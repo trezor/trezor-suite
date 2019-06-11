@@ -38,7 +38,8 @@ variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
   PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
-  DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
+  PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
+  DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 # Components package # --------------------------------
 
@@ -245,7 +246,6 @@ suite-web build:
     - yarn
     - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
   artifacts:
-    name: suite-web-build
     expire_in: 15 minutes
     paths:
       - $PACKAGE_PATH_SUITE_WEB/build
@@ -331,3 +331,18 @@ suite-desktop type check:
       - packages/suite/**/*
       - packages/suite-native/**/*
       - .gitlab-ci.yml
+
+# suite-desktop build mac:
+#   stage: build
+#   script:
+#     - yarn
+#     - yarn workspace @trezor/suite-desktop build:mac
+#   only:
+#     changes:
+#       - packages/suite/**/*
+#       - packages/suite-desktop/**/*
+#       - .gitlab-ci.yml
+#   artifacts:
+#     expire_in: 3 days
+#     paths:
+#       - $PACKAGE_PATH_SUITE_DESKTOP/build-electron/mac/TrezorSuite.app

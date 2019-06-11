@@ -1,4 +1,4 @@
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@suite-types/index';
 import * as SUITE from './constants/suite';
 
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {

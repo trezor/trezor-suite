@@ -1,6 +1,6 @@
-import { defineMessages } from 'react-intl';
+import { defineMessages, Messages } from 'react-intl';
 
-const definedMessages = defineMessages({
+const definedMessages: Messages = defineMessages({
     TR_CONNECTED: {
         id: 'TR_CONNECTED',
         defaultMessage: 'Connected',

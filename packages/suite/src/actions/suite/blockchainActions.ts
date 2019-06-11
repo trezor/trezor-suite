@@ -1,4 +1,4 @@
-import { Dispatch, GetState } from '@suite/types';
+import { Dispatch, GetState } from '@suite-types/index';
 import * as BLOCKCHAIN from './constants/blockchain';
 
 // Conditionally subscribe to blockchain backend

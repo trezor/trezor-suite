@@ -1,6 +1,6 @@
 import { FETCH_START, FETCH_ERROR, FETCH_SUCCESS } from '@suite/types/onboarding/fetch';
 import { GET_FIRMWARE, SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
-import { Dispatch } from '@suite/types/onboarding/actions';
+import { Dispatch } from '@suite/types/suite';
 
 const GET = 'GET';
 const MODE_NO_CORS: 'no-cors' = 'no-cors';

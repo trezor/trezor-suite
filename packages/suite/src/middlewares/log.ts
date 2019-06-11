@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { State, Action, Dispatch } from '@suite/types';
+import { State, Action, Dispatch } from '@suite-types/index';
 
 const log = (_api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
     action: Action,

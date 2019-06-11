@@ -2,21 +2,19 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
-import { isWebUSB } from '@suite/utils/device';
+
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { colors, Button, Loader } from '@trezor/components';
-import { getRoute } from '@suite/utils/router';
 
-import InstallBridge from '@suite-views/bridge';
-
+import { getRoute } from '@suite-utils/router';
+import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 
-import { State } from '@suite/types';
+import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import VersionPage from '@suite-views/version';
-import l10nCommonMessages from '@suite/views/index.messages';
+import l10nCommonMessages from '@suite-views/index.messages';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import DeviceMenu from '@suite-components/DeviceMenu';
 import Layout from '@suite-components/Layout';
@@ -28,6 +26,13 @@ interface Props {
     goto: typeof goto;
     children: React.ReactNode;
 }
+
+const LoaderWrapper = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
 
 const SuiteHeader = styled.div`
     display: flex;
@@ -49,20 +54,14 @@ const Right = styled.div``;
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
 
-    if (router.pathname === '/version') {
-        return (
-            <Layout isLanding>
-                <VersionPage />
-            </Layout>
-        );
-    }
-
-    // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
+        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
             <Layout isLanding>
-                <Loader text="Loading" size={100} strokeWidth={1} />
+                <LoaderWrapper>
+                    <Loader text="Loading" size={100} strokeWidth={1} />
+                </LoaderWrapper>
             </Layout>
         );
     }
@@ -74,12 +73,9 @@ const Index: FunctionComponent<Props> = props => {
     }
 
     // no available transport
+    // TODO: redirect to brige page
     if (!suite.transport.type) {
-        return (
-            <Layout>
-                <InstallBridge />
-            </Layout>
-        );
+        return <Layout isLanding>{/* <Bridge /> */}</Layout>;
     }
 
     // no available device
@@ -112,7 +108,9 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    // TODO: render requested view
+    const { pathname } = router;
+    const isLandingPage = pathname === '/bridge' || pathname === '/version';
+
     return (
         <Layout>
             <SuiteHeader>

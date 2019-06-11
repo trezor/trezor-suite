@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Router from 'next/router';
 
 import { onLocationChange, onBeforePopState } from '@suite-actions/routerActions';
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@suite-types/index';
 
 /**
  * Router handler for 'next/router' used in suite-web and suite-desktop apps

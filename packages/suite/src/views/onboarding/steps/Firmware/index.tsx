@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 import colors from '@suite/config/onboarding/colors';
 import { GET_FIRMWARE } from '@suite/actions/onboarding/constants/fetchCalls';
 import { FIRMWARE_ERASE, FIRMWARE_UPLOAD } from '@suite/actions/onboarding/constants/calls';
-import commonMessages from '@suite/support/commonMessages';
+import commonMessages from '@suite-support/Messages';
 
 import Text from '@suite/components/onboarding/Text';
 import { ConnectDeviceIcon } from '@suite/components/onboarding/Icons';

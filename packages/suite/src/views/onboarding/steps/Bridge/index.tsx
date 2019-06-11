@@ -10,7 +10,7 @@ import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/on
 
 import { Dots } from '@suite/components/onboarding/Loaders';
 import Text from '@suite/components/onboarding/Text';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 import {
     StepWrapper,
     StepHeadingWrapper,

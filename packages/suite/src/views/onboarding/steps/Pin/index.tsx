@@ -8,7 +8,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { PIN_MANUAL_URL } from '@suite/config/onboarding/urls';
 import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 import PinMatrix from '@suite/components/onboarding/PinMatrix';
 import Text from '@suite/components/onboarding/Text';
 import {

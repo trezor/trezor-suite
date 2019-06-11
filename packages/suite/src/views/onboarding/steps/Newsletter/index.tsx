@@ -11,7 +11,7 @@ import { validateEmail } from '@suite/utils/onboarding/validate';
 import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
 import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
 import Text from '@suite/components/onboarding/Text';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 
 import {
     StepWrapper,

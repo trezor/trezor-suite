@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite/types';
+import { TrezorDevice } from '@suite-types/index';
 
 // get selected device from reducer
 export const getSelectedDevice = (device: TrezorDevice, devices: TrezorDevice[]) => {

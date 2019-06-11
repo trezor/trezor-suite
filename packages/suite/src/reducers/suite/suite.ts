@@ -1,6 +1,6 @@
 import { TRANSPORT } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import { Action, TrezorDevice } from '@suite/types';
+import { Action, TrezorDevice } from '@suite-types/index';
 
 interface SuiteState {
     loading: boolean;

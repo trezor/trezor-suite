@@ -8,7 +8,7 @@ import { SEED_MANUAL_URL } from '@suite/config/onboarding/urls';
 import { WIPE_DEVICE, BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import * as STEP from '@suite/constants/onboarding/steps';
 import Text from '@suite/components/onboarding/Text';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 
 import {
     StepWrapper,

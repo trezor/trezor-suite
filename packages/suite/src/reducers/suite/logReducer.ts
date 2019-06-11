@@ -2,7 +2,7 @@
 
 import { LOG } from '@suite-actions/constants';
 
-import { Action } from '@suite/types';
+import { Action } from '@suite-types/index';
 
 export interface LogEntry {
     time: number;

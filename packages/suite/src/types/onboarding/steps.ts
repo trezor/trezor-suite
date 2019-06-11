@@ -35,20 +35,20 @@ export type AnyStepDisallowedState =
     | typeof STEP.DISALLOWED_IS_NOT_SAME_DEVICE;
 
 export type AnyStepTitle =
-    | typeof TITLE_INIT_DEVICE
-    | typeof TITLE_BACKUP_STEP
-    | typeof TITLE_BOOKMARK_STEP
-    | typeof TITLE_BRIDGE_STEP
-    | typeof TITLE_FINAL_STEP
-    | typeof TITLE_FIRMWARE_STEP
-    | typeof TITLE_HOLOGRAM_STEP
-    | typeof TITLE_NEWSLETTER_STEP
-    | typeof TITLE_SELECT_DEVICE_STEP
-    | typeof TITLE_SET_PIN_STEP
-    | typeof TITLE_START_STEP
-    | typeof TITLE_SECURITY_STEP
-    | typeof TITLE_WELCOME_STEP
-    | typeof TITLE_NAME_STEP
-    | typeof TITLE_CONNECT_STEP
-    | typeof TITLE_UNBOXING_STEP
-    | typeof TITLE_RECOVERY_STEP;
+    | typeof STEP.TITLE_INIT_DEVICE
+    | typeof STEP.TITLE_BACKUP_STEP
+    | typeof STEP.TITLE_BOOKMARK_STEP
+    | typeof STEP.TITLE_BRIDGE_STEP
+    | typeof STEP.TITLE_FINAL_STEP
+    | typeof STEP.TITLE_FIRMWARE_STEP
+    | typeof STEP.TITLE_HOLOGRAM_STEP
+    | typeof STEP.TITLE_NEWSLETTER_STEP
+    | typeof STEP.TITLE_SELECT_DEVICE_STEP
+    | typeof STEP.TITLE_SET_PIN_STEP
+    | typeof STEP.TITLE_START_STEP
+    | typeof STEP.TITLE_SECURITY_STEP
+    | typeof STEP.TITLE_WELCOME_STEP
+    | typeof STEP.TITLE_NAME_STEP
+    | typeof STEP.TITLE_CONNECT_STEP
+    | typeof STEP.TITLE_UNBOXING_STEP
+    | typeof STEP.TITLE_RECOVERY_STEP;

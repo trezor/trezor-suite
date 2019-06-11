@@ -7,7 +7,7 @@ import withRedux from 'next-redux-wrapper';
 
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
-import IntlProvider from '@suite/support/ConnectedIntlProvider';
+import IntlProvider from '@suite-support/ConnectedIntlProvider';
 
 interface Props {
     store: Store;

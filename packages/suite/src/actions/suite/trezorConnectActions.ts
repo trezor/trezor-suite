@@ -7,7 +7,7 @@ import TrezorConnect, {
 } from 'trezor-connect';
 
 import { SUITE } from '@suite-actions/constants';
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@suite-types/index';
 
 export const init = () => async (dispatch: Dispatch) => {
     // set listeners
@@ -46,7 +46,7 @@ export const init = () => async (dispatch: Dispatch) => {
 
     try {
         await TrezorConnect.init({
-            connectSrc: 'https://sisyfos.trezor.io/connect-electron/',
+            connectSrc: 'https://sisyfos.sldev.cz/connect-electron/',
             transportReconnect: true,
             debug: false,
             popup: false,
