@@ -287,6 +287,7 @@ suite-web deploy dev:
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    on_stop: suite-web delete review
   before_script: []
   script:
     - env
@@ -299,6 +300,25 @@ suite-web deploy dev:
   tags:
     - deploy
 
+suite-web delete review:
+  before_script: []
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    PACKAGE_NAME: suite-web
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  when: manual
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    action: stop
+  before_script: []
+  script:
+    - cd packages/suite-web
+    - 'rm -r "${DEPLOY_DIRECTORY}"'
+  only:
+    - branches
+  tags:
+    - deploy
 
 # Suite native package # --------------------------------
 
