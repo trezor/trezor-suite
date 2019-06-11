@@ -7,6 +7,7 @@ import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
 import Title from '@suite/components/wallet/Title';
 import Layout from '@wallet-components/Layout';
+
 interface Props {
     suite: State['suite'];
     router: State['router'];
