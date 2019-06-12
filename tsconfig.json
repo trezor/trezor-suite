@@ -17,6 +17,7 @@
             "@suite-support/*": ["./packages/suite/src/support/suite/*"],
             "@suite-constants/*": ["./packages/suite/src/constants/suite/*"],
             "@suite-config/*": ["./packages/suite/src/config/suite/*"],
+            "@suite-middlewares/*": ["./packages/suite/src/middlewares/suite/*"],
             // wallet
             "@wallet-components/*": ["./packages/suite/src/components/wallet/*"],
             "@wallet-views/*": ["./packages/suite/src/views/wallet/*"],
@@ -27,6 +28,7 @@
             "@wallet-support/*": ["./packages/suite/src/support/wallet/*"],
             "@wallet-constants/*": ["./packages/suite/src/constants/wallet/*"],
             "@wallet-config/*": ["./packages/suite/src/config/wallet/*"],
+            "@wallet-middlewares/*": ["./packages/suite/src/middlewares/wallet/*"],
             // onboarding
             "@onboarding-components/*": ["./packages/suite/src/components/onboarding/*"],
             "@onboarding-views/*": ["./packages/suite/src/views/onboarding/*"],
@@ -37,6 +39,7 @@
             "@onboarding-support/*": ["./packages/suite/src/support/onboarding/*"],
             "@onboarding-constants/*": ["./packages/suite/src/constants/onboarding/*"],
             "@onboarding-config/*": ["./packages/suite/src/config/onboarding/*"],
+            "@onboarding-middlewares/*": ["./packages/suite/src/middlewares/onboarding/*"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"],
