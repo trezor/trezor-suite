@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
+import { toggleSidebar } from '@suite-actions/suiteActions';
 import { LANGUAGES } from '@suite-config/app';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
 import Footer from '@suite-components/Footer';
@@ -48,6 +49,7 @@ interface Props {
     suite: State['suite'];
     devices: State['devices'];
     fetchLocale: typeof fetchLocale;
+    toggleSidebar: () => void;
     isLanding?: boolean;
     showSuiteHeader?: boolean;
     children: React.ReactNode;
@@ -57,7 +59,11 @@ const Layout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
         <Router />
         <CommonHeader
-            sidebarEnabled={false}
+            sidebarOpened={props.suite.showSidebar}
+            toggleSidebar={props.toggleSidebar}
+            togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}
+            togglerCloseText={<FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />}
+            sidebarEnabled
             rightAddon={
                 <LanguagePicker
                     language={props.suite.language}
@@ -108,6 +114,7 @@ export default injectIntl(
         mapStateToProps,
         dispatch => ({
             fetchLocale: bindActionCreators(fetchLocale, dispatch),
+            toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
         }),
     )(Layout),
 );

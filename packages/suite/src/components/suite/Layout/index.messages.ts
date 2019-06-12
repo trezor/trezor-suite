@@ -1,6 +1,22 @@
+/* @flow */
 import { defineMessages, Messages } from 'react-intl';
 
 const definedMessages: Messages = defineMessages({
+    TR_MENU: {
+        id: 'TR_MENU',
+        defaultMessage: 'Menu',
+        description: 'Mobile sidebar toggler',
+    },
+    TR_MENU_CLOSE: {
+        id: 'TR_MENU_CLOSE',
+        defaultMessage: 'Close',
+        description: 'Used on button for closing sidebar menu',
+    },
+    TR_TREZOR: {
+        id: 'TR_TREZOR',
+        defaultMessage: 'Trezor',
+        description: 'Link in header navigation',
+    },
     TR_WIKI: {
         id: 'TR_WIKI',
         defaultMessage: 'Wiki',

@@ -11,6 +11,7 @@ interface SuiteState {
     language: string;
     messages: { [key: string]: any };
     deviceMenuOpened: boolean;
+    showSidebar?: boolean;
 }
 
 interface Transport {
@@ -29,6 +30,7 @@ const initialState: SuiteState = {
     language: 'en',
     messages: {},
     deviceMenuOpened: false,
+    showSidebar: undefined,
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -79,6 +81,11 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 transport: {
                     bridge: action.payload.bridge,
                 },
+            };
+        case SUITE.TOGGLE_SIDEBAR:
+            return {
+                ...state,
+                showSidebar: !state.showSidebar,
             };
         default:
             return state;

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { State } from '@suite-types/index';
 import styled from 'styled-components';
 import TopNavigation from '@wallet-components/TopNavigation';
-import CoinMenu from '@wallet-components/CoinMenu';
+import Sidebar from './components/Sidebar';
 
 interface Props {
     router: State['router'];
@@ -23,17 +23,6 @@ const Content = styled.div`
     padding: 20px 35px;
 `;
 
-const Sidebar = styled.div`
-    display: flex;
-    width: 320px;
-    position: relative;
-    overflow-y: auto;
-    border-top-left-radius: 4px;
-    overflow-x: hidden;
-    background: rgb(251, 251, 251);
-    border-right: 1px solid rgb(227, 227, 227);
-`;
-
 const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -43,9 +32,7 @@ const ContentWrapper = styled.div`
 
 const Layout = (props: Props) => (
     <Wrapper>
-        <Sidebar>
-            <CoinMenu />
-        </Sidebar>
+        <Sidebar isOpen={props.suite.showSidebar} />
         <ContentWrapper>
             <TopNavigation />
             <Content>{props.children}</Content>
