@@ -173,10 +173,4 @@ class CoinMenu extends PureComponent {
     }
 }
 
-CoinMenu.propTypes = {
-    localStorage: PropTypes.object.isRequired,
-    wallet: PropTypes.object.isRequired,
-    gotoExternalWallet: PropTypes.func.isRequired,
-};
-
 export default CoinMenu;
