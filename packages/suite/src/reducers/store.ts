@@ -2,14 +2,14 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import commonReducers from './suite';
-import onboardingReducers from './onboarding';
-import commonMiddlewares from '../middlewares';
+import suiteMiddlewares from '@suite-middlewares/index';
+import onboardingReducers from '@onboarding-reducers/index';
+import suiteReducers from '@suite-reducers/index';
 
-const reducers = combineReducers({ ...commonReducers, onboarding: onboardingReducers });
+const reducers = combineReducers({ ...suiteReducers, onboarding: onboardingReducers });
 export type State = ReturnType<typeof reducers>;
 
-const middlewares = [thunkMiddleware, ...commonMiddlewares];
+const middlewares = [thunkMiddleware, ...suiteMiddlewares];
 
 const enhancers: any[] = [];
 
