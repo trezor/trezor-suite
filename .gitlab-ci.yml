@@ -78,7 +78,6 @@ components-storybook lint:
 
 components-storybook type check:
   stage: type check
-  allow_failure: true
   script:
     - yarn
     - yarn workspace @trezor/components-storybook type-check
