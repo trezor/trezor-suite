@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import { State } from '@suite-types/index';
 import styled from 'styled-components';
 import CoinMenu from '@wallet-components/CoinMenu';
+import Backdrop from '@suite-components/Backdrop';
+import { toggleSidebar } from '@suite-actions/suiteActions';
 import { variables, animations, colors } from '@trezor/components';
+import { bindActionCreators } from 'redux';
 
 const { SCREEN_SIZE } = variables;
 const { SLIDE_RIGHT, SLIDE_LEFT } = animations;
@@ -13,9 +16,11 @@ interface Props {
     suite: State['suite'];
     children: React.ReactNode;
     isOpen: boolean;
+    toggleSidebar: () => void;
 }
 
-const AbsoluteWrapper = styled.aside<Props>`
+type WrapperProps = Pick<Props, 'isOpen'>;
+const AbsoluteWrapper = styled.aside<WrapperProps>`
     width: 320px;
     position: relative;
     overflow-y: auto;
@@ -52,12 +57,23 @@ const SidebarWrapper = styled.div`
     }
 `;
 
-const Sidebar = ({ isOpen, ...rest }: Props) => (
-    <AbsoluteWrapper isOpen={isOpen} {...rest}>
-        <SidebarWrapper>
-            <CoinMenu />
-        </SidebarWrapper>
-    </AbsoluteWrapper>
+const StyledBackdrop = styled(Backdrop)`
+    display: none;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: initial;
+    }
+`;
+
+const Sidebar = ({ isOpen, toggleSidebar }: Props) => (
+    <>
+        <StyledBackdrop show={isOpen} onClick={toggleSidebar} animated />
+        <AbsoluteWrapper isOpen={isOpen}>
+            <SidebarWrapper>
+                <CoinMenu />
+            </SidebarWrapper>
+        </AbsoluteWrapper>
+    </>
 );
 
 const mapStateToProps = (state: State) => ({
@@ -65,4 +81,9 @@ const mapStateToProps = (state: State) => ({
     suite: state.suite,
 });
 
-export default connect(mapStateToProps)(Sidebar);
+export default connect(
+    mapStateToProps,
+    dispatch => ({
+        toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
+    }),
+)(Sidebar);
