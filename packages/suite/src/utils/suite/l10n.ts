@@ -1,4 +1,4 @@
-import { LANGUAGES } from '@suite/config/app';
+import { LANGUAGES } from '@suite-config/app';
 import { Language } from '@suite-types/languages';
 
 export const getInitialLocale = (navigatorLanguage: string, defaultLocale: string = 'en') => {

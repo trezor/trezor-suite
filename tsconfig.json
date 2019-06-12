@@ -15,6 +15,8 @@
             "@suite-types/*": ["./packages/suite/src/types/suite/*"],
             "@suite-reducers/*": ["./packages/suite/src/reducers/suite/*"],
             "@suite-support/*": ["./packages/suite/src/support/suite/*"],
+            "@suite-constants/*": ["./packages/suite/src/constants/suite/*"],
+            "@suite-config/*": ["./packages/suite/src/config/suite/*"],
             // wallet
             "@wallet-components/*": ["./packages/suite/src/components/wallet/*"],
             "@wallet-views/*": ["./packages/suite/src/views/wallet/*"],
@@ -23,6 +25,8 @@
             "@wallet-types/*": ["./packages/suite/src/types/wallet/*"],
             "@wallet-reducers/*": ["./packages/suite/src/reducers/wallet/*"],
             "@wallet-support/*": ["./packages/suite/src/support/wallet/*"],
+            "@wallet-constants/*": ["./packages/suite/src/constants/wallet/*"],
+            "@wallet-config/*": ["./packages/suite/src/config/wallet/*"],
             // onboarding
             "@onboarding-components/*": ["./packages/suite/src/components/onboarding/*"],
             "@onboarding-views/*": ["./packages/suite/src/views/onboarding/*"],
@@ -31,6 +35,8 @@
             "@onboarding-types/*": ["./packages/suite/src/types/onboarding/*"],
             "@onboarding-reducers/*": ["./packages/suite/src/reducers/onboarding/*"],
             "@onboarding-support/*": ["./packages/suite/src/support/onboarding/*"],
+            "@onboarding-constants/*": ["./packages/suite/src/constants/onboarding/*"],
+            "@onboarding-config/*": ["./packages/suite/src/config/onboarding/*"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"],
@@ -47,9 +53,9 @@
         "target": "esnext",
     },
     "exclude": [
-        "node_modules", 
-        "**/api/generated/**/*.*", 
-        "**/_old/**/*.*", 
+        "node_modules",
+        "**/api/generated/**/*.*",
+        "**/_old/**/*.*",
         ".next"
     ]
 }
