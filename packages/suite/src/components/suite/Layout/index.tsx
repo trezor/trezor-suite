@@ -6,10 +6,10 @@ import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import { toggleSidebar } from '@suite-actions/suiteActions';
-import { LANGUAGES } from '@suite-config/app';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
 import Footer from '@suite-components/Footer';
 import SuiteHeader from '@suite-components/SuiteHeader';
+import suiteConfig from '@suite-config/index';
 import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
 import { State } from '@suite-types/index';
@@ -67,7 +67,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             rightAddon={
                 <LanguagePicker
                     language={props.suite.language}
-                    languages={LANGUAGES}
+                    languages={suiteConfig.LANGUAGES}
                     onChange={option => {
                         props.fetchLocale(option.value);
                     }}

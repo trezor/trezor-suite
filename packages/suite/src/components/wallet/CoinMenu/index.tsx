@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { EXTERNAL_COINS } from '@suite-config/app';
+import suiteConfig from '@suite-config/index';
 import React, { PureComponent } from 'react';
 import { Link, colors, icons as ICONS } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
@@ -55,7 +55,7 @@ class CoinMenu extends PureComponent {
     getOtherCoins() {
         // const { hiddenCoinsExternal } = this.props.wallet;
         return (
-            EXTERNAL_COINS.sort((a, b) => a.order - b.order)
+            suiteConfig.EXTERNAL_COINS.sort((a, b) => a.order - b.order)
                 .filter(item => !item.isHidden) // hide coins globally in config
                 // .filter(item => !hiddenCoinsExternal.includes(item.id))
                 .map(coin => {
