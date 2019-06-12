@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import coins from '@wallet-constants/coins';
+import { EXTERNAL_COINS } from '@suite-config/app';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Link, colors, icons as ICONS } from '@trezor/components';
-import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
 import Divider from '../Divider';
@@ -11,7 +10,9 @@ import RowCoin from '../RowCoin';
 
 import l10nMessages from './index.messages';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    width: 260px;
+`;
 
 const ExternalWallet = styled.div`
     cursor: pointer;
@@ -38,7 +39,7 @@ const Gray = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-class CoinMenu extends PureComponent<Props> {
+class CoinMenu extends PureComponent {
     getBaseUrl() {
         const { selectedDevice } = this.props.wallet;
         let baseUrl = '';
@@ -54,40 +55,42 @@ class CoinMenu extends PureComponent<Props> {
 
     getOtherCoins() {
         // const { hiddenCoinsExternal } = this.props.wallet;
-        return coins
-            .sort((a, b) => a.order - b.order)
-            // .filter(item => !item.isHidden) // hide coins globally in config
-            // .filter(item => !hiddenCoinsExternal.includes(item.id))
-            .map(coin => {
-                const row = (
-                    <RowCoin
-                        network={{
-                            name: coin.coinName,
-                            shortcut: coin.id,
-                        }}
-                        iconRight={{
-                            type: ICONS.SKIP,
-                            color: colors.TEXT_SECONDARY,
-                            size: 13,
-                        }}
-                    />
-                );
-
-                if (coin.external)
-                    return (
-                        <ExternalWallet
-                            key={coin.id}
-                            onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
-                        >
-                            {row}
-                        </ExternalWallet>
+        return (
+            EXTERNAL_COINS
+                .sort((a, b) => a.order - b.order)
+                .filter(item => !item.isHidden) // hide coins globally in config
+                // .filter(item => !hiddenCoinsExternal.includes(item.id))
+                .map(coin => {
+                    const row = (
+                        <RowCoin
+                            network={{
+                                name: coin.coinName,
+                                shortcut: coin.id,
+                            }}
+                            iconRight={{
+                                type: ICONS.SKIP,
+                                color: colors.TEXT_SECONDARY,
+                                size: 13,
+                            }}
+                        />
                     );
-                return (
-                    <StyledLink isGray key={coin.id} href={coin.url} target="_top">
-                        {row}
-                    </StyledLink>
-                );
-            });
+
+                    if (coin.external)
+                        return (
+                            <ExternalWallet
+                                key={coin.id}
+                                onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
+                            >
+                                {row}
+                            </ExternalWallet>
+                        );
+                    return (
+                        <StyledLink isGray key={coin.id} href={coin.url} target="_top">
+                            {row}
+                        </StyledLink>
+                    );
+                })
+        );
     }
 
     getEmptyContent() {
