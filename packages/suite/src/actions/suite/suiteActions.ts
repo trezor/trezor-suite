@@ -33,6 +33,9 @@ export type SuiteActions =
     | {
           type: typeof SUITE.TOGGLE_DEVICE_MENU;
           opened: boolean;
+      }
+    | {
+          type: typeof SUITE.TOGGLE_SIDEBAR;
       };
 
 export const onSuiteReady = (): SuiteActions => {
@@ -124,6 +127,10 @@ export const handleDeviceDisconnect = (device: Device) => (
 export const toggleDeviceMenu = (opened: boolean) => ({
     type: SUITE.TOGGLE_DEVICE_MENU,
     opened,
+});
+
+export const toggleSidebar = () => ({
+    type: SUITE.TOGGLE_SIDEBAR,
 });
 
 // list of all actions which has influence on "selectedDevice" field in "wallet" reducer

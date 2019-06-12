@@ -1,22 +1,18 @@
 import React, { FunctionComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
 
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { colors, Button, Loader } from '@trezor/components';
+import { Loader } from '@trezor/components';
 
-import { getRoute } from '@suite-utils/router';
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 
 import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import l10nCommonMessages from '@suite-views/index.messages';
 import AcquireDevice from '@suite-components/AcquireDevice';
-import DeviceMenu from '@suite-components/DeviceMenu';
 import Layout from '@suite-components/Layout';
 
 interface Props {
@@ -33,23 +29,6 @@ const LoaderWrapper = styled.div`
     justify-content: center;
     align-items: center;
 `;
-
-const SuiteHeader = styled.div`
-    display: flex;
-    padding: 0px 15px;
-    border-bottom: 1px solid ${colors.BODY};
-    border-radius: 4px 4px 0px 0px;
-    align-items: center;
-    box-sizing: border-box;
-    justify-content: space-between;
-    width: 100%;
-    background: ${colors.WHITE};
-    max-width: 1170px;
-    flex-direction: row;
-`;
-
-const Left = styled.div``;
-const Right = styled.div``;
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
@@ -110,22 +89,7 @@ const Index: FunctionComponent<Props> = props => {
 
     const { pathname } = router;
     const isLandingPage = pathname === '/bridge' || pathname === '/version';
-
-    return (
-        <Layout>
-            <SuiteHeader>
-                <Left>
-                    <DeviceMenu data-test="@suite/device_selection" />
-                </Left>
-                <Right>
-                    <Button onClick={() => goto(getRoute('suite-device-settings'))}>
-                        <FormattedMessage {...l10nCommonMessages.TR_DEVICE_SETTINGS} />
-                    </Button>
-                </Right>
-            </SuiteHeader>
-            {props.children}
-        </Layout>
-    );
+    return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 
 const mapStateToProps = (state: State) => ({

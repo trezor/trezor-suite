@@ -10,7 +10,7 @@ import RowCoin from '../RowCoin';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
-    width: 260px;
+    width: 100%;
 `;
 
 const ExternalWallet = styled.div`

@@ -157,8 +157,8 @@ interface Props {
     sidebarEnabled: boolean;
     sidebarOpened?: boolean;
     toggleSidebar?: () => any;
-    togglerOpenText?: string;
-    togglerCloseText?: string;
+    togglerOpenText?: React.ReactNode;
+    togglerCloseText?: React.ReactNode;
     rightAddon?: React.ReactNode;
     logoLinkComponent?: React.ReactNode;
     links?: LinkShape[];

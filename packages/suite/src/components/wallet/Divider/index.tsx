@@ -27,14 +27,16 @@ const Wrapper = styled.div<Props>`
         `}
 `;
 
-const TextLeft = styled.p`
+const TextLeft = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
+
+const TextRight = styled.div``;
 
 const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }: Props) => (
     <Wrapper data-test={testId} hasBorder={hasBorder} className={className}>
         <TextLeft>{textLeft}</TextLeft>
-        {textRight && <p>{textRight}</p>}
+        {textRight && <TextRight>{textRight}</TextRight>}
     </Wrapper>
 );
 
