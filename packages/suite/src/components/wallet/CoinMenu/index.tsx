@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { EXTERNAL_COINS } from '@suite-config/app';
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Link, colors, icons as ICONS } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
