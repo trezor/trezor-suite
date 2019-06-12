@@ -78,7 +78,6 @@ components-storybook lint:
 
 components-storybook type check:
   stage: type check
-  allow_failure: true
   script:
     - yarn
     - yarn workspace @trezor/components-storybook type-check
@@ -120,6 +119,7 @@ components-storybook deploy dev:
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    on_stop: components-storybook delete review
   before_script: []
   script:
     - env
@@ -129,6 +129,26 @@ components-storybook deploy dev:
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  tags:
+    - deploy
+
+components-storybook delete review:
+  before_script: []
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    PACKAGE_NAME: components-storybook
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  when: manual
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    action: stop
+  before_script: []
+  script:
+    - cd packages/components-storybook
+    - 'rm -r "${DEPLOY_DIRECTORY}"'
+  only:
+    - branches
   tags:
     - deploy
 
@@ -266,6 +286,7 @@ suite-web deploy dev:
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    on_stop: suite-web delete review
   before_script: []
   script:
     - env
@@ -278,6 +299,23 @@ suite-web deploy dev:
   tags:
     - deploy
 
+suite-web delete review:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    PACKAGE_NAME: suite-web
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  when: manual
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    action: stop
+  script:
+    - cd packages/suite-web
+    - 'rm -r "${DEPLOY_DIRECTORY}"'
+  only:
+    - branches
+  tags:
+    - deploy
 
 # Suite native package # --------------------------------
 

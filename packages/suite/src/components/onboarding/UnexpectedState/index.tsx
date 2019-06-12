@@ -91,7 +91,7 @@ const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ connectAct
 );
 
 interface UnexpectedStateProps {
-    caseType: AnyStepDisallowedState | string;
+    caseType: AnyStepDisallowedState;
     model: number;
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;

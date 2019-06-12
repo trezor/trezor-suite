@@ -8,7 +8,7 @@ import { Dispatch } from '@suite-types/index';
 import Step from './index';
 
 const mapStateToProps = (state: State) => ({
-    device: state.suite.device,
+    device: state.onboarding.connect.device,
     model: state.onboarding.selectedModel,
     activeSubStep: state.onboarding.activeSubStep,
 });

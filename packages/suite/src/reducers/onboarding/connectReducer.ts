@@ -1,8 +1,10 @@
+import { DEVICE } from 'trezor-connect';
 import * as Connect from '@suite/types/onboarding/connect';
 import { Action } from '@suite/types/onboarding/actions';
 
 const initialState: Connect.ConnectReducer = {
     prevDeviceId: null,
+    device: null,
     deviceCall: {
         name: null,
         isProgress: false,
@@ -41,12 +43,34 @@ const connect = (
     action: Connect.ActionTypes,
 ): Connect.ConnectReducer => {
     switch (action.type) {
-        case Connect.DISCONNECT:
+        case DEVICE.CONNECT:
+        case DEVICE.CONNECT_UNACQUIRED:
             return {
                 ...state,
                 device: {
+                    isRequestingPin: 0,
+                    connected: true,
+                    // features: {}, // ??
+                    ...action.payload,
+                },
+            };
+        case DEVICE.CHANGED:
+            return {
+                ...state,
+                device: {
+                    ...state.device,
+                    connected: true,
+                    // features: {}, // ?
+                    ...action.payload,
+                },
+            };
+        case DEVICE.DISCONNECT:
+            return {
+                ...state,
+                device: {
+                    isRequestingPin: 0,
                     connected: false,
-                    ...action.device,
+                    ...action.payload,
                 },
                 uiInteraction: {
                     name: null,
@@ -86,6 +110,11 @@ const connect = (
         case Connect.DEVICE_CALL_SUCCESS:
             return {
                 ...state,
+                device: {
+                    // ?
+                    isRequestingPin: 0,
+                    ...state.device,
+                },
                 deviceCall: {
                     ...state.deviceCall,
                     isProgress: false,
@@ -115,7 +144,6 @@ const connect = (
         case 'button':
             return {
                 ...state,
-                // uiInteraction: { name: null, counter: 0 },
                 deviceInteraction: {
                     name: action.payload.code,
                     counter: state.deviceInteraction.counter + 1,
@@ -128,7 +156,17 @@ const connect = (
                     name: action.payload.code,
                     counter: state.uiInteraction.counter + 1,
                 },
-                // deviceInteraction: { name: null, counter: 0 },
+            };
+        case 'ui-request_pin':
+            return {
+                ...state,
+                device: {
+                    hovnoSmakem: true,
+                    ...state.device,
+                    isRequestingPin: state.device.isRequestingPin + 1,
+                },
+                uiInteraction: { name: null, counter: 0 },
+                deviceInteraction: { name: null, counter: 0 },
             };
         default:
             return state;

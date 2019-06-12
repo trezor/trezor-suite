@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { UI } from 'trezor-connect';
 import {
     DEVICE_CALL_START,
     DEVICE_CALL_ERROR,

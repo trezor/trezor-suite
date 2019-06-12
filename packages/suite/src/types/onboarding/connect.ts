@@ -28,7 +28,7 @@ export type PrevDeviceId = string | null;
 export interface ConnectReducer {
     prevDeviceId: PrevDeviceId;
     deviceCall: {
-        name: null | string; // todo: better
+        name: null | string; // todo: better, make type AnyDeviceCall
         isProgress: boolean;
         error: null | string;
         result: null | Record<string, any>;

@@ -12,7 +12,7 @@ const mapStateToProps = (state: State) => ({
     activeSubStep: state.onboarding.activeSubStep,
     model: state.onboarding.selectedModel,
     deviceCall: state.onboarding.connect.deviceCall,
-    device: state.suite.device,
+    device: state.onboarding.connect.device,
     isResolved: false, // todo: maybe add maybe not.
 });
 
