@@ -4,7 +4,15 @@ import PropTypes from 'prop-types';
 
 import { colors, variables } from '@trezor/components';
 
-const Wrapper = styled.div`
+interface Props {
+    hasBorder: boolean;
+    textLeft: string;
+    textRight: string;
+    className: string;
+    testId: string;
+}
+
+const Wrapper = styled.div<Props>`
     display: flex;
     justify-content: space-between;
     padding: 8px 28px 8px 24px;
@@ -23,7 +31,7 @@ const TextLeft = styled.p`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }) => (
+const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }: Props) => (
     <Wrapper data-test={testId} hasBorder={hasBorder} className={className}>
         <TextLeft>{textLeft}</TextLeft>
         {textRight && <p>{textRight}</p>}
