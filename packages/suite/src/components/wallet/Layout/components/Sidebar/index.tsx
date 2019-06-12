@@ -14,8 +14,7 @@ const { SLIDE_RIGHT, SLIDE_LEFT } = animations;
 interface Props {
     router: State['router'];
     suite: State['suite'];
-    children: React.ReactNode;
-    isOpen: boolean;
+    isOpen?: boolean;
     toggleSidebar: () => void;
 }
 

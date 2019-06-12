@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { State } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import TopNavigation from '@wallet-components/TopNavigation';
-import Sidebar from './components/Sidebar';
 import { variables } from '@trezor/components';
+import Sidebar from './components/Sidebar';
 
 const { SCREEN_SIZE } = variables;
 
