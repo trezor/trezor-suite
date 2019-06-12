@@ -67,7 +67,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             rightAddon={
                 <LanguagePicker
                     language={props.suite.language}
-                    languages={suiteConfig.LANGUAGES}
+                    languages={suiteConfig.languages}
                     onChange={option => {
                         props.fetchLocale(option.value);
                     }}
