@@ -75,7 +75,6 @@ const LinkContent = styled.div`
 `;
 
 interface Props {
-    currentPath: string;
     router: State['router'];
 }
 
