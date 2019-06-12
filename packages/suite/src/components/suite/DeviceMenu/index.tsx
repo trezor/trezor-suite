@@ -47,10 +47,10 @@ const Menu = styled.div`
     width: 320px;
     top: 70px;
     border-bottom: 1px solid #e3e3e3;
-    border-left: 1px solid #e3e3e3;
     border-right: 1px solid #e3e3e3;
     animation: ${SLIDE_DOWN} 0.2s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
     background: ${colors.WHITE};
+    box-shadow: 0 12px 8px -8px rgba(0, 0, 0, 0.1);
 `;
 
 const IconDivider = styled.div`
