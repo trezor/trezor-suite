@@ -56,8 +56,7 @@ class CoinMenu extends PureComponent {
     getOtherCoins() {
         // const { hiddenCoinsExternal } = this.props.wallet;
         return (
-            EXTERNAL_COINS
-                .sort((a, b) => a.order - b.order)
+            EXTERNAL_COINS.sort((a, b) => a.order - b.order)
                 .filter(item => !item.isHidden) // hide coins globally in config
                 // .filter(item => !hiddenCoinsExternal.includes(item.id))
                 .map(coin => {
