@@ -6,8 +6,9 @@ import { injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import { LANGUAGES } from '@suite-config/app';
-import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
-import Footer from '@suite/components/suite/Footer';
+import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
+import Footer from '@suite-components/Footer';
+import SuiteHeader from '@suite-components/SuiteHeader';
 import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
 import { State } from '@suite-types/index';
@@ -48,12 +49,14 @@ interface Props {
     devices: State['devices'];
     fetchLocale: typeof fetchLocale;
     isLanding?: boolean;
+    showSuiteHeader?: boolean;
+    children: React.ReactNode;
 }
 
 const Layout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
         <Router />
-        <AppHeader
+        <CommonHeader
             sidebarEnabled={false}
             rightAddon={
                 <LanguagePicker
@@ -86,6 +89,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
         <AppWrapper isLanding={props.isLanding}>
             <>
                 <Log />
+                {props.showSuiteHeader && <SuiteHeader />}
                 {props.children}
             </>
         </AppWrapper>
