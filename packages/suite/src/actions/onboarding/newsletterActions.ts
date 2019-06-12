@@ -26,7 +26,7 @@ const setSkipped = () => ({
 });
 
 const submitEmail = () => (dispatch: Dispatch, getState: GetState) => {
-    const { email, checkboxes } = getState().newsletter;
+    const { email, checkboxes } = getState().onboarding.newsletter;
     let url = `${MAILCHIMP_BASE}/subscribe/post-json?u=${MAILCHIMP_U}&id=${MAILCHIMP_ID}&group[1][1]=true&group[5][8]=true`;
     Object.values(checkboxes).forEach((checkbox: Checkbox, index) => {
         if (checkbox.value) {

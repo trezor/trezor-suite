@@ -61,11 +61,10 @@ import StartStep from '@suite/views/onboarding/steps/Start/Container';
 import SecurityStep from '@suite/views/onboarding/steps/Security/Container';
 import SetPinStep from '@suite/views/onboarding/steps/Pin/Container';
 import NameStep from '@suite/views/onboarding/steps/Name/Container';
-
 import BookmarkStep from '@suite/views/onboarding/steps/Bookmark/Container';
+import NewsletterStep from '@suite/views/onboarding/steps/Newsletter/Container';
 
 import FinalStep from '@suite/views/onboarding/steps/Final';
-import NewsletterStep from '@suite/views/onboarding/steps/Newsletter';
 
 import background from './background.jpg';
 
@@ -249,7 +248,6 @@ class Onboarding extends React.PureComponent<Props> {
 
     getError() {
         const { device, prevDeviceId, activeStepId, connectError, uiInteraction } = this.props;
-
         if (!this.getStep(activeStepId).disallowedDeviceStates) {
             return null;
         }
@@ -272,9 +270,7 @@ class Onboarding extends React.PureComponent<Props> {
             EVENTS.BUTTON_REQUEST__MNEMONIC_INPUT,
             EVENTS.BUTTON_REQUEST__OTHER,
         ];
-        return (
-            deviceInteraction && globals.includes(deviceInteraction.name) && deviceCall.isProgress
-        );
+        return globals.includes(deviceInteraction.name) && deviceCall.isProgress;
     }
 
     // todo: reconsider if we need resolved logic.
@@ -451,7 +447,7 @@ class Onboarding extends React.PureComponent<Props> {
 
 const mapStateToProps = (state: State) => {
     return {
-        device: state.suite.device,
+        device: state.onboarding.connect.device,
         transport: state.suite.transport,
 
         // connect reducer

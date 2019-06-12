@@ -18,7 +18,7 @@ export default function onboardingApp(state, action) {
             onboardingState.connect,
             action,
         ),
-        fetch: fetch(onboardingState.fetch, action),
+        fetchCall: fetch(onboardingState.fetchCall, action),
         recovery: recovery(onboardingState.recovery, action),
         firmwareUpdate: firmwareUpdate(onboardingState.firmwareUpdate, action),
         newsletter: newsletter(onboardingState.newsletter, action),

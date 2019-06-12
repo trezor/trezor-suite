@@ -69,23 +69,24 @@ class SetPinStep extends React.Component<Props> {
 
     getStatus() {
         const { deviceCall, uiInteraction, device, activeSubStep } = this.props;
+        console.log(device.isRequestingPin, uiInteraction.counter);
         if (activeSubStep) {
             return activeSubStep;
         }
         if (deviceCall.error === 'PIN mismatch') {
             return 'mismatch';
         }
-        if (uiInteraction.name === UI.REQUEST_PIN && uiInteraction.counter === 1) {
-            return 'first';
-        }
-        if (uiInteraction.name === UI.REQUEST_PIN && uiInteraction.counter === 2) {
-            return 'second';
-        }
         if (device && device.features.pin_protection && !deviceCall.isProgress) {
             return 'success';
         }
         if (device && !device.features.pin_protection && !deviceCall.isProgress) {
             return 'initial';
+        }
+        if (device.isRequestingPin === 1) {
+            return 'first';
+        }
+        if (device.isRequestingPin === 2) {
+            return 'second';
         }
         // todo: what if device disconnects?
         return null;
