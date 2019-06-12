@@ -5,18 +5,11 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
-
-import CoinMenu from '@wallet-components/CoinMenu';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
+import Layout from '@wallet-components/Layout';
 
 const Wallet = () => {
     return (
-        <Wrapper>
-            <CoinMenu />
+        <Layout>
             <Text>Wallet homepage</Text>
             <Button variant="success" onClick={() => goto('/wallet/account#/eth/1')}>
                 Ethereum
@@ -28,7 +21,7 @@ const Wallet = () => {
             <Button variant="success" onClick={() => goto('/wallet/settings')}>
                 Settings
             </Button>
-        </Wrapper>
+        </Layout>
     );
 };
 
