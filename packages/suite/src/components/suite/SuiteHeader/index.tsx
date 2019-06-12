@@ -10,7 +10,7 @@ import l10nCommonMessages from '@suite-views/index.messages';
 
 const StyledSuiteHeader = styled.div`
     display: flex;
-    padding: 0px 15px;
+    padding-right: 15px;
     border-bottom: 1px solid ${colors.BODY};
     border-radius: 4px 4px 0px 0px;
     align-items: center;
