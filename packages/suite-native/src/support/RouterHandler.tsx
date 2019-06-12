@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Router, Scene, Actions } from 'react-native-router-flux';
-import Index from '@suite/views';
+import Index from '@suite-views/index';
 import Wallet from '@suite/views/wallet';
 import WalletSend from '@suite/views/wallet/account/send';
 import { onLocationChange } from '@suite-actions/routerActions';

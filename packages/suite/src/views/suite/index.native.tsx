@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Text, View } from 'react-native';
 import { Header as AppHeader, colors } from '@trezor/components';
 import { bindActionCreators } from 'redux';
-import Router from '@suite/support/Router';
+import Router from '@suite-support/Router';
 
 import { State } from '@suite-types/index';
 import { goto } from '@suite/actions/routerActions';
-import AcquireDevice from '../components/suite/AcquireDevice';
+import AcquireDevice from '@suite-components/AcquireDevice';
 
 interface Props {
     router: State['router'];
