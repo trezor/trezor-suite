@@ -1,5 +1,6 @@
 import Document, { Head, Main, NextDocumentContext, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import React from 'react';
 import { colors } from '@trezor/components';
 import { AppRegistry } from 'react-native';
@@ -65,7 +66,11 @@ export default class MyDocument extends Document<Props> {
             <html lang="en" style={{ height: '100%' }}>
                 <Head>
                     <meta charSet="utf-8" />
-                    <link media="all" rel="stylesheet" href="/static/fonts/fonts.css" />
+                    <link
+                        media="all"
+                        rel="stylesheet"
+                        href={resolveStaticPath('fonts/fonts.css')}
+                    />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     {this.props.styleTags}
                 </Head>
