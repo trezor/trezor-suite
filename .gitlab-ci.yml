@@ -1,5 +1,9 @@
 image: node:lts
 
+# templates
+include:
+  - ci/templates/lint.yaml
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -46,9 +50,9 @@ variables:
 # Components package # --------------------------------
 
 components lint:
-  stage: lint
-  script:
-    - yarn workspace @trezor/components lint
+  variables:
+    PACKAGE_NAME: "@trezor/components"
+  <<: *lint
   only:
     changes:
       - packages/components/**/*
