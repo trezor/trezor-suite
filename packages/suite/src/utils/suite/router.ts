@@ -42,7 +42,7 @@ export const routes: Route[] = [
     },
     {
         name: 'wallet-account-transactions',
-        pattern: '/wallet/account/transactions',
+        pattern: 'wallet/account/transactions',
     },
     {
         name: 'wallet-account-send',
