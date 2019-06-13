@@ -1,3 +1,5 @@
+--- # components-storybook package # --------------------------------
+
 components-storybook lint:
   stage: lint
   script:

@@ -1,3 +1,5 @@
+--- # components package # --------------------------------
+
 components lint:
     stage: lint
     script:

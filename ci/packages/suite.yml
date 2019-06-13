@@ -1,0 +1,31 @@
+--- # suite package # --------------------------------
+
+suite lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/suite lint
+    only:
+        changes:
+            - packages/suite/**/*
+            - .gitlab-ci.yml
+
+suite type check:
+    stage: type check
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/suite type-check
+    only:
+        changes:
+            - packages/suite/**/*
+            - .gitlab-ci.yml
+
+suite test unit:
+    stage: test
+    script:
+        - env
+        - yarn workspace @trezor/suite test
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml

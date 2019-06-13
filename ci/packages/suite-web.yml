@@ -1,0 +1,86 @@
+--- # suite-web package # --------------------------------
+
+suite-web lint:
+    stage: lint
+    script:
+        - env
+        - yarn workspace @trezor/suite-web lint
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml
+
+suite-web type check:
+    stage: type check
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/suite-web type-check
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml
+
+suite-web build:
+    stage: build
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml
+    variables:
+        PACKAGE_NAME: suite-web
+    script:
+        - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 15 minutes
+        paths:
+            - $PACKAGE_PATH_SUITE_WEB/build
+
+suite-web deploy dev:
+    stage: deploy
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml
+    variables:
+        PACKAGE_NAME: suite-web
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+        DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
+    dependencies:
+        - suite-web build
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+        on_stop: suite-web delete review
+    before_script: []
+    script:
+        - env
+        - cd ${PACKAGE_PATH_SUITE_WEB}
+        - echo "Deploy to dev servers"
+        - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+        - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+    tags:
+        - deploy
+
+suite-web delete review:
+    stage: deploy
+    variables:
+        GIT_STRATEGY: none
+        PACKAGE_NAME: suite-web
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    when: manual
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        action: stop
+    script:
+        - cd packages/suite-web
+        - 'rm -r "${DEPLOY_DIRECTORY}"'
+    only:
+        - branches
+    tags:
+        - deploy
