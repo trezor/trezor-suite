@@ -1,4 +1,4 @@
-import * as ACTION from '@wallet-actions/constants';
+import { SIGN_VERIFY } from '@wallet-actions/constants';
 
 interface Error {
     inputName: string;
@@ -29,13 +29,13 @@ export const initialState: State = {
 
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
-        case ACTION.SIGN_SUCCESS:
+        case SIGN_VERIFY.SIGN_SUCCESS:
             return {
                 ...state,
                 signSignature: action.signSignature,
             };
 
-        case ACTION.ERROR: {
+        case SIGN_VERIFY.ERROR: {
             const { inputName } = action;
             if (!state.errors.some(e => e.inputName === inputName)) {
                 const error = {
@@ -50,7 +50,7 @@ export default (state: State = initialState, action: Action): State => {
             return state;
         }
 
-        case ACTION.TOUCH: {
+        case SIGN_VERIFY.TOUCH: {
             const { inputName } = action;
             if (!state.touched.includes(inputName)) {
                 return {
@@ -66,7 +66,7 @@ export default (state: State = initialState, action: Action): State => {
             };
         }
 
-        case ACTION.INPUT_CHANGE: {
+        case SIGN_VERIFY.INPUT_CHANGE: {
             const change = {
                 [action.inputName]: action.value,
             };
@@ -76,7 +76,7 @@ export default (state: State = initialState, action: Action): State => {
             };
         }
 
-        case ACTION.CLEAR_SIGN:
+        case SIGN_VERIFY.CLEAR_SIGN:
             return {
                 ...state,
                 signAddress: '',
@@ -84,7 +84,7 @@ export default (state: State = initialState, action: Action): State => {
                 signSignature: '',
             };
 
-        case ACTION.CLEAR_VERIFY:
+        case SIGN_VERIFY.CLEAR_VERIFY:
             return {
                 ...state,
                 verifyAddress: '',
