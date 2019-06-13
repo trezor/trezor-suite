@@ -20,6 +20,7 @@ components-storybook type check:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - ci/**/*
 
 components-storybook build:
   stage: build
