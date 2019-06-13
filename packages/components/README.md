@@ -10,22 +10,3 @@ To achieve the exact same look as in Storybook you need to use a font Roboto and
 
 Documentation in [Storybook](https://suite-dev.sldev.cz/components/develop/)
 
-
-## Contributing
-
-To enable ESLint to lint typescript files in VS Code add following lines to your settings
-```
-"eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    {
-        "language": "typescript",
-        "autoFix": true
-    },
-    {
-        "language": "typescriptreact",
-        "autoFix": true
-    }
-]
-
-```
