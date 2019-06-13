@@ -6,6 +6,7 @@ import { colors, variables } from '@trezor/components';
 import { State } from '@suite/types';
 import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
+import Link from 'next/link';
 
 import l10nMessages from './index.messages';
 
@@ -87,6 +88,9 @@ const TopNavigation = (props: Props) => {
     };
     return (
         <Wrapper>
+            <Link href={getRoute('wallet-account-transactions')}>
+                <div>test</div>
+            </Link>
             <StyledNavLink
                 active={isPathActive('wallet-account-summary')}
                 onClick={() => goto(getRoute('wallet-account-summary'), true)}
