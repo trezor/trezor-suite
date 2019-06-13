@@ -8,6 +8,7 @@ components-storybook lint:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
+      - ci/**
       - .gitlab-ci.yml
 
 components-storybook type check:
@@ -28,6 +29,7 @@ components-storybook build:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
+      - ci/**
       - .gitlab-ci.yml
   artifacts:
     name: components-build-files
@@ -47,6 +49,7 @@ components-storybook deploy dev:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
+      - ci/**
       - .gitlab-ci.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
@@ -76,6 +79,7 @@ components-storybook delete review:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
+      - ci/**
       - .gitlab-ci.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
@@ -96,6 +100,7 @@ components-storybook test snapshots:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
+      - ci/**
       - .gitlab-ci.yml
   script:
     - env
@@ -116,6 +121,7 @@ components-storybook make snapshot references:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
+      - ci/**
       - .gitlab-ci.yml
   script:
     - env
