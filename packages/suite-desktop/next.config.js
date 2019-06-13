@@ -23,7 +23,6 @@ module.exports = withCustomBabelConfig(
                     '@components',
                     '../packages/components/src',
                 ],
-                assetPrefix: 'file://',
                 webpack: config => {
                     config.plugins.push(
                         new webpack.DefinePlugin({

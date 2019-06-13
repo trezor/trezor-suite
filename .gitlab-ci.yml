@@ -253,7 +253,7 @@ suite-web build:
   variables:
     PACKAGE_NAME: suite-web
   script:
-    - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+    - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 15 minutes
     paths:
