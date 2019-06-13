@@ -1,3 +1,3 @@
-## @trezor/suite-desktop
+# @trezor/suite-onboarding
 
-electron + next.js + redux
+Temporary build target for standalone onboarding web app

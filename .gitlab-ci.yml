@@ -1,14 +1,16 @@
 image: node:lts
 
 cache:
-  key: "${CI_COMMIT_REF_NAME}"
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - ~/.cache
+    - node_modules/
 
 before_script:
   - apt-get update
   - apt-get install -y build-essential
   - apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
+  - yarn install
 
 stages:
   - install
@@ -46,7 +48,6 @@ variables:
 components lint:
   stage: lint
   script:
-    - yarn
     - yarn workspace @trezor/components lint
   only:
     changes:
@@ -57,7 +58,6 @@ components lint:
 components type check:
   stage: type check
   script:
-    - yarn
     - yarn workspace @trezor/components type-check
   only:
     changes:
@@ -68,7 +68,6 @@ components type check:
 components-storybook lint:
   stage: lint
   script:
-    - yarn
     - yarn workspace @trezor/components-storybook lint
   only:
     changes:
@@ -79,7 +78,6 @@ components-storybook lint:
 components-storybook type check:
   stage: type check
   script:
-    - yarn
     - yarn workspace @trezor/components-storybook type-check
   only:
     changes:
@@ -90,7 +88,6 @@ components-storybook type check:
 components-storybook build:
   stage: build
   script:
-    - yarn
     - yarn workspace @trezor/components-storybook build
   only:
     changes:
@@ -162,7 +159,6 @@ components-storybook test snapshots:
       - .gitlab-ci.yml
   script:
     - env
-    - yarn
     - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
   artifacts:
     expire_in: 2 days
@@ -183,7 +179,6 @@ components-storybook make snapshot references:
       - .gitlab-ci.yml
   script:
     - env
-    - yarn
     - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
   artifacts:
     expire_in: 2 days
@@ -197,7 +192,6 @@ components-storybook make snapshot references:
 suite lint:
   stage: lint
   script:
-    - yarn
     - yarn workspace @trezor/suite lint
   only:
     changes:
@@ -208,7 +202,6 @@ suite type check:
   stage: type check
   allow_failure: true
   script:
-    - yarn
     - yarn workspace @trezor/suite type-check
   only:
     changes:
@@ -219,7 +212,6 @@ suite test unit:
   stage: test
   script:
     - env
-    - yarn
     - yarn workspace @trezor/suite test
   only:
     changes:
@@ -233,7 +225,6 @@ suite-web lint:
   stage: lint
   script:
     - env
-    - yarn
     - yarn workspace @trezor/suite-web lint
   only:
     changes:
@@ -245,7 +236,6 @@ suite-web type check:
   stage: type check
   allow_failure: true
   script:
-    - yarn
     - yarn workspace @trezor/suite-web type-check
   only:
     changes:
@@ -263,7 +253,6 @@ suite-web build:
   variables:
     PACKAGE_NAME: suite-web
   script:
-    - yarn
     - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 15 minutes
@@ -323,7 +312,6 @@ suite-native lint:
   stage: lint
   script:
     - env
-    - yarn
     - yarn workspace @trezor/suite-native lint
   only:
     changes:
@@ -335,7 +323,6 @@ suite-native type check:
   stage: type check
   allow_failure: true
   script:
-    - yarn
     - yarn workspace @trezor/suite-web type-check
   only:
     changes:
@@ -350,7 +337,6 @@ suite-desktop lint:
   stage: lint
   script:
     - env
-    - yarn
     - yarn workspace @trezor/suite-desktop lint
   only:
     changes:
@@ -362,7 +348,6 @@ suite-desktop type check:
   stage: type check
   allow_failure: true
   script:
-    - yarn
     - yarn workspace @trezor/suite-desktop type-check
   only:
     changes:
