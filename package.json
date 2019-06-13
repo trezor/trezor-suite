@@ -9,7 +9,7 @@
     },
     "workspaces": {
         "packages": ["packages/*"],
-        "nohoist": []
+        "nohoist": ["!(suite-native)/react-native", "!(suite-native)/react-native/**"]
     },
     "scripts": {
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
