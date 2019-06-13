@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@suite-types/index';
 import * as SUITE from '@suite-actions/constants/suite';
 
 // TODO: it is the same code as for native. Couldn't we just somehow import it from suite-native?
