@@ -8,7 +8,7 @@ suite lint:
         changes:
             - packages/suite/**/*
             - .gitlab-ci.yml
-            - ci/**
+            - ci/**/*
 
 suite type check:
     stage: type check
@@ -19,7 +19,7 @@ suite type check:
         changes:
             - packages/suite/**/*
             - .gitlab-ci.yml
-            - ci/**
+            - ci/**/*
 
 suite test unit:
     stage: test
@@ -31,4 +31,4 @@ suite test unit:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
-            - ci/**
+            - ci/**/*
