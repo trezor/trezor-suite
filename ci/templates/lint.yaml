@@ -1,4 +1,0 @@
-.lint: &lint
-    stage: lint
-    script:
-        - yarn workspace ${PACKAGE_NAME} lint
