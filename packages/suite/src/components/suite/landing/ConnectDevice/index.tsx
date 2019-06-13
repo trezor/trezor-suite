@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import TrezorConnect from 'trezor-connect';
 import l10nCommonMessages from '@suite-views/index.messages';
 
@@ -192,7 +193,7 @@ class ConnectDevice extends PureComponent<Props> {
                         </React.Fragment>
                     )}
                 </Wrapper>
-                <Image src="/static/images/macbook.png" />
+                <Image src={resolveStaticPath('images/macbook.png')} />
                 <Footer>
                     {this.props.showWebUsb && (
                         <P>

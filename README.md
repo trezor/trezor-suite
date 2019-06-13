@@ -3,14 +3,12 @@
 ![img](https://repository-images.githubusercontent.com/148657224/439f6100-765f-11e9-9bff-b725eef3c4a6)
 
 Projects:
-- @trezor/components
-- @trezor/suite
-- @trezor/suite-desktop
-- @trezor/suite-native
+- [@trezor/components](./packages/components/README.md)
+- [@trezor/suite](./packages/suite/README.md')
+- [@trezor/suite-desktop](./packages/suite-desktop/README.md)
+- [@trezor/suite-native](./packages/suite-native/README.md)
 
 ## Development
-To build react-native application start by following these instructions. Select `React Native CLI Quickstart` and install all required dependencies.
-https://facebook.github.io/react-native/docs/getting-started
 
 - `git clone git@github.com:trezor/trezor-suite.git`
 - `yarn`

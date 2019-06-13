@@ -1,3 +1,3 @@
-## @trezor/suite-desktop
+# @trezor/suite-desktop
 
-electron + next.js + redux
+Build target for desktop.
