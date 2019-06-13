@@ -179,6 +179,8 @@ Notification.propTypes = {
     message: PropTypes.node,
     cancelable: PropTypes.bool,
     isActionInProgress: PropTypes.bool,
+    // TODO
+    // eslint-disable-next-line react/forbid-prop-types
     actions: PropTypes.array,
     className: PropTypes.string,
 };
