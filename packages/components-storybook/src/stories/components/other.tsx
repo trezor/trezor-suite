@@ -243,7 +243,7 @@ storiesOf('Other', module).add('All', () => (
             {Object.keys(icons).map(icon => {
                 const test = `icon_${icon.toLowerCase()}`;
                 return (
-                    <Item>
+                    <Item key={icon}>
                         <Title>{icon}</Title>
                         <Icon icon={icons[icon]} data-test={test} />
                     </Item>
@@ -258,7 +258,7 @@ storiesOf('Other', module).add('All', () => (
             {COINS.map(coin => {
                 const test = `coin_${coin.toLowerCase()}`;
                 return (
-                    <Item>
+                    <Item key={coin}>
                         <Title>{coin}</Title>
                         <CoinLogo height="23" network={coin} data-test={test} />
                     </Item>
