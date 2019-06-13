@@ -22,31 +22,7 @@ import {
     LanguagePicker,
 } from '@trezor/components';
 
-const { FONT_SIZE } = variables;
-
-const coins = [
-    'ada',
-    'bch',
-    'btc',
-    'btg',
-    'dash',
-    'dgb',
-    'doge',
-    'etc',
-    'eth',
-    'ltc',
-    'nem',
-    'nmc',
-    'rinkeby',
-    'trop',
-    'txrp',
-    'vtc',
-    'xem',
-    'xlm',
-    'xrp',
-    'zec',
-    'xtz',
-];
+const { FONT_SIZE, COINS } = variables;
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -279,7 +255,7 @@ storiesOf('Other', module).add('All', () => (
             Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
         </H1>
         <Icons>
-            {coins.map(coin => {
+            {COINS.map(coin => {
                 const test = `coin_${coin.toLowerCase()}`;
                 return (
                     <Item>
@@ -317,7 +293,7 @@ storiesOf('Other', module)
         'Coin',
         () => {
             const coinsObject: any = {};
-            coins.forEach(c => {
+            COINS.forEach(c => {
                 coinsObject[c] = c;
             });
             const coinSelect = select('network', coinsObject, 'ada');
