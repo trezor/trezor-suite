@@ -1,0 +1,135 @@
+--- # components-storybook package # --------------------------------
+
+components-storybook lint:
+  stage: lint
+  script:
+    - yarn workspace @trezor/components-storybook lint
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - ci/**/*
+      - .gitlab-ci.yml
+
+components-storybook type check:
+  stage: type check
+  script:
+    - yarn workspace @trezor/components-storybook type-check
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - .gitlab-ci.yml
+      - ci/**/*
+
+components-storybook build:
+  stage: build
+  script:
+    - yarn workspace @trezor/components-storybook build
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - ci/**/*
+      - .gitlab-ci.yml
+  artifacts:
+    name: components-build-files
+    expire_in: 15 minutes
+    paths:
+      - packages/components-storybook/build
+
+components-storybook deploy dev:
+  stage: deploy
+  variables:
+    PACKAGE_NAME: components-storybook
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  dependencies:
+    - components-storybook build
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - ci/**/*
+      - .gitlab-ci.yml
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    on_stop: components-storybook delete review
+  before_script: []
+  script:
+    - env
+    - cd packages/components-storybook
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  tags:
+    - deploy
+
+components-storybook delete review:
+  before_script: []
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    PACKAGE_NAME: components-storybook
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  when: manual
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - ci/**/*
+      - .gitlab-ci.yml
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    action: stop
+  before_script: []
+  script:
+    - cd packages/components-storybook
+    - 'rm -r "${DEPLOY_DIRECTORY}"'
+  only:
+    - branches
+  tags:
+    - deploy
+
+components-storybook test snapshots:
+  image: cypress/base:10
+  stage: test snapshots
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - ci/**/*
+      - .gitlab-ci.yml
+  script:
+    - env
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
+  artifacts:
+    expire_in: 2 days
+    when: always
+    paths:
+      - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
+      - /builds/trezor/trezor-suite/packages/components-storybook/test/screenshots
+
+components-storybook make snapshot references:
+  image: cypress/base:10
+  stage: test snapshots
+  variables:
+     PACKAGE_NAME: components
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - ci/**/*
+      - .gitlab-ci.yml
+  script:
+    - env
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
+  artifacts:
+    expire_in: 2 days
+    when: always
+    paths:
+      - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
+
