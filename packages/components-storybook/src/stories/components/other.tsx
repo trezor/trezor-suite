@@ -267,9 +267,9 @@ storiesOf('Other', module).add('All', () => (
             {Object.keys(icons).map(icon => {
                 const test = `icon_${icon.toLowerCase()}`;
                 return (
-                    <Item>
+                    <Item key={icon}>
                         <Title>{icon}</Title>
-                        <Icon icon={icons[icon]} data-test={test} key={icon} />
+                        <Icon icon={icons[icon]} data-test={test} />
                     </Item>
                 );
             })}
