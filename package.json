@@ -7,9 +7,10 @@
     "engines": {
         "node": ">=8.10.0"
     },
-    "workspaces": [
-        "packages/*"
-    ],
+    "workspaces": {
+        "packages": ["packages/*"],
+        "nohoist": ["!(suite-native)/react-native", "!(suite-native)/react-native/**"]
+    },
     "scripts": {
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
         "deps:update": "rimraf 'yarn.lock' 'node_modules' '*/**/node_modules' && yarn",
