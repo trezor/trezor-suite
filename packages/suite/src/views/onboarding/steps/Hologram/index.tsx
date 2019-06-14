@@ -7,7 +7,7 @@ import {
     TREZOR_RESELLERS_URL,
     TREZOR_PACKAGING_URL,
     SUPPORT_URL,
-} from '@suite/config/onboarding/urls';
+} from '@suite/constants/onboarding/urls';
 import { MD } from '@suite/config/onboarding/breakpoints';
 
 import Text from '@suite/components/onboarding/Text';
