@@ -5,7 +5,11 @@ import { Flags } from 'trezor-flags';
 import { Button, Link, Input, Checkbox, P } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@suite/constants/onboarding/urls';
+import {
+    SOCIAL_FACEBOOK_URL,
+    BLOG_URL,
+    SOCIAL_TWITTER_URL,
+} from '@suite/constants/onboarding/urls';
 import { IconSocial } from '@suite/components/onboarding/Icons';
 import { isEmail } from '@suite-utils/validators';
 import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
