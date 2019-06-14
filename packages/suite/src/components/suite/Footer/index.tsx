@@ -7,11 +7,10 @@ import { FormattedMessage } from 'react-intl';
 import { State, Dispatch } from '@suite-types/index';
 
 import * as logActions from '@suite-actions/logActions';
-import { FOOTER_HEIGHT, FOOTER_HEIGHT_UNIT } from '@suite/constants/suite/layout';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
-
+const FOOTER_HEIGHT = '59px';
 interface Props {
     isLanding?: boolean;
     opened: boolean;
@@ -27,7 +26,7 @@ const Wrapper = styled.div`
     color: ${colors.TEXT_SECONDARY};
     padding: 10px 30px;
     display: flex;
-    height: ${`${FOOTER_HEIGHT}${FOOTER_HEIGHT_UNIT}`};
+    height: ${FOOTER_HEIGHT};
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;

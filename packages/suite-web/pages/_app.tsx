@@ -8,7 +8,7 @@ import * as Sentry from '@sentry/browser';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
-import ErrorBounday from '@suite-support/ErrorBoundary';
+import ErrorBoundary from '@suite-support/ErrorBoundary';
 import config from '@suite-config/index';
 
 Sentry.init({ dsn: config.sentry });
@@ -27,7 +27,7 @@ class TrezorSuiteApp extends App<Props> {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <ErrorBounday>
+            <ErrorBoundary>
                 <Container>
                     <ReduxProvider store={store}>
                         <IntlProvider>
@@ -37,7 +37,7 @@ class TrezorSuiteApp extends App<Props> {
                         </IntlProvider>
                     </ReduxProvider>
                 </Container>
-            </ErrorBounday>
+            </ErrorBoundary>
         );
     }
 }

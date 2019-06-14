@@ -34,13 +34,6 @@ const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
 const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     width: 100%;
     max-width: 1170px;
-    min-height: calc(
-        100vh -
-            (
-                ${`${HEADER_HEIGHT}${HEADER_HEIGHT_UNIT}`} +
-                    ${`${FOOTER_HEIGHT}${FOOTER_HEIGHT_UNIT}`}
-            )
-    );
     margin: 0 auto;
     flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};

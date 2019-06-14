@@ -1,12 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H1, P, Button } from '@trezor/components';
-import {
-    HEADER_HEIGHT,
-    HEADER_HEIGHT_UNIT,
-    FOOTER_HEIGHT,
-    FOOTER_HEIGHT_UNIT,
-} from '@suite/constants/suite/layout';
 
 import * as Sentry from '@sentry/browser';
 
@@ -15,13 +9,6 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: calc(
-        100vh -
-            (
-                ${`${HEADER_HEIGHT}${HEADER_HEIGHT_UNIT}`} +
-                    ${`${FOOTER_HEIGHT}${FOOTER_HEIGHT_UNIT}`}
-            )
-    );
 `;
 
 const StyledButton = styled(Button)`
