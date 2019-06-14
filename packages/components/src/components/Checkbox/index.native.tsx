@@ -8,7 +8,9 @@ import colors from '../../config/colors';
 import icons from '../../config/icons';
 import { Omit } from '../../support/types';
 
-const Wrapper = styled.TouchableWithoutFeedback`
+const Touchable = styled.TouchableWithoutFeedback``;
+
+const Wrapper = styled.View`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -32,11 +34,6 @@ const Label = styled.Text<IconWrapperProps>`
     justify-content: center;
     ${colors.TEXT_SECONDARY};
     font-size: ${FONT_SIZE.BASE};
-
-    &:hover,
-    &:focus {
-        color: ${props => (props.isChecked ? colors.TEXT_PRIMARY : colors.TEXT_PRIMARY)};
-    }
 `;
 
 interface Props {
@@ -50,19 +47,21 @@ type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
 
 const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
     return (
-        <Wrapper onPress={onClick} {...rest}>
-            <IconWrapper isChecked={isChecked}>
-                {isChecked && (
-                    <Icon
-                        hoverColor={colors.WHITE}
-                        size={10}
-                        color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
-                        icon={icons.SUCCESS}
-                    />
-                )}
-            </IconWrapper>
-            <Label isChecked={isChecked}>{children}</Label>
-        </Wrapper>
+        <Touchable onPress={onClick} {...rest}>
+            <Wrapper>
+                <IconWrapper isChecked={isChecked}>
+                    {isChecked && (
+                        <Icon
+                            hoverColor={colors.WHITE}
+                            size={10}
+                            color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
+                            icon={icons.SUCCESS}
+                        />
+                    )}
+                </IconWrapper>
+                <Label isChecked={isChecked}>{children}</Label>
+            </Wrapper>
+        </Touchable>
     );
 };
 
