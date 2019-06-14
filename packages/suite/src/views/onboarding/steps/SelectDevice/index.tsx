@@ -11,6 +11,7 @@ import {
     StepHeadingWrapper,
     StepBodyWrapper,
 } from '@suite/components/onboarding/Wrapper';
+import * as STEP from '@suite/constants/onboarding/steps';
 
 import l10nMessages from './index.messages';
 
@@ -24,9 +25,10 @@ interface Props {
     onboardingActions: OnboardingActions;
     device: ConnectReducer['device'];
     model: number;
+    asNewDevice: boolean;
 }
 
-const SelectDeviceStep = ({ onboardingActions, model, device }: Props) => {
+const SelectDeviceStep = ({ onboardingActions, model, device, asNewDevice }: Props) => {
     const actualVersion =
         device && device.features && device.features.major_version
             ? device.features.major_version
@@ -76,7 +78,9 @@ const SelectDeviceStep = ({ onboardingActions, model, device }: Props) => {
                     selected={actualVersion || model}
                     onSelect={(value: number) => {
                         onboardingActions.selectTrezorModel(value);
-                        onboardingActions.goToNextStep();
+                        onboardingActions.goToNextStep(
+                            asNewDevice ? STEP.ID_UNBOXING_STEP : STEP.ID_CONNECT_STEP,
+                        );
                     }}
                 />
             </StepBodyWrapper>

@@ -4,8 +4,14 @@ import { Button, H1, P } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
-import { StepBodyWrapper, StepWrapper } from '@suite/components/onboarding/Wrapper';
+import Text from '@suite/components/onboarding/Text';
+import {
+    StepBodyWrapper,
+    StepWrapper,
+    ControlsWrapper,
+} from '@suite/components/onboarding/Wrapper';
 import { State } from '@suite/types/suite';
+import { SKIP_URL } from '@suite/constants/onboarding/urls';
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import l10nMessages from './index.messages';
 
@@ -52,9 +58,6 @@ const FadeInWrapper = styled.div`
     justify-content: center;
     animation: fadeIn 0.5s linear;
     text-align: center;
-    & > * {
-        margin: 20px;
-    }
 
     @keyframes fadeIn {
         from {
@@ -110,12 +113,25 @@ class WelcomeStep extends React.PureComponent<Props, {}> {
                                 <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} />
                             </H1>
 
-                            <Button
-                                data-test="button-continue"
-                                onClick={() => this.props.onboardingActions.goToNextStep()}
-                            >
-                                <FormattedMessage {...l10nMessages.TR_GET_STARTED} />
-                            </Button>
+                            <Text>
+                                <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR_TEXT} />
+                            </Text>
+
+                            <ControlsWrapper isVertical>
+                                <Button
+                                    data-test="button-continue"
+                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                >
+                                    <FormattedMessage {...l10nMessages.TR_GET_STARTED} />
+                                </Button>
+                                <Button
+                                    isWhite
+                                    data-test="button-use-wallet"
+                                    onClick={() => (window.location.href = SKIP_URL)}
+                                >
+                                    <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
+                                </Button>
+                            </ControlsWrapper>
                         </FadeInWrapper>
                     )}
                 </StepBodyWrapper>
