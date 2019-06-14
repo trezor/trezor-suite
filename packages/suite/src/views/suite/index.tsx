@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Loader, Link } from '@trezor/components';
+import { Loader, Button } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
@@ -80,11 +80,10 @@ const Index: FunctionComponent<Props> = props => {
         // not-initialized should redirect to onboarding
         return (
             <Layout>
-                <Text>Device is in unexpected mode: {suite.device.mode}
-                </Text>
-                {
-                    suite.device.mode === 'initialize' && <Link onClick={() => goto('/onboarding')}>Go to onboarding</Link>
-                }
+                <Text>Device is in unexpected mode: {suite.device.mode}</Text>{' '}
+                {suite.device.mode === 'initialize' && (
+                    <Button onClick={() => goto('/onboarding')}>Go to onboarding</Button>
+                )}
                 <Text>Transport: {suite.transport.type}</Text>
             </Layout>
         );

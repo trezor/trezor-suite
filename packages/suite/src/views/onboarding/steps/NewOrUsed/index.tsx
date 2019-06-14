@@ -28,7 +28,8 @@ const NewOrUsedStep = (props: Props) => (
         <StepBodyWrapper>
             <>
                 <Text>
-                    Trezor Wallet is your account within Trezor ecosystem. It allows you to easily manage your funds and initiate transfers.
+                    Trezor Wallet is your account within Trezor ecosystem. It allows you to easily
+                    manage your funds and initiate transfers.
                 </Text>
                 <ControlsWrapper isVertical>
                     <Button
@@ -45,7 +46,7 @@ const NewOrUsedStep = (props: Props) => (
                         data-test="button-new-device"
                         onClick={() => {
                             props.onboardingActions.setAsNewDevice(false);
-                            props.onboardingActions.goToNextStep()
+                            props.onboardingActions.goToNextStep();
                         }}
                     >
                         Used device
