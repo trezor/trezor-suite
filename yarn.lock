@@ -4626,9 +4626,10 @@ ripple-address-codec@^2.0.1:
     hash.js "^1.0.3"
     x-address-codec "^0.7.0"
 
-ripple-binary-codec@^0.1.0, ripple-binary-codec@^0.1.13:
-  version "0.1.15"
-  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-0.1.15.tgz#bf69aa4aef097237f682ff517be29959102cd816"
+ripple-binary-codec@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-0.2.1.tgz#f343da758a64f3aceb4164b8a98fbc153b088c14"
+  integrity sha512-R1+equWtaJs505/G2NRvxKJVlMkZMqo4fiE6eBXi1c2IvL7dDRZPlb8JHdSgD6eT/Qo5TkovuUf3qmRz5dinNw==
   dependencies:
     babel-runtime "^6.6.1"
     bn.js "^4.11.3"
@@ -4638,14 +4639,15 @@ ripple-binary-codec@^0.1.0, ripple-binary-codec@^0.1.13:
     lodash "^4.12.0"
     ripple-address-codec "^2.0.1"
 
-ripple-hashes@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/ripple-hashes/-/ripple-hashes-0.3.1.tgz#f2f46f1ff05e6487500a99839019114cd2482411"
+ripple-hashes@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/ripple-hashes/-/ripple-hashes-0.3.2.tgz#f3ac3b1832cec6d0bac07e82acc10a0a6a1cc84e"
+  integrity sha512-1Emm/raLNChNR5nVoQPJ7NWQpHr8jJjIZDoug4ukw4RZ3+eehO5nyx86a+MaQKAeAc1nJRFwVjBvh9SeYpelYw==
   dependencies:
     bignumber.js "^4.1.0"
     create-hash "^1.1.2"
     ripple-address-codec "^2.0.1"
-    ripple-binary-codec "^0.1.0"
+    ripple-binary-codec "0.2.1"
 
 ripple-keypairs@^0.10.1:
   version "0.10.1"
@@ -4665,9 +4667,10 @@ ripple-lib-transactionparser@0.7.1:
     bignumber.js "^4.1.0"
     lodash "^4.17.4"
 
-ripple-lib@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ripple-lib/-/ripple-lib-1.0.2.tgz#c99a55267cdc03f48bd3a80fa92b89c44bda52fb"
+ripple-lib@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/ripple-lib/-/ripple-lib-1.2.4.tgz#834c318aae1a255beb9a57bc2b36a08cf9226019"
+  integrity sha512-hmlj+AIisg4XuSS4ee4uhB9Glc/kM02ZNfl7KF336NDPu81vhqJuR8pikSGwJ/Ay7wIVrP9ny1zR/6FI6lZTZg==
   dependencies:
     "@types/lodash" "^4.14.85"
     "@types/ws" "^3.2.0"
@@ -4676,8 +4679,8 @@ ripple-lib@^1.0.2:
     jsonschema "1.2.2"
     lodash "^4.17.4"
     ripple-address-codec "^2.0.1"
-    ripple-binary-codec "^0.1.13"
-    ripple-hashes "^0.3.1"
+    ripple-binary-codec "0.2.1"
+    ripple-hashes "0.3.2"
     ripple-keypairs "^0.10.1"
     ripple-lib-transactionparser "0.7.1"
     ws "^3.3.1"
