@@ -7,7 +7,7 @@ import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.js!../worker
 import RippleWorker from 'worker-loader?name=js/ripple-worker.js!../workers/ripple/index.js'; // eslint-disable-line no-unused-vars
 
 import CONFIG from './config';
-import BlockchainLink from 'index';
+import BlockchainLink from '../index';
 
 const handleClick = (event: MouseEvent) => {
     const target: HTMLElement = (event.target: any);

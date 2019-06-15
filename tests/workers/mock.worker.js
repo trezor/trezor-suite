@@ -5,7 +5,7 @@ import TinyWorker from 'tiny-worker';
 export const rippleWorkerFactory = (): Worker => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
-            const requireHack = eval('req' + 'uire');
+            const requireHack = eval('req' + 'uire'); // eslint-disable-line no-eval,no-useless-concat
             requireHack('babel-register')({ cache: true });
             requireHack('../../../src/workers/ripple/index.js');
         });

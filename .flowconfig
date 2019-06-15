@@ -2,6 +2,7 @@
 
 [ignore]
 .*/_old/.*
+.*/build
 
 [libs]
 

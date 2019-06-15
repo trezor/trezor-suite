@@ -13,7 +13,7 @@ export const concatTransactions = (
     return txs.concat(unique);
 };
 
-export const transformTransactionHistory = (descriptor: string, raw) => {
+export const transformTransactionHistory = (descriptor: string, raw: any) => {
     const { tx } = raw;
 
     if (tx.TransactionType !== 'Payment') {
@@ -53,6 +53,7 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
         : undefined;
 
     return {
+        descriptor,
         type,
         timestamp: tx.date,
         inputs: [{ addresses: [tx.Account] }],
@@ -63,6 +64,8 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
         fee,
         total,
         tokens,
+        amount,
+        fees: fee,
 
         blockHeight: event.ledger_index,
         blockHash: event.ledger_hash,

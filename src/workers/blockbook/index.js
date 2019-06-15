@@ -74,10 +74,11 @@ const connect = async (): Promise<Connection> => {
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    _connection = new Connection(_endpoints[0]);
+    const connection = new Connection(_endpoints[0]);
 
     try {
-        await _connection.connect();
+        await connection.connect();
+        _connection = connection;
     } catch (error) {
         common.debug('Websocket connection failed');
         _connection = undefined;
@@ -90,7 +91,7 @@ const connect = async (): Promise<Connection> => {
         await connect();
     }
 
-    _connection.on('disconnected', () => {
+    connection.on('disconnected', () => {
         cleanup();
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
     });
@@ -101,7 +102,7 @@ const connect = async (): Promise<Connection> => {
     });
 
     common.debug('Connected');
-    return _connection;
+    return connection;
 };
 
 const cleanup = () => {
@@ -131,7 +132,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
         const socket = await connect();
-        const resp = await socket.estimateFee(data);
+        const resp = await socket.estimateFee();
         console.warn('estimateFee', resp, data);
         postMessage({
             id: data.id,
@@ -161,13 +162,13 @@ const pushTransaction = async (
 };
 
 const getAccountInfo = async (
-    data: { id: number } & MessageTypes.getAccountInfo
+    data: { id: number } & MessageTypes.GetAccountInfo
 ): Promise<void> => {
     const { payload } = data;
     try {
         const socket = await connect();
         const info = await socket.getAccountInfo(payload);
-        const transformedInfo = transformAccountInfo(info, payload.details);
+        const transformedInfo = transformAccountInfo(info, payload.options);
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
@@ -243,7 +244,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
 const unsubscribeAddresses = async (addresses: Array<string>) => {
     const subscribed = common.removeAddresses(addresses);
     const socket = await connect();
-    await socket.unsubscribeAddresses(addresses);
+    await socket.unsubscribeAddresses();
 
     if (subscribed.length < 1) {
         // there are no subscribed addresses left

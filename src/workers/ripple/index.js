@@ -222,10 +222,12 @@ const getRawTransactionsData = async (
     });
 };
 
-const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise<void> => {
+const getAccountInfo = async (
+    data: MessageTypes.GetAccountInfo & { id: number }
+): Promise<void> => {
     const { payload } = data;
 
-    const options: MessageTypes.GetAccountInfoOptions = payload || {};
+    const options: MessageTypes.GetAccountInfoOptions = payload.options ? payload.options : {};
 
     // initial state
     const account = {
@@ -307,8 +309,8 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
         };
 
         const transactionsData = await getRawTransactionsData(payload.descriptor, requestOptions);
-        const transformedTransactions = transactionsData.transactions.map(tx =>
-            utils.transformTransactionHistory(account, tx)
+        const transformedTransactions = transactionsData.map(tx =>
+            utils.transformTransactionHistory(payload.descriptor, tx)
         );
 
         common.response({
@@ -316,7 +318,8 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: {
                 ...account,
-                marker: transactionsData.marker,
+                // marker: transactionsData.marker,
+                marker: null,
                 transactions: transformedTransactions,
                 block,
             },

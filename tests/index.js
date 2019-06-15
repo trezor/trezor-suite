@@ -1,19 +1,19 @@
 /* @flow */
 
-import Promise from 'es6-promise';
+// import Promise from 'es6-promise';
 // import chai, { expect, should } from 'chai';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import chai, { expect, should } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import createServer from './websocket/rippled.websocket.js';
-import { rippleWorkerFactory } from './workers/mock.worker.js';
-import { MESSAGES, RESPONSES } from '../src/constants';
+import createServer from './websocket/rippled.websocket';
+import { rippleWorkerFactory } from './workers/mock.worker';
+// import { MESSAGES, RESPONSES } from '../src/constants';
 import BlockchainLink from '../src';
 
 should();
 chai.use(chaiAsPromised);
 
-describe('Ripple call', () => {
+describe('Ripple', () => {
     let server;
     let blockchain;
 
@@ -23,7 +23,7 @@ describe('Ripple call', () => {
             name: 'Tests:Ripple',
             worker: rippleWorkerFactory,
             server: [`ws://localhost:${server.options.port}`],
-            debug: true,
+            debug: false,
         });
     });
 
