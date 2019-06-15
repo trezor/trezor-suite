@@ -157,9 +157,10 @@ export default class Socket extends EventEmitter {
         return new Promise(resolve => {
             this._send('getInfo', {}, response => {
                 resolve({
-                    block: response.bestheight,
-                    // network: response.result.network,
-                    networkName: response.name,
+                    name: response.name,
+                    shortcut: response.shortcut,
+                    decimals: response.decimals,
+                    block: response.bestHeight,
                 });
             });
         });

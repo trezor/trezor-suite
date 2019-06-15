@@ -118,7 +118,6 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     try {
         const socket = await connect();
         const info = await socket.getServerInfo();
-        console.warn('getInfo', info, data);
         postMessage({
             id: data.id,
             type: RESPONSES.GET_INFO,

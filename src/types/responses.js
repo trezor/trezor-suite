@@ -23,7 +23,7 @@ export type GetInfo = {
         +shortcut: string,
         +decimals: number,
         +block: number,
-        +fee: string,
+        +fee?: string,
         +reserved?: string,
     },
 };
