@@ -11,21 +11,21 @@ export const SCREEN_SIZE = {
 };
 
 export const FONT_SIZE_NATIVE = {
-    SMALL: '12',
-    BASE: '14',
-    BIG: '16',
-    BIGGER: '18',
-    BIGGEST: '32',
-    HUGE: '36',
-    TOP_MENU: '17',
-    WALLET_TITLE: '18',
-    H1: '28',
-    H2: '24',
-    H3: '20',
-    H4: '18',
-    H5: '16',
-    H6: '14',
-    COUNTER: '11',
+    SMALL: 12,
+    BASE: 14,
+    BIG: 16,
+    BIGGER: 18,
+    BIGGEST: 32,
+    HUGE: 36,
+    TOP_MENU: 17,
+    WALLET_TITLE: 18,
+    H1: 28,
+    H2: 24,
+    H3: 20,
+    H4: 18,
+    H5: 16,
+    H6: 14,
+    COUNTER: 11,
 };
 
 export const FONT_SIZE = {
