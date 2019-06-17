@@ -12,15 +12,11 @@ const models = {
 const Img = styled.Image``;
 
 interface Props {
-    model: number;
+    model: 1 | 2;
 }
 
 const TrezorImage = ({ model, ...rest }: Props) => {
-    return <Img source={models[1]} {...rest} />;
-};
-
-TrezorImage.propTypes = {
-    model: PropTypes.oneOf([1, 2]),
+    return <Img source={models[model]} {...rest} />;
 };
 
 export default TrezorImage;
