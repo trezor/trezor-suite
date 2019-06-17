@@ -26,17 +26,12 @@ const definedMessages = defineMessages({
         defaultMessage: 'It is a brand new device, just unpacked',
         description: 'Option to click when troubleshooting initialized device.',
     },
-    TR_INSTRUCTION_TO_SKIP_OR_WIPE: {
-        id: 'TR_INSTRUCTION_TO_SKIP_OR_WIPE',
+    TR_INSTRUCTION_TO_SKIP: {
+        id: 'TR_INSTRUCTION_TO_SKIP',
         defaultMessage:
-            'You might skip setup and continue to wallet or wipe your device to be able to go through the onboarding process again.',
+            'You should skip setup and continue to wallet and check if you have any funds on this device.',
         description:
             'Instruction what to do when user knows the device he is holding was manipulated by him, not someone else.',
-    },
-    TR_WIPE_WARNING: {
-        id: 'TR_WIPE_WARNING',
-        defaultMessage: 'Danger zone here, wiping device erases all data and can not be reverted',
-        description: 'Wipe device action warning.',
     },
     TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS: {
         id: 'TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS',

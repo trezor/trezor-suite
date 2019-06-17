@@ -111,9 +111,8 @@ const connect = (
             return {
                 ...state,
                 device: {
-                    // ?
-                    isRequestingPin: 0,
                     ...state.device,
+                    isRequestingPin: 0,
                 },
                 deviceCall: {
                     ...state.deviceCall,
@@ -161,7 +160,6 @@ const connect = (
             return {
                 ...state,
                 device: {
-                    hovnoSmakem: true,
                     ...state.device,
                     isRequestingPin: state.device.isRequestingPin + 1,
                 },

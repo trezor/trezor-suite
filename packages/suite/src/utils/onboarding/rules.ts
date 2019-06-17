@@ -5,7 +5,7 @@ import {
     DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
     DISALLOWED_DEVICE_IS_REQUESTING_PIN,
 } from '@suite/constants/onboarding/steps';
-import { UiInteraction, PrevDeviceId } from '@suite/types/onboarding/connect';
+import { PrevDeviceId } from '@suite/types/onboarding/connect';
 
 type Device = any; // todo: finish when connect types ready.
 
@@ -42,21 +42,11 @@ export const isInBootloader = ({ device }: { device?: Device }) => {
 };
 
 // todo typescript
-export const isRequestingPin = ({
-    device,
-    uiInteraction,
-}: {
-    device?: Device;
-    uiInteraction: UiInteraction;
-}) => {
-    if (!device || !device.features) {
+export const isRequestingPin = ({ device }: { device?: Device }) => {
+    if (!device) {
         return null;
     }
-    return (
-        uiInteraction.name === 'ui-request_pin' &&
-        device.features.pin_cached === false &&
-        device.features.pin_protection === true
-    );
+    return !!device.isRequestingPin;
 };
 
 export const getFnForRule = (rule: string) => {

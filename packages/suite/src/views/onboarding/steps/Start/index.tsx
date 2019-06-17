@@ -86,12 +86,10 @@ const StartStep = ({
                 />
             )}
 
-            {!isResolved && activeSubStep === null && device.features.initialized !== true && (
-                <>
-                    <Text>
-                        <FormattedMessage {...l10nMessages.TR_START_TEXT} />
-                    </Text>
-                    <OptionsList
+            <Text>
+                <FormattedMessage {...l10nMessages.TR_START_TEXT} />
+            </Text>
+            {/* <OptionsList
                         options={[
                             {
                                 content: <StartOption />,
@@ -112,36 +110,17 @@ const StartStep = ({
                         ]}
                         selected={null}
                         selectedAccessor="value"
-                    />
-                </>
-            )}
-
-            {!isResolved && device.features.initialized === true && (
-                <React.Fragment>
-                    {/* todo: translations */}
-                    <Text>Device succesfully initialized. You can continue</Text>
-                    <ControlsWrapper>
-                        <Button onClick={() => onboardingActions.goToNextStep()}>Continue</Button>
-                    </ControlsWrapper>
-                </React.Fragment>
-            )}
-
-            {isResolved && (
-                <React.Fragment>
-                    {/* todo: translations */}
-                    <Text>
-                        You have already created a new wallet from scratch or through recovery.
-                    </Text>
-                    <ControlsWrapper>
-                        <Button
-                            data-test="button-continue"
-                            onClick={() => onboardingActions.goToNextStep()}
-                        >
-                            Continue
-                        </Button>
-                    </ControlsWrapper>
-                </React.Fragment>
-            )}
+                    /> */}
+            <ControlsWrapper isVertical>
+                <Button onClick={() => onboardingActions.goToNextStep()}>
+                    Create new Wallet <br />
+                    if you never had any Wallet
+                </Button>
+                <Button onClick={() => onboardingActions.goToNextStep()} isWhite>
+                    Restore existing wallet <br />
+                    using your backup seed
+                </Button>
+            </ControlsWrapper>
         </StepBodyWrapper>
     </StepWrapper>
 );

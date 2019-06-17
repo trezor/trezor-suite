@@ -21,10 +21,11 @@ const initialState: OnboardingReducer = {
             id: STEP.ID_WELCOME_STEP,
             visited: true,
         },
-        {
-            id: STEP.ID_START_STEP,
-            title: STEP.TITLE_START_STEP,
-        },
+        // content of StartStep moved to WelcomeStep
+        // {
+        //     id: STEP.ID_START_STEP,
+        //     title: STEP.TITLE_START_STEP,
+        // },
         {
             id: STEP.ID_NEW_OR_USED,
             title: STEP.TITLE_SELECT_DEVICE_STEP,
