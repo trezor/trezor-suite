@@ -38,7 +38,7 @@ const init = async () => {
     };
 
     session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-        details.requestHeaders['Origin'] = 'https://electron.trezor.io';
+        details.requestHeaders['Origin'] = 'https://sisyfos.sldev.cz';
         callback({
             cancel: false,
             requestHeaders: details.requestHeaders
