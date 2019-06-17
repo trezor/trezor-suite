@@ -104,7 +104,7 @@ interface Language {
 interface Props {
     language: string;
     onChange: (option: any) => any;
-    languages: [Language];
+    languages: Language[];
 }
 
 const LanguagePicker = ({ language, languages, onChange, ...rest }: Props) => (
