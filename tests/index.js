@@ -5,7 +5,7 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import chai, { expect, should } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import createServer from './websocket/rippled.websocket';
+import createServer from './websocket/ripple';
 import { rippleWorkerFactory } from './workers/mock.worker';
 // import { MESSAGES, RESPONSES } from '../src/constants';
 import BlockchainLink from '../src';

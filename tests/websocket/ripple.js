@@ -3,7 +3,7 @@
 import { Server } from 'ws';
 import assert from 'assert';
 import getFreePort from './freePort';
-import responses from './rippled';
+import responses from './fixtures/ripple';
 
 const createResponse = (request, response, overrides = {}) => {
     const result = {
@@ -22,7 +22,7 @@ const create = async () => {
     const server = new Server({ port, noServer: true });
 
     const close = server.close;
-    server.close = function() {
+    server.close = () => {
         // if (mock.expectedRequests !== undefined) {
         //   const allRequestsMade = _.every(mock.expectedRequests, function (counter) {
         //     return counter === 0;
@@ -37,14 +37,13 @@ const create = async () => {
         close.call(server);
     };
 
-    server.on('connection', function(connection) {
+    server.on('connection', connection => {
         connection.on('message', json => {
             try {
                 const request = JSON.parse(json);
                 if (!request || typeof request.command !== 'string') {
                     throw new Error('Unknown request');
                 }
-                console.log('REQUEST', request);
                 server.emit(`request_${request.command}`, request, connection);
             } catch (error) {
                 assert(false, error.message);
@@ -55,9 +54,6 @@ const create = async () => {
     server.config = {};
 
     server.on('request_subscribe', (request, connection) => {
-        console.log('SUBS!', request.id);
-        const r = createResponse(request, responses.subscribe);
-        console.log('SUBS!', r);
         connection.send(createResponse(request, responses.subscribe));
     });
 
