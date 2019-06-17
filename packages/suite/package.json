@@ -10,7 +10,6 @@
         "type-check": "tsc --project tsconfig.json",
         "test": "run-s test:*",
         "test:unit": "jest --passWithNoTests",
-        "test:health": "jest -c jest.config.health.js",
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {

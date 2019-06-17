@@ -79,7 +79,7 @@ interface Props {
 class WelcomeStep extends React.PureComponent<Props, {}> {
     render() {
         return (
-            <StepWrapper>
+            <StepWrapper data-test="onboarding_first_page">
                 <StepBodyWrapper>
                     <Logo
                         viewBox="30 8 60 30"
