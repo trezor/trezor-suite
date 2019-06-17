@@ -11,8 +11,10 @@ interface Props {
 }
 
 const Transactions = (props: Props) => {
-    const { pathname, params } = props.router;
-    const baseUrl = `${pathname}#/${params.coin}/`;
+    const { params } = props.router;
+    // todo: commented out for typescript
+    // const { pathname, params } = props.router;
+    // const baseUrl = `${pathname}#/${params.coin}/`;
     return (
         <Layout>
             <Text>

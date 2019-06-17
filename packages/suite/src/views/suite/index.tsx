@@ -89,8 +89,8 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    const { pathname } = router;
-    const isLandingPage = pathname === '/bridge' || pathname === '/version';
+    // const { pathname } = router;
+    // const isLandingPage = pathname === '/bridge' || pathname === '/version';
     return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 

@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import styled from 'styled-components';
-import { goto } from '@suite-actions/routerActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, Select, P, Link, H1, icons, colors, variables } from '@trezor/components';
+import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
+
+import { Button, Select, P, Link, H1, icons, colors, variables } from '@trezor/components';
+import { goto } from '@suite-actions/routerActions';
+import { State } from '@suite-types/index';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
@@ -81,18 +83,38 @@ const GoBack = styled.span`
     }
 `;
 
-class InstallBridge extends PureComponent {
-    constructor(props) {
+interface BridgeProps {
+    transport: State['suite']['transport'];
+}
+
+interface Installer {
+    label: string;
+    value: string;
+    signature: string;
+    preferred: boolean;
+}
+
+interface BridgeState {
+    target: Installer;
+    uri: string;
+    currentVersion: string;
+    latestVersion: string;
+    installers: Installer[];
+}
+
+class InstallBridge extends PureComponent<BridgeProps, BridgeState> {
+    constructor(props: BridgeProps) {
         super(props);
 
-        const installers = props.transport.bridge.packages.map(p => ({
+        // todo: typescript any. use type from connect?
+        const installers = props.transport.bridge.packages.map((p: any) => ({
             label: p.name,
             value: p.url,
             signature: p.signature,
             preferred: p.preferred,
         }));
 
-        const currentTarget: InstallTarget = installers.find(i => i.preferred === true);
+        const currentTarget = installers.find((i: Installer) => i.preferred === true);
         this.state = {
             currentVersion:
                 props.transport.type && props.transport.type === 'bridge'
@@ -105,7 +127,7 @@ class InstallBridge extends PureComponent {
         };
     }
 
-    onChange(value: InstallTarget) {
+    onChange(value: Installer) {
         this.setState({
             target: value,
         });
@@ -127,7 +149,7 @@ class InstallBridge extends PureComponent {
                             isSearchable={false}
                             isClearable={false}
                             value={target}
-                            onChange={v => this.onChange(v)}
+                            onChange={(v: Installer) => this.onChange(v)}
                             options={this.state.installers}
                         />
                         <Link href={`${this.state.uri}${target.value}`}>
@@ -165,7 +187,7 @@ class InstallBridge extends PureComponent {
                     </P>
                 </Top>
                 <Bottom>
-                    {this.props.transport.type && (
+                    {this.props!.transport!.type && (
                         <P>
                             <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
                             <br />
@@ -181,9 +203,6 @@ class InstallBridge extends PureComponent {
 }
 
 const mapStateToProps = (state: State) => ({
-    router: state.router,
-    suite: state.suite,
-    devices: state.devices,
     transport: state.suite.transport,
 });
 
