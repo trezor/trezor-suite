@@ -12,8 +12,6 @@ const textAlignStyle = css`
 `;
 
 const baseStyles = css`
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
     color: ${colors.TEXT_PRIMARY};
     font-weight: bold;
     margin: 0;
