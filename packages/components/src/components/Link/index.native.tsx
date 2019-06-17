@@ -4,9 +4,7 @@ import styled from 'styled-components/native';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';
 
-const A = styled.TouchableOpacity``;
-
-const Text = styled.Text<Omit<Props, 'href'>>`
+const A = styled.Text<Omit<Props, 'href'>>`
     color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
 `;
 
@@ -25,7 +23,7 @@ const Link = ({ isGray, isGreen, href, children, ...rest }: Props) => {
             }}
             {...rest}
         >
-            <Text>{children}</Text>
+            {children}
         </A>
     );
 };
