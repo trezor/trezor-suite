@@ -96,7 +96,7 @@ components-storybook delete review:
 
 components-storybook test snapshots:
   image: cypress/base:10
-  stage: test snapshots
+  stage: test integration
   only:
     changes:
       - packages/components/**/*
@@ -115,7 +115,7 @@ components-storybook test snapshots:
 
 components-storybook make snapshot references:
   image: cypress/base:10
-  stage: test snapshots
+  stage: test integration
   variables:
      PACKAGE_NAME: components
   only:
