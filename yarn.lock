@@ -2448,6 +2448,15 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
+"@types/storybook-react-router@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/storybook-react-router/-/storybook-react-router-1.0.0.tgz#b384461f8b203ce1d6d1f23a3a7124031c0dfe4f"
+  integrity sha512-zYZXxoBVvs1Y0lXo8fHx2zh8MkpyE9lh3VmeQqOJjPgA1zizMWCiYtakikoK6IAi6AqKDO4YK5cpe5HdPdLl3w==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-router" "*"
+    "@types/storybook__react" "*"
+
 "@types/storybook__addon-info@^4.1.1":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@types/storybook__addon-info/-/storybook__addon-info-4.1.2.tgz#a61c0b201e23380b6ec6ed3902a87350d92652d8"
