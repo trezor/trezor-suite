@@ -104,7 +104,7 @@ suite-web test integration:
       - .gitlab-ci.yml
   script:
     - env
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web ci:test:integration
+    - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
   artifacts:
     expire_in: 2 days
     when: always
