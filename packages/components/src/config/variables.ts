@@ -84,3 +84,27 @@ export const LINE_HEIGHT = {
     BASE: '1.8',
     TREZOR_ACTION: '37px',
 };
+
+export const COINS = [
+    'ada',
+    'bch',
+    'btc',
+    'btg',
+    'dash',
+    'dgb',
+    'doge',
+    'etc',
+    'eth',
+    'ltc',
+    'nem',
+    'nmc',
+    'rinkeby',
+    'trop',
+    'txrp',
+    'vtc',
+    'xem',
+    'xlm',
+    'xrp',
+    'zec',
+    'xtz',
+];

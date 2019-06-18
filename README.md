@@ -4,7 +4,7 @@
 
 Projects:
 - [@trezor/components](./packages/components/README.md)
-- [@trezor/suite](./packages/suite/README.md')
+- [@trezor/suite](./packages/suite/README.md)
 - [@trezor/suite-desktop](./packages/suite-desktop/README.md)
 - [@trezor/suite-native](./packages/suite-native/README.md)
 

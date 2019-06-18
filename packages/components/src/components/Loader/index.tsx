@@ -111,6 +111,7 @@ Loader.propTypes = {
     isSmallText: PropTypes.bool,
     className: PropTypes.string,
     text: PropTypes.string,
+    // eslint-disable-next-line react/forbid-prop-types
     animationColor: PropTypes.object,
     transparentRoute: PropTypes.bool,
     size: PropTypes.number,

@@ -1,3 +1,5 @@
+import { icons, variables } from '@trezor/components';
+
 describe('Buttons', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
@@ -18,6 +20,14 @@ describe('Buttons', () => {
         'loader_white_text',
         'loader_white_text_transparent',
     ];
+
+    Object.keys(icons).forEach(icon => {
+        tests.push(`icon_${icon.toLowerCase()}`);
+    });
+
+    variables.COINS.forEach(coin => {
+        tests.push(`coin_${coin}`);
+    });
 
     tests.forEach(testName => {
         it(`${testName}`, () => {

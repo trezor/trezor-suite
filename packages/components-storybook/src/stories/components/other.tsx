@@ -5,6 +5,7 @@ import { withInfo } from '@storybook/addon-info';
 import { Link } from 'react-router-dom';
 import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
+import StoryRouter from 'storybook-react-router';
 
 import {
     icons,
@@ -22,31 +23,7 @@ import {
     LanguagePicker,
 } from '@trezor/components';
 
-const { FONT_SIZE } = variables;
-
-const coins = [
-    'ada',
-    'bch',
-    'btc',
-    'btg',
-    'dash',
-    'dgb',
-    'doge',
-    'etc',
-    'eth',
-    'ltc',
-    'nem',
-    'nmc',
-    'rinkeby',
-    'trop',
-    'txrp',
-    'vtc',
-    'xem',
-    'xlm',
-    'xrp',
-    'zec',
-    'xtz',
-];
+const { FONT_SIZE, COINS } = variables;
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -267,7 +244,7 @@ storiesOf('Other', module).add('All', () => (
             {Object.keys(icons).map(icon => {
                 const test = `icon_${icon.toLowerCase()}`;
                 return (
-                    <Item>
+                    <Item key={icon}>
                         <Title>{icon}</Title>
                         <Icon icon={icons[icon]} data-test={test} />
                     </Item>
@@ -279,10 +256,10 @@ storiesOf('Other', module).add('All', () => (
             Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
         </H1>
         <Icons>
-            {coins.map(coin => {
+            {COINS.map((coin: string) => {
                 const test = `coin_${coin.toLowerCase()}`;
                 return (
-                    <Item>
+                    <Item key={coin}>
                         <Title>{coin}</Title>
                         <CoinLogo height="23" network={coin} data-test={test} />
                     </Item>
@@ -317,8 +294,8 @@ storiesOf('Other', module)
         'Coin',
         () => {
             const coinsObject: any = {};
-            coins.forEach(c => {
-                coinsObject[c] = c;
+            COINS.forEach((coin: string) => {
+                coinsObject[coin] = coin;
             });
             const coinSelect = select('network', coinsObject, 'ada');
             const width = number('width', NaN);
@@ -511,6 +488,7 @@ storiesOf('Other', module)
             },
         }
     )
+    .addDecorator(StoryRouter())
     .add(
         'Header',
         () => {

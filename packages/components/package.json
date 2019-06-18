@@ -7,7 +7,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
         "lint": "run-s lint:*",
-        "lint:js": "eslint . --ext .tsx,.ts",
+        "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.tsx,.ts}'",
         "lint-fix": "npx eslint ./src --fix",
         "build:lib": "rm -rf lib && npx babel --extensions '.ts,.tsx' src -d lib && babel-node ./scripts/build.js && yarn tsc -p tsconfig.json",
