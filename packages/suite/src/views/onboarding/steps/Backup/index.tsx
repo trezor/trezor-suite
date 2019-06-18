@@ -104,7 +104,7 @@ class BackupStep extends React.Component<Props, State> {
     }
 
     async wipeDeviceAndStartAgain() {
-        this.props.connectActions.callActionAndGoToNextStep(WIPE_DEVICE, null, STEP.ID_START_STEP);
+        this.props.connectActions.callActionAndGoToNextStep(WIPE_DEVICE, null, STEP.ID_BACKUP_STEP);
     }
 
     render() {
