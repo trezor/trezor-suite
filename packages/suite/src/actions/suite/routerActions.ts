@@ -59,12 +59,10 @@ export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState)
 
 // links inside of application
 export const goto = (url: string, preserveParams: boolean = false) => {
+    const urlPrefix = process.env.assetPrefix;
     if (preserveParams) {
-        Router.push(
-            url + window.location.hash,
-            process.env.assetPrefix + url + window.location.hash,
-        );
+        Router.push(url + window.location.hash, urlPrefix + url + window.location.hash);
     } else {
-        Router.push(url, process.env.assetPrefix + url);
+        Router.push(url, urlPrefix + url);
     }
 };
