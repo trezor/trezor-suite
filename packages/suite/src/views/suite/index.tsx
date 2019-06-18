@@ -7,12 +7,12 @@ import styled from 'styled-components';
 import { Loader, Button } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
-import ConnectDevice from '@suite-components/landing/ConnectDevice';
-
 import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
+import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import Layout from '@suite-components/Layout';
+import Bridge from '@suite-views/bridge'
 
 interface Props {
     router: State['router'];
@@ -53,7 +53,7 @@ const Index: FunctionComponent<Props> = props => {
     // no available transport
     // TODO: redirect to brige page
     if (!suite.transport.type) {
-        return <Layout isLanding>{/* <Bridge /> */}</Layout>;
+        return <Layout isLanding><Bridge /></Layout>;
     }
 
     // no available device
