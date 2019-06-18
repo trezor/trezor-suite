@@ -1,10 +1,9 @@
 import React from 'react';
 import { Button } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+// import { FormattedMessage } from 'react-intl';
 
 import Text from '@suite/components/onboarding/Text';
 
-import * as STEP from '@suite/constants/onboarding/steps';
 import {
     StepWrapper,
     StepBodyWrapper,

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { UI } from 'trezor-connect';
 import { Button, Link, Modal } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 

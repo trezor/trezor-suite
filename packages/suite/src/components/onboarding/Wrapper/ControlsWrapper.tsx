@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
 
 interface Props {
-    isVertical: boolean;
+    isVertical?: boolean;
 }
 
 const ControlsWrapper = styled.div<Props>`
