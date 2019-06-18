@@ -19,7 +19,7 @@ stages:
   - test
   - build
   - deploy
-  - test snapshots
+  - test integration
 
 install:
   stage: install

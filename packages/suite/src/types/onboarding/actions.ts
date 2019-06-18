@@ -9,7 +9,8 @@ type Action =
     | FirmwareUpdateActionTypes
     | NewsletterActionTypes
     | RecoveryActionTypes
-    | OnboardingActionTypes
-    | Connect.ActionTypes;
+    | OnboardingActionTypes;
+
+// | Connect.ActionTypes;
 
 export default Action;

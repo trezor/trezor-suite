@@ -41,6 +41,7 @@ const RecoverOption = () => (
 );
 
 interface Props {
+    asNewDevice: boolean;
     isResolved: boolean;
     activeSubStep: State['onboarding']['activeSubStep'];
     recovery: State['onboarding']['recovery'];
@@ -53,6 +54,7 @@ interface Props {
 }
 
 const StartStep = ({
+    asNewDevice,
     isResolved,
     onboardingActions,
     activeSubStep,
@@ -85,28 +87,33 @@ const StartStep = ({
             )}
 
             {!isResolved && activeSubStep === null && device.features.initialized !== true && (
-                <OptionsList
-                    options={[
-                        {
-                            content: <StartOption />,
-                            value: STEP.ID_SECURITY_STEP,
-                            key: 1,
-                            onClick: () => {
-                                connectActions.resetDevice();
+                <>
+                    <Text>
+                        <FormattedMessage {...l10nMessages.TR_START_TEXT} />
+                    </Text>
+                    <OptionsList
+                        options={[
+                            {
+                                content: <StartOption />,
+                                value: STEP.ID_SECURITY_STEP,
+                                key: 1,
+                                onClick: () => {
+                                    onboardingActions.goToNextStep();
+                                },
                             },
-                        },
-                        {
-                            content: <RecoverOption />,
-                            value: STEP.ID_RECOVERY_STEP,
-                            key: 2,
-                            onClick: () => {
-                                onboardingActions.goToSubStep(STEP.ID_RECOVERY_STEP);
+                            {
+                                content: <RecoverOption />,
+                                value: STEP.ID_RECOVERY_STEP,
+                                key: 2,
+                                onClick: () => {
+                                    onboardingActions.goToNextStep();
+                                },
                             },
-                        },
-                    ]}
-                    selected={null}
-                    selectedAccessor="value"
-                />
+                        ]}
+                        selected={null}
+                        selectedAccessor="value"
+                    />
+                </>
             )}
 
             {!isResolved && device.features.initialized === true && (

@@ -7,7 +7,7 @@ import { createFilter } from 'react-select';
 import BlindMatrix from '@suite/components/onboarding/BlindMatrix';
 import bip39List from '@suite/constants/onboarding/bip39';
 import colors from '@suite/config/onboarding/colors';
-import { RECOVERY_MODEL_ONE_URL } from '@suite/config/onboarding/urls';
+import { RECOVERY_MODEL_ONE_URL } from '@suite/constants/onboarding/urls';
 import { RECOVER_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import {
     WORD_REQUEST_PLAIN,

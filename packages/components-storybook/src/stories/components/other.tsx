@@ -256,7 +256,7 @@ storiesOf('Other', module).add('All', () => (
             Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
         </H1>
         <Icons>
-            {COINS.map(coin => {
+            {COINS.map((coin: string) => {
                 const test = `coin_${coin.toLowerCase()}`;
                 return (
                     <Item key={coin}>
@@ -294,8 +294,8 @@ storiesOf('Other', module)
         'Coin',
         () => {
             const coinsObject: any = {};
-            COINS.forEach(c => {
-                coinsObject[c] = c;
+            COINS.forEach((coin: string) => {
+                coinsObject[coin] = coin;
             });
             const coinSelect = select('network', coinsObject, 'ada');
             const width = number('width', NaN);
