@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { Text, View } from 'react-native';
-import { Header as AppHeader, colors } from '@trezor/components';
+import { Text } from 'react-native';
+// import { Header as AppHeader, colors } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import Router from '@suite-support/Router';
 
 import { State } from '@suite-types/index';
-import { goto } from '@suite/actions/routerActions';
+import { goto } from '@suite-actions/routerActions';
 import AcquireDevice from '@suite-components/AcquireDevice';
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
     goto: typeof goto;
 }
 
-const Body: FunctionComponent = props => (
+const Body: FunctionComponent = () => (
     <>
         <Router />
         <Text>TODO wallet</Text>

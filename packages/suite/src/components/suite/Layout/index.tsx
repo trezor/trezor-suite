@@ -16,7 +16,7 @@ import { State } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
 import l10nMessages from './index.messages';
 
-const PageWrapper = styled.div<Props>`
+const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -24,7 +24,7 @@ const PageWrapper = styled.div<Props>`
     align-items: center;
 `;
 
-const AppWrapper = styled.div<Props>`
+const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     width: 100%;
     max-width: 1170px;
     margin: 0 auto;
@@ -63,7 +63,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             toggleSidebar={props.toggleSidebar}
             togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}
             togglerCloseText={<FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />}
-            sidebarEnabled
+            sidebarEnabled={!props.isLanding}
             rightAddon={
                 <LanguagePicker
                     language={props.suite.language}

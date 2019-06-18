@@ -7,7 +7,7 @@ import {
     TREZOR_RESELLERS_URL,
     TREZOR_PACKAGING_URL,
     SUPPORT_URL,
-} from '@suite/config/onboarding/urls';
+} from '@suite/constants/onboarding/urls';
 import { MD } from '@suite/config/onboarding/breakpoints';
 
 import Text from '@suite/components/onboarding/Text';
@@ -22,7 +22,7 @@ import {
 import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
 import { ConnectReducer } from '@suite/types/onboarding/connect';
 import l10nMessages from './index.messages';
-// import Hologram from './components/Hologram';
+import Hologram from './components/Hologram';
 
 const HologramWrapper = styled.div`
     max-width: 500px;
@@ -56,7 +56,9 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
-                        <HologramWrapper>{/* <Hologram model={model} /> */}</HologramWrapper>
+                        <HologramWrapper>
+                            <Hologram model={model} />
+                        </HologramWrapper>
                         <ControlsWrapper>
                             {actualVersion && actualVersion !== model && (
                                 <React.Fragment>

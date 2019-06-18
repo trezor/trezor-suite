@@ -12,6 +12,7 @@ export interface OnboardingReducer {
     selectedModel: number | null;
     activeStepId: AnyStepId | null;
     activeSubStep: string | null;
+    asNewDevice: boolean | null;
     steps: Step[];
 }
 
@@ -27,6 +28,7 @@ export const GO_TO_SUBSTEP = '@onboarding/go-to-substep';
 export const SET_STEP_ACTIVE = '@onboarding/set-step-active';
 export const SET_STEP_RESOLVED = '@onboarding/set-step-resolved';
 export const SELECT_TREZOR_MODEL = '@onboarding/select-trezor-model';
+export const SET_AS_NEW_DEVICE = '@onboarding/set-as-new-device';
 
 interface SetStepActiveAction {
     type: typeof SET_STEP_ACTIVE;
@@ -48,8 +50,14 @@ interface SelectTrezorModelAction {
     model: number;
 }
 
+interface SetAsNewDevice {
+    type: typeof SET_AS_NEW_DEVICE;
+    asNewDevice: boolean;
+}
+
 export type OnboardingActionTypes =
     | SetStepActiveAction
     | SetStepResolvedAction
     | GoToSubstepAction
-    | SelectTrezorModelAction;
+    | SelectTrezorModelAction
+    | SetAsNewDevice;

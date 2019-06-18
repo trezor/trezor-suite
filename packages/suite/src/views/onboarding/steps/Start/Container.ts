@@ -17,6 +17,7 @@ const mapStateToProps = (state: State) => ({
     recovery: state.onboarding.recovery,
     activeSubStep: state.onboarding.activeSubStep,
     isResolved: false, // todo: ???
+    asNewDevice: state.onboarding.asNewDevice,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
