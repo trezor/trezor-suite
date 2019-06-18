@@ -11,7 +11,7 @@ module.exports = api => {
     }
 
     return {
-        presets: ['next/babel', '@zeit/next-typescript/babel'],
+        presets: ['@babel/preset-typescript'],
         plugins,
     };
 };
