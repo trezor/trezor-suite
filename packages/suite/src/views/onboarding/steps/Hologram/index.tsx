@@ -56,9 +56,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
-                        <HologramWrapper>
-                            { model && <Hologram model={model} /> }
-                        </HologramWrapper>
+                        <HologramWrapper>{model && <Hologram model={model} />}</HologramWrapper>
                         <ControlsWrapper>
                             {actualVersion && actualVersion !== model && (
                                 <React.Fragment>

@@ -166,7 +166,13 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }: { model: State['onboarding']['model'], event: EVENTS.AnyEvent }) => {
+const TrezorAction = ({
+    model,
+    event,
+}: {
+    model: State['onboarding']['model'];
+    event: EVENTS.AnyEvent;
+}) => {
     let TrezorActionText;
     if (event.name === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
