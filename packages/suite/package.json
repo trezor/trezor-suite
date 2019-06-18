@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
-        "@trezor/translations-manager": "1.0.5",
         "@types/jest": "^24.0.13",
         "@types/react-intl": "^2.3.17",
         "react": "16.8.6",
@@ -30,6 +29,7 @@
         "trezor-connect": "./trezor-connect-lib"
     },
     "devDependencies": {
+        "@trezor/translations-manager": "1.0.5",
         "@babel/cli": "^7.4.4",
         "@babel/core": "^7.4.5",
         "@babel/preset-typescript": "^7.3.3",
