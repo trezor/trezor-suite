@@ -1,0 +1,39 @@
+--- # suite-desktop package # --------------------------------
+
+suite-desktop lint:
+    stage: lint
+    script:
+        - env
+        - yarn workspace @trezor/suite-desktop lint
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-desktop/**/*
+            - .gitlab-ci.yml
+            - ci/**/*
+
+suite-desktop type check:
+    stage: type check
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/suite-desktop type-check
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-native/**/*
+            - .gitlab-ci.yml
+            - ci/**/*
+# suite-desktop build mac:
+#   stage: build
+#   script:
+#     - yarn
+#     - yarn workspace @trezor/suite-desktop build:mac
+#   only:
+#     changes:
+#       - packages/suite/**/*
+#       - packages/suite-desktop/**/*
+#       - .gitlab-ci.yml
+#   artifacts:
+#     expire_in: 3 days
+#     paths:
+#       - $PACKAGE_PATH_SUITE_DESKTOP/build-electron/mac/TrezorSuite.app

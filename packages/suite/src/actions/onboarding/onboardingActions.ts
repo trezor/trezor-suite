@@ -3,6 +3,7 @@ import {
     GO_TO_SUBSTEP,
     SET_STEP_RESOLVED,
     SELECT_TREZOR_MODEL,
+    SET_AS_NEW_DEVICE,
     OnboardingReducer,
 } from '@suite/types/onboarding/onboarding';
 import { AnyStepId } from '@suite/types/onboarding/steps';
@@ -64,4 +65,9 @@ const selectTrezorModel = (model: number) => ({
     model,
 });
 
-export { goToNextStep, goToSubStep, goToStep, goToPreviousStep, selectTrezorModel };
+const setAsNewDevice = (asNewDevice: boolean) => ({
+    type: SET_AS_NEW_DEVICE,
+    asNewDevice,
+});
+
+export { goToNextStep, goToSubStep, goToStep, goToPreviousStep, selectTrezorModel, setAsNewDevice };

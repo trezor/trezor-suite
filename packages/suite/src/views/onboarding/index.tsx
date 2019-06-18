@@ -34,7 +34,7 @@ import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
 
 import colors from '@suite/config/onboarding/colors';
 import { SM } from '@suite/config/onboarding/breakpoints';
-import { TOS_URL } from '@suite/config/onboarding/urls';
+import { TOS_URL } from '@suite/constants/onboarding/urls';
 
 import {
     PROGRESSBAR_HEIGHT,
@@ -51,13 +51,14 @@ import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@suite/views/onboarding/steps/Welcome/Container';
+import StartStep from '@suite/views/onboarding/steps/Start/Container';
+import NewOrUsedStep from '@suite/views/onboarding/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@suite/views/onboarding/steps/SelectDevice/Container';
 import HologramStep from '@suite/views/onboarding/steps/Hologram/Container';
 import BridgeStep from '@suite/views/onboarding/steps/Bridge/Container';
 import ConnectStep from '@suite/views/onboarding/steps/Connect/Container';
 import FirmwareStep from '@suite/views/onboarding/steps/Firmware/Container';
 import BackupStep from '@suite/views/onboarding/steps/Backup/Container';
-import StartStep from '@suite/views/onboarding/steps/Start/Container';
 import SecurityStep from '@suite/views/onboarding/steps/Security/Container';
 import SetPinStep from '@suite/views/onboarding/steps/Pin/Container';
 import NameStep from '@suite/views/onboarding/steps/Name/Container';
@@ -348,6 +349,20 @@ class Onboarding extends React.PureComponent<Props> {
                             </CSSTransition>
 
                             <CSSTransition
+                                in={activeStepId === STEP.ID_START_STEP}
+                                {...TRANSITION_PROPS}
+                            >
+                                <StartStep />
+                            </CSSTransition>
+
+                            <CSSTransition
+                                in={activeStepId === STEP.ID_NEW_OR_USED}
+                                {...TRANSITION_PROPS}
+                            >
+                                <NewOrUsedStep />
+                            </CSSTransition>
+
+                            <CSSTransition
                                 in={activeStepId === STEP.ID_SELECT_DEVICE_STEP}
                                 {...TRANSITION_PROPS}
                             >
@@ -380,13 +395,6 @@ class Onboarding extends React.PureComponent<Props> {
                                 {...TRANSITION_PROPS}
                             >
                                 <FirmwareStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_START_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <StartStep />
                             </CSSTransition>
 
                             <CSSTransition

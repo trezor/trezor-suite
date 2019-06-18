@@ -5,6 +5,7 @@ import {
     SET_STEP_RESOLVED,
     GO_TO_SUBSTEP,
     SELECT_TREZOR_MODEL,
+    SET_AS_NEW_DEVICE,
 } from '@suite/types/onboarding/onboarding';
 import { Step } from '@suite/types/onboarding/steps';
 
@@ -14,10 +15,19 @@ const initialState: OnboardingReducer = {
     selectedModel: null,
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
+    asNewDevice: null,
     steps: [
         {
             id: STEP.ID_WELCOME_STEP,
             visited: true,
+        },
+        {
+            id: STEP.ID_START_STEP,
+            title: STEP.TITLE_START_STEP,
+        },
+        {
+            id: STEP.ID_NEW_OR_USED,
+            title: STEP.TITLE_SELECT_DEVICE_STEP,
         },
         {
             id: STEP.ID_SELECT_DEVICE_STEP,
@@ -25,7 +35,7 @@ const initialState: OnboardingReducer = {
         },
         {
             id: STEP.ID_UNBOXING_STEP,
-            title: STEP.TITLE_UNBOXING_STEP,
+            title: STEP.TITLE_SELECT_DEVICE_STEP,
         },
         {
             id: STEP.ID_BRIDGE_STEP,
@@ -42,16 +52,6 @@ const initialState: OnboardingReducer = {
             disallowedDeviceStates: [
                 STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
                 STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
-            ],
-        },
-        {
-            id: STEP.ID_START_STEP,
-            title: STEP.TITLE_START_STEP,
-            disallowedDeviceStates: [
-                STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED,
-                STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
-                STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
-                STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             ],
         },
         {
@@ -156,6 +156,11 @@ const onboarding = (
             return {
                 ...state,
                 selectedModel: action.model,
+            };
+        case SET_AS_NEW_DEVICE:
+            return {
+                ...state,
+                asNewDevice: action.asNewDevice,
             };
         default:
             return state;
