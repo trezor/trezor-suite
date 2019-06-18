@@ -9,7 +9,7 @@
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -R ./src/locales/ ../suite-web/static/l10n",
         "type-check": "tsc --project tsconfig.json",
         "test": "run-s test:*",
-        "test:unit": "jest --passWithNoTests",
+        "test:unit": "jest",
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
@@ -17,7 +17,7 @@
         "@trezor/translations-manager": "1.0.5",
         "@types/jest": "^24.0.13",
         "@types/react-intl": "^2.3.17",
-        "ethereumjs-util": "^6.1.0",
+        "ethereumjs-util": "^6.0.0",
         "react": "16.8.6",
         "react-dom": "16.8.6",
         "react-intl": "3.0.0-beta-6",
