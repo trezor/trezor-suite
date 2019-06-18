@@ -59,9 +59,14 @@ export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState)
 
 // links inside of application
 export const goto = (url: string, preserveParams: boolean = false) => {
+    console.log(process.env.assetPrefix);
+    console.log(url);
+    console.log(url + process.env.assetPrefix);
     if (preserveParams) {
-        Router.push(process.env.assetPrefix + url + window.location.hash);
+        Router.push(
+            `https://suite.corp.sldev.cz${process.env.assetPrefix}${url}${window.location.hash}`,
+        );
     } else {
-        Router.push(process.env.assetPrefix + url);
+        Router.push(`https://suite.corp.sldev.cz${process.env.assetPrefix}${url}`);
     }
 };
