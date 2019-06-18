@@ -9,7 +9,6 @@ module.exports = {
     coverageDirectory: 'coverage',
     collectCoverage: true,
     modulePathIgnorePatterns: ['node_modules'],
-    collectCoverageFrom: ['utils/**.ts'],
     testMatch: ['**/tests/**/*.test.(ts|js)'],
     transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
