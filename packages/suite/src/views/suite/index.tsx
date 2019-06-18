@@ -1,11 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
-
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Loader } from '@trezor/components';
+import { Loader, Button } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
@@ -81,14 +80,17 @@ const Index: FunctionComponent<Props> = props => {
         // not-initialized should redirect to onboarding
         return (
             <Layout>
-                <Text>Device is in unexpected mode: {suite.device.mode}</Text>
+                <Text>Device is in unexpected mode: {suite.device.mode}</Text>{' '}
+                {suite.device.mode === 'initialize' && (
+                    <Button onClick={() => goto('/onboarding')}>Go to onboarding</Button>
+                )}
                 <Text>Transport: {suite.transport.type}</Text>
             </Layout>
         );
     }
 
-    const { pathname } = router;
-    const isLandingPage = pathname === '/bridge' || pathname === '/version';
+    // const { pathname } = router;
+    // const isLandingPage = pathname === '/bridge' || pathname === '/version';
     return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 

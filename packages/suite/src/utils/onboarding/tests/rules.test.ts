@@ -61,8 +61,7 @@ describe('rules.js', () => {
         it('should return true', () => {
             expect(
                 isRequestingPin({
-                    device: { features: { pin_protection: true, pin_cached: false } },
-                    uiInteraction: { name: 'ui-request_pin', counter: 1 },
+                    device: { isRequestingPin: 1 },
                 }),
             ).toEqual(true);
         });

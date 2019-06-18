@@ -1,0 +1,3 @@
+rootProject.name = 'componentsStorybookNative'
+
+include ':app'

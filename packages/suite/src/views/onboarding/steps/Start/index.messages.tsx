@@ -3,7 +3,13 @@ import { defineMessages } from 'react-intl';
 const definedMessages = defineMessages({
     TR_START_HEADING: {
         id: 'TR_START_HEADING',
-        defaultMessage: 'Create or recover',
+        defaultMessage: 'Create new or restore your Trezor Wallet',
+        description: 'Heading in start page',
+    },
+    TR_START_TEXT: {
+        id: 'TR_START_TEXT',
+        defaultMessage:
+            'Trezor Wallet is your account within Trezor ecosystem. It allows you to easily manage your funds and initiate transfers.',
         description: 'Heading in start page',
     },
     TR_RECOVERY_HEADING: {

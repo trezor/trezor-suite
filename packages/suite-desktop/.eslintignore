@@ -1,10 +1,18 @@
-.next
-_old
-build
+.nex/**
+_old/**
+build/**
 
 node_modules
 generated
-
+build-electron/**
 next.config.js
-src/electron.js
-src/preload.js
+
+public/**
+coverage/**
+cache/**
+node_modules
+src/flowtype/npm
+scripts/solidity/.*
+**/_old/*
+docs/**
+lib/**

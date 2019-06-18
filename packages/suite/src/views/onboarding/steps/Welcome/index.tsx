@@ -1,11 +1,17 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Button, H1, P } from '@trezor/components';
+import { Button, H1, P, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
-import { StepBodyWrapper, StepWrapper } from '@suite/components/onboarding/Wrapper';
+import Text from '@suite/components/onboarding/Text';
+import {
+    StepBodyWrapper,
+    StepWrapper,
+    ControlsWrapper,
+} from '@suite/components/onboarding/Wrapper';
 import { State } from '@suite/types/suite';
+import { SKIP_URL } from '@suite/constants/onboarding/urls';
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import l10nMessages from './index.messages';
 
@@ -52,9 +58,7 @@ const FadeInWrapper = styled.div`
     justify-content: center;
     animation: fadeIn 0.5s linear;
     text-align: center;
-    & > * {
-        margin: 20px;
-    }
+    align-items: center;
 
     @keyframes fadeIn {
         from {
@@ -64,6 +68,18 @@ const FadeInWrapper = styled.div`
             opacity: 1;
         }
     }
+`;
+
+const StyledButton = styled(Button)`
+    display: block;
+`;
+
+const Small = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const Base = styled.div`
+    font-size: ${variables.FONT_SIZE.BASE};
 `;
 
 interface Props {
@@ -76,7 +92,7 @@ interface Props {
 class WelcomeStep extends React.PureComponent<Props, {}> {
     render() {
         return (
-            <StepWrapper>
+            <StepWrapper data-test="onboarding_first_page">
                 <StepBodyWrapper>
                     <Logo
                         viewBox="30 8 60 30"
@@ -110,12 +126,32 @@ class WelcomeStep extends React.PureComponent<Props, {}> {
                                 <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} />
                             </H1>
 
-                            <Button
-                                data-test="button-continue"
-                                onClick={() => this.props.onboardingActions.goToNextStep()}
-                            >
-                                <FormattedMessage {...l10nMessages.TR_GET_STARTED} />
-                            </Button>
+                            <Text>
+                                <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR_TEXT} />
+                            </Text>
+
+                            <ControlsWrapper isVertical>
+                                <StyledButton
+                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                >
+                                    <Base>Create new Wallet</Base>
+                                    <Small>if you never had any Wallet</Small>
+                                </StyledButton>
+                                <StyledButton
+                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                    isInverse
+                                >
+                                    <Base>Restore existing wallet</Base>
+                                    <Small>using your backup seed</Small>
+                                </StyledButton>
+                                <StyledButton
+                                    isWhite
+                                    data-test="button-use-wallet"
+                                    onClick={() => (window.location.href = SKIP_URL)}
+                                >
+                                    <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
+                                </StyledButton>
+                            </ControlsWrapper>
                         </FadeInWrapper>
                     )}
                 </StepBodyWrapper>

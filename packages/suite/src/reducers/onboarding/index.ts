@@ -10,6 +10,7 @@ import newsletter from '@suite/reducers/onboarding/newsletterReducer';
 export default function onboardingApp(state, action) {
     const onboardingState = onboarding(state, action);
     return {
+        asNewDevice: onboardingState.asNewDevice,
         activeStepId: onboardingState.activeStepId,
         activeSubStep: onboardingState.activeSubStep,
         steps: onboardingState.steps,

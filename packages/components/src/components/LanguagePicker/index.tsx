@@ -87,7 +87,7 @@ interface Option {
     label: string;
 }
 
-const buildOption = (langCode: string, languages: [Language]): Option => {
+const buildOption = (langCode: string, languages: Language[]): Option => {
     const lang = languages.find((l: Language) => l.code === langCode);
     if (!lang) {
         throw new Error(`code '${lang}' is not present languages`);
@@ -104,7 +104,7 @@ interface Language {
 interface Props {
     language: string;
     onChange: (option: any) => any;
-    languages: [Language];
+    languages: Language[];
 }
 
 const LanguagePicker = ({ language, languages, onChange, ...rest }: Props) => (

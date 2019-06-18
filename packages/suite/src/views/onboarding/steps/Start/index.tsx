@@ -41,6 +41,7 @@ const RecoverOption = () => (
 );
 
 interface Props {
+    asNewDevice: boolean;
     isResolved: boolean;
     activeSubStep: State['onboarding']['activeSubStep'];
     recovery: State['onboarding']['recovery'];
@@ -53,6 +54,7 @@ interface Props {
 }
 
 const StartStep = ({
+    asNewDevice,
     isResolved,
     onboardingActions,
     activeSubStep,
@@ -84,57 +86,41 @@ const StartStep = ({
                 />
             )}
 
-            {!isResolved && activeSubStep === null && device.features.initialized !== true && (
-                <OptionsList
-                    options={[
-                        {
-                            content: <StartOption />,
-                            value: STEP.ID_SECURITY_STEP,
-                            key: 1,
-                            onClick: () => {
-                                connectActions.resetDevice();
+            <Text>
+                <FormattedMessage {...l10nMessages.TR_START_TEXT} />
+            </Text>
+            {/* <OptionsList
+                        options={[
+                            {
+                                content: <StartOption />,
+                                value: STEP.ID_SECURITY_STEP,
+                                key: 1,
+                                onClick: () => {
+                                    onboardingActions.goToNextStep();
+                                },
                             },
-                        },
-                        {
-                            content: <RecoverOption />,
-                            value: STEP.ID_RECOVERY_STEP,
-                            key: 2,
-                            onClick: () => {
-                                onboardingActions.goToSubStep(STEP.ID_RECOVERY_STEP);
+                            {
+                                content: <RecoverOption />,
+                                value: STEP.ID_RECOVERY_STEP,
+                                key: 2,
+                                onClick: () => {
+                                    onboardingActions.goToNextStep();
+                                },
                             },
-                        },
-                    ]}
-                    selected={null}
-                    selectedAccessor="value"
-                />
-            )}
-
-            {!isResolved && device.features.initialized === true && (
-                <React.Fragment>
-                    {/* todo: translations */}
-                    <Text>Device succesfully initialized. You can continue</Text>
-                    <ControlsWrapper>
-                        <Button onClick={() => onboardingActions.goToNextStep()}>Continue</Button>
-                    </ControlsWrapper>
-                </React.Fragment>
-            )}
-
-            {isResolved && (
-                <React.Fragment>
-                    {/* todo: translations */}
-                    <Text>
-                        You have already created a new wallet from scratch or through recovery.
-                    </Text>
-                    <ControlsWrapper>
-                        <Button
-                            data-test="button-continue"
-                            onClick={() => onboardingActions.goToNextStep()}
-                        >
-                            Continue
-                        </Button>
-                    </ControlsWrapper>
-                </React.Fragment>
-            )}
+                        ]}
+                        selected={null}
+                        selectedAccessor="value"
+                    /> */}
+            <ControlsWrapper isVertical>
+                <Button onClick={() => onboardingActions.goToNextStep()}>
+                    Create new Wallet <br />
+                    if you never had any Wallet
+                </Button>
+                <Button onClick={() => onboardingActions.goToNextStep()} isWhite>
+                    Restore existing wallet <br />
+                    using your backup seed
+                </Button>
+            </ControlsWrapper>
         </StepBodyWrapper>
     </StepWrapper>
 );

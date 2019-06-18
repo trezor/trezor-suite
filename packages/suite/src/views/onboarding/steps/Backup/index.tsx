@@ -4,7 +4,7 @@ import { H4, P, Button, Checkbox, Icon, Link, Prompt } from '@trezor/components'
 import { FormattedMessage } from 'react-intl';
 
 import colors from '@suite/config/onboarding/colors';
-import { SEED_MANUAL_URL } from '@suite/config/onboarding/urls';
+import { SEED_MANUAL_URL } from '@suite/constants/onboarding/urls';
 import { WIPE_DEVICE, BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import * as STEP from '@suite/constants/onboarding/steps';
 import Text from '@suite/components/onboarding/Text';
