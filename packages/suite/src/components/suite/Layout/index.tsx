@@ -15,12 +15,7 @@ import Router from '@suite-support/Router';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { State } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
-import {
-    HEADER_HEIGHT,
-    HEADER_HEIGHT_UNIT,
-    FOOTER_HEIGHT,
-    FOOTER_HEIGHT_UNIT,
-} from '@suite/constants/suite/layout';
+
 import l10nMessages from './index.messages';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
