@@ -34,7 +34,8 @@ export const handshake = (): void => {
     });
 };
 
-export const errorHandler = ({ id, error }: { id: number, error: Object }): void => {
+export const errorHandler = ({ id, error }: { id: number, error: any }): void => {
+    let code: string = 'blockchain_link/unknown';
     let message: string = '';
     if (typeof error === 'string') {
         message = error;
@@ -45,12 +46,18 @@ export const errorHandler = ({ id, error }: { id: number, error: Object }): void
         } else {
             message = error.message;
         }
+        if (error.code) {
+            code = error.code;
+        }
     }
 
     postMessage({
         id,
         type: RESPONSES.ERROR,
-        payload: message,
+        payload: {
+            code,
+            message,
+        },
     });
 };
 
@@ -93,4 +100,13 @@ export const removeSubscription = (type: string): void => {
 
 export const clearSubscriptions = (): void => {
     Object.keys(_subscription).forEach(key => (_subscription[key] = false));
+};
+
+export const shuffleEndpoints = (a: Array<string>): Array<string> => {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        // $FlowIssue
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
 };

@@ -1,26 +1,27 @@
 /* @flow */
 
+// import Promise from 'es6-promise';
 // import chai, { expect, should } from 'chai';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import chai, { expect, should } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import createServer, { setFixture } from './websocket/blockbook';
-import { blockbookWorkerFactory } from './workers/mock.worker';
+import createServer from './websocket/ripple';
+import { rippleWorkerFactory } from './workers/mock.worker';
+// import { MESSAGES, RESPONSES } from '../src/constants';
 import BlockchainLink from '../src';
 
 should();
 chai.use(chaiAsPromised);
 
-describe('Blockbook', () => {
+describe('Ripple', () => {
     let server;
     let blockchain;
 
     beforeEach(async () => {
-        setFixture(); // reset response custom fixture
         server = await createServer();
         blockchain = new BlockchainLink({
-            name: 'Tests:Blockbook',
-            worker: blockbookWorkerFactory,
+            name: 'Tests:Ripple',
+            worker: rippleWorkerFactory,
             server: [`ws://localhost:${server.options.port}`],
             debug: false,
         });
@@ -33,7 +34,7 @@ describe('Blockbook', () => {
 
     it('Connect', async () => {
         const result = await blockchain.connect();
-        expect(result).equal(true);
+        expect(result).to.deep.equal(true);
     });
 
     it('Connect (one input is invalid)', async () => {
@@ -102,24 +103,8 @@ describe('Blockbook', () => {
         }
     });
 
-    it('Get info', async () => {
-        setFixture('valid');
-        const result = await blockchain.getInfo();
-        expect(result).to.deep.equal({
-            name: 'Test',
-            shortcut: 'test',
-            decimals: 9,
-            blockHeight: 1,
-        });
-    });
-
-    it('Get info error', async () => {
-        setFixture('invalid');
-        try {
-            await blockchain.getInfo();
-            // done('failed');
-        } catch (error) {
-            expect(error).to.be.an('error');
-        }
+    it('Get fee', async () => {
+        const result = await blockchain.estimateFee();
+        expect(result).to.deep.equal([{ name: 'Normal', value: '12' }]);
     });
 });

@@ -32,17 +32,24 @@ const handleClick = (event: MouseEvent) => {
             break;
 
         case 'get-account-info': {
-            const payload = {
-                descriptor: getInputValue('get-account-info-address'),
-                details: getInputValue('get-account-info-mode') || 'basic',
-                pageSize: parseInt(getInputValue('get-account-info-pageSize'), 10) || 25,
-                tokens: getInputValue('get-account-info-tokens') || 'derived',
-                page: parseInt(getInputValue('get-account-info-page'), 10) || 1,
-                from: parseInt(getInputValue('get-account-info-from'), 10),
-                to: parseInt(getInputValue('get-account-info-to'), 10),
-                contractFilter: getInputValue('get-account-info-contract') || '',
-            };
-            blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
+            try {
+                const options = JSON.parse(getInputValue('get-account-info-options'));
+                console.log("options", options)
+                const payload = {
+                    descriptor: getInputValue('get-account-info-address'),
+                    details: getInputValue('get-account-info-mode') || 'basic',
+                    // pageSize: parseInt(getInputValue('get-account-info-pageSize'), 10) || 25,
+                    // tokens: getInputValue('get-account-info-tokens') || 'derived',
+                    // page: parseInt(getInputValue('get-account-info-page'), 10) || 1,
+                    // from: parseInt(getInputValue('get-account-info-from'), 10),
+                    // to: parseInt(getInputValue('get-account-info-to'), 10),
+                    // contractFilter: getInputValue('get-account-info-contract') || '',
+                };
+                blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
+            } catch(error) {
+                onError(error);
+            }
+            
             break;
         }
 
@@ -170,7 +177,7 @@ const onSelectChange = (event) => {
 
 const onAccountInfoModeChange = (event) => {
     const advanced = (document.getElementById('get-account-info-advanced'): any);
-    advanced.style.display = event.target.value === 'advanced' ? 'block' : 'none';
+    advanced.style.display = event.target.value === 'txids' || event.target.value === 'txs' ? 'block' : 'none';
 };
 
 const onEstimateFeeModeChange = (event) => {

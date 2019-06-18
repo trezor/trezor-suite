@@ -29,7 +29,7 @@
     "build:workers": "babel-node ./scripts/build.workers.js",
     "lint": "eslint ./src ./webpack ./tests",
     "flow": "flow check ./src",
-    "test": "mocha --opts ./tests/mocha.opts ./tests/index.js"
+    "test": "mocha --opts ./tests/mocha.opts ./tests/"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

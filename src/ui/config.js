@@ -28,7 +28,6 @@ export default [
             tx: '304402202f0046af4147a8646a1c06ef63789698756cffb5e2e380cd2740688b71bd15a302201797d6b55175b6b326257737f331f701f1c9d8271fcc990644ef12d1bf3bdf80',
             subscribe: 'rBdHGo5fksQotC4x5t7BtaR8vMW5EDqk6S,rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H,rBKz5MC2iXdoS3XgnNSYmF69K1Yo4NS3Ws',
         },
-        selected: false,
     },
     {
         blockchain: {
@@ -40,13 +39,17 @@ export default [
             debug: true,
         },
         data: {
-            address: 'rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy', // some exchange
+            address: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj', // address with 1 in 1 out tx
+            // address: 'rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy', // some exchange
             // address: 'rsG1sNifXJxGS2nDQ9zHyoe1S5APrtwpjV', // another exchange
             accountInfoOptions: {
-                type: 'transactions',
-                page: 0,
-                from: 0,
-                to: 0,
+                pageSize: 1,
+                marker: {
+                    ledger: 0,
+                    seq: 0,
+                },
+                // from: 0,
+                // to: 0,
             },
             estimateFeeOptions: {
                 transaction: undefined,
@@ -74,8 +77,12 @@ export default [
             // address: '0x103262f243e6f67d12d6a4ea0d45302c1fa4bb0a',
             address: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
             accountInfoOptions: {
-                start: '',
-                limit: 0,
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+                // tokens: 'derived', // used - btc only used addresses, nonzero - btc addresses wit utxo
+                // from: 0,
+                // to: 0,
             },
             estimateFeeOptions: {
 
@@ -83,6 +90,36 @@ export default [
             tx: '',
             subscribe: '0x103262f243e6f67d12d6a4ea0d45302c1fa4bb0a',
         },
-        selected: false,
+    },
+    {
+        blockchain: {
+            name: 'Bitcoin Testnet',
+            worker: 'js/blockbook-worker.js',
+            server: ['wss://blockbook-dev.corp.sldev.cz:19130'],
+            debug: true,
+        },
+        data: {
+            // address: 'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy', // all-all legacy 1 (idk why xpub?)
+            address: 'vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b', // all-all bech32 1
+            // address: 'upub5DR1Mg5nykixzYjFXWW5GghAU7dDqoPVJ2jrqFbL8sJ7Hs7jn69MP7KBnnmxn88GeZtnH8PRKV9w5MMSFX8AdEAoXY8Qd8BJPoXtpMeHMxJ', // all-all segwit 1
+            // address: 'tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U', // all-all legacy 1
+            
+            // address: 'tpubDDKn3FtHc74CcBfxJ3zdSNnRacuggmGwv3KEZLJP2LAuqc3HhsQR5ZAVudcQzezzXs7T6QrDtoJJYvgyDUJ9vgWx3Y7Et4Ats1Q25U1LXvU', // all-all legacy 2
+            // address: 'upub5DR1Mg5nykiy3TcYPKDyVC1vS9uoPBD5oyAx5oFAJwwPSEqekNFXboyDUogKicY6tRnBmMcdrFyMPfTSdm8qXSYrpnYuhXZWzQP1wU4xFhq', // all-all segwit 2
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+                // tokens: 'derived', // used - btc only used addresses, nonzero - btc addresses wit utxo
+                // from: 0,
+                // to: 0,
+            },
+            estimateFeeOptions: {
+
+            },
+            tx: '',
+            subscribe: '0x103262f243e6f67d12d6a4ea0d45302c1fa4bb0a',
+        },
+        
     },
 ];
