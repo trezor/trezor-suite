@@ -63,7 +63,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             toggleSidebar={props.toggleSidebar}
             togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}
             togglerCloseText={<FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />}
-            sidebarEnabled
+            sidebarEnabled={!props.isLanding}
             rightAddon={
                 <LanguagePicker
                     language={props.suite.language}
