@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Button, H1, P } from '@trezor/components';
+import { Button, H1, P, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
@@ -58,6 +58,7 @@ const FadeInWrapper = styled.div`
     justify-content: center;
     animation: fadeIn 0.5s linear;
     text-align: center;
+    align-items: center;
 
     @keyframes fadeIn {
         from {
@@ -67,6 +68,18 @@ const FadeInWrapper = styled.div`
             opacity: 1;
         }
     }
+`;
+
+const StyledButton = styled(Button)`
+    display: block;
+`;
+
+const Small = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const Base = styled.div`
+    font-size: ${variables.FONT_SIZE.BASE};
 `;
 
 interface Props {
@@ -118,19 +131,26 @@ class WelcomeStep extends React.PureComponent<Props, {}> {
                             </Text>
 
                             <ControlsWrapper isVertical>
-                                <Button
-                                    data-test="button-continue"
+                                <StyledButton
                                     onClick={() => this.props.onboardingActions.goToNextStep()}
                                 >
-                                    <FormattedMessage {...l10nMessages.TR_GET_STARTED} />
-                                </Button>
-                                <Button
+                                    <Base>Create new Wallet</Base>
+                                    <Small>if you never had any Wallet</Small>
+                                </StyledButton>
+                                <StyledButton
+                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                    isInverse
+                                >
+                                    <Base>Restore existing wallet</Base>
+                                    <Small>using your backup seed</Small>
+                                </StyledButton>
+                                <StyledButton
                                     isWhite
                                     data-test="button-use-wallet"
                                     onClick={() => (window.location.href = SKIP_URL)}
                                 >
                                     <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
-                                </Button>
+                                </StyledButton>
                             </ControlsWrapper>
                         </FadeInWrapper>
                     )}
