@@ -213,6 +213,7 @@ interface Props {
     steps: OnboardingReducer['steps'];
     activeSubStep: OnboardingReducer['activeSubStep'];
     selectedModel: OnboardingReducer['selectedModel'];
+    asNewDevice: OnboardingReducer['asNewDevice'];
 
     deviceCall: ConnectReducer['deviceCall'];
     uiInteraction: ConnectReducer['uiInteraction'];
@@ -245,7 +246,7 @@ class Onboarding extends React.PureComponent<Props> {
         }
     }
 
-    getStep(activeStepId: OnboardingReducer['activeStepId']) {
+    getStep(activeStepId: State['onboarding']['activeStepId']) {
         return this.props.steps.find(step => step.id === activeStepId);
     }
 
@@ -254,7 +255,14 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const { device, prevDeviceId, activeStepId, connectError, uiInteraction } = this.props;
+        const {
+            device,
+            prevDeviceId,
+            activeStepId,
+            connectError,
+            uiInteraction,
+            asNewDevice,
+        } = this.props;
         if (!this.getStep(activeStepId).disallowedDeviceStates) {
             return null;
         }
@@ -262,7 +270,7 @@ class Onboarding extends React.PureComponent<Props> {
         return this.getStep(activeStepId).disallowedDeviceStates.find(
             (state: AnyStepDisallowedState) => {
                 const fn = getFnForRule(state);
-                return fn({ device, prevDeviceId, uiInteraction });
+                return fn({ device, prevDeviceId, uiInteraction, asNewDevice });
             },
         );
     }
@@ -470,6 +478,7 @@ const mapStateToProps = (state: State) => {
         activeStepId: state.onboarding.activeStepId,
         activeSubStep: state.onboarding.activeSubStep,
         steps: state.onboarding.steps,
+        asNewDevice: state.onboarding.asNewDevice,
     };
 };
 
