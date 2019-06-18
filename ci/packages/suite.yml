@@ -33,8 +33,8 @@ suite test unit:
             - .gitlab-ci.yml
             - ci/**/*
 
-suite test health: 
-    stage: test
+suite test integration:
+    stage: test integration
     script:
         - yarn workspace @trezor/suite test:health
     only:
