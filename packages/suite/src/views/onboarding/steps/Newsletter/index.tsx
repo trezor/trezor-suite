@@ -25,9 +25,9 @@ import {
     CheckboxWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
-import { FetchReducer } from '@suite/types/onboarding/fetch';
-import { NewsletterReducer, NewsletterActions } from '@suite/types/onboarding/newsletter';
+import { State } from '@suite-types/index';
+import { ConnectActions } from '@suite/types/onboarding/connect';
+import { NewsletterActions } from '@suite/types/onboarding/newsletter';
 
 import l10nMessages from './index.messages';
 
@@ -54,9 +54,9 @@ const InputWrapper = styled.div`
 `;
 
 interface Props {
-    fetchCall: FetchReducer;
-    newsletter: NewsletterReducer;
-    device: ConnectReducer['device'];
+    fetchCall: State['onboarding']['fetchCall'];
+    newsletter: State['onboarding']['newsletter'];
+    device: State['onboarding']['connect']['device'];
     connectActions: ConnectActions;
     newsletterActions: NewsletterActions;
 }

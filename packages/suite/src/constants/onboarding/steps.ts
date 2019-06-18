@@ -1,5 +1,5 @@
 export const ID_WELCOME_STEP = '';
-export const ID_START_STEP = 'start';
+// export const ID_START_STEP = 'start';
 export const ID_NEW_OR_USED = 'new-or-used';
 export const ID_BACKUP_STEP = 'backup';
 export const ID_BOOKMARK_STEP = 'bookmark';
@@ -17,7 +17,7 @@ export const ID_RECOVERY_STEP = 'recovery';
 export const ID_INIT_DEVICE = 'basic-setup';
 
 export const TITLE_WELCOME_STEP = 'Welcome';
-export const TITLE_START_STEP = 'Start';
+// export const TITLE_START_STEP = 'Start';
 export const TITLE_BACKUP_STEP = 'Backup';
 export const TITLE_BOOKMARK_STEP = 'Bookmark';
 export const TITLE_BRIDGE_STEP = 'Bridge';

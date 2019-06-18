@@ -1,12 +1,11 @@
 import React from 'react';
-import { H4, Button, Link, Checkbox, P } from '@trezor/components';
+import { Button, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect';
 import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
 
 import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
-import colors from '@suite/config/onboarding/colors';
 import * as STEP from '@suite/constants/onboarding/steps';
 import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
 import Text from '@suite/components/onboarding/Text';
@@ -17,11 +16,10 @@ interface Props {
     device: ConnectReducer['device'];
     activeSubStep: OnboardingReducer['activeSubStep'];
     onboardingActions: OnboardingActions;
-    connectActions: ConnectActions;
 }
 
 const TroubleshootInitialized: React.FC = (props: Props) => {
-    const { device, connectActions, activeSubStep, onboardingActions } = props;
+    const { device, activeSubStep, onboardingActions } = props;
 
     return (
         <React.Fragment>

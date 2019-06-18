@@ -51,7 +51,7 @@ import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@suite/views/onboarding/steps/Welcome/Container';
-import StartStep from '@suite/views/onboarding/steps/Start/Container';
+// import StartStep from '@suite/views/onboarding/steps/Start/Container';
 import NewOrUsedStep from '@suite/views/onboarding/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@suite/views/onboarding/steps/SelectDevice/Container';
 import HologramStep from '@suite/views/onboarding/steps/Hologram/Container';
@@ -166,7 +166,7 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }) => {
+const TrezorAction = ({ model, event }: { model: State['onboarding']['model'], event: EVENTS.AnyEvent }) => {
     let TrezorActionText;
     if (event.name === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
@@ -284,20 +284,14 @@ class Onboarding extends React.PureComponent<Props> {
             onboardingActions,
             connectActions,
 
-            device,
-            transport,
-
-            // todo: Containerize some of the components
             selectedModel,
             activeStepId,
-            activeSubStep,
             steps,
 
             deviceCall,
             deviceInteraction,
             uiInteraction,
         } = this.props;
-        const model = selectedModel;
 
         const errorState = this.getError();
 
@@ -348,12 +342,12 @@ class Onboarding extends React.PureComponent<Props> {
                                 <WelcomeStep />
                             </CSSTransition>
 
-                            <CSSTransition
+                            {/* <CSSTransition
                                 in={activeStepId === STEP.ID_START_STEP}
                                 {...TRANSITION_PROPS}
                             >
                                 <StartStep />
-                            </CSSTransition>
+                            </CSSTransition> */}
 
                             <CSSTransition
                                 in={activeStepId === STEP.ID_NEW_OR_USED}

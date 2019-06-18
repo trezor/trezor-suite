@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { H6, TrezorImage } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
-import { ConnectReducer } from '@suite/types/onboarding/connect';
+import { State } from '@suite-types/index';
+import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { OptionsList } from '@suite/components/onboarding/Options';
 import {
     StepWrapper,
@@ -23,9 +23,9 @@ const DEVICE_HEIGHT = 130;
 
 interface Props {
     onboardingActions: OnboardingActions;
-    device: ConnectReducer['device'];
-    model: number;
-    asNewDevice: boolean;
+    device: State['onboarding']['connect']['device'];
+    asNewDevice: State['onboarding']['asNewDevice'];
+    model: State['onboarding']['selectedModel'];
 }
 
 const SelectDeviceStep = ({ onboardingActions, model, device, asNewDevice }: Props) => {

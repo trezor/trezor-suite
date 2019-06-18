@@ -138,7 +138,6 @@ class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> 
                             {device.features.initialized && !isResolved && (
                                 <TroubleshootInitialized
                                     device={device}
-                                    connectActions={connectActions}
                                     onboardingActions={onboardingActions}
                                     activeSubStep={activeSubStep}
                                 />
