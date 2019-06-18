@@ -29,6 +29,7 @@
         "@typescript-eslint/eslint-plugin": "^1.6.0",
         "@typescript-eslint/parser": "^1.6.0",
         "awesome-typescript-loader": "^5.2.1",
+        "babel-jest": "^24.8.0",
         "babel-loader": "^8.0.5",
         "babel-plugin-styled-components": "^1.10.0",
         "eslint": "^5.13.0",
@@ -51,6 +52,7 @@
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.5.2",
+        "ts-jest": "^24.0.2",
         "typescript": "^3.5.1",
         "typescript-styled-plugin": "^0.14.0",
         "wait-on": "^3.2.0"
