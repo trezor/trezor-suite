@@ -60,25 +60,20 @@
     },
     "dependencies": {
         "@tippy.js/react": "^2.1.1",
+        "@types/react-select": "^2.0.17",
         "@types/storybook__addon-info": "^4.1.1",
         "@types/storybook__addon-knobs": "^4.0.5",
         "@types/storybook__addon-links": "^3.3.4",
         "@types/storybook__react": "^4.0.1",
-        "@types/react-router-dom": "^4.3.3",
-        "@types/react-select": "^2.0.17",
-        "@types/react-textarea-autosize": "^4.3.4",
         "@types/styled-components": "^4.1.15",
         "prop-types": "^15.7.2",
         "react-native-svg": "^9.4.0",
         "react-select": "^2.4.3",
-        "react-switch": "^5.0.0",
-        "react-textarea-autosize": "^7.1.0"
+        "react-switch": "^5.0.0"
     },
     "peerDependencies": {
         "react": "^16.8",
-        "react-dom": "^16.8",
         "react-native": "^0.59.4",
-        "react-router-dom": "^5.0.0",
         "styled-components": "^4.1.3"
     }
 }
