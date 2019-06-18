@@ -5,7 +5,7 @@ describe('Pages', () => {
 
     it(`test root onboarding page is online`, () => {
         cy.visit('/onboarding')
-            .contains('Welcome to Trezor')
+            .get('html')
             .should('be.visible');
     });
 });
