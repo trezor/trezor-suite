@@ -15,11 +15,9 @@ export type AnyStepId =
     | typeof STEP.ID_BRIDGE_STEP
     | typeof STEP.ID_FINAL_STEP
     | typeof STEP.ID_FIRMWARE_STEP
-    | typeof STEP.ID_HOLOGRAM_STEP
     | typeof STEP.ID_NEWSLETTER_STEP
     | typeof STEP.ID_SELECT_DEVICE_STEP
     | typeof STEP.ID_SET_PIN_STEP
-    | typeof STEP.ID_START_STEP
     | typeof STEP.ID_SECURITY_STEP
     | typeof STEP.ID_WELCOME_STEP
     | typeof STEP.ID_NAME_STEP
@@ -41,11 +39,9 @@ export type AnyStepTitle =
     | typeof STEP.TITLE_BRIDGE_STEP
     | typeof STEP.TITLE_FINAL_STEP
     | typeof STEP.TITLE_FIRMWARE_STEP
-    | typeof STEP.TITLE_HOLOGRAM_STEP
     | typeof STEP.TITLE_NEWSLETTER_STEP
     | typeof STEP.TITLE_SELECT_DEVICE_STEP
     | typeof STEP.TITLE_SET_PIN_STEP
-    | typeof STEP.TITLE_START_STEP
     | typeof STEP.TITLE_SECURITY_STEP
     | typeof STEP.TITLE_WELCOME_STEP
     | typeof STEP.TITLE_NAME_STEP

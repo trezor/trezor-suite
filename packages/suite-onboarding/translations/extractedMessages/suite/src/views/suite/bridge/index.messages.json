@@ -1,0 +1,94 @@
+[
+  {
+    "id": "TR_NEW_COMMUNICATION_TOOL",
+    "defaultMessage": "New communication tool to facilitate the connection between your Trezor and your internet browser.",
+    "file": "../suite/src/views/suite/bridge/index.messages.ts",
+    "start": {
+      "line": 4,
+      "column": 31
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DOWNLOAD_LATEST_BRIDGE",
+    "defaultMessage": "Download latest Bridge {version}",
+    "file": "../suite/src/views/suite/bridge/index.messages.ts",
+    "start": {
+      "line": 9,
+      "column": 31
+    },
+    "end": {
+      "line": 12,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEARN_MORE_ABOUT_LATEST_VERSION",
+    "defaultMessage": "Learn more about latest version in {TR_CHANGELOG}.",
+    "file": "../suite/src/views/suite/bridge/index.messages.ts",
+    "start": {
+      "line": 13,
+      "column": 40
+    },
+    "end": {
+      "line": 16,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHANGELOG",
+    "description": "Part of the sentence: Learn more about latest version in {TR_CHANGELOG}.",
+    "defaultMessage": "Changelog",
+    "file": "../suite/src/views/suite/bridge/index.messages.ts",
+    "start": {
+      "line": 17,
+      "column": 18
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_PGP_SIGNATURE",
+    "defaultMessage": "Check PGP signature",
+    "file": "../suite/src/views/suite/bridge/index.messages.ts",
+    "start": {
+      "line": 22,
+      "column": 28
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DONT_UPGRADE_BRIDGE",
+    "defaultMessage": "No, I don't want to upgrade Bridge now",
+    "file": "../suite/src/views/suite/bridge/index.messages.ts",
+    "start": {
+      "line": 26,
+      "column": 28
+    },
+    "end": {
+      "line": 29,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TAKE_ME_BACK_TO_WALLET",
+    "defaultMessage": "Take me back to the wallet",
+    "file": "../suite/src/views/suite/bridge/index.messages.ts",
+    "start": {
+      "line": 30,
+      "column": 31
+    },
+    "end": {
+      "line": 33,
+      "column": 5
+    }
+  }
+]

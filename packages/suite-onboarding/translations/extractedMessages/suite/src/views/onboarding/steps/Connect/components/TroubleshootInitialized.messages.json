@@ -1,0 +1,100 @@
+[
+  {
+    "id": "TR_DEVICE_IS_INITIALIZED",
+    "description": "Indication that device is in already initialized",
+    "defaultMessage": "Device is initialized",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootInitialized.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 30
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_LABEL",
+    "description": "Display label of device",
+    "defaultMessage": "Device label: {label}.",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootInitialized.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 21
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_FIRMWARE_VERSION",
+    "description": "Display firmware of device",
+    "defaultMessage": "Device firmware: {firmware}.",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootInitialized.messages.tsx",
+    "start": {
+      "line": 14,
+      "column": 32
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_USER_HAS_WORKDED_WITH_THE_DEVICE",
+    "description": "Option to click when troubleshooting initialized device.",
+    "defaultMessage": "I have worked with it before",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootInitialized.messages.tsx",
+    "start": {
+      "line": 19,
+      "column": 41
+    },
+    "end": {
+      "line": 23,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_USER_HAS_NOT_WORKDED_WITH_THIS_DEVICE",
+    "description": "Option to click when troubleshooting initialized device.",
+    "defaultMessage": "It is a brand new device, just unpacked",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootInitialized.messages.tsx",
+    "start": {
+      "line": 24,
+      "column": 45
+    },
+    "end": {
+      "line": 28,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSTRUCTION_TO_SKIP",
+    "description": "Instruction what to do when user knows the device he is holding was manipulated by him, not someone else.",
+    "defaultMessage": "You should skip setup and continue to wallet and check if you have any funds on this device.",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootInitialized.messages.tsx",
+    "start": {
+      "line": 29,
+      "column": 28
+    },
+    "end": {
+      "line": 35,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS",
+    "description": "What to do if device is already initialized but not by user.",
+    "defaultMessage": "In that case you should immediately contact Trezor support with detailed information on your purchase and refrain from using this device.",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootInitialized.messages.tsx",
+    "start": {
+      "line": 36,
+      "column": 58
+    },
+    "end": {
+      "line": 41,
+      "column": 5
+    }
+  }
+]

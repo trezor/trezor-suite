@@ -54,14 +54,14 @@ const InputWrapper = styled.div`
 `;
 
 interface Props {
-    fetchCall: State['onboarding']['fetchCall'];
-    newsletter: State['onboarding']['newsletter'];
-    device: State['onboarding']['connect']['device'];
+    fetchCall: FetchReducer;
+    newsletter: NewsletterReducer;
+    device: ConnectReducer['device'];
     connectActions: ConnectActions;
     newsletterActions: NewsletterActions;
 }
 
-class NewsleterStep extends React.Component<Props & InjectedIntlProps, {}> {
+class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
     getBottomText() {
         return this.validateInput().bottomText;
     }
