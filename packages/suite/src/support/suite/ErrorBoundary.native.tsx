@@ -1,30 +1,43 @@
 import React from 'react';
-
-import { View, Text } from 'react-native';
-
+import { Text, View } from 'react-native';
 import { Sentry } from 'react-native-sentry';
 
-class ErrorBoundary extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { error: null };
-    }
+interface Props {
+    children: React.ReactNode;
+}
 
-    componentDidCatch(error, errorInfo) {
+interface State {
+    error: Error | null;
+}
+
+class ErrorBoundary extends React.Component<Props, State> {
+    state = { error: null };
+
+    componentDidCatch(error: Error, info: object) {
         this.setState({ error });
+        // Alert.alert(
+        //     'error',
+        //     'An unexpected error has occurred. Please restart the app to continue.',
+        //     [
+        //         {
+        //             text: 'cta',
+        //             onPress: () => {},
+        //         },
+        //     ],
+        //     { cancelable: false },
+        // );
     }
 
     render() {
-        if (this.state.error) {
-            // render fallback UI
-            return (
+        return this.state.error ? (
+            <>
                 <View>
                     <Text>Error occured</Text>
                 </View>
-            );
-        }
-        // when there's not an error, render children untouched
-        return this.props.children;
+            </>
+        ) : (
+            this.props.children
+        );
     }
 }
 

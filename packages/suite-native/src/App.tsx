@@ -6,6 +6,7 @@ import './support/global';
 import Preloader from '@suite-components/Preloader';
 import { Sentry, SentryLog } from 'react-native-sentry';
 import config from '@suite-config/index';
+import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from './support/RouterHandler';
 
 import { initStore } from './reducers/store';
@@ -24,12 +25,14 @@ const TrezorSuite = (props: any) => {
     const store = initStore();
 
     return (
-        <Provider store={store}>
-            <Text>Nothing works very much here. </Text>
-            {/* <Preloader> */}
-            {/* <RouterHandler /> */}
-            {/* </Preloader> */}
-        </Provider>
+        <ErrorBoundary>
+            <Provider store={store}>
+                <Text>Nothing works very much here.</Text>
+                {/* <Preloader> */}
+                {/* <RouterHandler /> */}
+                {/* </Preloader> */}
+            </Provider>
+        </ErrorBoundary>
     );
 };
 
