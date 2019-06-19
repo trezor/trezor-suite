@@ -292,14 +292,7 @@ storiesOf('Typography', module)
             ~~~js
             import { Link, variables } from 'trezor-ui-components';
             ~~~
-
-            #### Font size via \`size\` prop (default: _inherit_)
-            ~~~js
-            variables.FONT_SIZE.SMALL
-            variables.FONT_SIZE.BASE
-            variables.FONT_SIZE.BIG
-            variables.FONT_SIZE.BIGGER
-            ~~~
+            
             `,
             },
         }
