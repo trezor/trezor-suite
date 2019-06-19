@@ -16,6 +16,7 @@ interface SuiteState {
 
 interface Transport {
     type?: string;
+    version?: string;
     bridge: {
         version: [];
         directory: '';

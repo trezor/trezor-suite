@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { Select, Link, Button } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { ConnectReducer } from '@suite/types/onboarding/connect';
-import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { State } from '@suite-types/index';
+import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
 import Text from '@suite/components/onboarding/Text';
@@ -45,19 +45,19 @@ interface Installer {
     preferred: boolean;
 }
 
-interface State {
+interface BridgeState {
     target: Installer;
     uri: string;
     installers: Installer[];
 }
 
 interface Props {
-    transport: ConnectReducer['transport'];
-    activeSubStep: OnboardingReducer['activeSubStep'];
+    transport: State['suite']['transport'];
+    activeSubStep: State['onboarding']['activeSubStep'];
     onboardingActions: OnboardingActions;
 }
 
-class InstallBridge extends PureComponent<Props & InjectedIntlProps, State> {
+class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState> {
     constructor(props: Props & InjectedIntlProps) {
         super(props);
         const installers = this.getInstallers();
@@ -75,7 +75,7 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, State> {
     }
 
     getStatus() {
-        if (this.props.transport.type === 'bridge') {
+        if (this.props.transport!.type === 'bridge') {
             return 'installed';
         }
         return this.props.activeSubStep;
@@ -83,7 +83,7 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, State> {
 
     getInstallers() {
         // todo: typescript from connect
-        return this.props.transport.bridge.packages.map((p: any) => ({
+        return this.props.transport!.bridge.packages.map((p: any) => ({
             label: p.name,
             value: p.url,
             signature: p.signature,
@@ -109,7 +109,7 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, State> {
                         {status === 'installed' && (
                             <FormattedMessage
                                 {...l10nMessages.TR_TREZOR_BRIDGE_IS_RUNNING_VERSION}
-                                values={{ version: this.props.transport.version }}
+                                values={{ version: this.props.transport!.version }}
                             />
                         )}
                         {status !== 'installed' && (

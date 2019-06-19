@@ -4,6 +4,7 @@ import {
     DISALLOWED_DEVICE_IS_NOT_USED_HERE,
     DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
     DISALLOWED_DEVICE_IS_REQUESTING_PIN,
+    DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
 } from '@suite/constants/onboarding/steps';
 import { PrevDeviceId } from '@suite/types/onboarding/connect';
 
@@ -41,12 +42,24 @@ export const isInBootloader = ({ device }: { device?: Device }) => {
     return device.features.bootloader_mode === true;
 };
 
-// todo typescript
 export const isRequestingPin = ({ device }: { device?: Device }) => {
     if (!device) {
         return null;
     }
     return !!device.isRequestingPin;
+};
+
+export const isNotNewDevice = ({
+    device,
+    asNewDevice,
+}: {
+    device?: Device;
+    asNewDevice: boolean | null;
+}) => {
+    if (!device || !asNewDevice) {
+        return null;
+    }
+    return device.features.firmware_present !== false;
 };
 
 export const getFnForRule = (rule: string) => {
@@ -61,6 +74,8 @@ export const getFnForRule = (rule: string) => {
             return isInBootloader;
         case DISALLOWED_DEVICE_IS_REQUESTING_PIN:
             return isRequestingPin;
+        case DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
+            return isNotNewDevice;
         default:
             throw new Error(`Wrong rule passed: ${rule}`);
     }

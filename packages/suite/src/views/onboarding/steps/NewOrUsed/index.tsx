@@ -12,7 +12,7 @@ import {
 } from '@suite/components/onboarding/Wrapper';
 import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 
-import l10nMessages from './index.messages';
+// import l10nMessages from './index.messages';
 
 interface Props {
     onboardingActions: OnboardingActions;

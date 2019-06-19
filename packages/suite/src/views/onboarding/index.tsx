@@ -51,7 +51,7 @@ import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@suite/views/onboarding/steps/Welcome/Container';
-import StartStep from '@suite/views/onboarding/steps/Start/Container';
+// import StartStep from '@suite/views/onboarding/steps/Start/Container';
 import NewOrUsedStep from '@suite/views/onboarding/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@suite/views/onboarding/steps/SelectDevice/Container';
 import HologramStep from '@suite/views/onboarding/steps/Hologram/Container';
@@ -166,7 +166,13 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }) => {
+const TrezorAction = ({
+    model,
+    event,
+}: {
+    model: State['onboarding']['model'];
+    event: EVENTS.AnyEvent;
+}) => {
     let TrezorActionText;
     if (event.name === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
@@ -207,6 +213,7 @@ interface Props {
     steps: OnboardingReducer['steps'];
     activeSubStep: OnboardingReducer['activeSubStep'];
     selectedModel: OnboardingReducer['selectedModel'];
+    asNewDevice: OnboardingReducer['asNewDevice'];
 
     deviceCall: ConnectReducer['deviceCall'];
     uiInteraction: ConnectReducer['uiInteraction'];
@@ -239,7 +246,7 @@ class Onboarding extends React.PureComponent<Props> {
         }
     }
 
-    getStep(activeStepId: OnboardingReducer['activeStepId']) {
+    getStep(activeStepId: State['onboarding']['activeStepId']) {
         return this.props.steps.find(step => step.id === activeStepId);
     }
 
@@ -248,7 +255,14 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const { device, prevDeviceId, activeStepId, connectError, uiInteraction } = this.props;
+        const {
+            device,
+            prevDeviceId,
+            activeStepId,
+            connectError,
+            uiInteraction,
+            asNewDevice,
+        } = this.props;
         if (!this.getStep(activeStepId).disallowedDeviceStates) {
             return null;
         }
@@ -256,7 +270,7 @@ class Onboarding extends React.PureComponent<Props> {
         return this.getStep(activeStepId).disallowedDeviceStates.find(
             (state: AnyStepDisallowedState) => {
                 const fn = getFnForRule(state);
-                return fn({ device, prevDeviceId, uiInteraction });
+                return fn({ device, prevDeviceId, uiInteraction, asNewDevice });
             },
         );
     }
@@ -284,20 +298,14 @@ class Onboarding extends React.PureComponent<Props> {
             onboardingActions,
             connectActions,
 
-            device,
-            transport,
-
-            // todo: Containerize some of the components
             selectedModel,
             activeStepId,
-            activeSubStep,
             steps,
 
             deviceCall,
             deviceInteraction,
             uiInteraction,
         } = this.props;
-        const model = selectedModel;
 
         const errorState = this.getError();
 
@@ -348,12 +356,12 @@ class Onboarding extends React.PureComponent<Props> {
                                 <WelcomeStep />
                             </CSSTransition>
 
-                            <CSSTransition
+                            {/* <CSSTransition
                                 in={activeStepId === STEP.ID_START_STEP}
                                 {...TRANSITION_PROPS}
                             >
                                 <StartStep />
-                            </CSSTransition>
+                            </CSSTransition> */}
 
                             <CSSTransition
                                 in={activeStepId === STEP.ID_NEW_OR_USED}
@@ -470,6 +478,7 @@ const mapStateToProps = (state: State) => {
         activeStepId: state.onboarding.activeStepId,
         activeSubStep: state.onboarding.activeSubStep,
         steps: state.onboarding.steps,
+        asNewDevice: state.onboarding.asNewDevice,
     };
 };
 

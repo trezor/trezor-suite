@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { isNotSameDevice, isNotConnected, isInBootloader, isRequestingPin } from '../rules';
+import {
+    isNotSameDevice,
+    isNotConnected,
+    isInBootloader,
+    isRequestingPin,
+    isNotNewDevice,
+} from '../rules';
 
 describe('rules.js', () => {
     describe('isNotConneted', () => {
@@ -64,6 +70,25 @@ describe('rules.js', () => {
                     device: { isRequestingPin: 1 },
                 }),
             ).toEqual(true);
+        });
+    });
+
+    describe('isNotNewDevice', () => {
+        it('should return false', () => {
+            expect(
+                isNotNewDevice({
+                    device: { features: { firmware_present: false } },
+                    asNewDevice: true,
+                }),
+            ).toEqual(false);
+        });
+
+        it('cant tell without device', () => {
+            expect(
+                isNotNewDevice({
+                    asNewDevice: true,
+                }),
+            ).toEqual(null);
         });
     });
 });

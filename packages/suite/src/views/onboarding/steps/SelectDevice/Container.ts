@@ -1,9 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { State } from '@suite/types/suite';
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
-
-import { Dispatch } from '@suite-types/index';
+import { goToNextStep, selectTrezorModel } from '@suite/actions/onboarding/onboardingActions';
+import { Dispatch, State } from '@suite-types/index';
 
 import Step from './index';
 
@@ -14,7 +12,10 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
+    onboardingActions: {
+        goToNextStep: bindActionCreators(goToNextStep, dispatch),
+        selectTrezorModel: bindActionCreators(selectTrezorModel, dispatch),
+    },
 });
 
 export default connect(
