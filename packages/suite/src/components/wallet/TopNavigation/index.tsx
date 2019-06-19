@@ -124,7 +124,7 @@ const TopNavigation = (props: Props) => {
                     <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
                 </LinkContent>
             </StyledNavLink>
-            {networkConfig!.hasSignVerify && (
+            {networkConfig && networkConfig.hasSignVerify && (
                 <StyledNavLink
                     active={isPathActive('wallet-account-sign-verify')}
                     onClick={() => goto(getRoute('wallet-account-sign-verify'), true)}
