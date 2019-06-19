@@ -104,11 +104,35 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    async getBlockHash(): Promise<$ElementType<ResponseTypes.GetBlockHash, 'payload'>> {
+        return await this.__send({
+            type: MESSAGES.GET_BLOCK_HASH,
+        });
+    }
+
     async getAccountInfo(
         payload: $ElementType<MessageTypes.GetAccountInfo, 'payload'>
     ): Promise<$ElementType<ResponseTypes.GetAccountInfo, 'payload'>> {
         return await this.__send({
             type: MESSAGES.GET_ACCOUNT_INFO,
+            payload,
+        });
+    }
+
+    async getAccountUtxo(
+        payload: $ElementType<MessageTypes.GetAccountUtxo, 'payload'>
+    ): Promise<$ElementType<ResponseTypes.GetAccountUtxo, 'payload'>> {
+        return await this.__send({
+            type: MESSAGES.GET_ACCOUNT_INFO,
+            payload,
+        });
+    }
+
+    async getTransaction(
+        payload: $ElementType<MessageTypes.GetTransaction, 'payload'>
+    ): Promise<$ElementType<ResponseTypes.GetTransaction, 'payload'>> {
+        return await this.__send({
+            type: MESSAGES.ESTIMATE_FEE,
             payload,
         });
     }
