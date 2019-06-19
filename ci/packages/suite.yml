@@ -25,10 +25,19 @@ suite test unit:
     stage: test
     script:
         - env
-        - yarn workspace @trezor/suite test
+        - yarn workspace @trezor/suite test:unit
     only:
         changes:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
             - ci/**/*
+
+suite test integration:
+    stage: test integration
+    script:
+        - yarn workspace @trezor/suite test:health
+    only:
+        refs:
+            - master
+            - develop
