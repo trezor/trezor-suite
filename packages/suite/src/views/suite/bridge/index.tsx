@@ -107,7 +107,7 @@ class InstallBridge extends PureComponent<BridgeProps, BridgeState> {
         super(props);
 
         // todo: typescript any. use type from connect?
-        const installers = props.transport.bridge.packages.map((p: any) => ({
+        const installers = props.transport!.bridge.packages.map((p: any) => ({
             label: p.name,
             value: p.url,
             signature: p.signature,
@@ -117,10 +117,10 @@ class InstallBridge extends PureComponent<BridgeProps, BridgeState> {
         const currentTarget = installers.find((i: Installer) => i.preferred === true);
         this.state = {
             currentVersion:
-                props.transport.type && props.transport.type === 'bridge'
-                    ? `Your version ${props.transport.version}`
+                props.transport!.type && props.transport!.type === 'bridge'
+                    ? `Your version ${props.transport!.version}`
                     : 'Not installed',
-            latestVersion: props.transport.bridge.version.join('.'),
+            latestVersion: props.transport!.bridge.version.join('.'),
             installers,
             target: currentTarget || installers[0],
             uri: 'https://data.trezor.io/',

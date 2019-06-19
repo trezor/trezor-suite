@@ -1,4 +1,6 @@
 module.exports = api => {
+    // The cache only affects in-memory configuration. If you've restarted the process, it'll always call the function at least once.
+    api.cache(true);
     const plugins = [
         [
             'module-resolver',
@@ -28,16 +30,6 @@ module.exports = api => {
             },
         ],
     ];
-
-    if (api.env('translations')) {
-        plugins.push([
-            'react-intl',
-            {
-                messagesDir: './translations/extractedMessages/',
-                extractSourceLocation: true,
-            },
-        ]);
-    }
 
     return {
         presets: ['next/babel', '@zeit/next-typescript/babel'],

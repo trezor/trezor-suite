@@ -55,11 +55,11 @@ const SelectWrapper = styled.div`
 interface RecoveryStepProps {
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;
-    deviceCall: State['connect']['deviceCall'];
-    uiInteraction: State['connect']['uiInteraction'];
-    device: State['suite']['device'];
-    recovery: RecoveryReducer;
     recoveryActions: RecoveryActions;
+    deviceCall: State['onboarding']['connect']['deviceCall'];
+    uiInteraction: State['onboarding']['connect']['uiInteraction'];
+    device: State['onboarding']['connect']['device'];
+    recovery: State['onboarding']['recovery'];
 }
 
 type Status = null | 'select-advanced-recovery';

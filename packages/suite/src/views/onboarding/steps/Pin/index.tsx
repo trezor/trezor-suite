@@ -17,8 +17,9 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
+import { State } from '@suite-types/index';
+import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { ConnectActions } from '@suite/types/onboarding/connect';
 
 import l10nMessages from './index.messages';
 import HowToSetPinGif from './videos/pin.gif';
@@ -49,26 +50,24 @@ const HowToSetPin = styled.img`
 `;
 
 interface Props {
-    deviceCall: ConnectReducer['deviceCall'];
-    uiInteraction: ConnectReducer['uiInteraction'];
-    device: ConnectReducer['device'];
-    activeSubStep: OnboardingReducer['activeSubStep'];
+    deviceCall: State['onboarding']['connect']['deviceCall'];
+    device: State['onboarding']['connect']['device'];
+    activeSubStep: State['onboarding']['activeSubStep'];
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;
 }
 
-interface State {
+interface SetPinState {
     instructionsFocused: boolean;
 }
 
 class SetPinStep extends React.Component<Props> {
-    state: State = {
+    state: SetPinState = {
         instructionsFocused: false,
     };
 
     getStatus() {
-        const { deviceCall, uiInteraction, device, activeSubStep } = this.props;
-        console.log(device.isRequestingPin, uiInteraction.counter);
+        const { deviceCall, device, activeSubStep } = this.props;
         if (activeSubStep) {
             return activeSubStep;
         }
