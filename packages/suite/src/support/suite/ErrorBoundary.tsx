@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex: 1;
 `;
 
 const StyledButton = styled(Button)`
