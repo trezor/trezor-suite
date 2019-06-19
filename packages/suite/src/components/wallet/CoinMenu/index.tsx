@@ -47,43 +47,43 @@ interface Props {
 }
 class CoinMenu extends PureComponent<Props> {
     getOtherCoins() {
+        // TODO
         // const { hiddenCoinsExternal } = this.props.wallet;
-        return (
-            externalCoins
-                .sort((a, b) => a.order - b.order)
-                .filter(item => !item.isHidden) // hide coins globally in config
-                // .filter(item => !hiddenCoinsExternal.includes(item.id))
-                .map(coin => {
-                    const row = (
-                        <RowCoin
-                            network={{
-                                name: coin.coinName,
-                                shortcut: coin.id,
-                            }}
-                            iconRight={{
-                                type: ICONS.SKIP,
-                                color: colors.TEXT_SECONDARY,
-                                size: 13,
-                            }}
-                        />
-                    );
+        const hiddenCoinsExternal: string[] = [];
+        return externalCoins
+            .sort((a, b) => a.order - b.order)
+            .filter(item => !item.isHidden) // hide coins globally in config
+            .filter(item => !hiddenCoinsExternal.includes(item.id))
+            .map(coin => {
+                const row = (
+                    <RowCoin
+                        network={{
+                            name: coin.coinName,
+                            shortcut: coin.id,
+                        }}
+                        iconRight={{
+                            type: ICONS.SKIP,
+                            color: colors.TEXT_SECONDARY,
+                            size: 13,
+                        }}
+                    />
+                );
 
-                    if (coin.external)
-                        return (
-                            <ExternalWallet
-                                key={coin.id}
-                                // onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
-                            >
-                                {row}
-                            </ExternalWallet>
-                        );
+                if (coin.external)
                     return (
-                        <StyledLink isGray key={coin.id} href={coin.url} target="_top">
+                        <ExternalWallet
+                            key={coin.id}
+                            // onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
+                        >
                             {row}
-                        </StyledLink>
+                        </ExternalWallet>
                     );
-                })
-        );
+                return (
+                    <StyledLink isGray key={coin.id} href={coin.url} target="_top">
+                        {row}
+                    </StyledLink>
+                );
+            });
     }
 
     getEmptyContent() {
@@ -108,17 +108,24 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     isTopMenuEmpty() {
-        const numberOfVisibleNetworks = networks.filter(item => !item.isHidden); // hide coins globally in config
-        // .filter(item => !this.props.wallet.hiddenCoins.includes(item.shortcut));
+        // TODO
+        // const { hiddenCoins } = this.props.wallet;
+        const hiddenCoins: string[] = [];
+        const numberOfVisibleNetworks = networks
+            .filter(item => !item.isHidden) // hide coins globally in config
+            .filter(item => !hiddenCoins.includes(item.shortcut))
+            .filter(item => !hiddenCoins.includes(item.shortcut));
 
         return numberOfVisibleNetworks.length <= 0;
     }
 
     isBottomMenuEmpty() {
+        // TODO
         // const { hiddenCoinsExternal } = this.props.wallet;
-        const hiddenCoinsExternal = [];
-        const numberOfVisibleNetworks = externalCoins.filter(item => !item.isHidden);
-        // .filter(item => !hiddenCoinsExternal.includes(item.id));
+        const hiddenCoinsExternal: string[] = [];
+        const numberOfVisibleNetworks = externalCoins
+            .filter(item => !item.isHidden)
+            .filter(item => !hiddenCoinsExternal.includes(item.id));
 
         return numberOfVisibleNetworks.length <= 0;
     }
@@ -128,14 +135,15 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     render() {
+        // TODO
         // const { hiddenCoins } = this.props.wallet;
-        const hiddenCoins = [];
+        const hiddenCoins: string[] = [];
         return (
             <Wrapper data-test="Main__page__coin__menu">
                 {this.isMenuEmpty() || (this.isTopMenuEmpty() && this.getEmptyContent())}
                 {networks
                     .filter(item => !item.isHidden) // hide coins globally in config
-                    // .filter(item => !hiddenCoins.includes(item.shortcut)) // hide coins by user settings
+                    .filter(item => !hiddenCoins.includes(item.shortcut)) // hide coins by user settings
                     .sort((a, b) => a.order - b.order)
                     .map(item => (
                         <StyledLink
