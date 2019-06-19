@@ -50,12 +50,16 @@ const create = async () => {
         connection.send(createResponse(request, responses.getInfo));
     });
 
+    server.on('getBlockHash', (request, connection) => {
+        connection.send(createResponse(request, responses.getBlockHash.normal));
+    });
+
     server.on('getAccountInfo', (request, connection) => {
         connection.send(createResponse(request, responses.getAccountInfo.normal));
     });
 
-    server.on('getBlockHash', (request, connection) => {
-        connection.send(createResponse(request, responses.getBlockHash.normal));
+    server.on('getAccountUtxo', (request, connection) => {
+        connection.send(createResponse(request, responses.getAccountInfo.normal));
     });
 
     server.on('getTransaction', (request, connection) => {
@@ -80,6 +84,10 @@ const create = async () => {
 
     server.on('unsubscribeNewBlock', (request, connection) => {
         connection.send(createResponse(request, responses.unsubscribeNewBlock.normal));
+    });
+
+    server.on('subscribeAddresses', (request, connection) => {
+        connection.send(createResponse(request, responses.unsubscribeAddresses.normal));
     });
 
     server.on('unsubscribeAddresses', (request, connection) => {
