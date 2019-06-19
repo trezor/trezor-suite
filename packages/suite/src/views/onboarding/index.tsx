@@ -308,7 +308,7 @@ class Onboarding extends React.PureComponent<Props> {
         } = this.props;
 
         const errorState = this.getError();
-
+        // throw('kaboom0');
         return (
             <>
                 <BaseStyles />

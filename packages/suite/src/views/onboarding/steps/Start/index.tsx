@@ -2,6 +2,8 @@
 // import { P, Button } from '@trezor/components';
 // import { FormattedMessage } from 'react-intl';
 
+// TODO: this entire step is deprecated. Buttons from here were moved to welcome step.
+
 // import Text from '@suite/components/onboarding/Text';
 
 // import { OptionsList } from '@suite/components/onboarding/Options';

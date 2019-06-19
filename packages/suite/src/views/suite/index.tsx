@@ -14,6 +14,8 @@ import AcquireDevice from '@suite-components/AcquireDevice';
 import Layout from '@suite-components/Layout';
 import Bridge from '@suite-views/bridge';
 
+import ErrorBoundary from '@suite-support/ErrorBoundary';
+
 interface Props {
     router: State['router'];
     suite: State['suite'];

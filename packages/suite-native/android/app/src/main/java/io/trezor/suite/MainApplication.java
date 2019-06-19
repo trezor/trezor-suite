@@ -13,6 +13,7 @@ import java.util.List;
 
 // https://github.com/react-native-community/react-native-svg#android
 import com.horcrux.svg.SvgPackage;
+import io.sentry.RNSentryPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -26,7 +27,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new SvgPackage()
+          new SvgPackage(),
+          new RNSentryPackage()
       );
     }
 
