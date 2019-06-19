@@ -1,0 +1,30 @@
+[
+  {
+    "id": "TR_DEVICE_IN_BOOTLOADER_MODE",
+    "description": "Indication that device is in bootloader mode",
+    "defaultMessage": "Device in bootloader mode",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootBootloader.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 34
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_IN_BOOTLOADER_MODE_INSTRUCTIONS",
+    "description": "Instructions what to do if device is in bootloader mode",
+    "defaultMessage": "Device is connected in bootloader mode. Plug out the USB cable and connect device again.",
+    "file": "../suite/src/views/onboarding/steps/Connect/components/TroubleshootBootloader.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 47
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  }
+]

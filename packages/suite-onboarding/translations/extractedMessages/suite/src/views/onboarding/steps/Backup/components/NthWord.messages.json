@@ -1,0 +1,16 @@
+[
+  {
+    "id": "TR_NTH_WORD",
+    "description": "Ordinal number. For example: 1. word",
+    "defaultMessage": "{number}. word",
+    "file": "../suite/src/views/onboarding/steps/Backup/components/NthWord.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 17
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  }
+]

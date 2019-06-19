@@ -1,0 +1,29 @@
+[
+  {
+    "id": "TR_OTHER_COINS",
+    "defaultMessage": "Other coins",
+    "file": "../suite/src/components/wallet/CoinMenu/index.messages.ts",
+    "start": {
+      "line": 4,
+      "column": 20
+    },
+    "end": {
+      "line": 7,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SELECT_COINS",
+    "description": "COMPLETE SENTENCE: Select a coin in application settings",
+    "defaultMessage": "Select a coin in {TR_SELECT_COINS_LINK}",
+    "file": "../suite/src/components/wallet/CoinMenu/index.messages.ts",
+    "start": {
+      "line": 8,
+      "column": 21
+    },
+    "end": {
+      "line": 12,
+      "column": 5
+    }
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "TR_START_HEADING",
+    "description": "Heading in start page",
+    "defaultMessage": "Create new or restore your Trezor Wallet",
+    "file": "../suite/src/views/onboarding/steps/NewOrUsed/index.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 22
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_TEXT",
+    "description": "Heading in start page",
+    "defaultMessage": "Trezor Wallet is your account within Trezor ecosystem. It allows you to easily manage your funds and initiate transfers.",
+    "file": "../suite/src/views/onboarding/steps/NewOrUsed/index.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 19
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOVERY_HEADING",
+    "description": "Heading in start page, when recovery process is active",
+    "defaultMessage": "Recover your device",
+    "file": "../suite/src/views/onboarding/steps/NewOrUsed/index.messages.tsx",
+    "start": {
+      "line": 15,
+      "column": 25
+    },
+    "end": {
+      "line": 19,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_CREATING",
+    "description": "Alternative heading text that is displayed when create new wallet call is in progress",
+    "defaultMessage": "Creating",
+    "file": "../suite/src/views/onboarding/steps/NewOrUsed/index.messages.tsx",
+    "start": {
+      "line": 20,
+      "column": 23
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_FROM_SCRATCH",
+    "description": "Option in start page (create new wallet or recover)",
+    "defaultMessage": "Start from scratch",
+    "file": "../suite/src/views/onboarding/steps/NewOrUsed/index.messages.tsx",
+    "start": {
+      "line": 26,
+      "column": 27
+    },
+    "end": {
+      "line": 30,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOVER",
+    "description": "Option in start page (create new wallet or recover)",
+    "defaultMessage": "Recover",
+    "file": "../suite/src/views/onboarding/steps/NewOrUsed/index.messages.tsx",
+    "start": {
+      "line": 31,
+      "column": 16
+    },
+    "end": {
+      "line": 35,
+      "column": 5
+    }
+  }
+]
