@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactTimeout, { ReactTimeoutProps } from 'react-timeout';
+import ReactTimeout, { Timer } from 'react-timeout';
 import { H4, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
@@ -13,35 +13,35 @@ import {
     StepBodyWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
-import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect';
 
+import { State } from '@suite-types/index';
+import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import TroubleshootBootloader from './components/TroubleshootBootloader';
 import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
 import l10nMessages from './index.messages';
 
-interface Props {
-    onboardingActions: OnboardingActions;
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    device: ConnectReducer['device'];
-    connectActions: ConnectActions;
-    deviceCall: ConnectReducer['deviceCall'];
-    isResolved: boolean;
-    model: number;
+interface StepProps {
+    activeSubStep: State['onboarding']['activeSubStep'];
+    device: State['onboarding']['connect']['device'];
+    deviceCall: State['onboarding']['connect']['deviceCall'];
+    model: State['onboarding']['selectedModel'];
+    setTimeout: (callback: (...args: any[]) => void, ms: number, ...args: any[]) => Timer;
+    isResolved: boolean; // todo: ?
+    onboardingActions: typeof onboardingActions;
 }
 
-interface State {
+interface StepState {
     isSearching: boolean;
     isSearchingTooLong: boolean;
 }
 
-class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> {
+class ConnectStep extends React.PureComponent<StepProps, StepState> {
     static readonly IS_SEARCHING_TIMEOUT = 5 * 1000;
 
     static readonly IS_SEARCHING_TOO_LONG_TIMEOUT = 15 * 1000;
 
-    state: State = {
+    state: StepState = {
         isSearching: false,
         isSearchingTooLong: false,
     };
@@ -59,7 +59,7 @@ class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> 
         }
     }
 
-    componentWillReceiveProps(nextProps: Props & ReactTimeoutProps) {
+    componentWillReceiveProps(nextProps: StepProps) {
         if (this.props.device && !nextProps.device) {
             this.setState({ isSearching: true });
             this.props.setTimeout(() => this.setState({ isSearchingTooLong: true }), 15 * 1000);
@@ -78,14 +78,7 @@ class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> 
 
     render() {
         const deviceIsConnected = Boolean(this.props.device && this.props.device.connected);
-        const {
-            device,
-            deviceCall,
-            connectActions,
-            onboardingActions,
-            activeSubStep,
-            isResolved,
-        } = this.props;
+        const { device, deviceCall, onboardingActions, activeSubStep, isResolved } = this.props;
         const { isSearching, isSearchingTooLong } = this.state;
         return (
             <StepWrapper>
@@ -94,7 +87,7 @@ class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> 
                 </StepHeadingWrapper>
                 <StepBodyWrapper>
                     <TrezorConnect
-                        model={this.props.model}
+                        model={this.props.model || 2}
                         height={180}
                         loop={!deviceIsConnected}
                     />

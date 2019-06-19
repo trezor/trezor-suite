@@ -2,9 +2,9 @@ import React from 'react';
 import { Button, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect';
-import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
-
+import { State } from '@suite-types/index';
+// import { goToSubStep, goToNextStep } from '@suite/actions/onboarding/onboardingActions';
+import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
 import * as STEP from '@suite/constants/onboarding/steps';
 import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
@@ -13,9 +13,13 @@ import l10nCommonMessages from '@suite-support/Messages';
 import l10nMessages from './TroubleshootInitialized.messages';
 
 interface Props {
-    device: ConnectReducer['device'];
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    onboardingActions: OnboardingActions;
+    device: State['onboarding']['connect']['device'];
+    activeSubStep: State['onboarding']['activeSubStep'];
+    // onboardingActions: {
+    //     goToSubStep: typeof goToSubStep;
+    //     goToNextStep: typeof goToNextStep;
+    // };
+    onboardingActions: typeof onboardingActions;
 }
 
 const TroubleshootInitialized: React.FC = (props: Props) => {

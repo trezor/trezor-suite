@@ -61,7 +61,7 @@ interface Props {
     newsletterActions: NewsletterActions;
 }
 
-class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
+class NewsleterStep extends React.Component<Props & InjectedIntlProps, {}> {
     getBottomText() {
         return this.validateInput().bottomText;
     }

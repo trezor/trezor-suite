@@ -17,9 +17,15 @@ import {
     ControlsWrapper,
     CheckboxWrapper,
 } from '@suite/components/onboarding/Wrapper';
-
-import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
+import { State } from '@suite-types/index';
+import { goToNextStep, goToSubStep } from '@suite/actions/onboarding/onboardingActions';
+import {
+    wipeDevice,
+    resetDevice,
+    callActionAndGoToNextStep,
+    resetCall,
+    backupDevice,
+} from '@suite/actions/onboarding/connectActions';
 import { SeedCardModelT } from './components/SeedCard';
 // import BackupModelOne from './components/BackupModelOne';
 import l10nMessages from './index.messages';
@@ -47,20 +53,29 @@ const Instruction = styled.div`
     align-items: center;
 `;
 
-interface State {
+interface BackupState {
     userUnderstands: boolean;
 }
 
-interface Props {
-    device: ConnectReducer['device'];
-    deviceCall: ConnectReducer['deviceCall'];
-    deviceInteraction: ConnectReducer['deviceInteraction'];
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    connectActions: ConnectActions;
-    onboardingActions: OnboardingActions;
+interface BackupProps {
+    device: State['onboarding']['connect']['device'];
+    deviceCall: State['onboarding']['connect']['deviceCall'];
+    deviceInteraction: State['onboarding']['connect']['deviceInteraction'];
+    activeSubStep: State['onboarding']['activeSubStep'];
+    connectActions: {
+        wipeDevice: typeof wipeDevice;
+        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
+        resetDevice: typeof resetDevice;
+        resetCall: typeof resetCall;
+        backupDevice: typeof backupDevice;
+    };
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+        goToSubStep: typeof goToSubStep;
+    };
 }
 
-class BackupStep extends React.Component<Props, State> {
+class BackupStep extends React.Component<BackupProps, BackupState> {
     static readonly STARTED_STATUS = 'started';
 
     static readonly FAILED_STATUS = 'failed';
@@ -69,7 +84,7 @@ class BackupStep extends React.Component<Props, State> {
 
     static readonly SUCCESS_STATUS = 'success';
 
-    state: State = {
+    state: BackupState = {
         userUnderstands: false,
     };
 
