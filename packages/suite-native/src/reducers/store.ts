@@ -5,10 +5,13 @@ import { createLogger } from 'redux-logger';
 import suiteReducers from '@suite-reducers/index';
 import suiteMiddlewares from '@suite-middlewares/index';
 
+import walletReducers from '@wallet-reducers/index';
+import walletMiddlewares from '@wallet-middlewares/index';
+
 const reducers = combineReducers(suiteReducers);
 export type State = ReturnType<typeof reducers>;
 
-const middlewares = [thunkMiddleware, ...suiteMiddlewares];
+const middlewares = [thunkMiddleware, ...suiteMiddlewares, ...walletMiddlewares, ...walletReducers];
 
 const enhancers: any[] = [];
 

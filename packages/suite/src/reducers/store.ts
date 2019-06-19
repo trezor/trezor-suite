@@ -3,13 +3,21 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
 import suiteMiddlewares from '@suite-middlewares/index';
-import onboardingReducers from '@onboarding-reducers/index';
-import suiteReducers from '@suite-reducers/index';
+import walletMiddlewares from '@wallet-middlewares/index';
 
-const reducers = combineReducers({ ...suiteReducers, onboarding: onboardingReducers });
+import suiteReducers from '@suite-reducers/index';
+import onboardingReducers from '@onboarding-reducers/index';
+import walletReducers from '@wallet-reducers/index';
+
+const reducers = combineReducers({
+    ...suiteReducers,
+    onboarding: onboardingReducers,
+    wallet: walletReducers,
+});
+
 export type State = ReturnType<typeof reducers>;
 
-const middlewares = [thunkMiddleware, ...suiteMiddlewares];
+const middlewares = [thunkMiddleware, ...suiteMiddlewares, ...walletMiddlewares];
 
 const enhancers: any[] = [];
 

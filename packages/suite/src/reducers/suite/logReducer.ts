@@ -1,5 +1,4 @@
-/* @flow */
-
+import produce from 'immer';
 import { LOG } from '@suite-actions/constants';
 
 import { Action } from '@suite-types/index';
@@ -23,39 +22,31 @@ export const initialState: State = {
 };
 
 export default (state: State = initialState, action: Action): State => {
-    switch (action.type) {
-        case LOG.OPEN:
-            return {
-                ...state,
-                opened: true,
-            };
+    return produce(state, draft => {
+        switch (action.type) {
+            case LOG.OPEN:
+                draft.opened = true;
+                break;
 
-        case LOG.CLOSE:
-            return {
-                ...state,
-                opened: false,
-                copied: false,
-            };
+            case LOG.ADD:
+                draft.entries = state.entries.concat([action.payload]);
+                break;
 
-        case LOG.ADD:
-            return {
-                ...state,
-                entries: state.entries.concat([action.payload]),
-            };
+            case LOG.CLOSE:
+                draft.copied = true;
+                draft.opened = true;
+                break;
 
-        case LOG.COPY_SUCCESS:
-            return {
-                ...state,
-                copied: true,
-            };
+            case LOG.COPY_SUCCESS:
+                draft.copied = true;
+                break;
 
-        case LOG.COPY_RESET:
-            return {
-                ...state,
-                copied: false,
-            };
+            case LOG.COPY_RESET:
+                draft.copied = false;
+                break;
 
-        default:
-            return state;
-    }
+            default:
+                return state;
+        }
+    });
 };
