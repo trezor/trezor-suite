@@ -4,6 +4,7 @@ import {
     goToStep,
     goToPreviousStep,
     selectTrezorModel,
+    setAsNewDevice,
 } from '@suite/actions/onboarding/onboardingActions';
 
 import { Step, AnyStepId } from '@suite/types/onboarding/steps';
@@ -22,6 +23,7 @@ export interface OnboardingActions {
     goToStep: typeof goToStep;
     goToPreviousStep: typeof goToPreviousStep;
     selectTrezorModel: typeof selectTrezorModel;
+    setAsNewDevice: typeof setAsNewDevice;
 }
 
 export const GO_TO_SUBSTEP = '@onboarding/go-to-substep';

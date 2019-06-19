@@ -17,6 +17,7 @@
         "@trezor/components": "1.0.0",
         "@types/jest": "^24.0.13",
         "@types/react-intl": "^2.3.17",
+        "@types/react-timeout": "^1.1.1",
         "react": "16.8.6",
         "react-dom": "16.8.6",
         "react-intl": "3.0.0-beta-6",
@@ -29,10 +30,10 @@
         "trezor-connect": "./trezor-connect-lib"
     },
     "devDependencies": {
-        "@trezor/translations-manager": "1.0.5",
         "@babel/cli": "^7.4.4",
         "@babel/core": "^7.4.5",
         "@babel/preset-typescript": "^7.3.3",
+        "@trezor/translations-manager": "1.0.5",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.0.8",

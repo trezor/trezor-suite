@@ -33,6 +33,7 @@ const initialState: OnboardingReducer = {
         {
             id: STEP.ID_SELECT_DEVICE_STEP,
             title: STEP.TITLE_SELECT_DEVICE_STEP,
+            disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE],
         },
         {
             id: STEP.ID_UNBOXING_STEP,
