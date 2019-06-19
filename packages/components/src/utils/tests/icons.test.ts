@@ -6,4 +6,5 @@ test('Icons', () => {
     expect(getStateIcon('error')).toBe(icons.ERROR);
     expect(getStateIcon('warning')).toBe(icons.WARNING);
     expect(getStateIcon('success')).toBe(icons.SUCCESS);
+    expect(getStateIcon()).toBe(null);
 });
