@@ -1,28 +1,25 @@
 import React from 'react';
 import App, { Container, NextAppContext } from 'next/app';
-
-import { Store, bindActionCreators } from 'redux';
+import { Store } from 'redux';
 import { Provider as ReduxProvider, connect } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import { initStore } from '@suite/reducers/store';
 import { SUITE } from '@suite-actions/constants';
 import { State, Dispatch } from '@suite-types/index';
-import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
-import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
+import { Header as CommonHeader, LanguagePicker, P, H1 } from '@trezor/components';
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
-import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 import suiteConfig from '@suite-config/index';
 import l10nMessages from '@suite-components/Layout/index.messages';
 
-interface Props {
-    store: Store;
-    loaded: State['suite']['loaded'];
+interface HeaderProps extends InjectedIntlProps {
     dispatch: Dispatch;
+    language: State['suite']['language'];
 }
 
-const Header = injectIntl(props => (
+const Header = injectIntl((props: HeaderProps) => (
     <CommonHeader
         sidebarEnabled={false}
         rightAddon={
@@ -55,6 +52,13 @@ const Header = injectIntl(props => (
     />
 ));
 
+interface Props {
+    store: Store;
+    loaded: State['suite']['loaded'];
+    language: State['suite']['language'];
+    error: State['suite']['error'];
+    dispatch: Dispatch;
+}
 class TrezorSuiteApp extends App<Props> {
     static async getInitialProps({ Component, ctx }: NextAppContext): Promise<any> {
         return {
@@ -70,10 +74,10 @@ class TrezorSuiteApp extends App<Props> {
         }
         if (error) {
             return (
-                <View style={styles.wrapper}>
+                <div>
                     <H1>Failed to load Trezor Suite</H1>
                     <P>Ups, something went wrong. Details: {error}</P>
-                </View>
+                </div>
             );
         }
     }
@@ -85,10 +89,10 @@ class TrezorSuiteApp extends App<Props> {
             <Container>
                 <ReduxProvider store={store}>
                     <IntlProvider>
-                        <>
+                        <div style={{ height: 'auto', maxWidth: '100vw', overflowX: 'hidden' }}>
                             <Header language={language} dispatch={dispatch} />
                             <Component {...pageProps} />
-                        </>
+                        </div>
                     </IntlProvider>
                 </ReduxProvider>
             </Container>
@@ -102,11 +106,4 @@ const mapStateToProps = (state: State) => ({
     language: state.suite.language,
 });
 
-export default withRedux(initStore)(
-    connect(
-        mapStateToProps,
-        // dispatch => ({
-        //     fetchLocale: bindActionCreators(fetchLocale, dispatch),
-        // }),
-    )(TrezorSuiteApp),
-);
+export default withRedux(initStore)(connect(mapStateToProps)(TrezorSuiteApp));

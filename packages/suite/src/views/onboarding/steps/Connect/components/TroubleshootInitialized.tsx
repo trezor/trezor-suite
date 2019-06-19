@@ -1,9 +1,10 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Button, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { State } from '@suite-types/index';
-// import { goToSubStep, goToNextStep } from '@suite/actions/onboarding/onboardingActions';
+import { Dispatch, State } from '@suite-types/index';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
 import * as STEP from '@suite/constants/onboarding/steps';
@@ -15,14 +16,13 @@ import l10nMessages from './TroubleshootInitialized.messages';
 interface Props {
     device: State['onboarding']['connect']['device'];
     activeSubStep: State['onboarding']['activeSubStep'];
-    // onboardingActions: {
-    //     goToSubStep: typeof goToSubStep;
-    //     goToNextStep: typeof goToNextStep;
-    // };
-    onboardingActions: typeof onboardingActions;
+    onboardingActions: {
+        goToSubStep: typeof onboardingActions.goToSubStep;
+        goToNextStep: typeof onboardingActions.goToNextStep;
+    };
 }
 
-const TroubleshootInitialized: React.FC = (props: Props) => {
+const TroubleshootInitialized = (props: Props) => {
     const { device, activeSubStep, onboardingActions } = props;
 
     return (
@@ -124,4 +124,19 @@ const TroubleshootInitialized: React.FC = (props: Props) => {
     );
 };
 
-export default TroubleshootInitialized;
+const mapStateToProps = (state: State) => ({
+    activeSubStep: state.onboarding.activeSubStep,
+    device: state.onboarding.connect.device,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    onboardingActions: {
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+        goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
+    },
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(TroubleshootInitialized);

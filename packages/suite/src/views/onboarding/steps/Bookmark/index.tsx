@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Flags } from 'trezor-flags';
-import Platform from '@suite/utils/onboarding/Platform';
-
-import { Link, Button, P } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
+import { Link, Button, P } from '@trezor/components';
+
+import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
+import Platform from '@suite/utils/onboarding/Platform';
 import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
 import l10nCommonMessages from '@suite-support/Messages';
 import { PHISHING_URL } from '@suite/constants/onboarding/urls';
@@ -17,7 +17,8 @@ import {
     StepHeadingWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
+import { State } from '@suite-types/index';
+import { ConnectActions } from '@suite/types/onboarding/connect';
 
 import l10nMessages from './index.messages';
 
@@ -25,19 +26,16 @@ const Keys = styled.div`
     display: flex;
 `;
 
-interface Props {
-    device: ConnectReducer['device'];
+interface StepProps {
+    device: State['onboarding']['connect']['device'];
     connectActions: ConnectActions;
 }
 
-interface State {
+interface StepState {
     keys: { [index: number]: boolean };
 }
-type keydown = 'keydown';
 
-class BookmarkStep extends React.Component<Props, State> {
-    static readonly TARGET_FLAG = 'hasBookmark';
-
+class BookmarkStep extends React.Component<StepProps, StepState> {
     static readonly D_KEY = 68;
 
     static readonly CTRL_KEYS_WIN = [17];
@@ -60,7 +58,7 @@ class BookmarkStep extends React.Component<Props, State> {
     }
 
     setBookmarkFlagAndContinue() {
-        const flags = Flags.setFlag(BookmarkStep.TARGET_FLAG, this.props.device.features.flags);
+        const flags = addToFlags(HAS_BOOKMARK_FLAG, this.props.device.features.flags);
         this.props.connectActions.callActionAndGoToNextStep(APPLY_FLAGS, { flags });
     }
 

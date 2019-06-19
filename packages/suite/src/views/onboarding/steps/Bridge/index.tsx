@@ -21,9 +21,6 @@ import {
 import l10nCommonBridgeMessages from '@suite-views/bridge/index.messages';
 import l10nMessages from './index.messages';
 
-// todo: unify onboarding bridge messages with suite bridge
-Object.assign(l10nMessages, l10nCommonBridgeMessages);
-
 const SelectWrapper = styled(Select)`
     margin-right: 10px;
     width: 180px;
@@ -154,7 +151,7 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                                 <Text>
                                     <Link href={uri + target.signature} isGreen>
                                         <FormattedMessage
-                                            {...l10nMessages.TR_CHECK_PGP_SIGNATURE}
+                                            {...l10nCommonBridgeMessages.TR_CHECK_PGP_SIGNATURE}
                                         />
                                     </Link>
                                 </Text>
