@@ -1,0 +1,55 @@
+[
+  {
+    "id": "TR_ATTENTION_COLON_THE_LOG_CONTAINS",
+    "defaultMessage": "Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.",
+    "file": "../suite/src/components/suite/Log/index.messages.ts",
+    "start": {
+      "line": 5,
+      "column": 41
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOG",
+    "description": "application event and error",
+    "defaultMessage": "Log",
+    "file": "../suite/src/components/suite/Log/index.messages.ts",
+    "start": {
+      "line": 10,
+      "column": 12
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_COPY_TO_CLIPBOARD",
+    "defaultMessage": "Copy to clipboard",
+    "file": "../suite/src/components/suite/Log/index.messages.ts",
+    "start": {
+      "line": 15,
+      "column": 26
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_COPIED",
+    "defaultMessage": "Copied!",
+    "file": "../suite/src/components/suite/Log/index.messages.ts",
+    "start": {
+      "line": 19,
+      "column": 15
+    },
+    "end": {
+      "line": 22,
+      "column": 5
+    }
+  }
+]

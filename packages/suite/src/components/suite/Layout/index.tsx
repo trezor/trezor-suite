@@ -12,8 +12,10 @@ import SuiteHeader from '@suite-components/SuiteHeader';
 import suiteConfig from '@suite-config/index';
 import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
+import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { State } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
+
 import l10nMessages from './index.messages';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
@@ -92,13 +94,15 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 },
             ]}
         />
-        <AppWrapper isLanding={props.isLanding}>
-            <>
-                <Log />
-                {props.showSuiteHeader && <SuiteHeader />}
-                {props.children}
-            </>
-        </AppWrapper>
+        <ErrorBoundary>
+            <AppWrapper isLanding={props.isLanding}>
+                <>
+                    <Log />
+                    {props.showSuiteHeader && <SuiteHeader />}
+                    {props.children}
+                </>
+            </AppWrapper>
+        </ErrorBoundary>
         <Footer isLanding={props.isLanding} />
     </PageWrapper>
 );

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "TR_NAV_TRANSACTIONS",
+    "description": "Title of the navigation tab that contains tx history.",
+    "defaultMessage": "Transactions",
+    "file": "../suite/src/components/wallet/TopNavigation/index.messages.ts",
+    "start": {
+      "line": 4,
+      "column": 25
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_SUMMARY",
+    "description": "Title of the navigation tab that contains information about selected account (balance, tx history).",
+    "defaultMessage": "Summary",
+    "file": "../suite/src/components/wallet/TopNavigation/index.messages.ts",
+    "start": {
+      "line": 9,
+      "column": 20
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_RECEIVE",
+    "description": "Title of the navigation tab that contains the account address",
+    "defaultMessage": "Receive",
+    "file": "../suite/src/components/wallet/TopNavigation/index.messages.ts",
+    "start": {
+      "line": 15,
+      "column": 20
+    },
+    "end": {
+      "line": 19,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_SEND",
+    "description": "Title of the navigation tab that contains a form for sending funds",
+    "defaultMessage": "Send",
+    "file": "../suite/src/components/wallet/TopNavigation/index.messages.ts",
+    "start": {
+      "line": 20,
+      "column": 17
+    },
+    "end": {
+      "line": 24,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_SIGN_AND_VERIFY",
+    "description": "Title of the navigation tab that contains a form for signing and verifying messages",
+    "defaultMessage": "Sign & Verify",
+    "file": "../suite/src/components/wallet/TopNavigation/index.messages.ts",
+    "start": {
+      "line": 25,
+      "column": 28
+    },
+    "end": {
+      "line": 30,
+      "column": 5
+    }
+  }
+]

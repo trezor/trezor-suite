@@ -18,7 +18,11 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
+import l10nCommonBridgeMessages from '@suite-views/bridge/index.messages';
 import l10nMessages from './index.messages';
+
+// todo: unify onboarding bridge messages with suite bridge
+Object.assign(l10nMessages, l10nCommonBridgeMessages);
 
 const SelectWrapper = styled(Select)`
     margin-right: 10px;

@@ -1,5 +1,5 @@
-/* @flow */
 
+import styled from 'styled-components';
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link, colors, variables } from '@trezor/components';
@@ -13,7 +13,6 @@ import l10nMessages from './index.messages';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 const FOOTER_HEIGHT = '59px';
-
 interface Props {
     isLanding?: boolean;
     opened: boolean;

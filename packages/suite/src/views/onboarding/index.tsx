@@ -9,13 +9,14 @@ import { isDev } from '@suite-utils/build';
 
 import BaseStyles from '@suite/support/onboarding/BaseStyles';
 
-import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
-import { FetchReducer, FetchActions } from '@suite/types/onboarding/fetch';
-import { RecoveryReducer, RecoveryActions } from '@suite/types/onboarding/recovery';
-import { NewsletterReducer, NewsletterActions } from '@suite/types/onboarding/newsletter';
+import { State, Dispatch } from '@suite-types/index';
+import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { ConnectActions } from '@suite/types/onboarding/connect';
+import { FetchActions } from '@suite/types/onboarding/fetch';
+import { RecoveryActions } from '@suite/types/onboarding/recovery';
+import { NewsletterActions } from '@suite/types/onboarding/newsletter';
 import { AnyStepId, AnyStepDisallowedState, Step } from '@suite/types/onboarding/steps';
-import { Dispatch } from '@suite/types/onboarding/actions';
+
 import {
     FirmwareUpdateReducer,
     FirmwareUpdateActions,
@@ -24,10 +25,6 @@ import * as EVENTS from '@suite/actions/onboarding/constants/events';
 
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import * as connectActions from '@suite/actions/onboarding/connectActions';
-import * as fetchActions from '@suite/actions/onboarding/fetchActions';
-import * as newsletterActions from '@suite/actions/onboarding/newsletterActions';
-import * as firmwareUpdateActions from '@suite/actions/onboarding/firmwareUpdateActions';
-import * as recoveryActions from '@suite/actions/onboarding/recoveryActions';
 
 import * as STEP from '@suite/constants/onboarding/steps';
 import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
@@ -170,7 +167,7 @@ const TrezorAction = ({
     model,
     event,
 }: {
-    model: State['onboarding']['model'];
+    model: State['onboarding']['selectedModel'];
     event: EVENTS.AnyEvent;
 }) => {
     let TrezorActionText;
@@ -209,28 +206,34 @@ interface Props {
     device: any; // todo
     transport: any; // todo
 
-    activeStepId: OnboardingReducer['activeStepId'];
-    steps: OnboardingReducer['steps'];
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    selectedModel: OnboardingReducer['selectedModel'];
-    asNewDevice: OnboardingReducer['asNewDevice'];
+    activeStepId: State['onboarding']['activeStepId'];
+    steps: State['onboarding']['steps'];
+    activeSubStep: State['onboarding']['activeSubStep'];
+    selectedModel: State['onboarding']['selectedModel'];
+    asNewDevice: State['onboarding']['asNewDevice'];
 
-    deviceCall: ConnectReducer['deviceCall'];
-    uiInteraction: ConnectReducer['uiInteraction'];
-    deviceInteraction: ConnectReducer['deviceInteraction'];
-    prevDeviceId: ConnectReducer['prevDeviceId'];
+    deviceCall: State['onboarding']['connect']['deviceCall'];
+    uiInteraction: State['onboarding']['connect']['uiInteraction'];
+    deviceInteraction: State['onboarding']['connect']['deviceInteraction'];
+    prevDeviceId: State['onboarding']['connect']['prevDeviceId'];
 
-    newsletter: NewsletterReducer;
-    fetchCall: FetchReducer;
-    recovery: RecoveryReducer;
-    firmwareUpdate: FirmwareUpdateReducer;
+    newsletter: State['onboarding']['newsletter'];
+    fetchCall: State['onboarding']['fetch'];
+    recovery: State['onboarding']['recovery'];
+    firmwareUpdate: State['onboarding']['firmwareUpdate'];
 
-    recoveryActions: RecoveryActions;
+    deviceCall: State['onboarding']['connect']['deviceCall'];
+    uiInteraction: State['onboarding']['connect']['uiInteraction'];
+    deviceInteraction: State['onboarding']['connect']['deviceInteraction'];
+    prevDeviceId: State['onboarding']['connect']['prevDeviceId'];
+
+    newsletter: State['onboarding']['newsletter'];
+    fetchCall: State['onboarding']['fetch'];
+    recovery: State['onboarding']['recovery'];
+    firmwareUpdate: State['onboarding']['firmwareUpdate'];
+
     connectActions: ConnectActions;
-    fetchActions: FetchActions;
-    newsletterActions: NewsletterActions;
     onboardingActions: OnboardingActions;
-    firmwareUpdateActions: FirmwareUpdateActions;
 }
 
 class Onboarding extends React.PureComponent<Props> {
@@ -255,14 +258,7 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const {
-            device,
-            prevDeviceId,
-            activeStepId,
-            connectError,
-            uiInteraction,
-            asNewDevice,
-        } = this.props;
+        const { device, prevDeviceId, activeStepId, uiInteraction, asNewDevice } = this.props;
         if (!this.getStep(activeStepId).disallowedDeviceStates) {
             return null;
         }
@@ -308,7 +304,7 @@ class Onboarding extends React.PureComponent<Props> {
         } = this.props;
 
         const errorState = this.getError();
-
+        // throw('kaboom0');
         return (
             <>
                 <BaseStyles />

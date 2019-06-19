@@ -1,0 +1,44 @@
+[
+  {
+    "id": "TR_ENTER_PIN",
+    "description": "Button. Submit PIN",
+    "defaultMessage": "Enter PIN",
+    "file": "../suite/src/components/onboarding/PinMatrix/index.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 18
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_MANUAL_LINK",
+    "description": "Link to PIN manual",
+    "defaultMessage": "Learn more",
+    "file": "../suite/src/components/onboarding/PinMatrix/index.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 24
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NOT_SURE_HOW_PIN_WORKS",
+    "description": "Link to PIN manual",
+    "defaultMessage": "Not sure how PIN works? {TR_PIN_MANUAL_LINK}",
+    "file": "../suite/src/components/onboarding/PinMatrix/index.messages.tsx",
+    "start": {
+      "line": 14,
+      "column": 31
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  }
+]

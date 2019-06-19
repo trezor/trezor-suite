@@ -1,0 +1,156 @@
+[
+  {
+    "id": "TR_CONTINUE",
+    "description": "Continue button",
+    "defaultMessage": "Continue",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 4,
+      "column": 17
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACK",
+    "description": "Back button",
+    "defaultMessage": "Back",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 9,
+      "column": 13
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SKIP_ALL",
+    "description": "Button. Skip the entire onboarding process.",
+    "defaultMessage": "Skip onboarding",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 14,
+      "column": 17
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SKIP",
+    "description": "Button. Skip one step",
+    "defaultMessage": "Skip",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 19,
+      "column": 13
+    },
+    "end": {
+      "line": 23,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONTACT_SUPPORT",
+    "description": "Button to click to contact support",
+    "defaultMessage": "Contact support",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 24,
+      "column": 24
+    },
+    "end": {
+      "line": 28,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RETRY",
+    "description": "Retry button",
+    "defaultMessage": "Retry",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 29,
+      "column": 14
+    },
+    "end": {
+      "line": 33,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_YOUR_DEVICE",
+    "description": "Prompt to user to connect his device.",
+    "defaultMessage": "Connect your device",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 34,
+      "column": 28
+    },
+    "end": {
+      "line": 38,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SUBMIT",
+    "description": "Button text",
+    "defaultMessage": "Submit",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 39,
+      "column": 15
+    },
+    "end": {
+      "line": 43,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WIPE_DEVICE",
+    "description": "Button",
+    "defaultMessage": "Wipe device",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 44,
+      "column": 20
+    },
+    "end": {
+      "line": 48,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RESET_DEVICE",
+    "description": "Button.",
+    "defaultMessage": "Reset device",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 49,
+      "column": 21
+    },
+    "end": {
+      "line": 53,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEARN_MORE_LINK",
+    "description": "Link to Trezor wiki.",
+    "defaultMessage": "Learn more.",
+    "file": "../suite/src/support/suite/Messages.ts",
+    "start": {
+      "line": 54,
+      "column": 24
+    },
+    "end": {
+      "line": 58,
+      "column": 5
+    }
+  }
+]
