@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import { colors, variables } from '@trezor/components';
 
 interface Props {
-    hasBorder: boolean;
-    textLeft: React.ReactNode;
-    textRight: React.ReactNode;
+    hasBorder?: boolean;
+    textLeft?: React.ReactNode;
+    textRight?: React.ReactNode;
     className?: string;
-    testId: string;
+    testId?: string;
 }
 
 const Wrapper = styled.div<Pick<Props, 'hasBorder'>>`
