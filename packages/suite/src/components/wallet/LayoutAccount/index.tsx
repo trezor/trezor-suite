@@ -2,12 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State } from '@suite-types/index';
 import TopNavigation from '@wallet-components/TopNavigation';
+import Layout from '@wallet-components/Layout';
 
 interface Props {
     children: React.ReactNode;
 }
 
-const Layout = (props: Props) => (
+const LayoutAccount = (props: Props) => (
     <Layout>
         <TopNavigation />
         {props.children}
@@ -19,4 +20,4 @@ const mapStateToProps = (state: State) => ({
     suite: state.suite,
 });
 
-export default connect(mapStateToProps)(Layout);
+export default connect(mapStateToProps)(LayoutAccount);
