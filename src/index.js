@@ -1,29 +1,41 @@
 /* @flow */
 
 import EventEmitter from 'events';
-
+import { CustomError } from './constants/errors';
 import { MESSAGES, RESPONSES } from './constants';
 import { create as createDeferred } from './utils/deferred';
 import type { BlockchainSettings, Deferred } from './types';
 import * as ResponseTypes from './types/responses';
 import * as MessageTypes from './types/messages';
 
-export type { GetAccountInfoOptions, EstimateFeeOptions } from './types/messages';
+export type { EstimateFeeOptions } from './types/messages';
 
 const workerWrapper = (factory: string | Function): Worker => {
     if (typeof factory === 'function') return new factory();
     if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
     // use custom worker
-    throw new Error('Cannot use worker');
+    throw new CustomError('worker_not_found');
 };
 
 // initialize worker communication, raise error if worker not found
 const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     const dfd: Deferred<Worker> = createDeferred(-1);
     const worker = workerWrapper(settings.worker);
+
+    if (typeof worker !== 'object' || typeof worker.postMessage !== 'function') {
+        throw new CustomError('worker_invalid');
+    }
+
+    const timeout = setTimeout(() => {
+        worker.onmessage = null;
+        worker.onerror = null;
+        dfd.reject(new CustomError('worker_timeout'));
+    }, 30000);
+
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
         // eslint-disable-next-line no-param-reassign
+        clearTimeout(timeout);
         delete settings.worker;
         worker.postMessage({
             type: MESSAGES.HANDSHAKE,
@@ -33,12 +45,13 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     };
 
     worker.onerror = (error: any) => {
+        clearTimeout(timeout);
         worker.onmessage = null;
         worker.onerror = null;
-        const msg = error.message
+        const message = error.message
             ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
             : 'Worker handshake error';
-        dfd.reject(new Error(msg));
+        dfd.reject(new CustomError('worker_runtime', message));
     };
 
     return dfd.promise;
@@ -160,7 +173,7 @@ class BlockchainLink extends EventEmitter {
             return;
         }
         if (data.type === RESPONSES.ERROR) {
-            dfd.reject(new Error(data.payload));
+            dfd.reject(new CustomError(data.payload.code, data.payload.message));
         } else {
             dfd.resolve(data.payload);
         }
@@ -190,7 +203,7 @@ class BlockchainLink extends EventEmitter {
         const message = error.message
             ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
             : 'Worker handshake error';
-        const e = new Error(message);
+        const e = new CustomError('worker_runtime', message);
         // reject all pending responses
         this.deferred.forEach(d => {
             d.reject(e);
