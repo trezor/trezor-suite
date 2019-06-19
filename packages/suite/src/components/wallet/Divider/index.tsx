@@ -6,13 +6,13 @@ import { colors, variables } from '@trezor/components';
 
 interface Props {
     hasBorder: boolean;
-    textLeft: string;
-    textRight: string;
-    className: string;
+    textLeft: React.ReactNode;
+    textRight: React.ReactNode;
+    className?: string;
     testId: string;
 }
 
-const Wrapper = styled.div<Props>`
+const Wrapper = styled.div<Pick<Props, 'hasBorder'>>`
     display: flex;
     justify-content: space-between;
     padding: 8px 28px 8px 24px;
