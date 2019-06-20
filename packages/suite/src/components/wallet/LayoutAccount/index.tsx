@@ -4,6 +4,7 @@ import TopNavigation from '@wallet-components/TopNavigation';
 import Layout from '@wallet-components/Layout';
 import { getRoute } from '@suite/utils/suite/router';
 import NETWORKS from '@suite-config/networks';
+import FLAGS from '@suite-config/flags';
 import l10nMessages from './index.messages';
 
 interface Props {
@@ -22,6 +23,9 @@ const LayoutAccount = (props: Props) => (
                     {
                         route: getRoute('wallet-account-transactions'),
                         title: <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />,
+                        isHidden: (coinShortcut: string) => {
+                            return !FLAGS.transactions;
+                        },
                     },
                     {
                         route: getRoute('wallet-account-receive'),
