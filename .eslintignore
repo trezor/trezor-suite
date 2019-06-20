@@ -1,5 +1,6 @@
 public
 build
+lib
 coverage
 cache/**
 **/_old/*

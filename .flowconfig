@@ -3,6 +3,7 @@
 [ignore]
 .*/_old/.*
 .*/build
+./lib
 
 [libs]
 ./tests/types/jest.js
