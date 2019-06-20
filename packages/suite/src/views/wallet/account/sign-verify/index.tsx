@@ -73,7 +73,6 @@ class SignVerify extends Component {
     };
 
     render() {
-        console.log(this.props);
         // const { devices, selectedDevice } = props;
         // const device = this.props.wallet.selectedDevice;
         // const { account, discovery, shouldRender } = this.props.selectedAccount;
