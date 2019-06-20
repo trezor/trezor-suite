@@ -5,6 +5,7 @@
 
 import Router from 'next/router';
 import { Dispatch, GetState } from '@suite-types/index';
+import { getPrefixedURL } from '@suite-utils/nextjs';
 
 export const LOCATION_CHANGE = '@router/location-change';
 export const UPDATE = '@router/update';
@@ -59,10 +60,9 @@ export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState)
 
 // links inside of application
 export const goto = (url: string, preserveParams: boolean = false) => {
-    const urlPrefix = process.env.assetPrefix || '';
     if (preserveParams) {
-        Router.push(url + window.location.hash, urlPrefix + url + window.location.hash);
+        Router.push(url + window.location.hash, getPrefixedURL(url) + window.location.hash);
     } else {
-        Router.push(url, urlPrefix + url);
+        Router.push(url, getPrefixedURL(url));
     }
 };

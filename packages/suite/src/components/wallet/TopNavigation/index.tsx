@@ -1,14 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
 import { colors, variables } from '@trezor/components';
-import { State } from '@suite/types';
-import { getRoute } from '@suite-utils/router';
+import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import networks from '@suite-config/networks';
-
-import l10nMessages from './index.messages';
+import { getPrefixedURL } from '@suite-utils/nextjs';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -75,65 +71,43 @@ const LinkContent = styled.div`
     padding-top: 4px;
 `;
 
+interface NavigationItem {
+    title: React.ReactNode;
+    route: string;
+    isHidden?: (coinShortcut: string) => boolean;
+}
+
 interface Props {
+    items: NavigationItem[];
     router: State['router'];
 }
 
 const TopNavigation = (props: Props) => {
     const { pathname, params } = props.router;
-    const currentPath = pathname;
+    const currentPath =
+        pathname[pathname.length - 1] === '/'
+            ? pathname.substring(0, pathname.length - 1)
+            : pathname;
 
-    const networkConfig = networks.find(c => c.shortcut === params.coin);
-
-    const isPathActive = (path: string) => {
-        return currentPath === getRoute(path);
-    };
     return (
         <Wrapper>
-            <StyledNavLink
-                active={isPathActive('wallet-account-summary')}
-                onClick={() => goto(getRoute('wallet-account-summary'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />
-                </LinkContent>
-            </StyledNavLink>
-            {/* {config.transactions && ( */}
-            <StyledNavLink
-                active={isPathActive('wallet-account-transactions')}
-                onClick={() => goto(getRoute('wallet-account-transactions'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />
-                </LinkContent>
-            </StyledNavLink>
-            {/* )} */}
-            <StyledNavLink
-                active={isPathActive('wallet-account-receive')}
-                onClick={() => goto(getRoute('wallet-account-receive'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />
-                </LinkContent>
-            </StyledNavLink>
-            <StyledNavLink
-                active={isPathActive('wallet-account-send')}
-                onClick={() => goto(getRoute('wallet-account-send'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
-                </LinkContent>
-            </StyledNavLink>
-            {networkConfig && networkConfig.hasSignVerify && (
-                <StyledNavLink
-                    active={isPathActive('wallet-account-sign-verify')}
-                    onClick={() => goto(getRoute('wallet-account-sign-verify'), true)}
-                >
-                    <LinkContent>
-                        <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
-                    </LinkContent>
-                </StyledNavLink>
-            )}
+            {props.items.map(item => {
+                // show item if isHidden() returns false or when isHidden func is not defined
+                if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
+                    console.log(getPrefixedURL(item.route));
+
+                    return (
+                        <StyledNavLink
+                            key={item.route}
+                            active={currentPath === getPrefixedURL(item.route)}
+                            onClick={() => goto(item.route, true)}
+                        >
+                            <LinkContent>{item.title}</LinkContent>
+                        </StyledNavLink>
+                    );
+                }
+                return null;
+            })}
         </Wrapper>
     );
 };
