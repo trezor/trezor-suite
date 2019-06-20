@@ -14,7 +14,7 @@ import {
     colors,
     variables,
 } from '@trezor/components';
-import Link from 'next/link';
+import Link from '@suite-components/Link';
 import FIAT from '@suite-config/fiat';
 import NETWORKS from '@suite-config/networks';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -164,7 +164,7 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
                 <FormattedMessage {...l10nMessages.TR_THE_CHANGES_ARE_SAVED} />
             </Info>
             <Buttons>
-                <Link href="/">
+                <Link href={getRoute('wallet-index')}>
                     <Button>
                         <FormattedMessage {...l10nCommonMessages.TR_CLOSE} />
                     </Button>
