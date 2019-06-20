@@ -4,6 +4,7 @@ export default [
         coinName: 'Bitcoin',
         url: '../?coin=btc',
         order: 1,
+        isHidden: false,
     },
     {
         id: 'bch',

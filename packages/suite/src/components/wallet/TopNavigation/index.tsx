@@ -6,6 +6,7 @@ import { colors, variables } from '@trezor/components';
 import { State } from '@suite/types';
 import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
+import networks from '@suite-config/networks';
 
 import l10nMessages from './index.messages';
 
@@ -79,8 +80,10 @@ interface Props {
 }
 
 const TopNavigation = (props: Props) => {
-    const { pathname } = props.router;
+    const { pathname, params } = props.router;
     const currentPath = pathname;
+
+    const networkConfig = networks.find(c => c.shortcut === params.coin);
 
     const isPathActive = (path: string) => {
         return currentPath === getRoute(path);
@@ -121,16 +124,16 @@ const TopNavigation = (props: Props) => {
                     <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
                 </LinkContent>
             </StyledNavLink>
-            {/* {networkConfig.hasSignVerify && ( */}
-            <StyledNavLink
-                active={isPathActive('wallet-account-sign-verify')}
-                onClick={() => goto(getRoute('wallet-account-sign-verify'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
-                </LinkContent>
-            </StyledNavLink>
-            {/* )} */}
+            {networkConfig && networkConfig.hasSignVerify && (
+                <StyledNavLink
+                    active={isPathActive('wallet-account-sign-verify')}
+                    onClick={() => goto(getRoute('wallet-account-sign-verify'), true)}
+                >
+                    <LinkContent>
+                        <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
+                    </LinkContent>
+                </StyledNavLink>
+            )}
         </Wrapper>
     );
 };
