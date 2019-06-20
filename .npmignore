@@ -1,0 +1,39 @@
+# Dev directories
+coverage
+tests
+.eslintignore
+.eslintrc
+.flowconfig
+.gitignore
+.gilab-ci.yml
+.prettierignore
+.prettierrc
+babel.config.js
+jest.config.integration.js
+jest.config.unit.js
+
+# Source files
+src
+webpack
+scripts
+docs
+
+# Editors
+.editorconfig
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Dependency directory
+node_modules
+yarn.lock
+package-lock.json
+
+# OSX
+.DS_Store
+
+# Logs
+logs
+*.log
+.yarnclean
