@@ -21,10 +21,6 @@ const Wrapper = styled.div`
     flex: 1 1 0%;
 `;
 
-const Content = styled.div`
-    padding: 20px 35px;
-`;
-
 const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
     display: flex;
     flex-direction: column;
@@ -45,9 +41,7 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 const Layout = (props: Props) => (
     <Wrapper>
         <Sidebar isOpen={props.suite.showSidebar} />
-        <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-            <Content>{props.children}</Content>
-        </ContentWrapper>
+        <ContentWrapper preventBgScroll={props.suite.showSidebar}>{props.children}</ContentWrapper>
     </Wrapper>
 );
 

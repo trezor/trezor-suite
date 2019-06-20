@@ -1,16 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-// import Content from '@wallet-components/Content';
+import Content from '@wallet-components/Content';
 import { H4, P } from '@trezor/components';
 import Layout from '@wallet-components/Layout';
 import { FormattedMessage } from 'react-intl';
 // import l10nCommonMessages from '@wallet-views/messages';
 import l10nMessages from './index.messages';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
 
 const Row = styled.div`
     flex: 1;
@@ -76,9 +71,8 @@ const Dashboard = () => {
     // };
 
     return (
-        // <Content>
         <Layout>
-            <Wrapper>
+            <Content>
                 <Row data-test="Dashboard__page__content">
                     <StyledH4>
                         <FormattedMessage {...l10nMessages.TR_PLEASE_SELECT_YOUR} />
@@ -119,9 +113,8 @@ const Dashboard = () => {
                         ))}
                 </Coins> */}
                 </Row>
-            </Wrapper>
+            </Content>
         </Layout>
-        // </Content>
     );
 };
 
