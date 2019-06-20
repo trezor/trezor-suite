@@ -1,3 +1,3 @@
-import Account from '@wallet-views/account/sign-verify';
+import signVerify from '@wallet-views/account/sign-verify';
 
-export default Account;
+export default signVerify;
