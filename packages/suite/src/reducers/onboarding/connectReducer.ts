@@ -1,6 +1,6 @@
 import { DEVICE } from 'trezor-connect';
 import * as Connect from '@suite/types/onboarding/connect';
-import { Action } from '@suite/types/onboarding/actions';
+import { Action } from '@suite-types/index';
 
 const initialState: Connect.ConnectReducer = {
     prevDeviceId: null,
