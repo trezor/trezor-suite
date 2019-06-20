@@ -236,6 +236,7 @@ class BlockchainLink extends EventEmitter {
     };
 
     dispose() {
+        this.removeAllListeners();
         if (this.worker) {
             this.worker.terminate();
             delete this.worker;
