@@ -10,6 +10,7 @@ const { SCREEN_SIZE } = variables;
 interface Props {
     router: State['router'];
     suite: State['suite'];
+    topNavigationComponent?: React.ReactNode;
     children: React.ReactNode;
 }
 
@@ -46,6 +47,7 @@ const Layout = (props: Props) => (
     <Wrapper>
         <Sidebar isOpen={props.suite.showSidebar} />
         <ContentWrapper preventBgScroll={props.suite.showSidebar}>
+            {props.topNavigationComponent}
             <Content>{props.children}</Content>
         </ContentWrapper>
     </Wrapper>

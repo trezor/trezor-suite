@@ -19,6 +19,8 @@ import FIAT from '@suite-config/fiat';
 import NETWORKS from '@suite-config/networks';
 import l10nCommonMessages from '@suite-views/index.messages';
 import Layout from '@wallet-components/Layout';
+import TopNavigation from '@wallet-components/TopNavigation';
+import { getRoute } from '@suite/utils/suite/router';
 import Coins from './components/Coins';
 import l10nMessages from './index.messages';
 
@@ -97,7 +99,18 @@ interface Props {
 }
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
-    <Layout>
+    <Layout
+        topNavigationComponent={
+            <TopNavigation
+                items={[
+                    {
+                        route: getRoute('wallet-settings'),
+                        title: <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />,
+                    },
+                ]}
+            />
+        }
+    >
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />

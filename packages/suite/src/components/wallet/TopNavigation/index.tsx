@@ -1,13 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
 import { colors, variables } from '@trezor/components';
-import { State } from '@suite/types';
-import { getRoute } from '@suite-utils/router';
+import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import NETWORKS from '@suite-config/networks';
-import l10nMessages from './index.messages';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -74,7 +70,14 @@ const LinkContent = styled.div`
     padding-top: 4px;
 `;
 
+interface NavigationItem {
+    title: React.ReactNode;
+    route: string;
+    isHidden?: (coinShortcut: string) => boolean;
+}
+
 interface Props {
+    items: NavigationItem[];
     router: State['router'];
 }
 
@@ -82,36 +85,9 @@ const TopNavigation = (props: Props) => {
     const { pathname, params } = props.router;
     const currentPath = pathname;
 
-    const accountNavigation = [
-        {
-            route: getRoute('wallet-account-summary'),
-            title: <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />,
-        },
-        {
-            route: getRoute('wallet-account-transactions'),
-            title: <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />,
-        },
-        {
-            route: getRoute('wallet-account-receive'),
-            title: <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />,
-        },
-        {
-            route: getRoute('wallet-account-send'),
-            title: <FormattedMessage {...l10nMessages.TR_NAV_SEND} />,
-        },
-        {
-            route: getRoute('wallet-account-sign-verify'),
-            title: <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />,
-            isHidden: (coinShortcut: string) => {
-                const network = NETWORKS.find(c => c.shortcut === coinShortcut);
-                return network && !network.hasSignVerify;
-            },
-        },
-    ];
-
     return (
         <Wrapper>
-            {accountNavigation.map(item => {
+            {props.items.map(item => {
                 // show item if isHidden() returns false or when isHidden func is not defined
                 if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
                     return (
