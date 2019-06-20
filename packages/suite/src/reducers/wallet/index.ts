@@ -1,5 +1,10 @@
+import { combineReducers } from 'redux';
 import signVerifyReducer from './signVerifyReducer';
+import settingsReducer from './settingsReducer';
 
-export default {
-    signVerifyReducer,
-};
+const WalletReducers = combineReducers({
+    signVerify: signVerifyReducer,
+    settings: settingsReducer,
+});
+
+export default WalletReducers;
