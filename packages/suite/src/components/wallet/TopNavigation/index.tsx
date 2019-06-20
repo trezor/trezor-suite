@@ -6,7 +6,7 @@ import { colors, variables } from '@trezor/components';
 import { State } from '@suite/types';
 import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
-
+import NETWORKS from '@suite-config/networks';
 import l10nMessages from './index.messages';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
@@ -79,58 +79,52 @@ interface Props {
 }
 
 const TopNavigation = (props: Props) => {
-    const { pathname } = props.router;
+    const { pathname, params } = props.router;
     const currentPath = pathname;
 
-    const isPathActive = (path: string) => {
-        return currentPath === getRoute(path);
-    };
+    const accountNavigation = [
+        {
+            route: getRoute('wallet-account-summary'),
+            title: <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />,
+        },
+        {
+            route: getRoute('wallet-account-transactions'),
+            title: <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />,
+        },
+        {
+            route: getRoute('wallet-account-receive'),
+            title: <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />,
+        },
+        {
+            route: getRoute('wallet-account-send'),
+            title: <FormattedMessage {...l10nMessages.TR_NAV_SEND} />,
+        },
+        {
+            route: getRoute('wallet-account-sign-verify'),
+            title: <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />,
+            isHidden: (coinShortcut: string) => {
+                const network = NETWORKS.find(c => c.shortcut === coinShortcut);
+                return network && !network.hasSignVerify;
+            },
+        },
+    ];
+
     return (
         <Wrapper>
-            <StyledNavLink
-                active={isPathActive('wallet-account-summary')}
-                onClick={() => goto(getRoute('wallet-account-summary'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />
-                </LinkContent>
-            </StyledNavLink>
-            {/* {config.transactions && ( */}
-            <StyledNavLink
-                active={isPathActive('wallet-account-transactions')}
-                onClick={() => goto(getRoute('wallet-account-transactions'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />
-                </LinkContent>
-            </StyledNavLink>
-            {/* )} */}
-            <StyledNavLink
-                active={isPathActive('wallet-account-receive')}
-                onClick={() => goto(getRoute('wallet-account-receive'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />
-                </LinkContent>
-            </StyledNavLink>
-            <StyledNavLink
-                active={isPathActive('wallet-account-send')}
-                onClick={() => goto(getRoute('wallet-account-send'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
-                </LinkContent>
-            </StyledNavLink>
-            {/* {networkConfig.hasSignVerify && ( */}
-            <StyledNavLink
-                active={isPathActive('wallet-account-sign-verify')}
-                onClick={() => goto(getRoute('wallet-account-sign-verify'), true)}
-            >
-                <LinkContent>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
-                </LinkContent>
-            </StyledNavLink>
-            {/* )} */}
+            {accountNavigation.map(item => {
+                // show item if isHidden() returns false or when isHidden func is not defined
+                if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
+                    return (
+                        <StyledNavLink
+                            active={currentPath === item.route}
+                            onClick={() => goto(item.route, true)}
+                        >
+                            <LinkContent>{item.title}</LinkContent>
+                        </StyledNavLink>
+                    );
+                }
+                return null;
+            })}
         </Wrapper>
     );
 };
