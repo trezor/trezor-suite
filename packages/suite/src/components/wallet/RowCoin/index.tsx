@@ -56,7 +56,7 @@ const RowCoin = ({ network, iconLeft, iconRight }) => (
                     <CoinLogoWrapper>
                         <CoinLogo height="23" network={network.shortcut} />
                     </CoinLogoWrapper>
-                    <p>{network.name}</p>
+                    {network.name}
                 </CoinNameWrapper>
             </Left>
             {iconRight && (
