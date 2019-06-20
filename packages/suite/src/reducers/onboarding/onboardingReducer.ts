@@ -9,6 +9,8 @@ import {
 } from '@suite/types/onboarding/onboarding';
 import { Step } from '@suite/types/onboarding/steps';
 
+import { State } from '@suite-types/index';
+
 import * as STEP from '@suite/constants/onboarding/steps';
 
 const initialState: OnboardingReducer = {
@@ -125,7 +127,7 @@ const initialState: OnboardingReducer = {
 };
 
 const onboarding = (
-    state: OnboardingReducer = initialState,
+    state: State = initialState,
     action: OnboardingActionTypes,
 ): OnboardingReducer => {
     switch (action.type) {

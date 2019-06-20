@@ -15,20 +15,21 @@ import {
 } from '@suite/components/onboarding/Wrapper';
 
 import { State } from '@suite-types/index';
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
+import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import TroubleshootBootloader from './components/TroubleshootBootloader';
 import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
 import l10nMessages from './index.messages';
 
 interface StepProps {
-    activeSubStep: State['onboarding']['activeSubStep'];
     device: State['onboarding']['connect']['device'];
     deviceCall: State['onboarding']['connect']['deviceCall'];
     model: State['onboarding']['selectedModel'];
     setTimeout: (callback: (...args: any[]) => void, ms: number, ...args: any[]) => Timer;
     isResolved: boolean; // todo: ?
-    onboardingActions: typeof onboardingActions;
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
 }
 
 interface StepState {
@@ -78,7 +79,7 @@ class ConnectStep extends React.PureComponent<StepProps, StepState> {
 
     render() {
         const deviceIsConnected = Boolean(this.props.device && this.props.device.connected);
-        const { device, deviceCall, onboardingActions, activeSubStep, isResolved } = this.props;
+        const { device, deviceCall, isResolved } = this.props;
         const { isSearching, isSearchingTooLong } = this.state;
         return (
             <StepWrapper>
@@ -129,11 +130,7 @@ class ConnectStep extends React.PureComponent<StepProps, StepState> {
                             {this.isInBlWithFwPresent() && <TroubleshootBootloader />}
 
                             {device.features.initialized && !isResolved && (
-                                <TroubleshootInitialized
-                                    device={device}
-                                    onboardingActions={onboardingActions}
-                                    activeSubStep={activeSubStep}
-                                />
+                                <TroubleshootInitialized />
                             )}
 
                             {device.features.initialized && isResolved && (

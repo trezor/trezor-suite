@@ -25,6 +25,14 @@ export interface Route {
 
 export const routes: Route[] = [
     {
+        name: 'suite-index',
+        pattern: '/',
+    },
+    {
+        name: 'wallet-index',
+        pattern: '/wallet',
+    },
+    {
         name: 'suite-device-settings',
         pattern: '/settings',
     },

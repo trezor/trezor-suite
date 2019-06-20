@@ -10,17 +10,11 @@ import { isDev } from '@suite-utils/build';
 import BaseStyles from '@suite/support/onboarding/BaseStyles';
 
 import { State, Dispatch } from '@suite-types/index';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { ConnectActions } from '@suite/types/onboarding/connect';
-import { FetchActions } from '@suite/types/onboarding/fetch';
-import { RecoveryActions } from '@suite/types/onboarding/recovery';
-import { NewsletterActions } from '@suite/types/onboarding/newsletter';
-import { AnyStepId, AnyStepDisallowedState, Step } from '@suite/types/onboarding/steps';
+import { OnboardingActions } from '@onboarding-types/onboarding';
+import { ConnectActions } from '@onboarding-types/connect';
+import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
+import { AnyEvent } from '@onboarding-types/events';
 
-import {
-    FirmwareUpdateReducer,
-    FirmwareUpdateActions,
-} from '@suite/types/onboarding/firmwareUpdate';
 import * as EVENTS from '@suite/actions/onboarding/constants/events';
 
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
@@ -45,6 +39,7 @@ import {
 import ProgressSteps from '@suite/components/onboarding/ProgressSteps';
 import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
 
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@suite/views/onboarding/steps/Welcome/Container';
@@ -63,8 +58,6 @@ import BookmarkStep from '@suite/views/onboarding/steps/Bookmark/Container';
 import NewsletterStep from '@suite/views/onboarding/steps/Newsletter/Container';
 
 import FinalStep from '@suite/views/onboarding/steps/Final';
-
-import background from './background.jpg';
 
 const BORDER_RADIUS = 12;
 const TRANSITION_PROPS = {
@@ -101,7 +94,7 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
         ${props =>
             props.animate &&
             css`
-                background-image: url(${background});
+                background-image: url(${resolveStaticPath('images/background.jpg')});
                 background-size: cover;
             `};
     }
@@ -168,7 +161,7 @@ const TrezorAction = ({
     event,
 }: {
     model: State['onboarding']['selectedModel'];
-    event: EVENTS.AnyEvent;
+    event: AnyEvent;
 }) => {
     let TrezorActionText;
     if (event.name === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
@@ -222,16 +215,6 @@ interface Props {
     recovery: State['onboarding']['recovery'];
     firmwareUpdate: State['onboarding']['firmwareUpdate'];
 
-    deviceCall: State['onboarding']['connect']['deviceCall'];
-    uiInteraction: State['onboarding']['connect']['uiInteraction'];
-    deviceInteraction: State['onboarding']['connect']['deviceInteraction'];
-    prevDeviceId: State['onboarding']['connect']['prevDeviceId'];
-
-    newsletter: State['onboarding']['newsletter'];
-    fetchCall: State['onboarding']['fetch'];
-    recovery: State['onboarding']['recovery'];
-    firmwareUpdate: State['onboarding']['firmwareUpdate'];
-
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;
 }
@@ -250,7 +233,7 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getStep(activeStepId: State['onboarding']['activeStepId']) {
-        return this.props.steps.find(step => step.id === activeStepId);
+        return this.props.steps.find((step: Step) => step.id === activeStepId);
     }
 
     getScreen() {

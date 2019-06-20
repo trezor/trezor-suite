@@ -1,9 +1,8 @@
 import React, { FormEvent } from 'react';
 import styled from 'styled-components';
-import { Flags } from 'trezor-flags';
+import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { Button, Link, Input, Checkbox, P } from '@trezor/components';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
 import {
     SOCIAL_FACEBOOK_URL,
@@ -12,10 +11,18 @@ import {
 } from '@suite/constants/onboarding/urls';
 import { IconSocial } from '@suite/components/onboarding/Icons';
 import { isEmail } from '@suite-utils/validators';
+import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
 import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
 import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
 import Text from '@suite/components/onboarding/Text';
 import l10nCommonMessages from '@suite-support/Messages';
+import { callActionAndGoToNextStep } from '@onboarding-actions/connectActions';
+import {
+    setSkipped,
+    setEmail,
+    submitEmail,
+    toggleCheckbox,
+} from '@onboarding-actions/newsletterActions';
 
 import {
     StepWrapper,
@@ -26,8 +33,6 @@ import {
 } from '@suite/components/onboarding/Wrapper';
 
 import { State } from '@suite-types/index';
-import { ConnectActions } from '@suite/types/onboarding/connect';
-import { NewsletterActions } from '@suite/types/onboarding/newsletter';
 
 import l10nMessages from './index.messages';
 
@@ -54,11 +59,18 @@ const InputWrapper = styled.div`
 `;
 
 interface Props {
-    fetchCall: FetchReducer;
-    newsletter: NewsletterReducer;
-    device: ConnectReducer['device'];
-    connectActions: ConnectActions;
-    newsletterActions: NewsletterActions;
+    fetchCall: State['onboarding']['fetchCall'];
+    newsletter: State['onboarding']['newsletter'];
+    device: State['onboarding']['connect']['device'];
+    connectActions: {
+        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
+    };
+    newsletterActions: {
+        submitEmail: typeof submitEmail;
+        setEmail: typeof setEmail;
+        toggleCheckbox: typeof toggleCheckbox;
+        setSkipped: typeof setSkipped;
+    };
 }
 
 class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
@@ -109,7 +121,7 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
 
     goToNextStep = () => {
         this.props.connectActions.callActionAndGoToNextStep(APPLY_FLAGS, {
-            flags: Flags.setFlag('hasEmail', this.props.device.features.flags),
+            flags: addToFlags(HAS_EMAIL_FLAG, this.props.device.features.flags),
         });
     };
 
@@ -147,18 +159,20 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                             </InputWrapper>
 
                             <CheckboxexSection>
-                                {Object.values(newsletter.checkboxes).map(checkbox => (
-                                    <CheckboxWrapper key={checkbox.label}>
-                                        <Checkbox
-                                            isChecked={checkbox.value}
-                                            onClick={() =>
-                                                newsletterActions.toggleCheckbox(checkbox.label)
-                                            }
-                                        >
-                                            <P>{checkbox.label}</P>
-                                        </Checkbox>
-                                    </CheckboxWrapper>
-                                ))}
+                                {Object.values(newsletter.checkboxes).map(
+                                    (checkbox: State['onboarding']['newsletter']['checkbox']) => (
+                                        <CheckboxWrapper key={checkbox.label}>
+                                            <Checkbox
+                                                isChecked={checkbox.value}
+                                                onClick={() =>
+                                                    newsletterActions.toggleCheckbox(checkbox.label)
+                                                }
+                                            >
+                                                <P>{checkbox.label}</P>
+                                            </Checkbox>
+                                        </CheckboxWrapper>
+                                    ),
+                                )}
                             </CheckboxexSection>
 
                             <ControlsWrapper>

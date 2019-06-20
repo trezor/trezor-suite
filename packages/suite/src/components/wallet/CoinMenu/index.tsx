@@ -43,13 +43,12 @@ const Gray = styled.span`
 
 interface Props {
     suite: State['suite'];
+    wallet: State['wallet'];
     router: State['router'];
 }
 class CoinMenu extends PureComponent<Props> {
     getOtherCoins() {
-        // TODO
-        // const { hiddenCoinsExternal } = this.props.wallet;
-        const hiddenCoinsExternal: string[] = [];
+        const { hiddenCoinsExternal } = this.props.wallet.settings;
         return externalCoins
             .sort((a, b) => a.order - b.order)
             .filter(item => !item.isHidden) // hide coins globally in config
@@ -108,9 +107,7 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     isTopMenuEmpty() {
-        // TODO
-        // const { hiddenCoins } = this.props.wallet;
-        const hiddenCoins: string[] = [];
+        const { hiddenCoins } = this.props.wallet.settings;
         const numberOfVisibleNetworks = networks
             .filter(item => !item.isHidden) // hide coins globally in config
             .filter(item => !hiddenCoins.includes(item.shortcut))
@@ -121,8 +118,7 @@ class CoinMenu extends PureComponent<Props> {
 
     isBottomMenuEmpty() {
         // TODO
-        // const { hiddenCoinsExternal } = this.props.wallet;
-        const hiddenCoinsExternal: string[] = [];
+        const { hiddenCoinsExternal } = this.props.wallet.settings;
         const numberOfVisibleNetworks = externalCoins
             .filter(item => !item.isHidden)
             .filter(item => !hiddenCoinsExternal.includes(item.id));
@@ -135,9 +131,7 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     render() {
-        // TODO
-        // const { hiddenCoins } = this.props.wallet;
-        const hiddenCoins: string[] = [];
+        const { hiddenCoins } = this.props.wallet.settings;
         return (
             <Wrapper data-test="Main__page__coin__menu">
                 {this.isMenuEmpty() || (this.isTopMenuEmpty() && this.getEmptyContent())}
@@ -173,6 +167,7 @@ class CoinMenu extends PureComponent<Props> {
 }
 
 const mapStateToProps = (state: State) => ({
+    wallet: state.wallet,
     suite: state.suite,
     router: state.router,
 });

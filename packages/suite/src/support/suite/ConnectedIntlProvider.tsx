@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { connect } from 'react-redux';
+import { State } from '@suite-types/index';
 
 import en from 'react-intl/locale-data/en';
 import cs from 'react-intl/locale-data/cs';
@@ -52,12 +53,17 @@ addLocaleData([
     ...zh,
 ]);
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: State) => ({
     locale: state.suite.language,
     messages: state.suite.messages,
 });
 
-const ReactIntlProvider = ({ children, locale, messages }) => (
+interface ReactIntlProps {
+    locale: State['suite']['language'];
+    messages: State['suite']['messages'];
+}
+
+const ReactIntlProvider: React.FC<ReactIntlProps> = ({ children, locale, messages }) => (
     <IntlProvider locale={locale} messages={messages}>
         {children}
     </IntlProvider>

@@ -88,8 +88,6 @@ class BackupStep extends React.Component<BackupProps, BackupState> {
         userUnderstands: false,
     };
 
-    interval: NodeJS.Timer;
-
     componentDidMount() {
         this.props.connectActions.resetCall();
     }

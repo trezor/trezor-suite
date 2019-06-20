@@ -7,7 +7,6 @@ import { Dispatch, State } from '@suite-types/index';
 import Step from './index';
 
 const mapStateToProps = (state: State) => ({
-    activeSubStep: state.onboarding.activeSubStep,
     model: state.onboarding.selectedModel,
     deviceCall: state.onboarding.connect.deviceCall,
     device: state.onboarding.connect.device,
@@ -15,7 +14,9 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
+    onboardingActions: {
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    },
 });
 
 export default connect(

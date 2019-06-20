@@ -5,33 +5,28 @@ import styled from 'styled-components';
 import { Button, Link, Modal } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { PIN_MANUAL_URL } from '@suite/constants/onboarding/urls';
-import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
+// import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
 import l10nCommonMessages from '@suite-support/Messages';
-import PinMatrix from '@suite/components/onboarding/PinMatrix';
-import Text from '@suite/components/onboarding/Text';
+import PinMatrix from '@onboarding-components/PinMatrix';
+import Text from '@onboarding-components/Text';
 import {
     StepWrapper,
     StepBodyWrapper,
     StepHeadingWrapper,
     ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
-
+} from '@onboarding-components/Wrapper';
+import { goToNextStep } from '@onboarding-actions/onboardingActions';
+import { changePin, submitNewPin } from '@onboarding-actions/connectActions';
 import { State } from '@suite-types/index';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { ConnectActions } from '@suite/types/onboarding/connect';
 
 import l10nMessages from './index.messages';
-import HowToSetPinGif from './videos/pin.gif';
 
 const NewPinWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    /* @media only screen and (min-width: ${BREAKPOINTS.SM}px) { 
-        flex-direction: row; 
-    }  */
 `;
 
 const HowToSetPinModal = styled.div`
@@ -53,8 +48,13 @@ interface Props {
     deviceCall: State['onboarding']['connect']['deviceCall'];
     device: State['onboarding']['connect']['device'];
     activeSubStep: State['onboarding']['activeSubStep'];
-    connectActions: ConnectActions;
-    onboardingActions: OnboardingActions;
+    connectActions: {
+        changePin: typeof changePin;
+        submitNewPin: typeof submitNewPin;
+    };
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
 }
 
 interface SetPinState {
@@ -141,7 +141,10 @@ class SetPinStep extends React.Component<Props> {
                             {this.state.instructionsFocused && (
                                 <Modal>
                                     <HowToSetPinModal>
-                                        <HowToSetPin src={HowToSetPinGif} alt="How to enter pin" />
+                                        <HowToSetPin
+                                            src={resolveStaticPath('videos/onboarding/pin.gif')}
+                                            alt="How to enter pin"
+                                        />
                                         <Link
                                             onClick={() =>
                                                 this.setState({ instructionsFocused: false })

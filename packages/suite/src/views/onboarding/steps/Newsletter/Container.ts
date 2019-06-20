@@ -15,8 +15,18 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    connectActions: bindActionCreators(connectActions, dispatch),
-    newsletterActions: bindActionCreators(newsletterActions, dispatch),
+    connectActions: {
+        callActionAndGoToNextStep: bindActionCreators(
+            connectActions.callActionAndGoToNextStep,
+            dispatch,
+        ),
+    },
+    newsletterActions: {
+        submitEmail: bindActionCreators(newsletterActions.submitEmail, dispatch),
+        setEmail: bindActionCreators(newsletterActions.setEmail, dispatch),
+        toggleCheckbox: bindActionCreators(newsletterActions.toggleCheckbox, dispatch),
+        setSkipped: bindActionCreators(newsletterActions.setSkipped, dispatch),
+    },
 });
 
 export default connect(
