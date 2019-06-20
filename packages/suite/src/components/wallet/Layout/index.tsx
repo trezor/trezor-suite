@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State } from '@suite-types/index';
 import styled, { css } from 'styled-components';
-import TopNavigation from '@wallet-components/TopNavigation';
 import { variables } from '@trezor/components';
 import Sidebar from './components/Sidebar';
 
@@ -47,7 +46,6 @@ const Layout = (props: Props) => (
     <Wrapper>
         <Sidebar isOpen={props.suite.showSidebar} />
         <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-            <TopNavigation />
             <Content>{props.children}</Content>
         </ContentWrapper>
     </Wrapper>
