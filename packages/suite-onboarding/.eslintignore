@@ -1,7 +1,8 @@
-.next
+.next/**
 _old
-build
+build/**
 
+lib/**
 node_modules
 generated
 

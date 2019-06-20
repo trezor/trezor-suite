@@ -1,9 +1,8 @@
 image: node:lts
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: shared-yarn-cache
   paths:
-    - ~/.cache
     - node_modules/
 
 before_script:
