@@ -96,6 +96,8 @@ interface Props {
     wallet: State['wallet'];
     setLocalCurrency: typeof settingsActions.setLocalCurrency;
     setHideBalance: typeof settingsActions.setHideBalance;
+    handleCoinVisibility: typeof settingsActions.handleCoinVisibility;
+    toggleGroupCoinsVisibility: typeof settingsActions.toggleGroupCoinsVisibility;
 }
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
@@ -151,10 +153,8 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
         <Section>
             <Coins
                 networks={NETWORKS}
-                handleCoinVisibility={() => {}}
-                toggleGroupCoinsVisibility={() => {}}
-                // handleCoinVisibility={props.handleCoinVisibility}
-                // toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
+                handleCoinVisibility={props.handleCoinVisibility}
+                toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
                 hiddenCoins={props.wallet.settings.hiddenCoins}
                 hiddenCoinsExternal={props.wallet.settings.hiddenCoinsExternal}
             />

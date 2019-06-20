@@ -17,11 +17,11 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(settingsActions.setLocalCurrency, dispatch),
     setHideBalance: bindActionCreators(settingsActions.setHideBalance, dispatch),
-    // handleCoinVisibility: bindActionCreators(LocalStorageActions.handleCoinVisibility, dispatch),
-    // toggleGroupCoinsVisibility: bindActionCreators(
-    //     LocalStorageActions.toggleGroupCoinsVisibility,
-    //     dispatch
-    // ),
+    handleCoinVisibility: bindActionCreators(settingsActions.handleCoinVisibility, dispatch),
+    toggleGroupCoinsVisibility: bindActionCreators(
+        settingsActions.toggleGroupCoinsVisibility,
+        dispatch,
+    ),
 });
 
 export default injectIntl(
