@@ -1,5 +1,5 @@
 import { State, Dispatch, GetState } from '@suite-types/index';
-import * as STORAGE from './constants/storage';
+import * as STORAGE from '@suite-actions/constants/storageConstants';
 
 export type StorageActions =
     | {

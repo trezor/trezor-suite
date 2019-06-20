@@ -1,6 +1,7 @@
-import * as BLOCKCHAIN from './blockchain';
-import * as STORAGE from './storage';
-import * as SUITE from './suite';
-import * as LOG from './log';
+import * as BLOCKCHAIN from './blockchainConstants';
+import * as STORAGE from './storageConstants';
+import * as SUITE from './suiteConstants';
+import * as LOG from './logConstants';
+import * as MODAL from './modalConstants';
 
-export { BLOCKCHAIN, STORAGE, SUITE, LOG };
+export { BLOCKCHAIN, STORAGE, SUITE, LOG, MODAL };

@@ -1,7 +1,6 @@
 import { UI, DEVICE } from 'trezor-connect';
-import * as RECEIVE from 'actions/constants/receive';
-import * as MODAL from 'actions/constants/modal';
-import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as MODAL from '@suite-actions/constants/modalConstants';
+import * as CONNECT from '@suite-actions/trezorConnectActions';
 
 const initialState = {
     context: MODAL.CONTEXT_NONE,
@@ -9,7 +8,6 @@ const initialState = {
 
 export default function modal(state = initialState, action) {
     switch (action.type) {
-        case RECEIVE.REQUEST_UNVERIFIED:
         case CONNECT.FORGET_REQUEST:
         case CONNECT.TRY_TO_DUPLICATE:
         case CONNECT.REQUEST_WALLET_TYPE:
@@ -69,17 +67,6 @@ export default function modal(state = initialState, action) {
         case CONNECT.FORGET_SINGLE:
         case CONNECT.REMEMBER:
             return initialState;
-
-        case MODAL.OPEN_EXTERNAL_WALLET:
-            return {
-                context: MODAL.CONTEXT_EXTERNAL_WALLET,
-                windowType: action.id,
-            };
-
-        case MODAL.OPEN_SCAN_QR:
-            return {
-                context: MODAL.CONTEXT_SCAN_QR,
-            };
 
         case UI.REQUEST_CONFIRMATION:
             return {
