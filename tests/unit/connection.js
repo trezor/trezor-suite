@@ -80,6 +80,11 @@ backends.forEach((b, i) => {
             }
         });
 
+        it('Disconnect without connection', async () => {
+            const r = await blockchain.disconnect();
+            expect(r).toEqual(true);
+        });
+
         it('Connect error (server field with invalid values)', async () => {
             // $FlowIssue
             blockchain.settings.server = [
