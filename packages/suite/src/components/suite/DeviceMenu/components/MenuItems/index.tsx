@@ -2,11 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { getRoute } from '@suite-utils/router';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { goto } from '@suite-actions/routerActions';
 import { Switch, Icon, colors, icons, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
-import { AcquiredDevice } from '@suite-types/index';
+import { AcquiredDevice, State } from '@suite-types/index';
+import { setHideBalance } from '@wallet-actions/settingsActions';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
@@ -50,11 +53,15 @@ const IconWrapper = styled.div`
 
 const Link = styled.a``;
 
+const SwitchWrapper = styled.div``;
+
 interface Props {
     device: AcquiredDevice;
+    setHideBalance: typeof setHideBalance;
+    settings: State['wallet']['settings'];
 }
 
-const MenuItems = ({ device }: Props) => {
+const MenuItems = ({ device, setHideBalance, settings }: Props) => {
     // const showDeviceMenu = device && device.mode === 'normal';
 
     const showClone =
@@ -111,7 +118,7 @@ const MenuItems = ({ device }: Props) => {
                     <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                 </Label>
             </Item>
-            {/* <Divider />
+            <Divider />
             <Item>
                 <IconWrapper>
                     <Icon icon={icons.EYE_CROSSED} size={14} color={colors.TEXT_SECONDARY} />
@@ -119,20 +126,27 @@ const MenuItems = ({ device }: Props) => {
                 <Label>
                     <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
                 </Label>
-                <Switch
-                    width={36}
-                    height={18}
-                    handleDiameter={14}
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    onChange={checked => {
-                        this.props.setHideBalance(checked);
+                <SwitchWrapper
+                    onClick={event => {
+                        // prevents closing the device menu when toggling the switch
+                        event.stopPropagation();
+                        event.preventDefault();
                     }}
-                    checked={this.props.wallet.hideBalance}
-                />
-            </Item> 
+                >
+                    <Switch
+                        width={36}
+                        height={18}
+                        handleDiameter={14}
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onChange={checked => {
+                            setHideBalance(checked);
+                        }}
+                        checked={settings.hideBalance}
+                    />
+                </SwitchWrapper>
+            </Item>
             <Divider />
-            */}
             <Item onClick={() => goto(getRoute('wallet-settings'))}>
                 <IconWrapper>
                     <Icon icon={icons.COG} size={14} color={colors.TEXT_SECONDARY} />
@@ -145,4 +159,13 @@ const MenuItems = ({ device }: Props) => {
     );
 };
 
-export default MenuItems;
+const mapStateToProps = (state: State) => ({
+    settings: state.wallet.settings,
+});
+
+export default connect(
+    mapStateToProps,
+    dispatch => ({
+        setHideBalance: bindActionCreators(setHideBalance, dispatch),
+    }),
+)(MenuItems);
