@@ -39,7 +39,7 @@ suite-onboarding build:
     artifacts:
         expire_in: 15 minutes
         paths:
-            - $PACKAGE_PATH_SUITE_WEB/build
+            - $PACKAGE_PATH_SUITE_ONBOARDING/build
 
 suite-onboarding deploy dev:
     stage: deploy
@@ -62,7 +62,7 @@ suite-onboarding deploy dev:
     before_script: []
     script:
         - env
-        - cd ${PACKAGE_PATH_SUITE_WEB}
+        - cd ${PACKAGE_PATH_SUITE_ONBOARDING}
         - echo "Deploy to dev servers"
         - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
