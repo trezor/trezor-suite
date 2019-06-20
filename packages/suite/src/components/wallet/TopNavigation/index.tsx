@@ -92,6 +92,7 @@ const TopNavigation = (props: Props) => {
                 if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
                     return (
                         <StyledNavLink
+                            key={item.route}
                             active={currentPath === item.route}
                             onClick={() => goto(item.route, true)}
                         >
