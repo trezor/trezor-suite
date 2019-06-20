@@ -1,21 +1,22 @@
 module.exports = {
-    rootDir: './tests',
-    testMatch: ['**/?(*.)+(test).js?(x)'],
-    automock: false,
+    rootDir: './',
+    // testMatch: ['**/tests/unit/*.js', '**/tests/integration2/*.js'],
+    testMatch: ['**/tests/unit/*.js'],
     coverageDirectory: './coverage/',
     collectCoverage: true,
-    testURL: 'http://localhost',
+    collectCoverageFrom: [
+        // '**/src/**/*.js',
+    ],
     modulePathIgnorePatterns: [
         'node_modules',
-        'utils/windowUtils.js',
-        'utils/promiseUtils.js',
-        'utils/networkUtils.js',
+        'build',
+        '_old',
+        'src/types',
+        'src/ui',
+        'src/utils/ws.js',
     ],
-    collectCoverageFrom: [
-        'utils/**.js',
-        'reducers/utils/**.js',
-    ],
-    setupFiles: [
-        './setupJest.js',
-    ],
+    setupFiles: ['./tests/setup.js'],
+    transform: {
+        '^.+\\.js$': 'babel-jest',
+    },
 };

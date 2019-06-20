@@ -4,7 +4,8 @@
         "prettier",
         "prettier/babel",
         "plugin:flowtype/recommended",
-        "prettier/flowtype"
+        "prettier/flowtype",
+        "plugin:jest/recommended"
     ],
     "globals": {
     },
@@ -12,7 +13,7 @@
         "browser": true,
         "amd": true,
         "node": true,
-        "mocha": true
+        "jest": true
     },
     "rules": {
         "import/prefer-default-export": 0,
@@ -34,13 +35,14 @@
         "max-len": 0,
         "eol-last": 0,
         "spaced-comment": 0,
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "jest/no-disabled-tests": 0
     },
     "plugins": [
         "import",
         "prettier",
         "flowtype",
-        "mocha"
+        "jest"
     ],
     "settings": {
         "import/resolver": {

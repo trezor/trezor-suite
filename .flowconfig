@@ -5,6 +5,7 @@
 .*/build
 
 [libs]
+./tests/types/jest.js
 
 [options]
 esproposal.class_static_fields=enable
