@@ -18,23 +18,26 @@
     "blockbook",
     "javascript"
   ],
-  "main": "index.js",
+  "main": "./lib/index.js",
   "browser": {
     "ws": "./lib/utils/ws.js"
   },
   "scripts": {
     "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
-    "build": "rm -rf ./build && yarn build:lib && yarn build:workers && babel ./build/lib --out-dir ./build/lib",
-    "build:lib": "babel-node ./scripts/build.lib.js",
-    "build:workers": "babel-node ./scripts/build.workers.js",
+    "build": "yarn build:lib && yarn build:workers",
+    "build:lib": "babel-node ./scripts/build.lib.js && babel ./lib --out-dir ./lib",
+    "build:workers": "rm -rf build && yarn build:workers-web && yarn build:workers-node",
+    "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
+    "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
     "lint": "eslint ./src ./webpack ./tests",
-    "flow": "flow check ./src",
-    "test-mocha": "mocha --opts ./tests/mocha.opts ./tests/utils.js",
-    "test": "jest"
+    "flow": "flow check ./src ./tests",
+    "test": "jest -c jest.config.unit.js",
+    "test:node": "jest -c jest.config.integration.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/plugin-transform-flow-strip-types": "^7.4.4",
