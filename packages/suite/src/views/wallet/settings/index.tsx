@@ -24,19 +24,7 @@ import { getRoute } from '@suite/utils/suite/router';
 import Coins from './components/Coins';
 import l10nMessages from './index.messages';
 
-const { FONT_SIZE, SCREEN_SIZE } = variables;
-
-const StyledContent = styled.div`
-    max-width: 800px;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding: 40px 35px 40px 35px;
-
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
-        padding: 20px 35px;
-    }
-`;
+const { FONT_SIZE } = variables;
 
 const CurrencySelect = styled(Select)`
     min-width: 77px;

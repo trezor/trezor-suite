@@ -9,8 +9,3 @@ export const resolveStaticPath = (path: string) => {
 
     return staticPath;
 };
-
-export const getPrefixedURL = (url: string) => {
-    const urlPrefix = process.env.assetPrefix || '';
-    return urlPrefix + url;
-};

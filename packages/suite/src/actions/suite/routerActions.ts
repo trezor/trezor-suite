@@ -5,7 +5,7 @@
 
 import Router from 'next/router';
 import { Dispatch, GetState } from '@suite-types/index';
-import { getPrefixedURL } from '@suite-utils/nextjs';
+import { getPrefixedURL } from '@suite-utils/router';
 
 export const LOCATION_CHANGE = '@router/location-change';
 export const UPDATE = '@router/update';

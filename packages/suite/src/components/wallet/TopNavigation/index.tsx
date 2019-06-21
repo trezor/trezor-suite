@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import { getPrefixedURL } from '@suite-utils/nextjs';
+import { getPrefixedURL } from '@suite-utils/router';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -84,10 +84,7 @@ interface Props {
 
 const TopNavigation = (props: Props) => {
     const { pathname, params } = props.router;
-    const currentPath =
-        pathname[pathname.length - 1] === '/'
-            ? pathname.substring(0, pathname.length - 1)
-            : pathname;
+    const currentPath = pathname;
 
     return (
         <Wrapper>
