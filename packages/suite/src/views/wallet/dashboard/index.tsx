@@ -53,6 +53,14 @@ const StyledH4 = styled(H4)`
     text-align: center;
 `;
 
+const StyledLink = styled(Link)`
+    margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+`;
+
 interface Props {
     settings: State['wallet']['settings'];
 }
@@ -98,7 +106,7 @@ const Dashboard = (props: Props) => {
                         {NETWORKS.filter(item => !item.isHidden)
                             .filter(item => !props.settings.hiddenCoins.includes(item.shortcut))
                             .map(network => (
-                                <Link
+                                <StyledLink
                                     key={network.shortcut}
                                     href={getRoute('wallet-account', {
                                         coin: network.shortcut,
@@ -106,7 +114,7 @@ const Dashboard = (props: Props) => {
                                     })}
                                 >
                                     <StyledCoinLogo network={network.shortcut} height={32} />
-                                </Link>
+                                </StyledLink>
                             ))}
                     </Coins>
                 </Row>

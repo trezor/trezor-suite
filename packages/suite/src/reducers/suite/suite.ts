@@ -12,6 +12,7 @@ interface SuiteState {
     messages: { [key: string]: any };
     deviceMenuOpened: boolean;
     showSidebar?: boolean;
+    platform?: Platform;
 }
 
 interface Transport {
@@ -23,6 +24,14 @@ interface Transport {
         packages: [];
         changelog: [];
     };
+}
+
+interface Platform {
+    mobile: boolean | undefined; // todo: there is maybe a bug in connect, mobile shouldnt be undefined imho
+    name: string;
+    osname: string;
+    outdated: boolean;
+    supported: boolean;
 }
 
 const initialState: SuiteState = {
@@ -87,6 +96,11 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             return {
                 ...state,
                 showSidebar: !state.showSidebar,
+            };
+        case 'iframe-loaded':
+            return {
+                ...state,
+                platform: action.payload.browser,
             };
         default:
             return state;
