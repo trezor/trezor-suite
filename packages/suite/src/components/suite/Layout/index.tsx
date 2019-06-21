@@ -28,6 +28,7 @@ const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
 
 const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
     width: 100%;
+    margin: 0 auto;
 
     ${props =>
         !props.fullscreenMode &&
@@ -41,7 +42,6 @@ const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
             }
         `};
 
-    margin: 0 auto;
     flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     display: flex;
