@@ -14,6 +14,10 @@ export const routes: Route[] = [
         pattern: '/wallet/',
     },
     {
+        name: 'onboarding-index',
+        pattern: '/onboarding/',
+    },
+    {
         name: 'suite-device-settings',
         pattern: '/settings/',
     },
@@ -49,9 +53,16 @@ export const routes: Route[] = [
 
 const PARAMS = ['coin', 'accountId'];
 
+// Prefix a url with assetPrefix (eg. name of the branch in CI)
+// Useful with NextJS's Router.push() that accepts `as` prop as second arg
+export const getPrefixedURL = (url: string) => {
+    const urlPrefix = process.env.assetPrefix || '';
+    return urlPrefix + url;
+};
+
 export const getApp = (url: string) => {
-    if (url === '/' || url.indexOf('/wallet') === 0) return 'wallet';
-    if (url.indexOf('/onboarding') === 0) return 'onboarding';
+    if (url === '/' || url.indexOf(getPrefixedURL('/wallet')) === 0) return 'wallet';
+    if (url.indexOf(getPrefixedURL('/onboarding')) === 0) return 'onboarding';
 
     return 'unknown';
 };
@@ -80,18 +91,14 @@ export const getRoute = (name: string, params?: { [key: string]: string }) => {
     if (params && params !== {}) {
         let paramsString = '';
         PARAMS.forEach(key => {
-            paramsString = `${paramsString}/${params[key]}`;
+            // eslint-disable-next-line no-prototype-builtins
+            if (params.hasOwnProperty(key)) {
+                paramsString = `${paramsString}/${params[key]}`;
+            }
         });
         return `${entry.pattern}#${paramsString}`;
     }
     return entry.pattern;
-};
-
-// Prefix a url with assetPrefix (eg. name of the branch in CI)
-// Useful with NextJS's Router.push() that accepts
-export const getPrefixedURL = (url: string) => {
-    const urlPrefix = process.env.assetPrefix || '';
-    return urlPrefix + url;
 };
 
 // Strips params delimited by a hashtag from the URL
@@ -111,5 +118,5 @@ export const toInternalRoute = (route: string) => {
 
 // Check if the URL/route points to an in-app page
 export const isInternalRoute = (route: string) => {
-    return routes.find(r => r.pattern === toInternalRoute(route));
+    return !!routes.find(r => r.pattern === toInternalRoute(route));
 };
