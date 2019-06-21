@@ -139,7 +139,7 @@ class CoinMenu extends PureComponent<Props> {
                     .map(item => (
                         <StyledLink
                             key={item.shortcut}
-                            href={`/wallet/account#/${item.shortcut}/0`}
+                            href={`/wallet/account/#/${item.shortcut}/0`}
                         >
                             <RowCoin
                                 network={{
