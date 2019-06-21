@@ -30,39 +30,39 @@ export const routes: Route[] = [
     },
     {
         name: 'wallet-index',
-        pattern: '/wallet',
+        pattern: '/wallet/',
     },
     {
         name: 'suite-device-settings',
-        pattern: '/settings',
+        pattern: '/settings/',
     },
     {
         name: 'wallet-settings',
-        pattern: '/wallet/settings',
+        pattern: '/wallet/settings/',
     },
     {
         name: 'wallet-account',
-        pattern: '/wallet/account',
+        pattern: '/wallet/account/',
     },
     {
         name: 'wallet-account-summary',
-        pattern: '/wallet/account',
+        pattern: '/wallet/account/',
     },
     {
         name: 'wallet-account-transactions',
-        pattern: '/wallet/account/transactions',
+        pattern: '/wallet/account/transactions/',
     },
     {
         name: 'wallet-account-send',
-        pattern: '/wallet/account/send',
+        pattern: '/wallet/account/send/',
     },
     {
         name: 'wallet-account-receive',
-        pattern: '/wallet/account/receive',
+        pattern: '/wallet/account/receive/',
     },
     {
         name: 'wallet-account-sign-verify',
-        pattern: '/wallet/account/sign-verify',
+        pattern: '/wallet/account/sign-verify/',
     },
 ];
 

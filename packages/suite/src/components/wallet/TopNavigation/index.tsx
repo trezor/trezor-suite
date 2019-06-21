@@ -84,10 +84,7 @@ interface Props {
 
 const TopNavigation = (props: Props) => {
     const { pathname, params } = props.router;
-    const currentPath =
-        pathname[pathname.length - 1] === '/'
-            ? pathname.substring(0, pathname.length - 1)
-            : pathname;
+    const currentPath = pathname;
 
     return (
         <Wrapper>

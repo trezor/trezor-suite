@@ -23,10 +23,7 @@ export const toInternalRoute = (url: string) => {
         // 'https://suite.corp.sldev.cz/wallet/account/' and '#/eth/0'
         const tokens = url.match(/([^#]*)(#.*)?/);
         const group1 = tokens ? tokens[1] : url;
-        // strip trailing slash
-        const lastCharPos = group1.length - 1;
-        const stripped = group1[lastCharPos] === '/' ? group1.substring(0, lastCharPos) : group1;
-        return stripped;
+        return group1;
     } catch (error) {
         console.error(error);
         return url;
