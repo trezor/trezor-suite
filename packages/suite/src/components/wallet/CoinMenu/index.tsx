@@ -8,7 +8,6 @@ import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
 import networks from '@suite-config/networks';
 import externalCoins from '@suite-config/externalCoins';
-import { goto } from '@suite/actions/suite/routerActions';
 import { getRoute } from '@suite/utils/suite/router';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
