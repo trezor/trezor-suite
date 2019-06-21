@@ -11,9 +11,11 @@ interface Props extends LinkProps {
 }
 
 const Link = ({ children, href, className, target = '_self', ...rest }: Props) => {
-    // if href prop refers to internal url puts assetPrefix in front and
-    // pass the prefixed value in 'as' prop to prevent refreshing the page
-    // TODO: handle UrlObject, Url type of href
+    /*  
+        if href prop refers to internal url puts assetPrefix in front and
+        pass the prefixed value in 'as' prop to prevent refreshing the page
+        TODO: handle UrlObject, Url type of href
+    */
     const isInternalLink = typeof href === 'string' ? isInternalRoute(href) : false;
     const overrideAsProp = {
         ...(isInternalLink && typeof href === 'string' ? { as: getPrefixedURL(href) } : {}),
