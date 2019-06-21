@@ -33,8 +33,8 @@ export default (state: State = initialState, action: Action): State => {
                 break;
 
             case LOG.CLOSE:
-                draft.copied = true;
-                draft.opened = true;
+                draft.copied = false;
+                draft.opened = false;
                 break;
 
             case LOG.COPY_SUCCESS:
