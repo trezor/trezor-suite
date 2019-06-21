@@ -2,12 +2,14 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { State } from '@suite-types/index';
-import { Link, colors, icons as ICONS } from '@trezor/components';
+import { colors, icons as ICONS } from '@trezor/components';
+import Link from '@suite-components/Link';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
 import networks from '@suite-config/networks';
 import externalCoins from '@suite-config/externalCoins';
 import { goto } from '@suite/actions/suite/routerActions';
+import { getRoute } from '@suite/utils/suite/router';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
 import l10nMessages from './index.messages';
@@ -31,10 +33,6 @@ const Empty = styled.span`
     justify-content: center;
     align-items: center;
     min-height: 50px;
-`;
-
-const StyledLinkEmpty = styled(Link)`
-    padding: 0;
 `;
 
 const Gray = styled.span`
@@ -93,11 +91,11 @@ class CoinMenu extends PureComponent<Props> {
                         {...l10nMessages.TR_SELECT_COINS}
                         values={{
                             TR_SELECT_COINS_LINK: (
-                                <StyledLinkEmpty to="/settings">
+                                <Link href={getRoute('wallet-settings')}>
                                     <FormattedMessage
                                         {...l10nCommonMessages.TR_SELECT_COINS_LINK}
                                     />
-                                </StyledLinkEmpty>
+                                </Link>
                             ),
                         }}
                     />{' '}
@@ -142,7 +140,7 @@ class CoinMenu extends PureComponent<Props> {
                     .map(item => (
                         <StyledLink
                             key={item.shortcut}
-                            onClick={() => goto(`/wallet/account#/${item.shortcut}/0`)}
+                            href={`/wallet/account#/${item.shortcut}/0`}
                         >
                             <RowCoin
                                 network={{
