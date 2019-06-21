@@ -38,15 +38,18 @@ interface Props {
     style?: CSSProperties;
     content: React.ReactNode;
 }
-const Option = (props: Props) => (
-    <OptionWrapper
-        // {...props}
-        isSelected={props.isSelected}
-        onClick={props.onClick}
-    >
-        <Circle style={{ visibility: props.isSelected ? 'visible' : 'hidden' }} />
-        {props.content}
-    </OptionWrapper>
-);
+const Option = (props: Props) => {
+    const { isSelected = false } = props;
+    return (
+        <OptionWrapper
+            // {...props}
+            isSelected={isSelected}
+            onClick={props.onClick}
+        >
+            <Circle style={{ visibility: props.isSelected ? 'visible' : 'hidden' }} />
+            {props.content}
+        </OptionWrapper>
+    );
+};
 
 export default Option;

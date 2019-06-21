@@ -6,16 +6,13 @@ import {
     SET_ADVANCED_RECOVERY,
 } from '@suite/types/onboarding/recovery';
 
-const initialState: RecoveryReducer = {
+const initialState = {
     word: null,
     advancedRecovery: false,
     wordsCount: 12,
 };
 
-const recovery = (
-    state: RecoveryReducer = initialState,
-    action: RecoveryActionTypes,
-): RecoveryReducer => {
+const recovery = (state: RecoveryReducer = initialState, action: RecoveryActionTypes) => {
     switch (action.type) {
         case SET_WORD:
             return {

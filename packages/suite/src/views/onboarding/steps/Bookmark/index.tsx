@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { Link, Button, P } from '@trezor/components';
 
 import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
-import Platform from '@suite/utils/onboarding/Platform';
 import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
 import l10nCommonMessages from '@suite-support/Messages';
 import { PHISHING_URL } from '@suite/constants/onboarding/urls';
@@ -42,7 +41,7 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
 
     static readonly CTRL_KEYS_MAC = [91, 93];
 
-    state: State = {
+    state: StepState = {
         keys: {},
     };
 
@@ -74,13 +73,15 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
 
     nextDisabled() {
         const { keys } = this.state;
-        const ctrlKeys = Platform.isMac() ? BookmarkStep.CTRL_KEYS_MAC : BookmarkStep.CTRL_KEYS_WIN;
+        // const ctrlKeys = Platform.isMac() ? BookmarkStep.CTRL_KEYS_MAC : BookmarkStep.CTRL_KEYS_WIN;
+        const ctrlKeys = BookmarkStep.CTRL_KEYS_WIN;
         return !keys[BookmarkStep.D_KEY] || !ctrlKeys.find(key => keys[key] === true);
     }
 
     render() {
         const { keys } = this.state;
-        const ctrlKeys = Platform.isMac() ? BookmarkStep.CTRL_KEYS_MAC : BookmarkStep.CTRL_KEYS_WIN;
+        // const ctrlKeys = Platform.isMac() ? BookmarkStep.CTRL_KEYS_MAC : BookmarkStep.CTRL_KEYS_WIN;
+        const ctrlKeys = BookmarkStep.CTRL_KEYS_WIN;
 
         return (
             <StepWrapper>
@@ -100,39 +101,37 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
                             }}
                         />
                     </Text>
-
-                    {!Platform.isMobile() && (
-                        <React.Fragment>
-                            <Text>
-                                <FormattedMessage {...l10nMessages.TR_USE_THE_KEYBOARD_SHORTCUT} />
-                            </Text>
-                            <Keys>
-                                <Key
-                                    isPressed={Boolean(ctrlKeys.find(key => keys[key] === true))}
-                                    text={Platform.isMac() ? '⌘' : 'Ctrl'}
-                                />
-                                <P> + </P>
-                                <Key isPressed={keys[BookmarkStep.D_KEY] === true} text="D" />
-                            </Keys>
-                        </React.Fragment>
-                    )}
-
+                    {/* {!Platform.isMobile() && ( */}
+                    <React.Fragment>
+                        <Text>
+                            <FormattedMessage {...l10nMessages.TR_USE_THE_KEYBOARD_SHORTCUT} />
+                        </Text>
+                        <Keys>
+                            <Key
+                                isPressed={Boolean(ctrlKeys.find(key => keys[key] === true))}
+                                text="Ctrl"
+                            />
+                            <P> + </P>
+                            <Key isPressed={keys[BookmarkStep.D_KEY] === true} text="D" />
+                        </Keys>
+                    </React.Fragment>
+                    // )}
                     <ControlsWrapper>
-                        {!Platform.isMobile() && (
-                            <React.Fragment>
-                                <Button isWhite onClick={() => this.setBookmarkFlagAndContinue()}>
-                                    <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                                </Button>
-                                <Button
-                                    isDisabled={this.nextDisabled()}
-                                    onClick={() => this.setBookmarkFlagAndContinue()}
-                                >
-                                    <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </Button>
-                            </React.Fragment>
-                        )}
+                        {/* {!Platform.isMobile() && ( */}
+                        <React.Fragment>
+                            <Button isWhite onClick={() => this.setBookmarkFlagAndContinue()}>
+                                <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
+                            </Button>
+                            <Button
+                                isDisabled={this.nextDisabled()}
+                                onClick={() => this.setBookmarkFlagAndContinue()}
+                            >
+                                <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                            </Button>
+                        </React.Fragment>
+                        {/* )} */}
                         {/*  todo: for mobile add to homescreen */}
-                        {Platform.isMobile() && (
+                        {/* {Platform.isMobile() && (
                             <React.Fragment>
                                 <Button isWhite onClick={() => this.setBookmarkFlagAndContinue()}>
                                     <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
@@ -141,7 +140,7 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
                                 </Button>
                             </React.Fragment>
-                        )}
+                        )} */}
                     </ControlsWrapper>
                 </StepBodyWrapper>
             </StepWrapper>

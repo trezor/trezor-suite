@@ -9,8 +9,6 @@ import {
 } from '@suite/types/onboarding/onboarding';
 import { Step } from '@suite/types/onboarding/steps';
 
-import { State } from '@suite-types/index';
-
 import * as STEP from '@suite/constants/onboarding/steps';
 
 const initialState: OnboardingReducer = {
@@ -21,7 +19,6 @@ const initialState: OnboardingReducer = {
     steps: [
         {
             id: STEP.ID_WELCOME_STEP,
-            visited: true,
         },
         // content of StartStep moved to WelcomeStep
         // {
@@ -126,10 +123,7 @@ const initialState: OnboardingReducer = {
     ],
 };
 
-const onboarding = (
-    state: State = initialState,
-    action: OnboardingActionTypes,
-): OnboardingReducer => {
+const onboarding = (state: OnboardingReducer = initialState, action: OnboardingActionTypes) => {
     switch (action.type) {
         case SET_STEP_ACTIVE:
             return {

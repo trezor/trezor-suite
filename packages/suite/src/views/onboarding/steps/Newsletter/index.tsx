@@ -33,6 +33,7 @@ import {
 } from '@suite/components/onboarding/Wrapper';
 
 import { State } from '@suite-types/index';
+import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
 
 import l10nMessages from './index.messages';
 
@@ -159,20 +160,18 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                             </InputWrapper>
 
                             <CheckboxexSection>
-                                {Object.values(newsletter.checkboxes).map(
-                                    (checkbox: State['onboarding']['newsletter']['checkbox']) => (
-                                        <CheckboxWrapper key={checkbox.label}>
-                                            <Checkbox
-                                                isChecked={checkbox.value}
-                                                onClick={() =>
-                                                    newsletterActions.toggleCheckbox(checkbox.label)
-                                                }
-                                            >
-                                                <P>{checkbox.label}</P>
-                                            </Checkbox>
-                                        </CheckboxWrapper>
-                                    ),
-                                )}
+                                {newsletter.checkboxes.map((checkbox: CheckboxType) => (
+                                    <CheckboxWrapper key={checkbox.label}>
+                                        <Checkbox
+                                            isChecked={checkbox.value}
+                                            onClick={() =>
+                                                newsletterActions.toggleCheckbox(checkbox.label)
+                                            }
+                                        >
+                                            <P>{checkbox.label}</P>
+                                        </Checkbox>
+                                    </CheckboxWrapper>
+                                ))}
                             </CheckboxexSection>
 
                             <ControlsWrapper>
