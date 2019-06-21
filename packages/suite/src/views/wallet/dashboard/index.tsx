@@ -101,7 +101,10 @@ const Dashboard = (props: Props) => {
                                 // TODO: build network account url in router utils
                                 <Link
                                     key={network.shortcut}
-                                    href={`/wallet/account/#/${network.shortcut}/0`}
+                                    href={getRoute('wallet-account', {
+                                        coin: network.shortcut,
+                                        accountId: '0',
+                                    })}
                                 >
                                     <StyledCoinLogo network={network.shortcut} height={32} />
                                 </Link>

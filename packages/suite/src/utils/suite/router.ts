@@ -47,6 +47,8 @@ export const routes: Route[] = [
     },
 ];
 
+const PARAMS = ['coin', 'accountId'];
+
 export const getApp = (url: string) => {
     if (url === '/' || url.indexOf('/wallet') === 0) return 'wallet';
     if (url.indexOf('/onboarding') === 0) return 'onboarding';
@@ -60,18 +62,27 @@ export const getParams = (url: string) => {
     const parts = split[1].substr(1, split[1].length).split('/');
 
     const params: { [key: string]: string } = {};
-    ['coin', 'accountId'].forEach((key, index) => {
+    PARAMS.forEach((key, index) => {
         params[key] = parts[index];
     });
     return params;
 };
 
-export const getRoute = (name: string): string => {
+export const getRoute = (name: string, params?: { [key: string]: string }) => {
     const entry = routes.find(r => r.name === name);
     if (!entry) {
         // eslint-disable-next-line no-console
         console.error(`Route for ${name} not found`);
         return '/';
+    }
+
+    // attach params
+    if (params && params !== {}) {
+        let paramsString = '';
+        PARAMS.forEach(key => {
+            paramsString = `${paramsString}/${params[key]}`;
+        });
+        return `${entry.pattern}#${paramsString}`;
     }
     return entry.pattern;
 };
@@ -84,17 +95,17 @@ export const getPrefixedURL = (url: string) => {
 };
 
 // Strips params delimited by a hashtag from the URL
-export const toInternalRoute = (url: string) => {
+export const toInternalRoute = (route: string) => {
     // chars before # belong to the first group, # and chars after to the optional second group
     // eg. https://suite.corp.sldev.cz/wallet/account/#/eth/0 will be splitted to
     // 'https://suite.corp.sldev.cz/wallet/account/' and '#/eth/0'
     try {
-        const tokens = url.match(/([^#]*)(#.*)?/);
-        const group1 = tokens ? tokens[1] : url;
+        const tokens = route.match(/([^#]*)(#.*)?/);
+        const group1 = tokens ? tokens[1] : route;
         return group1;
     } catch (error) {
         console.error(error);
-        return url;
+        return route;
     }
 };
 
