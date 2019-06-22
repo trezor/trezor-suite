@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
@@ -26,24 +26,30 @@ const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     align-items: center;
 `;
 
-const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
+const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
     width: 100%;
-    max-width: 1170px;
     margin: 0 auto;
+
+    ${props =>
+        !props.fullscreenMode &&
+        css`
+            max-width: 1170px;
+            margin-top: 30px;
+
+            @media screen and (max-width: 1170px) {
+                border-radius: 0px;
+                margin-top: 0px;
+            }
+        `};
+
     flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     display: flex;
     flex-direction: column;
     align-items: center;
     border-radius: 4px 4px 0px 0px;
-    margin-top: 30px;
     height: 100%;
     overflow-y: hidden;
-
-    @media screen and (max-width: 1170px) {
-        border-radius: 0px;
-        margin-top: 0px;
-    }
 `;
 
 interface Props {
@@ -54,6 +60,7 @@ interface Props {
     toggleSidebar: () => void;
     isLanding?: boolean;
     showSuiteHeader?: boolean;
+    fullscreenMode?: boolean;
     children: React.ReactNode;
 }
 
@@ -95,7 +102,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             ]}
         />
         <ErrorBoundary>
-            <AppWrapper isLanding={props.isLanding}>
+            <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
                     <Log />
                     {props.showSuiteHeader && <SuiteHeader />}
@@ -103,7 +110,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 </>
             </AppWrapper>
         </ErrorBoundary>
-        <Footer isLanding={props.isLanding} />
+        {!props.fullscreenMode && <Footer isLanding={props.isLanding} />}
     </PageWrapper>
 );
 

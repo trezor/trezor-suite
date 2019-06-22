@@ -77,6 +77,7 @@ interface WrapperOutsideProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const WrapperOutside = styled.div<WrapperOutsideProps>`
     display: flex;
+    flex: 1;
     flex-direction: column;
     /* min-height: calc(100vh - ${NAVBAR_HEIGHT} ${NAVBAR_HEIGHT_UNIT}); */
     max-width: 100vw;
