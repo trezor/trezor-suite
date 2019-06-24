@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { State } from '@suite-types/index';
-import { ConnectActions } from '@suite/types/onboarding/connect';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { applySettings } from '@onboarding-actions/connectActions';
+import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
 import { isASCII } from '@suite-utils/validators';
 import l10nCommonMessages from '@suite-support/Messages';
@@ -28,8 +28,12 @@ const NameInput = styled(Input)<NameInputProps>`
 `;
 
 interface StepProps {
-    connectActions: ConnectActions;
-    onboardingActions: OnboardingActions;
+    connectActions: {
+        applySettings: typeof applySettings;
+    };
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
     device: State['onboarding']['connect']['device'];
     deviceCall: State['onboarding']['connect']['deviceCall'];
 }

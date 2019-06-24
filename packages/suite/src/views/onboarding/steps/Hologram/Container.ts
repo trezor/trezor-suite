@@ -13,7 +13,11 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
+    onboardingActions: {
+        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+        goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
+    },
 });
 
 export default connect(

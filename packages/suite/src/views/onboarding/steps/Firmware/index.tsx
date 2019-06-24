@@ -18,8 +18,8 @@ import {
 } from '@suite/components/onboarding/Wrapper';
 
 import { State } from '@suite-types/index';
-import { FirmwareUpdateActions } from '@suite/types/onboarding/firmwareUpdate';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { updateFirmware } from '@onboarding-actions/firmwareUpdateActions';
+import { goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import l10nMessages from './index.messages';
 
@@ -31,8 +31,12 @@ interface Props {
     deviceCall: State['onboarding']['connect']['deviceCall'];
     fetchCall: State['onboarding']['fetchCall'];
     firmwareUpdate: State['onboarding']['firmwareUpdate'];
-    firmwareUpdateActions: FirmwareUpdateActions;
-    onboardingActions: OnboardingActions;
+    firmwareUpdateActions: {
+        updateFirmware: typeof updateFirmware;
+    };
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
 }
 
 class FirmwareStep extends React.Component<Props & InjectedIntlProps> {

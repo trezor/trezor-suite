@@ -6,7 +6,7 @@ import { Select, Link, Button } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { State } from '@suite-types/index';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { goToSubStep, goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
 import Text from '@suite/components/onboarding/Text';
@@ -55,7 +55,10 @@ interface BridgeState {
 interface Props {
     transport: State['suite']['transport'];
     activeSubStep: State['onboarding']['activeSubStep'];
-    onboardingActions: OnboardingActions;
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+        goToSubStep: typeof goToSubStep;
+    };
 }
 
 class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState> {

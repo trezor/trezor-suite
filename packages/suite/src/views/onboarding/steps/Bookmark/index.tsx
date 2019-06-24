@@ -17,7 +17,7 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 import { State } from '@suite-types/index';
-import { ConnectActions } from '@suite/types/onboarding/connect';
+import { callActionAndGoToNextStep } from '@onboarding-actions/connectActions';
 
 import l10nMessages from './index.messages';
 
@@ -27,7 +27,9 @@ const Keys = styled.div`
 
 interface StepProps {
     device: State['onboarding']['connect']['device'];
-    connectActions: ConnectActions;
+    connectActions: {
+        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
+    };
 }
 
 interface StepState {

@@ -10,12 +10,15 @@ import {
     StepHeadingWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { setAsNewDevice, goToNextStep } from '@onboarding-actions/onboardingActions';
 
 // import l10nMessages from './index.messages';
 
 interface Props {
-    onboardingActions: OnboardingActions;
+    onboardingActions: {
+        setAsNewDevice: typeof setAsNewDevice;
+        goToNextStep: typeof goToNextStep;
+    };
 }
 
 const NewOrUsedStep = (props: Props) => (
