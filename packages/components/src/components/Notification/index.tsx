@@ -93,7 +93,7 @@ const ButtonNotification = styled(Button)`
 `;
 
 interface CtaShape {
-    label: React.ReactNode;
+    label: string;
     callback: () => any;
 }
 

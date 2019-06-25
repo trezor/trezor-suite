@@ -1,8 +1,7 @@
 import colors from '../config/colors';
+import { FeedbackType } from '../support/types';
 
-type Props = 'info' | 'error' | 'warning' | 'success';
-
-const getPrimaryColor = (type?: Props) => {
+const getPrimaryColor = (type?: FeedbackType) => {
     let color;
     switch (type) {
         case 'info':
@@ -24,7 +23,7 @@ const getPrimaryColor = (type?: Props) => {
     return color;
 };
 
-const getSecondaryColor = (type?: Props) => {
+const getSecondaryColor = (type?: FeedbackType) => {
     let color;
     switch (type) {
         case 'info':
@@ -46,7 +45,7 @@ const getSecondaryColor = (type?: Props) => {
     return color;
 };
 
-const getNotificationBgColor = (type?: Props) => {
+const getNotificationBgColor = (type?: FeedbackType) => {
     let color;
     switch (type) {
         case 'info':
