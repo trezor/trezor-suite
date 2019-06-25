@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components/native';
 import React from 'react';
 import { TextInputProps } from 'react-native';
 
-import { FONT_FAMILY, FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
+import { FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor } from '../../utils/colors';
 import colors from '../../config/colors';
 import { FeedbackType } from '../../support/types';
@@ -20,12 +20,8 @@ const StyledTextarea = styled.TextInput<StyledTextareaProps>`
     width: 100%;
     min-height: 85px;
     padding: 10px 12px;
-    box-sizing: border-box;
     border: 1px solid ${props => props.border};
     border-radius: 2px;
-    resize: none;
-    outline: none;
-    font-family: ${FONT_FAMILY.MONOSPACE};
     color: ${colors.TEXT_PRIMARY};
     background: ${colors.WHITE};
     font-weight: ${FONT_WEIGHT.MEDIUM};
