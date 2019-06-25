@@ -36,7 +36,23 @@ export type SuiteActions =
       }
     | {
           type: typeof SUITE.TOGGLE_SIDEBAR;
+      }
+    | {
+          type: typeof SUITE.ONLINE_STATUS;
+          online: boolean;
       };
+
+export const updateOnlineStatus = () => (dispatch: Dispatch) => {
+    const statusHandler = () => {
+        dispatch({
+            type: SUITE.ONLINE_STATUS,
+            online: navigator.onLine,
+        });
+    };
+    statusHandler();
+    window.addEventListener('online', statusHandler);
+    window.addEventListener('offline', statusHandler);
+};
 
 export const onSuiteReady = (): SuiteActions => {
     return {
@@ -63,7 +79,9 @@ export const selectDevice = (device: Device | TrezorDevice | undefined) => (
     // 3. TODO: check if device is in available mode (oinitialized, readable)
 
     // 4. select this device
-    const payload = device ? getState().devices.find(d => device.path === d.path) : device;
+    const payload = device
+        ? getState().devices.find((d: TrezorDevice) => device.path === d.path)
+        : device;
     dispatch({
         type: SUITE.SELECT_DEVICE,
         payload,
@@ -75,10 +93,7 @@ export const selectDevice = (device: Device | TrezorDevice | undefined) => (
     // }
 };
 
-export const updateSelectedDevice = (device: Device | TrezorDevice) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const updateSelectedDevice = (device: Device | TrezorDevice) => (dispatch: Dispatch) => {
     const payload = device;
     dispatch({
         type: SUITE.UPDATE_SELECTED_DEVICE,

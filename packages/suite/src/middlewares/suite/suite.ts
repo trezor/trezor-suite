@@ -16,6 +16,7 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
 
     switch (action.type) {
         case SUITE.INIT:
+            api.dispatch(SuiteActions.updateOnlineStatus());
             // load storage
             api.dispatch(loadStorage());
             break;

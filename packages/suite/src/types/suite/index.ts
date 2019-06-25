@@ -6,6 +6,7 @@ import { RouterActions } from '@suite-actions/routerActions';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { settingsActions as WalletSettingsActions } from '@wallet-actions/settingsActions';
+import { NotificationActions as WalletNotificationActions } from '@wallet-actions/notificationActions';
 import { LogActions } from '@suite-actions/logActions';
 import { State as ReducersState } from '@suite/reducers/store';
 import OnboardingActions from '@onboarding-types/actions';
@@ -23,7 +24,7 @@ type TrezorConnectEvents =
 export type State = ReducersState;
 
 // actions from Wallet sub app
-export type WalletAction = WalletSettingsActions;
+export type WalletAction = WalletSettingsActions | WalletNotificationActions;
 
 // all actions from all apps
 export type Action =
