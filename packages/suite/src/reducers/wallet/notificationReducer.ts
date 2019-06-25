@@ -1,5 +1,3 @@
-/* @flow */
-
 import React from 'react';
 // import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as NOTIFICATION from '@wallet-actions/constants/notification';

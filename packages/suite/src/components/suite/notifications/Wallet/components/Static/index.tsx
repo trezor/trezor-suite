@@ -1,5 +1,3 @@
-/* @flow */
-
 import * as React from 'react';
 import { Notification, Link } from '@trezor/components';
 import { State } from '@suite-types/index';

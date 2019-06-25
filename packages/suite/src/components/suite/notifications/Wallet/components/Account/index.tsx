@@ -1,4 +1,3 @@
-/* @flow */
 import * as React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';

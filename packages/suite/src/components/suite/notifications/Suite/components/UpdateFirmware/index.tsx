@@ -1,4 +1,3 @@
-/* @flow */
 import * as React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { State } from '@suite-types/index';

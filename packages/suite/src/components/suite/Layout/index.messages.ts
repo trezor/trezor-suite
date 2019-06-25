@@ -1,4 +1,3 @@
-/* @flow */
 import { defineMessages, Messages } from 'react-intl';
 
 const definedMessages: Messages = defineMessages({
