@@ -11,7 +11,7 @@ import { Step, AnyStepId } from '@suite/types/onboarding/steps';
 
 export interface OnboardingReducer {
     selectedModel: number | null;
-    activeStepId: AnyStepId | null;
+    activeStepId: AnyStepId;
     activeSubStep: string | null;
     asNewDevice: boolean | null;
     steps: Step[];
@@ -34,7 +34,7 @@ export const SET_AS_NEW_DEVICE = '@onboarding/set-as-new-device';
 
 interface SetStepActiveAction {
     type: typeof SET_STEP_ACTIVE;
-    stepId: AnyStepId;
+    stepId: AnyStepId; // ? null ?
 }
 
 interface SetStepResolvedAction {

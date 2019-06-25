@@ -157,15 +157,9 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({
-    model,
-    event,
-}: {
-    model: State['onboarding']['selectedModel'];
-    event: AnyEvent;
-}) => {
+const TrezorAction = ({ model, event }: { model: number; event: AnyEvent }) => {
     let TrezorActionText;
-    if (event.name === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
+    if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
             <P>
                 Complete action on your device. By clicking continue you agree with{' '}
@@ -211,11 +205,6 @@ interface Props {
     deviceInteraction: State['onboarding']['connect']['deviceInteraction'];
     prevDeviceId: State['onboarding']['connect']['prevDeviceId'];
 
-    newsletter: State['onboarding']['newsletter'];
-    fetchCall: State['onboarding']['fetch'];
-    recovery: State['onboarding']['recovery'];
-    firmwareUpdate: State['onboarding']['firmwareUpdate'];
-
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;
 }
@@ -242,15 +231,15 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const { device, prevDeviceId, activeStepId, uiInteraction, asNewDevice } = this.props;
-        if (!this.getStep(activeStepId).disallowedDeviceStates) {
+        const { device, prevDeviceId, activeStepId, asNewDevice } = this.props;
+        if (!this.getStep(activeStepId)!.disallowedDeviceStates) {
             return null;
         }
 
-        return this.getStep(activeStepId).disallowedDeviceStates.find(
+        return this.getStep(activeStepId)!.disallowedDeviceStates!.find(
             (state: AnyStepDisallowedState) => {
                 const fn = getFnForRule(state);
-                return fn({ device, prevDeviceId, uiInteraction, asNewDevice });
+                return fn({ device, prevDeviceId, asNewDevice });
             },
         );
     }
@@ -270,7 +259,7 @@ class Onboarding extends React.PureComponent<Props> {
 
     // todo: reconsider if we need resolved logic.
     isStepResolved(stepId: AnyStepId) {
-        return Boolean(this.props.steps.find((step: Step) => step.id === stepId).resolved);
+        return Boolean(this.props.steps.find((step: Step) => step.id === stepId)!.resolved);
     }
 
     render() {
@@ -287,8 +276,9 @@ class Onboarding extends React.PureComponent<Props> {
             uiInteraction,
         } = this.props;
 
+        const model = selectedModel || 1;
         const errorState = this.getError();
-        // throw('kaboom0');
+        const activeStep = this.getStep(activeStepId);
         return (
             <>
                 <BaseStyles />
@@ -301,7 +291,7 @@ class Onboarding extends React.PureComponent<Props> {
                             <UnexpectedStateOverlay>
                                 <UnexpectedState
                                     caseType={errorState}
-                                    model={selectedModel}
+                                    model={model}
                                     connectActions={connectActions}
                                     onboardingActions={onboardingActions}
                                     uiInteraction={uiInteraction}
@@ -309,24 +299,20 @@ class Onboarding extends React.PureComponent<Props> {
                             </UnexpectedStateOverlay>
                         )}
                         <ProgressStepsSlot>
-                            {this.getStep(activeStepId).title &&
-                                this.getStep(activeStepId).title !== 'Basic setup' && (
-                                    <ProgressStepsWrapper>
-                                        <ProgressSteps
-                                            steps={steps}
-                                            activeStep={this.getStep(activeStepId)}
-                                            onboardingActions={onboardingActions}
-                                            isDisabled={deviceCall.isProgress}
-                                        />
-                                    </ProgressStepsWrapper>
-                                )}
+                            {activeStep && activeStep.title !== 'Basic setup' && (
+                                <ProgressStepsWrapper>
+                                    <ProgressSteps
+                                        steps={steps}
+                                        activeStep={activeStep}
+                                        onboardingActions={onboardingActions}
+                                        isDisabled={deviceCall.isProgress}
+                                    />
+                                </ProgressStepsWrapper>
+                            )}
                         </ProgressStepsSlot>
                         <ComponentWrapper>
                             {this.isGlobalInteraction() && (
-                                <TrezorAction
-                                    model={selectedModel}
-                                    event={deviceInteraction.name}
-                                />
+                                <TrezorAction model={model} event={deviceInteraction.name} />
                             )}
 
                             <CSSTransition
@@ -448,7 +434,6 @@ const mapStateToProps = (state: State) => {
 
         // connect reducer
         prevDeviceId: state.onboarding.connect.prevDeviceId,
-        connectError: state.onboarding.connect.connectError,
         deviceCall: state.onboarding.connect.deviceCall,
         deviceInteraction: state.onboarding.connect.deviceInteraction,
         uiInteraction: state.onboarding.connect.uiInteraction,

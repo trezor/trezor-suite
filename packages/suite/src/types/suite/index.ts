@@ -7,6 +7,7 @@ import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { settingsActions as WalletSettingsActions } from '@wallet-actions/settingsActions';
 import { NotificationActions as WalletNotificationActions } from '@wallet-actions/notificationActions';
+import { SignVerifyAction as WalletSignVerifyAction } from '@wallet-actions/signVerifyActions';
 import { LogActions } from '@suite-actions/logActions';
 import { State as ReducersState } from '@suite/reducers/store';
 import OnboardingActions from '@onboarding-types/actions';
@@ -19,12 +20,13 @@ export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>
     | Omit<UiEvent, 'event'>
-    | Omit<DeviceEvent, 'event'>;
+    | Omit<DeviceEvent, 'event'>
+    | { type: 'iframe-loaded'; payload: any };
 
 export type State = ReducersState;
 
 // actions from Wallet sub app
-export type WalletAction = WalletSettingsActions | WalletNotificationActions;
+export type WalletAction = WalletSettingsActions | WalletSignVerifyAction | WalletNotificationActions;
 
 // all actions from all apps
 export type Action =
@@ -35,7 +37,7 @@ export type Action =
     | SuiteActions
     | LogActions
     | OnboardingActions
-    | WalletAction;
+    | WalletActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
 export type Dispatch = ThunkDispatch<State, any, Action>;

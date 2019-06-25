@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import * as STEP from '@suite/constants/onboarding/steps';
 import Text from '@suite/components/onboarding/Text';
 import {
@@ -15,7 +15,9 @@ import {
 import l10nMessages from './index.messages';
 
 interface Props {
-    onboardingActions: OnboardingActions;
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
 }
 
 const SecurityStep = ({ onboardingActions }: Props) => (

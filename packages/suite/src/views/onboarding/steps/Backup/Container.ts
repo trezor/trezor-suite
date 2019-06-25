@@ -18,8 +18,20 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
-    connectActions: bindActionCreators(connectActions, dispatch),
+    onboardingActions: {
+        goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    },
+    connectActions: {
+        wipeDevice: bindActionCreators(connectActions.wipeDevice, dispatch),
+        callActionAndGoToNextStep: bindActionCreators(
+            connectActions.callActionAndGoToNextStep,
+            dispatch,
+        ),
+        resetDevice: bindActionCreators(connectActions.resetDevice, dispatch),
+        resetCall: bindActionCreators(connectActions.resetCall, dispatch),
+        backupDevice: bindActionCreators(connectActions.backupDevice, dispatch),
+    },
 });
 
 export default connect(

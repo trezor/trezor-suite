@@ -7,7 +7,8 @@ import {
     OnboardingReducer,
 } from '@suite/types/onboarding/onboarding';
 import { AnyStepId } from '@suite/types/onboarding/steps';
-import { GetState, Dispatch } from '@suite/types/onboarding/actions';
+import { GetState, Dispatch } from '@suite-types/index';
+import { Step } from '@onboarding-types/steps';
 
 // utils
 const findNextStep = (currentStep: string, onboardingSteps: OnboardingReducer['steps']) => {
@@ -26,24 +27,26 @@ const findPrevStep = (currentStep: string, onboardingSteps: OnboardingReducer['s
     return onboardingSteps[currentIndex - 1];
 };
 
-const goToStep = (stepId: AnyStepId | null) => (dispatch: Dispatch) => {
+const goToStep = (stepId: AnyStepId) => (dispatch: Dispatch) => {
     dispatch({
         type: SET_STEP_ACTIVE,
         stepId,
     });
 };
 
-const goToSubStep = (subStepId: string | null) => ({
-    type: GO_TO_SUBSTEP,
-    subStepId,
-});
+const goToSubStep = (subStepId: string | null) => (dispatch: Dispatch) => {
+    dispatch({
+        type: GO_TO_SUBSTEP,
+        subStepId,
+    });
+};
 
 const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     const { activeStepId, steps } = getState().onboarding;
     const nextStep = findNextStep(activeStepId, steps);
-    const activeStep = steps.find(step => step.id === activeStepId);
+    const activeStep = steps.find((step: Step) => step.id === activeStepId);
 
-    if (!activeStep.resolved) {
+    if (activeStep && !activeStep.resolved) {
         dispatch({
             type: SET_STEP_RESOLVED,
             stepId: activeStepId,

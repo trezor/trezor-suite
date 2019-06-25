@@ -1,4 +1,4 @@
-import { Dispatch, GetState } from '@suite/types/onboarding/actions';
+import { Dispatch, GetState } from '@suite-types/index';
 
 import { SET_WORD, SET_WORDS_COUNT, SET_ADVANCED_RECOVERY } from '@suite/types/onboarding/recovery';
 import { submitWord } from './connectActions';
@@ -19,7 +19,7 @@ const setAdvancedRecovery = (value: boolean) => ({
 });
 
 const submit = (word?: string) => (dispatch: Dispatch, getState: GetState) => {
-    const normalizedWord = word || getState().recovery.word;
+    const normalizedWord = word || getState().onboarding.recovery.word;
     if (normalizedWord) {
         dispatch(submitWord({ word: `${normalizedWord}` })).then(() => {
             dispatch({

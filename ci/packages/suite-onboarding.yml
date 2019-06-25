@@ -14,7 +14,7 @@ suite-onboarding lint:
 
 suite-onboarding type check:
     stage: type check
-    allow_failure: true
+    allow_failure: false
     script:
         - yarn workspace @trezor/suite-onboarding type-check
     only:
@@ -51,8 +51,8 @@ suite-onboarding deploy dev:
             - ci/**/*
     variables:
         PACKAGE_NAME: suite-onboarding
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-onboarding/${CI_BUILD_REF_NAME}
-        DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+        DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     dependencies:
         - suite-onboarding build
     environment:
@@ -67,7 +67,7 @@ suite-onboarding deploy dev:
         - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-        - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+        - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
     tags:
         - deploy
 

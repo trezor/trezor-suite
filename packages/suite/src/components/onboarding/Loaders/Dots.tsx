@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const DotsWrapper = styled.span``;
@@ -14,54 +14,34 @@ interface Props {
     speed?: number;
 }
 
-interface State {
-    count: number;
-}
+const Dots = ({ maxCount = 3, speed = 1000 }: Props) => {
+    const [count, setCount] = useState<number>(0);
 
-class Dots extends React.Component<Props, State> {
-    state: State = {
-        count: 0,
-    };
-
-    interval: NodeJS.Timer;
-
-    willUnmount: boolean = false;
-
-    static defaultProps: { [index: string]: any } = {
-        maxCount: 3,
-        speed: 1000,
-    };
-
-    componentDidMount() {
-        this.interval = setInterval(() => {
-            if (this.willUnmount) {
-                return;
-            }
-            if (this.state.count < this.props.maxCount) {
-                this.setState(prevState => ({ count: prevState.count + 1 }));
+    useEffect(() => {
+        const timer = setInterval(() => {
+            if (count < maxCount) {
+                setCount(count + 1);
             } else {
-                this.setState({ count: 0 });
+                setCount(0);
             }
-        }, this.props.speed);
-    }
+        }, speed);
+        return () => clearTimeout(timer);
+    }, [maxCount, speed, count]);
 
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
-
-    render() {
-        return (
-            <DotsWrapper>
-                {Array.from(new Array(this.props.maxCount)).map((item, index) => (
+    return (
+        <DotsWrapper>
+            {Array.from(new Array(maxCount)).map(
+                // @ts-ignore sorry, dont know how to ignore the first parameter I dont use.
+                (item: number, index: number) => (
                     <Dot
                         // eslint-disable-next-line react/no-array-index-key
                         key={`dot-${index}`}
-                        style={{ visibility: index < this.state.count ? 'visible' : 'hidden' }}
+                        style={{ visibility: index < count ? 'visible' : 'hidden' }}
                     />
-                ))}
-            </DotsWrapper>
-        );
-    }
-}
+                ),
+            )}
+        </DotsWrapper>
+    );
+};
 
 export default Dots;

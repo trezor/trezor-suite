@@ -80,7 +80,7 @@ export const selectDevice = (device: Device | TrezorDevice | undefined) => (
 
     // 4. select this device
     const payload = device
-        ? getState().devices.find((d: TrezorDevice) => device.path === d.path)
+        ? getState().devices.find((d: Device | TrezorDevice) => device.path === d.path)
         : device;
     dispatch({
         type: SUITE.SELECT_DEVICE,
@@ -93,7 +93,7 @@ export const selectDevice = (device: Device | TrezorDevice | undefined) => (
     // }
 };
 
-export const updateSelectedDevice = (device: Device | TrezorDevice) => (dispatch: Dispatch) => {
+export const updateSelectedDevice = (device: TrezorDevice) => (dispatch: Dispatch) => {
     const payload = device;
     dispatch({
         type: SUITE.UPDATE_SELECTED_DEVICE,
@@ -111,7 +111,7 @@ export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getS
     }
 };
 
-export const handleDeviceChanged = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
+export const handleDeviceChanged = (device: any) => (dispatch: Dispatch, getState: GetState) => {
     const selected = getState().suite.device;
     if (selected) {
         dispatch(updateSelectedDevice(device));

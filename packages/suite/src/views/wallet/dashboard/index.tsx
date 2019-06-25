@@ -106,7 +106,6 @@ const Dashboard = (props: Props) => {
                         {NETWORKS.filter(item => !item.isHidden)
                             .filter(item => !props.settings.hiddenCoins.includes(item.shortcut))
                             .map(network => (
-                                // TODO: build network account url in router utils
                                 <StyledLink
                                     key={network.shortcut}
                                     href={getRoute('wallet-account', {
