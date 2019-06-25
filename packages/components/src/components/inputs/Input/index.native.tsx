@@ -6,7 +6,7 @@ import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import { FeedbackType } from '../../../support/types';
+import { Omit, FeedbackType } from '../../../support/types';
 
 const Wrapper = styled.View<WrapperProps>``;
 
@@ -20,7 +20,7 @@ const TopLabel = styled.Text`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const StyledInput = styled.TextInput<InputProps>`
+const StyledInput = styled.TextInput<Props>`
     width: 100%;
     height: ${props => (props.height ? props.height : 40)};
     padding: 0 ${props => (props.hasIcon ? '40px' : '12px')} 0 12px;
@@ -146,6 +146,7 @@ interface InputProps
     isPartiallyHidden?: boolean;
     isSmallText?: boolean;
     border?: string;
+    color?: string;
     tooltipAction?: React.ReactNode;
 }
 

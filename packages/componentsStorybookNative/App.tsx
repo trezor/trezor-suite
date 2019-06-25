@@ -21,7 +21,9 @@ import {
   Button, 
   ButtonPin, 
   Checkbox,
-  Input
+  Input,
+  CoinLogo,
+  TrezorLogo
 } from '@trezor/components';
 
 const Container = styled.ScrollView.attrs({
@@ -41,19 +43,46 @@ export default class App extends Component<Props> {
     return (
       <Container>
         <Wrapper>
+          <H5>TrezorLogo Horizontal</H5>
+          <TrezorLogo
+            type="horizontal"
+            width={200}
+            height={50}
+          />
+        </Wrapper>
+        <Wrapper>
+          <H5>TrezorLogo Vertical</H5>
+          <TrezorLogo
+            type="vertical"
+            width={100}
+            height={100}
+          />
+        </Wrapper>
+        <Wrapper>
+          <H5>CoinLogo</H5>
+          <CoinLogo
+            height={23}
+            network="ada"
+          />
+        </Wrapper>
+        <Wrapper>
+          <H5>Button</H5>
           <Button variant="success">
             Button Text
           </Button>
         </Wrapper>
         <Wrapper>
+          <H5>ButtonPin</H5>
           <ButtonPin onClick={() => {}} />
         </Wrapper>
         <Wrapper>
+          <H5>Checkbox</H5>
           <Checkbox onClick={() => {}}>
             Checkbox
           </Checkbox>
         </Wrapper>
         <Wrapper>
+          <H5>Input</H5>
           <Input
             value=""
             placeholder="placeholder..."
@@ -70,7 +99,13 @@ export default class App extends Component<Props> {
           <H4>Heading 4</H4>
           <H5>Heading 5</H5>
           <H6>Heading 6</H6>
+        </Wrapper>
+        <Wrapper>
+          <H5>Link</H5>
           <Link href="https://trezor.io">Trezor.io</Link>
+        </Wrapper>
+        <Wrapper>
+          <H5>Paragraph</H5>
           <P size='small'>
             This is an paragraph small
           </P>
@@ -85,6 +120,7 @@ export default class App extends Component<Props> {
           </P>
         </Wrapper>
         <Wrapper>
+          <H5>TrezorImage</H5>
           <TrezorImage
             height={310}
             model={1}
