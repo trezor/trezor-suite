@@ -21,14 +21,12 @@ const StyledInput = styled.TextInput`
     color: ${colors.TEXT_PRIMARY};
     background: transparent;
     border: 1px solid ${colors.DIVIDER};
-    box-sizing: border-box;
 `;
 
 const StyledIcon = styled(Icon)`
     position: absolute;
-    top: 14px;
+    top: 18px;
     right: 15px;
-    cursor: pointer;
 `;
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
