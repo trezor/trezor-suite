@@ -94,7 +94,7 @@ const ButtonNotification = styled(Button)`
 
 interface CtaShape {
     label: React.ReactNode;
-    callback?: () => any;
+    callback: () => any;
 }
 
 interface WrapperProps {
