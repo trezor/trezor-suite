@@ -51,8 +51,8 @@ suite-web deploy dev:
             - ci/**/*
     variables:
         PACKAGE_NAME: suite-web
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-        DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+        DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     dependencies:
         - suite-web build
     environment:
