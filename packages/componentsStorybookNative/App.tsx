@@ -27,7 +27,8 @@ import {
   Header,
   InputPin,
   TextArea,
-  Switch
+  Switch,
+  Prompt
 } from '@trezor/components';
 
 const Container = styled.ScrollView.attrs({
@@ -46,6 +47,12 @@ export default class App extends Component<Props> {
   render() {
     return (
       <Container>
+        <Wrapper>
+          <H5>Prompt</H5>
+          <Prompt model={1} size={32}>
+            Complete the action on your device
+          </Prompt>
+        </Wrapper>
         <Wrapper>
           <H5>Switch</H5>
           <Switch
