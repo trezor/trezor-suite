@@ -26,7 +26,8 @@ import {
   TrezorLogo,
   Header,
   InputPin,
-  TextArea
+  TextArea,
+  Switch
 } from '@trezor/components';
 
 const Container = styled.ScrollView.attrs({
@@ -45,6 +46,13 @@ export default class App extends Component<Props> {
   render() {
     return (
       <Container>
+        <Wrapper>
+          <H5>Switch</H5>
+          <Switch
+            onChange={() => {}}
+            checked={false}
+          />
+        </Wrapper>
         <Wrapper>
           <H5>TextArea</H5>
           <TextArea
