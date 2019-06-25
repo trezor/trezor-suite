@@ -29,6 +29,8 @@ import Notification from './components/Notification';
 import Prompt from './components/Prompt';
 import Header from './components/Header';
 
+import utils from './utils/';
+
 export {
     colors,
     icons,
@@ -62,4 +64,5 @@ export {
     Prompt,
     Header,
     LanguagePicker,
+    utils
 };
