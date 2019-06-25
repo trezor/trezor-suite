@@ -15,8 +15,12 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
-    firmwareUpdateActions: bindActionCreators(firmwareUpdateActions, dispatch),
+    onboardingActions: {
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    },
+    firmwareUpdateActions: {
+        updateFirmware: bindActionCreators(firmwareUpdateActions.updateFirmware, dispatch),
+    },
 });
 
 export default connect(

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactTimeout, { Timer } from 'react-timeout';
+import ReactTimeout, { ReactTimeoutProps } from 'react-timeout';
 import { H4, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
@@ -21,11 +21,10 @@ import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
 import l10nMessages from './index.messages';
 
-interface StepProps {
+interface StepProps extends ReactTimeoutProps {
     device: State['onboarding']['connect']['device'];
     deviceCall: State['onboarding']['connect']['deviceCall'];
     model: State['onboarding']['selectedModel'];
-    setTimeout: (callback: (...args: any[]) => void, ms: number, ...args: any[]) => Timer;
     isResolved: boolean; // todo: ?
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
@@ -48,7 +47,8 @@ class ConnectStep extends React.PureComponent<StepProps, StepState> {
     };
 
     componentDidMount() {
-        if (!this.props.device) {
+        // checking also props.setTimeout as it has ? type anotation. This is not nice.
+        if (!this.props.device && this.props.setTimeout) {
             this.props.setTimeout(
                 () => this.setState({ isSearching: true }),
                 ConnectStep.IS_SEARCHING_TIMEOUT,
@@ -61,7 +61,7 @@ class ConnectStep extends React.PureComponent<StepProps, StepState> {
     }
 
     componentWillReceiveProps(nextProps: StepProps) {
-        if (this.props.device && !nextProps.device) {
+        if (this.props.device && !nextProps.device && this.props.setTimeout) {
             this.setState({ isSearching: true });
             this.props.setTimeout(() => this.setState({ isSearchingTooLong: true }), 15 * 1000);
         } else {

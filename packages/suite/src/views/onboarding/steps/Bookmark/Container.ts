@@ -12,7 +12,12 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    connectActions: bindActionCreators(connectActions, dispatch),
+    connectActions: {
+        callActionAndGoToNextStep: bindActionCreators(
+            connectActions.callActionAndGoToNextStep,
+            dispatch,
+        ),
+    },
 });
 
 export default connect(

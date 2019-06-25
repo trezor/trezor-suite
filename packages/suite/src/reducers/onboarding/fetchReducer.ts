@@ -6,7 +6,7 @@ import {
     FetchActionTypes,
 } from '@suite/types/onboarding/fetch';
 
-const initialState: FetchReducer = {
+const initialState = {
     name: null,
     isProgress: false,
     error: null,

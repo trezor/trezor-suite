@@ -35,12 +35,12 @@ interface Props {
 class ProgressSteps extends React.Component<Props> {
     changeOverHowManySteps: number = 0;
 
-    isGoingForward: boolean;
+    isGoingForward: boolean = true;
 
     componentWillReceiveProps(nextProps: Props) {
         if (nextProps.activeStep) {
             const nextStepIndex = this.props.steps.findIndex(
-                step => step.title === nextProps.activeStep.title,
+                (step: Step) => step.title === nextProps.activeStep.title,
             );
             const currentStepIndex = this.props.steps.findIndex(
                 step => step.title === this.props.activeStep.title,
@@ -72,7 +72,7 @@ class ProgressSteps extends React.Component<Props> {
                 ],
             );
         } else {
-            steps = this.props.steps.reduce((accumulator, current) => {
+            steps = this.props.steps.reduce((accumulator: Step[], current: Step) => {
                 if (
                     !SECURITY_CLUSTER.includes(current.id) &&
                     !accumulator.find(item => item.title === current.title)

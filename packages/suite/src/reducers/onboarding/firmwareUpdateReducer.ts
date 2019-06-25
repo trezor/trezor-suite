@@ -11,7 +11,7 @@ const initialState = {
 const firmwareUpdate = (
     state: FirmwareUpdateReducer = initialState,
     action: FirmwareUpdateActionTypes,
-): FirmwareUpdateReducer => {
+) => {
     switch (action.type) {
         case SET_PROGRESS:
             return {
