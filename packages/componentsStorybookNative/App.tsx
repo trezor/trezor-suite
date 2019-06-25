@@ -24,7 +24,8 @@ import {
   Input,
   CoinLogo,
   TrezorLogo,
-  Header
+  Header,
+  InputPin
 } from '@trezor/components';
 
 const Container = styled.ScrollView.attrs({
@@ -43,6 +44,13 @@ export default class App extends Component<Props> {
   render() {
     return (
       <Container>
+        <Wrapper>
+          <H5>InputPin</H5>
+          <InputPin
+            value=""
+            onDeleteClick={() => {}}
+          />
+        </Wrapper>
         <Wrapper>
           <H5>Header</H5>
           <Header
