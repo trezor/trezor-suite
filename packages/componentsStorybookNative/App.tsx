@@ -23,7 +23,8 @@ import {
   Checkbox,
   Input,
   CoinLogo,
-  TrezorLogo
+  TrezorLogo,
+  Header
 } from '@trezor/components';
 
 const Container = styled.ScrollView.attrs({
@@ -42,6 +43,31 @@ export default class App extends Component<Props> {
   render() {
     return (
       <Container>
+        <Wrapper>
+          <H5>Header</H5>
+          <Header
+            sidebarEnabled={true}
+            sidebarOpened={false}
+            togglerOpenText="Menu"
+            togglerCloseText="Close"
+            rightAddon={null}
+            logoLinkComponent={<Link />}
+            links={[
+              {
+                href: 'https://trezor.io/',
+                title: 'Trezor'
+              },
+              {
+                href: 'https://wiki.trezor.io/',
+                title: 'Wiki'
+              },
+              {
+                href: 'https://blog.trezor.io/',
+                title: 'Blog'
+              },
+            ]}
+          />
+        </Wrapper>
         <Wrapper>
           <H5>TrezorLogo Horizontal</H5>
           <TrezorLogo
