@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { FocusEvent, MouseEvent, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import PropTypes from 'prop-types';
 
 import { variables } from '@trezor/components';
@@ -15,22 +15,9 @@ const Wrapper = styled.div`
 
 interface Props {
     children: ReactNode;
-    onMouseEnter: (event: MouseEvent) => void;
-    onClick: (event: MouseEvent) => void;
-    onMouseLeave: (event: MouseEvent) => void;
-    onFocus: (event: FocusEvent) => void;
 }
 
-const Row = ({ children, onClick, onMouseEnter, onMouseLeave, onFocus }: Props) => (
-    <Wrapper
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onFocus={onFocus}
-    >
-        {children}
-    </Wrapper>
-);
+const Row = ({ children }: Props) => <Wrapper>{children}</Wrapper>;
 
 Row.propTypes = {
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
