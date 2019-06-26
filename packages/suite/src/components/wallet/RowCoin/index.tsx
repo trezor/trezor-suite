@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Network } from '@wallet-types/index';
+import { Network, Icon as IconType } from '@wallet-types/index';
 import { CoinLogo, Icon, colors, variables } from '@trezor/components';
 import Row from '../Row';
 
@@ -44,16 +44,10 @@ const IconWrapper = styled.div`
     margin-right: 10px;
 `;
 
-interface Icon {
-    size: number;
-    color: string;
-    type: string;
-}
-
 interface Props {
     network: Network;
-    iconLeft: Icon;
-    iconRight: Icon;
+    iconLeft: IconType;
+    iconRight: IconType;
 }
 
 const RowCoin = ({ network, iconLeft, iconRight }: Props) => (

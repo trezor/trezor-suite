@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '@suite-types/index';
 import styled, { css } from 'styled-components';
@@ -11,8 +11,8 @@ const { SCREEN_SIZE } = variables;
 interface Props {
     router: AppState['router'];
     suite: AppState['suite'];
-    topNavigationComponent?: React.ReactNode;
-    children: React.ReactNode;
+    topNavigationComponent?: ReactNode;
+    children: ReactNode;
 }
 
 const Wrapper = styled.div`

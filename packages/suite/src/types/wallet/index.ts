@@ -1,3 +1,4 @@
-import { Network } from './networks';
+import { Network } from './networkTypes';
+import { Icon } from './iconTypes';
 
-export { Network };
+export { Network, Icon };

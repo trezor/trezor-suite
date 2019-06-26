@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -8,12 +8,6 @@ import { P, H4, Loader, colors, variables } from '@trezor/components';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 import l10nMessages from './index.messages';
-
-interface Props {
-    className?: string;
-    children?: React.ReactNode;
-    isLoading?: boolean;
-}
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,10 +32,14 @@ const LoaderWrapper = styled.div`
     margin-right: 10px;
 `;
 
+interface TitleProps {
+    type: string;
+}
+
 const Title = styled(H4)`
     font-size: ${variables.FONT_SIZE.BIGGER};
     font-weight: ${variables.FONT_WEIGHT.NORMAL};
-    color: ${props => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
+    color: ${(props: TitleProps) => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
     text-align: center;
     padding: 0;
 `;
@@ -76,6 +74,18 @@ const getExceptionPage = (exceptionPage: ExceptionPage) => {
             return null;
     }
 };
+
+interface Props {
+    className?: string;
+    children?: ReactNode | ReactNode[];
+    isLoading?: boolean;
+    exceptionPage: ExceptionPage;
+    loader: {
+        type: string;
+        title?: string;
+        message?: string;
+    };
+}
 
 const Content = ({ className, children, isLoading = false, loader, exceptionPage }: Props) => (
     <Wrapper className={className}>
