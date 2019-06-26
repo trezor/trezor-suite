@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { FocusEvent, MouseEvent, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 
 import { variables } from '@trezor/components';
@@ -13,7 +13,15 @@ const Wrapper = styled.div`
     transition: ${variables.TRANSITION.HOVER};
 `;
 
-const Row = ({ children, onClick, onMouseEnter, onMouseLeave, onFocus }) => (
+interface Props {
+    children: ReactNode;
+    onMouseEnter: { (event: MouseEvent<HTMLDivElement>): void };
+    onClick: { (event: MouseEvent<HTMLDivElement>): void };
+    onMouseLeave: { (event: MouseEvent<HTMLDivElement>): void };
+    onFocus: { (event: FocusEvent<HTMLDivElement>): void };
+}
+
+const Row = ({ children, onClick, onMouseEnter, onMouseLeave, onFocus }: Props) => (
     <Wrapper
         onClick={onClick}
         onMouseEnter={onMouseEnter}
