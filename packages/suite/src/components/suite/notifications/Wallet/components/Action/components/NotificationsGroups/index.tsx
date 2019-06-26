@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { NotificationEntry } from '@wallet-reducers/notificationReducer';
+import NOTIFICATIONS_CONSTANTS from '@wallet-constants/notification';
 import Group from './components/Group';
 
 const Wrapper = styled.div`
@@ -13,26 +14,38 @@ interface Props {
 }
 
 type GroupType = 'success' | 'warning' | 'info' | 'error';
+interface GroupedNotifications {
+    [key: string]: NotificationEntry[];
+}
 
 class NotificationsGroup extends PureComponent<Props> {
-    groupNotifications = (notifications: NotificationEntry[]) =>
-        notifications.reduce(
-            (acc: { [key: string]: NotificationEntry[] }, obj: NotificationEntry) => {
-                const key = obj.variant;
-                if (!acc[key]) {
-                    acc[key] = [];
-                }
-                acc[key].push({ ...obj, key: new Date().getTime().toString() }); // key was previously set as obj, but that is not a string
-                return acc;
-            },
-            {},
+    groupNotifications = (notifications: NotificationEntry[]) => {
+        return notifications.reduce((acc: GroupedNotifications, obj: NotificationEntry) => {
+            const key = obj.variant;
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push({ ...obj, key: new Date().getTime().toString() }); // key was previously set as obj, but that is not a string
+            return acc;
+        }, {});
+    };
+
+    sortByPriority(notifications: GroupedNotifications): GroupedNotifications {
+        console.log(notifications);
+        const sortedGroups = Object.keys(NOTIFICATIONS_CONSTANTS.PRIORITY).sort(
+            (group1, group2) =>
+                NOTIFICATIONS_CONSTANTS.PRIORITY[group1 as GroupType] -
+                NOTIFICATIONS_CONSTANTS.PRIORITY[group2 as GroupType],
         );
 
-    sortByPriority(notifications: {
-        [key: string]: NotificationEntry[];
-    }): { [key: string]: NotificationEntry[] } {
-        // TODO
-        return notifications;
+        const sortedNotifications: GroupedNotifications = {};
+        sortedGroups.forEach(key => {
+            if (key in notifications) {
+                sortedNotifications[key] = notifications[key];
+            }
+        });
+
+        return sortedNotifications;
     }
 
     render() {
