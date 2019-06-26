@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { State, Dispatch } from '@suite-types/index';
 
 // import { reconnect } from 'actions/DiscoveryActions';
-import * as NotificationActions from '@wallet-actions/NotificationActions';
+import * as NotificationActions from '@wallet-actions/notificationActions';
 
 import StaticNotifications from './components/Static';
 import AccountNotifications from './components/Account';
