@@ -1,6 +1,6 @@
-import { defineMessages, Messages } from 'react-intl';
+import { defineMessages } from 'react-intl';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_CHANGE_WALLET_TYPE: {
         id: 'TR_CHANGE_WALLET_TYPE',
         defaultMessage: 'Change wallet type',

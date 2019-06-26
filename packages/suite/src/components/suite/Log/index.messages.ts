@@ -1,6 +1,6 @@
-import { defineMessages, Messages } from 'react-intl';
+import { defineMessages } from 'react-intl';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_ATTENTION_COLON_THE_LOG_CONTAINS: {
         id: 'TR_ATTENTION_COLON_THE_LOG_CONTAINS',
         defaultMessage:
