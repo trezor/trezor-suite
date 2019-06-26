@@ -124,7 +124,7 @@ const TroubleshootInitialized = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     activeSubStep: state.onboarding.activeSubStep,
     device: state.onboarding.connect.device,
 });

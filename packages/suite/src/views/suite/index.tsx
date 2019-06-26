@@ -98,7 +98,7 @@ const Index: FunctionComponent<Props> = props => {
     return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
     devices: state.devices,

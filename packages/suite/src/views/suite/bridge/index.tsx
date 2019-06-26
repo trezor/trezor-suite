@@ -202,7 +202,7 @@ class InstallBridge extends PureComponent<BridgeProps, BridgeState> {
     }
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
 });
 

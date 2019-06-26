@@ -427,7 +427,7 @@ class Onboarding extends React.PureComponent<Props> {
     }
 }
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: AppState) => {
     return {
         device: state.onboarding.connect.device,
         transport: state.suite.transport,

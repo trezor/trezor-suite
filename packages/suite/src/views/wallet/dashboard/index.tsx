@@ -117,7 +117,7 @@ const Dashboard = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     settings: state.wallet.settings,
 });
 

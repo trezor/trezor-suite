@@ -84,7 +84,7 @@ const Index: FunctionComponent<Props> = props => {
     return <Body>{props.children}</Body>;
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
     devices: state.devices,

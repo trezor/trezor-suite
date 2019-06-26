@@ -47,7 +47,7 @@ const Wallet = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
     router: state.router,
 });
