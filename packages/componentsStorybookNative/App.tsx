@@ -29,7 +29,8 @@ import {
   TextArea,
   Switch,
   Prompt,
-  Notification
+  Notification,
+  Select
 } from '@trezor/components';
 
 const Container = styled.ScrollView.attrs({
@@ -48,6 +49,26 @@ export default class App extends Component<Props> {
   render() {
     return (
       <Container>
+        <Wrapper>
+          <H5>Select</H5>
+          <Select
+            items={[
+              {
+                value: 'en',
+                label: 'English',
+              },
+              {
+                value: 'bn',
+                label: 'Bengali',
+              },
+              {
+                value: 'cs',
+                label: 'Česky',
+              },
+            ]}
+            onChange={() => {}}
+          />
+        </Wrapper>
         <Wrapper>
           <H5>Notifications</H5>
           <Notification
