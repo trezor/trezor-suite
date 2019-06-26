@@ -4,6 +4,8 @@ import { FormattedMessage } from 'react-intl';
 import externalCoins from '@suite-config/externalCoins';
 // import * as LocalStorageActions from 'actions/LocalStorageActions';
 import { AppState } from '@suite-types/index';
+import { Network } from '@wallet-types/index';
+
 import {
     colors,
     Switch,
@@ -18,7 +20,7 @@ import l10nMessages from '../../index.messages';
 const { FONT_SIZE } = variables;
 
 interface Props {
-    networks: any; // TODO
+    networks: Network[]; // TODO
     hiddenCoins: AppState['wallet']['settings']['hiddenCoins'];
     hiddenCoinsExternal: AppState['wallet']['settings']['hiddenCoinsExternal'];
     // handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility;

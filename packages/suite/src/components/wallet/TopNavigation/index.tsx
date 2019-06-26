@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { StAppStateate } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
 import { getPrefixedURL } from '@suite-utils/router';
 
