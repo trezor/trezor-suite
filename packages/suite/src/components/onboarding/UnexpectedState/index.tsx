@@ -10,7 +10,7 @@ import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect'
 import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
 import l10nMessages from './index.messages';
-// import Reconnect from './Reconnect';
+import Reconnect from './Reconnect';
 import { ControlsWrapper } from '../Wrapper';
 
 const Wrapper = styled.div`

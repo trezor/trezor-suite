@@ -30,20 +30,16 @@ export type SignVerifyAction =
           type: typeof SIGN_VERIFY.ERROR;
           inputName: string;
           message?: string;
-      }
-    | {
-          type: typeof SIGN_VERIFY.ERROR;
-          inputName: string;
-          message?: string;
       };
 
-const sign = (path: [number], message: string, hex: boolean = false): AsyncAction => async (
+const sign = (path: [number], message: string, hex: boolean = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ): Promise<void> => {
-    const selected = getState().wallet.selectedDevice;
+    const selected = getState().suite.device;
     if (!selected) return;
 
+    // @ts-ignore
     const response = await TrezorConnect.ethereumSignMessage({
         device: {
             path: selected.path,
@@ -79,20 +75,21 @@ const verify = (
     message: string,
     signature: string,
     hex: boolean = false,
-): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const selected = getState().wallet.selectedDevice;
+) => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const selected = getState().suite.device;
     if (!selected) return;
-    const hasError = validateAddress(address);
+    const error = validateAddress(address);
 
-    if (hasError) {
+    if (error) {
         dispatch({
             type: SIGN_VERIFY.ERROR,
             inputName: 'verifyAddress',
-            message: validateAddress(address),
+            message: error,
         });
     }
 
-    if (!hasError) {
+    if (!error) {
+        // @ts-ignore
         const response = await TrezorConnect.ethereumVerifyMessage({
             device: {
                 path: selected.path,
@@ -130,9 +127,7 @@ const verify = (
     }
 };
 
-const inputChange = (inputName: string, value: string): ThunkAction => (
-    dispatch: Dispatch,
-): void => {
+const inputChange = (inputName: string, value: string) => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
         inputName,
@@ -155,13 +150,13 @@ const inputChange = (inputName: string, value: string): ThunkAction => (
     }
 };
 
-const clearSign = (): ThunkAction => (dispatch: Dispatch): void => {
+const clearSign = () => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.CLEAR_SIGN,
     });
 };
 
-const clearVerify = (): ThunkAction => (dispatch: Dispatch): void => {
+const clearVerify = () => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.CLEAR_VERIFY,
     });

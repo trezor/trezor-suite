@@ -37,17 +37,37 @@ interface Props {
     selected: any;
 }
 
-const OptionsList = ({ selectedAccessor = 'value', ...props }: Props) => (
-    <OptionsWrapper count={props.options.length}>
-        {props.options.map((opt: Opt) => (
-            <Option
-                onClick={opt.onClick ? opt.onClick : () => props.onSelect(opt[selectedAccessor])}
-                key={opt.key}
-                content={opt.content}
-                isSelected={opt[selectedAccessor] === props.selected}
-            />
-        ))}
-    </OptionsWrapper>
-);
+// onClick={opt.onClick ? opt.onClick : props.onSelect ? () => props.onSelect(opt[selectedAccessor])x}
+
+const OptionsList = ({ selectedAccessor = 'value', ...props }: Props) => {
+    if (props.onSelect) {
+        return (
+            <OptionsWrapper count={props.options.length}>
+                {props.options.map((opt: Opt) => (
+                    <Option
+                        // @ts-ignore
+                        onClick={() => props.onSelect(opt[selectedAccessor])}
+                        key={opt.key}
+                        content={opt.content}
+                        isSelected={opt[selectedAccessor] === props.selected}
+                    />
+                ))}
+            </OptionsWrapper>
+        );
+    }
+
+    return (
+        <OptionsWrapper count={props.options.length}>
+            {props.options.map((opt: Opt) => (
+                <Option
+                    onClick={opt.onClick}
+                    key={opt.key}
+                    content={opt.content}
+                    isSelected={opt[selectedAccessor] === props.selected}
+                />
+            ))}
+        </OptionsWrapper>
+    );
+};
 
 export default OptionsList;

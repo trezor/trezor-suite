@@ -24,7 +24,7 @@ export const SET_ADVANCED_RECOVERY = '@onboarding/recovery-set-advanced-recovery
 
 interface SetWordAction {
     type: typeof SET_WORD;
-    word: string;
+    word: string | null;
 }
 
 interface SetWordsCountAction {

@@ -34,7 +34,9 @@ export const handleCoinVisibility = (
     shouldBeVisible: boolean,
     isExternal: boolean,
 ) => (dispatch: Dispatch, getState: GetState) => {
-    const configuration: string[] = getState().wallet.settings.hiddenCoinsExternal;
+    const configuration: string[] = isExternal
+        ? getState().wallet.settings.hiddenCoinsExternal
+        : getState().wallet.settings.hiddenCoins;
     let newConfig: string[] = configuration;
     const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
 

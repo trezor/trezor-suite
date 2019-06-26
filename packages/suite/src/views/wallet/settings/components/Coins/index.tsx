@@ -1,4 +1,3 @@
-/* @flow */
 import styled from 'styled-components';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';

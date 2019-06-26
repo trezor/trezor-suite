@@ -1,4 +1,5 @@
 import { SIGN_VERIFY } from '@wallet-actions/constants';
+import { Action } from '@suite-types/index';
 
 interface Error {
     inputName: string;

@@ -1,4 +1,4 @@
-import { Dispatch, GetState } from '@suite/types/onboarding/actions';
+import { Dispatch, GetState } from '@suite-types/index';
 import * as FIRMWARE_UPDATE from '@suite/types/onboarding/firmwareUpdate';
 import arrayBufferToBuffer from '@suite/utils/onboarding/arrayBufferToBuffer';
 
@@ -27,7 +27,7 @@ const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
     const progressFn = () => {
         dispatch({
             type: FIRMWARE_UPDATE.SET_PROGRESS,
-            progress: getState().firmwareUpdate.progress + 1,
+            progress: getState().onboarding.firmwareUpdate.progress + 1,
         });
     };
     let maxProgress = 0;
@@ -35,7 +35,7 @@ const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
         () => {
             if (
                 getState().onboarding.connect.deviceCall.error ||
-                getState().onboarding.fetch.error
+                getState().onboarding.fetchCall.error
             ) {
                 dispatch({
                     type: FIRMWARE_UPDATE.SET_PROGRESS,

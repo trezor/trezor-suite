@@ -8,6 +8,7 @@ import SuiteWrapper from '@suite-views/index';
 
 interface Props {
     loaded: State['suite']['loaded'];
+    error: State['suite']['error'];
     dispatch: Dispatch;
 }
 

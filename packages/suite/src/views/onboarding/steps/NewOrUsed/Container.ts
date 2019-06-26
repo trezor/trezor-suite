@@ -8,7 +8,10 @@ import { Dispatch } from '@suite-types/index';
 import Step from './index';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
+    onboardingActions: {
+        setAsNewDevice: bindActionCreators(onboardingActions.setAsNewDevice, dispatch),
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    },
 });
 
 export default connect(
