@@ -105,7 +105,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 ...state,
                 online: action.online,
             };
-            
+
         case 'iframe-loaded':
             return {
                 ...state,

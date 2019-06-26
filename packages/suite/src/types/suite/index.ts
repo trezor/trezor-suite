@@ -26,7 +26,10 @@ type TrezorConnectEvents =
 export type State = ReducersState;
 
 // actions from Wallet sub app
-export type WalletAction = WalletSettingsActions | WalletSignVerifyAction | WalletNotificationActions;
+export type WalletActions =
+    | WalletSettingsActions
+    | WalletSignVerifyAction
+    | WalletNotificationActions;
 
 // all actions from all apps
 export type Action =
