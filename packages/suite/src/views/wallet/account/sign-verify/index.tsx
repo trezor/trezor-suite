@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, FormEvent } from 'react';
 import styled from 'styled-components';
 import { Input, TextArea, Button, colors, variables } from '@trezor/components';
 import Title from '@wallet-components/Title';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { AppState } from '@suite-types/index';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import signVerifyActions from '@wallet-actions/signVerifyActions';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import l10nCommonMessages from '@wallet-views/messages';
 import l10nMessages from './index.messages';
@@ -62,13 +61,22 @@ const Verify = styled(Column)`
     }
 `;
 
-class SignVerify extends Component {
+interface Props {
+    signVerify: AppState;
+    signVerifyActions: typeof signVerifyActions;
+}
+
+interface Error {
+    inputName: string;
+}
+
+class SignVerify extends Component<Props> {
     getError(inputName: string) {
         if (!this.props.signVerify) return null;
-        return this.props.signVerify.errors.find(e => e.inputName === inputName);
+        return this.props.signVerify.errors.find((e: Error) => e.inputName === inputName);
     }
 
-    handleInputChange = (event: SyntheticInputEvent<Text>) => {
+    handleInputChange = (event: FormEvent<HTMLInputElement>) => {
         this.props.signVerifyActions.inputChange(event.target.name, event.target.value);
     };
 
@@ -221,15 +229,4 @@ class SignVerify extends Component {
     }
 }
 
-export default injectIntl(
-    connect(
-        state => ({
-            suite: state.suite,
-            router: state.router,
-            signVerify: state.wallet.signVerify,
-        }),
-        dispatch => ({
-            signVerifyActions: bindActionCreators(signVerifyActions, dispatch),
-        }),
-    )(SignVerify),
-);
+export default SignVerify;

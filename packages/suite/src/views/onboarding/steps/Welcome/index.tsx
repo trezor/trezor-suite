@@ -10,7 +10,7 @@ import {
     StepWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { State } from '@suite/types/suite';
+import { AppState } from '@suite/types/suite';
 import { SKIP_URL } from '@suite/constants/onboarding/urls';
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import l10nMessages from './index.messages';
@@ -86,7 +86,7 @@ interface Props {
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
     };
-    suite: State['suite'];
+    suite: AppState['suite'];
 }
 
 class WelcomeStep extends React.PureComponent<Props, {}> {

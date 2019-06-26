@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import Content from '@wallet-components/Content';
 import { H4, P, CoinLogo } from '@trezor/components';
 import Link from '@suite-components/Link';
@@ -57,7 +57,7 @@ const StyledLink = styled(Link)`
 `;
 
 interface Props {
-    settings: State['wallet']['settings'];
+    settings: AppState['wallet']['settings'];
 }
 
 const Dashboard = (props: Props) => {

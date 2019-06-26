@@ -1,4 +1,4 @@
-import { State, Dispatch, GetState } from '@suite-types/index';
+import { Dispatch, GetState, AppState } from '@suite-types/index';
 import * as STORAGE from './constants/storage';
 
 export type StorageActions =
@@ -7,7 +7,7 @@ export type StorageActions =
       }
     | {
           type: typeof STORAGE.LOADED;
-          payload: State;
+          payload: AppState;
       }
     | {
           type: typeof STORAGE.ERROR;
@@ -16,7 +16,7 @@ export type StorageActions =
 
 export const load = () => async (dispatch: Dispatch, getState: GetState) => {
     // TODO: load state from indexed db
-    const state: State = await new Promise(resolve => {
+    const state: AppState = await new Promise(resolve => {
         setTimeout(() => {
             const s = getState();
             resolve({

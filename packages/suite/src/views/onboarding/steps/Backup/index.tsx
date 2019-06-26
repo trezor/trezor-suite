@@ -17,7 +17,7 @@ import {
     ControlsWrapper,
     CheckboxWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goToNextStep, goToSubStep } from '@suite/actions/onboarding/onboardingActions';
 import {
     wipeDevice,
@@ -58,10 +58,10 @@ interface BackupState {
 }
 
 interface BackupProps {
-    device: State['onboarding']['connect']['device'];
-    deviceCall: State['onboarding']['connect']['deviceCall'];
-    deviceInteraction: State['onboarding']['connect']['deviceInteraction'];
-    activeSubStep: State['onboarding']['activeSubStep'];
+    device: AppState['onboarding']['connect']['device'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    deviceInteraction: AppState['onboarding']['connect']['deviceInteraction'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
     connectActions: {
         wipeDevice: typeof wipeDevice;
         callActionAndGoToNextStep: typeof callActionAndGoToNextStep;

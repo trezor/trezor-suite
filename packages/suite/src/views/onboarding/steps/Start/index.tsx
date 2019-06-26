@@ -14,7 +14,7 @@
 //     StepHeadingWrapper,
 //     ControlsWrapper,
 // } from '@suite/components/onboarding/Wrapper';
-// import { State } from '@suite/types/suite';
+// import { AppState } from '@suite/types/suite';
 // import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 // import { ConnectActions } from '@suite/types/onboarding/connect';
 // import { RecoveryActions } from '@suite/types/onboarding/recovery';
@@ -45,11 +45,11 @@
 // interface Props {
 //     asNewDevice: boolean;
 //     isResolved: boolean;
-//     activeSubStep: State['onboarding']['activeSubStep'];
-//     recovery: State['onboarding']['recovery'];
-//     device: State['suite']['device'];
-//     uiInteraction: State['onboarding']['connect']['uiInteraction'];
-//     deviceCall: State['onboarding']['connect']['deviceCall'];
+//     activeSubStep: AppState['onboarding']['activeSubStep'];
+//     recovery: AppState['onboarding']['recovery'];
+//     device: AppState['suite']['device'];
+//     uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
+//     deviceCall: AppState['onboarding']['connect']['deviceCall'];
 //     recoveryActions: RecoveryActions;
 //     onboardingActions: OnboardingActions;
 //     connectActions: ConnectActions;

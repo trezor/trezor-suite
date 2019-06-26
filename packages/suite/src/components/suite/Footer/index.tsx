@@ -142,7 +142,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     opened: state.log.opened,
 });
 

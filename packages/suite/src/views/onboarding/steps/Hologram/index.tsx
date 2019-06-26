@@ -19,7 +19,7 @@ import {
     StepBodyWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goToPreviousStep, goToNextStep, goToSubStep } from '@onboarding-actions/onboardingActions';
 import l10nMessages from './index.messages';
 import Hologram from './components/Hologram';
@@ -39,9 +39,9 @@ interface Props {
         goToNextStep: typeof goToNextStep;
         goToSubStep: typeof goToSubStep;
     };
-    activeSubStep: State['onboarding']['activeSubStep'];
-    model: State['onboarding']['selectedModel'];
-    device: State['onboarding']['connect']['device'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
+    model: AppState['onboarding']['selectedModel'];
+    device: AppState['onboarding']['connect']['device'];
 }
 
 const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props) => {

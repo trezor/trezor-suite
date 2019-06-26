@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import Content from '@wallet-components/Content';
@@ -9,8 +9,8 @@ import Sidebar from './components/Sidebar';
 const { SCREEN_SIZE } = variables;
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
+    router: AppState['router'];
+    suite: AppState['suite'];
     topNavigationComponent?: React.ReactNode;
     children: React.ReactNode;
 }
@@ -50,7 +50,7 @@ const Layout = (props: Props) => (
     </Wrapper>
 );
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
 });

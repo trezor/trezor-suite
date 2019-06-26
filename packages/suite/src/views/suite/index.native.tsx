@@ -5,14 +5,14 @@ import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 import Router from '@suite-support/Router';
 
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
 import AcquireDevice from '@suite-components/AcquireDevice';
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
-    devices: State['devices'];
+    router: AppState['router'];
+    suite: AppState['suite'];
+    devices: AppState['devices'];
     goto: typeof goto;
 }
 

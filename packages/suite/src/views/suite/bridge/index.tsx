@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Select, P, Link, H1, icons, colors, variables } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
@@ -84,7 +84,7 @@ const GoBack = styled.span`
 `;
 
 interface BridgeProps {
-    transport: State['suite']['transport'];
+    transport: AppState['suite']['transport'];
 }
 
 interface Installer {

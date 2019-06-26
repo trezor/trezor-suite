@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 
 interface Props {
-    suite: State['suite'];
-    router: State['router'];
+    suite: AppState['suite'];
+    router: AppState['router'];
 }
 
 const Transactions = (props: Props) => {
@@ -27,7 +27,7 @@ const Transactions = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
     router: state.router,
 });
