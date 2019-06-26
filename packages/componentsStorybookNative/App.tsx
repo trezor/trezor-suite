@@ -30,7 +30,8 @@ import {
   Switch,
   Prompt,
   Notification,
-  Select
+  Select,
+  Loader
 } from '@trezor/components';
 
 const Container = styled.ScrollView.attrs({
@@ -49,6 +50,14 @@ export default class App extends Component<Props> {
   render() {
     return (
       <Container>
+        <Wrapper>
+          <H5>Loader</H5>
+          <Loader
+            size={100}
+            strokeWidth={1}
+            text="loading"
+          />
+        </Wrapper>
         <Wrapper>
           <H5>Select</H5>
           <Select
