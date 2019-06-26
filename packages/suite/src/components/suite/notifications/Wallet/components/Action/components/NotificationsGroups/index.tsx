@@ -31,7 +31,6 @@ class NotificationsGroup extends PureComponent<Props> {
     };
 
     sortByPriority(notifications: GroupedNotifications): GroupedNotifications {
-        console.log(notifications);
         const sortedGroups = Object.keys(NOTIFICATIONS_CONSTANTS.PRIORITY).sort(
             (group1, group2) =>
                 NOTIFICATIONS_CONSTANTS.PRIORITY[group1 as GroupType] -
