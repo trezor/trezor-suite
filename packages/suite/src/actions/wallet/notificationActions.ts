@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { NOTIFICATION } from '@wallet-actions/constants';
 
 import { Action, GetState, Dispatch, TrezorDevice } from '@suite-types/index';
-import { CallbackAction, NotificationEntry } from '@wallet-reducers/notificationReducer';
+import { CallbackAction } from '@wallet-reducers/notificationReducer';
 
 export type NotificationActions =
     | {
