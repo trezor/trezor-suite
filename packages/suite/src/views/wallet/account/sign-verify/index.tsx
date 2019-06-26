@@ -1,4 +1,4 @@
-import React, { Component, FormEvent } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Input, TextArea, Button, colors, variables } from '@trezor/components';
 import Title from '@wallet-components/Title';
@@ -6,7 +6,7 @@ import { AppState } from '@suite-types/index';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import signVerifyActions from '@wallet-actions/signVerifyActions';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, InjectedIntl } from 'react-intl';
 
 import l10nCommonMessages from '@wallet-views/messages';
 import l10nMessages from './index.messages';
@@ -62,21 +62,25 @@ const Verify = styled(Column)`
 `;
 
 interface Props {
-    signVerify: AppState;
+    intl: InjectedIntl;
+    signVerify: AppState['wallet']['signVerify'];
     signVerifyActions: typeof signVerifyActions;
 }
 
-interface Error {
-    inputName: string;
+interface FormEvent {
+    target: {
+        name: string;
+        value: string;
+    };
 }
 
 class SignVerify extends Component<Props> {
     getError(inputName: string) {
         if (!this.props.signVerify) return null;
-        return this.props.signVerify.errors.find((e: Error) => e.inputName === inputName);
+        return this.props.signVerify.errors.find(e => e.inputName === inputName);
     }
 
-    handleInputChange = (event: FormEvent<HTMLInputElement>) => {
+    handleInputChange = (event: FormEvent) => {
         this.props.signVerifyActions.inputChange(event.target.name, event.target.value);
     };
 
