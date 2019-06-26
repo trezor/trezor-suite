@@ -1,6 +1,6 @@
-import { defineMessages, Messages } from 'react-intl';
+import { defineMessages } from 'react-intl';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_FIND_OUT_MORE_INFO: {
         id: 'TR_FIND_OUT_MORE_INFO',
         defaultMessage: 'Find out more info',
