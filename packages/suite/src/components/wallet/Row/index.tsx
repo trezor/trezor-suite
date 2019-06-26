@@ -15,10 +15,10 @@ const Wrapper = styled.div`
 
 interface Props {
     children: ReactNode;
-    onMouseEnter: { (event: MouseEvent<HTMLDivElement>): void };
-    onClick: { (event: MouseEvent<HTMLDivElement>): void };
-    onMouseLeave: { (event: MouseEvent<HTMLDivElement>): void };
-    onFocus: { (event: FocusEvent<HTMLDivElement>): void };
+    onMouseEnter: (event: MouseEvent) => void;
+    onClick: (event: MouseEvent) => void;
+    onMouseLeave: (event: MouseEvent) => void;
+    onFocus: (event: FocusEvent) => void;
 }
 
 const Row = ({ children, onClick, onMouseEnter, onMouseLeave, onFocus }: Props) => (
