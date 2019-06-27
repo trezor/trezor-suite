@@ -18,8 +18,8 @@
         "@trezor/components": "1.0.0",
         "@types/jest": "^24.0.13",
         "@types/react-intl": "^2.3.17",
-        "ethereumjs-util": "^6.0.0",
         "@types/react-timeout": "^1.1.1",
+        "ethereumjs-util": "^6.0.0",
         "react": "16.8.6",
         "react-dom": "16.8.6",
         "react-intl": "3.0.0-beta-6",
@@ -29,7 +29,8 @@
         "redux-devtools-extension": "^2.13.8",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
-        "trezor-connect": "./trezor-connect-lib"
+        "trezor-connect": "./trezor-connect-lib",
+        "whatwg-fetch": "^3.0.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",
