@@ -78,8 +78,8 @@ interface Props {
     className?: string;
     children?: ReactNode | ReactNode[];
     isLoading?: boolean;
-    exceptionPage: ExceptionPage;
-    loader: {
+    exceptionPage?: ExceptionPage;
+    loader?: {
         type: string;
         title?: string;
         message?: string;
