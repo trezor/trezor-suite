@@ -8,7 +8,7 @@ import * as SUITE from '@suite-actions/constants/suite';
 // import * as TOKEN from 'actions/constants/token';
 // import { Token } from 'reducers/TokensReducer';
 import { MiddlewareAPI } from 'redux';
-import { State, Action, Dispatch, GetState } from '@suite-types/index';
+import { AppState, Action, Dispatch, GetState } from '@suite-types/index';
 
 const BASE_URL = 'https://api.coingecko.com/';
 
