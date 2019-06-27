@@ -6,20 +6,30 @@ import { CoinLogo, H4, P, Button, Link, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 
-const getInfoUrl = (networkShortcut?: string) => {
+interface Props {
+    networkShortcut?: 'default' | 'xrp' | 'txrp' | null;
+    title?: string;
+    message?: string;
+}
+
+const getInfoUrl = (networkShortcut?: Props['networkShortcut']) => {
+    let result;
     const urls = {
         default: 'https://wiki.trezor.io',
         xrp: 'https://wiki.trezor.io/Ripple_(XRP)',
         txrp: 'https://wiki.trezor.io/Ripple_(XRP)',
     };
-    return networkShortcut && urls[networkShortcut] ? urls[networkShortcut] : urls.default;
-};
 
-interface Props {
-    networkShortcut?: string;
-    title?: string;
-    message?: string;
-}
+    if (!networkShortcut) {
+        result = null;
+    } else if (networkShortcut in urls) {
+        result = urls[networkShortcut];
+    } else {
+        result = urls.default;
+    }
+
+    return result;
+};
 
 const Wrapper = styled.div`
     display: flex;
