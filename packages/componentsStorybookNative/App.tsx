@@ -50,6 +50,12 @@ export default class App extends Component<Props> {
     return (
       <Container>
         <Wrapper>
+          <H5>Prompt</H5>
+          <Prompt model={1}>
+            Complete the action on your device
+          </Prompt>
+        </Wrapper>
+        <Wrapper>
           <H5>Loader</H5>
           <Loader
             size={100}
@@ -99,12 +105,6 @@ export default class App extends Component<Props> {
             title="Notification title"
             message="Text of the notification."
           />
-        </Wrapper>
-        <Wrapper>
-          <H5>Prompt</H5>
-          <Prompt model={1} size={32}>
-            Complete the action on your device
-          </Prompt>
         </Wrapper>
         <Wrapper>
           <H5>Switch</H5>
