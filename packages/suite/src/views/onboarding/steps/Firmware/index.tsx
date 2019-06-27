@@ -17,7 +17,7 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { updateFirmware } from '@onboarding-actions/firmwareUpdateActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 
@@ -27,10 +27,10 @@ const DONUT_STROKE = 20;
 const DONUT_RADIUS = 60;
 
 interface Props {
-    device: State['onboarding']['connect']['device'];
-    deviceCall: State['onboarding']['connect']['deviceCall'];
-    fetchCall: State['onboarding']['fetchCall'];
-    firmwareUpdate: State['onboarding']['firmwareUpdate'];
+    device: AppState['onboarding']['connect']['device'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    fetchCall: AppState['onboarding']['fetchCall'];
+    firmwareUpdate: AppState['onboarding']['firmwareUpdate'];
     firmwareUpdateActions: {
         updateFirmware: typeof updateFirmware;
     };

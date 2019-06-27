@@ -19,7 +19,7 @@ import {
 } from '@onboarding-components/Wrapper';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { changePin, submitNewPin } from '@onboarding-actions/connectActions';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 
 import l10nMessages from './index.messages';
 
@@ -45,9 +45,9 @@ const HowToSetPin = styled.img`
 `;
 
 interface Props {
-    deviceCall: State['onboarding']['connect']['deviceCall'];
-    device: State['onboarding']['connect']['device'];
-    activeSubStep: State['onboarding']['activeSubStep'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    device: AppState['onboarding']['connect']['device'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
     connectActions: {
         changePin: typeof changePin;
         submitNewPin: typeof submitNewPin;

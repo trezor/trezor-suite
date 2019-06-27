@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { colors, icons as ICONS } from '@trezor/components';
 import Link from '@suite-components/Link';
 import { FormattedMessage } from 'react-intl';
@@ -39,9 +39,9 @@ const Gray = styled.span`
 `;
 
 interface Props {
-    suite: State['suite'];
-    wallet: State['wallet'];
-    router: State['router'];
+    suite: AppState['suite'];
+    wallet: AppState['wallet'];
+    router: AppState['router'];
 }
 class CoinMenu extends PureComponent<Props> {
     getOtherCoins() {
@@ -166,7 +166,7 @@ class CoinMenu extends PureComponent<Props> {
     }
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     wallet: state.wallet,
     suite: state.suite,
     router: state.router,

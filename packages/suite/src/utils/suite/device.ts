@@ -1,5 +1,6 @@
 import { colors } from '@trezor/components';
 import { TrezorDevice } from '@suite-types/index';
+import { InjectedIntl } from 'react-intl';
 import l10nMessages from '@suite-components/DeviceMenu/index.messages';
 
 export const getStatus = (device: TrezorDevice): string => {
@@ -43,7 +44,7 @@ export const getStatus = (device: TrezorDevice): string => {
     return 'unknown';
 };
 
-export const getStatusName = (deviceStatus: string, intl): string => {
+export const getStatusName = (deviceStatus: string, intl: InjectedIntl): string => {
     switch (deviceStatus) {
         case 'connected':
             return intl.formatMessage(l10nMessages.TR_CONNECTED);

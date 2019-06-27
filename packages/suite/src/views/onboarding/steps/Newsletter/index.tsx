@@ -32,7 +32,7 @@ import {
     CheckboxWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
 
 import l10nMessages from './index.messages';
@@ -60,9 +60,9 @@ const InputWrapper = styled.div`
 `;
 
 interface Props {
-    fetchCall: State['onboarding']['fetchCall'];
-    newsletter: State['onboarding']['newsletter'];
-    device: State['onboarding']['connect']['device'];
+    fetchCall: AppState['onboarding']['fetchCall'];
+    newsletter: AppState['onboarding']['newsletter'];
+    device: AppState['onboarding']['connect']['device'];
     connectActions: {
         callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
     };

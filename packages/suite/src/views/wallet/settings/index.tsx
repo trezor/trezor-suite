@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, InjectedIntlProps } from 'react-intl';
 import * as settingsActions from '@wallet-actions/settingsActions';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 // import Content from 'views/Wallet/components/Content';
 import {
     Switch,
@@ -81,7 +81,7 @@ const buildCurrencyOption = (currency: string) => {
 };
 
 interface Props {
-    wallet: State['wallet'];
+    wallet: AppState['wallet'];
     setLocalCurrency: typeof settingsActions.setLocalCurrency;
     setHideBalance: typeof settingsActions.setHideBalance;
     handleCoinVisibility: typeof settingsActions.handleCoinVisibility;

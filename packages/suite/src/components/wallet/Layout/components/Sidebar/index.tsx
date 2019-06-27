@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import styled from 'styled-components';
 import CoinMenu from '@wallet-components/CoinMenu';
 import Backdrop from '@suite-components/Backdrop';
@@ -12,8 +12,8 @@ const { SCREEN_SIZE } = variables;
 const { SLIDE_RIGHT, SLIDE_LEFT } = animations;
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
+    router: AppState['router'];
+    suite: AppState['suite'];
     isOpen?: boolean;
     toggleSidebar: () => void;
 }
@@ -75,7 +75,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: Props) => (
     </>
 );
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
 });

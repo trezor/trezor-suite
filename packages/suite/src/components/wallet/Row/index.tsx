@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode } from 'react';
 
 import { variables } from '@trezor/components';
 
@@ -13,23 +12,10 @@ const Wrapper = styled.div`
     transition: ${variables.TRANSITION.HOVER};
 `;
 
-const Row = ({ children, onClick, onMouseEnter, onMouseLeave, onFocus }) => (
-    <Wrapper
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onFocus={onFocus}
-    >
-        {children}
-    </Wrapper>
-);
+interface Props {
+    children: ReactNode | ReactNode[];
+}
 
-Row.propTypes = {
-    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-    onClick: PropTypes.func,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onFocus: PropTypes.func,
-};
+const Row = ({ children }: Props) => <Wrapper>{children}</Wrapper>;
 
 export default Row;

@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Loader, P, H1 } from '@trezor/components';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
-import { State, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types/index';
 import SuiteWrapper from '@suite-views/index';
 
 interface Props {
-    loaded: State['suite']['loaded'];
-    error: State['suite']['error'];
+    loaded: AppState['suite']['loaded'];
+    error: AppState['suite']['error'];
     dispatch: Dispatch;
 }
 
@@ -44,7 +44,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     loaded: state.suite.loaded,
     error: state.suite.error,
 });

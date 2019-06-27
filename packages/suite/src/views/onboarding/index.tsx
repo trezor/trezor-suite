@@ -9,7 +9,7 @@ import { isDev } from '@suite-utils/build';
 
 import BaseStyles from '@suite/support/onboarding/BaseStyles';
 
-import { State, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types/index';
 import { OnboardingActions } from '@onboarding-types/onboarding';
 import { ConnectActions } from '@onboarding-types/connect';
 import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
@@ -194,16 +194,16 @@ interface Props {
     device: any; // todo
     transport: any; // todo
 
-    activeStepId: State['onboarding']['activeStepId'];
-    steps: State['onboarding']['steps'];
-    activeSubStep: State['onboarding']['activeSubStep'];
-    selectedModel: State['onboarding']['selectedModel'];
-    asNewDevice: State['onboarding']['asNewDevice'];
+    activeStepId: AppState['onboarding']['activeStepId'];
+    steps: AppState['onboarding']['steps'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
+    selectedModel: AppState['onboarding']['selectedModel'];
+    asNewDevice: AppState['onboarding']['asNewDevice'];
 
-    deviceCall: State['onboarding']['connect']['deviceCall'];
-    uiInteraction: State['onboarding']['connect']['uiInteraction'];
-    deviceInteraction: State['onboarding']['connect']['deviceInteraction'];
-    prevDeviceId: State['onboarding']['connect']['prevDeviceId'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
+    deviceInteraction: AppState['onboarding']['connect']['deviceInteraction'];
+    prevDeviceId: AppState['onboarding']['connect']['prevDeviceId'];
 
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;
@@ -222,7 +222,7 @@ class Onboarding extends React.PureComponent<Props> {
         }
     }
 
-    getStep(activeStepId: State['onboarding']['activeStepId']) {
+    getStep(activeStepId: AppState['onboarding']['activeStepId']) {
         return this.props.steps.find((step: Step) => step.id === activeStepId);
     }
 
@@ -427,7 +427,7 @@ class Onboarding extends React.PureComponent<Props> {
     }
 }
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: AppState) => {
     return {
         device: state.onboarding.connect.device,
         transport: state.suite.transport,

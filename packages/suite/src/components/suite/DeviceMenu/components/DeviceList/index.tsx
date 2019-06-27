@@ -4,14 +4,14 @@ import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import * as deviceUtils from '@suite-utils/device';
 import { Icon, colors, icons } from '@trezor/components';
 
-import { TrezorDevice, State } from '@suite-types/index';
+import { TrezorDevice, AppState } from '@suite-types/index';
 
 const Wrapper = styled.div``;
 const IconClick = styled.div``;
 
 interface Props {
-    devices: State['devices'];
-    selectedDevice: State['suite']['device'];
+    devices: AppState['devices'];
+    selectedDevice: AppState['suite']['device'];
     onSelectDevice: (device: TrezorDevice) => void;
     // forgetDevice: $ElementType<CommonProps, 'forgetDevice'>;
 }
