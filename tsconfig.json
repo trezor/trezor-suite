@@ -29,6 +29,7 @@
             "@wallet-constants/*": ["./packages/suite/src/constants/wallet/*"],
             "@wallet-config/*": ["./packages/suite/src/config/wallet/*"],
             "@wallet-middlewares/*": ["./packages/suite/src/middlewares/wallet/*"],
+            "@wallet-services/*": ["./packages/suite/src/services/wallet/*"],
             // onboarding
             "@onboarding-components/*": ["./packages/suite/src/components/onboarding/*"],
             "@onboarding-views/*": ["./packages/suite/src/views/onboarding/*"],
