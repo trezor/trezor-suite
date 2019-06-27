@@ -5,7 +5,7 @@ import { Provider as ReduxProvider, connect } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import { initStore } from '@suite/reducers/store';
 import { SUITE } from '@suite-actions/constants';
-import { State, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types/index';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import { Header as CommonHeader, LanguagePicker, P, H1 } from '@trezor/components';
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
@@ -16,7 +16,7 @@ import l10nMessages from '@suite-components/Layout/index.messages';
 
 interface HeaderProps extends InjectedIntlProps {
     dispatch: Dispatch;
-    language: State['suite']['language'];
+    language: AppState['suite']['language'];
 }
 
 const Header = injectIntl((props: HeaderProps) => (
@@ -54,9 +54,9 @@ const Header = injectIntl((props: HeaderProps) => (
 
 interface Props {
     store: Store;
-    loaded: State['suite']['loaded'];
-    language: State['suite']['language'];
-    error: State['suite']['error'];
+    loaded: AppState['suite']['loaded'];
+    language: AppState['suite']['language'];
+    error: AppState['suite']['error'];
     dispatch: Dispatch;
 }
 class TrezorSuiteApp extends App<Props> {
@@ -100,7 +100,7 @@ class TrezorSuiteApp extends App<Props> {
     }
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     loaded: state.suite.loaded,
     error: state.suite.error,
     language: state.suite.language,
