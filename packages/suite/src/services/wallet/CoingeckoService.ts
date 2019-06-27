@@ -3,9 +3,10 @@
 import { httpRequest } from '@wallet-utils/networkUtils';
 import { resolveAfter } from '@wallet-utils/promiseUtils';
 import fiatConfig from '@suite-config/fiat';
+import * as SUITE from '@suite-actions/constants/suite';
 // import { READY } from 'actions/constants/localStorage';
-import * as TOKEN from 'actions/constants/token';
-import { Token } from 'reducers/TokensReducer';
+// import * as TOKEN from 'actions/constants/token';
+// import { Token } from 'reducers/TokensReducer';
 import { MiddlewareAPI } from 'redux';
 import { State, Action, Dispatch, GetState } from '@suite-types/index';
 
@@ -22,6 +23,12 @@ export interface FiatRateAction {
     type: typeof RATE_UPDATE;
     network: string;
     rates: { [key: string]: number };
+}
+
+interface CoinGeckoToken {
+    name: string;
+    symbol: string;
+    id: string;
 }
 
 // const getSupportedCurrencies = async () => {
@@ -76,13 +83,14 @@ const fetchCoinList = async (): Promise<any> => {
     return tokens;
 };
 
-const loadTokenRateAction = (token: Token): AsyncAction => async (
+const loadTokenRateAction = (token: { symbol: string }) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
-    const { symbol } = token;
     try {
         const tokens = await fetchCoinList();
-        const tokenData = tokens.find(t => t.symbol === symbol.toLowerCase());
+        const tokenData = tokens.find(
+            (t: CoinGeckoToken) => t.symbol === token.symbol.toLowerCase(),
+        );
         if (!tokenData) return;
 
         const res = await fetchCoinRate(tokenData.id);
@@ -101,16 +109,20 @@ const loadTokenRateAction = (token: Token): AsyncAction => async (
 /**
  * Middleware
  */
-const CoingeckoService = (api: MiddlewareAPI) => (next: Dispatch) => (action: Action): Action => {
+const CoingeckoService = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
+    action: Action,
+): Action => {
     next(action);
 
-    if (action.type === READY) {
+    // TODO: change to WALLET.READY
+    if (action.type === SUITE.READY) {
+        console.log('suite ready');
         api.dispatch(loadRateAction());
     }
 
-    if (action.type === TOKEN.ADD) {
-        api.dispatch(loadTokenRateAction(action.payload));
-    }
+    // if (action.type === TOKEN.ADD) {
+    //     api.dispatch(loadTokenRateAction(action.payload));
+    // }
 
     return action;
 };

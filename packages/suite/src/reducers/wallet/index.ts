@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 import signVerifyReducer from './signVerifyReducer';
 import settingsReducer from './settingsReducer';
-import fiatRateReducer from './fiatRateReducer.ts';
+import fiatRateReducer from './fiatRateReducer';
 
 const WalletReducers = combineReducers({
     signVerify: signVerifyReducer,
-    fiat: settingsReducer,
+    fiat: fiatRateReducer,
     settings: settingsReducer,
 });
 

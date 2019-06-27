@@ -1,4 +1,4 @@
-import 'whatwg-fetch';
+import { fetch } from 'whatwg-fetch';
 
 export const httpRequest = async (url: string, type: string = 'text'): Promise<any> => {
     const response: Response = await fetch(url, { credentials: 'same-origin' });
