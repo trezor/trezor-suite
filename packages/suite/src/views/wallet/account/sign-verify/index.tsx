@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Input, TextArea, Button, colors, variables } from '@trezor/components';
 import Title from '@wallet-components/Title';
 import { AppState } from '@suite-types/index';
-import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import signVerifyActions from '@wallet-actions/signVerifyActions';
 import { FormattedMessage, InjectedIntl } from 'react-intl';
@@ -110,124 +109,117 @@ class SignVerify extends Component<Props> {
         const verifyAddressError = this.getError('verifyAddress');
         return (
             <LayoutAccount>
-                <Content>
-                    <Wrapper>
-                        <Sign>
-                            <Title>
-                                <FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE} />
-                            </Title>
-                            <Row>
-                                <Input
-                                    topLabel={intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
-                                    name="signAddress"
-                                    value="aaaaa"
-                                    // value={account.descriptor}
-                                    type="text"
-                                    readOnly
-                                />
-                            </Row>
-                            <Row>
-                                <TextArea
-                                    topLabel={intl.formatMessage(l10nMessages.TR_MESSAGE)}
-                                    name="signMessage"
-                                    value={signMessage}
-                                    onChange={this.handleInputChange}
-                                    rows={4}
-                                    maxRows={4}
-                                    maxLength={255}
-                                />
-                            </Row>
-                            <Row>
-                                <TextArea
-                                    topLabel={intl.formatMessage(l10nMessages.TR_SIGNATURE)}
-                                    name="signSignature"
-                                    value={signSignature}
-                                    rows={4}
-                                    maxRows={4}
-                                    maxLength={255}
-                                    readOnly
-                                />
-                            </Row>
-                            <RowButtons>
-                                <StyledButton
-                                    onClick={this.props.signVerifyActions.clearSign}
-                                    isWhite
-                                >
-                                    <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
-                                </StyledButton>
-                                <StyledButton
-                                    // isDisabled={!device.connected}
-                                    isDisabled={false}
-                                    onClick={() =>
-                                        signVerifyActions.sign(account.accountPath, signMessage)
+                <Wrapper>
+                    <Sign>
+                        <Title>
+                            <FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE} />
+                        </Title>
+                        <Row>
+                            <Input
+                                topLabel={intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
+                                name="signAddress"
+                                value="aaaaa"
+                                // value={account.descriptor}
+                                type="text"
+                                readOnly
+                            />
+                        </Row>
+                        <Row>
+                            <TextArea
+                                topLabel={intl.formatMessage(l10nMessages.TR_MESSAGE)}
+                                name="signMessage"
+                                value={signMessage}
+                                onChange={this.handleInputChange}
+                                rows={4}
+                                maxRows={4}
+                                maxLength={255}
+                            />
+                        </Row>
+                        <Row>
+                            <TextArea
+                                topLabel={intl.formatMessage(l10nMessages.TR_SIGNATURE)}
+                                name="signSignature"
+                                value={signSignature}
+                                rows={4}
+                                maxRows={4}
+                                maxLength={255}
+                                readOnly
+                            />
+                        </Row>
+                        <RowButtons>
+                            <StyledButton onClick={this.props.signVerifyActions.clearSign} isWhite>
+                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
+                            </StyledButton>
+                            <StyledButton
+                                // isDisabled={!device.connected}
+                                isDisabled={false}
+                                onClick={() =>
+                                    signVerifyActions.sign(account.accountPath, signMessage)
+                                }
+                            >
+                                <FormattedMessage {...l10nMessages.TR_SIGN} />
+                            </StyledButton>
+                        </RowButtons>
+                    </Sign>
+                    <Verify>
+                        <Title>
+                            <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE} />
+                        </Title>
+                        <Row>
+                            <Input
+                                topLabel={intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
+                                name="verifyAddress"
+                                value={verifyAddress}
+                                onChange={this.handleInputChange}
+                                type="text"
+                                state={verifyAddressError ? 'error' : null}
+                                bottomText={verifyAddressError ? verifyAddressError.message : null}
+                            />
+                        </Row>
+                        <Row>
+                            <TextArea
+                                topLabel={intl.formatMessage(l10nMessages.TR_MESSAGE)}
+                                name="verifyMessage"
+                                value={verifyMessage}
+                                onChange={this.handleInputChange}
+                                rows={4}
+                                maxRows={4}
+                                maxLength={255}
+                            />
+                        </Row>
+                        <Row>
+                            <TextArea
+                                topLabel={intl.formatMessage(l10nMessages.TR_SIGNATURE)}
+                                name="verifySignature"
+                                value={verifySignature}
+                                onChange={this.handleInputChange}
+                                rows={4}
+                                maxRows={4}
+                                maxLength={255}
+                            />
+                        </Row>
+                        <RowButtons>
+                            <StyledButton onClick={signVerifyActions.clearVerify} isWhite>
+                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
+                            </StyledButton>
+                            <StyledButton
+                                // isDisabled={!!verifyAddressError || !device.connected}
+                                isDisabled
+                                onClick={() => {
+                                    if (errors.length <= 0) {
+                                        signVerifyActions.verify(
+                                            verifyAddress,
+                                            verifyMessage,
+                                            verifySignature,
+                                        );
                                     }
-                                >
-                                    <FormattedMessage {...l10nMessages.TR_SIGN} />
-                                </StyledButton>
-                            </RowButtons>
-                        </Sign>
-                        <Verify>
-                            <Title>
-                                <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE} />
-                            </Title>
-                            <Row>
-                                <Input
-                                    topLabel={intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
-                                    name="verifyAddress"
-                                    value={verifyAddress}
-                                    onChange={this.handleInputChange}
-                                    type="text"
-                                    state={verifyAddressError ? 'error' : null}
-                                    bottomText={
-                                        verifyAddressError ? verifyAddressError.message : null
-                                    }
-                                />
-                            </Row>
-                            <Row>
-                                <TextArea
-                                    topLabel={intl.formatMessage(l10nMessages.TR_MESSAGE)}
-                                    name="verifyMessage"
-                                    value={verifyMessage}
-                                    onChange={this.handleInputChange}
-                                    rows={4}
-                                    maxRows={4}
-                                    maxLength={255}
-                                />
-                            </Row>
-                            <Row>
-                                <TextArea
-                                    topLabel={intl.formatMessage(l10nMessages.TR_SIGNATURE)}
-                                    name="verifySignature"
-                                    value={verifySignature}
-                                    onChange={this.handleInputChange}
-                                    rows={4}
-                                    maxRows={4}
-                                    maxLength={255}
-                                />
-                            </Row>
-                            <RowButtons>
-                                <StyledButton onClick={signVerifyActions.clearVerify} isWhite>
-                                    <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
-                                </StyledButton>
-                                <StyledButton
-                                    // isDisabled={!!verifyAddressError || !device.connected}
-                                    isDisabled
-                                    onClick={() => {
-                                        if (errors.length <= 0) {
-                                            signVerifyActions.verify(
-                                                verifyAddress,
-                                                verifyMessage,
-                                                verifySignature,
-                                            );
-                                        }
-                                    }}
-                                >
-                                    <FormattedMessage {...l10nMessages.TR_VERIFY} />
-                                </StyledButton>
-                            </RowButtons>
-                        </Verify>
-                    </Wrapper>
-                </Content>
+                                }}
+                            >
+                                <FormattedMessage {...l10nMessages.TR_VERIFY} />
+                            </StyledButton>
+                        </RowButtons>
+                    </Verify>
+                </Wrapper>
             </LayoutAccount>
         );
     }

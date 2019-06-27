@@ -28,3 +28,5 @@ test/screenshots
 .env*
 !.env.dev
 dist
+
+*.code-workspace

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
 import { AppState } from '@suite-types/index';
-import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 
 interface Props {
@@ -18,11 +17,9 @@ const Transactions = (props: Props) => {
     // const baseUrl = `${pathname}#/${params.coin}/`;
     return (
         <LayoutAccount>
-            <Content>
-                <Text>
-                    {params.coin} Account {params.accountId} Transactions
-                </Text>
-            </Content>
+            <Text>
+                {params.coin} Account {params.accountId} Transactions
+            </Text>
         </LayoutAccount>
     );
 };
