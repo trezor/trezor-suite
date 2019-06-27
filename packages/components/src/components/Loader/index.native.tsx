@@ -21,6 +21,8 @@ const SvgWrapper = Animated.createAnimatedComponent(Svg);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const StyledParagraph = styled(Paragraph)<Props>`
+    flex: 1;
+    align-items: center;
     font-size: ${props => (props.isSmallText ? FONT_SIZE_NATIVE.SMALL : FONT_SIZE_NATIVE.BIG)};
     color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
 `;
@@ -32,6 +34,7 @@ interface Props {
     isSmallText?: boolean;
     transparentRoute?: boolean;
     size?: number;
+    width?: number;
     strokeWidth?: number;
     animationColor?: any;
 }
@@ -66,52 +69,55 @@ class Loader extends React.Component<Props> {
             ...rest
         } = this.props;
 
+        const halfSize = size / 2;
+
         const spin = this.state.spinValue.interpolate({
             inputRange: [0, 1],
             outputRange: ['0deg', '360deg'],
         });
 
+        // TODO: fix dasharray animation - https://stackoverflow.com/questions/46142291/animating-react-native-svg-dash-length-of-a-circle
         const dasharray = this.state.spinValue.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['1 200', '89 200'],
+            inputRange: [0, 0.5, 1],
+            outputRange: [89, 200, 89],
+        });
+
+        const dashoffset = this.state.spinValue.interpolate({
+            inputRange: [0, 0.25, 0.5, 0.75, 1],
+            outputRange: [0, -35, -124, -35, 0],
         });
 
         return (
             <Wrapper className={className} size={size} {...rest}>
-                {/* TODO: center text horizontally */}
                 <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
                     {text}
                 </StyledParagraph>
                 <SvgWrapper
-                    viewBox="25 25 50 50"
+                    width={size}
+                    height={size}
                     style={{
                         transform: [{ rotate: spin }],
                         position: 'absolute',
-                        width: '100%',
-                        height: '100%',
                     }}
                 >
                     <Circle
-                        cx={50}
-                        cy={50}
-                        r={20}
+                        cx={halfSize}
+                        cy={halfSize}
+                        r={halfSize}
                         fill="none"
                         stroke={transparentRoute ? 'transparent' : colors.GRAY_LIGHT}
                         strokeWidth={strokeWidth}
                     />
-                    {/* TODO: animate dasharray from 1, 200 to 89, 200 */}
                     <AnimatedCircle
-                        cx={50}
-                        cy={50}
-                        r={20}
+                        cx={halfSize}
+                        cy={halfSize}
+                        r={halfSize}
                         fill="none"
                         stroke={colors.GREEN_PRIMARY}
                         strokeWidth={strokeWidth}
-                        strokeDashoffset={0}
+                        strokeDashoffset={dashoffset}
+                        strokeDasharray={dasharray}
                         strokeLinecap="round"
-                        style={{
-                            strokeDasharray: dasharray,
-                        }}
                     />
                 </SvgWrapper>
             </Wrapper>

@@ -50,18 +50,18 @@ export default class App extends Component<Props> {
     return (
       <Container>
         <Wrapper>
+          <H5>Loader</H5>
+          <Loader
+            size={100}
+            strokeWidth={2}
+            text="loading"
+          />
+        </Wrapper>
+        <Wrapper>
           <H5>Prompt</H5>
           <Prompt model={1}>
             Complete the action on your device
           </Prompt>
-        </Wrapper>
-        <Wrapper>
-          <H5>Loader</H5>
-          <Loader
-            size={100}
-            strokeWidth={1}
-            text="loading"
-          />
         </Wrapper>
         <Wrapper>
           <H5>Select</H5>
