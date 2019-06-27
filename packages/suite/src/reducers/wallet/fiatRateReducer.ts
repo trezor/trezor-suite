@@ -12,7 +12,6 @@ export const initialState: Fiat[] = [];
 
 const update = (state: Fiat[], action: FiatRateAction) => {
     const affected = state.find(f => f.network === action.network);
-    // const otherRates = state.filter(d => d !== affected);
     const { network, rates } = action;
 
     Object.keys(rates).map(k => rates[k].toFixed(2));
@@ -25,13 +24,6 @@ const update = (state: Fiat[], action: FiatRateAction) => {
         affected.network = network;
         affected.rates = rates;
     }
-
-    // return otherRates.concat([
-    //     {
-    //         network,
-    //         rates,
-    //     },
-    // ]);
 };
 
 export default (state: Fiat[] = initialState, action: Action): Fiat[] => {
