@@ -9,6 +9,7 @@ import { SuiteActions } from '@suite-actions/suiteActions';
 import { settingsActions as WalletSettingsActions } from '@wallet-actions/settingsActions';
 import { NotificationActions as WalletNotificationActions } from '@wallet-actions/notificationActions';
 import { SignVerifyAction as WalletSignVerifyAction } from '@wallet-actions/signVerifyActions';
+import { FiatRateAction } from '@wallet-services/CoingeckoService';
 import { LogActions } from '@suite-actions/logActions';
 import OnboardingActions from '@onboarding-types/actions';
 
@@ -29,7 +30,8 @@ export type AppState = AppState;
 export type WalletActions =
     | WalletSettingsActions
     | WalletSignVerifyAction
-    | WalletNotificationActions;
+    | WalletNotificationActions
+    | FiatRateAction;
 
 // all actions from all apps
 export type Action =
