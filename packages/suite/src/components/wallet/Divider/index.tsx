@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { colors, variables } from '@trezor/components';
 
@@ -39,13 +38,5 @@ const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }: 
         {textRight && <TextRight>{textRight}</TextRight>}
     </Wrapper>
 );
-
-Divider.propTypes = {
-    className: PropTypes.string,
-    textLeft: PropTypes.node,
-    textRight: PropTypes.node,
-    hasBorder: PropTypes.bool,
-    testId: PropTypes.string,
-};
 
 export default Divider;

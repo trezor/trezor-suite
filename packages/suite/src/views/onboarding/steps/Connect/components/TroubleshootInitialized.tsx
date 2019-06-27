@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { Dispatch, State } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types/index';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
 import * as STEP from '@suite/constants/onboarding/steps';
@@ -14,8 +14,8 @@ import l10nCommonMessages from '@suite-support/Messages';
 import l10nMessages from './TroubleshootInitialized.messages';
 
 interface Props {
-    device: State['onboarding']['connect']['device'];
-    activeSubStep: State['onboarding']['activeSubStep'];
+    device: AppState['onboarding']['connect']['device'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
     onboardingActions: {
         goToSubStep: typeof onboardingActions.goToSubStep;
         goToNextStep: typeof onboardingActions.goToNextStep;
@@ -124,7 +124,7 @@ const TroubleshootInitialized = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     activeSubStep: state.onboarding.activeSubStep,
     device: state.onboarding.connect.device,
 });

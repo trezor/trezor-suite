@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import * as connectActions from '@suite/actions/onboarding/connectActions';
 
-import { Dispatch, State } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types/index';
 
 import Step from './index';
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     deviceCall: state.onboarding.connect.deviceCall,
     device: state.onboarding.connect.device,
 });

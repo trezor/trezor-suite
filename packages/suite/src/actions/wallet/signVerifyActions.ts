@@ -7,30 +7,12 @@ import { validateAddress } from '@wallet-utils/eth';
 import * as SIGN_VERIFY from './constants/signVerify';
 
 export type SignVerifyAction =
-    | {
-          type: typeof SIGN_VERIFY.SIGN_SUCCESS;
-          signSignature: string;
-      }
-    | {
-          type: typeof SIGN_VERIFY.CLEAR_SIGN;
-      }
-    | {
-          type: typeof SIGN_VERIFY.CLEAR_VERIFY;
-      }
-    | {
-          type: typeof SIGN_VERIFY.INPUT_CHANGE;
-          inputName: string;
-          value: string;
-      }
-    | {
-          type: typeof SIGN_VERIFY.TOUCH;
-          inputName: string;
-      }
-    | {
-          type: typeof SIGN_VERIFY.ERROR;
-          inputName: string;
-          message?: string;
-      };
+    | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
+    | { type: typeof SIGN_VERIFY.CLEAR_SIGN }
+    | { type: typeof SIGN_VERIFY.CLEAR_VERIFY }
+    | { type: typeof SIGN_VERIFY.INPUT_CHANGE; inputName: string; value: string }
+    | { type: typeof SIGN_VERIFY.TOUCH; inputName: string }
+    | { type: typeof SIGN_VERIFY.ERROR; inputName: string; message?: string };
 
 const sign = (path: [number], message: string, hex: boolean = false) => async (
     dispatch: Dispatch,

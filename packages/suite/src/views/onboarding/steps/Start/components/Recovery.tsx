@@ -17,7 +17,7 @@ import { OptionsList } from '@suite/components/onboarding/Options';
 import Text from '@suite/components/onboarding/Text';
 import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
 
-import { State } from '@suite/types/suite';
+import { AppState } from '@suite/types/suite';
 import { ConnectActions } from '@suite/types/onboarding/connect';
 import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { RecoveryActions } from '@suite/types/onboarding/recovery';
@@ -56,10 +56,10 @@ interface RecoveryStepProps {
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;
     recoveryActions: RecoveryActions;
-    deviceCall: State['onboarding']['connect']['deviceCall'];
-    uiInteraction: State['onboarding']['connect']['uiInteraction'];
-    device: State['onboarding']['connect']['device'];
-    recovery: State['onboarding']['recovery'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
+    device: AppState['onboarding']['connect']['device'];
+    recovery: AppState['onboarding']['recovery'];
 }
 
 type Status = null | 'select-advanced-recovery';

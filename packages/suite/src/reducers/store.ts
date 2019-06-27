@@ -6,16 +6,16 @@ import suiteMiddlewares from '@suite-middlewares/index';
 import walletMiddlewares from '@wallet-middlewares/index';
 
 import suiteReducers from '@suite-reducers/index';
-import onboardingReducers from '@onboarding-reducers/index';
 import walletReducers from '@wallet-reducers/index';
+import onboardingReducers from '@onboarding-reducers/index';
 
-const reducers = combineReducers({
+const rootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
 });
 
-export type State = ReturnType<typeof reducers>;
+export type AppState = ReturnType<typeof rootReducer>;
 
 const middlewares = [thunkMiddleware, ...suiteMiddlewares, ...walletMiddlewares];
 
@@ -49,5 +49,5 @@ const composedEnhancers = compose(
 );
 
 export const initStore = () => {
-    return createStore(reducers, composedEnhancers);
+    return createStore(rootReducer, composedEnhancers);
 };

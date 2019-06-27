@@ -1,3 +1,3 @@
-import Account from '@suite/views/wallet/account/sign-verify';
+import SignVerify from '@wallet-views/account/sign-verify/Container';
 
-export default Account;
+export default SignVerify;

@@ -31,11 +31,4 @@ const StyledBackdrop = styled.div<Props>`
 const Backdrop = ({ className, show, animated, onClick }: Props) =>
     show ? <StyledBackdrop className={className} animated={animated} onClick={onClick} /> : null;
 
-Backdrop.propTypes = {
-    show: PropTypes.bool,
-    className: PropTypes.string,
-    animated: PropTypes.bool,
-    onClick: PropTypes.func,
-};
-
 export default Backdrop;

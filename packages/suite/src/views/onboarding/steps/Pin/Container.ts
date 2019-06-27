@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import { submitNewPin, changePin } from '@suite/actions/onboarding/connectActions';
-import { Dispatch, State } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types/index';
 
 import Step from './index';
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     device: state.onboarding.connect.device,
     deviceCall: state.onboarding.connect.deviceCall,
     activeSubStep: state.onboarding.activeSubStep,

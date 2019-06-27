@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
-import { State, Action, Dispatch } from '@suite-types/index';
+import { AppState, Action, Dispatch } from '@suite-types/index';
 
-const firstMiddleware = (_api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
+const firstMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
     // pass action

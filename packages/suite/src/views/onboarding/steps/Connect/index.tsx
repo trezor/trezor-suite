@@ -14,7 +14,7 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import TroubleshootBootloader from './components/TroubleshootBootloader';
 import TroubleshootInitialized from './components/TroubleshootInitialized';
@@ -22,9 +22,9 @@ import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
 import l10nMessages from './index.messages';
 
 interface StepProps extends ReactTimeoutProps {
-    device: State['onboarding']['connect']['device'];
-    deviceCall: State['onboarding']['connect']['deviceCall'];
-    model: State['onboarding']['selectedModel'];
+    device: AppState['onboarding']['connect']['device'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    model: AppState['onboarding']['selectedModel'];
     isResolved: boolean; // todo: ?
     onboardingActions: {
         goToNextStep: typeof goToNextStep;

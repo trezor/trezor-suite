@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Select, Link, Button } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goToSubStep, goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
@@ -51,8 +51,8 @@ interface BridgeState {
 }
 
 interface Props {
-    transport: State['suite']['transport'];
-    activeSubStep: State['onboarding']['activeSubStep'];
+    transport: AppState['suite']['transport'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
         goToSubStep: typeof goToSubStep;

@@ -13,7 +13,7 @@ import suiteConfig from '@suite-config/index';
 import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
 
 import l10nMessages from './index.messages';
@@ -53,9 +53,9 @@ const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
 `;
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
-    devices: State['devices'];
+    router: AppState['router'];
+    suite: AppState['suite'];
+    devices: AppState['devices'];
     fetchLocale: typeof fetchLocale;
     toggleSidebar: () => void;
     isLanding?: boolean;
@@ -114,7 +114,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
     </PageWrapper>
 );
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
     devices: state.devices,

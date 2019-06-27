@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import TrezorConnect from 'trezor-connect';
 
 import { Button } from '@trezor/components';
-import { State, TrezorDevice } from '@suite-types/index';
+import { AppState, TrezorDevice } from '@suite-types/index';
 import { selectDevice } from '@suite-actions/suiteActions';
 
 interface Props {
-    devices: State['devices'];
-    selectedDevice: State['suite']['device'];
+    devices: AppState['devices'];
+    selectedDevice: AppState['suite']['device'];
     selectDevice: typeof selectDevice;
 }
 
@@ -38,7 +38,7 @@ const Selection: FunctionComponent<Props> = props => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
     selectedDevice: state.suite.device,
 });
