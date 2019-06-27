@@ -1,24 +1,24 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Animated } from 'react-native';
+import { Animated, Easing } from 'react-native';
 import Icon from '../Icon';
 
 import icons from '../../config/icons';
 import { Omit, IconShape } from '../../support/types';
 import colors from '../../config/colors';
 
-// TODO: center pulse animation
 const Pulse = styled.View<Omit<Props, 'model'>>`
     background-color: ${colors.GREEN_PRIMARY};
     opacity: 0.3;
     border-radius: 100;
     height: ${props => props.size};
     width: ${props => props.size};
+    margin-left: -${props => ((props.size || 32) - (props.size || 32) * (props.ratio || 1)) / 2}px;
 `;
 
 const IconWrapper = styled.View<Omit<Props, 'model'>>`
+    width: ${props => (props.size || 32) * (props.ratio || 1)};
     height: ${props => props.size};
-    width: ${props => props.size};
 `;
 
 const Wrapper = styled.View`
@@ -56,72 +56,61 @@ type model = 1 | 2;
 interface Props {
     model: model;
     size?: number;
+    ratio?: number;
     children?: React.ReactNode;
 }
 
 class Prompt extends React.Component<Props> {
     state = {
-        opacityAnim: new Animated.Value(0),
-        scaleAnim: new Animated.Value(0),
+        blinkAnim: new Animated.Value(0),
     };
 
     componentDidMount() {
-        const { opacityAnim, scaleAnim } = this.state;
+        const { blinkAnim } = this.state;
 
-        // TODO: make animation same as on web
         Animated.loop(
             Animated.sequence([
-                Animated.timing(opacityAnim, {
-                    toValue: 0,
-                    duration: 250,
-                }),
-                Animated.timing(scaleAnim, {
-                    toValue: 0,
-                    duration: 250,
-                }),
-
-                Animated.timing(opacityAnim, {
-                    toValue: 0.3,
-                    duration: 250,
-                }),
-                Animated.timing(scaleAnim, {
-                    toValue: 1.5,
-                    duration: 250,
-                }),
-
-                Animated.timing(opacityAnim, {
-                    toValue: 0,
-                    duration: 250,
-                }),
-                Animated.timing(scaleAnim, {
-                    toValue: 4,
-                    duration: 250,
+                Animated.timing(blinkAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    easing: Easing.out(Easing.quad),
                 }),
             ])
         ).start();
     }
 
     render() {
-        const { opacityAnim, scaleAnim } = this.state;
+        const { size = 32, model, children } = this.props;
+        const { blinkAnim } = this.state;
+
+        const icon = modelToIcon(model);
+
+        const scale = blinkAnim.interpolate({
+            inputRange: [0, 0.25, 0.5, 1],
+            outputRange: [0, 0.75, 1.5, 4],
+        });
+
+        const opacity = blinkAnim.interpolate({
+            inputRange: [0, 0.25, 0.5, 1],
+            outputRange: [0, 0.2, 0.3, 0],
+        });
 
         return (
             <Wrapper>
-                <IconWrapper size={this.props.size}>
+                <IconWrapper size={size} ratio={icon.ratio}>
                     <Animation
                         style={{
-                            opacity: opacityAnim,
-                            transform: [{ scaleX: scaleAnim }, { scaleY: scaleAnim }],
+                            opacity,
+                            transform: [{ scaleX: scale }, { scaleY: scale }],
                         }}
+                        size={size}
+                        ratio={icon.ratio}
                     >
-                        <Pulse size={this.props.size} />
+                        <Pulse size={size} ratio={icon.ratio} />
                     </Animation>
-                    <Icon
-                        icon={modelToIcon(this.props.model)}
-                        size={this.props.size}
-                        color={colors.GREEN_PRIMARY}
-                    />
+                    <Icon icon={icon} size={size} color={colors.GREEN_PRIMARY} />
                 </IconWrapper>
-                <ContentWrapper>{this.props.children}</ContentWrapper>
+                <ContentWrapper>{children}</ContentWrapper>
             </Wrapper>
         );
     }
