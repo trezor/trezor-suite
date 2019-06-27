@@ -23,7 +23,7 @@ const LayoutAccount = (props: Props) => (
                     {
                         route: getRoute('wallet-account-transactions'),
                         title: <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />,
-                        isHidden: (coinShortcut: string) => {
+                        isHidden: () => {
                             return !FLAGS.transactions;
                         },
                     },

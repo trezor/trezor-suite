@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
 import { getPrefixedURL } from '@suite-utils/router';
 
@@ -79,7 +79,7 @@ interface NavigationItem {
 
 interface Props {
     items: NavigationItem[];
-    router: State['router'];
+    router: AppState['router'];
 }
 
 const TopNavigation = (props: Props) => {
@@ -91,8 +91,6 @@ const TopNavigation = (props: Props) => {
             {props.items.map(item => {
                 // show item if isHidden() returns false or when isHidden func is not defined
                 if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
-                    console.log(getPrefixedURL(item.route));
-
                     return (
                         <StyledNavLink
                             key={item.route}
@@ -109,7 +107,7 @@ const TopNavigation = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
 });
 

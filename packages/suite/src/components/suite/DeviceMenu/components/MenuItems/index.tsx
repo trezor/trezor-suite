@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { goto } from '@suite-actions/routerActions';
 import { Switch, Icon, colors, icons, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
-import { AcquiredDevice, State } from '@suite-types/index';
+import { AcquiredDevice, AppState } from '@suite-types/index';
 import { setHideBalance } from '@wallet-actions/settingsActions';
 
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -58,7 +58,7 @@ const SwitchWrapper = styled.div``;
 interface Props {
     device: AcquiredDevice;
     setHideBalance: typeof setHideBalance;
-    settings: State['wallet']['settings'];
+    settings: AppState['wallet']['settings'];
 }
 
 const MenuItems = ({ device, setHideBalance, settings }: Props) => {
@@ -159,7 +159,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     settings: state.wallet.settings,
 });
 

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Loader, Button } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import AcquireDevice from '@suite-components/AcquireDevice';
@@ -15,9 +15,9 @@ import Layout from '@suite-components/Layout';
 import Bridge from '@suite-views/bridge';
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
-    devices: State['devices'];
+    router: AppState['router'];
+    suite: AppState['suite'];
+    devices: AppState['devices'];
     goto: typeof goto;
     children: React.ReactNode;
 }
@@ -98,7 +98,7 @@ const Index: FunctionComponent<Props> = props => {
     return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
     devices: state.devices,

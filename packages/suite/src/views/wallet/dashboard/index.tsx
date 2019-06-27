@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { State } from '@suite-types/index';
-// import Content from '@wallet-components/Content';
+import { AppState } from '@suite-types/index';
+import Content from '@wallet-components/Content';
 import { H4, P, CoinLogo } from '@trezor/components';
 import Link from '@suite-components/Link';
 import Layout from '@wallet-components/Layout';
@@ -12,11 +12,6 @@ import NETWORKS from '@suite-config/networks';
 import EXTERNAL_COINS from '@suite-config/externalCoins';
 import { getRoute } from '@suite/utils/suite/router';
 import l10nMessages from './index.messages';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
 
 const Row = styled.div`
     flex: 1;
@@ -62,7 +57,7 @@ const StyledLink = styled(Link)`
 `;
 
 interface Props {
-    settings: State['wallet']['settings'];
+    settings: AppState['wallet']['settings'];
 }
 
 const Dashboard = (props: Props) => {
@@ -78,9 +73,8 @@ const Dashboard = (props: Props) => {
     };
 
     return (
-        // <Content>
         <Layout>
-            <Wrapper>
+            <Content>
                 <Row data-test="Dashboard__page__content">
                     <StyledH4>
                         {isEmpty() && (
@@ -118,13 +112,12 @@ const Dashboard = (props: Props) => {
                             ))}
                     </Coins>
                 </Row>
-            </Wrapper>
+            </Content>
         </Layout>
-        // </Content>
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     settings: state.wallet.settings,
 });
 

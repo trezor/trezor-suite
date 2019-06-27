@@ -1,5 +1,5 @@
 import React from 'react';
-import { injectIntl } from 'react-intl';
+import { injectIntl, InjectedIntl } from 'react-intl';
 import { TrezorDevice } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { TrezorImage, colors, variables } from '@trezor/components';
@@ -90,7 +90,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     disabled?: boolean;
     isSelected?: boolean;
     className?: string;
-    intl: any;
+    intl: InjectedIntl;
 }
 
 type WrapperProps = Pick<Props, 'isSelected' | 'isHoverable' | 'disabled' | 'className'>;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { H6, TrezorImage } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { OptionsList } from '@suite/components/onboarding/Options';
 import {
     StepWrapper,
@@ -26,9 +26,9 @@ interface Props {
         selectTrezorModel: typeof selectTrezorModel;
         goToNextStep: typeof goToNextStep;
     };
-    device: State['onboarding']['connect']['device'];
-    asNewDevice: State['onboarding']['asNewDevice'];
-    model: State['onboarding']['selectedModel'];
+    device: AppState['onboarding']['connect']['device'];
+    asNewDevice: AppState['onboarding']['asNewDevice'];
+    model: AppState['onboarding']['selectedModel'];
     // model: any;
     // device: any;
     // asNewDevice: any;

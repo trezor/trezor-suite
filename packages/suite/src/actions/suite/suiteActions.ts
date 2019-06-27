@@ -36,7 +36,23 @@ export type SuiteActions =
       }
     | {
           type: typeof SUITE.TOGGLE_SIDEBAR;
+      }
+    | {
+          type: typeof SUITE.ONLINE_STATUS;
+          online: boolean;
       };
+
+export const updateOnlineStatus = () => (dispatch: Dispatch) => {
+    const statusHandler = () => {
+        dispatch({
+            type: SUITE.ONLINE_STATUS,
+            online: navigator.onLine,
+        });
+    };
+    statusHandler();
+    window.addEventListener('online', statusHandler);
+    window.addEventListener('offline', statusHandler);
+};
 
 export const onSuiteReady = (): SuiteActions => {
     return {

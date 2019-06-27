@@ -3,7 +3,7 @@ import { Button, Input } from '@trezor/components';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { applySettings } from '@onboarding-actions/connectActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
@@ -34,8 +34,8 @@ interface StepProps {
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
     };
-    device: State['onboarding']['connect']['device'];
-    deviceCall: State['onboarding']['connect']['deviceCall'];
+    device: AppState['onboarding']['connect']['device'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
 }
 
 interface StepState {

@@ -6,9 +6,9 @@ import { init as initRouter } from '@suite-actions/routerActions';
 import * as SuiteActions from '@suite-actions/suiteActions';
 import { load as loadStorage } from '@suite-actions/storageActions';
 import { init as initTrezorConnect } from '@suite-actions/trezorConnectActions';
-import { State, Action, Dispatch } from '@suite-types/index';
+import { AppState, Action, Dispatch } from '@suite-types/index';
 
-const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
+const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
     // pass action to reducers
@@ -16,6 +16,7 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
 
     switch (action.type) {
         case SUITE.INIT:
+            api.dispatch(SuiteActions.updateOnlineStatus());
             // load storage
             api.dispatch(loadStorage());
             break;

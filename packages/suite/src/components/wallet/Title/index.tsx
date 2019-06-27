@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 
 interface OwnProps {
     children?: React.ReactNode;
@@ -9,7 +9,6 @@ interface OwnProps {
 const Wrapper = styled.div`
     font-size: ${variables.FONT_SIZE.WALLET_TITLE};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.BLACK};
     padding-bottom: 35px;
 `;
 

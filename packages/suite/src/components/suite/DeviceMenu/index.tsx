@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import TrezorConnect from 'trezor-connect';
 import { bindActionCreators } from 'redux';
-import { State, Omit, TrezorDevice, AcquiredDevice } from '@suite-types/index';
+import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { Button, icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
@@ -89,15 +89,15 @@ const StyledButton = styled(Button)`
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    devices: State['devices'];
-    selectedDevice: State['suite']['device'];
+    devices: AppState['devices'];
+    selectedDevice: AppState['suite']['device'];
     selectDevice: (device: TrezorDevice) => void;
     toggleDeviceMenu: (opened: boolean) => void;
     icon?: any;
     disabled?: boolean;
     isOpen: boolean;
     isSelected?: boolean;
-    transport: State['suite']['transport'];
+    transport: AppState['suite']['transport'];
     className?: string;
 }
 
@@ -277,7 +277,7 @@ const DeviceMenu = ({
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
     selectedDevice: state.suite.device,
     transport: state.suite.transport,

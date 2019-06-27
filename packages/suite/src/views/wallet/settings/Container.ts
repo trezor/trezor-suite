@@ -4,10 +4,10 @@ import { injectIntl } from 'react-intl';
 
 import * as settingsActions from '@wallet-actions/settingsActions';
 // import * as LocalStorageActions from 'actions/LocalStorageActions';
-import { State, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types/index';
 import WalletSettings from './index';
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     wallet: state.wallet,
     // fiat: state.fiat,
     // localStorage: state.localStorage,
