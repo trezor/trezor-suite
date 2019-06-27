@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
 
@@ -9,7 +9,7 @@ import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
 
 interface Props {
-    transport: State['suite']['transport'];
+    transport: AppState['suite']['transport'];
 }
 
 const UpdateBridge = ({ transport, intl }: Props & InjectedIntlProps) => {

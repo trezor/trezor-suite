@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Notification, Link } from '@trezor/components';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import Bignumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 
@@ -9,7 +9,7 @@ import { getRoute } from '@suite-utils/router';
 import l10nMessages from './index.messages';
 
 interface Props {
-    router: State['router'];
+    router: AppState['router'];
 }
 
 export default (props: Props) => {

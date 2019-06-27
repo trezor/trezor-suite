@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { AppState } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
-import WalletNotifications from '@suite-components/notifications/Wallet';
+import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
 import Sidebar from './components/Sidebar';
 

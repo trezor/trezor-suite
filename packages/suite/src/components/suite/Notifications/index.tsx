@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import OnlineStatus from './components/OnlineStatus';
 import UpdateBridge from './components/UpdateBridge';
 import UpdateFirmware from './components/UpdateFirmware';
 import NoBackup from './components/NoBackup';
 
 interface Props {
-    connect: State['connect'];
-    suite: State['suite'];
-    router: State['router'];
+    suite: AppState['suite'];
+    router: AppState['router'];
     children?: React.ReactNode;
 }
 
@@ -23,8 +22,7 @@ const Notifications = (props: Props & InjectedIntlProps) => (
     </React.Fragment>
 );
 
-const mapStateToProps = (state: State) => ({
-    connect: state.connect,
+const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
     router: state.router,
 });

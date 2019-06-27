@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { Notification } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { getRoute } from '@suite-utils/router';
@@ -9,8 +9,8 @@ import { goto } from '@suite-actions/routerActions';
 import l10nMessages from './index.messages';
 
 interface Props extends InjectedIntlProps {
-    device: State['suite']['device'];
-    pathname: State['router']['pathname'];
+    device: AppState['suite']['device'];
+    pathname: AppState['router']['pathname'];
 }
 
 const UpdateFirmware = ({ device, pathname, intl }: Props) => {

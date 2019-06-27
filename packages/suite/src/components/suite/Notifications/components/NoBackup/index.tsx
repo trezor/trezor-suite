@@ -1,5 +1,5 @@
 import React from 'react';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { Notification } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -7,7 +7,7 @@ import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
 
 interface Props {
-    device: State['suite']['device'];
+    device: AppState['suite']['device'];
 }
 
 export default ({ device }: Props) => {
