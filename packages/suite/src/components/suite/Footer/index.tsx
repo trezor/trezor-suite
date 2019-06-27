@@ -4,7 +4,7 @@ import { Link, colors, variables } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { State, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types/index';
 
 import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';
@@ -15,7 +15,6 @@ interface Props {
     isLanding?: boolean;
     opened: boolean;
     toggle: typeof logActions.toggle;
-    propTypes?: any;
 }
 
 const Wrapper = styled.div<Pick<Props, 'isLanding'>>`

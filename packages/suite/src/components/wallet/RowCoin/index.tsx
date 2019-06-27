@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Network, Icon as IconType } from '@wallet-types/index';
 import { CoinLogo, Icon, colors, variables } from '@trezor/components';
@@ -72,19 +71,5 @@ const RowCoin = ({ network, iconLeft, iconRight }: Props) => (
         </Row>
     </RowCoinWrapper>
 );
-
-const iconShape = {
-    type: PropTypes.object.isRequired,
-    color: PropTypes.string.isRequired,
-    size: PropTypes.number.isRequired,
-};
-RowCoin.propTypes = {
-    network: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        shortcut: PropTypes.string,
-    }).isRequired,
-    iconLeft: PropTypes.shape(iconShape),
-    iconRight: PropTypes.shape(iconShape),
-};
 
 export default RowCoin;

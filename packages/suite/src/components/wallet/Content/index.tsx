@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { P, H4, Loader, colors, variables } from '@trezor/components';
 
@@ -110,11 +109,5 @@ const Content = ({ className, children, isLoading = false, loader, exceptionPage
         )}
     </Wrapper>
 );
-
-Content.propTypes = {
-    children: PropTypes.oneOfType([PropTypes.element, PropTypes.array]),
-    className: PropTypes.string,
-    isLoading: PropTypes.bool,
-};
 
 export default Content;
