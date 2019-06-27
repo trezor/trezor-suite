@@ -24,7 +24,6 @@ import {
   Input,
   CoinLogo,
   TrezorLogo,
-  Header,
   InputPin,
   TextArea,
   Switch,
@@ -127,33 +126,8 @@ export default class App extends Component<Props> {
         <Wrapper>
           <H5>InputPin</H5>
           <InputPin
-            value=""
+            value="test"
             onDeleteClick={() => {}}
-          />
-        </Wrapper>
-        <Wrapper>
-          <H5>Header</H5>
-          <Header
-            sidebarEnabled={true}
-            sidebarOpened={false}
-            togglerOpenText="Menu"
-            togglerCloseText="Close"
-            rightAddon={null}
-            logoLinkComponent={<Link />}
-            links={[
-              {
-                href: 'https://trezor.io/',
-                title: 'Trezor'
-              },
-              {
-                href: 'https://wiki.trezor.io/',
-                title: 'Wiki'
-              },
-              {
-                href: 'https://blog.trezor.io/',
-                title: 'Blog'
-              },
-            ]}
           />
         </Wrapper>
         <Wrapper>
