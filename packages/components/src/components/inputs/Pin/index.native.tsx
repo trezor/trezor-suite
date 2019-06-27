@@ -12,12 +12,12 @@ const Wrapper = styled.View`
 `;
 
 const StyledInput = styled.TextInput`
-    letter-spacing: 7px;
+    letter-spacing: 7;
     width: 100%;
-    height: 53px;
+    height: 53;
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
     font-size: ${FONT_SIZE.BIGGEST};
-    padding: 5px 31px 10px 20px;
+    padding: 0 5px 0 20px;
     color: ${colors.TEXT_PRIMARY};
     background: transparent;
     border: 1px solid ${colors.DIVIDER};
@@ -25,8 +25,8 @@ const StyledInput = styled.TextInput`
 
 const StyledIcon = styled(Icon)`
     position: absolute;
-    top: 18px;
-    right: 15px;
+    top: 18;
+    right: 15;
 `;
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
@@ -38,7 +38,7 @@ interface Props {
 
 const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
     <Wrapper {...rest} {...wrapperProps}>
-        <StyledInput secureTextEntry maxLength={9} value={value} />
+        <StyledInput secureTextEntry maxLength={9} value={value} editable={false} />
         <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
     </Wrapper>
 );
