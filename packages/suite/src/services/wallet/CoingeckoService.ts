@@ -1,5 +1,3 @@
-/* @flow */
-
 import { httpRequest } from '@wallet-utils/networkUtils';
 import { resolveAfter } from '@wallet-utils/promiseUtils';
 import fiatConfig from '@suite-config/fiat';
@@ -109,7 +107,7 @@ const loadTokenRateAction = (token: { symbol: string }) => async (
 /**
  * Middleware
  */
-const CoingeckoService = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
+const CoingeckoService = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
     next(action);
