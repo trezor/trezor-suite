@@ -93,7 +93,7 @@ const ButtonNotification = styled(Button)`
 `;
 
 interface CtaShape {
-    label: string;
+    label: React.ReactNode;
     callback: () => any;
 }
 
@@ -147,7 +147,6 @@ const Notification = ({
                                 {actions.map((action: CtaShape) => (
                                     <ButtonNotification
                                         isInverse
-                                        key={action.label}
                                         variant={variant}
                                         isLoading={isActionInProgress}
                                         onClick={() => {

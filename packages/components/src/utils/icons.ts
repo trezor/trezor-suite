@@ -1,6 +1,7 @@
 import icons from '../config/icons';
+import { FeedbackType } from '../support/types';
 
-const getStateIcon = (type?: string) => {
+const getStateIcon = (type?: FeedbackType) => {
     let icon = null;
     switch (type) {
         case 'info':

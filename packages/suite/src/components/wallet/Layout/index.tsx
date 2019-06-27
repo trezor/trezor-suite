@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { AppState } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
+import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
 import Sidebar from './components/Sidebar';
 
@@ -45,6 +46,7 @@ const Layout = (props: Props) => (
         <Sidebar isOpen={props.suite.showSidebar} />
         <ContentWrapper preventBgScroll={props.suite.showSidebar}>
             {props.topNavigationComponent}
+            <WalletNotifications />
             <Content>{props.children}</Content>
         </ContentWrapper>
     </Wrapper>

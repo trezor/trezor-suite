@@ -3,6 +3,7 @@ import { SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types/index';
 
 interface SuiteState {
+    online: boolean;
     loading: boolean;
     loaded: boolean;
     error?: string;
@@ -35,6 +36,7 @@ interface Platform {
 }
 
 const initialState: SuiteState = {
+    online: false, // correct value will be set on SUITE_INIT
     loading: true,
     loaded: false,
     language: 'en',
@@ -97,6 +99,13 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 ...state,
                 showSidebar: !state.showSidebar,
             };
+
+        case SUITE.ONLINE_STATUS:
+            return {
+                ...state,
+                online: action.online,
+            };
+
         case 'iframe-loaded':
             return {
                 ...state,
