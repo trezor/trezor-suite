@@ -41,6 +41,7 @@
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.0.8",
         "@types/redux-logger": "^3.0.7",
+        "@types/whatwg-fetch": "^0.0.33",
         "babel-plugin-react-intl": "^3.3.2",
         "cross-env": "^5.2.0",
         "jest": "^24.8.0",
