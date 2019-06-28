@@ -1,6 +1,6 @@
-import router from './router';
-import suite from './suite';
-import devices from './devices';
+import router from './routerReducer';
+import suite from './suiteReducer';
+import devices from './deviceReducer';
 import log from './logReducer';
 
 export default {

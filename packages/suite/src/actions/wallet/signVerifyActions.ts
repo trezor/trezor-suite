@@ -1,7 +1,7 @@
 import { Dispatch, GetState } from '@suite-types/index';
 // import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
-import { validateAddress } from '@wallet-utils/eth';
+import { validateAddress } from '@suite/utils/wallet/ethUtils';
 // import * as NOTIFICATION from 'actions/constants/notification';
 // import l10nMessages from 'components/notifications/Context/actions.messages';
 import * as SIGN_VERIFY from './constants/signVerify';

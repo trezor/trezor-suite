@@ -1,4 +1,4 @@
-import log from './log';
-import suite from './suite';
+import log from './logMiddleware';
+import suite from './suiteMiddleware';
 
 export default [log, suite];
