@@ -12,14 +12,26 @@ const View = styled.View`
     flex-direction: row;
 `;
 
-interface LabelProps {
+interface LabelProps extends Omit<Props, 'onClick'> {
     disabled: boolean;
 }
 const Label = styled.Text<LabelProps>`
     font-weight: 400;
     align-self: center;
     font-size: 18;
-    color: ${(props: any) => (props.disabled ? colors.TEXT_SECONDARY : colors.WHITE)};
+    color: ${colors.WHITE};
+
+    ${(props: any) =>
+        props.isInverse &&
+        css`
+            color: ${getPrimaryColor(props.variant)};
+        `}
+
+    ${(props: any) =>
+        props.disabled &&
+        css`
+            color: ${colors.TEXT_SECONDARY};
+        `}
 `;
 
 type ButtonContainerProps = Omit<Props, 'children' | 'onClick'>;
@@ -37,6 +49,13 @@ const ButtonContainer = styled.TouchableHighlight<ButtonContainerProps>`
         css`
             background-color: ${colors.GRAY_LIGHT};
             border: 1px solid ${colors.DIVIDER};
+        `}
+
+    ${(props: any) =>
+        props.isInverse &&
+        css`
+            background: transparent;
+            border: 1px solid ${getPrimaryColor(props.variant)};
         `}
 `;
 
@@ -78,7 +97,9 @@ const Button = ({
                     <Spinner size="small" color={isDisabled ? colors.TEXT_SECONDARY : 'white'} />
                 )}
 
-                <Label disabled={isDisabled}>{children}</Label>
+                <Label disabled={isDisabled} isInverse={isInverse} variant={variant}>
+                    {children}
+                </Label>
             </View>
         </ButtonContainer>
     );
