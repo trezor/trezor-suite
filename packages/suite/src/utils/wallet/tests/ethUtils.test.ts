@@ -1,4 +1,4 @@
-import * as utils from '../eth';
+import * as utils from '../ethUtils';
 
 describe('eth utils', () => {
     it('decimalToHex', () => {
