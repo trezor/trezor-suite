@@ -6,9 +6,9 @@ import * as SUITE from '@suite-actions/constants/suite';
 // import * as TOKEN from 'actions/constants/token';
 // import { Token } from 'reducers/TokensReducer';
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch, GetState } from '@suite-types/index';
+import { AppState, Action, Dispatch } from '@suite-types/index';
 
-const BASE_URL = 'https://api.coingecko.com/';
+// const BASE_URL = 'https://api.coingecko.com/';
 
 export const RATE_UPDATE: 'rate__update' = 'rate__update';
 
@@ -23,11 +23,11 @@ export interface FiatRateAction {
     rates: { [key: string]: number };
 }
 
-interface CoinGeckoToken {
-    name: string;
-    symbol: string;
-    id: string;
-}
+// interface CoinGeckoToken {
+//     name: string;
+//     symbol: string;
+//     id: string;
+// }
 
 // const getSupportedCurrencies = async () => {
 //     const url = 'https://api.coingecko.com/api/v3/simple/supported_vs_currencies';
@@ -35,7 +35,7 @@ interface CoinGeckoToken {
 //     return res;
 // };
 
-const loadRateAction = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+const loadRateAction = () => async (dispatch: Dispatch): Promise<void> => {
     // const { config } = getState().localStorage;
     // if (!config) return;
 
@@ -60,49 +60,49 @@ const loadRateAction = () => async (dispatch: Dispatch, getState: GetState): Pro
     await resolveAfter(50000);
 };
 
-const fetchCoinRate = async (id: string): Promise<any> => {
-    const url = new URL(`/api/v3/coins/${id}`, BASE_URL);
-    url.searchParams.set('tickers', 'false');
-    url.searchParams.set('market_data', 'true');
-    url.searchParams.set('community_data', 'false');
-    url.searchParams.set('developer_data', 'false');
-    url.searchParams.set('sparkline', 'false');
+// const fetchCoinRate = async (id: string): Promise<any> => {
+//     const url = new URL(`/api/v3/coins/${id}`, BASE_URL);
+//     url.searchParams.set('tickers', 'false');
+//     url.searchParams.set('market_data', 'true');
+//     url.searchParams.set('community_data', 'false');
+//     url.searchParams.set('developer_data', 'false');
+//     url.searchParams.set('sparkline', 'false');
 
-    const response = await fetch(url.toString());
-    const rates = await response.json();
-    return rates;
-};
+//     const response = await fetch(url.toString());
+//     const rates = await response.json();
+//     return rates;
+// };
 
-const fetchCoinList = async (): Promise<any> => {
-    const url = new URL('/api/v3/coins/list', BASE_URL);
+// const fetchCoinList = async (): Promise<any> => {
+//     const url = new URL('/api/v3/coins/list', BASE_URL);
 
-    const response = await fetch(url.toString());
-    const tokens = await response.json();
-    return tokens;
-};
+//     const response = await fetch(url.toString());
+//     const tokens = await response.json();
+//     return tokens;
+// };
 
-const loadTokenRateAction = (token: { symbol: string }) => async (
-    dispatch: Dispatch,
-): Promise<void> => {
-    try {
-        const tokens = await fetchCoinList();
-        const tokenData = tokens.find(
-            (t: CoinGeckoToken) => t.symbol === token.symbol.toLowerCase(),
-        );
-        if (!tokenData) return;
+// const loadTokenRateAction = (token: { symbol: string }) => async (
+//     dispatch: Dispatch,
+// ): Promise<void> => {
+//     try {
+//         const tokens = await fetchCoinList();
+//         const tokenData = tokens.find(
+//             (t: CoinGeckoToken) => t.symbol === token.symbol.toLowerCase(),
+//         );
+//         if (!tokenData) return;
 
-        const res = await fetchCoinRate(tokenData.id);
-        if (res) {
-            dispatch({
-                type: RATE_UPDATE,
-                network: res.symbol,
-                rates: res.market_data.current_price,
-            });
-        }
-    } catch (err) {
-        console.log(err);
-    }
-};
+//         const res = await fetchCoinRate(tokenData.id);
+//         if (res) {
+//             dispatch({
+//                 type: RATE_UPDATE,
+//                 network: res.symbol,
+//                 rates: res.market_data.current_price,
+//             });
+//         }
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };
 
 /**
  * Middleware
