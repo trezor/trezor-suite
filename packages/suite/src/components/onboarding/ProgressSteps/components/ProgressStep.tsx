@@ -92,7 +92,7 @@ const ProgressStep = (props: Props) => {
                         : `${LINE_TRANSITION_DURATION * (order - props.index * 2)}s`,
                 }}
                 onClick={() => {
-                    goToStep(props.onboardingActions.goToStep(props.step.id), isClickable);
+                    goToStep(() => props.onboardingActions.goToStep(props.step.id), isClickable);
                 }}
             />
 
@@ -114,7 +114,7 @@ const ProgressStep = (props: Props) => {
                     textAlign: 'center',
                 }}
                 onClick={() => {
-                    goToStep(props.onboardingActions.goToStep(props.step.id), isClickable);
+                    goToStep(() => props.onboardingActions.goToStep(props.step.id), isClickable);
                 }}
             >
                 {props.step.title}

@@ -1,4 +1,4 @@
-export const ID_WELCOME_STEP = '';
+export const ID_WELCOME_STEP = 'welcome';
 // export const ID_START_STEP = 'start';
 export const ID_NEW_OR_USED = 'new-or-used';
 export const ID_BACKUP_STEP = 'backup';
