@@ -1,3 +1,3 @@
 export default {
-    staticRoutes: ['/onboarding', '/bridge'],
+    staticRoutes: ['/version'],
 };

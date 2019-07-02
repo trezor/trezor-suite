@@ -6,7 +6,6 @@
 import Router from 'next/router';
 import { Dispatch, GetState } from '@suite-types/index';
 import { getPrefixedURL } from '@suite-utils/router';
-import routesConstants from '@suite-constants/routes';
 
 export const LOCATION_CHANGE = '@router/location-change';
 export const UPDATE = '@router/update';
@@ -27,14 +26,6 @@ export const init = (): LocationChange => {
         type: LOCATION_CHANGE,
         url,
     };
-};
-
-/**
- * Get information about route type
- */
-
-export const isStatic = (route: string) => {
-    return routesConstants.staticRoutes.includes(route);
 };
 
 /**

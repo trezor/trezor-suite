@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import { Loader, P, H1 } from '@trezor/components';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
-import { isStatic } from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types/index';
 import SuiteWrapper from '@suite-views/index';
 
 interface Props {
     loaded: AppState['suite']['loaded'];
     error: AppState['suite']['error'];
-    router: AppState['router'];
     dispatch: Dispatch;
 }
 
@@ -23,19 +21,12 @@ const styles = StyleSheet.create({
 });
 
 const Preloader: React.FunctionComponent<Props> = props => {
-    const { loaded, error, dispatch, router } = props;
-    const isStaticRoute = isStatic(router.pathname);
-    console.log('isStaticRoute', isStaticRoute);
-
+    const { loaded, error, dispatch } = props;
     useEffect(() => {
-        if (!loaded && !isStaticRoute) {
+        if (!loaded) {
             dispatch({ type: SUITE.INIT });
         }
-    }, [dispatch, isStaticRoute, loaded]);
-
-    if (isStaticRoute) {
-        return <SuiteWrapper>{props.children}</SuiteWrapper>;
-    }
+    }, [dispatch, loaded]);
 
     if (error) {
         return (
@@ -57,7 +48,6 @@ const Preloader: React.FunctionComponent<Props> = props => {
 const mapStateToProps = (state: AppState) => ({
     loaded: state.suite.loaded,
     error: state.suite.error,
-    router: state.router,
 });
 
 export default connect(mapStateToProps)(Preloader);
