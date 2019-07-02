@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components/native';
-import { View } from 'react-native';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { Omit, FeedbackType, IconShape } from '../../../support/types';
@@ -38,6 +37,18 @@ const Label = styled.Text<LabelProps>`
         css`
             color: ${colors.TEXT_SECONDARY};
         `}
+
+    ${(props: any) =>
+        props.isWhite &&
+        css`
+            color: ${colors.TEXT_SECONDARY};
+        `}
+
+    ${(props: any) =>
+        props.isTransparent &&
+        css`
+            color: ${colors.TEXT_SECONDARY};
+        `}
 `;
 
 type ButtonContainerProps = Omit<Props, 'children' | 'onClick'>;
@@ -49,6 +60,13 @@ const ButtonContainer = styled.TouchableHighlight<ButtonContainerProps>`
     border: 1px solid ${(props: any) => getPrimaryColor(props.variant)};
 
     ${(props: any) =>
+        props.isInverse &&
+        css`
+            background: transparent;
+            border: 1px solid ${getPrimaryColor(props.variant)};
+        `}
+
+    ${(props: any) =>
         props.disabled &&
         css`
             background-color: ${colors.GRAY_LIGHT};
@@ -56,10 +74,17 @@ const ButtonContainer = styled.TouchableHighlight<ButtonContainerProps>`
         `}
 
     ${(props: any) =>
-        props.isInverse &&
+        props.isWhite &&
+        css`
+            background: ${colors.WHITE};
+            border-color: ${colors.DIVIDER};
+        `}
+    
+    ${(props: any) =>
+        props.isTransparent &&
         css`
             background: transparent;
-            border: 1px solid ${getPrimaryColor(props.variant)};
+            border: none;
         `}
 `;
 
@@ -92,6 +117,13 @@ const Button = ({
     icon,
     ...rest
 }: Props) => {
+    const iconColor =
+        isDisabled || isTransparent || isWhite
+            ? colors.TEXT_SECONDARY
+            : isInverse
+            ? getPrimaryColor(variant) || colors.WHITE
+            : colors.WHITE;
+
     return (
         <ButtonContainer
             onPress={onClick}
@@ -100,29 +132,32 @@ const Button = ({
             isInverse={isInverse}
             isLoading={isLoading}
             variant={variant}
-            underlayColor={getSecondaryColor(variant) || undefined}
+            underlayColor={
+                isDisabled || isTransparent || isWhite
+                    ? colors.DIVIDER
+                    : getSecondaryColor(variant) || colors.GREEN_TERTIARY
+            }
+            activeOpacity={0.5}
             disabled={isDisabled}
             icon={icon}
             {...rest}
         >
             <Wrapper>
-                {isLoading && (
-                    <Spinner size="small" color={isDisabled ? colors.TEXT_SECONDARY : 'white'} />
-                )}
+                {isLoading && <Spinner size="small" color={iconColor} />}
 
                 {!isLoading && icon && (
                     <IconWrapper>
-                        <Icon
-                            icon={icon}
-                            size={14}
-                            color={
-                                isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE
-                            }
-                        />
+                        <Icon icon={icon} size={14} color={iconColor} />
                     </IconWrapper>
                 )}
 
-                <Label disabled={isDisabled} isInverse={isInverse} variant={variant}>
+                <Label
+                    disabled={isDisabled}
+                    isInverse={isInverse}
+                    isWhite={isWhite}
+                    isTransparent={isTransparent}
+                    variant={variant}
+                >
                     {children}
                 </Label>
             </Wrapper>
