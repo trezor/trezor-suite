@@ -4,7 +4,8 @@ import EventEmitter from 'events';
 import { CustomError } from './constants/errors';
 import { MESSAGES, RESPONSES } from './constants';
 import { create as createDeferred } from './utils/deferred';
-import type { BlockchainSettings, Deferred } from './types';
+import type { Deferred } from './utils/deferred';
+import type { BlockchainSettings } from './types';
 import * as ResponseTypes from './types/responses';
 import * as MessageTypes from './types/messages';
 
@@ -83,9 +84,9 @@ class BlockchainLink extends EventEmitter {
     }
 
     // Sending messages to worker
-    __send: <R>(message: any) => Promise<R> = async message => {
+    __send: <R>(message: any) => Promise<R> = async (message: any) => {
         await this.getWorker();
-        const dfd: Deferred<any> = createDeferred(this.messageId);
+        const dfd = createDeferred(this.messageId);
         this.deferred.push(dfd);
         this.worker.postMessage({ id: this.messageId, ...message });
         this.messageId++;
@@ -123,7 +124,7 @@ class BlockchainLink extends EventEmitter {
         payload: $ElementType<MessageTypes.GetAccountUtxo, 'payload'>
     ): Promise<$ElementType<ResponseTypes.GetAccountUtxo, 'payload'>> {
         return await this.__send({
-            type: MESSAGES.GET_ACCOUNT_INFO,
+            type: MESSAGES.GET_ACCOUNT_UTXO,
             payload,
         });
     }
@@ -132,7 +133,7 @@ class BlockchainLink extends EventEmitter {
         payload: $ElementType<MessageTypes.GetTransaction, 'payload'>
     ): Promise<$ElementType<ResponseTypes.GetTransaction, 'payload'>> {
         return await this.__send({
-            type: MESSAGES.ESTIMATE_FEE,
+            type: MESSAGES.GET_TRANSACTION,
             payload,
         });
     }
@@ -156,7 +157,7 @@ class BlockchainLink extends EventEmitter {
     }
 
     async unsubscribe(
-        payload: $ElementType<MessageTypes.Subscribe, 'payload'>
+        payload: $ElementType<MessageTypes.Unsubscribe, 'payload'>
     ): Promise<$ElementType<ResponseTypes.Unsubscribe, 'payload'>> {
         return await this.__send({
             type: MESSAGES.UNSUBSCRIBE,
@@ -217,10 +218,6 @@ class BlockchainLink extends EventEmitter {
         } else if (data.type === RESPONSES.NOTIFICATION) {
             this.emit(data.payload.type, data.payload.payload);
         }
-    };
-
-    onNotification: (notification: any) => void = notification => {
-        this.emit(notification.type, notification.payload);
     };
 
     onError: (error: { message: ?string, lineno: number, filename: string }) => void = error => {
