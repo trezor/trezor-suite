@@ -1,9 +1,7 @@
-/* @flow */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import webpack from 'webpack';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-// import FlowWebpackPlugin from 'flow-webpack-plugin';
 
 import { SRC, BUILD, PORT } from './constants';
 
@@ -12,12 +10,13 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        indexUI: [`${SRC}/ui/index.ui.js`],
-        index: [`${SRC}/index.js`],
-        // ripple: [`${SRC}/workers/ripple/index.js`],
+        indexUI: [`${SRC}/ui/index.ui.ts`],
+        index: [`${SRC}/index.ts`],
+        // 'blockbook-worker': `${SRC}/workers/blockbook/index.ts`,
+        // 'ripple-worker': `${SRC}/workers/ripple/index.ts`,
     },
     output: {
-        filename: '[name].[hash].js',
+        filename: '[name].js',
         path: BUILD,
     },
     devServer: {
@@ -30,6 +29,31 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: [/ripple\/index.ts$/, /blockbook\/index.ts$/],
+                use: [
+                    'worker-loader',
+                    // {
+                    //     loader: 'eslint-loader',
+                    //     options: {
+                    //         emitWarning: true,
+                    //     },
+                    // },
+                ],
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: [
+                    'ts-loader',
+                    // {
+                    //     loader: 'eslint-loader',
+                    //     options: {
+                    //         emitWarning: true,
+                    //     },
+                    // },
+                ],
+            },
             {
                 test: /\.js?$/,
                 exclude: /node_modules/,
@@ -47,6 +71,7 @@ module.exports = {
     },
     resolve: {
         modules: [SRC, 'node_modules'],
+        extensions: ['.tsx', '.ts', '.js'],
         alias: {
             'ws-browser': `${SRC}/utils/ws.js`,
         },
@@ -56,9 +81,6 @@ module.exports = {
     },
     plugins: [
         new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser'),
-        // new FlowWebpackPlugin({
-        //     reportingSeverity: 'warning',
-        // }),
         new HtmlWebpackPlugin({
             chunks: ['indexUI'],
             template: `${SRC}ui/index.html`,

@@ -1,0 +1,20 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "lib": ["webworker", "es2015"],
+        "outDir": "./lib",
+        "strict": true,
+        "declaration": true,
+        "noImplicitAny": false,
+        "preserveSymlinks": true, // ts-node: "Unable to require `.d.ts` file." (https://github.com/TypeStrong/ts-node/issues/797)
+        "removeComments": true,
+        "types": ["node"],
+    },
+    "include": [
+        "./src/workers/ripple/index.ts",
+        "./src/workers/blockbook/index.ts",
+    ],
+    "exclude": ["node_modules", "**/_old/**/*.*"]
+}
