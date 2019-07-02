@@ -39,8 +39,8 @@ class WSWrapper extends events.EventEmitter {
         return this.ws.readyState;
     }
 }
-// WSWrapper.CONNECTING = 0;
-// WSWrapper.OPEN = 1;
-// WSWrapper.CLOSING = 2;
-// WSWrapper.CLOSED = 3;
+WSWrapper.CONNECTING = 0;
+WSWrapper.OPEN = 1;
+WSWrapper.CLOSING = 2;
+WSWrapper.CLOSED = 3;
 module.exports = WSWrapper;
