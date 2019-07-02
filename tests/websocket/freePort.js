@@ -6,7 +6,7 @@ const getFreePort = async () => {
         const server = net.createServer();
         let port;
         server.on('listening', () => {
-            port = server.address().port;
+            port = server.address().port; // eslint-disable-line prefer-destructuring
             server.close();
         });
         server.on('close', () => resolve(port));

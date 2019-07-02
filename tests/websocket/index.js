@@ -1,5 +1,5 @@
 import { Server } from 'ws';
-import assert from 'assert';
+import * as assert from 'assert';
 import getFreePort from './freePort';
 import defaultBlockbookResponses from './fixtures/blockbook';
 import defaultRippleResponses from './fixtures/ripple';
@@ -9,17 +9,17 @@ const RESPONSES = {
     ripple: defaultRippleResponses,
 };
 
-const create = async (type: string) => {
+const create = async type => {
     const port = await getFreePort();
     const server = new Server({ port, noServer: true });
-    const close = server.close;
+    const { close } = server;
     const defaultResponses = RESPONSES[type];
-    let _connection;
+    let _connection; // eslint-disable-line no-underscore-dangle
     let addresses;
 
     const sendResponse = request => {
-        const id = request.id;
-        const fixtures = server.fixtures;
+        const { id } = request;
+        const { fixtures } = server;
         const method = type === 'blockbook' ? request.method : request.command;
         let data;
         if (Array.isArray(fixtures)) {
@@ -123,7 +123,7 @@ const create = async (type: string) => {
     server.on('blockbook_unsubscribeNewBlock', request => sendResponse(request));
 
     server.on('blockbook_subscribeAddresses', request => {
-        addresses = request.params.addresses;
+        addresses = request.params.addresses; // eslint-disable-line prefer-destructuring
         sendResponse(request);
     });
 
@@ -177,14 +177,13 @@ const create = async (type: string) => {
 
         const dfd = action =>
             new Promise(resolve => {
-                const _send = () => {
-                    // console.log('--sending');
+                const doSend = () => {
                     _connection.send(JSON.stringify(action), null, () => setTimeout(resolve, 100));
                 };
                 if (typeof action.delay === 'number') {
-                    setTimeout(_send, action.delay);
+                    setTimeout(doSend, action.delay);
                 } else {
-                    _send();
+                    doSend();
                 }
             });
 
