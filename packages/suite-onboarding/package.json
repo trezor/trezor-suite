@@ -17,7 +17,6 @@
         "next": "^8.0.0",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "react-svg": "^10.0.6",
-        "react-timeout": "^1.2.0",
         "styled-reset": "^2.0.14",
         "trezor-flags": "^1.0.2"
     },

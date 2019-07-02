@@ -79,7 +79,7 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
     display: flex;
     flex: 1;
     flex-direction: column;
-    /* min-height: calc(100vh - ${NAVBAR_HEIGHT} ${NAVBAR_HEIGHT_UNIT}); */
+    min-height: calc(100vh - ${`${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT}`});
     max-width: 100vw;
     width: 100%;
     overflow-x: hidden;
@@ -95,7 +95,7 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
         ${props =>
             props.animate &&
             css`
-                background-image: url(${resolveStaticPath('images/background.jpg')});
+                background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
                 background-size: cover;
             `};
     }
@@ -130,7 +130,6 @@ const ProgressStepsWrapper = styled.div`
     height: 100%;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid ${colors.grayLight};
 `;
 
 const ProgressStepsSlot = styled.div`
@@ -222,8 +221,13 @@ class Onboarding extends React.PureComponent<Props> {
         }
     }
 
-    getStep(activeStepId: AppState['onboarding']['activeStepId']) {
-        return this.props.steps.find((step: Step) => step.id === activeStepId);
+    getStep(activeStepId: AppState['onboarding']['activeStepId']): Step {
+        const lookup = this.props.steps.find((step: Step) => step.id === activeStepId);
+        // todo: is there a better way how to solve lookup completeness with typescript?
+        if (!lookup) {
+            throw new TypeError('step not found by step id. unexepected.');
+        }
+        return lookup;
     }
 
     getScreen() {
@@ -299,16 +303,15 @@ class Onboarding extends React.PureComponent<Props> {
                             </UnexpectedStateOverlay>
                         )}
                         <ProgressStepsSlot>
-                            {activeStep && activeStep.title !== 'Basic setup' && (
-                                <ProgressStepsWrapper>
-                                    <ProgressSteps
-                                        steps={steps}
-                                        activeStep={activeStep}
-                                        onboardingActions={onboardingActions}
-                                        isDisabled={deviceCall.isProgress}
-                                    />
-                                </ProgressStepsWrapper>
-                            )}
+                            <ProgressStepsWrapper>
+                                <ProgressSteps
+                                    hiddenOnSteps={[STEP.ID_WELCOME_STEP]}
+                                    steps={steps}
+                                    activeStep={activeStep}
+                                    onboardingActions={onboardingActions}
+                                    isDisabled={deviceCall.isProgress}
+                                />
+                            </ProgressStepsWrapper>
                         </ProgressStepsSlot>
                         <ComponentWrapper>
                             {this.isGlobalInteraction() && (
