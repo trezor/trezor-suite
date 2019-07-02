@@ -1,4 +1,4 @@
-import xrpAccount from '../../integration/fixtures/ripple/rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj';
+import xrpAccount from './accounts/ripple/rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj';
 
 export default {
     blockbook: [

@@ -6,6 +6,29 @@ const token = {
     symbol: undefined,
 };
 
+const tOut = {
+    name: 'Token name',
+    symbol: 'TN',
+    address: '0x0',
+    amount: '0',
+    decimals: 0,
+    from: undefined,
+    to: undefined,
+};
+
+const tIn = {
+    name: 'Token name',
+    symbol: 'TN',
+    token: '0x0',
+    value: '0',
+};
+
+const tokenTransfers = [
+    { ...tIn, from: 'A', to: 'B' },
+    { ...tIn, from: 'C', to: 'D' },
+    { ...tIn, from: 'X', to: 'X' },
+]
+
 export default {
     filterTargets: [
         {
@@ -14,8 +37,195 @@ export default {
             targets: [{ addresses: ['A'] }, { addresses: ['B'] }],
             parsed: [{ addresses: ['A'] }],
         },
+        {
+            description: 'addresses as array of strings',
+            addresses: ['A'],
+            targets: [{ addresses: ['A'] }, { addresses: ['B'] }],
+            parsed: [{ addresses: ['A'] }],
+        },
+        {
+            description: 'addresses as array of mixed objects',
+            addresses: ['A', 1, undefined, 'C', { address: 'B', path: '', transfers: 0, decimal: 0 }],
+            targets: [{ addresses: ['A'] }, { addresses: ['B'] }],
+            parsed: [{ addresses: ['A'] }, { addresses: ['B'] }],
+        },
+        {
+            description: 'targets not found',
+            addresses: 'A',
+            targets: [{ addresses: ['B'] }, { addresses: ['C'] }],
+            parsed: [],
+        },
+        {
+            description: 'addresses as unexpected object (number)',
+            addresses: 1,
+            targets: [{ addresses: ['A'] }],
+            parsed: [],
+        },
+        {
+            description: 'addresses as unexpected object (null)',
+            addresses: null,
+            targets: [{ addresses: ['A'] }],
+            parsed: [],
+        },
+        {
+            description: 'addresses as unexpected object (array of numbers)',
+            addresses: [1],
+            targets: [{ addresses: ['A'] }],
+            parsed: [],
+        },
+        {
+            description: 'addresses as unexpected object (array of unexpected objects)',
+            addresses: [{ foo: 'bar' }],
+            targets: [{ addresses: ['A'] }],
+            parsed: [],
+        },
+        {
+            description: 'targets as unexpected object (string)',
+            addresses: 'A',
+            targets: 'A',
+            parsed: [],
+        },
+        {
+            description: 'targets as unexpected object (null)',
+            addresses: 'A',
+            targets: null,
+            parsed: [],
+        },
+        {
+            description: 'targets as unexpected object (array of unexpected objects)',
+            addresses: 'A',
+            targets: ['A', null, 1, {}],
+            parsed: [],
+        },
     ],
-    transformTargets: [],
+    filterTokenTransfers: [
+        {
+            description: 'transfer recv',
+            addresses: 'B',
+            transfers: tokenTransfers,
+            parsed: [{
+                ...tOut,
+                type: 'recv',
+                from: 'A',
+                to: 'B',
+            }],
+        },
+        {
+            description: 'transfer self',
+            addresses: 'X',
+            transfers: tokenTransfers,
+            parsed: [{
+                ...tOut,
+                type: 'self',
+                from: 'X',
+                to: 'X',
+            }],
+        },
+        {
+            description: 'sent: addresses as string',
+            addresses: 'A',
+            transfers: tokenTransfers,
+            parsed: [{
+                ...tOut,
+                type: 'sent',
+                from: 'A',
+                to: 'B',
+            }],
+        },
+        {
+            description: 'sent: addresses as array of strings',
+            addresses: ['A'],
+            transfers: tokenTransfers,
+            parsed: [{
+                ...tOut,
+                type: 'sent',
+                from: 'A',
+                to: 'B',
+            }],
+        },
+        {
+            description: 'addresses as array of mixed objects (sent/recv/sent)',
+            addresses: ['A', 1, undefined, 'X', { address: 'D' }, 'NOT_FOUND'],
+            transfers: tokenTransfers,
+            parsed: [
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                }, {
+                    ...tOut,
+                    type: 'recv',
+                    from: 'C',
+                    to: 'D',
+                }, {
+                    ...tOut,
+                    type: 'self',
+                    from: 'X',
+                    to: 'X',
+                }
+            ],
+        },
+        {
+            description: 'sent: addresses as Address object',
+            addresses: [{ address: 'A' }],
+            transfers: tokenTransfers,
+            parsed: [{
+                ...tOut,
+                type: 'sent',
+                from: 'A',
+                to: 'B',
+            }],
+        },
+        {
+            description: 'addresses as unexpected object (number)',
+            addresses: 1,
+            transfers: tokenTransfers,
+            parsed: [],
+        },
+        {
+            description: 'addresses as unexpected object (null)',
+            addresses: null,
+            transfers: tokenTransfers,
+            parsed: [],
+        },
+        {
+            description: 'addresses as unexpected object (array of numbers)',
+            addresses: [1],
+            transfers: tokenTransfers,
+            parsed: [],
+        },
+        {
+            description: 'addresses as unexpected object (array of unexpected objects)',
+            addresses: [{ foo: 'bar' }],
+            transfers: tokenTransfers,
+            parsed: [],
+        },
+        {
+            description: 'transfers as unexpected object (string)',
+            addresses: 'A',
+            transfers: 'A',
+            parsed: [],
+        },
+        {
+            description: 'transfers as unexpected object (null)',
+            addresses: 'A',
+            transfers: null,
+            parsed: [],
+        },
+        {
+            description: 'transfers as unexpected object (empty array)',
+            addresses: 'A',
+            transfers: [],
+            parsed: [],
+        },
+        {
+            description: 'transfers as unexpected object (array of unexpected objects)',
+            addresses: 'A',
+            transfers: ['A', null, 1, {}],
+            parsed: [],
+        }
+    ],
     transformTransaction: [
         {
             description: 'sent to 1 outputs (no change)',
@@ -46,6 +256,7 @@ export default {
             descriptor: 'A',
             addresses: {
                 used: ['utxo'],
+                unused: [],
                 change: ['change'],
             },
             tx: {
@@ -77,6 +288,7 @@ export default {
             descriptor: 'A',
             addresses: {
                 used: ['utxo'],
+                unused: [],
                 change: ['change'],
             },
             tx: {
@@ -101,6 +313,7 @@ export default {
             descriptor: 'A',
             addresses: {
                 used: ['utxo'],
+                unused: [],
                 change: ['change'],
             },
             tx: {
@@ -136,6 +349,7 @@ export default {
             descriptor: 'utxo',
             addresses: {
                 used: ['utxo'],
+                unused: [],
                 change: ['change'],
             },
             tx: {

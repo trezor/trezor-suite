@@ -1,8 +1,8 @@
-import TinyWorker from 'tiny-worker';
+import * as TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
 describe('Worker', () => {
-    let blockchain;
+    let blockchain: BlockchainLink;
 
     beforeEach(async () => {
         blockchain = new BlockchainLink({
@@ -22,7 +22,7 @@ describe('Worker', () => {
             global.Worker = () => {
                 const W = {
                     // eslint-disable-next-line no-unused-vars
-                    onmessage: (d: any) => {},
+                    onmessage: d => {},
                     postMessage: data => {
                         if (data.type === 'm_connect') {
                             W.onmessage({ data2: { id: 100, type: 'not-found' } });
@@ -132,7 +132,7 @@ describe('Worker', () => {
                 const W = {
                     postMessage: () => {},
                     // eslint-disable-next-line no-unused-vars
-                    onerror: (e: string) => {},
+                    onerror: e => {},
                 };
                 setTimeout(() => {
                     W.onerror('string error');
@@ -163,8 +163,10 @@ describe('Worker', () => {
                 return new TinyWorker(() => {
                     /* eslint-disable */
                     self.onmessage = () => {
+                        // @ts-ignore undefined "x"
                         const r = 1 / x;
                     };
+                    // @ts-ignore postMessage params length
                     self.postMessage({ type: 'm_handshake' });
                     /* eslint-enable */
                 });
@@ -180,9 +182,9 @@ describe('Worker', () => {
             global.Worker = () => {
                 const W = {
                     // eslint-disable-next-line no-unused-vars
-                    onerror: (e: string) => {},
+                    onerror: e => {},
                     // eslint-disable-next-line no-unused-vars
-                    onmessage: (d: any) => {},
+                    onmessage: d => {},
                     postMessage: () => {
                         setTimeout(() => {
                             W.onerror('string error');

@@ -2,11 +2,11 @@ export default {
     addAddresses: [
         {
             input: 'not-an-array',
-            error: true,
+            error: 'Invalid parameter: addresses',
         },
         {
             input: {},
-            error: true,
+            error: 'Invalid parameter: addresses',
         },
         {
             input: ['A', 'A', 'A', { invalid: 'value' }],
@@ -27,11 +27,11 @@ export default {
     removeAddresses: [
         {
             input: 'not-an-array',
-            error: true,
+            error: 'Invalid parameter: addresses',
         },
         {
             input: {},
-            error: true,
+            error: 'Invalid parameter: addresses',
         },
         {
             input: ['A', 'A', 'A', { invalid: 'value' }],

@@ -1,4 +1,4 @@
-import TinyWorker from 'tiny-worker';
+import * as TinyWorker from 'tiny-worker';
 
 export const rippleWorkerFactory = (): Worker => {
     if (typeof Worker === 'undefined') {

@@ -4,30 +4,26 @@ import fixtures from './fixtures/common';
 describe('Add and remove address in sequence', () => {
     fixtures.addAddresses.forEach(f => {
         it('add address', () => {
-            if (f.error) {
-                expect(() => common.addAddresses(f.input)).toThrow('Invalid parameter: addresses');
-            } else {
-                expect(common.addAddresses(f.input)).toEqual(f.unique);
+            try {
+                // @ts-ignore invalid param
+                const unique = common.addAddresses(f.input);
+                expect(unique).toEqual(f.unique);
                 expect(common.getAddresses()).toEqual(f.subscribed);
+            } catch (error) {
+                expect(error.message).toEqual(f.error);
             }
-            // try {
-            //     expect(common.addAddresses(f.input)).toEqual(f.unique);
-            //     expect(common.getAddresses()).toEqual(f.subscribed);
-            // } catch (error) {
-            //     expect(error.message).toEqual('Invalid parameter: addresses');
-            // }
         });
     });
 
     fixtures.removeAddresses.forEach(f => {
         it('remove address', () => {
-            if (f.error) {
-                expect(() => common.removeAddresses(f.input)).toThrow(
-                    'Invalid parameter: addresses'
-                );
-            } else {
-                expect(common.removeAddresses(f.input)).toEqual(f.subscribed);
+            try {
+                // @ts-ignore invalid param
+                const unique = common.removeAddresses(f.input);
+                expect(unique).toEqual(f.subscribed);
                 expect(common.getAddresses()).toEqual(f.subscribed);
+            } catch (error) {
+                expect(error.message).toEqual(f.error);
             }
         });
     });
@@ -36,6 +32,7 @@ describe('Add and remove address in sequence', () => {
 describe('Add and remove account in sequence', () => {
     fixtures.addAccounts.forEach(f => {
         it('add account', () => {
+            // @ts-ignore invalid param
             common.addAccounts(f.input);
             expect(common.getAccounts()).toEqual(f.subscribedAccounts);
             expect(common.getAddresses()).toEqual(f.subscribedAddresses);
@@ -56,6 +53,8 @@ describe('Debug', () => {
         common.setSettings({
             name: 'Test',
             debug: true,
+            worker: 'foo.js',
+            server: [],
         });
         common.debug('Debug log message');
         common.debug('warn', 'Debug warning message');
