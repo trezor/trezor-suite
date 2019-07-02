@@ -12,8 +12,6 @@ module.exports = {
     entry: {
         indexUI: [`${SRC}/ui/index.ui.ts`],
         index: [`${SRC}/index.ts`],
-        // 'blockbook-worker': `${SRC}/workers/blockbook/index.ts`,
-        // 'ripple-worker': `${SRC}/workers/ripple/index.ts`,
     },
     output: {
         filename: '[name].js',
@@ -31,27 +29,19 @@ module.exports = {
         rules: [
             {
                 test: [/ripple\/index.ts$/, /blockbook\/index.ts$/],
-                use: [
-                    'worker-loader',
-                    // {
-                    //     loader: 'eslint-loader',
-                    //     options: {
-                    //         emitWarning: true,
-                    //     },
-                    // },
-                ],
+                use: ['worker-loader'],
             },
             {
                 test: /\.ts$/,
                 exclude: /node_modules/,
                 use: [
                     'ts-loader',
-                    // {
-                    //     loader: 'eslint-loader',
-                    //     options: {
-                    //         emitWarning: true,
-                    //     },
-                    // },
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true,
+                        },
+                    },
                 ],
             },
             {
