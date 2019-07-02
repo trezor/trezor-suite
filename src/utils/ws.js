@@ -3,7 +3,7 @@
  * same, as `ws` package provides.
  */
 
-const events = require('events');
+const events = require('events'); // eslint-disable-line @typescript-eslint/no-var-requires
 
 class WSWrapper extends events.EventEmitter {
     ws;
