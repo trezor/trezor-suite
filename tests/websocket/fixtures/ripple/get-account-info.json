@@ -1,0 +1,21 @@
+{
+    "id": 0,
+    "status": "success",
+    "type": "response",
+    "result": {
+        "ledger_hash": "98A98699B02EFFC53513F5CF38D1FA0523C1907860B318F038DD5E77C38BD057",
+        "ledger_index": 48354346,
+        "validated": true,
+        "account_data": {
+            "Account": "rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj",
+            "Balance": "20000000",
+            "Flags": 0,
+            "LedgerEntryType": "AccountRoot",
+            "OwnerCount": 0,
+            "PreviousTxnID": "33F2085B0EF572376335716521E412CF611C4124B1088E5CCED48A7901CAF95E",
+            "PreviousTxnLgrSeq": 47570158,
+            "Sequence": 2,
+            "index": "DA88187347B6A203ED9314A5BDFDB73D7C8DFC07CB42FC08B5D7A73B4E2F6E39"
+        }
+    }
+}

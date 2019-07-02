@@ -1,9 +1,0 @@
-{
-    "valid": {
-        "name": "Test",
-        "shortcut": "test",
-        "decimals": 9,
-        "bestHeight": 1
-    },
-    "invalid": null
-}
