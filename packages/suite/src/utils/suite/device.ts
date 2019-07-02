@@ -73,9 +73,10 @@ export const getStatusName = (deviceStatus: string, intl: InjectedIntl): string 
     }
 };
 
-export const isWebUSB = transport => !!(transport.type && transport.type === 'webusb');
+export const isWebUSB = (transport: any) => !!(transport.type && transport.type === 'webusb'); // TODO fix ts
 
-export const isDisabled = (selectedDevice: SelectedDevice, devices: TrezorDevice[], transport) => {
+export const isDisabled = (selectedDevice: any, devices: TrezorDevice[], transport: any) => {
+    // TODO fix ts
     if (isWebUSB(transport)) return false; // always enabled if webusb
     if (devices.length < 1) return true; // no devices
     if (devices.length === 1) {
@@ -86,12 +87,16 @@ export const isDisabled = (selectedDevice: SelectedDevice, devices: TrezorDevice
     return false; // default
 };
 
-export const isDeviceAccessible = (device: SelectedDevice): boolean => {
+export const isDeviceAccessible = (device: any): boolean => {
+    // TODO fix ts
     if (!device || !device.features) return false;
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
-export const isSelectedDevice = (selected: SelectedDevice, device: TrezorDevice): boolean =>
+export const isSelectedDevice = (
+    selected: any,
+    device: TrezorDevice,
+): boolean => // TODO fix ts
     !!(
         selected &&
         device &&
