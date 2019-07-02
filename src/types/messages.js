@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { BlockchainSettings } from './index';
+import type { SubscriptionAccountInfo, BlockchainSettings } from './common';
 import * as MESSAGES from '../constants/messages';
 
 // messages sent from blockchain.js to worker
@@ -28,6 +28,7 @@ export type GetAccountInfo = {
         from?: number, // from block
         to?: number, // to block
         contractFilter?: string, // blockbook only, ethereum token filter
+        gap?: number, // blockbook only, derived addresses gap
         // since ripple-lib cannot use pages "marker" is used as first unknown point in history (block and sequence of transaction)
         marker?: {
             ledger: number,
@@ -37,10 +38,15 @@ export type GetAccountInfo = {
 };
 
 export type GetAccountUtxo = {
-    type: typeof MESSAGES.GET_ACCOUNT_INFO,
+    type: typeof MESSAGES.GET_ACCOUNT_UTXO,
     payload: {
         descriptor: string, // address or xpub
     },
+};
+
+export type GetTransaction = {
+    type: typeof MESSAGES.GET_TRANSACTION,
+    payload: string,
 };
 
 export type EstimateFeeOptions = {
@@ -62,9 +68,12 @@ export type Subscribe = {
               type: 'block',
           }
         | {
-              type: 'notification',
+              type: 'addresses',
               addresses: Array<string>,
-              mempool?: boolean,
+          }
+        | {
+              type: 'accounts',
+              accounts: Array<SubscriptionAccountInfo>,
           },
 };
 
@@ -75,8 +84,12 @@ export type Unsubscribe = {
               type: 'block',
           }
         | {
-              type: 'notification',
-              addresses: Array<string>,
+              type: 'addresses',
+              addresses?: Array<string>,
+          }
+        | {
+              type: 'accounts',
+              accounts?: Array<SubscriptionAccountInfo>,
           },
 };
 
@@ -90,6 +103,9 @@ export type Message =
     | ({ id: number } & Connect)
     | ({ id: number } & GetInfo)
     | ({ id: number } & GetAccountInfo)
+    | ({ id: number } & GetAccountUtxo)
+    | ({ id: number } & GetTransaction)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
+    | ({ id: number } & Unsubscribe)
     | ({ id: number } & PushTransaction);
