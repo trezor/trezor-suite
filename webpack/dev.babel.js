@@ -18,7 +18,7 @@ module.exports = {
         path: BUILD,
     },
     devServer: {
-        contentBase: [SRC],
+        contentBase: `${SRC}ui`,
         hot: false,
         https: false,
         port: PORT,
@@ -36,12 +36,12 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     'ts-loader',
-                    {
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true,
-                        },
-                    },
+                    // {
+                    //     loader: 'eslint-loader',
+                    //     options: {
+                    //         emitWarning: true,
+                    //     },
+                    // },
                 ],
             },
             {
@@ -49,12 +49,12 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     'babel-loader',
-                    {
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true,
-                        },
-                    },
+                    // {
+                    //     loader: 'eslint-loader',
+                    //     options: {
+                    //         emitWarning: true,
+                    //     },
+                    // },
                 ],
             },
         ],
