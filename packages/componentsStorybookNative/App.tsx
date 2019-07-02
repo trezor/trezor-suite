@@ -54,11 +54,28 @@ export default class App extends Component<Props> {
     return (
       <Container>
         <Wrapper>
+            <H1>
+                Select
+            </H1>
+            <Select
+                isSearchable
+                placeholder="Example placeholder"
+                options={[
+                    { value: 'hello', label: 'Hello' },
+                    { value: 'world', label: 'World' },
+                ]}
+                value={{
+                  value: 'hello',
+                  label: 'Hello'
+                }}
+            />
+        </Wrapper>
+        <Wrapper>
           <H1>
               Basic
           </H1>
           <Row>
-              <Button variant="success" data-test="button_basic_success" onClick={() => {}} onClick={() => {}}>
+              <Button variant="success" data-test="button_basic_success" onClick={() => {}}>
                   Button
               </Button>
               <Button variant="info" data-test="button_basic_info" onClick={() => {}}>
