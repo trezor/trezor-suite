@@ -3,8 +3,8 @@ import { AppState } from '@suite-types/index';
 import { Notification } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
-import { goto } from '@suite-actions/routerActions';
-import { getRoute } from '@suite-utils/router';
+// import { goto } from '@suite-actions/routerActions';
+// import { getRoute } from '@suite-utils/router';
 
 interface Props {
     device: AppState['suite']['device'];
@@ -19,14 +19,14 @@ export default ({ device }: Props) => {
             variant="warning"
             title={<FormattedMessage {...l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />}
             message={<FormattedMessage {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />}
-            actions={[
-                {
-                    label: (
-                        <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
-                    ),
-                    callback: goto(getRoute('wallet-no-backup')),
-                },
-            ]}
+            // actions={[
+            //     {
+            //         label: (
+            //             <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
+            //         ),
+            //         callback: goto(getRoute('wallet-no-backup')),
+            //     },
+            // ]}
         />
     );
 };
