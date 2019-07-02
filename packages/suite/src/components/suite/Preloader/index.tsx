@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Loader, P, H1 } from '@trezor/components';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types/index';
 import SuiteWrapper from '@suite-views/index';
+import StaticPageWrapper from '@suite-components/StaticPageWrapper';
 
 interface Props {
     loaded: AppState['suite']['loaded'];
     error: AppState['suite']['error'];
     dispatch: Dispatch;
+    isStatic: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -21,12 +22,12 @@ const styles = StyleSheet.create({
 });
 
 const Preloader: React.FunctionComponent<Props> = props => {
-    const { loaded, error, dispatch } = props;
+    const { loaded, error, dispatch, isStatic } = props;
     useEffect(() => {
-        if (!loaded) {
+        if (!loaded && !isStatic) {
             dispatch({ type: SUITE.INIT });
         }
-    }, [dispatch, loaded]);
+    }, [dispatch, isStatic, loaded, props.children]);
 
     if (error) {
         return (
@@ -36,13 +37,10 @@ const Preloader: React.FunctionComponent<Props> = props => {
             </View>
         );
     }
-    return !loaded ? (
-        <View style={styles.wrapper}>
-            <Loader text="Loading" size={100} strokeWidth={1} />
-        </View>
-    ) : (
-        <SuiteWrapper>{props.children}</SuiteWrapper>
-    );
+
+    if (isStatic) return <StaticPageWrapper>{props.children}</StaticPageWrapper>;
+
+    return <SuiteWrapper>{loaded && props.children}</SuiteWrapper>;
 };
 
 const mapStateToProps = (state: AppState) => ({

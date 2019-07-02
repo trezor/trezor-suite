@@ -34,14 +34,9 @@ class TrezorSuiteApp extends App<Props> {
                 <Container>
                     <ReduxProvider store={store}>
                         <IntlProvider>
-                            <>
-                                {isStaticRoute && <Component {...pageProps} />}
-                                {!isStaticRoute && (
-                                    <Preloader>
-                                        <Component {...pageProps} />
-                                    </Preloader>
-                                )}
-                            </>
+                            <Preloader isStatic={isStaticRoute}>
+                                <Component {...pageProps} />
+                            </Preloader>
                         </IntlProvider>
                     </ReduxProvider>
                 </Container>
