@@ -34,7 +34,6 @@ const handleClick = (event: MouseEvent) => {
         case 'get-account-info': {
             try {
                 const options = JSON.parse(getInputValue('get-account-info-options'));
-                console.log("options", options)
                 const payload = {
                     descriptor: getInputValue('get-account-info-address'),
                     details: getInputValue('get-account-info-mode') || 'basic',
@@ -45,6 +44,26 @@ const handleClick = (event: MouseEvent) => {
                 onError(error);
             }
             
+            break;
+        }
+
+        case 'get-account-utxo': {
+            try {
+                const payload = {
+                    descriptor: getInputValue('get-account-utxo-address'),
+                };
+                blockchain.getAccountUtxo(payload).then(onResponse).catch(onError);
+            } catch(error) {
+                onError(error);
+            }
+            break;
+        }
+        case 'get-tx': {
+            try {
+                blockchain.getTransaction(getInputValue('get-tx-id')).then(onResponse).catch(onError);
+            } catch(error) {
+                onError(error);
+            }
             break;
         }
 
@@ -70,14 +89,14 @@ const handleClick = (event: MouseEvent) => {
 
         case 'subscribe-address':
             blockchain.subscribe({
-                type: 'notification',
+                type: 'addresses',
                 addresses: getInputValue('subscribe-addresses').split(','),
-            }).catch(onError);
+            }).then(onResponse).catch(onError);
             break;
 
         case 'unsubscribe-address':
             blockchain.unsubscribe({
-                type: 'notification',
+                type: 'addresses',
                 addresses: getInputValue('subscribe-addresses').split(','),
             }).catch(onError);
             break;
@@ -88,7 +107,7 @@ const handleClick = (event: MouseEvent) => {
 
 const handleResponse = (parent: any, response: any) => prepareResponse(parent, response);
 
-const handleError = (parent: any, error: any) => prepareResponse(parent, error.message, true);
+const handleError = (parent: any, error: any) => prepareResponse(parent, `${error.code}: ${error.message}`, true);
 
 const handleBlockEvent = (blockchain: BlockchainLink, notification: any): void => {
     const network: string = getInputValue('network-type');
@@ -183,6 +202,7 @@ const onEstimateFeeModeChange = (event) => {
 const fillValues = (data) => {
     setInputValue('get-account-info-address', data.address);
     setInputValue('get-account-info-options', JSON.stringify(data.accountInfoOptions, null, 2));
+    setInputValue('get-account-utxo-address', data.address);
     setInputValue('estimate-fee-options', JSON.stringify(data.estimateFeeOptions, null, 2));
     setInputValue('push-transaction-tx', data.tx);
     setInputValue('subscribe-addresses', data.subscribe);
