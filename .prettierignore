@@ -1,8 +1,6 @@
-build
 lib
+build
 coverage
-cache/**
 **/_old/*
 node_modules
-src/flowtype/npm
 src/ui/**

@@ -7,11 +7,10 @@ module.exports = api => {
                 loose: true,
             },
         ],
-        '@babel/preset-flow',
+        '@babel/preset-typescript',
     ];
 
     const plugins = [
-        '@babel/plugin-transform-flow-strip-types',
         '@babel/plugin-proposal-class-properties',
         '@babel/plugin-proposal-object-rest-spread',
         [

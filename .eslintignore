@@ -1,11 +1,6 @@
-public
 build
 lib
 coverage
-cache/**
-**/_old/*
 src/ui/**
 node_modules
-src/flowtype/npm
-scripts/solidity/.*
 **/_old/*
