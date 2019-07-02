@@ -1,6 +1,6 @@
 /* @flow */
 
-import createServer from './websocket/ripple';
+import createServer from './websocket';
 import { rippleWorkerFactory } from './workers/mock.worker';
 // import { MESSAGES, RESPONSES } from '../src/constants';
 import BlockchainLink from '../../src';

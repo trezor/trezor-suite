@@ -4,7 +4,7 @@
 // import { describe, it, beforeEach, afterEach } from 'mocha';
 // import chai, { expect, should } from 'chai';
 // import chaiAsPromised from 'chai-as-promised';
-import createServer, { setFixture } from './websocket/blockbook';
+import createServer, { setFixture } from './websocket';
 import { blockbookWorkerFactory } from './workers/mock.worker';
 import BlockchainLink from '../../src';
 

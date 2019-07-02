@@ -1,7 +1,7 @@
 /* @flow */
 
 import BlockchainLink from 'trezor-blockchain-link';
-import createServer from '../websocket/ripple';
+import createServer from '../websocket';
 import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
 
 const backends = [
