@@ -30,7 +30,7 @@
     "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
     "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
     "lint": "eslint ./src ./webpack ./tests/unit",
-    "flow": "flow check ./src ./tests",
+    "flow": "flow check src",
     "test": "jest -c jest.config.unit.js",
     "test:node": "jest -c jest.config.integration.js"
   },

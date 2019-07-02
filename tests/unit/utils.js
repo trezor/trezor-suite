@@ -11,6 +11,7 @@ import fixtures from './fixtures/utils';
 describe('blockbook/utils', () => {
     describe('filterTargets', () => {
         it('addresses as string', async () => {
+            // $FlowIssue
             const t = filterTargets('A', [{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]);
             expect(t).toEqual([{ addresses: ['A'], n: 0 }]);
         });
@@ -18,6 +19,7 @@ describe('blockbook/utils', () => {
         it('addresses as array of strings', async () => {
             const t = filterTargets(
                 ['A'],
+                // $FlowIssue
                 [{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]
             );
             expect(t).toEqual([{ addresses: ['A'], n: 0 }]);
@@ -27,12 +29,14 @@ describe('blockbook/utils', () => {
             const t = filterTargets(
                 // $FlowIssue
                 ['A', 1, undefined, 'C', { address: 'B', path: '', transfers: 0, decimal: 0 }],
+                // $FlowIssue
                 [{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]
             );
             expect(t).toEqual([{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]);
         });
 
         it('targets not found', async () => {
+            // $FlowIssue
             const t = filterTargets('A', [{ addresses: ['B'], n: 0 }, { addresses: ['C'], n: 1 }]);
             expect(t).toEqual([]);
         });

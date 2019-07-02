@@ -24,6 +24,8 @@ describe('Worker', () => {
         if (typeof Worker === 'undefined') {
             global.Worker = () => {
                 const W = {
+                    // eslint-disable-next-line no-unused-vars
+                    onmessage: (d: any) => {},
                     postMessage: data => {
                         if (data.type === 'm_connect') {
                             W.onmessage({ data2: { id: 100, type: 'not-found' } });
@@ -132,6 +134,8 @@ describe('Worker', () => {
             global.Worker = () => {
                 const W = {
                     postMessage: () => {},
+                    // eslint-disable-next-line no-unused-vars
+                    onerror: (e: string) => {},
                 };
                 setTimeout(() => {
                     W.onerror('string error');
@@ -179,6 +183,10 @@ describe('Worker', () => {
         if (typeof Worker === 'undefined') {
             global.Worker = () => {
                 const W = {
+                    // eslint-disable-next-line no-unused-vars
+                    onerror: (e: string) => {},
+                    // eslint-disable-next-line no-unused-vars
+                    onmessage: (d: any) => {},
                     postMessage: () => {
                         setTimeout(() => {
                             W.onerror('string error');

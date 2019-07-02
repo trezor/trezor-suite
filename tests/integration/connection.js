@@ -1,5 +1,5 @@
 /* @flow */
-/* eslint-disable-next-line */
+/* eslint-disable */
 import BlockchainLink from 'trezor-blockchain-link';
 import createServer from '../websocket';
 import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';

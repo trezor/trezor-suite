@@ -1,5 +1,5 @@
 /* @flow */
-/* eslint-disable-next-line import/no-unresolved,import/no-extraneous-dependencies */
+/* eslint-disable import/no-unresolved */
 import BlockchainLink from 'trezor-blockchain-link';
 import createServer from '../websocket';
 import { blockbookWorkerFactory } from './worker';

@@ -3,10 +3,10 @@
 [ignore]
 .*/_old/.*
 .*/build
-./lib
+.*/lib
 
 [libs]
-./tests/types/jest.js
+./flowtype
 
 [options]
 esproposal.class_static_fields=enable
