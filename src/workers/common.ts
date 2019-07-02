@@ -1,6 +1,4 @@
-/* @flow */
-
-import type { Response, BlockchainSettings, SubscriptionAccountInfo } from '../types';
+import { Response, BlockchainSettings, SubscriptionAccountInfo } from '../types';
 import { MESSAGES, RESPONSES } from '../constants';
 import { CustomError } from '../constants/errors';
 
@@ -8,11 +6,11 @@ declare function postMessage(data: Response): void;
 
 let _settings: BlockchainSettings;
 let _debugPrefix: string;
-let _addresses: Array<string> = [];
-let _accounts: Array<SubscriptionAccountInfo> = [];
+let _addresses: string[] = [];
+let _accounts: SubscriptionAccountInfo[] = [];
 const _subscription: { [key: string]: boolean } = {};
 
-const removeEmpty = (obj: Object) => {
+const removeEmpty = (obj: Response) => {
     Object.keys(obj).forEach(key => {
         if (obj[key] && typeof obj[key] === 'object') removeEmpty(obj[key]);
         else if (obj[key] === undefined) delete obj[key];
@@ -27,7 +25,7 @@ export const setSettings = (s: BlockchainSettings): void => {
 
 export const getSettings = (): BlockchainSettings => _settings;
 
-export const debug = (...args: Array<any>): void => {
+export const debug = (...args: any[]): void => {
     if (_settings && _settings.debug) {
         if (args[0] === 'warn' || args[0] === 'error') {
             console[args[0]](_debugPrefix, ...args.slice(1));
@@ -77,11 +75,11 @@ export const errorHandler = ({ id, error }: { id: number, error: any }): void =>
     });
 };
 
-export const response = (data: Response): void => {
+export const response = (data: Response) => {
     postMessage(removeEmpty(data));
 };
 
-const validateAddresses = (addresses: Array<string>): Array<string> => {
+const validateAddresses = (addresses: string[]) => {
     if (!Array.isArray(addresses)) throw new CustomError('invalid_param', '+addresses');
     const seen = {};
     return addresses.filter(a => {
@@ -90,23 +88,23 @@ const validateAddresses = (addresses: Array<string>): Array<string> => {
     });
 };
 
-export const addAddresses = (addresses: Array<string>): Array<string> => {
+export const addAddresses = (addresses: string[]) => {
     const unique = validateAddresses(addresses).filter(a => _addresses.indexOf(a) < 0);
     _addresses = _addresses.concat(unique);
     return unique;
 };
 
-export const getAddresses = (): Array<string> => _addresses;
+export const getAddresses = () => _addresses;
 
-export const removeAddresses = (addresses: Array<string>): Array<string> => {
+export const removeAddresses = (addresses: string[]) => {
     const unique = validateAddresses(addresses);
     _addresses = _addresses.filter(a => unique.indexOf(a) < 0);
     return _addresses;
 };
 
 const validateAccounts = (
-    accounts: Array<SubscriptionAccountInfo>
-): Array<SubscriptionAccountInfo> => {
+    accounts: SubscriptionAccountInfo[]
+): SubscriptionAccountInfo[] => {
     if (!Array.isArray(accounts)) throw new CustomError('invalid_param', '+accounts');
     const seen = {};
     return accounts.filter(a => {
@@ -117,33 +115,30 @@ const validateAccounts = (
     });
 };
 
-const getAccountAddresses = (account): Array<string> => {
-    // if (typeof account !== 'object' && typeof account.descriptor !== 'string') return [];
+const getAccountAddresses = (account: SubscriptionAccountInfo) => {
     if (account.addresses) {
-        return []
-            .concat(account.addresses.change, account.addresses.used, account.addresses.unused)
-            .map(a => a.address);
+        const { change, used, unused } = account.addresses;
+        return change.concat(used, unused).map(a => a.address);
     }
     return [account.descriptor];
 };
 
 export const addAccounts = (
-    accounts: Array<SubscriptionAccountInfo>
-): Array<SubscriptionAccountInfo> => {
+    accounts: SubscriptionAccountInfo[]
+): SubscriptionAccountInfo[] => {
     const valid = validateAccounts(accounts);
     const others = _accounts.filter(a => !valid.find(b => b.descriptor === a.descriptor));
     _accounts = others.concat(valid);
     const addresses = _accounts.reduce((addr, acc) => {
         return addr.concat(getAccountAddresses(acc));
-    }, []);
+    }, [] as string[]);
     addAddresses(addresses);
     return valid;
 };
 
-export const getAccount = (address: string): ?SubscriptionAccountInfo => {
+export const getAccount = (address: string): SubscriptionAccountInfo | undefined => {
     return _accounts.find(a => {
         if (a.descriptor === address) return true;
-        // console.log("2. get acc", a)
         if (a.addresses) {
             const { change, used, unused } = a.addresses;
             if (change.find(ad => ad.address === address)) return true;
@@ -154,16 +149,16 @@ export const getAccount = (address: string): ?SubscriptionAccountInfo => {
     });
 };
 
-export const getAccounts = (): Array<SubscriptionAccountInfo> => _accounts;
+export const getAccounts = () => _accounts;
 
 export const removeAccounts = (
-    accounts: Array<SubscriptionAccountInfo>
-): Array<SubscriptionAccountInfo> => {
+    accounts: SubscriptionAccountInfo[]
+): SubscriptionAccountInfo[] => {
     const valid = validateAccounts(accounts);
     const accountsToRemove = _accounts.filter(a => valid.find(b => b.descriptor === a.descriptor));
     const addressesToRemove = accountsToRemove.reduce((addr, acc) => {
         return addr.concat(getAccountAddresses(acc));
-    }, []);
+    }, [] as string[]);
     _accounts = _accounts.filter(a => accountsToRemove.indexOf(a) < 0);
     removeAddresses(addressesToRemove);
     return _accounts;
@@ -185,10 +180,9 @@ export const clearSubscriptions = (): void => {
     });
 };
 
-export const shuffleEndpoints = (a: Array<string>): Array<string> => {
+export const shuffleEndpoints = (a: string[]) => {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        // $FlowIssue
         [a[i], a[j]] = [a[j], a[i]];
     }
     return a;

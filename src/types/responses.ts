@@ -1,8 +1,6 @@
-/* @flow */
-
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
-import type { AccountInfo, Transaction } from './common';
+import { AccountInfo, Transaction } from './common';
 
 // messages sent from worker to blockchain.js
 
@@ -57,7 +55,7 @@ export type Utxo = {
 
 export type GetAccountUtxo = {
     type: typeof RESPONSES.GET_ACCOUNT_UTXO,
-    payload: Array<Utxo>,
+    payload: Utxo[],
 };
 
 export type GetTransaction = {
@@ -67,11 +65,11 @@ export type GetTransaction = {
 
 export type EstimateFee = {
     type: typeof RESPONSES.ESTIMATE_FEE,
-    payload: Array<{
+    payload: {
         feePerUnit: string,
         feePerTx?: string,
         feeLimit?: string,
-    }>,
+    }[],
 };
 
 export type Subscribe = {

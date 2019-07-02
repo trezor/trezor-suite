@@ -1,10 +1,8 @@
-/* @flow */
-import WebSocket from 'ws';
-import EventEmitter from 'events';
+import * as WebSocket from 'ws';
+import { EventEmitter } from 'events';
 import { CustomError } from '../../constants/errors';
-import { create as createDeferred } from '../../utils/deferred';
-import type { Deferred } from '../../utils/deferred';
-import type {
+import { create as createDeferred, Deferred } from '../../utils/deferred';
+import {
     AccountInfoParams,
     AccountUtxoParams,
     EstimateFeeParams,
@@ -24,11 +22,11 @@ type Subscription = {
 export default class Socket extends EventEmitter {
     _url: string;
 
-    _ws: WebSocket | typeof undefined;
+    _ws: WebSocket | undefined;
 
-    messages: Array<Deferred<any>> = [];
+    messages: Deferred<any>[] = [];
 
-    subscriptions: Array<Subscription> = [];
+    subscriptions: Subscription[] = [];
 
     constructor(url: string) {
         super();
@@ -49,7 +47,7 @@ export default class Socket extends EventEmitter {
         };
         this.messages.push(dfd);
         ws.send(JSON.stringify(req));
-        return dfd.promise;
+        return dfd.promise as Promise<any>;
     };
 
     _onmessage(message: string) {
@@ -96,7 +94,7 @@ export default class Socket extends EventEmitter {
             this._url += suffix;
         }
 
-        const dfd = createDeferred(-1);
+        const dfd = createDeferred<void>(-1);
 
         const ws = new WebSocket(this._url);
         if (typeof ws.setMaxListeners === 'function') {
@@ -163,7 +161,7 @@ export default class Socket extends EventEmitter {
         // });
     }
 
-    subscribeAddresses(addresses: Array<string>) {
+    subscribeAddresses(addresses: string[]) {
         const index = this.subscriptions.findIndex(s => s && s.type === 'notification');
         if (index >= 0) {
             // remove previous subscriptions

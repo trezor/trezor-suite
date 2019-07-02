@@ -1,5 +1,3 @@
-/* @flow */
-
 const PREFIX = 'blockchain_link/';
 
 const ERROR = {
@@ -15,11 +13,11 @@ const ERROR = {
 };
 
 export class CustomError extends Error {
-    code: string;
+    code: string | undefined;
 
-    message: string;
+    message: string = '';
 
-    constructor(code: string, message?: string | Array<string>) {
+    constructor(code: string, message?: string) {
         super(message);
 
         if (typeof message === 'string') {

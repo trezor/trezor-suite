@@ -1,8 +1,6 @@
-/* @flow */
-
 export function create<T>(id: number | string): Deferred<T> {
     let localResolve: (t: T) => void = () => {};
-    let localReject: (e?: ?Error) => void = () => {};
+    let localReject: (e?: Error) => void = () => {};
 
     const promise: Promise<T> = new Promise(async (resolve, reject) => {
         localResolve = resolve;

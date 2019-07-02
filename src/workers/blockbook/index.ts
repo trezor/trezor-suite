@@ -1,19 +1,19 @@
-/* @flow */
 import { CustomError } from '../../constants/errors';
 import { MESSAGES, RESPONSES } from '../../constants';
 import Connection from './websocket';
 import * as utils from './utils';
 
-import type { Message, SubscriptionAccountInfo } from '../../types';
-import type { AddressNotification, BlockNotification } from '../../types/blockbook';
+import { Message, SubscriptionAccountInfo } from '../../types';
+import { AddressNotification, BlockNotification } from '../../types/blockbook';
 import * as MessageTypes from '../../types/messages';
 import * as common from '../common';
 
-declare function onmessage(event: { data: Message }): void;
+// declare function onmessage(event: { data: Message }): void;
 
-onmessage = event => {
+onmessage = (event: { data: Message }) => {
     if (!event.data) return;
     const { data } = event;
+    const { id, type } = data;
 
     common.debug('onmessage', data);
     switch (data.type) {
@@ -23,9 +23,9 @@ onmessage = event => {
         case MESSAGES.CONNECT:
             connect()
                 .then(async () => {
-                    common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
+                    common.response({ id, type: RESPONSES.CONNECT, payload: true });
                 })
-                .catch(error => common.errorHandler({ id: data.id, error }));
+                .catch(error => common.errorHandler({ id, error }));
             break;
         case MESSAGES.GET_INFO:
             getInfo(data);
@@ -54,21 +54,21 @@ onmessage = event => {
         case MESSAGES.DISCONNECT:
             disconnect(data);
             break;
-        case 'terminate':
-            cleanup();
-            break;
+        // case 'terminate':
+        //     cleanup();
+        //     break;
         default:
             common.errorHandler({
-                id: data.id,
-                error: new Error(`Unknown message type ${data.type}`),
+                id,
+                error: new Error(`Unknown message type ${type}`),
             });
             break;
     }
 };
 
-let _connection: ?Connection;
-let _pingTimeout: TimeoutID;
-let _endpoints: Array<string> = [];
+let _connection: Connection | undefined;
+let _pingTimeout: number;
+let _endpoints: string[] = [];
 
 const timeoutHandler = async () => {
     if (_connection && _connection.isConnected()) {
@@ -263,7 +263,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
     }
 };
 
-const subscribeAccounts = async (accounts: Array<SubscriptionAccountInfo>) => {
+const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
     common.addAccounts(accounts);
@@ -274,7 +274,7 @@ const subscribeAccounts = async (accounts: Array<SubscriptionAccountInfo>) => {
     return await socket.subscribeAddresses(common.getAddresses());
 };
 
-const subscribeAddresses = async (addresses: Array<string>) => {
+const subscribeAddresses = async (addresses: string[]) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
     common.addAddresses(addresses);
@@ -317,7 +317,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Pro
     }
 };
 
-const unsubscribeAccounts = async (accounts?: Array<SubscriptionAccountInfo>) => {
+const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
     const socket = await connect();
     common.removeAccounts(accounts || common.getAccounts());
     const subscribed = common.getAddresses();
@@ -399,7 +399,7 @@ const onTransaction = (event: AddressNotification) => {
                 descriptor: account ? account.descriptor : descriptor,
                 tx: account
                     ? utils.transformTransaction(account.descriptor, account.addresses, event.tx)
-                    : utils.transformTransaction(descriptor, null, event.tx),
+                    : utils.transformTransaction(descriptor, undefined, event.tx),
             },
         },
     });

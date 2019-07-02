@@ -1,5 +1,5 @@
-/* @flow */
-import type {
+
+import {
     Transaction,
     TokenTransfer,
     TokenInfo,
@@ -8,7 +8,7 @@ import type {
     AccountInfo,
 } from '../../types';
 
-import type {
+import {
     ServerInfo,
     AccountInfo as BlockbookAccountInfo,
     AccountUtxo as BlockbookAccountUtxo,
@@ -16,7 +16,7 @@ import type {
     VinVout,
 } from '../../types/blockbook';
 
-import type { Utxo } from '../../types/responses';
+import { Utxo } from '../../types/responses';
 
 export const transformServerInfo = (payload: ServerInfo) => {
     return {
@@ -32,14 +32,14 @@ export const transformServerInfo = (payload: ServerInfo) => {
 
 type Addresses = Array<Address | string> | string;
 
-export const filterTargets = (addresses: Addresses, targets: Array<VinVout>): Array<VinVout> => {
+export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout[] => {
     if (typeof addresses === 'string') {
         addresses = [addresses];
     }
     // neither addresses or targets are missing
     if (!addresses || !Array.isArray(addresses) || !targets || !Array.isArray(targets)) return [];
 
-    const all: Array<?string> = addresses.map(a => {
+    const all: Array<string | null> = addresses.map(a => {
         if (typeof a === 'string') return a;
         if (typeof a === 'object' && typeof a.address === 'string') return a.address;
         return null;
@@ -55,8 +55,8 @@ export const filterTargets = (addresses: Addresses, targets: Array<VinVout>): Ar
 
 export const filterTokenTransfers = (
     addresses: Addresses,
-    transfers: $ElementType<BlockbookTransaction, 'tokenTransfers'>
-): Array<TokenTransfer> => {
+    transfers: BlockbookTransaction['tokenTransfers']
+): TokenTransfer[] => {
     if (typeof addresses === 'string') {
         addresses = [addresses];
     }
@@ -64,7 +64,7 @@ export const filterTokenTransfers = (
     if (!addresses || !Array.isArray(addresses) || !transfers || !Array.isArray(transfers))
         return [];
 
-    const all: Array<?string> = addresses.map(a => {
+    const all: Array<string | null> = addresses.map(a => {
         if (typeof a === 'string') return a;
         if (typeof a === 'object' && typeof a.address === 'string') return a.address;
         return null;
@@ -73,14 +73,14 @@ export const filterTokenTransfers = (
     return transfers
         .filter(tr => {
             if (tr && typeof tr === 'object') {
-                return all.indexOf(tr.from) >= 0 || all.indexOf(tr.to) >= 0;
+                return (tr.from && all.indexOf(tr.from) >= 0) || (tr.to && all.indexOf(tr.to) >= 0);
             }
             return false;
         })
         .map(tr => {
-            const incoming = all.indexOf(tr.from) >= 0;
-            const outgoing = all.indexOf(tr.to) >= 0;
-            let type = 'unknown';
+            const incoming = tr.from && all.indexOf(tr.from) >= 0;
+            const outgoing = tr.to && all.indexOf(tr.to) >= 0;
+            let type: TokenTransfer['type'] = 'unknown';
             if (incoming && outgoing) {
                 type = 'self';
             } else if (incoming) {
@@ -112,22 +112,22 @@ const transformTarget = (target: VinVout) => {
 
 export const transformTransaction = (
     descriptor: string,
-    addresses: ?AccountAddresses,
+    addresses: AccountAddresses | undefined,
     tx: BlockbookTransaction
 ): Transaction => {
     // combine all addresses into array
     const myAddresses = addresses
-        ? [].concat(addresses.change, addresses.used, addresses.unused)
+        ? addresses.change.concat(addresses.used, addresses.unused)
         : [descriptor];
 
     const inLength = Array.isArray(tx.vin) ? tx.vin.length : 0;
     const outLength = Array.isArray(tx.vout) ? tx.vout.length : 0;
     const outgoing = filterTargets(myAddresses, tx.vin);
     const incoming = filterTargets(myAddresses, tx.vout);
-    const internal = addresses ? filterTargets([].concat(addresses.change), tx.vout) : [];
+    const internal = addresses ? filterTargets(addresses.change, tx.vout) : [];
     const tokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
     let type;
-    let targets = [];
+    let targets: VinVout[] = [];
 
     // && !hasJoinsplits (from hd-wallet)
     if (outgoing.length === 0 && incoming.length === 0 && tokens.length === 0) {
@@ -171,8 +171,8 @@ export const transformTransaction = (
 };
 
 export const transformTokenInfo = (
-    tokens: $ElementType<BlockbookAccountInfo, 'tokens'>
-): Array<TokenInfo> | typeof undefined => {
+    tokens: BlockbookAccountInfo['tokens']
+): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens) || tokens.length < 1) return undefined;
     return tokens.reduce((arr, t) => {
         if (t.type !== 'ERC20') return arr;
@@ -186,12 +186,12 @@ export const transformTokenInfo = (
                 decimals: t.decimals || 0,
             },
         ]);
-    }, []);
+    }, [] as TokenInfo[]);
 };
 
 export const transformAddresses = (
-    tokens: $ElementType<BlockbookAccountInfo, 'tokens'>
-): AccountAddresses | typeof undefined => {
+    tokens: BlockbookAccountInfo['tokens']
+): AccountAddresses | undefined => {
     if (!tokens || !Array.isArray(tokens) || tokens.length < 1) return undefined;
     const addresses = tokens.reduce((arr, t) => {
         if (t.type !== 'XPUBAddress') return arr;
@@ -205,7 +205,7 @@ export const transformAddresses = (
                 received: t.totalReceived,
             },
         ]);
-    }, []);
+    }, [] as Address[]);
 
     if (addresses.length === 0) return undefined;
     const internal = addresses.filter(a => a.path.split('/')[4] === '1');
@@ -254,7 +254,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     };
 };
 
-export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Array<Utxo> => {
+export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
     return payload.map(utxo => ({
         txid: utxo.txid,
         vout: utxo.vout,

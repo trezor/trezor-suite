@@ -1,12 +1,13 @@
-/* @flow */
-
-import type { SubscriptionAccountInfo, BlockchainSettings } from './common';
+import { SubscriptionAccountInfo, BlockchainSettings } from './common';
 import * as MESSAGES from '../constants/messages';
 
 // messages sent from blockchain.js to worker
 
 export type Connect = {
     type: typeof MESSAGES.CONNECT,
+};
+export type Disconnect = {
+    type: typeof MESSAGES.DISCONNECT,
 };
 
 export type GetInfo = {
@@ -51,10 +52,10 @@ export type GetTransaction = {
 
 export type EstimateFeeOptions = {
     transaction?: any, // custom object, used in ethereum
-    levels?: Array<{
+    levels?: {
         name: string,
         value: string,
-    }>,
+    }[],
 };
 export type EstimateFee = {
     type: typeof MESSAGES.ESTIMATE_FEE,
@@ -69,11 +70,11 @@ export type Subscribe = {
           }
         | {
               type: 'addresses',
-              addresses: Array<string>,
+              addresses: string[],
           }
         | {
               type: 'accounts',
-              accounts: Array<SubscriptionAccountInfo>,
+              accounts: SubscriptionAccountInfo[],
           },
 };
 
@@ -85,11 +86,11 @@ export type Unsubscribe = {
           }
         | {
               type: 'addresses',
-              addresses?: Array<string>,
+              addresses?: string[],
           }
         | {
               type: 'accounts',
-              accounts?: Array<SubscriptionAccountInfo>,
+              accounts?: SubscriptionAccountInfo[],
           },
 };
 
@@ -101,6 +102,7 @@ export type PushTransaction = {
 export type Message =
     | { id: number, type: typeof MESSAGES.HANDSHAKE, settings: BlockchainSettings }
     | ({ id: number } & Connect)
+    | ({ id: number } & Disconnect)
     | ({ id: number } & GetInfo)
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)

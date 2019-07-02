@@ -1,11 +1,9 @@
-/* @flow */
-
 /* Common types used in both params and responses */
 
 export type BlockchainSettings = {
     name: string,
     worker: string | Function,
-    server: Array<string>,
+    server: string[],
     debug?: boolean,
 };
 
@@ -23,7 +21,7 @@ export type TokenTransfer = {
 };
 
 export type Target = {
-    addresses?: Array<string>,
+    addresses?: string[],
     isAddress: boolean,
     amount?: string,
     coinbase?: string,
@@ -33,16 +31,16 @@ export type Transaction = {
     type: 'sent' | 'recv' | 'self' | 'unknown',
 
     txid: string,
-    blockTime: ?number,
-    blockHeight: ?number,
-    blockHash: ?string,
+    blockTime?: number,
+    blockHeight?: number,
+    blockHash?: string,
 
     amount: string,
     fee: string,
     // total: string, // amount + total
 
-    targets: Array<Target>,
-    tokens: Array<TokenTransfer>,
+    targets: Target[],
+    tokens: TokenTransfer[],
 };
 
 /* Account */
@@ -58,9 +56,9 @@ export type Address = {
 };
 
 export type AccountAddresses = {
-    change: Array<Address>,
-    used: Array<Address>,
-    unused: Array<Address>,
+    change: Address[],
+    used: Address[],
+    unused: Address[],
 };
 
 export type TokenInfo = {
@@ -77,14 +75,14 @@ export type AccountInfo = {
     descriptor: string,
     balance: string,
     availableBalance: string,
-    tokens?: Array<TokenInfo>, // ethereum tokens
+    tokens?: TokenInfo[], // ethereum tokens
     addresses?: AccountAddresses, // bitcoin addresses
     history: {
         total: number, // total transactions (unknown in ripple)
         tokens?: number, // tokens transactions
         unconfirmed: number, // unconfirmed transactions
-        transactions?: Array<Transaction>, // list of transactions
-        txids?: Array<string>, // not implemented
+        transactions?: Transaction[], // list of transactions
+        txids?: string[], // not implemented
     },
     misc?: {
         // ETH
@@ -93,13 +91,13 @@ export type AccountInfo = {
         sequence?: number,
         reserve?: string,
     },
-    page?: ?{
+    page?: {
         // blockbook
         index: number,
         size: number,
         total: number,
     },
-    marker?: ?{
+    marker?: {
         // ripple-lib
         ledger: number,
         seq: number,

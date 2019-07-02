@@ -1,18 +1,17 @@
-/* @flow */
 import { RippleAPI } from 'ripple-lib';
 import BigNumber from 'bignumber.js';
 import { CustomError } from '../../constants/errors';
 import { MESSAGES, RESPONSES } from '../../constants';
 
 import * as MessageTypes from '../../types/messages';
-import type { Message, SubscriptionAccountInfo } from '../../types';
+import { Message, SubscriptionAccountInfo, AccountInfo } from '../../types';
 import * as utils from './utils';
 import * as common from '../common';
 
-declare function onmessage(event: { data: Message }): void;
+// declare function onmessage(event: { data: Message }): void;
 
 // WebWorker message handling
-onmessage = event => {
+onmessage = (event: { data: Message }) => {
     if (!event.data) return;
     const { data } = event;
 
@@ -49,9 +48,9 @@ onmessage = event => {
         case MESSAGES.DISCONNECT:
             disconnect(data);
             break;
-        case 'terminate':
-            cleanup();
-            break;
+        // case 'terminate':
+        //     cleanup();
+        //     break;
         default:
             common.errorHandler({
                 id: data.id,
@@ -61,9 +60,9 @@ onmessage = event => {
     }
 };
 
-let _api: ?RippleAPI;
-let _pingTimeout: TimeoutID;
-let _endpoints: Array<string> = [];
+let _api: RippleAPI | undefined;
+let _pingTimeout: number;
+let _endpoints: string[] = [];
 const RESERVE = {
     BASE: '20000000',
     OWNER: '5000000',
@@ -145,6 +144,7 @@ const connect = async (): Promise<RippleAPI> => {
     // }, 6000);
 
     try {
+        // @ts-ignore
         const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-');
         BLOCKS.MIN = parseInt(availableBlocks[0], 10);
         BLOCKS.MAX = parseInt(availableBlocks[1], 10);
@@ -215,7 +215,7 @@ type RawTxData = {
     ledger_index_max: number,
     limit: number,
     descriptor: string,
-    transactions: Array<any>,
+    transactions: any[],
 };
 const getRawTransactionsData = async (options: any): Promise<RawTxData> => {
     const api = await connect();
@@ -228,7 +228,7 @@ const getAccountInfo = async (
     const { payload } = data;
 
     // initial state (basic)
-    const account = {
+    const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: '0', // default balance
         availableBalance: '0', // default balance
@@ -256,12 +256,14 @@ const getAccountInfo = async (
                 ? new BigNumber(info.ownerCount).multipliedBy(RESERVE.OWNER).toString()
                 : '0';
 
-        account.misc.sequence = info.sequence;
-        account.misc.reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
-        account.balance = api.xrpToDrops(info.xrpBalance);
-        account.availableBalance = new BigNumber(account.balance)
-            .minus(account.misc.reserve)
-            .toString(); // availableBalance = current balance - reserve
+        const reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
+        const misc = {
+            sequence: info.sequence,
+            reserve,
+            balance: api.xrpToDrops(info.xrpBalance),
+            availableBalance: new BigNumber(account.balance).minus(reserve).toString(),
+        }
+        account.misc = misc;
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
@@ -394,7 +396,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
     }
 };
 
-const subscribeAccounts = async (accounts: Array<SubscriptionAccountInfo>) => {
+const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const api = await connect();
     const prevAddresses = common.getAddresses();
@@ -412,7 +414,7 @@ const subscribeAccounts = async (accounts: Array<SubscriptionAccountInfo>) => {
     return { subscribed: common.getAddresses().length > 0 };
 };
 
-const subscribeAddresses = async (addresses: Array<string>) => {
+const subscribeAddresses = async (addresses: string[]) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const api = await connect();
     const uniqueAddresses = common.addAddresses(addresses);
@@ -466,7 +468,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Pro
     });
 };
 
-const unsubscribeAccounts = async (accounts?: Array<SubscriptionAccountInfo>) => {
+const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
     const prevAddresses = common.getAddresses();
     common.removeAccounts(accounts || common.getAccounts());
     const addresses = common.getAddresses();
@@ -474,7 +476,7 @@ const unsubscribeAccounts = async (accounts?: Array<SubscriptionAccountInfo>) =>
     await unsubscribeAddresses(uniqueAddresses);
 };
 
-const unsubscribeAddresses = async (addresses?: Array<string>) => {
+const unsubscribeAddresses = async (addresses?: string[]) => {
     // remove accounts
     const api = await connect();
     if (!addresses) {

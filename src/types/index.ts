@@ -1,5 +1,3 @@
-/* @flow */
-
 export * from './common';
 
 export { Message } from './messages';

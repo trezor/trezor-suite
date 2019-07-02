@@ -41,7 +41,6 @@ export default [
         },
         data: {
             address: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj', // address with 1 in 1 out tx
-            address: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj', // address with 1 in 1 out tx
             // address: 'rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy', // some exchange
             // address: 'rsG1sNifXJxGS2nDQ9zHyoe1S5APrtwpjV', // another exchange
             accountInfoOptions: {

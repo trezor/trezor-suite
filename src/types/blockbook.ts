@@ -1,5 +1,3 @@
-/* @flow */
-
 export type Subscribe = {
     subscribed: boolean,
 };
@@ -57,9 +55,8 @@ export type AccountInfo = {
     page?: number,
     itemsOnPage: number,
     totalPages: number,
-    tokens?: any,
     nonTokenTxs?: number,
-    transactions?: Array<Transaction>,
+    transactions?: Transaction[],
     nonce?: string,
     tokens?: Array<XPUBAddress | ERC20>,
 };
@@ -68,7 +65,7 @@ export type AccountUtxoParams = {
     descriptor: string,
 };
 
-export type AccountUtxo = Array<{
+export type AccountUtxo = {
     txid: string,
     vout: number,
     value: string,
@@ -76,11 +73,11 @@ export type AccountUtxo = Array<{
     address: string,
     path: string,
     confirmations: number,
-}>;
+}[];
 
 export type VinVout = {
     n: number,
-    addresses?: Array<string>,
+    addresses?: string[],
     isAddress: boolean,
     value?: string,
     coinbase?: string,
@@ -126,7 +123,7 @@ export type Push = {
 };
 
 export type EstimateFeeParams = {
-    blocks: Array<number>,
+    blocks: number[],
     specific?: {
         conservative?: boolean,
         txsize?: number,
@@ -136,11 +133,11 @@ export type EstimateFeeParams = {
     },
 };
 
-export type Fee = Array<{
+export type Fee = {
     feePerUnit: string,
     feePerTx?: string,
     feeLimit?: string,
-}>;
+}[];
 
 export type BlockNotification = {
     height: number,
@@ -161,7 +158,7 @@ declare function FSend(method: 'sendTransaction', params: { hex: string }): Prom
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
     method: 'subscribeAddresses',
-    params: { addresses: Array<string> }
+    params: { addresses: string[] }
 ): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeAddresses', params: {}): Promise<Subscribe>;
 declare function FSend(method: 'subscribeNewBlock', params: {}): Promise<Subscribe>;

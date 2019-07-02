@@ -1,10 +1,10 @@
-/* @flow */
 // import BigNumber from 'bignumber.js';
-import { GetServerInfoResponse } from 'ripple-lib';
+// import { GetServerInfoResponse } from 'ripple-lib';
 
-import type { Transaction } from '../../types/common';
+import { Transaction } from '../../types/common';
 
-export const transformServerInfo = (payload: GetServerInfoResponse) => {
+// export const transformServerInfo = (payload: GetServerInfoResponse) => {
+export const transformServerInfo = (payload: any) => {
     return {
         name: 'Ripple',
         shortcut: 'xrp',
