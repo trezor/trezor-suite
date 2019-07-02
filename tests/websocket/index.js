@@ -1,5 +1,3 @@
-/* @flow */
-
 import { Server } from 'ws';
 import assert from 'assert';
 import getFreePort from './freePort';

@@ -1,5 +1,3 @@
-/* @flow */
-
 import createServer from '../websocket';
 import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
 import BlockchainLink from '../../src';
@@ -50,7 +48,6 @@ backends.forEach((b, i) => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('block', callback);
-                    // $FlowIssue
                     const s = await blockchain[f.method]({ type: 'block' });
                     expect(s).toEqual({ subscribed: f.method === 'subscribe' });
                     await server.sendMessage(f.server);
@@ -74,7 +71,6 @@ backends.forEach((b, i) => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('notification', callback);
-                    // $FlowIssue
                     const s = await blockchain[f.method](f.params);
 
                     expect(s).toEqual({ subscribed: f.method === 'subscribe' });
@@ -93,7 +89,6 @@ backends.forEach((b, i) => {
 
             fixturesSubscribe.forEach(f => {
                 it(f.description, async () => {
-                    // $FlowIssue
                     const s = await blockchain[f.method](f.params);
                     const subscribedAddresses = server.getAddresses();
                     const subscribed =
@@ -115,7 +110,6 @@ backends.forEach((b, i) => {
                     server.setFixtures(f.server);
 
                     try {
-                        // $FlowIssue
                         await blockchain[f.method](f.params);
                     } catch (error) {
                         // expect(error.code).toEqual('blockchain_link/blockbook-websocket');

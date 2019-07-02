@@ -1,4 +1,3 @@
-/* @flow */
 import TinyWorker from 'tiny-worker';
 
 export const rippleWorkerFactory = (): Worker => {

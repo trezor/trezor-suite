@@ -1,4 +1,3 @@
-/* @flow */
 /* eslint-disable */
 import BlockchainLink from 'trezor-blockchain-link';
 import createServer from '../websocket';
@@ -52,7 +51,6 @@ backends.forEach((b, i) => {
         });
 
         it('Connect error (no server field)', async () => {
-            // $FlowIssue
             blockchain.settings.server = null;
             try {
                 await blockchain.connect();
@@ -71,7 +69,6 @@ backends.forEach((b, i) => {
         });
 
         it('Connect error (server field invalid type)', async () => {
-            // $FlowIssue
             blockchain.settings.server = 1;
             try {
                 await blockchain.connect();
@@ -81,7 +78,6 @@ backends.forEach((b, i) => {
         });
 
         it('Connect error (server field with invalid values)', async () => {
-            // $FlowIssue
             blockchain.settings.server = [
                 'gibberish',
                 'ws://gibberish',

@@ -1,5 +1,3 @@
-/* @flow */
-
 import {
     filterTargets,
     filterTokenTransfers,
@@ -11,7 +9,6 @@ import fixtures from './fixtures/utils';
 describe('blockbook/utils', () => {
     describe('filterTargets', () => {
         it('addresses as string', async () => {
-            // $FlowIssue
             const t = filterTargets('A', [{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]);
             expect(t).toEqual([{ addresses: ['A'], n: 0 }]);
         });
@@ -19,7 +16,6 @@ describe('blockbook/utils', () => {
         it('addresses as array of strings', async () => {
             const t = filterTargets(
                 ['A'],
-                // $FlowIssue
                 [{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]
             );
             expect(t).toEqual([{ addresses: ['A'], n: 0 }]);
@@ -27,45 +23,35 @@ describe('blockbook/utils', () => {
 
         it('addresses as array of mixed objects', async () => {
             const t = filterTargets(
-                // $FlowIssue
                 ['A', 1, undefined, 'C', { address: 'B', path: '', transfers: 0, decimal: 0 }],
-                // $FlowIssue
                 [{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]
             );
             expect(t).toEqual([{ addresses: ['A'], n: 0 }, { addresses: ['B'], n: 1 }]);
         });
 
         it('targets not found', async () => {
-            // $FlowIssue
             const t = filterTargets('A', [{ addresses: ['B'], n: 0 }, { addresses: ['C'], n: 1 }]);
             expect(t).toEqual([]);
         });
 
         it('addresses as unexpected object', async () => {
-            // $FlowIssue
             let t = filterTargets(1, [{ addresses: ['A'], n: 0 }]);
             expect(t).toEqual([]);
-            // $FlowIssue
             t = filterTargets(null, [{ addresses: ['A'], n: 0 }]);
             expect(t).toEqual([]);
-            // $FlowIssue
             t = filterTargets([1], [{ addresses: ['A'], n: 0 }]);
             expect(t).toEqual([]);
-            // $FlowIssue
             t = filterTargets([{ foo: 'bar' }], [{ addresses: ['A'], n: 0 }]);
             expect(t).toEqual([]);
         });
 
         it('targets as unexpected object', async () => {
-            // $FlowIssue
             let t = filterTargets('A', 'A');
             expect(t).toEqual([]);
 
-            // $FlowIssue
             t = filterTargets('A', ['A', null, 1, {}]);
             expect(t).toEqual([]);
 
-            // $FlowIssue
             t = filterTargets('A', null);
             expect(t).toEqual([]);
         });
@@ -153,7 +139,6 @@ describe('blockbook/utils', () => {
 
         it('addresses as array of mixed objects (sent/recv/sent)', async () => {
             const t = filterTokenTransfers(
-                // $FlowIssue
                 ['A', 1, undefined, 'X', { address: 'D' }, 'NOT_FOUND'],
                 tokens
             );
@@ -183,16 +168,15 @@ describe('blockbook/utils', () => {
         });
 
         it('addresses as unexpected object', async () => {
-            // $FlowIssue
             let t = filterTokenTransfers(1, tokens);
             expect(t).toEqual([]);
-            // $FlowIssue
+
             t = filterTokenTransfers(null, tokens);
             expect(t).toEqual([]);
-            // $FlowIssue
+
             t = filterTokenTransfers([1], tokens);
             expect(t).toEqual([]);
-            // $FlowIssue
+
             t = filterTokenTransfers([{ foo: 'bar' }], tokens);
             expect(t).toEqual([]);
         });
@@ -220,15 +204,12 @@ describe('blockbook/utils', () => {
         });
 
         it('transfers as unexpected object', async () => {
-            // $FlowIssue
             let t = filterTokenTransfers('A', 'A');
             expect(t).toEqual([]);
 
-            // $FlowIssue
             t = filterTokenTransfers('A', ['A', null, 1, {}]);
             expect(t).toEqual([]);
 
-            // $FlowIssue
             t = filterTokenTransfers('A', null);
             expect(t).toEqual([]);
 

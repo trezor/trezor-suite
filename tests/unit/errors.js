@@ -1,7 +1,3 @@
-/* @flow */
-
-// import { describe, it } from 'mocha';
-// import { expect } from 'chai';
 import { CustomError } from '../../src/constants/errors';
 
 describe('Custom errors', () => {
@@ -36,14 +32,12 @@ describe('Custom errors', () => {
     });
 
     it('Error without code and with custom message', async () => {
-        // $FlowIssue
         const error = new CustomError(null, 'Custom message');
         expect(error.code).toBe(undefined);
         expect(error.message).toBe('Custom message');
     });
 
     it('Error without code and without message', async () => {
-        // $FlowIssue
         const error = new CustomError();
         expect(error.code).toBe(undefined);
         expect(error.message).toBe('Message not set');

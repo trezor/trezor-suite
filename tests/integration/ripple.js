@@ -1,5 +1,3 @@
-/* @flow */
-/* eslint-disable */
 import BlockchainLink from 'trezor-blockchain-link';
 import createServer from '../websocket';
 import { rippleWorkerFactory } from './worker';
@@ -48,7 +46,6 @@ describe('Ripple', () => {
     });
 
     it('Connect error (no server field)', async () => {
-        // $FlowIssue
         blockchain.settings.server = null;
         try {
             await blockchain.connect();
@@ -67,7 +64,6 @@ describe('Ripple', () => {
     });
 
     it('Connect error (server field invalid type)', async () => {
-        // $FlowIssue
         blockchain.settings.server = 1;
         try {
             await blockchain.connect();
@@ -77,7 +73,6 @@ describe('Ripple', () => {
     });
 
     it('Connect error (server field with invalid values)', async () => {
-        // $FlowIssue
         blockchain.settings.server = [
             'gibberish',
             'ws://gibberish',

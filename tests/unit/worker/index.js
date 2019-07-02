@@ -1,5 +1,3 @@
-/* @flow */
-
 global.onmessage = () => {};
 
 global.postMessage = data => {

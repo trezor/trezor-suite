@@ -1,5 +1,3 @@
-/* @flow */
-
 import createServer from '../websocket';
 import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
 import BlockchainLink from '../../src';

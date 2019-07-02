@@ -1,5 +1,3 @@
-/* @flow */
-
 import TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
@@ -7,7 +5,6 @@ describe('Worker', () => {
     let blockchain;
 
     beforeEach(async () => {
-        // $FlowIssue
         blockchain = new BlockchainLink({
             name: 'Tests:Blockbook',
             worker: null,
@@ -166,7 +163,6 @@ describe('Worker', () => {
                 return new TinyWorker(() => {
                     /* eslint-disable */
                     self.onmessage = () => {
-                        // $FlowIssue: this will cause an runtime error
                         const r = 1 / x;
                     };
                     self.postMessage({ type: 'm_handshake' });
