@@ -53,44 +53,129 @@ describe('blockbook/utils', () => {
         });
 
         it('targets as unexpected object', async () => {
+            // $FlowIssue
             let t = filterTargets('A', 'A');
             expect(t).toEqual([]);
 
+            // $FlowIssue
             t = filterTargets('A', ['A', null, 1, {}]);
             expect(t).toEqual([]);
 
+            // $FlowIssue
             t = filterTargets('A', null);
             expect(t).toEqual([]);
         });
     });
 
     describe('filterTokenTransfers', () => {
-        const tokens = [{ from: 'A', to: 'B' }, { from: 'C', to: 'D' }, { from: 'X', to: 'X' }];
-        it('addresses as string', async () => {
+        const tOut = {
+            name: 'Token name',
+            symbol: 'TN',
+            address: '0x0',
+            amount: '0',
+            decimals: 0,
+            from: undefined,
+            to: undefined,
+        };
+        const tIn = {
+            name: 'Token name',
+            symbol: 'TN',
+            token: '0x0',
+            value: '0',
+        };
+        const tokens = [
+            { ...tIn, from: 'A', to: 'B' },
+            { ...tIn, from: 'C', to: 'D' },
+            { ...tIn, from: 'X', to: 'X' },
+        ];
+
+        it('transfer recv', async () => {
+            let t = filterTokenTransfers('B', tokens);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'recv',
+                    from: 'A',
+                    to: 'B',
+                },
+            ]);
+
+            t = filterTokenTransfers(['D'], tokens);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'recv',
+                    from: 'C',
+                    to: 'D',
+                },
+            ]);
+        });
+
+        it('transfer self', async () => {
+            const t = filterTokenTransfers('X', tokens);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'self',
+                    from: 'X',
+                    to: 'X',
+                },
+            ]);
+        });
+
+        it('sent: addresses as string', async () => {
             const t = filterTokenTransfers('A', tokens);
-            expect(t).toEqual([tokens[0]]);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                },
+            ]);
         });
 
-        it('addresses as array of strings', async () => {
+        it('sent: addresses as array of strings', async () => {
             const t = filterTokenTransfers(['A'], tokens);
-            expect(t).toEqual([tokens[0]]);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                },
+            ]);
         });
 
-        it('addresses as array of mixed objects', async () => {
+        it('addresses as array of mixed objects (sent/recv/sent)', async () => {
             const t = filterTokenTransfers(
                 // $FlowIssue
                 ['A', 1, undefined, 'X', { address: 'D' }, 'NOT_FOUND'],
                 tokens
             );
-            expect(t).toEqual(tokens);
+            const order = ['sent', 'recv', 'self'];
+            const resp = tokens.map((r, i) => ({
+                ...tOut,
+                type: order[i],
+                from: r.from,
+                to: r.to,
+            }));
+            expect(t).toEqual(resp);
         });
 
-        it('addresses as Address object', async () => {
+        it('sent: addresses as Address object', async () => {
             const t = filterTokenTransfers(
                 [{ address: 'A', path: '', transfers: 0, decimal: 0 }],
                 tokens
             );
-            expect(t).toEqual([tokens[0]]);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                },
+            ]);
         });
 
         it('addresses as unexpected object', async () => {
@@ -110,32 +195,36 @@ describe('blockbook/utils', () => {
 
         it('transfers sent', async () => {
             let t = filterTokenTransfers('A', tokens);
-            expect(t).toEqual([tokens[0]]);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                },
+            ]);
 
             t = filterTokenTransfers(['C'], tokens);
-            expect(t).toEqual([tokens[1]]);
-        });
-
-        it('transfers recv', async () => {
-            let t = filterTokenTransfers('B', tokens);
-            expect(t).toEqual([tokens[0]]);
-
-            t = filterTokenTransfers(['D'], tokens);
-            expect(t).toEqual([tokens[1]]);
-        });
-
-        it('transfers self', async () => {
-            const t = filterTokenTransfers('X', tokens);
-            expect(t).toEqual([tokens[2]]);
+            expect(t).toEqual([
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'C',
+                    to: 'D',
+                },
+            ]);
         });
 
         it('transfers as unexpected object', async () => {
+            // $FlowIssue
             let t = filterTokenTransfers('A', 'A');
             expect(t).toEqual([]);
 
+            // $FlowIssue
             t = filterTokenTransfers('A', ['A', null, 1, {}]);
             expect(t).toEqual([]);
 
+            // $FlowIssue
             t = filterTokenTransfers('A', null);
             expect(t).toEqual([]);
 

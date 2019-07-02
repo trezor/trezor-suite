@@ -1,16 +1,16 @@
 /* @flow */
 
-import createServer from '../websocket/ripple';
+import createServer from '../websocket';
 import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
 import BlockchainLink from '../../src';
 
 const backends = [
     {
-        name: 'Ripple',
+        name: 'ripple',
         worker: rippleWorkerFactory,
     },
     {
-        name: 'Blockbook',
+        name: 'blockbook',
         worker: blockbookWorkerFactory,
     },
 ];
@@ -21,7 +21,7 @@ backends.forEach((b, i) => {
         let blockchain;
 
         beforeEach(async () => {
-            server = await createServer();
+            server = await createServer(b.name);
             blockchain = new BlockchainLink({
                 ...backends[i],
                 server: [`ws://localhost:${server.options.port}`],
@@ -91,6 +91,7 @@ backends.forEach((b, i) => {
                 'gibberish',
                 'ws://gibberish',
                 'http://gibberish',
+                'https://gibberish/',
                 1,
                 false,
                 { foo: 'bar' },
@@ -109,9 +110,11 @@ backends.forEach((b, i) => {
             });
 
             it('Handle disconnect event', done => {
-                blockchain.on('disconnected', () => done());
+                blockchain.on('disconnected', () => setTimeout(done, 300));
                 blockchain.connect().then(() => {
-                    blockchain.disconnect();
+                    setTimeout(() => blockchain.disconnect(), 100);
+                    setTimeout(() => blockchain.disconnect(), 200);
+                    // blockchain.disconnect();
                 });
             });
         });
