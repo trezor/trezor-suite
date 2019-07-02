@@ -1,73 +1,69 @@
 /* @flow */
-
 import BigNumber from 'bignumber.js';
+import { GetServerInfoResponse } from 'ripple-lib';
 
-import type { Transaction } from '../../types/responses';
+import type { Transaction } from '../../types/common';
 
-export const concatTransactions = (
-    txs: Array<Transaction>,
-    newTxs: Array<Transaction>
-): Array<Transaction> => {
-    if (newTxs.length < 1) return txs;
-    const unique = newTxs.filter(tx => txs.indexOf(tx) < 0);
-    return txs.concat(unique);
-};
-
-export const transformTransactionHistory = (descriptor: string, raw: any) => {
-    const { tx } = raw;
-
-    if (tx.TransactionType !== 'Payment') {
-        // https://github.com/ripple/ripple-lib/blob/develop/docs/index.md#transaction-types
-        console.warn('Transform tx type:', tx.TransactionType, tx);
-    }
-    const type = tx.Account === descriptor ? 'send' : 'recv';
-    const hash = tx.hash;
-    const amount = tx.Amount;
-    const fee = tx.Fee;
-    const total = new BigNumber(amount).plus(fee).toString();
-
+export const transformServerInfo = (payload: GetServerInfoResponse) => {
     return {
-        txid: hash,
-        vin: [{ n: 0, addresses: [tx.Account] }],
-        vout: [{ value: amount, n: 0, addresses: [tx.Destination] }],
-        blockTime: tx.date,
-        fees: fee,
-        total,
-        type,
-        blockHeight: tx.ledger_index,
-        blockHash: tx.ledger_hash,
+        name: 'Ripple',
+        shortcut: 'xrp',
+        testnet: false,
+        version: payload.buildVersion,
+        decimals: 6,
+        blockHeight: payload.validatedLedger.ledgerVersion,
+        blockHash: payload.validatedLedger.hash,
     };
 };
 
-export const transformTransactionEvent = (descriptor: string, event: any): Transaction => {
-    const tx = event.transaction;
-    const isPayment = tx.TransactionType === 'Payment';
-    const type = tx.Account === descriptor ? 'send' : 'recv';
-    const hash = tx.hash;
+// export const concatTransactions = (
+//     txs: Array<Transaction>,
+//     newTxs: Array<Transaction>
+// ): Array<Transaction> => {
+//     if (newTxs.length < 1) return txs;
+//     const unique = newTxs.filter(tx => txs.indexOf(tx) < 0);
+//     return txs.concat(unique);
+// };
+
+export const transformTransaction = (descriptor: string, tx: any): Transaction => {
+    if (tx.TransactionType !== 'Payment') {
+        // TODO: https://github.com/ripple/ripple-lib/blob/develop/docs/index.md#transaction-types
+        return {
+            type: 'unknown',
+            txid: tx.hash,
+            amount: '0',
+            fee: '0',
+            blockTime: tx.date,
+            blockHeight: tx.ledger_index,
+            blockHash: tx.hash,
+            targets: [],
+            tokens: [],
+        };
+    }
+    const type = tx.Account === descriptor ? 'sent' : 'recv';
+    const addresses = type === 'sent' ? [tx.Destination] : [tx.Account];
     const amount = tx.Amount;
     const fee = tx.Fee;
-    const total = isPayment ? new BigNumber(amount).plus(fee).toString() : '0';
-
-    const tokens = !isPayment
-        ? [{ name: tx.TransactionType, shortcut: '', value: '0' }]
-        : undefined;
+    // const total = new BigNumber(amount).plus(fee).toString();
 
     return {
-        descriptor,
         type,
-        timestamp: tx.date,
-        inputs: [{ addresses: [tx.Account] }],
-        outputs: [{ addresses: [tx.Destination] }],
 
-        hash,
-        value: amount,
-        fee,
-        total,
-        tokens,
+        txid: tx.hash,
+        blockTime: tx.date,
+        blockHeight: tx.ledger_index,
+        blockHash: tx.hash,
+
         amount,
-        fees: fee,
-
-        blockHeight: event.ledger_index,
-        blockHash: event.ledger_hash,
+        fee,
+        // total,
+        targets: [
+            {
+                addresses,
+                isAddress: true,
+                amount,
+            },
+        ],
+        tokens: [],
     };
 };

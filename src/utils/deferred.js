@@ -1,7 +1,6 @@
 /* @flow */
-import type { Deferred } from '../types';
 
-export function create<T>(id: number): Deferred<T> {
+export function create<T>(id: number | string): Deferred<T> {
     let localResolve: (t: T) => void = () => {};
     let localReject: (e?: ?Error) => void = () => {};
 
@@ -17,3 +16,10 @@ export function create<T>(id: number): Deferred<T> {
         promise,
     };
 }
+
+export type Deferred<T> = {
+    id: number | string,
+    promise: Promise<T>,
+    resolve: (t: T) => void,
+    reject: (e: Error) => void,
+};

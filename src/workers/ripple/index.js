@@ -1,12 +1,11 @@
 /* @flow */
-
 import { RippleAPI } from 'ripple-lib';
 import BigNumber from 'bignumber.js';
+import { CustomError } from '../../constants/errors';
 import { MESSAGES, RESPONSES } from '../../constants';
 
 import * as MessageTypes from '../../types/messages';
-import * as ResponseTypes from '../../types/responses';
-import type { Message } from '../../types';
+import type { Message, SubscriptionAccountInfo } from '../../types';
 import * as utils from './utils';
 import * as common from '../common';
 
@@ -50,6 +49,9 @@ onmessage = event => {
         case MESSAGES.DISCONNECT:
             disconnect(data);
             break;
+        case 'terminate':
+            cleanup();
+            break;
         default:
             common.errorHandler({
                 id: data.id,
@@ -89,18 +91,19 @@ const connect = async (): Promise<RippleAPI> => {
     }
 
     // validate endpoints
-    if (common.getSettings().server.length < 1) {
-        throw new Error('No servers');
+    const server = common.getSettings().server;
+    if (!server || !Array.isArray(server) || server.length < 1) {
+        throw new CustomError('connect', 'Endpoint not set');
     }
 
     if (_endpoints.length < 1) {
-        _endpoints = common.getSettings().server.slice(0);
+        _endpoints = common.shuffleEndpoints(server.slice(0));
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    const api = new RippleAPI({ server: _endpoints[0] });
-
+    let api: RippleAPI;
     try {
+        api = new RippleAPI({ server: _endpoints[0] });
         await api.connect();
     } catch (error) {
         common.debug('Websocket connection failed');
@@ -109,9 +112,9 @@ const connect = async (): Promise<RippleAPI> => {
         _endpoints.splice(0, 1);
         // and try another one or throw error
         if (_endpoints.length < 1) {
-            throw new Error('All backends are down');
+            throw new CustomError('connect', 'All backends are down');
         }
-        await connect();
+        return await connect();
     }
 
     // disable reconnecting
@@ -132,7 +135,6 @@ const connect = async (): Promise<RippleAPI> => {
     });
 
     api.on('disconnected', () => {
-        clearTimeout(_pingTimeout);
         cleanup();
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
     });
@@ -160,10 +162,14 @@ const connect = async (): Promise<RippleAPI> => {
 };
 
 const cleanup = () => {
+    if (_pingTimeout) {
+        clearTimeout(_pingTimeout);
+    }
     if (_api) {
         _api.removeAllListeners();
         _api = undefined;
     }
+    _endpoints = [];
     common.removeAddresses(common.getAddresses());
     common.clearSubscriptions();
 };
@@ -171,19 +177,11 @@ const cleanup = () => {
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
         const api = await connect();
-        // const info = await api.getServerInfo();
-        const block = await api.getLedgerVersion();
+        const info = await api.getServerInfo();
         common.response({
             id: data.id,
             type: RESPONSES.GET_INFO,
-            payload: {
-                name: 'Ripple',
-                shortcut: 'xrp',
-                decimals: 6,
-                block,
-                fee: '',
-                reserved: '0',
-            },
+            payload: utils.transformServerInfo(info),
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -191,7 +189,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 };
 
 // Custom request
-// RippleApi doesn't support "ledger_index": "current", which will fetch data from mempool
+// Ripple js api doesn't support "ledger_index": "current", which will fetch data from mempool
 const getMempoolAccountInfo = async (
     account: string
 ): Promise<{ xrpBalance: string, sequence: number }> => {
@@ -208,18 +206,20 @@ const getMempoolAccountInfo = async (
 };
 
 // Custom request
-// RippleApi returns parsed/formatted transactions, use own parsing
-const getRawTransactionsData = async (
-    account: string,
-    options
-): Promise<Array<ResponseTypes.Transaction>> => {
+// Ripple ja api returns parsed/formatted transactions, use own parsing
+type RawTxData = {
+    marker: {
+        ledger: number,
+        seq: number,
+    },
+    ledger_index_max: number,
+    limit: number,
+    descriptor: string,
+    transactions: Array<any>,
+};
+const getRawTransactionsData = async (options: any): Promise<RawTxData> => {
     const api = await connect();
-    return await api.request('account_tx', {
-        account,
-        ledger_index_max: options.maxLedgerVersion,
-        ledger_index_min: options.minLedgerVersion,
-        limit: options.pageSize,
-    });
+    return await api.request('account_tx', options);
 };
 
 const getAccountInfo = async (
@@ -227,39 +227,45 @@ const getAccountInfo = async (
 ): Promise<void> => {
     const { payload } = data;
 
-    const options: MessageTypes.GetAccountInfoOptions = payload.options ? payload.options : {};
-
-    // initial state
+    // initial state (basic)
     const account = {
-        address: payload.descriptor,
-        transactions: [],
-        tokens: [],
-        block: 0,
-        balance: '0',
-        availableBalance: '0',
-        sequence: 0,
-        coinSpecific: {
+        descriptor: payload.descriptor,
+        balance: '0', // default balance
+        availableBalance: '0', // default balance
+        tokens: [], // not implemented in Trezor firmware
+        history: {
+            // default history
+            total: 0,
+            tokens: 0,
+            unconfirmed: 0,
+            transactions: undefined,
+        },
+        misc: {
+            // default misc
+            sequence: 0,
             reserve: RESERVE.BASE,
         },
     };
 
     try {
         const api = await connect();
-        account.block = BLOCKS.MAX;
 
         const info = await api.getAccountInfo(payload.descriptor);
         const ownersReserve =
             info.ownerCount > 0
                 ? new BigNumber(info.ownerCount).multipliedBy(RESERVE.OWNER).toString()
                 : '0';
+
+        account.misc.sequence = info.sequence;
+        account.misc.reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
         account.balance = api.xrpToDrops(info.xrpBalance);
-        account.availableBalance = account.balance;
-        account.sequence = info.sequence;
-        account.coinSpecific.reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
+        account.availableBalance = new BigNumber(account.balance)
+            .minus(account.misc.reserve)
+            .toString(); // availableBalance = current balance - reserve
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
-        if (error.message === 'actNotFound') {
+        if (error.data.error === 'actNotFound') {
             common.response({
                 id: data.id,
                 type: RESPONSES.GET_ACCOUNT_INFO,
@@ -273,15 +279,15 @@ const getAccountInfo = async (
 
     try {
         const mempoolInfo = await getMempoolAccountInfo(payload.descriptor);
-        account.availableBalance = mempoolInfo.xrpBalance;
-        account.sequence = mempoolInfo.sequence;
+        account.availableBalance = mempoolInfo.xrpBalance; // TODO: balance - reserve
+        account.misc.sequence = mempoolInfo.sequence;
     } catch (error) {
         common.errorHandler({ id: data.id, error });
         return;
     }
 
     // get the reserve
-    if (options.details !== 'txs') {
+    if (payload.details !== 'txs') {
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
@@ -294,23 +300,18 @@ const getAccountInfo = async (
         // Rippled has an issue with looking up outside of range of completed ledgers
         // https://github.com/ripple/ripple-lib/issues/879#issuecomment-377576063
         // Always use "minLedgerVersion"
-        const api = await connect();
-        const block = await api.getLedgerVersion();
-        const minLedgerVersion = options.from ? Math.max(options.from, BLOCKS.MIN) : BLOCKS.MIN;
-        const maxLedgerVersion = options.to ? Math.max(options.to, BLOCKS.MAX) : undefined;
-        const limit = options.pageSize || 25;
-        const marker = options.page || '';
 
         const requestOptions = {
-            minLedgerVersion,
-            maxLedgerVersion,
-            pageSize: limit,
-            marker,
+            account: payload.descriptor,
+            ledger_index_min: payload.from ? Math.max(payload.from, BLOCKS.MIN) : BLOCKS.MIN,
+            ledger_index_max: payload.to ? Math.max(payload.to, BLOCKS.MAX) : undefined,
+            limit: payload.pageSize || 25,
+            marker: payload.marker,
         };
 
-        const transactionsData = await getRawTransactionsData(payload.descriptor, requestOptions);
-        const transformedTransactions = transactionsData.map(tx =>
-            utils.transformTransactionHistory(payload.descriptor, tx)
+        const transactionsData = await getRawTransactionsData(requestOptions);
+        account.history.transactions = transactionsData.transactions.map(raw =>
+            utils.transformTransaction(payload.descriptor, raw.tx)
         );
 
         common.response({
@@ -318,10 +319,7 @@ const getAccountInfo = async (
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: {
                 ...account,
-                // marker: transactionsData.marker,
-                marker: null,
-                transactions: transformedTransactions,
-                block,
+                marker: transactionsData.marker,
             },
         });
     } catch (error) {
@@ -343,7 +341,7 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
-            payload,
+            payload: [],
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -376,55 +374,82 @@ const pushTransaction = async (
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
     try {
-        if (payload.type === 'notification') {
-            await subscribeAddresses(payload.addresses, payload.mempool);
+        let response;
+        if (payload.type === 'accounts') {
+            response = await subscribeAccounts(payload.accounts);
+        } else if (payload.type === 'addresses') {
+            response = await subscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
-            await subscribeBlock();
+            response = await subscribeBlock();
+        } else {
+            throw new CustomError('invalid_param', '+type');
         }
+        common.response({
+            id: data.id,
+            type: RESPONSES.SUBSCRIBE,
+            payload: response,
+        });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
-        return;
     }
-
-    common.response({
-        id: data.id,
-        type: RESPONSES.SUBSCRIBE,
-        payload: true,
-    });
 };
 
-const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
+const subscribeAccounts = async (accounts: Array<SubscriptionAccountInfo>) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const api = await connect();
-    if (!common.getSubscription('transaction')) {
-        api.connection.on('transaction', onTransaction);
-        // api.connection.on('ledgerClosed', onLedgerClosed);
-        common.addSubscription('transaction');
-    }
-
-    const uniqueAddresses = common.addAddresses(addresses);
+    const prevAddresses = common.getAddresses();
+    common.addAccounts(accounts);
+    const uniqueAddresses = common.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
     if (uniqueAddresses.length > 0) {
+        if (!common.getSubscription('notification')) {
+            api.connection.on('transaction', onTransaction);
+            common.addSubscription('notification');
+        }
+        await api.request('subscribe', {
+            accounts_proposed: uniqueAddresses,
+        });
+    }
+    return { subscribed: common.getAddresses().length > 0 };
+};
+
+const subscribeAddresses = async (addresses: Array<string>) => {
+    // subscribe to new blocks, confirmed and mempool transactions for given addresses
+    const api = await connect();
+    const uniqueAddresses = common.addAddresses(addresses);
+
+    if (uniqueAddresses.length > 0) {
+        if (!common.getSubscription('transaction')) {
+            api.connection.on('transaction', onTransaction);
+            // api.connection.on('ledgerClosed', onLedgerClosed);
+            common.addSubscription('transaction');
+        }
         const request = {
+            // accounts: uniqueAddresses,
+            accounts_proposed: uniqueAddresses,
             // stream: ['transactions', 'transactions_proposed'],
-            accounts: uniqueAddresses,
-            accounts_proposed: mempool ? uniqueAddresses : [],
+            // accounts_proposed: mempool ? uniqueAddresses : [],
         };
 
         await api.request('subscribe', request);
     }
+    return { subscribed: common.getAddresses().length > 0 };
 };
 
 const subscribeBlock = async () => {
-    if (common.getSubscription('ledger')) return;
-    const api = await connect();
-    api.on('ledger', onNewBlock);
-    common.addSubscription('ledger');
+    if (!common.getSubscription('ledger')) {
+        const api = await connect();
+        api.on('ledger', onNewBlock);
+        common.addSubscription('ledger');
+    }
+    return { subscribed: true };
 };
 
-const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
+const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Promise<void> => {
     const { payload } = data;
     try {
-        if (payload.type === 'notification') {
+        if (payload.type === 'accounts') {
+            await unsubscribeAccounts(payload.accounts);
+        } else if (payload.type === 'addresses') {
             await unsubscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             await unsubscribeBlock();
@@ -436,22 +461,36 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
 
     common.response({
         id: data.id,
-        type: RESPONSES.SUBSCRIBE,
-        payload: true,
+        type: RESPONSES.UNSUBSCRIBE,
+        payload: { subscribed: common.getAddresses().length > 0 },
     });
 };
 
-const unsubscribeAddresses = async (addresses: Array<string>) => {
-    const subscribed = common.removeAddresses(addresses);
-    const request = {
-        // stream: ['transactions', 'transactions_proposed'],
-        accounts: addresses,
-        accounts_proposed: addresses,
-    };
-    const api = await connect();
-    await api.request('unsubscribe', request);
+const unsubscribeAccounts = async (accounts?: Array<SubscriptionAccountInfo>) => {
+    const prevAddresses = common.getAddresses();
+    common.removeAccounts(accounts || common.getAccounts());
+    const addresses = common.getAddresses();
+    const uniqueAddresses = prevAddresses.filter(a => addresses.indexOf(a) < 0);
+    await unsubscribeAddresses(uniqueAddresses);
+};
 
-    if (subscribed.length < 1) {
+const unsubscribeAddresses = async (addresses?: Array<string>) => {
+    // remove accounts
+    const api = await connect();
+    if (!addresses) {
+        const all = common.getAddresses();
+        common.removeAccounts(common.getAccounts());
+        common.removeAddresses(all);
+        await api.request('unsubscribe', {
+            accounts_proposed: all,
+        });
+    } else {
+        common.removeAddresses(addresses);
+        await api.request('unsubscribe', {
+            accounts_proposed: addresses,
+        });
+    }
+    if (common.getAccounts().length < 1) {
         // there are no subscribed addresses left
         // remove listeners
         api.connection.removeListener('transaction', onTransaction);
@@ -487,8 +526,8 @@ const onNewBlock = (event: any) => {
         payload: {
             type: 'block',
             payload: {
-                block: event.ledgerVersion,
-                hash: event.ledgerHash,
+                blockHeight: event.ledgerVersion,
+                blockHash: event.ledgerHash,
             },
         },
     });
@@ -496,87 +535,29 @@ const onNewBlock = (event: any) => {
 
 const onTransaction = (event: any) => {
     if (event.type !== 'transaction') return;
+    // ignore transactions other than Payment
+    const tx = event.transaction;
+    if (event.transaction.TransactionType !== 'Payment') return;
 
     const subscribed = common.getAddresses();
-    const sender = subscribed.indexOf(event.transaction.Account);
-    const receiver = subscribed.indexOf(event.transaction.Destination);
+    const descriptor =
+        subscribed.find(a => a === tx.Account) ||
+        subscribed.find(a => a === tx.Destination) ||
+        'unknown';
 
-    if (sender >= 0) {
-        common.response({
-            id: -1,
-            type: RESPONSES.NOTIFICATION,
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'notification',
             payload: {
-                type: 'notification',
-                payload: utils.transformTransactionEvent(subscribed[sender], event),
+                descriptor,
+                tx: utils.transformTransaction(descriptor, event.transaction),
             },
-        });
-    }
-
-    if (receiver >= 0) {
-        common.response({
-            id: -1,
-            type: RESPONSES.NOTIFICATION,
-            payload: {
-                type: 'notification',
-                payload: utils.transformTransactionEvent(subscribed[receiver], event),
-            },
-        });
-    }
-    /*
-    const status = event.validated ? 'confirmed' : 'pending';
-    const hash = event.transaction.hash;
-    const signature = event.transaction.TxnSignature;
-    const amount = event.transaction.Amount;
-    const fee = event.transaction.Fee;
-    const total = new BigNumber(amount).plus(fee).toString();
-
-    const txData = {
-        status,
-        timestamp: event.transaction.date,
-        blockHeight: 0,
-
-        inputs: [{ addresses: [event.transaction.Account] }],
-        outputs: [{ addresses: [event.transaction.Destination] }],
-
-        hash,
-        amount,
-        fee,
-        total,
-    };
-
-    if (sender >= 0) {
-        common.response({
-            id: -1,
-            type: RESPONSES.NOTIFICATION,
-            payload: {
-                type: 'notification',
-                payload: {
-                    type: 'send',
-                    descriptor: event.transaction.Account,
-                    ...txData,
-                }
-            }
-        });
-    }
-
-    if (receiver >= 0) {
-        common.response({
-            id: -1,
-            type: RESPONSES.NOTIFICATION,
-            payload: {
-                type: 'notification',
-                payload: {
-                    type: 'recv',
-                    descriptor: event.transaction.Destination,
-                    ...txData,
-                }
-            }
-        });
-    }
-    */
+        },
+    });
 };
 
-// postMessage(1/x); // Intentional error.
 common.handshake();
 
 // // Testnet account
