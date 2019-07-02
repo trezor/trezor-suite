@@ -329,15 +329,15 @@ const getAccountInfo = async (
 
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
-        const api = await connect();
-        const fee = await api.getFee();
+        // const api = await connect();
+        // const fee = await api.getFee();
         // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
         // investigate more...
-        const drops = api.xrpToDrops(fee);
-        const payload =
-            data.payload && Array.isArray(data.payload.levels)
-                ? data.payload.levels.map(l => ({ name: l.name, value: drops }))
-                : [{ name: 'Normal', value: drops }];
+        // const drops = api.xrpToDrops(fee);
+        // const payload =
+        //     data.payload && Array.isArray(data.payload.levels)
+        //         ? data.payload.levels.map(l => ({ name: l.name, value: drops }))
+        //         : [{ name: 'Normal', value: drops }];
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,

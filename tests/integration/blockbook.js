@@ -1,23 +1,15 @@
 /* @flow */
-
-// import chai, { expect, should } from 'chai';
-// import { describe, it, beforeEach, afterEach } from 'mocha';
-// import chai, { expect, should } from 'chai';
-// import chaiAsPromised from 'chai-as-promised';
-import createServer, { setFixture } from './websocket';
-import { blockbookWorkerFactory } from './workers/mock.worker';
-import BlockchainLink from '../../src';
-
-// should();
-// chai.use(chaiAsPromised);
+/* eslint-disable-next-line import/no-unresolved,import/no-extraneous-dependencies */
+import BlockchainLink from 'trezor-blockchain-link';
+import createServer from '../websocket';
+import { blockbookWorkerFactory } from './worker';
 
 describe('Blockbook', () => {
     let server;
     let blockchain;
 
     beforeEach(async () => {
-        setFixture(); // reset response custom fixture
-        server = await createServer();
+        server = await createServer('blockbook');
         blockchain = new BlockchainLink({
             name: 'Tests:Blockbook',
             worker: blockbookWorkerFactory,
@@ -103,7 +95,6 @@ describe('Blockbook', () => {
     });
 
     it('Get info', async () => {
-        setFixture('valid');
         const result = await blockchain.getInfo();
         expect(result).toEqual({
             name: 'Test',
@@ -114,7 +105,6 @@ describe('Blockbook', () => {
     });
 
     it('Get info error', async () => {
-        setFixture('invalid');
         try {
             await blockchain.getInfo();
         } catch (error) {

@@ -1,5 +1,5 @@
 /* @flow */
-import BigNumber from 'bignumber.js';
+// import BigNumber from 'bignumber.js';
 import { GetServerInfoResponse } from 'ripple-lib';
 
 import type { Transaction } from '../../types/common';

@@ -1,5 +1,4 @@
 /* @flow */
-import { CustomError } from '../../constants/errors';
 import type {
     Transaction,
     TokenTransfer,

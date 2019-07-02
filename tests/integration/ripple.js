@@ -1,19 +1,15 @@
 /* @flow */
-
-import createServer from './websocket';
-import { rippleWorkerFactory } from './workers/mock.worker';
-// import { MESSAGES, RESPONSES } from '../src/constants';
-import BlockchainLink from '../../src';
-
-// should();
-// chai.use(chaiAsPromised);
+/* eslint-disable-next-line */
+import BlockchainLink from 'trezor-blockchain-link';
+import createServer from '../websocket';
+import { rippleWorkerFactory } from './worker';
 
 describe('Ripple', () => {
     let server;
     let blockchain;
 
     beforeEach(async () => {
-        server = await createServer();
+        server = await createServer('ripple');
         blockchain = new BlockchainLink({
             name: 'Tests:Ripple',
             worker: rippleWorkerFactory,
