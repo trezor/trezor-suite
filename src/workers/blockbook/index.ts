@@ -74,7 +74,7 @@ const timeoutHandler = async () => {
     if (_connection && _connection.isConnected()) {
         try {
             // await _connection.getServerInfo();
-            _pingTimeout = setTimeout(timeoutHandler, 5000);
+            _pingTimeout = <any>setTimeout(timeoutHandler, 5000);
         } catch (error) {
             common.debug(`Error in timeout ping request: ${error}`);
         }
@@ -124,7 +124,7 @@ const connect = async (): Promise<Connection> => {
         type: RESPONSES.CONNECTED,
     });
 
-    _pingTimeout = setTimeout(timeoutHandler, 5000);
+    _pingTimeout = <any>setTimeout(timeoutHandler, 5000);
 
     common.debug('Connected');
     return connection;

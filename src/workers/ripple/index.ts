@@ -76,7 +76,7 @@ const timeoutHandler = async () => {
     if (_api && _api.isConnected()) {
         try {
             await _api.getServerInfo();
-            _pingTimeout = setTimeout(timeoutHandler, 5000);
+            _pingTimeout = <any>setTimeout(timeoutHandler, 5000);
         } catch (error) {
             common.debug(`Error in timeout ping request: ${error}`);
         }
@@ -123,7 +123,7 @@ const connect = async (): Promise<RippleAPI> => {
 
     api.on('ledger', ledger => {
         clearTimeout(_pingTimeout);
-        _pingTimeout = setTimeout(timeoutHandler, 5000);
+        _pingTimeout = <any>setTimeout(timeoutHandler, 5000);
 
         // store current block/ledger values
         RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
@@ -260,10 +260,10 @@ const getAccountInfo = async (
         const misc = {
             sequence: info.sequence,
             reserve,
-            balance: api.xrpToDrops(info.xrpBalance),
-            availableBalance: new BigNumber(account.balance).minus(reserve).toString(),
         }
         account.misc = misc;
+        account.balance = api.xrpToDrops(info.xrpBalance);
+        account.availableBalance = new BigNumber(account.balance).minus(reserve).toString();
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account

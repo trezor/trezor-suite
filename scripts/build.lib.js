@@ -19,7 +19,6 @@ const copySrc = dir => {
     for (const file of files) {
         if (ignore.indexOf(file) < 0) {
             const filePath = resolve(dir, file);
-            console.log('F', filePath);
             if (fs.statSync(filePath).isDirectory()) {
                 copySrc(filePath);
             } else {
