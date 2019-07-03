@@ -1,4 +1,6 @@
-const parse = (versionArr) => {
+import { Version } from '../types';
+
+const parse = (versionArr: number[]) => {
     if (!versionArr || versionArr.length !== 3) {
         throw Error('Wrong version arr');
     } else {
@@ -10,11 +12,11 @@ const parse = (versionArr) => {
     }
 };
 
-const toString = arr => `${arr[0]}.${arr[1]}.${arr[2]}`;
+const toString = (arr: number[]) => `${arr[0]}.${arr[1]}.${arr[2]}`;
 
-const isNewer = (versionX, versionY) => {
-    const parsedX = parse(versionX);
-    const parsedY = parse(versionY);
+const isNewer = (versionX: number[], versionY: number[]) => {
+    const parsedX: Version = parse(versionX);
+    const parsedY: Version = parse(versionY);
 
     if (parsedX.major - parsedY.major !== 0) {
         return parsedX.major > parsedY.major;
@@ -29,8 +31,10 @@ const isNewer = (versionX, versionY) => {
     return false;
 };
 
-const isEqual = (versionX, versionY) => toString(versionX) === toString(versionY);
-const isNewerOrEqual = (versionX, versionY) => isNewer(versionX, versionY) || isEqual(versionX, versionY);
+const isEqual = (versionX: number[], versionY: number[]) =>
+    toString(versionX) === toString(versionY);
+const isNewerOrEqual = (versionX, versionY) =>
+    isNewer(versionX, versionY) || isEqual(versionX, versionY);
 
 export default {
     isEqual,

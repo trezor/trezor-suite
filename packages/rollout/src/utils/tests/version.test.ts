@@ -1,4 +1,4 @@
-import versionUtils from 'utils/version';
+import versionUtils from '../version';
 
 describe('Version Utils', () => {
     describe('is newer', () => {
