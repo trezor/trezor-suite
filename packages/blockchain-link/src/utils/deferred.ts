@@ -15,9 +15,9 @@ export function create<T>(id: number | string): Deferred<T> {
     };
 }
 
-export type Deferred<T> = {
-    id: number | string,
-    promise: Promise<T>,
-    resolve: (t: T) => void,
-    reject: (e: Error) => void,
-};
+export interface Deferred<T> {
+    id: number | string;
+    promise: Promise<T>;
+    resolve: (t: T) => void;
+    reject: (e: Error) => void;
+}

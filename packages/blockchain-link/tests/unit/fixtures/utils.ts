@@ -27,7 +27,7 @@ const tokenTransfers = [
     { ...tIn, from: 'A', to: 'B' },
     { ...tIn, from: 'C', to: 'D' },
     { ...tIn, from: 'X', to: 'X' },
-]
+];
 
 export default {
     filterTargets: [
@@ -45,7 +45,13 @@ export default {
         },
         {
             description: 'addresses as array of mixed objects',
-            addresses: ['A', 1, undefined, 'C', { address: 'B', path: '', transfers: 0, decimal: 0 }],
+            addresses: [
+                'A',
+                1,
+                undefined,
+                'C',
+                { address: 'B', path: '', transfers: 0, decimal: 0 },
+            ],
             targets: [{ addresses: ['A'] }, { addresses: ['B'] }],
             parsed: [{ addresses: ['A'] }, { addresses: ['B'] }],
         },
@@ -103,45 +109,53 @@ export default {
             description: 'transfer recv',
             addresses: 'B',
             transfers: tokenTransfers,
-            parsed: [{
-                ...tOut,
-                type: 'recv',
-                from: 'A',
-                to: 'B',
-            }],
+            parsed: [
+                {
+                    ...tOut,
+                    type: 'recv',
+                    from: 'A',
+                    to: 'B',
+                },
+            ],
         },
         {
             description: 'transfer self',
             addresses: 'X',
             transfers: tokenTransfers,
-            parsed: [{
-                ...tOut,
-                type: 'self',
-                from: 'X',
-                to: 'X',
-            }],
+            parsed: [
+                {
+                    ...tOut,
+                    type: 'self',
+                    from: 'X',
+                    to: 'X',
+                },
+            ],
         },
         {
             description: 'sent: addresses as string',
             addresses: 'A',
             transfers: tokenTransfers,
-            parsed: [{
-                ...tOut,
-                type: 'sent',
-                from: 'A',
-                to: 'B',
-            }],
+            parsed: [
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                },
+            ],
         },
         {
             description: 'sent: addresses as array of strings',
             addresses: ['A'],
             transfers: tokenTransfers,
-            parsed: [{
-                ...tOut,
-                type: 'sent',
-                from: 'A',
-                to: 'B',
-            }],
+            parsed: [
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                },
+            ],
         },
         {
             description: 'addresses as array of mixed objects (sent/recv/sent)',
@@ -153,29 +167,33 @@ export default {
                     type: 'sent',
                     from: 'A',
                     to: 'B',
-                }, {
+                },
+                {
                     ...tOut,
                     type: 'recv',
                     from: 'C',
                     to: 'D',
-                }, {
+                },
+                {
                     ...tOut,
                     type: 'self',
                     from: 'X',
                     to: 'X',
-                }
+                },
             ],
         },
         {
             description: 'sent: addresses as Address object',
             addresses: [{ address: 'A' }],
             transfers: tokenTransfers,
-            parsed: [{
-                ...tOut,
-                type: 'sent',
-                from: 'A',
-                to: 'B',
-            }],
+            parsed: [
+                {
+                    ...tOut,
+                    type: 'sent',
+                    from: 'A',
+                    to: 'B',
+                },
+            ],
         },
         {
             description: 'addresses as unexpected object (number)',
@@ -224,7 +242,7 @@ export default {
             addresses: 'A',
             transfers: ['A', null, 1, {}],
             parsed: [],
-        }
+        },
     ],
     transformTransaction: [
         {

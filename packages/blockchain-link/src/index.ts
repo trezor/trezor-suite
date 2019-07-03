@@ -62,8 +62,6 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     return dfd.promise;
 };
 
-
-
 class BlockchainLink extends EventEmitter implements Emitter {
     settings: BlockchainSettings;
 
@@ -88,29 +86,30 @@ class BlockchainLink extends EventEmitter implements Emitter {
     }
 
     // Sending messages to worker
-    async __send<R>(message: any): Promise<R> {
+    // @ts-ignore no-underscore-dangle
+    async sendMessage<R>(message: any): Promise<R> {
         const worker = await this.getWorker();
         const dfd = createDeferred(this.messageId);
         this.deferred.push(dfd);
         worker.postMessage({ id: this.messageId, ...message });
         this.messageId++;
         return dfd.promise as Promise<R>;
-    };
+    }
 
-    async connect() {
-        return await this.__send({
+    async connect(): Promise<void> {
+        return this.sendMessage({
             type: MESSAGES.CONNECT,
         });
     }
 
     async getInfo(): Promise<ResponseTypes.GetInfo['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.GET_INFO,
         });
     }
 
     async getBlockHash(): Promise<ResponseTypes.GetBlockHash['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.GET_BLOCK_HASH,
         });
     }
@@ -118,7 +117,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
     async getAccountInfo(
         payload: MessageTypes.GetAccountInfo['payload']
     ): Promise<ResponseTypes.GetAccountInfo['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.GET_ACCOUNT_INFO,
             payload,
         });
@@ -127,7 +126,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
     async getAccountUtxo(
         payload: MessageTypes.GetAccountUtxo['payload']
     ): Promise<ResponseTypes.GetAccountUtxo['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.GET_ACCOUNT_UTXO,
             payload,
         });
@@ -136,7 +135,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
     async getTransaction(
         payload: MessageTypes.GetTransaction['payload']
     ): Promise<ResponseTypes.GetTransaction['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.GET_TRANSACTION,
             payload,
         });
@@ -145,7 +144,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
     async estimateFee(
         payload: MessageTypes.EstimateFee['payload']
     ): Promise<ResponseTypes.EstimateFee['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.ESTIMATE_FEE,
             payload,
         });
@@ -154,7 +153,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
     async subscribe(
         payload: MessageTypes.Subscribe['payload']
     ): Promise<ResponseTypes.Subscribe['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.SUBSCRIBE,
             payload,
         });
@@ -163,7 +162,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
     async unsubscribe(
         payload: MessageTypes.Unsubscribe['payload']
     ): Promise<ResponseTypes.Unsubscribe['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.UNSUBSCRIBE,
             payload,
         });
@@ -172,7 +171,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
     async pushTransaction(
         payload: MessageTypes.PushTransaction['payload']
     ): Promise<ResponseTypes.PushTransaction['payload'] | ResponseTypes.Error> {
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.PUSH_TRANSACTION,
             payload,
         });
@@ -180,7 +179,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
 
     async disconnect(): Promise<boolean | ResponseTypes.Error> {
         if (!this.worker) return true;
-        return await this.__send({
+        return this.sendMessage({
             type: MESSAGES.DISCONNECT,
         });
     }
@@ -224,7 +223,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         }
     };
 
-    onError: (error: { message?: string, lineno: number, filename: string }) => void = error => {
+    onError: (error: { message?: string; lineno: number; filename: string }) => void = error => {
         const message = error.message
             ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
             : 'Worker handshake error';
