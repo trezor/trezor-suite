@@ -1,7 +1,6 @@
 declare global {
     namespace NodeJS {
         interface Global {
-            Worker: any;
             postMessage: (data: any) => void;
             onmessage: (data: any) => void;
         }

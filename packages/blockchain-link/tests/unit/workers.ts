@@ -1,6 +1,14 @@
 import * as TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
+declare global {
+    namespace NodeJS {
+        interface Global {
+            Worker: any;
+        }
+    }
+}
+
 describe('Worker', () => {
     let blockchain: BlockchainLink;
 

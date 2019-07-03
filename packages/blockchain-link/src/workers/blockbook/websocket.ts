@@ -13,11 +13,11 @@ import {
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
-type Subscription = {
-    id: string,
-    type: 'notification' | 'block',
-    callback: (result: any) => void,
-};
+interface Subscription {
+    id: string;
+    type: 'notification' | 'block';
+    callback: (result: any) => void;
+}
 
 export default class Socket extends EventEmitter {
     _url: string;
@@ -77,7 +77,7 @@ export default class Socket extends EventEmitter {
     }
 
     connect() {
-        //this._clearReconnectTimer()
+        // this._clearReconnectTimer()
 
         if (typeof this._url !== 'string') {
             throw new CustomError('websocket_no_url');
@@ -109,7 +109,7 @@ export default class Socket extends EventEmitter {
         // });
 
         // this._onUnexpectedCloseBound = this._onUnexpectedClose.bind(this, true, resolve, reject)
-        //this._ws.once('close', this._onUnexpectedCloseBound)
+        // this._ws.once('close', this._onUnexpectedCloseBound)
         ws.on('open', dfd.resolve);
         ws.on('close', () => {
             this.emit('disconnected');

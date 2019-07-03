@@ -90,7 +90,7 @@ const connect = async (): Promise<RippleAPI> => {
     }
 
     // validate endpoints
-    const server = common.getSettings().server;
+    const { server } = common.getSettings();
     if (!server || !Array.isArray(server) || server.length < 1) {
         throw new CustomError('connect', 'Endpoint not set');
     }
@@ -192,7 +192,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 // Ripple js api doesn't support "ledger_index": "current", which will fetch data from mempool
 const getMempoolAccountInfo = async (
     account: string
-): Promise<{ xrpBalance: string, sequence: number }> => {
+): Promise<{ xrpBalance: string; sequence: number }> => {
     const api = await connect();
     const info = await api.request('account_info', {
         account,
@@ -207,16 +207,16 @@ const getMempoolAccountInfo = async (
 
 // Custom request
 // Ripple ja api returns parsed/formatted transactions, use own parsing
-type RawTxData = {
+interface RawTxData {
     marker: {
-        ledger: number,
-        seq: number,
-    },
-    ledger_index_max: number,
-    limit: number,
-    descriptor: string,
-    transactions: any[],
-};
+        ledger: number;
+        seq: number;
+    };
+    ledger_index_max: number;
+    limit: number;
+    descriptor: string;
+    transactions: any[];
+}
 const getRawTransactionsData = async (options: any): Promise<RawTxData> => {
     const api = await connect();
     return await api.request('account_tx', options);
@@ -260,7 +260,7 @@ const getAccountInfo = async (
         const misc = {
             sequence: info.sequence,
             reserve,
-        }
+        };
         account.misc = misc;
         account.balance = api.xrpToDrops(info.xrpBalance);
         account.availableBalance = new BigNumber(account.balance).minus(reserve).toString();

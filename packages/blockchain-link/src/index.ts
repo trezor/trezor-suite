@@ -62,8 +62,6 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     return dfd.promise;
 };
 
-
-
 class BlockchainLink extends EventEmitter implements Emitter {
     settings: BlockchainSettings;
 
@@ -95,7 +93,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         worker.postMessage({ id: this.messageId, ...message });
         this.messageId++;
         return dfd.promise as Promise<R>;
-    };
+    }
 
     async connect() {
         return await this.__send({
@@ -224,7 +222,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         }
     };
 
-    onError: (error: { message?: string, lineno: number, filename: string }) => void = error => {
+    onError: (error: { message?: string; lineno: number; filename: string }) => void = error => {
         const message = error.message
             ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
             : 'Worker handshake error';

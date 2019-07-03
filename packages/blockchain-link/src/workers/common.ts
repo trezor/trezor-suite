@@ -42,8 +42,8 @@ export const handshake = (): void => {
     });
 };
 
-export const errorHandler = ({ id, error }: { id: number, error: any }): void => {
-    let code: string = 'blockchain_link/unknown';
+export const errorHandler = ({ id, error }: { id: number; error: any }): void => {
+    let code = 'blockchain_link/unknown';
     // let message: string = '';
     // this part is uncovered by tests but for some reason i've write it like this (ripple maybe)
     // TODO: remove it after
@@ -60,7 +60,7 @@ export const errorHandler = ({ id, error }: { id: number, error: any }): void =>
     //         code = error.code;
     //     }
     // }
-    const message: string = error.message;
+    const { message } = error;
     if (error.code) {
         code = error.code;
     }
@@ -102,9 +102,7 @@ export const removeAddresses = (addresses: string[]) => {
     return _addresses;
 };
 
-const validateAccounts = (
-    accounts: SubscriptionAccountInfo[]
-): SubscriptionAccountInfo[] => {
+const validateAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
     if (!Array.isArray(accounts)) throw new CustomError('invalid_param', '+accounts');
     const seen = {};
     return accounts.filter(a => {
@@ -123,15 +121,16 @@ const getAccountAddresses = (account: SubscriptionAccountInfo) => {
     return [account.descriptor];
 };
 
-export const addAccounts = (
-    accounts: SubscriptionAccountInfo[]
-): SubscriptionAccountInfo[] => {
+export const addAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
     const valid = validateAccounts(accounts);
     const others = _accounts.filter(a => !valid.find(b => b.descriptor === a.descriptor));
     _accounts = others.concat(valid);
-    const addresses = _accounts.reduce((addr, acc) => {
-        return addr.concat(getAccountAddresses(acc));
-    }, [] as string[]);
+    const addresses = _accounts.reduce(
+        (addr, acc) => {
+            return addr.concat(getAccountAddresses(acc));
+        },
+        [] as string[]
+    );
     addAddresses(addresses);
     return valid;
 };
@@ -151,14 +150,15 @@ export const getAccount = (address: string): SubscriptionAccountInfo | undefined
 
 export const getAccounts = () => _accounts;
 
-export const removeAccounts = (
-    accounts: SubscriptionAccountInfo[]
-): SubscriptionAccountInfo[] => {
+export const removeAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
     const valid = validateAccounts(accounts);
     const accountsToRemove = _accounts.filter(a => valid.find(b => b.descriptor === a.descriptor));
-    const addressesToRemove = accountsToRemove.reduce((addr, acc) => {
-        return addr.concat(getAccountAddresses(acc));
-    }, [] as string[]);
+    const addressesToRemove = accountsToRemove.reduce(
+        (addr, acc) => {
+            return addr.concat(getAccountAddresses(acc));
+        },
+        [] as string[]
+    );
     _accounts = _accounts.filter(a => accountsToRemove.indexOf(a) < 0);
     removeAddresses(addressesToRemove);
     return _accounts;

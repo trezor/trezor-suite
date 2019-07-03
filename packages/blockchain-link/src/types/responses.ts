@@ -4,120 +4,120 @@ import { AccountInfo, Transaction } from './common';
 
 // messages sent from worker to blockchain.js
 
-export type Connect = {
-    type: typeof RESPONSES.CONNECT,
-    payload: boolean,
-};
+export interface Connect {
+    type: typeof RESPONSES.CONNECT;
+    payload: boolean;
+}
 
-export type Error = {
-    type: typeof RESPONSES.ERROR,
+export interface Error {
+    type: typeof RESPONSES.ERROR;
     payload: {
-        code: string,
-        message: string,
-    },
-};
+        code: string;
+        message: string;
+    };
+}
 
-export type GetInfo = {
-    type: typeof RESPONSES.GET_INFO,
+export interface GetInfo {
+    type: typeof RESPONSES.GET_INFO;
     payload: {
-        name: string,
-        shortcut: string,
-        testnet: boolean,
-        version: string,
-        decimals: number,
-        blockHeight: number,
-        blockHash: string,
+        name: string;
+        shortcut: string;
+        testnet: boolean;
+        version: string;
+        decimals: number;
+        blockHeight: number;
+        blockHash: string;
         misc?: {
-            reserve?: string,
-        },
-    },
-};
+            reserve?: string;
+        };
+    };
+}
 
-export type GetBlockHash = {
-    type: typeof RESPONSES.GET_BLOCK_HASH,
-    payload: any,
-};
+export interface GetBlockHash {
+    type: typeof RESPONSES.GET_BLOCK_HASH;
+    payload: any;
+}
 
-export type GetAccountInfo = {
-    type: typeof RESPONSES.GET_ACCOUNT_INFO,
-    payload: AccountInfo,
-};
+export interface GetAccountInfo {
+    type: typeof RESPONSES.GET_ACCOUNT_INFO;
+    payload: AccountInfo;
+}
 
-export type Utxo = {
-    txid: string,
-    vout: number,
-    amount: string,
-    blockHeight: number,
-    address: string,
-    path: string,
-    confirmations: number,
-};
+export interface Utxo {
+    txid: string;
+    vout: number;
+    amount: string;
+    blockHeight: number;
+    address: string;
+    path: string;
+    confirmations: number;
+}
 
-export type GetAccountUtxo = {
-    type: typeof RESPONSES.GET_ACCOUNT_UTXO,
-    payload: Utxo[],
-};
+export interface GetAccountUtxo {
+    type: typeof RESPONSES.GET_ACCOUNT_UTXO;
+    payload: Utxo[];
+}
 
-export type GetTransaction = {
-    type: typeof RESPONSES.GET_TRANSACTION,
-    payload: any,
-};
+export interface GetTransaction {
+    type: typeof RESPONSES.GET_TRANSACTION;
+    payload: any;
+}
 
-export type EstimateFee = {
-    type: typeof RESPONSES.ESTIMATE_FEE,
+export interface EstimateFee {
+    type: typeof RESPONSES.ESTIMATE_FEE;
     payload: {
-        feePerUnit: string,
-        feePerTx?: string,
-        feeLimit?: string,
-    }[],
-};
+        feePerUnit: string;
+        feePerTx?: string;
+        feeLimit?: string;
+    }[];
+}
 
-export type Subscribe = {
-    type: typeof RESPONSES.SUBSCRIBE,
-    payload: { subscribed: boolean },
-};
+export interface Subscribe {
+    type: typeof RESPONSES.SUBSCRIBE;
+    payload: { subscribed: boolean };
+}
 
-export type Unsubscribe = {
-    type: typeof RESPONSES.UNSUBSCRIBE,
-    payload: { subscribed: boolean },
-};
+export interface Unsubscribe {
+    type: typeof RESPONSES.UNSUBSCRIBE;
+    payload: { subscribed: boolean };
+}
 
-export type BlockEvent = {
-    type: 'block',
+export interface BlockEvent {
+    type: 'block';
     payload: {
-        blockHeight: number,
-        blockHash: string,
-    },
-};
+        blockHeight: number;
+        blockHash: string;
+    };
+}
 
-export type NotificationEvent = {
-    type: 'notification',
+export interface NotificationEvent {
+    type: 'notification';
     payload: {
-        descriptor: string,
-        tx: Transaction,
-    },
-};
+        descriptor: string;
+        tx: Transaction;
+    };
+}
 
-export type Notification = {
-    type: typeof RESPONSES.NOTIFICATION,
-    payload: BlockEvent | NotificationEvent,
-};
+export interface Notification {
+    type: typeof RESPONSES.NOTIFICATION;
+    payload: BlockEvent | NotificationEvent;
+}
 
-export type PushTransaction = {
-    type: typeof RESPONSES.PUSH_TRANSACTION,
-    payload: any,
-};
+export interface PushTransaction {
+    type: typeof RESPONSES.PUSH_TRANSACTION;
+    payload: any;
+}
 
-type WithoutPayload = {
-    id: number,
-    type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED,
-    payload?: any, // just for flow
-};
+interface WithoutPayload {
+    id: number;
+    type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED;
+    payload?: any; // just for flow
+}
 
 // extended
 export type Response =
     | WithoutPayload
-    | { id: number, type: typeof RESPONSES.DISCONNECTED, payload: boolean }
+    | { id: number; type: typeof RESPONSES.DISCONNECTED; payload: boolean }
     | ({ id: number } & Error)
     | ({ id: number } & Connect)
     | ({ id: number } & GetInfo)

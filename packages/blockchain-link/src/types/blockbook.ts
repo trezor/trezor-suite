@@ -1,153 +1,153 @@
-export type Subscribe = {
-    subscribed: boolean,
-};
+export interface Subscribe {
+    subscribed: boolean;
+}
 
-export type ServerInfo = {
-    bestHash: string,
-    bestHeight: number,
-    block0Hash: string,
-    decimals: number,
-    name: string,
-    shortcut: string,
-    testnet: boolean,
-    version: string,
-};
+export interface ServerInfo {
+    bestHash: string;
+    bestHeight: number;
+    block0Hash: string;
+    decimals: number;
+    name: string;
+    shortcut: string;
+    testnet: boolean;
+    version: string;
+}
 
-export type AccountInfoParams = {
-    descriptor: string,
-    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs',
-    tokens?: 'nonzero' | 'used' | 'derived',
-    page?: number,
-    pageSize?: number,
-    from?: number,
-    to?: number,
-    contractFilter?: string,
-    gap?: number,
-};
+export interface AccountInfoParams {
+    descriptor: string;
+    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
+    tokens?: 'nonzero' | 'used' | 'derived';
+    page?: number;
+    pageSize?: number;
+    from?: number;
+    to?: number;
+    contractFilter?: string;
+    gap?: number;
+}
 
-export type XPUBAddress = {
-    type: 'XPUBAddress',
-    name: string,
-    path: string,
-    transfers: number,
-    balance: string,
-    totalSent: string,
-    totalReceived: string,
-};
+export interface XPUBAddress {
+    type: 'XPUBAddress';
+    name: string;
+    path: string;
+    transfers: number;
+    balance: string;
+    totalSent: string;
+    totalReceived: string;
+}
 
-export type ERC20 = {
-    type: 'ERC20',
-    name: string,
-    symbol: string,
-    contract: string,
-    balance: string,
-    decimals?: number,
-};
+export interface ERC20 {
+    type: 'ERC20';
+    name: string;
+    symbol: string;
+    contract: string;
+    balance: string;
+    decimals?: number;
+}
 
-export type AccountInfo = {
-    address: string,
-    balance: string,
-    totalReceived: string,
-    totalSent: string,
-    txs: number,
-    unconfirmedBalance: string,
-    unconfirmedTxs: number,
-    page?: number,
-    itemsOnPage: number,
-    totalPages: number,
-    nonTokenTxs?: number,
-    transactions?: Transaction[],
-    nonce?: string,
-    tokens?: Array<XPUBAddress | ERC20>,
-};
+export interface AccountInfo {
+    address: string;
+    balance: string;
+    totalReceived: string;
+    totalSent: string;
+    txs: number;
+    unconfirmedBalance: string;
+    unconfirmedTxs: number;
+    page?: number;
+    itemsOnPage: number;
+    totalPages: number;
+    nonTokenTxs?: number;
+    transactions?: Transaction[];
+    nonce?: string;
+    tokens?: (XPUBAddress | ERC20)[];
+}
 
-export type AccountUtxoParams = {
-    descriptor: string,
-};
+export interface AccountUtxoParams {
+    descriptor: string;
+}
 
 export type AccountUtxo = {
-    txid: string,
-    vout: number,
-    value: string,
-    height: number,
-    address: string,
-    path: string,
-    confirmations: number,
+    txid: string;
+    vout: number;
+    value: string;
+    height: number;
+    address: string;
+    path: string;
+    confirmations: number;
 }[];
 
-export type VinVout = {
-    n: number,
-    addresses?: string[],
-    isAddress: boolean,
-    value?: string,
-    coinbase?: string,
-    txid?: string,
-    vout?: number,
-    sequence?: number,
-    hex?: string,
-};
+export interface VinVout {
+    n: number;
+    addresses?: string[];
+    isAddress: boolean;
+    value?: string;
+    coinbase?: string;
+    txid?: string;
+    vout?: number;
+    sequence?: number;
+    hex?: string;
+}
 
-export type Transaction = {
-    txid: string,
-    version?: number,
-    vin: VinVout[],
-    vout: VinVout[],
-    blockHeight: number,
-    blockHash?: string,
-    confirmations: number,
-    blockTime: number,
-    value: string,
-    valueIn: string,
-    fees: string,
-    hex: string,
+export interface Transaction {
+    txid: string;
+    version?: number;
+    vin: VinVout[];
+    vout: VinVout[];
+    blockHeight: number;
+    blockHash?: string;
+    confirmations: number;
+    blockTime: number;
+    value: string;
+    valueIn: string;
+    fees: string;
+    hex: string;
     ethereumSpecific?: {
-        status: number,
-        nonce: number,
-        gasLimit: number,
-        gasUsed?: number,
-        gasPrice: string,
-    },
+        status: number;
+        nonce: number;
+        gasLimit: number;
+        gasUsed?: number;
+        gasPrice: string;
+    };
     tokenTransfers?: {
-        from?: string,
-        to?: string,
-        value: string,
-        token: string,
-        name: string,
-        symbol: string,
-        decimals?: number,
-    }[],
-};
+        from?: string;
+        to?: string;
+        value: string;
+        token: string;
+        name: string;
+        symbol: string;
+        decimals?: number;
+    }[];
+}
 
-export type Push = {
-    status: boolean,
-};
+export interface Push {
+    status: boolean;
+}
 
-export type EstimateFeeParams = {
-    blocks: number[],
+export interface EstimateFeeParams {
+    blocks: number[];
     specific?: {
-        conservative?: boolean,
-        txsize?: number,
-        from?: string,
-        to?: string,
-        data?: string,
-    },
-};
+        conservative?: boolean;
+        txsize?: number;
+        from?: string;
+        to?: string;
+        data?: string;
+    };
+}
 
 export type Fee = {
-    feePerUnit: string,
-    feePerTx?: string,
-    feeLimit?: string,
+    feePerUnit: string;
+    feePerTx?: string;
+    feeLimit?: string;
 }[];
 
-export type BlockNotification = {
-    height: number,
-    hash: string,
-};
+export interface BlockNotification {
+    height: number;
+    hash: string;
+}
 
-export type AddressNotification = {
-    address: string,
-    tx: Transaction,
-};
+export interface AddressNotification {
+    address: string;
+    tx: Transaction;
+}
 
 /* eslint-disable no-redeclare */
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;

@@ -87,7 +87,7 @@ const connect = async (): Promise<Connection> => {
     }
 
     // validate endpoints
-    const server = common.getSettings().server;
+    const { server } = common.getSettings();
     if (!server || !Array.isArray(server) || server.length < 1) {
         throw new CustomError('connect', 'Endpoint not set');
     }
@@ -332,7 +332,7 @@ const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
     return await socket.subscribeAddresses(subscribed);
 };
 
-const unsubscribeAddresses = async (addresses?: Array<string>) => {
+const unsubscribeAddresses = async (addresses?: string[]) => {
     const socket = await connect();
     // remove accounts
     if (!addresses) {
