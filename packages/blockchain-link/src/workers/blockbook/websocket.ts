@@ -13,16 +13,16 @@ import {
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
-type Subscription = {
-    id: string,
-    type: 'notification' | 'block',
-    callback: (result: any) => void,
-};
+interface Subscription {
+    id: string;
+    type: 'notification' | 'block';
+    callback: (result: any) => void;
+}
 
 export default class Socket extends EventEmitter {
-    _url: string;
+    url: string;
 
-    _ws: WebSocket | undefined;
+    ws: WebSocket | undefined;
 
     messages: Deferred<any>[] = [];
 
@@ -31,11 +31,11 @@ export default class Socket extends EventEmitter {
     constructor(url: string) {
         super();
         this.setMaxListeners(Infinity);
-        this._url = url;
+        this.url = url;
     }
 
-    _send: Send = (method, params) => {
-        const ws = this._ws;
+    send: Send = (method, params) => {
+        const { ws } = this;
         if (!ws) throw NOT_INITIALIZED;
         const id = this.messages.length.toString();
 
@@ -50,7 +50,7 @@ export default class Socket extends EventEmitter {
         return dfd.promise as Promise<any>;
     };
 
-    _onmessage(message: string) {
+    onmessage(message: string) {
         try {
             const resp = JSON.parse(message);
             const { id, data } = resp;
@@ -77,44 +77,44 @@ export default class Socket extends EventEmitter {
     }
 
     connect() {
-        //this._clearReconnectTimer()
+        // this._clearReconnectTimer()
 
-        if (typeof this._url !== 'string') {
+        if (typeof this.url !== 'string') {
             throw new CustomError('websocket_no_url');
         }
 
-        if (this._url.startsWith('https')) {
-            this._url = this._url.replace('https', 'wss');
+        if (this.url.startsWith('https')) {
+            this.url = this.url.replace('https', 'wss');
         }
-        if (this._url.startsWith('http')) {
-            this._url = this._url.replace('http', 'ws');
+        if (this.url.startsWith('http')) {
+            this.url = this.url.replace('http', 'ws');
         }
-        if (!this._url.endsWith('/websocket')) {
-            const suffix = this._url.endsWith('/') ? 'websocket' : '/websocket';
-            this._url += suffix;
+        if (!this.url.endsWith('/websocket')) {
+            const suffix = this.url.endsWith('/') ? 'websocket' : '/websocket';
+            this.url += suffix;
         }
 
         const dfd = createDeferred<void>(-1);
 
-        const ws = new WebSocket(this._url);
+        const ws = new WebSocket(this.url);
         if (typeof ws.setMaxListeners === 'function') {
             ws.setMaxListeners(Infinity);
         }
         ws.once('error', error => {
             dfd.reject(new CustomError('websocket_runtime_error', error.message));
         });
-        ws.on('message', this._onmessage.bind(this));
+        ws.on('message', this.onmessage.bind(this));
         // ws.on('ping', a => {
         //     console.log('PING!', a);
         // });
 
         // this._onUnexpectedCloseBound = this._onUnexpectedClose.bind(this, true, resolve, reject)
-        //this._ws.once('close', this._onUnexpectedCloseBound)
+        // this._ws.once('close', this._onUnexpectedCloseBound)
         ws.on('open', dfd.resolve);
         ws.on('close', () => {
             this.emit('disconnected');
         });
-        this._ws = ws;
+        this.ws = ws;
 
         return dfd.promise;
     }
@@ -122,39 +122,39 @@ export default class Socket extends EventEmitter {
     cleanup() {}
 
     disconnect() {
-        if (this._ws) {
-            this._ws.close();
+        if (this.ws) {
+            this.ws.close();
         }
         this.cleanup();
     }
 
     isConnected() {
-        const ws = this._ws;
+        const { ws } = this;
         return ws && ws.readyState === WebSocket.OPEN;
     }
 
     getServerInfo() {
-        return this._send('getInfo', {});
+        return this.send('getInfo', {});
     }
 
     getAccountInfo(payload: AccountInfoParams) {
-        return this._send('getAccountInfo', payload);
+        return this.send('getAccountInfo', payload);
     }
 
     getAccountUtxo(payload: AccountUtxoParams) {
-        return this._send('getAccountUtxo', payload);
+        return this.send('getAccountUtxo', payload);
     }
 
     getTransaction(txid: string) {
-        return this._send('getTransaction', { txid });
+        return this.send('getTransaction', { txid });
     }
 
     pushTransaction(hex: string) {
-        return this._send('sendTransaction', { hex });
+        return this.send('sendTransaction', { hex });
     }
 
     estimateFee(payload: EstimateFeeParams) {
-        return this._send('estimateFee', payload);
+        return this.send('estimateFee', payload);
         // return this._send('estimateFee', {
         //     blocks: [2, 5, 10, 200],
         //     specific: undefined, // { conservative: boolean, txsize: number } // { from: '0x0', to: '0x0', data: '0xdeadbeef' }
@@ -176,7 +176,7 @@ export default class Socket extends EventEmitter {
                 this.emit('notification', result);
             },
         });
-        return this._send('subscribeAddresses', { addresses });
+        return this.send('subscribeAddresses', { addresses });
     }
 
     unsubscribeAddresses() {
@@ -184,7 +184,7 @@ export default class Socket extends EventEmitter {
         if (index >= 0) {
             // remove previous subscriptions
             delete this.subscriptions[index];
-            return this._send('unsubscribeAddresses', {});
+            return this.send('unsubscribeAddresses', {});
         }
         return { subscribed: false };
     }
@@ -204,7 +204,7 @@ export default class Socket extends EventEmitter {
                 this.emit('block', result);
             },
         });
-        return this._send('subscribeNewBlock', {});
+        return this.send('subscribeNewBlock', {});
     }
 
     unsubscribeBlock() {
@@ -212,7 +212,7 @@ export default class Socket extends EventEmitter {
         if (index >= 0) {
             // remove previous subscriptions
             delete this.subscriptions[index];
-            return this._send('unsubscribeNewBlock', {});
+            return this.send('unsubscribeNewBlock', {});
         }
         return { subscribed: false };
     }

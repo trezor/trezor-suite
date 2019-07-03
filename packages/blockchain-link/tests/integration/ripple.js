@@ -1,4 +1,4 @@
-import BlockchainLink from 'trezor-blockchain-link';
+import BlockchainLink from '@trezor/blockchain-link';
 import createServer from '../websocket';
 import { rippleWorkerFactory } from './worker';
 

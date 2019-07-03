@@ -1,4 +1,3 @@
-
 import {
     Transaction,
     TokenTransfer,
@@ -30,7 +29,7 @@ export const transformServerInfo = (payload: ServerInfo) => {
     };
 };
 
-type Addresses = Array<Address | string> | string;
+type Addresses = (Address | string)[] | string;
 
 export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout[] => {
     if (typeof addresses === 'string') {
@@ -39,7 +38,7 @@ export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout
     // neither addresses or targets are missing
     if (!addresses || !Array.isArray(addresses) || !targets || !Array.isArray(targets)) return [];
 
-    const all: Array<string | null> = addresses.map(a => {
+    const all: (string | null)[] = addresses.map(a => {
         if (typeof a === 'string') return a;
         if (typeof a === 'object' && typeof a.address === 'string') return a.address;
         return null;
@@ -64,7 +63,7 @@ export const filterTokenTransfers = (
     if (!addresses || !Array.isArray(addresses) || !transfers || !Array.isArray(transfers))
         return [];
 
-    const all: Array<string | null> = addresses.map(a => {
+    const all: (string | null)[] = addresses.map(a => {
         if (typeof a === 'string') return a;
         if (typeof a === 'object' && typeof a.address === 'string') return a.address;
         return null;
@@ -174,38 +173,44 @@ export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens']
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens) || tokens.length < 1) return undefined;
-    return tokens.reduce((arr, t) => {
-        if (t.type !== 'ERC20') return arr;
-        return arr.concat([
-            {
-                type: t.type,
-                name: t.name,
-                symbol: t.symbol,
-                address: t.contract,
-                balance: t.balance,
-                decimals: t.decimals || 0,
-            },
-        ]);
-    }, [] as TokenInfo[]);
+    return tokens.reduce(
+        (arr, t) => {
+            if (t.type !== 'ERC20') return arr;
+            return arr.concat([
+                {
+                    type: t.type,
+                    name: t.name,
+                    symbol: t.symbol,
+                    address: t.contract,
+                    balance: t.balance,
+                    decimals: t.decimals || 0,
+                },
+            ]);
+        },
+        [] as TokenInfo[]
+    );
 };
 
 export const transformAddresses = (
     tokens: BlockbookAccountInfo['tokens']
 ): AccountAddresses | undefined => {
     if (!tokens || !Array.isArray(tokens) || tokens.length < 1) return undefined;
-    const addresses = tokens.reduce((arr, t) => {
-        if (t.type !== 'XPUBAddress') return arr;
-        return arr.concat([
-            {
-                address: t.name,
-                path: t.path,
-                transfers: t.transfers,
-                balance: t.balance,
-                sent: t.totalSent,
-                received: t.totalReceived,
-            },
-        ]);
-    }, [] as Address[]);
+    const addresses = tokens.reduce(
+        (arr, t) => {
+            if (t.type !== 'XPUBAddress') return arr;
+            return arr.concat([
+                {
+                    address: t.name,
+                    path: t.path,
+                    transfers: t.transfers,
+                    balance: t.balance,
+                    sent: t.totalSent,
+                    received: t.totalReceived,
+                },
+            ]);
+        },
+        [] as Address[]
+    );
 
     if (addresses.length === 0) return undefined;
     const internal = addresses.filter(a => a.path.split('/')[4] === '1');

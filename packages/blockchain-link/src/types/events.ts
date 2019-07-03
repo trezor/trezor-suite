@@ -1,10 +1,10 @@
-type ConnectEvent = {
-
+interface ConnectEvent {
+    foo: boolean;
 }
 
-export type Events = {
-    connect: ConnectEvent,
-    disconnect: any,
-    notification: any,
-    block: any,
+export interface Events {
+    connect: ConnectEvent;
+    disconnect: any;
+    notification: any;
+    block: any;
 }

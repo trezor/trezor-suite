@@ -8,7 +8,6 @@ components-storybook lint:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
 
 components-storybook type check:
@@ -20,8 +19,6 @@ components-storybook type check:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-      - ci/components-storybook.yml
-      - ci/components.yml
 
 components-storybook build:
   stage: build
@@ -32,8 +29,6 @@ components-storybook build:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-      - ci/components-storybook.yml
-      - ci/components.yml
   artifacts:
     name: components-build-files
     expire_in: 15 minutes
@@ -53,8 +48,6 @@ components-storybook deploy dev:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-      - ci/components-storybook.yml
-      - ci/components.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
@@ -79,13 +72,6 @@ components-storybook delete review:
     PACKAGE_NAME: components-storybook
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   when: manual
-  only:
-    changes:
-      - packages/components/**/*
-      - packages/components-storybook/**/*
-      - .gitlab-ci.yml
-      - ci/components-storybook.yml
-      - ci/components.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
     action: stop
@@ -94,7 +80,10 @@ components-storybook delete review:
     - cd packages/components-storybook
     - 'rm -r "${DEPLOY_DIRECTORY}"'
   only:
-    - branches
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - .gitlab-ci.yml
   tags:
     - deploy
 
@@ -106,8 +95,6 @@ components-storybook test snapshots:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-      - ci/components-storybook.yml
-      - ci/components.yml
   script:
     - env
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
@@ -128,8 +115,6 @@ components-storybook make snapshot references:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-      - ci/components-storybook.yml
-      - ci/components.yml
   script:
     - env
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references

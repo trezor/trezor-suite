@@ -1,7 +1,7 @@
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace NodeJS {
         interface Global {
-            Worker: any;
             postMessage: (data: any) => void;
             onmessage: (data: any) => void;
         }

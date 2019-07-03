@@ -10,7 +10,6 @@ suite-native lint:
             - packages/suite/**/*
             - packages/suite-native/**/*
             - .gitlab-ci.yml
-            - ci/**/*
 
 suite-native type check:
     stage: type check
@@ -22,4 +21,3 @@ suite-native type check:
             - packages/suite/**/*
             - packages/suite-native/**/*
             - .gitlab-ci.yml
-            - ci/**/*
