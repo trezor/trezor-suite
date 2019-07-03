@@ -8,7 +8,7 @@ export default [
                 // 'wss://foo2.bar',
                 'wss://s.altnet.rippletest.net',
             ],
-            debug: false,
+            debug: true,
         },
         data: {
             // address: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H', // (all all acc 1)

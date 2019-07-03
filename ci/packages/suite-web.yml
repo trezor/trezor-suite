@@ -29,7 +29,6 @@ suite-web build:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
-            - ci/**/*
     variables:
         PACKAGE_NAME: suite-web
     script:
