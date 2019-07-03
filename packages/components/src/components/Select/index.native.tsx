@@ -8,7 +8,7 @@ import { Omit } from '../../support/types';
 
 interface Props extends Omit<PickerProps, 'items' | 'placeholder'> {
     onChange: () => void;
-    options: Item[];
+    options: { [k: string]: Item | null };
     withDropdownIndicator?: boolean;
     isDisabled?: boolean;
     placeholder?: string;
@@ -40,6 +40,11 @@ const styles = StyleSheet.create({
     },
 });
 
+const optionsToItems = (options: object) => {
+    const items = Object.values(options).filter(option => option !== null);
+    return items;
+};
+
 // TODO: prop `value` doesn't work
 // TODO: fix conflict between `React Select` props and `React Native Select` props on import
 const Select = ({
@@ -68,7 +73,7 @@ const Select = ({
                 isDisabled ? styles.disabled : {},
             ],
         }}
-        items={options}
+        items={optionsToItems(options)}
         placeholder={{ label: placeholder }}
         useNativeAndroidPickerStyle={false}
         disabled={isDisabled}
@@ -81,7 +86,7 @@ const propTypes = {
     withDropdownIndicator: PropTypes.bool,
     // TODO
     // eslint-disable-next-line react/forbid-prop-types
-    options: PropTypes.array,
+    options: PropTypes.object,
     // TODO
     // eslint-disable-next-line react/forbid-prop-types
     value: PropTypes.object,
