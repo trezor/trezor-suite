@@ -1,5 +1,5 @@
 {
-  "name": "trezor-blockchain-link",
+  "name": "@trezor/blockchain-link",
   "version": "0.0.12",
   "author": "Trezor <info@trezor.io>",
   "homepage": "https://github.com/trezor/trezor-blockchain-link",

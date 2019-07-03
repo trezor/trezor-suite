@@ -1,0 +1,20 @@
+blockchain-link lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/blockchain-link lint
+    only:
+        changes:
+            - packages/blockchain-link/**/*
+            - ci/**/*
+            - .gitlab-ci.yml
+
+blockchain-link test:
+    stage: test
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/blockchain-link test
+    only:
+        changes:
+            - packages/blockchain-link/**/*
+            - ci/**/*
+            - .gitlab-ci.yml
