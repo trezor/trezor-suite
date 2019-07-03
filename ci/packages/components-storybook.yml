@@ -20,7 +20,8 @@ components-storybook type check:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-      - ci/**/*
+      - ci/components-storybook.yml
+      - ci/components.yml
 
 components-storybook build:
   stage: build
@@ -30,8 +31,9 @@ components-storybook build:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
+      - ci/components-storybook.yml
+      - ci/components.yml
   artifacts:
     name: components-build-files
     expire_in: 15 minutes
@@ -50,8 +52,9 @@ components-storybook deploy dev:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
+      - ci/components-storybook.yml
+      - ci/components.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
@@ -80,8 +83,9 @@ components-storybook delete review:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
+      - ci/components-storybook.yml
+      - ci/components.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
     action: stop
@@ -101,8 +105,9 @@ components-storybook test snapshots:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
+      - ci/components-storybook.yml
+      - ci/components.yml
   script:
     - env
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
@@ -122,8 +127,9 @@ components-storybook make snapshot references:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
+      - ci/components-storybook.yml
+      - ci/components.yml
   script:
     - env
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
