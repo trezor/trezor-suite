@@ -1,6 +1,6 @@
-import * as TinyWorker from 'tiny-worker';
+import TinyWorker from 'tiny-worker';
 
-export const rippleWorkerFactory = (): Worker => {
+export const rippleWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker('./build/node/ripple-worker.js');
         // return new TinyWorker(() => {
@@ -11,7 +11,7 @@ export const rippleWorkerFactory = (): Worker => {
     return new Worker('./build/web/ripple-worker.js');
 };
 
-export const blockbookWorkerFactory = (): Worker => {
+export const blockbookWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker('./build/node/blockbook-worker.js');
         // return new TinyWorker(() => {
