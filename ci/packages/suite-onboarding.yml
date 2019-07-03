@@ -10,7 +10,6 @@ suite-onboarding lint:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
 
 suite-onboarding type check:
     stage: type check
@@ -22,7 +21,6 @@ suite-onboarding type check:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
 
 suite-onboarding build:
     stage: build
@@ -31,7 +29,6 @@ suite-onboarding build:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
     variables:
         PACKAGE_NAME: suite-onboarding
     script:
@@ -48,7 +45,6 @@ suite-onboarding deploy dev:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
     variables:
         PACKAGE_NAME: suite-onboarding
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
