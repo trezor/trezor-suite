@@ -81,7 +81,7 @@ export const response = (data: Response) => {
 
 const validateAddresses = (addr: string[]) => {
     if (!Array.isArray(addr)) throw new CustomError('invalid_param', '+addresses');
-    const seen = [];
+    const seen: string[] = [];
     return addr.filter(a => {
         if (typeof a !== 'string') return false;
         if (seen.indexOf(a) >= 0) return false;
@@ -106,11 +106,11 @@ export const removeAddresses = (addr: string[]) => {
 
 const validateAccounts = (acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
     if (!Array.isArray(acc)) throw new CustomError('invalid_param', '+accounts');
-    const seen = [];
+    const seen: string[] = [];
     return acc.filter(a => {
         if (a && typeof a === 'object' && typeof a.descriptor === 'string') {
-            if (seen.indexOf(a) >= 0) return false;
-            seen.push(a);
+            if (seen.indexOf(a.descriptor) >= 0) return false;
+            seen.push(a.descriptor);
             return true;
         }
         return false;
