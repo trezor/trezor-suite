@@ -85,6 +85,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         return this.worker;
     }
 
+    // Sending messages to worker
     // @ts-ignore no-underscore-dangle
     async sendMessage<R>(message: any): Promise<R> {
         const worker = await this.getWorker();
