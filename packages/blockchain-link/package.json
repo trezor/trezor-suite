@@ -29,7 +29,7 @@
     "build:workers": "rm -rf build && yarn build:workers-web && yarn build:workers-node",
     "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
     "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
-    "lint": "eslint ./src ./webpack ./tests/unit",
+    "lint": "eslint '**/*{.ts,.tsx}'",
     "test": "jest -c jest.config.unit.js",
     "prettier": "prettier",
     "test:node": "jest -c jest.config.integration.js",
