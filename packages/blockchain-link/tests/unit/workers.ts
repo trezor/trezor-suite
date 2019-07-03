@@ -2,6 +2,7 @@ import * as TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace NodeJS {
         interface Global {
             Worker: any;

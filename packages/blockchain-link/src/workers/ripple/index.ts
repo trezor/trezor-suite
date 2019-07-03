@@ -8,61 +8,9 @@ import { Message, SubscriptionAccountInfo, AccountInfo } from '../../types';
 import * as utils from './utils';
 import * as common from '../common';
 
-// declare function onmessage(event: { data: Message }): void;
-
-// WebWorker message handling
-onmessage = (event: { data: Message }) => {
-    if (!event.data) return;
-    const { data } = event;
-
-    common.debug('onmessage', data);
-    switch (data.type) {
-        case MESSAGES.HANDSHAKE:
-            common.setSettings(data.settings);
-            break;
-        case MESSAGES.CONNECT:
-            connect()
-                .then(async () => {
-                    common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
-                })
-                .catch(error => common.errorHandler({ id: data.id, error }));
-            break;
-        case MESSAGES.GET_INFO:
-            getInfo(data);
-            break;
-        case MESSAGES.GET_ACCOUNT_INFO:
-            getAccountInfo(data);
-            break;
-        case MESSAGES.ESTIMATE_FEE:
-            estimateFee(data);
-            break;
-        case MESSAGES.PUSH_TRANSACTION:
-            pushTransaction(data);
-            break;
-        case MESSAGES.SUBSCRIBE:
-            subscribe(data);
-            break;
-        case MESSAGES.UNSUBSCRIBE:
-            unsubscribe(data);
-            break;
-        case MESSAGES.DISCONNECT:
-            disconnect(data);
-            break;
-        // case 'terminate':
-        //     cleanup();
-        //     break;
-        default:
-            common.errorHandler({
-                id: data.id,
-                error: new Error(`Unknown message type ${data.type}`),
-            });
-            break;
-    }
-};
-
-let _api: RippleAPI | undefined;
-let _pingTimeout: number;
-let _endpoints: string[] = [];
+let rippleApi: RippleAPI | undefined;
+let pingTimeout: number;
+let endpoints: string[] = [];
 const RESERVE = {
     BASE: '20000000',
     OWNER: '5000000',
@@ -73,20 +21,33 @@ const BLOCKS = {
 };
 
 const timeoutHandler = async () => {
-    if (_api && _api.isConnected()) {
+    if (rippleApi && rippleApi.isConnected()) {
         try {
-            await _api.getServerInfo();
-            _pingTimeout = <any>setTimeout(timeoutHandler, 5000);
+            await rippleApi.getServerInfo();
+            pingTimeout = setTimeout(timeoutHandler, 5000);
         } catch (error) {
             common.debug(`Error in timeout ping request: ${error}`);
         }
     }
 };
 
+const cleanup = () => {
+    if (pingTimeout) {
+        clearTimeout(pingTimeout);
+    }
+    if (rippleApi) {
+        rippleApi.removeAllListeners();
+        rippleApi = undefined;
+    }
+    endpoints = [];
+    common.removeAddresses(common.getAddresses());
+    common.clearSubscriptions();
+};
+
 const connect = async (): Promise<RippleAPI> => {
-    if (_api) {
+    if (rippleApi) {
         // socket is already connected
-        if (_api.isConnected()) return _api;
+        if (rippleApi.isConnected()) return rippleApi;
     }
 
     // validate endpoints
@@ -95,35 +56,35 @@ const connect = async (): Promise<RippleAPI> => {
         throw new CustomError('connect', 'Endpoint not set');
     }
 
-    if (_endpoints.length < 1) {
-        _endpoints = common.shuffleEndpoints(server.slice(0));
+    if (endpoints.length < 1) {
+        endpoints = common.shuffleEndpoints(server.slice(0));
     }
 
-    common.debug('Connecting to', _endpoints[0]);
+    common.debug('Connecting to', endpoints[0]);
     let api: RippleAPI;
     try {
-        api = new RippleAPI({ server: _endpoints[0] });
+        api = new RippleAPI({ server: endpoints[0] });
         await api.connect();
     } catch (error) {
         common.debug('Websocket connection failed');
-        _api = undefined;
+        rippleApi = undefined;
         // connection error. remove endpoint
-        _endpoints.splice(0, 1);
+        endpoints.splice(0, 1);
         // and try another one or throw error
-        if (_endpoints.length < 1) {
+        if (endpoints.length < 1) {
             throw new CustomError('connect', 'All backends are down');
         }
-        return await connect();
+        return connect();
     }
 
     // disable reconnecting
     // workaround: RippleApi which doesn't have possibility to disable reconnection
     // override private method and return never ending promise
-    api.connection._retryConnect = () => new Promise(() => {});
+    api.connection._retryConnect = () => new Promise(() => {}); // eslint-disable-line no-underscore-dangle
 
     api.on('ledger', ledger => {
-        clearTimeout(_pingTimeout);
-        _pingTimeout = <any>setTimeout(timeoutHandler, 5000);
+        clearTimeout(pingTimeout);
+        pingTimeout = setTimeout(timeoutHandler, 5000);
 
         // store current block/ledger values
         RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
@@ -145,7 +106,7 @@ const connect = async (): Promise<RippleAPI> => {
 
     try {
         // @ts-ignore
-        const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-');
+        const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-'); // eslint-disable-line no-underscore-dangle
         BLOCKS.MIN = parseInt(availableBlocks[0], 10);
         BLOCKS.MAX = parseInt(availableBlocks[1], 10);
     } catch (error) {
@@ -157,21 +118,8 @@ const connect = async (): Promise<RippleAPI> => {
 
     common.response({ id: -1, type: RESPONSES.CONNECTED });
 
-    _api = api;
-    return _api;
-};
-
-const cleanup = () => {
-    if (_pingTimeout) {
-        clearTimeout(_pingTimeout);
-    }
-    if (_api) {
-        _api.removeAllListeners();
-        _api = undefined;
-    }
-    _endpoints = [];
-    common.removeAddresses(common.getAddresses());
-    common.clearSubscriptions();
+    rippleApi = api;
+    return rippleApi;
 };
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
@@ -219,7 +167,7 @@ interface RawTxData {
 }
 const getRawTransactionsData = async (options: any): Promise<RawTxData> => {
     const api = await connect();
-    return await api.request('account_tx', options);
+    return api.request('account_tx', options);
 };
 
 const getAccountInfo = async (
@@ -253,7 +201,7 @@ const getAccountInfo = async (
         const info = await api.getAccountInfo(payload.descriptor);
         const ownersReserve =
             info.ownerCount > 0
-                ? new BigNumber(info.ownerCount).multipliedBy(RESERVE.OWNER).toString()
+                ? new BigNumber(info.ownerCount).times(RESERVE.OWNER).toString()
                 : '0';
 
         const reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
@@ -373,27 +321,43 @@ const pushTransaction = async (
     }
 };
 
-const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    const { payload } = data;
-    try {
-        let response;
-        if (payload.type === 'accounts') {
-            response = await subscribeAccounts(payload.accounts);
-        } else if (payload.type === 'addresses') {
-            response = await subscribeAddresses(payload.addresses);
-        } else if (payload.type === 'block') {
-            response = await subscribeBlock();
-        } else {
-            throw new CustomError('invalid_param', '+type');
-        }
-        common.response({
-            id: data.id,
-            type: RESPONSES.SUBSCRIBE,
-            payload: response,
-        });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error });
-    }
+const onNewBlock = (event: any) => {
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'block',
+            payload: {
+                blockHeight: event.ledgerVersion,
+                blockHash: event.ledgerHash,
+            },
+        },
+    });
+};
+
+const onTransaction = (event: any) => {
+    if (event.type !== 'transaction') return;
+    // ignore transactions other than Payment
+    const tx = event.transaction;
+    if (event.transaction.TransactionType !== 'Payment') return;
+
+    const subscribed = common.getAddresses();
+    const descriptor =
+        subscribed.find(a => a === tx.Account) ||
+        subscribed.find(a => a === tx.Destination) ||
+        'unknown';
+
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'notification',
+            payload: {
+                descriptor,
+                tx: utils.transformTransaction(descriptor, event.transaction),
+            },
+        },
+    });
 };
 
 const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
@@ -446,34 +410,27 @@ const subscribeBlock = async () => {
     return { subscribed: true };
 };
 
-const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Promise<void> => {
+const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
     try {
+        let response;
         if (payload.type === 'accounts') {
-            await unsubscribeAccounts(payload.accounts);
+            response = await subscribeAccounts(payload.accounts);
         } else if (payload.type === 'addresses') {
-            await unsubscribeAddresses(payload.addresses);
+            response = await subscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
-            await unsubscribeBlock();
+            response = await subscribeBlock();
+        } else {
+            throw new CustomError('invalid_param', '+type');
         }
+        common.response({
+            id: data.id,
+            type: RESPONSES.SUBSCRIBE,
+            payload: response,
+        });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
-        return;
     }
-
-    common.response({
-        id: data.id,
-        type: RESPONSES.UNSUBSCRIBE,
-        payload: { subscribed: common.getAddresses().length > 0 },
-    });
-};
-
-const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
-    const prevAddresses = common.getAddresses();
-    common.removeAccounts(accounts || common.getAccounts());
-    const addresses = common.getAddresses();
-    const uniqueAddresses = prevAddresses.filter(a => addresses.indexOf(a) < 0);
-    await unsubscribeAddresses(uniqueAddresses);
 };
 
 const unsubscribeAddresses = async (addresses?: string[]) => {
@@ -501,6 +458,14 @@ const unsubscribeAddresses = async (addresses?: string[]) => {
     }
 };
 
+const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
+    const prevAddresses = common.getAddresses();
+    common.removeAccounts(accounts || common.getAccounts());
+    const addresses = common.getAddresses();
+    const uniqueAddresses = prevAddresses.filter(a => addresses.indexOf(a) < 0);
+    await unsubscribeAddresses(uniqueAddresses);
+};
+
 const unsubscribeBlock = async () => {
     if (!common.getSubscription('ledger')) return;
     const api = await connect();
@@ -508,71 +473,91 @@ const unsubscribeBlock = async () => {
     common.removeSubscription('ledger');
 };
 
+const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Promise<void> => {
+    const { payload } = data;
+    try {
+        if (payload.type === 'accounts') {
+            await unsubscribeAccounts(payload.accounts);
+        } else if (payload.type === 'addresses') {
+            await unsubscribeAddresses(payload.addresses);
+        } else if (payload.type === 'block') {
+            await unsubscribeBlock();
+        }
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+        return;
+    }
+
+    common.response({
+        id: data.id,
+        type: RESPONSES.UNSUBSCRIBE,
+        payload: { subscribed: common.getAddresses().length > 0 },
+    });
+};
+
 const disconnect = async (data: { id: number }) => {
-    if (!_api) {
+    if (!rippleApi) {
         common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
         return;
     }
     try {
-        await _api.disconnect();
+        await rippleApi.disconnect();
         common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
 };
 
-const onNewBlock = (event: any) => {
-    common.response({
-        id: -1,
-        type: RESPONSES.NOTIFICATION,
-        payload: {
-            type: 'block',
-            payload: {
-                blockHeight: event.ledgerVersion,
-                blockHash: event.ledgerHash,
-            },
-        },
-    });
+// WebWorker message handling
+onmessage = (event: { data: Message }) => {
+    if (!event.data) return;
+    const { data } = event;
+
+    common.debug('onmessage', data);
+    switch (data.type) {
+        case MESSAGES.HANDSHAKE:
+            common.setSettings(data.settings);
+            break;
+        case MESSAGES.CONNECT:
+            connect()
+                .then(async () => {
+                    common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
+                })
+                .catch(error => common.errorHandler({ id: data.id, error }));
+            break;
+        case MESSAGES.GET_INFO:
+            getInfo(data);
+            break;
+        case MESSAGES.GET_ACCOUNT_INFO:
+            getAccountInfo(data);
+            break;
+        case MESSAGES.ESTIMATE_FEE:
+            estimateFee(data);
+            break;
+        case MESSAGES.PUSH_TRANSACTION:
+            pushTransaction(data);
+            break;
+        case MESSAGES.SUBSCRIBE:
+            subscribe(data);
+            break;
+        case MESSAGES.UNSUBSCRIBE:
+            unsubscribe(data);
+            break;
+        case MESSAGES.DISCONNECT:
+            disconnect(data);
+            break;
+        // @ts-ignore this message is used in tests
+        case 'terminate':
+            cleanup();
+            break;
+        default:
+            common.errorHandler({
+                id: data.id,
+                error: new Error(`Unknown message type ${data.type}`),
+            });
+            break;
+    }
 };
 
-const onTransaction = (event: any) => {
-    if (event.type !== 'transaction') return;
-    // ignore transactions other than Payment
-    const tx = event.transaction;
-    if (event.transaction.TransactionType !== 'Payment') return;
-
-    const subscribed = common.getAddresses();
-    const descriptor =
-        subscribed.find(a => a === tx.Account) ||
-        subscribed.find(a => a === tx.Destination) ||
-        'unknown';
-
-    common.response({
-        id: -1,
-        type: RESPONSES.NOTIFICATION,
-        payload: {
-            type: 'notification',
-            payload: {
-                descriptor,
-                tx: utils.transformTransaction(descriptor, event.transaction),
-            },
-        },
-    });
-};
-
+// Handshake to host
 common.handshake();
-
-// // Testnet account
-// // addr: rGz6kFcejym5ZEWnzUCwPjxcfwEPRUPXXG
-// // secret: ss2BKjSc4sMdVXcTHxzjyQS2vyhrQ
-
-// // Trezor account
-// // rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H
-
-// rpNqAwVKdyWxZoHerUzDfgEEobNQPnQgPU
-
-// rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy - exachnge
-
-// rsG1sNifXJxGS2nDQ9zHyoe1S5APrtwpjV - exchange2
-
-// from: https://i.redd.it/zwcthelefj901.png

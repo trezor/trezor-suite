@@ -1,4 +1,6 @@
-interface ConnectEvent {}
+interface ConnectEvent {
+    foo: boolean;
+}
 
 export interface Events {
     connect: ConnectEvent;

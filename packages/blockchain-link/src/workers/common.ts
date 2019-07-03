@@ -4,11 +4,11 @@ import { CustomError } from '../constants/errors';
 
 declare function postMessage(data: Response): void;
 
-let _settings: BlockchainSettings;
-let _debugPrefix: string;
-let _addresses: string[] = [];
-let _accounts: SubscriptionAccountInfo[] = [];
-const _subscription: { [key: string]: boolean } = {};
+let settings: BlockchainSettings;
+let debugPrefix: string;
+let addresses: string[] = [];
+let accounts: SubscriptionAccountInfo[] = [];
+const subscription: { [key: string]: boolean } = {};
 
 const removeEmpty = (obj: Response) => {
     Object.keys(obj).forEach(key => {
@@ -19,18 +19,18 @@ const removeEmpty = (obj: Response) => {
 };
 
 export const setSettings = (s: BlockchainSettings): void => {
-    _settings = s;
-    _debugPrefix = `[Worker "${s.name}"]:`;
+    settings = s;
+    debugPrefix = `[Worker "${s.name}"]:`;
 };
 
-export const getSettings = (): BlockchainSettings => _settings;
+export const getSettings = (): BlockchainSettings => settings;
 
 export const debug = (...args: any[]): void => {
-    if (_settings && _settings.debug) {
+    if (settings && settings.debug) {
         if (args[0] === 'warn' || args[0] === 'error') {
-            console[args[0]](_debugPrefix, ...args.slice(1));
+            console[args[0]](debugPrefix, ...args.slice(1));
         } else {
-            console.log(_debugPrefix, ...args);
+            console.log(debugPrefix, ...args);
         }
     }
 };
@@ -43,7 +43,7 @@ export const handshake = (): void => {
 };
 
 export const errorHandler = ({ id, error }: { id: number; error: any }): void => {
-    let code = 'blockchain_link/unknown';
+    let errorCode = 'blockchain_link/unknown';
     // let message: string = '';
     // this part is uncovered by tests but for some reason i've write it like this (ripple maybe)
     // TODO: remove it after
@@ -57,19 +57,19 @@ export const errorHandler = ({ id, error }: { id: number; error: any }): void =>
     //         message = error.message;
     //     }
     //     if (error.code) {
-    //         code = error.code;
+    //         errorCode = error.code;
     //     }
     // }
     const { message } = error;
     if (error.code) {
-        code = error.code;
+        errorCode = error.code;
     }
 
     postMessage({
         id,
         type: RESPONSES.ERROR,
         payload: {
-            code,
+            code: errorCode,
             message,
         },
     });
@@ -79,55 +79,59 @@ export const response = (data: Response) => {
     postMessage(removeEmpty(data));
 };
 
-const validateAddresses = (addresses: string[]) => {
-    if (!Array.isArray(addresses)) throw new CustomError('invalid_param', '+addresses');
-    const seen = {};
-    return addresses.filter(a => {
+const validateAddresses = (addr: string[]) => {
+    if (!Array.isArray(addr)) throw new CustomError('invalid_param', '+addresses');
+    const seen = [];
+    return addr.filter(a => {
         if (typeof a !== 'string') return false;
-        return seen.hasOwnProperty(a) ? false : (seen[a] = true);
+        if (seen.indexOf(a) >= 0) return false;
+        seen.push(a);
+        return true;
     });
 };
 
-export const addAddresses = (addresses: string[]) => {
-    const unique = validateAddresses(addresses).filter(a => _addresses.indexOf(a) < 0);
-    _addresses = _addresses.concat(unique);
+export const addAddresses = (addr: string[]) => {
+    const unique = validateAddresses(addr).filter(a => addresses.indexOf(a) < 0);
+    addresses = addr.concat(unique);
     return unique;
 };
 
-export const getAddresses = () => _addresses;
+export const getAddresses = () => addresses;
 
-export const removeAddresses = (addresses: string[]) => {
-    const unique = validateAddresses(addresses);
-    _addresses = _addresses.filter(a => unique.indexOf(a) < 0);
-    return _addresses;
+export const removeAddresses = (addr: string[]) => {
+    const unique = validateAddresses(addr);
+    addresses = addresses.filter(a => unique.indexOf(a) < 0);
+    return addresses;
 };
 
-const validateAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
-    if (!Array.isArray(accounts)) throw new CustomError('invalid_param', '+accounts');
-    const seen = {};
-    return accounts.filter(a => {
+const validateAccounts = (acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
+    if (!Array.isArray(acc)) throw new CustomError('invalid_param', '+accounts');
+    const seen = [];
+    return acc.filter(a => {
         if (a && typeof a === 'object' && typeof a.descriptor === 'string') {
-            return seen.hasOwnProperty(a.descriptor) ? false : (seen[a.descriptor] = true);
+            if (seen.indexOf(a) >= 0) return false;
+            seen.push(a);
+            return true;
         }
         return false;
     });
 };
 
-const getAccountAddresses = (account: SubscriptionAccountInfo) => {
-    if (account.addresses) {
-        const { change, used, unused } = account.addresses;
+const getAccountAddresses = (acc: SubscriptionAccountInfo) => {
+    if (acc.addresses) {
+        const { change, used, unused } = acc.addresses;
         return change.concat(used, unused).map(a => a.address);
     }
-    return [account.descriptor];
+    return [acc.descriptor];
 };
 
-export const addAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
-    const valid = validateAccounts(accounts);
-    const others = _accounts.filter(a => !valid.find(b => b.descriptor === a.descriptor));
-    _accounts = others.concat(valid);
-    const addresses = _accounts.reduce(
-        (addr, acc) => {
-            return addr.concat(getAccountAddresses(acc));
+export const addAccounts = (acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
+    const valid = validateAccounts(acc);
+    const others = accounts.filter(a => !valid.find(b => b.descriptor === a.descriptor));
+    accounts = others.concat(valid);
+    const addresses = accounts.reduce(
+        (addr, a) => {
+            return addr.concat(getAccountAddresses(a));
         },
         [] as string[]
     );
@@ -136,7 +140,7 @@ export const addAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAc
 };
 
 export const getAccount = (address: string): SubscriptionAccountInfo | undefined => {
-    return _accounts.find(a => {
+    return accounts.find(a => {
         if (a.descriptor === address) return true;
         if (a.addresses) {
             const { change, used, unused } = a.addresses;
@@ -148,35 +152,35 @@ export const getAccount = (address: string): SubscriptionAccountInfo | undefined
     });
 };
 
-export const getAccounts = () => _accounts;
+export const getAccounts = () => accounts;
 
-export const removeAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
-    const valid = validateAccounts(accounts);
-    const accountsToRemove = _accounts.filter(a => valid.find(b => b.descriptor === a.descriptor));
+export const removeAccounts = (acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] => {
+    const valid = validateAccounts(acc);
+    const accountsToRemove = accounts.filter(a => valid.find(b => b.descriptor === a.descriptor));
     const addressesToRemove = accountsToRemove.reduce(
         (addr, acc) => {
             return addr.concat(getAccountAddresses(acc));
         },
         [] as string[]
     );
-    _accounts = _accounts.filter(a => accountsToRemove.indexOf(a) < 0);
+    accounts = accounts.filter(a => accountsToRemove.indexOf(a) < 0);
     removeAddresses(addressesToRemove);
-    return _accounts;
+    return accounts;
 };
 
 export const addSubscription = (type: string): void => {
-    _subscription[type] = true;
+    subscription[type] = true;
 };
 
-export const getSubscription = (type: string): boolean => _subscription[type];
+export const getSubscription = (type: string): boolean => subscription[type];
 
 export const removeSubscription = (type: string): void => {
-    delete _subscription[type];
+    delete subscription[type];
 };
 
 export const clearSubscriptions = (): void => {
-    Object.keys(_subscription).forEach(key => {
-        delete _subscription[key];
+    Object.keys(subscription).forEach(key => {
+        delete subscription[key];
     });
 };
 
