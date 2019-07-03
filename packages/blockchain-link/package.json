@@ -31,7 +31,7 @@
     "lint": "eslint '**/*{.ts,.tsx}'",
     "test": "jest -c jest.config.unit.js",
     "test:node": "jest -c jest.config.integration.js",
-    "build:lib": "rm -rf lib && tsc && tsc --project ./tsconfig-workers.json && node ./scripts/build.lib.js"
+    "build:lib": "rm -rf lib && tsc --p ./tsconfig.json && tsc --p ./tsconfig-workers.json && node ./scripts/build.lib.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
