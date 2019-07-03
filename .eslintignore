@@ -1,5 +1,6 @@
 build
 lib
+scripts
 coverage
 src/ui/**
 node_modules

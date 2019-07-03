@@ -33,7 +33,7 @@
     "test": "jest -c jest.config.unit.js",
     "prettier": "prettier",
     "test:node": "jest -c jest.config.integration.js",
-    "build:lib": "tsc && tsc --project ./tsconfig-workers.json"
+    "build:lib": "rm -rf lib && tsc && tsc --project ./tsconfig-workers.json && node ./scripts/build.lib.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
