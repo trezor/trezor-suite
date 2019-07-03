@@ -92,7 +92,7 @@ const validateAddresses = (addr: string[]) => {
 
 export const addAddresses = (addr: string[]) => {
     const unique = validateAddresses(addr).filter(a => addresses.indexOf(a) < 0);
-    addresses = addr.concat(unique);
+    addresses = addresses.concat(unique);
     return unique;
 };
 
