@@ -1,5 +1,4 @@
-/* eslint-disable */
-import BlockchainLink from 'trezor-blockchain-link';
+import BlockchainLink from '@trezor/blockchain-link';
 import createServer from '../websocket';
 import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
 
@@ -8,10 +7,10 @@ const backends = [
         name: 'blockbook',
         worker: blockbookWorkerFactory,
     },
-    {
-        name: 'ripple',
-        worker: rippleWorkerFactory,
-    },
+    // {
+    //     name: 'ripple',
+    //     worker: rippleWorkerFactory,
+    // },
 ];
 
 backends.forEach((b, i) => {

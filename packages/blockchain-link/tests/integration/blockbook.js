@@ -1,5 +1,4 @@
-/* eslint-disable import/no-unresolved */
-import BlockchainLink from 'trezor-blockchain-link';
+import BlockchainLink from '@trezor/blockchain-link';
 import createServer from '../websocket';
 import { blockbookWorkerFactory } from './worker';
 
