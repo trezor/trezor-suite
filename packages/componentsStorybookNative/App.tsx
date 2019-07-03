@@ -51,26 +51,48 @@ const Row = styled.View`
 type Props = {};
 export default class App extends Component<Props> {
   render() {
+    const options: any = {
+        None: null,
+        Hello: { value: 'hello', label: 'Hello' },
+        World: { value: 'world', label: 'World' },
+    };
+
     return (
-      <Container>
-        <Wrapper>
-            <H1>
-                Select
-            </H1>
-            <Select
-                isSearchable
-                placeholder="Example placeholder"
-                options={[
-                    { value: 'hello', label: 'Hello' },
-                    { value: 'world', label: 'World' },
-                ]}
-                value={{
-                  value: 'hello',
-                  label: 'Hello'
-                }}
-            />
+    	<Container>
+        	<Wrapper>
+			<H1>
+				Checkbox
+			</H1>
+			<Checkbox onClick={() => {}} data-test="checkbox_unchecked">
+				Label
+			</Checkbox>
+			<Checkbox onClick={() => {}} isChecked data-test="checkbox_checked">
+				Label
+			</Checkbox>
         </Wrapper>
-        <Wrapper>
+		<Wrapper>
+			<H1>
+				Switch
+			</H1>
+			<H5>
+				basic
+			</H5>
+			<Row>
+				<Switch onChange={() => {}} checked={false} />
+				<Switch onChange={() => {}} checked />
+				<Switch onChange={() => {}} disabled checked={false} />
+			</Row>
+
+			<H5>
+				small
+			</H5>
+			<Row>
+				<Switch onChange={() => {}} isSmall checked={false} />
+				<Switch onChange={() => {}} isSmall checked />
+				<Switch onChange={() => {}} isSmall disabled checked={false} />
+			</Row>
+		  </Wrapper>
+      <Wrapper>
           <H1>
               Basic
           </H1>
@@ -317,20 +339,8 @@ export default class App extends Component<Props> {
         <Wrapper>
           <H5>Select</H5>
           <Select
-            items={[
-              {
-                value: 'en',
-                label: 'English',
-              },
-              {
-                value: 'bn',
-                label: 'Bengali',
-              },
-              {
-                value: 'cs',
-                label: 'Česky',
-              },
-            ]}
+            options={options}
+            value={options.World}
             onChange={() => {}}
           />
         </Wrapper>

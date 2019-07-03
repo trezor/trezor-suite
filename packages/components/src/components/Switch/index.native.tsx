@@ -7,22 +7,24 @@ interface Props extends SwitchProps {
     onChange: (checked: boolean) => any;
     disabled?: boolean;
     isSmall?: boolean;
-}
-
-interface StateProps {
     checked: boolean;
 }
 
-class Switch extends Component<Props, StateProps> {
+class Switch extends Component<Props> {
+    state = {
+        checked: false,
+    };
+
     static propTypes = {
         onChange: PropTypes.func.isRequired,
         disabled: PropTypes.bool,
+        checked: PropTypes.bool,
         isSmall: PropTypes.bool,
     };
 
     constructor(props: Props) {
         super(props);
-        this.state = { checked: false };
+        this.state.checked = props.checked;
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -36,16 +38,11 @@ class Switch extends Component<Props, StateProps> {
     render() {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { onChange, disabled, isSmall, ...rest }: Props = this.props;
-        const smallProps = isSmall
-            ? {
-                  width: 36,
-                  height: 18,
-                  handleDiameter: 14,
-              }
-            : {};
+        const { checked } = this.state;
+        const smallProps = isSmall ? { transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] } : {};
         return (
             <SwitchNative
-                value={this.state.checked}
+                value={checked}
                 disabled={disabled}
                 onValueChange={this.handleChange}
                 ios_backgroundColor={colors.TEXT_SECONDARY}
@@ -53,7 +50,7 @@ class Switch extends Component<Props, StateProps> {
                     false: colors.TEXT_SECONDARY,
                     true: colors.GREEN_PRIMARY,
                 }}
-                {...smallProps}
+                style={smallProps}
                 {...rest}
             />
         );
