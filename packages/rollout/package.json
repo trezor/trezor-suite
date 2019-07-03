@@ -16,6 +16,7 @@
     "lint": "eslint .",
     "type-check": "tsc --project tsconfig.json",
     "type-check:watch": "yarn type-check -- --watch",
+    "clean": "rimraf lib",
     "build": "yarn run clean && npx rollup -c rollup.config.js"
   },
   "dependencies": {},
