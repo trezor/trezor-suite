@@ -1,13 +1,14 @@
+/*
+ * Integration test for builded library located in './lib' directory
+ */
+
 module.exports = {
     rootDir: './',
-    // testMatch: ['**/tests/unit/*.js', '**/tests/integration2/*.js'],
+    moduleFileExtensions: ['js', 'json'],
+    // testMatch: ['**/tests/integration/*.js'],
     testMatch: ['**/tests/integration/connection.js'],
-    coverageDirectory: './coverage/',
     collectCoverage: false,
-    moduleDirectories: ['node_modules', './'],
-    // modulePaths: ['<rootDir>/build'],
-    // modulePathIgnorePatterns: ['node_modules'],
-    // setupFiles: ['./tests/setup.js'],
+    moduleDirectories: ['node_modules', './'], // './' - ia a home directory for the 'trezor-blockchain-link' library (lib/index.js)
     transform: {
         '^.+\\.js$': 'babel-jest',
     },

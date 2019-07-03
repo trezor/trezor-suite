@@ -1,3 +1,7 @@
+/*
+ * Unit tests for source with coverage
+ */
+
 module.exports = {
     rootDir: './',
     globals: {
@@ -11,8 +15,7 @@ module.exports = {
         },
     },
     moduleFileExtensions: ['js', 'ts', 'json'],
-    // testMatch: ['**/tests/unit/getAccountUtxo.js'],
-    testMatch: ['**/tests/unit/*.(js|ts)'],
+    testMatch: ['**/tests/unit/*.ts'],
     coverageDirectory: './coverage/',
     collectCoverage: true,
     collectCoverageFrom: ['**/src/**/*.ts'],
