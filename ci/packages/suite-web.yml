@@ -10,7 +10,6 @@ suite-web lint:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
-            - ci/**/*
 
 suite-web type check:
     stage: type check
@@ -22,7 +21,6 @@ suite-web type check:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
-            - ci/**/*
 
 suite-web build:
     stage: build
@@ -31,7 +29,6 @@ suite-web build:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
-            - ci/**/*
     variables:
         PACKAGE_NAME: suite-web
     script:
@@ -48,7 +45,6 @@ suite-web deploy dev:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
-            - ci/**/*
     variables:
         PACKAGE_NAME: suite-web
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
