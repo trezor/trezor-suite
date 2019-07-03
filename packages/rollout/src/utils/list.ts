@@ -1,8 +1,9 @@
 import versionUtils from './version';
+import { Release } from '../types';
 
 const filterSafeListByBootloader = ({ releasesList, bootloaderVersion }) =>
     releasesList.filter(
-        item =>
+        (item: Release) =>
             (!item.min_bootloader_version ||
                 versionUtils.isNewerOrEqual(bootloaderVersion, item.min_bootloader_version)) &&
             (!item.bootloader_version ||
@@ -11,7 +12,7 @@ const filterSafeListByBootloader = ({ releasesList, bootloaderVersion }) =>
 
 const filterSafeListByFirmware = ({ releasesList, firmwareVersion }) =>
     releasesList.filter(
-        item =>
+        (item: Release) =>
             versionUtils.isNewerOrEqual(firmwareVersion, item.min_firmware_version) &&
             versionUtils.isNewer(item.version, firmwareVersion)
     );

@@ -21,7 +21,7 @@ const getBootloaderVersion = ({
     return foundVersion.bootloader_version;
 };
 
-const getLatestSafeFw = (input: Input, score?: number) => {
+const getLatestSafeFw = (input, score?: number) => {
     // first find bootloader version for both bootloader mode and normal mode;
     const { isInBootloader, firmwareVersion, firmwarePresent } = input;
     let { releasesList } = input;

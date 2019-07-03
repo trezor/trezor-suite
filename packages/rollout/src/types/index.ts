@@ -10,6 +10,8 @@ export interface Release {
     version: number[];
     rollout: number;
     required: boolean;
+    min_firmware_version: number[];
+    min_bootloader_version: number[];
 }
 
 export interface Input {
