@@ -35,6 +35,10 @@ suite test integration:
     script:
         - yarn workspace @trezor/suite test:health
     only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml
         refs:
             - master
             - develop
