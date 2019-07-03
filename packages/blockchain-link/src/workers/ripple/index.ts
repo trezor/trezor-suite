@@ -9,7 +9,7 @@ import * as utils from './utils';
 import * as common from '../common';
 
 let rippleApi: RippleAPI | undefined;
-let pingTimeout: number;
+let pingTimeout: ReturnType<typeof setTimeout>;
 let endpoints: string[] = [];
 const RESERVE = {
     BASE: '20000000',

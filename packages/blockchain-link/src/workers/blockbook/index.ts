@@ -9,7 +9,7 @@ import * as MessageTypes from '../../types/messages';
 import * as common from '../common';
 
 let api: Connection | undefined;
-let pingTimeout: number;
+let pingTimeout: ReturnType<typeof setTimeout>;
 let endpoints: string[] = [];
 
 const timeoutHandler = async () => {
