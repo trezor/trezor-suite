@@ -1,0 +1,32 @@
+rollout lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/rollout lint
+    only:
+        changes:
+            - packages/rollout/**/*
+            - .gitlab-ci.yml
+
+rollout test:
+    stage: test
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/rollout test
+    only:
+        changes:
+            - packages/rollout/**/*
+            - .gitlab-ci.yml
+
+rollout build:
+    stage: build
+    script:
+        - yarn workspace @trezor/rollout build
+    only:
+        changes:
+            - packages/rollout/**/*
+            - .gitlab-ci.yml
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - packages/rollout/lib
