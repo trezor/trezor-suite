@@ -74,11 +74,6 @@ suite-onboarding delete review:
         PACKAGE_NAME: suite-onboarding
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     when: manual
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-onboarding/**/*
-            - .gitlab-ci.yml
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
@@ -86,10 +81,13 @@ suite-onboarding delete review:
         - cd packages/suite-onboarding
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-onboarding/**/*
+            - .gitlab-ci.yml
         - branches
     tags:
         - deploy
-
 # suite-onboarding test integration:
 #   image: cypress/base:10
 #   stage: test integration

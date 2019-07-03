@@ -79,14 +79,13 @@ suite-web delete review:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+        - branches
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
     script:
         - cd packages/suite-web
         - 'rm -r "${DEPLOY_DIRECTORY}"'
-    only:
-        - branches
     tags:
         - deploy
 
