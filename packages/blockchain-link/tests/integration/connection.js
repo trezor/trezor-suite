@@ -7,10 +7,10 @@ const backends = [
         name: 'blockbook',
         worker: blockbookWorkerFactory,
     },
-    // {
-    //     name: 'ripple',
-    //     worker: rippleWorkerFactory,
-    // },
+    {
+        name: 'ripple',
+        worker: rippleWorkerFactory,
+    },
 ];
 
 backends.forEach((b, i) => {

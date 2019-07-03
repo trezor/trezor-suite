@@ -72,11 +72,6 @@ components-storybook delete review:
     PACKAGE_NAME: components-storybook
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   when: manual
-  only:
-    changes:
-      - packages/components/**/*
-      - packages/components-storybook/**/*
-      - .gitlab-ci.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
     action: stop
@@ -85,7 +80,10 @@ components-storybook delete review:
     - cd packages/components-storybook
     - 'rm -r "${DEPLOY_DIRECTORY}"'
   only:
-    - branches
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - .gitlab-ci.yml
   tags:
     - deploy
 
