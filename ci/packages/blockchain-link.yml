@@ -5,7 +5,7 @@ blockchain-link lint:
     only:
         changes:
             - packages/blockchain-link/**/*
-            - ci/**/*
+            - ci/blockchain-link.yml
             - .gitlab-ci.yml
 
 blockchain-link test:
@@ -16,5 +16,5 @@ blockchain-link test:
     only:
         changes:
             - packages/blockchain-link/**/*
-            - ci/**/*
+            - ci/blockchain-link.yml
             - .gitlab-ci.yml
