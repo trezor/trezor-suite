@@ -25,9 +25,9 @@ blockchain-link build:
         changes:
             - packages/blockchain-link/**/*
             - .gitlab-ci.yml
-     artifacts:
+    artifacts:
         expire_in: 2 days
         when: always
         paths:
-            - /packages/blockchain-link/lib
-            - /packages/blockchain-link/build
+            - packages/blockchain-link/lib
+            - packages/blockchain-link/build
