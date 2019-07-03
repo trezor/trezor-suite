@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "lib": ["webworker", "es2015"],
+        "types": ["node"],
+    },
+    "include": [
+        "./src/workers/ripple/index.ts",
+        "./src/workers/blockbook/index.ts",
+    ]
+}

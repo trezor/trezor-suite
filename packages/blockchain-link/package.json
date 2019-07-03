@@ -1,0 +1,83 @@
+{
+  "name": "trezor-blockchain-link",
+  "version": "0.0.12",
+  "author": "Trezor <info@trezor.io>",
+  "homepage": "https://github.com/trezor/trezor-blockchain-link",
+  "description": "High-level javascript interface for blockchain communication",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/trezor/trezor-blockchain-link.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trezor/trezor-blockchain-link/issues"
+  },
+  "keywords": [
+    "Trezor",
+    "blockchain",
+    "blockbook",
+    "javascript"
+  ],
+  "main": "./lib/index.js",
+  "browser": {
+    "ws": "./lib/utils/ws.js"
+  },
+  "scripts": {
+    "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
+    "build": "yarn build:lib && yarn build:workers",
+    "build:lib-old": "babel-node ./scripts/build.lib.js && babel ./lib --out-dir ./lib",
+    "build:workers": "rm -rf build && yarn build:workers-web && yarn build:workers-node",
+    "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
+    "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
+    "lint": "eslint ./src ./webpack ./tests/unit",
+    "test": "jest -c jest.config.unit.js",
+    "prettier": "prettier",
+    "test:node": "jest -c jest.config.integration.js",
+    "build:lib": "rm -rf lib && tsc && tsc --project ./tsconfig-workers.json && node ./scripts/build.lib.js"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/register": "^7.4.4",
+    "@babel/runtime": "^7.4.5",
+    "@types/jest": "^24.0.15",
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0",
+    "babel-eslint": "^10.0.2",
+    "babel-jest": "^24.8.0",
+    "babel-loader": "^8.0.6",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-loader": "^2.1.2",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-jest": "^22.7.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "fs-extra": "^8.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "prettier-eslint": "^9.0.0",
+    "ts-jest": "^24.0.2",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.2",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.4",
+    "webpack-dev-server": "^3.7.2",
+    "worker-loader": "^2.0.0"
+  },
+  "dependencies": {
+    "bignumber.js": "^8.0.1",
+    "es6-promise": "^4.2.8",
+    "events": "^3.0.0",
+    "ripple-lib": "^1.2.4",
+    "tiny-worker": "^2.2.0",
+    "ws": "^7.0.1"
+  }
+}

@@ -1,0 +1,21 @@
+image: node:10.15.1
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules
+
+stages:
+  - test
+
+lint:
+  stage: test
+  script:
+    - yarn
+    - yarn run lint
+
+test:
+  stage: test
+  script:
+    - yarn
+    - yarn run test
