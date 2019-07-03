@@ -13,7 +13,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint .",
+    "lint": "eslint '**/*{.ts,.tsx}'",
     "type-check": "tsc --project tsconfig.json",
     "type-check:watch": "yarn type-check -- --watch",
     "clean": "rimraf lib",
