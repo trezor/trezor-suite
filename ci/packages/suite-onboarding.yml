@@ -85,7 +85,6 @@ suite-onboarding delete review:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-        - branches
     tags:
         - deploy
 # suite-onboarding test integration:

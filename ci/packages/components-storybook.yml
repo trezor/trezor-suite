@@ -84,7 +84,6 @@ components-storybook delete review:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-    - branches
   tags:
     - deploy
 

@@ -79,7 +79,6 @@ suite-web delete review:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
-        - branches
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
@@ -90,19 +89,19 @@ suite-web delete review:
         - deploy
 
 suite-web test integration:
-  image: cypress/base:10
-  stage: test integration
-  only:
-    changes:
-      - packages/suite/**/*
-      - packages/suite-web/**/*
-      - .gitlab-ci.yml
-  script:
-    - env
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
-  artifacts:
-    expire_in: 2 days
-    when: always
-    paths:
-      - /builds/trezor/trezor-suite/packages/suite-web/test/snapshots
-      - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
+    image: cypress/base:10
+    stage: test integration
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml
+    script:
+        - env
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - /builds/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
