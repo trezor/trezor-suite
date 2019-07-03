@@ -11,8 +11,6 @@
         "preserveSymlinks": true, // ts-node: "Unable to require `.d.ts` file." (https://github.com/TypeStrong/ts-node/issues/797)
         "removeComments": true,
     },
-    "include": [
-        "./src/index.ts",
-    ],
+    "include": ["./src/index.ts"],
     "exclude": ["node_modules"]
 }
