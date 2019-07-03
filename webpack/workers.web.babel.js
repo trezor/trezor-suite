@@ -5,8 +5,8 @@ import { SRC, BUILD } from './constants';
 module.exports = {
     mode: 'production',
     entry: {
-        'ripple-worker': `${SRC}workers/ripple/index.js`,
-        'blockbook-worker': `${SRC}workers/blockbook/index.js`,
+        'ripple-worker': `${SRC}workers/ripple/index.ts`,
+        'blockbook-worker': `${SRC}workers/blockbook/index.ts`,
     },
     output: {
         filename: '[name].js',
@@ -16,6 +16,11 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.ts?$/,
+                exclude: /node_modules/,
+                use: ['ts-loader'],
+            },
+            {
                 test: /\.js?$/,
                 exclude: /node_modules/,
                 use: ['babel-loader'],
@@ -24,6 +29,7 @@ module.exports = {
     },
     resolve: {
         modules: [SRC, 'node_modules'],
+        extensions: ['.ts', '.js'],
         alias: {
             'ws-browser': `${SRC}/utils/ws.js`,
         },

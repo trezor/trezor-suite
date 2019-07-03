@@ -61,7 +61,7 @@ module.exports = {
     },
     resolve: {
         modules: [SRC, 'node_modules'],
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.ts', '.js'],
         alias: {
             'ws-browser': `${SRC}/utils/ws.js`,
         },

@@ -7,8 +7,8 @@ module.exports = {
     mode: 'production',
     target: 'node',
     entry: {
-        'ripple-worker': `${SRC}workers/ripple/index.js`,
-        'blockbook-worker': `${SRC}workers/blockbook/index.js`,
+        'ripple-worker': `${SRC}workers/ripple/index.ts`,
+        'blockbook-worker': `${SRC}workers/blockbook/index.ts`,
     },
     output: {
         filename: '[name].js',
@@ -18,14 +18,15 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js?$/,
+                test: /\.ts?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader'],
+                use: ['ts-loader'],
             },
         ],
     },
     resolve: {
         modules: [SRC, 'node_modules'],
+        extensions: ['.ts', '.js'],
         alias: {},
     },
     performance: {
