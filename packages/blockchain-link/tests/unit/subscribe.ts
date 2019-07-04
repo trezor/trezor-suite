@@ -1,32 +1,21 @@
 import createServer from '../websocket';
-import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
+import workers from './worker';
 import BlockchainLink from '../../src';
 import fixtures from './fixtures/subscribe';
-
-const backends = [
-    {
-        name: 'ripple',
-        worker: rippleWorkerFactory,
-    },
-    {
-        name: 'blockbook',
-        worker: blockbookWorkerFactory,
-    },
-];
 
 // this test covers application live cycle
 // where "subscribe" and "unsubscribe" is called multiple times on single blockchain-link instance
 // and subscription id (websocket message id) is incremented
 
-backends.forEach((b, i) => {
-    describe(`Subscriptions ${b.name}`, () => {
+workers.forEach(instance => {
+    describe(`Subscriptions ${instance.name}`, () => {
         let server;
         let blockchain;
 
         const setup = async () => {
-            server = await createServer(b.name);
+            server = await createServer(instance.name);
             blockchain = new BlockchainLink({
-                ...backends[i],
+                ...instance,
                 server: [`ws://localhost:${server.options.port}`],
                 debug: false,
             });

@@ -1,19 +1,8 @@
 import createServer from '../websocket';
-import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
+import workers from './worker';
 import BlockchainLink from '../../src';
 
-const backends = [
-    {
-        name: 'ripple',
-        worker: rippleWorkerFactory,
-    },
-    {
-        name: 'blockbook',
-        worker: blockbookWorkerFactory,
-    },
-];
-
-backends.forEach(instance => {
+workers.forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
         let server;
         let blockchain: BlockchainLink;

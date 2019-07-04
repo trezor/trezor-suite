@@ -1,28 +1,20 @@
 import createServer from '../websocket';
-import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
+import workers from './worker';
 import BlockchainLink from '../../src';
 
-import fixturesRipple from './fixtures/notifications-ripple';
 import fixturesBlockbook from './fixtures/notifications-blockbook';
+import fixturesRipple from './fixtures/notifications-ripple';
 
-const backends = [
-    {
-        name: 'ripple',
-        worker: rippleWorkerFactory,
-        fixtures: fixturesRipple,
-    },
-    {
-        name: 'blockbook',
-        worker: blockbookWorkerFactory,
-        fixtures: fixturesBlockbook,
-    },
-];
+const fixtures = {
+    blockbook: fixturesBlockbook,
+    ripple: fixturesRipple,
+};
 
 // this test covers application live cycle
 // where "subscribe" and "unsubscribe" is called multiple times on single blockchain-link instance
 // and subscription id (websocket message id) is incremented
 
-backends.forEach(instance => {
+workers.forEach(instance => {
     describe(`Notifications ${instance.name}`, () => {
         let server;
         let blockchain: BlockchainLink;
@@ -45,7 +37,7 @@ backends.forEach(instance => {
             beforeAll(setup);
             afterAll(teardown);
 
-            instance.fixtures.notifyAddresses.forEach((f, id) => {
+            fixtures[instance.name].notifyAddresses.forEach((f, id) => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('notification', callback);
@@ -75,7 +67,7 @@ backends.forEach(instance => {
             beforeAll(setup);
             afterAll(teardown);
 
-            instance.fixtures.notifyBlocks.forEach(f => {
+            fixtures[instance.name].notifyBlocks.forEach(f => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('block', callback);
