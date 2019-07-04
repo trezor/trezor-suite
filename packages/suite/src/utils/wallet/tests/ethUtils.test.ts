@@ -9,7 +9,6 @@ describe('eth utils', () => {
         expect(utils.decimalToHex(9999999999)).toBe('2540be3ff');
     });
 
-    // TODO: decimal as string ?????
     it('hexToDecimal', () => {
         expect(utils.hexToDecimal(64)).toBe('100');
         expect(utils.hexToDecimal(2)).toBe('2');

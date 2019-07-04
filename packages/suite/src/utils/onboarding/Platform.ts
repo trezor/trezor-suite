@@ -2,6 +2,7 @@ interface GetInfoResult {
     os: string | null;
     isMobile: boolean | null;
 }
+
 export default class Platform {
     static OS = {
         MAC: 'Mac',
@@ -16,7 +17,7 @@ export default class Platform {
         const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
         const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
         const iosPlatforms = ['iPhone', 'iPad', 'iPod'];
-        const result: getInfoResult = {
+        const result: GetInfoResult = {
             os: null,
             isMobile: null,
         };
@@ -47,7 +48,7 @@ export default class Platform {
         return Platform.getInfo().os === Platform.OS.MAC;
     }
 
-    static isMobile(): getInfoResult['isMobile'] {
+    static isMobile(): GetInfoResult['isMobile'] {
         return Platform.getInfo().isMobile;
     }
 }

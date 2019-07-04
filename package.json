@@ -13,7 +13,8 @@
         ],
         "nohoist": [
             "!(suite-native)/react-native",
-            "!(suite-native)/react-native/**"
+            "!(suite-native)/react-native/**",
+            "**/babel-jest"
         ]
     },
     "scripts": {

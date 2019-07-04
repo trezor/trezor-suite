@@ -8,7 +8,6 @@ components-storybook lint:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
 
 components-storybook type check:
@@ -20,7 +19,6 @@ components-storybook type check:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-      - ci/**/*
 
 components-storybook build:
   stage: build
@@ -30,7 +28,6 @@ components-storybook build:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
   artifacts:
     name: components-build-files
@@ -50,7 +47,6 @@ components-storybook deploy dev:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
@@ -76,12 +72,6 @@ components-storybook delete review:
     PACKAGE_NAME: components-storybook
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   when: manual
-  only:
-    changes:
-      - packages/components/**/*
-      - packages/components-storybook/**/*
-      - ci/**/*
-      - .gitlab-ci.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
     action: stop
@@ -90,7 +80,10 @@ components-storybook delete review:
     - cd packages/components-storybook
     - 'rm -r "${DEPLOY_DIRECTORY}"'
   only:
-    - branches
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - .gitlab-ci.yml
   tags:
     - deploy
 
@@ -101,7 +94,6 @@ components-storybook test snapshots:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
   script:
     - env
@@ -122,7 +114,6 @@ components-storybook make snapshot references:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
-      - ci/**/*
       - .gitlab-ci.yml
   script:
     - env

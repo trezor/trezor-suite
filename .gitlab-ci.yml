@@ -52,3 +52,4 @@ include:
   - ci/packages/suite-desktop.yml
   - ci/packages/suite-native.yml
   - ci/packages/suite-onboarding.yml
+  - ci/packages/blockchain-link.yml
