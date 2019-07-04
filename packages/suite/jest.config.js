@@ -20,6 +20,7 @@ module.exports = {
     moduleFileExtensions: ['js', 'ts'],
     coverageDirectory: './coverage',
     collectCoverage: true,
+    collectCoverageFrom: ['<rootDir>/src/reducers/**', '<rootDir>/src/utils/**'],
     modulePathIgnorePatterns: ['node_modules'],
     testMatch: ['**/tests/**/*.test.(ts|js)'],
     transform: {

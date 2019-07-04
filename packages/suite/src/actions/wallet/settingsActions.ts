@@ -1,5 +1,5 @@
 import { Dispatch, GetState } from '@suite-types/index';
-import * as SETTINGS from './constants/settings';
+import * as SETTINGS from './constants/settingsConstants';
 
 export type settingsActions =
     | { type: typeof SETTINGS.SET_HIDDEN_COINS; hiddenCoins: string[] }

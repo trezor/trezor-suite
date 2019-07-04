@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactTimeout, { ReactTimeoutProps } from 'react-timeout';
+import React, { useState, useEffect } from 'react';
+
 import { H4, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
@@ -21,7 +21,7 @@ import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
 import l10nMessages from './index.messages';
 
-interface StepProps extends ReactTimeoutProps {
+interface StepProps {
     device: AppState['onboarding']['connect']['device'];
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
     model: AppState['onboarding']['selectedModel'];
@@ -31,131 +31,100 @@ interface StepProps extends ReactTimeoutProps {
     };
 }
 
-interface StepState {
-    isSearching: boolean;
-    isSearchingTooLong: boolean;
-}
+const ConnectStep = ({ device, deviceCall, isResolved, model, onboardingActions }: StepProps) => {
+    const IS_SEARCHING_TIMEOUT = 5 * 1000;
+    const IS_SEARCHING_TOO_LONG_TIMEOUT = 15 * 1000;
 
-class ConnectStep extends React.PureComponent<StepProps, StepState> {
-    static readonly IS_SEARCHING_TIMEOUT = 5 * 1000;
+    const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [isSearchingTooLong, setIsSearchingTooLong] = useState<boolean>(false);
 
-    static readonly IS_SEARCHING_TOO_LONG_TIMEOUT = 15 * 1000;
+    const deviceIsConnected = Boolean(device && device.connected);
 
-    state: StepState = {
-        isSearching: false,
-        isSearchingTooLong: false,
-    };
-
-    componentDidMount() {
-        // checking also props.setTimeout as it has ? type anotation. This is not nice.
-        if (!this.props.device && this.props.setTimeout) {
-            this.props.setTimeout(
-                () => this.setState({ isSearching: true }),
-                ConnectStep.IS_SEARCHING_TIMEOUT,
-            );
-            this.props.setTimeout(
-                () => this.setState({ isSearchingTooLong: true }),
-                ConnectStep.IS_SEARCHING_TOO_LONG_TIMEOUT,
-            );
+    useEffect(() => {
+        let isSearchingTimeout: number;
+        let isSearchingTooLongTimeout: number;
+        if (!device) {
+            isSearchingTimeout = setTimeout(() => {
+                setIsSearching(true);
+            }, IS_SEARCHING_TIMEOUT);
+            isSearchingTooLongTimeout = setTimeout(() => {
+                setIsSearchingTooLong(true);
+            }, IS_SEARCHING_TOO_LONG_TIMEOUT);
         }
-    }
 
-    componentWillReceiveProps(nextProps: StepProps) {
-        if (this.props.device && !nextProps.device && this.props.setTimeout) {
-            this.setState({ isSearching: true });
-            this.props.setTimeout(() => this.setState({ isSearchingTooLong: true }), 15 * 1000);
-        } else {
-            this.setState({ isSearchingTooLong: false });
-        }
-    }
+        return () => {
+            clearTimeout(isSearchingTimeout);
+            clearTimeout(isSearchingTooLongTimeout);
+        };
+    }, [IS_SEARCHING_TIMEOUT, IS_SEARCHING_TOO_LONG_TIMEOUT, device]);
 
-    isInBlWithFwPresent() {
-        const { device } = this.props;
+    const isInBlWithFwPresent = () => {
         if (!device) {
             return null;
         }
         return device.mode === 'bootloader' && device.features.firmware_present === true;
-    }
+    };
 
-    render() {
-        const deviceIsConnected = Boolean(this.props.device && this.props.device.connected);
-        const { device, deviceCall, isResolved } = this.props;
-        const { isSearching, isSearchingTooLong } = this.state;
-        return (
-            <StepWrapper>
-                <StepHeadingWrapper>
-                    <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
-                    <TrezorConnect
-                        model={this.props.model || 2}
-                        height={180}
-                        loop={!deviceIsConnected}
-                    />
+    return (
+        <StepWrapper>
+            <StepHeadingWrapper>
+                <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
+            </StepHeadingWrapper>
+            <StepBodyWrapper>
+                <TrezorConnect model={model || 2} height={180} loop={!deviceIsConnected} />
 
-                    {!deviceIsConnected && (
-                        <Text>
-                            <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
-                            <FormattedMessage {...l10nMessages.TR_SEARCHING_FOR_YOUR_DEVICE} />
-                            <Dots />
-                        </Text>
-                    )}
+                {!deviceIsConnected && (
+                    <Text>
+                        <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
+                        <FormattedMessage {...l10nMessages.TR_SEARCHING_FOR_YOUR_DEVICE} />
+                        <Dots />
+                    </Text>
+                )}
 
-                    {!deviceIsConnected && isSearching && isSearchingTooLong && (
-                        <TroubleshootSearchingTooLong />
-                    )}
+                {!deviceIsConnected && isSearching && isSearchingTooLong && (
+                    <TroubleshootSearchingTooLong />
+                )}
 
-                    {deviceIsConnected && !deviceCall.isProgress && (
-                        <React.Fragment>
-                            {!device.features.initialized && this.isInBlWithFwPresent() === false && (
-                                <React.Fragment>
-                                    <H4>
-                                        <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
-                                    </H4>
-                                    <Text>
-                                        <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} />
-                                    </Text>
-                                    <ControlsWrapper>
-                                        <Button
-                                            onClick={() =>
-                                                this.props.onboardingActions.goToNextStep()
-                                            }
-                                        >
-                                            <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                        </Button>
-                                    </ControlsWrapper>
-                                </React.Fragment>
-                            )}
+                {deviceIsConnected && !deviceCall.isProgress && (
+                    <React.Fragment>
+                        {!device.features.initialized && isInBlWithFwPresent() === false && (
+                            <React.Fragment>
+                                <H4>
+                                    <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
+                                </H4>
+                                <Text>
+                                    <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} />
+                                </Text>
+                                <ControlsWrapper>
+                                    <Button onClick={() => onboardingActions.goToNextStep()}>
+                                        <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                    </Button>
+                                </ControlsWrapper>
+                            </React.Fragment>
+                        )}
 
-                            {this.isInBlWithFwPresent() && <TroubleshootBootloader />}
+                        {isInBlWithFwPresent() && <TroubleshootBootloader />}
 
-                            {device.features.initialized && !isResolved && (
-                                <TroubleshootInitialized />
-                            )}
+                        {device.features.initialized && !isResolved && <TroubleshootInitialized />}
 
-                            {device.features.initialized && isResolved && (
-                                <React.Fragment>
-                                    <H4>
-                                        <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
-                                    </H4>
-                                    <Text>Found a device you have previously initialized</Text>
-                                    <ControlsWrapper>
-                                        <Button
-                                            onClick={() =>
-                                                this.props.onboardingActions.goToNextStep()
-                                            }
-                                        >
-                                            <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                        </Button>
-                                    </ControlsWrapper>
-                                </React.Fragment>
-                            )}
-                        </React.Fragment>
-                    )}
-                </StepBodyWrapper>
-            </StepWrapper>
-        );
-    }
-}
+                        {device.features.initialized && isResolved && (
+                            <React.Fragment>
+                                <H4>
+                                    <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
+                                </H4>
+                                <Text>Found a device you have previously initialized</Text>
+                                <ControlsWrapper>
+                                    <Button onClick={() => onboardingActions.goToNextStep()}>
+                                        <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                    </Button>
+                                </ControlsWrapper>
+                            </React.Fragment>
+                        )}
+                    </React.Fragment>
+                )}
+            </StepBodyWrapper>
+        </StepWrapper>
+    );
+};
 
-export default ReactTimeout(ConnectStep);
+export default ConnectStep;

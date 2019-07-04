@@ -10,7 +10,6 @@ suite-onboarding lint:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
 
 suite-onboarding type check:
     stage: type check
@@ -22,7 +21,6 @@ suite-onboarding type check:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
 
 suite-onboarding build:
     stage: build
@@ -31,7 +29,6 @@ suite-onboarding build:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
     variables:
         PACKAGE_NAME: suite-onboarding
     script:
@@ -48,7 +45,6 @@ suite-onboarding deploy dev:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
-            - ci/**/*
     variables:
         PACKAGE_NAME: suite-onboarding
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
@@ -78,11 +74,6 @@ suite-onboarding delete review:
         PACKAGE_NAME: suite-onboarding
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     when: manual
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-onboarding/**/*
-            - .gitlab-ci.yml
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
@@ -90,10 +81,12 @@ suite-onboarding delete review:
         - cd packages/suite-onboarding
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     only:
-        - branches
+        changes:
+            - packages/suite/**/*
+            - packages/suite-onboarding/**/*
+            - .gitlab-ci.yml
     tags:
         - deploy
-
 # suite-onboarding test integration:
 #   image: cypress/base:10
 #   stage: test integration
