@@ -4,7 +4,6 @@ import BlockchainLink from '../../src';
 
 import fixturesRipple from './fixtures/notifications-ripple';
 import fixturesBlockbook from './fixtures/notifications-blockbook';
-import fixturesSubscribe from './fixtures/subscribe';
 
 const backends = [
     {
@@ -19,15 +18,19 @@ const backends = [
     },
 ];
 
-backends.forEach((b, i) => {
-    describe(`Notifications ${b.name}`, () => {
+// this test covers application live cycle
+// where "subscribe" and "unsubscribe" is called multiple times on single blockchain-link instance
+// and subscription id (websocket message id) is incremented
+
+backends.forEach(instance => {
+    describe(`Notifications ${instance.name}`, () => {
         let server;
-        let blockchain;
+        let blockchain: BlockchainLink;
 
         const setup = async () => {
-            server = await createServer(b.name);
+            server = await createServer(instance.name);
             blockchain = new BlockchainLink({
-                ...backends[i],
+                ...instance,
                 server: [`ws://localhost:${server.options.port}`],
                 debug: false,
             });
@@ -38,47 +41,27 @@ backends.forEach((b, i) => {
             server.close();
         };
 
-        // this test covers the case where "subscribe" and "unsubscribe" is called
-        // multiple times on single blockchain-link instance an subscription id is incremented in every call
-        describe('Subscribed blocks with single blockchain-link instance', () => {
+        describe('Addresses and accounts', () => {
             beforeAll(setup);
             afterAll(teardown);
 
-            b.fixtures.notifyBlocks.forEach(f => {
-                it(f.description, async () => {
-                    const callback = jest.fn();
-                    blockchain.on('block', callback);
-                    const s = await blockchain[f.method]({ type: 'block' });
-                    expect(s).toEqual({ subscribed: f.method === 'subscribe' });
-                    await server.sendMessage(f.server);
-                    if (f.result) {
-                        expect(callback).toHaveBeenCalledTimes(f.server.length);
-                        expect(callback).toHaveBeenLastCalledWith(f.result);
-                    } else {
-                        expect(callback).not.toHaveBeenCalled();
-                    }
-                });
-            });
-        });
-
-        // this test covers the case where "subscribe" and "unsubscribe" is called
-        // multiple times on single blockchain-link instance an subscription id is incremented in every call
-        describe('Subscribed addresses/accounts with single blockchain-link instance', () => {
-            beforeAll(setup);
-            afterAll(teardown);
-
-            b.fixtures.notifyAddresses.forEach((f, id) => {
+            instance.fixtures.notifyAddresses.forEach((f, id) => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('notification', callback);
                     const s = await blockchain[f.method](f.params);
 
                     expect(s).toEqual({ subscribed: f.method === 'subscribe' });
-                    if (Array.isArray(f.server)) {
-                        await server.sendMessage(f.server.map(a => ({ ...a, id: id.toString() })));
-                    } else {
-                        await server.sendMessage({ ...f.server, id: id.toString() });
-                    }
+
+                    const data = (!Array.isArray(f.notifications)
+                        ? [f.notifications]
+                        : f.notifications
+                    ).map(n => ({
+                        ...n,
+                        id: id.toString(),
+                    }));
+                    await server.sendNotification(data);
+
                     if (f.result) {
                         expect(callback).toHaveBeenLastCalledWith(f.result);
                     } else {
@@ -86,56 +69,28 @@ backends.forEach((b, i) => {
                     }
                 });
             });
-
-            fixturesSubscribe.forEach(f => {
-                it(f.description, async () => {
-                    const s = await blockchain[f.method](f.params);
-                    const subscribedAddresses = server.getAddresses();
-                    const subscribed =
-                        f.method === 'subscribe' ||
-                        (subscribedAddresses && subscribedAddresses.length > 0) ||
-                        false;
-                    expect(s).toEqual({ subscribed });
-                    expect(subscribedAddresses).toEqual(f.subscribed);
-                });
-            });
-        });
-
-        describe('Subscribe/Unsubscribe errors with single blockchain-link instance', () => {
-            beforeAll(setup);
-            afterAll(teardown);
-
-            b.fixtures.subscribeErrors.forEach(f => {
-                it(f.description, async () => {
-                    server.setFixtures(f.server);
-
-                    try {
-                        await blockchain[f.method](f.params);
-                    } catch (error) {
-                        // expect(error.code).toEqual('blockchain_link/blockbook-websocket');
-                        expect(error.message).toEqual(f.error);
-                    }
-                });
-            });
         });
 
         describe('Blocks', () => {
-            beforeEach(setup);
-            afterEach(teardown);
+            beforeAll(setup);
+            afterAll(teardown);
 
-            it('Unsubscribe before subscription', async () => {
-                const resp = await blockchain.unsubscribe({ type: 'block' });
-                expect(resp).toEqual({ subscribed: false });
-            });
+            instance.fixtures.notifyBlocks.forEach(f => {
+                it(f.description, async () => {
+                    const callback = jest.fn();
+                    blockchain.on('block', callback);
+                    const s = await blockchain[f.method]({ type: 'block' });
+                    expect(s).toEqual({ subscribed: f.method === 'subscribe' });
 
-            it('Unsubscribe after subscription', async () => {
-                await blockchain.subscribe({
-                    type: 'block',
+                    await server.sendNotification(f.notifications);
+
+                    if (f.result) {
+                        expect(callback).toHaveBeenCalledTimes(f.notifications.length);
+                        expect(callback).toHaveBeenLastCalledWith(f.result);
+                    } else {
+                        expect(callback).not.toHaveBeenCalled();
+                    }
                 });
-                const resp = await blockchain.unsubscribe({
-                    type: 'block',
-                });
-                expect(resp).toEqual({ subscribed: false });
             });
         });
     });
