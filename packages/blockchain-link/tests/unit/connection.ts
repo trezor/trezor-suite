@@ -13,15 +13,15 @@ const backends = [
     },
 ];
 
-backends.forEach((b, i) => {
-    describe(`Connection ${b.name}`, () => {
+backends.forEach(instance => {
+    describe(`Connection ${instance.name}`, () => {
         let server;
-        let blockchain;
+        let blockchain: BlockchainLink;
 
         beforeEach(async () => {
-            server = await createServer(b.name);
+            server = await createServer(instance.name);
             blockchain = new BlockchainLink({
-                ...backends[i],
+                ...instance,
                 server: [`ws://localhost:${server.options.port}`],
                 debug: false,
             });
@@ -32,9 +32,31 @@ backends.forEach((b, i) => {
             server.close();
         });
 
-        it('Connect', async () => {
+        it('Handle connect event', async done => {
+            blockchain.on('connected', done);
             const result = await blockchain.connect();
             expect(result).toEqual(true);
+        });
+
+        it('Handle disconnect event', async done => {
+            // blockchain.on('disconnected', () => setTimeout(done, 300));
+            blockchain.on('disconnected', done);
+            await blockchain.connect();
+            // TODO: ripple-lib throws error when disconnect is called immediately
+            // investigate more, use setTimeout as a workaround
+            // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
+            // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
+            if (instance.name === 'ripple') {
+                setTimeout(blockchain.disconnect, 100);
+            } else {
+                blockchain.disconnect();
+            }
+
+            // blockchain.connect().then(() => {
+            //     setTimeout(() => blockchain.disconnect(), 100);
+            //     setTimeout(() => blockchain.disconnect(), 200);
+            //     // blockchain.disconnect();
+            // });
         });
 
         it('Connect (only one endpoint is valid)', async () => {
@@ -68,6 +90,7 @@ backends.forEach((b, i) => {
         });
 
         it('Connect error (server field invalid type)', async () => {
+            // @ts-ignore invalid value
             blockchain.settings.server = 1;
             try {
                 await blockchain.connect();
@@ -87,8 +110,11 @@ backends.forEach((b, i) => {
                 'ws://gibberish',
                 'http://gibberish',
                 'https://gibberish/',
+                // @ts-ignore invalid value
                 1,
+                // @ts-ignore invalid value
                 false,
+                // @ts-ignore invalid value
                 { foo: 'bar' },
             ];
             try {
@@ -96,22 +122,6 @@ backends.forEach((b, i) => {
             } catch (error) {
                 expect(error.message).toEqual('All backends are down');
             }
-        });
-
-        describe('Event listeners', () => {
-            it('Handle connect event', done => {
-                blockchain.on('connected', () => done());
-                blockchain.connect();
-            });
-
-            it('Handle disconnect event', done => {
-                blockchain.on('disconnected', () => setTimeout(done, 300));
-                blockchain.connect().then(() => {
-                    setTimeout(() => blockchain.disconnect(), 100);
-                    setTimeout(() => blockchain.disconnect(), 200);
-                    // blockchain.disconnect();
-                });
-            });
         });
     });
 });
