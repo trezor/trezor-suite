@@ -1,14 +1,9 @@
 import reducer from '@wallet-reducers/settingsReducer';
-import * as types from '@wallet-actions/constants/signVerifyConstants';
 
 describe('sign verify reducer', () => {
     it('test initial state', () => {
-        expect(
-            reducer(undefined, {
-                // @ts-ignore
-                type: 'none',
-            }),
-        ).toEqual({
+        // @ts-ignore
+        expect(reducer(undefined, {})).toEqual({
             localCurrency: 'usd',
             hideBalance: false,
             hiddenCoins: [],
