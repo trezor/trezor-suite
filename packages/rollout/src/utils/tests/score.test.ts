@@ -1,15 +1,15 @@
 import { mockRandom } from 'jest-mock-random';
-import { isInProbability, getScore } from 'utils/score';
+import { isInProbability, getScore } from '../score';
 
 describe('Score Utils', () => {
     describe('isInProbability()', () => {
         it('should not be in probability with higher score', () => {
-            const result = isInProbability(0.21, 0.30);
+            const result = isInProbability(0.21, 0.3);
             expect(result).toBe(false);
         });
 
         it('should be in probability with lower score', () => {
-            const result = isInProbability(0.21, 0.10);
+            const result = isInProbability(0.21, 0.1);
             expect(result).toBe(true);
         });
 
@@ -20,20 +20,26 @@ describe('Score Utils', () => {
 
         it('should fail without score param', () => {
             expect(() => {
-                isInProbability(0);
-            }).toThrow('score not supplied. If you want to override this functionality, just pass 0');
+                isInProbability(0, null);
+            }).toThrow(
+                'score not supplied. If you want to override this functionality, just pass 0'
+            );
         });
 
         it('should fail with score param null', () => {
             expect(() => {
                 isInProbability(0, null);
-            }).toThrow('score not supplied. If you want to override this functionality, just pass 0');
+            }).toThrow(
+                'score not supplied. If you want to override this functionality, just pass 0'
+            );
         });
 
         it('should not fail with score param 0', () => {
             expect(() => {
                 isInProbability(0, 0);
-            }).not.toThrow('score not supplied. If you want to override this functionality, just pass 0');
+            }).not.toThrow(
+                'score not supplied. If you want to override this functionality, just pass 0'
+            );
         });
     });
 
