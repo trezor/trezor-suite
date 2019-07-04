@@ -59,7 +59,7 @@ module.exports = {
         'no-plusplus': 'off',
         'no-return-assign': 'off',
         'consistent-return': 'off',
-        'no-console': 'off',
+        'no-console': 'warn',
         // TSC checks it.
         '@typescript-eslint/no-unused-vars': 'off',
         'no-undef': 'off',
