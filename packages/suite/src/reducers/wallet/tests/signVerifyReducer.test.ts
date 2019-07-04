@@ -1,13 +1,17 @@
-import reducer from '@wallet-reducers/settingsReducer';
+import reducer from '@wallet-reducers/signVerifyReducer';
 
 describe('sign verify reducer', () => {
     it('test initial state', () => {
         // @ts-ignore
         expect(reducer(undefined, {})).toEqual({
-            localCurrency: 'usd',
-            hideBalance: false,
-            hiddenCoins: [],
-            hiddenCoinsExternal: [],
+            signAddress: '',
+            signMessage: '',
+            signSignature: '',
+            verifyAddress: '',
+            verifyMessage: '',
+            verifySignature: '',
+            touched: [],
+            errors: [],
         });
     });
 });
