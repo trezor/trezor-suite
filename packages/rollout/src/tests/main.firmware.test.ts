@@ -56,10 +56,14 @@ describe('Get latest safe firmware version for T1 in normal mode', () => {
             firmwareVersion: [2, 0, 0],
         });
 
-        expect(result.firmware.version).toEqual([3, 0, 0]);
-        expect(result.isLatest).toEqual(true);
-        expect(result.isRequired).toEqual(false);
-        expect(result.isNewer).toEqual(true);
+        if (result) {
+            expect(result.firmware.version).toEqual([3, 0, 0]);
+            expect(result.isLatest).toEqual(true);
+            expect(result.isRequired).toEqual(false);
+            expect(result.isNewer).toEqual(true);
+        } else {
+            throw new Error('I have failed you');
+        }
     });
 
     it('test firmware multiple version bump', () => {
@@ -94,9 +98,13 @@ describe('Get latest safe firmware version for T1 in normal mode', () => {
             firmwareVersion: [2, 0, 0],
         });
 
-        expect(result.firmware.version).toEqual([4, 0, 0]);
-        expect(result.isRequired).toEqual(false);
-        expect(result.isLatest).toEqual(true);
-        expect(result.isNewer).toEqual(true);
+        if (result) {
+            expect(result.firmware.version).toEqual([4, 0, 0]);
+            expect(result.isRequired).toEqual(false);
+            expect(result.isLatest).toEqual(true);
+            expect(result.isNewer).toEqual(true);
+        } else {
+            throw new Error('I have failed you');
+        }
     });
 });

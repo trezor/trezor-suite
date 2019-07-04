@@ -23,8 +23,12 @@ describe('getLatestSafeFw', () => {
                 bootloaderVersion: [2, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
-            expect(result.isRequired).toEqual(true);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+                expect(result.isRequired).toEqual(true);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('bootloader mode, middle fw is required', () => {
@@ -54,8 +58,12 @@ describe('getLatestSafeFw', () => {
                 bootloaderVersion: [1, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
-            expect(result.isRequired).toEqual(true);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+                expect(result.isRequired).toEqual(true);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('bootloader mode, already installed fw is required', () => {
@@ -85,8 +93,12 @@ describe('getLatestSafeFw', () => {
                 bootloaderVersion: [2, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
-            expect(result.isRequired).toEqual(false);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+                expect(result.isRequired).toEqual(false);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('normal mode, newest fw is required', () => {
@@ -110,8 +122,12 @@ describe('getLatestSafeFw', () => {
                 firmwareVersion: [2, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
-            expect(result.isRequired).toEqual(true);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+                expect(result.isRequired).toEqual(true);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('normal mode, middle fw is required', () => {
@@ -141,8 +157,12 @@ describe('getLatestSafeFw', () => {
                 firmwareVersion: [1, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
-            expect(result.isRequired).toEqual(true);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+                expect(result.isRequired).toEqual(true);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('normal mode, already installed fw is required', () => {
@@ -172,8 +192,12 @@ describe('getLatestSafeFw', () => {
                 firmwareVersion: [2, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
-            expect(result.isRequired).toEqual(false);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+                expect(result.isRequired).toEqual(false);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
     });
 });

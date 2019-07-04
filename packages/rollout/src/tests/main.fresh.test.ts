@@ -27,9 +27,13 @@ describe('getLatestSafeFw', () => {
                 firmwarePresent: false,
             });
 
-            expect(result.firmware.version).toEqual([2, 0, 0]);
-            expect(result.isLatest).toEqual(false);
-            expect(result.isRequired).toEqual(true);
+            if (result) {
+                expect(result.firmware.version).toEqual([2, 0, 0]);
+                expect(result.isLatest).toEqual(false);
+                expect(result.isRequired).toEqual(true);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('it should respect  bootloader rules and not allow downgrade', () => {

@@ -21,7 +21,11 @@ describe('getLatestSafeFw', () => {
                 bootloaderVersion: [2, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('bootloader mode - safe - not in probability', () => {
@@ -46,8 +50,12 @@ describe('getLatestSafeFw', () => {
                 0.5
             );
 
-            expect(result.firmware.version).toEqual([2, 0, 0]);
-            expect(result.isLatest).toEqual(false);
+            if (result) {
+                expect(result.firmware.version).toEqual([2, 0, 0]);
+                expect(result.isLatest).toEqual(false);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('bootloader mode - safe - within probability', () => {
@@ -72,7 +80,11 @@ describe('getLatestSafeFw', () => {
                 0.1
             );
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('normal mode - safe - score not specified, skip rollout', () => {
@@ -96,7 +108,11 @@ describe('getLatestSafeFw', () => {
                 firmwareVersion: [2, 0, 0],
             });
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
 
         it('normal mode - safe - not in probability', () => {
@@ -150,7 +166,11 @@ describe('getLatestSafeFw', () => {
                 0.1
             );
 
-            expect(result.firmware.version).toEqual([3, 0, 0]);
+            if (result) {
+                expect(result.firmware.version).toEqual([3, 0, 0]);
+            } else {
+                throw new Error('I have failed you');
+            }
         });
     });
 });
