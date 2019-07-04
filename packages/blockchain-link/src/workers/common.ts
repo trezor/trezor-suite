@@ -28,8 +28,10 @@ export const getSettings = (): BlockchainSettings => settings;
 export const debug = (...args: any[]): void => {
     if (settings && settings.debug) {
         if (args[0] === 'warn' || args[0] === 'error') {
+            // eslint-disable-next-line no-console
             console[args[0]](debugPrefix, ...args.slice(1));
         } else {
+            // eslint-disable-next-line no-console
             console.log(debugPrefix, ...args);
         }
     }

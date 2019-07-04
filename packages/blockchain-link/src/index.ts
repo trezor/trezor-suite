@@ -197,7 +197,6 @@ class BlockchainLink extends EventEmitter implements Emitter {
 
         const dfd = this.deferred.find(d => d.id === data.id);
         if (!dfd) {
-            console.warn(`Message with id ${data.id} not found`);
             return;
         }
         if (data.type === RESPONSES.ERROR) {

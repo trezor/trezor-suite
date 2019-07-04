@@ -1,4 +1,4 @@
-import { Server } from 'ws';
+import WebSocket, { Server } from 'ws';
 import * as assert from 'assert';
 import getFreePort from './freePort';
 import defaultBlockbookResponses from './fixtures/blockbook';
@@ -14,7 +14,7 @@ const create = async type => {
     const server = new Server({ port, noServer: true });
     const { close } = server;
     const defaultResponses = RESPONSES[type];
-    let _connection; // eslint-disable-line no-underscore-dangle
+    const connections = [];
     let addresses;
 
     const sendResponse = request => {
@@ -35,41 +35,9 @@ const create = async type => {
             };
         }
 
-        if (type === 'blockbook') {
-            _connection.send(
-                JSON.stringify({
-                    ...data,
-                    id,
-                })
-            );
-        } else if (type === 'ripple') {
-            _connection.send(
-                JSON.stringify({
-                    ...data,
-                    id,
-                })
-            );
-        }
-
-        // _connection.send(
-        //     JSON.stringify({
-        //         data: data || { error: { message: `unknown response for ${method}` } },
-        //         id,
-        //     })
-        // );
-
-        // if (!Array.isArray(fixtures) || !fixtures[id] || !Array.isArray(fixtures[id].actions))
-        //     return;
-        // fixtures[id].actions.forEach(action => {
-        //     const result = JSON.stringify(action);
-        //     if (action.delay) {
-        //         setTimeout(() => {
-        //             _connection.send(result);
-        //         }, action.delay);
-        //     } else {
-        //         _connection.send(result);
-        //     }
-        // });
+        connections.forEach(c => {
+            c.send(JSON.stringify({ ...data, id }));
+        });
     };
 
     const processRequest = json => {
@@ -95,9 +63,12 @@ const create = async type => {
         }
     };
 
-    server.on('connection', connection => {
-        _connection = connection;
-        connection.on('message', processRequest);
+    server.on('connection', ws => {
+        ws.once('close', () => {
+            connections.splice(connections.indexOf(ws), 1);
+        });
+        connections.push(ws);
+        ws.on('message', processRequest);
     });
 
     // Blockbook
@@ -172,13 +143,16 @@ const create = async type => {
         close.call(server);
     };
 
-    server.sendMessage = async resp => {
-        if (!_connection) throw new Error('server.send: No connection');
-
+    server.sendNotification = async notification => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const ws = await connectToServer(server);
         const dfd = action =>
             new Promise(resolve => {
                 const doSend = () => {
-                    _connection.send(JSON.stringify(action), null, () => setTimeout(resolve, 100));
+                    connections.forEach(c => {
+                        c.send(JSON.stringify(action));
+                    });
+                    resolve();
                 };
                 if (typeof action.delay === 'number') {
                     setTimeout(doSend, action.delay);
@@ -187,13 +161,32 @@ const create = async type => {
                 }
             });
 
-        if (Array.isArray(resp)) {
-            return Promise.all(resp.map(action => dfd(action)));
+        if (Array.isArray(notification)) {
+            await Promise.all(notification.map(action => dfd(action)));
+        } else {
+            await dfd(notification);
         }
-        return dfd(resp);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        await receiveMessage(ws);
     };
 
     return server;
 };
 
 export default create;
+
+const connectToServer = async server => {
+    return new Promise((resolve, reject) => {
+        const ws = new WebSocket(`ws://localhost:${server.options.port}`);
+        const dfd = ws.once('error', reject);
+        ws.on('open', () => resolve(ws));
+    });
+};
+
+const receiveMessage = async ws => {
+    return new Promise(resolve => {
+        ws.on('close', () => setTimeout(resolve, 100));
+        // ws.on('close', resolve);
+        ws.on('message', () => ws.close());
+    });
+};
