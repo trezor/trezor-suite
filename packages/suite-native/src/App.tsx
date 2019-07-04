@@ -3,11 +3,9 @@ import { Platform, Text } from 'react-native';
 import { Provider } from 'react-redux';
 
 import './support/global';
-import Preloader from '@suite-components/Preloader';
 import { Sentry, SentryLog } from 'react-native-sentry';
 import config from '@suite-config/index';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import RouterHandler from './support/RouterHandler';
 
 import { initStore } from './reducers/store';
 

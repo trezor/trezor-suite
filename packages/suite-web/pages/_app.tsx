@@ -6,6 +6,7 @@ import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
 
 import { initStore } from '@suite/reducers/store';
+import { isStatic } from '@suite-utils/router';
 import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
@@ -24,14 +25,15 @@ class TrezorSuiteApp extends App<Props> {
     }
 
     render() {
-        const { Component, pageProps, store } = this.props;
+        const { Component, pageProps, store, router } = this.props;
+        const isStaticRoute = isStatic(router.pathname);
 
         return (
             <ErrorBoundary>
                 <Container>
                     <ReduxProvider store={store}>
                         <IntlProvider>
-                            <Preloader>
+                            <Preloader isStatic={isStaticRoute}>
                                 <Component {...pageProps} />
                             </Preloader>
                         </IntlProvider>
