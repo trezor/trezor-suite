@@ -2,13 +2,9 @@ import TrezorConnect, { UI } from 'trezor-connect';
 // import type { Device } from 'trezor-connect';
 import { Action, GetState, Dispatch, TrezorDevice } from '@suite-types/index';
 import * as MODAL from '@suite-actions/constants/modalConstants';
-// import * as CONNECT from '@suite-actions/constants/TrezorConnect';
-// import type { ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice } from 'flowtype';
+import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 // import type { State } from 'reducers/ModalReducer';
 // import type { parsedURI } from 'utils/cryptoUriParser';
-
-import sendEthereumFormActions from './ethereum/SendFormActions';
-import sendRippleFormActions from './ripple/SendFormActions';
 
 export const onPinSubmit = (value: string): Action => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: value });
@@ -142,56 +138,6 @@ export const onDeviceConnect = (device: Device): ThunkAction => (
     }
 };
 
-export const onWalletTypeRequest = (hidden: boolean): Action => (
-    dispatch: Dispatch,
-    getState: GetState,
-): void => {
-    const { modal } = getState();
-    if (modal.context !== MODAL.CONTEXT_DEVICE) return;
-    dispatch({
-        type: MODAL.CLOSE,
-    });
-    dispatch({
-        type: CONNECT.RECEIVE_WALLET_TYPE,
-        device: modal.device,
-        hidden,
-    });
-};
-
-export const gotoExternalWallet = (id: string, url: string): Action => (
-    dispatch: Dispatch,
-): void => {
-    dispatch({
-        type: MODAL.OPEN_EXTERNAL_WALLET,
-        id,
-        url,
-    });
-};
-
-export const openQrModal = (): Action: => (dispatch: Dispatch): void => {
-    dispatch({
-        type: MODAL.OPEN_SCAN_QR,
-    });
-};
-
-export const onQrScan = (parsedUri: parsedURI, networkType: string): Action => (
-    dispatch: Dispatch,
-): void => {
-    const { address = '', amount } = parsedUri;
-    switch (networkType) {
-        case 'ethereum':
-            dispatch(sendEthereumFormActions.onAddressChange(address));
-            if (amount) dispatch(sendEthereumFormActions.onAmountChange(amount));
-            break;
-        case 'ripple':
-            dispatch(sendRippleFormActions.onAddressChange(address));
-            if (amount) dispatch(sendRippleFormActions.onAmountChange(amount));
-            break;
-        default:
-            break;
-    }
-};
-
 export default {
     onPinSubmit,
     onPassphraseSubmit,
@@ -201,8 +147,4 @@ export default {
     onForgetSingleDevice,
     onCancel,
     onDuplicateDevice,
-    onWalletTypeRequest,
-    gotoExternalWallet,
-    openQrModal,
-    onQrScan,
 };

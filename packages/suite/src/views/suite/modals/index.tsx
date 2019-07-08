@@ -3,10 +3,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { colors, animations } from '@trezor/components';
 
-// import { UI } from 'trezor-connect';
-
 import * as MODAL from '@suite-actions/constants/modalConstants';
-// import * as CONNECT from 'suite-actions/constants/trezorConnectActions';
+import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 
 // import Pin from 'components/modals/pin/Pin';
 // import InvalidPin from 'components/modals/pin/Invalid';
@@ -106,7 +104,7 @@ const getDeviceContextModal = props => {
             return (
                 <WalletType
                     device={modal.device}
-                    onWalletTypeRequest={modalActions.onWalletTypeRequest}
+                    // onWalletTypeRequest={modalActions.onWalletTypeRequest}
                     onCancel={modalActions.onCancel}
                 />
             );

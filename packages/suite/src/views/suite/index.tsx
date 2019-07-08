@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import Modals from '@suite-views/modals/index';
+import Modals from '@suite-views/modals/Container';
 
 import { Loader, Button } from '@trezor/components';
 

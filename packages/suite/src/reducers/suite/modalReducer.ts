@@ -1,8 +1,7 @@
 import { UI, DEVICE } from 'trezor-connect';
-import * as RECEIVE from 'actions/constants/receive';
 import { Action } from '@suite-types/index';
-import * as MODAL from 'actions/constants/modal';
-import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as MODAL from '@suite-actions/constants/modalConstants';
+import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 
 // export type State =
 //     | {
@@ -32,7 +31,6 @@ const initialState = {
 
 export default function modal(state = initialState, action: Action) {
     switch (action.type) {
-        case RECEIVE.REQUEST_UNVERIFIED:
         case CONNECT.FORGET_REQUEST:
         case CONNECT.TRY_TO_DUPLICATE:
         case CONNECT.REQUEST_WALLET_TYPE:

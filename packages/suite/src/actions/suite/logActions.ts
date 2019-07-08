@@ -4,22 +4,11 @@ import { LogEntry } from '@suite-reducers/logReducer';
 import * as LOG from './constants/log';
 
 export type LogActions =
-    | {
-          type: typeof LOG.OPEN;
-      }
-    | {
-          type: typeof LOG.CLOSE;
-      }
-    | {
-          type: typeof LOG.COPY_RESET;
-      }
-    | {
-          type: typeof LOG.COPY_SUCCESS;
-      }
-    | {
-          type: typeof LOG.ADD;
-          payload: LogEntry;
-      };
+    | { type: typeof LOG.OPEN }
+    | { type: typeof LOG.CLOSE }
+    | { type: typeof LOG.COPY_RESET }
+    | { type: typeof LOG.COPY_SUCCESS }
+    | { type: typeof LOG.ADD; payload: LogEntry };
 
 export const toggle = () => (dispatch: Dispatch, getState: GetState) => {
     if (!getState().log.opened) {
