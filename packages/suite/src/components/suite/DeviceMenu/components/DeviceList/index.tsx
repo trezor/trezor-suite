@@ -13,7 +13,6 @@ interface Props {
     devices: AppState['devices'];
     selectedDevice: AppState['suite']['device'];
     onSelectDevice: (device: TrezorDevice) => void;
-    // forgetDevice: $ElementType<CommonProps, 'forgetDevice'>;
 }
 
 class DeviceList extends PureComponent<Props> {
@@ -23,11 +22,11 @@ class DeviceList extends PureComponent<Props> {
     }
 
     render() {
-        const { devices, selectedDevice, onSelectDevice } = this.props;
+        const { devices, selectedDevice, onSelectDevice, forgetDevice } = this.props;
         return (
             <Wrapper>
                 {devices.sort(this.sortByInstance).map(
-                    device =>
+                    (device: TrezorDevice) =>
                         !deviceUtils.isSelectedDevice(selectedDevice, device) && (
                             <DeviceItem
                                 key={device.state || device.path}
@@ -41,7 +40,7 @@ class DeviceList extends PureComponent<Props> {
                                             onClick={event => {
                                                 event.stopPropagation();
                                                 event.preventDefault();
-                                                // forgetDevice(device);
+                                                forgetDevice(device);
                                             }}
                                         >
                                             <Icon

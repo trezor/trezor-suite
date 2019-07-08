@@ -1,10 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
-// import type { Device } from 'trezor-connect';
 import { Action, GetState, Dispatch, TrezorDevice } from '@suite-types/index';
-import * as MODAL from '@suite-actions/constants/modalConstants';
-import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
-// import type { State } from 'reducers/ModalReducer';
-// import type { parsedURI } from 'utils/cryptoUriParser';
+import { MODAL, CONNECT } from '@suite-actions/constants';
+import { State } from '@suite-reducers/modalReducer';
 
 export const onPinSubmit = (value: string): Action => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: value });

@@ -1,7 +1,7 @@
 import copy from 'copy-to-clipboard';
 import { Action, GetState, Dispatch } from '@suite-types/index';
 import { LogEntry } from '@suite-reducers/logReducer';
-import * as LOG from './constants/log';
+import { LOG } from './constants/index';
 
 export type LogActions =
     | { type: typeof LOG.OPEN }

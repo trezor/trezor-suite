@@ -258,7 +258,7 @@ const DeviceMenu = ({
                         devices={devices}
                         selectedDevice={selectedDevice}
                         onSelectDevice={selectDevice}
-                        // forgetDevice={forgetDevice}
+                        forgetDevice={forget}
                     />
                     {isWebUSB(transport) && (
                         <ButtonWrapper>

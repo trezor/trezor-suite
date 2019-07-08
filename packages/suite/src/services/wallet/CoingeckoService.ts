@@ -1,7 +1,7 @@
 import { httpRequest } from '@wallet-utils/networkUtils';
 import { resolveAfter } from '@wallet-utils/promiseUtils';
 import fiatConfig from '@suite-config/fiat';
-import * as SUITE from '@suite-actions/constants/suite';
+import { SUITE } from '@suite-actions/constants';
 // import { READY } from 'actions/constants/localStorage';
 // import * as TOKEN from 'actions/constants/token';
 // import { Token } from 'reducers/TokensReducer';
