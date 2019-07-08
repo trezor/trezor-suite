@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { Link, Button, P } from '@trezor/components';
 
 import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
-import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
 import l10nCommonMessages from '@suite-support/Messages';
 import { PHISHING_URL } from '@suite/constants/onboarding/urls';
 import Key from '@suite/components/onboarding/Key';
@@ -17,7 +16,7 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 import { AppState } from '@suite-types/index';
-import { callActionAndGoToNextStep } from '@onboarding-actions/connectActions';
+import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
 
 import l10nMessages from './index.messages';
 
@@ -28,6 +27,7 @@ const Keys = styled.div`
 interface StepProps {
     device: AppState['onboarding']['connect']['device'];
     connectActions: {
+        applyFlags: typeof applyFlags;
         callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
     };
 }
@@ -60,7 +60,7 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
 
     setBookmarkFlagAndContinue() {
         const flags = addToFlags(HAS_BOOKMARK_FLAG, this.props.device.features.flags);
-        this.props.connectActions.callActionAndGoToNextStep(APPLY_FLAGS, { flags });
+        this.props.connectActions.callActionAndGoToNextStep(() => applyFlags({ flags }));
     }
 
     keyboardHandler(e: KeyboardEvent) {

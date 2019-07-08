@@ -106,7 +106,6 @@ class ProgressSteps extends React.Component<Props> {
     render() {
         const { isDisabled, onboardingActions, activeStep, hiddenOnSteps = [] } = this.props;
         const steps = this.getStepsWithDots();
-
         return (
             <React.Fragment>
                 <Wrapper>
