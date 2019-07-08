@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+import Modals from '@suite-views/modals/index';
 
 import { Loader, Button } from '@trezor/components';
 
@@ -92,7 +93,12 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    return <Layout showSuiteHeader>{props.children}</Layout>;
+    return (
+        <Layout showSuiteHeader>
+            {props.children}
+            <Modals />
+        </Layout>
+    );
 };
 
 const mapStateToProps = (state: AppState) => ({
