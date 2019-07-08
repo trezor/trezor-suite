@@ -7,7 +7,7 @@ import RippleTypeReceiveForm from './ripple';
 import BitcoinTypeReceiveForm from './bitcoin';
 
 const AccountReceive = () => {
-    const network = { type: 'bitcoin' };
+    const network = { type: 'ripple' };
     return (
         <LayoutAccount>
             {network.type === 'bitcoin' && <BitcoinTypeReceiveForm />}
