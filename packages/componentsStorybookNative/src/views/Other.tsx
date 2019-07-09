@@ -189,7 +189,7 @@ const Other = () => {
                     return (
                         <Item key={coin}>
                             <Title>{coin}</Title>
-                            <CoinLogo height="15" network={coin} data-test={test} />
+                            <CoinLogo height={30} network={coin} data-test={test} />
                         </Item>
                     );
                 })}
