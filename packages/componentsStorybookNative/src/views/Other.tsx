@@ -170,11 +170,10 @@ const Other = () => {
             </H1>
             <Icons>
                 {Object.keys(icons).map(icon => {
-                    const test = `icon_${icon.toLowerCase()}`;
                     return (
                         <Item key={icon}>
                             <Title>{icon}</Title>
-                            <Icon icon={icons[icon]} data-test={test} />
+                            <Icon icon={icons[icon]} />
                         </Item>
                     );
                 })}
@@ -185,11 +184,10 @@ const Other = () => {
             </H1>
             <Icons>
                 {COINS.map((coin: string) => {
-                    const test = `coin_${coin.toLowerCase()}`;
                     return (
                         <Item key={coin}>
                             <Title>{coin}</Title>
-                            <CoinLogo height={30} network={coin} data-test={test} />
+                            <CoinLogo height={30} network={coin} />
                         </Item>
                     );
                 })}
