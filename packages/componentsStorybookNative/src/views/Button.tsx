@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Button, ButtonPin, H1, H5, colors, icons } from '@trezor/components';
+import { Button, ButtonPin, H1, H5 } from '@trezor/components';
 
 const Wrapper = styled.View`
   padding: 10px;

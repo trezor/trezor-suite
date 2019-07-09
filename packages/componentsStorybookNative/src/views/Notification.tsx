@@ -1,5 +1,5 @@
 import React from 'react';
-import { H1, H5, Notification, colors } from '@trezor/components';
+import { H1, H5, Notification } from '@trezor/components';
 import styled from 'styled-components/native';
 
 const Wrapper = styled.View`

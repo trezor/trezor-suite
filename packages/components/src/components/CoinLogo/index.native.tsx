@@ -36,7 +36,7 @@ interface Props {
 const CoinLogo = ({ network, ...rest }: Props) => {
     return (
         // eslint-disable-next-line import/no-dynamic-require(
-        <Logo source={LOGOS.xtz} {...rest} />
+        <Logo source={LOGOS[network]} {...rest} />
     );
 };
 
