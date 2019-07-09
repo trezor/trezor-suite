@@ -176,6 +176,7 @@ export const loadJSON = () => async (dispatch: Dispatch) => {
         // load tokens
         // TODO proper types
         const tokens = await NETWORKS.reduce(
+            // @ts-ignore
             async (
                 promise: Promise<TokensCollection>,
                 network: Network,
