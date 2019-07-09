@@ -76,6 +76,7 @@ export const setBalance = (tokenAddress: string, ethAddress: string, balance: st
 export const add = (token: NetworkToken, account: Account) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
+    console.log('add');
     const tkn: Token = {
         loaded: false,
         deviceState: account.deviceState,

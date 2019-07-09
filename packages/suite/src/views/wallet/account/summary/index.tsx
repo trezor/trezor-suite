@@ -2,13 +2,12 @@ import React from 'react';
 import { AppState } from '@suite-types/index';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
+import * as TokenActions from '@wallet-actions/tokenActions';
 import Tokens from './components/Tokens';
 import AccountHeader from './components/AccountHeader';
-import * as TokenActions from '@wallet-actions/tokenActions';
 
 interface Props {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    summary: AppState['wallet']['summary'];
     wallet: AppState['wallet'];
     device: AppState['suite']['device'];
     tokens: AppState['wallet']['tokens'];

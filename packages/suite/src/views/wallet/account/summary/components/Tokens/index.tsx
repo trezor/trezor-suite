@@ -75,6 +75,7 @@ const Tokens = (props: Props) => {
                         props.intl.formatMessage(l10nSummaryMessages.TR_TOKEN_NOT_FOUND)
                     }
                     onChange={token => {
+                        console.log('onChange');
                         if (token.name) {
                             const isAdded = props.tokens.find(t => t.symbol === token.symbol);
                             if (!isAdded) {

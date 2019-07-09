@@ -140,8 +140,9 @@ const DeviceMenu = ({
         }
     };
     useEffect(() => {
-        document.addEventListener('click', handleClickOutside, true);
-        if (!isOpen) {
+        if (isOpen) {
+            document.addEventListener('click', handleClickOutside, true);
+        } else {
             document.removeEventListener('click', handleClickOutside, true);
         }
         return () => {
