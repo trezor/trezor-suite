@@ -11,6 +11,7 @@ import styled from 'styled-components/native';
 import Typography from './src/views/Typography';
 import Form from './src/views/Form';
 import Notification from './src/views/Notification';
+import Buttons from './src/views/Button';
 
 const Container = styled.ScrollView.attrs({
 	contentContainerStyle: {
@@ -26,11 +27,12 @@ export default class App extends Component<Props> {
 			Typography: Typography,
 			Form: Form,
 			Notification: Notification,
+			Buttons: Buttons,
 		};
 
 		return (
 			<Container>
-				<options.Notification />
+				<options.Buttons />
 			</Container>
 		);
 	}
