@@ -10,6 +10,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import Typography from './src/views/Typography';
 import Form from './src/views/Form';
+import Notification from './src/views/Notification';
 
 const Container = styled.ScrollView.attrs({
 	contentContainerStyle: {
@@ -24,11 +25,12 @@ export default class App extends Component<Props> {
 		const options: any = {
 			Typography: Typography,
 			Form: Form,
+			Notification: Notification,
 		};
 
 		return (
 			<Container>
-				<options.Form />
+				<options.Notification />
 			</Container>
 		);
 	}

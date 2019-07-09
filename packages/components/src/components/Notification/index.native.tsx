@@ -35,7 +35,7 @@ const Col = styled.View`
 `;
 
 const Body = styled.View`
-    flex: 1 1 auto;
+    flex: 1;
     flex-direction: row;
     align-items: center;
     padding-bottom: 10px;
@@ -56,7 +56,6 @@ const Title = styled.Text<TextProps>`
 const CloseClick = styled.TouchableHighlight`
     margin-left: 24px;
     align-self: flex-start;
-    cursor: pointer;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -143,8 +142,8 @@ const Notification = ({
                             <Title color={stateColor}>{title}</Title>
                             {message ? <Message color={stateColor}>{message}</Message> : ''}
                         </Texts>
-                        <AdditionalContent>
-                            {actions && actions.length > 0 && (
+                        {actions && actions.length > 0 && (
+                            <AdditionalContent>
                                 <ActionContent>
                                     {actions.map((action: CtaShape) => (
                                         <ButtonNotification
@@ -161,8 +160,8 @@ const Notification = ({
                                         </ButtonNotification>
                                     ))}
                                 </ActionContent>
-                            )}
-                        </AdditionalContent>
+                            </AdditionalContent>
+                        )}
                     </Body>
                 </Col>
                 {cancelable && (
