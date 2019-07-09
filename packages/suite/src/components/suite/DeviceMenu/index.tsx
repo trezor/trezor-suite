@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
+import { forgetDevice } from '@suite-actions/trezorConnectActions';
 import { Button, icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
@@ -258,7 +259,7 @@ const DeviceMenu = ({
                         devices={devices}
                         selectedDevice={selectedDevice}
                         onSelectDevice={selectDevice}
-                        forgetDevice={forget}
+                        forgetDevice={forgetDevice}
                     />
                     {isWebUSB(transport) && (
                         <ButtonWrapper>
@@ -288,6 +289,7 @@ export default connect(
     mapStateToProps,
     dispatch => ({
         selectDevice: bindActionCreators(selectDevice, dispatch),
+        forgetDevice: bindActionCreators(forgetDevice, dispatch),
         toggleDeviceMenu: bindActionCreators(toggleDeviceMenu, dispatch),
     }),
 )(DeviceMenu);

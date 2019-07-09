@@ -1,7 +1,6 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { Action, GetState, Dispatch, TrezorDevice } from '@suite-types/index';
 import { MODAL, CONNECT } from '@suite-actions/constants';
-import { State } from '@suite-reducers/modalReducer';
 
 export const onPinSubmit = (value: string): Action => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: value });
@@ -10,7 +9,7 @@ export const onPinSubmit = (value: string): Action => {
     };
 };
 
-export const onPassphraseSubmit = (passphrase: string): Action => async (
+export const onPassphraseSubmit = (passphrase: string): ModalActions => async (
     dispatch: Dispatch,
     getState: GetState,
 ): Promise<void> => {

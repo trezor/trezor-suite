@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { H5, P, Button, Tooltip, Link, Icon, icons, colors } from '@trezor/components';
 
@@ -172,11 +171,5 @@ class WalletType extends PureComponent<Props> {
         );
     }
 }
-
-WalletType.propTypes = {
-    device: PropTypes.object.isRequired,
-    onWalletTypeRequest: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-};
 
 export default injectIntl(WalletType);

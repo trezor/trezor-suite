@@ -1,29 +1,18 @@
 import { UI, DEVICE } from 'trezor-connect';
 import { Action } from '@suite-types/index';
+import { TrezorDevice } from '@suite-types/index';
 import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 
-// export type State =
-//     | {
-//           context: typeof MODAL.CONTEXT_NONE;
-//       }
-//     | {
-//           context: typeof MODAL.CONTEXT_DEVICE;
-//           device: TrezorDevice;
-//           instances?: Array<TrezorDevice>;
-//           windowType?: string;
-//       }
-//     | {
-//           context: typeof MODAL.CONTEXT_EXTERNAL_WALLET;
-//           windowType?: string;
-//       }
-//     | {
-//           context: typeof MODAL.CONTEXT_SCAN_QR;
-//       }
-//     | {
-//           context: typeof MODAL.CONTEXT_CONFIRMATION;
-//           windowType: string;
-//       };
+export type State =
+    | { context: typeof MODAL.CONTEXT_NONE }
+    | {
+          context: typeof MODAL.CONTEXT_DEVICE;
+          device: TrezorDevice;
+          instances?: Array<TrezorDevice>;
+          windowType?: string;
+      }
+    | { context: typeof MODAL.CONTEXT_EXTERNAL_WALLET; windowType?: string };
 
 const initialState = {
     context: MODAL.CONTEXT_NONE,
@@ -90,17 +79,6 @@ export default function modal(state = initialState, action: Action) {
         case CONNECT.FORGET_SINGLE:
         case CONNECT.REMEMBER:
             return initialState;
-
-        case MODAL.OPEN_EXTERNAL_WALLET:
-            return {
-                context: MODAL.CONTEXT_EXTERNAL_WALLET,
-                windowType: action.id,
-            };
-
-        case MODAL.OPEN_SCAN_QR:
-            return {
-                context: MODAL.CONTEXT_SCAN_QR,
-            };
 
         case UI.REQUEST_CONFIRMATION:
             return {

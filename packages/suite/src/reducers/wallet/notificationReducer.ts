@@ -1,6 +1,6 @@
 import React from 'react';
 // import { LOCATION_CHANGE } from '@suite-actions/routerActions';
-import * as NOTIFICATION from '@wallet-actions/constants/notification';
+import { NOTIFICATION } from '@wallet-actions/constants';
 import { DEVICE } from 'trezor-connect';
 import { Action } from '@suite-types/index';
 

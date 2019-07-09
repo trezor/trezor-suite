@@ -7,7 +7,10 @@ import { Icon, colors, icons } from '@trezor/components';
 import { TrezorDevice, AppState } from '@suite-types/index';
 
 const Wrapper = styled.div``;
-const IconClick = styled.div``;
+
+const IconClick = styled.div`
+    border: 5px solid red;
+`;
 
 interface Props {
     devices: AppState['devices'];
@@ -22,7 +25,7 @@ class DeviceList extends PureComponent<Props> {
     }
 
     render() {
-        const { devices, selectedDevice, onSelectDevice, forgetDevice } = this.props;
+        const { devices, selectedDevice, onSelectDevice } = this.props;
         return (
             <Wrapper>
                 {devices.sort(this.sortByInstance).map(
@@ -40,7 +43,6 @@ class DeviceList extends PureComponent<Props> {
                                             onClick={event => {
                                                 event.stopPropagation();
                                                 event.preventDefault();
-                                                forgetDevice(device);
                                             }}
                                         >
                                             <Icon

@@ -4,7 +4,7 @@ import TrezorConnect from 'trezor-connect';
 import { validateAddress } from '@suite/utils/wallet/ethUtils';
 // import * as NOTIFICATION from 'actions/constants/notification';
 // import l10nMessages from 'components/notifications/Context/actions.messages';
-import * as SIGN_VERIFY from './constants/signVerify';
+import { SIGN_VERIFY } from './constants';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }

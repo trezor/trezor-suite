@@ -70,7 +70,7 @@ export const init = () => async (dispatch: Dispatch) => {
     }
 };
 
-export const forget = (device: TrezorDevice): Action => ({
+export const forgetDevice = (device: TrezorDevice): Action => ({
     type: CONNECT.FORGET_REQUEST,
     device,
 });
