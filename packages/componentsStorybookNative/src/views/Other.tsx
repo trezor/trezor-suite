@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 import {
     icons,
     colors,
-    Header,
     Prompt,
     H1,
     H5,
@@ -18,15 +17,15 @@ import {
 const { FONT_SIZE_NATIVE } = variables;
 
 const Wrapper = styled.View`
-  padding: 10px;
+    padding: 10px;
 `;
 
 const Col = styled.View`
-  flex-direction: column;
+    flex-direction: column;
 `;
 
 const Section = styled.View`
-  flex: 1;
+    flex: 1;
 `;
 
 const ColDark = styled(Col)`
@@ -104,35 +103,6 @@ const Other = () => {
             <Section>
                 <TrezorLogo type="vertical" height={100} data-test="trezor_logo_vertical" />
             </Section>
-
-            <H1>
-                Header
-            </H1>
-            <Col>
-                <Header
-                    sidebarEnabled
-                    sidebarOpened={false}
-                    toggleSidebar={undefined}
-                    togglerOpenText="Menu"
-                    togglerCloseText="Close"
-                    rightAddon={null}
-                    links={[
-                        {
-                            href: 'https://trezor.io/',
-                            title: 'Trezor',
-                        },
-                        {
-                            href: 'https://wiki.trezor.io/',
-                            title: 'Wiki',
-                        },
-                        {
-                            href: 'https://blog.trezor.io/',
-                            title: 'Blog',
-                        },
-                    ]}
-                    data-test="header"
-                />
-            </Col>
 
             <H1>Loader</H1>
             <H5>
@@ -219,7 +189,7 @@ const Other = () => {
                     return (
                         <Item key={coin}>
                             <Title>{coin}</Title>
-                            <CoinLogo height="23" network={coin} data-test={test} />
+                            <CoinLogo height="15" network={coin} data-test={test} />
                         </Item>
                     );
                 })}

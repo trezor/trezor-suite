@@ -1,11 +1,10 @@
 import React from 'react';
-import styled, { css } from 'styled-components/native';
+import styled from 'styled-components/native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { Animated, Easing } from 'react-native';
-import { FONT_SIZE_NATIVE } from '../../config/variables';
-import Paragraph from '../Paragraph';
 import colors from '../../config/colors';
+import { FONT_SIZE_NATIVE } from '../../config/variables';
 
 const Wrapper = styled.View<Props>`
     flex: 1;
@@ -20,9 +19,13 @@ const SvgWrapper = Animated.createAnimatedComponent(Svg);
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-const StyledParagraph = styled(Paragraph)<Props>`
+const TextWrapper = styled.Text<Props>`
     flex: 1;
     align-items: center;
+`;
+
+const StyledText = styled.Text<Props>`
+    text-align: center;
     font-size: ${props => (props.isSmallText ? FONT_SIZE_NATIVE.SMALL : FONT_SIZE_NATIVE.BIG)};
     color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
 `;
@@ -89,9 +92,11 @@ class Loader extends React.Component<Props> {
 
         return (
             <Wrapper className={className} size={size} {...rest}>
-                <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
-                    {text}
-                </StyledParagraph>
+                <TextWrapper>
+                    <StyledText isSmallText={isSmallText} isWhiteText={isWhiteText}>
+                        {text}
+                    </StyledText>
+                </TextWrapper>
                 <SvgWrapper
                     width={size}
                     height={size}
