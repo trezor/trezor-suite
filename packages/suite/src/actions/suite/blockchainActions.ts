@@ -13,7 +13,7 @@ export interface BlockchainActions {
 export const init = () => async (dispatch: Dispatch, _getState: GetState): Promise<void> => {
     // TODO: add connections to backend (from wallet)
 
-    // continue wallet initialization
+    // continue suite initialization
     dispatch({
         type: BLOCKCHAIN.READY,
     });

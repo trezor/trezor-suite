@@ -1,9 +1,9 @@
 import { Dispatch, GetState } from '@suite-types/index';
-// import { FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
 import { validateAddress } from '@suite/utils/wallet/ethUtils';
-// import * as NOTIFICATION from 'actions/constants/notification';
-// import l10nMessages from 'components/notifications/Context/actions.messages';
+import { NOTIFICATION } from '@wallet-actions/constants';
+import messages from '@wallet-components/notifications/actions.messages';
 import { SIGN_VERIFY } from './constants';
 
 export type SignVerifyAction =
@@ -40,15 +40,15 @@ const sign = (path: [number], message: string, hex: boolean = false) => async (
             signSignature: response.payload.signature,
         });
     } else {
-        // dispatch({
-        //     type: NOTIFICATION.ADD,
-        //     payload: {
-        //         variant: 'error',
-        //         title: <FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE_ERROR} />,
-        //         message: response.payload.error,
-        //         cancelable: true,
-        //     },
-        // });
+        dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                variant: 'error',
+                title: <FormattedMessage {...messages.TR_SIGN_MESSAGE_ERROR} />,
+                message: response.payload.error,
+                cancelable: true,
+            },
+        });
     }
 };
 
@@ -86,25 +86,25 @@ const verify = (
         });
 
         if (response && response.success) {
-            // dispatch({
-            //     type: NOTIFICATION.ADD,
-            //     payload: {
-            //         variant: 'success',
-            //         title: <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE_SUCCESS} />,
-            //         message: <FormattedMessage {...l10nMessages.TR_SIGNATURE_IS_VALID} />,
-            //         cancelable: true,
-            //     },
-            // });
+            dispatch({
+                type: NOTIFICATION.ADD,
+                payload: {
+                    variant: 'success',
+                    title: <FormattedMessage {...messages.TR_VERIFY_MESSAGE_SUCCESS} />,
+                    message: <FormattedMessage {...messages.TR_SIGNATURE_IS_VALID} />,
+                    cancelable: true,
+                },
+            });
         } else {
-            // dispatch({
-            //     type: NOTIFICATION.ADD,
-            //     payload: {
-            //         variant: 'error',
-            //         title: <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE_ERROR} />,
-            //         message: response.payload.error,
-            //         cancelable: true,
-            //     },
-            // });
+            dispatch({
+                type: NOTIFICATION.ADD,
+                payload: {
+                    variant: 'error',
+                    title: <FormattedMessage {...messages.TR_VERIFY_MESSAGE_ERROR} />,
+                    message: response.payload.error,
+                    cancelable: true,
+                },
+            });
         }
     }
 };
