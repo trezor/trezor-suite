@@ -29,7 +29,7 @@
     "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
     "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
     "lint": "eslint '**/*{.ts,.tsx}'",
-    "test": "jest -c jest.config.unit.js",
+    "test": "jest --verbose -c jest.config.unit.js",
     "test:node": "jest -c jest.config.integration.js",
     "build:lib": "rm -rf lib && tsc --p ./tsconfig.json && tsc --p ./tsconfig-workers.json && node ./scripts/build.lib.js"
   },

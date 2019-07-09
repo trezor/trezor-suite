@@ -67,8 +67,6 @@ export default class Socket extends EventEmitter {
                 const subs = this.subscriptions.find(s => s && s.id === id);
                 if (subs) {
                     subs.callback(data);
-                } else {
-                    console.log(`unknown response ${id}`);
                 }
             }
         } catch (error) {

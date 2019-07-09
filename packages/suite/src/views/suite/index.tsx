@@ -34,7 +34,6 @@ const Index: FunctionComponent<Props> = props => {
 
     if (!suite.transport) {
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-        // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
             <Layout isLanding>
                 <LoaderWrapper>
@@ -93,8 +92,6 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    // const { pathname } = router;
-    // const isLandingPage = pathname === '/bridge' || pathname === '/version';
     return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 

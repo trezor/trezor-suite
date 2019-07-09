@@ -1,3 +1,5 @@
+import routesConstants from '@suite-constants/routes';
+
 export interface Route {
     name: string;
     pattern: string;
@@ -123,4 +125,8 @@ export const toInternalRoute = (route: string) => {
 // Check if the URL/route points to an in-app page
 export const isInternalRoute = (route: string) => {
     return !!routes.find(r => r.pattern === toInternalRoute(route));
+};
+
+export const isStatic = (route: string) => {
+    return routesConstants.staticRoutes.includes(route);
 };

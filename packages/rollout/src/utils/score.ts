@@ -1,11 +1,13 @@
 const getScore = () => Math.random().toFixed(2);
 
-const isInProbability = (rollout, score) => {
+const isInProbability = (rollout: number | null, score: number | null) => {
     const IS_IN_PROBABILITY = true;
     const IS_NOT_IN_PROBABILITY = false;
 
     if (score == null || Number.isNaN(score)) {
-        throw new Error('score not supplied. If you want to override this functionality, just pass 0');
+        throw new Error(
+            'score not supplied. If you want to override this functionality, just pass 0'
+        );
     }
 
     if (!rollout) {
@@ -19,7 +21,4 @@ const isInProbability = (rollout, score) => {
     return IS_NOT_IN_PROBABILITY;
 };
 
-export {
-    getScore,
-    isInProbability,
-};
+export { getScore, isInProbability };

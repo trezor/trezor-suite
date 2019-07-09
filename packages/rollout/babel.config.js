@@ -1,10 +1,9 @@
-module.exports = {
-    presets: [
-        '@babel/preset-env',
-    ],
-    plugins: [
-        ['module-resolver', {
+export const presets = ['@babel/preset-env'];
+export const plugins = [
+    [
+        'module-resolver',
+        {
             root: ['./src'],
-        }],
+        },
     ],
-};
+];

@@ -2,7 +2,7 @@ module.exports = {
     rootDir: '.',
     roots: ['src'],
     transform: {
-        '^.+\\.(js|jsx|ts)$': 'babel-jest',
+        '^.+\\.(ts)$': 'ts-jest',
     },
     coverageThreshold: {
         global: {
@@ -15,11 +15,9 @@ module.exports = {
     automock: false,
     coverageDirectory: './coverage',
     collectCoverage: true,
+    testMatch: ['**/tests/*.ts'],
     modulePaths: ['src'],
-    modulePathIgnorePatterns: [
-        'node_modules',
-    ],
-    collectCoverageFrom: [
-        'src/**.js',
-    ],
+    moduleFileExtensions: ['js', 'ts', 'json'],
+    modulePathIgnorePatterns: ['node_modules'],
+    collectCoverageFrom: ['src/**/*.ts'],
 };

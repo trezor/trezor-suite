@@ -1,4 +1,4 @@
-export default [
+const addresses = [
     {
         description: 'clear all addresses from the previous part of the test',
         method: 'unsubscribe',
@@ -232,13 +232,84 @@ export default [
         },
         subscribed: undefined,
     },
+];
+
+const errors = [
+    {
+        description: 'subscribe (invalid "type" parameter)',
+        method: 'subscribe',
+        params: {
+            type: 'unknown',
+        },
+        error: 'Invalid parameter: type',
+    },
+    {
+        description: 'unsubscribe (invalid "type" parameter)',
+        method: 'unsubscribe',
+        params: {
+            type: 'unknown',
+        },
+        error: 'Invalid parameter: type',
+    },
+    {
+        description: 'account subscribe (invalid "accounts" parameter)',
+        method: 'subscribe',
+        params: {
+            type: 'accounts',
+            accounts: 1,
+        },
+        error: 'Invalid parameter: accounts',
+    },
+    {
+        description: 'address subscribe (invalid "addresses" parameter)',
+        method: 'subscribe',
+        params: {
+            type: 'addresses',
+            addresses: 1,
+        },
+        error: 'Invalid parameter: addresses',
+    },
+    {
+        description: 'account unsubscribe (invalid "accounts" parameter)',
+        method: 'unsubscribe',
+        params: {
+            type: 'accounts',
+            accounts: 1,
+        },
+        error: 'Invalid parameter: accounts',
+    },
+    {
+        description: 'address unsubscribe (invalid "addresses" parameter)',
+        method: 'unsubscribe',
+        params: {
+            type: 'addresses',
+            addresses: 1,
+        },
+        error: 'Invalid parameter: addresses',
+    },
     // {
-    //     description: 'add account subscription (invalid accounts param type)',
+    //     description: 'subscribe (server error)',
     //     method: 'subscribe',
+    //     server: { method: 'subscribe', response: { error: { message: 'Error msg' } } },
     //     params: {
-    //         type: 'accounts',
-    //         accounts: 1,
+    //         type: 'addresses',
+    //         addresses: ['A'],
     //     },
-    //     subscribed: undefined,
+    //     error: 'Error msg',
+    // },
+    // {
+    //     description: 'unsubscribe (server error)',
+    //     method: 'unsubscribe',
+    //     server: { method: 'unsubscribe', response: { error: { message: 'Error msg' } } },
+    //     params: {
+    //         type: 'addresses',
+    //         addresses: ['A'],
+    //     },
+    //     error: 'Error msg',
     // },
 ];
+
+export default {
+    addresses,
+    errors,
+};

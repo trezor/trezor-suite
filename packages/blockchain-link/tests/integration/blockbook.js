@@ -1,6 +1,8 @@
 import BlockchainLink from '@trezor/blockchain-link';
 import createServer from '../websocket';
-import { blockbookWorkerFactory } from './worker';
+import {
+    blockbookWorkerFactory
+} from './worker';
 
 describe('Blockbook', () => {
     let server;
@@ -79,7 +81,9 @@ describe('Blockbook', () => {
             'http://gibberish',
             1,
             false,
-            { foo: 'bar' },
+            {
+                foo: 'bar'
+            },
         ];
         try {
             await blockchain.connect();
@@ -104,7 +108,7 @@ describe('Blockbook', () => {
             await blockchain.getInfo();
         } catch (error) {
             expect(error.code).toEqual('blockchain_link/response');
-            // expect(error.message).toEqual('Unexpected response');
+            // // expect(error.message).toEqual('Unexpected response');
         }
     });
 });

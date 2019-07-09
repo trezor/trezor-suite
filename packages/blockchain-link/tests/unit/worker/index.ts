@@ -33,7 +33,7 @@ class MyWorker {
     }
 }
 
-export const rippleWorkerFactory = () => {
+const rippleWorkerFactory = () => {
     require('../../../src/workers/ripple/index.ts'); // eslint-disable-line global-require
     setTimeout(() => {
         global.postMessage({ id: -1, type: 'm_handshake' });
@@ -41,10 +41,21 @@ export const rippleWorkerFactory = () => {
     return new MyWorker();
 };
 
-export const blockbookWorkerFactory = () => {
+const blockbookWorkerFactory = () => {
     require('../../../src/workers/blockbook/index.ts'); // eslint-disable-line global-require
     setTimeout(() => {
         global.postMessage({ id: -1, type: 'm_handshake' });
     }, 1);
     return new MyWorker();
 };
+
+export default [
+    {
+        name: 'ripple',
+        worker: rippleWorkerFactory,
+    },
+    {
+        name: 'blockbook',
+        worker: blockbookWorkerFactory,
+    },
+];

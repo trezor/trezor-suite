@@ -1,10 +1,6 @@
 {
-  "name": "trezor-rollout",
-  "version": "1.0.5",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trezor/trezor-rollout.git"
-  },
+  "name": "@trezor/rollout",
+  "version": "1.0.0",
   "author": "Trezor <info@trezor.io>",
   "keywords": [
     "Trezor",
@@ -17,7 +13,9 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint .",
+    "lint": "eslint '**/*{.ts,.tsx}'",
+    "type-check": "tsc --project tsconfig.json",
+    "type-check:watch": "yarn type-check -- --watch",
     "clean": "rimraf lib",
     "build": "yarn run clean && npx rollup -c rollup.config.js"
   },
@@ -36,13 +34,14 @@
     "eslint-import-resolver-jest": "^2.1.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^22.1.0",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "jest-mock-random": "^1.0.2",
     "regenerator-runtime": "^0.13.1",
     "rimraf": "^2.6.2",
     "rollup": "^0.67.4",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-cleanup": "^3.0.0",
-    "yarn": "^1.12.3"
+    "rollup-plugin-typescript": "^1.0.1",
+    "ts-jest": "^24.0.2"
   }
 }
