@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DEVICE } from 'trezor-connect';
+// import { DEVICE } from 'trezor-connect';
 
 import styled from 'styled-components';
 import { colors, animations } from '@trezor/components';
@@ -135,15 +135,11 @@ const getDeviceContextModal = props => {
 
 // modal container component
 const Modal = props => {
-    // const { modal } = props;
-    const modal = {
-        context: MODAL.CONTEXT_DEVICE,
-        windowType: '@connect/request-wallet-type',
-    };
+    const { modal } = props;
+
     if (modal.context === MODAL.CONTEXT_NONE) return null;
 
     let component = null;
-    console.log('props', props);
     switch (modal.context) {
         case MODAL.CONTEXT_DEVICE:
             component = getDeviceContextModal(props);

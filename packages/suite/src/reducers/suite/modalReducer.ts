@@ -23,7 +23,7 @@ export default function modal(state = initialState, action: Action) {
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.device,
-                windowType: action.type | '@connect/wallet-type',
+                windowType: action.type,
             };
 
         default:

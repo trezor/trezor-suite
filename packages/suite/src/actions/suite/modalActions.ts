@@ -3,7 +3,7 @@ import { MODAL, CONNECT } from '@suite-actions/constants';
 
 export type ModalActions = { type: typeof MODAL.CLOSE };
 
-export const onWalletTypeRequest = (hidden: boolean): Action => (
+export const requestWalletType = (hidden: boolean): Action => (
     dispatch: Dispatch,
     getState: GetState,
 ): void => {
@@ -19,6 +19,4 @@ export const onWalletTypeRequest = (hidden: boolean): Action => (
     });
 };
 
-export default {
-    onWalletTypeRequest,
-};
+export default { requestWalletType };

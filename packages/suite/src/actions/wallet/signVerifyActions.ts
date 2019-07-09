@@ -44,7 +44,7 @@ const sign = (path: [number], message: string, hex: boolean = false) => async (
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: <FormattedMessage {...messages.TR_SIGN_MESSAGE_ERROR} />,
+                title: messages.TR_SIGN_MESSAGE_ERROR,
                 message: response.payload.error,
                 cancelable: true,
             },
@@ -90,8 +90,8 @@ const verify = (
                 type: NOTIFICATION.ADD,
                 payload: {
                     variant: 'success',
-                    title: <FormattedMessage {...messages.TR_VERIFY_MESSAGE_SUCCESS} />,
-                    message: <FormattedMessage {...messages.TR_SIGNATURE_IS_VALID} />,
+                    title: messages.TR_VERIFY_MESSAGE_SUCCESS,
+                    message: messages.TR_SIGNATURE_IS_VALID,
                     cancelable: true,
                 },
             });
@@ -100,7 +100,7 @@ const verify = (
                 type: NOTIFICATION.ADD,
                 payload: {
                     variant: 'error',
-                    title: <FormattedMessage {...messages.TR_VERIFY_MESSAGE_ERROR} />,
+                    title: messages.TR_VERIFY_MESSAGE_ERROR,
                     message: response.payload.error,
                     cancelable: true,
                 },
