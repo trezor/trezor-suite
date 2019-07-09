@@ -70,7 +70,7 @@ const verify = (
     }
 
     if (!error) {
-        // @ts-ignore
+        // @ts-ignore // TODO ADD TO CONNECT
         const response = await TrezorConnect.ethereumVerifyMessage({
             device: {
                 path: selected.path,

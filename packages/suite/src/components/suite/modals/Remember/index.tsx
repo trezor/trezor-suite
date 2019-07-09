@@ -104,16 +104,12 @@ class RememberDevice extends PureComponent<Props, State> {
     keyboardHandler(event: KeyboardEvent): void {
         if (event.keyCode === 13) {
             event.preventDefault();
-            this.forget();
+            this.props.onForgetDevice(this.props.device);
         }
     }
 
-    forget() {
-        this.props.forgetDevice(this.props.device);
-    }
-
     render() {
-        const { device, instances, rememberDevice } = this.props;
+        const { device, instances, onRememberDevice, onForgetDevice } = this.props;
 
         let { label } = device;
         const deviceCount = instances ? instances.length : 0;
@@ -139,7 +135,7 @@ class RememberDevice extends PureComponent<Props, State> {
                     />
                 </StyledP>
                 <Column>
-                    <ButtonWithLoader onClick={() => this.forget()}>
+                    <ButtonWithLoader onClick={() => onForgetDevice(device)}>
                         <ButtonContent>
                             <Text>
                                 <FormattedMessage {...commonMessages.TR_FORGET_DEVICE} />
@@ -152,7 +148,7 @@ class RememberDevice extends PureComponent<Props, State> {
                             />
                         </ButtonContent>
                     </ButtonWithLoader>
-                    <Button isWhite onClick={() => rememberDevice(device)}>
+                    <Button isWhite onClick={() => onRememberDevice(device)}>
                         <FormattedMessage {...messages.TR_REMEMBER_DEVICE} />
                     </Button>
                 </Column>

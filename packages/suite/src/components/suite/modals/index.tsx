@@ -13,9 +13,8 @@ import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 // import PassphraseType from 'components/modals/passphrase/Type';
 // import ConfirmAction from 'components/modals/confirm/Action';
 // import ConfirmNoBackup from 'components/modals/confirm/NoBackup';
-import ForgetDeviceModal from '@suite-components/modals/device/Forget';
-import RememberDeviceModal from '@suite-components/modals/device/Remember';
-import WalletTypeModal from '@suite-components/modals/device/WalletType';
+import ForgetDeviceModal from '@suite-components/modals/Forget';
+import RememberDeviceModal from '@suite-components/modals/Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 
 const ModalContainer = styled.div`
@@ -77,8 +76,8 @@ const getDeviceContextModal = props => {
                 <RememberDeviceModal
                     device={modal.device}
                     instances={modal.instances}
-                    rememberDevice={modalActions.rememberDevice}
-                    forgetDevice={modalActions.forgetDevice}
+                    onRememberDevice={modalActions.onRememberDevice}
+                    onForgetDevice={modalActions.onForgetDevice}
                 />
             );
 
@@ -86,8 +85,8 @@ const getDeviceContextModal = props => {
             return (
                 <ForgetDeviceModal
                     device={modal.device}
-                    forgetDevice={modalActions.forgetDevice}
-                    cancel={modalActions.cancel}
+                    onForgetDevice={modalActions.onForgetDevice}
+                    onCancel={modalActions.onCancel}
                 />
             );
 
@@ -100,15 +99,6 @@ const getDeviceContextModal = props => {
         //             onCancel={modalActions.onCancel}
         //         />
         //     );
-
-        case CONNECT.REQUEST_WALLET_TYPE:
-            return (
-                <WalletTypeModal
-                    device={modal.device}
-                    requestWalletType={modalActions.requestWalletType}
-                    onCancel={modalActions.cancel}
-                />
-            );
 
         default:
             return null;

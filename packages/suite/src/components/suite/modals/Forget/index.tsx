@@ -47,13 +47,11 @@ class ForgetDevice extends PureComponent<Props> {
     keyboardHandler(event: KeyboardEvent) {
         if (event.keyCode === 13) {
             event.preventDefault();
-            this.forget();
+            this.props.onForgetDevice(this.props.device);
         }
     }
 
-    forget() {
-        this.props.forgetDevice(this.props.device);
-    }
+    forget() {}
 
     render() {
         return (
@@ -72,7 +70,7 @@ class ForgetDevice extends PureComponent<Props> {
                     />
                 </StyledP>
                 <Row>
-                    <Button onClick={() => this.forget()}>
+                    <Button onClick={() => this.props.onForgetDevice(this.props.device)}>
                         <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                     </Button>
                     <Button isWhite onClick={this.props.onCancel}>

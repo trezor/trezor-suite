@@ -40,7 +40,6 @@ export type Action =
     | RouterActions
     | BlockchainActions
     | StorageActions
-    | ConnectActions
     | SuiteActions
     | LogActions
     | ModalActions

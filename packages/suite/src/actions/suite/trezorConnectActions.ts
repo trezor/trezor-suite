@@ -70,6 +70,7 @@ export const init = () => async (dispatch: Dispatch) => {
     }
 };
 
+// called from device menu (forget single instance)
 export const forgetDevice = (device: TrezorDevice): Action => ({
     type: CONNECT.FORGET_REQUEST,
     device,

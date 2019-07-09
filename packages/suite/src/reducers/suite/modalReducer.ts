@@ -16,10 +16,12 @@ const initialState = {
 };
 
 export default function modal(state = initialState, action: Action) {
+    console.log('aaa', action.type);
     switch (action.type) {
         case CONNECT.FORGET_REQUEST:
         case CONNECT.TRY_TO_DUPLICATE:
         case CONNECT.REQUEST_WALLET_TYPE:
+            console.log('action.type', action);
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.device,
