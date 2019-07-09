@@ -55,20 +55,6 @@ const { COINS } = variables;
 const Other = () => {
     return (
         <Wrapper>
-            <H1>
-                Coins
-            </H1>
-            <Icons>
-                {COINS.map((coin: string) => {
-                    return (
-                        <Item key={coin}>
-                            <Title>{coin}</Title>
-                            <CoinLogo size="30" network={coin} />
-                        </Item>
-                    );
-                })}
-            </Icons>
-
             <H1>Prompt</H1>
             <H5>
                 Trezor One
@@ -184,10 +170,26 @@ const Other = () => {
             </H1>
             <Icons>
                 {Object.keys(icons).map(icon => {
+                    const test = `icon_${icon.toLowerCase()}`;
                     return (
                         <Item key={icon}>
                             <Title>{icon}</Title>
-                            <Icon icon={icons[icon]} />
+                            <Icon icon={icons[icon]} data-test={test} />
+                        </Item>
+                    );
+                })}
+            </Icons>
+
+            <H1>
+                Coins
+            </H1>
+            <Icons>
+                {COINS.map((coin: string) => {
+                    const test = `coin_${coin.toLowerCase()}`;
+                    return (
+                        <Item key={coin}>
+                            <Title>{coin}</Title>
+                            <CoinLogo height="15" network={coin} data-test={test} />
                         </Item>
                     );
                 })}
