@@ -29,9 +29,6 @@ interface Props {
     device: AppState['onboarding']['connect']['device'];
     asNewDevice: AppState['onboarding']['asNewDevice'];
     model: AppState['onboarding']['selectedModel'];
-    // model: any;
-    // device: any;
-    // asNewDevice: any;
 }
 
 const SelectDeviceStep: React.FC<Props> = ({ onboardingActions, model, device, asNewDevice }) => {
@@ -85,7 +82,7 @@ const SelectDeviceStep: React.FC<Props> = ({ onboardingActions, model, device, a
                     onSelect={(value: number) => {
                         onboardingActions.selectTrezorModel(value);
                         onboardingActions.goToNextStep(
-                            asNewDevice ? STEP.ID_UNBOXING_STEP : STEP.ID_CONNECT_STEP,
+                            asNewDevice ? STEP.ID_UNBOXING_STEP : STEP.ID_BRIDGE_STEP,
                         );
                     }}
                 />

@@ -305,7 +305,7 @@ class Onboarding extends React.PureComponent<Props> {
                         <ProgressStepsSlot>
                             <ProgressStepsWrapper>
                                 <ProgressSteps
-                                    hiddenOnSteps={[STEP.ID_WELCOME_STEP]}
+                                    hiddenOnSteps={[STEP.ID_WELCOME_STEP, STEP.ID_SECURITY_STEP]}
                                     steps={steps}
                                     activeStep={activeStep}
                                     onboardingActions={onboardingActions}
@@ -324,13 +324,6 @@ class Onboarding extends React.PureComponent<Props> {
                             >
                                 <WelcomeStep />
                             </CSSTransition>
-
-                            {/* <CSSTransition
-                                in={activeStepId === STEP.ID_START_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <StartStep />
-                            </CSSTransition> */}
 
                             <CSSTransition
                                 in={activeStepId === STEP.ID_NEW_OR_USED}

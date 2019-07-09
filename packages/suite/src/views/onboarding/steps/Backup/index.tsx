@@ -5,8 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import colors from '@suite/config/onboarding/colors';
 import { SEED_MANUAL_URL } from '@suite/constants/onboarding/urls';
-import { WIPE_DEVICE, BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
-import * as STEP from '@suite/constants/onboarding/steps';
+import { BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import Text from '@suite/components/onboarding/Text';
 import l10nCommonMessages from '@suite-support/Messages';
 
@@ -114,10 +113,6 @@ class BackupStep extends React.Component<BackupProps, BackupState> {
             return BackupStep.INITIAL_STATUS;
         }
         return null;
-    }
-
-    async wipeDeviceAndStartAgain() {
-        this.props.connectActions.callActionAndGoToNextStep(WIPE_DEVICE, null, STEP.ID_BACKUP_STEP);
     }
 
     render() {

@@ -207,15 +207,13 @@ const submitWord = (params: any) => (dispatch: Dispatch) =>
     dispatch(uiResponseCall(UI.RECEIVE_WORD, params));
 
 // todo: maybe rework this function to take concrete call function as argument;
-// todo: not used now.
 const callActionAndGoToNextStep = (
-    name: string,
-    params: any,
+    action: any,
     stepId?: AnyStepId,
     goOnSuccess: boolean = true,
     goOnError: boolean = false,
 ) => (dispatch: Dispatch) => {
-    dispatch(call(name, params)).then((response: any) => {
+    dispatch(action).then((response: any) => {
         if (response.success && goOnSuccess) {
             dispatch(goToNextStep(stepId));
         }
