@@ -1,3 +1,4 @@
+/* eslint-disable react/style-prop-object */
 import React, { PureComponent } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import styled from 'styled-components';
@@ -174,7 +175,6 @@ class AccountBalance extends PureComponent<Props, State> {
                                         <FormattedNumber
                                             value={fiat}
                                             minimumFractionDigits={2}
-                                            // eslint-disable-next-line react/style-prop-object
                                             style="currency"
                                             currency={localCurrency}
                                         />
