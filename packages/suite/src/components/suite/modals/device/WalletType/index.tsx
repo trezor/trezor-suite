@@ -99,8 +99,6 @@ class WalletType extends PureComponent<Props> {
         }
     }
 
-    keyboardHandler: (event: KeyboardEvent) => void;
-
     render() {
         const { device, onCancel, onWalletTypeRequest } = this.props;
 

@@ -13,9 +13,9 @@ import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 // import PassphraseType from 'components/modals/passphrase/Type';
 // import ConfirmAction from 'components/modals/confirm/Action';
 // import ConfirmNoBackup from 'components/modals/confirm/NoBackup';
-import ForgetDevice from '@suite-components/modals/device/Forget';
-import RememberDevice from '@suite-components/modals/device/Remember';
-import WalletType from '@suite-components/modals/device/WalletType';
+import ForgetDeviceModal from '@suite-components/modals/device/Forget';
+import RememberDeviceModal from '@suite-components/modals/device/Remember';
+import WalletTypeModal from '@suite-components/modals/device/WalletType';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 
 const ModalContainer = styled.div`
@@ -74,39 +74,39 @@ const getDeviceContextModal = props => {
 
         case CONNECT.REMEMBER_REQUEST:
             return (
-                <RememberDevice
+                <RememberDeviceModal
                     device={modal.device}
                     instances={modal.instances}
-                    onRememberDevice={modalActions.onRememberDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
+                    rememberDevice={modalActions.rememberDevice}
+                    forgetDevice={modalActions.forgetDevice}
                 />
             );
 
         case CONNECT.FORGET_REQUEST:
             return (
-                <ForgetDevice
+                <ForgetDeviceModal
                     device={modal.device}
-                    onForgetSingleDevice={modalActions.onForgetSingleDevice}
-                    onCancel={modalActions.onCancel}
+                    forgetDevice={modalActions.forgetDevice}
+                    cancel={modalActions.cancel}
                 />
             );
 
-        case CONNECT.TRY_TO_DUPLICATE:
-            return (
-                <DuplicateDevice
-                    device={modal.device}
-                    devices={props.devices}
-                    onDuplicateDevice={modalActions.onDuplicateDevice}
-                    onCancel={modalActions.onCancel}
-                />
-            );
+        // case CONNECT.TRY_TO_DUPLICATE:
+        //     return (
+        //         <DuplicateDevice
+        //             device={modal.device}
+        //             devices={props.devices}
+        //             onDuplicateDevice={modalActions.onDuplicateDevice}
+        //             onCancel={modalActions.onCancel}
+        //         />
+        //     );
 
         case CONNECT.REQUEST_WALLET_TYPE:
             return (
-                <WalletType
+                <WalletTypeModal
                     device={modal.device}
-                    // onWalletTypeRequest={modalActions.onWalletTypeRequest}
-                    onCancel={modalActions.onCancel}
+                    requestWalletType={modalActions.requestWalletType}
+                    onCancel={modalActions.cancel}
                 />
             );
 

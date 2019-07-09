@@ -108,14 +108,12 @@ class RememberDevice extends PureComponent<Props, State> {
         }
     }
 
-    keyboardHandler: (event: KeyboardEvent) => void;
-
     forget() {
-        this.props.onForgetDevice(this.props.device);
+        this.props.forgetDevice(this.props.device);
     }
 
     render() {
-        const { device, instances, onRememberDevice } = this.props;
+        const { device, instances, rememberDevice } = this.props;
 
         let { label } = device;
         const deviceCount = instances ? instances.length : 0;
@@ -154,7 +152,7 @@ class RememberDevice extends PureComponent<Props, State> {
                             />
                         </ButtonContent>
                     </ButtonWithLoader>
-                    <Button isWhite onClick={() => onRememberDevice(device)}>
+                    <Button isWhite onClick={() => rememberDevice(device)}>
                         <FormattedMessage {...messages.TR_REMEMBER_DEVICE} />
                     </Button>
                 </Column>

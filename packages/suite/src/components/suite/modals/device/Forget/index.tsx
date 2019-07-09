@@ -52,7 +52,7 @@ class ForgetDevice extends PureComponent<Props> {
     }
 
     forget() {
-        this.props.onForgetSingleDevice(this.props.device);
+        this.props.forgetDevice(this.props.device);
     }
 
     render() {
