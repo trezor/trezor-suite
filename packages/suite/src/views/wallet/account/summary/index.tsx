@@ -4,6 +4,7 @@ import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import Tokens from './components/Tokens';
 import AccountHeader from './components/AccountHeader';
+import * as TokenActions from '@wallet-actions/tokenActions';
 
 interface Props {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -13,9 +14,9 @@ interface Props {
     tokens: AppState['wallet']['tokens'];
     fiat: AppState['wallet']['fiat'];
     localStorage: AppState['wallet']['localStorage'];
-    // addToken: typeof TokenActions.add,
-    // loadTokens: typeof TokenActions.load,
-    // removeToken: typeof TokenActions.remove,
+    addToken: typeof TokenActions.add;
+    loadTokens: typeof TokenActions.load;
+    removeToken: typeof TokenActions.remove;
 }
 
 const AccountSummary = (props: Props) => {

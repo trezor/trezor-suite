@@ -1,10 +1,12 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types/index';
+import { bindActionCreators } from 'redux';
+import { AppState, Dispatch } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
+import { loadJSON } from '@wallet-actions/localStorageActions';
 import Sidebar from './components/Sidebar';
 
 const { SCREEN_SIZE } = variables;
@@ -12,7 +14,9 @@ const { SCREEN_SIZE } = variables;
 interface Props {
     router: AppState['router'];
     suite: AppState['suite'];
+    wallet: AppState['wallet'];
     topNavigationComponent?: ReactNode;
+    loadJSON: typeof loadJSON;
     children: ReactNode;
 }
 
@@ -41,20 +45,37 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
     }
 `;
 
-const Layout = (props: Props) => (
-    <Wrapper>
-        <Sidebar isOpen={props.suite.showSidebar} />
-        <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-            {props.topNavigationComponent}
-            <WalletNotifications />
-            <Content>{props.children}</Content>
-        </ContentWrapper>
-    </Wrapper>
-);
+const Layout = (props: Props) => {
+    useEffect(() => {
+        if (!props.wallet.localStorage.initialized) {
+            props.loadJSON();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return (
+        <Wrapper>
+            <Sidebar isOpen={props.suite.showSidebar} />
+            <ContentWrapper preventBgScroll={props.suite.showSidebar}>
+                {props.topNavigationComponent}
+                <WalletNotifications />
+                <Content>{props.children}</Content>
+            </ContentWrapper>
+        </Wrapper>
+    );
+};
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
+    wallet: state.wallet,
 });
 
-export default connect(mapStateToProps)(Layout);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    loadJSON: bindActionCreators(loadJSON, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Layout);

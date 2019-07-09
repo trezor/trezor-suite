@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Transaction } from '@wallet-types/index';
+import { Transaction, Account, Token } from '@wallet-types/index';
 
 export const getPendingAmount = (
     pending: Transaction[],
@@ -25,3 +25,14 @@ export const getPendingAmount = (
         // default
         return value;
     }, new BigNumber('0'));
+
+export const getAccountTokens = (tokens: Token[], account?: Account) => {
+    const a = account;
+    if (!a) return [];
+    return tokens.filter(
+        t =>
+            t.ethAddress === a.descriptor &&
+            t.network === a.network &&
+            t.deviceState === a.deviceState,
+    );
+};

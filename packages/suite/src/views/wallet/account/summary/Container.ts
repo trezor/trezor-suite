@@ -1,8 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
 
-// import * as TokenActions from 'actions/TokenActions';
+import * as TokenActions from '@wallet-actions/tokenActions';
 
 import { AppState, Dispatch } from '@suite-types/index';
 import Summary from './index';
@@ -60,17 +59,12 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addToken: () => {},
-    loadTokens: () => {},
-    removeToken: () => {},
-    // addToken: bindActionCreators(TokenActions.add, dispatch),
-    // loadTokens: bindActionCreators(TokenActions.load, dispatch),
-    // removeToken: bindActionCreators(TokenActions.remove, dispatch),
+    addToken: bindActionCreators(TokenActions.add, dispatch),
+    loadTokens: bindActionCreators(TokenActions.load, dispatch),
+    removeToken: bindActionCreators(TokenActions.remove, dispatch),
 });
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Summary),
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Summary);
