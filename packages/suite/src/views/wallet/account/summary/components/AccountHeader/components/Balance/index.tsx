@@ -172,11 +172,11 @@ class AccountBalance extends PureComponent<Props, State> {
                                 <FiatValue>
                                     {fiatRates ? (
                                         <FormattedNumber
-                                            currency={localCurrency}
                                             value={fiat}
                                             minimumFractionDigits={2}
                                             // eslint-disable-next-line react/style-prop-object
                                             style="currency"
+                                            currency={localCurrency}
                                         />
                                     ) : (
                                         'N/A'

@@ -33,7 +33,7 @@ const remove = (state: State, token: Token): State =>
                 t.ethAddress === token.ethAddress &&
                 t.address === token.address &&
                 t.deviceState === token.deviceState
-            )
+            ),
     );
 
 export default (state: State = initialState, action: Action): State => {
