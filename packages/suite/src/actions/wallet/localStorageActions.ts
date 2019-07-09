@@ -1,5 +1,3 @@
-/* @flow */
-
 // import * as CONNECT from 'actions/constants/TrezorConnect';
 // import * as ACCOUNT from 'actions/constants/account';
 import * as TOKEN from '@wallet-actions/constants/token';
@@ -176,6 +174,7 @@ export const loadJSON = () => async (dispatch: Dispatch) => {
         // });
 
         // load tokens
+        // TODO proper types
         const tokens = await NETWORKS.reduce(
             async (
                 promise: Promise<TokensCollection>,
@@ -208,6 +207,7 @@ export const loadJSON = () => async (dispatch: Dispatch) => {
 
 const VERSION = '2';
 
+// @ts-ignore
 const loadStorageData = () => (dispatch: Dispatch) => {
     // validate version
     const version = storageUtils.get(TYPE, KEY_VERSION);

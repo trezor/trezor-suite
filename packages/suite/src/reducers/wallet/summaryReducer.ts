@@ -21,8 +21,8 @@ export default (state: State = initialState, action: Action): State => {
             //     return initialState;
 
             case SUMMARY.INIT:
-                draft.details = action.state.details;
-                draft.selectedToken = action.state.selectedToken;
+                draft.details = action.payload.details;
+                draft.selectedToken = action.payload.selectedToken;
                 break;
 
             case SUMMARY.DISPOSE:
