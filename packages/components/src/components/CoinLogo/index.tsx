@@ -3,17 +3,26 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Logo = styled.img``;
+const Logo = styled.img<Omit<Props, 'network'>>`
+    width: ${props => props.size}px;
+    height: ${props => props.size}px;
+`;
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     network: string;
     className?: string;
+    size?: number;
 }
 
-const CoinLogo = ({ network, className, ...rest }: Props) => {
+const CoinLogo = ({ network, size = 50, className, ...rest }: Props) => {
     return (
-        // eslint-disable-next-line import/no-dynamic-require
-        <Logo className={className} src={require(`../../images/coins/${network}.png`)} {...rest} />
+        <Logo
+            className={className}
+            size={size}
+            // eslint-disable-next-line import/no-dynamic-require
+            src={require(`../../images/coins/${network}.png`)}
+            {...rest}
+        />
     );
 };
 

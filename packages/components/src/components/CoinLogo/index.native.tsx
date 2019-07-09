@@ -27,16 +27,20 @@ const LOGOS: { [key: string]: any } = {
     zec: require('../../images/coins/zec.png'),
 };
 
-const Logo = styled.Image``;
+const Logo = styled.Image<Omit<Props, 'network'>>`
+    width: ${props => props.size};
+    height: ${props => props.size};
+`;
 
 interface Props {
     network: string;
+    size?: number;
 }
 
-const CoinLogo = ({ network, ...rest }: Props) => {
+const CoinLogo = ({ network, size = 50, ...rest }: Props) => {
     return (
         // eslint-disable-next-line import/no-dynamic-require(
-        <Logo source={LOGOS[network]} {...rest} />
+        <Logo source={LOGOS[network]} size={size} {...rest} />
     );
 };
 
