@@ -4,6 +4,8 @@ import * as NOTIFICATION from '@wallet-actions/constants/notification';
 import { DEVICE } from 'trezor-connect';
 import { Action } from '@suite-types/index';
 
+import produce from 'immer';
+
 export interface CallbackAction {
     label: React.ReactNode;
     callback: () => any;
@@ -33,9 +35,8 @@ const initialState: State = [
     // }
 ];
 
-const addNotification = (state: State, payload: any): State => {
-    const newState: State = state.filter(e => !e.cancelable);
-    newState.push({
+const addNotification = (state: State, payload: any) => {
+    return state.push({
         key: new Date().getTime().toString(),
         id: payload.id,
         devicePath: payload.devicePath,
@@ -45,9 +46,7 @@ const addNotification = (state: State, payload: any): State => {
         cancelable: payload.cancelable,
         actions: payload.actions,
     });
-
     // TODO: sort
-    return newState;
 };
 
 const closeNotification = (state: State, payload: any): State => {
@@ -61,19 +60,23 @@ const closeNotification = (state: State, payload: any): State => {
 };
 
 export default function notification(state: State = initialState, action: Action): State {
-    switch (action.type) {
-        case DEVICE.DISCONNECT: {
-            const { path } = action.payload;
-            return state.filter(entry => entry.devicePath !== path);
+    return produce(state, draft => {
+        switch (action.type) {
+            case DEVICE.DISCONNECT: {
+                const { path } = action.payload;
+                draft.filter(entry => entry.devicePath !== path);
+                break;
+            }
+
+            case NOTIFICATION.ADD:
+                addNotification(draft, action.payload);
+                break;
+            // TODO
+            // case LOCATION_CHANGE:
+            case NOTIFICATION.CLOSE:
+                closeNotification(draft, action.payload);
+                break;
+            // no default
         }
-
-        case NOTIFICATION.ADD:
-            return addNotification(state, action.payload);
-
-        // TODO
-        // case LOCATION_CHANGE:
-        case NOTIFICATION.CLOSE:
-            return closeNotification(state, action.payload);
-        // no default
-    }
+    });
 }
