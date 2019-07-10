@@ -3,21 +3,20 @@ import { H1, H5, Notification } from '@trezor/components';
 import styled from 'styled-components/native';
 
 const Wrapper = styled.View`
-  padding: 10px;
+    padding: 10px;
 `;
 
 const Col = styled.View`
-  flex-direction: column;
+    flex-direction: column;
 `;
 
 const Notifications = () => {
-    const notMessage = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam sapien elit.';
+    const notMessage =
+        'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam sapien elit.';
 
     return (
         <Wrapper>
-            <H1>
-                Basic
-            </H1>
+            <H1>Basic</H1>
             <Col>
                 <Notification
                     variant="info"
@@ -77,9 +76,7 @@ const Notifications = () => {
                     data-test="notification_cancelable_error"
                 />
             </Col>
-            <H5>
-                with an action button
-            </H5>
+            <H5>with an action button</H5>
             <Col>
                 <Notification
                     variant="info"
@@ -135,9 +132,7 @@ const Notifications = () => {
                 />
             </Col>
 
-            <H5>
-                with an action in progress
-            </H5>
+            <H5>with an action in progress</H5>
             <Col>
                 <Notification
                     variant="info"
@@ -197,7 +192,7 @@ const Notifications = () => {
                 />
             </Col>
         </Wrapper>
-    )
-}
+    );
+};
 
 export default Notifications;

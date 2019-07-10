@@ -56,18 +56,14 @@ const Other = () => {
     return (
         <Wrapper>
             <H1>Prompt</H1>
-            <H5>
-                Trezor One
-            </H5>
+            <H5>Trezor One</H5>
             <Col>
                 <Prompt model={1} data-test="prompt_1">
                     Complete the action on your device
                 </Prompt>
             </Col>
 
-            <H5>
-                Trezor Model T
-            </H5>
+            <H5>Trezor Model T</H5>
             <Col>
                 <Prompt model={2} data-test="prompt_2">
                     Complete the action on your device
@@ -75,46 +71,34 @@ const Other = () => {
             </Col>
 
             <H1>TrezorImage</H1>
-            <H5>
-                Trezor One
-            </H5>
+            <H5>Trezor One</H5>
             <Col>
                 <TrezorImage height={310} model={1} data-test="trezor_image_1" />
             </Col>
 
-            <H5>
-                Trezor Model T
-            </H5>
+            <H5>Trezor Model T</H5>
             <Col>
                 <TrezorImage height={310} model={2} data-test="trezor_image_2" />
             </Col>
 
             <H1>TrezorLogo</H1>
-            <H5>
-                Horizontal
-            </H5>
+            <H5>Horizontal</H5>
             <Section>
                 <TrezorLogo type="horizontal" height={50} data-test="trezor_logo_horizontal" />
             </Section>
 
-            <H5>
-                Vertical
-            </H5>
+            <H5>Vertical</H5>
             <Section>
                 <TrezorLogo type="vertical" height={100} data-test="trezor_logo_vertical" />
             </Section>
 
             <H1>Loader</H1>
-            <H5>
-                default
-            </H5>
+            <H5>default</H5>
             <Col>
                 <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
             </Col>
 
-            <H5>
-                small text
-            </H5>
+            <H5>small text</H5>
             <Col>
                 <Loader
                     size={100}
@@ -125,9 +109,7 @@ const Other = () => {
                 />
             </Col>
 
-            <H5>
-                transparent route
-            </H5>
+            <H5>transparent route</H5>
             <Col>
                 <Loader
                     size={100}
@@ -138,9 +120,7 @@ const Other = () => {
                 />
             </Col>
 
-            <H5>
-                white text
-            </H5>
+            <H5>white text</H5>
             <ColDark>
                 <Loader
                     size={100}
@@ -151,9 +131,7 @@ const Other = () => {
                 />
             </ColDark>
 
-            <H5>
-                white text &amp; transparent route
-            </H5>
+            <H5>white text &amp; transparent route</H5>
             <ColDark>
                 <Loader
                     size={100}
@@ -165,9 +143,7 @@ const Other = () => {
                 />
             </ColDark>
 
-            <H1>
-                Icons
-            </H1>
+            <H1>Icons</H1>
             <Icons>
                 {Object.keys(icons).map(icon => {
                     return (
@@ -179,9 +155,7 @@ const Other = () => {
                 })}
             </Icons>
 
-            <H1>
-                Coins
-            </H1>
+            <H1>Coins</H1>
             <Icons>
                 {COINS.map((coin: string) => {
                     return (
@@ -193,7 +167,7 @@ const Other = () => {
                 })}
             </Icons>
         </Wrapper>
-    )
+    );
 };
 
 export default Other;

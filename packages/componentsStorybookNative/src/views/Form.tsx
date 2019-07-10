@@ -1,22 +1,13 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import {
-    Checkbox,
-    Switch,
-    Input,
-    InputPin,
-    TextArea,
-    Select,
-    H1,
-    H5,
-} from '@trezor/components';
+import { Checkbox, Switch, Input, InputPin, TextArea, Select, H1, H5 } from '@trezor/components';
 
 const Wrapper = styled.View`
-  padding: 10px;
+    padding: 10px;
 `;
 
 const Col = styled.View`
-  flex-direction: column;
+    flex-direction: column;
 `;
 
 const Form = () => {
@@ -28,12 +19,8 @@ const Form = () => {
 
     return (
         <Wrapper>
-            <H1>
-                Input
-            </H1>
-            <H5>
-                Basic
-            </H5>
+            <H1>Input</H1>
+            <H5>Basic</H5>
             <Col>
                 <Input
                     type="text"
@@ -87,9 +74,7 @@ const Form = () => {
                 />
             </Col>
 
-            <H5>
-                with value
-            </H5>
+            <H5>with value</H5>
             <Col>
                 <Input
                     type="text"
@@ -137,9 +122,7 @@ const Form = () => {
                 />
             </Col>
 
-            <H5>
-                with label and bottomText
-            </H5>
+            <H5>with label and bottomText</H5>
             <Col>
                 <Input
                     type="text"
@@ -205,9 +188,7 @@ const Form = () => {
                 />
             </Col>
 
-            <H5>
-                with tooltipAction
-            </H5>
+            <H5>with tooltipAction</H5>
             <Col>
                 <Input
                     type="text"
@@ -219,9 +200,7 @@ const Form = () => {
                 />
             </Col>
 
-            <H1>
-                InputPin
-            </H1>
+            <H1>InputPin</H1>
             <Col>
                 <InputPin
                     value="1234"
@@ -230,12 +209,8 @@ const Form = () => {
                 />
             </Col>
 
-            <H1>
-                TextArea
-            </H1>
-            <H5>
-                Basic
-            </H5>
+            <H1>TextArea</H1>
+            <H5>Basic</H5>
             <Col>
                 <TextArea
                     value=""
@@ -280,9 +255,7 @@ const Form = () => {
                 />
             </Col>
 
-            <H5>
-                with label and bottomText
-            </H5>
+            <H5>with label and bottomText</H5>
             <Col>
                 <TextArea
                     value=""
@@ -339,9 +312,7 @@ const Form = () => {
                 />
             </Col>
 
-            <H1>
-                Select
-            </H1>
+            <H1>Select</H1>
             <Col>
                 <H5>Basic</H5>
                 <Select
@@ -350,12 +321,7 @@ const Form = () => {
                     options={options}
                     onChange={() => {}}
                 />
-                <Select
-                    isSearchable
-                    value={options.Hello}
-                    options={options}
-                    onChange={() => {}}
-                />
+                <Select isSearchable value={options.Hello} options={options} onChange={() => {}} />
                 <H5>clearable</H5>
                 <Select
                     isSearchable
@@ -387,9 +353,7 @@ const Form = () => {
                 />
             </Col>
 
-            <H1>
-                Checkbox
-            </H1>
+            <H1>Checkbox</H1>
             <Col>
                 <Checkbox onClick={() => {}} data-test="checkbox_unchecked">
                     Label
@@ -400,28 +364,22 @@ const Form = () => {
                     Label
                 </Checkbox>
             </Col>
-            <H1>
-                Switch
-            </H1>
-            <H5>
-                basic
-            </H5>
+            <H1>Switch</H1>
+            <H5>basic</H5>
             <Col>
                 <Switch onChange={() => {}} checked={false} />
                 <Switch onChange={() => {}} checked />
                 <Switch onChange={() => {}} checked={false} disabled />
             </Col>
 
-            <H5>
-                small
-            </H5>
+            <H5>small</H5>
             <Col>
                 <Switch onChange={() => {}} isSmall checked={false} />
                 <Switch onChange={() => {}} isSmall checked />
                 <Switch onChange={() => {}} isSmall disabled checked={false} />
             </Col>
         </Wrapper>
-    )
+    );
 };
 
 export default Form;

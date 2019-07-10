@@ -1,22 +1,13 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { 
-	H1, 
-	H2, 
-	H3, 
-	H4, 
-	H5, 
-	H6, 
-	P, 
-    Link,
-} from '@trezor/components';
+import { H1, H2, H3, H4, H5, H6, P, Link } from '@trezor/components';
 
 const Wrapper = styled.View`
-  padding: 10px;
+    padding: 10px;
 `;
 
 const Col = styled.View`
-  flex-direction: column;
+    flex-direction: column;
 `;
 
 const Typography = () => {
@@ -33,9 +24,7 @@ const Typography = () => {
                 <H5 data-test="heading_5">Heading level 5</H5>
                 <H6 data-test="heading_6">Heading level 6</H6>
             </Col>
-            <H1>
-                Paragraph
-            </H1>
+            <H1>Paragraph</H1>
 
             <H5>small</H5>
             <Col>
@@ -82,7 +71,7 @@ const Typography = () => {
                 </P>
             </Col>
         </Wrapper>
-    )
+    );
 };
 
 export default Typography;

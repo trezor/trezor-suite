@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import Typography from './src/views/Typography';
 import Form from './src/views/Form';
@@ -15,27 +15,24 @@ import Buttons from './src/views/Button';
 import Other from './src/views/Other';
 
 const Container = styled.ScrollView.attrs({
-	contentContainerStyle: {
-		justifyContent: 'center',
-		paddingTop: 50,
-	}
+    contentContainerStyle: {
+        justifyContent: 'center',
+        paddingTop: 50,
+    },
 })``;
 
-type Props = {};
-export default class App extends Component<Props> {
-	render() {
-		const options: any = {
-			Typography: Typography,
-			Form: Form,
-			Notification: Notification,
-			Buttons: Buttons,
-			Other: Other,
-		};
+export const App = () => {
+    const options: any = {
+        Typography,
+        Form,
+        Notification,
+        Buttons,
+        Other,
+    };
 
-		return (
-			<Container>
-				<options.Other />
-			</Container>
-		);
-	}
-}
+    return (
+        <Container>
+            <options.Other />
+        </Container>
+    );
+};
