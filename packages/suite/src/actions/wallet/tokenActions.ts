@@ -14,12 +14,13 @@ export type TokenAction =
 // action from component <reactSelect>
 export const load = (input: string, network: string) => async (
     dispatch: Dispatch,
-    getState: GetState,
 ): Promise<any> => {
     let formattedInput = input;
     if (formattedInput.length < 1) formattedInput = '0x';
 
-    const tokens = getState().wallet.localStorage.tokens[network];
+    // TODO: Can be removed once we start to retrieve tokens from blockbook
+    // const tokens = getState().wallet.localStorage.tokens[network];
+    const tokens: Token[] = [];
     const value = formattedInput.toLowerCase();
     const result = tokens.filter(
         (t: Token) =>
