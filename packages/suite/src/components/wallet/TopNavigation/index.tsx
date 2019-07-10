@@ -92,6 +92,9 @@ const TopNavigation = (props: Props) => {
                 // show item if isHidden() returns false or when isHidden func is not defined
                 if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
                     const itemRoute = getPrefixedURL(item.route); // prefix url
+                    console.log(itemRoute);
+                    console.log(currentPath);
+                    console.log(toInternalRoute(currentPath));
                     return (
                         <StyledNavLink
                             key={item.route}
