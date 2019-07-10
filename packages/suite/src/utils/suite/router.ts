@@ -115,7 +115,7 @@ export const toInternalRoute = (route: string) => {
     try {
         const tokens = route.match(/([^#]*)(#.*)?/);
         const group1 = tokens ? tokens[1] : route;
-        return group1;
+        return group1.replace(/\/+$/, ''); // strip trailing slash
     } catch (error) {
         console.error(error);
         return route;
