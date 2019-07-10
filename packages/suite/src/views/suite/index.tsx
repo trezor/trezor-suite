@@ -13,6 +13,7 @@ import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import Layout from '@suite-components/Layout';
 import Bridge from '@suite-views/bridge';
+import { getRoute } from '@suite/utils/suite/router';
 
 interface Props {
     router: AppState['router'];
@@ -85,7 +86,7 @@ const Index: FunctionComponent<Props> = props => {
             <Layout>
                 <Text>Device is in unexpected mode: {suite.device.mode}</Text>{' '}
                 {suite.device.mode === 'initialize' && (
-                    <Button onClick={() => goto('/onboarding')}>Go to onboarding</Button>
+                    <Button onClick={() => goto(getRoute('onboarding-index'))}>Go to onboarding</Button>
                 )}
                 <Text>Transport: {suite.transport.type}</Text>
             </Layout>
