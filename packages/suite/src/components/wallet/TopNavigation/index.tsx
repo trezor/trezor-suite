@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import { getPrefixedURL, toInternalRoute } from '@suite-utils/router';
+import { toInternalRoute } from '@suite-utils/router';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -91,14 +91,13 @@ const TopNavigation = (props: Props) => {
             {props.items.map(item => {
                 // show item if isHidden() returns false or when isHidden func is not defined
                 if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
-                    const itemRoute = getPrefixedURL(item.route); // prefix url
-                    console.log(itemRoute);
+                    console.log(item.route);
                     console.log(currentPath);
                     console.log(toInternalRoute(currentPath));
                     return (
                         <StyledNavLink
                             key={item.route}
-                            active={toInternalRoute(currentPath) === itemRoute}
+                            active={toInternalRoute(currentPath) === item.route}
                             onClick={() => goto(item.route, true)}
                         >
                             <LinkContent>{item.title}</LinkContent>
