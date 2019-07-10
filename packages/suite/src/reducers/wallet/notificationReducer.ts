@@ -74,8 +74,6 @@ export default function notification(state: State = initialState, action: Action
         // case LOCATION_CHANGE:
         case NOTIFICATION.CLOSE:
             return closeNotification(state, action.payload);
-
-        default:
-            return state;
+        // no default
     }
 }

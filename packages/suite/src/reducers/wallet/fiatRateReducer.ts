@@ -32,9 +32,7 @@ export default (state: Fiat[] = initialState, action: Action) => {
             case RATE_UPDATE:
                 update(draft, action);
                 break;
-
-            default:
-                return state;
+            // no default
         }
     });
 };
