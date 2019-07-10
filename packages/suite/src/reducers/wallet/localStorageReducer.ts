@@ -1,6 +1,7 @@
 import * as STORAGE from '@suite/actions/wallet/constants/storage';
 import { Action } from '@suite-types/index';
 import { Network, NetworkToken } from '@wallet-types/index';
+import produce from 'immer';
 
 export interface TokensCollection {
     [network: string]: NetworkToken[];
@@ -52,24 +53,20 @@ const initialState: State = {
 };
 
 export default function localStorage(state: State = initialState, action: Action): State {
-    switch (action.type) {
-        case STORAGE.READY:
-            return {
-                ...state,
-                initialized: true,
-                // config: action.config,
-                // ERC20Abi: action.ERC20Abi,
-                tokens: action.tokens,
-                error: null,
-            };
-
-        case STORAGE.ERROR:
-            return {
-                ...state,
-                error: action.error,
-            };
-
-        default:
-            return state;
-    }
+    return produce(state, draft => {
+        switch (action.type) {
+            case STORAGE.READY:
+                draft.initialized = true;
+                draft.tokens = action.tokens;
+                draft.error = null;
+                // draft.config = action.config;
+                // draft.ERC20Abi = action.ERC20Abi;
+                break;
+            case STORAGE.ERROR:
+                draft.error = action.error;
+                break;
+            default:
+                break;
+        }
+    });
 }
