@@ -2,6 +2,8 @@ import { TRANSPORT } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types/index';
 
+import produce from 'immer';
+
 interface SuiteState {
     online: boolean;
     loading: boolean;
@@ -46,72 +48,57 @@ const initialState: SuiteState = {
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
-    switch (action.type) {
-        case SUITE.INIT:
-            return initialState;
-        case SUITE.READY:
-            return {
-                ...state,
-                loading: false,
-                loaded: true,
-            };
-        case SUITE.ERROR:
-            return {
-                ...state,
-                loading: false,
-                loaded: false,
-                error: action.error,
-            };
-        case SUITE.SELECT_DEVICE:
-        case SUITE.UPDATE_SELECTED_DEVICE:
-            return {
-                ...state,
-                device: action.payload,
-            };
+    return produce(state, draft => {
+        switch (action.type) {
+            case SUITE.INIT:
+                return initialState;
 
-        case SUITE.SET_LANGUAGE:
-            return {
-                ...state,
-                language: action.locale,
-                messages: action.messages,
-            };
+            case SUITE.READY:
+                draft.loading = false;
+                draft.loaded = true;
+                break;
 
-        case SUITE.TOGGLE_DEVICE_MENU:
-            return {
-                ...state,
-                deviceMenuOpened: action.opened,
-            };
+            case SUITE.ERROR:
+                draft.loading = false;
+                draft.loaded = false;
+                draft.error = action.error;
+                break;
 
-        case TRANSPORT.START:
-            return {
-                ...state,
-                transport: action.payload,
-            };
-        case TRANSPORT.ERROR:
-            return {
-                ...state,
-                transport: {
+            case SUITE.SELECT_DEVICE:
+            case SUITE.UPDATE_SELECTED_DEVICE:
+                draft.device = action.payload;
+                break;
+
+            case SUITE.SET_LANGUAGE:
+                draft.language = action.locale;
+                draft.messages = action.messages;
+                break;
+
+            case SUITE.TOGGLE_DEVICE_MENU:
+                draft.deviceMenuOpened = action.opened;
+                break;
+
+            case TRANSPORT.START:
+                draft.transport = action.payload;
+                break;
+
+            case TRANSPORT.ERROR:
+                draft.transport = {
                     bridge: action.payload.bridge,
-                },
-            };
-        case SUITE.TOGGLE_SIDEBAR:
-            return {
-                ...state,
-                showSidebar: !state.showSidebar,
-            };
+                };
+                break;
+            case SUITE.TOGGLE_SIDEBAR:
+                draft.showSidebar = !draft.showSidebar;
+                break;
 
-        case SUITE.ONLINE_STATUS:
-            return {
-                ...state,
-                online: action.online,
-            };
+            case SUITE.ONLINE_STATUS:
+                draft.online = action.online;
+                break;
 
-        case 'iframe-loaded':
-            return {
-                ...state,
-                platform: action.payload.browser,
-            };
-        default:
-            return state;
-    }
+            case 'iframe-loaded':
+                draft.platform = action.payload.browser;
+                break;
+            // no default
+        }
+    });
 };
