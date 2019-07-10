@@ -27,13 +27,14 @@ export default class Components extends Component {
 
     render() {
         const options: any = {
+            None: null,
             Typography: { value: 'typography', label: 'Typography' },
             Form: { value: 'form', label: 'Form' },
             Notification: { value: 'notification', label: 'Notification' },
             Buttons: { value: 'buttons', label: 'Buttons' },
             Other: { value: 'other', label: 'Other' },
         };
-        const C = views[this.state.option];
+        const C = views[this.state.option || 'typography'];
 
         return (
             <View>
