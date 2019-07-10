@@ -117,7 +117,7 @@ export const toInternalRoute = (route: string) => {
         const urlPrefix = process.env.assetPrefix;
         let strippedPrefix = route;
         if (urlPrefix && route.indexOf(urlPrefix) === 0) {
-            strippedPrefix.slice(urlPrefix.length)
+            strippedPrefix = strippedPrefix.slice(urlPrefix.length);
         }
         // split path and params
         const tokens = strippedPrefix.match(/([^#]*)(#.*)?/);
