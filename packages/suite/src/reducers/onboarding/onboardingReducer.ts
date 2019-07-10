@@ -19,12 +19,12 @@ const initialState: OnboardingReducer = {
     steps: [
         {
             id: STEP.ID_WELCOME_STEP,
-            visited: true,
         },
-        {
-            id: STEP.ID_START_STEP,
-            title: STEP.TITLE_START_STEP,
-        },
+        // content of StartStep moved to WelcomeStep
+        // {
+        //     id: STEP.ID_START_STEP,
+        //     title: STEP.TITLE_START_STEP,
+        // },
         {
             id: STEP.ID_NEW_OR_USED,
             title: STEP.TITLE_SELECT_DEVICE_STEP,
@@ -32,6 +32,7 @@ const initialState: OnboardingReducer = {
         {
             id: STEP.ID_SELECT_DEVICE_STEP,
             title: STEP.TITLE_SELECT_DEVICE_STEP,
+            disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE],
         },
         {
             id: STEP.ID_UNBOXING_STEP,
@@ -122,10 +123,7 @@ const initialState: OnboardingReducer = {
     ],
 };
 
-const onboarding = (
-    state: OnboardingReducer = initialState,
-    action: OnboardingActionTypes,
-): OnboardingReducer => {
+const onboarding = (state: OnboardingReducer = initialState, action: OnboardingActionTypes) => {
     switch (action.type) {
         case SET_STEP_ACTIVE:
             return {

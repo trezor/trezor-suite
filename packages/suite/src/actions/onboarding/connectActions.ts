@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import TrezorConnect, { UI } from 'trezor-connect';
+
 import {
     DEVICE_CALL_START,
     DEVICE_CALL_ERROR,
     DEVICE_CALL_SUCCESS,
     DEVICE_CALL_RESET,
-    DEVICE_INTERACTION_EVENT,
-    UI_INTERACTION_EVENT,
 } from '@suite/types/onboarding/connect';
-import { State, GetState, Dispatch } from '@suite/types/onboarding/actions';
+import { GetState, Dispatch } from '@suite-types/index';
 import { AnyStepId } from '@suite/types/onboarding/steps';
 import * as CALLS from '@suite/actions/onboarding/constants/calls';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
@@ -47,33 +46,43 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
         let fn;
         switch (name) {
             case CALLS.FIRMWARE_ERASE:
+                // @ts-ignore
                 fn = () => TrezorConnect.firmwareErase(callParams);
                 break;
             case CALLS.FIRMWARE_UPLOAD:
+                // @ts-ignore
                 fn = () => TrezorConnect.firmwareUpload(callParams);
                 break;
             case CALLS.RESET_DEVICE:
+                // @ts-ignore
                 fn = () => TrezorConnect.resetDevice(callParams);
                 break;
             case CALLS.BACKUP_DEVICE:
+                // @ts-ignore
                 fn = () => TrezorConnect.backupDevice(callParams);
                 break;
             case CALLS.APPLY_SETTINGS:
+                // @ts-ignore
                 fn = () => TrezorConnect.applySettings(callParams);
                 break;
             case CALLS.APPLY_FLAGS:
+                // @ts-ignore
                 fn = () => TrezorConnect.applyFlags(callParams);
                 break;
             case CALLS.GET_FEATURES:
+                // @ts-ignore
                 fn = () => TrezorConnect.getFeatures(callParams);
                 break;
             case CALLS.CHANGE_PIN:
+                // @ts-ignore
                 fn = () => TrezorConnect.changePin(callParams);
                 break;
             case CALLS.RECOVER_DEVICE:
+                // @ts-ignore
                 fn = () => TrezorConnect.recoveryDevice(callParams);
                 break;
             case CALLS.WIPE_DEVICE:
+                // @ts-ignore
                 fn = () => TrezorConnect.wipeDevice(callParams);
                 break;
             default:
@@ -105,15 +114,19 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
     }
 };
 
-const uiResponseCall = (name: string, params: any) => async (dispatch: Dispatch) => {
+const uiResponseCall = (name: string, params: any) => async () => {
     try {
         let fn;
         switch (name) {
+            // @ts-ignore
             case UI.RECEIVE_PIN:
+                // @ts-ignore
                 fn = () => TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: params.pin });
                 break;
+            // @ts-ignore
             case UI.RECEIVE_WORD:
                 fn = () =>
+                    // @ts-ignore
                     TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: params.word });
                 break;
             default:
@@ -138,7 +151,7 @@ const firmwareUpload = (params: any) => (dispatch: Dispatch) =>
 
 const resetDevice = () => (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    if (device.features.major_version === 1) {
+    if (device!.features!.major_version === 1) {
         return dispatch(
             call(CALLS.RESET_DEVICE, {
                 label: DEFAULT_LABEL,
@@ -171,7 +184,7 @@ const recoveryDevice = () => (dispatch: Dispatch, getState: GetState) => {
     let defaults;
     const { device } = getState().suite;
     const { recovery } = getState().onboarding;
-    if (device.features.major_version === 2) {
+    if (device!.features!.major_version === 2) {
         defaults = {
             passphrase_protection: true,
         };
@@ -187,20 +200,20 @@ const recoveryDevice = () => (dispatch: Dispatch, getState: GetState) => {
 };
 const wipeDevice = () => (dispatch: Dispatch) => dispatch(call(CALLS.WIPE_DEVICE));
 const submitNewPin = (params: any) => (dispatch: Dispatch) =>
+    // @ts-ignore
     dispatch(uiResponseCall(UI.RECEIVE_PIN, params));
 const submitWord = (params: any) => (dispatch: Dispatch) =>
+    // @ts-ignore
     dispatch(uiResponseCall(UI.RECEIVE_WORD, params));
 
 // todo: maybe rework this function to take concrete call function as argument;
-// todo: not used now.
 const callActionAndGoToNextStep = (
-    name: string,
-    params: any,
+    action: any,
     stepId?: AnyStepId,
     goOnSuccess: boolean = true,
     goOnError: boolean = false,
 ) => (dispatch: Dispatch) => {
-    dispatch(call(name, params)).then((response: any) => {
+    dispatch(action).then((response: any) => {
         if (response.success && goOnSuccess) {
             dispatch(goToNextStep(stepId));
         }

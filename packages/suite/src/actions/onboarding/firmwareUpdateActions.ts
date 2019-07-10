@@ -1,4 +1,4 @@
-import { Dispatch, GetState } from '@suite/types/onboarding/actions';
+import { Dispatch, GetState } from '@suite-types/index';
 import * as FIRMWARE_UPDATE from '@suite/types/onboarding/firmwareUpdate';
 import arrayBufferToBuffer from '@suite/utils/onboarding/arrayBufferToBuffer';
 
@@ -11,12 +11,12 @@ const setProgress = (progress: number) => ({
 });
 
 const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
-    const model: number = getState().connect.device.features.major_version;
+    const { device } = getState().onboarding.connect;
+    const model = device.features.major_version;
     const versions: { [index: number]: string } = {
         1: 'trezor-1.8.1.bin',
-        2: 'trezor-2.1.0.bin',
+        2: 'trezor-2.1.1.bin',
     };
-    const { device } = getState().connect;
     let fw;
 
     dispatch({
@@ -27,13 +27,16 @@ const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
     const progressFn = () => {
         dispatch({
             type: FIRMWARE_UPDATE.SET_PROGRESS,
-            progress: getState().firmwareUpdate.progress + 1,
+            progress: getState().onboarding.firmwareUpdate.progress + 1,
         });
     };
     let maxProgress = 0;
     const interval = setInterval(
         () => {
-            if (getState().connect.deviceCall.error || getState().fetch.error) {
+            if (
+                getState().onboarding.connect.deviceCall.error ||
+                getState().onboarding.fetchCall.error
+            ) {
                 dispatch({
                     type: FIRMWARE_UPDATE.SET_PROGRESS,
                     progress: 100,
@@ -41,10 +44,10 @@ const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
                 clearInterval(interval);
                 return;
             }
-            if (getState().firmwareUpdate.progress === 100) {
+            if (getState().onboarding.firmwareUpdate.progress === 100) {
                 clearInterval(interval);
             }
-            if (getState().firmwareUpdate.progress < maxProgress) {
+            if (getState().onboarding.firmwareUpdate.progress < maxProgress) {
                 progressFn();
             }
         },

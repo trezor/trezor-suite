@@ -35,10 +35,7 @@ const initialState = {
     ],
 };
 
-const newsletter = (
-    state: NewsletterReducer = initialState,
-    action: NewsletterActionTypes,
-): NewsletterReducer => {
+const newsletter = (state: NewsletterReducer = initialState, action: NewsletterActionTypes) => {
     switch (action.type) {
         case TOGGLE_CHECKBOX:
             return {

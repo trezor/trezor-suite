@@ -1,12 +1,18 @@
 import React from 'react';
 import App, { Container, NextAppContext } from 'next/app';
-
 import { Store } from 'redux';
+import { isStatic } from '@suite-utils/router';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
+import * as Sentry from '@sentry/browser';
+
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
+import ErrorBoundary from '@suite-support/ErrorBoundary';
+import config from '@suite-config/index';
+
+Sentry.init({ dsn: config.sentry });
 
 interface Props {
     store: Store;
@@ -20,18 +26,21 @@ class TrezorSuiteApp extends App<Props> {
     }
 
     render() {
-        const { Component, pageProps, store } = this.props;
+        const { Component, pageProps, store, router } = this.props;
+        const isStaticRoute = isStatic(router.pathname);
 
         return (
-            <Container>
-                <ReduxProvider store={store}>
-                    <IntlProvider>
-                        <Preloader>
-                            <Component {...pageProps} />
-                        </Preloader>
-                    </IntlProvider>
-                </ReduxProvider>
-            </Container>
+            <ErrorBoundary>
+                <Container>
+                    <ReduxProvider store={store}>
+                        <IntlProvider>
+                            <Preloader isStatic={isStaticRoute}>
+                                <Component {...pageProps} />
+                            </Preloader>
+                        </IntlProvider>
+                    </ReduxProvider>
+                </Container>
+            </ErrorBoundary>
         );
     }
 }

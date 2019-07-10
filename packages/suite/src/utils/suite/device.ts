@@ -1,6 +1,7 @@
 import { colors } from '@trezor/components';
 import { TrezorDevice } from '@suite-types/index';
-import l10nMessages from '@suite-components/DeviceMenu/components/DeviceItem/index.messages';
+import { InjectedIntl } from 'react-intl';
+import l10nMessages from '@suite-components/DeviceMenu/index.messages';
 
 export const getStatus = (device: TrezorDevice): string => {
     if (!device.connected) {
@@ -43,7 +44,7 @@ export const getStatus = (device: TrezorDevice): string => {
     return 'unknown';
 };
 
-export const getStatusName = (deviceStatus: string, intl): string => {
+export const getStatusName = (deviceStatus: string, intl: InjectedIntl): string => {
     switch (deviceStatus) {
         case 'connected':
             return intl.formatMessage(l10nMessages.TR_CONNECTED);
@@ -72,9 +73,10 @@ export const getStatusName = (deviceStatus: string, intl): string => {
     }
 };
 
-export const isWebUSB = transport => !!(transport.type && transport.type === 'webusb');
+export const isWebUSB = (transport: any) => !!(transport.type && transport.type === 'webusb'); // TODO fix ts
 
-export const isDisabled = (selectedDevice: SelectedDevice, devices: TrezorDevice[], transport) => {
+export const isDisabled = (selectedDevice: any, devices: TrezorDevice[], transport: any) => {
+    // TODO fix ts
     if (isWebUSB(transport)) return false; // always enabled if webusb
     if (devices.length < 1) return true; // no devices
     if (devices.length === 1) {
@@ -85,12 +87,16 @@ export const isDisabled = (selectedDevice: SelectedDevice, devices: TrezorDevice
     return false; // default
 };
 
-export const isDeviceAccessible = (device: SelectedDevice): boolean => {
+export const isDeviceAccessible = (device: any): boolean => {
+    // TODO fix ts
     if (!device || !device.features) return false;
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
-export const isSelectedDevice = (selected: SelectedDevice, device: TrezorDevice): boolean =>
+export const isSelectedDevice = (
+    selected: any,
+    device: TrezorDevice,
+): boolean => // TODO fix ts
     !!(
         selected &&
         device &&

@@ -820,6 +820,14 @@ storiesOf('Form', module)
                 Hello: { value: 'hello', label: 'Hello' },
                 World: { value: 'world', label: 'World' },
             };
+            const options = Object.keys(values)
+                .filter((k: string) => {
+                    return values[k];
+                })
+                .map((k: string) => {
+                    return values[k];
+                });
+
             return (
                 <Select
                     {...(!isSearchable ? { isSearchable } : {})}
@@ -827,7 +835,7 @@ storiesOf('Form', module)
                     {...(isDisabled ? { isDisabled } : {})}
                     {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
                     value={select('Value', values, null)}
-                    options={values}
+                    options={options}
                 />
             );
         },

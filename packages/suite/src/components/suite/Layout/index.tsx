@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
@@ -12,11 +12,14 @@ import SuiteHeader from '@suite-components/SuiteHeader';
 import suiteConfig from '@suite-config/index';
 import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
-import { State } from '@suite-types/index';
+import ErrorBoundary from '@suite-support/ErrorBoundary';
+import SuiteNotifications from '@suite-components/Notifications';
+import { AppState } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
+
 import l10nMessages from './index.messages';
 
-const PageWrapper = styled.div<Props>`
+const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -24,34 +27,41 @@ const PageWrapper = styled.div<Props>`
     align-items: center;
 `;
 
-const AppWrapper = styled.div<Props>`
+const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
     width: 100%;
-    max-width: 1170px;
     margin: 0 auto;
+
+    ${props =>
+        !props.fullscreenMode &&
+        css`
+            max-width: 1170px;
+            margin-top: 30px;
+
+            @media screen and (max-width: 1170px) {
+                border-radius: 0px;
+                margin-top: 0px;
+            }
+        `};
+
     flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     display: flex;
     flex-direction: column;
     align-items: center;
     border-radius: 4px 4px 0px 0px;
-    margin-top: 30px;
     height: 100%;
     overflow-y: hidden;
-
-    @media screen and (max-width: 1170px) {
-        border-radius: 0px;
-        margin-top: 0px;
-    }
 `;
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
-    devices: State['devices'];
+    router: AppState['router'];
+    suite: AppState['suite'];
+    devices: AppState['devices'];
     fetchLocale: typeof fetchLocale;
     toggleSidebar: () => void;
     isLanding?: boolean;
     showSuiteHeader?: boolean;
+    fullscreenMode?: boolean;
     children: React.ReactNode;
 }
 
@@ -63,7 +73,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             toggleSidebar={props.toggleSidebar}
             togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}
             togglerCloseText={<FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />}
-            sidebarEnabled
+            sidebarEnabled={!props.isLanding}
             rightAddon={
                 <LanguagePicker
                     language={props.suite.language}
@@ -92,18 +102,21 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 },
             ]}
         />
-        <AppWrapper isLanding={props.isLanding}>
-            <>
-                <Log />
-                {props.showSuiteHeader && <SuiteHeader />}
-                {props.children}
-            </>
-        </AppWrapper>
-        <Footer isLanding={props.isLanding} />
+        <ErrorBoundary>
+            <SuiteNotifications />
+            <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
+                <>
+                    <Log />
+                    {props.showSuiteHeader && <SuiteHeader />}
+                    {props.children}
+                </>
+            </AppWrapper>
+        </ErrorBoundary>
+        {!props.fullscreenMode && <Footer isLanding={props.isLanding} />}
     </PageWrapper>
 );
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
     devices: state.devices,

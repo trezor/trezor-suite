@@ -1,8 +1,15 @@
 import { DEVICE } from 'trezor-connect';
-import * as Connect from '@suite/types/onboarding/connect';
-import { Action } from '@suite/types/onboarding/actions';
+import {
+    ConnectReducer,
+    DEVICE_CALL_RESET,
+    DEVICE_CALL_START,
+    DEVICE_CALL_SUCCESS,
+    DEVICE_CALL_ERROR,
+    UI_REQUEST_PIN,
+} from '@suite/types/onboarding/connect';
+import { Action } from '@suite-types/index';
 
-const initialState: Connect.ConnectReducer = {
+const initialState = {
     prevDeviceId: null,
     device: null,
     deviceCall: {
@@ -21,7 +28,7 @@ const initialState: Connect.ConnectReducer = {
     },
 };
 
-const setPrevDeviceId = (state: Connect.ConnectReducer, device: Connect.Device) => {
+const setPrevDeviceId = (state: ConnectReducer, device: any) => {
     // unacquired device
     if (!device.features) {
         return null;
@@ -38,10 +45,7 @@ const setPrevDeviceId = (state: Connect.ConnectReducer, device: Connect.Device) 
     return device.features.device_id;
 };
 
-const connect = (
-    state: Connect.ConnectReducer = initialState,
-    action: Connect.ActionTypes,
-): Connect.ConnectReducer => {
+const connect = (state: ConnectReducer = initialState, action: Action) => {
     switch (action.type) {
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
@@ -50,7 +54,6 @@ const connect = (
                 device: {
                     isRequestingPin: 0,
                     connected: true,
-                    // features: {}, // ??
                     ...action.payload,
                 },
             };
@@ -60,7 +63,6 @@ const connect = (
                 device: {
                     ...state.device,
                     connected: true,
-                    // features: {}, // ?
                     ...action.payload,
                 },
             };
@@ -78,7 +80,7 @@ const connect = (
                 },
                 prevDeviceId: setPrevDeviceId(state, action.payload),
             };
-        case Connect.DEVICE_CALL_RESET: {
+        case DEVICE_CALL_RESET: {
             return {
                 ...state,
                 deviceCall: {
@@ -98,7 +100,7 @@ const connect = (
                 prevDeviceId: null,
             };
         }
-        case Connect.DEVICE_CALL_START:
+        case DEVICE_CALL_START:
             return {
                 ...state,
                 deviceCall: {
@@ -107,13 +109,12 @@ const connect = (
                     isProgress: true,
                 },
             };
-        case Connect.DEVICE_CALL_SUCCESS:
+        case DEVICE_CALL_SUCCESS:
             return {
                 ...state,
                 device: {
-                    // ?
-                    isRequestingPin: 0,
                     ...state.device,
+                    isRequestingPin: 0,
                 },
                 deviceCall: {
                     ...state.deviceCall,
@@ -130,7 +131,7 @@ const connect = (
                     counter: 0,
                 },
             };
-        case Connect.DEVICE_CALL_ERROR:
+        case DEVICE_CALL_ERROR:
             return {
                 ...state,
                 deviceCall: {
@@ -157,11 +158,10 @@ const connect = (
                     counter: state.uiInteraction.counter + 1,
                 },
             };
-        case 'ui-request_pin':
+        case UI_REQUEST_PIN:
             return {
                 ...state,
                 device: {
-                    hovnoSmakem: true,
                     ...state.device,
                     isRequestingPin: state.device.isRequestingPin + 1,
                 },

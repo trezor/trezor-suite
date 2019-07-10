@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactTimeout, { ReactTimeoutProps } from 'react-timeout';
+import React, { useState, useEffect } from 'react';
+
 import { H4, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
@@ -13,160 +13,118 @@ import {
     StepBodyWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
-import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect';
 
+import { AppState } from '@suite-types/index';
+import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import TroubleshootBootloader from './components/TroubleshootBootloader';
 import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
 import l10nMessages from './index.messages';
 
-interface Props {
-    onboardingActions: OnboardingActions;
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    device: ConnectReducer['device'];
-    connectActions: ConnectActions;
-    deviceCall: ConnectReducer['deviceCall'];
-    isResolved: boolean;
-    model: number;
-}
-
-interface State {
-    isSearching: boolean;
-    isSearchingTooLong: boolean;
-}
-
-class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> {
-    static readonly IS_SEARCHING_TIMEOUT = 5 * 1000;
-
-    static readonly IS_SEARCHING_TOO_LONG_TIMEOUT = 15 * 1000;
-
-    state: State = {
-        isSearching: false,
-        isSearchingTooLong: false,
+interface StepProps {
+    device: AppState['onboarding']['connect']['device'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    model: AppState['onboarding']['selectedModel'];
+    isResolved: boolean; // todo: ?
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
     };
+}
 
-    componentDidMount() {
-        if (!this.props.device) {
-            this.props.setTimeout(
-                () => this.setState({ isSearching: true }),
-                ConnectStep.IS_SEARCHING_TIMEOUT,
-            );
-            this.props.setTimeout(
-                () => this.setState({ isSearchingTooLong: true }),
-                ConnectStep.IS_SEARCHING_TOO_LONG_TIMEOUT,
-            );
+const ConnectStep = ({ device, deviceCall, isResolved, model, onboardingActions }: StepProps) => {
+    const IS_SEARCHING_TIMEOUT = 5 * 1000;
+    const IS_SEARCHING_TOO_LONG_TIMEOUT = 15 * 1000;
+
+    const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [isSearchingTooLong, setIsSearchingTooLong] = useState<boolean>(false);
+
+    const deviceIsConnected = Boolean(device && device.connected);
+
+    useEffect(() => {
+        let isSearchingTimeout: number;
+        let isSearchingTooLongTimeout: number;
+        if (!device) {
+            isSearchingTimeout = setTimeout(() => {
+                setIsSearching(true);
+            }, IS_SEARCHING_TIMEOUT);
+            isSearchingTooLongTimeout = setTimeout(() => {
+                setIsSearchingTooLong(true);
+            }, IS_SEARCHING_TOO_LONG_TIMEOUT);
         }
-    }
 
-    componentWillReceiveProps(nextProps: Props & ReactTimeoutProps) {
-        if (this.props.device && !nextProps.device) {
-            this.setState({ isSearching: true });
-            this.props.setTimeout(() => this.setState({ isSearchingTooLong: true }), 15 * 1000);
-        } else {
-            this.setState({ isSearchingTooLong: false });
-        }
-    }
+        return () => {
+            clearTimeout(isSearchingTimeout);
+            clearTimeout(isSearchingTooLongTimeout);
+        };
+    }, [IS_SEARCHING_TIMEOUT, IS_SEARCHING_TOO_LONG_TIMEOUT, device]);
 
-    isInBlWithFwPresent() {
-        const { device } = this.props;
+    const isInBlWithFwPresent = () => {
         if (!device) {
             return null;
         }
         return device.mode === 'bootloader' && device.features.firmware_present === true;
-    }
+    };
 
-    render() {
-        const deviceIsConnected = Boolean(this.props.device && this.props.device.connected);
-        const {
-            device,
-            deviceCall,
-            connectActions,
-            onboardingActions,
-            activeSubStep,
-            isResolved,
-        } = this.props;
-        const { isSearching, isSearchingTooLong } = this.state;
-        return (
-            <StepWrapper>
-                <StepHeadingWrapper>
-                    <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
-                    <TrezorConnect
-                        model={this.props.model}
-                        height={180}
-                        loop={!deviceIsConnected}
-                    />
+    return (
+        <StepWrapper>
+            <StepHeadingWrapper>
+                <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
+            </StepHeadingWrapper>
+            <StepBodyWrapper>
+                <TrezorConnect model={model || 2} height={180} loop={!deviceIsConnected} />
 
-                    {!deviceIsConnected && (
-                        <Text>
-                            <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
-                            <FormattedMessage {...l10nMessages.TR_SEARCHING_FOR_YOUR_DEVICE} />
-                            <Dots />
-                        </Text>
-                    )}
+                {!deviceIsConnected && (
+                    <Text>
+                        <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
+                        <FormattedMessage {...l10nMessages.TR_SEARCHING_FOR_YOUR_DEVICE} />
+                        <Dots />
+                    </Text>
+                )}
 
-                    {!deviceIsConnected && isSearching && isSearchingTooLong && (
-                        <TroubleshootSearchingTooLong />
-                    )}
+                {!deviceIsConnected && isSearching && isSearchingTooLong && (
+                    <TroubleshootSearchingTooLong />
+                )}
 
-                    {deviceIsConnected && !deviceCall.isProgress && (
-                        <React.Fragment>
-                            {!device.features.initialized && this.isInBlWithFwPresent() === false && (
-                                <React.Fragment>
-                                    <H4>
-                                        <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
-                                    </H4>
-                                    <Text>
-                                        <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} />
-                                    </Text>
-                                    <ControlsWrapper>
-                                        <Button
-                                            onClick={() =>
-                                                this.props.onboardingActions.goToNextStep()
-                                            }
-                                        >
-                                            <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                        </Button>
-                                    </ControlsWrapper>
-                                </React.Fragment>
-                            )}
+                {deviceIsConnected && !deviceCall.isProgress && (
+                    <React.Fragment>
+                        {!device.features.initialized && isInBlWithFwPresent() === false && (
+                            <React.Fragment>
+                                <H4>
+                                    <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
+                                </H4>
+                                <Text>
+                                    <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} />
+                                </Text>
+                                <ControlsWrapper>
+                                    <Button onClick={() => onboardingActions.goToNextStep()}>
+                                        <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                    </Button>
+                                </ControlsWrapper>
+                            </React.Fragment>
+                        )}
 
-                            {this.isInBlWithFwPresent() && <TroubleshootBootloader />}
+                        {isInBlWithFwPresent() && <TroubleshootBootloader />}
 
-                            {device.features.initialized && !isResolved && (
-                                <TroubleshootInitialized
-                                    device={device}
-                                    connectActions={connectActions}
-                                    onboardingActions={onboardingActions}
-                                    activeSubStep={activeSubStep}
-                                />
-                            )}
+                        {device.features.initialized && !isResolved && <TroubleshootInitialized />}
 
-                            {device.features.initialized && isResolved && (
-                                <React.Fragment>
-                                    <H4>
-                                        <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
-                                    </H4>
-                                    <Text>Found a device you have previously initialized</Text>
-                                    <ControlsWrapper>
-                                        <Button
-                                            onClick={() =>
-                                                this.props.onboardingActions.goToNextStep()
-                                            }
-                                        >
-                                            <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                        </Button>
-                                    </ControlsWrapper>
-                                </React.Fragment>
-                            )}
-                        </React.Fragment>
-                    )}
-                </StepBodyWrapper>
-            </StepWrapper>
-        );
-    }
-}
+                        {device.features.initialized && isResolved && (
+                            <React.Fragment>
+                                <H4>
+                                    <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
+                                </H4>
+                                <Text>Found a device you have previously initialized</Text>
+                                <ControlsWrapper>
+                                    <Button onClick={() => onboardingActions.goToNextStep()}>
+                                        <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                    </Button>
+                                </ControlsWrapper>
+                            </React.Fragment>
+                        )}
+                    </React.Fragment>
+                )}
+            </StepBodyWrapper>
+        </StepWrapper>
+    );
+};
 
-export default ReactTimeout(ConnectStep);
+export default ConnectStep;

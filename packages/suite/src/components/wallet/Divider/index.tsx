@@ -1,18 +1,17 @@
 import styled, { css } from 'styled-components';
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { colors, variables } from '@trezor/components';
 
 interface Props {
-    hasBorder: boolean;
-    textLeft: string;
-    textRight: string;
-    className: string;
-    testId: string;
+    hasBorder?: boolean;
+    textLeft?: React.ReactNode;
+    textRight?: React.ReactNode;
+    className?: string;
+    testId?: string;
 }
 
-const Wrapper = styled.div<Props>`
+const Wrapper = styled.div<Pick<Props, 'hasBorder'>>`
     display: flex;
     justify-content: space-between;
     padding: 8px 28px 8px 24px;
@@ -39,13 +38,5 @@ const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }: 
         {textRight && <TextRight>{textRight}</TextRight>}
     </Wrapper>
 );
-
-Divider.propTypes = {
-    className: PropTypes.string,
-    textLeft: PropTypes.node,
-    textRight: PropTypes.node,
-    hasBorder: PropTypes.bool,
-    testId: PropTypes.string,
-};
 
 export default Divider;

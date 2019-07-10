@@ -1,5 +1,5 @@
 export default {
-    valueTickers: [
+    tickers: [
         {
             network: 'eth',
             url: 'https://api.coingecko.com/api/v3/coins/ethereum',

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "TR_MENU",
+    "description": "Mobile sidebar toggler",
+    "defaultMessage": "Menu",
+    "file": "../suite/src/components/suite/Layout/index.messages.ts",
+    "start": {
+      "line": 5,
+      "column": 13
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MENU_CLOSE",
+    "description": "Used on button for closing sidebar menu",
+    "defaultMessage": "Close",
+    "file": "../suite/src/components/suite/Layout/index.messages.ts",
+    "start": {
+      "line": 10,
+      "column": 19
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TREZOR",
+    "description": "Link in header navigation",
+    "defaultMessage": "Trezor",
+    "file": "../suite/src/components/suite/Layout/index.messages.ts",
+    "start": {
+      "line": 15,
+      "column": 15
+    },
+    "end": {
+      "line": 19,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WIKI",
+    "description": "Link in header navigation",
+    "defaultMessage": "Wiki",
+    "file": "../suite/src/components/suite/Layout/index.messages.ts",
+    "start": {
+      "line": 20,
+      "column": 13
+    },
+    "end": {
+      "line": 24,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BLOG",
+    "description": "Link in header navigation",
+    "defaultMessage": "Blog",
+    "file": "../suite/src/components/suite/Layout/index.messages.ts",
+    "start": {
+      "line": 25,
+      "column": 13
+    },
+    "end": {
+      "line": 29,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SUPPORT",
+    "description": "Link in header navigation",
+    "defaultMessage": "Support",
+    "file": "../suite/src/components/suite/Layout/index.messages.ts",
+    "start": {
+      "line": 30,
+      "column": 16
+    },
+    "end": {
+      "line": 34,
+      "column": 5
+    }
+  }
+]

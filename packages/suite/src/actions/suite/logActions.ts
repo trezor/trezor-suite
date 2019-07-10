@@ -1,6 +1,6 @@
 import copy from 'copy-to-clipboard';
 import { Action, GetState, Dispatch } from '@suite-types/index';
-import { LogEntry } from '@suite/reducers/common/logReducer';
+import { LogEntry } from '@suite-reducers/logReducer';
 import * as LOG from './constants/log';
 
 export type LogActions =

@@ -1,22 +1,22 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { Text, View } from 'react-native';
-import { Header as AppHeader, colors } from '@trezor/components';
+import { Text } from 'react-native';
+// import { Header as AppHeader, colors } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import Router from '@suite-support/Router';
 
-import { State } from '@suite-types/index';
-import { goto } from '@suite/actions/routerActions';
+import { AppState } from '@suite-types/index';
+import { goto } from '@suite-actions/routerActions';
 import AcquireDevice from '@suite-components/AcquireDevice';
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
-    devices: State['devices'];
+    router: AppState['router'];
+    suite: AppState['suite'];
+    devices: AppState['devices'];
     goto: typeof goto;
 }
 
-const Body: FunctionComponent = props => (
+const Body: FunctionComponent = () => (
     <>
         <Router />
         <Text>TODO wallet</Text>
@@ -84,7 +84,7 @@ const Index: FunctionComponent<Props> = props => {
     return <Body>{props.children}</Body>;
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
     devices: state.devices,

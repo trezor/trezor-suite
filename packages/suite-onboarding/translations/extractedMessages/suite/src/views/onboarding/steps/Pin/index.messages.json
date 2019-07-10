@@ -1,0 +1,170 @@
+[
+  {
+    "id": "TR_PIN_HEADING_FIRST",
+    "description": "Heading in PIN page when entering PIN for the first time",
+    "defaultMessage": "Set new PIN",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 26
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_HEADING_REPEAT",
+    "description": "Heading in PIN page when repeating PIN",
+    "defaultMessage": "Repeat PIN",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 27
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_HEADING_SUCCESS",
+    "description": "Heading in PIN page when PIN set",
+    "defaultMessage": "PIN enabled",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 14,
+      "column": 28
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_HEADING_MISMATCH",
+    "description": "Heading in PIN page when PIN repeated incorrectly",
+    "defaultMessage": "PIN mismatch",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 19,
+      "column": 29
+    },
+    "end": {
+      "line": 23,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_SUBHEADING",
+    "description": "Subheading on PIN page",
+    "defaultMessage": "Protect device from unauthorized access by using a strong pin.",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 24,
+      "column": 23
+    },
+    "end": {
+      "line": 28,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SET_PIN",
+    "description": "Button text",
+    "defaultMessage": "Set pin",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 29,
+      "column": 16
+    },
+    "end": {
+      "line": 33,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_ENTERING_DESCRIPTION",
+    "description": "Text describe how to enter PIN o trezor device",
+    "defaultMessage": "In order to secure maximum security, we do not display pin on your computer. We will just show a blind matrix, real layout is displayed on your device.",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 34,
+      "column": 33
+    },
+    "end": {
+      "line": 39,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRST_PIN_ENTERED",
+    "description": "Text describing what happens after user enters PIN for the first time.",
+    "defaultMessage": "Good. You entered a new pin. But to make sure you did not make mistake, please enter it again. Look at your device now, numbers are now different.",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 40,
+      "column": 26
+    },
+    "end": {
+      "line": 45,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_SET_SUCCESS",
+    "description": "Longer text indicating PIN was set succesfully.",
+    "defaultMessage": "Purfect! Your device is now secured by pin.",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 46,
+      "column": 24
+    },
+    "end": {
+      "line": 50,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_ERROR_TROUBLESHOOT",
+    "description": "Troubleshooting text after user enters second PIN incorrectly.",
+    "defaultMessage": "Are you confused, how PIN works? You can always refer to our {TR_DOCUMENTATION}",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 51,
+      "column": 31
+    },
+    "end": {
+      "line": 56,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DOCUMENTATION",
+    "description": "Link to trezor documentation (wiki)",
+    "defaultMessage": "documentation",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 57,
+      "column": 22
+    },
+    "end": {
+      "line": 61,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_AGAIN",
+    "description": "Button text",
+    "defaultMessage": "Start again",
+    "file": "../suite/src/views/onboarding/steps/Pin/index.messages.tsx",
+    "start": {
+      "line": 62,
+      "column": 20
+    },
+    "end": {
+      "line": 66,
+      "column": 5
+    }
+  }
+]

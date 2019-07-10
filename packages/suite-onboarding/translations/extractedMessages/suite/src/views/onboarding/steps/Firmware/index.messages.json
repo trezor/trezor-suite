@@ -1,0 +1,156 @@
+[
+  {
+    "id": "TR_FIRMWARE_HEADING",
+    "description": "Heading on firmware page",
+    "defaultMessage": "Get the latest firmware",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 25
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_SUBHEADING",
+    "description": "Main text on firmware page for devices without firmware.",
+    "defaultMessage": "Your Trezor is shipped without firmware installed to ensure that you can get started with the latest features right away. The authenticity of the installed firmware is always checked during device start. If the firmware is not correctly signed by SatoshiLabs, your Trezor will display a warning.",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 28
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSTALL",
+    "description": "Install button",
+    "defaultMessage": "Install",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 15,
+      "column": 16
+    },
+    "end": {
+      "line": 19,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSTALLING",
+    "description": "Message that is visible when installing process is in progress.",
+    "defaultMessage": "Do not disconnect your device. Installing",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 20,
+      "column": 19
+    },
+    "end": {
+      "line": 24,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSTALL_ERROR_OCCURRED",
+    "description": "Error message when installing firmware to device",
+    "defaultMessage": "Error occurred during firmware install: {error}",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 25,
+      "column": 31
+    },
+    "end": {
+      "line": 29,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FETCH_ERROR_OCCURRED",
+    "description": "Error message when downloading firmware",
+    "defaultMessage": "Error occured during firmware download: {error}",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 30,
+      "column": 29
+    },
+    "end": {
+      "line": 34,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_INSTALLED",
+    "description": "Message to display in case firmware is installed",
+    "defaultMessage": "Perfect. The newest firmware is installed. Time to continue",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 35,
+      "column": 27
+    },
+    "end": {
+      "line": 39,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_YOUR_DEVICE_AGAIN",
+    "description": "Prompt to connect device.",
+    "defaultMessage": "Connect your device again",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 40,
+      "column": 34
+    },
+    "end": {
+      "line": 44,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DISCONNECT_YOUR_DEVICE",
+    "description": "Prompt to disconnect device.",
+    "defaultMessage": "Disconnect your device",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 45,
+      "column": 31
+    },
+    "end": {
+      "line": 49,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WAIT_FOR_REBOOT",
+    "description": "Info what is happening with users device.",
+    "defaultMessage": "Wait for your device to reboot",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 50,
+      "column": 24
+    },
+    "end": {
+      "line": 54,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_INSTALLED_TEXT",
+    "description": "Text to display in case device has firmware installed but it is outdated",
+    "defaultMessage": "This device has already installed firmware version: {version}",
+    "file": "../suite/src/views/onboarding/steps/Firmware/index.messages.tsx",
+    "start": {
+      "line": 55,
+      "column": 32
+    },
+    "end": {
+      "line": 59,
+      "column": 5
+    }
+  }
+]

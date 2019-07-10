@@ -2,27 +2,29 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
-import { State } from '@suite-types/index';
-import Layout from '@wallet-components/Layout';
+import { AppState } from '@suite-types/index';
+import LayoutAccount from '@wallet-components/LayoutAccount';
 
 interface Props {
-    suite: State['suite'];
-    router: State['router'];
+    suite: AppState['suite'];
+    router: AppState['router'];
 }
 
 const Transactions = (props: Props) => {
-    const { pathname, params } = props.router;
-    const baseUrl = `${pathname}#/${params.coin}/`;
+    const { params } = props.router;
+    // todo: commented out for typescript
+    // const { pathname, params } = props.router;
+    // const baseUrl = `${pathname}#/${params.coin}/`;
     return (
-        <Layout>
+        <LayoutAccount>
             <Text>
                 {params.coin} Account {params.accountId} Transactions
             </Text>
-        </Layout>
+        </LayoutAccount>
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
     router: state.router,
 });

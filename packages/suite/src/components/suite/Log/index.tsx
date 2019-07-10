@@ -1,4 +1,3 @@
-/* @flow */
 import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
@@ -8,14 +7,14 @@ import { Button, Tooltip, H5, P, Icon, icons, colors } from '@trezor/components'
 import { FormattedMessage } from 'react-intl';
 
 import * as logActions from '@suite-actions/logActions';
-import { State, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types/index';
 import l10nMessages from './index.messages';
 
 interface Props {
     toggle: typeof logActions.toggle;
     copyToClipboard: typeof logActions.copyToClipboard;
     resetCopyState: typeof logActions.resetCopyState;
-    log: State['log'];
+    log: AppState['log'];
 }
 
 const Wrapper = styled.div`
@@ -107,7 +106,7 @@ const Log = (props: Props) => {
 };
 
 export default connect(
-    (state: State) => ({
+    (state: AppState) => ({
         log: state.log,
     }),
     (dispatch: Dispatch) => ({

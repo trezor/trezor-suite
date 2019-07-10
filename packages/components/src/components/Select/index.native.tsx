@@ -46,7 +46,6 @@ const optionsToItems = (options: object) => {
 };
 
 // TODO: prop `value` doesn't work
-// TODO: fix conflict between `React Select` props and `React Native Select` props on import
 const Select = ({
     onChange,
     withDropdownIndicator = true,

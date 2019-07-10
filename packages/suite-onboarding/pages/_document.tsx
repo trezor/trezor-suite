@@ -24,7 +24,11 @@ const globalStyles = `
     }
 `;
 
-export default class MyDocument extends Document {
+interface Props {
+    styleTags: any;
+}
+
+export default class MyDocument extends Document<Props> {
     static async getInitialProps({ renderPage }: NextDocumentContext) {
         AppRegistry.registerComponent('Main', () => Main);
         // @ts-ignore getApplication is React Native Web addition for SSR.

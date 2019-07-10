@@ -17,13 +17,9 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { ConnectReducer } from '@suite/types/onboarding/connect';
-import { FetchReducer } from '@suite/types/onboarding/fetch';
-import {
-    FirmwareUpdateReducer,
-    FirmwareUpdateActions,
-} from '@suite/types/onboarding/firmwareUpdate';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { AppState } from '@suite-types/index';
+import { updateFirmware } from '@onboarding-actions/firmwareUpdateActions';
+import { goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import l10nMessages from './index.messages';
 
@@ -31,12 +27,16 @@ const DONUT_STROKE = 20;
 const DONUT_RADIUS = 60;
 
 interface Props {
-    device: ConnectReducer['device'];
-    deviceCall: ConnectReducer['deviceCall'];
-    fetchCall: FetchReducer;
-    firmwareUpdateActions: FirmwareUpdateActions;
-    firmwareUpdate: FirmwareUpdateReducer;
-    onboardingActions: OnboardingActions;
+    device: AppState['onboarding']['connect']['device'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    fetchCall: AppState['onboarding']['fetchCall'];
+    firmwareUpdate: AppState['onboarding']['firmwareUpdate'];
+    firmwareUpdateActions: {
+        updateFirmware: typeof updateFirmware;
+    };
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
 }
 
 class FirmwareStep extends React.Component<Props & InjectedIntlProps> {
@@ -102,6 +102,9 @@ class FirmwareStep extends React.Component<Props & InjectedIntlProps> {
 
     isProgress() {
         const status = this.getStatus();
+        if (!status) {
+            return false;
+        }
         const targetStates = [
             'downloading',
             'preparing',

@@ -1,9 +1,8 @@
 image: node:lts
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: shared-yarn-cache
   paths:
-    - ~/.cache
     - node_modules/
 
 before_script:
@@ -41,6 +40,8 @@ variables:
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
   PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
   PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
+  PACKAGE_PATH_SUITE_ONBOARDING: 'packages/suite-onboarding'
+
   DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 include:
@@ -50,3 +51,6 @@ include:
   - ci/packages/suite-web.yml
   - ci/packages/suite-desktop.yml
   - ci/packages/suite-native.yml
+  - ci/packages/suite-onboarding.yml
+  - ci/packages/blockchain-link.yml
+  - ci/packages/rollout.yml

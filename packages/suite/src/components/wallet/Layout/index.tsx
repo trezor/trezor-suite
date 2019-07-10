@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import styled, { css } from 'styled-components';
-import TopNavigation from '@wallet-components/TopNavigation';
 import { variables } from '@trezor/components';
+import WalletNotifications from '@wallet-components/Notifications';
+import Content from '@wallet-components/Content';
 import Sidebar from './components/Sidebar';
 
 const { SCREEN_SIZE } = variables;
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
-    children: React.ReactNode;
+    router: AppState['router'];
+    suite: AppState['suite'];
+    topNavigationComponent?: ReactNode;
+    children: ReactNode;
 }
 
 const Wrapper = styled.div`
@@ -20,10 +22,6 @@ const Wrapper = styled.div`
     max-width: 1170px;
     flex-direction: row;
     flex: 1 1 0%;
-`;
-
-const Content = styled.div`
-    padding: 20px 35px;
 `;
 
 const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
@@ -47,13 +45,14 @@ const Layout = (props: Props) => (
     <Wrapper>
         <Sidebar isOpen={props.suite.showSidebar} />
         <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-            <TopNavigation />
+            {props.topNavigationComponent}
+            <WalletNotifications />
             <Content>{props.children}</Content>
         </ContentWrapper>
     </Wrapper>
 );
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
 });

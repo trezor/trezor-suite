@@ -27,6 +27,7 @@ export type PrevDeviceId = string | null;
 
 export interface ConnectReducer {
     prevDeviceId: PrevDeviceId;
+    device: any; // todo: remove any
     deviceCall: {
         name: null | string; // todo: better, make type AnyDeviceCall
         isProgress: boolean;
@@ -77,14 +78,18 @@ export const RELEASE = 'device-release';
 export const ACQUIRED = 'device-acquired';
 export const RELEASED = 'device-released';
 export const USED_ELSEWHERE = 'device-used_elsewhere';
+export const UI_REQUEST_PIN = 'ui-request_pin';
 
-export type ActionTypes =
+export type ConnectActionTypes =
     | {
           type: typeof DEVICE_CALL_RESET;
       }
     | {
           type: typeof DEVICE_CALL_START;
           name: string;
+      }
+    | {
+          type: typeof DEVICE_CALL_RESET;
       }
     | {
           type: typeof DEVICE_CALL_SUCCESS;
@@ -102,4 +107,15 @@ export type ActionTypes =
     | {
           type: typeof UI_INTERACTION_EVENT;
           name: string;
+      }
+    | {
+          type: typeof UI_REQUEST_PIN;
+      }
+    | {
+          type: 'button';
+          payload: any;
+      }
+    | {
+          type: 'ui-button';
+          payload: any;
       };

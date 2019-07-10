@@ -1,8 +1,12 @@
-.next
-_old
-build
+.next/**
+_old/**
+build/**
 
 node_modules
 generated
 
 next.config.js
+
+ios/**
+android/**
+dist/**

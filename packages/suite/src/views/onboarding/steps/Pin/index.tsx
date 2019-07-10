@@ -2,36 +2,31 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { UI } from 'trezor-connect';
 import { Button, Link, Modal } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { PIN_MANUAL_URL } from '@suite/constants/onboarding/urls';
-import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
+// import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
 import l10nCommonMessages from '@suite-support/Messages';
-import PinMatrix from '@suite/components/onboarding/PinMatrix';
-import Text from '@suite/components/onboarding/Text';
+import PinMatrix from '@onboarding-components/PinMatrix';
+import Text from '@onboarding-components/Text';
 import {
     StepWrapper,
     StepBodyWrapper,
     StepHeadingWrapper,
     ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
-
-import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
+} from '@onboarding-components/Wrapper';
+import { goToNextStep } from '@onboarding-actions/onboardingActions';
+import { changePin, submitNewPin } from '@onboarding-actions/connectActions';
+import { AppState } from '@suite-types/index';
 
 import l10nMessages from './index.messages';
-import HowToSetPinGif from './videos/pin.gif';
 
 const NewPinWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    /* @media only screen and (min-width: ${BREAKPOINTS.SM}px) { 
-        flex-direction: row; 
-    }  */
 `;
 
 const HowToSetPinModal = styled.div`
@@ -50,26 +45,29 @@ const HowToSetPin = styled.img`
 `;
 
 interface Props {
-    deviceCall: ConnectReducer['deviceCall'];
-    uiInteraction: ConnectReducer['uiInteraction'];
-    device: ConnectReducer['device'];
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    connectActions: ConnectActions;
-    onboardingActions: OnboardingActions;
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    device: AppState['onboarding']['connect']['device'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
+    connectActions: {
+        changePin: typeof changePin;
+        submitNewPin: typeof submitNewPin;
+    };
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
 }
 
-interface State {
+interface SetPinState {
     instructionsFocused: boolean;
 }
 
 class SetPinStep extends React.Component<Props> {
-    state: State = {
+    state: SetPinState = {
         instructionsFocused: false,
     };
 
     getStatus() {
-        const { deviceCall, uiInteraction, device, activeSubStep } = this.props;
-        console.log(device.isRequestingPin, uiInteraction.counter);
+        const { deviceCall, device, activeSubStep } = this.props;
         if (activeSubStep) {
             return activeSubStep;
         }
@@ -143,7 +141,10 @@ class SetPinStep extends React.Component<Props> {
                             {this.state.instructionsFocused && (
                                 <Modal>
                                     <HowToSetPinModal>
-                                        <HowToSetPin src={HowToSetPinGif} alt="How to enter pin" />
+                                        <HowToSetPin
+                                            src={resolveStaticPath('videos/onboarding/pin.gif')}
+                                            alt="How to enter pin"
+                                        />
                                         <Link
                                             onClick={() =>
                                                 this.setState({ instructionsFocused: false })

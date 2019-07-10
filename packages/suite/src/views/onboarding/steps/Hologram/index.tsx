@@ -19,10 +19,10 @@ import {
     StepBodyWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
-import { ConnectReducer } from '@suite/types/onboarding/connect';
+import { AppState } from '@suite-types/index';
+import { goToPreviousStep, goToNextStep, goToSubStep } from '@onboarding-actions/onboardingActions';
 import l10nMessages from './index.messages';
-// import Hologram from './components/Hologram';
+import Hologram from './components/Hologram';
 
 const HologramWrapper = styled.div`
     max-width: 500px;
@@ -34,10 +34,14 @@ const HologramWrapper = styled.div`
 `;
 
 interface Props {
-    onboardingActions: OnboardingActions;
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    model: number;
-    device: ConnectReducer['device'];
+    onboardingActions: {
+        goToPreviousStep: typeof goToPreviousStep;
+        goToNextStep: typeof goToNextStep;
+        goToSubStep: typeof goToSubStep;
+    };
+    activeSubStep: AppState['onboarding']['activeSubStep'];
+    model: AppState['onboarding']['selectedModel'];
+    device: AppState['onboarding']['connect']['device'];
 }
 
 const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props) => {
@@ -56,7 +60,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
-                        <HologramWrapper>{/* <Hologram model={model} /> */}</HologramWrapper>
+                        <HologramWrapper>{model && <Hologram model={model} />}</HologramWrapper>
                         <ControlsWrapper>
                             {actualVersion && actualVersion !== model && (
                                 <React.Fragment>

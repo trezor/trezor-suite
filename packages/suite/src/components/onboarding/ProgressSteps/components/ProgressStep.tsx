@@ -46,6 +46,12 @@ interface Props {
     onboardingActions: OnboardingActions;
 }
 
+const goToStep = (goToStepFn: any, isClickable: boolean) => {
+    if (isClickable) {
+        goToStepFn();
+    }
+};
+
 const ProgressStep = (props: Props) => {
     const color = props.isActive ? colors.brandPrimary : colors.gray;
     const borderColor = props.isActive || props.isFinished ? colors.brandPrimary : colors.gray;
@@ -56,7 +62,7 @@ const ProgressStep = (props: Props) => {
         backgroundColor = colors.brandPrimary;
     }
 
-    const isClickable = props.isFinished && !props.isDisabled && props.step.id;
+    const isClickable = Boolean(props.isFinished && !props.isDisabled && props.step.id);
 
     let order;
     if (props.isGoingForward) {
@@ -85,13 +91,9 @@ const ProgressStep = (props: Props) => {
                         ? `${LINE_TRANSITION_DURATION * 2}s`
                         : `${LINE_TRANSITION_DURATION * (order - props.index * 2)}s`,
                 }}
-                onClick={
-                    isClickable
-                        ? () => {
-                              props.onboardingActions.goToStep(props.step.id);
-                          }
-                        : null
-                }
+                onClick={() => {
+                    goToStep(() => props.onboardingActions.goToStep(props.step.id), isClickable);
+                }}
             />
 
             <Line
@@ -111,13 +113,9 @@ const ProgressStep = (props: Props) => {
                     flexBasis: '100%',
                     textAlign: 'center',
                 }}
-                onClick={
-                    isClickable
-                        ? () => {
-                              props.onboardingActions.goToStep(props.step.id);
-                          }
-                        : null
-                }
+                onClick={() => {
+                    goToStep(() => props.onboardingActions.goToStep(props.step.id), isClickable);
+                }}
             >
                 {props.step.title}
             </Text>

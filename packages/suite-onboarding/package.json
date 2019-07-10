@@ -8,19 +8,22 @@
         "build": "next build && next export -o build",
         "start": "next start",
         "type-check": "tsc --project tsconfig.json",
-        "type-check:watch": "yarn type-check -- --watch"
+        "type-check:watch": "yarn type-check -- --watch",
+        "translations:extract": "rimraf translations/extractedMessages && cross-env NODE_ENV=translations npx babel ../suite/src/**/*.{tsx,ts} && yarn ttm merge-msgs && yarn ttm build-csv",
+        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -R ./src/locales/ ./static/l10n && rm -rf ./src/"
     },
     "dependencies": {
         "@trezor/suite": "1.0.0",
         "next": "^8.0.0",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "react-svg": "^10.0.6",
-        "react-timeout": "^1.2.0",
         "styled-reset": "^2.0.14",
         "trezor-flags": "^1.0.2"
     },
     "devDependencies": {
+        "@babel/cli": "^7.4.4",
         "@babel/core": "^7.0.0",
+        "@trezor/translations-manager": "1.0.5",
         "@types/next": "^8.0.0",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
@@ -28,6 +31,7 @@
         "@types/react-native": "^0.57.41",
         "@types/react-redux": "^7.0.8",
         "@zeit/next-typescript": "^1.1.1",
+        "babel-plugin-react-intl": "^3.3.3",
         "git-revision-webpack-plugin": "^3.0.3",
         "next-images": "^1.1.1",
         "next-plugin-custom-babel-config": "^1.0.0",

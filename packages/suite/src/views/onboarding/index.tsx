@@ -9,25 +9,16 @@ import { isDev } from '@suite-utils/build';
 
 import BaseStyles from '@suite/support/onboarding/BaseStyles';
 
-import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
-import { FetchReducer, FetchActions } from '@suite/types/onboarding/fetch';
-import { RecoveryReducer, RecoveryActions } from '@suite/types/onboarding/recovery';
-import { NewsletterReducer, NewsletterActions } from '@suite/types/onboarding/newsletter';
-import { AnyStepId, AnyStepDisallowedState, Step } from '@suite/types/onboarding/steps';
-import { Dispatch } from '@suite/types/onboarding/actions';
-import {
-    FirmwareUpdateReducer,
-    FirmwareUpdateActions,
-} from '@suite/types/onboarding/firmwareUpdate';
+import { AppState, Dispatch } from '@suite-types/index';
+import { OnboardingActions } from '@onboarding-types/onboarding';
+import { ConnectActions } from '@onboarding-types/connect';
+import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
+import { AnyEvent } from '@onboarding-types/events';
+
 import * as EVENTS from '@suite/actions/onboarding/constants/events';
 
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import * as connectActions from '@suite/actions/onboarding/connectActions';
-import * as fetchActions from '@suite/actions/onboarding/fetchActions';
-import * as newsletterActions from '@suite/actions/onboarding/newsletterActions';
-import * as firmwareUpdateActions from '@suite/actions/onboarding/firmwareUpdateActions';
-import * as recoveryActions from '@suite/actions/onboarding/recoveryActions';
 
 import * as STEP from '@suite/constants/onboarding/steps';
 import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
@@ -48,10 +39,11 @@ import {
 import ProgressSteps from '@suite/components/onboarding/ProgressSteps';
 import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
 
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@suite/views/onboarding/steps/Welcome/Container';
-import StartStep from '@suite/views/onboarding/steps/Start/Container';
+// import StartStep from '@suite/views/onboarding/steps/Start/Container';
 import NewOrUsedStep from '@suite/views/onboarding/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@suite/views/onboarding/steps/SelectDevice/Container';
 import HologramStep from '@suite/views/onboarding/steps/Hologram/Container';
@@ -66,8 +58,6 @@ import BookmarkStep from '@suite/views/onboarding/steps/Bookmark/Container';
 import NewsletterStep from '@suite/views/onboarding/steps/Newsletter/Container';
 
 import FinalStep from '@suite/views/onboarding/steps/Final';
-
-import background from './background.jpg';
 
 const BORDER_RADIUS = 12;
 const TRANSITION_PROPS = {
@@ -87,8 +77,9 @@ interface WrapperOutsideProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const WrapperOutside = styled.div<WrapperOutsideProps>`
     display: flex;
+    flex: 1;
     flex-direction: column;
-    /* min-height: calc(100vh - ${NAVBAR_HEIGHT} ${NAVBAR_HEIGHT_UNIT}); */
+    min-height: calc(100vh - ${`${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT}`});
     max-width: 100vw;
     width: 100%;
     overflow-x: hidden;
@@ -104,7 +95,7 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
         ${props =>
             props.animate &&
             css`
-                background-image: url(${background});
+                background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
                 background-size: cover;
             `};
     }
@@ -139,7 +130,6 @@ const ProgressStepsWrapper = styled.div`
     height: 100%;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid ${colors.grayLight};
 `;
 
 const ProgressStepsSlot = styled.div`
@@ -166,9 +156,9 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }) => {
+const TrezorAction = ({ model, event }: { model: number; event: AnyEvent }) => {
     let TrezorActionText;
-    if (event.name === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
+    if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
             <P>
                 Complete action on your device. By clicking continue you agree with{' '}
@@ -203,27 +193,19 @@ interface Props {
     device: any; // todo
     transport: any; // todo
 
-    activeStepId: OnboardingReducer['activeStepId'];
-    steps: OnboardingReducer['steps'];
-    activeSubStep: OnboardingReducer['activeSubStep'];
-    selectedModel: OnboardingReducer['selectedModel'];
+    activeStepId: AppState['onboarding']['activeStepId'];
+    steps: AppState['onboarding']['steps'];
+    activeSubStep: AppState['onboarding']['activeSubStep'];
+    selectedModel: AppState['onboarding']['selectedModel'];
+    asNewDevice: AppState['onboarding']['asNewDevice'];
 
-    deviceCall: ConnectReducer['deviceCall'];
-    uiInteraction: ConnectReducer['uiInteraction'];
-    deviceInteraction: ConnectReducer['deviceInteraction'];
-    prevDeviceId: ConnectReducer['prevDeviceId'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
+    uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
+    deviceInteraction: AppState['onboarding']['connect']['deviceInteraction'];
+    prevDeviceId: AppState['onboarding']['connect']['prevDeviceId'];
 
-    newsletter: NewsletterReducer;
-    fetchCall: FetchReducer;
-    recovery: RecoveryReducer;
-    firmwareUpdate: FirmwareUpdateReducer;
-
-    recoveryActions: RecoveryActions;
     connectActions: ConnectActions;
-    fetchActions: FetchActions;
-    newsletterActions: NewsletterActions;
     onboardingActions: OnboardingActions;
-    firmwareUpdateActions: FirmwareUpdateActions;
 }
 
 class Onboarding extends React.PureComponent<Props> {
@@ -239,8 +221,13 @@ class Onboarding extends React.PureComponent<Props> {
         }
     }
 
-    getStep(activeStepId: OnboardingReducer['activeStepId']) {
-        return this.props.steps.find(step => step.id === activeStepId);
+    getStep(activeStepId: AppState['onboarding']['activeStepId']): Step {
+        const lookup = this.props.steps.find((step: Step) => step.id === activeStepId);
+        // todo: is there a better way how to solve lookup completeness with typescript?
+        if (!lookup) {
+            throw new TypeError('step not found by step id. unexepected.');
+        }
+        return lookup;
     }
 
     getScreen() {
@@ -248,15 +235,15 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const { device, prevDeviceId, activeStepId, connectError, uiInteraction } = this.props;
-        if (!this.getStep(activeStepId).disallowedDeviceStates) {
+        const { device, prevDeviceId, activeStepId, asNewDevice } = this.props;
+        if (!this.getStep(activeStepId)!.disallowedDeviceStates) {
             return null;
         }
 
-        return this.getStep(activeStepId).disallowedDeviceStates.find(
+        return this.getStep(activeStepId)!.disallowedDeviceStates!.find(
             (state: AnyStepDisallowedState) => {
                 const fn = getFnForRule(state);
-                return fn({ device, prevDeviceId, uiInteraction });
+                return fn({ device, prevDeviceId, asNewDevice });
             },
         );
     }
@@ -276,7 +263,7 @@ class Onboarding extends React.PureComponent<Props> {
 
     // todo: reconsider if we need resolved logic.
     isStepResolved(stepId: AnyStepId) {
-        return Boolean(this.props.steps.find((step: Step) => step.id === stepId).resolved);
+        return Boolean(this.props.steps.find((step: Step) => step.id === stepId)!.resolved);
     }
 
     render() {
@@ -284,23 +271,18 @@ class Onboarding extends React.PureComponent<Props> {
             onboardingActions,
             connectActions,
 
-            device,
-            transport,
-
-            // todo: Containerize some of the components
             selectedModel,
             activeStepId,
-            activeSubStep,
             steps,
 
             deviceCall,
             deviceInteraction,
             uiInteraction,
         } = this.props;
-        const model = selectedModel;
 
+        const model = selectedModel || 1;
         const errorState = this.getError();
-
+        const activeStep = this.getStep(activeStepId);
         return (
             <>
                 <BaseStyles />
@@ -313,7 +295,7 @@ class Onboarding extends React.PureComponent<Props> {
                             <UnexpectedStateOverlay>
                                 <UnexpectedState
                                     caseType={errorState}
-                                    model={selectedModel}
+                                    model={model}
                                     connectActions={connectActions}
                                     onboardingActions={onboardingActions}
                                     uiInteraction={uiInteraction}
@@ -321,24 +303,19 @@ class Onboarding extends React.PureComponent<Props> {
                             </UnexpectedStateOverlay>
                         )}
                         <ProgressStepsSlot>
-                            {this.getStep(activeStepId).title &&
-                                this.getStep(activeStepId).title !== 'Basic setup' && (
-                                    <ProgressStepsWrapper>
-                                        <ProgressSteps
-                                            steps={steps}
-                                            activeStep={this.getStep(activeStepId)}
-                                            onboardingActions={onboardingActions}
-                                            isDisabled={deviceCall.isProgress}
-                                        />
-                                    </ProgressStepsWrapper>
-                                )}
+                            <ProgressStepsWrapper>
+                                <ProgressSteps
+                                    hiddenOnSteps={[STEP.ID_WELCOME_STEP, STEP.ID_SECURITY_STEP]}
+                                    steps={steps}
+                                    activeStep={activeStep}
+                                    onboardingActions={onboardingActions}
+                                    isDisabled={deviceCall.isProgress}
+                                />
+                            </ProgressStepsWrapper>
                         </ProgressStepsSlot>
                         <ComponentWrapper>
                             {this.isGlobalInteraction() && (
-                                <TrezorAction
-                                    model={selectedModel}
-                                    event={deviceInteraction.name}
-                                />
+                                <TrezorAction model={model} event={deviceInteraction.name} />
                             )}
 
                             <CSSTransition
@@ -346,13 +323,6 @@ class Onboarding extends React.PureComponent<Props> {
                                 {...TRANSITION_PROPS}
                             >
                                 <WelcomeStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_START_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <StartStep />
                             </CSSTransition>
 
                             <CSSTransition
@@ -453,14 +423,13 @@ class Onboarding extends React.PureComponent<Props> {
     }
 }
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: AppState) => {
     return {
         device: state.onboarding.connect.device,
         transport: state.suite.transport,
 
         // connect reducer
         prevDeviceId: state.onboarding.connect.prevDeviceId,
-        connectError: state.onboarding.connect.connectError,
         deviceCall: state.onboarding.connect.deviceCall,
         deviceInteraction: state.onboarding.connect.deviceInteraction,
         uiInteraction: state.onboarding.connect.uiInteraction,
@@ -470,6 +439,7 @@ const mapStateToProps = (state: State) => {
         activeStepId: state.onboarding.activeStepId,
         activeSubStep: state.onboarding.activeSubStep,
         steps: state.onboarding.steps,
+        asNewDevice: state.onboarding.asNewDevice,
     };
 };
 

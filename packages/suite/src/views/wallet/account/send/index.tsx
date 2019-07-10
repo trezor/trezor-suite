@@ -1,52 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { Text } from 'react-native';
-import { Button } from '@trezor/components';
-import { State } from '@suite-types/index';
-import { goto } from '@suite-actions/routerActions';
-import Layout from '@wallet-components/Layout';
+import LayoutAccount from '@wallet-components/LayoutAccount';
 
-interface Props {
-    suite: State['suite'];
-    router: State['router'];
-}
+import EthereumTypeSendForm from './ethereum';
+import RippleTypeSendForm from './ripple';
+import BitcoinTypeSendForm from './bitcoin';
 
-const Wallet = (props: Props) => {
-    const { pathname, params } = props.router;
-    const baseUrl = `${pathname}#/${params.coin}/`;
+const AccountSend = () => {
+    const network = { type: 'bitcoin' };
     return (
-        <Layout>
-            <Text>
-                {params.coin} Account {params.accountId} Send Page
-            </Text>
-            <Text>Other accounts</Text>
-            <Button variant="success" onClick={() => goto(`${baseUrl}1`)}>
-                Account#1
-            </Button>
-            <Button variant="success" onClick={() => goto(`${baseUrl}2`)}>
-                Account#2
-            </Button>
-            <Text>Account subpages</Text>
-            <Button variant="success" onClick={() => goto('/wallet/account', true)}>
-                Dashboard
-            </Button>
-            <Button variant="success" onClick={() => goto('/wallet/account/send', true)}>
-                Send
-            </Button>
-            <Button variant="success" onClick={() => goto('/wallet/account/receive', true)}>
-                Recv
-            </Button>
-            <Button variant="success" onClick={() => goto('/wallet/account/sign-verify', true)}>
-                Sign verify
-            </Button>
-        </Layout>
+        <LayoutAccount>
+            {network.type === 'bitcoin' && <BitcoinTypeSendForm />}
+            {network.type === 'ethereum' && <EthereumTypeSendForm />}
+            {network.type === 'ripple' && <RippleTypeSendForm />}
+        </LayoutAccount>
     );
 };
 
-const mapStateToProps = (state: State) => ({
-    suite: state.suite,
-    router: state.router,
-});
-
-export default connect(mapStateToProps)(Wallet);
+export default AccountSend;

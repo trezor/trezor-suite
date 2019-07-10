@@ -7,17 +7,17 @@ import styled from 'styled-components';
 import { Loader, Button } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
-import ConnectDevice from '@suite-components/landing/ConnectDevice';
-
-import { State } from '@suite-types/index';
+import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
+import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import Layout from '@suite-components/Layout';
+import Bridge from '@suite-views/bridge';
 
 interface Props {
-    router: State['router'];
-    suite: State['suite'];
-    devices: State['devices'];
+    router: AppState['router'];
+    suite: AppState['suite'];
+    devices: AppState['devices'];
     goto: typeof goto;
     children: React.ReactNode;
 }
@@ -34,7 +34,6 @@ const Index: FunctionComponent<Props> = props => {
 
     if (!suite.transport) {
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-        // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
             <Layout isLanding>
                 <LoaderWrapper>
@@ -47,13 +46,17 @@ const Index: FunctionComponent<Props> = props => {
     // onboarding handles TrezorConnect events by itself
     // and display proper view (install bridge, connect/disconnect device etc.)
     if (router.app === 'onboarding') {
-        return <Layout>{props.children}</Layout>;
+        return <Layout fullscreenMode>{props.children}</Layout>;
     }
 
     // no available transport
     // TODO: redirect to brige page
     if (!suite.transport.type) {
-        return <Layout isLanding>{/* <Bridge /> */}</Layout>;
+        return (
+            <Layout isLanding>
+                <Bridge />
+            </Layout>
+        );
     }
 
     // no available device
@@ -89,12 +92,10 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    const { pathname } = router;
-    const isLandingPage = pathname === '/bridge' || pathname === '/version';
     return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
     devices: state.devices,

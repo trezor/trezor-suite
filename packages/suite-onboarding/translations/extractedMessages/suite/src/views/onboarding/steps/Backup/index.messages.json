@@ -1,0 +1,240 @@
+[
+  {
+    "id": "TR_BACKUP_HEADING",
+    "description": "Heading in start page",
+    "defaultMessage": "Create or recover",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 23
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_SUBHEADING_1",
+    "description": "Explanation what recovery seed is",
+    "defaultMessage": "Your {TR_SEED_MANUAL_LINK} is the backup key to all your cryptocurrencies and applications.",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 28
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEED_MANUAL_LINK",
+    "description": "Link. Part of TR_BACKUP_SUBHEADING_1",
+    "defaultMessage": "recovery seed",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 15,
+      "column": 25
+    },
+    "end": {
+      "line": 19,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_SUBHEADING_2",
+    "description": "Explanation what recovery seed is",
+    "defaultMessage": "Your recovery seed can only be displayed once. Never make a digital copy of your recovery seed and never upload it online. Keep your recovery seed in a safe place.",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 20,
+      "column": 28
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DO_NOT_UPLOAD_INSTRUCTION",
+    "description": "Instruction what user should never do with his seed.",
+    "defaultMessage": "Do not upload words on the internet",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 26,
+      "column": 34
+    },
+    "end": {
+      "line": 30,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HIDE_TO_SAFE_PLACE_INSTRUCTION",
+    "description": "Instruction what user should do with his seed.",
+    "defaultMessage": "Hide them somewhere safe",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 31,
+      "column": 39
+    },
+    "end": {
+      "line": 35,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION",
+    "description": "Instruction what user should never do with his seed.",
+    "defaultMessage": "Do not write it into a computer",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 36,
+      "column": 44
+    },
+    "end": {
+      "line": 40,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DO_NOT_TAKE_PHOTO_INSTRUCTION",
+    "description": "Instruction what user should never do with his seed.",
+    "defaultMessage": "Do not take a photo of your recovery seed",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 41,
+      "column": 38
+    },
+    "end": {
+      "line": 45,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEED_IS_MORE_IMPORTANT_THAN_YOUR_DEVICE",
+    "description": "Instruction what user should never do with his seed.",
+    "defaultMessage": "Seed is more important than your device",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 46,
+      "column": 48
+    },
+    "end": {
+      "line": 50,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SATOSHILABS_CANNOT_BE_HELD_RESPONSIBLE",
+    "description": "Liability disclaimer.",
+    "defaultMessage": "SatoshiLabs cannot be held responsible for security liabilities or financial losses resulting from not following security instructions described here.",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 51,
+      "column": 47
+    },
+    "end": {
+      "line": 56,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_I_HAVE_READ_INSTRUCTIONS",
+    "description": "Checkbox text",
+    "defaultMessage": "I have read the instructions and agree",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 57,
+      "column": 33
+    },
+    "end": {
+      "line": 61,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_BACKUP",
+    "description": "Button text",
+    "defaultMessage": "Start backup",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 62,
+      "column": 21
+    },
+    "end": {
+      "line": 66,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_DISCONNECTED_DURING_ACTION",
+    "description": "Error message",
+    "defaultMessage": "Device disconnected during action",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 67,
+      "column": 42
+    },
+    "end": {
+      "line": 71,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION",
+    "description": "Error message. Instruction what to do.",
+    "defaultMessage": "You device disconnected during action which resulted in interuption of backup process. For security reasons you need to wipe your device now and start the backup process again.",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 72,
+      "column": 54
+    },
+    "end": {
+      "line": 77,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WIPE_DEVICE_AND_START_AGAIN",
+    "description": "Button text",
+    "defaultMessage": "Wipe device and start again",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 78,
+      "column": 36
+    },
+    "end": {
+      "line": 82,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_FINISHED_TEXT",
+    "description": "Text that appears after backup is finished",
+    "defaultMessage": "Backup is now on your recovery seed card. Once again dont lose it and keep it private!",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 83,
+      "column": 29
+    },
+    "end": {
+      "line": 88,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_FINISHED_BUTTON",
+    "description": "Exit button after backup is finished",
+    "defaultMessage": "My recovery card is safe",
+    "file": "../suite/src/views/onboarding/steps/Backup/index.messages.tsx",
+    "start": {
+      "line": 89,
+      "column": 31
+    },
+    "end": {
+      "line": 93,
+      "column": 5
+    }
+  }
+]

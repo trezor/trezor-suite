@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React from 'react';
 
-// import t1video from './videos/trezor-click-1.mp4';
-// import t2video from './videos/trezor-click-2.mp4';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 interface Props {
     model: number;
@@ -11,21 +10,20 @@ interface Props {
 }
 
 const TrezorConnect = ({ model, height, loop }: Props) => {
-    // const models = new Map([[1, t1video], [2, t2video]]);
+    const path = `videos/onboarding/trezor-click-${model}.mp4`;
     return (
         <React.Fragment>
             {/* just a hack to switch loop from true to false without need to forward ref to the video */}
-            {/* {loop && (
+            {loop && (
                 <video height={height} autoPlay loop={loop}>
-                    <source src={models.get(model)} type="video/mp4" />
+                    <source src={resolveStaticPath(path)} type="video/mp4" />
                 </video>
             )}
             {!loop && (
                 <video height={height} autoPlay loop={loop}>
-                    <source src={models.get(model)} type="video/mp4" />
+                    <source src={resolveStaticPath(path)} type="video/mp4" />
                 </video>
-            )} */}
-            Fancy video with connecting trezor. Disabled until we have final designs
+            )}
         </React.Fragment>
     );
 };

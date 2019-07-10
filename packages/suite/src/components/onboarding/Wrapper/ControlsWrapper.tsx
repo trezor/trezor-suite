@@ -2,12 +2,13 @@ import styled from 'styled-components';
 import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
 
 interface Props {
-    isVertical: boolean;
+    isVertical?: boolean;
 }
 
 const ControlsWrapper = styled.div<Props>`
     display: flex;
     flex-direction: ${({ isVertical }) => (isVertical ? 'column' : 'row')};
+    width: ${({ isVertical }) => (isVertical ? '240px' : '100%')};
 
     justify-content: center;
     margin-top: 10px;
@@ -15,8 +16,6 @@ const ControlsWrapper = styled.div<Props>`
     & > * {
         margin: 3px 10px 3px 10px;
     }
-
-    width: 100%;
 
     @media (max-width: ${BREAKPOINTS.SM}px) {
         flex-direction: column;

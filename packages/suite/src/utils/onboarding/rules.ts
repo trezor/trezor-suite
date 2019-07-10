@@ -4,8 +4,9 @@ import {
     DISALLOWED_DEVICE_IS_NOT_USED_HERE,
     DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
     DISALLOWED_DEVICE_IS_REQUESTING_PIN,
+    DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
 } from '@suite/constants/onboarding/steps';
-import { UiInteraction, PrevDeviceId } from '@suite/types/onboarding/connect';
+import { PrevDeviceId } from '@suite/types/onboarding/connect';
 
 type Device = any; // todo: finish when connect types ready.
 
@@ -41,22 +42,24 @@ export const isInBootloader = ({ device }: { device?: Device }) => {
     return device.features.bootloader_mode === true;
 };
 
-// todo typescript
-export const isRequestingPin = ({
-    device,
-    uiInteraction,
-}: {
-    device?: Device;
-    uiInteraction: UiInteraction;
-}) => {
-    if (!device || !device.features) {
+export const isRequestingPin = ({ device }: { device?: Device }) => {
+    if (!device) {
         return null;
     }
-    return (
-        uiInteraction.name === 'ui-request_pin' &&
-        device.features.pin_cached === false &&
-        device.features.pin_protection === true
-    );
+    return !!device.isRequestingPin;
+};
+
+export const isNotNewDevice = ({
+    device,
+    asNewDevice,
+}: {
+    device?: Device;
+    asNewDevice: boolean | null;
+}) => {
+    if (!device || !asNewDevice) {
+        return null;
+    }
+    return device.features.firmware_present !== false;
 };
 
 export const getFnForRule = (rule: string) => {
@@ -71,6 +74,8 @@ export const getFnForRule = (rule: string) => {
             return isInBootloader;
         case DISALLOWED_DEVICE_IS_REQUESTING_PIN:
             return isRequestingPin;
+        case DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
+            return isNotNewDevice;
         default:
             throw new Error(`Wrong rule passed: ${rule}`);
     }

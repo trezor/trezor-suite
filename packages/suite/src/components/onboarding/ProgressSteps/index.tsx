@@ -8,13 +8,15 @@ import {
     ID_NEWSLETTER_STEP,
 } from '@suite/constants/onboarding/steps';
 import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
-import { Step } from '@suite/types/onboarding/steps';
+import { Step, AnyStepId } from '@suite/types/onboarding/steps';
+import colors from '@suite/config/onboarding/colors';
 
 import ProgressStep from './components/ProgressStep';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
+    border-bottom: 1px solid ${colors.grayLight};
 `;
 
 const SECURITY_CLUSTER = [
@@ -30,17 +32,18 @@ interface Props {
     onboardingActions: OnboardingActions;
     activeStep: Step;
     steps: OnboardingReducer['steps'];
+    hiddenOnSteps?: AnyStepId[];
 }
 
 class ProgressSteps extends React.Component<Props> {
     changeOverHowManySteps: number = 0;
 
-    isGoingForward: boolean;
+    isGoingForward: boolean = true;
 
     componentWillReceiveProps(nextProps: Props) {
         if (nextProps.activeStep) {
             const nextStepIndex = this.props.steps.findIndex(
-                step => step.title === nextProps.activeStep.title,
+                (step: Step) => step.title === nextProps.activeStep.title,
             );
             const currentStepIndex = this.props.steps.findIndex(
                 step => step.title === this.props.activeStep.title,
@@ -72,7 +75,7 @@ class ProgressSteps extends React.Component<Props> {
                 ],
             );
         } else {
-            steps = this.props.steps.reduce((accumulator, current) => {
+            steps = this.props.steps.reduce((accumulator: Step[], current: Step) => {
                 if (
                     !SECURITY_CLUSTER.includes(current.id) &&
                     !accumulator.find(item => item.title === current.title)
@@ -101,28 +104,28 @@ class ProgressSteps extends React.Component<Props> {
     }
 
     render() {
-        const { isDisabled, onboardingActions, activeStep } = this.props;
+        const { isDisabled, onboardingActions, activeStep, hiddenOnSteps = [] } = this.props;
         const steps = this.getStepsWithDots();
-
         return (
             <React.Fragment>
                 <Wrapper>
-                    {steps.map((step, index) => (
-                        <React.Fragment key={`${step.id}-${step.title}`}>
-                            <ProgressStep
-                                isGoingForward={this.isGoingForward}
-                                step={step}
-                                index={index}
-                                length={steps.length}
-                                isActive={activeStep.title === step.title}
-                                isFinished={this.isStepFinished(index, activeStep)}
-                                isLast={steps.length - 1 === index}
-                                onboardingActions={onboardingActions}
-                                changeOverHowManySteps={this.changeOverHowManySteps}
-                                isDisabled={isDisabled}
-                            />
-                        </React.Fragment>
-                    ))}
+                    {!hiddenOnSteps.includes(activeStep.id) &&
+                        steps.map((step, index) => (
+                            <React.Fragment key={`${step.id}-${step.title}`}>
+                                <ProgressStep
+                                    isGoingForward={this.isGoingForward}
+                                    step={step}
+                                    index={index}
+                                    length={steps.length}
+                                    isActive={activeStep.title === step.title}
+                                    isFinished={this.isStepFinished(index, activeStep)}
+                                    isLast={steps.length - 1 === index}
+                                    onboardingActions={onboardingActions}
+                                    changeOverHowManySteps={this.changeOverHowManySteps}
+                                    isDisabled={isDisabled}
+                                />
+                            </React.Fragment>
+                        ))}
                 </Wrapper>
             </React.Fragment>
         );

@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { P } from '@trezor/components';
 
 import { UnorderedList } from '@suite/components/onboarding/Lists';
-// import { TrezorConnect } from '@suite/components/onboarding/Prompts';
+import { TrezorConnect } from '@suite/components/onboarding/Prompts';
 
 import l10nMessages from './Reconnect.messages';
 import { StepWrapper, StepHeadingWrapper, StepBodyWrapper } from '../Wrapper';
@@ -41,7 +41,7 @@ const Reconnect = ({ model }: { model: number }) => (
             <FormattedMessage {...l10nMessages.TR_RECONNECT_HEADER} />
         </StepHeadingWrapper>
         <StepBodyWrapper>
-            {/* <TrezorConnect model={model} loop /> */}
+            <TrezorConnect model={model} loop />
             <P>
                 <FormattedMessage {...l10nMessages.TR_RECONNECT_TEXT} />
             </P>

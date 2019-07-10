@@ -1,6 +1,6 @@
-import { defineMessages, Messages } from 'react-intl';
+import { defineMessages } from 'react-intl';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_TREZOR_WALLET_IS_AN_EASY_DASH: {
         id: 'TR_TREZOR_WALLET_IS_AN_EASY_DASH',
         defaultMessage:

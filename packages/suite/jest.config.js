@@ -18,14 +18,13 @@ module.exports = {
         '^@(.+)-types/(.+)': '<rootDir>/src/types/$1/$2',
     },
     moduleFileExtensions: ['js', 'ts'],
-    coverageDirectory: '../coverage/',
+    coverageDirectory: './coverage',
     collectCoverage: true,
-    testURL: 'http://localhost',
+    collectCoverageFrom: ['<rootDir>/src/reducers/**', '<rootDir>/src/utils/**'],
     modulePathIgnorePatterns: ['node_modules'],
-    collectCoverageFrom: ['utils/**.ts', 'reducers/utils/**.ts'],
     testMatch: ['**/tests/**/*.test.(ts|js)'],
     transform: {
-        '^.+\\.(ts|tsx)$': 'ts-jest',
+        '^.+\\.(ts)$': 'ts-jest',
     },
     preset: 'ts-jest',
 };

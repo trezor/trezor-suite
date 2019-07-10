@@ -1,20 +1,19 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { State } from '@suite/types/onboarding/actions';
 import { Dispatch } from '@suite-types/index';
-
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
+import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
+import { callActionAndGoToNextStep, resetDevice } from '@suite/actions/onboarding/connectActions';
 
 import Step from './index';
 
-const mapStateToProps = (state: State) => ({});
-
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
+    goToNextStep: bindActionCreators(goToNextStep, dispatch),
+    callActionAndGoToNextStep: bindActionCreators(callActionAndGoToNextStep, dispatch),
+    resetDevice: bindActionCreators(resetDevice, dispatch),
 });
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps,
 )(Step);

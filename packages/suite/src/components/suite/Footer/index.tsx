@@ -1,43 +1,38 @@
-/* @flow */
-
-import styled from 'styled-components';
 import React from 'react';
+import styled, { css } from 'styled-components';
 import { Link, colors, variables } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { State, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types/index';
 
 import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 const FOOTER_HEIGHT = '59px';
-
 interface Props {
     isLanding?: boolean;
     opened: boolean;
     toggle: typeof logActions.toggle;
-    propTypes?: any;
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<Pick<Props, 'isLanding'>>`
     width: 100%;
-    max-width: ${SCREEN_SIZE.LG};
     font-size: ${FONT_SIZE.SMALL};
     background: ${colors.LANDING};
     color: ${colors.TEXT_SECONDARY};
     padding: 10px 30px;
-    display: flex;
     height: ${FOOTER_HEIGHT};
-    flex-wrap: wrap;
+    display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     border-top: 1px solid ${colors.BACKGROUND};
-
-    @media all and (max-width: ${SCREEN_SIZE.MD}) {
-        justify-content: center;
-    }
+    ${props =>
+        !props.isLanding &&
+        css`
+            max-width: ${SCREEN_SIZE.LG};
+        `}
 `;
 
 const StyledLink = styled(Link)`
@@ -81,6 +76,18 @@ const RatesRight = styled.div`
     }
 `;
 
+const Content = styled.div`
+    max-width: ${SCREEN_SIZE.LG};
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    @media all and (max-width: ${SCREEN_SIZE.MD}) {
+        justify-content: center;
+    }
+`;
+
 const Footer = ({ opened, toggle, isLanding = false }: Props) => {
     const exchangeRates = (
         <FormattedMessage
@@ -95,44 +102,46 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         />
     );
     return (
-        <Wrapper>
-            <Left>
-                <StyledLink href="http://satoshilabs.com" isGreen>
-                    SatoshiLabs
-                </StyledLink>
-                <StyledLink href="https://trezor.io/tos" isGreen>
-                    <FormattedMessage {...l10nMessages.TR_TERMS} />
-                </StyledLink>
-                <StyledLink onClick={toggle} isGreen>
-                    {opened ? 'Hide Log' : 'Show Log'}
-                </StyledLink>
-                <RatesLeft>{exchangeRates}</RatesLeft>
-            </Left>
-            {!isLanding && (
-                <Right>
-                    <TranslatorsRight>
-                        <FormattedMessage
-                            {...l10nMessages.TR_WE_THANK_OUR_TRANSLATORS}
-                            values={{
-                                TR_CONTRIBUTION: (
-                                    <Link
-                                        href="https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation"
-                                        isGreen
-                                    >
-                                        <FormattedMessage {...l10nMessages.TR_CONTRIBUTION} />
-                                    </Link>
-                                ),
-                            }}
-                        />
-                    </TranslatorsRight>
-                    <RatesRight>{exchangeRates}</RatesRight>
-                </Right>
-            )}
+        <Wrapper isLanding={isLanding}>
+            <Content>
+                <Left>
+                    <StyledLink href="http://satoshilabs.com" isGreen>
+                        SatoshiLabs
+                    </StyledLink>
+                    <StyledLink href="https://trezor.io/tos" isGreen>
+                        <FormattedMessage {...l10nMessages.TR_TERMS} />
+                    </StyledLink>
+                    <StyledLink onClick={toggle} isGreen>
+                        {opened ? 'Hide Log' : 'Show Log'}
+                    </StyledLink>
+                    <RatesLeft>{exchangeRates}</RatesLeft>
+                </Left>
+                {!isLanding && (
+                    <Right>
+                        <TranslatorsRight>
+                            <FormattedMessage
+                                {...l10nMessages.TR_WE_THANK_OUR_TRANSLATORS}
+                                values={{
+                                    TR_CONTRIBUTION: (
+                                        <Link
+                                            href="https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation"
+                                            isGreen
+                                        >
+                                            <FormattedMessage {...l10nMessages.TR_CONTRIBUTION} />
+                                        </Link>
+                                    ),
+                                }}
+                            />
+                        </TranslatorsRight>
+                        <RatesRight>{exchangeRates}</RatesRight>
+                    </Right>
+                )}
+            </Content>
         </Wrapper>
     );
 };
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: AppState) => ({
     opened: state.log.opened,
 });
 

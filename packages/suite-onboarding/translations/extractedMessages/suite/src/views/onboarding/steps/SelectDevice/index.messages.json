@@ -1,0 +1,44 @@
+[
+  {
+    "id": "TR_SELECT_YOUR_DEVICE_HEADING",
+    "description": "Heading on select your device page",
+    "defaultMessage": "Select your device",
+    "file": "../suite/src/views/onboarding/steps/SelectDevice/index.messages.tsx",
+    "start": {
+      "line": 4,
+      "column": 35
+    },
+    "end": {
+      "line": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MODEL_ONE",
+    "description": "Name of Trezor model 1",
+    "defaultMessage": "Model one",
+    "file": "../suite/src/views/onboarding/steps/SelectDevice/index.messages.tsx",
+    "start": {
+      "line": 9,
+      "column": 18
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MODEL_T",
+    "description": "Name of Trezor model T",
+    "defaultMessage": "Model T",
+    "file": "../suite/src/views/onboarding/steps/SelectDevice/index.messages.tsx",
+    "start": {
+      "line": 14,
+      "column": 16
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  }
+]

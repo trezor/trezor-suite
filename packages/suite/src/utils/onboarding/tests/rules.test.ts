@@ -1,6 +1,23 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { isNotSameDevice, isNotConnected, isInBootloader, isRequestingPin } from '../rules';
+import {
+    DISALLOWED_IS_NOT_SAME_DEVICE,
+    DISALLOWED_DEVICE_IS_NOT_CONNECTED,
+    DISALLOWED_DEVICE_IS_NOT_USED_HERE,
+    DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
+    DISALLOWED_DEVICE_IS_REQUESTING_PIN,
+    DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
+} from '@suite/constants/onboarding/steps';
+
+import {
+    isNotSameDevice,
+    isNotConnected,
+    isInBootloader,
+    isRequestingPin,
+    isNotNewDevice,
+    isNotUsedHere,
+    getFnForRule,
+} from '../rules';
 
 describe('rules.js', () => {
     describe('isNotConneted', () => {
@@ -55,16 +72,77 @@ describe('rules.js', () => {
                 false,
             );
         });
+        it('cant tell without device', () => {
+            expect(isInBootloader({})).toEqual(null);
+        });
     });
 
     describe('isRequestingPin', () => {
         it('should return true', () => {
             expect(
                 isRequestingPin({
-                    device: { features: { pin_protection: true, pin_cached: false } },
-                    uiInteraction: { name: 'ui-request_pin', counter: 1 },
+                    device: { isRequestingPin: 1 },
                 }),
             ).toEqual(true);
+        });
+        it('cant tell without device', () => {
+            expect(isRequestingPin({})).toEqual(null);
+        });
+    });
+
+    describe('isNotNewDevice', () => {
+        it('should return false', () => {
+            expect(
+                isNotNewDevice({
+                    device: { features: { firmware_present: false } },
+                    asNewDevice: true,
+                }),
+            ).toEqual(false);
+        });
+
+        it('cant tell without device', () => {
+            expect(
+                isNotNewDevice({
+                    asNewDevice: true,
+                }),
+            ).toEqual(null);
+        });
+    });
+
+    describe('isNotUsedHere', () => {
+        it('should return false', () => {
+            expect(
+                isNotUsedHere({
+                    device: { status: 'available', connected: true },
+                }),
+            ).toEqual(false);
+        });
+
+        it('cant tell without device', () => {
+            expect(isNotUsedHere({})).toEqual(null);
+        });
+    });
+
+    describe('getFnForRule ', () => {
+        it('should not throw for expected states', () => {
+            [
+                DISALLOWED_IS_NOT_SAME_DEVICE,
+                DISALLOWED_DEVICE_IS_NOT_CONNECTED,
+                DISALLOWED_DEVICE_IS_NOT_USED_HERE,
+                DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
+                DISALLOWED_DEVICE_IS_REQUESTING_PIN,
+                DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
+            ].forEach((state: string) => {
+                expect(() => getFnForRule(state)).not.toThrow();
+                // expect(getFnForRule(state)).not.toThrow();
+            });
+        });
+
+        it('should throw for unexpected states', () => {
+            ['fooo', 'bcash moon'].forEach((state: string) => {
+                expect(() => getFnForRule(state)).toThrow();
+                // expect(getFnForRule(state)).not.toThrow();
+            });
         });
     });
 });

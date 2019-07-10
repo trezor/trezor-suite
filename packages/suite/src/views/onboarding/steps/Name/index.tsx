@@ -3,8 +3,9 @@ import { Button, Input } from '@trezor/components';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { AppState } from '@suite-types/index';
+import { applySettings } from '@onboarding-actions/connectActions';
+import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
 import { isASCII } from '@suite-utils/validators';
 import l10nCommonMessages from '@suite-support/Messages';
@@ -26,19 +27,23 @@ const NameInput = styled(Input)<NameInputProps>`
     min-height: 65px;
 `;
 
-interface Props {
-    connectActions: ConnectActions;
-    device: ConnectReducer['device'];
-    deviceCall: ConnectReducer['deviceCall'];
-    onboardingActions: OnboardingActions;
+interface StepProps {
+    connectActions: {
+        applySettings: typeof applySettings;
+    };
+    onboardingActions: {
+        goToNextStep: typeof goToNextStep;
+    };
+    device: AppState['onboarding']['connect']['device'];
+    deviceCall: AppState['onboarding']['connect']['deviceCall'];
 }
 
-interface State {
+interface StepState {
     label: string;
 }
 
-class NameStep extends React.Component<Props & InjectedIntlProps, State> {
-    state: State = {
+class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState> {
+    state: StepState = {
         label: '',
     };
 

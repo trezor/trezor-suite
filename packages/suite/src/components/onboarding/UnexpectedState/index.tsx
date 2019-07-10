@@ -10,7 +10,7 @@ import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect'
 import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
 import l10nMessages from './index.messages';
-// import Reconnect from './Reconnect';
+import Reconnect from './Reconnect';
 import { ControlsWrapper } from '../Wrapper';
 
 const Wrapper = styled.div`
@@ -106,8 +106,12 @@ const UnexpectedState = ({
     uiInteraction,
 }: UnexpectedStateProps): any => {
     switch (caseType) {
-        // case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
-        //     return <UnexpectedStateCommon onboardingActions={onboardingActions}><Reconnect model={model} /></UnexpectedStateCommon>;
+        case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
+            return (
+                <UnexpectedStateCommon onboardingActions={onboardingActions}>
+                    <Reconnect model={model} />
+                </UnexpectedStateCommon>
+            );
         case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
             return (
                 <UnexpectedStateCommon onboardingActions={onboardingActions}>

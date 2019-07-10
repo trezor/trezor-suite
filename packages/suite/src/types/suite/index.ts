@@ -2,11 +2,15 @@ import { ThunkDispatch } from 'redux-thunk';
 import { UiEvent, DeviceEvent, TransportEvent } from 'trezor-connect';
 import { BlockchainActions } from '@suite-actions/blockchainActions';
 import { RouterActions } from '@suite-actions/routerActions';
+import { AppState } from '@suite/reducers/store';
 
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
+import { settingsActions as WalletSettingsActions } from '@wallet-actions/settingsActions';
+import { NotificationActions as WalletNotificationActions } from '@wallet-actions/notificationActions';
+import { SignVerifyAction as WalletSignVerifyAction } from '@wallet-actions/signVerifyActions';
+import { FiatRateAction } from '@wallet-services/CoingeckoService';
 import { LogActions } from '@suite-actions/logActions';
-import { State as ReducersState } from '@suite/reducers/store';
 import OnboardingActions from '@onboarding-types/actions';
 
 export { MessageDescriptor } from '@suite-support/ConnectedIntlProvider';
@@ -17,9 +21,19 @@ export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>
     | Omit<UiEvent, 'event'>
-    | Omit<DeviceEvent, 'event'>;
+    | Omit<DeviceEvent, 'event'>
+    | { type: 'iframe-loaded'; payload: any };
 
-export type State = ReducersState;
+export type AppState = AppState;
+
+// actions from Wallet sub app
+export type WalletActions =
+    | WalletSettingsActions
+    | WalletSignVerifyAction
+    | WalletNotificationActions
+    | FiatRateAction;
+
+// all actions from all apps
 export type Action =
     | TrezorConnectEvents
     | RouterActions
@@ -27,11 +41,12 @@ export type Action =
     | StorageActions
     | SuiteActions
     | LogActions
-    | OnboardingActions;
+    | OnboardingActions
+    | WalletActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
-export type Dispatch = ThunkDispatch<State, any, Action>;
-export type GetState = () => State;
+export type Dispatch = ThunkDispatch<AppState, any, Action>;
+export type GetState = () => AppState;
 
 // tmp
 type Features = any;
