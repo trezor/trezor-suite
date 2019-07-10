@@ -13,47 +13,47 @@ export const routes: Route[] = [
     },
     {
         name: 'wallet-index',
-        pattern: '/wallet/',
+        pattern: '/wallet',
     },
     {
         name: 'onboarding-index',
-        pattern: '/onboarding/',
+        pattern: '/onboarding',
     },
     {
         name: 'suite-device-settings',
-        pattern: '/settings/',
+        pattern: '/settings',
     },
     {
         name: 'wallet-settings',
-        pattern: '/wallet/settings/',
+        pattern: '/wallet/settings',
     },
     {
         name: 'wallet-account',
-        pattern: '/wallet/account/',
+        pattern: '/wallet/account',
     },
     {
         name: 'wallet-import',
-        pattern: '/wallet/import/',
+        pattern: '/wallet/import',
     },
     {
         name: 'wallet-account-summary',
-        pattern: '/wallet/account/',
+        pattern: '/wallet/account',
     },
     {
         name: 'wallet-account-transactions',
-        pattern: '/wallet/account/transactions/',
+        pattern: '/wallet/account/transactions',
     },
     {
         name: 'wallet-account-send',
-        pattern: '/wallet/account/send/',
+        pattern: '/wallet/account/send',
     },
     {
         name: 'wallet-account-receive',
-        pattern: '/wallet/account/receive/',
+        pattern: '/wallet/account/receive',
     },
     {
         name: 'wallet-account-sign-verify',
-        pattern: '/wallet/account/sign-verify/',
+        pattern: '/wallet/account/sign-verify',
     },
 ];
 
@@ -110,12 +110,19 @@ export const getRoute = (name: string, params?: { [key: string]: string }) => {
 // Strips params delimited by a hashtag from the URL
 export const toInternalRoute = (route: string) => {
     // chars before # belong to the first group, # and chars after to the optional second group
-    // eg. https://suite.corp.sldev.cz/wallet/account/#/eth/0 will be splitted to
+    // eg. https://suite.corp.sldev.cz/wallet/account/#/eth/0 will be split to
     // 'https://suite.corp.sldev.cz/wallet/account/' and '#/eth/0'
     try {
-        const tokens = route.match(/([^#]*)(#.*)?/);
+        // if there is an URL prefix remove it(eg. branch name on CI)
+        const urlPrefix = process.env.assetPrefix;
+        let strippedPrefix = route;
+        if (urlPrefix && route.indexOf(urlPrefix) === 0) {
+            strippedPrefix = strippedPrefix.slice(urlPrefix.length);
+        }
+        // split path and params
+        const tokens = strippedPrefix.match(/([^#]*)(#.*)?/);
         const group1 = tokens ? tokens[1] : route;
-        return group1;
+        return group1.replace(/\/+$/, ''); // strip trailing slash
     } catch (error) {
         console.error(error);
         return route;
