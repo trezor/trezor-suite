@@ -51,8 +51,6 @@ const ButtonWithLoader = styled(Button)`
     padding-bottom: 6px;
 `;
 
-interface Props {}
-
 interface State {
     countdown: number;
     ticker?: number;
