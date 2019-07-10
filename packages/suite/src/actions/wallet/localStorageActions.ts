@@ -28,14 +28,8 @@ export type StorageAction =
           //   ERC20Abi: Array<TokensCollection>,
           tokens: TokensCollection;
       }
-    | {
-          type: typeof STORAGE.SAVE;
-          network: string;
-      }
-    | {
-          type: typeof STORAGE.ERROR;
-          error: string;
-      };
+    | { type: typeof STORAGE.SAVE; network: string }
+    | { type: typeof STORAGE.ERROR; error: string };
 
 const TYPE = 'local';
 const STORAGE_PATH = storageUtils.getStoragePath();

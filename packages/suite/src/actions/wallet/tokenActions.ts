@@ -6,22 +6,10 @@ import { State } from '@wallet-reducers/tokenReducer';
 import * as BlockchainActions from '@wallet-actions/ethereum/blockchainActions';
 
 export type TokenAction =
-    | {
-          type: typeof TOKEN.FROM_STORAGE;
-          payload: State;
-      }
-    | {
-          type: typeof TOKEN.ADD;
-          payload: Token;
-      }
-    | {
-          type: typeof TOKEN.REMOVE;
-          token: Token;
-      }
-    | {
-          type: typeof TOKEN.SET_BALANCE;
-          payload: State;
-      };
+    | { type: typeof TOKEN.FROM_STORAGE; payload: State }
+    | { type: typeof TOKEN.ADD; payload: Token }
+    | { type: typeof TOKEN.REMOVE; token: Token }
+    | { type: typeof TOKEN.SET_BALANCE; payload: State };
 
 // action from component <reactSelect>
 export const load = (input: string, network: string) => async (
@@ -34,7 +22,7 @@ export const load = (input: string, network: string) => async (
     const tokens = getState().wallet.localStorage.tokens[network];
     const value = formattedInput.toLowerCase();
     const result = tokens.filter(
-        t =>
+        (t: Token) =>
             t.symbol.toLowerCase().indexOf(value) >= 0 ||
             t.address.toLowerCase().indexOf(value) >= 0 ||
             t.name.toLowerCase().indexOf(value) >= 0,
@@ -76,7 +64,6 @@ export const setBalance = (tokenAddress: string, ethAddress: string, balance: st
 export const add = (token: NetworkToken, account: Account) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
-    console.log('add');
     const tkn: Token = {
         loaded: false,
         deviceState: account.deviceState,
