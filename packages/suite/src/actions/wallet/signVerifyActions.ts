@@ -6,13 +6,21 @@ import { validateAddress } from '@suite/utils/wallet/ethUtils';
 // import l10nMessages from 'components/notifications/Context/actions.messages';
 import * as SIGN_VERIFY from './constants/signVerify';
 
+type inputNameType =
+    | 'signAddress'
+    | 'signMessage'
+    | 'signSignature'
+    | 'verifyAddress'
+    | 'verifyMessage'
+    | 'verifySignature';
+
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
     | { type: typeof SIGN_VERIFY.CLEAR_SIGN }
     | { type: typeof SIGN_VERIFY.CLEAR_VERIFY }
-    | { type: typeof SIGN_VERIFY.INPUT_CHANGE; inputName: string; value: string }
-    | { type: typeof SIGN_VERIFY.TOUCH; inputName: string }
-    | { type: typeof SIGN_VERIFY.ERROR; inputName: string; message?: string };
+    | { type: typeof SIGN_VERIFY.INPUT_CHANGE; inputName: inputNameType; value: string }
+    | { type: typeof SIGN_VERIFY.TOUCH; inputName: inputNameType }
+    | { type: typeof SIGN_VERIFY.ERROR; inputName: inputNameType; message?: string };
 
 const sign = (path: [number], message: string, hex: boolean = false) => async (
     dispatch: Dispatch,
