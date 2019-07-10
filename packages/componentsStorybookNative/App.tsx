@@ -21,7 +21,7 @@ const Container = styled.ScrollView.attrs({
     },
 })``;
 
-export const App = () => {
+const App = () => {
     const options: any = {
         Typography,
         Form,
@@ -36,3 +36,5 @@ export const App = () => {
         </Container>
     );
 };
+
+export default App;
