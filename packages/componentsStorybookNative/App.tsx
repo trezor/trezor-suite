@@ -8,11 +8,7 @@
 
 import React from 'react';
 import styled from 'styled-components/native';
-import Typography from './src/views/Typography';
-import Form from './src/views/Form';
-import Notification from './src/views/Notification';
-import Buttons from './src/views/Button';
-import Other from './src/views/Other';
+import Components from './src';
 
 const Container = styled.ScrollView.attrs({
     contentContainerStyle: {
@@ -21,20 +17,10 @@ const Container = styled.ScrollView.attrs({
     },
 })``;
 
-const App = () => {
-    const options: any = {
-        Typography,
-        Form,
-        Notification,
-        Buttons,
-        Other,
-    };
-
-    return (
-        <Container>
-            <options.Other />
-        </Container>
-    );
-};
+const App = () => (
+    <Container>
+        <Components />
+    </Container>
+);
 
 export default App;
