@@ -4,7 +4,6 @@ import signVerifyReducer from './signVerifyReducer';
 import settingsReducer from './settingsReducer';
 import fiatRateReducer from './fiatRateReducer';
 import tokensReducer from './tokenReducer';
-import localStorageReducer from './localStorageReducer';
 
 const WalletReducers = combineReducers({
     signVerify: signVerifyReducer,
@@ -12,7 +11,6 @@ const WalletReducers = combineReducers({
     settings: settingsReducer,
     notifications: notificationReducer,
     tokens: tokensReducer,
-    localStorage: localStorageReducer,
 });
 
 export default WalletReducers;

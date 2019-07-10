@@ -8,7 +8,19 @@ import { Action } from '@suite-types/index';
 
 export type State = Token[];
 
-const initialState: State = [];
+const initialState: State = [
+    // {
+    //     loaded: true,
+    //     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+    //     network: 'eth',
+    //     name: '$TEAK',
+    //     symbol: '$TEAK',
+    //     address: '0x7DD7F56D697Cc0f2b52bD55C057f378F1fE6Ab4b',
+    //     ethAddress: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
+    //     decimals: 18,
+    //     balance: '0',
+    // },
+];
 
 const create = (state: State, token: Token): State => {
     state.push(token);
