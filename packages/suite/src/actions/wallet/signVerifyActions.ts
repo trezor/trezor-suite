@@ -117,7 +117,7 @@ const verify = (
     }
 };
 
-const inputChange = (inputName: string, value: string) => (dispatch: Dispatch): void => {
+const inputChange = (inputName: inputNameType, value: string) => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
         inputName,
