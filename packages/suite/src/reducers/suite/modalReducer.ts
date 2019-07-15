@@ -16,7 +16,6 @@ const initialState = {
 };
 
 export default function modal(state = initialState, action: Action) {
-    console.log('aaa', action.type);
     switch (action.type) {
         case CONNECT.FORGET_REQUEST:
         case CONNECT.TRY_TO_DUPLICATE:
