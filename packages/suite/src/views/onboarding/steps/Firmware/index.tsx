@@ -1,23 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { P, Button, Tooltip } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import colors from '@suite/config/onboarding/colors';
-import { GET_FIRMWARE } from '@suite/actions/onboarding/constants/fetchCalls';
-import { FIRMWARE_ERASE, FIRMWARE_UPLOAD } from '@suite/actions/onboarding/constants/calls';
+import { AppState } from '@suite-types/index';
 import commonMessages from '@suite-support/Messages';
 
-import Text from '@suite/components/onboarding/Text';
-import { ConnectDeviceIcon } from '@suite/components/onboarding/Icons';
-import { Donut, Dots } from '@suite/components/onboarding/Loaders';
+import colors from '@suite/config/onboarding/colors';
+import { FIRMWARE_UPLOAD } from '@onboarding-actions/constants/calls';
+import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
+import Text from '@onboarding-components/Text';
+import { ConnectDeviceIcon } from '@onboarding-components/Icons';
+import { Donut, Dots } from '@onboarding-components/Loaders';
 import {
     StepWrapper,
     StepHeadingWrapper,
     StepBodyWrapper,
     ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
-
-import { AppState } from '@suite-types/index';
+} from '@onboarding-components/Wrapper';
 import { updateFirmware } from '@onboarding-actions/firmwareUpdateActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 
@@ -26,10 +25,38 @@ import l10nMessages from './index.messages';
 const DONUT_STROKE = 20;
 const DONUT_RADIUS = 60;
 
+interface ButtonProps {
+    onClick: () => void;
+    isConnected: boolean;
+}
+
+const InstallButton = ({ isConnected, onClick }: ButtonProps) => (
+    <Tooltip
+        trigger={isConnected ? 'manual' : 'mouseenter focus'}
+        placement="bottom"
+        content="Connect device to continue"
+    >
+        <Button isDisabled={!isConnected} onClick={() => onClick()}>
+            <FormattedMessage {...l10nMessages.TR_INSTALL} />
+        </Button>
+    </Tooltip>
+);
+
+const ContinueButton = ({ isConnected, onClick }: ButtonProps) => (
+    <Tooltip
+        trigger={isConnected ? 'manual' : 'mouseenter focus'}
+        placement="bottom"
+        content="Connect device to continue"
+    >
+        <Button isDisabled={!isConnected} onClick={() => onClick()}>
+            <FormattedMessage {...commonMessages.TR_CONTINUE} />
+        </Button>
+    </Tooltip>
+);
+
 interface Props {
     device: AppState['onboarding']['connect']['device'];
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    fetchCall: AppState['onboarding']['fetchCall'];
     firmwareUpdate: AppState['onboarding']['firmwareUpdate'];
     firmwareUpdateActions: {
         updateFirmware: typeof updateFirmware;
@@ -39,228 +66,236 @@ interface Props {
     };
 }
 
-class FirmwareStep extends React.Component<Props & InjectedIntlProps> {
-    getStatus() {
-        const { device, fetchCall, deviceCall } = this.props;
+const FirmwareStep = ({
+    device,
+    deviceCall,
+    firmwareUpdate,
+    onboardingActions,
+    firmwareUpdateActions,
+    intl,
+}: Props & InjectedIntlProps) => {
+    const [maxProgress, setMaxProgress] = useState(0);
+    const [progress, setProgress] = useState(0);
 
+    useEffect(() => {
+        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.DONE || deviceCall.error) {
+            setProgress(100);
+        }
+    }, [firmwareUpdate.status, deviceCall]);
+
+    useEffect(() => {
+        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.DOWNLOADING) {
+            setMaxProgress(10);
+        }
+        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.INSTALLING) {
+            setMaxProgress(99);
+        }
+        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.DONE) {
+            setMaxProgress(100);
+        }
+    }, [firmwareUpdate.status]);
+
+    useEffect(() => {
+        let interval: number;
+
+        const runOn = [
+            FIRMWARE_UPDATE_STATUS.STARTED,
+            FIRMWARE_UPDATE_STATUS.INSTALLING,
+            FIRMWARE_UPDATE_STATUS.DOWNLOADING,
+        ];
+        if (firmwareUpdate.status && runOn.includes(firmwareUpdate.status)) {
+            interval = setInterval(
+                () => {
+                    if (progress < maxProgress) {
+                        setProgress(progress + 1);
+                    }
+                },
+                device.features.major_version === 1 ? 170 : 561,
+            );
+        }
+        return () => {
+            clearInterval(interval);
+        };
+    }, [firmwareUpdate.status, progress, maxProgress, device.features.major_version]);
+
+    const isConnected = device && device.connected;
+
+    const getError = () => {
+        return deviceCall.error || firmwareUpdate.error;
+    };
+
+    const getFirmwareStatus = () => {
         if (device.firmware === 'valid') {
             return 'success';
         }
 
-        if (deviceCall.error) {
-            return 'deviceCall-error';
-        }
-
-        if (fetchCall.error) {
-            return 'fetchCall-error';
-        }
-
-        if (deviceCall.name === FIRMWARE_UPLOAD && deviceCall.result) {
-            return 'reconnect';
-        }
-
-        if (deviceCall.name === FIRMWARE_UPLOAD) {
-            return 'installing';
-        }
-
-        if (deviceCall.name === FIRMWARE_ERASE) {
-            return 'preparing';
-        }
-
-        if (fetchCall.name === GET_FIRMWARE) {
-            return 'downloading';
+        if (device.firmware === 'outdated' || device.firmware === 'required') {
+            return 'outdated';
         }
 
         if (device.firmware === 'none' || device.firmware === 'unknown') {
-            return 'initial';
+            return 'none';
         }
 
-        if (device.firmware === 'outdated') {
-            return 'outdated';
-        }
         return null;
-    }
+    };
 
-    getMessageForStatus = () => {
-        const { device } = this.props;
-        const status = this.getStatus();
+    const getUpdateStatus = () => {
+        if (
+            deviceCall.name === FIRMWARE_UPLOAD &&
+            deviceCall.result &&
+            device.firmware !== 'valid'
+        ) {
+            return 'reconnect';
+        }
+        return firmwareUpdate.status;
+    };
+
+    const getMessageForStatus = () => {
+        const status = getUpdateStatus();
         if (status === 'reconnect' && !device.connected && device.features.major_version === 1) {
-            return this.props.intl.formatMessage(l10nMessages.TR_CONNECT_YOUR_DEVICE_AGAIN);
+            return intl.formatMessage(l10nMessages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
         if (status === 'reconnect' && device.connected && device.features.major_version === 1) {
-            return this.props.intl.formatMessage(l10nMessages.TR_DISCONNECT_YOUR_DEVICE);
+            return intl.formatMessage(l10nMessages.TR_DISCONNECT_YOUR_DEVICE);
         }
         if (status === 'reconnect' && device.features.major_version === 2) {
-            return this.props.intl.formatMessage(l10nMessages.TR_WAIT_FOR_REBOOT);
+            return intl.formatMessage(l10nMessages.TR_WAIT_FOR_REBOOT);
         }
-        return this.props.intl.formatMessage(l10nMessages.TR_INSTALLING);
+        if (status === 'done') {
+            return null;
+        }
+        return intl.formatMessage(l10nMessages.TR_INSTALLING);
     };
 
-    install = async () => {
-        this.props.firmwareUpdateActions.updateFirmware();
+    const install = () => {
+        setProgress(0);
+        setMaxProgress(0);
+        firmwareUpdateActions.updateFirmware();
     };
 
-    isProgress() {
-        const status = this.getStatus();
-        if (!status) {
-            return false;
-        }
-        const targetStates = [
-            'downloading',
-            'preparing',
-            'installing',
-            'reconnect',
-            'deviceCall-error',
-            'fetchCall-error',
-        ];
-        return targetStates.includes(status);
-    }
+    return (
+        <StepWrapper>
+            <StepHeadingWrapper>
+                <FormattedMessage {...l10nMessages.TR_FIRMWARE_HEADING} />
+            </StepHeadingWrapper>
+            <StepBodyWrapper>
+                {/*  text section */}
+                {getFirmwareStatus() === 'none' && (
+                    <>
+                        <Text>
+                            <FormattedMessage {...l10nMessages.TR_FIRMWARE_SUBHEADING} />
+                        </Text>
+                    </>
+                )}
 
-    render() {
-        const { device, deviceCall, fetchCall, firmwareUpdate } = this.props;
-        const isConnected = device && device.connected;
-
-        return (
-            <StepWrapper>
-                <StepHeadingWrapper>
-                    <FormattedMessage {...l10nMessages.TR_FIRMWARE_HEADING} />
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
-                    {this.getStatus() === 'initial' && (
-                        <React.Fragment>
-                            <Text>
-                                <FormattedMessage {...l10nMessages.TR_FIRMWARE_SUBHEADING} />
-                            </Text>
-                            <ControlsWrapper>
-                                <Button onClick={() => this.install()}>
-                                    <FormattedMessage {...l10nMessages.TR_INSTALL} />
-                                </Button>
-                            </ControlsWrapper>
-                        </React.Fragment>
-                    )}
-
-                    {this.getStatus() === 'outdated' && (
-                        <React.Fragment>
-                            <Text>
-                                <FormattedMessage
-                                    {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
-                                    values={{
-                                        version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
-                                    }}
-                                />
-                            </Text>
-                            <ControlsWrapper>
-                                {isConnected && (
-                                    <Button
-                                        isDisabled={!isConnected}
-                                        onClick={() => this.props.onboardingActions.goToNextStep()}
-                                    >
-                                        <FormattedMessage {...commonMessages.TR_CONTINUE} />
-                                    </Button>
-                                )}
-                                {!isConnected && (
-                                    <Tooltip
-                                        placement="bottom"
-                                        content="Connect device to continue"
-                                    >
-                                        <Button
-                                            isDisabled={!isConnected}
-                                            onClick={() =>
-                                                this.props.onboardingActions.goToNextStep()
-                                            }
-                                        >
-                                            <FormattedMessage {...commonMessages.TR_CONTINUE} />
-                                        </Button>
-                                    </Tooltip>
-                                )}
-                            </ControlsWrapper>
-                        </React.Fragment>
-                    )}
-
-                    {this.isProgress() && (
-                        <React.Fragment>
-                            <Donut
-                                progress={firmwareUpdate.progress}
-                                radius={DONUT_RADIUS}
-                                stroke={DONUT_STROKE}
-                                isSuccess={this.getStatus() === 'success'}
-                                isError={deviceCall.error !== null || fetchCall.error !== null}
+                {getFirmwareStatus() === 'outdated' && (
+                    <>
+                        <Text>
+                            <FormattedMessage
+                                {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
+                                values={{
+                                    version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
+                                }}
                             />
-                            {!deviceCall.error && !fetchCall.error && (
-                                <React.Fragment>
-                                    <P>
-                                        {this.getMessageForStatus()}
-                                        <Dots />
-                                    </P>
-                                    {this.getStatus() === 'reconnect' && (
-                                        <ConnectDeviceIcon model={device.features.major_version} />
-                                    )}
-                                </React.Fragment>
-                            )}
-                            {(deviceCall.error || fetchCall.error) && (
-                                <React.Fragment>
-                                    {deviceCall.error && (
-                                        <Text style={{ color: colors.error }}>
-                                            <FormattedMessage
-                                                {...l10nMessages.TR_INSTALL_ERROR_OCCURRED}
-                                                values={{ error: deviceCall.error }}
-                                            />
-                                        </Text>
-                                    )}
-                                    {fetchCall.error && (
-                                        <Text style={{ color: colors.error }}>
-                                            <FormattedMessage
-                                                {...l10nMessages.TR_FETCH_ERROR_OCCURRED}
-                                                values={{ error: fetchCall.error }}
-                                            />
-                                        </Text>
-                                    )}
-                                    <ControlsWrapper>
-                                        <Button onClick={() => this.install()}>
-                                            <FormattedMessage {...commonMessages.TR_RETRY} />
-                                        </Button>
-                                    </ControlsWrapper>
-                                </React.Fragment>
-                            )}
-                        </React.Fragment>
-                    )}
+                        </Text>
+                    </>
+                )}
 
-                    {this.getStatus() === 'success' && (
-                        <React.Fragment>
-                            <Text>
-                                <FormattedMessage {...l10nMessages.TR_FIRMWARE_INSTALLED} />
-                            </Text>
-                            <ControlsWrapper>
-                                {isConnected && (
-                                    <Button
-                                        isDisabled={!isConnected}
-                                        onClick={() => this.props.onboardingActions.goToNextStep()}
-                                    >
-                                        <FormattedMessage {...commonMessages.TR_CONTINUE} />
-                                    </Button>
+                {getFirmwareStatus() === 'success' && (
+                    <>
+                        <Text>
+                            <FormattedMessage {...l10nMessages.TR_FIRMWARE_INSTALLED} />
+                        </Text>
+                    </>
+                )}
+
+                {/* progress donut section */}
+                {getUpdateStatus() && (
+                    <>
+                        <Donut
+                            progress={progress}
+                            radius={DONUT_RADIUS}
+                            stroke={DONUT_STROKE}
+                            isSuccess={getFirmwareStatus() === 'success'}
+                            isError={!!getError()}
+                        />
+                        {!getError() && (
+                            <>
+                                <P>
+                                    {getMessageForStatus()}
+                                    {getMessageForStatus() && <Dots />}
+                                </P>
+                                {getUpdateStatus() === 'reconnect' && (
+                                    <ConnectDeviceIcon model={device.features.major_version} />
                                 )}
-                                {!isConnected && (
-                                    <Tooltip
-                                        placement="bottom"
-                                        content="Connect device to continue"
-                                    >
-                                        <Button
-                                            isDisabled={!isConnected}
-                                            onClick={() =>
-                                                this.props.onboardingActions.goToNextStep()
-                                            }
-                                        >
-                                            <FormattedMessage {...commonMessages.TR_CONTINUE} />
-                                        </Button>
-                                    </Tooltip>
+                            </>
+                        )}
+                        {getError() && (
+                            <>
+                                {deviceCall.error && (
+                                    <Text style={{ color: colors.error }}>
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_INSTALL_ERROR_OCCURRED}
+                                            values={{ error: deviceCall.error }}
+                                        />
+                                    </Text>
                                 )}
-                            </ControlsWrapper>
-                        </React.Fragment>
-                    )}
-                </StepBodyWrapper>
-            </StepWrapper>
-        );
-    }
-}
+                                {firmwareUpdate.error && (
+                                    <Text style={{ color: colors.error }}>
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_FETCH_ERROR_OCCURRED}
+                                            values={{ error: firmwareUpdate.error }}
+                                        />
+                                    </Text>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
+
+                {/* buttons section */}
+                {(!getUpdateStatus() || getUpdateStatus() === 'done') && (
+                    <ControlsWrapper>
+                        {getFirmwareStatus() === 'none' && !getError() && (
+                            <>
+                                <InstallButton isConnected={isConnected} onClick={install} />
+                            </>
+                        )}
+                        {getFirmwareStatus() === 'none' && getError() && (
+                            <Tooltip
+                                trigger={isConnected ? 'manual' : 'mouseenter focus'}
+                                placement="bottom"
+                                content="Connect device to continue"
+                            >
+                                <Button isDisabled={!isConnected} onClick={() => install()}>
+                                    <FormattedMessage {...commonMessages.TR_RETRY} />
+                                </Button>
+                            </Tooltip>
+                        )}
+
+                        {getFirmwareStatus() === 'outdated' && (
+                            <>
+                                <InstallButton isConnected={isConnected} onClick={install} />
+                                <ContinueButton
+                                    isConnected={isConnected}
+                                    onClick={onboardingActions.goToNextStep}
+                                />
+                            </>
+                        )}
+                        {getFirmwareStatus() === 'success' && (
+                            <>
+                                <ContinueButton
+                                    isConnected={isConnected}
+                                    onClick={onboardingActions.goToNextStep}
+                                />
+                            </>
+                        )}
+                    </ControlsWrapper>
+                )}
+            </StepBodyWrapper>
+        </StepWrapper>
+    );
+};
 
 export default injectIntl(FirmwareStep);

@@ -25,7 +25,7 @@
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
-        "postinstall": "yarn workspace @trezor/components build:lib",
+        "postinstall": "yarn workspace @trezor/components build:lib && yarn workspace @trezor/rollout build:lib",
         "run-all": "yarn run wsrun",
         "lint": "yarn run-all lint"
     },

@@ -10,7 +10,6 @@ import Step from './index';
 const mapStateToProps = (state: AppState) => ({
     deviceCall: state.onboarding.connect.deviceCall,
     device: state.onboarding.connect.device,
-    fetchCall: state.onboarding.fetchCall,
     firmwareUpdate: state.onboarding.firmwareUpdate,
 });
 

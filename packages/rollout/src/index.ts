@@ -1,87 +1,129 @@
-import { filterSafeListByFirmware, filterSafeListByBootloader } from './utils/list';
+import {
+    filterSafeListByFirmware,
+    filterSafeListByBootloader,
+    findActualBlVersionInList,
+} from './utils/list';
+import { fetchFirmware, fetchReleasesList } from './utils/fetch';
 import { getScore, isInProbability } from './utils/score';
 import versionUtils from './utils/version';
-import { Input, Release } from './types';
+import { Release, RolloutOpts, Firmware, Features } from './types';
 
-const getBootloaderVersion = ({
-    releasesList,
-    isInBootloader,
-    firmwareVersion,
-    bootloaderVersion,
-}) => {
-    if (isInBootloader) {
-        return bootloaderVersion;
-    }
-    const foundVersion = releasesList.find((item: Release) =>
-        versionUtils.isEqual(item.version, firmwareVersion)
-    );
-    if (!foundVersion || !foundVersion.bootloader_version) {
-        return null;
-    }
-    return foundVersion.bootloader_version;
-};
+const rollout = (opts: RolloutOpts) => {
+    const { releasesListsPaths, baseUrl } = opts;
+    const releasesList = {
+        1: [],
+        2: [],
+    };
 
-const getLatestSafeFw = (input, score?: number) => {
-    // first find bootloader version for both bootloader mode and normal mode;
-    const { isInBootloader, firmwareVersion, firmwarePresent } = input;
-    let { releasesList } = input;
+    const modifyFirmware = ({ fw, features }: { fw: Firmware; features: Features }) => {
+        const deviceBlVersion = findActualBlVersionInList(releasesList[features.major_version], [
+            features.major_version,
+            features.minor_version,
+            features.patch_version,
+        ]);
+        if (!deviceBlVersion) {
+            // this should be safe, in releasesList, bootloader_version is not defined for some ancient firmwares.
+            // at the same time, there is no need to modify them, so just return the fw.
+            return fw;
+        }
 
-    const latest = releasesList[0];
-    let isNewer: boolean | null;
-    if (isInBootloader) {
-        // here we can not guarantee, that offered firmware is really newer than actual
-        // because we are evaluating bootloader versions, which do not automatically
-        // increment between firmware releases
-        const bootloaderVersion = getBootloaderVersion(input);
-        releasesList = filterSafeListByBootloader({ releasesList, bootloaderVersion });
-        if (
-            releasesList[0] &&
-            releasesList[0].bootloader_version &&
-            versionUtils.isNewer(releasesList[0].bootloader_version, bootloaderVersion)
-        ) {
-            isNewer = true;
+        // any version installed on bootloader 1.8.0 must be sliced of the first 256 bytes (containing old firmware header)
+        // unluckily, we dont know the actual bootloader of connected device, but we can assume it is 1.8.0 in case
+        // getInfo() returns firmware with version 1.8.1 or greater as it has bootloader version 1.8.0 (see releases.ts)
+        // this should be temporary until special bootloader updating firmwares are ready
+        if (versionUtils.isNewerOrEqual(deviceBlVersion, [1, 8, 0])) {
+            return fw.slice(256);
+        }
+        return fw;
+    };
+
+    const getInfoCommon = (features, list, score) => {
+        const {
+            bootloader_mode,
+            major_version,
+            minor_version,
+            patch_version,
+            firmware_present,
+        } = features;
+        let isNewer: boolean | null;
+        const latest = list[0];
+        if (bootloader_mode) {
+            list = filterSafeListByBootloader(list, [major_version, minor_version, patch_version]);
+            if (!list.length) {
+                return null;
+            }
+            // no firmware at all - get latest possible
+            if (firmware_present === false) {
+                return {
+                    firmware: list[0],
+                    isLatest: versionUtils.isEqual(list[0].version, latest.version),
+                    isRequired: true,
+                };
+            }
         } else {
+            list = filterSafeListByFirmware(list, [major_version, minor_version, patch_version]);
+        }
+        if (!list.length) {
+            // no new firmware
+            return null;
+        }
+        if (score != null && !Number.isNaN(score)) {
+            list = list.filter(item => isInProbability(item.rollout, score));
+        }
+        if (!list.length) {
+            // no new firmware
+            return null;
+        }
+        if (bootloader_mode) {
             isNewer = null;
+        } else {
+            isNewer = versionUtils.isNewer(list[0].version, [
+                major_version,
+                minor_version,
+                patch_version,
+            ]);
         }
-    } else {
-        releasesList = filterSafeListByFirmware({ releasesList, firmwareVersion });
-        const bootloaderVersion = getBootloaderVersion(input);
-        if (bootloaderVersion) {
-            releasesList = filterSafeListByBootloader({ releasesList, bootloaderVersion });
-        }
-        isNewer = true;
-    }
-
-    if (!releasesList.length) {
-        // no new firmware
-        return null;
-    }
-
-    // no firmware at all - get latest possible
-    if (firmwarePresent === false) {
         return {
-            firmware: releasesList[0],
-            isLatest: versionUtils.isEqual(releasesList[0].version, latest.version),
-            isRequired: true,
-            isNewer: true,
+            firmware: list[0],
+            isLatest: versionUtils.isEqual(list[0].version, latest.version),
+            isRequired: list.some(item => item.required),
+            isNewer,
         };
-    }
+    };
 
-    if (score != null && !Number.isNaN(score)) {
-        releasesList = releasesList.filter(item => isInProbability(item.rollout, score));
-    }
+    const getInfo = async (features: Features, score?: number) => {
+        const model = features.major_version;
+        if (!releasesList[model].length) {
+            releasesList[model] = await fetchReleasesList(
+                `${baseUrl}/${releasesListsPaths[model]}`
+            );
+        }
+        return getInfoCommon(features, releasesList[model], score);
+    };
 
-    if (!releasesList.length) {
-        // no new firmware
-        return null;
-    }
+    const getInfoSync = (features, list: Release[], score?: number) => {
+        if (!list) {
+            throw new Error(
+                'no releasesList available, you might use async method getInfo() instead or provide releasesList as param'
+            );
+        }
+        return getInfoCommon(features, list, score);
+    };
+
+    const getFw = async (features: Features, score?: number) => {
+        const info = await getInfo(features, score);
+        if (!info) {
+            return null;
+        }
+        const fw = await fetchFirmware(`${baseUrl}/${info.firmware.url}`);
+        return modifyFirmware({ fw, features });
+    };
 
     return {
-        firmware: releasesList[0],
-        isLatest: versionUtils.isEqual(releasesList[0].version, latest.version),
-        isRequired: releasesList.some(item => item.required),
-        isNewer,
+        getFw,
+        getInfo,
+        getInfoSync,
     };
 };
 
-export { getLatestSafeFw, getScore };
+export default rollout;

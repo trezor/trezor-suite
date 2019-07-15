@@ -1,9 +1,11 @@
 module.exports = {
     rootDir: '.',
-    roots: ['src'],
     transform: {
         '^.+\\.(ts)$': 'ts-jest',
     },
+    collectCoverage: true,
+    collectCoverageFrom: ['src/**/*.ts'],
+    coverageDirectory: './coverage',
     coverageThreshold: {
         global: {
             branches: 100,
@@ -12,12 +14,21 @@ module.exports = {
             statements: 100,
         },
     },
-    automock: false,
-    coverageDirectory: './coverage',
-    collectCoverage: true,
+    coveragePathIgnorePatterns: [
+        'src/utils/fetch.ts' // mocked in tests
+    ],
     testMatch: ['**/tests/*.ts'],
     modulePaths: ['src'],
     moduleFileExtensions: ['js', 'ts', 'json'],
     modulePathIgnorePatterns: ['node_modules'],
-    collectCoverageFrom: ['src/**/*.ts'],
+    automock: false,
+    globals: {
+        'ts-jest': {
+            diagnostics: false,
+            tsConfig: {
+                target: 'esnext',
+            },
+        },
+    },
+    setupFiles: ['./setupTests.ts'],
 };
