@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { AppState } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import { getPrefixedURL } from '@suite-utils/router';
+import { toInternalRoute } from '@suite-utils/router';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -94,7 +94,7 @@ const TopNavigation = (props: Props) => {
                     return (
                         <StyledNavLink
                             key={item.route}
-                            active={currentPath === getPrefixedURL(item.route)}
+                            active={toInternalRoute(currentPath) === item.route}
                             onClick={() => goto(item.route, true)}
                         >
                             <LinkContent>{item.title}</LinkContent>

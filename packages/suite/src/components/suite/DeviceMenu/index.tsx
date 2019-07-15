@@ -135,17 +135,22 @@ const DeviceMenu = ({
 
     // hooks managing closing the menu on click outside of the menu
     const ref = useRef<HTMLDivElement>(null);
-    const handleClickOutside = event => {
+    const handleClickOutside = (event: any) => {
         if (ref.current && !ref.current.contains(event.target)) {
             toggleDeviceMenu(false);
         }
     };
     useEffect(() => {
-        document.addEventListener('click', handleClickOutside, true);
+        if (isOpen) {
+            document.addEventListener('click', handleClickOutside, true);
+        } else {
+            document.removeEventListener('click', handleClickOutside, true);
+        }
         return () => {
             document.removeEventListener('click', handleClickOutside, true);
         };
-    });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen]);
 
     if (!selectedDevice) return null; // TODO: can it happen? if so some placeholder would be better
 

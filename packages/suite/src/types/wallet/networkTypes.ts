@@ -33,7 +33,7 @@ export interface Network {
         defaultGasLimitTokens: string; // ETH specific
         levels: NetworkFeeLevel[];
     };
-    backends: {
+    backends?: {
         name: string;
         urls: string[];
     }[];

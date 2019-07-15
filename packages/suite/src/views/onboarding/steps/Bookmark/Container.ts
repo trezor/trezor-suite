@@ -13,6 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     connectActions: {
+        applyFlags: bindActionCreators(connectActions.applyFlags, dispatch),
         callActionAndGoToNextStep: bindActionCreators(
             connectActions.callActionAndGoToNextStep,
             dispatch,

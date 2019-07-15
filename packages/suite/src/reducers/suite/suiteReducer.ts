@@ -36,7 +36,7 @@ interface Platform {
 }
 
 const initialState: SuiteState = {
-    online: false, // correct value will be set on SUITE_INIT
+    online: true, // correct value will be set on SUITE_INIT
     loading: true,
     loaded: false,
     language: 'en',
