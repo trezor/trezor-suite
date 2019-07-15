@@ -25,10 +25,12 @@
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
-        "postinstall": "yarn workspace @trezor/components build:lib"
+        "postinstall": "yarn workspace @trezor/components build:lib",
+        "run-all": "yarn run wsrun",
+        "lint": "yarn run-all lint"
     },
     "dependencies": {
-        "wsrun": "^3.6.2"
+        "wsrun": "^5.0.0"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^1.4.1",
