@@ -6,11 +6,13 @@ export interface ModalActions {
 }
 
 const onForgetDevice = (device: TrezorDevice): Action => ({
+    // @ts-ignore
     type: CONNECT.FORGET,
     device,
 });
 
 const onForgetDeviceSingle = (device: TrezorDevice): Action => ({
+    // @ts-ignore
     type: CONNECT.FORGET_SINGLE,
     device,
 });
