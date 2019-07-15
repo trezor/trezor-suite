@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Dispatch } from '@suite-types/index';
 
-import ModalActions from '@suite-actions/ModalActions';
+import ModalActions from '@suite-actions/modalActions';
 
 import Modal from './index';
 
