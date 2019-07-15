@@ -9,6 +9,7 @@ import { SuiteActions } from '@suite-actions/suiteActions';
 import { settingsActions as WalletSettingsActions } from '@wallet-actions/settingsActions';
 import { NotificationActions as WalletNotificationActions } from '@wallet-actions/notificationActions';
 import { SignVerifyAction as WalletSignVerifyAction } from '@wallet-actions/signVerifyActions';
+import { ModalActions } from '@suite-actions/modalActions';
 import { TokenAction as WalletTokenAction } from '@suite/actions/wallet/tokenActions';
 import { FiatRateAction } from '@wallet-services/CoingeckoService';
 import { LogActions } from '@suite-actions/logActions';
@@ -43,6 +44,7 @@ export type Action =
     | StorageActions
     | SuiteActions
     | LogActions
+    | ModalActions
     | OnboardingActions
     | WalletActions;
 

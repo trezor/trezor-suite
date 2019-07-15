@@ -6,8 +6,8 @@ import TrezorConnect, {
     UI,
 } from 'trezor-connect';
 
-import { SUITE } from '@suite-actions/constants';
-import { Dispatch } from '@suite-types/index';
+import { SUITE, CONNECT } from '@suite-actions/constants';
+import { Dispatch, TrezorDevice, Action } from '@suite-types/index';
 
 export const init = () => async (dispatch: Dispatch) => {
     // set listeners
@@ -69,3 +69,9 @@ export const init = () => async (dispatch: Dispatch) => {
         });
     }
 };
+
+// called from device menu (forget single instance)
+export const forgetDevice = (device: TrezorDevice): Action => ({
+    type: CONNECT.FORGET_REQUEST,
+    device,
+});

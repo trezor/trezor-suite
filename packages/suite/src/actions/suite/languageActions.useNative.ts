@@ -1,6 +1,6 @@
 import { Dispatch } from '@suite-types/index';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import * as SUITE from './constants/suite';
+import { SUITE } from './constants';
 
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {
     fetch(resolveStaticPath(`l10n/${locale}.json`))
