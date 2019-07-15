@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { TrezorDevice, Action } from '@suite-types/index';
 import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
@@ -17,13 +18,12 @@ const initialState = {
 
 export default function modal(state = initialState, action: Action) {
     switch (action.type) {
-        // @ts-ignore // TODO fix after connect types
+        // @ts-ignore TODO fix after connect types
         case CONNECT.FORGET_REQUEST:
         // @ts-ignore
         case CONNECT.TRY_TO_DUPLICATE:
         // @ts-ignore
         case CONNECT.REQUEST_WALLET_TYPE:
-            console.log('action.type', action);
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 // @ts-ignore
