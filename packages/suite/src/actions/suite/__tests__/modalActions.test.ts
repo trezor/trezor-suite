@@ -6,6 +6,6 @@ describe('Modal Actions', () => {
         const expectedAction = {
             type: MODAL.CLOSE,
         };
-        expect(modalActions.cancel()).toEqual(expectedAction);
+        expect(modalActions.onCancel()).toEqual(expectedAction);
     });
 });
