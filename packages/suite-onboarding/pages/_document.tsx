@@ -1,4 +1,4 @@
-import Document, { Head, Main, NextDocumentContext, NextScript } from 'next/document';
+import Document, { Head, Main, DocumentContext, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 import React from 'react';
 import { AppRegistry } from 'react-native';
@@ -29,7 +29,7 @@ interface Props {
 }
 
 export default class MyDocument extends Document<Props> {
-    static async getInitialProps({ renderPage }: NextDocumentContext) {
+    static async getInitialProps({ renderPage }: DocumentContext) {
         AppRegistry.registerComponent('Main', () => Main);
         // @ts-ignore getApplication is React Native Web addition for SSR.
         const { getStyleElement } = AppRegistry.getApplication('Main');
