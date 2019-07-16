@@ -1,5 +1,7 @@
+// TODO: deprecated, rework to separate actions;
+
 import { FETCH_START, FETCH_ERROR, FETCH_SUCCESS } from '@suite/types/onboarding/fetch';
-import { GET_FIRMWARE, SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
+import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
 import { Dispatch } from '@suite-types/index';
 
 const GET = 'GET';
@@ -7,8 +9,6 @@ const MODE_NO_CORS: 'no-cors' = 'no-cors';
 
 const getParams = (name: string) => {
     switch (name) {
-        case GET_FIRMWARE:
-            return { options: { method: GET } };
         case SUBMIT_EMAIL:
             return { options: { method: GET, mode: MODE_NO_CORS } };
         default:
@@ -35,14 +35,7 @@ const fetchResource = (name: string, url: string) => async (dispatch: Dispatch) 
     }
 };
 
-const getFirmware = (urlSuffix: string) => {
-    const TREZOR_FIRMWARE_SRC_URL = 'https://beta-wallet.trezor.io/data/firmware';
-    return fetchResource(GET_FIRMWARE, TREZOR_FIRMWARE_SRC_URL + urlSuffix);
-};
-
 export {
     // abstract action
     fetchResource,
-    // parametrized actions
-    getFirmware,
 };

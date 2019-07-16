@@ -1,26 +1,38 @@
+import produce from 'immer';
+
 import {
-    SET_PROGRESS,
+    SET_FIRMWARE,
+    SET_ERROR,
+    SET_UPDATE_STATUS,
     FirmwareUpdateReducer,
     FirmwareUpdateActionTypes,
-} from '@suite/types/onboarding/firmwareUpdate';
+} from '@onboarding-types/firmwareUpdate';
 
 const initialState = {
-    progress: 0,
+    error: null,
+    firmware: null,
+    status: null,
 };
 
 const firmwareUpdate = (
     state: FirmwareUpdateReducer = initialState,
     action: FirmwareUpdateActionTypes,
 ) => {
-    switch (action.type) {
-        case SET_PROGRESS:
-            return {
-                ...state,
-                progress: action.progress,
-            };
-        default:
-            return state;
-    }
+    return produce(state, draft => {
+        switch (action.type) {
+            case SET_ERROR:
+                draft.error = action.value;
+                break;
+            case SET_FIRMWARE:
+                draft.firmware = action.value;
+                break;
+            case SET_UPDATE_STATUS:
+                draft.status = action.value;
+                break;
+            default:
+                return state;
+        }
+    });
 };
 
 export default firmwareUpdate;

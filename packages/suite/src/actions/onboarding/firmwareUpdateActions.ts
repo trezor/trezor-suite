@@ -1,100 +1,72 @@
+import Rollout from '@trezor/rollout';
 import { Dispatch, GetState } from '@suite-types/index';
-import * as FIRMWARE_UPDATE from '@suite/types/onboarding/firmwareUpdate';
-import arrayBufferToBuffer from '@suite/utils/onboarding/arrayBufferToBuffer';
+import * as FIRMWARE_UPDATE from '@onboarding-types/firmwareUpdate';
+import { DEVICE_CALL_RESET } from '@onboarding-types/connect';
 
-import { getFirmware } from './fetchActions';
+import * as STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
+
 import { firmwareErase, firmwareUpload } from './connectActions';
 
-const setProgress = (progress: number) => ({
-    type: FIRMWARE_UPDATE.SET_PROGRESS,
-    progress,
-});
-
 const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().onboarding.connect;
-    const model = device.features.major_version;
-    const versions: { [index: number]: string } = {
-        1: 'trezor-1.8.1.bin',
-        2: 'trezor-2.1.1.bin',
-    };
-    let fw;
+    dispatch({ type: DEVICE_CALL_RESET });
+    dispatch({ type: FIRMWARE_UPDATE.SET_ERROR, value: null });
+    dispatch({ type: FIRMWARE_UPDATE.SET_UPDATE_STATUS, value: STATUS.STARTED });
 
-    dispatch({
-        type: FIRMWARE_UPDATE.SET_PROGRESS,
-        progress: 0,
+    const { device } = getState().onboarding.connect;
+    if (!device || !device.connected) {
+        throw new Error('device is not connected');
+    }
+
+    dispatch({ type: FIRMWARE_UPDATE.SET_UPDATE_STATUS, value: STATUS.DOWNLOADING });
+
+    const rollout = Rollout({
+        releasesListsPaths: {
+            1: 'data/firmware/1/releases.json',
+            2: 'data/firmware/2/releases.json',
+        },
+        baseUrl: 'https://wallet.trezor.io',
     });
 
-    const progressFn = () => {
-        dispatch({
-            type: FIRMWARE_UPDATE.SET_PROGRESS,
-            progress: getState().onboarding.firmwareUpdate.progress + 1,
-        });
-    };
-    let maxProgress = 0;
-    const interval = setInterval(
-        () => {
-            if (
-                getState().onboarding.connect.deviceCall.error ||
-                getState().onboarding.fetchCall.error
-            ) {
-                dispatch({
-                    type: FIRMWARE_UPDATE.SET_PROGRESS,
-                    progress: 100,
-                });
-                clearInterval(interval);
-                return;
-            }
-            if (getState().onboarding.firmwareUpdate.progress === 100) {
-                clearInterval(interval);
-            }
-            if (getState().onboarding.firmwareUpdate.progress < maxProgress) {
-                progressFn();
-            }
-        },
-        device.features.major_version === 1 ? 170 : 561,
-    );
-
     try {
-        // todo [stick]: use special updating firware
-        maxProgress = 10;
-        dispatch(getFirmware(`/${model}/${versions[model]}`)).then(async (response: Response) => {
-            if (!response.ok) {
-                return;
-            }
-            maxProgress = 40;
-            const ab = await response.arrayBuffer();
-            if (model === 1) {
-                fw = ab.slice(256);
-            } else {
-                fw = ab.slice(0);
-            }
-            fw = arrayBufferToBuffer(fw);
-
-            const callResponse = await dispatch(
-                firmwareErase({ keepSession: true, skipFinalReload: true, length: fw.byteLength }),
-            );
-            const payload: any = {
-                payload: fw,
-                keepSession: false,
-                skipFinalReload: true,
-            };
-            if (callResponse.offset) {
-                payload.offset = callResponse.offset;
-            }
-            if (callResponse.length) {
-                payload.length = callResponse.lenght;
-            }
-            maxProgress = 99;
-            await dispatch(firmwareUpload(payload));
-            maxProgress = 100;
+        dispatch({ type: FIRMWARE_UPDATE.SET_FIRMWARE, value: null });
+        const response = await rollout.getFw(getState().onboarding.connect.device.features);
+        if (!response) {
+            throw new Error('no firmware found');
+        }
+        dispatch({
+            type: FIRMWARE_UPDATE.SET_FIRMWARE,
+            value: response,
         });
     } catch (error) {
-        // todo: handle error
-        // dispatch({
-        //     type: SET_APPLICATION_ERROR,
-        //     error,
-        // });
+        dispatch({ type: FIRMWARE_UPDATE.SET_ERROR, value: error.message });
     }
+
+    dispatch({ type: FIRMWARE_UPDATE.SET_UPDATE_STATUS, value: STATUS.INSTALLING });
+
+    // ignoring type invalidation...
+    const fw = getState().onboarding.firmwareUpdate.firmware as ArrayBuffer;
+
+    const callResponse = await dispatch(
+        firmwareErase({
+            keepSession: true,
+            skipFinalReload: true,
+            length: fw.byteLength,
+        }),
+    );
+    // todo: when types in connect ready
+    const payload: any = {
+        payload: fw,
+        keepSession: false,
+        skipFinalReload: true,
+    };
+    if (callResponse.offset) {
+        payload.offset = callResponse.offset;
+    }
+    if (callResponse.length) {
+        payload.length = callResponse.lenght;
+    }
+    await dispatch(firmwareUpload(payload));
+    dispatch({ type: FIRMWARE_UPDATE.SET_UPDATE_STATUS, value: STATUS.DONE });
 };
 
-export { setProgress, updateFirmware };
+export { updateFirmware };

@@ -1,9 +1,25 @@
-import { getLatestSafeFw } from '../index';
+import Rollout from '../index';
 
-describe('Get latest safe firmware version for T1 in normal mode', () => {
+describe('getInfoSync() in normal (firmware) mode', () => {
+    let rollout;
+    beforeEach(() => {
+        rollout = Rollout({
+            firmwareBaseUrl: 'foo',
+            releasesListsPaths: {
+                1: 'doest matter, is mocked',
+                2: 'indeed',
+            },
+        });
+    });
     it('for firmware version 10.10.10, there is no matching bootloaderVersion in list ', () => {
-        const result = getLatestSafeFw({
-            releasesList: [
+        const result = rollout.getInfoSync(
+            {
+                bootloader_mode: false,
+                major_version: 10,
+                minor_version: 10,
+                patch_version: 10,
+            },
+            [
                 {
                     version: [3, 0, 0],
                     min_firmware_version: [2, 0, 0],
@@ -22,17 +38,21 @@ describe('Get latest safe firmware version for T1 in normal mode', () => {
                     bootloader_version: [1, 0, 0],
                     min_bootloader_version: [0, 0, 0],
                 },
-            ],
-            isInBootloader: false,
-            firmwareVersion: [10, 10, 10],
-        });
+            ]
+        );
 
         expect(result).toEqual(null);
     });
 
     it('test single version bump', () => {
-        const result = getLatestSafeFw({
-            releasesList: [
+        const result = rollout.getInfoSync(
+            {
+                bootloader_mode: false,
+                major_version: 2,
+                minor_version: 0,
+                patch_version: 0,
+            },
+            [
                 {
                     version: [3, 0, 0],
                     min_firmware_version: [2, 0, 0],
@@ -51,24 +71,24 @@ describe('Get latest safe firmware version for T1 in normal mode', () => {
                     bootloader_version: [1, 0, 0],
                     min_bootloader_version: [0, 0, 0],
                 },
-            ],
-            isInBootloader: false,
-            firmwareVersion: [2, 0, 0],
-        });
+            ]
+        );
 
-        if (result) {
-            expect(result.firmware.version).toEqual([3, 0, 0]);
-            expect(result.isLatest).toEqual(true);
-            expect(result.isRequired).toEqual(false);
-            expect(result.isNewer).toEqual(true);
-        } else {
-            throw new Error('I have failed you');
-        }
+        expect(result.firmware.version).toEqual([3, 0, 0]);
+        expect(result.isLatest).toEqual(true);
+        expect(result.isRequired).toEqual(false);
+        expect(result.isNewer).toEqual(true);
     });
 
     it('test firmware multiple version bump', () => {
-        const result = getLatestSafeFw({
-            releasesList: [
+        const result = rollout.getInfoSync(
+            {
+                bootloader_mode: false,
+                major_version: 2,
+                minor_version: 0,
+                patch_version: 0,
+            },
+            [
                 {
                     version: [4, 0, 0],
                     min_firmware_version: [2, 0, 0],
@@ -93,18 +113,12 @@ describe('Get latest safe firmware version for T1 in normal mode', () => {
                     bootloader_version: [1, 0, 0],
                     min_bootloader_version: [0, 0, 0],
                 },
-            ],
-            isInBootloader: false,
-            firmwareVersion: [2, 0, 0],
-        });
+            ]
+        );
 
-        if (result) {
-            expect(result.firmware.version).toEqual([4, 0, 0]);
-            expect(result.isRequired).toEqual(false);
-            expect(result.isLatest).toEqual(true);
-            expect(result.isNewer).toEqual(true);
-        } else {
-            throw new Error('I have failed you');
-        }
+        expect(result.firmware.version).toEqual([4, 0, 0]);
+        expect(result.isRequired).toEqual(false);
+        expect(result.isLatest).toEqual(true);
+        expect(result.isNewer).toEqual(true);
     });
 });
