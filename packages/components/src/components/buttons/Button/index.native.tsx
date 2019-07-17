@@ -26,25 +26,25 @@ const Label = styled.Text<LabelProps>`
     color: ${colors.WHITE};
     font-size: ${FONT_SIZE_NATIVE.BASE};
 
-    ${(props: any) =>
+    ${props =>
         props.isInverse &&
         css`
             color: ${getPrimaryColor(props.variant)};
         `}
 
-    ${(props: any) =>
+    ${props =>
         props.disabled &&
         css`
             color: ${colors.TEXT_SECONDARY};
         `}
 
-    ${(props: any) =>
+    ${props =>
         props.isWhite &&
         css`
             color: ${colors.TEXT_SECONDARY};
         `}
 
-    ${(props: any) =>
+    ${props =>
         props.isTransparent &&
         css`
             color: ${colors.TEXT_SECONDARY};
@@ -56,31 +56,31 @@ type ButtonContainerProps = Omit<Props, 'children' | 'onClick'>;
 const ButtonContainer = styled.TouchableHighlight<ButtonContainerProps>`
     padding: 10px 18px;
     border-radius: 3px;
-    background-color: ${(props: any) => getPrimaryColor(props.variant)};
-    border: 1px solid ${(props: any) => getPrimaryColor(props.variant)};
+    background-color: ${props => getPrimaryColor(props.variant)};
+    border: 1px solid ${props => getPrimaryColor(props.variant)};
 
-    ${(props: any) =>
+    ${props =>
         props.isInverse &&
         css`
             background: transparent;
             border: 1px solid ${getPrimaryColor(props.variant)};
         `}
 
-    ${(props: any) =>
+    ${props =>
         props.disabled &&
         css`
             background-color: ${colors.GRAY_LIGHT};
             border: 1px solid ${colors.DIVIDER};
         `}
 
-    ${(props: any) =>
+    ${props =>
         props.isWhite &&
         css`
             background: ${colors.WHITE};
             border-color: ${colors.DIVIDER};
         `}
     
-    ${(props: any) =>
+    ${props =>
         props.isTransparent &&
         css`
             background: transparent;

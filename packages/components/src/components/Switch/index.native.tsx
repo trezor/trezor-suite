@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import colors from '../../config/colors';
 
 interface Props extends SwitchProps {
-    onChange: (checked: boolean) => any;
+    onChange: (checked: boolean) => boolean | void;
     disabled?: boolean;
     isSmall?: boolean;
     checked: boolean;
