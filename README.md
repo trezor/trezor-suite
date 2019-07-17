@@ -5,10 +5,10 @@
 
 Name            | Packages
 --------------- | ----------
-suite           | [suite](./packages/suite/README.md), [desktop](./packages/suite-desktop/README.md), [native](./packages/suite-native/README.md), [onboarding](./packages/suite-onboarding/README.md)
-components      | [components](./packages/components/README.md), [storybook](./packages/components-storybook/README.md), [storybook native](./packages/components-storybook-native/README.md)
-rollout         | [rollout](./packages/rollout/README.md)
-blockchain-link | [blockchain-link]('./packages/blockchain-link/README.md)
+suite           | [suite](./packages/suite), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [onboarding](./packages/suite-onboarding)
+components      | [components](./packages/components), [storybook](./packages/components-storybook), [storybook native](./packages/components-storybook-native)
+rollout         | [rollout](./packages/rollout)
+blockchain-link | [blockchain-link]('./packages/blockchain-link)
 
 ## Development
 
