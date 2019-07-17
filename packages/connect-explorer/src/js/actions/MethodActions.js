@@ -6,6 +6,7 @@ import { loadDocs } from './DocsActions';
 
 export const TAB_CHANGE: string = 'method_tab_change';
 export const FIELD_CHANGE: string = 'method_field_change';
+export const FIELD_DATA_CHANGE: string = 'method_field_data_change';
 export const ADD_BATCH: string = 'method_add_batch';
 export const REMOVE_BATCH: string = 'method_remove_batch';
 export const RESPONSE: string = 'method_response';
@@ -25,6 +26,14 @@ export const onFieldChange = (field, value) => {
         type: FIELD_CHANGE,
         field,
         value
+    }
+}
+
+export const onFieldDataChange = (field, data) => {
+    return {
+        type: FIELD_DATA_CHANGE,
+        field,
+        data
     }
 }
 

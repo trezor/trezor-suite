@@ -3,16 +3,20 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import {Button} from 'trezor-ui-components';
 import * as MethodActions from '../actions/MethodActions';
 
-import Input from './fields/Input';
-import TextArea from './fields/TextArea';
-import Checkbox from './fields/Checkbox';
-import CoinSelect from './fields/CoinSelect';
-import Response from './fields/Response';
-import ArrayWrapper from './fields/ArrayWrapper';
-import BatchWrapper from './fields/BatchWrapper';
+import {
+    Input,
+    TextArea,
+    Checkbox,
+    CoinSelect,
+    AsyncSelect,
+    Response,
+    ArrayWrapper,
+    BatchWrapper,
+    File,
+} from './fields';
 
 const getArray = (field, props) => {
     const items = field.items.map((batch, index) => {
@@ -46,15 +50,16 @@ const getField = (field, props) => {
 
         case 'checkbox':
             return <Checkbox key={field.name} field={field} onChange={props.actions.onFieldChange} />;
-
         case 'json':
         case 'textarea':
         case 'function':
             return <TextArea key={field.name} field={field} onChange={props.actions.onFieldChange} />;
-
         case 'select':
             return <CoinSelect key={field.name} field={field} onChange={props.actions.onFieldChange} />;
-
+        case 'select-async': 
+            return <AsyncSelect key={field.name} field={field} onDataChange={props.actions.onFieldDataChange} onChange={props.actions.onFieldChange} />;
+        case 'file':
+            return <File key={field.name} field={field} onChange={props.actions.onFieldChange}/>
         default:
             return null;
     }
@@ -75,7 +80,7 @@ const VerifyButton = (props) => {
     if (index < 0) return null;
 
     return (
-        <button onClick={event => props.onClick(verifyUrls[index]) }>Verify response</button>
+        <Button onClick={event => props.onClick(verifyUrls[index]) }>Verify response</Button>
     );
 }
 

@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { PureComponent } from 'react';
-import Select from './CoinSelect';
+import Select from './Select';
 
 class AddButton extends PureComponent {
     render() {

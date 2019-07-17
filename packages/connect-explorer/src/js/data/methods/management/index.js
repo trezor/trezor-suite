@@ -10,6 +10,7 @@ import backupDevice from './backupDevice';
 import changePin from './changePin';
 import recoverDevice from './recoverDevice';
 import firmwareErase from './firmwareErase';
+import firmwareUpdate from './firmwareUpdate';
 
 export default [
     ...debugLink,
@@ -22,4 +23,5 @@ export default [
     ...changePin,
     ...recoverDevice,
     ...firmwareErase,
+    ...firmwareUpdate,
 ]

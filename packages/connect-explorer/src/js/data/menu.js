@@ -429,6 +429,10 @@ export default [
                 url: '/method/firmwareErase',
             },
             {
+                name: 'Firmware update',
+                url: '/method/firmwareUpdate',
+            },
+            {
                 name: 'Get features',
                 url: '/method/getFeatures',
             },

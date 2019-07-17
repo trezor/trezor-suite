@@ -11,7 +11,6 @@ import AppContainer from '../containers/AppContainer';
 import About from '../components/About';
 import Method from '../components/Method';
 
-// export default (
 const App = () => (
     <Provider store={ store }>
         <ConnectedRouter history={ history }>
@@ -26,4 +25,3 @@ const App = () => (
 );
 
 export default hot(module)(App);
-// export default App;
