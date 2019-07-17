@@ -1,7 +1,6 @@
 const path = require('path');
 const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
-const withTypescript = require('@zeit/next-typescript');
 const withImages = require('next-images');
 
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
