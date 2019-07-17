@@ -29,7 +29,6 @@ const StyledIcon = styled(Icon)`
     right: 15;
 `;
 
-// TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props {
     value: string;
     wrapperProps?: Record<string, any>;

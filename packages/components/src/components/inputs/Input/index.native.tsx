@@ -48,6 +48,13 @@ const StyledInput = styled.TextInput<Props>`
             z-index: 10001; /* bigger than modal container */
             position: relative;
         `};
+
+    ${props =>
+        !props.editable &&
+        css`
+            background-color: ${colors.GRAY_LIGHT};
+            color: ${colors.TEXT_SECONDARY};
+        `}
 `;
 
 const StyledIcon = styled(Icon)`
@@ -82,8 +89,8 @@ const Overlay = styled.View<InputProps>`
         `}
 `;
 
-const TooltipAction = styled.View`
-    display: ${(props: { action?: React.ReactNode }) => (props.action ? 'flex' : 'none')};
+const TooltipAction = styled.View<TooltipActionProps>`
+    display: ${props => (props.action ? 'flex' : 'none')};
     margin: 0px 10px;
     position: absolute;
     top: 5;
@@ -116,6 +123,10 @@ const ArrowUp = styled.View`
     border-right-color: transparent;
     border-bottom-color: black;
 `;
+
+interface TooltipActionProps {
+    action?: React.ReactNode;
+}
 
 interface WrapperProps {
     className?: string;
