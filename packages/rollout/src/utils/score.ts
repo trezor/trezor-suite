@@ -1,6 +1,8 @@
+import { Release } from '../types';
+
 const getScore = () => Math.random().toFixed(2);
 
-const isInProbability = (rollout: number | null, score: number | null) => {
+const isInProbability = (rollout: Release['rollout'], score: number | null) => {
     const IS_IN_PROBABILITY = true;
     const IS_NOT_IN_PROBABILITY = false;
 

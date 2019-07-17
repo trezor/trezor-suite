@@ -206,7 +206,6 @@ const submitWord = (params: any) => (dispatch: Dispatch) =>
     // @ts-ignore
     dispatch(uiResponseCall(UI.RECEIVE_WORD, params));
 
-// todo: maybe rework this function to take concrete call function as argument;
 const callActionAndGoToNextStep = (
     action: any,
     stepId?: AnyStepId,

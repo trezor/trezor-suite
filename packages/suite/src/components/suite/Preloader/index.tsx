@@ -5,6 +5,7 @@ import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types/index';
 import SuiteWrapper from '@suite-views/index';
 import StaticPageWrapper from '@suite-components/StaticPageWrapper';
+import { H1, P } from '@trezor/components';
 
 interface Props {
     loaded: AppState['suite']['loaded'];

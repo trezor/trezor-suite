@@ -7,7 +7,17 @@ rollout lint:
             - packages/rollout/**/*
             - .gitlab-ci.yml
 
-rollout test:
+suite-onboarding type check:
+    stage: type check
+    allow_failure: false
+    script:
+        - yarn workspace @trezor/rollout type-check
+    only:
+        changes:
+            - packages/rollout/**/*
+            - .gitlab-ci.yml
+
+rollout test unit:
     stage: test
     allow_failure: true
     script:
@@ -20,7 +30,7 @@ rollout test:
 rollout build:
     stage: build
     script:
-        - yarn workspace @trezor/rollout build
+        - yarn workspace @trezor/rollout build:lib
     only:
         changes:
             - packages/rollout/**/*

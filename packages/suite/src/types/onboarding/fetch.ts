@@ -1,4 +1,4 @@
-import { fetchResource, getFirmware } from '@suite/actions/onboarding/fetchActions';
+import { fetchResource } from '@suite/actions/onboarding/fetchActions';
 
 export interface FetchReducer {
     name: null | string;
@@ -9,7 +9,6 @@ export interface FetchReducer {
 
 export interface FetchActions {
     fetchResource: typeof fetchResource;
-    getFirmware: typeof getFirmware;
 }
 
 export const FETCH_START = '@onboarding/fetch-start';
