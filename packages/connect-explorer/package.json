@@ -13,7 +13,7 @@
     "license": "LGPL-3.0+",
     "scripts": {
         "dev": "webpack-dev-server --config ./webpack/dev.babel.js --mode development",
-        "dev:local": "cross-env LOCAL=true webpack-dev-server --config ./webpack/local.babel.js --mode development --progress",
+        "dev:local": "cross-env LOCAL=true webpack-dev-server --progress --colors --config ./webpack/local.babel.js --mode development --bail",
         "build": "rm -rf build && webpack --config ./webpack/prod.babel.js --progress",
         "flow": "cd src/js && flow check"
     },
