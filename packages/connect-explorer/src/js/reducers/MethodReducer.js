@@ -155,8 +155,10 @@ const findField = (state, field) => {
 }
 
 const onFieldChange = (state, action) => {
-    const newState = {};
-    Object.assign(newState, state);
+    const newState = {
+        ...JSON.parse(JSON.stringify(state)),
+        ...state,
+    };
     const field = findField(newState, action.field);
     field.value = action.value;
     if (field.affect) {
@@ -178,11 +180,10 @@ const getMethodState = (url) => {
     const method = config.find(m => m.url === url);
     if (!method) return initialState;
     // clone object
-    const state = {};
-    // can not clone with JSON.parse(JSON.stringify(method)); as we need to clone functions.
-    // shallow copy by Object.assign should be fine
-    Object.assign(state, method);
-    console.log('method altered', state);
+    const state = {
+        ...JSON.parse(JSON.stringify(method)),
+        ...method,
+    };
 
     // set default values
     state.fields = state.fields.map(f => setAffectedValues(state, prepareBundle(f)));
