@@ -31,8 +31,7 @@
             "package.json"
         ],
         "dmg": {
-            "contents": [
-                {
+            "contents": [{
                     "x": 410,
                     "y": 150,
                     "type": "link",
@@ -59,7 +58,7 @@
         "@sentry/browser": "^5.4.0",
         "electron-is-dev": "^1.1.0",
         "electron-next": "^3.1.5",
-        "next": "^9.0.1",
+        "next": "^9.0.2",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "rimraf": "^2.6.3"
     },

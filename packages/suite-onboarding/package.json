@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@trezor/suite": "1.0.0",
-        "next": "^8.0.0",
+        "next": "^9.0.2",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "react-svg": "^10.0.6",
         "styled-reset": "^2.0.14",
