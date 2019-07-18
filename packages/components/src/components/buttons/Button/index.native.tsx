@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components/native';
 import PropTypes from 'prop-types';
 
-import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
+import { getPrimaryColor, getSecondaryColor, getNotificationBgColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { Omit, FeedbackType, IconShape } from '../../../support/types';
 import Icon from '../../Icon';
@@ -137,6 +137,8 @@ const Button = ({
             underlayColor={
                 isDisabled || isTransparent || isWhite
                     ? colors.DIVIDER
+                    : isInverse
+                    ? getNotificationBgColor(variant) || colors.GREEN_TERTIARY
                     : getSecondaryColor(variant) || colors.GREEN_TERTIARY
             }
             activeOpacity={0.5}
