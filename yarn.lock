@@ -4234,9 +4234,9 @@ base-x@^1.0.1:
   integrity sha1-QtPXF0dPnqAiB/bRqh9CaRPut6w=
 
 base-x@^3.0.2:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/base-x/-/base-x-3.0.5.tgz#d3ada59afed05b921ab581ec3112e6444ba0795a"
-  integrity sha512-C3picSgzPSLE+jW3tcBzJoGwitOtazb5B+5YmAxZm2ybmTi9LNgAtDO/jjVEBZwHoXmDBZ9m/IELj3elJVRBcA==
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/base-x/-/base-x-3.0.6.tgz#de047ec95f5f7b99ae63d830a2a894c96538b2cd"
+  integrity sha512-4PaF8u2+AlViJxRVjurkLTxpp7CaFRD/jo5rPT9ONnKxyhQ8f59yzamEvq7EkriG56yn5On4ONyaG75HLqr46w==
   dependencies:
     safe-buffer "^5.0.1"
 
@@ -4973,9 +4973,9 @@ cashaddrjs@^0.2.9:
     big-integer "^1.6.34"
 
 cashaddrjs@^0.3.3:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.3.5.tgz#f19d4ef8bf4f2c88a90a3ac24db0c11ae7936852"
-  integrity sha512-bRLNkj+1UM7Lh2hQ1ffE4A+j9916WckhtDHP7ykxbNnHc6K8jJ4KfrIKZ+FLSia9QSZtm6cTW9B9ZGGpqbMkGA==
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.3.6.tgz#de0b84b98e224de18e6d5ba14a97584e6aa7f823"
+  integrity sha512-TEeTEXT8Gft4cNoZKisCdyrAymnSRYpZHtvCRgXJ9OmOwyTKn5vnCWbPQLL3EiUkm1HeMxSrKNK29nMfvaT2Qw==
   dependencies:
     big-integer "1.6.36"
 

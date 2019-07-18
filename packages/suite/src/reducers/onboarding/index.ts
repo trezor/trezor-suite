@@ -22,7 +22,6 @@ interface OnboardingAppState extends ReturnType<typeof onboarding> {
     asNewDevice: OnboardingReducer['asNewDevice'];
     activeStepId: OnboardingReducer['activeStepId'];
     activeSubStep: OnboardingReducer['activeSubStep'];
-    steps: OnboardingReducer['steps'];
     selectedModel: OnboardingReducer['selectedModel'];
 }
 
@@ -32,8 +31,8 @@ export default function onboardingApp(state: OnboardingAppState | undefined, act
         asNewDevice: onboardingState.asNewDevice,
         activeStepId: onboardingState.activeStepId,
         activeSubStep: onboardingState.activeSubStep,
-        steps: onboardingState.steps,
         selectedModel: onboardingState.selectedModel,
+        path: onboardingState.path,
         connect: connect(
             onboardingState.connect,
             action as ConnectActionTypes,

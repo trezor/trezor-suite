@@ -45,13 +45,9 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
         Object.assign(callParams, params);
         let fn;
         switch (name) {
-            case CALLS.FIRMWARE_ERASE:
+            case CALLS.FIRMWARE_UPDATE:
                 // @ts-ignore
-                fn = () => TrezorConnect.firmwareErase(callParams);
-                break;
-            case CALLS.FIRMWARE_UPLOAD:
-                // @ts-ignore
-                fn = () => TrezorConnect.firmwareUpload(callParams);
+                fn = () => TrezorConnect.firmwareUpdate(callParams);
                 break;
             case CALLS.RESET_DEVICE:
                 // @ts-ignore
@@ -115,39 +111,30 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
 };
 
 const uiResponseCall = (name: string, params: any) => async () => {
-    try {
-        let fn;
-        switch (name) {
+    let fn;
+    switch (name) {
+        // @ts-ignore
+        case UI.RECEIVE_PIN:
             // @ts-ignore
-            case UI.RECEIVE_PIN:
+            fn = () => TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: params.pin });
+            break;
+        // @ts-ignore
+        case UI.RECEIVE_WORD:
+            fn = () =>
                 // @ts-ignore
-                fn = () => TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: params.pin });
-                break;
-            // @ts-ignore
-            case UI.RECEIVE_WORD:
-                fn = () =>
-                    // @ts-ignore
-                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: params.word });
-                break;
-            default:
-                throw new Error(`call ${name} does not exist`);
-        }
-        await fn();
-    } catch (error) {
-        // dispatch({
-        //     type: SET_APPLICATION_ERROR,
-        //     error,
-        // });
+                TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: params.word });
+            break;
+        default:
+            // todo: handle error properly
+            throw new Error(`call ${name} does not exist`);
     }
+    await fn();
 };
 
 const getFeatures = () => (dispatch: Dispatch) => dispatch(call(CALLS.GET_FEATURES));
 
-const firmwareErase = (params: any) => (dispatch: Dispatch) =>
-    dispatch(call(CALLS.FIRMWARE_ERASE, params));
-
-const firmwareUpload = (params: any) => (dispatch: Dispatch) =>
-    dispatch(call(CALLS.FIRMWARE_UPLOAD, params));
+const firmwareUpdate = (params: any) => (dispatch: Dispatch) =>
+    dispatch(call(CALLS.FIRMWARE_UPDATE, params));
 
 const resetDevice = () => (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
@@ -229,8 +216,7 @@ export {
     // calls to connect
     resetCall,
     getFeatures,
-    firmwareErase,
-    firmwareUpload,
+    firmwareUpdate,
     resetDevice,
     backupDevice,
     applySettings,

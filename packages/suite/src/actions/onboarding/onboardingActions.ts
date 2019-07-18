@@ -4,28 +4,14 @@ import {
     SET_STEP_RESOLVED,
     SELECT_TREZOR_MODEL,
     SET_AS_NEW_DEVICE,
+    SET_PATH,
     OnboardingReducer,
 } from '@suite/types/onboarding/onboarding';
-import { AnyStepId } from '@suite/types/onboarding/steps';
+import { Step } from '@suite/types/onboarding/steps';
 import { GetState, Dispatch } from '@suite-types/index';
-import { Step } from '@onboarding-types/steps';
-
-// utils
-const findNextStep = (currentStep: string, onboardingSteps: OnboardingReducer['steps']) => {
-    const currentIndex = onboardingSteps.findIndex(step => step.id === currentStep);
-    if (currentIndex + 1 > onboardingSteps.length) {
-        throw new Error('no next step exists');
-    }
-    return onboardingSteps[currentIndex + 1];
-};
-
-const findPrevStep = (currentStep: string, onboardingSteps: OnboardingReducer['steps']) => {
-    const currentIndex = onboardingSteps.findIndex(step => step.id === currentStep);
-    if (currentIndex - 1 > onboardingSteps.length) {
-        throw new Error('no next step exists');
-    }
-    return onboardingSteps[currentIndex - 1];
-};
+import { AnyStepId } from '@onboarding-types/steps';
+import steps from '@onboarding-config/steps';
+import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 
 const goToStep = (stepId: AnyStepId) => (dispatch: Dispatch) => {
     dispatch({
@@ -42,8 +28,12 @@ const goToSubStep = (subStepId: string | null) => (dispatch: Dispatch) => {
 };
 
 const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
-    const { activeStepId, steps } = getState().onboarding;
-    const nextStep = findNextStep(activeStepId, steps);
+    if (stepId) {
+        return dispatch(goToStep(stepId));
+    }
+    const { activeStepId, path } = getState().onboarding;
+    const stepsInPath = steps.filter(step => isStepInPath(step, path));
+    const nextStep = findNextStep(activeStepId, stepsInPath);
     const activeStep = steps.find((step: Step) => step.id === activeStepId);
 
     if (activeStep && !activeStep.resolved) {
@@ -53,13 +43,13 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
         });
     }
 
-    dispatch(goToStep(stepId || nextStep.id));
+    dispatch(goToStep(nextStep.id));
 };
 
 const goToPreviousStep = () => (dispatch: Dispatch, getState: GetState) => {
-    const { activeStepId } = getState().onboarding;
-    const prevStep = findPrevStep(activeStepId, getState().onboarding.steps);
-
+    const { activeStepId, path } = getState().onboarding;
+    const stepsInPath = steps.filter(step => isStepInPath(step, path));
+    const prevStep = findPrevStep(activeStepId, stepsInPath);
     dispatch(goToStep(prevStep.id));
 };
 
@@ -73,4 +63,17 @@ const setAsNewDevice = (asNewDevice: boolean) => ({
     asNewDevice,
 });
 
-export { goToNextStep, goToSubStep, goToStep, goToPreviousStep, selectTrezorModel, setAsNewDevice };
+const setPath = (value: OnboardingReducer['path']) => ({
+    type: SET_PATH,
+    value,
+});
+
+export {
+    goToNextStep,
+    goToSubStep,
+    goToStep,
+    goToPreviousStep,
+    selectTrezorModel,
+    setAsNewDevice,
+    setPath,
+};

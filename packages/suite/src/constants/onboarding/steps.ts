@@ -39,3 +39,8 @@ export const DISALLOWED_DEVICE_IS_NOT_USED_HERE = 'device-is-not-used-here';
 export const DISALLOWED_DEVICE_IS_IN_BOOTLOADER = 'device-is-in-bootloader';
 export const DISALLOWED_DEVICE_IS_REQUESTING_PIN = 'device-is-not-requesting-pin';
 export const DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE = 'is-not-new-device';
+
+export const PATH_RECOVERY = 'recovery';
+export const PATH_CREATE = 'create';
+export const PATH_NEW = 'new';
+export const PATH_USED = 'used';

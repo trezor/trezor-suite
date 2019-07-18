@@ -22,6 +22,7 @@ import * as connectActions from '@suite/actions/onboarding/connectActions';
 
 import * as STEP from '@suite/constants/onboarding/steps';
 import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
+import steps from '@suite/config/onboarding/steps';
 
 import colors from '@suite/config/onboarding/colors';
 import { SM } from '@suite/config/onboarding/breakpoints';
@@ -43,13 +44,13 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@suite/views/onboarding/steps/Welcome/Container';
-// import StartStep from '@suite/views/onboarding/steps/Start/Container';
 import NewOrUsedStep from '@suite/views/onboarding/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@suite/views/onboarding/steps/SelectDevice/Container';
 import HologramStep from '@suite/views/onboarding/steps/Hologram/Container';
 import BridgeStep from '@suite/views/onboarding/steps/Bridge/Container';
 import ConnectStep from '@suite/views/onboarding/steps/Connect/Container';
 import FirmwareStep from '@suite/views/onboarding/steps/Firmware/Container';
+import RecoveryStep from '@suite/views/onboarding/steps/Recovery/Container';
 import BackupStep from '@suite/views/onboarding/steps/Backup/Container';
 import SecurityStep from '@suite/views/onboarding/steps/Security/Container';
 import SetPinStep from '@suite/views/onboarding/steps/Pin/Container';
@@ -194,7 +195,6 @@ interface Props {
     transport: any; // todo
 
     activeStepId: AppState['onboarding']['activeStepId'];
-    steps: AppState['onboarding']['steps'];
     activeSubStep: AppState['onboarding']['activeSubStep'];
     selectedModel: AppState['onboarding']['selectedModel'];
     asNewDevice: AppState['onboarding']['asNewDevice'];
@@ -222,7 +222,7 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getStep(activeStepId: AppState['onboarding']['activeStepId']): Step {
-        const lookup = this.props.steps.find((step: Step) => step.id === activeStepId);
+        const lookup = steps.find((step: Step) => step.id === activeStepId);
         // todo: is there a better way how to solve lookup completeness with typescript?
         if (!lookup) {
             throw new TypeError('step not found by step id. unexepected.');
@@ -250,6 +250,7 @@ class Onboarding extends React.PureComponent<Props> {
 
     isGlobalInteraction() {
         const { deviceInteraction, deviceCall } = this.props;
+        // if (deviceCall.name === RECOVER_DEVICE )
         const globals = [
             EVENTS.BUTTON_REQUEST__PROTECT_CALL,
             EVENTS.BUTTON_REQUEST__WIPE_DEVICE,
@@ -263,7 +264,7 @@ class Onboarding extends React.PureComponent<Props> {
 
     // todo: reconsider if we need resolved logic.
     isStepResolved(stepId: AnyStepId) {
-        return Boolean(this.props.steps.find((step: Step) => step.id === stepId)!.resolved);
+        return Boolean(steps.find((step: Step) => step.id === stepId)!.resolved);
     }
 
     render() {
@@ -273,8 +274,6 @@ class Onboarding extends React.PureComponent<Props> {
 
             selectedModel,
             activeStepId,
-            steps,
-
             deviceCall,
             deviceInteraction,
             uiInteraction,
@@ -368,6 +367,13 @@ class Onboarding extends React.PureComponent<Props> {
                             </CSSTransition>
 
                             <CSSTransition
+                                in={activeStepId === STEP.ID_RECOVERY_STEP}
+                                {...TRANSITION_PROPS}
+                            >
+                                <RecoveryStep />
+                            </CSSTransition>
+
+                            <CSSTransition
                                 in={activeStepId === STEP.ID_SECURITY_STEP}
                                 {...TRANSITION_PROPS}
                             >
@@ -438,7 +444,6 @@ const mapStateToProps = (state: AppState) => {
         selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
         activeSubStep: state.onboarding.activeSubStep,
-        steps: state.onboarding.steps,
         asNewDevice: state.onboarding.asNewDevice,
     };
 };

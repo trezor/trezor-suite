@@ -122,7 +122,7 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
 
     goToNextStep = () => {
         this.props.connectActions.callActionAndGoToNextStep(() =>
-            applyFlags({
+            this.props.connectActions.applyFlags({
                 flags: addToFlags(HAS_EMAIL_FLAG, this.props.device.features.flags),
             }),
         );
