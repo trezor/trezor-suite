@@ -276,6 +276,5 @@ export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
         address: utxo.address,
         path: utxo.path,
         confirmations: utxo.confirmations,
-        coinbase: utxo.coinbase,
     }));
 };

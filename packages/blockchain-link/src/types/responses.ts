@@ -51,7 +51,6 @@ export interface Utxo {
     address: string;
     path: string;
     confirmations: number;
-    coinbase?: string;
 }
 
 export interface GetAccountUtxo {
