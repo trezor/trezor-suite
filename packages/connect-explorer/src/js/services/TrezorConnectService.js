@@ -54,7 +54,7 @@ const TrezorConnectService = store => next => action => {
         // });
 
         TrezorConnect.init({
-            // connectSrc: 'https://connect.trezor.io/7/',
+            connectSrc: 'https://connect.sldev.cz/connect-electron/',
             webusb: true,
             // transportReconnect: false,
             popup: true,
