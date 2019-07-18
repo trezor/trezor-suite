@@ -99,11 +99,6 @@ const connect = async (): Promise<RippleAPI> => {
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
     });
 
-    // mocking
-    // setTimeout(() => {
-    //     api.connection._ws._ws.close()
-    // }, 6000);
-
     try {
         // @ts-ignore
         const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-'); // eslint-disable-line no-underscore-dangle
@@ -303,7 +298,10 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
         const fee = await api.getFee();
         // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
         // investigate more...
-        const drops = api.xrpToDrops(fee);
+        let drops = api.xrpToDrops(fee);
+        if (new BigNumber(drops).gt('2000')) {
+            drops = '12';
+        }
         const payload =
             data.payload && Array.isArray(data.payload.blocks)
                 ? data.payload.blocks.map(l => ({ feePerUnit: drops }))
