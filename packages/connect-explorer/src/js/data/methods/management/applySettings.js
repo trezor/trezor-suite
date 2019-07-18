@@ -32,8 +32,6 @@ export default [
                 label: 'use passphrase',
                 name: 'use_passphrase',
                 type: 'checkbox',
-                optional: true,
-                defaultValue: false,
                 value: false,
             },
             {
