@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import PropTypes from 'prop-types';
 import Svg, { Circle } from 'react-native-svg';
 
 import { Animated, Easing } from 'react-native';
@@ -45,6 +46,19 @@ interface Props {
 class Loader extends React.Component<Props> {
     state = {
         spinValue: new Animated.Value(0),
+    };
+
+    static propTypes = {
+        className: PropTypes.string,
+        text: PropTypes.string,
+        isWhiteText: PropTypes.bool,
+        isSmallText: PropTypes.bool,
+        transparentRoute: PropTypes.bool,
+        size: PropTypes.number,
+        width: PropTypes.number,
+        strokeWidth: PropTypes.number,
+        // eslint-disable-next-line react/forbid-prop-types
+        animationColor: PropTypes.object,
     };
 
     componentDidMount() {

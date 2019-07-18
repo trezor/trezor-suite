@@ -71,6 +71,7 @@ const Select = ({
                 Platform.OS === 'ios' ? styles.inputIOS : styles.inputAndroid,
                 isDisabled ? styles.disabled : {},
             ],
+            placeholderTextColor: colors.GRAY_LIGHT,
         }}
         items={optionsToItems(options)}
         placeholder={{ label: placeholder }}
@@ -82,14 +83,16 @@ const Select = ({
 );
 
 const propTypes = {
+    onChange: PropTypes.func,
     withDropdownIndicator: PropTypes.bool,
+    isDisabled: PropTypes.bool,
+    placeholder: PropTypes.string,
     // TODO
     // eslint-disable-next-line react/forbid-prop-types
     options: PropTypes.object,
     // TODO
     // eslint-disable-next-line react/forbid-prop-types
     value: PropTypes.object,
-    onChange: PropTypes.func,
 };
 
 Select.propTypes = propTypes;

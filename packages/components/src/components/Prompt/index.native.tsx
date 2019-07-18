@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
 import Icon from '../Icon';
 
@@ -63,6 +64,11 @@ interface Props {
 class Prompt extends React.Component<Props> {
     state = {
         blinkAnim: new Animated.Value(0),
+    };
+
+    static propTypes = {
+        model: PropTypes.oneOf([1, 2]),
+        size: PropTypes.number,
     };
 
     componentDidMount() {

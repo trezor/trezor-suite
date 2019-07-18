@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components/native';
+import PropTypes from 'prop-types';
 
 import { FONT_SIZE_NATIVE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
@@ -100,11 +101,9 @@ interface TextProps {
 }
 
 interface WrapperProps {
-    className?: string;
     variant?: FeedbackType;
 }
 interface Props {
-    className?: string;
     title: React.ReactNode;
     message?: React.ReactNode;
     actions?: CtaShape[];
@@ -115,7 +114,6 @@ interface Props {
 }
 
 const Notification = ({
-    className,
     variant = 'info',
     title,
     message,
@@ -131,7 +129,7 @@ const Notification = ({
     if (!stateIcon || !stateColor) return null;
 
     return (
-        <Wrapper className={className} variant={variant} {...rest}>
+        <Wrapper variant={variant} {...rest}>
             <Content>
                 <Col>
                     <Body>
@@ -172,6 +170,21 @@ const Notification = ({
             </Content>
         </Wrapper>
     );
+};
+
+Notification.propTypes = {
+    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
+    title: PropTypes.node,
+    message: PropTypes.node,
+    actions: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string,
+            callback: PropTypes.func,
+        })
+    ),
+    cancelable: PropTypes.bool,
+    isActionInProgress: PropTypes.bool,
+    close: PropTypes.func,
 };
 
 export default Notification;

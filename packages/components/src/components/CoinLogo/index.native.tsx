@@ -50,6 +50,7 @@ const CoinLogo = ({ network, height = 50, ...rest }: Props) => {
 
 CoinLogo.propTypes = {
     network: PropTypes.string,
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 export default CoinLogo;

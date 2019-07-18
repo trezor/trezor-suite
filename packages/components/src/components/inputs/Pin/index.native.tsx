@@ -43,8 +43,8 @@ const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
 );
 
 InputPin.propTypes = {
-    onDeleteClick: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
+    onDeleteClick: PropTypes.func.isRequired,
 };
 
 export default InputPin;

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import PropTypes from 'prop-types';
 
 import { GestureResponderEvent } from 'react-native';
 import { FONT_SIZE_NATIVE as FONT_SIZE } from '../../config/variables';
@@ -39,13 +40,12 @@ const Label = styled.Text<IconWrapperProps>`
 interface Props {
     onClick: (event: GestureResponderEvent) => any;
     isChecked: boolean;
-    propTypes: any;
     children?: React.ReactNode;
 }
 
-type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
+type IconWrapperProps = Omit<Props, 'onClick'>;
 
-const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
+const Checkbox = ({ onClick, isChecked, children, ...rest }: Props) => {
     return (
         <Touchable onPress={onClick} {...rest}>
             <Wrapper>
@@ -63,6 +63,12 @@ const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
             </Wrapper>
         </Touchable>
     );
+};
+
+Checkbox.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    isChecked: PropTypes.bool,
+    children: PropTypes.node,
 };
 
 export default Checkbox;

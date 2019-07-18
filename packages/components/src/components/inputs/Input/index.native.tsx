@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components/native';
+import PropTypes from 'prop-types';
 
 import { FONT_SIZE_NATIVE, FONT_WEIGHT, LINE_HEIGHT } from '../../../config/variables';
 import { getStateIcon } from '../../../utils/icons';
@@ -8,7 +9,7 @@ import Icon from '../../Icon';
 import colors from '../../../config/colors';
 import { Omit, FeedbackType } from '../../../support/types';
 
-const Wrapper = styled.View<WrapperProps>``;
+const Wrapper = styled.View``;
 
 const InputWrapper = styled.View`
     flex: 1;
@@ -128,10 +129,6 @@ interface TooltipActionProps {
     action?: React.ReactNode;
 }
 
-interface WrapperProps {
-    className?: string;
-}
-
 // TODO: fix input props without omit
 interface InputProps
     extends Omit<
@@ -163,8 +160,10 @@ interface InputProps
 
 interface Props extends InputProps {
     innerRef?: any;
+    type?: string;
     height?: number;
     icon?: any;
+    state?: FeedbackType;
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;
@@ -172,14 +171,9 @@ interface Props extends InputProps {
     isDisabled?: boolean;
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
-    wrapperProps?: Record<string, any>;
-    type?: string; // TODO: type prop should be inherited from basic html input
-    propTypes?: any;
-    state?: FeedbackType;
 }
 
 const Input = ({
-    className,
     innerRef,
     type = 'text',
     height = 40,
@@ -192,14 +186,13 @@ const Input = ({
     isDisabled,
     isSmallText,
     isPartiallyHidden,
-    wrapperProps,
     ...rest
 }: Props) => {
     const stateIcon = getStateIcon(state);
     const stateColor = getPrimaryColor(state) || undefined;
 
     return (
-        <Wrapper className={className} {...wrapperProps}>
+        <Wrapper>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <InputWrapper>
                 {stateIcon && stateColor && (
@@ -233,6 +226,21 @@ const Input = ({
             </Wrapper>
         </Wrapper>
     );
+};
+
+Input.propTypes = {
+    innerRef: PropTypes.func,
+    type: PropTypes.string,
+    height: PropTypes.number,
+    icon: PropTypes.node,
+    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
+    bottomText: PropTypes.node,
+    topLabel: PropTypes.node,
+    tooltipAction: PropTypes.node,
+    sideAddons: PropTypes.arrayOf(PropTypes.node),
+    isDisabled: PropTypes.bool,
+    isSmallText: PropTypes.bool,
+    isPartiallyHidden: PropTypes.bool,
 };
 
 export default Input;

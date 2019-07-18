@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import PropTypes from 'prop-types';
 import colors from '../../../config/colors';
 
 const Touchable = styled.TouchableHighlight`
@@ -30,6 +31,10 @@ const ButtonPin = ({ onClick }: Props) => {
             <Dot />
         </Touchable>
     );
+};
+
+ButtonPin.propTypes = {
+    onClick: PropTypes.func,
 };
 
 export default ButtonPin;

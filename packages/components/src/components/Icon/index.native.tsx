@@ -17,7 +17,6 @@ interface Props {
     icon: string | IconShape;
     size?: number;
     color: string;
-    isActive?: boolean;
     onClick?: (event: GestureResponderEvent) => void;
 }
 

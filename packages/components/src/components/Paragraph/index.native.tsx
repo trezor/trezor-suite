@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components/native';
+import PropTypes from 'prop-types';
 
 import React from 'react';
 import { FONT_SIZE_NATIVE, LINE_HEIGHT } from '../../config/variables';
@@ -42,5 +43,12 @@ const P = ({ children, className, size = 'medium', textAlign, ...rest }: Props) 
         </StyledText>
     </Paragraph>
 );
+
+P.propType = {
+    className: PropTypes.string,
+    children: PropTypes.node,
+    size: PropTypes.oneOf(['small', 'medium', 'large', 'xlarge']),
+    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify', 'inherit', 'initial']),
+};
 
 export default P;

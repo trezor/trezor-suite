@@ -93,23 +93,18 @@ const TextArea = ({
 };
 
 TextArea.propTypes = {
-    className: PropTypes.string,
-    onFocus: PropTypes.func,
-    onBlur: PropTypes.func,
+    maxLength: PropTypes.string,
+    topLabel: PropTypes.node,
+    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
+    bottomText: PropTypes.string,
+    isDisabled: PropTypes.bool,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     value: PropTypes.string,
     readOnly: PropTypes.bool,
     maxRows: PropTypes.number,
-    maxLength: PropTypes.string,
     rows: PropTypes.number,
     name: PropTypes.string,
-    isDisabled: PropTypes.bool,
-    topLabel: PropTypes.node,
-    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
-    autoSelect: PropTypes.bool,
-    bottomText: PropTypes.string,
-    tooltipAction: PropTypes.node,
 };
 
 export default TextArea;

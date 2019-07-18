@@ -1,5 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components/native';
+import PropTypes from 'prop-types';
+
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { Omit, FeedbackType, IconShape } from '../../../support/types';
@@ -94,14 +96,14 @@ const IconWrapper = styled.View`
 `;
 
 interface Props {
+    children?: React.ReactNode;
+    onClick: () => void;
+    variant?: FeedbackType;
     isDisabled?: boolean;
-    isInverse?: boolean;
     isWhite?: boolean;
     isTransparent?: boolean;
+    isInverse?: boolean;
     isLoading?: boolean;
-    children?: React.ReactNode;
-    variant?: FeedbackType;
-    onClick: () => void;
     icon?: string | IconShape;
 }
 
@@ -163,6 +165,18 @@ const Button = ({
             </Wrapper>
         </ButtonContainer>
     );
+};
+
+Button.propTypes = {
+    children: PropTypes.node.isRequired,
+    onClick: PropTypes.func,
+    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
+    isDisabled: PropTypes.bool,
+    isWhite: PropTypes.bool,
+    isTransparent: PropTypes.bool,
+    isInverse: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
 
 export default Button;

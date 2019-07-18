@@ -329,6 +329,7 @@ const Form = () => {
                     withDropdownIndicator
                     value={options.World}
                     options={options}
+                    placeholder="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
                 />
 
@@ -338,6 +339,7 @@ const Form = () => {
                     withDropdownIndicator={false}
                     value={options.Hello}
                     options={options}
+                    placeholder="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
                 />
 
@@ -349,6 +351,7 @@ const Form = () => {
                     withDropdownIndicator
                     value={options.World}
                     options={options}
+                    placeholder="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
                 />
             </Col>

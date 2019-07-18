@@ -18,8 +18,8 @@ class Switch extends Component<Props> {
     static propTypes = {
         onChange: PropTypes.func.isRequired,
         disabled: PropTypes.bool,
-        checked: PropTypes.bool,
         isSmall: PropTypes.bool,
+        checked: PropTypes.bool,
     };
 
     constructor(props: Props) {
