@@ -76,15 +76,9 @@ const Texts = styled.View`
 
 const AdditionalContent = styled.View`
     flex: 1;
+    flex-direction: row;
     justify-content: center;
-    align-items: flex-end;
     padding-top: 10px;
-`;
-
-const ActionContent = styled.View`
-    flex: 1;
-    justify-content: flex-end;
-    align-items: flex-end;
 `;
 
 const ButtonNotification = styled(Button)`
@@ -140,33 +134,31 @@ const Notification = ({
                             <Title color={stateColor}>{title}</Title>
                             {message ? <Message color={stateColor}>{message}</Message> : ''}
                         </Texts>
-                        {actions && actions.length > 0 && (
-                            <AdditionalContent>
-                                <ActionContent>
-                                    {actions.map((action: CtaShape) => (
-                                        <ButtonNotification
-                                            isInverse
-                                            key={action.label}
-                                            variant={variant}
-                                            isLoading={isActionInProgress}
-                                            onClick={() => {
-                                                closeFunc();
-                                                action.callback();
-                                            }}
-                                        >
-                                            {action.label}
-                                        </ButtonNotification>
-                                    ))}
-                                </ActionContent>
-                            </AdditionalContent>
+                        {cancelable && (
+                            <CloseClick onPress={() => closeFunc()}>
+                                <Icon color={stateColor} icon={icons.CLOSE} size={10} />
+                            </CloseClick>
                         )}
                     </Body>
+                    {actions && actions.length > 0 && (
+                        <AdditionalContent>
+                            {actions.map((action: CtaShape) => (
+                                <ButtonNotification
+                                    isInverse
+                                    key={action.label}
+                                    variant={variant}
+                                    isLoading={isActionInProgress}
+                                    onClick={() => {
+                                        closeFunc();
+                                        action.callback();
+                                    }}
+                                >
+                                    {action.label}
+                                </ButtonNotification>
+                            ))}
+                        </AdditionalContent>
+                    )}
                 </Col>
-                {cancelable && (
-                    <CloseClick onPress={() => closeFunc()}>
-                        <Icon color={stateColor} icon={icons.CLOSE} size={10} />
-                    </CloseClick>
-                )}
             </Content>
         </Wrapper>
     );
