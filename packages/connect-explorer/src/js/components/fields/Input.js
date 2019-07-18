@@ -3,7 +3,7 @@
 import React from 'react';
 
 const getClassName = (type: string, validation: ?boolean): string => {
-    if (type === 'input') return 'small';
+    if (type === 'input' || type === 'number') return 'small';
     if (validation) return 'validation';
     return '';
 }
