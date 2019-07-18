@@ -379,6 +379,28 @@ export default [
         ]
     },
     {
+        name: 'Eos',
+        children: [
+            {
+                name: 'Get public key',
+                children: [
+                    { 
+                        name: 'export public key',
+                        url: '/method/eosGetPublicKey',
+                    },
+                    { 
+                        name: 'export multiple public keys',
+                        url: '/method/eosGetPublicKey-multiple',
+                    },
+                ]
+            },
+            {
+                name: 'Sign transaction',
+                url: '/method/eosSignTransaction',
+            },
+        ]
+    },
+    {
         name: 'Other methods',
         children: [
             {
