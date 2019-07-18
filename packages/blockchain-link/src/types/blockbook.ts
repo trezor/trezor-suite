@@ -73,6 +73,7 @@ export type AccountUtxo = {
     address: string;
     path: string;
     confirmations: number;
+    coinbase?: string;
 }[];
 
 export interface VinVout {
@@ -119,17 +120,17 @@ export interface Transaction {
 }
 
 export interface Push {
-    status: boolean;
+    result: string;
 }
 
 export interface EstimateFeeParams {
-    blocks: number[];
+    blocks?: number[];
     specific?: {
-        conservative?: boolean;
-        txsize?: number;
-        from?: string;
-        to?: string;
-        data?: string;
+        conservative?: boolean; // btc
+        txsize?: number; // btc transaction size
+        from?: string; // eth from
+        to?: string; // eth to
+        data?: string; // eth tx data
     };
 }
 

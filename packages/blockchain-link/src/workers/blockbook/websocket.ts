@@ -4,7 +4,6 @@ import { CustomError } from '../../constants/errors';
 import { create as createDeferred, Deferred } from '../../utils/deferred';
 import {
     AccountInfoParams,
-    AccountUtxoParams,
     EstimateFeeParams,
     BlockNotification,
     AddressNotification,
@@ -139,8 +138,8 @@ export default class Socket extends EventEmitter {
         return this.send('getAccountInfo', payload);
     }
 
-    getAccountUtxo(payload: AccountUtxoParams) {
-        return this.send('getAccountUtxo', payload);
+    getAccountUtxo(descriptor: string) {
+        return this.send('getAccountUtxo', { descriptor });
     }
 
     getTransaction(txid: string) {

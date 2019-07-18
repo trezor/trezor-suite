@@ -160,7 +160,7 @@ const pushTransaction = async (
         common.response({
             id: data.id,
             type: RESPONSES.PUSH_TRANSACTION,
-            payload: resp,
+            payload: resp.result,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -170,7 +170,7 @@ const pushTransaction = async (
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
         const socket = await connect();
-        const resp = await socket.estimateFee({ blocks: [1] });
+        const resp = await socket.estimateFee(data.payload);
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,

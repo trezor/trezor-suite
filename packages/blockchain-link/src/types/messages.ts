@@ -40,9 +40,7 @@ export interface GetAccountInfo {
 
 export interface GetAccountUtxo {
     type: typeof MESSAGES.GET_ACCOUNT_UTXO;
-    payload: {
-        descriptor: string; // address or xpub
-    };
+    payload: string; // address or xpub
 }
 
 export interface GetTransaction {
@@ -51,15 +49,18 @@ export interface GetTransaction {
 }
 
 export interface EstimateFeeOptions {
-    transaction?: any; // custom object, used in ethereum
-    levels?: {
-        name: string;
-        value: string;
-    }[];
+    blocks?: number[];
+    specific?: {
+        conservative?: boolean;
+        txsize?: number;
+        from?: string;
+        to?: string;
+        data?: string;
+    };
 }
 export interface EstimateFee {
     type: typeof MESSAGES.ESTIMATE_FEE;
-    payload?: EstimateFeeOptions;
+    payload: EstimateFeeOptions;
 }
 
 export interface Subscribe {

@@ -51,6 +51,7 @@ export interface Utxo {
     address: string;
     path: string;
     confirmations: number;
+    coinbase?: string;
 }
 
 export interface GetAccountUtxo {
@@ -105,7 +106,7 @@ export interface Notification {
 
 export interface PushTransaction {
     type: typeof RESPONSES.PUSH_TRANSACTION;
-    payload: any;
+    payload: string;
 }
 
 interface WithoutPayload {
