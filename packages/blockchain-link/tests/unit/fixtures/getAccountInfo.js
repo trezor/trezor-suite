@@ -26,6 +26,7 @@ export default {
                 descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
                 balance: '0',
                 availableBalance: '0',
+                empty: true,
                 history: {
                     total: 0,
                     unconfirmed: 0,
@@ -61,6 +62,7 @@ export default {
                     'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
                 balance: '0',
                 availableBalance: '0',
+                empty: true,
                 history: {
                     total: 0,
                     unconfirmed: 0,
@@ -78,6 +80,7 @@ export default {
                 descriptor: 'rNpM6NUAdqWvmDpB22PJ7AHTrN6nkwEEpS',
                 balance: '0',
                 availableBalance: '0',
+                empty: true,
                 history: {
                     tokens: 0,
                     total: 0,
@@ -87,7 +90,6 @@ export default {
                     reserve: '20000000',
                     sequence: 0,
                 },
-                tokens: [],
             },
         },
         {
@@ -109,6 +111,7 @@ export default {
                 descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
                 balance: '20000000',
                 availableBalance: '20000000',
+                empty: false,
                 history: {
                     tokens: 0,
                     total: 0,
@@ -118,7 +121,6 @@ export default {
                     reserve: '20000000',
                     sequence: 2,
                 },
-                tokens: [],
             },
         },
         {
@@ -158,6 +160,7 @@ export default {
                 descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
                 balance: '20000000',
                 availableBalance: '20000000',
+                empty: false,
                 history: {
                     tokens: 0,
                     total: 0,
@@ -176,7 +179,6 @@ export default {
                     reserve: '20000000',
                     sequence: 2,
                 },
-                tokens: [],
             },
         },
         {
@@ -203,6 +205,7 @@ export default {
                 descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
                 balance: '20000000',
                 availableBalance: '20000000',
+                empty: false,
                 history: {
                     tokens: 0,
                     total: 0,
@@ -254,7 +257,6 @@ export default {
                     reserve: '20000000',
                     sequence: 2,
                 },
-                tokens: [],
             },
         },
     ],

@@ -180,7 +180,8 @@ const getAccountInfo = async (
         descriptor: payload.descriptor,
         balance: '0', // default balance
         availableBalance: '0', // default balance
-        tokens: [], // not implemented in Trezor firmware
+        empty: true,
+        // tokens: [], // XRP tokens are not implemented in Trezor firmware
         history: {
             // default history
             total: 0,
@@ -212,6 +213,7 @@ const getAccountInfo = async (
         account.misc = misc;
         account.balance = api.xrpToDrops(info.xrpBalance);
         account.availableBalance = new BigNumber(account.balance).minus(reserve).toString();
+        account.empty = false;
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
@@ -227,9 +229,10 @@ const getAccountInfo = async (
         return;
     }
 
+    // get mempool information
     try {
         const mempoolInfo = await getMempoolAccountInfo(payload.descriptor);
-        account.availableBalance = mempoolInfo.xrpBalance; // TODO: balance - reserve
+        account.availableBalance = mempoolInfo.xrpBalance; // TODO: balance - reserve?
         account.misc.sequence = mempoolInfo.sequence;
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -277,21 +280,38 @@ const getAccountInfo = async (
     }
 };
 
+const getTransaction = async (
+    data: { id: number } & MessageTypes.GetTransaction
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const api = await connect();
+        const info = await api.getTransaction(payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_TRANSACTION,
+            payload: info,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
-        // const api = await connect();
-        // const fee = await api.getFee();
+        const api = await connect();
+        const fee = await api.getFee();
         // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
         // investigate more...
-        // const drops = api.xrpToDrops(fee);
-        // const payload =
-        //     data.payload && Array.isArray(data.payload.levels)
-        //         ? data.payload.levels.map(l => ({ name: l.name, value: drops }))
-        //         : [{ name: 'Normal', value: drops }];
+        const drops = api.xrpToDrops(fee);
+        const payload =
+            data.payload && Array.isArray(data.payload.blocks)
+                ? data.payload.blocks.map(l => ({ feePerUnit: drops }))
+                : [{ feePerUnit: drops }];
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
-            payload: [],
+            payload,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -530,6 +550,9 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);
+            break;
+        case MESSAGES.GET_TRANSACTION:
+            getTransaction(data);
             break;
         case MESSAGES.ESTIMATE_FEE:
             estimateFee(data);

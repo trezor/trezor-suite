@@ -75,6 +75,7 @@ export interface AccountInfo {
     descriptor: string;
     balance: string;
     availableBalance: string;
+    empty: boolean;
     tokens?: TokenInfo[]; // ethereum tokens
     addresses?: AccountAddresses; // bitcoin addresses
     history: {

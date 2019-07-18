@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 import {
     Transaction,
     TokenTransfer,
@@ -125,7 +127,7 @@ export const transformTransaction = (
     const incoming = filterTargets(myAddresses, tx.vout);
     const internal = addresses ? filterTargets(addresses.change, tx.vout) : [];
     const tokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
-    let type;
+    let type: Transaction['type'];
     let targets: VinVout[] = [];
 
     // && !hasJoinsplits (from hd-wallet)
@@ -238,11 +240,18 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     }
     const descriptor = payload.address;
     const addresses = transformAddresses(payload.tokens);
+    const empty = payload.txs === 0;
+    const unconfirmed = new BigNumber(payload.unconfirmedBalance);
+    // reduce availableBalance if unconfirmed balance is lower than 0
+    const availableBalance = unconfirmed.lt(0)
+        ? unconfirmed.plus(payload.balance).toString()
+        : payload.balance;
+
     return {
-        // block: payload.block, // TODO: ask marting to implement
         descriptor,
         balance: payload.balance,
-        availableBalance: payload.balance, // TODO: balance - unconfirmedBalance, could be lower than 0?
+        availableBalance,
+        empty,
         tokens: transformTokenInfo(payload.tokens),
         addresses,
         history: {
@@ -252,7 +261,6 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
             transactions: payload.transactions
                 ? payload.transactions.map(t => transformTransaction(descriptor, addresses, t))
                 : undefined,
-            // txids: payload.txids, // not used
         },
         misc,
         page,
@@ -268,5 +276,6 @@ export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
         address: utxo.address,
         path: utxo.path,
         confirmations: utxo.confirmations,
+        coinbase: utxo.coinbase,
     }));
 };
