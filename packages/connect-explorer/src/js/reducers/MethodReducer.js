@@ -29,10 +29,8 @@ const getParam = (field, $params) => {
     const params = $params || {};
     if (field.omit) {
         return params;
-    } else if (field.optional) {
-        if ((field.value || field.value === 0) && field.value !== '') {
-            params[field.name] = field.value;
-        }
+    } else if (field.optional && ((!field.value && field.value !== 0) || field.value === '')) {
+        return params;
     } else if (field.hasOwnProperty('defaultValue')) {
         if (field.defaultValue !== field.value) {
             params[field.name] = field.value;
@@ -49,7 +47,7 @@ const getParam = (field, $params) => {
         } catch (error) {
             params[field.name] = `Invalid function, ${ error.toString() }`
         }
-    } else if(field.type === 'number') {
+    } else if (field.type === 'number') {
         if (!isNaN(parseInt(field.value))) {
             params[field.name] = parseInt(field.value);
         }
