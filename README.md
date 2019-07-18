@@ -5,7 +5,7 @@
 
 Name            | Packages
 --------------- | ----------
-suite           | [suite](./packages/suite), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [onboarding](./packages/suite-onboarding)
+suite           | [core](./packages/suite), [web](./packages/suite-web), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [onboarding](./packages/suite-onboarding)
 components      | [components](./packages/components), [storybook](./packages/components-storybook), [storybook native](./packages/components-storybook-native)
 rollout         | [rollout](./packages/rollout)
 blockchain-link | [blockchain-link]('./packages/blockchain-link)
