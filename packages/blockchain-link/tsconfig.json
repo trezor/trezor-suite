@@ -12,6 +12,6 @@
         "removeComments": true,
         "types": ["jest", "node"],
     },
-    "include": ["./src/index.ts"],
+    "include": ["./src/index.ts", "./src/utils/ws.ts"],
     "exclude": ["node_modules"]
 }
