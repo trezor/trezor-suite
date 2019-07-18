@@ -8,6 +8,7 @@ import nem from './nem/index';
 import cardano from './cardano/index';
 import lisk from './lisk';
 import tezos from './tezos';
+import eos from './eos';
 import other from './other';
 
 import management from './management';
@@ -21,6 +22,7 @@ export default [
     ...cardano,
     ...lisk,
     ...tezos,
+    ...eos,
     ...other,
     ...management
 ];
