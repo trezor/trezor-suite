@@ -61,9 +61,6 @@ const getParam = (field, $params) => {
 const updateParams = (state) => {
     const params = {};
     state.fields.forEach(field => {
-        if (field.helper) {
-            return;
-        }
         if (field.type === 'array') {
             const arr = [];
             field.items.forEach(batch => {

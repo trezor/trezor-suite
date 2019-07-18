@@ -22,7 +22,7 @@ export default [
             },
             {
                 name: 'firmware',
-                helper: true,
+                omit: true,
                 type: 'select-async',
                 value: '',
                 affect: 'payload',
