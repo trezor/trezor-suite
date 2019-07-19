@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
-import { linkTo } from '@storybook/addon-links';
 
 import { withInfo } from '@storybook/addon-info';
 import {
@@ -40,21 +39,6 @@ const Row = styled.div`
     flex-wrap: wrap;
 `;
 
-const BtnLink = styled.button`
-    font-size: 1rem;
-    color: ${colors.TEXT_SECONDARY};
-    vertical-align: middle;
-    background: ${colors.LANDING};
-    padding: 0.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-        color: ${colors.TEXT};
-    }
-`;
-
 const StyledSelect = styled(Select)<typeof Select>`
     width: 100%;
     margin-bottom: 10px;
@@ -74,12 +58,8 @@ Wrapper.displayName = 'Wrapper';
 
 storiesOf('Form', module).add('All', () => (
     <Wrapper>
-        <H1>
-            Input <BtnLink onClick={linkTo('Form', 'Input')}>{'<Input />'}</BtnLink>
-        </H1>
-        <H5>
-            Basic <BtnLink onClick={linkTo('Form', 'Input')}>{'<Input />'}</BtnLink>
-        </H5>
+        <H1>Input</H1>
+        <H5>Basic</H5>
         <Row>
             <StyledInput
                 type="text"
@@ -133,9 +113,7 @@ storiesOf('Form', module).add('All', () => (
             />
         </Row>
 
-        <H5>
-            with value <BtnLink onClick={linkTo('Form', 'Input')}>{'<Input />'}</BtnLink>
-        </H5>
+        <H5>with value</H5>
         <Row>
             <StyledInput
                 type="text"
@@ -183,12 +161,7 @@ storiesOf('Form', module).add('All', () => (
             />
         </Row>
 
-        <H5>
-            with label and bottomText{' '}
-            <BtnLink onClick={linkTo('Form', 'Input')}>
-                {'<Input topLabel="Label" bottomText="bottomText"/>'}
-            </BtnLink>
-        </H5>
+        <H5>with label and bottomText </H5>
         <Row>
             <StyledInput
                 type="text"
@@ -254,12 +227,7 @@ storiesOf('Form', module).add('All', () => (
             />
         </Row>
 
-        <H5>
-            with tooltipAction{' '}
-            <BtnLink onClick={linkTo('Form', 'Input')}>
-                {'<Input tooltipAction="Example tooltipAction" />'}
-            </BtnLink>
-        </H5>
+        <H5>with tooltipAction</H5>
         <Row>
             <StyledInput
                 type="text"
@@ -271,9 +239,7 @@ storiesOf('Form', module).add('All', () => (
             />
         </Row>
 
-        <H1>
-            InputPin <BtnLink onClick={linkTo('Form', 'Input Pin')}>{'<InputPin />'}</BtnLink>
-        </H1>
+        <H1>InputPin</H1>
         <Row>
             <InputPin
                 value="1234"
@@ -282,12 +248,8 @@ storiesOf('Form', module).add('All', () => (
             />
         </Row>
 
-        <H1>
-            TextArea <BtnLink onClick={linkTo('Form', 'TextArea')}>{'<TextArea />'}</BtnLink>
-        </H1>
-        <H5>
-            Basic <BtnLink onClick={linkTo('Form', 'TextArea')}>{'<TextArea />'}</BtnLink>
-        </H5>
+        <H1>TextArea</H1>
+        <H5>Basic</H5>
         <Row>
             <Margin size="30">
                 <TextArea
@@ -348,12 +310,7 @@ storiesOf('Form', module).add('All', () => (
             </Margin>
         </Row>
 
-        <H5>
-            with label and bottomText{' '}
-            <BtnLink onClick={linkTo('Form', 'TextArea')}>
-                {'<TextArea topLabel="Label" bottomText="bottomText"/>'}
-            </BtnLink>
-        </H5>
+        <H5>with label and bottomText </H5>
         <Row>
             <Margin size="30">
                 <TextArea
@@ -426,9 +383,7 @@ storiesOf('Form', module).add('All', () => (
             </Margin>
         </Row>
 
-        <H1>
-            Select <BtnLink onClick={linkTo('Form', 'Select')}>{'<Select />'}</BtnLink>
-        </H1>
+        <H1>Select</H1>
         <Row>
             <H5>Basic</H5>
             <DataWrapper width="100%" data-test="select_basic_placeholder">
@@ -510,9 +465,7 @@ storiesOf('Form', module).add('All', () => (
             </DataWrapper>
         </Row>
 
-        <H1>
-            Checkbox <BtnLink onClick={linkTo('Form', 'Checkbox')}>{'<Checkbox />'}</BtnLink>
-        </H1>
+        <H1>Checkbox</H1>
         <Row>
             <Checkbox onClick={() => {}} data-test="checkbox_unchecked">
                 Label
@@ -523,12 +476,8 @@ storiesOf('Form', module).add('All', () => (
                 Label
             </Checkbox>
         </Row>
-        <H1>
-            Switch <BtnLink onClick={linkTo('Form', 'Switch')}>{'<Switch />'}</BtnLink>
-        </H1>
-        <H5>
-            basic <BtnLink onClick={linkTo('Form', 'Switch')}>{'<Switch/>'}</BtnLink>
-        </H5>
+        <H1>Switch</H1>
+
         <Row>
             <DataWrapper data-test="switch_basic_unchecked">
                 <Switch onChange={() => {}} checked={false} />
@@ -541,9 +490,7 @@ storiesOf('Form', module).add('All', () => (
             </DataWrapper>
         </Row>
 
-        <H5>
-            small <BtnLink onClick={linkTo('Form', 'Switch')}>{'<Switch isSmall />'}</BtnLink>
-        </H5>
+        <H5>small</H5>
         <Row>
             <DataWrapper data-test="switch_small_unchecked">
                 <Switch onChange={() => {}} isSmall checked={false} />
@@ -557,12 +504,7 @@ storiesOf('Form', module).add('All', () => (
                 <Switch onChange={() => {}} isSmall disabled checked={false} />
             </DataWrapper>
         </Row>
-        <H5>
-            without icons{' '}
-            <BtnLink onClick={linkTo('Form', 'Switch')}>
-                {'<Switch checkedIcon={null} uncheckedIcon={null} />'}
-            </BtnLink>
-        </H5>
+        <H5>without icons </H5>
         <Row>
             <DataWrapper data-test="switch_noicon_unchecked">
                 <Switch
