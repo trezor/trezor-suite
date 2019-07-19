@@ -1,4 +1,5 @@
 import React from 'react';
+import { TextInputProperties } from 'react-native';
 import styled, { css } from 'styled-components/native';
 import PropTypes from 'prop-types';
 
@@ -130,25 +131,7 @@ interface TooltipActionProps {
 }
 
 // TODO: fix input props without omit
-interface InputProps
-    extends Omit<
-        React.InputHTMLAttributes<HTMLInputElement>,
-        | 'style'
-        | 'onFocus'
-        | 'onBlur'
-        | 'onChange'
-        | 'onKeyPress'
-        | 'onTouchCancel'
-        | 'onTouchEnd'
-        | 'onTouchEndCapture'
-        | 'onTouchMove'
-        | 'onTouchStart'
-        | 'onScroll'
-        | 'defaultValue'
-        | 'autoCapitalize'
-        | 'autoCorrect'
-        | 'value'
-    > {
+interface InputProps extends TextInputProperties {
     hasIcon?: boolean;
     hasAddon?: boolean;
     isPartiallyHidden?: boolean;
@@ -160,7 +143,6 @@ interface InputProps
 
 interface Props extends InputProps {
     innerRef?: any;
-    type?: string;
     height?: number;
     icon?: any;
     state?: FeedbackType;
@@ -175,7 +157,6 @@ interface Props extends InputProps {
 
 const Input = ({
     innerRef,
-    type = 'text',
     height = 40,
     icon,
     state,
@@ -200,8 +181,7 @@ const Input = ({
                 )}
                 <Overlay isPartiallyHidden={isPartiallyHidden} />
                 <StyledInput
-                    type={type}
-                    autoComplete="off"
+                    autoCompleteType="off"
                     height={height}
                     tooltipAction={tooltipAction}
                     hasIcon={icon || getStateIcon(state)}
