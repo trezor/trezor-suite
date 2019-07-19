@@ -79,20 +79,14 @@ const BtnLink = styled.button`
 storiesOf('Other', module).add('All', () => (
     <Wrapper>
         <H1>Prompt</H1>
-        <H5>
-            Trezor One{' '}
-            <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="1" />'}</BtnLink>
-        </H5>
+        <H5>Trezor One</H5>
         <Section>
             <Prompt model={1} data-test="prompt_1">
                 Complete the action on your device
             </Prompt>
         </Section>
 
-        <H5>
-            Trezor Model T{' '}
-            <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="2" />'}</BtnLink>
-        </H5>
+        <H5>Trezor Model T</H5>
         <Section>
             <Prompt model={2} data-test="prompt_2">
                 Complete the action on your device
@@ -100,50 +94,28 @@ storiesOf('Other', module).add('All', () => (
         </Section>
 
         <H1>TrezorImage</H1>
-        <H5>
-            Trezor One{' '}
-            <BtnLink onClick={linkTo('Other', 'TrezorImage')}>
-                {'<TrezorImage model="1" />'}
-            </BtnLink>
-        </H5>
+        <H5>Trezor One</H5>
         <Section>
             <TrezorImage height={310} model={1} data-test="trezor_image_1" />
         </Section>
 
-        <H5>
-            Trezor Model T{' '}
-            <BtnLink onClick={linkTo('Other', 'TrezorImage')}>
-                {'<TrezorImage model="2" />'}
-            </BtnLink>
-        </H5>
+        <H5>Trezor Model T</H5>
         <Section>
             <TrezorImage height={310} model={2} data-test="trezor_image_2" />
         </Section>
 
         <H1>TrezorLogo</H1>
-        <H5>
-            Horizontal{' '}
-            <BtnLink onClick={linkTo('Other', 'TrezorLogo')}>
-                {'<TrezorLogo type="horizontal" />'}
-            </BtnLink>
-        </H5>
+        <H5>Horizontal</H5>
         <Section>
             <TrezorLogo type="horizontal" width="90%" data-test="trezor_logo_horizontal" />
         </Section>
 
-        <H5>
-            Vertical{' '}
-            <BtnLink onClick={linkTo('Other', 'TrezorLogo')}>
-                {'<TrezorLogo type="vertical" />'}
-            </BtnLink>
-        </H5>
+        <H5>Vertical</H5>
         <Section>
             <TrezorLogo type="vertical" width="50%" data-test="trezor_logo_vertical" />
         </Section>
 
-        <H1>
-            Header <BtnLink onClick={linkTo('Other', 'Header')}>{'<Header />'}</BtnLink>
-        </H1>
+        <H1>Header</H1>
         <Section>
             <Header
                 sidebarEnabled
@@ -171,17 +143,12 @@ storiesOf('Other', module).add('All', () => (
         </Section>
 
         <H1>Loader</H1>
-        <H5>
-            default <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader />'}</BtnLink>
-        </H5>
+        <H5>default</H5>
         <Section>
             <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
         </Section>
 
-        <H5>
-            small text{' '}
-            <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader isSmallText />'}</BtnLink>
-        </H5>
+        <H5>small text</H5>
         <Section>
             <Loader
                 size={100}
@@ -192,10 +159,7 @@ storiesOf('Other', module).add('All', () => (
             />
         </Section>
 
-        <H5>
-            transparent route{' '}
-            <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader transparentRoute />'}</BtnLink>
-        </H5>
+        <H5>transparent route</H5>
         <Section>
             <Loader
                 size={100}
@@ -206,10 +170,7 @@ storiesOf('Other', module).add('All', () => (
             />
         </Section>
 
-        <H5>
-            white text{' '}
-            <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader isWhiteText />'}</BtnLink>
-        </H5>
+        <H5>white text</H5>
         <SectionDark>
             <Loader
                 size={100}
@@ -220,12 +181,7 @@ storiesOf('Other', module).add('All', () => (
             />
         </SectionDark>
 
-        <H5>
-            white text &amp; transparent route{' '}
-            <BtnLink onClick={linkTo('Other', 'Loader')}>
-                {'<Loader isWhiteText transparentRoute />'}
-            </BtnLink>
-        </H5>
+        <H5>white text &amp; transparent route</H5>
         <SectionDark>
             <Loader
                 size={100}
@@ -237,9 +193,7 @@ storiesOf('Other', module).add('All', () => (
             />
         </SectionDark>
 
-        <H1>
-            Icons <BtnLink onClick={linkTo('Other', 'Icon')}>{'<Icon />'}</BtnLink>
-        </H1>
+        <H1>Icons</H1>
         <Icons>
             {Object.keys(icons).map(icon => {
                 const test = `icon_${icon.toLowerCase()}`;
@@ -252,9 +206,7 @@ storiesOf('Other', module).add('All', () => (
             })}
         </Icons>
 
-        <H1>
-            Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
-        </H1>
+        <H1>Coins</H1>
         <Icons>
             {COINS.map((coin: string) => {
                 const test = `coin_${coin.toLowerCase()}`;

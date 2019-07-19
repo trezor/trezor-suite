@@ -56,9 +56,7 @@ storiesOf('Typography', module).add('All', () => {
         'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Et harum quidem rerum facilis est et expedita distinctio. Fusce tellus. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Mauris elementum mauris vitae tortor. Mauris metus.';
     return (
         <Wrapper>
-            <H1>
-                Heading <BtnLink onClick={linkTo('Typography', 'Heading')}>{'<H1 />'}</BtnLink>
-            </H1>
+            <H1>Heading</H1>
             <Row>
                 <H1 data-test="heading_1">Heading level 1</H1>
                 <H2 data-test="heading_2">Heading level 2</H2>
@@ -67,10 +65,7 @@ storiesOf('Typography', module).add('All', () => {
                 <H5 data-test="heading_5">Heading level 5</H5>
                 <H6 data-test="heading_6">Heading level 6</H6>
             </Row>
-            <H1>
-                Paragraph{' '}
-                <BtnLink onClick={linkTo('Typography', 'Paragraph')}>{'<P size={size} />'}</BtnLink>
-            </H1>
+            <H1>Paragraph</H1>
 
             <H5>small</H5>
             <Row>
@@ -117,9 +112,7 @@ storiesOf('Typography', module).add('All', () => {
                 </P>
             </Row>
 
-            <H1>
-                Tooltip <BtnLink onClick={linkTo('Typography', 'Tooltip')}>{'<Tooltip />'}</BtnLink>
-            </H1>
+            <H1>Tooltip</H1>
             <H5>basic</H5>
             <Row>
                 <Tooltip

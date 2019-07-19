@@ -44,12 +44,7 @@ const notMessage = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Et
 
 storiesOf('Notifications', module).add('All', () => (
     <Wrapper>
-        <H1>
-            Basic{' '}
-            <BtnLink onClick={linkTo('Notifications', 'Notification')}>
-                {'<Notification />'}
-            </BtnLink>
-        </H1>
+        <H1>Basic</H1>
         <Row>
             <StyledNotification
                 variant="info"
@@ -109,12 +104,7 @@ storiesOf('Notifications', module).add('All', () => (
                 data-test="notification_cancelable_error"
             />
         </Row>
-        <H5>
-            with an action button
-            <BtnLink onClick={linkTo('Notifications', 'Notification with CTA')}>
-                {'<Notification actions={[...]} cancelable/>'}
-            </BtnLink>
-        </H5>
+        <H5>with an action button</H5>
         <Row>
             <StyledNotification
                 variant="info"
@@ -170,12 +160,7 @@ storiesOf('Notifications', module).add('All', () => (
             />
         </Row>
 
-        <H5>
-            with an action in progress
-            <BtnLink onClick={linkTo('Notifications', 'Notification with CTA')}>
-                {'<Notification actions={[...]} cancelable/>'}
-            </BtnLink>
-        </H5>
+        <H5>with an action in progress</H5>
         <Row>
             <StyledNotification
                 variant="info"
