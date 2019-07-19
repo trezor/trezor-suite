@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, select, radios, number } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
-import { linkTo } from '@storybook/addon-links';
 
 import { Tooltip, P, Link, H1, H2, H3, H4, H5, H6, colors } from '@trezor/components';
 
@@ -25,16 +24,6 @@ const Wrapper = styled.div`
     p {
         margin-bottom: 10px;
     }
-`;
-
-const BtnLink = styled.button`
-    font-size: 1rem;
-    color: ${colors.TEXT_SECONDARY};
-    vertical-align: middle;
-    background: ${colors.LANDING};
-    padding: 0.5rem;
-    border: none;
-    border-radius: 5px;
 `;
 
 const HoverMe = styled.span`

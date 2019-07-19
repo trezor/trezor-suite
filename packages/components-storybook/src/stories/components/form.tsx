@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
-import { linkTo } from '@storybook/addon-links';
 
 import { withInfo } from '@storybook/addon-info';
 import {
@@ -38,21 +37,6 @@ const Row = styled.div`
     display: flex;
     margin: 0.5rem 0 2rem;
     flex-wrap: wrap;
-`;
-
-const BtnLink = styled.button`
-    font-size: 1rem;
-    color: ${colors.TEXT_SECONDARY};
-    vertical-align: middle;
-    background: ${colors.LANDING};
-    padding: 0.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-        color: ${colors.TEXT};
-    }
 `;
 
 const StyledSelect = styled(Select)<typeof Select>`

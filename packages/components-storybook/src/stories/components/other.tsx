@@ -4,7 +4,6 @@ import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import { Link } from 'react-router-dom';
 import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
-import { linkTo } from '@storybook/addon-links';
 import StoryRouter from 'storybook-react-router';
 
 import {
@@ -64,16 +63,6 @@ const Title = styled.div`
     color: ${colors.TEXT_SECONDARY};
     font-size: ${FONT_SIZE.SMALL};
     margin-bottom: 0.5rem;
-`;
-
-const BtnLink = styled.button`
-    font-size: 1rem;
-    color: ${colors.TEXT_SECONDARY};
-    vertical-align: middle;
-    background: ${colors.LANDING};
-    padding: 0.5rem;
-    border: none;
-    border-radius: 5px;
 `;
 
 storiesOf('Other', module).add('All', () => (
