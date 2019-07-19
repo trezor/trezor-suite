@@ -33,7 +33,7 @@ module.exports = api => {
     ];
 
     return {
-        presets: ['next/babel', '@zeit/next-typescript/babel'],
+        presets: ['next/babel'],
         plugins,
     };
 };

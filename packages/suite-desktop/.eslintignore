@@ -16,3 +16,4 @@ scripts/solidity/.*
 **/_old/*
 docs/**
 lib/**
+next-env.d.ts
