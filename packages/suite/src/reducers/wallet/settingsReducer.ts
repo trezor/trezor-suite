@@ -34,9 +34,7 @@ export default (state: State = initialState, action: WalletActions): State => {
             case SETTINGS.SET_HIDDEN_COINS_EXTERNAL:
                 draft.hiddenCoinsExternal = action.hiddenCoinsExternal;
                 break;
-
-            default:
-                return state;
+            // no default
         }
     });
 };
