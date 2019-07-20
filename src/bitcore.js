@@ -610,7 +610,12 @@ function observeErrors(socket: Socket): Stream<Error> {
     const errortypes = ['connect_error', 'reconnect_error', 'error', 'close', 'disconnect'];
     const streams = errortypes.map((type) => {
         const subs = socket.observe(type);
-        const cleaned = subs.map((k: mixed) => new Error(`${JSON.stringify(k)} (${type})`));
+        const cleaned = subs.map((k: mixed) => {
+            const stringify = JSON.stringify(k);
+            return new Error(`${
+                stringify !== undefined ? stringify : 'undefined'
+            } (${type})`);
+        });
         return cleaned;
     });
 
