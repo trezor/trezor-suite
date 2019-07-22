@@ -9,25 +9,11 @@ import * as MessageTypes from '../../types/messages';
 import * as common from '../common';
 
 let api: Connection | undefined;
-let pingTimeout: ReturnType<typeof setTimeout>;
 let endpoints: string[] = [];
 
-const timeoutHandler = async () => {
-    if (api && api.isConnected()) {
-        try {
-            // await _connection.getServerInfo();
-            pingTimeout = setTimeout(timeoutHandler, 5000);
-        } catch (error) {
-            common.debug(`Error in timeout ping request: ${error}`);
-        }
-    }
-};
-
 const cleanup = () => {
-    if (pingTimeout) {
-        clearTimeout(pingTimeout);
-    }
     if (api) {
+        api.dispose();
         api.removeAllListeners();
         api = undefined;
     }
@@ -43,7 +29,7 @@ const connect = async (): Promise<Connection> => {
     }
 
     // validate endpoints
-    const { server } = common.getSettings();
+    const { server, timeout, pingTimeout, keepAlive } = common.getSettings();
     if (!server || !Array.isArray(server) || server.length < 1) {
         throw new CustomError('connect', 'Endpoint not set');
     }
@@ -53,7 +39,12 @@ const connect = async (): Promise<Connection> => {
     }
 
     common.debug('Connecting to', endpoints[0]);
-    const connection = new Connection(endpoints[0]);
+    const connection = new Connection({
+        url: endpoints[0],
+        timeout,
+        pingTimeout,
+        keepAlive,
+    });
 
     try {
         await connection.connect();
@@ -71,16 +62,14 @@ const connect = async (): Promise<Connection> => {
     }
 
     connection.on('disconnected', () => {
-        cleanup();
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+        cleanup();
     });
 
     common.response({
         id: -1,
         type: RESPONSES.CONNECTED,
     });
-
-    pingTimeout = setTimeout(timeoutHandler, 5000);
 
     common.debug('Connected');
     return connection;
@@ -399,7 +388,7 @@ onmessage = (event: { data: Message }) => {
         default:
             common.errorHandler({
                 id,
-                error: new Error(`Unknown message type ${type}`),
+                error: new CustomError('worker_unknown_request', `+${type}`),
             });
             break;
     }

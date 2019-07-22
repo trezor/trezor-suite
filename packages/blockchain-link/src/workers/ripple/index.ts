@@ -10,6 +10,10 @@ import * as common from '../common';
 
 let rippleApi: RippleAPI | undefined;
 let pingTimeout: ReturnType<typeof setTimeout>;
+
+const DEFAULT_TIMEOUT = 20 * 1000;
+const DEFAULT_PING_TIMEOUT = 3 * 60 * 1000;
+
 let endpoints: string[] = [];
 const RESERVE = {
     BASE: '20000000',
@@ -20,13 +24,26 @@ const BLOCKS = {
     MAX: 0,
 };
 
-const timeoutHandler = async () => {
+const setPingTimeout = () => {
+    if (pingTimeout) {
+        clearTimeout(pingTimeout);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    pingTimeout = setTimeout(onPing, common.getSettings().pingTimeout || DEFAULT_PING_TIMEOUT);
+};
+
+const onPing = async () => {
     if (rippleApi && rippleApi.isConnected()) {
-        try {
-            await rippleApi.getServerInfo();
-            pingTimeout = setTimeout(timeoutHandler, 5000);
-        } catch (error) {
-            common.debug(`Error in timeout ping request: ${error}`);
+        if (common.hasSubscriptions() || common.getSettings().keepAlive) {
+            try {
+                await rippleApi.getServerInfo();
+            } catch (error) {
+                common.debug(`Error in timeout ping request: ${error}`);
+            }
+            // reset timeout
+            setPingTimeout();
+        } else {
+            rippleApi.disconnect();
         }
     }
 };
@@ -49,9 +66,8 @@ const connect = async (): Promise<RippleAPI> => {
         // socket is already connected
         if (rippleApi.isConnected()) return rippleApi;
     }
-
     // validate endpoints
-    const { server } = common.getSettings();
+    const { server, timeout } = common.getSettings();
     if (!server || !Array.isArray(server) || server.length < 1) {
         throw new CustomError('connect', 'Endpoint not set');
     }
@@ -62,10 +78,20 @@ const connect = async (): Promise<RippleAPI> => {
 
     common.debug('Connecting to', endpoints[0]);
     let api: RippleAPI;
+
+    // RippleApi doesn't have custom connection timeout
+    // set it here since we don't want to wait 50 sec.
+    const connectionTimeout = setTimeout(() => {
+        api.disconnect();
+    }, timeout || DEFAULT_TIMEOUT);
+
     try {
-        api = new RippleAPI({ server: endpoints[0] });
+        api = new RippleAPI({ server: endpoints[0], timeout: timeout || DEFAULT_TIMEOUT });
         await api.connect();
     } catch (error) {
+        // clear custom timeout
+        clearTimeout(connectionTimeout);
+
         common.debug('Websocket connection failed');
         rippleApi = undefined;
         // connection error. remove endpoint
@@ -76,16 +102,16 @@ const connect = async (): Promise<RippleAPI> => {
         }
         return connect();
     }
+    // clear custom timeout
+    clearTimeout(connectionTimeout);
 
     // disable reconnecting
-    // workaround: RippleApi which doesn't have possibility to disable reconnection
-    // override private method and return never ending promise
+    // workaround for RippleApi which doesn't have possibility to disable reconnection
+    // override Api private method and return never ending promise, this will prevent reconnection
     api.connection._retryConnect = () => new Promise(() => {}); // eslint-disable-line no-underscore-dangle
 
+    // Ripple api does set ledger listener automatically
     api.on('ledger', ledger => {
-        clearTimeout(pingTimeout);
-        pingTimeout = setTimeout(timeoutHandler, 5000);
-
         // store current block/ledger values
         RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
         RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
@@ -95,8 +121,8 @@ const connect = async (): Promise<RippleAPI> => {
     });
 
     api.on('disconnected', () => {
-        cleanup();
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+        cleanup();
     });
 
     try {
@@ -127,7 +153,10 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
             payload: utils.transformServerInfo(info),
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
@@ -219,7 +248,7 @@ const getAccountInfo = async (
                 payload: account,
             });
         } else {
-            common.errorHandler({ id: data.id, error });
+            common.errorHandler({ id: data.id, error: utils.transformError(error) });
         }
         return;
     }
@@ -230,7 +259,7 @@ const getAccountInfo = async (
         account.availableBalance = mempoolInfo.xrpBalance; // TODO: balance - reserve?
         account.misc.sequence = mempoolInfo.sequence;
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
         return;
     }
 
@@ -271,7 +300,7 @@ const getAccountInfo = async (
             },
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
     }
 };
 
@@ -288,7 +317,10 @@ const getTransaction = async (
             payload: info,
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
@@ -312,7 +344,10 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
             payload,
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
@@ -331,15 +366,21 @@ const pushTransaction = async (
                 payload: info.resultMessage,
             });
         } else {
-            common.errorHandler({ id: data.id, error: new Error(info.resultMessage) });
+            common.errorHandler({ id: data.id, error: { message: info.resultMessage } });
             return;
         }
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
 const onNewBlock = (event: any) => {
+    // reset timeout
+    setPingTimeout();
+
     common.response({
         id: -1,
         type: RESPONSES.NOTIFICATION,
@@ -354,6 +395,8 @@ const onNewBlock = (event: any) => {
 };
 
 const onTransaction = (event: any) => {
+    // reset timeout
+    setPingTimeout();
     if (event.type !== 'transaction') return;
     // ignore transactions other than Payment
     const tx = event.transaction;
@@ -447,7 +490,10 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
             payload: response,
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
@@ -502,8 +548,11 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Pro
             await unsubscribeBlock();
         }
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
         return;
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 
     common.response({
@@ -522,7 +571,7 @@ const disconnect = async (data: { id: number }) => {
         await rippleApi.disconnect();
         common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
     }
 };
 
@@ -541,7 +590,9 @@ onmessage = (event: { data: Message }) => {
                 .then(async () => {
                     common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
                 })
-                .catch(error => common.errorHandler({ id: data.id, error }));
+                .catch(error =>
+                    common.errorHandler({ id: data.id, error: utils.transformError(error) })
+                );
             break;
         case MESSAGES.GET_INFO:
             getInfo(data);
@@ -574,7 +625,7 @@ onmessage = (event: { data: Message }) => {
         default:
             common.errorHandler({
                 id: data.id,
-                error: new Error(`Unknown message type ${data.type}`),
+                error: new CustomError('worker_unknown_request', `+${data.type}`),
             });
             break;
     }
