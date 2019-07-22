@@ -9,16 +9,15 @@ const Touchable = styled.TouchableHighlight`
     border: 1px solid ${colors.DIVIDER};
     background: ${colors.WHITE};
     position: relative;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Dot = styled.View`
     width: 6px;
     height: 6px;
-    position: absolute;
     border-radius: 6px;
     background: ${colors.TEXT_PRIMARY};
-    top: 37px;
-    left: 37px;
 `;
 
 interface Props {
