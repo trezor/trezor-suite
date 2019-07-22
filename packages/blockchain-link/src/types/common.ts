@@ -5,6 +5,9 @@ export interface BlockchainSettings {
     worker: string | Function;
     server: string[];
     debug?: boolean;
+    timeout?: number;
+    pingTimeout?: number;
+    keepAlive?: boolean;
 }
 
 /* Transaction */
