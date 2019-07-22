@@ -72,28 +72,28 @@ workers.forEach(instance => {
             expect(server.fixtures).toEqual([]);
         });
 
-        // it('Handle ping (keepAlive)', async () => {
-        //     // similar to previous test but this time expect that ping will be called because of "keepAlive" param
-        //     jest.setTimeout(10000);
-        //     server.setFixtures([
-        //         {
-        //             method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-        //             response: undefined,
-        //         },
-        //         {
-        //             method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-        //             response: undefined,
-        //         },
-        //     ]);
+        it('Handle ping (keepAlive)', async () => {
+            // similar to previous test but this time expect that ping will be called because of "keepAlive" param
+            jest.setTimeout(10000);
+            server.setFixtures([
+                {
+                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+                    response: undefined,
+                },
+                {
+                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+                    response: undefined,
+                },
+            ]);
 
-        //     blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
-        //     blockchain.settings.keepAlive = true;
-        //     await blockchain.subscribe({ type: 'block' });
-        //     await blockchain.unsubscribe({ type: 'block' });
+            blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
+            blockchain.settings.keepAlive = true;
+            await blockchain.subscribe({ type: 'block' });
+            await blockchain.unsubscribe({ type: 'block' });
 
-        //     await new Promise(resolve => setTimeout(resolve, 6000));
-        //     expect(server.fixtures).toEqual([]);
-        // });
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            expect(server.fixtures).toEqual([]);
+        });
 
         it('Ping should not be called and websocket should be disconnected', async () => {
             // similar to previous test but this time expect that server fixtures will not be removed
