@@ -29,7 +29,7 @@ const UpdateFirmware = ({ device, pathname, intl }: Props) => {
             actions={[
                 {
                     label: intl.formatMessage(l10nCommonMessages.TR_SHOW_DETAILS),
-                    callback: goto(getRoute('suite-firmware-update')),
+                    callback: () => goto(getRoute('suite-firmware-update')),
                 },
             ]}
         />
