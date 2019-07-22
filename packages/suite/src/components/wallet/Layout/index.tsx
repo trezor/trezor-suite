@@ -12,6 +12,7 @@ const { SCREEN_SIZE } = variables;
 interface Props {
     router: AppState['router'];
     suite: AppState['suite'];
+    wallet: AppState['wallet'];
     topNavigationComponent?: ReactNode;
     children: ReactNode;
 }
@@ -41,20 +42,23 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
     }
 `;
 
-const Layout = (props: Props) => (
-    <Wrapper>
-        <Sidebar isOpen={props.suite.showSidebar} />
-        <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-            {props.topNavigationComponent}
-            <WalletNotifications />
-            <Content>{props.children}</Content>
-        </ContentWrapper>
-    </Wrapper>
-);
+const Layout = (props: Props) => {
+    return (
+        <Wrapper>
+            <Sidebar isOpen={props.suite.showSidebar} />
+            <ContentWrapper preventBgScroll={props.suite.showSidebar}>
+                {props.topNavigationComponent}
+                <WalletNotifications />
+                <Content>{props.children}</Content>
+            </ContentWrapper>
+        </Wrapper>
+    );
+};
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
+    wallet: state.wallet,
 });
 
 export default connect(mapStateToProps)(Layout);

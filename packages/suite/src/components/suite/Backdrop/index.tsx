@@ -1,9 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
 import { animations } from '@trezor/components';
-
-const { FADE_IN } = animations;
 
 interface Props {
     show?: boolean;
@@ -24,7 +21,7 @@ const StyledBackdrop = styled.div<Props>`
     ${props =>
         props.animated &&
         css`
-            animation: ${FADE_IN} 0.3s;
+            animation: ${animations.FADE_IN} 0.3s;
         `};
 `;
 

@@ -29,7 +29,7 @@ install:
       - packages/components/**/*
       - .gitlab-ci.yml
   script:
-    - yarn install --frozen-lockfile
+    - yarn
     - $(yarn bin)/cypress cache path
     - $(yarn bin)/cypress cache list
     - $(yarn bin)/cypress verify

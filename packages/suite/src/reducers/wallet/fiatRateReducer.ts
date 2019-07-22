@@ -26,15 +26,13 @@ const update = (state: Fiat[], action: FiatRateAction) => {
     }
 };
 
-export default (state: Fiat[] = initialState, action: Action): Fiat[] => {
+export default (state: Fiat[] = initialState, action: Action) => {
     return produce(state, draft => {
         switch (action.type) {
             case RATE_UPDATE:
                 update(draft, action);
                 break;
-
-            default:
-                return state;
+            // no default
         }
     });
 };

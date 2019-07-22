@@ -1,28 +1,20 @@
 import { Dispatch, GetState, AppState } from '@suite-types/index';
-import * as STORAGE from './constants/storage';
+import { STORAGE } from './constants/index';
 
 export type StorageActions =
-    | {
-          type: typeof STORAGE.LOAD;
-      }
-    | {
-          type: typeof STORAGE.LOADED;
-          payload: AppState;
-      }
-    | {
-          type: typeof STORAGE.ERROR;
-          error: any;
-      };
+    | { type: typeof STORAGE.LOAD }
+    | { type: typeof STORAGE.LOADED; payload: AppState }
+    | { type: typeof STORAGE.ERROR; error: any };
 
 export const load = () => async (dispatch: Dispatch, getState: GetState) => {
     // TODO: load state from indexed db
     const state: AppState = await new Promise(resolve => {
         setTimeout(() => {
-            const s = getState();
+            const reducersState = getState();
             resolve({
-                ...s,
+                ...reducersState,
                 suite: {
-                    ...s.suite,
+                    ...reducersState.suite,
                     loaded: true,
                 },
             });

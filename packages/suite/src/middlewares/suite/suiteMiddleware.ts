@@ -5,7 +5,7 @@ import { init as initBlockchain } from '@suite-actions/blockchainActions';
 import { init as initRouter } from '@suite-actions/routerActions';
 import * as SuiteActions from '@suite-actions/suiteActions';
 import { load as loadStorage } from '@suite-actions/storageActions';
-import { init as initTrezorConnect } from '@suite-actions/trezorConnectActions';
+import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types/index';
 
 const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -22,7 +22,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
             break;
         case STORAGE.LOADED:
             // initialize backends
-            api.dispatch(initTrezorConnect());
+            api.dispatch(trezorConnectActions.init());
             break;
         case SUITE.CONNECT_INITIALIZED:
             // trezor-connect init successfully

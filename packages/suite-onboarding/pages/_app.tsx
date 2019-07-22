@@ -1,5 +1,5 @@
 import React from 'react';
-import App, { Container, NextAppContext } from 'next/app';
+import App, { Container, AppContext } from 'next/app';
 import { Store } from 'redux';
 import { Provider as ReduxProvider, connect } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
@@ -60,7 +60,7 @@ interface Props {
     dispatch: Dispatch;
 }
 class TrezorSuiteApp extends App<Props> {
-    static async getInitialProps({ Component, ctx }: NextAppContext): Promise<any> {
+    static async getInitialProps({ Component, ctx }: AppContext): Promise<any> {
         return {
             pageProps: Component.getInitialProps ? await Component.getInitialProps(ctx) : {},
         };

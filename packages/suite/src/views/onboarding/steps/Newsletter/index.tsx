@@ -13,10 +13,9 @@ import { IconSocial } from '@suite/components/onboarding/Icons';
 import { isEmail } from '@suite-utils/validators';
 import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
 import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
-import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
 import Text from '@suite/components/onboarding/Text';
 import l10nCommonMessages from '@suite-support/Messages';
-import { callActionAndGoToNextStep } from '@onboarding-actions/connectActions';
+import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
 import {
     setSkipped,
     setEmail,
@@ -64,6 +63,7 @@ interface Props {
     newsletter: AppState['onboarding']['newsletter'];
     device: AppState['onboarding']['connect']['device'];
     connectActions: {
+        applyFlags: typeof applyFlags;
         callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
     };
     newsletterActions: {
@@ -121,9 +121,11 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
     };
 
     goToNextStep = () => {
-        this.props.connectActions.callActionAndGoToNextStep(APPLY_FLAGS, {
-            flags: addToFlags(HAS_EMAIL_FLAG, this.props.device.features.flags),
-        });
+        this.props.connectActions.callActionAndGoToNextStep(() =>
+            applyFlags({
+                flags: addToFlags(HAS_EMAIL_FLAG, this.props.device.features.flags),
+            }),
+        );
     };
 
     submitEmail = () => {

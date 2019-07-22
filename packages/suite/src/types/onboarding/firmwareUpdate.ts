@@ -1,19 +1,33 @@
-import { setProgress, updateFirmware } from '@suite/actions/onboarding/firmwareUpdateActions';
+import { updateFirmware } from '@suite/actions/onboarding/firmwareUpdateActions';
+import { AnyStatus } from '@onboarding-types/firmwareUpdateStatus';
 
 export interface FirmwareUpdateReducer {
-    progress: number;
+    error: null | string;
+    firmware: null | ArrayBuffer;
+    status: null | AnyStatus;
 }
 
 export interface FirmwareUpdateActions {
-    setProgress: typeof setProgress;
     updateFirmware: typeof updateFirmware;
 }
 
-export const SET_PROGRESS = '@onboarding/firmware-update-set-progress';
+export const SET_FIRMWARE = '@onboarding/set-firmware';
+export const SET_ERROR = '@onboarding/firmware-update-set-error';
+export const SET_UPDATE_STATUS = '@onboarding/set-update-status';
 
-interface SetProgressAction {
-    type: typeof SET_PROGRESS;
-    progress: number;
+interface SetFirmwareAction {
+    type: typeof SET_FIRMWARE;
+    value: ArrayBuffer | null;
 }
 
-export type FirmwareUpdateActionTypes = SetProgressAction;
+interface SetErrorAction {
+    type: typeof SET_ERROR;
+    value: string | null;
+}
+
+interface SetUpdateStatusAction {
+    type: typeof SET_UPDATE_STATUS;
+    value: AnyStatus;
+}
+
+export type FirmwareUpdateActionTypes = SetFirmwareAction | SetErrorAction | SetUpdateStatusAction;

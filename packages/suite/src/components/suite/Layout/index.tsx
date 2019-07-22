@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
+import Modals from '@suite-components/modals/Container';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
 import Footer from '@suite-components/Footer';
@@ -104,6 +105,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
         />
         <ErrorBoundary>
             <SuiteNotifications />
+            <Modals />
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
                     <Log />

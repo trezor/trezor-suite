@@ -20,7 +20,6 @@ export default [
         defaultGasLimit: 21000,
         defaultGasLimitTokens: 200000,
         decimals: 18,
-        tokens: './data/ethereumTokens.json',
         web3: ['wss://eth2.trezor.io/geth'],
         explorer: {
             tx: 'https://etherscan.io/tx/',
@@ -40,7 +39,6 @@ export default [
         defaultGasLimit: 21000,
         defaultGasLimitTokens: 200000,
         decimals: 18,
-        tokens: './data/ethereumClassicTokens.json',
         web3: ['wss://etc2.trezor.io/geth'],
         explorer: {
             tx: 'https://gastracker.io/tx/',
@@ -86,7 +84,6 @@ export default [
                 },
             ],
         },
-        tokens: './data/ropstenTokens.json',
         web3: ['wss://ropsten1.trezor.io/geth'],
         explorer: {
             tx: 'https://ropsten.etherscan.io/tx/',

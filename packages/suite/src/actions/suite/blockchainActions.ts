@@ -1,5 +1,5 @@
 import { Dispatch, GetState } from '@suite-types/index';
-import * as BLOCKCHAIN from './constants/blockchain';
+import { BLOCKCHAIN } from './constants/index';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -13,7 +13,7 @@ export interface BlockchainActions {
 export const init = () => async (dispatch: Dispatch, _getState: GetState): Promise<void> => {
     // TODO: add connections to backend (from wallet)
 
-    // continue wallet initialization
+    // continue suite initialization
     dispatch({
         type: BLOCKCHAIN.READY,
     });

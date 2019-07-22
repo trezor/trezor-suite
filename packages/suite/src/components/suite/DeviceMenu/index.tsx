@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
+import { forgetDevice } from '@suite-actions/trezorConnectActions';
 import { Button, icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
@@ -134,17 +135,22 @@ const DeviceMenu = ({
 
     // hooks managing closing the menu on click outside of the menu
     const ref = useRef<HTMLDivElement>(null);
-    const handleClickOutside = event => {
+    const handleClickOutside = (event: any) => {
         if (ref.current && !ref.current.contains(event.target)) {
             toggleDeviceMenu(false);
         }
     };
     useEffect(() => {
-        document.addEventListener('click', handleClickOutside, true);
+        if (isOpen) {
+            document.addEventListener('click', handleClickOutside, true);
+        } else {
+            document.removeEventListener('click', handleClickOutside, true);
+        }
         return () => {
             document.removeEventListener('click', handleClickOutside, true);
         };
-    });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen]);
 
     if (!selectedDevice) return null; // TODO: can it happen? if so some placeholder would be better
 
@@ -258,7 +264,7 @@ const DeviceMenu = ({
                         devices={devices}
                         selectedDevice={selectedDevice}
                         onSelectDevice={selectDevice}
-                        // forgetDevice={forgetDevice}
+                        forgetDevice={forgetDevice}
                     />
                     {isWebUSB(transport) && (
                         <ButtonWrapper>
@@ -288,6 +294,7 @@ export default connect(
     mapStateToProps,
     dispatch => ({
         selectDevice: bindActionCreators(selectDevice, dispatch),
+        forgetDevice: bindActionCreators(forgetDevice, dispatch),
         toggleDeviceMenu: bindActionCreators(toggleDeviceMenu, dispatch),
     }),
 )(DeviceMenu);

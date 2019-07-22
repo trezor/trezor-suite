@@ -57,29 +57,27 @@ describe('router', () => {
 
     describe('getRoute', () => {
         it('should return the route for given name', () => {
-            expect(getRoute('wallet-settings')).toEqual('/wallet/settings/');
-            expect(getRoute('wallet-account-transactions')).toEqual(
-                '/wallet/account/transactions/',
-            );
+            expect(getRoute('wallet-settings')).toEqual('/wallet/settings');
+            expect(getRoute('wallet-account-transactions')).toEqual('/wallet/account/transactions');
             expect(
                 getRoute('wallet-account', {
                     coin: 'eth',
                     accountId: '0',
                 }),
-            ).toEqual('/wallet/account/#/eth/0');
+            ).toEqual('/wallet/account#/eth/0');
             expect(
                 getRoute('wallet-account', {
                     coin: 'eth',
                 }),
-            ).toEqual('/wallet/account/#/eth');
+            ).toEqual('/wallet/account#/eth');
             expect(getRoute('does-not-exist')).toEqual('/');
         });
     });
 
     describe('toInternalRoute', () => {
         it('should strip params delimited by a hashtag from the URL', () => {
-            expect(toInternalRoute('/wallet/account/#/eth/0')).toEqual('/wallet/account/');
-            expect(toInternalRoute('/wallet/account/#/42')).toEqual('/wallet/account/');
+            expect(toInternalRoute('/wallet/account/#/eth/0')).toEqual('/wallet/account');
+            expect(toInternalRoute('/wallet/account/#/42')).toEqual('/wallet/account');
         });
     });
 

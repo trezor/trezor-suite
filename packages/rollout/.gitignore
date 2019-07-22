@@ -79,3 +79,5 @@ typings/
 
 #DynamoDB Local files 
 .dynamodb/ 
+
+.rpt2_cache

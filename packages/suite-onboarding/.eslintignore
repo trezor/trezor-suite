@@ -7,3 +7,4 @@ node_modules
 generated
 
 next.config.js
+next-env.d.ts

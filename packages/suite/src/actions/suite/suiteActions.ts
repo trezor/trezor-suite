@@ -1,46 +1,19 @@
 import { Device, DEVICE } from 'trezor-connect';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types/index';
 import * as reducersUtils from '@suite-utils/reducers';
-import * as SUITE from './constants/suite';
+import { SUITE } from './constants';
 
 export type SuiteActions =
-    | {
-          type: typeof SUITE.INIT;
-      }
-    | {
-          type: typeof SUITE.READY;
-      }
-    | {
-          type: typeof SUITE.CONNECT_INITIALIZED;
-      }
-    | {
-          type: typeof SUITE.ERROR;
-          error: any;
-      }
-    | {
-          type: typeof SUITE.SELECT_DEVICE;
-          payload?: TrezorDevice;
-      }
-    | {
-          type: typeof SUITE.UPDATE_SELECTED_DEVICE;
-          payload: TrezorDevice;
-      }
-    | {
-          type: typeof SUITE.SET_LANGUAGE;
-          locale: string;
-          messages: { [key: string]: string };
-      }
-    | {
-          type: typeof SUITE.TOGGLE_DEVICE_MENU;
-          opened: boolean;
-      }
-    | {
-          type: typeof SUITE.TOGGLE_SIDEBAR;
-      }
-    | {
-          type: typeof SUITE.ONLINE_STATUS;
-          online: boolean;
-      };
+    | { type: typeof SUITE.INIT }
+    | { type: typeof SUITE.READY }
+    | { type: typeof SUITE.CONNECT_INITIALIZED }
+    | { type: typeof SUITE.ERROR; error: any }
+    | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
+    | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
+    | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
+    | { type: typeof SUITE.TOGGLE_DEVICE_MENU; opened: boolean }
+    | { type: typeof SUITE.TOGGLE_SIDEBAR }
+    | { type: typeof SUITE.ONLINE_STATUS; online: boolean };
 
 export const updateOnlineStatus = () => (dispatch: Dispatch) => {
     const statusHandler = () => {

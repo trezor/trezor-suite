@@ -1,5 +1,6 @@
 import { SUITE } from '@suite-actions/constants';
 import { Action } from '@suite-types/index';
+import produce from 'immer';
 
 interface SuiteState {
     loading: boolean;
@@ -14,22 +15,20 @@ const initialState: SuiteState = {
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
-    switch (action.type) {
-        case SUITE.INIT:
-            return initialState;
-        case SUITE.READY:
-            return {
-                loading: false,
-                loaded: true,
-                error: null,
-            };
-        case SUITE.ERROR:
-            return {
-                loading: false,
-                loaded: false,
-                error: action.error,
-            };
-        default:
-            return state;
-    }
+    return produce(state, draft => {
+        switch (action.type) {
+            case SUITE.INIT:
+                return initialState;
+            case SUITE.READY:
+                draft.loading = false;
+                draft.loaded = true;
+                draft.error = null;
+                break;
+            case SUITE.ERROR:
+                draft.loading = false;
+                draft.loaded = false;
+                draft.error = action.error;
+            // no default
+        }
+    });
 };

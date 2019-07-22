@@ -1,5 +1,6 @@
 import { SIGN_VERIFY } from '@wallet-actions/constants';
 import { Action } from '@suite-types/index';
+import produce from 'immer';
 
 interface Error {
     inputName: string;
@@ -29,71 +30,50 @@ export const initialState: State = {
 };
 
 export default (state: State = initialState, action: Action): State => {
-    switch (action.type) {
-        case SIGN_VERIFY.SIGN_SUCCESS:
-            return {
-                ...state,
-                signSignature: action.signSignature,
-            };
+    return produce(state, draft => {
+        switch (action.type) {
+            case SIGN_VERIFY.SIGN_SUCCESS:
+                draft.signSignature = action.signSignature;
+                break;
 
-        case SIGN_VERIFY.ERROR: {
-            const { inputName } = action;
-            if (!state.errors.some(e => e.inputName === inputName)) {
-                const error = {
-                    inputName,
-                    message: action.message,
-                };
-                return {
-                    ...state,
-                    errors: [...state.errors, error],
-                };
-            }
-            return state;
-        }
+            case SIGN_VERIFY.ERROR:
+                if (!state.errors.some(e => e.inputName === action.inputName)) {
+                    const error = {
+                        inputName: action.inputName,
+                        message: action.message,
+                    };
+                    draft.errors.push(error);
+                }
+                break;
 
-        case SIGN_VERIFY.TOUCH: {
-            const { inputName } = action;
-            if (!state.touched.includes(inputName)) {
-                return {
-                    ...state,
-                    touched: [...state.touched, action.inputName],
+            case SIGN_VERIFY.TOUCH:
+                if (!state.touched.includes(action.inputName)) {
+                    draft.touched.push(action.inputName);
                     // reset errors for the input even if it was not touched before
-                    errors: state.errors.filter(error => error.inputName !== inputName),
-                };
-            }
-            return {
-                ...state,
-                errors: state.errors.filter(error => error.inputName !== inputName),
-            };
+                    draft.errors = state.errors.filter(
+                        error => error.inputName !== action.inputName,
+                    );
+                }
+                draft.errors = draft.errors.filter(error => error.inputName !== action.inputName);
+                break;
+
+            case SIGN_VERIFY.INPUT_CHANGE:
+                draft[action.inputName] = action.value;
+                break;
+
+            case SIGN_VERIFY.CLEAR_SIGN:
+                draft.signAddress = '';
+                draft.signMessage = '';
+                draft.signSignature = '';
+                break;
+
+            case SIGN_VERIFY.CLEAR_VERIFY:
+                draft.verifyAddress = '';
+                draft.verifyMessage = '';
+                draft.verifySignature = '';
+                break;
+
+            // no default
         }
-
-        case SIGN_VERIFY.INPUT_CHANGE: {
-            const change = {
-                [action.inputName]: action.value,
-            };
-            return {
-                ...state,
-                ...change,
-            };
-        }
-
-        case SIGN_VERIFY.CLEAR_SIGN:
-            return {
-                ...state,
-                signAddress: '',
-                signMessage: '',
-                signSignature: '',
-            };
-
-        case SIGN_VERIFY.CLEAR_VERIFY:
-            return {
-                ...state,
-                verifyAddress: '',
-                verifyMessage: '',
-                verifySignature: '',
-            };
-
-        default:
-            return state;
-    }
+    });
 };
