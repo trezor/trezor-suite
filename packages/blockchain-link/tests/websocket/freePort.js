@@ -4,14 +4,14 @@ import net from 'net';
 const getFreePort = async () => {
     return new Promise((resolve, reject) => {
         const server = net.createServer();
-        let port;
-        server.on('listening', () => {
-            port = server.address().port; // eslint-disable-line prefer-destructuring
-            server.close();
+        server.unref();
+        server.on('error', reject);
+        server.listen(0, () => {
+            const { port } = server.address();
+            server.close(() => {
+                resolve(port);
+            });
         });
-        server.on('close', () => resolve(port));
-        server.on('error', error => reject(error));
-        server.listen(0);
     });
 };
 

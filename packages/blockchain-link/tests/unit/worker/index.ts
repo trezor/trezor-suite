@@ -8,7 +8,7 @@ declare global {
     }
 }
 
-let currentWorker;
+let currentWorker: any;
 global.onmessage = () => {};
 
 global.postMessage = data => {
@@ -21,7 +21,7 @@ class MyWorker {
         currentWorker = this;
     }
 
-    postMessage(data) {
+    postMessage(data: any) {
         global.onmessage({ data });
     }
 

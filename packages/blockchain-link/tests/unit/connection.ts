@@ -4,7 +4,7 @@ import BlockchainLink from '../../src';
 
 workers.forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
-        let server;
+        let server: any;
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
@@ -17,6 +17,7 @@ workers.forEach(instance => {
         });
 
         afterEach(async () => {
+            await blockchain.disconnect();
             blockchain.dispose();
             await server.close();
         });
@@ -157,6 +158,7 @@ workers.forEach(instance => {
         });
 
         it('Connect error (no server field)', async () => {
+            // @ts-ignore invalid server value
             blockchain.settings.server = null;
             try {
                 await blockchain.connect();

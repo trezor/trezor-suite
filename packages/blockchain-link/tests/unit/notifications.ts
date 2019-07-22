@@ -16,7 +16,7 @@ const fixtures = {
 
 workers.forEach(instance => {
     describe(`Notifications ${instance.name}`, () => {
-        let server;
+        let server: any;
         let blockchain: BlockchainLink;
 
         const setup = async () => {
@@ -29,6 +29,7 @@ workers.forEach(instance => {
         };
 
         const teardown = async () => {
+            await blockchain.disconnect();
             blockchain.dispose();
             await server.close();
         };
@@ -37,10 +38,12 @@ workers.forEach(instance => {
             beforeAll(setup);
             afterAll(teardown);
 
+            // @ts-ignore No index signature
             fixtures[instance.name].notifyAddresses.forEach((f, id) => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('notification', callback);
+                    // @ts-ignore No index signature
                     const s = await blockchain[f.method](f.params);
 
                     expect(s).toEqual({ subscribed: f.method === 'subscribe' });
@@ -48,7 +51,7 @@ workers.forEach(instance => {
                     const data = (!Array.isArray(f.notifications)
                         ? [f.notifications]
                         : f.notifications
-                    ).map(n => ({
+                    ).map((n: any) => ({
                         ...n,
                         id: id.toString(),
                     }));
@@ -67,10 +70,12 @@ workers.forEach(instance => {
             beforeAll(setup);
             afterAll(teardown);
 
+            // @ts-ignore No index signature
             fixtures[instance.name].notifyBlocks.forEach(f => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('block', callback);
+                    // @ts-ignore No index signature
                     const s = await blockchain[f.method]({ type: 'block' });
                     expect(s).toEqual({ subscribed: f.method === 'subscribe' });
 

@@ -30,7 +30,7 @@ const create = async type => {
             if (fid >= 0) {
                 data = fixtures[fid].response;
                 if (typeof fixtures[fid].delay === 'number') {
-                    delay = fixtures[fid].delay;
+                    delay = fixtures[fid].delay; // eslint-disable-line
                 }
                 // remove from list
                 fixtures.splice(fid, 1);
@@ -190,7 +190,6 @@ const create = async type => {
         server.on('listening', () => resolve(server));
         server.on('error', error => reject(error));
     });
-    return server;
 };
 
 export default create;
