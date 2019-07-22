@@ -13,6 +13,10 @@ export interface ServerInfo {
     version: string;
 }
 
+export interface BlockHash {
+    blockHash: string;
+}
+
 export interface AccountInfoParams {
     descriptor: string;
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
@@ -151,6 +155,7 @@ export interface AddressNotification {
 
 /* eslint-disable no-redeclare */
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
+declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
