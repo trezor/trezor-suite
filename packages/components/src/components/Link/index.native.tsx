@@ -1,23 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';
 
-const A = styled.TouchableOpacity``;
-
-const Text = styled.Text<Omit<Props, 'href'>>`
+const A = styled.Text<Omit<Props, 'href'>>`
     color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
 `;
 
 interface Props {
+    children?: React.ReactNode;
     isGray?: boolean;
     isGreen?: boolean;
     href: string;
-    children?: React.ReactNode;
 }
 
-const Link = ({ isGray, isGreen, href, children, ...rest }: Props) => {
+const Link = ({ children, isGray, isGreen, href, ...rest }: Props) => {
     return (
         <A
             onPress={() => {
@@ -25,9 +24,21 @@ const Link = ({ isGray, isGreen, href, children, ...rest }: Props) => {
             }}
             {...rest}
         >
-            <Text>{children}</Text>
+            {children}
         </A>
     );
+};
+
+Link.propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+        PropTypes.array,
+        PropTypes.node,
+    ]).isRequired,
+    isGray: PropTypes.bool,
+    isGreen: PropTypes.bool,
+    href: PropTypes.string,
 };
 
 export default Link;

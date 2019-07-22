@@ -1,88 +1,125 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
+import { Animated, Easing } from 'react-native';
 import Icon from '../Icon';
 
 import icons from '../../config/icons';
 import { Omit, IconShape } from '../../support/types';
 import colors from '../../config/colors';
 
-// TODO: Rewrite using Animated API
-// const PulseAnimation = keyframes`
-//     0% {
-//         background-color: ${colors.GREEN_PRIMARY};
-//         transform: scale(0);
-//         opacity: 0;
-//     }
-//     25% {
-//         background-color: ${colors.GREEN_PRIMARY};
-//         transform: scale(0.75);
-//         opacity: 0.2;
-//     }
-//     50% {
-//         transform: scale(1.5);
-//         opacity: 0.3;
-//     }
-//     100% {
-//         opacity: 0;
-//         transform: scale(4);
-//     }
-// `;
+const Pulse = styled.View<Omit<Props, 'model'>>`
+    background-color: ${colors.GREEN_PRIMARY};
+    opacity: 0.3;
+    border-radius: 100;
+    height: ${props => props.size};
+    width: ${props => props.size};
+    margin-left: -${props => ((props.size || 32) - (props.size || 32) * (props.ratio || 1)) / 2}px;
+`;
 
 const IconWrapper = styled.View<Omit<Props, 'model'>>`
-    position: relative;
-    height: ${props => props.size}px;
-    width: ${props => props.size}px;
+    width: ${props => (props.size || 32) * (props.ratio || 1)};
+    height: ${props => props.size};
 `;
 
 const Wrapper = styled.View`
-    display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
 `;
 
-const ContentWrapper = styled.View`
-    max-width: 300px;
+const ContentWrapper = styled.Text`
     color: ${colors.GREEN_PRIMARY};
     text-align: center;
-    margin: 5px;
+    margin: 10px;
 `;
 
-const modelToIcon = (model: number) => {
+const Animation = styled(Animated.View)`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+`;
+
+const modelToIcon = (model: model) => {
     const mapping: { [key: number]: IconShape } = {
         1: icons.T1,
         2: icons.T2,
     };
     return mapping[model];
 };
+
+type model = 1 | 2;
+
 interface Props {
-    model: number;
+    model: model;
     size?: number;
+    ratio?: number;
     children?: React.ReactNode;
 }
 
-const Prompt = ({ model, size, children }: Props) => {
-    return (
-        <Wrapper>
-            <IconWrapper size={size}>
-                {/* <Pulse /> */}
-                <Icon icon={modelToIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
-            </IconWrapper>
-            <ContentWrapper>{children}</ContentWrapper>
-        </Wrapper>
-    );
-};
+class Prompt extends React.Component<Props> {
+    state = {
+        blinkAnim: new Animated.Value(0),
+    };
 
-Prompt.propTypes = {
-    model: PropTypes.oneOf([1, 2]).isRequired,
-    children: PropTypes.node.isRequired,
-    size: PropTypes.number,
-};
+    static propTypes = {
+        model: PropTypes.oneOf([1, 2]),
+        size: PropTypes.number,
+    };
 
-Prompt.defaultProps = {
-    size: 32,
-};
+    componentDidMount() {
+        const { blinkAnim } = this.state;
+
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(blinkAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    easing: Easing.out(Easing.quad),
+                }),
+            ])
+        ).start();
+    }
+
+    render() {
+        const { size = 32, model, children } = this.props;
+        const { blinkAnim } = this.state;
+
+        const icon = modelToIcon(model);
+
+        const scale = blinkAnim.interpolate({
+            inputRange: [0, 0.25, 0.5, 1],
+            outputRange: [0, 0.75, 1.5, 4],
+        });
+
+        const opacity = blinkAnim.interpolate({
+            inputRange: [0, 0.25, 0.5, 1],
+            outputRange: [0, 0.2, 0.3, 0],
+        });
+
+        return (
+            <Wrapper>
+                <IconWrapper size={size} ratio={icon.ratio}>
+                    <Animation
+                        style={{
+                            opacity,
+                            transform: [{ scaleX: scale }, { scaleY: scale }],
+                        }}
+                        size={size}
+                        ratio={icon.ratio}
+                    >
+                        <Pulse size={size} ratio={icon.ratio} />
+                    </Animation>
+                    <Icon icon={icon} size={size} color={colors.GREEN_PRIMARY} />
+                </IconWrapper>
+                <ContentWrapper>{children}</ContentWrapper>
+            </Wrapper>
+        );
+    }
+}
 
 export default Prompt;
