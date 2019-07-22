@@ -62,11 +62,4 @@ const setPath = (value: OnboardingReducer['path']) => ({
     value,
 });
 
-export {
-    goToNextStep,
-    goToSubStep,
-    goToStep,
-    goToPreviousStep,
-    selectTrezorModel,
-    setPath,
-};
+export { goToNextStep, goToSubStep, goToStep, goToPreviousStep, selectTrezorModel, setPath };
