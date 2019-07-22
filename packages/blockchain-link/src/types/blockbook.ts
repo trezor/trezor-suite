@@ -77,6 +77,7 @@ export type AccountUtxo = {
     address: string;
     path: string;
     confirmations: number;
+    coinbase?: boolean;
 }[];
 
 export interface VinVout {
