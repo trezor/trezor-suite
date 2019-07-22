@@ -16,7 +16,7 @@ const Paragraph = styled.View<Props>`
     flex: 1;
 `;
 
-const StyledText = styled.Text<Props>`
+const StyledText = styled.Text<ParagraphProps>`
     font-size: ${props => props.fontSize};
     line-height: ${props => props.fontSize + props.fontSize / 2};
     color: ${colors.TEXT_SECONDARY};
@@ -28,11 +28,14 @@ const StyledText = styled.Text<Props>`
         `}
 `;
 
+interface ParagraphProps extends Props {
+    fontSize: number;
+}
+
 interface Props {
     children: React.ReactNode;
     className?: string;
-    size?: string;
-    fontSize: number;
+    size?: 'small' | 'medium' | 'large' | 'xlarge';
     textAlign?: string;
 }
 
