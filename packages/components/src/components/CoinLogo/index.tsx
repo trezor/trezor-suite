@@ -3,7 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Logo = styled.img``;
+import AdaCoin from './coins/ada';
+import BchCoin from './coins/bch';
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     network: string;
@@ -13,7 +14,7 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 const CoinLogo = ({ network, className, ...rest }: Props) => {
     return (
         // eslint-disable-next-line import/no-dynamic-require
-        <Logo className={className} src={require(`../../images/coins/${network}.png`)} {...rest} />
+        <BchCoin width={32} height={32} />
     );
 };
 
