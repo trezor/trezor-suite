@@ -13,6 +13,7 @@ const create = async type => {
     const port = await getFreePort();
     const server = new Server({ port, noServer: true });
     const { close } = server;
+
     const defaultResponses = RESPONSES[type];
     const connections = [];
     let addresses;
@@ -40,7 +41,6 @@ const create = async type => {
                 error: { message: `unknown response for ${method}` },
             };
         }
-        
 
         if (delay) {
             setTimeout(() => {
@@ -74,7 +74,6 @@ const create = async type => {
                 server.emit(`ripple_${request.command}`, request);
             }
         } catch (error) {
-            console.log("WZAZZPAA", error)
             assert(false, error.message);
         }
     };
@@ -156,7 +155,8 @@ const create = async type => {
     };
 
     server.close = () => {
-        close.call(server);
+        return new Promise(resolve => close.call(server, resolve));
+        // close.call(server);
     };
 
     server.sendNotification = async notification => {
@@ -186,6 +186,10 @@ const create = async type => {
         await receiveMessage(ws);
     };
 
+    return new Promise((resolve, reject) => {
+        server.on('listening', () => resolve(server));
+        server.on('error', error => reject(error));
+    });
     return server;
 };
 

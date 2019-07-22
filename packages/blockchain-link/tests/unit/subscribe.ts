@@ -22,9 +22,8 @@ workers.forEach(instance => {
         };
 
         const teardown = async () => {
-            await blockchain.disconnect();
             blockchain.dispose();
-            server.close();
+            await server.close();
         };
 
         describe('Compare subscribed addresses/accounts with server', () => {

@@ -234,10 +234,16 @@ class BlockchainLink extends EventEmitter implements Emitter {
         this.deferred = [];
     };
 
-    dispose() {
+    async dispose() {
         this.removeAllListeners();
-        if (this.worker) {
-            this.worker.terminate();
+        const { worker } = this;
+        if (worker) {
+            // this.sendMessage({
+            //     type: MESSAGES.DISCONNECT,
+            // });
+            // worker.onmessage = null;
+            // worker.onerror = null;
+            worker.terminate();
             delete this.worker;
         }
     }

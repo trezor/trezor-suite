@@ -17,9 +17,8 @@ workers.forEach(instance => {
         });
 
         afterEach(async () => {
-            await blockchain.disconnect();
             blockchain.dispose();
-            server.close();
+            await server.close();
         });
 
         it('Handle connection timeout', async () => {
