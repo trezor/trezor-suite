@@ -13855,6 +13855,11 @@ q@^1.1.2:
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
+qr.js@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
+  integrity sha1-ys6GOG9ZoNuAUPqQ2baw6IoeNk8=
+
 qs@6.7.0, qs@^6.6.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
@@ -14492,6 +14497,14 @@ react-proxy@^1.1.7:
   dependencies:
     lodash "^4.6.1"
     react-deep-force-update "^1.0.0"
+
+react-qr-svg@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-qr-svg/-/react-qr-svg-2.2.1.tgz#f6f25820fdb2c39ad0d66a14a758e2f575717c68"
+  integrity sha512-rLDCZI9pIqD5lbBIatrqUMhP1gqQ7glqubXO/m/X87ikEPhXuY0hMLhYMuKoH4834G36ap8Az0HI4bXEJUN//w==
+  dependencies:
+    prop-types "^15.5.8"
+    qr.js "0.0.0"
 
 react-redux@^7.0.3:
   version "7.1.0"

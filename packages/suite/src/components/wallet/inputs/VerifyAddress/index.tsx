@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Icon, Tooltip, Input, colors, icons as ICONS } from '@trezor/components';
+import { FormattedMessage, injectIntl, InjectedIntl } from 'react-intl';
+import { Button, Input, icons as ICONS } from '@trezor/components';
 // import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 import commonMessages from '@wallet-views/messages';
 import messages from './messages';
@@ -38,11 +38,6 @@ const ShowAddressButton = styled(Button)`
     }
 `;
 
-const Label = styled.div`
-    padding-bottom: 10px;
-    color: ${colors.TEXT_SECONDARY};
-`;
-
 interface Props {
     address: string;
     topLabel: string;
@@ -51,15 +46,19 @@ interface Props {
     isAddressUnverified: boolean;
     isAddressHidden: boolean;
     isAddressVerified: boolean;
+    intl: InjectedIntl;
 }
 
 const VerifyInput = ({
+    // @ts-ignore
     account,
+    // @ts-ignore
     device,
     isAddressHidden,
     isAddressVerified,
     isAddressUnverified,
     isAddressVerifying,
+    // @ts-ignore
     showAddress,
     intl,
 }: Props) => (
@@ -68,7 +67,7 @@ const VerifyInput = ({
             type="text"
             readOnly
             topLabel={intl.formatMessage(commonMessages.TR_ADDRESS)}
-            value={'address'}
+            value="address"
             isPartiallyHidden={isAddressHidden}
             tooltipAction={
                 isAddressVerifying ? (
@@ -115,23 +114,6 @@ const VerifyInput = ({
                 </ShowAddressButton>
             )}
         </>
-        {/* <>
-            {((isAddressVerified || isAddressUnverified) && !isAddressVerifying) ||
-                (account.imported && (
-                    <QrWrapper>
-                        <Label>
-                            <FormattedMessage {...messages.TR_QR_CODE} />
-                        </Label>
-                        <StyledQRCode
-                            bgColor="#FFFFFF"
-                            fgColor="#000000"
-                            level="Q"
-                            style={{ width: 150 }}
-                            value={account.descriptor}
-                        />
-                    </QrWrapper>
-                ))}
-        </> */}
     </Wrapper>
 );
 
