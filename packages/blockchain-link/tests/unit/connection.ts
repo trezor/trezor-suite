@@ -16,7 +16,8 @@ workers.forEach(instance => {
             });
         });
 
-        afterEach(() => {
+        afterEach(async () => {
+            await blockchain.disconnect();
             blockchain.dispose();
             server.close();
         });
@@ -24,7 +25,6 @@ workers.forEach(instance => {
         it('Handle connection timeout', async () => {
             jest.setTimeout(10000);
             try {
-                // blockchain.settings.server = ['https://blockbook-dev.corp.sldev.cz:19136'];
                 blockchain.settings.server = ['wss://google.com:11111', 'wss://google.com:22222'];
                 blockchain.settings.timeout = 2500;
                 await blockchain.connect();
@@ -39,7 +39,7 @@ workers.forEach(instance => {
             server.setFixtures([
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getInfo',
-                    response: 1, // doesn't matter, should never be sent
+                    response: undefined,
                     delay: 3000, // wait 3 sec. to send response
                 },
             ]);

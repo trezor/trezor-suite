@@ -17,7 +17,8 @@ workers.forEach(instance => {
             });
         };
 
-        const teardown = () => {
+        const teardown = async () => {
+            await blockchain.disconnect();
             blockchain.dispose();
             server.close();
         };
