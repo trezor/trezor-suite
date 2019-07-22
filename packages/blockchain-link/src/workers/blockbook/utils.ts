@@ -155,6 +155,15 @@ export const transformTransaction = (
         }
     }
 
+    let rbf: boolean | undefined;
+    if (Array.isArray(tx.vin)) {
+        tx.vin.forEach(vin => {
+            if (typeof vin.sequence === 'number' && vin.sequence < (0xffffffff - 1)) {
+                rbf = true;
+            }
+        })
+    }
+
     return {
         type,
 
@@ -168,6 +177,7 @@ export const transformTransaction = (
 
         targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t)),
         tokens,
+        rbf,
     };
 };
 

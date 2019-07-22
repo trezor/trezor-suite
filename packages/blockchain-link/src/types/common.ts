@@ -44,6 +44,7 @@ export interface Transaction {
 
     targets: Target[];
     tokens: TokenTransfer[];
+    rbf?: boolean;
 }
 
 /* Account */
