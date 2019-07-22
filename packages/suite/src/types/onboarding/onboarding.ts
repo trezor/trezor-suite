@@ -24,7 +24,6 @@ export interface OnboardingActions {
     goToStep: typeof goToStep;
     goToPreviousStep: typeof goToPreviousStep;
     selectTrezorModel: typeof selectTrezorModel;
-    setAsNewDevice: typeof setAsNewDevice;
     setPath: typeof setPath;
 }
 
@@ -32,7 +31,6 @@ export const GO_TO_SUBSTEP = '@onboarding/go-to-substep';
 export const SET_STEP_ACTIVE = '@onboarding/set-step-active';
 export const SET_STEP_RESOLVED = '@onboarding/set-step-resolved';
 export const SELECT_TREZOR_MODEL = '@onboarding/select-trezor-model';
-export const SET_AS_NEW_DEVICE = '@onboarding/set-as-new-device';
 export const SET_PATH = '@onboarding/set-path';
 
 interface SetStepActiveAction {
@@ -55,11 +53,6 @@ interface SelectTrezorModelAction {
     model: number;
 }
 
-interface SetAsNewDevice {
-    type: typeof SET_AS_NEW_DEVICE;
-    asNewDevice: boolean;
-}
-
 interface SetPath {
     type: typeof SET_PATH;
     value: AnyPath[];
@@ -70,5 +63,4 @@ export type OnboardingActionTypes =
     | SetStepResolvedAction
     | GoToSubstepAction
     | SelectTrezorModelAction
-    | SetAsNewDevice
     | SetPath;

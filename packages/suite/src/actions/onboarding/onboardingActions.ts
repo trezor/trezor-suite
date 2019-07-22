@@ -3,7 +3,6 @@ import {
     GO_TO_SUBSTEP,
     SET_STEP_RESOLVED,
     SELECT_TREZOR_MODEL,
-    SET_AS_NEW_DEVICE,
     SET_PATH,
     OnboardingReducer,
 } from '@suite/types/onboarding/onboarding';
@@ -58,11 +57,6 @@ const selectTrezorModel = (model: number) => ({
     model,
 });
 
-const setAsNewDevice = (asNewDevice: boolean) => ({
-    type: SET_AS_NEW_DEVICE,
-    asNewDevice,
-});
-
 const setPath = (value: OnboardingReducer['path']) => ({
     type: SET_PATH,
     value,
@@ -74,6 +68,5 @@ export {
     goToStep,
     goToPreviousStep,
     selectTrezorModel,
-    setAsNewDevice,
     setPath,
 };

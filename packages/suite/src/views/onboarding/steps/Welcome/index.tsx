@@ -134,6 +134,7 @@ class WelcomeStep extends React.PureComponent<Props, {}> {
 
                             <ControlsWrapper isVertical>
                                 <StyledButton
+                                    data-test="button-create"
                                     onClick={() => {
                                         this.props.onboardingActions.setPath([STEP.PATH_CREATE]);
                                         this.props.onboardingActions.goToNextStep();

@@ -48,7 +48,7 @@ const NewOrUsedStep = (props: Props) => (
                 </Button>
                 <Button
                     isWhite
-                    data-test="button-new-device"
+                    data-test="button-used-device"
                     onClick={() => {
                         props.onboardingActions.setPath([...props.path, STEP.PATH_USED]);
                         props.onboardingActions.goToNextStep();
