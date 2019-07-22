@@ -205,9 +205,9 @@ const onTransaction = (event: AddressNotification) => {
 };
 
 const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
+    common.addAccounts(accounts);
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
-    common.addAccounts(accounts);
     if (!common.getSubscription('notification')) {
         socket.on('notification', onTransaction);
         common.addSubscription('notification');
@@ -216,9 +216,9 @@ const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
 };
 
 const subscribeAddresses = async (addresses: string[]) => {
+    common.addAddresses(addresses);
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
-    common.addAddresses(addresses);
     if (!common.getSubscription('notification')) {
         socket.on('notification', onTransaction);
         common.addSubscription('notification');
@@ -259,8 +259,9 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
 };
 
 const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
-    const socket = await connect();
     common.removeAccounts(accounts || common.getAccounts());
+
+    const socket = await connect();
     const subscribed = common.getAddresses();
     if (subscribed.length < 1) {
         // there are no subscribed addresses left

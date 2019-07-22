@@ -201,7 +201,7 @@ export default class Socket extends EventEmitter {
     init() {
         const { ws } = this;
         if (!ws || !this.isConnected()) {
-            throw Error('A');
+            throw Error('Blockbook websocket init cannot be called');
         }
         // clear timeout from this.connect
         this.clearConnectionTimeout();
@@ -313,19 +313,19 @@ export default class Socket extends EventEmitter {
     }
 
     dispose() {
+        if (this.pingTimeout) {
+            clearTimeout(this.pingTimeout);
+        }
+        if (this.connectionTimeout) {
+            clearTimeout(this.connectionTimeout);
+        }
+
         const { ws } = this;
         if (this.isConnected()) {
             this.disconnect();
         }
         if (ws) {
             ws.removeAllListeners();
-        }
-
-        if (this.pingTimeout) {
-            clearTimeout(this.pingTimeout);
-        }
-        if (this.connectionTimeout) {
-            clearTimeout(this.connectionTimeout);
         }
 
         this.removeAllListeners();
