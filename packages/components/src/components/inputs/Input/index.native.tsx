@@ -130,7 +130,6 @@ interface TooltipActionProps {
     action?: React.ReactNode;
 }
 
-// TODO: fix input props without omit
 interface InputProps extends TextInputProperties {
     hasIcon?: boolean;
     hasAddon?: boolean;
