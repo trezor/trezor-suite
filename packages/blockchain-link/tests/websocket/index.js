@@ -22,11 +22,17 @@ const create = async type => {
         const { fixtures } = server;
         const method = type === 'blockbook' ? request.method : request.command;
         let data;
+        let delay = 0;
         if (Array.isArray(fixtures)) {
+            // find nearest predefined fixture with this method
             const fid = fixtures.findIndex(f => f && f.method === method);
             if (fid >= 0) {
                 data = fixtures[fid].response;
-                delete fixtures[fid];
+                if (typeof fixtures[fid].delay === 'number') {
+                    delay = fixtures[fid].delay;
+                }
+                // remove from list
+                fixtures.splice(fid, 1);
             }
         }
         if (!data) {
@@ -34,10 +40,19 @@ const create = async type => {
                 error: { message: `unknown response for ${method}` },
             };
         }
+        
 
-        connections.forEach(c => {
-            c.send(JSON.stringify({ ...data, id }));
-        });
+        if (delay) {
+            setTimeout(() => {
+                connections.forEach(c => {
+                    c.send(JSON.stringify({ ...data, id }));
+                });
+            }, delay);
+        } else {
+            connections.forEach(c => {
+                c.send(JSON.stringify({ ...data, id }));
+            });
+        }
     };
 
     const processRequest = json => {
@@ -59,6 +74,7 @@ const create = async type => {
                 server.emit(`ripple_${request.command}`, request);
             }
         } catch (error) {
+            console.log("WZAZZPAA", error)
             assert(false, error.message);
         }
     };

@@ -21,14 +21,117 @@ workers.forEach(instance => {
             server.close();
         });
 
+        it('Handle connection timeout', async () => {
+            jest.setTimeout(10000);
+            try {
+                // blockchain.settings.server = ['https://blockbook-dev.corp.sldev.cz:19136'];
+                blockchain.settings.server = ['wss://google.com:11111', 'wss://google.com:22222'];
+                blockchain.settings.timeout = 2500;
+                await blockchain.connect();
+            } catch (error) {
+                expect(error.code).toEqual('blockchain_link/connect');
+                expect(error.message).toEqual('All backends are down');
+            }
+        });
+
+        it('Handle message timeout', async () => {
+            jest.setTimeout(10000);
+            server.setFixtures([
+                {
+                    method: instance.name === 'ripple' ? 'server_info' : 'getInfo',
+                    response: 1, // doesn't matter, should never be sent
+                    delay: 3000, // wait 3 sec. to send response
+                },
+            ]);
+            try {
+                blockchain.settings.timeout = 2500;
+                await blockchain.getInfo();
+            } catch (error) {
+                expect(error.code).toEqual('blockchain_link/websocket_timeout');
+            }
+        });
+
+        it('Handle ping (subscription)', async () => {
+            // the only way how to test it is to check if server fixture was called
+            // method defined in this fixture is the same which is used in ping function inside the worker
+            // server should remove this fixture once called
+            jest.setTimeout(10000);
+            server.setFixtures([
+                {
+                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+                    response: undefined,
+                },
+                {
+                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+                    response: undefined,
+                },
+            ]);
+            blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
+            await blockchain.subscribe({ type: 'block' });
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            expect(server.fixtures).toEqual([]);
+        });
+
+        // it('Handle ping (keepAlive)', async () => {
+        //     // similar to previous test but this time expect that ping will be called because of "keepAlive" param
+        //     jest.setTimeout(10000);
+        //     server.setFixtures([
+        //         {
+        //             method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+        //             response: undefined,
+        //         },
+        //         {
+        //             method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+        //             response: undefined,
+        //         },
+        //     ]);
+
+        //     blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
+        //     blockchain.settings.keepAlive = true;
+        //     await blockchain.subscribe({ type: 'block' });
+        //     await blockchain.unsubscribe({ type: 'block' });
+
+        //     await new Promise(resolve => setTimeout(resolve, 6000));
+        //     expect(server.fixtures).toEqual([]);
+        // });
+
+        it('Ping should not be called and websocket should be disconnected', async () => {
+            // similar to previous test but this time expect that server fixtures will not be removed
+            // since ping should not be called because subscription was cancelled and keepAlive is not set
+            // after first ping websocket should be disconnected
+            jest.setTimeout(5000);
+            server.setFixtures([
+                {
+                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+                    response: undefined,
+                },
+                {
+                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
+                    response: undefined,
+                },
+            ]);
+
+            const callback = jest.fn();
+            blockchain.on('disconnected', callback);
+
+            blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
+            await blockchain.subscribe({ type: 'block' });
+            await blockchain.unsubscribe({ type: 'block' });
+
+            await new Promise(resolve => setTimeout(resolve, 4000));
+
+            expect(callback).toHaveBeenCalled();
+            expect(server.fixtures.length).toEqual(2);
+        });
+
         it('Handle connect event', async done => {
+            jest.setTimeout(5000); // reset from previous test
             blockchain.on('connected', done);
             const result = await blockchain.connect();
             expect(result).toEqual(true);
         });
 
         it('Handle disconnect event', async done => {
-            // blockchain.on('disconnected', () => setTimeout(done, 300));
             blockchain.on('disconnected', done);
             await blockchain.connect();
             // TODO: ripple-lib throws error when disconnect is called immediately
@@ -36,16 +139,10 @@ workers.forEach(instance => {
             // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
             // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
             if (instance.name === 'ripple') {
-                setTimeout(blockchain.disconnect, 100);
+                setTimeout(() => blockchain.disconnect(), 1000);
             } else {
                 blockchain.disconnect();
             }
-
-            // blockchain.connect().then(() => {
-            //     setTimeout(() => blockchain.disconnect(), 100);
-            //     setTimeout(() => blockchain.disconnect(), 200);
-            //     // blockchain.disconnect();
-            // });
         });
 
         it('Connect (only one endpoint is valid)', async () => {

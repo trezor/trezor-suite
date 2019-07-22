@@ -60,7 +60,7 @@ export default {
         {
             description: 'getAccountUtxo - not implemented',
             params: 'A',
-            error: 'Unknown message type m_get_account_utxo',
+            error: 'Unknown message type: m_get_account_utxo',
         },
     ],
 };
