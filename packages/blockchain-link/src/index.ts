@@ -7,8 +7,6 @@ import * as ResponseTypes from './types/responses';
 import * as MessageTypes from './types/messages';
 import { Events } from './types/events';
 
-// export { EstimateFeeOptions } from './types/messages';
-
 interface Emitter {
     on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
     off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
@@ -35,7 +33,7 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
         worker.onmessage = null;
         worker.onerror = null;
         dfd.reject(new CustomError('worker_timeout'));
-    }, 30000);
+    }, settings.timeout || 30000);
 
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
@@ -53,6 +51,13 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
         clearTimeout(timeout);
         worker.onmessage = null;
         worker.onerror = null;
+        try {
+            worker.terminate();
+        } catch (error) {
+            // empty
+        }
+        delete settings.worker;
+
         const message = error.message
             ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
             : 'Worker handshake error';
@@ -234,15 +239,10 @@ class BlockchainLink extends EventEmitter implements Emitter {
         this.deferred = [];
     };
 
-    async dispose() {
+    dispose() {
         this.removeAllListeners();
         const { worker } = this;
         if (worker) {
-            // this.sendMessage({
-            //     type: MESSAGES.DISCONNECT,
-            // });
-            // worker.onmessage = null;
-            // worker.onerror = null;
             worker.terminate();
             delete this.worker;
         }
