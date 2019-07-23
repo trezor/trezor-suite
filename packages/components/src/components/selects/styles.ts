@@ -1,9 +1,3 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import ReactAsyncSelect from 'react-select/lib/Async';
-import ReactSelect from 'react-select';
-import { Props as SelectProps } from 'react-select/lib/Select';
-import { OptionProps } from 'react-select/lib/types';
 import colors from '../../config/colors';
 
 const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) => ({
@@ -67,51 +61,4 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
     }),
 });
 
-interface Props extends SelectProps<OptionProps> {
-    isSearchable?: boolean;
-    withDropdownIndicator?: boolean;
-}
-
-interface AsyncProps extends Props {
-    loadOptions: (inputValue: string, callback: (options: any) => void) => Promise<any> | void;
-}
-
-const propTypes = {
-    isAsync: PropTypes.bool,
-    isSearchable: PropTypes.bool,
-    withDropdownIndicator: PropTypes.bool,
-    // TODO
-    // eslint-disable-next-line react/forbid-prop-types
-    options: PropTypes.array,
-    // TODO
-    // eslint-disable-next-line react/forbid-prop-types
-    value: PropTypes.object,
-    onChange: PropTypes.func,
-};
-
-const Select = ({ isSearchable = true, withDropdownIndicator = true, ...rest }: Props) => (
-    <ReactSelect
-        styles={styles(isSearchable, withDropdownIndicator)}
-        isSearchable={isSearchable}
-        {...rest}
-    />
-);
-
-const AsyncSelect = ({
-    isSearchable = true,
-    withDropdownIndicator = true,
-    loadOptions,
-    ...rest
-}: AsyncProps) => (
-    <ReactAsyncSelect
-        styles={styles(isSearchable, withDropdownIndicator)}
-        isSearchable={isSearchable}
-        loadOptions={loadOptions}
-        {...rest}
-    />
-);
-
-Select.propTypes = propTypes;
-AsyncSelect.propTypes = propTypes;
-
-export { Select, AsyncSelect };
+export default styles;
