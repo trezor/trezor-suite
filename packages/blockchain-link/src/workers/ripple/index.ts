@@ -259,8 +259,9 @@ const getAccountInfo = async (
         account.availableBalance = mempoolInfo.xrpBalance; // TODO: balance - reserve?
         account.misc.sequence = mempoolInfo.sequence;
     } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-        return;
+        // do not throw error for mempool (ledger_index: "current")
+        // mainnet sometimes return "error": "noNetwork", "error_message": "InsufficientNetworkMode",
+        // TODO: investigate
     }
 
     // get the reserve
