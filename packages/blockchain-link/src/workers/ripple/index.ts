@@ -310,7 +310,9 @@ const getTransaction = async (
     const { payload } = data;
     try {
         const api = await connect();
-        const info = await api.getTransaction(payload);
+        const info = await api.getTransaction(payload, {
+            minLedgerVersion: BLOCKS.MIN,
+        });
         common.response({
             id: data.id,
             type: RESPONSES.GET_TRANSACTION,

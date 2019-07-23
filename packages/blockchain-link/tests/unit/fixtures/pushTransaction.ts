@@ -17,7 +17,7 @@ export default {
             description: 'Unsuccessful',
             params: 'A',
             error: '-22: TX decode failed',
-        }
+        },
     ],
 
     ripple: [

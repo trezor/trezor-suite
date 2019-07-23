@@ -57,5 +57,12 @@
    },
    "estimateFee": {
       "data": []
+   },
+   "getTransaction": {
+      "data": {
+         "error": {
+            "message": "Transaction not found"
+         }
+      }
    }
 }

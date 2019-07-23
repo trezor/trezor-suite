@@ -56,5 +56,12 @@
         "status": "error",
         "type": "response",
         "error": "Some error"
+    },
+    "tx": {
+        "status": "error",
+        "type": "response",
+        "error": "txnNotFound",
+        "error_code": 29,
+        "error_message": "Transaction not found."
     }
  }
