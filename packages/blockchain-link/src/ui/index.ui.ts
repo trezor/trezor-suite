@@ -133,6 +133,14 @@ const handleClick = (event: MouseEvent) => {
                 .catch(onError);
             break;
 
+        case 'get-blockhash':
+            blockchain
+                .getBlockHash(
+                    parseInt(getInputValue('blockhash-number'), 10)
+                ).then(onResponse)
+                .catch(onError);
+            break;
+
         default:
             break;
     }
@@ -194,7 +202,7 @@ const handleConnectionEvent = (blockchain: BlockchainLink, status: boolean) => {
     );
 };
 
-const handleErrorEvent = (blockchain: BlockchainLink, message: any) => {
+const handleErrorEvent = (_blockchain: BlockchainLink, message: any) => {
     const parent = document.getElementById('notification-status') as HTMLElement;
     prepareResponse(parent, message, true);
 };
