@@ -2,8 +2,6 @@ import {
     // calls to connect
     resetCall,
     getFeatures,
-    firmwareErase,
-    firmwareUpload,
     resetDevice,
     backupDevice,
     applySettings,
@@ -45,8 +43,6 @@ export interface ConnectActions {
     // calls to connect
     resetCall: typeof resetCall;
     getFeatures: typeof getFeatures;
-    firmwareErase: typeof firmwareErase;
-    firmwareUpload: typeof firmwareUpload;
     resetDevice: typeof resetDevice;
     backupDevice: typeof backupDevice;
     applySettings: typeof applySettings;
@@ -117,5 +113,9 @@ export type ConnectActionTypes =
       }
     | {
           type: 'ui-button';
+          payload: any;
+      }
+    | {
+          type: 'ui-request_word';
           payload: any;
       };

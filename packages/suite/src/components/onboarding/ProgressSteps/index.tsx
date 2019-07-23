@@ -7,7 +7,7 @@ import {
     ID_BOOKMARK_STEP,
     ID_NEWSLETTER_STEP,
 } from '@suite/constants/onboarding/steps';
-import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
+import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { Step, AnyStepId } from '@suite/types/onboarding/steps';
 import colors from '@suite/config/onboarding/colors';
 
@@ -31,7 +31,7 @@ interface Props {
     isDisabled: boolean;
     onboardingActions: OnboardingActions;
     activeStep: Step;
-    steps: OnboardingReducer['steps'];
+    steps: Step[];
     hiddenOnSteps?: AnyStepId[];
 }
 
@@ -46,7 +46,7 @@ class ProgressSteps extends React.Component<Props> {
                 (step: Step) => step.title === nextProps.activeStep.title,
             );
             const currentStepIndex = this.props.steps.findIndex(
-                step => step.title === this.props.activeStep.title,
+                (step: Step) => step.title === this.props.activeStep.title,
             );
             this.isGoingForward = nextStepIndex > currentStepIndex;
             this.changeOverHowManySteps = Math.abs(nextStepIndex - currentStepIndex);

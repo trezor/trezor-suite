@@ -5,8 +5,9 @@ import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 import { AppState } from '@suite-types/index';
 import commonMessages from '@suite-support/Messages';
 
-import colors from '@suite/config/onboarding/colors';
-import { FIRMWARE_UPLOAD } from '@onboarding-actions/constants/calls';
+import * as STEP from '@onboarding-constants/steps';
+import colors from '@onboarding-config/colors';
+import { FIRMWARE_UPDATE } from '@onboarding-actions/constants/calls';
 import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
 import Text from '@onboarding-components/Text';
 import { ConnectDeviceIcon } from '@onboarding-components/Icons';
@@ -20,6 +21,7 @@ import {
 import { updateFirmware } from '@onboarding-actions/firmwareUpdateActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 
+import { callActionAndGoToNextStep, resetDevice } from '@suite/actions/onboarding/connectActions';
 import l10nMessages from './index.messages';
 
 const DONUT_STROKE = 20;
@@ -49,7 +51,8 @@ const ContinueButton = ({ isConnected, onClick }: ButtonProps) => (
         content="Connect device to continue"
     >
         <Button isDisabled={!isConnected} onClick={() => onClick()}>
-            <FormattedMessage {...commonMessages.TR_CONTINUE} />
+            Finish basic setup
+            {/* <FormattedMessage {...commonMessages.TR_CONTINUE} /> */}
         </Button>
     </Tooltip>
 );
@@ -58,11 +61,16 @@ interface Props {
     device: AppState['onboarding']['connect']['device'];
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
     firmwareUpdate: AppState['onboarding']['firmwareUpdate'];
+    path: AppState['onboarding']['path'];
     firmwareUpdateActions: {
         updateFirmware: typeof updateFirmware;
     };
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
+    };
+    connectActions: {
+        resetDevice: typeof resetDevice;
+        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
     };
 }
 
@@ -70,8 +78,10 @@ const FirmwareStep = ({
     device,
     deviceCall,
     firmwareUpdate,
+    path,
     onboardingActions,
     firmwareUpdateActions,
+    connectActions,
     intl,
 }: Props & InjectedIntlProps) => {
     const [maxProgress, setMaxProgress] = useState(0);
@@ -142,7 +152,7 @@ const FirmwareStep = ({
 
     const getUpdateStatus = () => {
         if (
-            deviceCall.name === FIRMWARE_UPLOAD &&
+            deviceCall.name === FIRMWARE_UPDATE &&
             deviceCall.result &&
             device.firmware !== 'valid'
         ) {
@@ -172,6 +182,18 @@ const FirmwareStep = ({
         setProgress(0);
         setMaxProgress(0);
         firmwareUpdateActions.updateFirmware();
+    };
+
+    const getContinueFn = () => {
+        if (path.includes(STEP.PATH_CREATE)) {
+            return () => {
+                connectActions.callActionAndGoToNextStep(
+                    () => connectActions.resetDevice(),
+                    STEP.ID_SECURITY_STEP,
+                );
+            };
+        }
+        return () => onboardingActions.goToNextStep(STEP.ID_RECOVERY_STEP);
     };
 
     return (
@@ -279,17 +301,12 @@ const FirmwareStep = ({
                                 <InstallButton isConnected={isConnected} onClick={install} />
                                 <ContinueButton
                                     isConnected={isConnected}
-                                    onClick={onboardingActions.goToNextStep}
+                                    onClick={getContinueFn()}
                                 />
                             </>
                         )}
                         {getFirmwareStatus() === 'success' && (
-                            <>
-                                <ContinueButton
-                                    isConnected={isConnected}
-                                    onClick={onboardingActions.goToNextStep}
-                                />
-                            </>
+                            <ContinueButton isConnected={isConnected} onClick={getContinueFn()} />
                         )}
                     </ControlsWrapper>
                 )}

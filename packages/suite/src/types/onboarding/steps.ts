@@ -6,6 +6,7 @@ export interface Step {
     disallowedDeviceStates?: AnyStepDisallowedState[];
     visited?: boolean; // todo: might not be used
     resolved?: boolean; // todo: might not be used
+    path?: AnyPath[];
 }
 
 export type AnyStepId =
@@ -50,3 +51,9 @@ export type AnyStepTitle =
     | typeof STEP.TITLE_CONNECT_STEP
     | typeof STEP.TITLE_UNBOXING_STEP
     | typeof STEP.TITLE_RECOVERY_STEP;
+
+export type AnyPath =
+    | typeof STEP.PATH_CREATE
+    | typeof STEP.PATH_RECOVERY
+    | typeof STEP.PATH_NEW
+    | typeof STEP.PATH_USED;

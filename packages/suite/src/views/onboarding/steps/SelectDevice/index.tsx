@@ -10,7 +10,6 @@ import {
     StepHeadingWrapper,
     StepBodyWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import * as STEP from '@suite/constants/onboarding/steps';
 import { goToNextStep, selectTrezorModel } from '@suite/actions/onboarding/onboardingActions';
 
 import l10nMessages from './index.messages';
@@ -27,11 +26,10 @@ interface Props {
         goToNextStep: typeof goToNextStep;
     };
     device: AppState['onboarding']['connect']['device'];
-    asNewDevice: AppState['onboarding']['asNewDevice'];
     model: AppState['onboarding']['selectedModel'];
 }
 
-const SelectDeviceStep: React.FC<Props> = ({ onboardingActions, model, device, asNewDevice }) => {
+const SelectDeviceStep: React.FC<Props> = ({ onboardingActions, model, device }) => {
     const actualVersion =
         device && device.features && device.features.major_version
             ? device.features.major_version
@@ -81,9 +79,7 @@ const SelectDeviceStep: React.FC<Props> = ({ onboardingActions, model, device, a
                     selected={actualVersion || model}
                     onSelect={(value: number) => {
                         onboardingActions.selectTrezorModel(value);
-                        onboardingActions.goToNextStep(
-                            asNewDevice ? STEP.ID_UNBOXING_STEP : STEP.ID_BRIDGE_STEP,
-                        );
+                        onboardingActions.goToNextStep();
                     }}
                 />
             </StepBodyWrapper>

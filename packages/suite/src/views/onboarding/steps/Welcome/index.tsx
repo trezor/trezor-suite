@@ -11,8 +11,9 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 import { AppState } from '@suite/types/suite';
-import { SKIP_URL } from '@suite/constants/onboarding/urls';
-import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
+import * as STEP from '@onboarding-constants/steps';
+import { SKIP_URL } from '@onboarding-constants/urls';
+import { goToNextStep, setPath } from '@suite/actions/onboarding/onboardingActions';
 import l10nMessages from './index.messages';
 
 const ANIMATION_DURATION = 2.5;
@@ -85,6 +86,7 @@ const Base = styled.div`
 interface Props {
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
+        setPath: typeof setPath;
     };
     suite: AppState['suite'];
 }
@@ -132,13 +134,20 @@ class WelcomeStep extends React.PureComponent<Props, {}> {
 
                             <ControlsWrapper isVertical>
                                 <StyledButton
-                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                    data-test="button-create"
+                                    onClick={() => {
+                                        this.props.onboardingActions.setPath([STEP.PATH_CREATE]);
+                                        this.props.onboardingActions.goToNextStep();
+                                    }}
                                 >
                                     <Base>Create new Wallet</Base>
                                     <Small>if you never had any Wallet</Small>
                                 </StyledButton>
                                 <StyledButton
-                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                    onClick={() => {
+                                        this.props.onboardingActions.setPath([STEP.PATH_RECOVERY]);
+                                        this.props.onboardingActions.goToNextStep();
+                                    }}
                                     isInverse
                                 >
                                     <Base>Restore existing wallet</Base>

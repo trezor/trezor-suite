@@ -158,6 +158,18 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     counter: state.uiInteraction.counter + 1,
                 },
             };
+        case 'ui-request_word':
+            return {
+                ...state,
+                uiInteraction: {
+                    name: action.payload.type,
+                    counter: state.uiInteraction.counter + 1,
+                },
+                deviceInteraction: {
+                    name: action.payload.type,
+                    counter: state.deviceInteraction.counter + 1,
+                },
+            };
         case UI_REQUEST_PIN:
             return {
                 ...state,
