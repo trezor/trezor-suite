@@ -1,7 +1,29 @@
+import { openDB, DBSchema, IDBPDatabase, IDBPTransaction, deleteDB, wrap, unwrap } from 'idb';
+
 const VERSION = 1;
+let db: IDBPDatabase<MyDBV1>;
 // react-native https://facebook.github.io/react-native/docs/asyncstorage.html
 
 // next.js https://medium.com/@filipvitas/indexeddb-with-promises-and-async-await-3d047dddd313
+
+// https://github.com/jakearchibald/idb#typescript
+
+interface MyDBV1 extends DBSchema {
+    txs: {
+        key: string;
+        value: {
+            id?: number;
+            accountId: number;
+            txId: string;
+            details: {
+                name: string;
+                price: number;
+                productCode: string;
+            };
+        };
+        indexes: { txId: string; accountId: number };
+    };
+}
 
 const isIndexedDBAvailable = () => {
     if (!('indexedDB' in window)) {
@@ -11,20 +33,84 @@ const isIndexedDBAvailable = () => {
 };
 
 // TODO: implement upgrade
-const onUpgrade = (db: IDBDatabase) => {
-    db.createObjectStore('devices', { keyPath: 'id', autoIncrement: true });
+const onUpgrade = (
+    db: IDBPDatabase<MyDBV1>,
+    oldVersion: number,
+    newVersion: number | null,
+    transaction: any,
+    // transaction: IDBPTransaction<MyDBV1, "transactions"[]>,
+) => {
+    console.log('upgrade');
+    console.log(oldVersion);
+    console.log(newVersion);
+    const store = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
+    store.createIndex('txId', 'txId', { unique: true });
+    store.createIndex('accountId', 'accountId', { unique: false });
 };
 
-const openDB = async () => {
-    const idb =
-        window.indexedDB ||
-        window.mozIndexedDB ||
-        window.webkitIndexedDB ||
-        window.msIndexedDB ||
-        window.shimIndexedDB;
-    // idb.onversionchange = onUpgrade;
-    const request = await idb.open('trezor-suite', VERSION);
-    return request;
+const getDB = async () => {
+    if (!db) {
+        db = await openDB<MyDBV1>('trezor-suite', VERSION, {
+            upgrade(
+                db,
+                oldVersion,
+                newVersion,
+                transaction,
+            ) {
+                // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
+                onUpgrade(db, oldVersion, newVersion, transaction);
+            },
+            blocked() {
+                // Called if there are older versions of the database open on the origin, so this version cannot open.
+            },
+            blocking() {
+                // Called if this connection is blocking a future version of the database from opening.
+            },
+        });
+    }
+    return db;
+};
+
+const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
+    const db = await getDB();
+    await db.add('txs', transaction);
+};
+
+const addTransactions = async (transactions: MyDBV1['txs']['value'][]) => {
+    const db = await getDB();
+    const tx = db.transaction('txs', 'readwrite');
+
+    transactions.forEach(transaction => {
+        tx.store.add(transaction);
+    });
+    await tx.done;
+};
+
+const getTransaction = async (txId: string) => {
+    const db = await getDB();    
+    const tx = db.transaction('txs');
+    const txIdIndex = tx.store.index('txId');
+    // find the tx with txID
+    if (txId) {
+        const tx = await txIdIndex.get(IDBKeyRange.only(txId));
+        return tx;
+    }
+};
+
+const getTransactions = async (accountId: number) => {
+    const db = await getDB();
+    const tx = db.transaction('txs');
+    if (accountId) {
+        // find all txs belonging to accountId
+        const accountIdIndex = tx.store.index('accountId');
+        const txs = await accountIdIndex.getAll(IDBKeyRange.only(accountId));
+        return txs;
+    } else {
+        // return all txs
+        const txs = await tx.store.getAll();
+        return txs;
+    }
+    
 };
 
 const load = async () => {
@@ -32,8 +118,4 @@ const load = async () => {
         console.warn('IndexedDB not supported');
         return;
     }
-
-    await openDB();
-
-    // db.close();
 };
