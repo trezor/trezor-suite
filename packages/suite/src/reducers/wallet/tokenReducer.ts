@@ -71,8 +71,7 @@ export default (state: State = initialState, action: Action): State => {
             // case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA:
             //     return clear(state, action.devices);
 
-            default:
-                break;
+            // no default
         }
     });
 };

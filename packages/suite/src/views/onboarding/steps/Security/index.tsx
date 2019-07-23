@@ -3,9 +3,7 @@ import { Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
-import { callActionAndGoToNextStep, resetDevice } from '@onboarding-actions/connectActions';
 
-import * as STEP from '@suite/constants/onboarding/steps';
 import Text from '@suite/components/onboarding/Text';
 import {
     StepWrapper,
@@ -17,9 +15,7 @@ import {
 import l10nMessages from './index.messages';
 
 interface Props {
-    callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
     goToNextStep: typeof goToNextStep;
-    resetDevice: typeof resetDevice;
 }
 
 const SecurityStep = (props: Props) => (
@@ -34,21 +30,15 @@ const SecurityStep = (props: Props) => (
             <ControlsWrapper>
                 <Button
                     isWhite
-                    onClick={() =>
-                        props.callActionAndGoToNextStep(
-                            () => props.resetDevice(),
-                            STEP.ID_FINAL_STEP,
-                        )
-                    }
+                    onClick={() => {
+                        props.goToNextStep();
+                    }}
                 >
                     <FormattedMessage {...l10nMessages.TR_SKIP_SECURITY} />
                 </Button>
                 <Button
                     onClick={() => {
-                        props.callActionAndGoToNextStep(
-                            () => props.resetDevice(),
-                            STEP.ID_BACKUP_STEP,
-                        );
+                        props.goToNextStep();
                     }}
                 >
                     <FormattedMessage {...l10nMessages.TR_GO_TO_SECURITY} />

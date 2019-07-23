@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
+import { Tooltip } from 'src';
 import {
     FONT_FAMILY,
     FONT_SIZE,
@@ -120,8 +121,8 @@ const Overlay = styled.div<InputProps>`
         `}
 `;
 
-const TooltipAction = styled.div`
-    display: ${(props: { action?: React.ReactNode }) => (props.action ? 'flex' : 'none')};
+const TooltipAction = styled.div<TooltipActionProps>`
+    display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     height: 37px;
     margin: 0px 10px;
@@ -147,6 +148,10 @@ const ArrowUp = styled.div`
     border-bottom: 9px solid black;
     z-index: 10001;
 `;
+
+interface TooltipActionProps {
+    action?: React.ReactNode;
+}
 
 interface InputProps {
     hasIcon?: boolean;

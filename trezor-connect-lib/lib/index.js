@@ -1661,6 +1661,8 @@ function () {
     return _ref52.apply(this, arguments);
   };
 }());
+
+
 (0, _defineProperty2.default)(TrezorConnect, "firmwareUpload",
 /*#__PURE__*/
 function () {
@@ -1691,6 +1693,39 @@ function () {
     return _ref53.apply(this, arguments);
   };
 }());
+
+(0, _defineProperty2.default)(TrezorConnect, "firmwareUpdate",
+/*#__PURE__*/
+function () {
+  var _ref53 = (0, _asyncToGenerator2.default)(
+  /*#__PURE__*/
+  _regenerator.default.mark(function _callee53(params) {
+    return _regenerator.default.wrap(function _callee53$(_context53) {
+      while (1) {
+        switch (_context53.prev = _context53.next) {
+          case 0:
+            _context53.next = 2;
+            return (0, _node.call)((0, _objectSpread2.default)({
+              method: 'firmwareUpdate'
+            }, params));
+
+          case 2:
+            return _context53.abrupt("return", _context53.sent);
+
+          case 3:
+          case "end":
+            return _context53.stop();
+        }
+      }
+    }, _callee53, this);
+  }));
+
+  return function (_x51) {
+    return _ref53.apply(this, arguments);
+  };
+}());
+
+
 (0, _defineProperty2.default)(TrezorConnect, "recoveryDevice",
 /*#__PURE__*/
 function () {

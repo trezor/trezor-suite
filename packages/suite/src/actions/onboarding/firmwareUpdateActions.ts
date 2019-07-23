@@ -5,7 +5,7 @@ import { DEVICE_CALL_RESET } from '@onboarding-types/connect';
 
 import * as STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
 
-import { firmwareErase, firmwareUpload } from './connectActions';
+import { firmwareUpdate } from './connectActions';
 
 const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: DEVICE_CALL_RESET });
@@ -46,26 +46,14 @@ const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
     // ignoring type invalidation...
     const fw = getState().onboarding.firmwareUpdate.firmware as ArrayBuffer;
 
-    const callResponse = await dispatch(
-        firmwareErase({
-            keepSession: true,
-            skipFinalReload: true,
-            length: fw.byteLength,
-        }),
-    );
     // todo: when types in connect ready
     const payload: any = {
         payload: fw,
         keepSession: false,
         skipFinalReload: true,
     };
-    if (callResponse.offset) {
-        payload.offset = callResponse.offset;
-    }
-    if (callResponse.length) {
-        payload.length = callResponse.lenght;
-    }
-    await dispatch(firmwareUpload(payload));
+
+    await dispatch(firmwareUpdate(payload));
     dispatch({ type: FIRMWARE_UPDATE.SET_UPDATE_STATUS, value: STATUS.DONE });
 };
 

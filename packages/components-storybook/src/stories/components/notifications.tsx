@@ -3,7 +3,6 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
-import { linkTo } from '@storybook/addon-links';
 import { H1, H5, Notification, colors } from '@trezor/components';
 
 import styled from 'styled-components';
@@ -24,32 +23,13 @@ const Row = styled.div`
     }
 `;
 
-const BtnLink = styled.button`
-    font-size: 1rem;
-    color: ${colors.TEXT_SECONDARY};
-    vertical-align: middle;
-    background: ${colors.LANDING};
-    padding: 0.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-        color: ${colors.TEXT};
-    }
-`;
 Wrapper.displayName = 'Wrapper';
 
 const notMessage = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam sapien elit.';
 
 storiesOf('Notifications', module).add('All', () => (
     <Wrapper>
-        <H1>
-            Basic{' '}
-            <BtnLink onClick={linkTo('Notifications', 'Notification')}>
-                {'<Notification />'}
-            </BtnLink>
-        </H1>
+        <H1>Basic</H1>
         <Row>
             <StyledNotification
                 variant="info"
@@ -109,12 +89,7 @@ storiesOf('Notifications', module).add('All', () => (
                 data-test="notification_cancelable_error"
             />
         </Row>
-        <H5>
-            with an action button
-            <BtnLink onClick={linkTo('Notifications', 'Notification with CTA')}>
-                {'<Notification actions={[...]} cancelable/>'}
-            </BtnLink>
-        </H5>
+        <H5>with an action button</H5>
         <Row>
             <StyledNotification
                 variant="info"
@@ -170,12 +145,7 @@ storiesOf('Notifications', module).add('All', () => (
             />
         </Row>
 
-        <H5>
-            with an action in progress
-            <BtnLink onClick={linkTo('Notifications', 'Notification with CTA')}>
-                {'<Notification actions={[...]} cancelable/>'}
-            </BtnLink>
-        </H5>
+        <H5>with an action in progress</H5>
         <Row>
             <StyledNotification
                 variant="info"

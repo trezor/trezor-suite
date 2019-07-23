@@ -14,7 +14,6 @@
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
-        "postinstall": "electron-builder install-app-deps",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
     },
@@ -72,7 +71,6 @@
         "@types/react-redux": "^7.0.8",
         "electron": "^4.1.0",
         "electron-builder": "^20.41.0",
-        "electron-installer-dmg": "^2.0.0",
         "electron-packager": "^13.1.1",
         "electron-winstaller": "^3.0.4",
         "git-revision-webpack-plugin": "^3.0.3",

@@ -1,6 +1,7 @@
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as routerUtils from '@suite-utils/router';
 import { Action } from '@suite-types/index';
+import produce from 'immer';
 
 interface Params {
     [key: string]: string;
@@ -33,10 +34,11 @@ const onLocationChange = (url: string) => {
 };
 
 export default (state: RouterState = initialState, action: Action): RouterState => {
-    switch (action.type) {
-        case LOCATION_CHANGE:
-            return onLocationChange(action.url);
-        default:
-            return state;
-    }
+    return produce(state, _draft => {
+        switch (action.type) {
+            case LOCATION_CHANGE:
+                return onLocationChange(action.url);
+            // no default
+        }
+    });
 };

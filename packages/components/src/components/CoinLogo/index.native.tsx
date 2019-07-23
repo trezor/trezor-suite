@@ -31,17 +31,26 @@ const Logo = styled.Image``;
 
 interface Props {
     network: string;
+    height: number | string;
 }
 
-const CoinLogo = ({ network, ...rest }: Props) => {
+const CoinLogo = ({ network, height = 50, ...rest }: Props) => {
     return (
-        // eslint-disable-next-line import/no-dynamic-require(
-        <Logo source={LOGOS.xtz} {...rest} />
+        <Logo
+            source={LOGOS[network]}
+            style={{
+                width: height,
+                height,
+            }}
+            resizeMode="contain"
+            {...rest}
+        />
     );
 };
 
 CoinLogo.propTypes = {
     network: PropTypes.string,
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 export default CoinLogo;

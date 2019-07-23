@@ -2,7 +2,6 @@
   "name": "@trezor/rollout",
   "version": "1.0.0",
   "author": "Trezor <info@trezor.io>",
-  "private": true,
   "keywords": [
     "Trezor",
     "trezor-rollout",

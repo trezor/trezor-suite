@@ -2,16 +2,24 @@ import { Dispatch, GetState } from '@suite-types/index';
 import TrezorConnect from 'trezor-connect';
 import { validateAddress } from '@suite/utils/wallet/ethUtils';
 import { NOTIFICATION } from '@wallet-actions/constants';
-import messages from '@wallet-components/notifications/actions.messages';
+import messages from '@wallet-components/Notifications/actions.messages';
 import { SIGN_VERIFY } from './constants';
+
+type inputNameType =
+    | 'signAddress'
+    | 'signMessage'
+    | 'signSignature'
+    | 'verifyAddress'
+    | 'verifyMessage'
+    | 'verifySignature';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
     | { type: typeof SIGN_VERIFY.CLEAR_SIGN }
     | { type: typeof SIGN_VERIFY.CLEAR_VERIFY }
-    | { type: typeof SIGN_VERIFY.INPUT_CHANGE; inputName: string; value: string }
-    | { type: typeof SIGN_VERIFY.TOUCH; inputName: string }
-    | { type: typeof SIGN_VERIFY.ERROR; inputName: string; message?: string };
+    | { type: typeof SIGN_VERIFY.INPUT_CHANGE; inputName: inputNameType; value: string }
+    | { type: typeof SIGN_VERIFY.TOUCH; inputName: inputNameType }
+    | { type: typeof SIGN_VERIFY.ERROR; inputName: inputNameType; message?: string };
 
 const sign = (path: [number], message: string, hex: boolean = false) => async (
     dispatch: Dispatch,
@@ -108,7 +116,7 @@ const verify = (
     }
 };
 
-const inputChange = (inputName: string, value: string) => (dispatch: Dispatch): void => {
+const inputChange = (inputName: inputNameType, value: string) => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
         inputName,

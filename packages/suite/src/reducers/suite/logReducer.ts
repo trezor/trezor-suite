@@ -45,8 +45,7 @@ export default (state: State = initialState, action: Action): State => {
                 draft.copied = false;
                 break;
 
-            default:
-                return state;
+            // no default
         }
     });
 };

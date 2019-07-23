@@ -4,7 +4,6 @@ import { Button, ButtonPin, H1, H5, colors, icons } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
-import { linkTo } from '@storybook/addon-links';
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -20,26 +19,9 @@ const Row = styled.div`
     }
 `;
 
-const BtnLink = styled.button`
-    font-size: 1rem;
-    color: ${colors.TEXT_SECONDARY};
-    vertical-align: middle;
-    background: ${colors.LANDING};
-    padding: 0.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-        color: ${colors.TEXT};
-    }
-`;
-
 storiesOf('Buttons', module).add('All', () => (
     <Wrapper>
-        <H1>
-            Basic <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button />'}</BtnLink>
-        </H1>
+        <H1>Basic </H1>
         <Row>
             <Button variant="success" data-test="button_basic_success">
                 Button
@@ -66,10 +48,7 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
 
-        <H5>
-            with an icon{' '}
-            <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button icon="PLUS" />'}</BtnLink>
-        </H5>
+        <H5>with an icon</H5>
         <Row>
             <Button icon="PLUS" variant="success" data-test="button_icon_success">
                 Button
@@ -96,10 +75,7 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
 
-        <H5>
-            with loading{' '}
-            <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isLoading />'}</BtnLink>
-        </H5>
+        <H5>with loading </H5>
         <Row>
             <Button isLoading variant="success" data-test="button_loading_success">
                 Button
@@ -126,10 +102,7 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
 
-        <H1>
-            Inverse{' '}
-            <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isInverse />'}</BtnLink>
-        </H1>
+        <H1>Inverse </H1>
         <Row>
             <Button isInverse variant="success" data-test="button_inverse_success">
                 Button
@@ -156,12 +129,7 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
 
-        <H5>
-            with an icon{' '}
-            <BtnLink onClick={linkTo('Buttons', 'Button')}>
-                {'<Button isInverse icon="PLUS" />'}
-            </BtnLink>
-        </H5>
+        <H5>with an icon </H5>
         <Row>
             <Button isInverse icon="PLUS" variant="success" data-test="button_inverse_icon_success">
                 Button
@@ -188,12 +156,7 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
 
-        <H5>
-            with loading{' '}
-            <BtnLink onClick={linkTo('Buttons', 'Button')}>
-                {'<Button isInverse isLoading />'}
-            </BtnLink>
-        </H5>
+        <H5>with loading </H5>
         <Row>
             <Button
                 isInverse
@@ -234,9 +197,7 @@ storiesOf('Buttons', module).add('All', () => (
                 Disabled
             </Button>
         </Row>
-        <H1>
-            Pin <BtnLink onClick={linkTo('Buttons', 'Button Pin')}>{'<ButtonPin />'}</BtnLink>
-        </H1>
+        <H1>Pin</H1>
         <Row>
             <ButtonPin onClick={() => {}} />
         </Row>

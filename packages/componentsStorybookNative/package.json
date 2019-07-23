@@ -8,13 +8,13 @@
     "start:clean": "yarn workspace componentsStorybookNative clean && yarn workspace componentsStorybookNative start -- --reset-cache",
     "suite:dev:ios": "yarn workspace componentsStorybookNative dev:ios",
     "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*",
-    "test": "jest",
-    "lint": "echo \"no lint script specified\" && exit 0"
+    "test": "jest"
   },
   "dependencies": {
     "@trezor/components": "1.0.0",
     "react": "16.8.6",
-    "react-native": "0.59.4"
+    "react-native": "0.59.4",
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",

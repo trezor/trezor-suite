@@ -33,7 +33,7 @@ components-storybook build:
     name: components-build-files
     expire_in: 15 minutes
     paths:
-      - packages/components-storybook/build
+      - packages/components-storybook/.build
 
 components-storybook deploy dev:
   stage: deploy
@@ -59,7 +59,7 @@ components-storybook deploy dev:
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    - rsync --delete -va .build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   tags:
     - deploy
