@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Platform } from 'react-native';
 import RNPickerSelect, { Item, PickerProps } from 'react-native-picker-select';
-import Icon from '../Icon';
-import colors from '../../config/colors';
-import { Omit } from '../../support/types';
+import Icon from '../../Icon';
+import colors from '../../../config/colors';
+import { Omit } from '../../../support/types';
 
 interface Props extends Omit<PickerProps, 'items' | 'placeholder'> {
     onChange: () => void;
