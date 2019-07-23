@@ -9,7 +9,7 @@
    },
    "getBlockHash": {
       "data": {
-         "blockHash": "000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943"
+         "hash": "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048"
       }
    },
    "subscribeNewBlock": {
