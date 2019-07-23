@@ -5,6 +5,7 @@
   "homepage": "https://github.com/trezor/connect",
   "description": "High-level javascript interface for Trezor hardware wallet.",
   "license": "SEE LICENSE IN LICENSE.md",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git://github.com/trezor/connect.git"
