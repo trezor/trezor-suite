@@ -143,6 +143,7 @@ const create = async type => {
     server.on('ripple_server_info', request => sendResponse(request));
     server.on('ripple_account_info', request => sendResponse(request));
     server.on('ripple_account_tx', request => sendResponse(request));
+    server.on('ripple_submit', request => sendResponse(request));
 
     // Public methods
 

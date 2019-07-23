@@ -50,5 +50,10 @@
         "ledger_hash": "FDFA9E459F54932F2713F6728A6102E8255C3C8441C717CD7689AD0C38F228AD",
         "ledger_index": 48356306,
         "validated": true
+    },
+    "submit": {
+        "status": "error",
+        "type": "response",
+        "error": "Some error"
     }
  }

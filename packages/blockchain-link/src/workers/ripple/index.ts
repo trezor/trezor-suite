@@ -363,7 +363,9 @@ const pushTransaction = async (
             common.response({
                 id: data.id,
                 type: RESPONSES.PUSH_TRANSACTION,
-                payload: info.resultMessage,
+                // payload: info.resultMessage,
+                // @ts-ignore: TODO: this param is not typed in RippleApi
+                payload: info.tx_json.hash,
             });
         } else {
             common.errorHandler({ id: data.id, error: { message: info.resultMessage } });

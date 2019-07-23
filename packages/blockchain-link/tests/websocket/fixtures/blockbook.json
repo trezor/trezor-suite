@@ -47,5 +47,12 @@
    },
    "getAccountUtxo": {
       "data": []
+   },
+   "sendTransaction": {
+      "data": {
+         "error": {
+            "message": "-22: TX decode failed"
+         }
+      }
    }
 }
