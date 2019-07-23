@@ -12,7 +12,8 @@
                     "reserve_inc_xrp": 5,
                     "hash": "1",
                     "seq": 1
-                }
+                },
+                "load_factor": 1
             }
         }
     },

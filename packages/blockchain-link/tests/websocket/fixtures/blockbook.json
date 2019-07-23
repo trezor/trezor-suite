@@ -54,5 +54,8 @@
             "message": "-22: TX decode failed"
          }
       }
+   },
+   "estimateFee": {
+      "data": []
    }
 }
