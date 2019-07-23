@@ -7,6 +7,7 @@ import { AppState } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { settingsActions as WalletSettingsActions } from '@wallet-actions/settingsActions';
+import { TransactionAction as WalletTransactionActions } from '@wallet-actions/transactionActions';
 import { NotificationActions as WalletNotificationActions } from '@wallet-actions/notificationActions';
 import { SignVerifyAction as WalletSignVerifyAction } from '@wallet-actions/signVerifyActions';
 import { ModalActions } from '@suite-actions/modalActions';
@@ -34,6 +35,7 @@ export type WalletActions =
     | WalletSignVerifyAction
     | WalletNotificationActions
     | WalletTokenAction
+    | WalletTransactionActions
     | FiatRateAction;
 
 // all actions from all apps
