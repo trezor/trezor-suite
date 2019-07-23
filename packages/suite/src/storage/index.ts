@@ -32,7 +32,6 @@ const isIndexedDBAvailable = () => {
     return false;
 };
 
-// TODO: implement upgrade
 const onUpgrade = (
     db: IDBPDatabase<MyDBV1>,
     oldVersion: number,
@@ -51,12 +50,7 @@ const onUpgrade = (
 const getDB = async () => {
     if (!db) {
         db = await openDB<MyDBV1>('trezor-suite', VERSION, {
-            upgrade(
-                db,
-                oldVersion,
-                newVersion,
-                transaction,
-            ) {
+            upgrade(db, oldVersion, newVersion, transaction) {
                 // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
                 onUpgrade(db, oldVersion, newVersion, transaction);
             },
@@ -71,12 +65,13 @@ const getDB = async () => {
     return db;
 };
 
-const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
+export const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
     const db = await getDB();
-    await db.add('txs', transaction);
+    const result = await db.add('txs', transaction);
+    return result;
 };
 
-const addTransactions = async (transactions: MyDBV1['txs']['value'][]) => {
+export const addTransactions = async (transactions: MyDBV1['txs']['value'][]) => {
     const db = await getDB();
     const tx = db.transaction('txs', 'readwrite');
 
@@ -86,8 +81,8 @@ const addTransactions = async (transactions: MyDBV1['txs']['value'][]) => {
     await tx.done;
 };
 
-const getTransaction = async (txId: string) => {
-    const db = await getDB();    
+export const getTransaction = async (txId: string) => {
+    const db = await getDB();
     const tx = db.transaction('txs');
     const txIdIndex = tx.store.index('txId');
     // find the tx with txID
@@ -97,7 +92,7 @@ const getTransaction = async (txId: string) => {
     }
 };
 
-const getTransactions = async (accountId: number) => {
+export const getTransactions = async (accountId?: number) => {
     const db = await getDB();
     const tx = db.transaction('txs');
     if (accountId) {
@@ -105,17 +100,20 @@ const getTransactions = async (accountId: number) => {
         const accountIdIndex = tx.store.index('accountId');
         const txs = await accountIdIndex.getAll(IDBKeyRange.only(accountId));
         return txs;
-    } else {
-        // return all txs
-        const txs = await tx.store.getAll();
-        return txs;
     }
-    
+    // return all txs
+    const txs = await tx.store.getAll();
+    return txs;
+};
+
+export const removeTransaction = async (txId: string) => {
+    const db = await getDB();
+    const tx = db.transaction('txs', 'readwrite');
+    await tx.store.delete(txId);
 };
 
 const load = async () => {
     if (!isIndexedDBAvailable()) {
         console.warn('IndexedDB not supported');
-        return;
     }
 };

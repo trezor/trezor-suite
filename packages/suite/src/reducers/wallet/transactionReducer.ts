@@ -19,8 +19,9 @@ export default (state: State = initialState, action: Action): State => {
             case TRANSACTION.REMOVE:
                 draft.splice(draft.findIndex(tx => tx.txId === action.txId), 1);
                 break;
-            default:
-                break;
+            case TRANSACTION.FROM_STORAGE:
+                return action.transactions;
+            // no default
         }
     });
 };

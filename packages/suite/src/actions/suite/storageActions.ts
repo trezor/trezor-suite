@@ -1,4 +1,6 @@
 import { Dispatch, GetState, AppState } from '@suite-types/index';
+import * as transactionActions from '@wallet-actions/transactionActions';
+import * as db from '@suite/storage';
 import { STORAGE } from './constants/index';
 
 export type StorageActions =
@@ -7,6 +9,11 @@ export type StorageActions =
     | { type: typeof STORAGE.ERROR; error: any };
 
 export const load = () => async (dispatch: Dispatch, getState: GetState) => {
+    //  load transactions from indexedDB
+    const txs = await db.getTransactions();
+    // @ts-ignore
+    dispatch(transactionActions.fromStorage(txs));
+
     // TODO: load state from indexed db
     const state: AppState = await new Promise(resolve => {
         setTimeout(() => {
@@ -18,7 +25,7 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
                     loaded: true,
                 },
             });
-        }, 1000);
+        }, 100);
     });
 
     return dispatch({
