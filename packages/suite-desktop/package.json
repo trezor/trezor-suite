@@ -14,7 +14,6 @@
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
-        "postinstall": "electron-builder install-app-deps",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
     },
@@ -31,8 +30,7 @@
             "package.json"
         ],
         "dmg": {
-            "contents": [
-                {
+            "contents": [{
                     "x": 410,
                     "y": 150,
                     "type": "link",
