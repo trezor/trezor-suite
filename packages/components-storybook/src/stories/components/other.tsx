@@ -202,7 +202,7 @@ storiesOf('Other', module).add('All', () => (
                 return (
                     <Item key={coin}>
                         <Title>{coin}</Title>
-                        <CoinLogo height="23" network={coin} data-test={test} />
+                        <CoinLogo size={32} network={coin} data-test={test} />
                     </Item>
                 );
             })}

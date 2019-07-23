@@ -66,7 +66,7 @@ const Other = () => {
                     return (
                         <Item key={coin}>
                             <Title>{coin}</Title>
-                            <CoinLogo height={64} network={coin} />
+                            <CoinLogo size={64} network={coin} />
                         </Item>
                     );
                 })}

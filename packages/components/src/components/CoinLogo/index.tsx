@@ -1,6 +1,5 @@
 /* eslint-disable global-require */
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import AdaCoin from './coins/ada';
@@ -52,11 +51,12 @@ const LOGOS: { [key: string]: any } = {
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     network: string;
     className?: string;
+    size?: number;
 }
 
-const CoinLogo = ({ network, className, ...rest }: Props) => {
+const CoinLogo = ({ network, className, size = 32, ...rest }: Props) => {
     const Component = LOGOS[network];
-    return <Component width={32} height={32} />;
+    return <Component className={className} width={size} height={size} {...rest} />;
 };
 
 CoinLogo.propTypes = {

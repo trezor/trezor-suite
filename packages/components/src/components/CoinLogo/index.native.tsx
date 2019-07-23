@@ -50,12 +50,12 @@ const LOGOS: { [key: string]: any } = {
 
 interface Props {
     network: string;
-    height: number | string;
+    size: number | string;
 }
 
-const CoinLogo = ({ network, height = 50, ...rest }: Props) => {
+const CoinLogo = ({ network, size = 32, ...rest }: Props) => {
     const Component = LOGOS[network];
-    return <Component height={height} width={height} />;
+    return <Component height={size} width={size} />;
 };
 
 CoinLogo.propTypes = {
