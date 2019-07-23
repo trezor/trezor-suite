@@ -113,9 +113,12 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getBlockHash(): Promise<ResponseTypes.GetBlockHash['payload']> {
+    async getBlockHash(
+        payload: MessageTypes.GetBlockHash['payload']
+    ): Promise<ResponseTypes.GetBlockHash['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_BLOCK_HASH,
+            payload,
         });
     }
 

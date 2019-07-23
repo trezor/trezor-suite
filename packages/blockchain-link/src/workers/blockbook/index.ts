@@ -89,6 +89,20 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     }
 };
 
+const getBlockHash = async (data: { id: number } & MessageTypes.GetBlockHash): Promise<void> => {
+    try {
+        const socket = await connect();
+        const info = await socket.getBlockHash(data.payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_BLOCK_HASH,
+            payload: info.hash,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const getAccountInfo = async (
     data: { id: number } & MessageTypes.GetAccountInfo
 ): Promise<void> => {
@@ -357,6 +371,9 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.GET_INFO:
             getInfo(data);
+            break;
+        case MESSAGES.GET_BLOCK_HASH:
+            getBlockHash(data);
             break;
         case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);

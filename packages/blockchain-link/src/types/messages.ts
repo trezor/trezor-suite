@@ -16,6 +16,7 @@ export interface GetInfo {
 
 export interface GetBlockHash {
     type: typeof MESSAGES.GET_BLOCK_HASH;
+    payload: number;
 }
 
 export interface GetAccountInfo {
@@ -105,6 +106,7 @@ export type Message =
     | ({ id: number } & Connect)
     | ({ id: number } & Disconnect)
     | ({ id: number } & GetInfo)
+    | ({ id: number } & GetBlockHash)
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)

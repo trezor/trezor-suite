@@ -14,7 +14,7 @@ export interface ServerInfo {
 }
 
 export interface BlockHash {
-    blockHash: string;
+    hash: string;
 }
 
 export interface AccountInfoParams {
