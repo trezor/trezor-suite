@@ -68,7 +68,6 @@
         "react": "16.8.6",
         "react-docgen-typescript-loader": "^3.1.0",
         "react-dom": "16.8.6",
-        "react-native": "^0.59.4",
         "react-router-dom": "^5.0.0",
         "start-server-and-test": "^1.9.0",
         "storybook-react-router": "^1.0.5",
