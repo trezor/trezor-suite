@@ -28,7 +28,7 @@ class MyWorker {
     onmessage = undefined;
 
     terminate() {
-        global.onmessage({ data: { type: 'terminate' } } );
+        global.onmessage({ data: { type: 'terminate' } });
         currentWorker = null;
     }
 }
