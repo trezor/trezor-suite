@@ -35,7 +35,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
         "styled-components": "^4.3.2",
-        "trezor-connect": "./trezor-connect-lib"
+        "trezor-connect": "../../trezor-connect-lib"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",
