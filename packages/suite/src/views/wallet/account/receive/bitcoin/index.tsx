@@ -15,7 +15,7 @@ const BitcoinReceive = () => (
             <FormattedMessage {...messages.TR_RECEIVE_BITCOIN} />
         </Title>
         <VerifyAddressInput />
-        <QrCode />
+        <QrCode value="2121212" />
     </Wrapper>
 );
 

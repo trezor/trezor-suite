@@ -16,7 +16,7 @@ const EthereumReceive = () => (
             <FormattedMessage {...messages.TR_RECEIVE_ETHEREUM_OR_TOKENS} />
         </Title>
         <VerifyAddressInput />
-        <QrCode />
+        <QrCode value="2121212" />
     </Wrapper>
 );
 

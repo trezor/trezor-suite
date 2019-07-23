@@ -15,7 +15,7 @@ const RippleReceive = () => (
             <FormattedMessage {...messages.TR_RECEIVE_RIPPLE} />
         </Title>
         <VerifyAddressInput />
-        <QrCode />
+        <QrCode value="2121212" />
     </Wrapper>
 );
 
