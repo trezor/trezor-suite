@@ -164,7 +164,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 // Ripple js api doesn't support "ledger_index": "current", which will fetch data from mempool
 const getMempoolAccountInfo = async (
     account: string
-): Promise<{ xrpBalance: string; sequence: number }> => {
+): Promise<{ xrpBalance: string; sequence: number; txs: number }> => {
     const api = await connect();
     const info = await api.request('account_info', {
         account,
@@ -174,6 +174,7 @@ const getMempoolAccountInfo = async (
     return {
         xrpBalance: info.account_data.Balance,
         sequence: info.account_data.Sequence,
+        txs: info.queue_data ? info.queue_data.txn_count : 0,
     };
 };
 
@@ -208,8 +209,7 @@ const getAccountInfo = async (
         // tokens: [], // XRP tokens are not implemented in Trezor firmware
         history: {
             // default history
-            total: 0,
-            tokens: 0,
+            total: -1,
             unconfirmed: 0,
             transactions: undefined,
         },
@@ -256,8 +256,11 @@ const getAccountInfo = async (
     // get mempool information
     try {
         const mempoolInfo = await getMempoolAccountInfo(payload.descriptor);
-        account.availableBalance = mempoolInfo.xrpBalance; // TODO: balance - reserve?
+        account.availableBalance = new BigNumber(mempoolInfo.xrpBalance)
+            .minus(account.misc.reserve)
+            .toString();
         account.misc.sequence = mempoolInfo.sequence;
+        account.history.unconfirmed = mempoolInfo.txs;
     } catch (error) {
         // do not throw error for mempool (ledger_index: "current")
         // mainnet sometimes return "error": "noNetwork", "error_message": "InsufficientNetworkMode",

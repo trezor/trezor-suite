@@ -199,7 +199,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         const { data } = event;
 
         if (data.id === -1) {
-            this.onEvent(event);
+            this.onEvent(data);
             return;
         }
 
@@ -215,17 +215,14 @@ class BlockchainLink extends EventEmitter implements Emitter {
         this.deferred = this.deferred.filter(d => d !== dfd);
     };
 
-    onEvent: (event: { data: ResponseTypes.Response }) => void = event => {
-        if (!event.data) return;
-        const { data } = event;
-
+    onEvent: (data: ResponseTypes.Response) => void = data => {
         if (data.type === RESPONSES.CONNECTED) {
             this.emit('connected');
-        } else if (data.type === RESPONSES.DISCONNECTED) {
+        }
+        if (data.type === RESPONSES.DISCONNECTED) {
             this.emit('disconnected');
-        } else if (data.type === RESPONSES.ERROR) {
-            this.emit('error', data.payload);
-        } else if (data.type === RESPONSES.NOTIFICATION) {
+        }
+        if (data.type === RESPONSES.NOTIFICATION) {
             this.emit(data.payload.type, data.payload.payload);
         }
     };
