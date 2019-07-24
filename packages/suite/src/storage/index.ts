@@ -1,25 +1,29 @@
 import { openDB, DBSchema, IDBPDatabase, IDBPTransaction, deleteDB, wrap, unwrap } from 'idb';
+import { migrate } from '@suite/storage/migrations';
 
-const VERSION = 1;
+const VERSION = 9;
 let db: IDBPDatabase<MyDBV1>;
 // we create only one broadcast channel, so the sender tab won't receive its own messages
 let broadcastChannel: BroadcastChannel;
 
 // TODO: for typing migration/upgrade functions look at https://github.com/jakearchibald/idb#typescript
-interface MyDBV1 extends DBSchema {
+
+export interface WalletTransaction {
+    id?: number;
+    accountId: number;
+    txId: string;
+    timestamp: number;
+    details: {
+        name: string;
+        price: number;
+        productCode: string;
+    };
+}
+export interface MyDBV1 extends DBSchema {
     txs: {
         key: string;
-        value: {
-            id?: number;
-            accountId: number;
-            txId: string;
-            details: {
-                name: string;
-                price: number;
-                productCode: string;
-            };
-        };
-        indexes: { txId: string; accountId: number };
+        value: WalletTransaction;
+        indexes: { txId: string; accountId: number; timestamp: number };
     };
 }
 
@@ -40,7 +44,7 @@ export const onChange = (handler: (event: MessageEvent) => any) => {
     broadcastChannel.onmessage = handler;
 };
 
-const onUpgrade = (
+const onUpgrade = async (
     db: IDBPDatabase<MyDBV1>,
     oldVersion: number,
     newVersion: number | null,
@@ -50,9 +54,18 @@ const onUpgrade = (
     console.log('upgrade');
     console.log(oldVersion);
     console.log(newVersion);
-    const store = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
-    store.createIndex('txId', 'txId', { unique: true });
-    store.createIndex('accountId', 'accountId', { unique: false });
+
+    const shouldInitDB = oldVersion === 0;
+
+    if (shouldInitDB) {
+        // init db
+        const store = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('txId', 'txId', { unique: true });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+        store.createIndex('accountId', 'accountId', { unique: false });
+    } else {
+        migrate(db, oldVersion, newVersion, transaction);
+    }
 };
 
 const getDB = async () => {

@@ -1,7 +1,6 @@
 import { Dispatch, GetState, AppState } from '@suite-types/index';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as db from '@suite/storage';
-import { onChange } from '@suite/storage';
 import { STORAGE } from './constants/index';
 
 export type StorageActions =
@@ -29,7 +28,8 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
         }, 100);
     });
 
-    onChange(event => {
+    // listen on db changes
+    db.onChange(event => {
         console.log(event);
         const message = event.data;
         console.log('A message occurred', message);

@@ -15,7 +15,19 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
     switch (action.type) {
         case TRANSACTION.ADD:
             console.log('adding to indexedDB');
-            db.addTransaction(action.transaction);
+            try {
+                db.addTransaction(action.transaction)
+                    .then(() => {
+                        console.log('doneee');
+                    })
+                    .catch(error => {
+                        console.log('omg');
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.log('kačujem');
+                console.log(error);
+            }
             // api.dispatch(transactionActions.add(action.transaction));
             break;
         case TRANSACTION.REMOVE:

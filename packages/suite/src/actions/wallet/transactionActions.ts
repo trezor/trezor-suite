@@ -1,24 +1,16 @@
 import { TRANSACTION } from '@wallet-actions/constants/index';
 
 import { Dispatch } from '@suite-types/index';
-
-export interface Transaction {
-    id?: number;
-    accountId: number;
-    txId: string;
-    details: {
-        name: string;
-        price: number;
-        productCode: string;
-    };
-}
+import { WalletTransaction } from '@suite/storage';
 
 export type TransactionAction =
-    | { type: typeof TRANSACTION.ADD; transaction: Transaction }
+    | { type: typeof TRANSACTION.ADD; transaction: WalletTransaction }
     | { type: typeof TRANSACTION.REMOVE; txId: string }
-    | { type: typeof TRANSACTION.FROM_STORAGE; transactions: Transaction[] };
+    | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletTransaction[] };
 
-export const add = (transaction: Transaction) => async (dispatch: Dispatch): Promise<void> => {
+export const add = (transaction: WalletTransaction) => async (
+    dispatch: Dispatch,
+): Promise<void> => {
     // const tx: Transaction = {
     //     accountId: 0,
     //     txId: 'abc',
@@ -40,7 +32,7 @@ export const remove = (txId: string) => ({
     txId,
 });
 
-export const fromStorage = (transactions: Transaction[]) => ({
+export const fromStorage = (transactions: WalletTransaction[]) => ({
     type: TRANSACTION.FROM_STORAGE,
     transactions,
 });
