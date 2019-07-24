@@ -126,7 +126,7 @@ const connect = async (): Promise<RippleAPI> => {
     });
 
     try {
-        // @ts-ignore
+        // @ts-ignore: accessing private var _availableLedgerVersions
         const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-'); // eslint-disable-line no-underscore-dangle
         BLOCKS.MIN = parseInt(availableBlocks[0], 10);
         BLOCKS.MAX = parseInt(availableBlocks[1], 10);
@@ -256,9 +256,10 @@ const getAccountInfo = async (
     // get mempool information
     try {
         const mempoolInfo = await getMempoolAccountInfo(payload.descriptor);
-        account.availableBalance = new BigNumber(mempoolInfo.xrpBalance)
-            .minus(account.misc.reserve)
-            .toString();
+        const { misc } = account;
+        const reserve: string =
+            misc && typeof misc.reserve === 'string' ? misc.reserve : RESERVE.BASE;
+        account.availableBalance = new BigNumber(mempoolInfo.xrpBalance).minus(reserve).toString();
         account.misc.sequence = mempoolInfo.sequence;
         account.history.unconfirmed = mempoolInfo.txs;
     } catch (error) {

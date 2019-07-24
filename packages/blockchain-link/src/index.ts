@@ -37,7 +37,6 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
 
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
-        // eslint-disable-next-line no-param-reassign
         clearTimeout(timeout);
         delete settings.worker;
         worker.postMessage({
@@ -91,7 +90,6 @@ class BlockchainLink extends EventEmitter implements Emitter {
     }
 
     // Sending messages to worker
-    // @ts-ignore no-underscore-dangle
     async sendMessage<R>(message: any): Promise<R> {
         const worker = await this.getWorker();
         const dfd = createDeferred(this.messageId);
