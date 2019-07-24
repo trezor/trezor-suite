@@ -108,10 +108,10 @@ export const addTransactions = async (transactions: MyDBV1['txs']['value'][]) =>
 };
 
 export const getTransaction = async (txId: string) => {
+    // returns the tx with txID
     const db = await getDB();
     const tx = db.transaction('txs');
     const txIdIndex = tx.store.index('txId');
-    // find the tx with txID
     if (txId) {
         const tx = await txIdIndex.get(IDBKeyRange.only(txId));
         return tx;
@@ -119,10 +119,11 @@ export const getTransaction = async (txId: string) => {
 };
 
 export const getTransactions = async (accountId?: number) => {
+    // TODO: variant with cursor
+    // returns all txs belonging to accountId
     const db = await getDB();
     const tx = db.transaction('txs');
     if (accountId) {
-        // find all txs belonging to accountId
         const accountIdIndex = tx.store.index('accountId');
         const txs = await accountIdIndex.getAll(IDBKeyRange.only(accountId));
         return txs;
@@ -130,6 +131,16 @@ export const getTransactions = async (accountId?: number) => {
     // return all txs
     const txs = await tx.store.getAll();
     return txs;
+};
+
+export const updateTransaction = async (txId: string, timestamp: number) => {
+    const db = await getDB();
+    const tx = db.transaction('txs', 'readwrite');
+    const result = await tx.store.get(txId);
+    if (result) {
+        result.timestamp = timestamp;
+        tx.store.put(result);
+    }
 };
 
 export const removeTransaction = async (txId: string) => {

@@ -16,7 +16,8 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
         case TRANSACTION.ADD:
             console.log('adding to indexedDB');
             try {
-                db.addTransaction(action.transaction)
+                const req = db
+                    .addTransaction(action.transaction)
                     .then(() => {
                         console.log('doneee');
                     })
@@ -37,6 +38,13 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
             // @ts-ignore
             // api.dispatch(transactionActions.remove(action.txId));
             db.removeTransaction(action.txId);
+            break;
+        case TRANSACTION.UPDATE:
+            console.log('updating tx in indexedDB');
+            // https://stackoverflow.com/a/55321144
+            // https://stackoverflow.com/a/57102280
+            // @ts-ignore
+            db.updateTransaction(action.txId, action.timestamp);
             break;
         default:
             break;

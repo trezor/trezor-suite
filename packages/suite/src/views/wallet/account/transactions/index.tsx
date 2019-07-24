@@ -14,6 +14,7 @@ interface Props {
     wallet: AppState['wallet'];
     add: typeof transactionActions.add;
     remove: typeof transactionActions.remove;
+    update: typeof transactionActions.update;
 }
 
 const Transactions = (props: Props) => {
@@ -30,6 +31,7 @@ const Transactions = (props: Props) => {
                 onClick={() => {
                     props.add({
                         accountId: parseInt(params.accountId, 10),
+                        timestamp: Date.now(),
                         txId: 'abc',
                         details: {
                             name: 'label',
@@ -45,6 +47,7 @@ const Transactions = (props: Props) => {
                 onClick={() => {
                     props.add({
                         accountId: parseInt(params.accountId, 10),
+                        timestamp: Date.now(),
                         txId: Math.random()
                             .toString(36)
                             .substring(7),
@@ -71,6 +74,14 @@ const Transactions = (props: Props) => {
                         >
                             X
                         </Button>
+                        <Button
+                            onClick={() => {
+                                props.update(tx.txId);
+                            }}
+                            variant="error"
+                        >
+                            update
+                        </Button>
                     </div>
                 );
             })}
@@ -87,6 +98,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     add: bindActionCreators(transactionActions.add, dispatch),
     remove: bindActionCreators(transactionActions.remove, dispatch),
+    update: bindActionCreators(transactionActions.update, dispatch),
 });
 
 export default connect(
