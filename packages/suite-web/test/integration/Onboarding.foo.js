@@ -1,9 +1,11 @@
+// bla
 describe('Onboarding', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).visit('/');
     });
 
     it(`test root onboarding page is online`, () => {
+        // todo: this does not work. it does not recongize we want "client side routing"
         cy.visit('/onboarding')
             .get('html')
             .should('be.visible');
