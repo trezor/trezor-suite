@@ -60,6 +60,18 @@ const { COINS } = variables;
 const Other = () => {
     return (
         <Wrapper>
+            <H1>Icons</H1>
+            <Icons>
+                {Object.keys(icons).map(icon => {
+                    return (
+                        <Item key={icon}>
+                            <Title>{icon}</Title>
+                            <Icon icon={icons[icon]} size={100} />
+                        </Item>
+                    );
+                })}
+            </Icons>
+
             <H1>Coins</H1>
             <Icons>
                 {COINS.map((coin: string) => {
@@ -71,6 +83,7 @@ const Other = () => {
                     );
                 })}
             </Icons>
+
             <H1>Prompt</H1>
             <H5>Trezor One</H5>
             <Col>
@@ -158,18 +171,6 @@ const Other = () => {
                     data-test="loader_white_text_transparent"
                 />
             </ColDark>
-
-            <H1>Icons</H1>
-            <Icons>
-                {Object.keys(icons).map(icon => {
-                    return (
-                        <Item key={icon}>
-                            <Title>{icon}</Title>
-                            <Icon icon={icons[icon]} />
-                        </Item>
-                    );
-                })}
-            </Icons>
         </Wrapper>
     );
 };
