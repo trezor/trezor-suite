@@ -1,7 +1,8 @@
 // import BigNumber from 'bignumber.js';
 // import { GetServerInfoResponse } from 'ripple-lib';
-
+import { RippleError } from 'ripple-lib/dist/npm/common/errors';
 import { Transaction } from '../../types/common';
+import { CustomError } from '../../constants/errors';
 
 // export const transformServerInfo = (payload: GetServerInfoResponse) => {
 export const transformServerInfo = (payload: any) => {
@@ -14,6 +15,16 @@ export const transformServerInfo = (payload: any) => {
         blockHeight: payload.validatedLedger.ledgerVersion,
         blockHash: payload.validatedLedger.hash,
     };
+};
+
+export const transformError = (error: any) => {
+    if (error instanceof RippleError) {
+        const code =
+            error.name === 'TimeoutError' ? 'websocket_timeout' : 'websocket_error_message';
+        const message = `${error.name} ${error.data ? error.data.error_message : ''}`;
+        return new CustomError(code, message);
+    }
+    return error;
 };
 
 // export const concatTransactions = (

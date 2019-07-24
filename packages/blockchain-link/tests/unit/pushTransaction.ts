@@ -1,10 +1,10 @@
 import createServer from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
-import fixtures from './fixtures/getInfo';
+import fixtures from './fixtures/pushTransaction';
 
 workers.forEach(instance => {
-    describe(`getInfo: ${instance.name}`, () => {
+    describe(`pushTransaction: ${instance.name}`, () => {
         let server: any;
         let blockchain: BlockchainLink;
 
@@ -30,7 +30,7 @@ workers.forEach(instance => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
                 try {
-                    const response = await blockchain.getInfo();
+                    const response = await blockchain.pushTransaction(f.params);
                     expect(response).toEqual(f.response);
                 } catch (error) {
                     expect(error.message).toEqual(f.error);

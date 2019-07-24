@@ -9,8 +9,8 @@ import fixtures from './fixtures/subscribe';
 
 workers.forEach(instance => {
     describe(`Subscriptions ${instance.name}`, () => {
-        let server;
-        let blockchain;
+        let server: any;
+        let blockchain: BlockchainLink;
 
         const setup = async () => {
             server = await createServer(instance.name);
@@ -21,9 +21,10 @@ workers.forEach(instance => {
             });
         };
 
-        const teardown = () => {
+        const teardown = async () => {
+            await blockchain.disconnect();
             blockchain.dispose();
-            server.close();
+            await server.close();
         };
 
         describe('Compare subscribed addresses/accounts with server', () => {
@@ -32,6 +33,7 @@ workers.forEach(instance => {
 
             fixtures.addresses.forEach(f => {
                 it(f.description, async () => {
+                    // @ts-ignore No index signature
                     const s = await blockchain[f.method](f.params);
                     const subscribedAddresses = server.getAddresses();
                     const subscribed =
@@ -51,8 +53,8 @@ workers.forEach(instance => {
             fixtures.errors.forEach(f => {
                 it(f.description, async () => {
                     // server.setFixtures(f.server);
-
                     try {
+                        // @ts-ignore No index signature
                         await blockchain[f.method](f.params);
                     } catch (error) {
                         // expect(error.code).toEqual('blockchain_link/blockbook-websocket');
@@ -63,8 +65,8 @@ workers.forEach(instance => {
         });
 
         describe('Subscribe block', () => {
-            beforeEach(setup);
-            afterEach(teardown);
+            beforeAll(setup);
+            afterAll(teardown);
 
             it('Unsubscribe before subscription', async () => {
                 const resp = await blockchain.unsubscribe({ type: 'block' });

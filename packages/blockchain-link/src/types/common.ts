@@ -5,6 +5,9 @@ export interface BlockchainSettings {
     worker: string | Function;
     server: string[];
     debug?: boolean;
+    timeout?: number;
+    pingTimeout?: number;
+    keepAlive?: boolean;
 }
 
 /* Transaction */
@@ -41,6 +44,7 @@ export interface Transaction {
 
     targets: Target[];
     tokens: TokenTransfer[];
+    rbf?: boolean;
 }
 
 /* Account */
@@ -75,6 +79,7 @@ export interface AccountInfo {
     descriptor: string;
     balance: string;
     availableBalance: string;
+    empty: boolean;
     tokens?: TokenInfo[]; // ethereum tokens
     addresses?: AccountAddresses; // bitcoin addresses
     history: {

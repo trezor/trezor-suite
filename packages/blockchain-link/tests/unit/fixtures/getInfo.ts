@@ -47,7 +47,7 @@ export default {
                     },
                 },
             ],
-            error: 'Error msg',
+            error: 'RippledError Error msg',
         },
     ],
 };

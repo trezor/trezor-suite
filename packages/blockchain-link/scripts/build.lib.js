@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-fs.copyFile(path.resolve(__dirname, '../src/utils/ws.js'), path.resolve(__dirname, '../lib/utils/ws.js'), () => {});
-
+// fs.copyFile(path.resolve(__dirname, '../src/utils/ws.js'), path.resolve(__dirname, '../lib/utils/ws.js'), () => {});
 
 // import fs from 'fs'; // lint-disable-line import/no-extraneous-dependencies
 // import { resolve } from 'path';

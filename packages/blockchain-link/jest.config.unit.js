@@ -16,10 +16,11 @@ module.exports = {
     },
     moduleFileExtensions: ['js', 'ts', 'json'],
     testMatch: ['**/tests/unit/*.ts'],
+    // testMatch: ['**/tests/unit/subscribe.ts', '**/tests/unit/connection.ts'],
     coverageDirectory: './coverage/',
     collectCoverage: true,
     collectCoverageFrom: ['**/src/**/*.ts'],
-    modulePathIgnorePatterns: ['node_modules', '_old', 'src/types', 'src/ui', 'src/utils/ws.js'],
+    modulePathIgnorePatterns: ['node_modules', '_old', 'src/types', 'src/ui', 'src/utils/ws.ts'],
     setupFiles: ['./tests/setup.js'],
     transform: {
         '^.+\\.js$': 'babel-jest',

@@ -1,3 +1,4 @@
+// @ts-ignore tiny-worker types
 import * as TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
@@ -16,7 +17,7 @@ describe('Worker', () => {
     beforeEach(async () => {
         blockchain = new BlockchainLink({
             name: 'Tests:Blockbook',
-            worker: null,
+            worker: () => {},
             server: ['does-not-matter'],
             debug: false,
         });
@@ -31,8 +32,8 @@ describe('Worker', () => {
             global.Worker = () => {
                 const W = {
                     // eslint-disable-next-line no-unused-vars
-                    onmessage: d => {},
-                    postMessage: data => {
+                    onmessage: (_data: any) => {},
+                    postMessage: (data: any) => {
                         if (data.type === 'm_connect') {
                             W.onmessage({ data2: { id: 100, type: 'not-found' } });
                             W.onmessage({ data: { id: 100, type: 'not-found' } });
@@ -89,51 +90,46 @@ describe('Worker', () => {
         }
     });
 
-    /* this test takes too long */
-    // it('Worker error (handshake timeout)', async () => {
-    //     jest.setTimeout(31000);
-    //     console.info('Worker timeout - this test takes 30 sec.');
-    //     try {
-    //         blockchain.settings.worker = () => {
-    //             return {
-    //                 postMessage: () => {},
-    //             };
-    //         };
-    //         await blockchain.connect();
-    //     } catch (error) {
-    //         expect(error.code).toBe('blockchain_link/worker_timeout');
-    //         expect(error.message).toBe('Worker timeout');
-    //     }
-    // });
+    it('Worker error (handshake timeout)', async () => {
+        try {
+            blockchain.settings.timeout = 2500;
+            blockchain.settings.worker = () => {
+                return {
+                    postMessage: () => {},
+                };
+            };
+            await blockchain.connect();
+        } catch (error) {
+            expect(error.code).toBe('blockchain_link/worker_timeout');
+            expect(error.message).toBe('Worker timeout');
+        }
+    });
 
-    /* this test ends up with:
-    Jest did not exit one second after the test run has completed.
-    This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.
-    */
-    // it('Worker error (runtime before handshake)', async () => {
-    //     try {
-    //         blockchain.settings.worker = () => {
-    //             if (typeof Worker !== 'undefined') {
-    //                 const js =
-    //                     'self.onmessage=function(){var r=1/x;};self.postMessage({type:"m_handshake"});';
-    //                 const blob = new Blob([js], {
-    //                     type: 'application/javascript',
-    //                 });
-    //                 return new Worker(URL.createObjectURL(blob));
-    //             }
-    //             return new TinyWorker(() => {
-    //                 /* eslint-disable */
-    //                 setTimeout(() => {
-    //                     self.onerror(new Error('runtime error'));
-    //                 }, 3000)
-    //                 /* eslint-enable */
-    //             });
-    //         };
-    //         await blockchain.connect();
-    //     } catch (error) {
-    //         expect(error.code).toBe('blockchain_link/worker_runtime');
-    //     }
-    // });
+    it('Worker error (runtime before handshake)', async () => {
+        try {
+            blockchain.settings.worker = () => {
+                if (typeof Worker !== 'undefined') {
+                    const js =
+                        'self.onmessage=function(){var r=1/x;};self.postMessage({type:"m_handshake"});';
+                    const blob = new Blob([js], {
+                        type: 'application/javascript',
+                    });
+                    return new Worker(URL.createObjectURL(blob));
+                }
+                return new TinyWorker(() => {
+                    /* eslint-disable */
+                    setTimeout(() => {
+                        // @ts-ignore
+                        self.onerror(new Error('runtime error'));
+                    }, 1000)
+                    /* eslint-enable */
+                });
+            };
+            await blockchain.connect();
+        } catch (error) {
+            expect(error.code).toBe('blockchain_link/worker_runtime');
+        }
+    });
 
     it('Mocked window.Worker (runtime error BEFORE handshake and error without message)', async () => {
         if (typeof Worker === 'undefined') {
@@ -141,7 +137,7 @@ describe('Worker', () => {
                 const W = {
                     postMessage: () => {},
                     // eslint-disable-next-line no-unused-vars
-                    onerror: e => {},
+                    onerror: (_e: any) => {},
                 };
                 setTimeout(() => {
                     W.onerror('string error');
@@ -191,9 +187,9 @@ describe('Worker', () => {
             global.Worker = () => {
                 const W = {
                     // eslint-disable-next-line no-unused-vars
-                    onerror: e => {},
+                    onerror: (_e: any) => {},
                     // eslint-disable-next-line no-unused-vars
-                    onmessage: d => {},
+                    onmessage: (_data: any) => {},
                     postMessage: () => {
                         setTimeout(() => {
                             W.onerror('string error');

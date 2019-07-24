@@ -2,9 +2,7 @@ export default {
     blockbook: [
         {
             description: 'Not supported',
-            params: {
-                descriptor: 'A',
-            },
+            params: 'A',
             serverFixtures: [
                 {
                     method: 'getAccountUtxo',
@@ -24,10 +22,8 @@ export default {
         },
         {
             description: 'Testnet account with 1 utxo',
-            params: {
-                descriptor:
-                    'upub5Df5hVPH2yM4Khs85P8nkq3x9GRcvX3FgDitXDcqSJDXgMJjVmpWPRqwqHExjQcezkjDDyU1u3ij1wUPXHaYqRHehuGtBvSPzcocpKu3wUz',
-            },
+            params:
+                'upub5Df5hVPH2yM4Khs85P8nkq3x9GRcvX3FgDitXDcqSJDXgMJjVmpWPRqwqHExjQcezkjDDyU1u3ij1wUPXHaYqRHehuGtBvSPzcocpKu3wUz',
             serverFixtures: [
                 {
                     method: 'getAccountUtxo',
@@ -63,10 +59,8 @@ export default {
     ripple: [
         {
             description: 'getAccountUtxo - not implemented',
-            params: {
-                descriptor: 'A',
-            },
-            error: 'Unknown message type m_get_account_utxo',
+            params: 'A',
+            error: 'Unknown message type: m_get_account_utxo',
         },
     ],
 };

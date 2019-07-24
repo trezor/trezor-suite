@@ -35,7 +35,7 @@ export interface GetInfo {
 
 export interface GetBlockHash {
     type: typeof RESPONSES.GET_BLOCK_HASH;
-    payload: any;
+    payload: string;
 }
 
 export interface GetAccountInfo {
@@ -51,6 +51,7 @@ export interface Utxo {
     address: string;
     path: string;
     confirmations: number;
+    coinbase?: boolean;
 }
 
 export interface GetAccountUtxo {
@@ -105,7 +106,7 @@ export interface Notification {
 
 export interface PushTransaction {
     type: typeof RESPONSES.PUSH_TRANSACTION;
-    payload: any;
+    payload: string;
 }
 
 interface WithoutPayload {
@@ -121,6 +122,7 @@ export type Response =
     | ({ id: number } & Error)
     | ({ id: number } & Connect)
     | ({ id: number } & GetInfo)
+    | ({ id: number } & GetBlockHash)
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
