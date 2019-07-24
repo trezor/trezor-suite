@@ -11,8 +11,13 @@ export const migrate = async (
     console.log(`Migrating database from version ${oldVersion} to ${newVersion}`);
 
     // TODO: make separate file for each iterative migration
-    if (newVersion === 9 && oldVersion === newVersion - 1) {
-        // 1 => 2
+    if (oldVersion < 2) {
+        // upgrade to version 2
+    }
+    if (oldVersion < 3) {
+        // upgrade to version 3
+    }
+    if (oldVersion < 9) {
         // added timestamp field
         let cursor = await transaction.store.openCursor();
         while (cursor) {
