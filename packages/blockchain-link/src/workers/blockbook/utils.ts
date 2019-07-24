@@ -181,6 +181,7 @@ export const transformTransaction = (
         targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t)),
         tokens,
         rbf,
+        ethereumSpecific: tx.ethereumSpecific,
     };
 };
 
