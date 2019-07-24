@@ -239,9 +239,8 @@ storiesOf('Other', module)
                 coinsObject[coin] = coin;
             });
             const coinSelect = select('network', coinsObject, 'ada');
-            const width = number('width', NaN);
-            const height = number('height', 23);
-            return <CoinLogo {...(width ? { width } : {})} height={height} network={coinSelect} />;
+            const size = number('size', 32);
+            return <CoinLogo size={size} network={coinSelect} />;
         },
         {
             info: {
