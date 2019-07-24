@@ -97,4 +97,4 @@ const propTypes = {
 
 Select.propTypes = propTypes;
 
-export { Select };
+export default Select;
