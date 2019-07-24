@@ -1,7 +1,6 @@
-// disabled for now, hitting /onboarding route does not work in CI, it does not trigger application side routing
-describe.skip('Onboarding', () => {
+describe('Onboarding', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).visit('/onboarding');
+        cy.viewport(1024, 768).visit('/');
     });
 
     it(`test root onboarding page is online`, () => {
