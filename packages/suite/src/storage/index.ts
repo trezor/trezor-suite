@@ -2,12 +2,10 @@ import { openDB, DBSchema, IDBPDatabase, IDBPTransaction, deleteDB, wrap, unwrap
 
 const VERSION = 1;
 let db: IDBPDatabase<MyDBV1>;
-// react-native https://facebook.github.io/react-native/docs/asyncstorage.html
+// we create only one broadcast channel, so the sender tab won't receive its own messages
+let broadcastChannel: BroadcastChannel;
 
-// next.js https://medium.com/@filipvitas/indexeddb-with-promises-and-async-await-3d047dddd313
-
-// https://github.com/jakearchibald/idb#typescript
-
+// TODO: for typing migration/upgrade functions look at https://github.com/jakearchibald/idb#typescript
 interface MyDBV1 extends DBSchema {
     txs: {
         key: string;
@@ -32,6 +30,16 @@ const isIndexedDBAvailable = () => {
     return false;
 };
 
+export const notifyAboutChange = (message: any) => {
+    // sends the message to other tabs/windows
+    broadcastChannel.postMessage(message);
+};
+
+export const onChange = (handler: (event: MessageEvent) => any) => {
+    // listens to the channel. On receiving a message triggers the handler func
+    broadcastChannel.onmessage = handler;
+};
+
 const onUpgrade = (
     db: IDBPDatabase<MyDBV1>,
     oldVersion: number,
@@ -49,6 +57,7 @@ const onUpgrade = (
 
 const getDB = async () => {
     if (!db) {
+        // if global var db is not already set then open new connection
         db = await openDB<MyDBV1>('trezor-suite', VERSION, {
             upgrade(db, oldVersion, newVersion, transaction) {
                 // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
@@ -61,6 +70,9 @@ const getDB = async () => {
                 // Called if this connection is blocking a future version of the database from opening.
             },
         });
+
+        // create channel and store it to global var
+        broadcastChannel = new BroadcastChannel('storageChangeEvent');
     }
     return db;
 };
@@ -68,6 +80,7 @@ const getDB = async () => {
 export const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
     const db = await getDB();
     const result = await db.add('txs', transaction);
+    notifyAboutChange(result);
     return result;
 };
 
