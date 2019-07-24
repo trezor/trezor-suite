@@ -4,7 +4,7 @@ describe('Pages', () => {
     });
 
     it(`test root page is online`, () => {
-        cy.visit('/onboarding')
+        cy.visit('/')
             .get('html')
             .should('be.visible');
     });
