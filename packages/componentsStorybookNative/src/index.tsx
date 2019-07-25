@@ -22,7 +22,7 @@ const SelectWrapper = styled.View`
 
 export default class Components extends Component {
     state = {
-        option: 'typography',
+        option: 'other',
     };
 
     render() {

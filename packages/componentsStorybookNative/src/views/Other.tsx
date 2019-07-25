@@ -34,6 +34,8 @@ const ColDark = styled(Col)`
 
 const Icons = styled.View`
     flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     padding: 16px;
@@ -41,7 +43,10 @@ const Icons = styled.View`
 
 const Item = styled.View`
     flex: 1;
-    text-align: center;
+    flex-basis: 33%;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0 10px;
 `;
 
 const Title = styled.Text`
@@ -55,6 +60,17 @@ const { COINS } = variables;
 const Other = () => {
     return (
         <Wrapper>
+            <H1>Coins</H1>
+            <Icons>
+                {COINS.map((coin: string) => {
+                    return (
+                        <Item key={coin}>
+                            <Title>{coin}</Title>
+                            <CoinLogo size={64} network={coin} />
+                        </Item>
+                    );
+                })}
+            </Icons>
             <H1>Prompt</H1>
             <H5>Trezor One</H5>
             <Col>
@@ -150,18 +166,6 @@ const Other = () => {
                         <Item key={icon}>
                             <Title>{icon}</Title>
                             <Icon icon={icons[icon]} />
-                        </Item>
-                    );
-                })}
-            </Icons>
-
-            <H1>Coins</H1>
-            <Icons>
-                {COINS.map((coin: string) => {
-                    return (
-                        <Item key={coin}>
-                            <Title>{coin}</Title>
-                            <CoinLogo height={30} network={coin} />
                         </Item>
                     );
                 })}
