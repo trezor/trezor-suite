@@ -1,9 +1,10 @@
-import { openDB, DBSchema, IDBPDatabase, IDBPTransaction, deleteDB, wrap, unwrap } from 'idb';
+import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { migrate } from '@suite/storage/migrations';
 
 const VERSION = 9;
 let db: IDBPDatabase<MyDBV1>;
-// we create only one broadcast channel, so the sender tab won't receive its own messages
+// we reuse the same instance of broadcast channel for both sending the message
+// and setting a listener, so the sender tab (source) won't receive its own messages
 let broadcastChannel: BroadcastChannel;
 
 // TODO: for typing migration/upgrade functions look at https://github.com/jakearchibald/idb#typescript
@@ -19,12 +20,23 @@ export interface WalletTransaction {
         productCode: string;
     };
 }
+
 export interface MyDBV1 extends DBSchema {
     txs: {
         key: string;
         value: WalletTransaction;
         indexes: { txId: string; accountId: number; timestamp: number };
     };
+}
+
+export interface StorageUpdateMessage {
+    // TODO: only key strings from MyDBV1 should be allowed
+    store: keyof MyDBV1;
+    keys: string[];
+}
+
+export interface StorageMessageEvent extends MessageEvent {
+    data: StorageUpdateMessage;
 }
 
 const isIndexedDBAvailable = () => {
@@ -34,12 +46,16 @@ const isIndexedDBAvailable = () => {
     return false;
 };
 
-export const notifyAboutChange = (message: any) => {
-    // sends the message to other tabs/windows
+export const notify = (
+    store: StorageUpdateMessage['store'],
+    keys: StorageUpdateMessage['keys'],
+) => {
+    // sends the message containing store, keys which were updated to other tabs/windows
+    const message: StorageUpdateMessage = { store, keys };
     broadcastChannel.postMessage(message);
 };
 
-export const onChange = (handler: (event: MessageEvent) => any) => {
+export const onChange = (handler: (event: StorageMessageEvent) => any) => {
     // listens to the channel. On receiving a message triggers the handler func
     broadcastChannel.onmessage = handler;
 };
@@ -84,7 +100,7 @@ const getDB = async () => {
             },
         });
 
-        // create channel and store it to global var
+        // create global instance of broadcast channel
         broadcastChannel = new BroadcastChannel('storageChangeEvent');
     }
     return db;
@@ -92,8 +108,10 @@ const getDB = async () => {
 
 export const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
     const db = await getDB();
-    const result = await db.add('txs', transaction);
-    notifyAboutChange(result);
+    const tx = db.transaction('txs', 'readwrite');
+    // shortcut db.add throws null instead of ConstraintError on duplicate key (???)
+    const result = await tx.store.add(transaction);
+    notify('txs', [result]);
     return result;
 };
 
@@ -101,9 +119,13 @@ export const addTransactions = async (transactions: MyDBV1['txs']['value'][]) =>
     const db = await getDB();
     const tx = db.transaction('txs', 'readwrite');
 
+    const keys: string[] = [];
     transactions.forEach(transaction => {
-        tx.store.add(transaction);
+        tx.store.add(transaction).then(result => {
+            keys.push(result);
+        });
     });
+    notify('txs', keys);
     await tx.done;
 };
 
@@ -139,7 +161,9 @@ export const updateTransaction = async (txId: string, timestamp: number) => {
     const result = await tx.store.get(txId);
     if (result) {
         result.timestamp = timestamp;
-        tx.store.put(result);
+        await tx.store.put(result);
+        // @ts-ignore
+        notify('txs', [result.id]);
     }
 };
 

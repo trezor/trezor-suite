@@ -4,33 +4,34 @@ import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import * as db from '@suite/storage/index';
 
-const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
+const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
-): Action => {
+): Promise<Action> => {
     // pass action
     next(action);
 
     // perhaps we don't need middleware just for syncing reducer to idb.
     // maybe a better solution would be to work directly with idb and trigger reducer update when needed
     switch (action.type) {
-        case TRANSACTION.ADD:
+        case TRANSACTION.ADD: {
             console.log('adding to indexedDB');
             try {
-                const req = db
-                    .addTransaction(action.transaction)
-                    .then(() => {
-                        console.log('doneee');
-                    })
-                    .catch(error => {
-                        console.log('omg');
-                        console.error(error);
-                    });
+                const txId = await db.addTransaction(action.transaction);
+                console.log(txId);
             } catch (error) {
-                console.log('kačujem');
-                console.log(error);
+                if (error && error.name === 'ConstraintError') {
+                    console.log('Tx with such id already exists');
+                } else if (error) {
+                    console.error(error.name);
+                    console.error(error.message);
+                } else {
+                    console.error(error);
+                }
             }
+
             // api.dispatch(transactionActions.add(action.transaction));
             break;
+        }
         case TRANSACTION.REMOVE:
             console.log('removing tx from indexedDB');
             // https://stackoverflow.com/a/55321144
