@@ -58,9 +58,9 @@ const ContentWrapper = styled.div`
 `;
 
 const modelToIcon = (model: number) => {
-    const mapping: { [key: number]: IconShape } = {
-        1: icons.T1,
-        2: icons.T2,
+    const mapping: { [key: number]: string } = {
+        1: 'T1',
+        2: 'T2',
     };
     return mapping[model];
 };

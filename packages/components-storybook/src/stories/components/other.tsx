@@ -189,7 +189,7 @@ storiesOf('Other', module).add('All', () => (
                 return (
                     <Item key={icon}>
                         <Title>{icon}</Title>
-                        <Icon icon={icons[icon]} data-test={test} />
+                        <Icon icon={icon} data-test={test} />
                     </Item>
                 );
             })}

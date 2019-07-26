@@ -223,12 +223,12 @@ const Header = ({
                         <MenuToggler onClick={toggleSidebar}>
                             {sidebarOpened ? (
                                 <>
-                                    <Icon size={12} color={colors.WHITE} icon={icons.CLOSE} />
+                                    <Icon size={12} color={colors.WHITE} icon="CLOSE" />
                                     <TogglerText>{togglerCloseText}</TogglerText>
                                 </>
                             ) : (
                                 <>
-                                    <Icon color={colors.WHITE} size={14} icon={icons.MENU} />
+                                    <Icon color={colors.WHITE} size={14} icon="MENU" />
                                     <TogglerText>{togglerOpenText}</TogglerText>
                                 </>
                             )}

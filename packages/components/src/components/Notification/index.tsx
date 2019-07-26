@@ -163,7 +163,7 @@ const Notification = ({
                 </Col>
                 {cancelable && (
                     <CloseClick onClick={() => closeFunc()}>
-                        <Icon color={stateColor} icon={icons.CLOSE} size={10} />
+                        <Icon color={stateColor} icon="CLOSE" size={10} />
                     </CloseClick>
                 )}
             </Content>

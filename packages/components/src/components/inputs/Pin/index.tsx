@@ -41,7 +41,7 @@ interface Props {
 const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
     <Wrapper {...rest} {...wrapperProps}>
         <StyledInput disabled type="password" maxLength={9} autoComplete="off" value={value} />
-        <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
+        <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon="BACK" />
     </Wrapper>
 );
 

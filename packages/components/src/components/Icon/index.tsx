@@ -2,9 +2,38 @@ import styled, { keyframes } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReactSvg from 'react-svg';
 import colors from '../../config/colors';
-import icons from '../../config/icons';
-import { Omit, IconShape } from '../../support/types';
+import { Omit } from '../../support/types';
+
+const LOGOS: { [key: string]: string } = {
+    ARROW_DOWN: '../../images/icons/arrow_down.svg',
+    ARROW_LEFT: '../../images/icons/arrow_left.svg',
+    ARROW_UP: '../../images/icons/arrow_up.svg',
+    BACK: '../../images/icons/back.svg',
+    CHAT: '../../images/icons/chat.svg',
+    CLOSE: '../../images/icons/close.svg',
+    COG: '../../images/icons/cog.svg',
+    DOWNLOAD: '../../images/icons/download.svg',
+    EJECT: '../../images/icons/eject.svg',
+    ERROR: '../../images/icons/error.svg',
+    EYE_CROSSED: '../../images/icons/eye_crossed.svg',
+    EYE: '../../images/icons/eye.svg',
+    HELP: '../../images/icons/help.svg',
+    INFO: '../../images/icons/info.svg',
+    MENU: '../../images/icons/menu.svg',
+    PLUS: '../../images/icons/plus.svg',
+    QRCODE: '../../images/icons/qrcode.svg',
+    REFRESH: '../../images/icons/refresh.svg',
+    SKIP: '../../images/icons/skip.svg',
+    SUCCESS: '../../images/icons/success.svg',
+    T1: '../../images/icons/t1.svg',
+    T2: '../../images/icons/t2.svg',
+    TOP: '../../images/icons/top.svg',
+    WALLET_HIDDEN: '../../images/icons/wallet_hidden.svg',
+    WALLET_STANDARD: '../../images/icons/wallet_standard.svg',
+    WARNING: '../../images/icons/warning.svg',
+};
 
 // TODO: make animation of icons better
 const rotate180up = keyframes`
@@ -35,7 +64,7 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
     return null;
 };
 
-const SvgWrapper = styled.svg<WrapperProps>`
+const SvgWrapper = styled.div<WrapperProps>`
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
@@ -46,24 +75,19 @@ const SvgWrapper = styled.svg<WrapperProps>`
     }
 `;
 
-const Path = styled.path<{ color: string }>`
-    fill: ${props => props.color};
-`;
-
 type WrapperProps = Omit<Props, 'icon' | 'size'>;
-interface Props extends React.SVGAttributes<SVGElement> {
+interface Props extends React.SVGAttributes<HTMLDivElement> {
     className?: string;
-
-    icon: string | IconShape;
+    icon: string;
     size?: number;
     color?: string;
     isActive?: boolean;
     canAnimate?: boolean;
     hoverColor?: string;
-    onClick?: (event: React.MouseEvent<SVGSVGElement>) => any;
-    onMouseEnter?: (event: React.MouseEvent<SVGSVGElement>) => any;
-    onMouseLeave?: (event: React.MouseEvent<SVGSVGElement>) => any;
-    onFocus?: (event: React.FocusEvent<SVGSVGElement>) => any;
+    onClick?: (event: React.MouseEvent<HTMLDivElement>) => any;
+    onMouseEnter?: (event: React.MouseEvent<HTMLDivElement>) => any;
+    onMouseLeave?: (event: React.MouseEvent<HTMLDivElement>) => any;
+    onFocus?: (event: React.FocusEvent<HTMLDivElement>) => any;
 }
 
 const Icon = ({
@@ -80,34 +104,7 @@ const Icon = ({
     onFocus,
     ...rest
 }: Props) => {
-    // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: IconShape = typeof icon === 'string' ? icons[icon] : icon;
-    if (!iconObject) return null;
-    return (
-        <SvgWrapper
-            className={className}
-            canAnimate={canAnimate}
-            hoverColor={hoverColor}
-            onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onFocus={onFocus}
-            isActive={isActive}
-            style={{
-                display: 'inline-block',
-                verticalAlign: 'middle',
-            }}
-            width={`${size * (iconObject.ratio || 1)}`}
-            height={`${size}`}
-            viewBox={iconObject.viewBox || '0 0 1024 1024'}
-            color={color}
-            {...rest}
-        >
-            {iconObject.paths.map((path: string) => (
-                <Path key={path} color={color} d={path} />
-            ))}
-        </SvgWrapper>
-    );
+    return <ReactSvg src={LOGOS.TOP} />;
 };
 
 Icon.propTypes = {

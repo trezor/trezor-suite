@@ -104,7 +104,7 @@ interface Props {
     isTransparent?: boolean;
     isInverse?: boolean;
     isLoading?: boolean;
-    icon?: string | IconShape;
+    icon?: string;
 }
 
 const Button = ({
