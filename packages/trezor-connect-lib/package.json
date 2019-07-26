@@ -1,6 +1,6 @@
 {
   "name": "trezor-connect",
-  "version": "7.0.3",
+  "version": "7.0.4",
   "author": "Trezor <info@trezor.io>",
   "homepage": "https://github.com/trezor/connect",
   "description": "High-level javascript interface for Trezor hardware wallet.",
@@ -31,10 +31,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.3.1",
-    "events": "^3.0.0",
     "bchaddrjs": "^0.2.1",
     "bignumber.js": "^4.1.0",
     "bowser": "^1.9.3",
+    "events": "^3.0.0",
     "hd-wallet": "9.0.0-bigint.4",
     "keccak": "^2.0.0",
     "parse-uri": "^1.0.0",
