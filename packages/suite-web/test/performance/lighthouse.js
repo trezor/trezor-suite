@@ -26,13 +26,13 @@ const run = async (url, options) => {
             throw new Error('min performance score not met');
         }
     } catch (error) {
+        console.log(error);
         throw new Error(error);
     } finally {
         await chrome.kill();
     }
 };
 
-// const urlToTest = 'https://www.seznam.cz/';
 const urlToTest = 'https://suite.corp.sldev.cz/suite-web/develop';
 
 run(urlToTest, {
