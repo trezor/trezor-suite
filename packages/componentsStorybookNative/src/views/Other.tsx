@@ -60,6 +60,18 @@ const { COINS } = variables;
 const Other = () => {
     return (
         <Wrapper>
+            <H1>Icons</H1>
+            <Icons>
+                {Object.keys(icons).map(icon => {
+                    return (
+                        <Item key={icon}>
+                            <Title>{icon}</Title>
+                            <Icon size={32} icon={icon} />
+                        </Item>
+                    );
+                })}
+            </Icons>
+
             <H1>Coins</H1>
             <Icons>
                 {COINS.map((coin: string) => {
@@ -158,18 +170,6 @@ const Other = () => {
                     data-test="loader_white_text_transparent"
                 />
             </ColDark>
-
-            <H1>Icons</H1>
-            <Icons>
-                {Object.keys(icons).map(icon => {
-                    return (
-                        <Item key={icon}>
-                            <Title>{icon}</Title>
-                            <Icon icon={icons[icon]} />
-                        </Item>
-                    );
-                })}
-            </Icons>
         </Wrapper>
     );
 };
