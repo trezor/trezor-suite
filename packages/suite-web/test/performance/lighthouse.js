@@ -30,19 +30,17 @@ const run = async (url, options) => {
     } finally {
         await chrome.kill();
     }
-}
+};
 
 // const urlToTest = 'https://www.seznam.cz/';
 const urlToTest = 'https://suite.corp.sldev.cz/suite-web/develop';
 
-run(
-    urlToTest, {
-        chromeFlags: [
-            '--ignore-certificate-errors',
-            '--no-sandbox',
-            '--ignore-urlfetcher-cert-requests',
-            '--allow-insecure-localhost',
-            '--view',
-        ]
-    }
-);
+run(urlToTest, {
+    chromeFlags: [
+        '--ignore-certificate-errors',
+        '--no-sandbox',
+        '--ignore-urlfetcher-cert-requests',
+        '--allow-insecure-localhost',
+        '--view',
+    ],
+});
