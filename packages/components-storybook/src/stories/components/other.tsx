@@ -7,7 +7,6 @@ import { withKnobs, select, number, color, text, object, boolean } from '@storyb
 import StoryRouter from 'storybook-react-router';
 
 import {
-    icons,
     colors,
     Header,
     Prompt,
@@ -22,7 +21,7 @@ import {
     LanguagePicker,
 } from '@trezor/components';
 
-const { FONT_SIZE, COINS } = variables;
+const { FONT_SIZE, COINS, ICONS } = variables;
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -184,7 +183,7 @@ storiesOf('Other', module).add('All', () => (
 
         <H1>Icons</H1>
         <Icons>
-            {Object.keys(icons).map(icon => {
+            {ICONS.map((icon: string) => {
                 const test = `icon_${icon.toLowerCase()}`;
                 return (
                     <Item key={icon}>
@@ -265,7 +264,7 @@ storiesOf('Other', module)
             const iconOptions: any = {
                 None: null,
             };
-            Object.keys(icons).forEach(icon => {
+            ICONS.forEach((icon: string) => {
                 iconOptions[icon] = icon;
             });
 

@@ -191,8 +191,11 @@ const Wrapper = styled.button<Props>`
 `;
 
 const IconWrapper = styled.div`
+    flex: 1;
+    align-items: center;
     margin-right: 0.8rem;
     display: flex;
+    justify-content: center;
 `;
 
 // TODO: Error messages are not helpful. Find a better way to extend html button props.

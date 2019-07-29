@@ -66,6 +66,7 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
 };
 
 const SvgWrapper = styled.div<WrapperProps>`
+    height: ${props => props.size}px;
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
@@ -76,7 +77,7 @@ const SvgWrapper = styled.div<WrapperProps>`
     }
 `;
 
-type WrapperProps = Omit<Props, 'icon' | 'size'>;
+type WrapperProps = Omit<Props, 'icon'>;
 interface Props extends React.SVGAttributes<HTMLDivElement> {
     className?: string;
     icon: string;
@@ -115,12 +116,14 @@ const Icon = ({
             onMouseLeave={onMouseLeave}
             onFocus={onFocus}
             isActive={isActive}
+            size={size}
             {...rest}
         >
             <ReactSvg
                 src={ICONS[icon]}
                 beforeInjection={svg => {
-                    svg.setAttribute('style', `width: ${size}; height: ${size};`);
+                    svg.setAttribute('width', `${size}px`);
+                    svg.setAttribute('height', `${size}px`);
                     svg.setAttribute('fill', color);
                 }}
             />

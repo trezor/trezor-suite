@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import {
-    icons,
     colors,
     Prompt,
     H1,
@@ -55,14 +54,14 @@ const Title = styled.Text`
     margin-bottom: 8px;
 `;
 
-const { COINS } = variables;
+const { COINS, ICONS } = variables;
 
 const Other = () => {
     return (
         <Wrapper>
             <H1>Icons</H1>
             <Icons>
-                {Object.keys(icons).map(icon => {
+                {ICONS.map((icon: string) => {
                     return (
                         <Item key={icon}>
                             <Title>{icon}</Title>
