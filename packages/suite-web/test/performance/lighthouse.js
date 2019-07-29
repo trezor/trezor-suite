@@ -22,7 +22,6 @@ const run = async (url, options) => {
         // if (performance < 0.5) {
         // throw new Error('min performance score not met');
         // }
-        console.log('uaa');
     } catch (error) {
         console.log(error);
         throw new Error(error);
