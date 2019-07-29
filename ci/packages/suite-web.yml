@@ -107,7 +107,7 @@ suite-web delete review:
 #             - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
 
 suite-web test performance:
-    image: kporras07/lighthouse-ci
+    image: node:11
     stage: test integration
     only:
         changes:
