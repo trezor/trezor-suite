@@ -44,5 +44,6 @@ run(urlToTest, {
         '--ignore-certificate-errors',
         '--ignore-urlfetcher-cert-requests',
         '--allow-insecure-localhost',
+        '--headless',
     ],
 });

@@ -115,11 +115,19 @@ suite-web test performance:
             - packages/suite-web/**/*
             - .gitlab-ci.yml
             - ci/packages/suite-web.yml
+    variables:
+        TEST_URL: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     script:
         - env
-        - TEST_URL=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:performance --port=9222
+        # - TEST_URL=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:performance --port=9222
         # - rsync -va test/performance/results.html "${DEPLOY_DIRECTORY}/"
-
+        - lighthouse $TEST_URL \
+            --port=9222 \
+            --chrome-flags=\"--headless\" \
+            --output-path=/home/chrome/reports/anonymous-"$(echo -n $CIRCLE_SHELL_ENV | md5sum | awk '{print $1}')" \
+            --output=json \
+            --output=html
+    
     artifacts:
         expire_in: 2 days
         when: always
