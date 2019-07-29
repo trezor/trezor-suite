@@ -114,8 +114,8 @@ components-storybook test snapshots:
     paths:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
       - /builds/trezor/trezor-suite/packages/components-storybook/test/screenshots
-    dependencies:
-      - install and build
+  dependencies:
+    - install and build
 
 components-storybook make snapshot references:
   image: cypress/base:10
