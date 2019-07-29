@@ -108,7 +108,7 @@ suite-web delete review:
 
 suite-web test performance:
     image: node:11
-    stage: test integration
+    stage: test
     only:
         changes:
             - packages/suite/**/*
