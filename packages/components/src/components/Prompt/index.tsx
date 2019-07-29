@@ -2,8 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import Icon from '../Icon';
 
-import icons from '../../config/icons';
-import { Omit, IconShape } from '../../support/types';
+import { Omit } from '../../support/types';
 import colors from '../../config/colors';
 
 const PulseAnimation = keyframes`

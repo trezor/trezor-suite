@@ -5,7 +5,6 @@ import styled from 'styled-components/native';
 import { FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import icons from '../../../config/icons';
 
 const Wrapper = styled.View`
     position: relative;

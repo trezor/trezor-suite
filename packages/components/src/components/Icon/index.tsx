@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import styled, { keyframes } from 'styled-components';
 
 import PropTypes from 'prop-types';
@@ -6,33 +7,33 @@ import ReactSvg from 'react-svg';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';
 
-const LOGOS: { [key: string]: string } = {
-    ARROW_DOWN: '../../images/icons/arrow_down.svg',
-    ARROW_LEFT: '../../images/icons/arrow_left.svg',
-    ARROW_UP: '../../images/icons/arrow_up.svg',
-    BACK: '../../images/icons/back.svg',
-    CHAT: '../../images/icons/chat.svg',
-    CLOSE: '../../images/icons/close.svg',
-    COG: '../../images/icons/cog.svg',
-    DOWNLOAD: '../../images/icons/download.svg',
-    EJECT: '../../images/icons/eject.svg',
-    ERROR: '../../images/icons/error.svg',
-    EYE_CROSSED: '../../images/icons/eye_crossed.svg',
-    EYE: '../../images/icons/eye.svg',
-    HELP: '../../images/icons/help.svg',
-    INFO: '../../images/icons/info.svg',
-    MENU: '../../images/icons/menu.svg',
-    PLUS: '../../images/icons/plus.svg',
-    QRCODE: '../../images/icons/qrcode.svg',
-    REFRESH: '../../images/icons/refresh.svg',
-    SKIP: '../../images/icons/skip.svg',
-    SUCCESS: '../../images/icons/success.svg',
-    T1: '../../images/icons/t1.svg',
-    T2: '../../images/icons/t2.svg',
-    TOP: '../../images/icons/top.svg',
-    WALLET_HIDDEN: '../../images/icons/wallet_hidden.svg',
-    WALLET_STANDARD: '../../images/icons/wallet_standard.svg',
-    WARNING: '../../images/icons/warning.svg',
+const ICONS: { [key: string]: string } = {
+    ARROW_DOWN: require('../../images/icons/arrow_down.svg'),
+    ARROW_LEFT: require('../../images/icons/arrow_left.svg'),
+    ARROW_UP: require('../../images/icons/arrow_up.svg'),
+    BACK: require('../../images/icons/back.svg'),
+    CHAT: require('../../images/icons/chat.svg'),
+    CLOSE: require('../../images/icons/close.svg'),
+    COG: require('../../images/icons/cog.svg'),
+    DOWNLOAD: require('../../images/icons/download.svg'),
+    EJECT: require('../../images/icons/eject.svg'),
+    ERROR: require('../../images/icons/error.svg'),
+    EYE_CROSSED: require('../../images/icons/eye_crossed.svg'),
+    EYE: require('../../images/icons/eye.svg'),
+    HELP: require('../../images/icons/help.svg'),
+    INFO: require('../../images/icons/info.svg'),
+    MENU: require('../../images/icons/menu.svg'),
+    PLUS: require('../../images/icons/plus.svg'),
+    QRCODE: require('../../images/icons/qrcode.svg'),
+    REFRESH: require('../../images/icons/refresh.svg'),
+    SKIP: require('../../images/icons/skip.svg'),
+    SUCCESS: require('../../images/icons/success.svg'),
+    T1: require('../../images/icons/t1.svg'),
+    T2: require('../../images/icons/t2.svg'),
+    TOP: require('../../images/icons/top.svg'),
+    WALLET_HIDDEN: require('../../images/icons/wallet_hidden.svg'),
+    WALLET_STANDARD: require('../../images/icons/wallet_standard.svg'),
+    WARNING: require('../../images/icons/warning.svg'),
 };
 
 // TODO: make animation of icons better
@@ -104,7 +105,27 @@ const Icon = ({
     onFocus,
     ...rest
 }: Props) => {
-    return <ReactSvg src={LOGOS.TOP} />;
+    return (
+        <SvgWrapper
+            className={className}
+            canAnimate={canAnimate}
+            hoverColor={hoverColor}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocus={onFocus}
+            isActive={isActive}
+            {...rest}
+        >
+            <ReactSvg
+                src={ICONS[icon]}
+                beforeInjection={svg => {
+                    svg.setAttribute('style', `width: ${size}; height: ${size};`);
+                    svg.setAttribute('fill', color);
+                }}
+            />
+        </SvgWrapper>
+    );
 };
 
 Icon.propTypes = {

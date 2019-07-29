@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import Icon from '../Icon';
-import icons from '../../config/icons';
 import colors from '../../config/colors';
 import Link from '../Link';
 import TrezorLogo from '../TrezorLogo';
