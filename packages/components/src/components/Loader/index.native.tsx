@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 import { Animated, Easing } from 'react-native';
 import colors from '../../config/colors';
 import { FONT_SIZE_NATIVE } from '../../config/variables';
 
-const Wrapper = styled.View<Props>`
+const Wrapper = styled.View<WrapperProps>`
     flex: 1;
     justify-content: center;
     align-items: center;
@@ -18,7 +18,7 @@ const Wrapper = styled.View<Props>`
 
 const SvgWrapper = Animated.createAnimatedComponent(Svg);
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const TextWrapper = styled.Text<Props>`
     flex: 1;
@@ -43,28 +43,33 @@ interface Props {
     animationColor?: any;
 }
 
+interface WrapperProps {
+    size: number;
+}
+
+interface CertesianProps {
+    x: number;
+    y: number;
+}
+
 class Loader extends React.Component<Props> {
     state = {
-        spinValue: new Animated.Value(0),
+        progress: new Animated.Value(0),
     };
 
     static propTypes = {
-        className: PropTypes.string,
         text: PropTypes.string,
         isWhiteText: PropTypes.bool,
         isSmallText: PropTypes.bool,
         transparentRoute: PropTypes.bool,
         size: PropTypes.number,
-        width: PropTypes.number,
         strokeWidth: PropTypes.number,
-        // eslint-disable-next-line react/forbid-prop-types
-        animationColor: PropTypes.object,
     };
 
     componentDidMount() {
         Animated.loop(
             Animated.sequence([
-                Animated.timing(this.state.spinValue, {
+                Animated.timing(this.state.progress, {
                     toValue: 1,
                     duration: 3000,
                     easing: Easing.linear,
@@ -74,38 +79,94 @@ class Loader extends React.Component<Props> {
     }
 
     render() {
+        const polarToCartesian = (
+            centerX: number,
+            centerY: number,
+            radius: number,
+            angleInDegrees: number
+        ): CertesianProps => {
+            const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
+
+            return {
+                x: centerX + radius * Math.cos(angleInRadians),
+                y: centerY + radius * Math.sin(angleInRadians),
+            };
+        };
+
+        const describeArc = (
+            x: number,
+            y: number,
+            radius: number,
+            startAngle: number,
+            endAngle: number
+        ): string => {
+            const start = polarToCartesian(x, y, radius, endAngle);
+            const end = polarToCartesian(x, y, radius, startAngle);
+
+            const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+
+            const d = [
+                'M',
+                start.x,
+                start.y,
+                'A',
+                radius,
+                radius,
+                0,
+                largeArcFlag,
+                0,
+                end.x,
+                end.y,
+            ].join(' ');
+
+            return d;
+        };
+
         const {
-            className,
             size = 100,
             text,
-            animationColor,
             isSmallText,
             isWhiteText = false,
             transparentRoute,
             strokeWidth = 2,
-            ...rest
         } = this.props;
-
         const halfSize = size / 2;
+        const dRange = [];
+        const iRange = [];
+        const steps = 359;
 
-        const spin = this.state.spinValue.interpolate({
+        for (let i = 0; i < steps; i++) {
+            const startAngle = i < 180 ? 0 : 2 * (i - 180);
+            const endAngle = i < 180 ? 2 * i : 360;
+
+            dRange.push(
+                describeArc(halfSize, halfSize, halfSize - strokeWidth, startAngle, endAngle)
+            );
+            iRange.push(i / (steps - 1));
+        }
+
+        const d = this.state.progress.interpolate({
+            inputRange: iRange,
+            outputRange: dRange,
+        });
+
+        const spin = this.state.progress.interpolate({
             inputRange: [0, 1],
-            outputRange: ['0deg', '360deg'],
+            outputRange: ['90deg', '450deg'],
         });
 
-        // TODO: fix dasharray animation - https://stackoverflow.com/questions/46142291/animating-react-native-svg-dash-length-of-a-circle
-        const dasharray = this.state.spinValue.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [89, 200, 89],
-        });
-
-        const dashoffset = this.state.spinValue.interpolate({
-            inputRange: [0, 0.25, 0.5, 0.75, 1],
-            outputRange: [0, -35, -124, -35, 0],
+        const strokeColor = this.state.progress.interpolate({
+            inputRange: [0, 0.4, 0.66, 1],
+            outputRange: [
+                colors.GREEN_PRIMARY,
+                colors.GREEN_PRIMARY,
+                colors.GREEN_SECONDARY,
+                colors.GREEN_TERTIARY,
+            ],
         });
 
         return (
-            <Wrapper className={className} size={size} {...rest}>
+            <Wrapper size={size}>
                 <TextWrapper>
                     <StyledText isSmallText={isSmallText} isWhiteText={isWhiteText}>
                         {text}
@@ -122,21 +183,16 @@ class Loader extends React.Component<Props> {
                     <Circle
                         cx={halfSize}
                         cy={halfSize}
-                        r={halfSize}
+                        r={halfSize - strokeWidth}
                         fill="none"
                         stroke={transparentRoute ? 'transparent' : colors.GRAY_LIGHT}
                         strokeWidth={strokeWidth}
                     />
-                    <AnimatedCircle
-                        cx={halfSize}
-                        cy={halfSize}
-                        r={halfSize}
-                        fill="none"
-                        stroke={colors.GREEN_PRIMARY}
+                    <AnimatedPath
+                        d={d}
+                        stroke={strokeColor}
                         strokeWidth={strokeWidth}
-                        strokeDashoffset={dashoffset}
-                        strokeDasharray={dasharray}
-                        strokeLinecap="round"
+                        fill="none"
                     />
                 </SvgWrapper>
             </Wrapper>
