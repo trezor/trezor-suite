@@ -113,6 +113,7 @@ suite-web test performance:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - ci/packages/suite-web.yml
     script:
         - env
         - TEST_URL=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:performance
