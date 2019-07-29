@@ -27,7 +27,6 @@
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
-        "postinstall": "yarn build:libs"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^1.4.1",
