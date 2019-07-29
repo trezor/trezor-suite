@@ -9,8 +9,8 @@ components-storybook lint:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
-    dependencies:
-      - install and build
+  dependencies:
+    - install and build
 
 components-storybook type check:
   stage: type check
@@ -135,7 +135,6 @@ components-storybook make snapshot references:
     when: always
     paths:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
-  
   dependencies:
     - install and build
 
