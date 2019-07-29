@@ -17,7 +17,7 @@ install and build:
             - .gitlab-ci.yml
     script:
         - yarn install
-        - lerna run build:lib
+        - npx lerna run build:lib
     artifacts:
         expire_in: 1 day
         when: always
