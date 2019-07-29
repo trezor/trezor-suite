@@ -31,8 +31,9 @@ const run = async (url, options) => {
 };
 
 // DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME
-const urlToTest = `${process.DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}`;
+const urlToTest = `${process.DEV_SERVER_URL}/suite-web/${process.CI_BUILD_REF_NAME}`;
 // 'https://suite.corp.sldev.cz/suite-web/develop';
+console.log(urlToTest);
 
 run(urlToTest, {
     chromeFlags: [
