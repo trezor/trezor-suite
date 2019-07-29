@@ -17,7 +17,7 @@ export interface NetworkRate {
     rates: { [key: string]: number };
 }
 
-export interface FiatRateAction {
+export interface FiatRateActions {
     type: typeof RATE_UPDATE;
     network: string;
     rates: { [key: string]: number };

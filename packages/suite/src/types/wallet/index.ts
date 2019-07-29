@@ -1,15 +1,26 @@
+import { SettingsActions } from '@wallet-actions/settingsActions';
+import { NotificationActions } from '@wallet-actions/notificationActions';
+import { TokenActions } from '@suite/actions/wallet/tokenActions';
+import { FiatRateActions } from '@wallet-services/CoingeckoService';
+import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 import { Network } from './networkTypes';
 import { Icon } from './iconTypes';
 import { NetworkToken, Token } from './tokenTypes';
 
 export { Network, Icon, NetworkToken, Token };
-
 // TODO import from connect
 interface BlockchainLinkToken {
     name: string;
     shortcut: string;
     value: string;
 }
+
+export type Actions =
+    | SettingsActions
+    | SignVerifyActions
+    | NotificationActions
+    | TokenActions
+    | FiatRateActions;
 
 export interface BlockchainLinkTransaction {
     type: 'send' | 'recv';
