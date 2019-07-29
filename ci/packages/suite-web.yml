@@ -107,7 +107,7 @@ suite-web delete review:
 #             - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
 
 suite-web test performance:
-    image: cypress/base:12.0.0
+    image: kporras07/lighthouse-ci
     stage: test integration
     only:
         changes:
@@ -117,7 +117,7 @@ suite-web test performance:
             - ci/packages/suite-web.yml
     script:
         - env
-        - TEST_URL=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:performance
+        - TEST_URL=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:performance --port=9222
         # - rsync -va test/performance/results.html "${DEPLOY_DIRECTORY}/"
 
     artifacts:
