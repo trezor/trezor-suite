@@ -10,6 +10,7 @@ stages:
     - test integration
 
 install and build:
+    image: cypress/base:10
     stage: install
     only:
         changes:
@@ -22,6 +23,8 @@ install and build:
         expire_in: 1 day
         when: always
         paths:
+            # cypress
+            - ~/.cache/Cypress
             # libs
             - packages/components/lib
             - packages/blockchain-link/lib
