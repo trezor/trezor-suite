@@ -24,26 +24,20 @@ const run = async (url, options) => {
         // }
     } catch (error) {
         console.log(error);
-        throw new Error(error);
+        process.exit(1);
     } finally {
         await chrome.kill();
+        process.exit(0);
     }
 };
 
 const urlToTest = process.env.TEST_URL;
 console.log('urlToTest', urlToTest);
 
-try {
-    run(urlToTest, {
-        chromeFlags: [
-            '--ignore-certificate-errors',
-            '--no-sandbox',
-            '--ignore-urlfetcher-cert-requests',
-            '--allow-insecure-localhost',
-            '--view',
-        ],
-    });
-} catch (error) {
-    consoel.log('error', error);
-}
-
+run(urlToTest, {
+    chromeFlags: [
+        '--ignore-certificate-errors',
+        '--ignore-urlfetcher-cert-requests',
+        '--allow-insecure-localhost',
+    ],
+});
