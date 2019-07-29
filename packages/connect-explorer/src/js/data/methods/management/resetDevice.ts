@@ -1,5 +1,5 @@
 const name = 'resetDevice';
-const docs = 'methods/resetDevice.md';
+// const docs = 'methods/resetDevice.md';
 
 export default [
     {

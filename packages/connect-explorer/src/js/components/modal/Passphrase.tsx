@@ -78,7 +78,7 @@ export default class PinModal extends Component {
                         autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
-                        spellCheck="false"
+                        spellCheck={false}
                         data-lpignore="true"
                         onFocus={onPassphraseFocus}
                         onBlur={onPassphraseBlur}

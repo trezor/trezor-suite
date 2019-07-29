@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-import { LOCATION_CHANGE } from 'connected-react-router';
 
+import { LOCATION_CHANGE } from 'connected-react-router';
 import TrezorConnect, {
     TRANSPORT_EVENT,
     DEVICE_EVENT,
@@ -11,6 +11,8 @@ import TrezorConnect, {
     TransportEvent,
 } from 'trezor-connect';
 import { getQueryVariable } from '../utils/windowUtils';
+
+declare const LOCAL: string;
 
 let inited = false;
 
@@ -50,6 +52,7 @@ const TrezorConnectService = store => next => action => {
             });
         });
 
+        // @ts-ignore connect
         TrezorConnect.on(UI.ADDRESS_VALIDATION, (data: any) => {
             // This needs to be explicity set to make address validation work
         });
@@ -65,6 +68,7 @@ const TrezorConnectService = store => next => action => {
                 email: 'info@trezor.io',
                 appUrl: window.location.host,
             },
+        // @ts-ignore connect
         }).catch(error => {
             console.log('ERROR', error);
         });

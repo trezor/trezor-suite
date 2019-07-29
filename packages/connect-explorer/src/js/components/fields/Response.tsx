@@ -55,9 +55,9 @@ const Response = (props): any => {
     let currentTab = null;
     switch (props.tab) {
         case 'response':
-            const exp = (k, d, l) => {
-                return true;
-            };
+            // const exp = (k, d, l) => {
+            //     return true;
+            // };
             const json = props.response ? (
                 <Inspector data={props.response} expandLevel={10} />
             ) : null;

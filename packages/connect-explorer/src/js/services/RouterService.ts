@@ -1,3 +1,4 @@
+// @ts-ignore
 import { LOCATION_CHANGE } from 'connected-react-router';
 
 /**
@@ -6,6 +7,8 @@ import { LOCATION_CHANGE } from 'connected-react-router';
  * It starts right before action is passed to reducers and add "alive" filed to every action
  * which determining if current path is Adam or not
  */
+
+// @ts-ignore
 const RouterService = store => next => action => {
     // if (action.type === LOCATION_CHANGE) {
     // }

@@ -86,6 +86,7 @@ class Menu extends Component {
         }
     }
 
+    // @ts-ignore keep these params here just for quick reference
     onNodeMouseClick(event, tree, node, level, keyPath) {
         this.setState({
             tree,

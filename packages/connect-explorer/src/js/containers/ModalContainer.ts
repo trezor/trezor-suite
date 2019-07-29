@@ -5,7 +5,7 @@ import Modal from '../components/modal/Modal';
 import * as ModalActions from '../actions/ModalActions';
 import { AppState, Dispatch } from '../types';
 
-function mapStateToProps(state: AppState, own) {
+function mapStateToProps(state: AppState) {
     return {
         modal: state.modal,
     };

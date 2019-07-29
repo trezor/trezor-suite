@@ -1,5 +1,5 @@
 const name = 'firmwareErase';
-const docs = 'methods/firmwareErase.md';
+// const docs = 'methods/firmwareErase.md';
 
 export default [
     {

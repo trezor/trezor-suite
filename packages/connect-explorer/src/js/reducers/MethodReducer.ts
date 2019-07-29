@@ -133,7 +133,7 @@ const setAffectedValues = (state, field) => {
         if (typeof field.key === 'string') {
             const key = field.key.split('-');
             const bundle = state.fields.find(f => f.name === key[0]);
-            root = bundle.items.find((batch, index) => index === parseInt(key[1], 10));
+            root = bundle.items.find((batch, index: number) => index === parseInt(key[1], 10));
         } else {
             root = state.fields;
         }
@@ -261,13 +261,13 @@ export default function method(state: State = initialState, action) {
                 tab: 'response',
                 response: action.response,
             };
-
+        // @ts-ignore connect
         case UI.ADDRESS_VALIDATION:
             return {
                 ...state,
                 addressValidation: true,
             };
-
+        // @ts-ignore connect
         case UI.CLOSE_UI_WINDOW:
             return {
                 ...state,

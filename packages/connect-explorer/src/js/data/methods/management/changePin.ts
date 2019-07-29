@@ -1,5 +1,5 @@
 const name = 'changePin';
-const docs = 'methods/changePin.md';
+// const docs = 'methods/changePin.md';
 
 export default [
     {

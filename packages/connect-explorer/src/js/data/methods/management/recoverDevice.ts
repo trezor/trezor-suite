@@ -1,5 +1,5 @@
 const name = 'recoveryDevice';
-const docs = 'methods/recoverDevice.md';
+// const docs = 'methods/recoverDevice.md';
 
 export default [
     {

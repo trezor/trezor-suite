@@ -1,5 +1,5 @@
 const name = 'firmwareUpdate';
-const docs = 'methods/firmwareUpdate.md';
+// const docs = 'methods/firmwareUpdate.md';
 
 const list1Url = 'https://wallet.trezor.io/data/firmware/1/releases.json';
 const list2Url = 'https://wallet.trezor.io/data/firmware/2/releases.json';

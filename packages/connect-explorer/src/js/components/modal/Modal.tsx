@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { CSSTransition, Transition } from 'react-transition-group';
-
 import { UI } from 'trezor-connect';
-
 import Pin from './Pin';
 import InvalidPin from './InvalidPin';
 import Passphrase from './Passphrase';
@@ -69,7 +67,6 @@ export default class Modal extends Component {
             case UI.REQUEST_CONFIRMATION:
                 component = <Confirmation {...this.props} />;
                 break;
-
             case UI.SELECT_ACCOUNT:
                 component = <AccountSelection {...this.props} />;
                 break;

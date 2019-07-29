@@ -1,4 +1,4 @@
-import React, { Component, KeyboardEvent, useEffect } from 'react';
+import React, { KeyboardEvent, useEffect } from 'react';
 import { ButtonPin, Button } from '@trezor/components';
 import { Modal } from '../../types';
 
@@ -94,7 +94,7 @@ const Pin: React.FC<Props> = props => {
                     type="password"
                     className="input"
                     autoComplete="off"
-                    maxLength="9"
+                    maxLength={9}
                     disabled
                     value={pin}
                 />

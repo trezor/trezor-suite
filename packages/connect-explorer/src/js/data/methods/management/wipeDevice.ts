@@ -1,5 +1,5 @@
 const name = 'wipeDevice';
-const docs = 'methods/wipeDevice.md';
+// const docs = 'methods/wipeDevice.md';
 
 export default [
     {

@@ -52,7 +52,7 @@ const removeDevice = (state: State, device: Record<string, any>) => {
     return state;
 };
 
-const onDeviceStateChange = (device: Record<string, any>): void => {};
+// const onDeviceStateChange = (device: Record<string, any>): void => {};
 
 export default function connect(state: State = initialState, action) {
     switch (action.type) {
@@ -63,6 +63,7 @@ export default function connect(state: State = initialState, action) {
                 ...addDevice(state, action.device),
             };
         case DEVICE.DISCONNECT:
+        // @ts-ignore connect eslint-disable-next-line no-fallthrough
         case DEVICE.DISCONNECT_UNACQUIRED:
             return {
                 ...state,

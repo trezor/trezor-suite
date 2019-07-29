@@ -25,7 +25,6 @@ declare module 'redux' {
 }
 
 declare global {
-    // type LOCAL = string;
     interface Window {
         TrezorConnect: TrezorConncet;
         __TREZOR_CONNECT_SRC: string;
@@ -33,3 +32,5 @@ declare global {
         __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: () => any | null;
     }
 }
+
+declare const LOCAL: string;

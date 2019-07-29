@@ -1,5 +1,5 @@
 const name = 'getFeatures';
-const docs = 'methods/getFeatures.md';
+// const docs = 'methods/getFeatures.md';
 
 export default [
     {

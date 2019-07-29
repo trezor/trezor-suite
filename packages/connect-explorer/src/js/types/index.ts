@@ -1,5 +1,5 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { UiEvent, DeviceEvent, TransportEvent } from 'trezor-connect';
+// import { UiEvent, DeviceEvent, TransportEvent } from 'trezor-connect';
 import { AppState } from '../store';
 
 import { DocsActions } from '../actions/DocsActions';
@@ -10,12 +10,12 @@ import { TrezorConnectActions } from '../actions/TrezorConnectActions';
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
-type TrezorConnectEvents =
-    | Omit<TransportEvent, 'event'>
-    | Omit<UiEvent, 'event'>
-    | Omit<DeviceEvent, 'event'>
-    | { type: 'iframe-loaded'; payload: any };
-
+// type TrezorConnectEvents =
+//     | Omit<TransportEvent, 'event'>
+//     | Omit<UiEvent, 'event'>
+//     | Omit<DeviceEvent, 'event'>
+//     | { type: 'iframe-loaded'; payload: any };
+type TrezorConnectEvents = any;
 export type AppState = AppState;
 
 export type Action =

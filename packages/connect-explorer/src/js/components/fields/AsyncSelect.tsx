@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Select } from '@trezor/components';
 import { Field } from '../../types';
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 import { UI } from 'trezor-connect';
 import * as ACTIONS from '../actions';
 import { Action } from '../types';
@@ -33,22 +34,25 @@ const initialState: State = {
 
 export default function modal(state: State = initialState, action: Action) {
     switch (action.type) {
+        // @ts-ignore connect
         case UI.ADDRESS_VALIDATION:
             return {
                 ...state,
                 opened: true,
                 windowType: action.type,
             };
-
+        // @ts-ignore connect
         case UI.REQUEST_PIN:
+        // @ts-ignore connect
         case UI.INVALID_PIN:
+        // @ts-ignore connect
         case UI.REQUEST_PASSPHRASE:
             return {
                 ...state,
                 opened: true,
                 windowType: action.type,
             };
-
+        // @ts-ignore connect
         case UI.REQUEST_CONFIRMATION:
             return {
                 ...state,
@@ -56,7 +60,7 @@ export default function modal(state: State = initialState, action: Action) {
                 confirmation: action.data.label,
                 windowType: action.type,
             };
-
+        // @ts-ignore connect
         case UI.REQUEST_PERMISSION:
             return {
                 ...state,
@@ -64,14 +68,14 @@ export default function modal(state: State = initialState, action: Action) {
                 confirmation: action.data.label,
                 windowType: action.type,
             };
-
+        // @ts-ignore connect
         case UI.SELECT_DEVICE:
             return {
                 ...state,
                 opened: true,
                 windowType: action.type,
             };
-
+        // @ts-ignore connect
         case UI.SELECT_ACCOUNT:
             return {
                 ...state,
@@ -82,6 +86,7 @@ export default function modal(state: State = initialState, action: Action) {
                 complete: action.data.complete,
             };
 
+        // @ts-ignore connect
         case UI.SELECT_FEE:
             return {
                 ...state,
@@ -90,27 +95,28 @@ export default function modal(state: State = initialState, action: Action) {
                 feeList: action.data.list,
                 coinInfo: action.data.coinInfo,
             };
-
+        // @ts-ignore connect
         case UI.UPDATE_CUSTOM_FEE:
             return {
                 ...state,
                 opened: true,
                 windowType: action.type,
             };
-
+        // @ts-ignore connect
         case UI.INSUFFICIENT_FUNDS:
             return {
                 ...state,
                 opened: true,
                 windowType: action.type,
             };
+        // @ts-ignore connect
         case UI.REQUEST_BUTTON:
             return {
                 ...state,
                 opened: true,
                 windowType: action.type,
             };
-
+        // @ts-ignore connect
         case UI.CLOSE_UI_WINDOW:
         case ACTIONS.CLOSE_MODAL:
             return {

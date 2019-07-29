@@ -13,7 +13,7 @@ export type ModalActions =
     | { type: typeof ACTIONS.ON_PASSPHRASE_FOCUS }
     | { type: typeof ACTIONS.ON_PASSPHRASE_BLUR }
     | { type: typeof ACTIONS.ON_CUSTOM_FEE_OPEN }
-    | { type: typeof ACTIONS.ON_CUSTOM_FEE_CHANGE };
+    | { type: typeof ACTIONS.ON_CUSTOM_FEE_CHANGE; value: number };
 
 export function onPinAdd(number: number) {
     return {
