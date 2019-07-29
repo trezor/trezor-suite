@@ -1,4 +1,4 @@
-image: registry.corp.sldev.cz/trezor/trezor-suite
+image: registry.corp.sldev.cz/trezor/trezor-suite:latest
 
 cache:
   key: shared-yarn-cache
