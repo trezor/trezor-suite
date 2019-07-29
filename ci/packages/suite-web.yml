@@ -10,6 +10,8 @@ suite-web lint:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-web type check:
     stage: type check
@@ -21,6 +23,8 @@ suite-web type check:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-web build:
     stage: build
@@ -37,6 +41,8 @@ suite-web build:
         expire_in: 15 minutes
         paths:
             - $PACKAGE_PATH_SUITE_WEB/build
+    dependencies:
+        - install and build
 
 suite-web deploy dev:
     stage: deploy
@@ -66,6 +72,8 @@ suite-web deploy dev:
         - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 suite-web delete review:
     stage: deploy
@@ -87,6 +95,8 @@ suite-web delete review:
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 suite-web test integration:
     image: cypress/base:10
@@ -105,3 +115,5 @@ suite-web test integration:
         paths:
             - /builds/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
+    dependencies:
+        - install and build

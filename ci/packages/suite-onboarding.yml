@@ -10,6 +10,8 @@ suite-onboarding lint:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-onboarding type check:
     stage: type check
@@ -21,6 +23,8 @@ suite-onboarding type check:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-onboarding build:
     stage: build
@@ -37,6 +41,8 @@ suite-onboarding build:
         expire_in: 15 minutes
         paths:
             - $PACKAGE_PATH_SUITE_ONBOARDING/build
+    dependencies:
+        - install and build
 
 suite-onboarding deploy dev:
     stage: deploy
@@ -66,6 +72,8 @@ suite-onboarding deploy dev:
         - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 suite-onboarding delete review:
     stage: deploy
@@ -87,6 +95,8 @@ suite-onboarding delete review:
             - .gitlab-ci.yml
     tags:
         - deploy
+    dependencies:
+        - install and build
 # suite-onboarding test integration:
 #   image: cypress/base:10
 #   stage: test integration
