@@ -116,7 +116,7 @@ suite-web test performance:
             - .gitlab-ci.yml
     script:
         - env
-        - yarn workspace @trezor/suite-web test:performance
+        - TEST_URL=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:performance
         - rsync -va test/performance/results.html "${DEPLOY_DIRECTORY}/"
 
     artifacts:
