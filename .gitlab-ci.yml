@@ -40,6 +40,13 @@ install and build:
             - packages/suite-onboarding/node_modules
 
 variables:
+    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
+    PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+    PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
+    PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
+    PACKAGE_PATH_SUITE_ONBOARDING: 'packages/suite-onboarding'
+    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
+
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 include:
