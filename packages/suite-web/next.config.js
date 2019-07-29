@@ -19,6 +19,7 @@ module.exports = withCustomBabelConfig(
                 '@trezor',
                 '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
             ],
+            exportTrailingSlash: true,
             assetPrefix: process.env.assetPrefix || '',
             webpack: config => {
                 config.plugins.push(
