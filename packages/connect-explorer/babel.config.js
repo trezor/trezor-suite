@@ -12,9 +12,7 @@ module.exports = api => {
         '@babel/typescript',
     ];
 
-    const plugins = [
-        'react-hot-loader/babel',
-    ];
+    const plugins = ['react-hot-loader/babel'];
 
     if (process.env.LOCAL) {
         plugins.shift();

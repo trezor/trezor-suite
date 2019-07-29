@@ -10,21 +10,15 @@ const constants = Object.freeze({
     TREZOR_CONNECT_ROOT: path.join(ABSOLUTE_BASE, '../trezor-connect/'),
 });
 
-export const {TREZOR_CONNECT_ROOT} = constants;
+export const { TREZOR_CONNECT_ROOT } = constants;
 export const TREZOR_CONNECT = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/index');
-export const TREZOR_IFRAME = path.join(
-    constants.TREZOR_CONNECT_ROOT,
-    'src/js/iframe/iframe.js',
-);
-export const TREZOR_POPUP = path.join(
-    constants.TREZOR_CONNECT_ROOT,
-    'src/js/popup/popup.js',
-);
+export const TREZOR_IFRAME = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/iframe/iframe.js');
+export const TREZOR_POPUP = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/popup/popup.js');
 export const TREZOR_CONNECT_HTML = path.join(constants.TREZOR_CONNECT_ROOT, 'src/html/');
 export const TREZOR_CONNECT_FILES = path.join(constants.TREZOR_CONNECT_ROOT, 'src/data/');
-export const {BUILD} = constants;
-export const {SRC} = constants;
-export const {PORT} = constants;
-export const {INDEX} = constants;
+export const { BUILD } = constants;
+export const { SRC } = constants;
+export const { PORT } = constants;
+export const { INDEX } = constants;
 
 export default constants;
