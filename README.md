@@ -9,6 +9,7 @@ suite           | [core](./packages/suite), [web](./packages/suite-web), [deskto
 components      | [components](./packages/components), [storybook](./packages/components-storybook), [storybook native](./packages/components-storybook-native)
 rollout         | [rollout](./packages/rollout)
 blockchain-link | [blockchain-link]('./packages/blockchain-link)
+connect-explorer | [connect-explorer]('./packages/connect-explorer)
 
 ## Development
 

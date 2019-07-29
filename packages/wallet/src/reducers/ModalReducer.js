@@ -1,5 +1,3 @@
-/* @flow */
-
 import { UI, DEVICE } from 'trezor-connect';
 import * as RECEIVE from 'actions/constants/receive';
 import * as MODAL from 'actions/constants/modal';

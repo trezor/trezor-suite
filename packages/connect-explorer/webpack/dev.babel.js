@@ -1,15 +1,14 @@
-import { SRC, BUILD, PORT } from './constants';
-
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { SRC, BUILD, PORT } from './constants';
 
 module.exports = {
     watch: true,
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        'index': [`${SRC}js/index.js` ]
+        index: [`${SRC}js/index`, `${SRC}styles/index`],
     },
     output: {
         filename: '[name].[hash].js',
@@ -26,20 +25,20 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                use: ['babel-loader', 'react-hot-loader/webpack']
-            },
-            {
                 test: /\.less$/,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' }
+                        options: { publicPath: '../' },
                     },
                     'css-loader',
                     'less-loader',
-                ]
+                ],
+            },
+            {
+                test: /\.(ts|js)x?$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
             },
             {
                 test: /\.(png|gif|jpg)$/,
@@ -47,7 +46,7 @@ module.exports = {
                 query: {
                     outputPath: './images',
                     name: '[name].[ext]',
-                }
+                },
             },
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
@@ -67,30 +66,35 @@ module.exports = {
                     name: '[name].[ext]',
                 },
             },
-        ]
+        ],
     },
     resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.less'],
         modules: [SRC, 'node_modules'],
     },
     performance: {
-        hints: false
+        hints: false,
     },
     plugins: [
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: '[id].css',
         }),
-        
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
-            inject: true
+            inject: true,
         }),
 
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
-    ]
-}
+    ],
+    // externals: {
+    //     react: 'React',
+    //     'react-dom': 'ReactDOM',
+    // },
+    // addition - add source-map support
+};

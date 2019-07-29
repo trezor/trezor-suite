@@ -1,17 +1,18 @@
-import { 
-    TREZOR_CONNECT_ROOT,
-    TREZOR_CONNECT_HTML,
-    TREZOR_CONNECT_FILES,
-    TREZOR_CONNECT, TREZOR_IFRAME, TREZOR_POPUP,
-    SRC, 
-    BUILD,
-    PORT 
-} from './constants';
-
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import {
+    TREZOR_CONNECT_ROOT,
+    TREZOR_CONNECT_HTML,
+    TREZOR_CONNECT_FILES,
+    TREZOR_CONNECT,
+    TREZOR_IFRAME,
+    TREZOR_POPUP,
+    SRC,
+    BUILD,
+    PORT,
+} from './constants';
 
 module.exports = {
     watch: true,
@@ -19,10 +20,10 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: {
         'trezor-connect-npm': `${TREZOR_CONNECT}.js`,
-        'iframe': `${TREZOR_IFRAME}`,
-        'popup': `${TREZOR_POPUP}`,
-        'extensionPermissions': `${TREZOR_CONNECT_ROOT}src/js/webusb/extensionPermissions.js`,
-        'index': [`${SRC}js/index.js` ]
+        iframe: `${TREZOR_IFRAME}`,
+        popup: `${TREZOR_POPUP}`,
+        extensionPermissions: `${TREZOR_CONNECT_ROOT}src/js/webusb/extensionPermissions.js`,
+        index: [`${SRC}js/index.tsx`],
     },
     output: {
         filename: '[name].[hash].js',
@@ -40,20 +41,20 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.(ts|js)x?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                loader: 'babel-loader',
             },
             {
                 test: /\.less$/,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' }
+                        options: { publicPath: '../' },
                     },
                     'css-loader',
                     'less-loader',
-                ]
+                ],
             },
             {
                 test: /\.(png|gif|jpg)$/,
@@ -61,7 +62,7 @@ module.exports = {
                 query: {
                     outputPath: './images',
                     name: '[name].[ext]',
-                }
+                },
             },
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
@@ -93,16 +94,17 @@ module.exports = {
                     name: '[name].[ext]',
                 },
             },
-        ]
+        ],
     },
     resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: [SRC, 'node_modules', `${TREZOR_CONNECT_ROOT}/node_modules`],
         alias: {
             'trezor-connect': `${TREZOR_CONNECT}`,
-        }
+        },
     },
     performance: {
-        hints: false
+        hints: false,
     },
     plugins: [
         new webpack.NormalModuleReplacementPlugin(/.blake2b$/, './blake2b.js'),
@@ -111,36 +113,34 @@ module.exports = {
             filename: '[name].css',
             chunkFilename: '[id].css',
         }),
-        
+
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
-            inject: true
+            inject: true,
         }),
 
         new HtmlWebpackPlugin({
             chunks: ['iframe'],
             filename: `iframe.html`,
             template: `${TREZOR_CONNECT_HTML}iframe.html`,
-            inject: false
+            inject: false,
         }),
         new HtmlWebpackPlugin({
             chunks: ['popup'],
             filename: 'popup.html',
             template: `${TREZOR_CONNECT_HTML}popup.html`,
-            inject: false
+            inject: false,
         }),
         new HtmlWebpackPlugin({
             chunks: ['extensionPermissions'],
             filename: `extension-permissions.html`,
             template: `${TREZOR_CONNECT_HTML}extension-permissions.html`,
-            inject: true
+            inject: true,
         }),
 
-        new CopyWebpackPlugin([
-            { from: TREZOR_CONNECT_FILES, to: 'data' },
-        ]),
+        new CopyWebpackPlugin([{ from: TREZOR_CONNECT_FILES, to: 'data' }]),
 
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
@@ -157,9 +157,9 @@ module.exports = {
 
     // ignoring "fs" import in fastxpub
     node: {
-        fs: "empty",
-        path: "empty",
-        net: "empty",
-        tls: "empty",
-    }
-}
+        fs: 'empty',
+        path: 'empty',
+        net: 'empty',
+        tls: 'empty',
+    },
+};

@@ -271,6 +271,7 @@ export interface Settings {
     pendingTransportEvent?: boolean;
     supportedBrowser?: boolean;
     extension?: string;
+    lazyLoad?: boolean;
     manifest: {
         appUrl: string;
         email: string;
@@ -348,7 +349,6 @@ export interface TransactionID {
 }
 
 import * as UI from './lib/constants/ui';
-
 export namespace DEVICE {
     // device list events
     export const CONNECT: 'device-connect' = 'device-connect';
@@ -415,7 +415,9 @@ export const UI_EVENT = 'UI_EVENT';
 export namespace UI {
     export const REQUEST_CONFIRMATION = 'ui-request_confirmation';
     export const RECEIVE_CONFIRMATION = 'ui-receive_confirmation';
+    export const ADDRESS_VALIDATION = 'ui-address_validation';
 }
+
 export type UiEvent = {
     event: typeof UI_EVENT;
     type: typeof UI.REQUEST_CONFIRMATION;
