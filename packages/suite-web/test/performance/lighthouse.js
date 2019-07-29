@@ -5,12 +5,11 @@ const fs = require('fs');
 const ReportGenerator = require('lighthouse/lighthouse-core/report/report-generator');
 
 const run = async (url, options) => {
-    console.log('debug 0');
-
-    const chrome = await chromeLauncher.launch({ chromeFlags: options.chromeFlags });
-    options.port = chrome.port;
-
+    let chrome;
     try {
+        console.log('debug 0');
+        chrome = await chromeLauncher.launch({ chromeFlags: options.chromeFlags });
+        options.port = chrome.port;
         console.log('debug 00');
 
         const results = await lighthouse(url, options);
