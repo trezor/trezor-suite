@@ -39,7 +39,8 @@ install and build:
             - suite-native/node_modules
             - suite-onboarding/node_modules
 
-DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+variables:
+    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 include:
     - ci/packages/components.yml
