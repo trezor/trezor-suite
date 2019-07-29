@@ -30,17 +30,20 @@ const run = async (url, options) => {
     }
 };
 
-// DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME
 const urlToTest = process.env.TEST_URL;
-// 'https://suite.corp.sldev.cz/suite-web/develop';
-console.log(urlToTest);
+console.log('urlToTest', urlToTest);
 
-run(urlToTest, {
-    chromeFlags: [
-        '--ignore-certificate-errors',
-        '--no-sandbox',
-        '--ignore-urlfetcher-cert-requests',
-        '--allow-insecure-localhost',
-        '--view',
-    ],
-});
+try {
+    run(urlToTest, {
+        chromeFlags: [
+            '--ignore-certificate-errors',
+            '--no-sandbox',
+            '--ignore-urlfetcher-cert-requests',
+            '--allow-insecure-localhost',
+            '--view',
+        ],
+    });
+} catch (error) {
+    consoel.log('error', error);
+}
+
