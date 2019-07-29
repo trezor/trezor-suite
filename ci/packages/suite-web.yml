@@ -22,21 +22,21 @@
 #             - packages/suite-web/**/*
 #             - .gitlab-ci.yml
 
-# suite-web build:
-#     stage: build
-#     only:
-#         changes:
-#             - packages/suite/**/*
-#             - packages/suite-web/**/*
-#             - .gitlab-ci.yml
-#     variables:
-#         PACKAGE_NAME: suite-web
-#     script:
-#         - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
-#     artifacts:
-#         expire_in: 15 minutes
-#         paths:
-#             - $PACKAGE_PATH_SUITE_WEB/build
+suite-web build:
+    stage: build
+    only:
+        changes:
+            - packages/suite/**/*
+            - packages/suite-web/**/*
+            - .gitlab-ci.yml
+    variables:
+        PACKAGE_NAME: suite-web
+    script:
+        - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 15 minutes
+        paths:
+            - $PACKAGE_PATH_SUITE_WEB/build
 
 suite-web deploy dev:
     stage: deploy
