@@ -1,7 +1,6 @@
-import { RATE_UPDATE, FiatRateAction } from '@wallet-services/CoingeckoService';
+import { RATE_UPDATE } from '@wallet-services/CoingeckoService';
+import { Actions } from '@wallet-types/index';
 import produce from 'immer';
-
-import { Action } from '@suite-types/index';
 
 export interface Fiat {
     network: string;
@@ -10,7 +9,7 @@ export interface Fiat {
 
 export const initialState: Fiat[] = [];
 
-const update = (state: Fiat[], action: FiatRateAction) => {
+const update = (state: Fiat[], action: Actions) => {
     const affected = state.find(f => f.network === action.network);
     const { network, rates } = action;
 
