@@ -5,16 +5,22 @@ const fs = require('fs');
 const ReportGenerator = require('lighthouse/lighthouse-core/report/report-generator');
 
 const run = async (url, options) => {
+    console.log('debug 0');
+
     const chrome = await chromeLauncher.launch({ chromeFlags: options.chromeFlags });
     options.port = chrome.port;
 
     try {
+        console.log('debug 00');
+
         const results = await lighthouse(url, options);
         const jsonReport = ReportGenerator.generateReport(results.lhr, 'json');
         const htmlReport = ReportGenerator.generateReport(results.lhr, 'html');
 
+        console.log('debug 1');
         await fs.writeFileSync('test/performance/results.json', jsonReport);
         await fs.writeFileSync('test/performance/results.html', htmlReport);
+        console.log('debug 2');
 
         const json = await JSON.parse(jsonReport);
         const performance = json.categories.performance.score;
