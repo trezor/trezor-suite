@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
-import TrezorConnect from 'trezor-connect';
-import { Action, GetState, Dispatch, TrezorDevice } from '@suite-types/index';
-import { RECEIVE, NOTIFICATION } from 'actions/constants/receive';
+import { GetState, Dispatch, TrezorDevice } from '@suite-types/index';
+import { Actions } from '@wallet-types/index';
+import { RECEIVE, NOTIFICATION } from '@wallet-actions/constants';
 
 import l10nMessages from 'components/notifications/Context/actions.messages';
 import l10nCommonMessages from 'views/common.messages';
@@ -25,11 +25,11 @@ export const init = (): ThunkAction => (dispatch: Dispatch): void => {
     });
 };
 
-export const dispose = (): Action => ({
+export const dispose = (): Actions => ({
     type: RECEIVE.DISPOSE,
 });
 
-export const showUnverifiedAddress = (): Action => ({
+export const showUnverifiedAddress = (): Actions => ({
     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
 });
 

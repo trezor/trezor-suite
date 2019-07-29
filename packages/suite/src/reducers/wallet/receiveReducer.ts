@@ -1,7 +1,7 @@
 import { UI } from 'trezor-connect';
 import produce from 'immer';
 import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
-import { Action } from '@suite-types/index';
+import { Actions } from '@wallet-types/index';
 
 export interface State {
     addressVerified: boolean;
@@ -13,7 +13,7 @@ const initialState = {
     addressUnverified: false,
 };
 
-export default (state: State = initialState, action: Action): State => {
+export default (state: State = initialState, action: Actions): State => {
     return produce(state, draft => {
         switch (action.type) {
             case RECEIVE.INIT:

@@ -1,8 +1,11 @@
 import { SettingsActions } from '@wallet-actions/settingsActions';
 import { NotificationActions } from '@wallet-actions/notificationActions';
-import { TokenActions } from '@suite/actions/wallet/tokenActions';
-import { FiatRateActions } from '@wallet-services/CoingeckoService';
+import { TokenActions } from '@wallet-actions/tokenActions';
+import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
+
+import { FiatRateActions } from '@wallet-services/CoingeckoService';
+
 import { Network } from './networkTypes';
 import { Icon } from './iconTypes';
 import { NetworkToken, Token } from './tokenTypes';
@@ -17,6 +20,7 @@ interface BlockchainLinkToken {
 
 export type Actions =
     | SettingsActions
+    | ReceiveActions
     | SignVerifyActions
     | NotificationActions
     | TokenActions
