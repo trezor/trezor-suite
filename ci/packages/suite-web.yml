@@ -1,42 +1,42 @@
 --- # suite-web package # --------------------------------
 
-suite-web lint:
-    stage: lint
-    script:
-        - env
-        - yarn workspace @trezor/suite-web lint
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-web/**/*
-            - .gitlab-ci.yml
+# suite-web lint:
+#     stage: lint
+#     script:
+#         - env
+#         - yarn workspace @trezor/suite-web lint
+#     only:
+#         changes:
+#             - packages/suite/**/*
+#             - packages/suite-web/**/*
+#             - .gitlab-ci.yml
 
-suite-web type check:
-    stage: type check
-    allow_failure: true
-    script:
-        - yarn workspace @trezor/suite-web type-check
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-web/**/*
-            - .gitlab-ci.yml
+# suite-web type check:
+#     stage: type check
+#     allow_failure: true
+#     script:
+#         - yarn workspace @trezor/suite-web type-check
+#     only:
+#         changes:
+#             - packages/suite/**/*
+#             - packages/suite-web/**/*
+#             - .gitlab-ci.yml
 
-suite-web build:
-    stage: build
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-web/**/*
-            - .gitlab-ci.yml
-    variables:
-        PACKAGE_NAME: suite-web
-    script:
-        - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 15 minutes
-        paths:
-            - $PACKAGE_PATH_SUITE_WEB/build
+# suite-web build:
+#     stage: build
+#     only:
+#         changes:
+#             - packages/suite/**/*
+#             - packages/suite-web/**/*
+#             - .gitlab-ci.yml
+#     variables:
+#         PACKAGE_NAME: suite-web
+#     script:
+#         - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+#     artifacts:
+#         expire_in: 15 minutes
+#         paths:
+#             - $PACKAGE_PATH_SUITE_WEB/build
 
 suite-web deploy dev:
     stage: deploy
@@ -88,23 +88,23 @@ suite-web delete review:
     tags:
         - deploy
 
-suite-web test integration:
-    image: cypress/base:10
-    stage: test integration
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-web/**/*
-            - .gitlab-ci.yml
-    script:
-        - env
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
-    artifacts:
-        expire_in: 2 days
-        when: always
-        paths:
-            - /builds/trezor/trezor-suite/packages/suite-web/test/snapshots
-            - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
+# suite-web test integration:
+#     image: cypress/base:10
+#     stage: test integration
+#     only:
+#         changes:
+#             - packages/suite/**/*
+#             - packages/suite-web/**/*
+#             - .gitlab-ci.yml
+#     script:
+#         - env
+#         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
+#     artifacts:
+#         expire_in: 2 days
+#         when: always
+#         paths:
+#             - /builds/trezor/trezor-suite/packages/suite-web/test/snapshots
+#             - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
 
 suite-web test performance:
     image: node:11
@@ -116,7 +116,9 @@ suite-web test performance:
             - .gitlab-ci.yml
     script:
         - env
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:performance
+        - yarn workspace @trezor/suite-web test:performance
+        - rsync -va test/performance/results.html "${DEPLOY_DIRECTORY}/"
+
     artifacts:
         expire_in: 2 days
         when: always
