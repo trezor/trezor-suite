@@ -11,7 +11,7 @@ import colors from '../../config/colors';
 
 const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
 
-const LOGOS: { [key: string]: any } = {
+const ICONS: { [key: string]: any } = {
     ARROW_DOWN: require('../../images/icons/arrow_down.svg'),
     ARROW_LEFT: require('../../images/icons/arrow_left.svg'),
     ARROW_UP: require('../../images/icons/arrow_up.svg'),
@@ -56,7 +56,7 @@ const Icon = ({ icon, size = 24, color = colors.TEXT_SECONDARY, onClick }: Props
                 height: size,
             }}
         >
-            <SvgUri width={size} height={size} fill={color} source={LOGOS[icon]} />
+            <SvgUri width={size} height={size} fill={color} source={ICONS[icon]} />
         </TouchableWithoutFeedback>
     );
 };
