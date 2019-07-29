@@ -1,6 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import webpack from 'webpack';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { SRC, BUILD, PORT } from './constants';
