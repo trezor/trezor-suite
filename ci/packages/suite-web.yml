@@ -87,8 +87,7 @@ suite-web delete review:
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     tags:
         - deploy
-
-        
+      
 # suite-web test integration:
 #     image: cypress/base:10
 #     stage: test integration
