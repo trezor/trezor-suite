@@ -5,6 +5,7 @@ import { Modal } from '../../types';
 interface Props {
     modal: Modal;
 }
+
 const Pin: React.FC<Props> = props => {
     const { onPinAdd, onPinBackspace, onPinSubmit } = props.modalActions;
     const { pin } = props.modal;
@@ -109,3 +110,5 @@ const Pin: React.FC<Props> = props => {
         </div>
     );
 };
+
+export default Pin;
