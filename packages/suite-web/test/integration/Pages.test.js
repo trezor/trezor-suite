@@ -1,11 +1,15 @@
+const pages = ['/', '/bridge', '/onboarding', '/settings', '/version', '/wallet'];
+
 describe('Pages', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).visit('/');
     });
 
-    it(`test root page is online`, () => {
-        cy.visit('/')
-            .get('html')
-            .should('be.visible');
+    pages.forEach(page => {
+        it(`test ${page} page is online`, () => {
+            cy.visit(page)
+                .get('html')
+                .should('be.visible');
+        });
     });
 });

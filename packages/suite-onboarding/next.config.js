@@ -26,9 +26,14 @@ module.exports = withCustomBabelConfig(
                     new webpack.DefinePlugin({
                         'process.env.SUITE_TYPE': JSON.stringify('web'),
                         'process.env.VERSION': JSON.stringify(packageJson.version),
+<<<<<<< Updated upstream
                         'process.env.COMMITHASH': JSON.stringify(
                             gitRevisionPlugin.commithash(),
                         ),
+=======
+                        'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
+                        'process.env.COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash()),
+>>>>>>> Stashed changes
                     }),
                 );
                 return config;
