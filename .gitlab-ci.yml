@@ -28,7 +28,7 @@ install and build:
             - packages/blockchain-link/lib
             - packages/rollout/lib
             # cypress
-            ~/cypress_cache
+            - ~/cypress_cache
             # node_modules
             - node_modules
             - node_modules/.bin
