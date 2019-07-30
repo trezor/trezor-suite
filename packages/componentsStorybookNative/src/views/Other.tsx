@@ -25,9 +25,11 @@ const Col = styled.View`
 
 const Section = styled.View`
     flex: 1;
+    justify-content: center;
+    align-items: center;
 `;
 
-const ColDark = styled(Col)`
+const SectionDark = styled(Section)`
     background: ${colors.HEADER};
 `;
 
@@ -121,12 +123,12 @@ const Other = () => {
 
             <H1>Loader</H1>
             <H5>default</H5>
-            <Col>
+            <Section>
                 <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
-            </Col>
+            </Section>
 
             <H5>small text</H5>
-            <Col>
+            <Section>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -134,10 +136,10 @@ const Other = () => {
                     isSmallText
                     data-test="loader_small_text"
                 />
-            </Col>
+            </Section>
 
             <H5>transparent route</H5>
-            <Col>
+            <Section>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -145,10 +147,10 @@ const Other = () => {
                     transparentRoute
                     data-test="loader_transparent_route"
                 />
-            </Col>
+            </Section>
 
             <H5>white text</H5>
-            <ColDark>
+            <SectionDark>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -156,10 +158,10 @@ const Other = () => {
                     isWhiteText
                     data-test="loader_white_text"
                 />
-            </ColDark>
+            </SectionDark>
 
             <H5>white text &amp; transparent route</H5>
-            <ColDark>
+            <SectionDark>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -168,7 +170,7 @@ const Other = () => {
                     transparentRoute
                     data-test="loader_white_text_transparent"
                 />
-            </ColDark>
+            </SectionDark>
         </Wrapper>
     );
 };
