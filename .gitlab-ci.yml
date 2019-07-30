@@ -23,9 +23,6 @@ install and build:
         expire_in: 1 day
         when: always
         paths:
-            # cypress
-            - ~/.cache
-            - /root/.cache/Cypress
             # libs
             - packages/components/lib
             - packages/blockchain-link/lib
@@ -54,13 +51,13 @@ variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 include:
-    - ci/packages/components.yml
-    - ci/packages/components-storybook.yml
-    - ci/packages/suite.yml
+    # - ci/packages/components.yml
+    # - ci/packages/components-storybook.yml
+    # - ci/packages/suite.yml
     - ci/packages/suite-web.yml
-    - ci/packages/suite-desktop.yml
-    - ci/packages/suite-native.yml
-    - ci/packages/suite-onboarding.yml
-    - ci/packages/blockchain-link.yml
-    - ci/packages/rollout.yml
-    - ci/packages/connect-explorer.yml
+    # - ci/packages/suite-desktop.yml
+    # - ci/packages/suite-native.yml
+    # - ci/packages/suite-onboarding.yml
+    # - ci/packages/blockchain-link.yml
+    # - ci/packages/rollout.yml
+    # - ci/packages/connect-explorer.yml
