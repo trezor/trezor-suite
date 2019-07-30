@@ -98,7 +98,6 @@ suite-web delete review:
         - install and build
 
 suite-web test integration:
-    image: cypress/base:10
     stage: test integration
     only:
         changes:
@@ -107,6 +106,8 @@ suite-web test integration:
             - .gitlab-ci.yml
     script:
         - env
+        - ls /root/.cache/
+        - ls /root
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
     artifacts:
         expire_in: 2 days
