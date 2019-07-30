@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { getPrimaryColor, getSecondaryColor, getNotificationBgColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
-import { Omit, FeedbackType, IconShape } from '../../../support/types';
+import { Omit, FeedbackType } from '../../../support/types';
 import Icon from '../../Icon';
 import { FONT_SIZE_NATIVE } from '../../../config/variables';
 

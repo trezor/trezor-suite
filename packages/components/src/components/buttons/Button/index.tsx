@@ -7,7 +7,7 @@ import Icon from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
-import { IconShape, FeedbackType } from '../../../support/types';
+import { FeedbackType } from '../../../support/types';
 
 interface FluidSpinnerProps {
     size: number;
