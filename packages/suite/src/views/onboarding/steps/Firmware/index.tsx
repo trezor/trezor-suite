@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { P, Button, Tooltip } from '@trezor/components';
+import { P, Tooltip } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
 import commonMessages from '@suite-support/Messages';
 
-import * as STEP from '@onboarding-constants/steps';
+// import * as STEP from '@onboarding-constants/steps';
 import colors from '@onboarding-config/colors';
 import { FIRMWARE_UPDATE } from '@onboarding-actions/constants/calls';
 import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
 import Text from '@onboarding-components/Text';
 import { ConnectDeviceIcon } from '@onboarding-components/Icons';
 import { Donut, Dots } from '@onboarding-components/Loaders';
+import { ButtonCta } from '@onboarding-components/Buttons';
 import {
     StepWrapper,
     StepHeadingWrapper,
@@ -19,8 +20,7 @@ import {
 } from '@onboarding-components/Wrapper';
 import { updateFirmware } from '@onboarding-actions/firmwareUpdateActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
-
-import { callActionAndGoToNextStep, resetDevice } from '@suite/actions/onboarding/connectActions';
+// import { callActionAndGoToNextStep, resetDevice } from '@suite/actions/onboarding/connectActions';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -38,9 +38,9 @@ const InstallButton = ({ isConnected, onClick }: ButtonProps) => (
         placement="bottom"
         content="Connect device to continue"
     >
-        <Button isDisabled={!isConnected} onClick={() => onClick()}>
+        <ButtonCta isDisabled={!isConnected} onClick={() => onClick()}>
             <FormattedMessage {...l10nMessages.TR_INSTALL} />
-        </Button>
+        </ButtonCta>
     </Tooltip>
 );
 
@@ -50,10 +50,10 @@ const ContinueButton = ({ isConnected, onClick }: ButtonProps) => (
         placement="bottom"
         content="Connect device to continue"
     >
-        <Button isDisabled={!isConnected} onClick={() => onClick()}>
+        <ButtonCta isDisabled={!isConnected} onClick={() => onClick()}>
             Finish basic setup
             {/* <FormattedMessage {...commonMessages.TR_CONTINUE} /> */}
-        </Button>
+        </ButtonCta>
     </Tooltip>
 );
 
@@ -61,27 +61,27 @@ interface Props {
     device: AppState['onboarding']['connect']['device'];
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
     firmwareUpdate: AppState['onboarding']['firmwareUpdate'];
-    path: AppState['onboarding']['path'];
+    // path: AppState['onboarding']['path'];
     firmwareUpdateActions: {
         updateFirmware: typeof updateFirmware;
     };
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
     };
-    connectActions: {
-        resetDevice: typeof resetDevice;
-        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
-    };
+    // connectActions: {
+    //     resetDevice: typeof resetDevice;
+    //     callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
+    // };
 }
 
 const FirmwareStep = ({
     device,
     deviceCall,
     firmwareUpdate,
-    path,
+    // path,
     onboardingActions,
     firmwareUpdateActions,
-    connectActions,
+    // connectActions,
     intl,
 }: Props & InjectedIntlProps) => {
     const [maxProgress, setMaxProgress] = useState(0);
@@ -185,15 +185,7 @@ const FirmwareStep = ({
     };
 
     const getContinueFn = () => {
-        if (path.includes(STEP.PATH_CREATE)) {
-            return () => {
-                connectActions.callActionAndGoToNextStep(
-                    () => connectActions.resetDevice(),
-                    STEP.ID_SECURITY_STEP,
-                );
-            };
-        }
-        return () => onboardingActions.goToNextStep(STEP.ID_RECOVERY_STEP);
+        return () => onboardingActions.goToNextStep();
     };
 
     return (
@@ -290,9 +282,9 @@ const FirmwareStep = ({
                                 placement="bottom"
                                 content="Connect device to continue"
                             >
-                                <Button isDisabled={!isConnected} onClick={() => install()}>
+                                <ButtonCta isDisabled={!isConnected} onClick={() => install()}>
                                     <FormattedMessage {...commonMessages.TR_RETRY} />
-                                </Button>
+                                </ButtonCta>
                             </Tooltip>
                         )}
 

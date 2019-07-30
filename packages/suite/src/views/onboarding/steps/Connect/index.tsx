@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-
-import { H4, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { TrezorConnect } from '@suite/components/onboarding/Prompts';
-import { Dots } from '@suite/components/onboarding/Loaders';
-import Text from '@suite/components/onboarding/Text';
+import { TrezorConnect } from '@onboarding-components/Prompts';
+import { Dots } from '@onboarding-components/Loaders';
+import Text from '@onboarding-components/Text';
+import { ButtonCta, ButtonBack } from '@onboarding-components/Buttons';
 import l10nCommonMessages from '@suite-support/Messages';
 import {
     StepWrapper,
     StepHeadingWrapper,
     StepBodyWrapper,
     ControlsWrapper,
+    StepFooterWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
+import { goToNextStep, goToPreviousStep } from '@suite/actions/onboarding/onboardingActions';
 import TroubleshootBootloader from './components/TroubleshootBootloader';
 import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
@@ -23,27 +23,27 @@ import { AppState } from '@suite-types';
 
 interface StepProps {
     device: AppState['onboarding']['connect']['device'];
-    deviceCall: AppState['onboarding']['connect']['deviceCall'];
     model: AppState['onboarding']['selectedModel'];
-    isResolved: boolean; // todo: ?
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
+        goToPreviousStep: typeof goToPreviousStep;
     };
 }
 
-const ConnectStep = ({ device, deviceCall, isResolved, model, onboardingActions }: StepProps) => {
-    const IS_SEARCHING_TIMEOUT = 5 * 1000;
-    const IS_SEARCHING_TOO_LONG_TIMEOUT = 15 * 1000;
-
+const ConnectStep = ({ device, model, onboardingActions }: StepProps) => {
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const [isSearchingTooLong, setIsSearchingTooLong] = useState<boolean>(false);
 
     const deviceIsConnected = Boolean(device && device.connected);
 
     useEffect(() => {
+        const IS_SEARCHING_TIMEOUT = 5 * 1000;
+        const IS_SEARCHING_TOO_LONG_TIMEOUT = 15 * 1000;
         let isSearchingTimeout: number;
         let isSearchingTooLongTimeout: number;
-        if (!device) {
+        setIsSearching(false);
+        setIsSearchingTooLong(false);
+        if (!deviceIsConnected) {
             isSearchingTimeout = setTimeout(() => {
                 setIsSearching(true);
             }, IS_SEARCHING_TIMEOUT);
@@ -56,7 +56,7 @@ const ConnectStep = ({ device, deviceCall, isResolved, model, onboardingActions 
             clearTimeout(isSearchingTimeout);
             clearTimeout(isSearchingTooLongTimeout);
         };
-    }, [IS_SEARCHING_TIMEOUT, IS_SEARCHING_TOO_LONG_TIMEOUT, device]);
+    }, [deviceIsConnected]);
 
     const isInBlWithFwPresent = () => {
         if (!device) {
@@ -65,64 +65,83 @@ const ConnectStep = ({ device, deviceCall, isResolved, model, onboardingActions 
         return device.mode === 'bootloader' && device.features.firmware_present === true;
     };
 
+    const getStatus = () => {
+        if (isSearching && !isSearchingTooLong) {
+            return 'searching';
+        }
+        if (isSearchingTooLong) {
+            return 'searching-long';
+        }
+        if (isInBlWithFwPresent()) {
+            return 'unexpected-bootloader';
+        }
+        if (device && device.features.initialized) {
+            return 'unexpected-initialized';
+        }
+        if (deviceIsConnected) {
+            return 'connected';
+        }
+        return null;
+    };
+
     return (
         <StepWrapper>
             <StepHeadingWrapper>
-                <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
+                {(!getStatus() || getStatus() === 'searching') && (
+                    <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
+                )}
+                {getStatus() === 'searching-long' && <>We dont see your device</>}
+                {getStatus() === 'connected' && (
+                    <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
+                )}
+                {getStatus() === 'unexpected-bootloader' && (
+                    <FormattedMessage {...l10nMessages.TR_DEVICE_IN_BOOTLOADER_MODE} />
+                )}
+                {getStatus() === 'unexpected-initialized' && (
+                    <FormattedMessage {...l10nMessages.TR_DEVICE_IS_INITIALIZED} />
+                )}
             </StepHeadingWrapper>
             <StepBodyWrapper>
-                <TrezorConnect model={model || 2} height={180} loop={!deviceIsConnected} />
-
-                {!deviceIsConnected && (
-                    <Text>
-                        <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
-                        <FormattedMessage {...l10nMessages.TR_SEARCHING_FOR_YOUR_DEVICE} />
-                        <Dots />
-                    </Text>
+                {(!getStatus() || getStatus() === 'searching') && (
+                    <>
+                        <TrezorConnect model={model || 2} height={180} loop={!deviceIsConnected} />
+                        <Text>
+                            <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
+                            <FormattedMessage {...l10nMessages.TR_SEARCHING_FOR_YOUR_DEVICE} />
+                            <Dots />
+                        </Text>
+                    </>
                 )}
 
-                {!deviceIsConnected && isSearching && isSearchingTooLong && (
-                    <TroubleshootSearchingTooLong />
-                )}
+                {getStatus() === 'searching-long' && <TroubleshootSearchingTooLong />}
 
-                {deviceIsConnected && !deviceCall.isProgress && (
-                    <React.Fragment>
-                        {!device.features.initialized && isInBlWithFwPresent() === false && (
-                            <React.Fragment>
-                                <H4>
-                                    <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
-                                </H4>
-                                <Text>
-                                    <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} />
-                                </Text>
-                                <ControlsWrapper>
-                                    <Button onClick={() => onboardingActions.goToNextStep()}>
-                                        <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                    </Button>
-                                </ControlsWrapper>
-                            </React.Fragment>
-                        )}
+                {getStatus() === 'unexpected-bootloader' && <TroubleshootBootloader />}
 
-                        {isInBlWithFwPresent() && <TroubleshootBootloader />}
+                {getStatus() === 'unexpected-initialized' && <TroubleshootInitialized />}
 
-                        {device.features.initialized && !isResolved && <TroubleshootInitialized />}
-
-                        {device.features.initialized && isResolved && (
-                            <React.Fragment>
-                                <H4>
-                                    <FormattedMessage {...l10nMessages.TR_DEVICE_DETECTED} />
-                                </H4>
-                                <Text>Found a device you have previously initialized</Text>
-                                <ControlsWrapper>
-                                    <Button onClick={() => onboardingActions.goToNextStep()}>
-                                        <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                    </Button>
-                                </ControlsWrapper>
-                            </React.Fragment>
-                        )}
-                    </React.Fragment>
+                {getStatus() === 'connected' && (
+                    <>
+                        <Text>
+                            <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} />
+                        </Text>
+                        <ControlsWrapper>
+                            <ButtonCta onClick={() => onboardingActions.goToNextStep()}>
+                                <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                            </ButtonCta>
+                        </ControlsWrapper>
+                    </>
                 )}
             </StepBodyWrapper>
+            <StepFooterWrapper>
+                <ControlsWrapper>
+                    <ButtonBack onClick={() => onboardingActions.goToPreviousStep()}>
+                        Back
+                    </ButtonBack>
+                </ControlsWrapper>
+            </StepFooterWrapper>
+            <Text>
+                // in case device is already connected, shouldnt we skip this step directly to fw?
+            </Text>
         </StepWrapper>
     );
 };

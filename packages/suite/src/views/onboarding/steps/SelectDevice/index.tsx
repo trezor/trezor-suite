@@ -1,22 +1,27 @@
 import React from 'react';
-import styled from 'styled-components';
-import { H6, TrezorImage } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
+import { H6, TrezorImage } from '@trezor/components';
 
-import { OptionsList } from '@suite/components/onboarding/Options';
+import Option from '@onboarding-components/Option';
+import Text from '@onboarding-components/Text';
+import { ButtonBack } from '@suite/components/onboarding/Buttons';
 import {
     StepWrapper,
     StepHeadingWrapper,
     StepBodyWrapper,
-} from '@suite/components/onboarding/Wrapper';
-import { goToNextStep, selectTrezorModel } from '@suite/actions/onboarding/onboardingActions';
+    StepFooterWrapper,
+    OptionsWrapper,
+    ControlsWrapper,
+} from '@onboarding-components/Wrapper';
+import {
+    goToNextStep,
+    goToPreviousStep,
+    selectTrezorModel,
+} from '@onboarding-actions/onboardingActions';
+import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
-
-const OptionWrapper = styled.div`
-    text-align: center;
-`;
 
 const DEVICE_HEIGHT = 130;
 
@@ -24,65 +29,51 @@ interface Props {
     onboardingActions: {
         selectTrezorModel: typeof selectTrezorModel;
         goToNextStep: typeof goToNextStep;
+        goToPreviousStep: typeof goToPreviousStep;
     };
-    device: AppState['onboarding']['connect']['device'];
-    model: AppState['onboarding']['selectedModel'];
 }
 
-const SelectDeviceStep: React.FC<Props> = ({ onboardingActions, model, device }) => {
-    const actualVersion =
-        device && device.features && device.features.major_version
-            ? device.features.major_version
-            : null;
-
+const SelectDeviceStep: React.FC<Props> = ({ onboardingActions }) => {
     return (
         <StepWrapper>
             <StepHeadingWrapper>
                 <FormattedMessage {...l10nMessages.TR_SELECT_YOUR_DEVICE_HEADING} />
             </StepHeadingWrapper>
             <StepBodyWrapper>
-                <OptionsList
-                    options={[
-                        {
-                            content: (
-                                <OptionWrapper data-test="select-device-1">
-                                    <TrezorImage
-                                        style={{ margin: '15px' }}
-                                        model={1}
-                                        height={DEVICE_HEIGHT}
-                                    />
-                                    <H6>
-                                        <FormattedMessage {...l10nMessages.TR_MODEL_ONE} />
-                                    </H6>
-                                </OptionWrapper>
-                            ),
-                            value: 1,
-                            key: 1,
-                        },
-                        {
-                            content: (
-                                <OptionWrapper data-test="select-device-2">
-                                    <TrezorImage
-                                        style={{ margin: '15px' }}
-                                        model={2}
-                                        height={DEVICE_HEIGHT}
-                                    />
-                                    <H6>
-                                        <FormattedMessage {...l10nMessages.TR_MODEL_T} />
-                                    </H6>
-                                </OptionWrapper>
-                            ),
-                            value: 2,
-                            key: 2,
-                        },
-                    ]}
-                    selected={actualVersion || model}
-                    onSelect={(value: number) => {
-                        onboardingActions.selectTrezorModel(value);
-                        onboardingActions.goToNextStep();
-                    }}
-                />
+                <Text>Note -> isnt it nicer without the green buttons?</Text>
+
+                <OptionsWrapper>
+                    <Option
+                        onClick={() => {
+                            onboardingActions.selectTrezorModel(1);
+                            onboardingActions.goToNextStep();
+                        }}
+                    >
+                        <TrezorImage style={{ margin: '15px' }} model={1} height={DEVICE_HEIGHT} />
+                        <H6>
+                            <FormattedMessage {...l10nMessages.TR_MODEL_ONE} />
+                        </H6>
+                    </Option>
+                    <Option
+                        onClick={() => {
+                            onboardingActions.selectTrezorModel(2);
+                            onboardingActions.goToNextStep();
+                        }}
+                    >
+                        <TrezorImage style={{ margin: '15px' }} model={2} height={DEVICE_HEIGHT} />
+                        <H6>
+                            <FormattedMessage {...l10nMessages.TR_MODEL_T} />
+                        </H6>
+                    </Option>
+                </OptionsWrapper>
             </StepBodyWrapper>
+            <StepFooterWrapper>
+                <ControlsWrapper>
+                    <ButtonBack onClick={() => onboardingActions.goToPreviousStep()}>
+                        Back
+                    </ButtonBack>
+                </ControlsWrapper>
+            </StepFooterWrapper>
         </StepWrapper>
     );
 };

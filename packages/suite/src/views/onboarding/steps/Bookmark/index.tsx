@@ -2,26 +2,27 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-import { Link, Button, P } from '@trezor/components';
+import { Link, P } from '@trezor/components';
 
 import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
 import l10nCommonMessages from '@suite-support/Messages';
-import { PHISHING_URL } from '@suite/constants/onboarding/urls';
-import Key from '@suite/components/onboarding/Key';
-import Text from '@suite/components/onboarding/Text';
+import { PHISHING_URL } from '@onboarding-constants/urls';
+import Key from '@onboarding-components/Key';
+import Text from '@onboarding-components/Text';
 import {
     StepWrapper,
     StepBodyWrapper,
     StepHeadingWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
+import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
 import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
-
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
 const Keys = styled.div`
     display: flex;
+    align-items: center;
 `;
 
 interface StepProps {
@@ -119,19 +120,18 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
                             <Key isPressed={keys[BookmarkStep.D_KEY] === true} text="D" />
                         </Keys>
                     </React.Fragment>
-                    // )}
                     <ControlsWrapper>
                         {/* {!Platform.isMobile() && ( */}
                         <React.Fragment>
-                            <Button isWhite onClick={() => this.setBookmarkFlagAndContinue()}>
+                            <ButtonAlt onClick={() => this.setBookmarkFlagAndContinue()}>
                                 <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                            </Button>
-                            <Button
+                            </ButtonAlt>
+                            <ButtonCta
                                 isDisabled={this.nextDisabled()}
                                 onClick={() => this.setBookmarkFlagAndContinue()}
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                            </Button>
+                            </ButtonCta>
                         </React.Fragment>
                         {/* )} */}
                         {/*  todo: for mobile add to homescreen */}

@@ -10,7 +10,7 @@ const ControlsWrapper = styled.div<Props>`
     flex-direction: ${({ isVertical }) => (isVertical ? 'column' : 'row')};
     width: ${({ isVertical }) => (isVertical ? '240px' : '100%')};
 
-    justify-content: center;
+    justify-content: ${({ isVertical }) => (isVertical ? 'center' : 'space-around')};
     margin-top: 10px;
     margin-bottom: 10px;
     & > * {

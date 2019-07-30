@@ -20,7 +20,8 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     border-color: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)};
 
     @media (min-width: ${BREAKPOINTS.SM}px) {
-        height: 200px;
+        min-height: 280px;
+        min-width: 215px;
     }
 `;
 
@@ -32,22 +33,18 @@ const Circle = styled.div`
     align-self: flex-end;
 `;
 
-interface Props {
+interface OptionProps {
     onClick?: () => void;
     isSelected?: boolean;
     style?: CSSProperties;
-    content: React.ReactNode;
 }
-const Option = (props: Props) => {
+
+const Option: React.FC<OptionProps> = props => {
     const { isSelected = false } = props;
     return (
-        <OptionWrapper
-            // {...props}
-            isSelected={isSelected}
-            onClick={props.onClick}
-        >
+        <OptionWrapper isSelected={isSelected} onClick={props.onClick}>
             <Circle style={{ visibility: props.isSelected ? 'visible' : 'hidden' }} />
-            {props.content}
+            {props.children}
         </OptionWrapper>
     );
 };

@@ -1,20 +1,22 @@
 import React from 'react';
-import { Button, Input } from '@trezor/components';
+import { Input } from '@trezor/components';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
+import l10nCommonMessages from '@suite-support/Messages';
+import { isASCII } from '@suite-utils/validators';
 import { applySettings } from '@onboarding-actions/connectActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
-import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
-import { isASCII } from '@suite-utils/validators';
-import l10nCommonMessages from '@suite-support/Messages';
-import Text from '@suite/components/onboarding/Text';
+import { DEFAULT_LABEL } from '@onboarding-constants/trezor';
+import Text from '@onboarding-components/Text';
 import {
     StepWrapper,
     StepBodyWrapper,
     StepHeadingWrapper,
     ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
+} from '@onboarding-components/Wrapper';
+import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
+import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
@@ -58,7 +60,7 @@ class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState>
 
     getStatus = () => {
         const { device } = this.props;
-        if (device!.features!.label !== DEFAULT_LABEL) {
+        if (device!.label !== DEFAULT_LABEL) {
             return 'changed';
         }
         return 'initial';
@@ -127,18 +129,17 @@ class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState>
                             />
 
                             <ControlsWrapper>
-                                <Button
-                                    isWhite
+                                <ButtonAlt
                                     onClick={() => this.props.onboardingActions.goToNextStep()}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                                </Button>
-                                <Button
+                                </ButtonAlt>
+                                <ButtonCta
                                     isDisabled={this.validateInput().state !== 'success'}
                                     onClick={this.changeLabel}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_SUBMIT} />
-                                </Button>
+                                </ButtonCta>
                             </ControlsWrapper>
                         </React.Fragment>
                     )}
@@ -149,9 +150,11 @@ class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState>
                                 <FormattedMessage {...l10nMessages.TR_NAME_CHANGED_TEXT} />
                             </Text>
                             <ControlsWrapper>
-                                <Button onClick={() => this.props.onboardingActions.goToNextStep()}>
+                                <ButtonCta
+                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                >
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </Button>
+                                </ButtonCta>
                             </ControlsWrapper>
                         </React.Fragment>
                     )}

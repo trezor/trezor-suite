@@ -1,3 +1,4 @@
+import produce from 'immer';
 import {
     RecoveryReducer,
     RecoveryActionTypes,
@@ -13,25 +14,21 @@ const initialState = {
 };
 
 const recovery = (state: RecoveryReducer = initialState, action: RecoveryActionTypes) => {
-    switch (action.type) {
-        case SET_WORD:
-            return {
-                ...state,
-                word: action.word,
-            };
-        case SET_WORDS_COUNT:
-            return {
-                ...state,
-                wordsCount: action.count,
-            };
-        case SET_ADVANCED_RECOVERY:
-            return {
-                ...state,
-                advancedRecovery: action.value,
-            };
-        default:
-            return state;
-    }
+    return produce(state, draft => {
+        switch (action.type) {
+            case SET_WORD:
+                draft.word = action.word;
+                break;
+            case SET_WORDS_COUNT:
+                draft.wordsCount = action.count;
+                break;
+            case SET_ADVANCED_RECOVERY:
+                draft.advancedRecovery = action.value;
+                break;
+            default:
+                return state;
+        }
+    });
 };
 
 export default recovery;

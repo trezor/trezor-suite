@@ -1,6 +1,5 @@
 import onboarding from '@suite/reducers/onboarding/onboardingReducer';
 import connect from '@suite/reducers/onboarding/connectReducer';
-import fetch from '@suite/reducers/onboarding/fetchReducer';
 import recovery from '@suite/reducers/onboarding/recoveryReducer';
 import firmwareUpdate from '@suite/reducers/onboarding/firmwareUpdateReducer';
 import newsletter from '@suite/reducers/onboarding/newsletterReducer';
@@ -15,11 +14,9 @@ import { Action } from '@suite-types';
 
 interface OnboardingAppState extends ReturnType<typeof onboarding> {
     connect?: ReturnType<typeof connect>;
-    fetchCall?: ReturnType<typeof fetch>;
     recovery?: ReturnType<typeof recovery>;
     firmwareUpdate?: ReturnType<typeof firmwareUpdate>;
     newsletter?: ReturnType<typeof newsletter>;
-    asNewDevice: OnboardingReducer['asNewDevice'];
     activeStepId: OnboardingReducer['activeStepId'];
     activeSubStep: OnboardingReducer['activeSubStep'];
     selectedModel: OnboardingReducer['selectedModel'];
@@ -28,7 +25,6 @@ interface OnboardingAppState extends ReturnType<typeof onboarding> {
 export default function onboardingApp(state: OnboardingAppState | undefined, action: Action) {
     const onboardingState: OnboardingAppState = onboarding(state, action as OnboardingActionTypes);
     return {
-        asNewDevice: onboardingState.asNewDevice,
         activeStepId: onboardingState.activeStepId,
         activeSubStep: onboardingState.activeSubStep,
         selectedModel: onboardingState.selectedModel,
@@ -37,7 +33,6 @@ export default function onboardingApp(state: OnboardingAppState | undefined, act
             onboardingState.connect,
             action as ConnectActionTypes,
         ),
-        fetchCall: fetch(onboardingState.fetchCall, action as FetchActionTypes),
         recovery: recovery(onboardingState.recovery, action as RecoveryActionTypes),
         firmwareUpdate: firmwareUpdate(
             onboardingState.firmwareUpdate,
