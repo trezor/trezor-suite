@@ -9,7 +9,7 @@ const NoSSR = ({ children, fallbackComponent = null }: Props) => {
     const [shouldRender, setShouldRender] = useState(false);
 
     useEffect(() => {
-        // should fire on equivalent of componentDidMount
+        // should fired on equivalent of componentDidMount
         setShouldRender(true);
     }, []);
 
