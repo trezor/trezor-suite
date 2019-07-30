@@ -58,11 +58,11 @@ const Select = ({
     <RNPickerSelect
         onValueChange={onChange}
         Icon={() => {
-            return withDropdownIndicator && !isDisabled && <Icon icon="ARROW_DOWN" />;
+            return withDropdownIndicator && !isDisabled && <Icon size={14} icon="ARROW_DOWN" />;
         }}
         style={{
             iconContainer: {
-                top: 18,
+                top: 16,
                 right: 15,
             },
         }}
