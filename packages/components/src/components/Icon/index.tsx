@@ -66,6 +66,7 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
 };
 
 const SvgWrapper = styled.div<WrapperProps>`
+    display: inline-block;
     height: ${props => props.size}px;
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;

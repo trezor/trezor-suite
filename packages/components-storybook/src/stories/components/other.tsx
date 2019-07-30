@@ -275,7 +275,7 @@ storiesOf('Other', module)
             if (hasHover) {
                 hoverColor = color('Hover color', colors.GREEN_PRIMARY);
             }
-            return <Icon icon={iconSelect} size={iconSize} {...(hasHover ? hoverColor : {})} />;
+            return <Icon icon={iconSelect} size={iconSize} {...(hasHover ? { hoverColor } : {})} />;
         },
         {
             info: {
