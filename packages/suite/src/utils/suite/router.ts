@@ -12,6 +12,10 @@ export const routes: Route[] = [
         pattern: '/',
     },
     {
+        name: 'suite-firmware-update',
+        pattern: '/firmware-update',
+    },
+    {
         name: 'wallet-index',
         pattern: '/wallet',
     },
