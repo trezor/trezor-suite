@@ -21,7 +21,6 @@ stages:
     - test integration
 
 install and build:
-    image: cypress/base:10
     stage: install
     only:
         changes:
