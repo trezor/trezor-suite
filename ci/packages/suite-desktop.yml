@@ -10,6 +10,8 @@ suite-desktop lint:
             - packages/suite/**/*
             - packages/suite-desktop/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-desktop type check:
     stage: type check
@@ -21,6 +23,8 @@ suite-desktop type check:
             - packages/suite/**/*
             - packages/suite-native/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 # suite-desktop build mac:
 #   stage: build
 #   script:

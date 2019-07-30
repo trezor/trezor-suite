@@ -13,6 +13,7 @@ const create = async type => {
     const port = await getFreePort();
     const server = new Server({ port, noServer: true });
     const { close } = server;
+
     const defaultResponses = RESPONSES[type];
     const connections = [];
     let addresses;
@@ -22,11 +23,17 @@ const create = async type => {
         const { fixtures } = server;
         const method = type === 'blockbook' ? request.method : request.command;
         let data;
+        let delay = 0;
         if (Array.isArray(fixtures)) {
+            // find nearest predefined fixture with this method
             const fid = fixtures.findIndex(f => f && f.method === method);
             if (fid >= 0) {
                 data = fixtures[fid].response;
-                delete fixtures[fid];
+                if (typeof fixtures[fid].delay === 'number') {
+                    delay = fixtures[fid].delay; // eslint-disable-line
+                }
+                // remove from list
+                fixtures.splice(fid, 1);
             }
         }
         if (!data) {
@@ -35,9 +42,17 @@ const create = async type => {
             };
         }
 
-        connections.forEach(c => {
-            c.send(JSON.stringify({ ...data, id }));
-        });
+        if (delay) {
+            setTimeout(() => {
+                connections.forEach(c => {
+                    c.send(JSON.stringify({ ...data, id }));
+                });
+            }, delay);
+        } else {
+            connections.forEach(c => {
+                c.send(JSON.stringify({ ...data, id }));
+            });
+        }
     };
 
     const processRequest = json => {
@@ -128,6 +143,8 @@ const create = async type => {
     server.on('ripple_server_info', request => sendResponse(request));
     server.on('ripple_account_info', request => sendResponse(request));
     server.on('ripple_account_tx', request => sendResponse(request));
+    server.on('ripple_submit', request => sendResponse(request));
+    server.on('ripple_tx', request => sendResponse(request));
 
     // Public methods
 
@@ -140,7 +157,8 @@ const create = async type => {
     };
 
     server.close = () => {
-        close.call(server);
+        return new Promise(resolve => close.call(server, resolve));
+        // close.call(server);
     };
 
     server.sendNotification = async notification => {
@@ -170,7 +188,10 @@ const create = async type => {
         await receiveMessage(ws);
     };
 
-    return server;
+    return new Promise((resolve, reject) => {
+        server.on('listening', () => resolve(server));
+        server.on('error', error => reject(error));
+    });
 };
 
 export default create;

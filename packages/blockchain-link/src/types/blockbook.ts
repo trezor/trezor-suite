@@ -13,6 +13,10 @@ export interface ServerInfo {
     version: string;
 }
 
+export interface BlockHash {
+    hash: string;
+}
+
 export interface AccountInfoParams {
     descriptor: string;
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
@@ -73,6 +77,7 @@ export type AccountUtxo = {
     address: string;
     path: string;
     confirmations: number;
+    coinbase?: boolean;
 }[];
 
 export interface VinVout {
@@ -119,17 +124,17 @@ export interface Transaction {
 }
 
 export interface Push {
-    status: boolean;
+    result: string;
 }
 
 export interface EstimateFeeParams {
-    blocks: number[];
+    blocks?: number[];
     specific?: {
-        conservative?: boolean;
-        txsize?: number;
-        from?: string;
-        to?: string;
-        data?: string;
+        conservative?: boolean; // btc
+        txsize?: number; // btc transaction size
+        from?: string; // eth from
+        to?: string; // eth to
+        data?: string; // eth tx data
     };
 }
 
@@ -151,6 +156,7 @@ export interface AddressNotification {
 
 /* eslint-disable no-redeclare */
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
+declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;

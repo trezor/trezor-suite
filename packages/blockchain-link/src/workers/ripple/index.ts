@@ -10,6 +10,10 @@ import * as common from '../common';
 
 let rippleApi: RippleAPI | undefined;
 let pingTimeout: ReturnType<typeof setTimeout>;
+
+const DEFAULT_TIMEOUT = 20 * 1000;
+const DEFAULT_PING_TIMEOUT = 3 * 60 * 1000;
+
 let endpoints: string[] = [];
 const RESERVE = {
     BASE: '20000000',
@@ -20,13 +24,26 @@ const BLOCKS = {
     MAX: 0,
 };
 
-const timeoutHandler = async () => {
+const setPingTimeout = () => {
+    if (pingTimeout) {
+        clearTimeout(pingTimeout);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    pingTimeout = setTimeout(onPing, common.getSettings().pingTimeout || DEFAULT_PING_TIMEOUT);
+};
+
+const onPing = async () => {
     if (rippleApi && rippleApi.isConnected()) {
-        try {
-            await rippleApi.getServerInfo();
-            pingTimeout = setTimeout(timeoutHandler, 5000);
-        } catch (error) {
-            common.debug(`Error in timeout ping request: ${error}`);
+        if (common.hasSubscriptions() || common.getSettings().keepAlive) {
+            try {
+                await rippleApi.getServerInfo();
+            } catch (error) {
+                common.debug(`Error in timeout ping request: ${error}`);
+            }
+            // reset timeout
+            setPingTimeout();
+        } else {
+            rippleApi.disconnect();
         }
     }
 };
@@ -49,9 +66,8 @@ const connect = async (): Promise<RippleAPI> => {
         // socket is already connected
         if (rippleApi.isConnected()) return rippleApi;
     }
-
     // validate endpoints
-    const { server } = common.getSettings();
+    const { server, timeout } = common.getSettings();
     if (!server || !Array.isArray(server) || server.length < 1) {
         throw new CustomError('connect', 'Endpoint not set');
     }
@@ -62,10 +78,20 @@ const connect = async (): Promise<RippleAPI> => {
 
     common.debug('Connecting to', endpoints[0]);
     let api: RippleAPI;
+
+    // RippleApi doesn't have custom connection timeout
+    // set it here since we don't want to wait 50 sec.
+    const connectionTimeout = setTimeout(() => {
+        api.disconnect();
+    }, timeout || DEFAULT_TIMEOUT);
+
     try {
-        api = new RippleAPI({ server: endpoints[0] });
+        api = new RippleAPI({ server: endpoints[0], timeout: timeout || DEFAULT_TIMEOUT });
         await api.connect();
     } catch (error) {
+        // clear custom timeout
+        clearTimeout(connectionTimeout);
+
         common.debug('Websocket connection failed');
         rippleApi = undefined;
         // connection error. remove endpoint
@@ -76,16 +102,16 @@ const connect = async (): Promise<RippleAPI> => {
         }
         return connect();
     }
+    // clear custom timeout
+    clearTimeout(connectionTimeout);
 
     // disable reconnecting
-    // workaround: RippleApi which doesn't have possibility to disable reconnection
-    // override private method and return never ending promise
+    // workaround for RippleApi which doesn't have possibility to disable reconnection
+    // override Api private method and return never ending promise, this will prevent reconnection
     api.connection._retryConnect = () => new Promise(() => {}); // eslint-disable-line no-underscore-dangle
 
+    // Ripple api does set ledger listener automatically
     api.on('ledger', ledger => {
-        clearTimeout(pingTimeout);
-        pingTimeout = setTimeout(timeoutHandler, 5000);
-
         // store current block/ledger values
         RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
         RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
@@ -95,17 +121,12 @@ const connect = async (): Promise<RippleAPI> => {
     });
 
     api.on('disconnected', () => {
-        cleanup();
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+        cleanup();
     });
 
-    // mocking
-    // setTimeout(() => {
-    //     api.connection._ws._ws.close()
-    // }, 6000);
-
     try {
-        // @ts-ignore
+        // @ts-ignore: accessing private var _availableLedgerVersions
         const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-'); // eslint-disable-line no-underscore-dangle
         BLOCKS.MIN = parseInt(availableBlocks[0], 10);
         BLOCKS.MAX = parseInt(availableBlocks[1], 10);
@@ -132,7 +153,10 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
             payload: utils.transformServerInfo(info),
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
@@ -140,7 +164,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 // Ripple js api doesn't support "ledger_index": "current", which will fetch data from mempool
 const getMempoolAccountInfo = async (
     account: string
-): Promise<{ xrpBalance: string; sequence: number }> => {
+): Promise<{ xrpBalance: string; sequence: number; txs: number }> => {
     const api = await connect();
     const info = await api.request('account_info', {
         account,
@@ -150,6 +174,7 @@ const getMempoolAccountInfo = async (
     return {
         xrpBalance: info.account_data.Balance,
         sequence: info.account_data.Sequence,
+        txs: info.queue_data ? info.queue_data.txn_count : 0,
     };
 };
 
@@ -180,11 +205,11 @@ const getAccountInfo = async (
         descriptor: payload.descriptor,
         balance: '0', // default balance
         availableBalance: '0', // default balance
-        tokens: [], // not implemented in Trezor firmware
+        empty: true,
+        // tokens: [], // XRP tokens are not implemented in Trezor firmware
         history: {
             // default history
-            total: 0,
-            tokens: 0,
+            total: -1,
             unconfirmed: 0,
             transactions: undefined,
         },
@@ -212,6 +237,7 @@ const getAccountInfo = async (
         account.misc = misc;
         account.balance = api.xrpToDrops(info.xrpBalance);
         account.availableBalance = new BigNumber(account.balance).minus(reserve).toString();
+        account.empty = false;
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
@@ -222,18 +248,24 @@ const getAccountInfo = async (
                 payload: account,
             });
         } else {
-            common.errorHandler({ id: data.id, error });
+            common.errorHandler({ id: data.id, error: utils.transformError(error) });
         }
         return;
     }
 
+    // get mempool information
     try {
         const mempoolInfo = await getMempoolAccountInfo(payload.descriptor);
-        account.availableBalance = mempoolInfo.xrpBalance; // TODO: balance - reserve
+        const { misc } = account;
+        const reserve: string =
+            misc && typeof misc.reserve === 'string' ? misc.reserve : RESERVE.BASE;
+        account.availableBalance = new BigNumber(mempoolInfo.xrpBalance).minus(reserve).toString();
         account.misc.sequence = mempoolInfo.sequence;
+        account.history.unconfirmed = mempoolInfo.txs;
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
-        return;
+        // do not throw error for mempool (ledger_index: "current")
+        // mainnet sometimes return "error": "noNetwork", "error_message": "InsufficientNetworkMode",
+        // TODO: investigate
     }
 
     // get the reserve
@@ -273,28 +305,56 @@ const getAccountInfo = async (
             },
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    }
+};
+
+const getTransaction = async (
+    data: { id: number } & MessageTypes.GetTransaction
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const api = await connect();
+        const info = await api.getTransaction(payload, {
+            minLedgerVersion: BLOCKS.MIN,
+        });
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_TRANSACTION,
+            payload: info,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
-        // const api = await connect();
-        // const fee = await api.getFee();
+        const api = await connect();
+        const fee = await api.getFee();
         // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
         // investigate more...
-        // const drops = api.xrpToDrops(fee);
-        // const payload =
-        //     data.payload && Array.isArray(data.payload.levels)
-        //         ? data.payload.levels.map(l => ({ name: l.name, value: drops }))
-        //         : [{ name: 'Normal', value: drops }];
+        let drops = api.xrpToDrops(fee);
+        if (new BigNumber(drops).gt('2000')) {
+            drops = '12';
+        }
+        const payload =
+            data.payload && Array.isArray(data.payload.blocks)
+                ? data.payload.blocks.map(l => ({ feePerUnit: drops }))
+                : [{ feePerUnit: drops }];
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
-            payload: [],
+            payload,
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
@@ -310,18 +370,26 @@ const pushTransaction = async (
             common.response({
                 id: data.id,
                 type: RESPONSES.PUSH_TRANSACTION,
-                payload: info.resultMessage,
+                // payload: info.resultMessage,
+                // @ts-ignore: TODO: this param is not typed in RippleApi
+                payload: info.tx_json.hash,
             });
         } else {
-            common.errorHandler({ id: data.id, error: new Error(info.resultMessage) });
+            common.errorHandler({ id: data.id, error: { message: info.resultMessage } });
             return;
         }
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
 const onNewBlock = (event: any) => {
+    // reset timeout
+    setPingTimeout();
+
     common.response({
         id: -1,
         type: RESPONSES.NOTIFICATION,
@@ -336,6 +404,8 @@ const onNewBlock = (event: any) => {
 };
 
 const onTransaction = (event: any) => {
+    // reset timeout
+    setPingTimeout();
     if (event.type !== 'transaction') return;
     // ignore transactions other than Payment
     const tx = event.transaction;
@@ -429,7 +499,10 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
             payload: response,
         });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 };
 
@@ -484,8 +557,11 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Pro
             await unsubscribeBlock();
         }
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
         return;
+    } finally {
+        // reset timeout
+        setPingTimeout();
     }
 
     common.response({
@@ -504,7 +580,7 @@ const disconnect = async (data: { id: number }) => {
         await rippleApi.disconnect();
         common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
     } catch (error) {
-        common.errorHandler({ id: data.id, error });
+        common.errorHandler({ id: data.id, error: utils.transformError(error) });
     }
 };
 
@@ -523,13 +599,18 @@ onmessage = (event: { data: Message }) => {
                 .then(async () => {
                     common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
                 })
-                .catch(error => common.errorHandler({ id: data.id, error }));
+                .catch(error =>
+                    common.errorHandler({ id: data.id, error: utils.transformError(error) })
+                );
             break;
         case MESSAGES.GET_INFO:
             getInfo(data);
             break;
         case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);
+            break;
+        case MESSAGES.GET_TRANSACTION:
+            getTransaction(data);
             break;
         case MESSAGES.ESTIMATE_FEE:
             estimateFee(data);
@@ -553,7 +634,7 @@ onmessage = (event: { data: Message }) => {
         default:
             common.errorHandler({
                 id: data.id,
-                error: new Error(`Unknown message type ${data.type}`),
+                error: new CustomError('worker_unknown_request', `+${data.type}`),
             });
             break;
     }

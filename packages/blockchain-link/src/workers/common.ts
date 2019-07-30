@@ -62,6 +62,7 @@ export const errorHandler = ({ id, error }: { id: number; error: any }): void =>
     //         errorCode = error.code;
     //     }
     // }
+
     const { message } = error;
     if (error.code) {
         errorCode = error.code;
@@ -175,6 +176,8 @@ export const addSubscription = (type: string): void => {
 };
 
 export const getSubscription = (type: string): boolean => subscription[type];
+
+export const hasSubscriptions = (): boolean => Object.keys(subscription).length > 0;
 
 export const removeSubscription = (type: string): void => {
     delete subscription[type];

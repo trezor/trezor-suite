@@ -6,6 +6,8 @@ blockchain-link lint:
         changes:
             - packages/blockchain-link/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 blockchain-link test:
     stage: test
@@ -16,6 +18,8 @@ blockchain-link test:
         changes:
             - packages/blockchain-link/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 blockchain-link build:
     stage: build
@@ -31,3 +35,5 @@ blockchain-link build:
         paths:
             - packages/blockchain-link/lib
             - packages/blockchain-link/build
+    dependencies:
+        - install and build

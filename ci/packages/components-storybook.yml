@@ -9,6 +9,8 @@ components-storybook lint:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+  dependencies:
+    - install and build
 
 components-storybook type check:
   stage: type check
@@ -19,6 +21,8 @@ components-storybook type check:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+  dependencies:
+    - install and build
 
 components-storybook build:
   stage: build
@@ -34,6 +38,8 @@ components-storybook build:
     expire_in: 15 minutes
     paths:
       - packages/components-storybook/.build
+  dependencies:
+      - install and build
 
 components-storybook deploy dev:
   stage: deploy
@@ -42,6 +48,7 @@ components-storybook deploy dev:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   dependencies:
+    - install and build
     - components-storybook build
   only:
     changes:
@@ -86,6 +93,8 @@ components-storybook delete review:
       - .gitlab-ci.yml
   tags:
     - deploy
+  dependencies:
+    - install and build
 
 components-storybook test snapshots:
   image: cypress/base:10
@@ -104,6 +113,8 @@ components-storybook test snapshots:
     paths:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
       - /builds/trezor/trezor-suite/packages/components-storybook/test/screenshots
+  dependencies:
+    - install and build
 
 components-storybook make snapshot references:
   image: cypress/base:10
@@ -123,4 +134,6 @@ components-storybook make snapshot references:
     when: always
     paths:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
+  dependencies:
+    - install and build
 

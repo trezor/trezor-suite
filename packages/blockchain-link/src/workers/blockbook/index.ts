@@ -9,25 +9,11 @@ import * as MessageTypes from '../../types/messages';
 import * as common from '../common';
 
 let api: Connection | undefined;
-let pingTimeout: ReturnType<typeof setTimeout>;
 let endpoints: string[] = [];
 
-const timeoutHandler = async () => {
-    if (api && api.isConnected()) {
-        try {
-            // await _connection.getServerInfo();
-            pingTimeout = setTimeout(timeoutHandler, 5000);
-        } catch (error) {
-            common.debug(`Error in timeout ping request: ${error}`);
-        }
-    }
-};
-
 const cleanup = () => {
-    if (pingTimeout) {
-        clearTimeout(pingTimeout);
-    }
     if (api) {
+        api.dispose();
         api.removeAllListeners();
         api = undefined;
     }
@@ -38,12 +24,10 @@ const cleanup = () => {
 };
 
 const connect = async (): Promise<Connection> => {
-    if (api) {
-        if (api.isConnected()) return api;
-    }
+    if (api && api.isConnected()) return api;
 
     // validate endpoints
-    const { server } = common.getSettings();
+    const { server, timeout, pingTimeout, keepAlive } = common.getSettings();
     if (!server || !Array.isArray(server) || server.length < 1) {
         throw new CustomError('connect', 'Endpoint not set');
     }
@@ -53,7 +37,12 @@ const connect = async (): Promise<Connection> => {
     }
 
     common.debug('Connecting to', endpoints[0]);
-    const connection = new Connection(endpoints[0]);
+    const connection = new Connection({
+        url: endpoints[0],
+        timeout,
+        pingTimeout,
+        keepAlive,
+    });
 
     try {
         await connection.connect();
@@ -71,16 +60,14 @@ const connect = async (): Promise<Connection> => {
     }
 
     connection.on('disconnected', () => {
-        cleanup();
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+        cleanup();
     });
 
     common.response({
         id: -1,
         type: RESPONSES.CONNECTED,
     });
-
-    pingTimeout = setTimeout(timeoutHandler, 5000);
 
     common.debug('Connected');
     return connection;
@@ -94,6 +81,20 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
             id: data.id,
             type: RESPONSES.GET_INFO,
             payload: utils.transformServerInfo(info),
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
+const getBlockHash = async (data: { id: number } & MessageTypes.GetBlockHash): Promise<void> => {
+    try {
+        const socket = await connect();
+        const info = await socket.getBlockHash(data.payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_BLOCK_HASH,
+            payload: info.hash,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -160,7 +161,7 @@ const pushTransaction = async (
         common.response({
             id: data.id,
             type: RESPONSES.PUSH_TRANSACTION,
-            payload: resp,
+            payload: resp.result,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -170,7 +171,7 @@ const pushTransaction = async (
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
         const socket = await connect();
-        const resp = await socket.estimateFee({ blocks: [1] });
+        const resp = await socket.estimateFee(data.payload);
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
@@ -216,9 +217,9 @@ const onTransaction = (event: AddressNotification) => {
 };
 
 const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
+    common.addAccounts(accounts);
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
-    common.addAccounts(accounts);
     if (!common.getSubscription('notification')) {
         socket.on('notification', onTransaction);
         common.addSubscription('notification');
@@ -227,9 +228,9 @@ const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
 };
 
 const subscribeAddresses = async (addresses: string[]) => {
+    common.addAddresses(addresses);
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
-    common.addAddresses(addresses);
     if (!common.getSubscription('notification')) {
         socket.on('notification', onTransaction);
         common.addSubscription('notification');
@@ -270,8 +271,9 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
 };
 
 const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
-    const socket = await connect();
     common.removeAccounts(accounts || common.getAccounts());
+
+    const socket = await connect();
     const subscribed = common.getAddresses();
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
@@ -368,6 +370,9 @@ onmessage = (event: { data: Message }) => {
         case MESSAGES.GET_INFO:
             getInfo(data);
             break;
+        case MESSAGES.GET_BLOCK_HASH:
+            getBlockHash(data);
+            break;
         case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);
             break;
@@ -399,7 +404,7 @@ onmessage = (event: { data: Message }) => {
         default:
             common.errorHandler({
                 id,
-                error: new Error(`Unknown message type ${type}`),
+                error: new CustomError('worker_unknown_request', `+${type}`),
             });
             break;
     }
