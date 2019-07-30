@@ -17,7 +17,7 @@ install and build:
             - packages/**/*
             - .gitlab-ci.yml
     script:
-        - yarn install
+        - CYPRESS_CACHE_FOLDER=~/cypress_cache yarn install
         - npx lerna run build:lib
     artifacts:
         expire_in: 1 day
@@ -27,6 +27,8 @@ install and build:
             - packages/components/lib
             - packages/blockchain-link/lib
             - packages/rollout/lib
+            # cypress
+            ~/cypress_cache
             # node_modules
             - node_modules
             - node_modules/.bin
