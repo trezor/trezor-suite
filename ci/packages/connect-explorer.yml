@@ -7,6 +7,8 @@ connect-explorer lint:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 connect-explorer type check:
     stage: type check
@@ -17,6 +19,8 @@ connect-explorer type check:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 connect-explorer type coverage:
     stage: type check
@@ -27,6 +31,8 @@ connect-explorer type coverage:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 ##### no unit tests yet
 # connect-explorer test unit:
@@ -52,6 +58,8 @@ connect-explorer build:
         when: always
         paths:
             - packages/connect-explorer/build
+    dependencies:
+        - install and build
 
 connect-explorer deploy dev:
     stage: deploy
@@ -64,6 +72,7 @@ connect-explorer deploy dev:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     dependencies:
+        - install and build
         - connect-explorer build
     environment:
         name: ${CI_BUILD_REF_NAME}
@@ -100,6 +109,8 @@ connect-explorer delete review:
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 #### no integration tests yet
 connect-explorer test integration:
@@ -118,3 +129,5 @@ connect-explorer test integration:
         paths:
             - /builds/trezor/trezor-suite/packages/connect-explorer/test/snapshots
             - /builds/trezor/trezor-suite/packages/connect-explorer/test/screenshots
+    dependencies:
+        - install and build

@@ -10,6 +10,8 @@ suite-onboarding lint:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-onboarding type check:
     stage: type check
@@ -21,6 +23,8 @@ suite-onboarding type check:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-onboarding build:
     stage: build
@@ -37,6 +41,8 @@ suite-onboarding build:
         expire_in: 15 minutes
         paths:
             - $PACKAGE_PATH_SUITE_ONBOARDING/build
+    dependencies:
+        - install and build
 
 suite-onboarding deploy dev:
     stage: deploy
@@ -50,6 +56,7 @@ suite-onboarding deploy dev:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     dependencies:
+        - install and build
         - suite-onboarding build
     environment:
         name: ${CI_BUILD_REF_NAME}
@@ -87,6 +94,8 @@ suite-onboarding delete review:
             - .gitlab-ci.yml
     tags:
         - deploy
+    dependencies:
+        - install and build
 # suite-onboarding test integration:
 #   image: cypress/base:10
 #   stage: test integration

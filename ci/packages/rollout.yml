@@ -6,6 +6,8 @@ rollout lint:
         changes:
             - packages/rollout/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite-onboarding type check:
     stage: type check
@@ -16,6 +18,8 @@ suite-onboarding type check:
         changes:
             - packages/rollout/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 rollout test unit:
     stage: test
@@ -26,6 +30,8 @@ rollout test unit:
         changes:
             - packages/rollout/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 rollout build:
     stage: build
@@ -40,3 +46,5 @@ rollout build:
         when: always
         paths:
             - packages/rollout/lib
+    dependencies:
+        - install and build

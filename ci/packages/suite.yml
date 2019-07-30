@@ -8,6 +8,8 @@ suite lint:
         changes:
             - packages/suite/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite type check:
     stage: type check
@@ -18,6 +20,8 @@ suite type check:
         changes:
             - packages/suite/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite test unit:
     stage: test
@@ -29,6 +33,8 @@ suite test unit:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+    dependencies:
+        - install and build
 
 suite test integration:
     stage: test integration
@@ -42,3 +48,5 @@ suite test integration:
         refs:
             - master
             - develop
+    dependencies:
+        - install and build
