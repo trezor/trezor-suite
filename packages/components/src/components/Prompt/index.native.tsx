@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
 import Icon from '../Icon';
 
-import { Omit } from '../../support/types';
+import { Omit, TrezorModel } from '../../support/types';
 import colors from '../../config/colors';
 
 const Pulse = styled.View<Omit<Props, 'model'>>`
@@ -42,18 +42,8 @@ const Animation = styled(Animated.View)`
     bottom: 0;
 `;
 
-const modelToIcon = (model: model) => {
-    const mapping: { [key: number]: string } = {
-        1: 'T1',
-        2: 'T2',
-    };
-    return mapping[model];
-};
-
-type model = 1 | 2;
-
 interface Props {
-    model: model;
+    model: TrezorModel;
     size?: number;
     ratio?: number;
     children?: React.ReactNode;
@@ -87,8 +77,6 @@ class Prompt extends React.Component<Props> {
         const { size = 32, model, children } = this.props;
         const { blinkAnim } = this.state;
 
-        const icon = modelToIcon(model);
-
         const scale = blinkAnim.interpolate({
             inputRange: [0, 0.25, 0.5, 1],
             outputRange: [0, 0.75, 1.5, 4],
@@ -111,7 +99,7 @@ class Prompt extends React.Component<Props> {
                     >
                         <Pulse size={size} />
                     </Animation>
-                    <Icon icon={icon} size={size} color={colors.GREEN_PRIMARY} />
+                    <Icon icon={`T${model}`} size={size} color={colors.GREEN_PRIMARY} />
                 </IconWrapper>
                 <ContentWrapper>{children}</ContentWrapper>
             </Wrapper>

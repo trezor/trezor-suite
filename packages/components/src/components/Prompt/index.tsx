@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import Icon from '../Icon';
 
-import { Omit } from '../../support/types';
+import { Omit, TrezorModel } from '../../support/types';
 import colors from '../../config/colors';
 
 const PulseAnimation = keyframes`
@@ -55,16 +55,8 @@ const ContentWrapper = styled.div`
     text-align: center;
     margin: 5px;
 `;
-
-const modelToIcon = (model: number) => {
-    const mapping: { [key: number]: string } = {
-        1: 'T1',
-        2: 'T2',
-    };
-    return mapping[model];
-};
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    model: number;
+    model: TrezorModel;
     size?: number;
 }
 
@@ -73,7 +65,7 @@ const Prompt = ({ model, size, children, ...rest }: Props) => {
         <Wrapper {...rest}>
             <ImgWrapper size={size}>
                 <Pulse />
-                <Icon icon={modelToIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
+                <Icon icon={`T${model}`} size={size} color={colors.GREEN_PRIMARY} />
             </ImgWrapper>
             <ContentWrapper>{children}</ContentWrapper>
         </Wrapper>

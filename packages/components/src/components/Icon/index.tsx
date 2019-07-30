@@ -5,36 +5,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSvg from 'react-svg';
 import colors from '../../config/colors';
-import { Omit } from '../../support/types';
-
-const ICONS: { [key: string]: string } = {
-    ARROW_DOWN: require('../../images/icons/arrow_down.svg'),
-    ARROW_LEFT: require('../../images/icons/arrow_left.svg'),
-    ARROW_UP: require('../../images/icons/arrow_up.svg'),
-    BACK: require('../../images/icons/back.svg'),
-    CHAT: require('../../images/icons/chat.svg'),
-    CLOSE: require('../../images/icons/close.svg'),
-    COG: require('../../images/icons/cog.svg'),
-    DOWNLOAD: require('../../images/icons/download.svg'),
-    EJECT: require('../../images/icons/eject.svg'),
-    ERROR: require('../../images/icons/error.svg'),
-    EYE_CROSSED: require('../../images/icons/eye_crossed.svg'),
-    EYE: require('../../images/icons/eye.svg'),
-    HELP: require('../../images/icons/help.svg'),
-    INFO: require('../../images/icons/info.svg'),
-    MENU: require('../../images/icons/menu.svg'),
-    PLUS: require('../../images/icons/plus.svg'),
-    QRCODE: require('../../images/icons/qrcode.svg'),
-    REFRESH: require('../../images/icons/refresh.svg'),
-    SKIP: require('../../images/icons/skip.svg'),
-    SUCCESS: require('../../images/icons/success.svg'),
-    T1: require('../../images/icons/t1.svg'),
-    T2: require('../../images/icons/t2.svg'),
-    TOP: require('../../images/icons/top.svg'),
-    WALLET_HIDDEN: require('../../images/icons/wallet_hidden.svg'),
-    WALLET_STANDARD: require('../../images/icons/wallet_standard.svg'),
-    WARNING: require('../../images/icons/warning.svg'),
-};
+import { Omit, IconType } from '../../support/types';
+import { ICONS } from './icons';
 
 // TODO: make animation of icons better
 const rotate180up = keyframes`
@@ -71,6 +43,11 @@ const SvgWrapper = styled.div<WrapperProps>`
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
+    div {
+        height: ${props => props.size}px;
+        line-height: ${props => props.size}px;
+    }
+
     :hover {
         path {
             fill: ${props => props.hoverColor};
@@ -81,7 +58,7 @@ const SvgWrapper = styled.div<WrapperProps>`
 type WrapperProps = Omit<Props, 'icon'>;
 interface Props extends React.SVGAttributes<HTMLDivElement> {
     className?: string;
-    icon: string;
+    icon: IconType;
     size?: number;
     color?: string;
     isActive?: boolean;
@@ -136,7 +113,7 @@ Icon.propTypes = {
     className: PropTypes.string,
     hoverColor: PropTypes.string,
     canAnimate: PropTypes.bool,
-    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
+    icon: PropTypes.string.isRequired,
     size: PropTypes.number,
     isActive: PropTypes.bool,
     color: PropTypes.string,
