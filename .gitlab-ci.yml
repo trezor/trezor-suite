@@ -24,6 +24,7 @@ install and build:
         when: always
         paths:
             # cypress
+            - ~/.cache
             - /root/.cache/Cypress
             # libs
             - packages/components/lib
