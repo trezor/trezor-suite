@@ -20,11 +20,10 @@ export class CustomError extends Error {
     message: string = '';
 
     constructor(code: string, message: string = '') {
+        // test reports that super is not covered, TODO: investigate more
         super(message);
 
-        if (typeof message === 'string') {
-            this.message = message;
-        }
+        this.message = message;
 
         if (typeof code === 'string') {
             const c =

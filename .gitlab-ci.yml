@@ -1,56 +1,65 @@
-image: node:lts
-
-cache:
-  key: shared-yarn-cache
-  paths:
-    - node_modules/
-
-before_script:
-  - apt-get update
-  - apt-get install -y build-essential
-  - apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
-  - yarn install
+image: registry.corp.sldev.cz/trezor/trezor-suite:latest
 
 stages:
-  - install
-  - lint
-  - type check
-  - test
-  - build
-  - deploy
-  - test integration
+    - install
+    - lint
+    - type check
+    - test
+    - build
+    - deploy
+    - test integration
 
-install:
-  stage: install
-  image: cypress/base:10
-  stage: build
-  only:
-    changes:
-      - packages/components/**/*
-      - .gitlab-ci.yml
-  script:
-    - yarn
-    - $(yarn bin)/cypress cache path
-    - $(yarn bin)/cypress cache list
-    - $(yarn bin)/cypress verify
+install and build:
+    image: cypress/base:10
+    stage: install
+    only:
+        changes:
+            - packages/**/*
+            - .gitlab-ci.yml
+    script:
+        - yarn install
+        - npx lerna run build:lib
+    artifacts:
+        expire_in: 1 day
+        when: always
+        paths:
+            # cypress
+            - ~/.cache/Cypress
+            # libs
+            - packages/components/lib
+            - packages/blockchain-link/lib
+            - packages/rollout/lib
+            # node_modules
+            - node_modules
+            - packages/blockchain-link/node_modules
+            - packages/components/node_modules
+            - packages/components-storybook/node_modules
+            - packages/connect-explorer/node_modules
+            - packages/rollout/node_modules
+            - packages/suite/node_modules
+            - packages/suite-web/node_modules
+            - packages/suite-desktop/node_modules
+            - packages/suite-native/node_modules
+            - packages/suite-onboarding/node_modules
 
 variables:
-  PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
-  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
-  PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
-  PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
-  PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-  PACKAGE_PATH_SUITE_ONBOARDING: 'packages/suite-onboarding'
+    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
+    PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+    PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
+    PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
+    PACKAGE_PATH_SUITE_ONBOARDING: 'packages/suite-onboarding'
+    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
 
-  DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 include:
-  - ci/packages/components.yml
-  - ci/packages/components-storybook.yml
-  - ci/packages/suite.yml
-  - ci/packages/suite-web.yml
-  - ci/packages/suite-desktop.yml
-  - ci/packages/suite-native.yml
-  - ci/packages/suite-onboarding.yml
-  - ci/packages/blockchain-link.yml
-  - ci/packages/rollout.yml
+    - ci/packages/components.yml
+    - ci/packages/components-storybook.yml
+    - ci/packages/suite.yml
+    - ci/packages/suite-web.yml
+    - ci/packages/suite-desktop.yml
+    - ci/packages/suite-native.yml
+    - ci/packages/suite-onboarding.yml
+    - ci/packages/blockchain-link.yml
+    - ci/packages/rollout.yml
+    - ci/packages/connect-explorer.yml

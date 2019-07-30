@@ -196,7 +196,7 @@ const notifyAddresses = [
             accounts: [
                 {
                     descriptor: 'xpub',
-                    addresses: { used: [{ address: 'B' }], unused: [], change: [] },
+                    addresses: { used: [], unused: [{ address: 'B' }], change: [] },
                 },
             ],
         },

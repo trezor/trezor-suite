@@ -1,0 +1,429 @@
+export default [
+    {
+        description: 'With server error',
+        params: {
+            descriptor: 'A',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: { data: { error: { message: 'Error message' } } },
+            },
+        ],
+        error: 'Error message',
+    },
+    {
+        description: 'Empty BTC account',
+        params: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address:
+                            'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+                        balance: '0',
+                        totalSent: '0',
+                        totalReceived: '0',
+                        txs: 0,
+                        unconfirmedBalance: '0',
+                        unconfirmedTxs: 0,
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+            balance: '0',
+            availableBalance: '0',
+            empty: true,
+            history: {
+                total: 0,
+                unconfirmed: 0,
+            },
+        },
+    },
+    {
+        description: 'BTC account with addresses',
+        params: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address:
+                            'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+                        balance: '0',
+                        totalSent: '0',
+                        totalReceived: '0',
+                        txs: 0,
+                        unconfirmedBalance: '0',
+                        unconfirmedTxs: 0,
+                        tokens: [
+                            {
+                                type: 'XPUBAddress',
+                                path: "m/44'/0'/100'/1/0",
+                                name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                                transfers: 0,
+                            },
+                            {
+                                type: 'XPUBAddress',
+                                path: "m/44'/0'/100'/0/0",
+                                name: '19SW698tGLusJZVBmGDYmHvSwn79WqJP65',
+                                transfers: 0,
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+            balance: '0',
+            availableBalance: '0',
+            empty: true,
+            addresses: {
+                change: [
+                    {
+                        path: "m/44'/0'/100'/1/0",
+                        address: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                        transfers: 0,
+                    },
+                ],
+                used: [],
+                unused: [
+                    {
+                        path: "m/44'/0'/100'/0/0",
+                        address: '19SW698tGLusJZVBmGDYmHvSwn79WqJP65',
+                        transfers: 0,
+                    },
+                ],
+            },
+            history: {
+                total: 0,
+                unconfirmed: 0,
+            },
+        },
+    },
+    {
+        description: 'BTC account with invalid addresses',
+        params: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address:
+                            'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+                        tokens: [
+                            {
+                                type: 'not-XPUBAddress',
+                                path: "m/44'/0'/100'/1/0",
+                                name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                                transfers: 0,
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+            empty: false,
+            addresses: undefined,
+            history: {},
+        },
+    },
+    {
+        description: 'BTC account with unconfirmed balance (incoming)',
+        params: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address:
+                            'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+                        balance: '0',
+                        unconfirmedBalance: '1',
+                        txs: 1,
+                        tokens: [
+                            {
+                                type: 'XPUBAddress',
+                                path: "m/44'/0'/100'/1/0",
+                                name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                                transfers: 1,
+                            },
+                        ],
+                        transactions: [
+                            {
+                                vin: [
+                                    {
+                                        addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                                        sequence: 4294967293, // RBF
+                                    },
+                                ],
+                                vout: [
+                                    {
+                                        addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
+                                    },
+                                ],
+                                value: '1',
+                            },
+                        ],
+                        page: 1,
+                        itemsOnPage: 25,
+                        totalPages: 1,
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+            empty: false,
+            balance: '0',
+            availableBalance: '1',
+            history: {
+                total: 1,
+                transactions: [
+                    {
+                        type: 'recv',
+                        amount: '1',
+                        rbf: true,
+                        targets: [
+                            {
+                                addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                            },
+                        ],
+                        tokens: [],
+                    },
+                ],
+            },
+            addresses: {
+                change: [
+                    {
+                        path: "m/44'/0'/100'/1/0",
+                        address: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                        transfers: 1,
+                    },
+                ],
+                used: [],
+                unused: [],
+            },
+            page: {
+                index: 1,
+                size: 25,
+                total: 1,
+            },
+        },
+    },
+    {
+        description: 'BTC account with unconfirmed balance and transaction (outgoing)',
+        params: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address:
+                            'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+                        balance: '1',
+                        unconfirmedBalance: '-1',
+                        txs: 2,
+                        tokens: [
+                            {
+                                type: 'XPUBAddress',
+                                path: "m/44'/0'/100'/1/0",
+                                name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                                transfers: 2,
+                            },
+                        ],
+                        transactions: [
+                            {
+                                vin: [
+                                    {
+                                        addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
+                                        sequence: 4294967293, // RBF
+                                    },
+                                ],
+                                vout: [
+                                    {
+                                        addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                                    },
+                                ],
+                                value: '1',
+                            },
+                        ],
+                        page: 1,
+                        itemsOnPage: 25,
+                        totalPages: 1,
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor:
+                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
+            empty: false,
+            balance: '1',
+            availableBalance: '0',
+            history: {
+                total: 2,
+                transactions: [
+                    {
+                        type: 'sent',
+                        amount: '1',
+                        rbf: true,
+                        targets: [
+                            {
+                                addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                            },
+                        ],
+                        tokens: [],
+                    },
+                ],
+            },
+            addresses: {
+                change: [
+                    {
+                        path: "m/44'/0'/100'/1/0",
+                        address: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                        transfers: 2,
+                    },
+                ],
+                used: [],
+                unused: [],
+            },
+            page: {
+                index: 1,
+                size: 25,
+                total: 1,
+            },
+        },
+    },
+    {
+        description: 'Empty ETH account',
+        params: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+                        balance: '0',
+                        txs: 0,
+                        unconfirmedBalance: '0',
+                        unconfirmedTxs: 0,
+                        nonce: '0',
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+            balance: '0',
+            availableBalance: '0',
+            empty: true,
+            history: {
+                total: 0,
+                unconfirmed: 0,
+            },
+            misc: { nonce: '0' },
+        },
+    },
+    {
+        description: 'ETH account with tokens',
+        params: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+                        txs: 1,
+                        nonTokenTxs: 0,
+                        tokens: [
+                            {
+                                type: 'ERC20',
+                                name: 'Token name',
+                                symbol: 'TKNNME',
+                                contract: '0x0',
+                                balance: '1',
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+            empty: false,
+            history: {
+                total: 1,
+                tokens: 1,
+            },
+            tokens: [
+                {
+                    type: 'ERC20',
+                    name: 'Token name',
+                    symbol: 'TKNNME',
+                    address: '0x0',
+                    balance: '1',
+                    decimals: 0,
+                },
+            ],
+        },
+    },
+    {
+        description: 'ETH account with unknown tokens',
+        params: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+                        tokens: [
+                            {
+                                type: 'not-ERC20',
+                                path: "m/44'/0'/100'/1/0",
+                                name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                                transfers: 0,
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+            empty: false,
+            history: {},
+        },
+    },
+];

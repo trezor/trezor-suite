@@ -24,9 +24,7 @@ const cleanup = () => {
 };
 
 const connect = async (): Promise<Connection> => {
-    if (api) {
-        if (api.isConnected()) return api;
-    }
+    if (api && api.isConnected()) return api;
 
     // validate endpoints
     const { server, timeout, pingTimeout, keepAlive } = common.getSettings();

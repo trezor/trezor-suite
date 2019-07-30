@@ -21,8 +21,10 @@ export const transformError = (error: any) => {
     if (error instanceof RippleError) {
         const code =
             error.name === 'TimeoutError' ? 'websocket_timeout' : 'websocket_error_message';
-        const message = `${error.name} ${error.data ? error.data.error_message : ''}`;
-        return new CustomError(code, message);
+        if (error.data) {
+            return new CustomError(code, `${error.name} ${error.data.error_message}`);
+        }
+        return new CustomError(code, error.toString());
     }
     return error;
 };

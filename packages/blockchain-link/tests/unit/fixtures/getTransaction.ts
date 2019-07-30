@@ -108,7 +108,7 @@ export default {
         {
             description: 'Not found',
             params: '6390FE5EE3B22239B2CA403C32DAFCA613B7FEEE55473A50CB8602CE0FE3EB3F',
-            error: 'NotFoundError ',
+            error: '[NotFoundError(Transaction not found)]',
         },
     ],
 };
