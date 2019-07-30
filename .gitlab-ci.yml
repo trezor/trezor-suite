@@ -24,7 +24,7 @@ install and build:
         when: always
         paths:
             # cypress
-            - ~/.cache/Cypress
+            - /root/.cache/Cypress
             # libs
             - packages/components/lib
             - packages/blockchain-link/lib
