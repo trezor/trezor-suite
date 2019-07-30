@@ -1,5 +1,16 @@
 image: registry.corp.sldev.cz/trezor/trezor-suite:latest
 
+variables:
+    CYPRESS_CACHE_FOLDER: /builds/trezor/trezor-suite/cache/Cypress
+    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
+    PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+    PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
+    PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
+    PACKAGE_PATH_SUITE_ONBOARDING: 'packages/suite-onboarding'
+    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
+
+    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+
 stages:
     - install
     - lint
@@ -17,7 +28,7 @@ install and build:
             - packages/**/*
             - .gitlab-ci.yml
     script:
-        - CYPRESS_CACHE_FOLDER=~/cypress_cache yarn install
+        - yarn install
         - npx lerna run build:lib
     artifacts:
         expire_in: 1 day
@@ -28,10 +39,9 @@ install and build:
             - packages/blockchain-link/lib
             - packages/rollout/lib
             # cypress
-            - ~/cypress_cache
+            - /builds/trezor/trezor-suite/cache/Cypress
             # node_modules
             - node_modules
-            - node_modules/.bin
             - packages/blockchain-link/node_modules
             - packages/components/node_modules
             - packages/components-storybook/node_modules
@@ -42,16 +52,6 @@ install and build:
             - packages/suite-desktop/node_modules
             - packages/suite-native/node_modules
             - packages/suite-onboarding/node_modules
-
-variables:
-    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
-    PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
-    PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
-    PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-    PACKAGE_PATH_SUITE_ONBOARDING: 'packages/suite-onboarding'
-    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
-
-    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 include:
     # - ci/packages/components.yml
