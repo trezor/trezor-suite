@@ -18,6 +18,7 @@ import SuiteNotifications from '@suite-components/Notifications';
 import { AppState } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
 
+import NoSSR from '@suite/support/suite/NoSSR';
 import l10nMessages from './index.messages';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
@@ -76,13 +77,15 @@ const Layout = (props: Props & InjectedIntlProps) => (
             togglerCloseText={<FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />}
             sidebarEnabled={!props.isLanding}
             rightAddon={
-                <LanguagePicker
-                    language={props.suite.language}
-                    languages={suiteConfig.languages}
-                    onChange={option => {
-                        props.fetchLocale(option.value);
-                    }}
-                />
+                <NoSSR>
+                    <LanguagePicker
+                        language={props.suite.language}
+                        languages={suiteConfig.languages}
+                        onChange={option => {
+                            props.fetchLocale(option.value);
+                        }}
+                    />
+                </NoSSR>
             }
             links={[
                 {
