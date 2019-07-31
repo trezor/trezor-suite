@@ -1,7 +1,11 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { migrate } from '@suite/storage/migrations';
+import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 
-const VERSION = 9;
+const STORE_TXS = 'txs';
+const STORE_SETTINGS = 'settings';
+
+const VERSION = 11;
 let db: IDBPDatabase<MyDBV1>;
 // we reuse the same instance of broadcast channel for both sending the message
 // and setting a listener, so the sender tab (source) won't receive its own messages
@@ -27,6 +31,10 @@ export interface MyDBV1 extends DBSchema {
         value: WalletTransaction;
         indexes: { txId: string; accountId: number; timestamp: number };
     };
+    settings: {
+        key: string;
+        value: WalletSettings;
+    };
 }
 
 export interface StorageUpdateMessage {
@@ -39,7 +47,7 @@ export interface StorageMessageEvent extends MessageEvent {
     data: StorageUpdateMessage;
 }
 
-const isIndexedDBAvailable = () => {
+export const isIndexedDBAvailable = () => {
     if (!('indexedDB' in window)) {
         return true;
     }
@@ -75,10 +83,11 @@ const onUpgrade = async (
 
     if (shouldInitDB) {
         // init db
-        const store = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('txId', 'txId', { unique: true });
-        store.createIndex('timestamp', 'timestamp', { unique: false });
-        store.createIndex('accountId', 'accountId', { unique: false });
+        const txsStore = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
+        txsStore.createIndex('txId', 'txId', { unique: true });
+        txsStore.createIndex('timestamp', 'timestamp', { unique: false });
+        txsStore.createIndex('accountId', 'accountId', { unique: false });
+        db.createObjectStore('settings');
     } else {
         migrate(db, oldVersion, newVersion, transaction);
     }
@@ -94,9 +103,13 @@ const getDB = async () => {
             },
             blocked() {
                 // Called if there are older versions of the database open on the origin, so this version cannot open.
+                console.log(
+                    'Accessing the IDB is blocked by another window running older version.',
+                );
             },
             blocking() {
                 // Called if this connection is blocking a future version of the database from opening.
+                console.log('This instance is blocking the IDB upgrade to new version.');
             },
         });
 
@@ -173,8 +186,18 @@ export const removeTransaction = async (txId: string) => {
     await tx.store.delete(txId);
 };
 
-const load = async () => {
-    if (!isIndexedDBAvailable()) {
-        console.warn('IndexedDB not supported');
-    }
+export const saveWalletSettings = async (settings: MyDBV1['walletSettings']['value']) => {
+    const db = await getDB();
+    const tx = db.transaction(STORE_SETTINGS, 'readwrite');
+    // shortcut db.add throws null instead of ConstraintError on duplicate key (???)
+    const result = await tx.store.put(settings, 'wallet');
+    notify(STORE_SETTINGS, [result]);
+    return result;
+};
+
+export const getWalletSettings = async () => {
+    const db = await getDB();
+    const tx = db.transaction(STORE_SETTINGS);
+    const settings = await tx.store.get('wallet');
+    return settings;
 };

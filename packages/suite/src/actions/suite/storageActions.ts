@@ -1,5 +1,6 @@
 import { Dispatch, GetState, AppState } from '@suite-types/index';
 import * as transactionActions from '@wallet-actions/transactionActions';
+import * as settingsActions from '@wallet-actions/settingsActions';
 import * as db from '@suite/storage';
 import { STORAGE } from './constants/index';
 
@@ -22,24 +23,30 @@ const updateReducers = (message: db.StorageUpdateMessage) => async (
 };
 
 export const load = () => async (dispatch: Dispatch, getState: GetState) => {
+    if (!db.isIndexedDBAvailable()) {
+        // TODO: Display error for the user (eg. redirect to unsupported browser page)
+        // Firefox doesn't support indexedDB while in incognito mode. Mozilla is working on it.
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
+        console.warn('IndexedDB not supported');
+        // return;
+    }
+
+    // TODO: Since user can edit data in IDB outside of the Suite,
+    // maybe we could run some form of data validation? Or delete corrupted object stores.
+
     //  load transactions from indexedDB
     const txs = await db.getTransactions();
-    // @ts-ignore
-    dispatch(transactionActions.fromStorage(txs));
+    if (txs) {
+        // @ts-ignore
+        dispatch(transactionActions.fromStorage(txs));
+    }
 
-    // TODO: load state from indexed db
-    const state: AppState = await new Promise(resolve => {
-        setTimeout(() => {
-            const reducersState = getState();
-            resolve({
-                ...reducersState,
-                suite: {
-                    ...reducersState.suite,
-                    loaded: true,
-                },
-            });
-        }, 100);
-    });
+    //  load wallet settings from indexedDB
+    const settings = await db.getWalletSettings();
+    if (settings) {
+        // @ts-ignore
+        dispatch(settingsActions.fromStorage(settings));
+    }
 
     db.onChange(event => {
         // listen on db changes from other windows
@@ -47,9 +54,15 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
         console.log('DB was updated from another window', message);
         dispatch(updateReducers(message));
     });
-
+    const reducersState = getState();
     return dispatch({
         type: STORAGE.LOADED,
-        payload: state,
+        payload: {
+            ...reducersState,
+            suite: {
+                ...reducersState.suite,
+                loaded: true,
+            },
+        },
     });
 };

@@ -34,4 +34,8 @@ export const migrate = async (
             transaction.store.createIndex('timestamp', 'timestamp', { unique: false });
         }
     }
+    if (oldVersion < 11) {
+        // add walletSettings
+        db.createObjectStore('settings', {});
+    }
 };

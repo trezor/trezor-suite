@@ -2,7 +2,7 @@ import produce from 'immer';
 import { SETTINGS } from '@wallet-actions/constants';
 import { WalletActions } from '@suite-types/index';
 
-interface State {
+export interface State {
     localCurrency: string;
     hideBalance: boolean;
     hiddenCoins: string[];
@@ -34,6 +34,9 @@ export default (state: State = initialState, action: WalletActions): State => {
             case SETTINGS.SET_HIDDEN_COINS_EXTERNAL:
                 draft.hiddenCoinsExternal = action.hiddenCoinsExternal;
                 break;
+
+            case SETTINGS.FROM_STORAGE:
+                return action.payload;
             // no default
         }
     });
