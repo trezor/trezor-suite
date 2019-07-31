@@ -121,7 +121,7 @@ connect-explorer test integration:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
     script:
-        - env
+        - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer test:integration
     artifacts:
         expire_in: 2 days

@@ -105,7 +105,7 @@ components-storybook test snapshots:
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
   script:
-    - env
+    - npx cypress install
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
   artifacts:
     expire_in: 2 days
@@ -127,7 +127,7 @@ components-storybook make snapshot references:
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
   script:
-    - env
+    - npx cypress install
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
   artifacts:
     expire_in: 2 days
