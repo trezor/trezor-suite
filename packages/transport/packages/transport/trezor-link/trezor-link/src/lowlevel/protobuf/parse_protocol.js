@@ -19,7 +19,7 @@ export function parseConfigure(data: string): Messages {
   }
 
   // incoming data are in binary format
-  const buffer = new Buffer(data.slice(64 * 2), `hex`);
+  const buffer = Buffer.from(data.slice(64 * 2), `hex`);
   const configBuilder = compiledConfigProto[`Configuration`];
   const loadedConfig = configBuilder.decode(buffer);
 
