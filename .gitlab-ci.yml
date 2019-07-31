@@ -28,7 +28,7 @@ install and build:
         - yarn install
         - npx lerna run build:lib
     artifacts:
-        expire_in: 1 day
+        expire_in: 2 hours
         when: always
         paths:
             # libs
