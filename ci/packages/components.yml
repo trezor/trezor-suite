@@ -23,3 +23,15 @@ components type check:
             - .gitlab-ci.yml
     dependencies:
         - install and build
+
+components publish to npm registry:
+    stage: publish
+    when: manual
+    script:
+        - yarn workspace @trezor/components publish
+    only:
+        changes:
+            - packages/components/**/*
+            - .gitlab-ci.yml
+    dependencies:
+        - install and build

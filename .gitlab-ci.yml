@@ -1,4 +1,4 @@
-image: registry.corp.sldev.cz/trezor/trezor-suite:latest
+image: registry.corp.sldev.cz/trezor/trezor-suite/base:latest
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
@@ -17,6 +17,7 @@ stages:
     - build
     - deploy
     - test integration
+    - publish
 
 install and build:
     stage: install
