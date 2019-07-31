@@ -106,7 +106,7 @@ class BuiltMessage {
   // encodes itself into one long arraybuffer
   encodeOne(): Buffer {
     const bytes: Uint8Array = this._encodeLong(false);
-    return new Buffer([...bytes]);
+    return Buffer.from([...bytes]);
   }
 }
 
