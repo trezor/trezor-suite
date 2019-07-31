@@ -1,10 +1,11 @@
 import { FormattedMessage } from 'react-intl';
+import TrezorConnect from 'trezor-connect';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types/index';
 import { Actions } from '@wallet-types/index';
 import { RECEIVE, NOTIFICATION } from '@wallet-actions/constants';
 
-import l10nMessages from 'components/notifications/Context/actions.messages';
-import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from '@wallet-components/Notifications/actions.messages';
+import l10nCommonMessages from '@wallet-views/messages';
 
 export type ReceiveActions =
     | { type: typeof RECEIVE.INIT; state: State }

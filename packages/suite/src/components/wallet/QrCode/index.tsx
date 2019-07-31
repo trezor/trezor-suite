@@ -13,10 +13,14 @@ const StyledQRCode = styled(QRCode)`
 
 const Wrapper = styled.div`
     display: flex;
+    padding-top: 20px;
     flex-direction: column;
 `;
 
-const Label = styled.div``;
+const Label = styled.div`
+    padding-bottom: 10px;
+    color: ${colors.TEXT_SECONDARY};
+`;
 
 interface Props {
     value: string;

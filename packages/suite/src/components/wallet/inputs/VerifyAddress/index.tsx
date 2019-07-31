@@ -6,7 +6,9 @@ import { Button, Input, icons as ICONS } from '@trezor/components';
 import commonMessages from '@wallet-views/messages';
 import messages from './messages';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    display: flex;
+`;
 
 const EyeButton = styled(Button)`
     z-index: 10001;
