@@ -8,7 +8,7 @@ export interface State {
     addressUnverified: boolean;
 }
 
-const initialState = {
+export const initialState = {
     addressVerified: false,
     addressUnverified: false,
 };

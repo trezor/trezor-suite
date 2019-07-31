@@ -1,9 +1,9 @@
-import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types/index';
 import { Actions } from '@wallet-types/index';
 import { RECEIVE, NOTIFICATION } from '@wallet-actions/constants';
 
+import { initialState, State } from '@wallet-reducers/receiveReducer';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 
@@ -15,7 +15,7 @@ export type ReceiveActions =
     | { type: typeof RECEIVE.HIDE_ADDRESS }
     | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS };
 
-export const init = (): ThunkAction => (dispatch: Dispatch): void => {
+export const init = () => (dispatch: Dispatch) => {
     const state: State = {
         ...initialState,
     };
@@ -34,8 +34,7 @@ export const showUnverifiedAddress = (): Actions => ({
     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
 });
 
-//export const showAddress = (address_n: string): AsyncAction => {
-export const showAddress = (path: Array<number>): AsyncAction => async (
+export const showAddress = (path: number[]) => async (
     dispatch: Dispatch,
     getState: GetState,
 ): Promise<void> => {
@@ -96,12 +95,12 @@ export const showAddress = (path: Array<number>): AsyncAction => async (
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: <FormattedMessage {...l10nMessages.TR_VERIFYING_ADDRESS_ERROR} />,
+                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR,
                 message: response.payload.error,
                 cancelable: true,
                 actions: [
                     {
-                        label: <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />,
+                        label: l10nCommonMessages.TR_TRY_AGAIN,
                         callback: () => {
                             dispatch(showAddress(path));
                         },
