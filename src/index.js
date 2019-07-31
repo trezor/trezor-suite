@@ -9,7 +9,13 @@ import LowlevelTransportWithSharedConnections from './lowlevel/withSharedConnect
 import FallbackTransport from './fallback';
 import WebUsbPlugin from './lowlevel/webusb';
 
-import 'whatwg-fetch';
+// node throw error with version 3.0.0
+// https://github.com/github/fetch/issues/657
+try {
+  require(`whatwg-fetch`);
+} catch (e) {
+  // empty
+}
 
 if (typeof window === `undefined`) {
   // eslint-disable-next-line quotes
