@@ -8,6 +8,19 @@ export type StorageActions =
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };
 
+const updateReducers = (message: db.StorageUpdateMessage) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    if (message.store === 'txs') {
+        // txs objecStore was updated, we'll load transactions from db to reducer
+        const { accountId } = getState().router.params;
+        const txs = await db.getTransactions(Number(accountId));
+        // @ts-ignore
+        dispatch(transactionActions.fromStorage(txs));
+    }
+};
+
 export const load = () => async (dispatch: Dispatch, getState: GetState) => {
     //  load transactions from indexedDB
     const txs = await db.getTransactions();
@@ -28,11 +41,11 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
         }, 100);
     });
 
-    // listen on db changes
     db.onChange(event => {
-        console.log(event);
+        // listen on db changes from other windows
         const message = event.data;
-        console.log('A message occurred', message);
+        console.log('DB was updated from another window', message);
+        dispatch(updateReducers(message));
     });
 
     return dispatch({
