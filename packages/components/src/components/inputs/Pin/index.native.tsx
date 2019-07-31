@@ -22,9 +22,9 @@ const StyledInput = styled.TextInput`
     border: 1px solid ${colors.DIVIDER};
 `;
 
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.View`
     position: absolute;
-    top: 18;
+    top: 14;
     right: 15;
 `;
 
@@ -37,7 +37,9 @@ interface Props {
 const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
     <Wrapper {...rest} {...wrapperProps}>
         <StyledInput secureTextEntry maxLength={9} value={value} editable={false} />
-        <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon="BACK" />
+        <IconWrapper>
+            <Icon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon="BACK" />
+        </IconWrapper>
     </Wrapper>
 );
 

@@ -8,9 +8,11 @@ import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import { Omit, FeedbackType } from '../../../support/types';
+import { FeedbackType } from '../../../support/types';
 
-const Wrapper = styled.View``;
+const Wrapper = styled.View<Props>`
+    flex: 1;
+`;
 
 const InputWrapper = styled.View`
     flex: 1;
@@ -59,7 +61,7 @@ const StyledInput = styled.TextInput<Props>`
         `}
 `;
 
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.View`
     position: absolute;
     top: 12;
     right: 15;
@@ -175,9 +177,6 @@ const Input = ({
         <Wrapper>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <InputWrapper>
-                {stateIcon && stateColor && (
-                    <StyledIcon icon={stateIcon} color={stateColor} size={16} />
-                )}
                 <Overlay isPartiallyHidden={isPartiallyHidden} />
                 <StyledInput
                     autoCompleteType="off"
@@ -194,6 +193,11 @@ const Input = ({
                     data-lpignore="true"
                     {...rest}
                 />
+                {stateIcon && stateColor && (
+                    <IconWrapper>
+                        <Icon icon={stateIcon} color={stateColor} size={16} />
+                    </IconWrapper>
+                )}
                 {sideAddons && sideAddons.map(sideAddon => sideAddon)}
             </InputWrapper>
             <Wrapper>

@@ -86,18 +86,18 @@ const Other = () => {
             </Icons>
             <H1>Prompt</H1>
             <H5>Trezor One</H5>
-            <Col>
+            <Section>
                 <Prompt model={1} data-test="prompt_1">
                     Complete the action on your device
                 </Prompt>
-            </Col>
+            </Section>
 
             <H5>Trezor Model T</H5>
-            <Col>
+            <Section>
                 <Prompt model={2} data-test="prompt_2">
                     Complete the action on your device
                 </Prompt>
-            </Col>
+            </Section>
 
             <H1>TrezorImage</H1>
             <H5>Trezor One</H5>
