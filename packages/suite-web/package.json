@@ -9,7 +9,7 @@
         "start": "next start",
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "test:integration": "node_modules/.bin/cypress run"
+        "test:integration": "cypress run"
     },
     "dependencies": {
         "@sentry/browser": "^5.4.0",
