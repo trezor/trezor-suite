@@ -6,6 +6,7 @@ blockchain-link lint:
         changes:
             - packages/blockchain-link/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -18,6 +19,7 @@ blockchain-link test:
         changes:
             - packages/blockchain-link/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -29,6 +31,7 @@ blockchain-link build:
         changes:
             - packages/blockchain-link/**/*
             - .gitlab-ci.yml
+            - package.json
     artifacts:
         expire_in: 2 days
         when: always

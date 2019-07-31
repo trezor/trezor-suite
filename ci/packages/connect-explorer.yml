@@ -7,6 +7,7 @@ connect-explorer lint:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -19,6 +20,7 @@ connect-explorer type check:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -31,6 +33,7 @@ connect-explorer type coverage:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -53,6 +56,7 @@ connect-explorer build:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+            - package.json
     artifacts:
         expire_in: 2 days
         when: always
@@ -67,6 +71,7 @@ connect-explorer deploy dev:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+            - package.json
     variables:
         PACKAGE_NAME: connect-explorer
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
@@ -101,6 +106,7 @@ connect-explorer delete review:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+            - package.json
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
@@ -120,6 +126,7 @@ connect-explorer test integration:
         changes:
             - packages/connect-explorer/**/*
             - .gitlab-ci.yml
+            - package.json
     script:
         - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer test:integration

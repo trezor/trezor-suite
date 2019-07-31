@@ -10,6 +10,7 @@ suite-desktop lint:
             - packages/suite/**/*
             - packages/suite-desktop/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -23,6 +24,7 @@ suite-desktop type check:
             - packages/suite/**/*
             - packages/suite-native/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 # suite-desktop build mac:

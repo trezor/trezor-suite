@@ -10,6 +10,7 @@ suite-onboarding lint:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -23,6 +24,7 @@ suite-onboarding type check:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -33,6 +35,7 @@ suite-onboarding build:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+            - package.json
     variables:
         PACKAGE_NAME: suite-onboarding
     script:
@@ -51,6 +54,7 @@ suite-onboarding deploy dev:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+            - package.json
     variables:
         PACKAGE_NAME: suite-onboarding
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
@@ -92,6 +96,7 @@ suite-onboarding delete review:
             - packages/suite/**/*
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
+            - package.json
     tags:
         - deploy
     dependencies:

@@ -24,6 +24,7 @@ install and build:
         changes:
             - packages/**/*
             - .gitlab-ci.yml
+            - package.json
     script:
         - yarn install
         - npx lerna run build:lib
