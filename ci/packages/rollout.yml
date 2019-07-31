@@ -10,7 +10,7 @@ rollout lint:
     dependencies:
         - install and build
 
-suite-onboarding type check:
+rollout type check:
     stage: type check
     allow_failure: false
     script:
