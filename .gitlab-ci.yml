@@ -1,7 +1,7 @@
 image: registry.corp.sldev.cz/trezor/trezor-suite:latest
 
 variables:
-    # CYPRESS_CACHE_FOLDER: ~/.cache/cypress
+    CYPRESS_CACHE_FOLDER: ~/.cache/cypress
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
     PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
     PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
