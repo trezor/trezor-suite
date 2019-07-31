@@ -16,6 +16,7 @@ export interface GetInfo {
 
 export interface GetBlockHash {
     type: typeof MESSAGES.GET_BLOCK_HASH;
+    payload: number;
 }
 
 export interface GetAccountInfo {
@@ -40,9 +41,7 @@ export interface GetAccountInfo {
 
 export interface GetAccountUtxo {
     type: typeof MESSAGES.GET_ACCOUNT_UTXO;
-    payload: {
-        descriptor: string; // address or xpub
-    };
+    payload: string; // address or xpub
 }
 
 export interface GetTransaction {
@@ -51,15 +50,18 @@ export interface GetTransaction {
 }
 
 export interface EstimateFeeOptions {
-    transaction?: any; // custom object, used in ethereum
-    levels?: {
-        name: string;
-        value: string;
-    }[];
+    blocks?: number[];
+    specific?: {
+        conservative?: boolean;
+        txsize?: number;
+        from?: string;
+        to?: string;
+        data?: string;
+    };
 }
 export interface EstimateFee {
     type: typeof MESSAGES.ESTIMATE_FEE;
-    payload?: EstimateFeeOptions;
+    payload: EstimateFeeOptions;
 }
 
 export interface Subscribe {
@@ -104,6 +106,7 @@ export type Message =
     | ({ id: number } & Connect)
     | ({ id: number } & Disconnect)
     | ({ id: number } & GetInfo)
+    | ({ id: number } & GetBlockHash)
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)

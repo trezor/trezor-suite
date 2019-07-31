@@ -9,6 +9,9 @@ components lint:
             - packages/components/**/*
             - packages/components-storybook/**/*
             - .gitlab-ci.yml
+            - package.json
+    dependencies:
+        - install and build
 
 components type check:
     stage: type check
@@ -19,3 +22,6 @@ components type check:
             - packages/components/**/*
             - packages/components-storybook/**/*
             - .gitlab-ci.yml
+            - package.json
+    dependencies:
+        - install and build

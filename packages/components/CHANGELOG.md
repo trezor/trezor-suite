@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - minor TS types fixes
+- CoinLogo: removed `width` and `height` props and replaced with `size` prop
 
 
 ## [1.0.0-beta.20]

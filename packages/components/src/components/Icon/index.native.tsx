@@ -7,18 +7,16 @@ import Svg, { Path } from 'react-native-svg';
 import { GestureResponderEvent } from 'react-native';
 import colors from '../../config/colors';
 import icons from '../../config/icons';
-import { Omit, IconShape } from '../../support/types';
+import { IconShape } from '../../support/types';
 
 // TODO: rewrite animations using Animated API
 
 const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
 
-type WrapperProps = Omit<Props, 'icon' | 'size'>;
 interface Props {
     icon: string | IconShape;
     size?: number;
     color: string;
-    isActive?: boolean;
     onClick?: (event: GestureResponderEvent) => void;
 }
 

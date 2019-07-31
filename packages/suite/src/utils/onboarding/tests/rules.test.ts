@@ -19,7 +19,7 @@ import {
     getFnForRule,
 } from '../rules';
 
-describe('rules.js', () => {
+describe('rules', () => {
     describe('isNotConneted', () => {
         it('should return true for device.connected === false', () => {
             expect(isNotConnected({ device: { connected: false } })).toEqual(true);

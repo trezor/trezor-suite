@@ -2,7 +2,6 @@
     "description": "Mainnet account with 2 transactions (1 in 1 out)",
     "account_info": {
         "validated": {
-            "id": 0,
             "status": "success",
             "type": "response",
             "result": {
@@ -23,7 +22,6 @@
             }
         },
         "current": {
-            "id": 0,
             "status": "success",
             "type": "response",
             "result": {
@@ -44,10 +42,31 @@
                     "index": "DA88187347B6A203ED9314A5BDFDB73D7C8DFC07CB42FC08B5D7A73B4E2F6E39"
                 }
             }
+        },
+        "pending": {
+            "status": "success",
+            "type": "response",
+            "result": {
+                "ledger_current_index": 48354347,
+                "queue_data": {
+                    "txn_count": 1
+                },
+                "validated": false,
+                "account_data": {
+                    "Account": "rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj",
+                    "Balance": "20000000",
+                    "Flags": 0,
+                    "LedgerEntryType": "AccountRoot",
+                    "OwnerCount": 0,
+                    "PreviousTxnID": "33F2085B0EF572376335716521E412CF611C4124B1088E5CCED48A7901CAF95E",
+                    "PreviousTxnLgrSeq": 47570158,
+                    "Sequence": 2,
+                    "index": "DA88187347B6A203ED9314A5BDFDB73D7C8DFC07CB42FC08B5D7A73B4E2F6E39"
+                }
+            }
         }
     },
     "account_tx": {
-        "id": 0,
         "status": "success",
         "type": "response",
         "result": {

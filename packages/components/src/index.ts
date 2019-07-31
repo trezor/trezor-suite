@@ -14,7 +14,8 @@ import Switch from './components/Switch';
 import TrezorImage from './components/TrezorImage';
 import TrezorLogo from './components/TrezorLogo';
 import LanguagePicker from './components/LanguagePicker';
-import { AsyncSelect, Select } from './components/Select';
+import Select from './components/selects/Select';
+import AsyncSelect from './components/selects/AsyncSelect';
 
 import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
 import Link from './components/Link';

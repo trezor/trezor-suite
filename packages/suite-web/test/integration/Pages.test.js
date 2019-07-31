@@ -3,8 +3,8 @@ describe('Pages', () => {
         cy.viewport(1024, 768).visit('/');
     });
 
-    it(`test root onboarding page is online`, () => {
-        cy.visit('/onboarding')
+    it(`test root page is online`, () => {
+        cy.visit('/')
             .get('html')
             .should('be.visible');
     });

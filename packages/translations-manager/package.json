@@ -1,8 +1,7 @@
 {
   "name": "@trezor/translations-manager",
-  "version": "1.0.5",
+  "version": "1.0.0",
   "main": "./lib/index.js",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/trezor/trezor-translations-manager.git"

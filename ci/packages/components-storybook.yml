@@ -9,6 +9,9 @@ components-storybook lint:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - package.json
+  dependencies:
+    - install and build
 
 components-storybook type check:
   stage: type check
@@ -19,6 +22,9 @@ components-storybook type check:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - package.json
+  dependencies:
+    - install and build
 
 components-storybook build:
   stage: build
@@ -29,11 +35,14 @@ components-storybook build:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - package.json
   artifacts:
     name: components-build-files
     expire_in: 15 minutes
     paths:
       - packages/components-storybook/.build
+  dependencies:
+      - install and build
 
 components-storybook deploy dev:
   stage: deploy
@@ -42,12 +51,14 @@ components-storybook deploy dev:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   dependencies:
+    - install and build
     - components-storybook build
   only:
     changes:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - package.json
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
@@ -84,8 +95,11 @@ components-storybook delete review:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - package.json
   tags:
     - deploy
+  dependencies:
+    - install and build
 
 components-storybook test snapshots:
   image: cypress/base:10
@@ -95,8 +109,9 @@ components-storybook test snapshots:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - package.json
   script:
-    - env
+    - npx cypress install
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
   artifacts:
     expire_in: 2 days
@@ -104,6 +119,8 @@ components-storybook test snapshots:
     paths:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
       - /builds/trezor/trezor-suite/packages/components-storybook/test/screenshots
+  dependencies:
+    - install and build
 
 components-storybook make snapshot references:
   image: cypress/base:10
@@ -115,12 +132,15 @@ components-storybook make snapshot references:
       - packages/components/**/*
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
+      - package.json
   script:
-    - env
+    - npx cypress install
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
   artifacts:
     expire_in: 2 days
     when: always
     paths:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
+  dependencies:
+    - install and build
 

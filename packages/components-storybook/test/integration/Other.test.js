@@ -1,6 +1,6 @@
 import { icons, variables } from '@trezor/components';
 
-describe('Buttons', () => {
+describe('Other', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
         cy.visit('/iframe.html?selectedKind=Other&selectedStory=All&full=0');

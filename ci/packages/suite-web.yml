@@ -10,6 +10,9 @@ suite-web lint:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
+    dependencies:
+        - install and build
 
 suite-web type check:
     stage: type check
@@ -21,6 +24,9 @@ suite-web type check:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
+    dependencies:
+        - install and build
 
 suite-web build:
     stage: build
@@ -29,6 +35,7 @@ suite-web build:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     variables:
         PACKAGE_NAME: suite-web
     script:
@@ -37,6 +44,8 @@ suite-web build:
         expire_in: 15 minutes
         paths:
             - $PACKAGE_PATH_SUITE_WEB/build
+    dependencies:
+        - install and build
 
 suite-web deploy dev:
     stage: deploy
@@ -45,11 +54,13 @@ suite-web deploy dev:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     variables:
         PACKAGE_NAME: suite-web
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     dependencies:
+        - install and build
         - suite-web build
     environment:
         name: ${CI_BUILD_REF_NAME}
@@ -79,6 +90,7 @@ suite-web delete review:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
@@ -87,17 +99,19 @@ suite-web delete review:
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 suite-web test integration:
-    image: cypress/base:10
     stage: test integration
     only:
         changes:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     script:
-        - env
+        - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
     artifacts:
         expire_in: 2 days
@@ -105,3 +119,5 @@ suite-web test integration:
         paths:
             - /builds/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/trezor/trezor-suite/packages/suite-web/test/screenshots
+    dependencies:
+        - install and build

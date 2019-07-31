@@ -21,6 +21,7 @@ module.exports = withCustomBabelConfig(
                 '@components',
                 '../packages/components/src',
             ],
+            exportTrailingSlash: true,
             assetPrefix: './',
             webpack: config => {
                 config.plugins.push(

@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 import {
     Transaction,
     TokenTransfer,
@@ -82,10 +84,13 @@ export const filterTokenTransfers = (
             let type: TokenTransfer['type'] = 'unknown';
             if (incoming && outgoing) {
                 type = 'self';
-            } else if (incoming) {
-                type = 'sent';
-            } else if (outgoing) {
-                type = 'recv';
+            } else {
+                if (incoming) {
+                    type = 'sent';
+                }
+                if (outgoing) {
+                    type = 'recv';
+                }
             }
             return {
                 type,
@@ -125,7 +130,7 @@ export const transformTransaction = (
     const incoming = filterTargets(myAddresses, tx.vout);
     const internal = addresses ? filterTargets(addresses.change, tx.vout) : [];
     const tokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
-    let type;
+    let type: Transaction['type'];
     let targets: VinVout[] = [];
 
     // && !hasJoinsplits (from hd-wallet)
@@ -153,6 +158,15 @@ export const transformTransaction = (
         }
     }
 
+    let rbf: boolean | undefined;
+    if (Array.isArray(tx.vin)) {
+        tx.vin.forEach(vin => {
+            if (typeof vin.sequence === 'number' && vin.sequence < 0xffffffff - 1) {
+                rbf = true;
+            }
+        });
+    }
+
     return {
         type,
 
@@ -166,14 +180,16 @@ export const transformTransaction = (
 
         targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t)),
         tokens,
+        rbf,
+        ethereumSpecific: tx.ethereumSpecific,
     };
 };
 
 export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens']
 ): TokenInfo[] | undefined => {
-    if (!tokens || !Array.isArray(tokens) || tokens.length < 1) return undefined;
-    return tokens.reduce(
+    if (!tokens || !Array.isArray(tokens)) return undefined;
+    const info = tokens.reduce(
         (arr, t) => {
             if (t.type !== 'ERC20') return arr;
             return arr.concat([
@@ -189,12 +205,13 @@ export const transformTokenInfo = (
         },
         [] as TokenInfo[]
     );
+    return info.length > 0 ? info : undefined;
 };
 
 export const transformAddresses = (
     tokens: BlockbookAccountInfo['tokens']
 ): AccountAddresses | undefined => {
-    if (!tokens || !Array.isArray(tokens) || tokens.length < 1) return undefined;
+    if (!tokens || !Array.isArray(tokens)) return undefined;
     const addresses = tokens.reduce(
         (arr, t) => {
             if (t.type !== 'XPUBAddress') return arr;
@@ -212,7 +229,7 @@ export const transformAddresses = (
         [] as Address[]
     );
 
-    if (addresses.length === 0) return undefined;
+    if (addresses.length < 1) return undefined;
     const internal = addresses.filter(a => a.path.split('/')[4] === '1');
     const external = addresses.filter(a => internal.indexOf(a) < 0);
 
@@ -238,21 +255,32 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     }
     const descriptor = payload.address;
     const addresses = transformAddresses(payload.tokens);
+    const tokens = transformTokenInfo(payload.tokens);
+    const empty = payload.txs === 0;
+    const unconfirmed = new BigNumber(payload.unconfirmedBalance);
+    // reduce or increase availableBalance
+    const availableBalance =
+        !unconfirmed.isNaN() && !unconfirmed.isZero()
+            ? unconfirmed.plus(payload.balance).toString()
+            : payload.balance;
+
     return {
-        // block: payload.block, // TODO: ask marting to implement
         descriptor,
         balance: payload.balance,
-        availableBalance: payload.balance, // TODO: balance - unconfirmedBalance, could be lower than 0?
-        tokens: transformTokenInfo(payload.tokens),
+        availableBalance,
+        empty,
+        tokens,
         addresses,
         history: {
             total: payload.txs,
-            tokens: payload.nonTokenTxs ? payload.txs - payload.nonTokenTxs : undefined,
+            tokens:
+                typeof payload.nonTokenTxs === 'number'
+                    ? payload.txs - payload.nonTokenTxs
+                    : undefined,
             unconfirmed: payload.unconfirmedTxs,
             transactions: payload.transactions
                 ? payload.transactions.map(t => transformTransaction(descriptor, addresses, t))
                 : undefined,
-            // txids: payload.txids, // not used
         },
         misc,
         page,
@@ -268,5 +296,6 @@ export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
         address: utxo.address,
         path: utxo.path,
         confirmations: utxo.confirmations,
+        coinbase: utxo.coinbase,
     }));
 };

@@ -1,8 +1,11 @@
 import React from 'react';
 import { Button } from '@trezor/components';
+import * as STEP from '@onboarding-constants/steps';
+
 // import { FormattedMessage } from 'react-intl';
 
 import Text from '@suite/components/onboarding/Text';
+import { OnboardingReducer } from '@onboarding-types/onboarding';
 
 import {
     StepWrapper,
@@ -10,14 +13,15 @@ import {
     StepHeadingWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { setAsNewDevice, goToNextStep } from '@onboarding-actions/onboardingActions';
+import { goToNextStep, setPath } from '@onboarding-actions/onboardingActions';
 
 // import l10nMessages from './index.messages';
 
 interface Props {
+    path: OnboardingReducer['path'];
     onboardingActions: {
-        setAsNewDevice: typeof setAsNewDevice;
         goToNextStep: typeof goToNextStep;
+        setPath: typeof setPath;
     };
 }
 
@@ -36,7 +40,7 @@ const NewOrUsedStep = (props: Props) => (
                 <Button
                     data-test="button-new-device"
                     onClick={() => {
-                        props.onboardingActions.setAsNewDevice(true);
+                        props.onboardingActions.setPath([...props.path, STEP.PATH_NEW]);
                         props.onboardingActions.goToNextStep();
                     }}
                 >
@@ -44,9 +48,9 @@ const NewOrUsedStep = (props: Props) => (
                 </Button>
                 <Button
                     isWhite
-                    data-test="button-new-device"
+                    data-test="button-used-device"
                     onClick={() => {
-                        props.onboardingActions.setAsNewDevice(false);
+                        props.onboardingActions.setPath([...props.path, STEP.PATH_USED]);
                         props.onboardingActions.goToNextStep();
                     }}
                 >

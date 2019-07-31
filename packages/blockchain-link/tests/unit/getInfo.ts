@@ -5,8 +5,8 @@ import fixtures from './fixtures/getInfo';
 
 workers.forEach(instance => {
     describe(`getInfo: ${instance.name}`, () => {
-        let server;
-        let blockchain;
+        let server: any;
+        let blockchain: BlockchainLink;
 
         const setup = async () => {
             server = await createServer(instance.name);
@@ -17,13 +17,15 @@ workers.forEach(instance => {
             });
         };
 
-        const teardown = () => {
+        const teardown = async () => {
+            await blockchain.disconnect();
             blockchain.dispose();
-            server.close();
+            await server.close();
         };
         beforeAll(setup);
         afterAll(teardown);
 
+        // @ts-ignore No index signature
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);

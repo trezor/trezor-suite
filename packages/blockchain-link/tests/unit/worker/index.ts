@@ -8,7 +8,7 @@ declare global {
     }
 }
 
-let currentWorker;
+let currentWorker: any;
 global.onmessage = () => {};
 
 global.postMessage = data => {
@@ -21,14 +21,14 @@ class MyWorker {
         currentWorker = this;
     }
 
-    postMessage(data) {
+    postMessage(data: any) {
         global.onmessage({ data });
     }
 
     onmessage = undefined;
 
     terminate() {
-        global.onmessage({ type: 'terminate' });
+        global.onmessage({ data: { type: 'terminate' } });
         currentWorker = null;
     }
 }

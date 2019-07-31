@@ -1,0 +1,140 @@
+connect-explorer lint:
+    stage: lint
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/connect-explorer lint
+    only:
+        changes:
+            - packages/connect-explorer/**/*
+            - .gitlab-ci.yml
+            - package.json
+    dependencies:
+        - install and build
+
+connect-explorer type check:
+    stage: type check
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/connect-explorer type-check
+    only:
+        changes:
+            - packages/connect-explorer/**/*
+            - .gitlab-ci.yml
+            - package.json
+    dependencies:
+        - install and build
+
+connect-explorer type coverage:
+    stage: type check
+    allow_failure: false
+    script:
+        - yarn workspace @trezor/connect-explorer type-coverage
+    only:
+        changes:
+            - packages/connect-explorer/**/*
+            - .gitlab-ci.yml
+            - package.json
+    dependencies:
+        - install and build
+
+##### no unit tests yet
+# connect-explorer test unit:
+#     stage: test
+#     allow_failure: true
+#     script:
+#         - yarn workspace @trezor/connect-explorer test
+#     only:
+#         changes:
+#             - packages/connect-explorer/**/*
+#             - .gitlab-ci.yml
+
+connect-explorer build:
+    stage: build
+    script:
+        - yarn workspace @trezor/connect-explorer build
+    only:
+        changes:
+            - packages/connect-explorer/**/*
+            - .gitlab-ci.yml
+            - package.json
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - packages/connect-explorer/build
+    dependencies:
+        - install and build
+
+connect-explorer deploy dev:
+    stage: deploy
+    only:
+        changes:
+            - packages/connect-explorer/**/*
+            - .gitlab-ci.yml
+            - package.json
+    variables:
+        PACKAGE_NAME: connect-explorer
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+        DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    dependencies:
+        - install and build
+        - connect-explorer build
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+        on_stop: connect-explorer delete review
+    before_script: []
+    script:
+        - env
+        - cd ${PACKAGE_PATH_CONNECT_EXPLORER}
+        - echo "Deploy to dev servers"
+        - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+        - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+    tags:
+        - deploy
+
+connect-explorer delete review:
+    stage: deploy
+    variables:
+        GIT_STRATEGY: none
+        PACKAGE_NAME: connect-explorer
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    when: manual
+    only:
+        changes:
+            - packages/connect-explorer/**/*
+            - .gitlab-ci.yml
+            - package.json
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        action: stop
+    script:
+        - cd packages/connect-explorer
+        - 'rm -r "${DEPLOY_DIRECTORY}"'
+    tags:
+        - deploy
+    dependencies:
+        - install and build
+
+#### no integration tests yet
+connect-explorer test integration:
+    image: cypress/base:10
+    stage: test integration
+    only:
+        changes:
+            - packages/connect-explorer/**/*
+            - .gitlab-ci.yml
+            - package.json
+    script:
+        - npx cypress install
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer test:integration
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - /builds/trezor/trezor-suite/packages/connect-explorer/test/snapshots
+            - /builds/trezor/trezor-suite/packages/connect-explorer/test/screenshots
+    dependencies:
+        - install and build

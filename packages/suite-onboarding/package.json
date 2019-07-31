@@ -13,7 +13,7 @@
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -R ./src/locales/ ./static/l10n && rm -rf ./src/"
     },
     "dependencies": {
-        "@trezor/suite": "1.0.0",
+        "@trezor/suite": "^1.0.0",
         "next": "^9.0.2",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "react-svg": "^10.0.6",
@@ -23,10 +23,12 @@
     "devDependencies": {
         "@babel/cli": "^7.4.4",
         "@babel/core": "^7.0.0",
-        "@trezor/translations-manager": "1.0.5",
+        "@trezor/translations-manager": "^1.0.0",
         "@types/next": "^8.0.0",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
+        "cypress": "^3.4.1",
+        "cypress-image-snapshot": "^3.0.1",
         "@types/react-dom": "^16.0.11",
         "@types/react-native": "^0.57.41",
         "@types/react-redux": "^7.0.8",
