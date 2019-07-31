@@ -1,7 +1,8 @@
 # Sources
 src
-.babelrc
-.eslintc
+babel.config.js
+.eslintrc
+.flowconfig
 .gitignore
 .gitmodules
 .travis.yml
