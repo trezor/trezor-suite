@@ -85,6 +85,7 @@ export const LINE_HEIGHT = {
     TREZOR_ACTION: '37px',
 };
 
+// TODO: use export const COINS = [] as const; declaration for use as type literal
 export const COINS = [
     'ada',
     'bch',
@@ -107,4 +108,34 @@ export const COINS = [
     'xrp',
     'zec',
     'xtz',
+];
+
+// TODO: use export const COINS = [] as const; declaration for use as type literal
+export const ICONS = [
+    'ARROW_DOWN',
+    'ARROW_LEFT',
+    'ARROW_UP',
+    'BACK',
+    'CHAT',
+    'CLOSE',
+    'COG',
+    'DOWNLOAD',
+    'EJECT',
+    'ERROR',
+    'EYE_CROSSED',
+    'EYE',
+    'HELP',
+    'INFO',
+    'MENU',
+    'PLUS',
+    'QRCODE',
+    'REFRESH',
+    'SKIP',
+    'SUCCESS',
+    'T1',
+    'T2',
+    'TOP',
+    'WALLET_HIDDEN',
+    'WALLET_STANDARD',
+    'WARNING',
 ];

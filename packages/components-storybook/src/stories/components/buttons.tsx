@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, ButtonPin, H1, H5, colors, icons } from '@trezor/components';
+import { Button, ButtonPin, H1, H5, colors, variables } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
@@ -18,6 +18,8 @@ const Row = styled.div`
         margin: 10px 10px;
     }
 `;
+
+const { ICONS } = variables;
 
 storiesOf('Buttons', module).add('All', () => (
     <Wrapper>
@@ -243,12 +245,11 @@ storiesOf('Buttons', module)
                 },
                 null
             );
-
             const iconOptions: any = {
                 None: null,
             };
 
-            Object.keys(icons).forEach(icon => {
+            ICONS.forEach((icon: string) => {
                 iconOptions[icon] = icon;
             });
 

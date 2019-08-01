@@ -1,10 +1,12 @@
+/* eslint-disable global-require */
 import styled, { keyframes } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReactSvg from 'react-svg';
 import colors from '../../config/colors';
-import icons from '../../config/icons';
-import { Omit, IconShape } from '../../support/types';
+import { Omit, IconType } from '../../support/types';
+import { ICONS } from './icons';
 
 // TODO: make animation of icons better
 const rotate180up = keyframes`
@@ -35,9 +37,16 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
     return null;
 };
 
-const SvgWrapper = styled.svg<WrapperProps>`
+const SvgWrapper = styled.div<WrapperProps>`
+    display: inline-block;
+    height: ${props => props.size}px;
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
+
+    div {
+        height: ${props => props.size}px;
+        line-height: ${props => props.size}px;
+    }
 
     :hover {
         path {
@@ -46,24 +55,19 @@ const SvgWrapper = styled.svg<WrapperProps>`
     }
 `;
 
-const Path = styled.path<{ color: string }>`
-    fill: ${props => props.color};
-`;
-
-type WrapperProps = Omit<Props, 'icon' | 'size'>;
-interface Props extends React.SVGAttributes<SVGElement> {
+type WrapperProps = Omit<Props, 'icon'>;
+interface Props extends React.SVGAttributes<HTMLDivElement> {
     className?: string;
-
-    icon: string | IconShape;
+    icon: IconType;
     size?: number;
     color?: string;
     isActive?: boolean;
     canAnimate?: boolean;
     hoverColor?: string;
-    onClick?: (event: React.MouseEvent<SVGSVGElement>) => any;
-    onMouseEnter?: (event: React.MouseEvent<SVGSVGElement>) => any;
-    onMouseLeave?: (event: React.MouseEvent<SVGSVGElement>) => any;
-    onFocus?: (event: React.FocusEvent<SVGSVGElement>) => any;
+    onClick?: (event: React.MouseEvent<HTMLDivElement>) => any;
+    onMouseEnter?: (event: React.MouseEvent<HTMLDivElement>) => any;
+    onMouseLeave?: (event: React.MouseEvent<HTMLDivElement>) => any;
+    onFocus?: (event: React.FocusEvent<HTMLDivElement>) => any;
 }
 
 const Icon = ({
@@ -80,9 +84,6 @@ const Icon = ({
     onFocus,
     ...rest
 }: Props) => {
-    // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: IconShape = typeof icon === 'string' ? icons[icon] : icon;
-    if (!iconObject) return null;
     return (
         <SvgWrapper
             className={className}
@@ -93,19 +94,17 @@ const Icon = ({
             onMouseLeave={onMouseLeave}
             onFocus={onFocus}
             isActive={isActive}
-            style={{
-                display: 'inline-block',
-                verticalAlign: 'middle',
-            }}
-            width={`${size * (iconObject.ratio || 1)}`}
-            height={`${size}`}
-            viewBox={iconObject.viewBox || '0 0 1024 1024'}
-            color={color}
+            size={size}
             {...rest}
         >
-            {iconObject.paths.map((path: string) => (
-                <Path key={path} color={color} d={path} />
-            ))}
+            <ReactSvg
+                src={ICONS[icon]}
+                beforeInjection={svg => {
+                    svg.setAttribute('width', `${size}px`);
+                    svg.setAttribute('height', `${size}px`);
+                    svg.setAttribute('fill', color);
+                }}
+            />
         </SvgWrapper>
     );
 };
@@ -114,7 +113,7 @@ Icon.propTypes = {
     className: PropTypes.string,
     hoverColor: PropTypes.string,
     canAnimate: PropTypes.bool,
-    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
+    icon: PropTypes.string.isRequired,
     size: PropTypes.number,
     isActive: PropTypes.bool,
     color: PropTypes.string,

@@ -1,42 +1,35 @@
+/* eslint-disable global-require */
 import styled from 'styled-components/native';
 
 import PropTypes from 'prop-types';
 import React from 'react';
-// eslint-disable-next-line import/no-named-as-default
-import Svg, { Path } from 'react-native-svg';
 import { GestureResponderEvent } from 'react-native';
+import SvgUri from 'react-native-svg-uri';
 import colors from '../../config/colors';
-import icons from '../../config/icons';
-import { IconShape } from '../../support/types';
+import { IconType } from '../../support/types';
+import { ICONS } from './icons';
 
 // TODO: rewrite animations using Animated API
 
 const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
 
 interface Props {
-    icon: string | IconShape;
+    icon: IconType;
     size?: number;
     color: string;
     onClick?: (event: GestureResponderEvent) => void;
 }
 
-const Icon = ({ icon, size = 24, color = colors.TEXT_SECONDARY, onClick, ...rest }: Props) => {
-    // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: IconShape = typeof icon === 'string' ? icons[icon] : icon;
-    if (!iconObject) return null;
+const Icon = ({ icon, size = 24, color = colors.TEXT_SECONDARY, onClick }: Props) => {
     return (
-        <TouchableWithoutFeedback onPress={onClick}>
-            <Svg
-                width={`${size * (iconObject.ratio || 1)}`}
-                height={`${size}`}
-                viewBox={iconObject.viewBox || '0 0 1024 1024'}
-                color={color}
-                {...rest}
-            >
-                {iconObject.paths.map((path: string) => (
-                    <Path key={path} fill={color} d={path} />
-                ))}
-            </Svg>
+        <TouchableWithoutFeedback
+            onPress={onClick}
+            style={{
+                width: size,
+                height: size,
+            }}
+        >
+            <SvgUri width={size} height={size} fill={color} source={ICONS[icon]} />
         </TouchableWithoutFeedback>
     );
 };

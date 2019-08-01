@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import icons from '../../../config/icons';
 
 const Wrapper = styled.div`
     position: relative;
@@ -41,7 +40,7 @@ interface Props {
 const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
     <Wrapper {...rest} {...wrapperProps}>
         <StyledInput disabled type="password" maxLength={9} autoComplete="off" value={value} />
-        <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
+        <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon="BACK" />
     </Wrapper>
 );
 

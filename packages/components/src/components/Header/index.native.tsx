@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import Icon from '../Icon';
-import icons from '../../config/icons';
 import colors from '../../config/colors';
 import Link from '../Link';
 import TrezorLogo from '../TrezorLogo';
@@ -110,12 +109,12 @@ const Header = ({
                         <MenuToggler onClick={toggleSidebar}>
                             {sidebarOpened ? (
                                 <>
-                                    <Icon size={12} color={colors.WHITE} icon={icons.CLOSE} />
+                                    <Icon size={12} color={colors.WHITE} icon="CLOSE" />
                                     <TogglerText>{togglerCloseText}</TogglerText>
                                 </>
                             ) : (
                                 <>
-                                    <Icon color={colors.WHITE} size={14} icon={icons.MENU} />
+                                    <Icon color={colors.WHITE} size={14} icon="MENU" />
                                     <TogglerText>{togglerOpenText}</TogglerText>
                                 </>
                             )}

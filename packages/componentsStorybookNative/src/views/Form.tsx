@@ -6,6 +6,12 @@ const Wrapper = styled.View`
     padding: 10px;
 `;
 
+const Section = styled.View`
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
+
 const Col = styled.View`
     flex-direction: column;
 `;
@@ -22,13 +28,15 @@ const Form = () => {
             <H1>Input</H1>
             <H5>Basic</H5>
             <Col>
-                <Input
-                    type="text"
-                    value=""
-                    placeholder="Placeholder"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'input_basic' }}
-                />
+                <Section>
+                    <Input
+                        type="text"
+                        value=""
+                        placeholder="Placeholder"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'input_basic' }}
+                    />
+                </Section>
 
                 <Input
                     type="text"
