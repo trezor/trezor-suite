@@ -4,7 +4,7 @@ import ReactSvg from 'react-svg';
 import { LOGOS } from './logos';
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
-    type: string;
+    type: 'horizontal' | 'vertical' | 'symbol';
     variant?: 'white' | 'black';
     width?: string | number;
     height?: string | number;

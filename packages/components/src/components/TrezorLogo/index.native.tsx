@@ -5,7 +5,7 @@ import SvgUri from 'react-native-svg-uri';
 import { LOGOS } from './logos';
 
 interface Props {
-    type: 'horizontal' | 'vertical';
+    type: 'horizontal' | 'vertical' | 'symbol';
     variant?: 'white' | 'black';
 }
 
