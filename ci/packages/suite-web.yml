@@ -10,6 +10,7 @@ suite-web lint:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -23,6 +24,7 @@ suite-web type check:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -33,6 +35,7 @@ suite-web build:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     variables:
         PACKAGE_NAME: suite-web
     script:
@@ -51,6 +54,7 @@ suite-web deploy dev:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     variables:
         PACKAGE_NAME: suite-web
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
@@ -86,6 +90,7 @@ suite-web delete review:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
@@ -98,15 +103,15 @@ suite-web delete review:
         - install and build
 
 suite-web test integration:
-    image: cypress/base:10
     stage: test integration
     only:
         changes:
             - packages/suite/**/*
             - packages/suite-web/**/*
             - .gitlab-ci.yml
+            - package.json
     script:
-        - env
+        - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
     artifacts:
         expire_in: 2 days

@@ -18,7 +18,7 @@ const UpdateFirmware = ({ device, pathname, intl }: Props) => {
     if (!outdated) return null;
 
     // don't show notification when user is on firmware update page
-    if (pathname === getRoute('wallet-firmware-update')) return null;
+    if (pathname === getRoute('suite-firmware-update')) return null;
 
     return (
         <Notification

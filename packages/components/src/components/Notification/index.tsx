@@ -143,9 +143,11 @@ const Notification = ({
                     <AdditionalContent>
                         {actions && actions.length > 0 && (
                             <ActionContent>
-                                {actions.map((action: CtaShape) => (
+                                {actions.map((action: CtaShape, i) => (
                                     <ButtonNotification
                                         isInverse
+                                        // eslint-disable-next-line react/no-array-index-key
+                                        key={i}
                                         variant={variant}
                                         isLoading={isActionInProgress}
                                         onClick={() => {

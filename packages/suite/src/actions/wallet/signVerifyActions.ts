@@ -13,7 +13,7 @@ type inputNameType =
     | 'verifyMessage'
     | 'verifySignature';
 
-export type SignVerifyAction =
+export type SignVerifyActions =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
     | { type: typeof SIGN_VERIFY.CLEAR_SIGN }
     | { type: typeof SIGN_VERIFY.CLEAR_VERIFY }

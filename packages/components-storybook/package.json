@@ -50,7 +50,7 @@
         "awesome-typescript-loader": "^5.2.1",
         "babel-loader": "^8.0.5",
         "babel-plugin-styled-components": "^1.10.0",
-        "cypress": "^3.1.5",
+        "cypress": "^3.4.1",
         "cypress-image-snapshot": "^3.0.1",
         "eslint": "^5.13.0",
         "eslint-config-airbnb": "^17.1.0",

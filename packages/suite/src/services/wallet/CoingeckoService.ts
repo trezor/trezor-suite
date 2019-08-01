@@ -10,14 +10,14 @@ import { AppState, Action, Dispatch } from '@suite-types/index';
 
 // const BASE_URL = 'https://api.coingecko.com/';
 
-export const RATE_UPDATE: 'rate__update' = 'rate__update';
+export const RATE_UPDATE = '@rate/update';
 
 export interface NetworkRate {
     network: string;
     rates: { [key: string]: number };
 }
 
-export interface FiatRateAction {
+export interface FiatRateActions {
     type: typeof RATE_UPDATE;
     network: string;
     rates: { [key: string]: number };

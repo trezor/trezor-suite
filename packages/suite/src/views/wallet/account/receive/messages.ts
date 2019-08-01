@@ -1,8 +1,6 @@
-/* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_CHECK_ADDRESS_ON_TREZOR: {
         id: 'TR_CHECK_ADDRESS_ON_TREZOR',
         defaultMessage: 'Check address on Trezor',
