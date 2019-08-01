@@ -34,11 +34,10 @@ export type Action =
     | SuiteActions
     | LogActions
     | ModalActions
-    | WalletActions
     | OnboardingActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
-export type Dispatch = ThunkDispatch<AppState, any, Action>;
+export type Dispatch = ThunkDispatch<AppState, any, Action | WalletActions>;
 export type GetState = () => AppState;
 
 // tmp
