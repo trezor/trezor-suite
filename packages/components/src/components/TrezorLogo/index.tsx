@@ -1,16 +1,28 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
-
-const Img = styled.img``;
+import ReactSvg from 'react-svg';
+import { LOGOS } from './logos';
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     type: string;
+    variant?: 'white' | 'black';
+    width?: string | number;
+    height?: string | number;
 }
 
-const TrezorLogo = ({ type, ...rest }: Props) => {
-	const src = require(`../../images/trezor_logo_${type}_black.svg`); // eslint-disable-line
-    return <Img src={src} {...rest} />;
+const TrezorLogo = ({ type, variant = 'black', width = 'auto', height = 'auto' }: Props) => {
+    return (
+        <ReactSvg
+            src={LOGOS[type.toUpperCase()]}
+            beforeInjection={svg => {
+                svg.setAttribute('fill', variant);
+            }}
+            style={{
+                width,
+                height,
+            }}
+        />
+    );
 };
 
 TrezorLogo.propTypes = {

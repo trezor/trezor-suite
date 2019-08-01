@@ -378,10 +378,19 @@ storiesOf('Other', module)
                 },
                 'horizontal'
             );
+            const variant: 'black' | 'white' = select(
+                'variant',
+                {
+                    black: 'black',
+                    white: 'white',
+                },
+                'black'
+            );
 
             return (
                 <TrezorLogo
                     type={type}
+                    variant={variant}
                     {...(width ? { width } : {})}
                     {...(height ? { height } : {})}
                 />
