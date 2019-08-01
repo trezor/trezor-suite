@@ -1,6 +1,6 @@
 import TrezorConnect from 'trezor-connect';
-import { GetState, Dispatch, TrezorDevice, Action } from '@suite-types/index';
-
+import { GetState, Dispatch, TrezorDevice } from '@suite-types/index';
+import { Action } from '@wallet-types/index';
 import { RECEIVE, NOTIFICATION } from '@wallet-actions/constants';
 
 import { initialState, State } from '@wallet-reducers/receiveReducer';

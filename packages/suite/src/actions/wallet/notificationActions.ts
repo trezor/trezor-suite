@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Action, GetState, Dispatch, TrezorDevice } from '@suite-types/index';
+import { GetState, Dispatch, TrezorDevice } from '@suite-types/index';
+import { Action } from '@wallet-types/index';
 import { CallbackAction } from '@wallet-reducers/notificationReducer';
 import { NOTIFICATION } from './constants';
 
