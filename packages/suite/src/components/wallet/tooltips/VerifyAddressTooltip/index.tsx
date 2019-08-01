@@ -1,13 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import l10nMessages from './index.messages';
+import l10nMessages from './messages';
 
 const Wrapper = styled.div``;
 const Content = styled.div``;
 
-const VerifyAddressTooltip = ({ isConnected, isAvailable, addressUnverified }) => (
+interface Props {
+    isConnected: boolean;
+    isAvailable: boolean;
+    addressUnverified: boolean;
+}
+
+const VerifyAddressTooltip = ({ isConnected, isAvailable, addressUnverified }: Props) => (
     <Wrapper>
         {addressUnverified && (
             <Content>
@@ -29,11 +34,5 @@ const VerifyAddressTooltip = ({ isConnected, isAvailable, addressUnverified }) =
         )}
     </Wrapper>
 );
-
-VerifyAddressTooltip.propTypes = {
-    isConnected: PropTypes.bool.isRequired,
-    isAvailable: PropTypes.bool.isRequired,
-    addressUnverified: PropTypes.bool.isRequired,
-};
 
 export default VerifyAddressTooltip;

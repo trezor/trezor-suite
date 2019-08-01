@@ -5,7 +5,7 @@ import { NetworkToken, Token, Account } from '@wallet-types/index';
 import { State } from '@wallet-reducers/tokenReducer';
 import * as BlockchainActions from '@wallet-actions/ethereum/blockchainActions';
 
-export type TokenAction =
+export type TokenActions =
     | { type: typeof TOKEN.FROM_STORAGE; payload: State }
     | { type: typeof TOKEN.ADD; payload: Token }
     | { type: typeof TOKEN.REMOVE; token: Token }

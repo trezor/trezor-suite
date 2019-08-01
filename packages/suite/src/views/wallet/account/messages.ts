@@ -1,8 +1,6 @@
-/* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_AMOUNT: {
         id: 'TR_AMOUNT',
         defaultMessage: 'Amount',

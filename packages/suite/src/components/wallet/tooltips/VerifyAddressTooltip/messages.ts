@@ -1,8 +1,6 @@
-/* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
         id: 'TR_UNVERIFIED_ADDRESS_COMMA_CONNECT',
         defaultMessage: 'Unverified address, connect your Trezor to verify it',

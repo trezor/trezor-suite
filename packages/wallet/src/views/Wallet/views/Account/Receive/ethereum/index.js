@@ -105,10 +105,6 @@ const AccountReceive = (props: Props) => {
 
     return (
         <Content>
-            <React.Fragment>
-                <Title>
-                    <FormattedMessage {...l10nMessages.TR_RECEIVE_ETHEREUM_OR_TOKENS} />
-                </Title>
                 <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
                     <Row>
                         <Input
@@ -192,7 +188,6 @@ const AccountReceive = (props: Props) => {
                         </QrWrapper>
                     )}
                 </AddressWrapper>
-            </React.Fragment>
         </Content>
     );
 };
