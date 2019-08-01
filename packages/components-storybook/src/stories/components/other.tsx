@@ -64,6 +64,8 @@ const Title = styled.div`
     margin-bottom: 0.5rem;
 `;
 
+type TrezorModelType = 1 | 2;
+
 storiesOf('Other', module).add('All', () => (
     <Wrapper>
         <H1>Prompt</H1>
@@ -303,7 +305,7 @@ storiesOf('Other', module)
                     '2': 2,
                 },
                 1
-            );
+            ) as TrezorModelType;
 
             return (
                 <Prompt model={model} size={number('size', 32)}>
@@ -327,11 +329,14 @@ storiesOf('Other', module)
         () => {
             const width = number('width', NaN);
             const height = number('height', 310);
-            const modelOptions: any = {
-                '1': 1,
-                '2': 2,
-            };
-            const model = select('model', modelOptions, 1);
+            const model = select(
+                'model',
+                {
+                    '1': 1,
+                    '2': 2,
+                },
+                1
+            ) as TrezorModelType;
 
             return <TrezorImage {...(width ? { width } : {})} height={height} model={model} />;
         },
