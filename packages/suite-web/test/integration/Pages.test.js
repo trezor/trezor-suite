@@ -9,7 +9,7 @@ describe('Pages', () => {
     it(`test / page is online`, () => {
         cy.visit('/')
             .get('html')
-            .should('contain', '');
+            .should('contain', 'Connect Trezor to continue');
     });
 
     it(`test /version page is online`, () => {
