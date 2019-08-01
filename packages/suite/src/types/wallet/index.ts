@@ -18,7 +18,7 @@ interface BlockchainLinkToken {
     value: string;
 }
 
-export type Actions =
+export type Action =
     | SettingsActions
     | ReceiveActions
     | SignVerifyActions

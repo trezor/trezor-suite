@@ -2,7 +2,7 @@ import React from 'react';
 // import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import { NOTIFICATION } from '@wallet-actions/constants';
 import { DEVICE } from 'trezor-connect';
-import { Actions } from '@wallet-types/index';
+import { Action } from '@suite-types/index';
 
 import produce from 'immer';
 
@@ -59,7 +59,7 @@ const closeNotification = (state: State, payload: any): State => {
     return state.filter(entry => !entry.cancelable);
 };
 
-export default function notification(state: State = initialState, action: Actions): State {
+export default function notification(state: State = initialState, action: Action): State {
     return produce(state, draft => {
         switch (action.type) {
             case DEVICE.DISCONNECT: {
