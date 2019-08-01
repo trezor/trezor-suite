@@ -1,4 +1,4 @@
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { openDB, DBSchema, IDBPDatabase, unwrap } from 'idb';
 import { migrate } from '@suite/storage/migrations';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 
@@ -129,12 +129,25 @@ const getDB = async () => {
 };
 
 export const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
-    const db = await getDB();
-    const tx = db.transaction('txs', 'readwrite');
-    // shortcut db.add throws null instead of ConstraintError on duplicate key (???)
-    const result = await tx.store.add(transaction);
-    notify('txs', [result]);
-    return result;
+    // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
+    // and I couldn't figure out how to catch it. Maybe a bug in idb?
+    // So instead of using idb wrapper I use indexedDB directly, wrapped in my own promise.
+    // @ts-ignore
+    const db = unwrap(await getDB());
+    const p = new Promise((resolve, reject) => {
+        const tx = db.transaction('txs', 'readwrite');
+        const req: IDBRequest = tx.objectStore('txs').add(transaction);
+        req.onerror = _event => {
+            reject(req.error);
+        };
+        req.onsuccess = _event => {
+            notify('txs', [req.result]);
+            resolve(req.result);
+        };
+    }).catch(err => {
+        throw err;
+    });
+    return p;
 };
 
 export const addTransactions = async (transactions: MyDBV1['txs']['value'][]) => {
