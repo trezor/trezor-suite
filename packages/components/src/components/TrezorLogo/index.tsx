@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactSvg from 'react-svg';
 import { LOGOS } from './logos';
+import { TrezorLogoType, TrezorLogoVariant } from '../../support/types';
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
-    type: 'horizontal' | 'vertical' | 'symbol';
-    variant?: 'white' | 'black';
+    type: TrezorLogoType;
+    variant?: TrezorLogoVariant;
     width?: string | number;
     height?: string | number;
 }

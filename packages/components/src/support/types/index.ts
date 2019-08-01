@@ -7,3 +7,7 @@ export interface IconShape {
     viewBox: string;
     ratio?: number;
 }
+
+export type TrezorLogoType = 'horizontal' | 'vertical' | 'symbol';
+
+export type TrezorLogoVariant = 'white' | 'black';
