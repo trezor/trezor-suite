@@ -8,6 +8,10 @@ import messages from './messages';
 
 const Wrapper = styled.div`
     display: flex;
+
+    @media screen and (max-width: 795px) {
+        flex-wrap: wrap;
+    }
 `;
 
 const EyeButton = styled(Button)`
@@ -34,6 +38,7 @@ const ShowAddressButton = styled(Button)`
     border-bottom-left-radius: 0;
 
     @media screen and (max-width: 795px) {
+        width: 100%;
         margin-top: 10px;
         align-self: auto;
         border-radius: 3px;
