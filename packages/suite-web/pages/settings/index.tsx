@@ -1,3 +1,3 @@
-import Settings from '@suite-views/settings';
+import Settings from '@suite-views/settings/Container';
 
 export default Settings;

@@ -56,6 +56,8 @@ type DeviceStatus = any;
 type DeviceMode = any;
 type DeviceFirmwareStatus = any;
 
+export type TrezorModel = 1 | 2;
+
 export interface AcquiredDevice {
     type: 'acquired';
     path: string;
