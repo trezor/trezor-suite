@@ -368,6 +368,9 @@ storiesOf('Other', module)
     .add(
         'TrezorLogo',
         () => {
+            type LogoType = 'horizontal' | 'vertical';
+            type LogoVariant = 'black' | 'white';
+
             const width = number('width', 100);
             const height = number('height', NaN);
             const type = select(
@@ -377,15 +380,15 @@ storiesOf('Other', module)
                     vertical: 'vertical',
                 },
                 'horizontal'
-            );
-            const variant: 'black' | 'white' = select(
+            ) as LogoType;
+            const variant = select(
                 'variant',
                 {
                     black: 'black',
                     white: 'white',
                 },
                 'black'
-            );
+            ) as LogoVariant;
 
             return (
                 <TrezorLogo
