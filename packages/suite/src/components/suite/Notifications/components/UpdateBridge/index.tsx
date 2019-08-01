@@ -25,7 +25,7 @@ const UpdateBridge = ({ transport, intl }: Props & InjectedIntlProps) => {
                 actions={[
                     {
                         label: intl.formatMessage(l10nCommonMessages.TR_SHOW_DETAILS),
-                        callback: goto(getRoute('suite-bridge')),
+                        callback: () => goto(getRoute('suite-bridge')),
                     },
                 ]}
             />

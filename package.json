@@ -19,6 +19,7 @@
     },
     "scripts": {
         "bootstrap": "lerna bootstrap",
+        "postinstall": "lerna bootstrap",
         "build:libs": "lerna run build:lib",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
         "deps:update": "rimraf 'yarn.lock' 'node_modules' '*/**/node_modules' && yarn",

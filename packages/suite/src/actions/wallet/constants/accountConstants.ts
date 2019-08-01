@@ -1,0 +1,9 @@
+export const INIT = '@account/init';
+export const DISPOSE = '@account/dispose';
+export const CREATE = '@account/create';
+export const REMOVE = '@account/remove';
+export const UPDATE = '@account/update';
+export const SET_BALANCE = '@account/set-balance';
+export const SET_NONCE = '@account/set0nonce';
+export const FROM_STORAGE = '@account/from-storage';
+export const UPDATE_SELECTED_ACCOUNT = '@account/update-selected-account';

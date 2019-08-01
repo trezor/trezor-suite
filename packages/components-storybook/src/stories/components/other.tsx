@@ -7,7 +7,6 @@ import { withKnobs, select, number, color, text, object, boolean } from '@storyb
 import StoryRouter from 'storybook-react-router';
 
 import {
-    icons,
     colors,
     Header,
     Prompt,
@@ -22,7 +21,7 @@ import {
     LanguagePicker,
 } from '@trezor/components';
 
-const { FONT_SIZE, COINS } = variables;
+const { FONT_SIZE, COINS, ICONS } = variables;
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -184,12 +183,12 @@ storiesOf('Other', module).add('All', () => (
 
         <H1>Icons</H1>
         <Icons>
-            {Object.keys(icons).map(icon => {
+            {ICONS.map((icon: string) => {
                 const test = `icon_${icon.toLowerCase()}`;
                 return (
                     <Item key={icon}>
                         <Title>{icon}</Title>
-                        <Icon icon={icons[icon]} data-test={test} />
+                        <Icon icon={icon} data-test={test} />
                     </Item>
                 );
             })}
@@ -265,7 +264,7 @@ storiesOf('Other', module)
             const iconOptions: any = {
                 None: null,
             };
-            Object.keys(icons).forEach(icon => {
+            ICONS.forEach((icon: string) => {
                 iconOptions[icon] = icon;
             });
 
@@ -276,7 +275,7 @@ storiesOf('Other', module)
             if (hasHover) {
                 hoverColor = color('Hover color', colors.GREEN_PRIMARY);
             }
-            return <Icon icon={iconSelect} size={iconSize} {...(hasHover ? hoverColor : {})} />;
+            return <Icon icon={iconSelect} size={iconSize} {...(hasHover ? { hoverColor } : {})} />;
         },
         {
             info: {
@@ -289,23 +288,6 @@ storiesOf('Other', module)
             Example
             ~~~js
             <Icon icon="TOP" /> 
-            ~~~
-
-            Another way to use the Icon component, allowing the usage of custom icons, is to pass an icon object instead of icon name. 
-            
-            Example
-            ~~~js
-            import { Icon } from 'trezor-ui-components';
-
-            const T2 = {
-                paths: [
-                    'M 625.28 546.304 c 0 4.512 -3.84 8 -8.32 8 l -209.92 0 c -4.48 0 -8.32 -3.488 -8.32 -8 l 0 -202.208 c 0 -4.512 3.84 -8.32 8.32 -8.32 l 209.92 0 c 4.48 0 8.32 3.808 8.32 8.32 l 0 202.208 Z m 18.56 -304.32 l -263.68 0 c -23.04 0 -41.92 18.56 -41.92 41.28 l 0 233.952 c 0 55.04 16 108.768 46.72 155.168 l 64.64 96.992 c 5.12 8 13.76 12.448 23.36 12.448 l 78.4 0 c 9.28 0 17.92 -4.448 23.04 -11.84 l 60.16 -86.048 c 33.6 -47.68 51.2 -103.392 51.2 -161.28 l 0 -239.392 c 0 -22.72 -18.88 -41.28 -41.92 -41.28',
-                ],
-                viewBox: '338.24005126953125 241.9840087890625 347.51995849609375 539.8400268554688',
-                ratio: 0.6437,
-            };
-
-            <Icon icon={T2} /> 
             ~~~
             `,
             },
@@ -368,6 +350,9 @@ storiesOf('Other', module)
     .add(
         'TrezorLogo',
         () => {
+            type LogoType = 'horizontal' | 'vertical';
+            type LogoVariant = 'black' | 'white';
+
             const width = number('width', 100);
             const height = number('height', NaN);
             const type = select(
@@ -377,11 +362,20 @@ storiesOf('Other', module)
                     vertical: 'vertical',
                 },
                 'horizontal'
-            );
+            ) as LogoType;
+            const variant = select(
+                'variant',
+                {
+                    black: 'black',
+                    white: 'white',
+                },
+                'black'
+            ) as LogoVariant;
 
             return (
                 <TrezorLogo
                     type={type}
+                    variant={variant}
                     {...(width ? { width } : {})}
                     {...(height ? { height } : {})}
                 />

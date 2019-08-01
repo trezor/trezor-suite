@@ -10,6 +10,7 @@ suite-native lint:
             - packages/suite/**/*
             - packages/suite-native/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
 
@@ -23,5 +24,6 @@ suite-native type check:
             - packages/suite/**/*
             - packages/suite-native/**/*
             - .gitlab-ci.yml
+            - package.json
     dependencies:
         - install and build
