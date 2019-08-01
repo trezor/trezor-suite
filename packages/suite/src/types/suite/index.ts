@@ -9,6 +9,7 @@ import { SuiteActions } from '@suite-actions/suiteActions';
 
 import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
+import { Action as WalletActions } from '@wallet-types/index';
 import OnboardingActions from '@onboarding-types/actions';
 
 export { MessageDescriptor } from '@suite-support/ConnectedIntlProvider';
@@ -24,7 +25,7 @@ type TrezorConnectEvents =
 
 export type AppState = AppState;
 
-// all actions from all apps
+// all actions from all apps used to properly type Dispatch.
 export type Action =
     | TrezorConnectEvents
     | RouterActions
@@ -33,6 +34,7 @@ export type Action =
     | SuiteActions
     | LogActions
     | ModalActions
+    | WalletActions
     | OnboardingActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
