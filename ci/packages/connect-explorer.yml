@@ -1,6 +1,6 @@
 connect-explorer lint:
     stage: lint
-    allow_failure: true
+    allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer lint
     only:
