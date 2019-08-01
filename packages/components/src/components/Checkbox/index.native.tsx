@@ -6,7 +6,6 @@ import { GestureResponderEvent } from 'react-native';
 import { FONT_SIZE_NATIVE as FONT_SIZE } from '../../config/variables';
 import Icon from '../Icon';
 import colors from '../../config/colors';
-import icons from '../../config/icons';
 import { Omit } from '../../support/types';
 
 const Touchable = styled.TouchableWithoutFeedback``;
@@ -55,7 +54,7 @@ const Checkbox = ({ onClick, isChecked, children, ...rest }: Props) => {
                             hoverColor={colors.WHITE}
                             size={10}
                             color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
-                            icon={icons.SUCCESS}
+                            icon="SUCCESS"
                         />
                     )}
                 </IconWrapper>
