@@ -44,6 +44,7 @@ const SelectDeviceStep: React.FC<Props> = ({ onboardingActions }) => {
 
                 <OptionsWrapper>
                     <Option
+                        data-test="option-model-one-path"
                         onClick={() => {
                             onboardingActions.selectTrezorModel(1);
                             onboardingActions.goToNextStep();
@@ -55,6 +56,7 @@ const SelectDeviceStep: React.FC<Props> = ({ onboardingActions }) => {
                         </H6>
                     </Option>
                     <Option
+                        data-test="option-model-t-path"
                         onClick={() => {
                             onboardingActions.selectTrezorModel(2);
                             onboardingActions.goToNextStep();

@@ -56,6 +56,7 @@ export const toInternalRoute = (route: string) => {
     // eg. https://suite.corp.sldev.cz/wallet/account/#/eth/0 will be split to
     // 'https://suite.corp.sldev.cz/wallet/account/' and '#/eth/0'
     try {
+        // https://suite.corp.sldev.cz/suite-web/onboarding/improvements/onboarding/
         // if there is an URL prefix remove it(eg. branch name on CI)
         const urlPrefix = process.env.assetPrefix;
         let strippedPrefix = route;

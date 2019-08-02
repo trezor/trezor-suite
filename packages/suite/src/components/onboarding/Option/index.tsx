@@ -42,7 +42,7 @@ interface OptionProps {
 const Option: React.FC<OptionProps> = props => {
     const { isSelected = false } = props;
     return (
-        <OptionWrapper isSelected={isSelected} onClick={props.onClick}>
+        <OptionWrapper isSelected={isSelected} onClick={props.onClick} {...props}>
             <Circle style={{ visibility: props.isSelected ? 'visible' : 'hidden' }} />
             {props.children}
         </OptionWrapper>

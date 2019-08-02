@@ -134,7 +134,7 @@ class WelcomeStep extends React.PureComponent<Props, {}> {
 
                             <ControlsWrapper isVertical>
                                 <StyledButton
-                                    data-test="button-create"
+                                    data-test="button-path-create"
                                     onClick={() => {
                                         this.props.onboardingActions.setPath([STEP.PATH_CREATE]);
                                         this.props.onboardingActions.goToNextStep();
@@ -144,6 +144,7 @@ class WelcomeStep extends React.PureComponent<Props, {}> {
                                     <Small>if you never had any Wallet</Small>
                                 </StyledButton>
                                 <StyledButton
+                                    data-test="button-path-recovery"
                                     onClick={() => {
                                         this.props.onboardingActions.setPath([STEP.PATH_RECOVERY]);
                                         this.props.onboardingActions.goToNextStep();
