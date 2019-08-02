@@ -77,7 +77,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
             }}
             >
                 <Icon
-                    icon={icons.COG}
+                    icon="COG"
                     size={14}
                     color={colors.TEXT_SECONDARY}
                 />
@@ -88,7 +88,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
                 <Item onClick={() => {}}>
                     <IconWrapper>
                         <Icon
-                            icon={icons.WALLET_STANDARD}
+                            icon="WALLET_STANDARD"
                             size={14}
                             color={colors.TEXT_SECONDARY}
                         />
@@ -115,7 +115,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
                 }}
             >
                 <IconWrapper>
-                    <Icon icon={icons.EJECT} size={14} color={colors.TEXT_SECONDARY} />
+                    <Icon icon="EJECT" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
                     <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
@@ -124,7 +124,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
             <Divider />
             <Item>
                 <IconWrapper>
-                    <Icon icon={icons.EYE_CROSSED} size={14} color={colors.TEXT_SECONDARY} />
+                    <Icon icon="EYE_CROSSED" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
                     <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
@@ -152,7 +152,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
             <Divider />
             <Item onClick={() => goto(getRoute('wallet-settings'))}>
                 <IconWrapper>
-                    <Icon icon={icons.COG} size={14} color={colors.TEXT_SECONDARY} />
+                    <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
                     <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />

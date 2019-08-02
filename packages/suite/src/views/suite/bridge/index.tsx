@@ -153,7 +153,7 @@ class InstallBridge extends PureComponent<BridgeProps, BridgeState> {
                             options={this.state.installers}
                         />
                         <Link href={`${this.state.uri}${target.value}`}>
-                            <DownloadBridgeButton icon={icons.DOWNLOAD}>
+                            <DownloadBridgeButton icon="DOWNLOAD">
                                 <FormattedMessage
                                     {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
                                     values={{ version: this.state.latestVersion }}

@@ -58,7 +58,7 @@ class CoinMenu extends PureComponent<Props> {
                             shortcut: coin.id,
                         }}
                         iconRight={{
-                            type: ICONS.SKIP,
+                            type: "SKIP",
                             color: colors.TEXT_SECONDARY,
                             size: 13,
                         }}

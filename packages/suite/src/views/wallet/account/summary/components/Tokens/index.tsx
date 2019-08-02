@@ -53,7 +53,7 @@ const Tokens = (props: Props) => {
                         placement="top"
                         content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
                     >
-                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                        <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
                     </Tooltip>
                 </TooltipContainer>
             </TokensHeadingWrapper>

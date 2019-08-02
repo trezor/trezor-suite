@@ -100,7 +100,7 @@ const VerifyInput = ({
                         >
                             <Icon
                                 size={16}
-                                icon={isAddressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
+                                icon={isAddressUnverified ? "EYE_CROSSED" : "EYE"}
                                 color={
                                     isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY
                                 }
@@ -115,7 +115,7 @@ const VerifyInput = ({
                 <ShowAddressButton
                     onClick={() => showAddress(account.accountPath)}
                     // isDisabled={device.connected && !discovery.completed}
-                    icon={ICONS.EYE}
+                    icon="EYE"
                 >
                     <FormattedMessage {...messages.TR_SHOW_FULL_ADDRESS} />
                 </ShowAddressButton>

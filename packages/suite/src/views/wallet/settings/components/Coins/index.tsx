@@ -158,7 +158,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                     placement="right"
                                 >
                                     <TooltipIcon
-                                        icon={ICONS.HELP}
+                                        icon="HELP"
                                         color={colors.TEXT_SECONDARY}
                                         size={12}
                                     />
@@ -224,7 +224,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                     placement="right"
                                 >
                                     <TooltipIcon
-                                        icon={ICONS.HELP}
+                                        icon="HELP"
                                         color={colors.TEXT_SECONDARY}
                                         size={12}
                                     />

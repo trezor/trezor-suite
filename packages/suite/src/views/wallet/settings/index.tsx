@@ -124,7 +124,7 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
                         maxWidth={210}
                         placement="right"
                     >
-                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                        <TooltipIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
                     </Tooltip>
                 </Label>
                 <Switch
