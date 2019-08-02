@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import styled from 'styled-components';
-import { Icon, Tooltip, colors, icons as ICONS, variables } from '@trezor/components';
+import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { AppState } from '@suite-types/index';
 import l10nMessages from './index.messages';
@@ -147,7 +147,7 @@ class AccountBalance extends PureComponent<Props, State> {
                     placement="top"
                     content={<FormattedMessage {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
                 >
-                    <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                    <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
                 </Tooltip>
             </TooltipContainer>
         );
@@ -158,7 +158,7 @@ class AccountBalance extends PureComponent<Props, State> {
                     <Icon
                         canAnimate={this.state.canAnimateHideBalanceIcon}
                         isActive={this.state.isHidden}
-                        icon={ICONS.ARROW_UP}
+                        icon="ARROW_UP"
                         color={colors.TEXT_SECONDARY}
                         size={14}
                     />

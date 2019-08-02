@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { forgetDevice } from '@suite-actions/trezorConnectActions';
 import { goto } from '@suite-actions/routerActions';
-import { Switch, Icon, colors, icons, variables } from '@trezor/components';
+import { Switch, Icon, colors, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { AcquiredDevice, AppState } from '@suite-types/index';
 import { setHideBalance } from '@wallet-actions/settingsActions';
@@ -77,7 +77,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
             }}
             >
                 <Icon
-                    icon={icons.COG}
+                    icon="COG"
                     size={14}
                     color={colors.TEXT_SECONDARY}
                 />
@@ -87,11 +87,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
                 // <Item onClick={() => this.props.duplicateDevice(device)}>
                 <Item onClick={() => {}}>
                     <IconWrapper>
-                        <Icon
-                            icon={icons.WALLET_STANDARD}
-                            size={14}
-                            color={colors.TEXT_SECONDARY}
-                        />
+                        <Icon icon="WALLET_STANDARD" size={14} color={colors.TEXT_SECONDARY} />
                     </IconWrapper>
                     <Label>
                         <FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} />
@@ -115,7 +111,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
                 }}
             >
                 <IconWrapper>
-                    <Icon icon={icons.EJECT} size={14} color={colors.TEXT_SECONDARY} />
+                    <Icon icon="EJECT" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
                     <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
@@ -124,7 +120,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
             <Divider />
             <Item>
                 <IconWrapper>
-                    <Icon icon={icons.EYE_CROSSED} size={14} color={colors.TEXT_SECONDARY} />
+                    <Icon icon="EYE_CROSSED" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
                     <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
@@ -152,7 +148,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
             <Divider />
             <Item onClick={() => goto(getRoute('wallet-settings'))}>
                 <IconWrapper>
-                    <Icon icon={icons.COG} size={14} color={colors.TEXT_SECONDARY} />
+                    <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
                     <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { AppState } from '@suite-types/index';
-import { colors, icons as ICONS } from '@trezor/components';
+import { colors } from '@trezor/components';
 import Link from '@suite-components/Link';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -58,7 +58,7 @@ class CoinMenu extends PureComponent<Props> {
                             shortcut: coin.id,
                         }}
                         iconRight={{
-                            type: ICONS.SKIP,
+                            type: 'SKIP',
                             color: colors.TEXT_SECONDARY,
                             size: 13,
                         }}

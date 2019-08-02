@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-import { Button, Select, P, Link, H1, icons, colors, variables } from '@trezor/components';
+import { Button, Select, P, Link, H1, colors, variables } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
 import { AppState } from '@suite-types/index';
 import l10nMessages from './index.messages';
@@ -153,7 +153,7 @@ class InstallBridge extends PureComponent<BridgeProps, BridgeState> {
                             options={this.state.installers}
                         />
                         <Link href={`${this.state.uri}${target.value}`}>
-                            <DownloadBridgeButton icon={icons.DOWNLOAD}>
+                            <DownloadBridgeButton icon="DOWNLOAD">
                                 <FormattedMessage
                                     {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
                                     values={{ version: this.state.latestVersion }}

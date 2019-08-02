@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import ColorHash from 'color-hash';
 // @ts-ignore
 import ScaleText from 'react-scale-text';
-import { Button, Icon, Tooltip, colors, icons as ICONS, variables } from '@trezor/components';
+import { Button, Icon, Tooltip, colors, variables } from '@trezor/components';
 import * as stateUtils from '@wallet-utils/reducerUtils';
 import BigNumber from 'bignumber.js';
 import { Transaction, Token } from '@wallet-types/index';
@@ -108,7 +108,7 @@ class AddedToken extends PureComponent<Props> {
                             }
                         >
                             <TooltipIcon
-                                icon={ICONS.EYE_CROSSED}
+                                icon="EYE_CROSSED"
                                 size={14}
                                 color={colors.TEXT_SECONDARY}
                             />
@@ -121,7 +121,7 @@ class AddedToken extends PureComponent<Props> {
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
                 >
-                    <Icon icon={ICONS.CLOSE} size={12} />
+                    <Icon icon="CLOSE" size={12} />
                 </RemoveTokenButton>
             </TokenWrapper>
         );
