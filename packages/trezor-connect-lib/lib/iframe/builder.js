@@ -66,7 +66,7 @@ function () {
             }
 
             manifest = "&version=" + settings.version + "&manifest=" + encodeURIComponent(btoa(JSON.stringify(settings.manifest)));
-            src = settings.iframeSrc + "?" + Date.now() + manifest;
+            src = settings.env == "web" ? settings.iframeSrc + "?" + Date.now() + manifest : settings.iframeSrc;
             instance.setAttribute('src', src);
 
             if (settings.webusb) {
