@@ -1,6 +1,6 @@
 import React from 'react';
 import { TrezorDevice } from '@suite-types/index';
-import { Icon, colors as COLORS, icons } from '@trezor/components';
+import { Icon, colors as COLORS } from '@trezor/components';
 
 interface Props {
     device: TrezorDevice;
@@ -13,11 +13,11 @@ interface Props {
 const getDeviceIcon = (majorVersion: number) => {
     switch (majorVersion) {
         case 1:
-            return "T1";
+            return 'T1';
         case 2:
-            return "T2";
+            return 'T2';
         default:
-            return "T2";
+            return 'T2';
     }
 };
 

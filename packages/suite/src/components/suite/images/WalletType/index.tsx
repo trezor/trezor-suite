@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, colors, icons } from '@trezor/components';
+import { Icon, colors } from '@trezor/components';
 
 interface Props {
     type: string;
@@ -16,7 +16,7 @@ const WalletType = ({
     onClick,
     ...rest
 }: Props) => {
-    const icon = type === 'hidden' ? "WALLET_HIDDEN" : "WALLET_STANDARD";
+    const icon = type === 'hidden' ? 'WALLET_HIDDEN' : 'WALLET_STANDARD';
     return (
         <Icon
             icon={icon}

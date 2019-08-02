@@ -87,11 +87,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
                 // <Item onClick={() => this.props.duplicateDevice(device)}>
                 <Item onClick={() => {}}>
                     <IconWrapper>
-                        <Icon
-                            icon="WALLET_STANDARD"
-                            size={14}
-                            color={colors.TEXT_SECONDARY}
-                        />
+                        <Icon icon="WALLET_STANDARD" size={14} color={colors.TEXT_SECONDARY} />
                     </IconWrapper>
                     <Label>
                         <FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} />
