@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, icons } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 import colors from '@suite/config/onboarding/colors';
 
@@ -97,8 +97,8 @@ class Donut extends React.Component<DonutProps, DonutState> {
                 </svg>
                 {this.props.progress > 0 && (
                     <DonutContent>
-                        {this.props.isSuccess && <Icon icon={icons.SUCCESS} color={colors.white} />}
-                        {this.props.isError && <Icon icon={icons.ERROR} color={colors.error} />}
+                        {this.props.isSuccess && <Icon icon="SUCCESS" color={colors.white} />}
+                        {this.props.isError && <Icon icon="ERROR" color={colors.error} />}
                         {!this.props.isError && !this.props.isSuccess && (
                             <div>{this.props.progress} %</div>
                         )}

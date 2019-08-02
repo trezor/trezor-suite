@@ -157,7 +157,7 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }: { model: number; event: AnyEvent }) => {
+const TrezorAction = ({ model, event }: { model: 1 | 2; event: AnyEvent }) => {
     let TrezorActionText;
     if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
@@ -272,14 +272,14 @@ class Onboarding extends React.PureComponent<Props> {
             onboardingActions,
             connectActions,
 
-            selectedModel,
+            selectedModel = 1,
             activeStepId,
             deviceCall,
             deviceInteraction,
             uiInteraction,
         } = this.props;
 
-        const model = selectedModel || 1;
+        const model = selectedModel as 1 | 2;
         const errorState = this.getError();
         const activeStep = this.getStep(activeStepId);
         return (
