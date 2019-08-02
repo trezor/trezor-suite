@@ -238,7 +238,7 @@ const DeviceMenu = ({
                                     size={16}
                                     color={colors.TEXT_SECONDARY}
                                     hoverColor={colors.TEXT_PRIMARY}
-                                    icon={icons.COG}
+                                    icon="COG"
                                 />
                             </Link>
                         </WalletTypeIconWrapper>
@@ -249,7 +249,7 @@ const DeviceMenu = ({
                             isActive={isOpen}
                             size={16}
                             color={colors.TEXT_SECONDARY}
-                            icon={icons.ARROW_DOWN}
+                            icon="ARROW_DOWN"
                         />
                     </React.Fragment>
                 }
@@ -270,7 +270,7 @@ const DeviceMenu = ({
                         <ButtonWrapper>
                             <StyledButton
                                 isInverse
-                                icon={icons.PLUS}
+                                icon="PLUS"
                                 additionalClassName="trezor-webusb-button"
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />

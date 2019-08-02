@@ -16,7 +16,7 @@ const WalletType = ({
     onClick,
     ...rest
 }: Props) => {
-    const icon = type === 'hidden' ? icons.WALLET_HIDDEN : icons.WALLET_STANDARD;
+    const icon = type === 'hidden' ? "WALLET_HIDDEN" : "WALLET_STANDARD";
     return (
         <Icon
             icon={icon}
