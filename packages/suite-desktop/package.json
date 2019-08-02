@@ -18,7 +18,7 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "build": {
-        "appId": "com.electron.${name}",
+        "appId": "io.trezor.${name}",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
         "directories": {
