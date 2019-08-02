@@ -16,7 +16,7 @@ suite-onboarding lint:
 
 suite-onboarding type check:
     stage: type check
-    allow_failure: false
+    allow_failure: true
     script:
         - yarn workspace @trezor/suite-onboarding type-check
     only:

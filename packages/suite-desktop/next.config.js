@@ -12,6 +12,7 @@ const gitRevisionPlugin = new GitRevisionPlugin();
 module.exports = withCustomBabelConfig(
     withImages(
         withTranspileModules({
+            inlineImageLimit: 0,
             babelConfigFile: path.resolve('babel.config.js'),
             // https://github.com/zeit/next.js/issues/6219
             // target: 'serverless',
