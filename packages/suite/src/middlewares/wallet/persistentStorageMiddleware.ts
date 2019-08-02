@@ -4,6 +4,7 @@ import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import * as db from '@suite/storage/index';
+import { SUITE } from '@suite/actions/suite/constants';
 
 const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
@@ -55,7 +56,11 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
             db.saveWalletSettings(_api.getState().wallet.settings);
             break;
-
+        case SUITE.SET_LANGUAGE:
+            db.saveSuiteSettings({
+                language: _api.getState().suite.language,
+            });
+            break;
         default:
             break;
     }

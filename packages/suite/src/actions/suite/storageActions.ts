@@ -1,6 +1,7 @@
 import { Dispatch, GetState, AppState } from '@suite-types/index';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as settingsActions from '@wallet-actions/settingsActions';
+import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import * as db from '@suite/storage';
 import { STORAGE } from './constants/index';
 
@@ -39,10 +40,17 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
             }
 
             //  load wallet settings from indexedDB
-            const settings = await db.getWalletSettings();
-            if (settings) {
+            const walletSettings = await db.getWalletSettings();
+            if (walletSettings) {
                 // @ts-ignore
-                dispatch(settingsActions.fromStorage(settings));
+                dispatch(settingsActions.fromStorage(walletSettings));
+            }
+
+            //  load wallet settings from indexedDB
+            const suiteSettings = await db.getSuiteSettings();
+            if (suiteSettings && suiteSettings.language) {
+                // @ts-ignore
+                dispatch(fetchLocale(suiteSettings.language));
             }
 
             db.onChange(event => {

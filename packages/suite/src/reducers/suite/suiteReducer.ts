@@ -4,7 +4,7 @@ import { Action, TrezorDevice } from '@suite-types/index';
 
 import produce from 'immer';
 
-interface SuiteState {
+export interface SuiteState {
     online: boolean;
     loading: boolean;
     loaded: boolean;

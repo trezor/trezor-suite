@@ -1,11 +1,13 @@
 import { openDB, DBSchema, IDBPDatabase, unwrap } from 'idb';
 import { migrate } from '@suite/storage/migrations';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
+import { SuiteState as SuiteSettings } from '@suite-reducers/suiteReducer';
 
 const STORE_TXS = 'txs';
-const STORE_SETTINGS = 'settings';
+const STORE_SUITE_SETTINGS = 'suiteSettings';
+const STORE_WALLET_SETTINGS = 'walletSettings';
 
-const VERSION = 11;
+const VERSION = 1;
 let db: IDBPDatabase<MyDBV1>;
 // we reuse the same instance of broadcast channel for both sending the message
 // and setting a listener, so the sender tab (source) won't receive its own messages
@@ -31,9 +33,13 @@ export interface MyDBV1 extends DBSchema {
         value: WalletTransaction;
         indexes: { txId: string; accountId: number; timestamp: number };
     };
-    settings: {
+    suiteSettings: {
         key: string;
-        value: WalletSettings;
+        value: { language: SuiteSettings['language'] };
+    };
+    walletSettings: {
+        key: string;
+        value: WalletSettings | { language: SuiteSettings['language'] };
     };
 }
 
@@ -84,19 +90,15 @@ const onUpgrade = async (
     transaction: any,
     // transaction: IDBPTransaction<MyDBV1, "transactions"[]>,
 ) => {
-    console.log('upgrade');
-    console.log(oldVersion);
-    console.log(newVersion);
-
     const shouldInitDB = oldVersion === 0;
-
     if (shouldInitDB) {
         // init db
         const txsStore = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
         txsStore.createIndex('txId', 'txId', { unique: true });
         txsStore.createIndex('timestamp', 'timestamp', { unique: false });
         txsStore.createIndex('accountId', 'accountId', { unique: false });
-        db.createObjectStore('settings');
+        db.createObjectStore('suiteSettings');
+        db.createObjectStore('walletSettings');
     } else {
         migrate(db, oldVersion, newVersion, transaction);
     }
@@ -112,12 +114,14 @@ const getDB = async () => {
             },
             blocked() {
                 // Called if there are older versions of the database open on the origin, so this version cannot open.
+                // TODO
                 console.log(
                     'Accessing the IDB is blocked by another window running older version.',
                 );
             },
             blocking() {
                 // Called if this connection is blocking a future version of the database from opening.
+                // TODO
                 console.log('This instance is blocking the IDB upgrade to new version.');
             },
         });
@@ -135,13 +139,13 @@ export const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
     // @ts-ignore
     const db = unwrap(await getDB());
     const p = new Promise((resolve, reject) => {
-        const tx = db.transaction('txs', 'readwrite');
-        const req: IDBRequest = tx.objectStore('txs').add(transaction);
+        const tx = db.transaction(STORE_TXS, 'readwrite');
+        const req: IDBRequest = tx.objectStore(STORE_TXS).add(transaction);
         req.onerror = _event => {
             reject(req.error);
         };
         req.onsuccess = _event => {
-            notify('txs', [req.result]);
+            notify(STORE_TXS, [req.result]);
             resolve(req.result);
         };
     }).catch(err => {
@@ -152,7 +156,7 @@ export const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
 
 export const addTransactions = async (transactions: MyDBV1['txs']['value'][]) => {
     const db = await getDB();
-    const tx = db.transaction('txs', 'readwrite');
+    const tx = db.transaction(STORE_TXS, 'readwrite');
 
     const keys: string[] = [];
     transactions.forEach(transaction => {
@@ -160,14 +164,14 @@ export const addTransactions = async (transactions: MyDBV1['txs']['value'][]) =>
             keys.push(result);
         });
     });
-    notify('txs', keys);
+    notify(STORE_TXS, keys);
     await tx.done;
 };
 
 export const getTransaction = async (txId: string) => {
     // returns the tx with txID
     const db = await getDB();
-    const tx = db.transaction('txs');
+    const tx = db.transaction(STORE_TXS);
     const txIdIndex = tx.store.index('txId');
     if (txId) {
         const tx = await txIdIndex.get(IDBKeyRange.only(txId));
@@ -179,7 +183,7 @@ export const getTransactions = async (accountId?: number) => {
     // TODO: variant with cursor
     // returns all txs belonging to accountId
     const db = await getDB();
-    const tx = db.transaction('txs');
+    const tx = db.transaction(STORE_TXS);
     if (accountId) {
         const accountIdIndex = tx.store.index('accountId');
         const txs = await accountIdIndex.getAll(IDBKeyRange.only(accountId));
@@ -192,34 +196,50 @@ export const getTransactions = async (accountId?: number) => {
 
 export const updateTransaction = async (txId: string, timestamp: number) => {
     const db = await getDB();
-    const tx = db.transaction('txs', 'readwrite');
+    const tx = db.transaction(STORE_TXS, 'readwrite');
     const result = await tx.store.get(txId);
     if (result) {
         result.timestamp = timestamp;
         await tx.store.put(result);
         // @ts-ignore
-        notify('txs', [result.id]);
+        notify(STORE_TXS, [result.id]);
     }
 };
 
 export const removeTransaction = async (txId: string) => {
     const db = await getDB();
-    const tx = db.transaction('txs', 'readwrite');
+    const tx = db.transaction(STORE_TXS, 'readwrite');
     await tx.store.delete(txId);
 };
 
-export const saveWalletSettings = async (settings: MyDBV1['walletSettings']['value']) => {
+export const saveWalletSettings = async (settings: MyDBV1['settings']['value']) => {
     const db = await getDB();
-    const tx = db.transaction(STORE_SETTINGS, 'readwrite');
+    const tx = db.transaction(STORE_WALLET_SETTINGS, 'readwrite');
     // shortcut db.add throws null instead of ConstraintError on duplicate key (???)
     const result = await tx.store.put(settings, 'wallet');
-    notify(STORE_SETTINGS, [result]);
+    notify(STORE_WALLET_SETTINGS, [result]);
     return result;
 };
 
 export const getWalletSettings = async () => {
     const db = await getDB();
-    const tx = db.transaction(STORE_SETTINGS);
+    const tx = db.transaction(STORE_WALLET_SETTINGS);
     const settings = await tx.store.get('wallet');
+    return settings;
+};
+
+export const saveSuiteSettings = async (settings: MyDBV1['settings']['value']) => {
+    const db = await getDB();
+    const tx = db.transaction(STORE_SUITE_SETTINGS, 'readwrite');
+    // shortcut db.add throws null instead of ConstraintError on duplicate key (???)
+    const result = await tx.store.put(settings, 'suite');
+    notify(STORE_SUITE_SETTINGS, [result]);
+    return result;
+};
+
+export const getSuiteSettings = async () => {
+    const db = await getDB();
+    const tx = db.transaction(STORE_SUITE_SETTINGS);
+    const settings = await tx.store.get('suite');
     return settings;
 };
