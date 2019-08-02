@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
 import Icon from '../Icon';
 
-import icons from '../../config/icons';
-import { Omit, IconShape } from '../../support/types';
+import { Omit, TrezorModel } from '../../support/types';
 import colors from '../../config/colors';
 
 const Pulse = styled.View<Omit<Props, 'model'>>`
@@ -14,11 +13,10 @@ const Pulse = styled.View<Omit<Props, 'model'>>`
     border-radius: 100;
     height: ${props => props.size};
     width: ${props => props.size};
-    margin-left: -${props => ((props.size || 32) - (props.size || 32) * (props.ratio || 1)) / 2}px;
 `;
 
 const IconWrapper = styled.View<Omit<Props, 'model'>>`
-    width: ${props => (props.size || 32) * (props.ratio || 1)};
+    width: ${props => props.size};
     height: ${props => props.size};
 `;
 
@@ -44,18 +42,8 @@ const Animation = styled(Animated.View)`
     bottom: 0;
 `;
 
-const modelToIcon = (model: model) => {
-    const mapping: { [key: number]: IconShape } = {
-        1: icons.T1,
-        2: icons.T2,
-    };
-    return mapping[model];
-};
-
-type model = 1 | 2;
-
 interface Props {
-    model: model;
+    model: TrezorModel;
     size?: number;
     ratio?: number;
     children?: React.ReactNode;
@@ -89,8 +77,6 @@ class Prompt extends React.Component<Props> {
         const { size = 32, model, children } = this.props;
         const { blinkAnim } = this.state;
 
-        const icon = modelToIcon(model);
-
         const scale = blinkAnim.interpolate({
             inputRange: [0, 0.25, 0.5, 1],
             outputRange: [0, 0.75, 1.5, 4],
@@ -103,18 +89,17 @@ class Prompt extends React.Component<Props> {
 
         return (
             <Wrapper>
-                <IconWrapper size={size} ratio={icon.ratio}>
+                <IconWrapper size={size}>
                     <Animation
                         style={{
                             opacity,
                             transform: [{ scaleX: scale }, { scaleY: scale }],
                         }}
                         size={size}
-                        ratio={icon.ratio}
                     >
-                        <Pulse size={size} ratio={icon.ratio} />
+                        <Pulse size={size} />
                     </Animation>
-                    <Icon icon={icon} size={size} color={colors.GREEN_PRIMARY} />
+                    <Icon icon={`T${model}`} size={size} color={colors.GREEN_PRIMARY} />
                 </IconWrapper>
                 <ContentWrapper>{children}</ContentWrapper>
             </Wrapper>

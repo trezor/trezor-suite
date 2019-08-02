@@ -28,6 +28,7 @@
         "react-dom": "16.8.6",
         "react-intl": "3.0.0-beta-6",
         "react-native-web": "^0.11.2",
+        "react-qr-svg": "^2.2.1",
         "react-redux": "^7.0.3",
         "react-scale-text": "^1.2.2",
         "react-window": "^1.8.4",

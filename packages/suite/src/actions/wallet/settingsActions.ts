@@ -1,7 +1,7 @@
 import { Dispatch, GetState, AppState } from '@suite-types/index';
 import { SETTINGS } from './constants';
 
-export type settingsActions =
+export type SettingsActions =
     | { type: typeof SETTINGS.SET_HIDDEN_COINS; hiddenCoins: string[] }
     | { type: typeof SETTINGS.SET_HIDDEN_COINS_EXTERNAL; hiddenCoinsExternal: string[] }
     | { type: typeof SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }

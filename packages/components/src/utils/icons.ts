@@ -1,20 +1,19 @@
-import icons from '../config/icons';
 import { FeedbackType } from '../support/types';
 
 const getStateIcon = (type?: FeedbackType) => {
     let icon = null;
     switch (type) {
         case 'info':
-            icon = icons.INFO;
+            icon = 'INFO';
             break;
         case 'error':
-            icon = icons.ERROR;
+            icon = 'ERROR';
             break;
         case 'warning':
-            icon = icons.WARNING;
+            icon = 'WARNING';
             break;
         case 'success':
-            icon = icons.SUCCESS;
+            icon = 'SUCCESS';
             break;
         default:
             icon = null;

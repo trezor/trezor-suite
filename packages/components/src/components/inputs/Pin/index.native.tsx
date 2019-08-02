@@ -5,7 +5,6 @@ import styled from 'styled-components/native';
 import { FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import icons from '../../../config/icons';
 
 const Wrapper = styled.View`
     position: relative;
@@ -23,9 +22,9 @@ const StyledInput = styled.TextInput`
     border: 1px solid ${colors.DIVIDER};
 `;
 
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.View`
     position: absolute;
-    top: 18;
+    top: 14;
     right: 15;
 `;
 
@@ -38,7 +37,9 @@ interface Props {
 const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
     <Wrapper {...rest} {...wrapperProps}>
         <StyledInput secureTextEntry maxLength={9} value={value} editable={false} />
-        <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
+        <IconWrapper>
+            <Icon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon="BACK" />
+        </IconWrapper>
     </Wrapper>
 );
 

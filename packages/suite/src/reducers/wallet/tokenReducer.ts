@@ -4,7 +4,7 @@ import * as TOKEN from '@wallet-actions/constants/token';
 import produce from 'immer';
 
 import { Token } from '@suite/types/wallet';
-import { Action } from '@suite-types/index';
+import { Action } from '@wallet-types/index';
 
 export type State = Token[];
 

@@ -7,7 +7,6 @@ import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
 import { getStateIcon } from '../../utils/icons';
 import Icon from '../Icon';
 import Button from '../buttons/Button';
-import icons from '../../config/icons';
 import { FeedbackType } from '../../support/types';
 
 const Wrapper = styled.div<WrapperProps>`
@@ -144,9 +143,11 @@ const Notification = ({
                     <AdditionalContent>
                         {actions && actions.length > 0 && (
                             <ActionContent>
-                                {actions.map((action: CtaShape) => (
+                                {actions.map((action: CtaShape, i) => (
                                     <ButtonNotification
                                         isInverse
+                                        // eslint-disable-next-line react/no-array-index-key
+                                        key={i}
                                         variant={variant}
                                         isLoading={isActionInProgress}
                                         onClick={() => {
@@ -163,7 +164,7 @@ const Notification = ({
                 </Col>
                 {cancelable && (
                     <CloseClick onClick={() => closeFunc()}>
-                        <Icon color={stateColor} icon={icons.CLOSE} size={10} />
+                        <Icon color={stateColor} icon="CLOSE" size={10} />
                     </CloseClick>
                 )}
             </Content>

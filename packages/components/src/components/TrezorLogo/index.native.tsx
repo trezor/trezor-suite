@@ -1,21 +1,16 @@
 /* eslint-disable global-require */
 import React from 'react';
 import PropTypes from 'prop-types';
-import TrezorLogoHorizontal from './trezor_logo_horizontal';
-import TrezorLogoVertical from './trezor_logo_vertical';
-
-const LOGOS: { [key: string]: any } = {
-    horizontal: TrezorLogoHorizontal,
-    vertical: TrezorLogoVertical,
-};
+import SvgUri from 'react-native-svg-uri';
+import { LOGOS } from './logos';
 
 interface Props {
     type: 'horizontal' | 'vertical';
+    variant?: 'white' | 'black';
 }
 
-const TrezorLogo = ({ type, ...rest }: Props) => {
-    const Logo = LOGOS[type];
-    return <Logo {...rest} />;
+const TrezorLogo = ({ type, variant = 'black', ...rest }: Props) => {
+    return <SvgUri fill={variant} source={LOGOS[type.toUpperCase()]} {...rest} />;
 };
 
 TrezorLogo.propTypes = {

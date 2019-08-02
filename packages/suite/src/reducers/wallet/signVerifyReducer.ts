@@ -1,5 +1,5 @@
 import { SIGN_VERIFY } from '@wallet-actions/constants';
-import { Action } from '@suite-types/index';
+import { Action } from '@wallet-types/index';
 import produce from 'immer';
 
 interface Error {

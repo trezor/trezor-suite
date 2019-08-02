@@ -1,7 +1,5 @@
-import { RATE_UPDATE, FiatRateAction } from '@wallet-services/CoingeckoService';
+import { RATE_UPDATE, FiatRateActions } from '@wallet-services/CoingeckoService';
 import produce from 'immer';
-
-import { Action } from '@suite-types/index';
 
 export interface Fiat {
     network: string;
@@ -10,9 +8,9 @@ export interface Fiat {
 
 export const initialState: Fiat[] = [];
 
-const update = (state: Fiat[], action: FiatRateAction) => {
-    const affected = state.find(f => f.network === action.network);
+const update = (state: Fiat[], action: FiatRateActions) => {
     const { network, rates } = action;
+    const affected = state.find(f => f.network === network);
 
     Object.keys(rates).map(k => rates[k].toFixed(2));
     if (!affected) {
@@ -26,7 +24,7 @@ const update = (state: Fiat[], action: FiatRateAction) => {
     }
 };
 
-export default (state: Fiat[] = initialState, action: Action) => {
+export default (state: Fiat[] = initialState, action: FiatRateActions) => {
     return produce(state, draft => {
         switch (action.type) {
             case RATE_UPDATE:

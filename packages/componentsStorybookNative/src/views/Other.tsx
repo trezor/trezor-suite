@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import {
-    icons,
     colors,
     Prompt,
     H1,
@@ -26,9 +25,11 @@ const Col = styled.View`
 
 const Section = styled.View`
     flex: 1;
+    justify-content: center;
+    align-items: center;
 `;
 
-const ColDark = styled(Col)`
+const SectionDark = styled(Section)`
     background: ${colors.HEADER};
 `;
 
@@ -55,11 +56,23 @@ const Title = styled.Text`
     margin-bottom: 8px;
 `;
 
-const { COINS } = variables;
+const { COINS, ICONS } = variables;
 
 const Other = () => {
     return (
         <Wrapper>
+            <H1>Icons</H1>
+            <Icons>
+                {ICONS.map((icon: string) => {
+                    return (
+                        <Item key={icon}>
+                            <Title>{icon}</Title>
+                            <Icon size={32} icon={icon} />
+                        </Item>
+                    );
+                })}
+            </Icons>
+
             <H1>Coins</H1>
             <Icons>
                 {COINS.map((coin: string) => {
@@ -73,18 +86,18 @@ const Other = () => {
             </Icons>
             <H1>Prompt</H1>
             <H5>Trezor One</H5>
-            <Col>
+            <Section>
                 <Prompt model={1} data-test="prompt_1">
                     Complete the action on your device
                 </Prompt>
-            </Col>
+            </Section>
 
             <H5>Trezor Model T</H5>
-            <Col>
+            <Section>
                 <Prompt model={2} data-test="prompt_2">
                     Complete the action on your device
                 </Prompt>
-            </Col>
+            </Section>
 
             <H1>TrezorImage</H1>
             <H5>Trezor One</H5>
@@ -110,12 +123,12 @@ const Other = () => {
 
             <H1>Loader</H1>
             <H5>default</H5>
-            <Col>
+            <Section>
                 <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
-            </Col>
+            </Section>
 
             <H5>small text</H5>
-            <Col>
+            <Section>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -123,10 +136,10 @@ const Other = () => {
                     isSmallText
                     data-test="loader_small_text"
                 />
-            </Col>
+            </Section>
 
             <H5>transparent route</H5>
-            <Col>
+            <Section>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -134,10 +147,10 @@ const Other = () => {
                     transparentRoute
                     data-test="loader_transparent_route"
                 />
-            </Col>
+            </Section>
 
             <H5>white text</H5>
-            <ColDark>
+            <SectionDark>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -145,10 +158,10 @@ const Other = () => {
                     isWhiteText
                     data-test="loader_white_text"
                 />
-            </ColDark>
+            </SectionDark>
 
             <H5>white text &amp; transparent route</H5>
-            <ColDark>
+            <SectionDark>
                 <Loader
                     size={100}
                     strokeWidth={2}
@@ -157,19 +170,7 @@ const Other = () => {
                     transparentRoute
                     data-test="loader_white_text_transparent"
                 />
-            </ColDark>
-
-            <H1>Icons</H1>
-            <Icons>
-                {Object.keys(icons).map(icon => {
-                    return (
-                        <Item key={icon}>
-                            <Title>{icon}</Title>
-                            <Icon icon={icons[icon]} />
-                        </Item>
-                    );
-                })}
-            </Icons>
+            </SectionDark>
         </Wrapper>
     );
 };

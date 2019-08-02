@@ -6,14 +6,9 @@ import { AppState } from '@suite/reducers/store';
 
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
-import { settingsActions as WalletSettingsActions } from '@wallet-actions/settingsActions';
-import { TransactionAction as WalletTransactionActions } from '@wallet-actions/transactionActions';
-import { NotificationActions as WalletNotificationActions } from '@wallet-actions/notificationActions';
-import { SignVerifyAction as WalletSignVerifyAction } from '@wallet-actions/signVerifyActions';
 import { ModalActions } from '@suite-actions/modalActions';
-import { TokenAction as WalletTokenAction } from '@suite/actions/wallet/tokenActions';
-import { FiatRateAction } from '@wallet-services/CoingeckoService';
 import { LogActions } from '@suite-actions/logActions';
+import { Action as WalletActions } from '@wallet-types/index';
 import OnboardingActions from '@onboarding-types/actions';
 
 export { MessageDescriptor } from '@suite-support/ConnectedIntlProvider';
@@ -29,16 +24,7 @@ type TrezorConnectEvents =
 
 export type AppState = AppState;
 
-// actions from Wallet sub app
-export type WalletActions =
-    | WalletSettingsActions
-    | WalletSignVerifyAction
-    | WalletNotificationActions
-    | WalletTokenAction
-    | WalletTransactionActions
-    | FiatRateAction;
-
-// all actions from all apps
+// all actions from all apps used to properly type Dispatch.
 export type Action =
     | TrezorConnectEvents
     | RouterActions
@@ -47,11 +33,10 @@ export type Action =
     | SuiteActions
     | LogActions
     | ModalActions
-    | OnboardingActions
-    | WalletActions;
+    | OnboardingActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
-export type Dispatch = ThunkDispatch<AppState, any, Action>;
+export type Dispatch = ThunkDispatch<AppState, any, Action | WalletActions>;
 export type GetState = () => AppState;
 
 // tmp
