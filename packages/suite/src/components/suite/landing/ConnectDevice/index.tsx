@@ -185,7 +185,7 @@ class ConnectDevice extends PureComponent<Props> {
                             </StyledP>
                             <StyledButton
                                 isInverse
-                                icon={icons.PLUS}
+                                icon="PLUS"
                                 additionalClassName="trezor-webusb-button"
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />

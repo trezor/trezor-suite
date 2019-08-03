@@ -147,7 +147,7 @@ class AccountBalance extends PureComponent<Props, State> {
                     placement="top"
                     content={<FormattedMessage {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
                 >
-                    <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                    <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
                 </Tooltip>
             </TooltipContainer>
         );
@@ -158,7 +158,7 @@ class AccountBalance extends PureComponent<Props, State> {
                     <Icon
                         canAnimate={this.state.canAnimateHideBalanceIcon}
                         isActive={this.state.isHidden}
-                        icon={ICONS.ARROW_UP}
+                        icon="ARROW_UP"
                         color={colors.TEXT_SECONDARY}
                         size={14}
                     />

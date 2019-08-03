@@ -97,7 +97,7 @@ class Group extends PureComponent<Props, StateProps> {
                         </Left>
                         <Right>
                             <Icon
-                                icon={ICONS.ARROW_DOWN}
+                                icon="ARROW_DOWN"
                                 color={colors.TEXT_SECONDARY}
                                 size={14}
                                 isActive={!this.state.visible}

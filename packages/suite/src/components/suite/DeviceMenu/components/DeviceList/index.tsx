@@ -46,7 +46,7 @@ class DeviceList extends PureComponent<Props> {
                                             }}
                                         >
                                             <Icon
-                                                icon={icons.EJECT}
+                                                icon="EJECT"
                                                 size={14}
                                                 color={colors.TEXT_SECONDARY}
                                                 hoverColor={colors.TEXT_PRIMARY}
