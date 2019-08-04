@@ -6,7 +6,7 @@ import { AppState, Dispatch } from '@suite-types/index';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import { Button } from '@trezor/components';
+import { Button, Loader } from '@trezor/components';
 
 interface Props {
     suite: AppState['suite'];
@@ -27,6 +27,7 @@ const Transactions = (props: Props) => {
             <Text>
                 {params.coin} Account {params.accountId} Transactions
             </Text>
+            <Loader />
             <Button
                 onClick={() => {
                     props.add({
@@ -45,18 +46,23 @@ const Transactions = (props: Props) => {
             </Button>
             <Button
                 onClick={() => {
-                    props.add({
-                        accountId: parseInt(params.accountId, 10),
-                        timestamp: Date.now(),
-                        txId: Math.random()
-                            .toString(36)
-                            .substring(7),
-                        details: {
-                            name: 'label',
-                            price: 2,
-                            productCode: 'code',
-                        },
-                    });
+
+                    const addTx = () => {
+                        props.add({
+                            accountId: parseInt(params.accountId, 10),
+                            timestamp: Date.now(),
+                            txId: Math.random()
+                                .toString(36)
+                                .substring(7),
+                            details: {
+                                name: 'label',
+                                price: 2,
+                                productCode: 'code',
+                            },
+                        });
+                        setTimeout(addTx, 100);
+                    };
+                    addTx();
                 }}
             >
                 Add random tx
