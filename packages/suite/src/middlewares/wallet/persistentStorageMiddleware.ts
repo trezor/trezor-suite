@@ -1,5 +1,6 @@
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch } from '@suite-types/index';
+import { AppState, Action as SuiteAction, Dispatch } from '@suite-types/index';
+import { Action as WalletAction } from '@wallet-types/index';
 import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
@@ -7,14 +8,14 @@ import * as db from '@suite/storage/index';
 import { SUITE } from '@suite/actions/suite/constants';
 
 const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
-    action: Action,
-): Promise<Action> => {
+    action: SuiteAction | WalletAction,
+): Promise<SuiteAction | WalletAction> => {
     // pass action
     next(action);
 
-    // perhaps we don't need middleware just for syncing reducer to idb.
-    // maybe a better solution would be to work directly with idb and trigger reducer update when needed
     switch (action.type) {
+        // Better solution for txs is to work directly with idb and trigger reducer update when needed.
+        // However this approach works nicely for settings, every change in settings reducer is reflected in idb.
         case TRANSACTION.ADD: {
             console.log('adding to indexedDB');
             try {

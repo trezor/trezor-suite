@@ -2,9 +2,13 @@ import { IDBPDatabase } from 'idb';
 import { MyDBV1 } from '@suite/storage';
 
 export const migrate = async (
+    // @ts-ignore
+    // 'db' is declared but its value is never read
     db: IDBPDatabase<MyDBV1>,
     oldVersion: number,
     newVersion: number | null,
+    // @ts-ignore
+    // 'transaction' is declared but its value is never read
     transaction: any,
     // transaction: IDBPTransaction<MyDBV1, "transactions"[]>,
 ) => {
@@ -17,9 +21,12 @@ export const migrate = async (
     if (oldVersion < 3) {
         // upgrade to version 3
     }
+
+    // EXAMPLE
     // if (oldVersion < 9) {
     //     // added timestamp field
     //     let cursor = await transaction.store.openCursor();
+
     //     while (cursor) {
     //         console.log(cursor.key, cursor.value);
     //         const updateData = cursor.value;
@@ -33,10 +40,5 @@ export const migrate = async (
     //     if (!transaction.store.indexNames.contains('timestamp')) {
     //         transaction.store.createIndex('timestamp', 'timestamp', { unique: false });
     //     }
-    // }
-    // if (oldVersion < 12) {
-    //     // add walletSettings
-    //     db.createObjectStore('suiteSettings', {});
-    //     db.createObjectStore('walletSettings', {});
     // }
 };

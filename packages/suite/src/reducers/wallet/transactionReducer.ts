@@ -3,14 +3,15 @@
 import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import produce from 'immer';
 
-import { Action } from '@suite-types/index';
+import { Action } from '@wallet-types/index';
 import { WalletTransaction } from '@suite/storage';
+import { TransactionAction } from '@suite/actions/wallet/transactionActions';
 
 export type State = WalletTransaction[];
 
 const initialState: State = [];
 
-const update = (draft: State, action: Action) => {
+const update = (draft: State, action: TransactionAction) => {
     const tx = draft.find(tx => tx.txId === action.txId);
     if (tx) {
         tx.timestamp = action.timestamp;
