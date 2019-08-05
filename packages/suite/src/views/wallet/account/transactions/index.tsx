@@ -7,6 +7,12 @@ import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { Button, Loader } from '@trezor/components';
+import styled from 'styled-components';
+
+const TxWrapper = styled.div`
+    display: flex;
+    border-bottom: 1px solid #ccc;
+`;
 
 interface Props {
     suite: AppState['suite'];
@@ -15,6 +21,7 @@ interface Props {
     add: typeof transactionActions.add;
     remove: typeof transactionActions.remove;
     update: typeof transactionActions.update;
+    getFromStorage: typeof transactionActions.getFromStorage;
 }
 
 const Transactions = (props: Props) => {
@@ -28,6 +35,30 @@ const Transactions = (props: Props) => {
                 {params.coin} Account {params.accountId} Transactions
             </Text>
             <Loader />
+            <Button
+                variant="info"
+                onClick={() => {
+                    props.getFromStorage(parseInt(params.accountId, 10), 10, 20);
+                }}
+            >
+                Get from storage (10 to 20)
+            </Button>
+            <Button
+                variant="info"
+                onClick={() => {
+                    props.getFromStorage(parseInt(params.accountId, 10), 10);
+                }}
+            >
+                Get from storage (10 and up)
+            </Button>
+            <Button
+                variant="info"
+                onClick={() => {
+                    props.getFromStorage(parseInt(params.accountId, 10), undefined, 10);
+                }}
+            >
+                Get from storage (10 and down)
+            </Button>
             <Button
                 onClick={() => {
                     props.add({
@@ -46,7 +77,6 @@ const Transactions = (props: Props) => {
             </Button>
             <Button
                 onClick={() => {
-
                     const addTx = () => {
                         props.add({
                             accountId: parseInt(params.accountId, 10),
@@ -60,7 +90,7 @@ const Transactions = (props: Props) => {
                                 productCode: 'code',
                             },
                         });
-                        setTimeout(addTx, 100);
+                        // setTimeout(addTx, 100);
                     };
                     addTx();
                 }}
@@ -70,7 +100,7 @@ const Transactions = (props: Props) => {
 
             {props.wallet.transactions.map(tx => {
                 return (
-                    <div>
+                    <TxWrapper key={tx.id}>
                         {JSON.stringify(tx)}
                         <Button
                             onClick={() => {
@@ -88,7 +118,7 @@ const Transactions = (props: Props) => {
                         >
                             update
                         </Button>
-                    </div>
+                    </TxWrapper>
                 );
             })}
         </LayoutAccount>
@@ -105,6 +135,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     add: bindActionCreators(transactionActions.add, dispatch),
     remove: bindActionCreators(transactionActions.remove, dispatch),
     update: bindActionCreators(transactionActions.update, dispatch),
+    getFromStorage: bindActionCreators(transactionActions.getFromStorage, dispatch),
 });
 
 export default connect(

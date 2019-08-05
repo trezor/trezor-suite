@@ -1,5 +1,6 @@
 import { IDBPDatabase } from 'idb';
-import { MyDBV1 } from '@suite/storage';
+import { MyDBV1 } from '@suite/storage/types';
+// import { STORE_TXS } from '../types';
 
 export const migrate = async (
     // @ts-ignore

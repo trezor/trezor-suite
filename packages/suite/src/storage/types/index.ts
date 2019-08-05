@@ -23,7 +23,12 @@ export interface MyDBV1 extends DBSchema {
     txs: {
         key: string;
         value: WalletTransaction;
-        indexes: { txId: string; accountId: number; timestamp: number };
+        indexes: {
+            txId: string;
+            accountId: number;
+            timestamp: number;
+            'accountId-id': [number, number];
+        };
     };
     suiteSettings: {
         key: string;

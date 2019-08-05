@@ -49,15 +49,40 @@ export const getTransaction = async (txId: string) => {
     }
 };
 
-export const getTransactions = async (accountId?: number) => {
+export const getTransactions = async (accountId?: number, from?: number, to?: number) => {
+    // TODO: Params from/to are just an example on using multiple indeces.
+    // They are now referring to id field of the transaction.
+    // Later it should be changed to something more useful (block height?)
     // TODO: variant with cursor
     // returns all txs belonging to accountId
     const db = await getDB();
     const tx = db.transaction(STORE_TXS);
-    if (accountId) {
-        const accountIdIndex = tx.store.index('accountId');
-        const txs = await accountIdIndex.getAll(IDBKeyRange.only(accountId));
-        return txs;
+    if (accountId !== undefined) {
+        if (from !== undefined || to !== undefined) {
+            // if 'from' or 'to' param is passed use a compound index
+            const index = tx.store.index('accountId-id');
+            if (from && to) {
+                const txs = await index.getAll(
+                    IDBKeyRange.bound([accountId, from], [accountId, to]),
+                );
+                return txs;
+            }
+            if (from && !to) {
+                const lowerBound = IDBKeyRange.lowerBound([accountId, from]);
+                const txs = await index.getAll(lowerBound);
+                return txs;
+            }
+            if (!from && to) {
+                const upperBound = IDBKeyRange.upperBound([accountId, to]);
+                const txs = await index.getAll(upperBound);
+                return txs;
+            }
+            // eslint-disable-next-line no-else-return
+        } else {
+            const index = tx.store.index('accountId');
+            const txs = await index.getAll(IDBKeyRange.only(accountId));
+            return txs;
+        }
     }
     // return all txs
     const txs = await tx.store.getAll();

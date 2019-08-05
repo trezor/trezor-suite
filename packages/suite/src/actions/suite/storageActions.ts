@@ -20,7 +20,7 @@ const updateReducers = (message: StorageUpdateMessage) => async (
         const { accountId } = getState().router.params;
         const txs = await db.getTransactions(Number(accountId));
         // @ts-ignore
-        dispatch(transactionActions.fromStorage(txs));
+        dispatch(transactionActions.setTransactions(txs));
     }
 };
 
@@ -37,7 +37,7 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
             const txs = await db.getTransactions();
             if (txs) {
                 // @ts-ignore
-                dispatch(transactionActions.fromStorage(txs));
+                dispatch(transactionActions.setTransactions(txs));
             }
 
             //  load wallet settings from indexedDB

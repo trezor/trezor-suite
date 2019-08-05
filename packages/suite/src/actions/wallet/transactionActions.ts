@@ -1,7 +1,8 @@
 import { TRANSACTION } from '@wallet-actions/constants/index';
 
 import { Dispatch } from '@suite-types/index';
-import { WalletTransaction } from '@suite/storage';
+import { WalletTransaction } from '@suite/storage/types';
+import * as db from '@suite/storage';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transaction: WalletTransaction }
@@ -9,25 +10,34 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
     | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletTransaction[] };
 
+export const setTransactions = (transactions: WalletTransaction[]) => ({
+    type: TRANSACTION.FROM_STORAGE,
+    transactions,
+});
+
 export const add = (transaction: WalletTransaction) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
-    // const tx: Transaction = {
-    //     accountId: 0,
-    //     txId: 'abc',
-    //     details: {
-    //         name: 'label',
-    //         price: 2,
-    //         productCode: 'code',
-    //     },
-    // };
-
-    dispatch({
-        type: TRANSACTION.ADD,
-        transaction,
-    });
+    try {
+        await db.addTransaction(transaction).then(_key => {
+            dispatch({
+                type: TRANSACTION.ADD,
+                transaction,
+            });
+        });
+    } catch (error) {
+        if (error && error.name === 'ConstraintError') {
+            console.log('Tx with such id already exists');
+        } else if (error) {
+            console.error(error.name);
+            console.error(error.message);
+        } else {
+            console.error(error);
+        }
+    }
 };
 
+// TODO: make db call then dispatch an action to update reducer
 export const remove = (txId: string) => ({
     type: TRANSACTION.REMOVE,
     txId,
@@ -39,7 +49,13 @@ export const update = (txId: string) => ({
     timestamp: Date.now(),
 });
 
-export const fromStorage = (transactions: WalletTransaction[]) => ({
-    type: TRANSACTION.FROM_STORAGE,
-    transactions,
-});
+export const getFromStorage = (accountId: number, from?: number, to?: number) => async (
+    dispatch: Dispatch,
+): Promise<void> => {
+    db.getTransactions(accountId, from, to).then(transactions => {
+        dispatch({
+            type: TRANSACTION.FROM_STORAGE,
+            transactions,
+        });
+    });
+};

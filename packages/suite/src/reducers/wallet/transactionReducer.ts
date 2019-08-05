@@ -4,7 +4,7 @@ import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import produce from 'immer';
 
 import { Action } from '@wallet-types/index';
-import { WalletTransaction } from '@suite/storage';
+import { WalletTransaction } from '@suite/storage/types';
 import { TransactionAction } from '@suite/actions/wallet/transactionActions';
 
 export type State = WalletTransaction[];

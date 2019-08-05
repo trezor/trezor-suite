@@ -16,7 +16,7 @@ import {
     removeTransaction,
 } from './stores/transactions/index';
 
-const VERSION = 1;
+const VERSION = 2;
 let db: IDBPDatabase<MyDBV1>;
 // we reuse the same instance of broadcast channel for both sending the message
 // and setting a listener, so the sender tab (source) won't receive its own messages
@@ -67,6 +67,7 @@ const onUpgrade = async (
         txsStore.createIndex('txId', 'txId', { unique: true });
         txsStore.createIndex('timestamp', 'timestamp', { unique: false });
         txsStore.createIndex('accountId', 'accountId', { unique: false });
+        txsStore.createIndex('accountId-id', ['accountId', 'id'], { unique: false }); // change later to block height instead of id
         db.createObjectStore('suiteSettings');
         db.createObjectStore('walletSettings');
     } else {
