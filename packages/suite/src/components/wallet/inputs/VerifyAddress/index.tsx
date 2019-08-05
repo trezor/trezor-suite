@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntl } from 'react-intl';
-import { Button, Input, icons as ICONS } from '@trezor/components';
+import { Button, Input } from '@trezor/components';
 // import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 import commonMessages from '@wallet-views/messages';
 import messages from './messages';

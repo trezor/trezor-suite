@@ -1,10 +1,9 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 // import Footer from 'components/Footer';
 // import Log from 'components/Log';
 // import ContextNotifications from 'components/notifications/Context';
-import { colors, Loader, Header } from '@trezor/components';
+import { colors, Loader } from '@trezor/components';
 
 import InitializationError from '../Error';
 

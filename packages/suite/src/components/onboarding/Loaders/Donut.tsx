@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, icons } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 import colors from '@suite/config/onboarding/colors';
 

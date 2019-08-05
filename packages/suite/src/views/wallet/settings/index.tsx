@@ -4,16 +4,7 @@ import { FormattedMessage, InjectedIntlProps } from 'react-intl';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import { AppState } from '@suite-types/index';
 // import Content from 'views/Wallet/components/Content';
-import {
-    Switch,
-    Select,
-    Button,
-    Tooltip,
-    Icon,
-    icons as ICONS,
-    colors,
-    variables,
-} from '@trezor/components';
+import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
 import Link from '@suite-components/Link';
 import FIAT from '@suite-config/fiat';
 import NETWORKS from '@suite-config/networks';

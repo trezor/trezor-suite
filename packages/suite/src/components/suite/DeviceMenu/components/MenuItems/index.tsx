@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { forgetDevice } from '@suite-actions/trezorConnectActions';
 import { goto } from '@suite-actions/routerActions';
-import { Switch, Icon, colors, icons, variables } from '@trezor/components';
+import { Switch, Icon, colors, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { AcquiredDevice, AppState } from '@suite-types/index';
 import { setHideBalance } from '@wallet-actions/settingsActions';

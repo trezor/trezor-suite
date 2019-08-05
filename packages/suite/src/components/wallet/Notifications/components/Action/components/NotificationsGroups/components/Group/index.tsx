@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { colors, Notification, Icon, icons as ICONS, utils } from '@trezor/components';
+import { colors, Notification, Icon, utils } from '@trezor/components';
 import { NotificationEntry } from '@wallet-reducers/notificationReducer';
 
 const { getPrimaryColor } = utils.colors;

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import * as deviceUtils from '@suite-utils/device';
-import { Icon, colors, icons } from '@trezor/components';
+import { Icon, colors } from '@trezor/components';
 
 import { TrezorDevice, AppState } from '@suite-types/index';
 

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, Tooltip, H5, P, Icon, icons, colors } from '@trezor/components';
+import { Button, Tooltip, H5, P, Icon, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import * as logActions from '@suite-actions/logActions';
