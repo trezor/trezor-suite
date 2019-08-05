@@ -3,6 +3,7 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import * as db from '@suite/storage';
+import { StorageUpdateMessage } from '@suite/storage/types/index';
 import { STORAGE } from './constants/index';
 
 export type StorageActions =
@@ -10,7 +11,7 @@ export type StorageActions =
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };
 
-const updateReducers = (message: db.StorageUpdateMessage) => async (
+const updateReducers = (message: StorageUpdateMessage) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
