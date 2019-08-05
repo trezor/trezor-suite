@@ -1,4 +1,4 @@
-image: registry.corp.sldev.cz/trezor/trezor-suite:latest
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite:latest
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
