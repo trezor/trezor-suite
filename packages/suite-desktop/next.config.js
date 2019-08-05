@@ -23,7 +23,7 @@ module.exports = withCustomBabelConfig(
                 '../packages/components/src',
             ],
             exportTrailingSlash: true,
-            assetPrefix: './',
+            assetPrefix: process.env.assetPrefix || '',
             webpack: config => {
                 config.plugins.push(
                     new webpack.DefinePlugin({
