@@ -1,5 +1,6 @@
 import { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducers';
+import { goto } from '@suite-actions/routerActions';
 import { SUITE } from './constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 
@@ -82,8 +83,12 @@ export const selectFirstAvailableDevice = () => () => {};
 // export const handleDeviceEvent = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     const selected = getState().suite.device;
+    const { app } = getState().router;
     if (!selected) {
         dispatch(selectDevice(device));
+        if (device.mode === 'initialize' && app !== 'onboarding') {
+            goto('/onboarding');
+        }
     }
 };
 
