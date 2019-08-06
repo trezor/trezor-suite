@@ -8,11 +8,11 @@ import { forgetDevice } from '@suite-actions/trezorConnectActions';
 import { goto } from '@suite-actions/routerActions';
 import { Switch, Icon, colors, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
-import { AcquiredDevice, AppState } from '@suite-types';
 import { setHideBalance } from '@wallet-actions/settingsActions';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
+import { AcquiredDevice, AppState } from '@suite-types';
 
 const { FONT_SIZE } = variables;
 

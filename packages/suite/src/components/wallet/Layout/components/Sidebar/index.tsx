@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types';
 import styled from 'styled-components';
 import CoinMenu from '@wallet-components/CoinMenu';
 import Backdrop from '@suite-components/Backdrop';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { variables, animations, colors } from '@trezor/components';
 import { bindActionCreators } from 'redux';
+import { AppState } from '@suite-types';
 
 const { SCREEN_SIZE } = variables;
 const { SLIDE_RIGHT, SLIDE_LEFT } = animations;

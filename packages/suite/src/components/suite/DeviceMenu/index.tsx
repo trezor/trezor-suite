@@ -3,7 +3,6 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import TrezorConnect from 'trezor-connect';
 import { bindActionCreators } from 'redux';
-import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { forgetDevice } from '@suite-actions/trezorConnectActions';
@@ -14,6 +13,7 @@ import l10nCommonMessages from '@suite-views/index.messages';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 import l10nMessages from './index.messages';
+import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 const { SLIDE_DOWN } = animations;

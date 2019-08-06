@@ -14,12 +14,12 @@ import {
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { AppState } from '@suite-types';
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import TroubleshootBootloader from './components/TroubleshootBootloader';
 import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 interface StepProps {
     device: AppState['onboarding']['connect']['device'];

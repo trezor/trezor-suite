@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types';
 
 import en from 'react-intl/locale-data/en';
 import cs from 'react-intl/locale-data/cs';
@@ -19,6 +18,7 @@ import pt from 'react-intl/locale-data/pt';
 import ru from 'react-intl/locale-data/ru';
 import uk from 'react-intl/locale-data/uk';
 import zh from 'react-intl/locale-data/zh';
+import { AppState } from '@suite-types';
 
 export interface MessageDescriptor {
     // A unique, stable identifier for the message

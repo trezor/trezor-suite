@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import { TrezorDevice } from '@suite-types';
-
 import { H5, P, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nDeviceMessages from '../messages';
 import l10nMessages from './messages';
+import { TrezorDevice } from '@suite-types';
 
 interface Props {
     device: TrezorDevice;

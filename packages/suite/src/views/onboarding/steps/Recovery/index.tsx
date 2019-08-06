@@ -21,14 +21,13 @@ import {
 import bip39List from '@onboarding-constants/bip39';
 import { RECOVERY_MODEL_ONE_URL } from '@onboarding-constants/urls';
 
-import { AppState } from '@suite-types';
-
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
 
 import l10nCommonMessages from '@suite-support/Messages';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const sortedBip39 = bip39List.map(item => ({ label: item, value: item }));
 
