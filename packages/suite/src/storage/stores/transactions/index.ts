@@ -106,5 +106,8 @@ export const removeTransaction = async (txId: string) => {
     const tx = db.transaction(STORE_TXS, 'readwrite');
     const txIdIndex = tx.store.index('txId');
     const p = await txIdIndex.openCursor(IDBKeyRange.only(txId));
-    if (p) p.delete();
+    if (p) {
+        p.delete();
+        notify(STORE_TXS, p.value.id ? [p.value.id] : []);
+    }
 };

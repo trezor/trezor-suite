@@ -43,7 +43,7 @@ export interface MyDBV1 extends DBSchema {
 export interface StorageUpdateMessage {
     // TODO: only key strings from MyDBV1 should be allowed
     store: keyof MyDBV1;
-    keys: string[];
+    keys: any[];
 }
 
 export interface StorageMessageEvent extends MessageEvent {
