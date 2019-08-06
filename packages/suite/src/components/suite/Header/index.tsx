@@ -8,7 +8,7 @@ import { getRoute } from '@suite-utils/router';
 import DeviceMenu from '@suite-components/DeviceMenu';
 import l10nCommonMessages from '@suite-views/index.messages';
 
-const StyledSuiteHeader = styled.div`
+const Wrapper = styled.div`
     display: flex;
     padding-right: 15px;
     border-bottom: 1px solid ${colors.BODY};
@@ -25,8 +25,8 @@ const StyledSuiteHeader = styled.div`
 const Left = styled.div``;
 const Right = styled.div``;
 
-const SuiteHeader = ({ ...props }) => (
-    <StyledSuiteHeader {...props}>
+const Header = ({ ...props }) => (
+    <Wrapper {...props}>
         <Left>
             <DeviceMenu data-test="@suite/device_selection" />
         </Left>
@@ -35,7 +35,7 @@ const SuiteHeader = ({ ...props }) => (
                 <FormattedMessage {...l10nCommonMessages.TR_DEVICE_SETTINGS} />
             </Button>
         </Right>
-    </StyledSuiteHeader>
+    </Wrapper>
 );
 
-export default SuiteHeader;
+export default Header;
