@@ -104,5 +104,7 @@ export const updateTransaction = async (txId: string, timestamp: number) => {
 export const removeTransaction = async (txId: string) => {
     const db = await getDB();
     const tx = db.transaction(STORE_TXS, 'readwrite');
-    await tx.store.delete(txId);
+    const txIdIndex = tx.store.index('txId');
+    const p = await txIdIndex.openCursor(IDBKeyRange.only(txId));
+    if (p) p.delete();
 };
