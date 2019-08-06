@@ -5,7 +5,7 @@ export interface Route {
     fields?: string[];
 }
 
-export const routes: Route[] = [
+export const routes = [
     {
         name: 'suite-index',
         pattern: '/',
@@ -69,4 +69,4 @@ export const routes: Route[] = [
         name: 'wallet-account-sign-verify',
         pattern: '/wallet/account/sign-verify',
     },
-];
+] as const;

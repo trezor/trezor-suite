@@ -1,6 +1,8 @@
 import { routes } from '@suite-constants/routes';
 
-const PARAMS = ['coin', 'accountId'];
+type AnyRouteName = typeof routes[number]['name'];
+
+const PARAMS = ['coin', 'accountId'] as const;
 
 // Prefix a url with assetPrefix (eg. name of the branch in CI)
 // Useful with NextJS's Router.push() that accepts `as` prop as second arg
@@ -28,7 +30,7 @@ export const getParams = (url: string) => {
     return params;
 };
 
-export const getRoute = (name: string, params?: { [key: string]: string }) => {
+export const getRoute = (name: AnyRouteName, params?: { [key: string]: string }) => {
     const entry = routes.find(r => r.name === name);
     if (!entry) {
         // eslint-disable-next-line no-console
