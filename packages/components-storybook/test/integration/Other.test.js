@@ -1,5 +1,3 @@
-import { icons, variables } from '@trezor/components';
-
 describe('Other', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
@@ -21,16 +19,72 @@ describe('Other', () => {
         'loader_white_text_transparent',
     ];
 
-    Object.keys(icons).forEach(icon => {
+    const ICONS = [
+        'ARROW_DOWN',
+        'ARROW_LEFT',
+        'ARROW_UP',
+        'BACK',
+        'CHAT',
+        'CLOSE',
+        'COG',
+        'DOWNLOAD',
+        'EJECT',
+        'ERROR',
+        'EYE_CROSSED',
+        'EYE',
+        'HELP',
+        'INFO',
+        'MENU',
+        'PLUS',
+        'QRCODE',
+        'REFRESH',
+        'SKIP',
+        'SUCCESS',
+        'T1',
+        'T2',
+        'TOP',
+        'WALLET_HIDDEN',
+        'WALLET_STANDARD',
+        'WARNING',
+    ];
+
+    ICONS.forEach(icon => {
         tests.push(`icon_${icon.toLowerCase()}`);
     });
 
-    variables.COINS.forEach(coin => {
+    const COINS = [
+        'ada',
+        'bch',
+        'btc',
+        'btg',
+        'dash',
+        'dgb',
+        'doge',
+        'etc',
+        'eth',
+        'ltc',
+        'nem',
+        'nmc',
+        'rinkeby',
+        'trop',
+        'txrp',
+        'vtc',
+        'xem',
+        'xlm',
+        'xrp',
+        'zec',
+        'xtz',
+    ];
+
+    COINS.forEach(coin => {
         tests.push(`coin_${coin}`);
     });
 
     tests.forEach(testName => {
         it(`${testName}`, () => {
+            cy.getTestElement(testName)
+                .find('.loading')
+                .should('not.be.visible');
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();
