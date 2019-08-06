@@ -1,5 +1,5 @@
+import { NetworkToken, Token } from '@wallet-types';
 import { Dispatch } from '@suite-types';
-import { NetworkToken, Token } from '@wallet-types/index';
 
 // TODO
 

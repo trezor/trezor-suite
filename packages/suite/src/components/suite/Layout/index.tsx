@@ -8,16 +8,16 @@ import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import Modals from '@suite-components/modals/Container';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
-import { Header, Footer, Log } from '@suite-components';
 import suiteConfig from '@suite-config/index';
 import Router from '@suite-support/Router';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
-import { AppState } from '@suite-types';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
 
 import NoSSR from '@suite/support/suite/NoSSR';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
+import { Header, Footer, Log } from '@suite-components';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;

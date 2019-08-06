@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Button, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { Dispatch, AppState } from '@suite-types';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
 import * as STEP from '@suite/constants/onboarding/steps';
@@ -12,6 +11,7 @@ import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
 import Text from '@suite/components/onboarding/Text';
 import l10nCommonMessages from '@suite-support/Messages';
 import l10nMessages from './TroubleshootInitialized.messages';
+import { Dispatch, AppState } from '@suite-types';
 
 interface Props {
     device: AppState['onboarding']['connect']['device'];

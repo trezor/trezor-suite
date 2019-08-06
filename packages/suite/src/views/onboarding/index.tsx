@@ -9,7 +9,6 @@ import { isDev } from '@suite-utils/build';
 
 import BaseStyles from '@suite/support/onboarding/BaseStyles';
 
-import { AppState, Dispatch } from '@suite-types';
 import { OnboardingActions } from '@onboarding-types/onboarding';
 import { ConnectActions } from '@onboarding-types/connect';
 import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
@@ -59,6 +58,7 @@ import BookmarkStep from '@suite/views/onboarding/steps/Bookmark/Container';
 import NewsletterStep from '@suite/views/onboarding/steps/Newsletter/Container';
 
 import FinalStep from '@suite/views/onboarding/steps/Final';
+import { AppState, Dispatch } from '@suite-types';
 
 const BORDER_RADIUS = 12;
 const TRANSITION_PROPS = {

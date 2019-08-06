@@ -1,5 +1,5 @@
-import { Action, TrezorDevice } from '@suite-types';
 import { MODAL, CONNECT } from '@suite-actions/constants';
+import { Action, TrezorDevice } from '@suite-types';
 
 export interface ModalActions {
     type: typeof MODAL.CLOSE;

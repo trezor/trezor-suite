@@ -1,12 +1,12 @@
 import React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';
-import { AppState } from '@suite-types';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 interface Props {
     transport: AppState['suite']['transport'];

@@ -1,11 +1,11 @@
 import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
 import Sidebar from './components/Sidebar';
+import { AppState } from '@suite-types';
 
 const { SCREEN_SIZE } = variables;
 
