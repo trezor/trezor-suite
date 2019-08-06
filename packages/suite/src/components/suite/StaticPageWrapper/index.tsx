@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 
 const StaticPageWrapper: React.FunctionComponent<Props> = props => {
     return (
-        <Layout>
+        <Layout fullscreenMode>
             <View style={styles.wrapper}>{props.children}</View>
         </Layout>
     );
