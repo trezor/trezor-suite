@@ -8,7 +8,7 @@ export const SCREEN_SIZE = {
     SM: '768px',
     MD: '992px',
     LG: '1170px',
-};
+} as const;
 
 export const FONT_SIZE_NATIVE = {
     SMALL: 12,
@@ -26,7 +26,7 @@ export const FONT_SIZE_NATIVE = {
     H5: 16,
     H6: 14,
     COUNTER: 11,
-};
+} as const;
 
 export const FONT_SIZE = {
     SMALL: '0.8571rem',
@@ -44,46 +44,46 @@ export const FONT_SIZE = {
     H5: '1.1428rem',
     H6: '1rem',
     COUNTER: '0.7857rem',
-};
+} as const;
 
 export const FONT_WEIGHT = {
     LIGHT: '300',
     NORMAL: '400',
     MEDIUM: '500',
     SEMIBOLD: '600',
-};
+} as const;
 
 export const FONT_FAMILY = {
     DEFAULT:
         '"Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
     MONOSPACE: '"Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace',
-};
+} as const;
 
 export const ICON_SIZE = {
     BASE: '20px',
-};
+} as const;
 
 export const BORDER_WIDTH = {
     SELECTED: '3px',
-};
+} as const;
 
 export const LEFT_NAVIGATION_ROW = {
     PADDING: '16px 24px',
-};
+} as const;
 
 const TRANSITION_TIME = {
     BASE: '0.3s',
-};
+} as const;
 
 export const TRANSITION = {
     HOVER: `background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out, fill ${TRANSITION_TIME.BASE} ease-in-out`,
-};
+} as const;
 
 export const LINE_HEIGHT = {
     SMALL: '1.42857143',
     BASE: '1.8',
     TREZOR_ACTION: '37px',
-};
+} as const;
 
 // TODO: use export const COINS = [] as const; declaration for use as type literal
 export const COINS = [
@@ -108,9 +108,8 @@ export const COINS = [
     'xrp',
     'zec',
     'xtz',
-];
+] as const;
 
-// TODO: use export const COINS = [] as const; declaration for use as type literal
 export const ICONS = [
     'ARROW_DOWN',
     'ARROW_LEFT',
@@ -141,4 +140,4 @@ export const ICONS = [
     'CLOUD_CROSSED',
     'DOWNLOAD_CROSSED',
     'PHOTO_CROSSED',
-];
+] as const;
