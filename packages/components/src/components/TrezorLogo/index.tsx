@@ -1,7 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactSvg from 'react-svg';
+import styled from 'styled-components';
 import { LOGOS } from './logos';
+
+const SvgWrapper = styled.div<Omit<Props, 'type'>>`
+    display: inline-block;
+    width: ${props => props.width};
+    height: ${props => props.height};
+
+    div {
+        height: ${props => props.height};
+    }
+`;
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     type: string;
@@ -12,16 +23,17 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 
 const TrezorLogo = ({ type, variant = 'black', width = 'auto', height = 'auto' }: Props) => {
     return (
-        <ReactSvg
-            src={LOGOS[type.toUpperCase()]}
-            beforeInjection={svg => {
-                svg.setAttribute('fill', variant);
-            }}
-            style={{
-                width,
-                height,
-            }}
-        />
+        <SvgWrapper width={width} height={height}>
+            <ReactSvg
+                src={LOGOS[type.toUpperCase()]}
+                beforeInjection={svg => {
+                    svg.setAttribute('width', `${width}`);
+                    svg.setAttribute('height', `${height}`);
+                    svg.setAttribute('fill', variant);
+                }}
+                loading={() => <span className="loading"></span>}
+            />
+        </SvgWrapper>
     );
 };
 

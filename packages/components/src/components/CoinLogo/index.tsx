@@ -6,13 +6,13 @@ import styled from 'styled-components';
 import { Omit } from '../../support/types';
 import { COINS } from './coins';
 
-const StyledSvg = styled(ReactSvg)<Omit<Props, 'network'>>`
-    width: ${props => props.size}px;
-    height: ${props => props.size}px;
+const SvgWrapper = styled.div<Omit<Props, 'network'>>`
     display: inline-block;
+    height: ${props => props.size}px;
 
     div {
         height: ${props => props.size}px;
+        line-height: ${props => props.size}px;
     }
 `;
 
@@ -23,7 +23,18 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 const CoinLogo = ({ network, className, size = 32, ...rest }: Props) => {
-    return <StyledSvg className={className} src={COINS[network]} size={size} {...rest} />;
+    return (
+        <SvgWrapper className={className} size={size} {...rest}>
+            <ReactSvg
+                src={COINS[network]}
+                beforeInjection={svg => {
+                    svg.setAttribute('width', `${size}px`);
+                    svg.setAttribute('height', `${size}px`);
+                }}
+                loading={() => <span className="loading"></span>}
+            />
+        </SvgWrapper>
+    );
 };
 
 CoinLogo.propTypes = {
