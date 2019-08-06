@@ -20,6 +20,7 @@ module.exports = api => {
                     '^@(.+)-config': '../../packages/suite/src/config/\\1/index',
                     '^@(.+)-constants/(.+)': '../../packages/suite/src/constants/\\1/\\2',
                     '^@(.+)-constants': '../../packages/suite/src/constants/\\1/index',
+                    '^@(.+)-support/(.+)': '../../packages/suite/src/support/\\1/\\2',
                     '^@(.+)-support': '../../packages/suite/src/support/\\1/index',
                     '^@(.+)-utils/(.+)': '../../packages/suite/src/utils/\\1/\\2',
                     '^@(.+)-utils': '../../packages/suite/src/utils/\\1/index',
