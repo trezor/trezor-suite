@@ -1,10 +1,10 @@
 import React from 'react';
-import { AppState } from '@suite-types';
 import { Notification } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
 // import { goto } from '@suite-actions/routerActions';
 // import { getRoute } from '@suite-utils/router';
+import { AppState } from '@suite-types';
 
 interface Props {
     device: AppState['suite']['device'];

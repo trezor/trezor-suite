@@ -3,7 +3,6 @@ import { Button, Input } from '@trezor/components';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { AppState } from '@suite-types';
 import { applySettings } from '@onboarding-actions/connectActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
@@ -18,6 +17,7 @@ import {
 } from '@suite/components/onboarding/Wrapper';
 
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 interface NameInputProps {
     value: string;

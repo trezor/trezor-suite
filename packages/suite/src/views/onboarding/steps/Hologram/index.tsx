@@ -19,10 +19,11 @@ import {
     StepBodyWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { AppState } from '@suite-types';
+
 import { goToPreviousStep, goToNextStep, goToSubStep } from '@onboarding-actions/onboardingActions';
 import l10nMessages from './index.messages';
 import Hologram from './components/Hologram';
+import { AppState } from '@suite-types';
 
 const HologramWrapper = styled.div`
     max-width: 500px;

@@ -1,6 +1,6 @@
 import { SUITE } from '@suite-actions/constants';
-import { Action } from '@suite-types';
 import produce from 'immer';
+import { Action } from '@suite-types';
 
 interface SuiteState {
     loading: boolean;

@@ -1,8 +1,7 @@
 import { TRANSPORT } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import { Action, TrezorDevice } from '@suite-types';
-
 import produce from 'immer';
+import { Action, TrezorDevice } from '@suite-types';
 
 export interface SuiteState {
     online: boolean;

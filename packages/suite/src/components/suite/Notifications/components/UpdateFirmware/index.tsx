@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
-import { AppState } from '@suite-types';
 import { Notification } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
 
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 interface Props extends InjectedIntlProps {
     device: AppState['suite']['device'];

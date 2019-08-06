@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { P, Button, Tooltip } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { AppState } from '@suite-types';
 import commonMessages from '@suite-support/Messages';
 
 import * as STEP from '@onboarding-constants/steps';
@@ -23,6 +22,7 @@ import { goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import { callActionAndGoToNextStep, resetDevice } from '@suite/actions/onboarding/connectActions';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const DONUT_STROKE = 20;
 const DONUT_RADIUS = 60;
