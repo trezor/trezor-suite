@@ -37,17 +37,25 @@ export const add = (transaction: WalletTransaction) => async (
     }
 };
 
-// TODO: make db call then dispatch an action to update reducer
-export const remove = (txId: string) => ({
-    type: TRANSACTION.REMOVE,
-    txId,
-});
+export const remove = (txId: string) => async (dispatch: Dispatch) => {
+    db.removeTransaction(txId).then(() => {
+        dispatch({
+            type: TRANSACTION.REMOVE,
+            txId,
+        });
+    });
+};
 
-export const update = (txId: string) => ({
-    type: TRANSACTION.UPDATE,
-    txId,
-    timestamp: Date.now(),
-});
+export const update = (txId: string) => async (dispatch: Dispatch) => {
+    const updatedTimestamp = Date.now();
+    db.updateTransaction(txId, updatedTimestamp).then(() => {
+        dispatch({
+            type: TRANSACTION.UPDATE,
+            txId,
+            timestamp: updatedTimestamp,
+        });
+    });
+};
 
 export const getFromStorage = (accountId: number, from?: number, to?: number) => async (
     dispatch: Dispatch,
