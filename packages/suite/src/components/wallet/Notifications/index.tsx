@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { AppState, Dispatch } from '@suite-types';
 
 // import { reconnect } from 'actions/DiscoveryActions';
 import * as NotificationActions from '@wallet-actions/notificationActions';
@@ -9,6 +8,7 @@ import * as NotificationActions from '@wallet-actions/notificationActions';
 import StaticNotifications from './components/Static';
 import AccountNotifications from './components/Account';
 import ActionNotifications from './components/Action';
+import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
     router: AppState['router'];
