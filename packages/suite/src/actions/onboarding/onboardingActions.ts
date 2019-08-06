@@ -7,7 +7,7 @@ import {
     OnboardingReducer,
 } from '@suite/types/onboarding/onboarding';
 import { Step } from '@suite/types/onboarding/steps';
-import { GetState, Dispatch } from '@suite-types/index';
+import { GetState, Dispatch } from '@suite-types';
 import { AnyStepId } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';

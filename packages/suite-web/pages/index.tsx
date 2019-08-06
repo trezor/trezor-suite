@@ -1,3 +1,3 @@
-import Index from '@wallet-views/index';
+import Index from '@wallet-views';
 
 export default Index;

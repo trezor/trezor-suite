@@ -1,4 +1,4 @@
-import { Dispatch, GetState, AppState } from '@suite-types/index';
+import { Dispatch, GetState, AppState } from '@suite-types';
 import { STORAGE } from './constants/index';
 
 export type StorageActions =

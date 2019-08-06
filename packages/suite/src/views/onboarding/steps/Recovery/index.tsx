@@ -21,7 +21,7 @@ import {
 import bip39List from '@onboarding-constants/bip39';
 import { RECOVERY_MODEL_ONE_URL } from '@onboarding-constants/urls';
 
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';

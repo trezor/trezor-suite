@@ -15,7 +15,7 @@ import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
 
 import NoSSR from '@suite/support/suite/NoSSR';

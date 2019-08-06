@@ -1,4 +1,4 @@
-import { Dispatch, GetState } from '@suite-types/index';
+import { Dispatch, GetState } from '@suite-types';
 
 import { SET_WORD, SET_WORDS_COUNT, SET_ADVANCED_RECOVERY } from '@suite/types/onboarding/recovery';
 import { submitWord } from './connectActions';

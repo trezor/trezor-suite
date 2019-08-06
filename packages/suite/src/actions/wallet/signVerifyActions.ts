@@ -1,4 +1,4 @@
-import { Dispatch, GetState } from '@suite-types/index';
+import { Dispatch, GetState } from '@suite-types';
 import TrezorConnect from 'trezor-connect';
 import { validateAddress } from '@suite/utils/wallet/ethUtils';
 import { NOTIFICATION } from '@wallet-actions/constants';

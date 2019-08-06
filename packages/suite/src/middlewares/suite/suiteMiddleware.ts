@@ -6,7 +6,7 @@ import { init as initRouter } from '@suite-actions/routerActions';
 import * as SuiteActions from '@suite-actions/suiteActions';
 import { load as loadStorage } from '@suite-actions/storageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
-import { AppState, Action, Dispatch } from '@suite-types/index';
+import { AppState, Action, Dispatch } from '@suite-types';
 
 const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,

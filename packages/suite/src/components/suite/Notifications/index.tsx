@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import OnlineStatus from './components/OnlineStatus';
 import UpdateBridge from './components/UpdateBridge';
 import UpdateFirmware from './components/UpdateFirmware';

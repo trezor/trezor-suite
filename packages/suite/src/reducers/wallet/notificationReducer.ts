@@ -2,7 +2,7 @@ import React from 'react';
 // import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import { NOTIFICATION } from '@wallet-actions/constants';
 import { DEVICE } from 'trezor-connect';
-import { Action as SuiteAction } from '@suite-types/index';
+import { Action as SuiteAction } from '@suite-types';
 import { Action as WalletAction } from '@wallet-types/index';
 
 import produce from 'immer';

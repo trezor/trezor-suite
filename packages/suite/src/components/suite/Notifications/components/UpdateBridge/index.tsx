@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
 

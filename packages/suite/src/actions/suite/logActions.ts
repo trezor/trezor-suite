@@ -1,5 +1,5 @@
 import copy from 'copy-to-clipboard';
-import { Action, GetState, Dispatch } from '@suite-types/index';
+import { Action, GetState, Dispatch } from '@suite-types';
 import { LogEntry } from '@suite-reducers/logReducer';
 import { LOG } from './constants/index';
 

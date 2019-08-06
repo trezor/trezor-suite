@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Select, P, Link, H1, colors, variables } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`

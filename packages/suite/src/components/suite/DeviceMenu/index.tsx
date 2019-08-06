@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import TrezorConnect from 'trezor-connect';
 import { bindActionCreators } from 'redux';
-import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types/index';
+import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { forgetDevice } from '@suite-actions/trezorConnectActions';

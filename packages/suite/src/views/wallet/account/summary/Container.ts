@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import * as TokenActions from '@wallet-actions/tokenActions';
 
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 import Summary from './index';
 
 const mapStateToProps = (state: AppState) => ({

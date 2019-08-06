@@ -3,7 +3,7 @@ import { Button, Input } from '@trezor/components';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { applySettings } from '@onboarding-actions/connectActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';

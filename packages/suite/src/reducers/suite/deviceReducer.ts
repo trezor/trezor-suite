@@ -1,6 +1,6 @@
 import { DEVICE } from 'trezor-connect';
 
-import { TrezorDevice, Action } from '@suite-types/index';
+import { TrezorDevice, Action } from '@suite-types';
 
 type Device = any;
 
