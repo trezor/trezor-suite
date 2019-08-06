@@ -21,9 +21,15 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     height?: string | number;
 }
 
-const TrezorLogo = ({ type, variant = 'black', width = 'auto', height = 'auto' }: Props) => {
+const TrezorLogo = ({
+    type,
+    variant = 'black',
+    width = 'auto',
+    height = 'auto',
+    ...rest
+}: Props) => {
     return (
-        <SvgWrapper width={width} height={height}>
+        <SvgWrapper width={width} height={height} {...rest}>
             <ReactSvg
                 src={LOGOS[type.toUpperCase()]}
                 beforeInjection={svg => {
