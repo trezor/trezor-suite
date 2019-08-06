@@ -12,8 +12,10 @@ export type State = WalletTransaction[];
 const initialState: State = [];
 
 const update = (draft: State, action: TransactionAction) => {
+    // @ts-ignore TODO: figure out why it doesn't pick correct action
     const tx = draft.find(tx => tx.txId === action.txId);
     if (tx) {
+        // @ts-ignore TODO: figure out why it doesn't pick correct action
         tx.timestamp = action.timestamp;
     }
 };
