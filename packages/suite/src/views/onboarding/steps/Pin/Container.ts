@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import { submitNewPin, changePin } from '@suite/actions/onboarding/connectActions';
-import { Dispatch, AppState } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types';
 
 import Step from './index';
 

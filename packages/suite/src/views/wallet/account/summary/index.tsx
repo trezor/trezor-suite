@@ -1,10 +1,10 @@
 import React from 'react';
-import { AppState } from '@suite-types/index';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as TokenActions from '@wallet-actions/tokenActions';
 import Tokens from './components/Tokens';
 import AccountHeader from './components/AccountHeader';
+import { AppState } from '@suite-types';
 
 interface Props {
     selectedAccount: AppState['wallet']['selectedAccount'];

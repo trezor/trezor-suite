@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as newsletterActions from '@suite/actions/onboarding/newsletterActions';
 import * as connectActions from '@suite/actions/onboarding/connectActions';
 
-import { Dispatch, AppState } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types';
 
 import Step from './index';
 

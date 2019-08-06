@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types/index';
 import Content from '@wallet-components/Content';
 import { H4, P, CoinLogo } from '@trezor/components';
 import Link from '@suite-components/Link';
@@ -12,6 +11,7 @@ import NETWORKS from '@suite-config/networks';
 import EXTERNAL_COINS from '@suite-config/externalCoins';
 import { getRoute } from '@suite/utils/suite/router';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const Row = styled.div`
     flex: 1;

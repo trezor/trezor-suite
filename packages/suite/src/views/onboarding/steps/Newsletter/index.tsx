@@ -31,10 +31,9 @@ import {
     CheckboxWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { AppState } from '@suite-types/index';
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
-
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const CheckboxexSection = styled.div`
     display: flex;

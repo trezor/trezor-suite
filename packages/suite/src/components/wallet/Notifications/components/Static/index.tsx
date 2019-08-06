@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Notification, Link } from '@trezor/components';
-import { AppState } from '@suite-types/index';
 import Bignumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import { getRoute } from '@suite-utils/router';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 interface Props {
     router: AppState['router'];

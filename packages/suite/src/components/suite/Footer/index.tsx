@@ -4,10 +4,10 @@ import { Link, colors, variables } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { AppState, Dispatch } from '@suite-types/index';
 
 import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';
+import { AppState, Dispatch } from '@suite-types';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 const FOOTER_HEIGHT = '59px';

@@ -15,10 +15,10 @@ import {
     StepHeadingWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { AppState } from '@suite-types/index';
 import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
 
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const Keys = styled.div`
     display: flex;

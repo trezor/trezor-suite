@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { H5, AsyncSelect, Tooltip, Icon, colors, icons as ICONS } from '@trezor/components';
+import { H5, AsyncSelect, Tooltip, Icon, colors } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { Token, Transaction } from '@suite/types/wallet';
 import MenuList from './components/MenuList';

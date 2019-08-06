@@ -1,7 +1,7 @@
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as routerUtils from '@suite-utils/router';
-import { Action } from '@suite-types/index';
 import produce from 'immer';
+import { Action } from '@suite-types';
 
 interface Params {
     [key: string]: string;

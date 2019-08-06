@@ -8,18 +8,16 @@ import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import Modals from '@suite-components/modals/Container';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
-import Footer from '@suite-components/Footer';
-import SuiteHeader from '@suite-components/SuiteHeader';
 import suiteConfig from '@suite-config/index';
-import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
-import { AppState } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
 
 import NoSSR from '@suite/support/suite/NoSSR';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
+import { Header, Footer, Log } from '@suite-components';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
@@ -112,7 +110,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
                     <Log />
-                    {props.showSuiteHeader && <SuiteHeader />}
+                    {props.showSuiteHeader && <Header />}
                     {props.children}
                 </>
             </AppWrapper>

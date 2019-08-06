@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { AppState } from '@suite-types/index';
 import { colors } from '@trezor/components';
 import Link from '@suite-components/Link';
 import { FormattedMessage } from 'react-intl';
@@ -12,6 +11,7 @@ import { getRoute } from '@suite/utils/suite/router';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const Wrapper = styled.div`
     width: 100%;

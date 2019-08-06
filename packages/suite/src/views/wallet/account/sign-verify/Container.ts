@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 
 import signVerifyActions from '@wallet-actions/signVerifyActions';
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 import SignVerify from './index';
 
 const mapStateToProps = (state: AppState) => ({

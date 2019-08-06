@@ -3,19 +3,11 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import externalCoins from '@suite-config/externalCoins';
 // import * as LocalStorageActions from 'actions/LocalStorageActions';
-import { AppState } from '@suite-types/index';
 import { Network } from '@wallet-types/index';
 
-import {
-    colors,
-    Switch,
-    CoinLogo,
-    Tooltip,
-    Icon,
-    icons as ICONS,
-    variables,
-} from '@trezor/components';
+import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/components';
 import l10nMessages from '../../index.messages';
+import { AppState } from '@suite-types';
 
 const { FONT_SIZE } = variables;
 

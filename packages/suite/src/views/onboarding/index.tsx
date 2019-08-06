@@ -9,7 +9,6 @@ import { isDev } from '@suite-utils/build';
 
 import BaseStyles from '@suite/support/onboarding/BaseStyles';
 
-import { AppState, Dispatch } from '@suite-types/index';
 import { OnboardingActions } from '@onboarding-types/onboarding';
 import { ConnectActions } from '@onboarding-types/connect';
 import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
@@ -59,6 +58,7 @@ import BookmarkStep from '@suite/views/onboarding/steps/Bookmark/Container';
 import NewsletterStep from '@suite/views/onboarding/steps/Newsletter/Container';
 
 import FinalStep from '@suite/views/onboarding/steps/Final';
+import { AppState, Dispatch } from '@suite-types';
 
 const BORDER_RADIUS = 12;
 const TRANSITION_PROPS = {
@@ -157,7 +157,7 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }: { model: number; event: AnyEvent }) => {
+const TrezorAction = ({ model, event }: { model: 1 | 2; event: AnyEvent }) => {
     let TrezorActionText;
     if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
@@ -272,14 +272,14 @@ class Onboarding extends React.PureComponent<Props> {
             onboardingActions,
             connectActions,
 
-            selectedModel,
+            selectedModel = 1,
             activeStepId,
             deviceCall,
             deviceInteraction,
             uiInteraction,
         } = this.props;
 
-        const model = selectedModel || 1;
+        const model = selectedModel as 1 | 2;
         const errorState = this.getError();
         const activeStep = this.getStep(activeStepId);
         return (

@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 import { TREZOR_DARA_URL } from '@suite/constants/urls';
 import { getRoute } from '@suite/utils/suite/router';

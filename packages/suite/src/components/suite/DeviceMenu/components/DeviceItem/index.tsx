@@ -1,9 +1,9 @@
 import React from 'react';
 import { injectIntl, InjectedIntl } from 'react-intl';
-import { TrezorDevice } from '@suite-types/index';
 import styled, { css } from 'styled-components';
 import { TrezorImage, colors, variables } from '@trezor/components';
 import { getStatusColor, getStatusName, getStatus } from '@suite-utils/device';
+import { TrezorDevice } from '@suite-types';
 
 const Wrapper = styled.div<WrapperProps>`
     position: relative;
