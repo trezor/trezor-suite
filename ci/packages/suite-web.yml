@@ -36,10 +36,8 @@ suite-web build:
             - packages/suite-web/**/*
             - .gitlab-ci.yml
             - package.json
-    variables:
-        PACKAGE_NAME: suite-web
     script:
-        - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 15 minutes
         paths:
@@ -56,7 +54,6 @@ suite-web deploy dev:
             - .gitlab-ci.yml
             - package.json
     variables:
-        PACKAGE_NAME: suite-web
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     dependencies:
@@ -82,8 +79,7 @@ suite-web delete review:
     stage: deploy
     variables:
         GIT_STRATEGY: none
-        PACKAGE_NAME: suite-web
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
     when: manual
     only:
         changes:
