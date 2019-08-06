@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import { TrezorDevice } from '@suite-types/index';
+import { TrezorDevice } from '@suite-types';
 
 import { H5, P, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';

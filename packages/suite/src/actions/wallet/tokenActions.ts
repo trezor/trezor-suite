@@ -1,6 +1,6 @@
 import { TOKEN } from '@wallet-actions/constants';
 
-import { GetState, Dispatch } from '@suite-types/index';
+import { GetState, Dispatch } from '@suite-types';
 import { NetworkToken, Token, Account } from '@wallet-types/index';
 import { State } from '@wallet-reducers/tokenReducer';
 import * as BlockchainActions from '@wallet-actions/ethereum/blockchainActions';

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { colors } from '@trezor/components';
 import Link from '@suite-components/Link';
 import { FormattedMessage } from 'react-intl';

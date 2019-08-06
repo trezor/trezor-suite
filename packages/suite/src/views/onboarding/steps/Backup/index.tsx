@@ -16,7 +16,6 @@ import {
     ControlsWrapper,
     CheckboxWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { AppState } from '@suite-types/index';
 import { goToNextStep, goToSubStep } from '@suite/actions/onboarding/onboardingActions';
 import {
     wipeDevice,
@@ -28,6 +27,7 @@ import {
 import { SeedCardModelT } from './components/SeedCard';
 // import BackupModelOne from './components/BackupModelOne';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const Panel = styled.div`
     background-color: ${colors.grayLight};

@@ -1,5 +1,5 @@
 import { SUITE } from '@suite-actions/constants';
-import { Action } from '@suite-types/index';
+import { Action } from '@suite-types';
 import produce from 'immer';
 
 interface SuiteState {

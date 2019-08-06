@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 
 import en from 'react-intl/locale-data/en';
 import cs from 'react-intl/locale-data/cs';

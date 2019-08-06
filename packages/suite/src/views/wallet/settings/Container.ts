@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 import * as settingsActions from '@wallet-actions/settingsActions';
 // import * as LocalStorageActions from 'actions/LocalStorageActions';
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 import WalletSettings from './index';
 
 const mapStateToProps = (state: AppState) => ({

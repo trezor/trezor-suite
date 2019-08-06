@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import styled from 'styled-components';
 import CoinMenu from '@wallet-components/CoinMenu';
 import Backdrop from '@suite-components/Backdrop';

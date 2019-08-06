@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Select, Link, Button } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { goToSubStep, goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import { Dots } from '@suite/components/onboarding/Loaders';

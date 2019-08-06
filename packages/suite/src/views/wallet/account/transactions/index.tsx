@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 
 interface Props {

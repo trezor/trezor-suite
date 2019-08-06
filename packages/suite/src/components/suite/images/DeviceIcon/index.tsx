@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrezorDevice } from '@suite-types/index';
+import { TrezorDevice } from '@suite-types';
 import { Icon, colors as COLORS } from '@trezor/components';
 
 interface Props {

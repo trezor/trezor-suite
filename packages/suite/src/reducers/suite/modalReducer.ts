@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { TrezorDevice, Action } from '@suite-types/index';
+import { TrezorDevice, Action } from '@suite-types';
 import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 

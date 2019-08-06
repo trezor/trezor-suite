@@ -4,7 +4,7 @@ import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import * as deviceUtils from '@suite-utils/device';
 import { Icon, colors } from '@trezor/components';
 
-import { TrezorDevice, AppState } from '@suite-types/index';
+import { TrezorDevice, AppState } from '@suite-types';
 
 const Wrapper = styled.div``;
 

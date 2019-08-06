@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { Dispatch, AppState } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
 import * as STEP from '@suite/constants/onboarding/steps';

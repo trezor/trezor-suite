@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { Notification } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { getRoute } from '@suite-utils/router';

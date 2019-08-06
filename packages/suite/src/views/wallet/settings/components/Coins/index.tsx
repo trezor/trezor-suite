@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import externalCoins from '@suite-config/externalCoins';
 // import * as LocalStorageActions from 'actions/LocalStorageActions';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { Network } from '@wallet-types/index';
 
 import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/components';
