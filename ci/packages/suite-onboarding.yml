@@ -36,10 +36,8 @@ suite-onboarding build:
             - packages/suite-onboarding/**/*
             - .gitlab-ci.yml
             - package.json
-    variables:
-        PACKAGE_NAME: suite-onboarding
     script:
-        - assetPrefix=/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-onboarding build
+        - assetPrefix=/suite-onboarding/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-onboarding build
     artifacts:
         expire_in: 15 minutes
         paths:
@@ -56,9 +54,8 @@ suite-onboarding deploy dev:
             - .gitlab-ci.yml
             - package.json
     variables:
-        PACKAGE_NAME: suite-onboarding
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
-        DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-onboarding/${CI_BUILD_REF_NAME}
+        DEPLOY_URL: ${DEV_SERVER_URL}/suite-onboarding/${CI_BUILD_REF_NAME}
     dependencies:
         - install and build
         - suite-onboarding build
@@ -71,7 +68,7 @@ suite-onboarding deploy dev:
         - env
         - cd ${PACKAGE_PATH_SUITE_ONBOARDING}
         - echo "Deploy to dev servers"
-        - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+        - mkdir -p ${DEPLOY_BASE_DIR}/suite-onboarding
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
         - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
@@ -82,8 +79,7 @@ suite-onboarding delete review:
     stage: deploy
     variables:
         GIT_STRATEGY: none
-        PACKAGE_NAME: suite-onboarding
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-onboarding/${CI_BUILD_REF_NAME}
     when: manual
     environment:
         name: ${CI_BUILD_REF_NAME}
