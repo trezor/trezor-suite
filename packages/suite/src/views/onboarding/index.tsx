@@ -26,6 +26,7 @@ import steps from '@suite/config/onboarding/steps';
 import colors from '@suite/config/onboarding/colors';
 import { SM } from '@suite/config/onboarding/breakpoints';
 import { TOS_URL } from '@suite/constants/onboarding/urls';
+import { AppState, Dispatch } from '@suite-types';
 
 import {
     PROGRESSBAR_HEIGHT,
@@ -266,14 +267,13 @@ class Onboarding extends React.PureComponent<Props> {
             onboardingActions,
             connectActions,
 
-            selectedModel = 1,
+            selectedModel,
             activeStepId,
             deviceCall,
             deviceInteraction,
             uiInteraction,
         } = this.props;
-
-        const model = selectedModel as 1 | 2;
+        const model = selectedModel || (2 as 1 | 2);
         const errorState = this.getError();
         const activeStep = this.getStep(activeStepId);
         return (

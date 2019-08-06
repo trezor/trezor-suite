@@ -17,8 +17,8 @@ import {
 } from '@suite/components/onboarding/Wrapper';
 import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
 import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
-import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
+import l10nMessages from './index.messages';
 
 const Keys = styled.div`
     display: flex;

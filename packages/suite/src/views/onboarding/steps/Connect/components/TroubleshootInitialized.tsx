@@ -31,12 +31,11 @@ const TroubleshootInitialized = (props: Props) => {
             {activeSubStep === null && (
                 <React.Fragment>
                     <Text>
-                        {device.features.label && (
-                            <FormattedMessage
+                        <FormattedMessage
                                 {...l10nMessages.TR_DEVICE_LABEL}
-                                values={{ label: device.features.label }}
+                                values={{ label: device.label }}
                             />
-                        )}{' '}
+                        {' '}
                         <FormattedMessage
                             {...l10nMessages.TR_DEVICE_FIRMWARE_VERSION}
                             values={{
