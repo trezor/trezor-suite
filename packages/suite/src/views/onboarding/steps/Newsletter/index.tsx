@@ -31,7 +31,7 @@ import {
     CheckboxWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
 
 import l10nMessages from './index.messages';

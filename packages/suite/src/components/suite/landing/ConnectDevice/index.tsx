@@ -4,7 +4,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import TrezorConnect from 'trezor-connect';
 import l10nCommonMessages from '@suite-views/index.messages';
 
-import { Button, P, H1, Link, icons, colors, variables, animations } from '@trezor/components';
+import { Button, P, H1, Link, colors, variables, animations } from '@trezor/components';
 
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
@@ -185,7 +185,7 @@ class ConnectDevice extends PureComponent<Props> {
                             </StyledP>
                             <StyledButton
                                 isInverse
-                                icon={icons.PLUS}
+                                icon="PLUS"
                                 additionalClassName="trezor-webusb-button"
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />

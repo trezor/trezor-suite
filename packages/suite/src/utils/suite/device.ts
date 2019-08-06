@@ -1,5 +1,5 @@
 import { colors } from '@trezor/components';
-import { TrezorDevice } from '@suite-types/index';
+import { TrezorDevice } from '@suite-types';
 import { InjectedIntl } from 'react-intl';
 import l10nMessages from '@suite-components/DeviceMenu/index.messages';
 

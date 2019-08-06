@@ -5,7 +5,6 @@ import {
     goToPreviousStep,
     selectTrezorModel,
     setPath,
-    setAsNewDevice,
 } from '@suite/actions/onboarding/onboardingActions';
 
 import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';

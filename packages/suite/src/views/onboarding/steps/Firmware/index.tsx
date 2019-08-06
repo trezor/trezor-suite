@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { P, Button, Tooltip } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import commonMessages from '@suite-support/Messages';
 
 import * as STEP from '@onboarding-constants/steps';

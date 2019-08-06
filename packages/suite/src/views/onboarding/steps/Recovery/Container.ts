@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Dispatch, AppState } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
 import * as connectActions from '@onboarding-actions/connectActions';

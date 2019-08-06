@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 
 // import { reconnect } from 'actions/DiscoveryActions';
 import * as NotificationActions from '@wallet-actions/notificationActions';

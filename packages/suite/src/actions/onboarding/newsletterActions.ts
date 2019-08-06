@@ -1,4 +1,4 @@
-import { Dispatch, GetState } from '@suite-types/index';
+import { Dispatch, GetState } from '@suite-types';
 import {
     TOGGLE_CHECKBOX,
     SET_EMAIL,

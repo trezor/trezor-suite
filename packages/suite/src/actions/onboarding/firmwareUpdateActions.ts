@@ -1,5 +1,5 @@
 import Rollout from '@trezor/rollout';
-import { Dispatch, GetState } from '@suite-types/index';
+import { Dispatch, GetState } from '@suite-types';
 import * as FIRMWARE_UPDATE from '@onboarding-types/firmwareUpdate';
 import { DEVICE_CALL_RESET } from '@onboarding-types/connect';
 

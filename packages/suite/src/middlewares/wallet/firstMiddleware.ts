@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch } from '@suite-types/index';
+import { AppState, Action, Dispatch } from '@suite-types';
 
 const firstMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,

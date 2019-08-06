@@ -4,7 +4,7 @@
  */
 
 import Router from 'next/router';
-import { Dispatch, GetState } from '@suite-types/index';
+import { Dispatch, GetState } from '@suite-types';
 import { getPrefixedURL } from '@suite-utils/router';
 
 export const LOCATION_CHANGE = '@router/location-change';

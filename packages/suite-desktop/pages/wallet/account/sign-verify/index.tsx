@@ -1,3 +1,3 @@
-import SignVerify from '@wallet-views/account/sign-verify/Container';
+import signVerify from '@wallet-views/account/sign-verify/Container';
 
-export default SignVerify;
+export default signVerify;

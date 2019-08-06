@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { colors, Notification, Icon, icons as ICONS, utils } from '@trezor/components';
+import { colors, Notification, Icon, utils } from '@trezor/components';
 import { NotificationEntry } from '@wallet-reducers/notificationReducer';
 
 const { getPrimaryColor } = utils.colors;
@@ -97,7 +97,7 @@ class Group extends PureComponent<Props, StateProps> {
                         </Left>
                         <Right>
                             <Icon
-                                icon={ICONS.ARROW_DOWN}
+                                icon="ARROW_DOWN"
                                 color={colors.TEXT_SECONDARY}
                                 size={14}
                                 isActive={!this.state.visible}

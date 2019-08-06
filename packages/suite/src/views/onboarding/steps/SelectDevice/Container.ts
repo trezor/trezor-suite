@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { goToNextStep, selectTrezorModel } from '@suite/actions/onboarding/onboardingActions';
-import { Dispatch, AppState } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types';
 
 import Step from './index';
 

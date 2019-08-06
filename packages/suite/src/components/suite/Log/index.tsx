@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, Tooltip, H5, P, Icon, icons, colors } from '@trezor/components';
+import { Button, Tooltip, H5, P, Icon, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import * as logActions from '@suite-actions/logActions';
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
 
 interface Props {
@@ -78,7 +78,7 @@ const Log = (props: Props) => {
     return (
         <Wrapper>
             <Click onClick={props.toggle}>
-                <Icon size={12} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
+                <Icon size={12} color={colors.INFO_PRIMARY} icon="CLOSE" />
             </Click>
             <H5>
                 <FormattedMessage {...l10nMessages.TR_LOG} />

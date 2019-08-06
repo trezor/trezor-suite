@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntl } from 'react-intl';
-import { Button, Input, icons as ICONS } from '@trezor/components';
+import { Button, Input } from '@trezor/components';
 // import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 import commonMessages from '@wallet-views/messages';
 import messages from './messages';
@@ -100,7 +100,7 @@ const VerifyInput = ({
                         >
                             <Icon
                                 size={16}
-                                icon={isAddressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
+                                icon={isAddressUnverified ? "EYE_CROSSED" : "EYE"}
                                 color={
                                     isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY
                                 }
@@ -115,7 +115,7 @@ const VerifyInput = ({
                 <ShowAddressButton
                     onClick={() => showAddress(account.accountPath)}
                     // isDisabled={device.connected && !discovery.completed}
-                    icon={ICONS.EYE}
+                    icon="EYE"
                 >
                     <FormattedMessage {...messages.TR_SHOW_FULL_ADDRESS} />
                 </ShowAddressButton>

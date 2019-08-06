@@ -7,7 +7,7 @@ import {
     DEVICE_CALL_SUCCESS,
     DEVICE_CALL_RESET,
 } from '@suite/types/onboarding/connect';
-import { GetState, Dispatch } from '@suite-types/index';
+import { GetState, Dispatch } from '@suite-types';
 import { AnyStepId } from '@suite/types/onboarding/steps';
 import * as CALLS from '@suite/actions/onboarding/constants/calls';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';

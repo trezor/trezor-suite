@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { H5, AsyncSelect, Tooltip, Icon, colors, icons as ICONS } from '@trezor/components';
+import { H5, AsyncSelect, Tooltip, Icon, colors } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { Token, Transaction } from '@suite/types/wallet';
 import MenuList from './components/MenuList';
@@ -53,7 +53,7 @@ const Tokens = (props: Props) => {
                         placement="top"
                         content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
                     >
-                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                        <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
                     </Tooltip>
                 </TooltipContainer>
             </TokensHeadingWrapper>

@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { SETTINGS } from '@wallet-actions/constants';
-import { Actions } from '@wallet-types/index';
+import { Action } from '@wallet-types/index';
 
 interface State {
     localCurrency: string;
@@ -16,7 +16,7 @@ export const initialState: State = {
     hiddenCoinsExternal: [],
 };
 
-export default (state: State = initialState, action: Actions): State => {
+export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case SETTINGS.SET_LOCAL_CURRENCY:

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import * as firmwareUpdateActions from '@suite/actions/onboarding/firmwareUpdateActions';
 import * as connectActions from '@suite/actions/onboarding/connectActions';
-import { Dispatch, AppState } from '@suite-types/index';
+import { Dispatch, AppState } from '@suite-types';
 
 import Step from './index';
 

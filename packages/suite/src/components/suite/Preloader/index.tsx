@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 import SuiteWrapper from '@suite-views/index';
 import StaticPageWrapper from '@suite-components/StaticPageWrapper';
 import { H1, P } from '@trezor/components';

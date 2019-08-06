@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Input, TextArea, Button, colors, variables } from '@trezor/components';
 import Title from '@wallet-components/Title';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import signVerifyActions from '@wallet-actions/signVerifyActions';
 import { FormattedMessage, InjectedIntl } from 'react-intl';

@@ -7,7 +7,7 @@ import {
     DEVICE_CALL_ERROR,
     UI_REQUEST_PIN,
 } from '@suite/types/onboarding/connect';
-import { Action } from '@suite-types/index';
+import { Action } from '@suite-types';
 
 const initialState = {
     prevDeviceId: null,

@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 import Router from '@suite-support/Router';
 
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { goto } from '@suite-actions/routerActions';
 import AcquireDevice from '@suite-components/AcquireDevice';
 

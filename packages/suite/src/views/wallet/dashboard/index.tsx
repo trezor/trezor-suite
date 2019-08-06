@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import Content from '@wallet-components/Content';
 import { H4, P, CoinLogo } from '@trezor/components';
 import Link from '@suite-components/Link';

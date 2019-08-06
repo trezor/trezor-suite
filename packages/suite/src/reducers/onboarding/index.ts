@@ -11,7 +11,7 @@ import { FetchActionTypes } from '@onboarding-types/fetch';
 import { ConnectActionTypes } from '@onboarding-types/connect';
 import { OnboardingActionTypes, OnboardingReducer } from '@onboarding-types/onboarding';
 
-import { Action } from '@suite-types/index';
+import { Action } from '@suite-types';
 
 interface OnboardingAppState extends ReturnType<typeof onboarding> {
     connect?: ReturnType<typeof connect>;

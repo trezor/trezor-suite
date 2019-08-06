@@ -4,7 +4,7 @@ import * as TOKEN from '@wallet-actions/constants/token';
 import produce from 'immer';
 
 import { Token } from '@suite/types/wallet';
-import { Actions } from '@wallet-types/index';
+import { Action } from '@wallet-types/index';
 
 export type State = Token[];
 
@@ -48,7 +48,7 @@ const remove = (state: State, token: Token): State =>
             ),
     );
 
-export default (state: State = initialState, action: Actions): State => {
+export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case TOKEN.FROM_STORAGE:

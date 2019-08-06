@@ -3,11 +3,11 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import TrezorConnect from 'trezor-connect';
 import { bindActionCreators } from 'redux';
-import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types/index';
+import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { forgetDevice } from '@suite-actions/trezorConnectActions';
-import { Button, icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
+import { Button, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -238,7 +238,7 @@ const DeviceMenu = ({
                                     size={16}
                                     color={colors.TEXT_SECONDARY}
                                     hoverColor={colors.TEXT_PRIMARY}
-                                    icon={icons.COG}
+                                    icon="COG"
                                 />
                             </Link>
                         </WalletTypeIconWrapper>
@@ -249,7 +249,7 @@ const DeviceMenu = ({
                             isActive={isOpen}
                             size={16}
                             color={colors.TEXT_SECONDARY}
-                            icon={icons.ARROW_DOWN}
+                            icon="ARROW_DOWN"
                         />
                     </React.Fragment>
                 }
@@ -270,7 +270,7 @@ const DeviceMenu = ({
                         <ButtonWrapper>
                             <StyledButton
                                 isInverse
-                                icon={icons.PLUS}
+                                icon="PLUS"
                                 additionalClassName="trezor-webusb-button"
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
