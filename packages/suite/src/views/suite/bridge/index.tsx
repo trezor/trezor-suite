@@ -121,67 +121,28 @@ class InstallBridge extends Component<BridgeProps, BridgeState> {
     }
 
     render() {
-        let installers = null;
-        let data = null;
-        if (this.props.transport) {
-            // todo: typescript any. use type from connect?
-            installers = this.props.transport.bridge.packages.map((p: any) => ({
-                label: p.name,
-                value: p.url,
-                signature: p.signature,
-                preferred: p.preferred,
-            }));
+        // todo: typescript any. use type from connect?
+        const installers = this.props.transport ? this.props.transport.bridge.packages.map((p: any) => ({
+            label: p.name,
+            value: p.url,
+            signature: p.signature,
+            preferred: p.preferred,
+        })) : [];
 
-            const currentTarget = installers.find((i: Installer) => i.preferred === true);
-            data = {
-                currentVersion:
-                    this.props.transport!.type && this.props.transport!.type === 'bridge'
-                        ? `Your version ${this.props.transport!.version}`
-                        : 'Not installed',
-                latestVersion: this.props.transport!.bridge.version.join('.'),
-                installers,
-                target: currentTarget || installers[0],
-                uri: 'https://wallet.trezor.io/data/',
-            };
-        } else {
-            return (
-                <Wrapper>
-                    <Top>
-                        <TitleHeader>
-                            Trezor Bridge <Version>Not installed</Version>
-                        </TitleHeader>
-                        <P>
-                            <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
-                        </P>
-
-
-                        <LoaderWrapper>
-                            <CenteredLoader size={50} strokeWidth={2} />
-                            <P>Gathering information, please wait...</P>
-                        </LoaderWrapper>
-                        <P size="small">
-                            <LearnMoreText>
-                                <FormattedMessage
-                                    {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
-                                    values={{
-                                        TR_CHANGELOG: (
-                                            <Link
-                                                href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                                                isGreen
-                                            >
-                                                <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
-                                            </Link>
-                                        ),
-                                    }}
-                                />
-                            </LearnMoreText>
-                        </P>
-                    </Top>
-                </Wrapper>
-            );
-        }
+        const currentTarget = installers.find((i: Installer) => i.preferred === true);
+        const data = {
+            currentVersion:
+                this.props.transport && this.props.transport.type === 'bridge'
+                    ? `Your version ${this.props.transport!.version}`
+                    : 'Not installed',
+            latestVersion: this.props.transport ? this.props.transport.bridge.version.join('.') : null,
+            installers,
+            target: currentTarget || installers[0],
+            uri: 'https://wallet.trezor.io/data/',
+        };
 
         const target = this.state.target || data.target;
+
         return (
             <Wrapper>
                 <Top>
@@ -191,33 +152,41 @@ class InstallBridge extends Component<BridgeProps, BridgeState> {
                     <P>
                         <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
                     </P>
-                    <Download>
-                        <SelectWrapper
-                            isSearchable={false}
-                            isClearable={false}
-                            value={target}
-                            onChange={(v: Installer) => this.onChange(v)}
-                            options={installers}
-                        />
 
-                        {data && target ? (
-                            <Link href={`${data.uri}${target.value}`}>
-                                <DownloadBridgeButton icon="DOWNLOAD">
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
-                                        values={{ version: data.latestVersion }}
-                                    />
-                                </DownloadBridgeButton>
-                            </Link>
-                        ) : (
-                                <DownloadBridgeButton icon="DOWNLOAD" isDisabled>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
-                                        values={{ version: '' }}
-                                    />
-                                </DownloadBridgeButton>
-                            )}
-                    </Download>
+                    {!this.props.transport ?
+                        <LoaderWrapper>
+                            <CenteredLoader size={50} strokeWidth={2} />
+                            <P>Gathering information, please wait...</P>
+                        </LoaderWrapper>
+                        : (
+                            <Download>
+                                <SelectWrapper
+                                    isSearchable={false}
+                                    isClearable={false}
+                                    value={target}
+                                    onChange={(v: Installer) => this.onChange(v)}
+                                    options={installers}
+                                />
+
+                                {data && target ? (
+                                    <Link href={`${data.uri}${target.value}`}>
+                                        <DownloadBridgeButton icon="DOWNLOAD">
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                                values={{ version: data.latestVersion }}
+                                            />
+                                        </DownloadBridgeButton>
+                                    </Link>
+                                ) : (
+                                        <DownloadBridgeButton icon="DOWNLOAD" isDisabled>
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                                values={{ version: '' }}
+                                            />
+                                        </DownloadBridgeButton>
+                                    )}
+                            </Download>
+                        )}
                     <P size="small">
                         <LearnMoreText>
                             <FormattedMessage
@@ -244,7 +213,7 @@ class InstallBridge extends Component<BridgeProps, BridgeState> {
                     </P>
                 </Top>
                 <Bottom>
-                    {this.props.transport.type && (
+                    {this.props.transport && this.props.transport.type && (
                         <P>
                             <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
                             <br />
