@@ -19,7 +19,7 @@ import {
 } from '@onboarding-components/Wrapper';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { changePin, submitNewPin } from '@onboarding-actions/connectActions';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
 

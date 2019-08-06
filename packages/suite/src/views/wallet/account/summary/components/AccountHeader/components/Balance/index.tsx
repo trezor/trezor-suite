@@ -2,9 +2,9 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import styled from 'styled-components';
-import { Icon, Tooltip, colors, icons as ICONS, variables } from '@trezor/components';
+import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;

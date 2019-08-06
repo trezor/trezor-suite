@@ -1,4 +1,4 @@
-import { Dispatch, GetState, AppState } from '@suite-types/index';
+import { Dispatch, GetState, AppState } from '@suite-types';
 import { SETTINGS } from './constants';
 
 export type SettingsActions =

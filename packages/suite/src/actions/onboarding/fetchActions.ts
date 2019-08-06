@@ -2,7 +2,7 @@
 
 import { FETCH_START, FETCH_ERROR, FETCH_SUCCESS } from '@suite/types/onboarding/fetch';
 import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
-import { Dispatch } from '@suite-types/index';
+import { Dispatch } from '@suite-types';
 
 const GET = 'GET';
 const MODE_NO_CORS: 'no-cors' = 'no-cors';

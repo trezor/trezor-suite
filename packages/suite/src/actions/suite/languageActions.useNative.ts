@@ -1,4 +1,4 @@
-import { Dispatch } from '@suite-types/index';
+import { Dispatch } from '@suite-types';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { SUITE } from './constants';
 

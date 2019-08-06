@@ -2,6 +2,6 @@
 
 `docker login` (your gitlab credentials)
 
-`docker build -t registry.corp.sldev.cz/trezor/trezor-suite .`
+`docker build -t registry.gitlab.com/satoshilabs/trezor/trezor-suite .`
 
-`docker push registry.corp.sldev.cz/trezor/trezor-suite`
+`docker push registry.gitlab.com/satoshilabs/trezor/trezor-suite`

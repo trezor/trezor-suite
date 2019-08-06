@@ -7,7 +7,7 @@ import TrezorConnect, {
 } from 'trezor-connect';
 
 import { SUITE, CONNECT } from '@suite-actions/constants';
-import { Dispatch, TrezorDevice, Action } from '@suite-types/index';
+import { Dispatch, TrezorDevice, Action } from '@suite-types';
 
 export const init = () => async (dispatch: Dispatch) => {
     // set listeners

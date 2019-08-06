@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
-import { AppState, Dispatch } from '@suite-types/index';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { Button, Loader } from '@trezor/components';
 import styled from 'styled-components';
+import { AppState, Dispatch } from '@suite-types';
 
 const TxWrapper = styled.div`
     display: flex;

@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { LOG } from '@suite-actions/constants';
 
-import { Action } from '@suite-types/index';
+import { Action } from '@suite-types';
 
 export interface LogEntry {
     time: number;

@@ -138,4 +138,7 @@ export const ICONS = [
     'WALLET_HIDDEN',
     'WALLET_STANDARD',
     'WARNING',
+    'CLOUD_CROSSED',
+    'DOWNLOAD_CROSSED',
+    'PHOTO_CROSSED',
 ];

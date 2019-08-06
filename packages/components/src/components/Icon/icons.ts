@@ -26,4 +26,7 @@ export const ICONS: { [key: string]: any } = {
     WALLET_HIDDEN: require('../../images/icons/wallet_hidden.svg'),
     WALLET_STANDARD: require('../../images/icons/wallet_standard.svg'),
     WARNING: require('../../images/icons/warning.svg'),
+    CLOUD_CROSSED: require('../../images/icons/cloud_crossed.svg'),
+    DOWNLOAD_CROSSED: require('../../images/icons/download_crossed.svg'),
+    PHOTO_CROSSED: require('../../images/icons/photo_crossed.svg'),
 };

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { H6, TrezorImage } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { OptionsList } from '@suite/components/onboarding/Options';
 import {
     StepWrapper,

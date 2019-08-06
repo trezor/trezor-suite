@@ -1,6 +1,6 @@
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as routerUtils from '@suite-utils/router';
-import { Action } from '@suite-types/index';
+import { Action } from '@suite-types';
 import produce from 'immer';
 
 interface Params {

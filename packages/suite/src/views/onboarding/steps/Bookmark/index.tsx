@@ -15,7 +15,7 @@ import {
     StepHeadingWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
 
 import l10nMessages from './index.messages';

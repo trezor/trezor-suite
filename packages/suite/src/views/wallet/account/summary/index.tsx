@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as TokenActions from '@wallet-actions/tokenActions';

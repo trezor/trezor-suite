@@ -1,4 +1,4 @@
-import { Action, TrezorDevice } from '@suite-types/index';
+import { Action, TrezorDevice } from '@suite-types';
 import { MODAL, CONNECT } from '@suite-actions/constants';
 
 export interface ModalActions {

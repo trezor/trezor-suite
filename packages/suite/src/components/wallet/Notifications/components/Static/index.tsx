@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Notification, Link } from '@trezor/components';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import Bignumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types/index';
+import { AppState } from '@suite-types';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';

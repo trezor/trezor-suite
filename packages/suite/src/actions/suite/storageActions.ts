@@ -1,9 +1,9 @@
-import { Dispatch, GetState, AppState } from '@suite-types/index';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import * as db from '@suite/storage';
 import { StorageUpdateMessage } from '@suite/storage/types/index';
+import { Dispatch, GetState, AppState } from '@suite-types';
 import { STORAGE } from './constants/index';
 
 export type StorageActions =

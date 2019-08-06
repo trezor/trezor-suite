@@ -1,5 +1,5 @@
 import { Device, DEVICE } from 'trezor-connect';
-import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types/index';
+import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import * as reducersUtils from '@suite-utils/reducers';
 import { SUITE } from './constants';
 
