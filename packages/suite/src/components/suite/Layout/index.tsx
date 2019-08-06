@@ -107,7 +107,9 @@ const Layout = (props: Props & InjectedIntlProps) => (
             ]}
         />
         <ErrorBoundary>
-            <SuiteNotifications />
+            {
+                props.router.app !== 'onboarding' && <SuiteNotifications />
+            }
             <Modals />
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
