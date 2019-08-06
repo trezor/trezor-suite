@@ -19,7 +19,6 @@ import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
 import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
-import { AppState } from '@suite-types';
 
 interface NameInputProps {
     value: string;

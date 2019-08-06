@@ -21,7 +21,6 @@ import {
 import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
-import { AppState } from '@suite-types';
 
 const DEVICE_HEIGHT = 130;
 

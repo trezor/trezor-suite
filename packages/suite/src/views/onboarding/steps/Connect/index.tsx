@@ -75,7 +75,7 @@ const ConnectStep = ({ device, model, onboardingActions }: StepProps) => {
         if (isInBlWithFwPresent()) {
             return 'unexpected-bootloader';
         }
-        if (device && device.features.initialized) {
+        if (device && device.features && device.features.initialized) {
             return 'unexpected-initialized';
         }
         if (deviceIsConnected) {

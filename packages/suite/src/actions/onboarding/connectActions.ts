@@ -136,11 +136,19 @@ const getFeatures = () => (dispatch: Dispatch) => dispatch(call(CALLS.GET_FEATUR
 const firmwareUpdate = (params: any) => (dispatch: Dispatch) =>
     dispatch(call(CALLS.FIRMWARE_UPDATE, params));
 
-const resetDevice = () => (dispatch: Dispatch, getState: GetState) => {
+const resetDevice = (params: any) => (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
+    console.warn({
+        ...params,
+        strength: 128,
+        label: DEFAULT_LABEL,
+        skipBackup: true,
+        passhpraseProtection: true,
+    });
     if (device!.features!.major_version === 1) {
         return dispatch(
             call(CALLS.RESET_DEVICE, {
+                ...params,
                 label: DEFAULT_LABEL,
                 skipBackup: true,
                 passhpraseProtection: true,
@@ -149,6 +157,7 @@ const resetDevice = () => (dispatch: Dispatch, getState: GetState) => {
     }
     return dispatch(
         call(CALLS.RESET_DEVICE, {
+            ...params,
             strength: 128,
             label: DEFAULT_LABEL,
             skipBackup: true,

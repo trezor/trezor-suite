@@ -107,7 +107,11 @@ const Layout = (props: Props & InjectedIntlProps) => (
             ]}
         />
         <ErrorBoundary>
+<<<<<<< de2d92007525cd0278d4fcbed338d35d7fbd78d7
             {!props.disableNotifications && <SuiteNotifications />}
+=======
+            {props.disableNotifications !== true && <SuiteNotifications />}
+>>>>>>> make shamir work (once connect will have been bumped)
             <Modals />
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>

@@ -26,7 +26,6 @@ import steps from '@suite/config/onboarding/steps';
 import colors from '@suite/config/onboarding/colors';
 import { SM } from '@suite/config/onboarding/breakpoints';
 import { TOS_URL } from '@suite/constants/onboarding/urls';
-import { AppState, Dispatch } from '@suite-types';
 
 import {
     PROGRESSBAR_HEIGHT,

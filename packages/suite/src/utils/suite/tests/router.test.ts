@@ -79,11 +79,6 @@ describe('router', () => {
             expect(toInternalRoute('/wallet/account/#/eth/0')).toEqual('/wallet/account');
             expect(toInternalRoute('/wallet/account/#/42')).toEqual('/wallet/account');
         });
-
-        // it('should work with dev server url structure', () => {
-        //     process.env.assetPrefix = 'https://suite.corp.sldev.cz/suite-web/onboarding/improvements' 
-        //     expect(toInternalRoute('https://suite.corp.sldev.cz/suite-web/onboarding/improvements/onboarding/'))
-        // })
     });
 
     describe('isInternalRoute', () => {

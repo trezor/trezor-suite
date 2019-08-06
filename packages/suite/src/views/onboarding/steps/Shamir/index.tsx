@@ -59,13 +59,12 @@ const ShamirStep = (props: Props) => {
                         <Option
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice(),
+                                    () => props.resetDevice({ backupType: 0 }),
                                     STEP.ID_SECURITY_STEP,
                                 )
                             }
                         >
-                            {/* <H6>Shamir backup</H6> */}
-                            <Text>bla bla</Text>
+                            <Text>Standard backup</Text>
                             {/* <ButtonCta
                         data-test="button-new-device"
                         onClick={() => {
@@ -80,12 +79,12 @@ const ShamirStep = (props: Props) => {
                         <Option
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice(),
+                                    () => props.resetDevice({ backupType: 1 }),
                                     STEP.ID_SECURITY_STEP,
                                 )
                             }
                         >
-                            <Text>bla bla</Text>
+                            <Text>Shamir backup (experimental)</Text>
                         </Option>
                     </OptionsWrapper>
                 )}

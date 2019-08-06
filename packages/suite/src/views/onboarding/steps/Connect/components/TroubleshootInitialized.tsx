@@ -32,10 +32,9 @@ const TroubleshootInitialized = (props: Props) => {
                 <React.Fragment>
                     <Text>
                         <FormattedMessage
-                                {...l10nMessages.TR_DEVICE_LABEL}
-                                values={{ label: device.label }}
-                            />
-                        {' '}
+                            {...l10nMessages.TR_DEVICE_LABEL}
+                            values={{ label: device.label }}
+                        />{' '}
                         <FormattedMessage
                             {...l10nMessages.TR_DEVICE_FIRMWARE_VERSION}
                             values={{

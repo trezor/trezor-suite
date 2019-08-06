@@ -46,6 +46,7 @@ const steps: Step[] = [
         id: STEP.ID_SHAMIR_STEP,
         title: STEP.TITLE_LAUNCH_STEP,
         disallowedDeviceStates: [
+            STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
         ],
@@ -55,6 +56,7 @@ const steps: Step[] = [
         id: STEP.ID_RECOVERY_STEP,
         title: STEP.TITLE_LAUNCH_STEP,
         disallowedDeviceStates: [
+            STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
         ],

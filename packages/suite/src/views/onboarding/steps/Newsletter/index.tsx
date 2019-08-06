@@ -4,7 +4,6 @@ import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { Link, Input, Checkbox, P } from '@trezor/components';
 
-import { AppState } from '@suite-types/index';
 import l10nCommonMessages from '@suite-support/Messages';
 import { isEmail } from '@suite-utils/validators';
 import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
@@ -28,8 +27,9 @@ import {
     toggleCheckbox,
 } from '@onboarding-actions/newsletterActions';
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
-import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
+
+import l10nMessages from './index.messages';
 
 const CheckboxexSection = styled.div`
     display: flex;
