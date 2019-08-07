@@ -1,6 +1,5 @@
 import React from 'react';
 import Layout from '@suite-components/Layout';
-import { View, StyleSheet } from 'react-native';
 
 interface Props {
     children: React.ReactNode;
