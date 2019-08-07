@@ -31,7 +31,7 @@ export const routes: Route[] = [
     {
         name: 'onboarding-index',
         pattern: '/onboarding',
-        isStatic: true,
+        isStatic: false,
     },
     {
         name: 'suite-device-settings',
