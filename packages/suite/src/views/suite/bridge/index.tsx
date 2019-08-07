@@ -6,10 +6,10 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
-import { AppState } from '@suite-types';
-import l10nMessages from './index.messages';
 import { TREZOR_DATA_URL } from '@suite/constants/urls';
 import { getRoute } from '@suite/utils/suite/router';
+import { AppState } from '@suite-types';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -101,15 +101,17 @@ const InstallBridge = (props: BridgeProps) => {
 
     const onChange = (value: Installer) => {
         setSelectedTarget(value);
-    }
+    };
 
     // todo: typescript any. use type from connect?
-    const installers = props.transport ? props.transport.bridge.packages.map((p: any) => ({
-        label: p.name,
-        value: p.url,
-        signature: p.signature,
-        preferred: p.preferred,
-    })) : [];
+    const installers = props.transport
+        ? props.transport.bridge.packages.map((p: any) => ({
+              label: p.name,
+              value: p.url,
+              signature: p.signature,
+              preferred: p.preferred,
+          }))
+        : [];
 
     const preferredTarget = installers.find((i: Installer) => i.preferred === true);
     const data = {
@@ -135,32 +137,31 @@ const InstallBridge = (props: BridgeProps) => {
                     <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
                 </P>
 
-                {!props.transport ?
+                {!props.transport ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
                         <P>Gathering information, please wait...</P>
                     </LoaderWrapper>
-                    : (
-                        <Download>
-                            <SelectWrapper
-                                isSearchable={false}
-                                isClearable={false}
-                                value={target}
-                                onChange={(v: Installer) => onChange(v)}
-                                options={installers}
-                            />
+                ) : (
+                    <Download>
+                        <SelectWrapper
+                            isSearchable={false}
+                            isClearable={false}
+                            value={target}
+                            onChange={(v: Installer) => onChange(v)}
+                            options={installers}
+                        />
 
-                            <Link href={`${data.uri}${target.value}`}>
-                                <DownloadBridgeButton icon="DOWNLOAD">
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
-                                        values={{ version: data.latestVersion }}
-                                    />
-                                </DownloadBridgeButton>
-                            </Link>
-
-                        </Download>
-                    )}
+                        <Link href={`${data.uri}${target.value}`}>
+                            <DownloadBridgeButton icon="DOWNLOAD">
+                                <FormattedMessage
+                                    {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                    values={{ version: data.latestVersion }}
+                                />
+                            </DownloadBridgeButton>
+                        </Link>
+                    </Download>
+                )}
 
                 <P size="small">
                     <LearnMoreText>
@@ -202,7 +203,7 @@ const InstallBridge = (props: BridgeProps) => {
             </Bottom>
         </Wrapper>
     );
-}
+};
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
