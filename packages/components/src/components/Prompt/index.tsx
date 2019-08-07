@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import Icon from '../Icon';
 
-import { Omit, TrezorModel } from '../../support/types';
+import { Omit, TrezorModel, IconType } from '../../support/types';
 import colors from '../../config/colors';
 
 const PulseAnimation = keyframes`
@@ -65,7 +65,7 @@ const Prompt = ({ model, size, children, ...rest }: Props) => {
         <Wrapper {...rest}>
             <ImgWrapper size={size}>
                 <Pulse />
-                <Icon icon={`T${model}`} size={size} color={colors.GREEN_PRIMARY} />
+                <Icon icon={`T${model}` as IconType} size={size} color={colors.GREEN_PRIMARY} />
             </ImgWrapper>
             <ContentWrapper>{children}</ContentWrapper>
         </Wrapper>
