@@ -87,6 +87,11 @@ class Prompt extends React.Component<Props> {
             outputRange: [0, 0.2, 0.3, 0],
         });
 
+        const trezorDeviceImages = {
+            1: 'T1',
+            2: 'T2'
+        } as const;
+
         return (
             <Wrapper>
                 <IconWrapper size={size}>
@@ -99,7 +104,7 @@ class Prompt extends React.Component<Props> {
                     >
                         <Pulse size={size} />
                     </Animation>
-                    <Icon icon={`T${model}` as IconType} size={size} color={colors.GREEN_PRIMARY} />
+                    <Icon icon={trezorDeviceImages[model]} size={size} color={colors.GREEN_PRIMARY} />
                 </IconWrapper>
                 <ContentWrapper>{children}</ContentWrapper>
             </Wrapper>

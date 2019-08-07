@@ -60,12 +60,17 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     size?: number;
 }
 
+const trezorDeviceImages = {
+    1: 'T1',
+    2: 'T2'
+} as const;
+
 const Prompt = ({ model, size, children, ...rest }: Props) => {
     return (
         <Wrapper {...rest}>
             <ImgWrapper size={size}>
                 <Pulse />
-                <Icon icon={`T${model}` as IconType} size={size} color={colors.GREEN_PRIMARY} />
+                <Icon icon={trezorDeviceImages[model]} size={size} color={colors.GREEN_PRIMARY} />
             </ImgWrapper>
             <ContentWrapper>{children}</ContentWrapper>
         </Wrapper>
