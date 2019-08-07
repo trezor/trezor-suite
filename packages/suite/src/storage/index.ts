@@ -63,13 +63,19 @@ const onUpgrade = async (
     const shouldInitDB = oldVersion === 0;
     if (shouldInitDB) {
         // init db
-        const txsStore = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
-        txsStore.createIndex('txId', 'txId', { unique: true });
-        txsStore.createIndex('timestamp', 'timestamp', { unique: false });
-        txsStore.createIndex('accountId', 'accountId', { unique: false });
-        txsStore.createIndex('accountId-id', ['accountId', 'id'], { unique: false }); // change later to block height instead of id
-        db.createObjectStore('suiteSettings');
-        db.createObjectStore('walletSettings');
+        try {
+            const txsStore = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
+            txsStore.createIndex('txId', 'txId', { unique: true });
+            txsStore.createIndex('timestamp', 'timestamp', { unique: false });
+            txsStore.createIndex('accountId', 'accountId', { unique: false });
+            txsStore.createIndex('accountId-timestamp', ['accountId', 'timestamp'], {
+                unique: false,
+            });
+            db.createObjectStore('suiteSettings');
+            db.createObjectStore('walletSettings');
+        } catch (err) {
+            console.error(err);
+        }
     } else {
         migrate(db, oldVersion, newVersion, transaction);
     }

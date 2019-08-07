@@ -27,7 +27,7 @@ export interface MyDBV1 extends DBSchema {
             txId: string;
             accountId: number;
             timestamp: number;
-            'accountId-id': [number, number];
+            'accountId-timestamp': [number, number];
         };
     };
     suiteSettings: {

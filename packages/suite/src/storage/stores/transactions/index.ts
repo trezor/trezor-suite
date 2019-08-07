@@ -60,7 +60,7 @@ export const getTransactions = async (accountId?: number, from?: number, to?: nu
     if (accountId !== undefined) {
         if (from !== undefined || to !== undefined) {
             // if 'from' or 'to' param is passed use a compound index
-            const index = tx.store.index('accountId-id');
+            const index = tx.store.index('accountId-timestamp');
             if (from && to) {
                 const txs = await index.getAll(
                     IDBKeyRange.bound([accountId, from], [accountId, to]),
@@ -79,8 +79,11 @@ export const getTransactions = async (accountId?: number, from?: number, to?: nu
             }
             // eslint-disable-next-line no-else-return
         } else {
-            const index = tx.store.index('accountId');
-            const txs = await index.getAll(IDBKeyRange.only(accountId));
+            const index = tx.store.index('accountId-timestamp');
+            // all txs for given accountId
+            // bound([accountId, undefined], [accountId, '']) should cover all timestamps
+            const keyRange = IDBKeyRange.bound([accountId], [accountId, '']);
+            const txs = await index.getAll(keyRange);
             return txs;
         }
     }
@@ -92,12 +95,12 @@ export const getTransactions = async (accountId?: number, from?: number, to?: nu
 export const updateTransaction = async (txId: string, timestamp: number) => {
     const db = await getDB();
     const tx = db.transaction(STORE_TXS, 'readwrite');
-    const result = await tx.store.get(txId);
+    const txIdIndex = tx.store.index('txId');
+    const result = await txIdIndex.get(txId);
     if (result) {
         result.timestamp = timestamp;
-        await tx.store.put(result);
-        // @ts-ignore
         notify(STORE_TXS, [result.id]);
+        return tx.store.put(result);
     }
 };
 

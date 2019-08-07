@@ -48,7 +48,7 @@ export const remove = (txId: string) => async (dispatch: Dispatch) => {
 
 export const update = (txId: string) => async (dispatch: Dispatch) => {
     const updatedTimestamp = Date.now();
-    db.updateTransaction(txId, updatedTimestamp).then(() => {
+    db.updateTransaction(txId, updatedTimestamp).then(_key => {
         dispatch({
             type: TRANSACTION.UPDATE,
             txId,
