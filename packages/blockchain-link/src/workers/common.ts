@@ -25,7 +25,7 @@ class WorkerCommon {
     }
 
     handshake() {
-        this.post({
+        this.post.call(null, {
             id: -1,
             type: MESSAGES.HANDSHAKE,
         });
@@ -64,7 +64,7 @@ class WorkerCommon {
             errorCode = error.code;
         }
 
-        this.post({
+        this.post.call(null, {
             id,
             type: RESPONSES.ERROR,
             payload: {
@@ -75,7 +75,7 @@ class WorkerCommon {
     }
 
     response(data: Response) {
-        this.post(this.removeEmpty(data));
+        this.post.call(null, this.removeEmpty(data));
     }
 
     validateAddresses(addr: string[]) {
