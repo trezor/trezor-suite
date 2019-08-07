@@ -8,7 +8,7 @@ import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/
 import { goto } from '@suite-actions/routerActions';
 import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
-import { TREZOR_DARA_URL } from '@suite/constants/urls';
+import { TREZOR_DATA_URL } from '@suite/constants/urls';
 import { getRoute } from '@suite/utils/suite/router';
 
 const Wrapper = styled.div`
@@ -120,7 +120,7 @@ const InstallBridge = (props: BridgeProps) => {
         latestVersion: props.transport ? props.transport.bridge.version.join('.') : null,
         installers,
         target: preferredTarget || installers[0],
-        uri: TREZOR_DARA_URL,
+        uri: TREZOR_DATA_URL,
     };
 
     const target = selectedTarget || data.target;
