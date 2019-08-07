@@ -6,7 +6,6 @@ import { AppState } from '@suite/reducers/store';
 
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
-
 import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { Action as WalletActions } from '@wallet-types/index';

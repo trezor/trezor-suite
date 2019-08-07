@@ -1,3 +1,3 @@
 export default {
-    transactions: false,
+    transactions: true,
 };

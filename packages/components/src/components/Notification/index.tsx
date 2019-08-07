@@ -7,7 +7,7 @@ import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
 import { getStateIcon } from '../../utils/icons';
 import Icon from '../Icon';
 import Button from '../buttons/Button';
-import { FeedbackType } from '../../support/types';
+import { FeedbackType, IconType } from '../../support/types';
 
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;

@@ -14,7 +14,7 @@ import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import { FeedbackType } from '../../../support/types';
+import { FeedbackType, IconType } from '../../../support/types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -166,7 +166,7 @@ interface InputProps {
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: any;
     height?: number;
-    icon?: any;
+    icon?: IconType;
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;
@@ -216,7 +216,7 @@ const Input = ({
                         autoComplete="off"
                         height={height}
                         tooltipAction={tooltipAction}
-                        hasIcon={icon || getStateIcon(state)}
+                        hasIcon={!!icon || !!getStateIcon(state)}
                         ref={innerRef}
                         hasAddon={!!sideAddons}
                         color={stateColor}

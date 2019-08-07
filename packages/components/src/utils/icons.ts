@@ -1,7 +1,8 @@
 import { FeedbackType } from '../support/types';
 
-const getStateIcon = (type?: FeedbackType) => {
-    let icon = null;
+type ReturnType = 'INFO' | 'ERROR' | 'WARNING' | 'SUCCESS' | null;
+const getStateIcon = (type?: FeedbackType): ReturnType => {
+    let icon: ReturnType = null;
     switch (type) {
         case 'info':
             icon = 'INFO';
