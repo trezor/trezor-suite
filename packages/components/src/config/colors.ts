@@ -42,4 +42,4 @@ export default {
     INPUT_FOCUS_SHADOW: '#D6D7D7',
     INPUT_FOCUS_BORDER: '#A9A9A9',
     SELECT_HOVER: '#F9F9F9',
-};
+} as const;
