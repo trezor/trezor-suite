@@ -8,7 +8,7 @@ import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import { FeedbackType } from '../../../support/types';
+import { FeedbackType, IconType } from '../../../support/types';
 
 const Wrapper = styled.View<Props>`
     flex: 1;
@@ -145,7 +145,7 @@ interface InputProps extends TextInputProperties {
 interface Props extends InputProps {
     innerRef?: any;
     height?: number;
-    icon?: any;
+    icon?: IconType;
     state?: FeedbackType;
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
@@ -182,7 +182,7 @@ const Input = ({
                     autoCompleteType="off"
                     height={height}
                     tooltipAction={tooltipAction}
-                    hasIcon={icon || getStateIcon(state)}
+                    hasIcon={!!icon || !!getStateIcon(state)}
                     ref={innerRef}
                     hasAddon={!!sideAddons}
                     color={stateColor}
