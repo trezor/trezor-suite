@@ -62,7 +62,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 
 const trezorDeviceImages = {
     1: 'T1',
-    2: 'T2'
+    2: 'T2',
 } as const;
 
 const Prompt = ({ model, size, children, ...rest }: Props) => {
