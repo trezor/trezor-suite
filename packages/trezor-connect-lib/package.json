@@ -1,5 +1,5 @@
 {
-  "name": "trezor-connect",
+  "name": "trezor-connect-lib-old",
   "version": "7.0.4",
   "author": "Trezor <info@trezor.io>",
   "homepage": "https://github.com/trezor/connect",
@@ -30,18 +30,6 @@
     "./lib/utils/networkUtils": "./lib/env/react-native/networkUtils"
   },
   "dependencies": {
-    "@babel/runtime": "^7.3.1",
-    "bchaddrjs": "^0.2.1",
-    "bignumber.js": "^4.1.0",
-    "bowser": "^1.9.3",
-    "events": "^3.0.0",
-    "hd-wallet": "9.0.0-bigint.4",
-    "keccak": "^2.0.0",
-    "parse-uri": "^1.0.0",
-    "tiny-worker": "^2.0.3",
-    "trezor-blockchain-link": "0.0.10",
-    "trezor-link": "1.6.1",
-    "trezor-utxo-lib": "^1.3.1-trezor.1",
-    "whatwg-fetch": "^3.0.0"
+
   }
 }

@@ -1790,18 +1790,6 @@
                         {
                             "name": "ButtonRequest_UnknownDerivationPath",
                             "id": 15
-                        },
-                        {
-                            "name": "ButtonRequest_RecoveryHomepage",
-                            "id": 16
-                        },
-                        {
-                            "name": "ButtonRequest_Success",
-                            "id": 17
-                        },
-                        {
-                            "name": "ButtonRequest_Warning",
-                            "id": 18
                         }
                     ],
                     "options": {}
@@ -4428,13 +4416,6 @@
                     "type": "bool",
                     "name": "no_backup",
                     "id": 28
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "recovery_mode",
-                    "id": 29
                 }
             ],
             "enums": [],
@@ -4648,10 +4629,10 @@
             "name": "LoadDevice",
             "fields": [
                 {
-                    "rule": "repeated",
+                    "rule": "optional",
                     "options": {},
                     "type": "string",
-                    "name": "mnemonics",
+                    "name": "mnemonic",
                     "id": 1
                 },
                 {
@@ -4780,37 +4761,9 @@
                     "type": "bool",
                     "name": "no_backup",
                     "id": 9
-                },
-                {
-                    "rule": "optional",
-                    "options": {
-                        "default": "ResetDeviceBackupType_Bip39"
-                    },
-                    "type": "ResetDeviceBackupType",
-                    "name": "backup_type",
-                    "id": 10
                 }
             ],
-            "enums": [
-                {
-                    "name": "ResetDeviceBackupType",
-                    "values": [
-                        {
-                            "name": "ResetDeviceBackupType_Bip39",
-                            "id": 0
-                        },
-                        {
-                            "name": "ResetDeviceBackupType_Slip39_Single_Group",
-                            "id": 1
-                        },
-                        {
-                            "name": "ResetDeviceBackupType_Slip39_Multiple_Groups",
-                            "id": 2
-                        }
-                    ],
-                    "options": {}
-                }
-            ],
+            "enums": [],
             "messages": [],
             "options": {},
             "oneofs": {}
