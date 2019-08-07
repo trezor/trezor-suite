@@ -6,19 +6,9 @@ interface Props {
     children: React.ReactNode;
 }
 
-const styles = StyleSheet.create({
-    wrapper: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-    },
-});
-
 const StaticPageWrapper: React.FunctionComponent<Props> = props => {
     return (
-        <Layout fullscreenMode>
-            <View style={styles.wrapper}>{props.children}</View>
-        </Layout>
+        <Layout fullscreenMode>{props.children}</Layout>
     );
 };
 
