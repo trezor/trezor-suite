@@ -3,7 +3,7 @@ import { SUITE } from '@suite-actions/constants';
 import produce from 'immer';
 import { Action, TrezorDevice } from '@suite-types';
 
-interface SuiteState {
+export interface SuiteState {
     online: boolean;
     loading: boolean;
     loaded: boolean;
