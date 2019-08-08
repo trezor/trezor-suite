@@ -14,9 +14,9 @@ interface Props {
     start: any;
 }
 
-const printAccounts = a => {
+const printAccounts = (a: any) => {
     let prev = -1;
-    return a.map((account, i) => {
+    return a.map((account: any, i: any) => {
         let accountHeader = null;
         if (account.index !== prev) {
             prev = account.index;
@@ -26,8 +26,11 @@ const printAccounts = a => {
         const accountType = account.type !== 'normal' ? `(${account.type}) ` : '';
         return (
             <View key={key}>
-                { accountHeader }
-                <P>{account.network.toUpperCase()} {accountType}balance: {account.balance}; {account.history.total} txs</P>
+                {accountHeader}
+                <P>
+                    {account.network.toUpperCase()} {accountType}balance: {account.balance};{' '}
+                    {account.history.total} txs
+                </P>
             </View>
         );
     });
@@ -35,19 +38,19 @@ const printAccounts = a => {
 
 const AccountDiscovery = (props: Props) => {
     const d = props.discovery[0];
-    if (!d) return (<Button onClick={props.start}>Start</Button>);
+    if (!d) return <Button onClick={props.start}>Start</Button>;
 
-    const perc = Math.round(d.loaded / d.total * 100);
-    const isStartVisible = d.status
-    const isRunning = d.status === STATUS.IDLE || STATUS.STOPPED;
+    const perc = Math.round((d.loaded / d.total) * 100);
+    // const isStartVisible = d.status;
+    // const isRunning = d.status === STATUS.IDLE || STATUS.STOPPED;
     return (
         <View>
             <Button onClick={props.start} isLoading>
                 Start
             </Button>
             <Button onClick={props.stop} isInverse>
-                    Stop
-                </Button>
+                Stop
+            </Button>
             {/* {d.status !== STATUS.RUNNING && (
                 
             )} */}
@@ -56,7 +59,7 @@ const AccountDiscovery = (props: Props) => {
                     Stop
                 </Button>
             )}
-            <P>Progress: { perc }%</P>
+            <P>Progress: {perc}%</P>
             {printAccounts(props.accounts)}
         </View>
     );

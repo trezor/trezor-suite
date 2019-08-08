@@ -5,6 +5,8 @@ import settingsReducer from './settingsReducer';
 import fiatRateReducer from './fiatRateReducer';
 import tokensReducer from './tokenReducer';
 import transactionReducer from './transactionReducer';
+import discoveryReducer from './discoveryReducer';
+import accountsReducer from './accountsReducer';
 
 const WalletReducers = combineReducers({
     signVerify: signVerifyReducer,
@@ -13,6 +15,8 @@ const WalletReducers = combineReducers({
     notifications: notificationReducer,
     tokens: tokensReducer,
     transactions: transactionReducer,
+    discovery: discoveryReducer,
+    accounts: accountsReducer,
 });
 
 export default WalletReducers;

@@ -1,5 +1,5 @@
-import CoingeckoService from '@wallet-services/CoingeckoService';
-import firstMiddlware from './firstMiddleware';
+import discoveryMiddleware from './discoveryMiddleware';
+import coingeckoMiddleware from './coingeckoMiddleware';
 import persistentStorageMiddleware from './persistentStorageMiddleware';
 
-export default [firstMiddlware, CoingeckoService, persistentStorageMiddleware];
+export default [discoveryMiddleware, coingeckoMiddleware, persistentStorageMiddleware];
