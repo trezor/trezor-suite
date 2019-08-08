@@ -13,7 +13,7 @@ cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
         # cypress
-        ~/.cache/Cypress
+        - ~/.cache/Cypress
         # libs
         - packages/components/lib
         - packages/blockchain-link/lib
