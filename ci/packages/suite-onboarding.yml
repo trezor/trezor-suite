@@ -1,63 +1,30 @@
---- # suite-onboarding package # --------------------------------
-
 suite-onboarding lint:
     stage: lint
     script:
         - env
         - yarn workspace @trezor/suite-onboarding lint
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-onboarding/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 suite-onboarding type check:
     stage: type check
     allow_failure: true
     script:
         - yarn workspace @trezor/suite-onboarding type-check
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-onboarding/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 suite-onboarding build:
     stage: build
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-onboarding/**/*
-            - .gitlab-ci.yml
-            - package.json
     script:
         - assetPrefix=/suite-onboarding/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-onboarding build
     artifacts:
         expire_in: 15 minutes
         paths:
             - $PACKAGE_PATH_SUITE_ONBOARDING/build
-    dependencies:
-        - install and build
 
 suite-onboarding deploy dev:
     stage: deploy
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-onboarding/**/*
-            - .gitlab-ci.yml
-            - package.json
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-onboarding/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/suite-onboarding/${CI_BUILD_REF_NAME}
     dependencies:
-        - install and build
         - suite-onboarding build
     environment:
         name: ${CI_BUILD_REF_NAME}
@@ -87,30 +54,5 @@ suite-onboarding delete review:
     script:
         - cd packages/suite-onboarding
         - 'rm -r "${DEPLOY_DIRECTORY}"'
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-onboarding/**/*
-            - .gitlab-ci.yml
-            - package.json
     tags:
         - deploy
-    dependencies:
-        - install and build
-# suite-onboarding test integration:
-#   image: cypress/base:10
-#   stage: test integration
-#   only:
-#     changes:
-#       - packages/suite/**/*
-#       - packages/suite-onboarding/**/*
-#       - .gitlab-ci.yml
-#   script:
-#     - env
-#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-onboarding/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-onboarding test:integration
-#   artifacts:
-#     expire_in: 2 days
-#     when: always
-#     paths:
-#       - /builds/trezor/trezor-suite/packages/suite-onboarding/test/snapshots
-#       - /builds/trezor/trezor-suite/packages/suite-onboarding/test/screenshots
