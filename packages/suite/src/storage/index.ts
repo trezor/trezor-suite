@@ -83,28 +83,40 @@ const onUpgrade = async (
 
 export const getDB = async () => {
     if (!db) {
-        // if global var db is not already set then open new connection
-        db = await openDB<MyDBV1>('trezor-suite', VERSION, {
-            upgrade(db, oldVersion, newVersion, transaction) {
-                // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
-                onUpgrade(db, oldVersion, newVersion, transaction);
-            },
-            blocked() {
-                // Called if there are older versions of the database open on the origin, so this version cannot open.
-                // TODO
-                console.log(
-                    'Accessing the IDB is blocked by another window running older version.',
-                );
-            },
-            blocking() {
-                // Called if this connection is blocking a future version of the database from opening.
-                // TODO
-                console.log('This instance is blocking the IDB upgrade to new version.');
-            },
-        });
+        try {
+            // if global var db is not already set then open new connection
+            db = await openDB<MyDBV1>('trezor-suite', VERSION, {
+                upgrade(db, oldVersion, newVersion, transaction) {
+                    // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
+                    onUpgrade(db, oldVersion, newVersion, transaction);
+                },
+                blocked() {
+                    // Called if there are older versions of the database open on the origin, so this version cannot open.
+                    // TODO
+                    console.log(
+                        'Accessing the IDB is blocked by another window running older version.',
+                    );
+                },
+                blocking() {
+                    // Called if this connection is blocking a future version of the database from opening.
+                    // TODO
+                    console.log('This instance is blocking the IDB upgrade to new version.');
+                },
+            });
 
-        // create global instance of broadcast channel
-        broadcastChannel = new BroadcastChannel('storageChangeEvent');
+            // create global instance of broadcast channel
+            broadcastChannel = new BroadcastChannel('storageChangeEvent');
+        } catch (error) {
+            if (error && error.name === 'VersionError') {
+                indexedDB.deleteDatabase('trezor-suite');
+                console.log(
+                    'SHOULD NOT HAPPEN IN PRODUCTION: IDB was deleted because your version is higher than it should be!',
+                );
+                throw error;
+            } else {
+                throw error;
+            }
+        }
     }
     return db;
 };
