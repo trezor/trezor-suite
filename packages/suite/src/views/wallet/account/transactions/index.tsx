@@ -38,10 +38,10 @@ const Transactions = (props: Props) => {
             <Button
                 variant="info"
                 onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId, 10), 10, 20);
+                    props.getFromStorage(parseInt(params.accountId, 10), 10, 10);
                 }}
             >
-                Get from storage (10 to 20)
+                Get from storage (offset 10, limit 10)
             </Button>
             <Button
                 variant="info"
@@ -49,7 +49,7 @@ const Transactions = (props: Props) => {
                     props.getFromStorage(parseInt(params.accountId, 10), 10);
                 }}
             >
-                Get from storage (10 and up)
+                Get from storage (offset 10, limit undefined)
             </Button>
             <Button
                 variant="info"
@@ -57,7 +57,7 @@ const Transactions = (props: Props) => {
                     props.getFromStorage(parseInt(params.accountId, 10), undefined, 10);
                 }}
             >
-                Get from storage (10 and down)
+                Get from storage (offset undefined, limit 10)
             </Button>
             <Button
                 variant="info"
