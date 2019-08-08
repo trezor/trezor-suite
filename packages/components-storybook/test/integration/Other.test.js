@@ -22,6 +22,7 @@ describe('Other', () => {
     const ICONS = [
         'ARROW_DOWN',
         'ARROW_LEFT',
+        'ARROW_RIGHT',
         'ARROW_UP',
         'BACK',
         'CHAT',
