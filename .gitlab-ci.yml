@@ -9,6 +9,8 @@ variables:
     PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
+    CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+
 cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
