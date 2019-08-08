@@ -62,6 +62,7 @@ suite-web delete review:
 suite-web test integration:
     stage: test integration
     script:
+        - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
     artifacts:
         expire_in: 2 days
