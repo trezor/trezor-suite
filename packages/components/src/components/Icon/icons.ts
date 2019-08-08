@@ -2,6 +2,7 @@
 export const ICONS: { [key: string]: any } = {
     ARROW_DOWN: require('../../images/icons/arrow_down.svg'),
     ARROW_LEFT: require('../../images/icons/arrow_left.svg'),
+    ARROW_RIGHT: require('../../images/icons/arrow_right.svg'),
     ARROW_UP: require('../../images/icons/arrow_up.svg'),
     BACK: require('../../images/icons/back.svg'),
     CHAT: require('../../images/icons/chat.svg'),
