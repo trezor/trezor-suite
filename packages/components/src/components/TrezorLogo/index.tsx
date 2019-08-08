@@ -34,8 +34,6 @@ const TrezorLogo = ({
             <ReactSvg
                 src={LOGOS[type.toUpperCase()]}
                 beforeInjection={svg => {
-                    svg.setAttribute('width', `${width}`);
-                    svg.setAttribute('height', `${height}`);
                     svg.setAttribute('fill', variant);
                 }}
                 loading={() => <span className="loading"></span>}
