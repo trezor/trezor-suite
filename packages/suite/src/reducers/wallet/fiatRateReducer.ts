@@ -1,4 +1,4 @@
-import { RATE_UPDATE, FiatRateActions } from '@wallet-services/CoingeckoService';
+import { RATE_UPDATE, FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
 import produce from 'immer';
 
 export interface Fiat {

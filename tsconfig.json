@@ -50,8 +50,6 @@
             "@wallet-config": ["./packages/suite/src/config/wallet/index"],
             "@wallet-middlewares/*": ["./packages/suite/src/middlewares/wallet/*"],
             "@wallet-middlewares": ["./packages/suite/src/middlewares/wallet/index"],
-            "@wallet-services/*": ["./packages/suite/src/services/wallet/*"],
-            "@wallet-services": ["./packages/suite/src/services/wallet/index"],
             // onboarding
             "@onboarding-components/*": ["./packages/suite/src/components/onboarding/*"],
             "@onboarding-components": ["./packages/suite/src/components/onboarding/index"],
@@ -87,6 +85,10 @@
         "sourceMap": true,
         "strict": true,
         "target": "esnext",
+        "typeRoots": [
+            "node_modules/@types",
+            "./packages/suite/src/types/trezor-connect"
+        ],
     },
     "exclude": [
         "node_modules",

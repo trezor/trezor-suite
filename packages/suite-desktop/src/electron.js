@@ -28,17 +28,16 @@ const init = async () => {
               slashes: true,
           });
 
-    const filter = {
-        urls: ['http://127.0.0.1:21325/*'],
-    };
-
-    session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-        details.requestHeaders['Origin'] = 'https://sisyfos.sldev.cz';
-        callback({
-            cancel: false,
-            requestHeaders: details.requestHeaders,
+    if (!isDev) {
+        const filter = {
+            urls: ['http://127.0.0.1:21325/*'],
+        };
+    
+        session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+            details.requestHeaders.Origin = 'https://electron.trezor.io';
+            callback({ cancel: false, requestHeaders: details.requestHeaders });
         });
-    });
+    }
 
     mainWindow.loadURL(src);
 };

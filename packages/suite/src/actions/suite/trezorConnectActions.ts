@@ -7,6 +7,7 @@ import TrezorConnect, {
 } from 'trezor-connect';
 
 import { SUITE, CONNECT } from '@suite-actions/constants';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Dispatch, TrezorDevice, Action } from '@suite-types';
 
 export const init = () => async (dispatch: Dispatch) => {
@@ -45,9 +46,15 @@ export const init = () => async (dispatch: Dispatch) => {
     });
 
     try {
+        const connectSrc =
+            process.env.SUITE_TYPE === 'desktop'
+                ? resolveStaticPath('connect/')
+                : 'https://connect.trezor.io/8/';
+        // : 'https://localhost:8088/';
+        // : 'https://connect.sldev.cz/connect-electron/';
+
         await TrezorConnect.init({
-            connectSrc: 'https://connect.sldev.cz/connect-electron/',
-            // connectSrc: 'https://localhost:8088/',
+            connectSrc,
             transportReconnect: true,
             debug: false,
             popup: false,
