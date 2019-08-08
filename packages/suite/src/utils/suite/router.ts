@@ -1,65 +1,4 @@
-import routesConstants from '@suite-constants/routes';
-
-export interface Route {
-    name: string;
-    pattern: string;
-    fields?: string[];
-}
-
-export const routes: Route[] = [
-    {
-        name: 'suite-index',
-        pattern: '/',
-    },
-    {
-        name: 'suite-firmware-update',
-        pattern: '/firmware-update',
-    },
-    {
-        name: 'wallet-index',
-        pattern: '/wallet',
-    },
-    {
-        name: 'onboarding-index',
-        pattern: '/onboarding',
-    },
-    {
-        name: 'suite-device-settings',
-        pattern: '/settings',
-    },
-    {
-        name: 'wallet-settings',
-        pattern: '/wallet/settings',
-    },
-    {
-        name: 'wallet-account',
-        pattern: '/wallet/account',
-    },
-    {
-        name: 'wallet-import',
-        pattern: '/wallet/import',
-    },
-    {
-        name: 'wallet-account-summary',
-        pattern: '/wallet/account',
-    },
-    {
-        name: 'wallet-account-transactions',
-        pattern: '/wallet/account/transactions',
-    },
-    {
-        name: 'wallet-account-send',
-        pattern: '/wallet/account/send',
-    },
-    {
-        name: 'wallet-account-receive',
-        pattern: '/wallet/account/receive',
-    },
-    {
-        name: 'wallet-account-sign-verify',
-        pattern: '/wallet/account/sign-verify',
-    },
-];
+import { routes } from '@suite-constants/routes';
 
 const PARAMS = ['coin', 'accountId'];
 
@@ -139,5 +78,6 @@ export const isInternalRoute = (route: string) => {
 };
 
 export const isStatic = (route: string) => {
-    return routesConstants.staticRoutes.includes(route);
+    const routeFound = routes.find(r => r.pattern === route);
+    return routeFound ? !!routeFound.isStatic : true; // 404 page act as a static
 };

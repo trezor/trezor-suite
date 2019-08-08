@@ -25,10 +25,10 @@ const styles = StyleSheet.create({
 const Preloader: React.FunctionComponent<Props> = props => {
     const { loaded, error, dispatch, isStatic } = props;
     useEffect(() => {
-        if (!loaded && !isStatic) {
+        if (!loaded) {
             dispatch({ type: SUITE.INIT });
         }
-    }, [dispatch, isStatic, loaded, props.children]);
+    }, [dispatch, loaded, props.children]);
 
     if (error) {
         return (
