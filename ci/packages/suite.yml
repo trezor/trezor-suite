@@ -1,56 +1,21 @@
---- # suite package # --------------------------------
-
 suite lint:
     stage: lint
     script:
         - yarn workspace @trezor/suite lint
-    only:
-        changes:
-            - packages/suite/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 suite type check:
     stage: type check
     allow_failure: true
     script:
         - yarn workspace @trezor/suite type-check
-    only:
-        changes:
-            - packages/suite/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 suite test unit:
     stage: test
     script:
         - env
         - yarn workspace @trezor/suite test:unit
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-web/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 suite test integration:
     stage: test integration
     script:
         - yarn workspace @trezor/suite test:health
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-web/**/*
-            - .gitlab-ci.yml
-            - package.json
-        refs:
-            - master
-            - develop
-    dependencies:
-        - install and build

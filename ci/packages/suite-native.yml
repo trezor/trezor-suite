@@ -1,29 +1,11 @@
---- # suite-native package # --------------------------------
-
 suite-native lint:
     stage: lint
     script:
         - env
         - yarn workspace @trezor/suite-native lint
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-native/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 suite-native type check:
     stage: type check
     allow_failure: true
     script:
         - yarn workspace @trezor/suite-web type-check
-    only:
-        changes:
-            - packages/suite/**/*
-            - packages/suite-native/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
