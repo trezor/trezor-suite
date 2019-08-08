@@ -3,80 +3,35 @@ connect-explorer lint:
     allow_failure: true
     script:
         - yarn workspace @trezor/connect-explorer lint
-    only:
-        changes:
-            - packages/connect-explorer/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 connect-explorer type check:
     stage: type check
     allow_failure: true
     script:
         - yarn workspace @trezor/connect-explorer type-check
-    only:
-        changes:
-            - packages/connect-explorer/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 connect-explorer type coverage:
     stage: type check
     allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer type-coverage
-    only:
-        changes:
-            - packages/connect-explorer/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
-
-##### no unit tests yet
-# connect-explorer test unit:
-#     stage: test
-#     allow_failure: true
-#     script:
-#         - yarn workspace @trezor/connect-explorer test
-#     only:
-#         changes:
-#             - packages/connect-explorer/**/*
-#             - .gitlab-ci.yml
 
 connect-explorer build:
     stage: build
     script:
         - yarn workspace @trezor/connect-explorer build
-    only:
-        changes:
-            - packages/connect-explorer/**/*
-            - .gitlab-ci.yml
-            - package.json
     artifacts:
         expire_in: 2 days
         when: always
         paths:
             - packages/connect-explorer/build
-    dependencies:
-        - install and build
 
 connect-explorer deploy dev:
     stage: deploy
-    only:
-        changes:
-            - packages/connect-explorer/**/*
-            - .gitlab-ci.yml
-            - package.json
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect-explorer/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}
     dependencies:
-        - install and build
         - connect-explorer build
     environment:
         name: ${CI_BUILD_REF_NAME}
@@ -100,11 +55,6 @@ connect-explorer delete review:
         GIT_STRATEGY: none
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect-explorer/${CI_BUILD_REF_NAME}
     when: manual
-    only:
-        changes:
-            - packages/connect-explorer/**/*
-            - .gitlab-ci.yml
-            - package.json
     environment:
         name: ${CI_BUILD_REF_NAME}
         action: stop
@@ -113,18 +63,11 @@ connect-explorer delete review:
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     tags:
         - deploy
-    dependencies:
-        - install and build
 
 #### no integration tests yet
 connect-explorer test integration:
     image: cypress/base:10
     stage: test integration
-    only:
-        changes:
-            - packages/connect-explorer/**/*
-            - .gitlab-ci.yml
-            - package.json
     script:
         - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer test:integration
@@ -134,5 +77,3 @@ connect-explorer test integration:
         paths:
             - /builds/trezor/trezor-suite/packages/connect-explorer/test/snapshots
             - /builds/trezor/trezor-suite/packages/connect-explorer/test/screenshots
-    dependencies:
-        - install and build

@@ -9,6 +9,26 @@ variables:
     PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        # libs
+        - packages/components/lib
+        - packages/blockchain-link/lib
+        - packages/rollout/lib
+        # node_modules
+        - node_modules
+        - packages/blockchain-link/node_modules
+        - packages/components/node_modules
+        - packages/components-storybook/node_modules
+        - packages/connect-explorer/node_modules
+        - packages/rollout/node_modules
+        - packages/suite/node_modules
+        - packages/suite-web/node_modules
+        - packages/suite-desktop/node_modules
+        - packages/suite-native/node_modules
+        - packages/suite-onboarding/node_modules
+
 stages:
     - install
     - lint
@@ -20,34 +40,9 @@ stages:
 
 install and build:
     stage: install
-    only:
-        changes:
-            - packages/**/*
-            - .gitlab-ci.yml
-            - package.json
     script:
         - yarn install
         - npx lerna run build:lib
-    artifacts:
-        expire_in: 2 hours
-        when: always
-        paths:
-            # libs
-            - packages/components/lib
-            - packages/blockchain-link/lib
-            - packages/rollout/lib
-            # node_modules
-            - node_modules
-            - packages/blockchain-link/node_modules
-            - packages/components/node_modules
-            - packages/components-storybook/node_modules
-            - packages/connect-explorer/node_modules
-            - packages/rollout/node_modules
-            - packages/suite/node_modules
-            - packages/suite-web/node_modules
-            - packages/suite-desktop/node_modules
-            - packages/suite-native/node_modules
-            - packages/suite-onboarding/node_modules
 
 include:
     - ci/packages/components.yml
