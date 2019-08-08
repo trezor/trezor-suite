@@ -106,9 +106,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
             ]}
         />
         <ErrorBoundary>
-            {
-                props.disableNotifications !== true && <SuiteNotifications />
-            }
+            {!props.disableNotifications && <SuiteNotifications />}
             <Modals />
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
