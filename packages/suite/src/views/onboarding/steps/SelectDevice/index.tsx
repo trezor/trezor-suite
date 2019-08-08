@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { H6, TrezorImage } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { AppState } from '@suite-types';
 import { OptionsList } from '@suite/components/onboarding/Options';
 import {
     StepWrapper,
@@ -13,6 +12,7 @@ import {
 import { goToNextStep, selectTrezorModel } from '@suite/actions/onboarding/onboardingActions';
 
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const OptionWrapper = styled.div`
     text-align: center;

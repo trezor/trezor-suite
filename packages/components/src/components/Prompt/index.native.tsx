@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
 import Icon from '../Icon';
 
-import { Omit, TrezorModel } from '../../support/types';
+import { Omit, TrezorModel, IconType } from '../../support/types';
 import colors from '../../config/colors';
 
 const Pulse = styled.View<Omit<Props, 'model'>>`
@@ -87,6 +87,11 @@ class Prompt extends React.Component<Props> {
             outputRange: [0, 0.2, 0.3, 0],
         });
 
+        const trezorDeviceImages = {
+            1: 'T1',
+            2: 'T2',
+        } as const;
+
         return (
             <Wrapper>
                 <IconWrapper size={size}>
@@ -99,7 +104,11 @@ class Prompt extends React.Component<Props> {
                     >
                         <Pulse size={size} />
                     </Animation>
-                    <Icon icon={`T${model}`} size={size} color={colors.GREEN_PRIMARY} />
+                    <Icon
+                        icon={trezorDeviceImages[model]}
+                        size={size}
+                        color={colors.GREEN_PRIMARY}
+                    />
                 </IconWrapper>
                 <ContentWrapper>{children}</ContentWrapper>
             </Wrapper>

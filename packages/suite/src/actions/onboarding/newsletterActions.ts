@@ -1,4 +1,3 @@
-import { Dispatch, GetState } from '@suite-types';
 import {
     TOGGLE_CHECKBOX,
     SET_EMAIL,
@@ -10,6 +9,7 @@ import { MAILCHIMP_U, MAILCHIMP_ID, MAILCHIMP_BASE } from '@suite/config/onboard
 import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
 
 import { fetchResource } from './fetchActions';
+import { Dispatch, GetState } from '@suite-types';
 
 const toggleCheckbox = (checkbox: string) => ({
     type: TOGGLE_CHECKBOX,

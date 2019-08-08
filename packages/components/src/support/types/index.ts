@@ -6,7 +6,6 @@ export type FeedbackType = 'success' | 'info' | 'warning' | 'error';
 
 export type TrezorModel = 1 | 2;
 
-// TODO: fix these types to use type literals
 export type IconType = typeof ICONS[number];
 
 export type CoinType = typeof COINS[number];

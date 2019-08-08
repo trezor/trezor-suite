@@ -185,7 +185,7 @@ storiesOf('Other', module).add('All', () => (
 
         <H1>Icons</H1>
         <Icons>
-            {ICONS.map((icon: string) => {
+            {ICONS.map(icon => {
                 const test = `icon_${icon.toLowerCase()}`;
                 return (
                     <Item key={icon}>

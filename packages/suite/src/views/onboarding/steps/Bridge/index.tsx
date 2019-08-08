@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Select, Link, Button } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { AppState } from '@suite-types';
 import { goToSubStep, goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
@@ -18,6 +17,7 @@ import {
 
 import l10nCommonBridgeMessages from '@suite-views/bridge/index.messages';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite-types';
 
 const SelectWrapper = styled(Select)`
     margin-right: 10px;

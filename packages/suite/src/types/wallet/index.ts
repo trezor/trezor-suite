@@ -6,6 +6,7 @@ import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
 import { FiatRateActions } from '@wallet-services/CoingeckoService';
 
+import { TransactionAction } from '@wallet-actions/transactionActions';
 import { Network } from './networkTypes';
 import { Icon } from './iconTypes';
 import { NetworkToken, Token } from './tokenTypes';
@@ -24,6 +25,7 @@ export type Action =
     | SignVerifyActions
     | NotificationActions
     | TokenActions
+    | TransactionAction
     | FiatRateActions;
 
 export interface BlockchainLinkTransaction {

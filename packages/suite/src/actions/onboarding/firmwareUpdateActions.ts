@@ -1,11 +1,11 @@
 import Rollout from '@trezor/rollout';
-import { Dispatch, GetState } from '@suite-types';
 import * as FIRMWARE_UPDATE from '@onboarding-types/firmwareUpdate';
 import { DEVICE_CALL_RESET } from '@onboarding-types/connect';
 
 import * as STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
 
 import { firmwareUpdate } from './connectActions';
+import { Dispatch, GetState } from '@suite-types';
 
 const updateFirmware = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: DEVICE_CALL_RESET });
