@@ -1,5 +1,5 @@
 // Wraps worker file into a module on the main thread
-
+/* eslint-disable */
 module.exports = function (source, map, foo, bar) {
     this.cacheable();
     // prevent handshake
