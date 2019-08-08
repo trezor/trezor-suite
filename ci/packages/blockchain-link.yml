@@ -2,41 +2,20 @@ blockchain-link lint:
     stage: lint
     script:
         - yarn workspace @trezor/blockchain-link lint
-    only:
-        changes:
-            - packages/blockchain-link/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 blockchain-link test:
     stage: test
     allow_failure: true
     script:
         - yarn workspace @trezor/blockchain-link test
-    only:
-        changes:
-            - packages/blockchain-link/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 blockchain-link build:
     stage: build
     script:
         - yarn workspace @trezor/blockchain-link build
-    only:
-        changes:
-            - packages/blockchain-link/**/*
-            - .gitlab-ci.yml
-            - package.json
     artifacts:
         expire_in: 2 days
         when: always
         paths:
             - packages/blockchain-link/lib
             - packages/blockchain-link/build
-    dependencies:
-        - install and build
