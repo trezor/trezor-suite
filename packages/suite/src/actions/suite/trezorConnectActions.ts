@@ -7,8 +7,8 @@ import TrezorConnect, {
 } from 'trezor-connect';
 
 import { SUITE, CONNECT } from '@suite-actions/constants';
-import { Dispatch, TrezorDevice, Action } from '@suite-types';
 import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Dispatch, TrezorDevice, Action } from '@suite-types';
 
 export const init = () => async (dispatch: Dispatch) => {
     // set listeners

@@ -4,8 +4,8 @@ import { Action } from '@wallet-types/index';
 
 export interface Account {
     index: number;
-    type: 'normal' | 'segwit' | 'legacy',
-    networkType: 'bitcoin' | 'ethereum' | 'ripple',
+    type: 'normal' | 'segwit' | 'legacy';
+    networkType: 'bitcoin' | 'ethereum' | 'ripple';
     network: string;
     path: string;
 
@@ -15,8 +15,8 @@ export interface Account {
     descriptor: string;
     empty: boolean;
     history: {
-        total: number, 
-        unconfirmed: number
+        total: number;
+        unconfirmed: number;
     };
 }
 
@@ -25,7 +25,6 @@ export const initialState: Account[] = [];
 const create = (state: Account[], action: Action) => {
     // const { network, rates } = action;
     // const affected = state.find(f => f.network === network);
-
     // Object.keys(rates).map(k => rates[k].toFixed(2));
     // if (!affected) {
     //     state.push({

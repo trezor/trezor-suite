@@ -86,35 +86,6 @@ const accountTypes: AccountType[] = [
 const LIMIT = 10;
 const BUNDLE_SIZE = 1;
 
-// const getDiscoveryBundle = (discovery: Discovery, options?: { retryFailed?: boolean; checkNew: boolean }) => {
-//     const bundle: DiscoveryBundle[] = [];
-//     // find not empty accounts
-//     const usedAccounts = accounts.filter(a => a.index === index && !a.empty);
-
-//     accountTypes.forEach(item => {
-//         // check if previous account of this type exists
-//         const type = item.type || 'normal';
-//         const prevAccount = usedAccounts.find(a => a.type === type && a.network === item.coin);
-//         // check if this coin not failed before
-//         const failed = deviceDiscovery.failed
-//             ? deviceDiscovery.failed.find(f => f.network === item.coin)
-//             : null;
-//         const skip = failed || (deviceDiscovery.index >= 0 && !prevAccount);
-//         for (let i = 1; i <= BUNDLE_SIZE; i++) {
-//             if (!skip) {
-//                 bundle.push({
-//                     path: item.path.replace('i', (index + 1).toString()),
-//                     coin: item.coin,
-//                     // details: 'txs',
-//                     index: index + 1,
-//                     type,
-//                     networkType: item.networkType || 'bitcoin',
-//                 });
-//             }
-//         }
-//     });
-// };
-
 // Get discovery process for currently selected device.
 // Return new instance if not exists
 const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): Discovery => {
@@ -140,7 +111,6 @@ const getDiscoveryForDevice = () => (dispatch: Dispatch, getState: GetState) => 
 
 export const update = (
     payload: PartialDiscovery,
-    // type: DiscoveryActions['type'] = DISCOVERY.UPDATE,
     type: UpdateActionType = DISCOVERY.UPDATE,
 ): DiscoveryActions => ({
     type,
@@ -294,8 +264,6 @@ export const start = () => async (dispatch: Dispatch, _getState: GetState): Prom
         const { progress } = event;
         dispatch(handleProgress(event, device, bundle[progress]));
     };
-    // @ts-ignore
-    console.log("CONNECT", TrezorConnect.getAccountInfo)
 
     TrezorConnect.on(UI.BUNDLE_PROGRESS, onBundleProgress);
     const result = await TrezorConnect.getAccountInfo({
