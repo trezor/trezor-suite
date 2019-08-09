@@ -30,7 +30,7 @@ export const getParams = (url: string) => {
     return params;
 };
 
-export const getRoute = (name: AnyRouteName, params?: { [key: string]: string }) => {
+export const getRoute = (name: AnyRouteName | string, params?: { [key: string]: string }) => {
     const entry = routes.find(r => r.name === name);
     if (!entry) {
         // eslint-disable-next-line no-console
@@ -79,7 +79,7 @@ export const isInternalRoute = (route: string) => {
     return !!routes.find(r => r.pattern === toInternalRoute(route));
 };
 
-export const isStatic = (route: string) => {
+export const isStatic = (route: AnyRouteName | string) => {
     const routeFound = routes.find(r => r.pattern === route);
     return routeFound ? !!routeFound.isStatic : true; // 404 page act as a static
 };
