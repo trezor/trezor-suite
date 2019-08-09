@@ -193,7 +193,7 @@ class ConnectDevice extends PureComponent<Props> {
                         </React.Fragment>
                     )}
                 </Wrapper>
-                <Image src={resolveStaticPath('images/macbook.png')} />
+                <Image src={resolveStaticPath('images/wallet/macbook.png')} />
                 <Footer>
                     {this.props.showWebUsb && (
                         <P>

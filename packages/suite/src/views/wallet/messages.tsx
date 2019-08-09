@@ -1,18 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_DEVICE_SETTINGS: {
-        id: 'TR_DEVICE_SETTINGS',
-        defaultMessage: 'Device settings',
-    },
-    TR_APPLICATION_SETTINGS: {
-        id: 'TR_APPLICATION_SETTINGS',
-        defaultMessage: 'Application settings',
-    },
-    TR_SELECT_COINS_LINK: {
-        id: 'TR_SELECT_COINS_LINK',
-        defaultMessage: 'application settings',
-    },
     TR_ACCOUNT_HASH: {
         id: 'TR_ACCOUNT_HASH',
         defaultMessage: 'Account #{number}',
