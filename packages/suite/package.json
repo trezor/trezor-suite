@@ -38,7 +38,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
         "styled-components": "^4.3.2",
-        "trezor-connect": "file:../trezor-connect-lib"
+        "trezor-connect": "extended"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",
@@ -49,9 +49,11 @@
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.0.8",
         "@types/redux-logger": "^3.0.7",
+        "@types/redux-mock-store": "^1.0.1",
         "babel-plugin-react-intl": "^3.3.2",
         "cross-env": "^5.2.0",
         "jest": "^24.8.0",
+        "redux-mock-store": "^1.5.3",
         "stylelint": "^10.0.1",
         "stylelint-config-recommended": "^2.2.0",
         "stylelint-config-styled-components": "^0.1.1",

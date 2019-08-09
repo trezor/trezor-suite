@@ -63,7 +63,7 @@ interface Props {
     showSuiteHeader?: boolean;
     fullscreenMode?: boolean;
     children: React.ReactNode;
-    disableNotifications: boolean;
+    disableNotifications?: boolean;
 }
 
 const Layout = (props: Props & InjectedIntlProps) => (

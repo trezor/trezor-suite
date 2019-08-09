@@ -68,7 +68,7 @@ const TrezorConnectService = store => next => action => {
                 email: 'info@trezor.io',
                 appUrl: window.location.host,
             },
-        // @ts-ignore connect
+            // @ts-ignore connect
         }).catch(error => {
             console.log('ERROR', error);
         });

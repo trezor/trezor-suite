@@ -28,8 +28,6 @@ module.exports = api => {
                     '^@(.+)-types': '../../packages/suite/src/types/\\1/index',
                     '^@(.+)-middlewares/(.+)': '../../packages/suite/src/middlewares/\\1/\\2',
                     '^@(.+)-middlewares': '../../packages/suite/src/middlewares/\\1/index',
-                    '^@(.+)-services/(.+)': '../../packages/suite/src/services/\\1/\\2',
-                    '^@(.+)-services': '../../packages/suite/src/services/\\1/index',
                 },
             },
         ],

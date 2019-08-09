@@ -6,7 +6,9 @@ import { MESSAGES, RESPONSES } from '../../constants';
 import * as MessageTypes from '../../types/messages';
 import { Message, SubscriptionAccountInfo, AccountInfo } from '../../types';
 import * as utils from './utils';
-import * as common from '../common';
+import WorkerCommon from '../common';
+
+const common = new WorkerCommon();
 
 let rippleApi: RippleAPI | undefined;
 let pingTimeout: ReturnType<typeof setTimeout>;

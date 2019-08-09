@@ -18,7 +18,6 @@ module.exports = api => {
                     '^@(.+)-utils/(.+)': '../../packages/suite/src/utils/\\1/\\2',
                     '^@(.+)-types/(.+)': '../../packages/suite/src/types/\\1/\\2',
                     '^@(.+)-middlewares/(.+)': '../../packages/suite/src/middlewares/\\1/\\2',
-                    '^@(.+)-services/(.+)': '../../packages/suite/src/services/\\1/\\2',
                 },
             },
         ],

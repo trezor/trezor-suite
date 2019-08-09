@@ -24,7 +24,7 @@
         "react-json-tree": "^0.11.0",
         "react-transition-group": "^2.3.1",
         "stringify-object": "^3.3.0",
-        "trezor-connect": "./packages/trezor-connect-lib",
+        "trezor-connect": "extended",
         "type-coverage": "^2.2.0-alpha.2"
     },
     "devDependencies": {

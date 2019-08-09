@@ -2,53 +2,25 @@ rollout lint:
     stage: lint
     script:
         - yarn workspace @trezor/rollout lint
-    only:
-        changes:
-            - packages/rollout/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 rollout type check:
     stage: type check
     allow_failure: false
     script:
         - yarn workspace @trezor/rollout type-check
-    only:
-        changes:
-            - packages/rollout/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 rollout test unit:
     stage: test
     allow_failure: true
     script:
         - yarn workspace @trezor/rollout test
-    only:
-        changes:
-            - packages/rollout/**/*
-            - .gitlab-ci.yml
-            - package.json
-    dependencies:
-        - install and build
 
 rollout build:
     stage: build
     script:
         - yarn workspace @trezor/rollout build:lib
-    only:
-        changes:
-            - packages/rollout/**/*
-            - .gitlab-ci.yml
-            - package.json
     artifacts:
         expire_in: 2 days
         when: always
         paths:
             - packages/rollout/lib
-    dependencies:
-        - install and build

@@ -1,5 +1,6 @@
 {
     "name": "@trezor/suite-desktop",
+    "description": "TrezorSuite desktop application",
     "version": "1.0.0",
     "private": true,
     "author": "Satoshilabs s.r.o",
@@ -18,7 +19,7 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "build": {
-        "appId": "com.electron.${name}",
+        "appId": "io.trezor.${name}",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
         "directories": {
@@ -26,7 +27,7 @@
         },
         "files": [
             "build/**/*",
-            "src/**/*",
+            "src/*.js",
             "package.json"
         ],
         "dmg": {
@@ -55,15 +56,12 @@
         }
     },
     "dependencies": {
-        "@sentry/browser": "^5.4.0",
         "electron-is-dev": "^1.1.0",
-        "electron-next": "^3.1.5",
-        "next": "^9.0.2",
-        "next-redux-wrapper": "^3.0.0-alpha.2",
-        "rimraf": "^2.6.3"
+        "electron-next": "^3.1.5"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
+        "@sentry/browser": "^5.4.0",
         "@types/next": "^8.0.0",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
@@ -72,10 +70,11 @@
         "@types/react-redux": "^7.0.8",
         "electron": "^4.1.0",
         "electron-builder": "^20.41.0",
-        "electron-packager": "^13.1.1",
-        "electron-winstaller": "^3.0.4",
         "git-revision-webpack-plugin": "^3.0.3",
+        "next": "^9.0.2",
         "next-plugin-custom-babel-config": "^1.0.0",
-        "next-transpile-modules": "^2.0.0"
+        "next-redux-wrapper": "^3.0.0-alpha.2",
+        "next-transpile-modules": "^2.0.0",
+        "rimraf": "^2.6.3"
     }
 }

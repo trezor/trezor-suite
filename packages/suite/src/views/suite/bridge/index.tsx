@@ -1,27 +1,28 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-import { Button, Select, P, Link, H1, colors, variables } from '@trezor/components';
+import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
+import { TREZOR_DATA_URL } from '@suite/constants/urls';
+import { getRoute } from '@suite/utils/suite/router';
 import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 0 24px;
+    justify-content: center;
+    padding: 60px 24px 30px 24px;
     flex: 1;
 `;
 
 const Top = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     max-width: 500px;
     text-align: center;
     flex: 1;
@@ -63,24 +64,25 @@ const SelectWrapper = styled(Select)`
 const Download = styled.div`
     margin: 24px auto;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
     justify-content: center;
 `;
 
 const DownloadBridgeButton = styled(Button)``;
 
-const GoBack = styled.span`
-    color: ${colors.GREEN_PRIMARY};
-    text-decoration: underline;
+const GoBack = styled(Link)`
     display: flex;
     justify-content: center;
-    align-items: center;
+`;
 
-    &:hover {
-        cursor: pointer;
-        text-decoration: none;
-    }
+const CenteredLoader = styled(Loader)`
+    margin: 0 auto;
+`;
+
+const LoaderWrapper = styled.div`
+    margin: 24px;
+    align-items: center;
+    justify-items: center;
 `;
 
 interface BridgeProps {
@@ -94,113 +96,114 @@ interface Installer {
     preferred: boolean;
 }
 
-interface BridgeState {
-    target: Installer;
-    uri: string;
-    currentVersion: string;
-    latestVersion: string;
-    installers: Installer[];
-}
+const InstallBridge = (props: BridgeProps) => {
+    const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
-class InstallBridge extends PureComponent<BridgeProps, BridgeState> {
-    constructor(props: BridgeProps) {
-        super(props);
+    const onChange = (value: Installer) => {
+        setSelectedTarget(value);
+    };
 
-        // todo: typescript any. use type from connect?
-        const installers = props.transport!.bridge.packages.map((p: any) => ({
-            label: p.name,
-            value: p.url,
-            signature: p.signature,
-            preferred: p.preferred,
-        }));
+    // todo: typescript any. use type from connect?
+    const installers = props.transport
+        ? props.transport.bridge.packages.map((p: any) => ({
+              label: p.name,
+              value: p.url,
+              signature: p.signature,
+              preferred: p.preferred,
+          }))
+        : [];
 
-        const currentTarget = installers.find((i: Installer) => i.preferred === true);
-        this.state = {
-            currentVersion:
-                props.transport!.type && props.transport!.type === 'bridge'
-                    ? `Your version ${props.transport!.version}`
-                    : 'Not installed',
-            latestVersion: props.transport!.bridge.version.join('.'),
-            installers,
-            target: currentTarget || installers[0],
-            uri: 'https://data.trezor.io/',
-        };
-    }
+    const preferredTarget = installers.find((i: Installer) => i.preferred === true);
+    const data = {
+        currentVersion:
+            props.transport && props.transport.type === 'bridge'
+                ? `Your version ${props.transport!.version}`
+                : 'Not installed',
+        latestVersion: props.transport ? props.transport.bridge.version.join('.') : null,
+        installers,
+        target: preferredTarget || installers[0],
+        uri: TREZOR_DATA_URL,
+    };
 
-    onChange(value: Installer) {
-        this.setState({
-            target: value,
-        });
-    }
+    const target = selectedTarget || data.target;
 
-    render() {
-        const { target } = this.state;
-        return (
-            <Wrapper>
-                <Top>
-                    <TitleHeader>
-                        Trezor Bridge<Version>{this.state.currentVersion}</Version>
-                    </TitleHeader>
-                    <P>
-                        <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
-                    </P>
+    return (
+        <Wrapper>
+            <Top>
+                <TitleHeader>
+                    Trezor Bridge<Version>{data && data.currentVersion}</Version>
+                </TitleHeader>
+                <P>
+                    <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
+                </P>
+
+                {!props.transport ? (
+                    <LoaderWrapper>
+                        <CenteredLoader size={50} strokeWidth={2} />
+                        <P>Gathering information, please wait...</P>
+                    </LoaderWrapper>
+                ) : (
                     <Download>
                         <SelectWrapper
                             isSearchable={false}
                             isClearable={false}
                             value={target}
-                            onChange={(v: Installer) => this.onChange(v)}
-                            options={this.state.installers}
+                            onChange={(v: Installer) => onChange(v)}
+                            options={installers}
                         />
-                        <Link href={`${this.state.uri}${target.value}`}>
+
+                        <Link href={`${data.uri}${target.value}`}>
                             <DownloadBridgeButton icon="DOWNLOAD">
                                 <FormattedMessage
                                     {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
-                                    values={{ version: this.state.latestVersion }}
+                                    values={{ version: data.latestVersion }}
                                 />
                             </DownloadBridgeButton>
                         </Link>
                     </Download>
-                    <P size="small">
-                        <LearnMoreText>
-                            <FormattedMessage
-                                {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
-                                values={{
-                                    TR_CHANGELOG: (
-                                        <Link
-                                            href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                                            isGreen
-                                        >
-                                            <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
-                                        </Link>
-                                    ),
-                                }}
-                            />
-                        </LearnMoreText>
-                    </P>
-                    <P>
-                        {target.signature && (
-                            <Link href={this.state.uri + target.signature} isGreen>
-                                <FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
-                            </Link>
-                        )}
-                    </P>
-                </Top>
-                <Bottom>
-                    {this.props!.transport!.type && (
-                        <P>
-                            <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
-                            <br />
-                            <GoBack onClick={() => goto('/wallet')}>
-                                <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
-                            </GoBack>
-                        </P>
+                )}
+
+                <P size="small">
+                    <LearnMoreText>
+                        <FormattedMessage
+                            {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
+                            values={{
+                                TR_CHANGELOG: (
+                                    <Link
+                                        href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
+                                        isGreen
+                                    >
+                                        <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
+                                    </Link>
+                                ),
+                            }}
+                        />
+                    </LearnMoreText>
+                </P>
+
+                <P>
+                    {target && data && target.signature && (
+                        <Link href={data.uri + target.signature} isGreen>
+                            <FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
+                        </Link>
                     )}
-                </Bottom>
-            </Wrapper>
-        );
-    }
-}
+                </P>
+            </Top>
+
+            <Bottom>
+                {props.transport && props.transport.type && (
+                    <P>
+                        <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
+                        <br />
+                        <GoBack onClick={() => goto(getRoute('wallet-index'))}>
+                            <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
+                        </GoBack>
+                    </P>
+                )}
+            </Bottom>
+        </Wrapper>
+    );
+};
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,

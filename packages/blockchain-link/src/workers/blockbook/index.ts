@@ -6,7 +6,9 @@ import * as utils from './utils';
 import { Message, SubscriptionAccountInfo } from '../../types';
 import { AddressNotification, BlockNotification } from '../../types/blockbook';
 import * as MessageTypes from '../../types/messages';
-import * as common from '../common';
+import WorkerCommon from '../common';
+
+const common = new WorkerCommon();
 
 let api: Connection | undefined;
 let endpoints: string[] = [];
