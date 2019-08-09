@@ -61,12 +61,12 @@ const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...
     return (
         <Tippy
             placement={placement}
-            content={Overlay}
             offset={4}
             zIndex={10070}
             arrow
             interactive
             {...rest}
+            content={Overlay}
         >
             <span>{children}</span>
         </Tippy>

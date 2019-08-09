@@ -12,10 +12,10 @@ const Wrapper = styled.div`
     transition: ${variables.TRANSITION.HOVER};
 `;
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: ReactNode | ReactNode[];
 }
 
-const Row = ({ children }: Props) => <Wrapper>{children}</Wrapper>;
+const Row = ({ children, ...rest }: Props) => <Wrapper {...rest}>{children}</Wrapper>;
 
 export default Row;

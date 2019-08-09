@@ -4,6 +4,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import React from 'react';
 import { colors } from '@trezor/components';
 import { AppRegistry } from 'react-native';
+import animationStyles from '@wallet-support/animations';
 
 const FONT_SIZE_BASE = '14px';
 // Force Next-generated DOM elements to fill their parent's height.
@@ -45,6 +46,7 @@ const globalStyles = `
         box-sizing: border-box;
     }
 
+    ${animationStyles};
 `;
 
 interface Props {
