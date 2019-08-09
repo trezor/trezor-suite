@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
@@ -29,9 +30,7 @@ module.exports = withCustomBabelConfig(
                     new webpack.DefinePlugin({
                         'process.env.SUITE_TYPE': JSON.stringify('desktop'),
                         'process.env.VERSION': JSON.stringify(packageJson.version),
-                        'process.env.COMMITHASH': JSON.stringify(
-                            gitRevisionPlugin.commithash(),
-                        ),
+                        'process.env.COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash()),
                     }),
                 );
                 return config;

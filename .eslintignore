@@ -1,4 +1,3 @@
 node_modules/**
 ci/**
-trezor-connect-lib/**
 **/.next/**

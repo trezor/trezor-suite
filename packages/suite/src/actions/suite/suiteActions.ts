@@ -23,8 +23,11 @@ export const updateOnlineStatus = () => (dispatch: Dispatch) => {
         });
     };
     statusHandler();
-    window.addEventListener('online', statusHandler);
-    window.addEventListener('offline', statusHandler);
+    // TODO: not working in react-native
+    if (typeof window !== 'undefined') {
+        window.addEventListener('online', statusHandler);
+        window.addEventListener('offline', statusHandler);
+    }
 };
 
 export const onSuiteReady = (): SuiteActions => {

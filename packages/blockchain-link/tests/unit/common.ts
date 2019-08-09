@@ -1,5 +1,7 @@
-import * as common from '../../src/workers/common';
+import WorkerCommon from '../../src/workers/common';
 import fixtures from './fixtures/common';
+
+const common = new WorkerCommon();
 
 describe('Add and remove address in sequence', () => {
     fixtures.addAddresses.forEach(f => {
