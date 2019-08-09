@@ -8,6 +8,7 @@ interface Props extends LinkProps {
     isGray?: boolean;
     isGreen?: boolean;
     target?: string;
+    children: React.ReactNode;
 }
 
 const Link = ({ children, href, className, target = '_self', ...rest }: Props) => {
