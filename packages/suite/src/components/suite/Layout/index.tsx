@@ -13,6 +13,7 @@ import Router from '@suite-support/Router';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
+import AcquireDevice from '@suite-components/AcquireDevice';
 
 import NoSSR from '@suite/support/suite/NoSSR';
 import l10nMessages from './index.messages';
@@ -112,7 +113,11 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 <>
                     <Log />
                     {props.showSuiteHeader && <Header />}
-                    {props.children}
+                    {props.suite.device && props.suite.device.type === 'unacquired' ? (
+                        <AcquireDevice />
+                    ) : (
+                        props.children
+                    )}
                 </>
             </AppWrapper>
         </ErrorBoundary>
