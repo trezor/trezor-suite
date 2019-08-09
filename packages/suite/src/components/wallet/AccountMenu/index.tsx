@@ -1,3 +1,4 @@
+/* eslint-disable react/style-prop-object */
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
@@ -166,7 +167,6 @@ const AccountMenu = (props: Props) => {
                                             currency={localCurrency}
                                             value={fiat}
                                             minimumFractionDigits={2}
-                                            // eslint-disable-next-line react/style-prop-object
                                             style="currency"
                                         />
                                     )}
