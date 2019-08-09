@@ -2,7 +2,7 @@ import * as animations from './config/animations';
 import colors from './config/colors';
 import * as variables from './config/variables';
 
-import Button from './components/buttons/Button';
+import { Button, ButtonProps } from './components/buttons/Button';
 import ButtonPin from './components/buttons/Pin';
 
 import Input from './components/inputs/Input';
@@ -32,6 +32,7 @@ export {
     animations,
     variables,
     Button,
+    ButtonProps,
     ButtonPin,
     Input,
     InputPin,

@@ -277,4 +277,4 @@ Button.propTypes = {
     variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
 };
 
-export default Button;
+export { Button, Props as ButtonProps };

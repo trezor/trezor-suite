@@ -6,7 +6,7 @@ import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
 import { getStateIcon } from '../../utils/icons';
 import Icon from '../Icon';
-import Button from '../buttons/Button';
+import { Button } from '../buttons/Button';
 import { FeedbackType, IconType } from '../../support/types';
 
 const Wrapper = styled.div<WrapperProps>`

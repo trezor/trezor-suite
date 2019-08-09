@@ -181,4 +181,4 @@ Button.propTypes = {
     icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
 
-export default Button;
+export { Button, Props as ButtonPorps };
