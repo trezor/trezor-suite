@@ -18,22 +18,8 @@ const copyFiles = (from: string, to: string) => {
     });
 };
 
-Object.keys(config).map((project: string) => {
-    switch (project) {
-        case 'web':
-            config[project].map(path => copyFiles(join(projectRoot, path), join(paths.web, path)));
-            break;
-        case 'desktop':
-            config[project].map(path =>
-                copyFiles(join(projectRoot, path), join(paths.desktop, path)),
-            );
-            break;
-        case 'native':
-            config[project].map(path =>
-                copyFiles(join(projectRoot, path), join(paths.native, path)),
-            );
-            break;
-        default:
-            console.log('Unknown option in data config');
-    }
-});
+Object.keys(config).map((project: string) =>
+    config[project].map((path: string) =>
+        copyFiles(join(projectRoot, path), join(paths[project], path)),
+    ),
+);
