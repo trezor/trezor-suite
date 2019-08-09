@@ -5,6 +5,7 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
+import { Account } from '@wallet-reducers/accountsReducer';
 
 import { FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
 
@@ -13,7 +14,7 @@ import { Network } from './networkTypes';
 import { Icon } from './iconTypes';
 import { NetworkToken, Token } from './tokenTypes';
 
-export { Network, Icon, NetworkToken, Token };
+export { Network, Icon, NetworkToken, Token, Account };
 // TODO import from connect
 interface BlockchainLinkToken {
     name: string;
@@ -56,37 +57,3 @@ export interface Transaction extends BlockchainLinkTransaction {
     network: string;
     rejected?: boolean;
 }
-
-// TODO: copied from wallet's accountReducer
-interface AccountCommon {
-    imported: boolean;
-    index: number;
-    network: string; // network id (shortcut)
-    deviceID: string; // empty for imported accounts
-    deviceState: string; // empty for imported accounts
-    accountPath: number[]; // empty for imported accounts
-    descriptor: string; // address or xpub
-
-    balance: string;
-    availableBalance: string; // balance - pending
-    block: number; // last known (synchronized) block
-    empty: boolean; // account without transactions
-
-    transactions: number; // deprecated
-}
-
-export type Account =
-    | (AccountCommon & {
-          networkType: 'ethereum';
-          nonce: number;
-      })
-    | (AccountCommon & {
-          networkType: 'ripple';
-          sequence: number;
-          reserve: string;
-      })
-    | (AccountCommon & {
-          networkType: 'bitcoin';
-          addressIndex: number;
-      });
-// TODO END

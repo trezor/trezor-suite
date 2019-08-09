@@ -22,6 +22,18 @@ export interface Account {
 
 export const initialState: Account[] = [];
 
+export const findDeviceAccounts = (
+    accounts: Account[],
+    // device: TrezorDevice,
+    networkShortcut?: string,
+) => {
+    // TODO: should also filter deviceState
+    if (networkShortcut) {
+        return accounts.filter(a => a.network === networkShortcut);
+    }
+    return accounts;
+};
+
 const create = (state: Account[], action: Action) => {
     // const { network, rates } = action;
     // const affected = state.find(f => f.network === network);

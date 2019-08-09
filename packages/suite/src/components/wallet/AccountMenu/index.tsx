@@ -5,7 +5,6 @@ import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import * as reducerUtils from '@wallet-utils/reducerUtils';
 // import * as stateUtils from 'reducers/utils';
-// import { findDeviceAccounts } from 'reducers/AccountsReducer';
 
 import { Loader, colors, variables } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -16,8 +15,10 @@ import { AppState } from '@suite/types/suite';
 import { connect } from 'react-redux';
 import { Link } from '@suite/components/suite';
 import networks from '@suite/config/suite/networks';
-import { Transaction, Account } from '@suite/types/wallet';
+import { Transaction } from '@suite/types/wallet';
+import { Account, findDeviceAccounts } from '@wallet-reducers/accountsReducer';
 import { getRoute } from '@suite/utils/suite/router';
+import { STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import AddAccountButton from './components/AddAccountButton';
 import l10nMessages from './index.messages';
 
@@ -116,61 +117,40 @@ interface Props {
 // TODO: Refactorize deviceStatus & selectedAccounts
 const AccountMenu = (props: Props) => {
     const selected = props.suite.device;
-    const { pathname, params } = props.router;
+    const { params } = props.router;
     const network = networks.find(c => c.shortcut === params.coin);
 
     if (!selected || !network) return null;
 
     // TODO
-    // const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, network.shortcut);
-    const deviceAccounts: Account[] = [
-        {
-            id: 0,
-            index: 0,
-        },
-        {
-            id: 1,
-            index: 1,
-        },
-    ];
+    const { accounts } = props.wallet;
+    const deviceAccounts = findDeviceAccounts(accounts, network.shortcut);
     const discoveryAccounts: Account[] = deviceAccounts.filter(
         account => account.imported === false,
     );
+
     const selectedAccounts = deviceAccounts.map((account, i) => {
-        // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
         const url = getRoute('wallet-account', {
             coin: network.shortcut,
             accountId: `${account.index}`,
         });
-        // if (account.imported) {
-        //     url = location.pathname.replace(/account+\/(i?[0-9]*)/, `account/i${account.index}`);
-        // } else {
-        //     url = location.pathname.replace(/account+\/(i?[0-9]*)/, `account/${account.index}`);
-        // }
-
-        let balance = null;
+        const { availableBalance } = account;
         const fiatRates = props.wallet.fiat.find(f => f.network === network.shortcut);
         const { localCurrency } = props.wallet.settings;
-        let fiat = '';
-        if (account.balance !== '') {
-            const pending = reducerUtils.getAccountPendingTx(props.pending, account);
-            const pendingAmount: BigNumber = reducerUtils.getPendingAmount(pending, network.symbol);
-            const availableBalance: string = new BigNumber(account.balance)
-                .minus(pendingAmount)
-                .toString(10);
 
-            balance = `${availableBalance} ${network.symbol}`;
-            if (fiatRates) {
-                fiat = toFiatCurrency(availableBalance, localCurrency, fiatRates);
-                balance = `${availableBalance} ${network.symbol} / `;
-            }
+        let fiat = '';
+        let balance = '';
+        balance = `${availableBalance} ${network.symbol}`;
+        if (fiatRates) {
+            fiat = toFiatCurrency(availableBalance, localCurrency, fiatRates);
+            balance = `${availableBalance} ${network.symbol} / `;
         }
 
         return (
             <LinkNoUnderline href={url} key={url}>
                 <Row>
                     <RowAccountWrapper
-                        isSelected={params.accountId === account.id}
+                        isSelected={parseInt(params.accountId, 10) === account.index}
                         borderTop={i === 0}
                     >
                         <Col>
@@ -215,10 +195,12 @@ const AccountMenu = (props: Props) => {
 
     let discoveryStatus = null;
     const discovery = props.discovery.find(
-        d => d.deviceState === selected.state && d.network === network.shortcut,
+        // TODO: compare deviceState not just device id
+        // d => d.device === selected.state && d.network === network.shortcut,
+        d => d.device === selected.features.device_id,
     );
 
-    if (discovery && discovery.completed) {
+    if (discovery && discovery.status === STATUS.COMPLETED) {
         const lastAccount = discoveryAccounts[discoveryAccounts.length - 1];
         if (!selected.connected) {
             discoveryStatus = (
@@ -289,9 +271,7 @@ const mapStateToProps = (state: AppState) => ({
     wallet: state.wallet,
     suite: state.suite,
     router: state.router,
-    discovery: [],
-    accounts: [],
-    pending: [],
+    discovery: state.wallet.discovery,
     addAccount: () => {},
 });
 
