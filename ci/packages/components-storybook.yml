@@ -68,5 +68,5 @@ components-storybook test snapshots:
     expire_in: 2 days
     when: always
     paths:
-      - components-storybook/test/snapshots
-      - components-storybook/test/screenshots
+      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots
+      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/screenshots
