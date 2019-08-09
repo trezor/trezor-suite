@@ -108,9 +108,7 @@ interface Props {
     suite: AppState['suite'];
     wallet: AppState['wallet'];
     router: AppState['router'];
-    accounts: Account[];
-    pending: Transaction[];
-    discovery: any;
+    discovery: AppState['wallet']['discovery'];
     addAccount: () => any; // TODO
 }
 
