@@ -26,6 +26,10 @@ describe('Notifications', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.getTestElement(testName)
+                .find('svg')
+                .should('be.visible');
+
+            cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();
         });
