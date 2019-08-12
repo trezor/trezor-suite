@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap",
     "start": "node ../../node_modules/react-native/local-cli/cli.js start --projectRoot ../../ --config ./metro.config.js",
     "run-ios": "react-native run-ios --no-packager",
     "start:clean": "yarn workspace componentsStorybookNative clean && yarn workspace componentsStorybookNative start -- --reset-cache",

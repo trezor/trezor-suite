@@ -4,7 +4,6 @@
     "private": true,
     "scripts": {
         "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
-        "postinstall": "lerna bootstrap",
         "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
         "lint": "eslint . --ext .tsx,.ts",
         "build": "next build && next export -o build",

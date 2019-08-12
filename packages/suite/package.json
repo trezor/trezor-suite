@@ -12,8 +12,7 @@
         "test": "run-s test:*",
         "test:unit": "jest",
         "test-unit:watch": "jest -o --watch",
-        "test:health": "jest -c jest.config.health.js",
-        "postinstall": "lerna bootstrap"
+        "test:health": "jest -c jest.config.health.js"
     },
     "dependencies": {
         "@trezor/components": "^1.0.0",

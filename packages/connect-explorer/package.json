@@ -4,7 +4,6 @@
     "private": true,
     "description": "Explore Trezor integration possibilities and docs in connect explorer interface",
     "scripts": {
-        "postinstall": "lerna bootstrap",
         "lint": "eslint . --ext .tsx,.ts",
         "type-check": "tsc --project tsconfig.json",
         "type-coverage": "type-coverage --at-least 90 --strict",
