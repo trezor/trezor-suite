@@ -7,6 +7,8 @@ import * as onboardingUrls from '@suite/constants/onboarding/urls';
 const excluded = [
     // TREZOR_DATA_URL because it returns 403 on itself (forbidden listing)
     suiteUrls.TREZOR_DATA_URL,
+    // TODO: it works locally but CI times out, probably cant handle the redirect or something..
+    onboardingUrls.TOS_URL,
 ];
 
 const getUrls = (urls: string[]) => {
