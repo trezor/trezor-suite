@@ -20,6 +20,6 @@ const copyFiles = (from: string, to: string) => {
 
 Object.keys(config).map((project: string) =>
     config[project].map((path: string) =>
-        copyFiles(join(projectRoot, path), join(paths[project], path)),
+        copyFiles(join(projectRoot, 'files', path), join(paths[project], path)),
     ),
 );
