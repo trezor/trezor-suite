@@ -13,7 +13,7 @@ import fixtures, { paramsError } from './fixtures/discoveryActions';
 
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 type Fixture = ArrayElement<typeof fixtures>;
-type Bundle = { path: string }[];
+type Bundle = { path: string; coin: string }[];
 
 jest.mock('trezor-connect', () => {
     let callback: Function = () => {};
@@ -267,6 +267,8 @@ describe('Discovery Actions', () => {
     });
 
     it('TrezorConnect did not emit any progress event', async () => {
+        // store original mocked function
+        const originalFn = require('trezor-connect').default.getAccountInfo;
         // set fixtures in trezor-connect
         require('trezor-connect').default.getAccountInfo = () => ({
             success: true,
@@ -274,7 +276,70 @@ describe('Discovery Actions', () => {
         const store = mockStore(getInitialState());
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
+        // restore original mocked fn
+        require('trezor-connect').default.getAccountInfo = originalFn;
         expect(action.type).toEqual(NOTIFICATION.ADD);
-        store.dispatch(discoveryActions.stop());
+    });
+
+    it('All accounts failed in runtime', async () => {
+        // store original mocked function
+        const originalFn = require('trezor-connect').default.getAccountInfo;
+        // override mocked function
+        require('trezor-connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
+            // prepare response (all failed)
+            const failedAccounts: string[] = [];
+            for (let i = 0; i < params.bundle.length; i++) {
+                failedAccounts.push(params.bundle[i].path);
+            }
+            require('trezor-connect').setTestFixtures({
+                connect: {
+                    success: true,
+                    failedAccounts,
+                },
+            });
+            // call original mocked fn
+            return originalFn(params);
+        };
+        // run process
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        await store.dispatch(discoveryActions.start());
+        // restore original mocked fn
+        require('trezor-connect').default.getAccountInfo = originalFn;
+        const action = store.getActions().pop();
+        const result = store.getState().wallet.discovery[0];
+        expect(action.type).toEqual(DISCOVERY.COMPLETE);
+        expect(result.loaded).toEqual(0);
+        expect(result.total).toEqual(0);
+    });
+
+    it('All accounts failed in first iteration', async () => {
+        // store original mocked function
+        const originalFn = require('trezor-connect').default.getAccountInfo;
+        // override mocked function
+        require('trezor-connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
+            // prepare json response
+            const failedAccounts: any[] = [];
+            for (let i = 0; i < params.bundle.length; i++) {
+                failedAccounts.push({
+                    index: i,
+                    coin: params.bundle[i].coin,
+                    exception: 'not supported',
+                });
+            }
+            // return error
+            return paramsError(JSON.stringify(failedAccounts), 'bundle_fw_exception');
+        };
+        // run process
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        await store.dispatch(discoveryActions.start());
+        // restore original mocked fn
+        require('trezor-connect').default.getAccountInfo = originalFn;
+        const action = store.getActions().pop();
+        const result = store.getState().wallet.discovery[0];
+        expect(action.type).toEqual(DISCOVERY.COMPLETE);
+        expect(result.loaded).toEqual(0);
+        expect(result.total).toEqual(0);
     });
 });
