@@ -5,25 +5,24 @@ import * as variables from './config/variables';
 import { Button, ButtonProps } from './components/buttons/Button';
 import ButtonPin from './components/buttons/Pin';
 
-import Input from './components/inputs/Input';
-import InputPin from './components/inputs/Pin';
-import TextArea from './components/Textarea';
-import Checkbox from './components/Checkbox';
-import Switch from './components/Switch';
-import TrezorImage from './components/TrezorImage';
-import TrezorLogo from './components/TrezorLogo';
-import Select from './components/selects/Select';
+import { Input, InputProps } from './components/inputs/Input';
+import { InputPin, InputPinProps } from './components/inputs/Pin';
+import { TextArea, TextareaProps } from './components/Textarea';
+import { Checkbox, CheckboxProps } from './components/Checkbox';
+import { Switch, SwitchProps } from './components/Switch';
+import { TrezorImage, TrezorImageProps } from './components/TrezorImage';
+import { TrezorLogo, TrezorLogoProps } from './components/TrezorLogo';
+import { Select, SelectProps } from './components/selects/Select';
 
 import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
-import Link from './components/Link';
-import P from './components/Paragraph';
+import { Link, LinkProps } from './components/Link';
+import { P, ParagraphProps } from './components/Paragraph';
 
-import Icon from './components/Icon';
-import CoinLogo from './components/CoinLogo';
-import Loader from './components/Loader';
-import Notification from './components/Notification';
-import Prompt from './components/Prompt';
-import Header from './components/Header';
+import { Icon, IconProps } from './components/Icon';
+import { CoinLogo, CoinLogoProps } from './components/CoinLogo';
+import { Loader, LoaderProps } from './components/Loader';
+import { Notification, NotificationProps } from './components/Notification';
+import { Prompt, PromptProps } from './components/Prompt';
 
 import utils from './utils';
 
@@ -35,11 +34,17 @@ export {
     ButtonProps,
     ButtonPin,
     Input,
+    InputProps,
     InputPin,
+    InputPinProps,
     TextArea,
+    TextareaProps,
     Checkbox,
+    CheckboxProps,
     Switch,
+    SwitchProps,
     Select,
+    SelectProps,
     H1,
     H2,
     H3,
@@ -47,14 +52,22 @@ export {
     H5,
     H6,
     Link,
+    LinkProps,
     P,
+    ParagraphProps,
     Icon,
+    IconProps,
     CoinLogo,
+    CoinLogoProps,
     TrezorImage,
+    TrezorImageProps,
     TrezorLogo,
+    TrezorLogoProps,
     Loader,
+    LoaderProps,
     Notification,
+    NotificationProps,
     Prompt,
-    Header,
+    PromptProps,
     utils,
 };

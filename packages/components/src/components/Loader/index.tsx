@@ -118,4 +118,4 @@ Loader.propTypes = {
     strokeWidth: PropTypes.number,
 };
 
-export default Loader;
+export { Loader, Props as LoaderProps };

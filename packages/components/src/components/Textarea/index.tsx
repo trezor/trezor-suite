@@ -169,4 +169,4 @@ TextArea.propTypes = {
     tooltipAction: PropTypes.node,
 };
 
-export default TextArea;
+export { TextArea, Props as TextareaProps };

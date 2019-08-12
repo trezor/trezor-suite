@@ -31,4 +31,4 @@ Select.propTypes = {
     onChange: PropTypes.func,
 };
 
-export default Select;
+export { Select, Props as SelectProps };

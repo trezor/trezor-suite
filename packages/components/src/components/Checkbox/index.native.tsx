@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { GestureResponderEvent } from 'react-native';
 import { FONT_SIZE_NATIVE as FONT_SIZE } from '../../config/variables';
-import Icon from '../Icon';
+import { Icon } from '../Icon';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';
 
@@ -70,4 +70,4 @@ Checkbox.propTypes = {
     children: PropTypes.node,
 };
 
-export default Checkbox;
+export { Checkbox, Props as CheckboxProps };

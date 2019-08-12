@@ -41,4 +41,4 @@ Link.propTypes = {
     href: PropTypes.string,
 };
 
-export default Link;
+export { Link, Props as LinkProps };

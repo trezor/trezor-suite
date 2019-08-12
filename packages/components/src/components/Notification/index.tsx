@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
 import { getStateIcon } from '../../utils/icons';
-import Icon from '../Icon';
+import { Icon } from '../Icon';
 import { Button } from '../buttons/Button';
 import { FeedbackType, IconType } from '../../support/types';
 
@@ -188,4 +188,4 @@ Notification.propTypes = {
     className: PropTypes.string,
 };
 
-export default Notification;
+export { Notification, Props as NotificationProps };

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { FONT_SIZE_NATIVE, FONT_WEIGHT, LINE_HEIGHT } from '../../../config/variables';
 import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
-import Icon from '../../Icon';
+import { Icon } from '../../Icon';
 import colors from '../../../config/colors';
 import { FeedbackType, IconType } from '../../../support/types';
 
@@ -226,4 +226,4 @@ Input.propTypes = {
     isPartiallyHidden: PropTypes.bool,
 };
 
-export default Input;
+export { Input, Props as InputProps };
