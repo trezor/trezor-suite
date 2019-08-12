@@ -1,27 +1,27 @@
 /* eslint-disable global-require */
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@trezor/suite-data/translations/l10n/types';
 import * as SUITE from '@suite-actions/constants/suite';
 
 // TODO
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {
     const messages: { [key: string]: any } = {
-        en: require('@suite/locales/en'),
-        bn: require('@suite/locales/bn'),
-        cs: require('@suite/locales/cs'),
-        de: require('@suite/locales/de'),
-        el: require('@suite/locales/el'),
-        es: require('@suite/locales/es'),
-        fr: require('@suite/locales/fr'),
-        id: require('@suite/locales/id'),
-        it: require('@suite/locales/it'),
-        ja: require('@suite/locales/ja'),
-        nl: require('@suite/locales/nl'),
-        pl: require('@suite/locales/pl'),
-        pt: require('@suite/locales/pt'),
-        ru: require('@suite/locales/ru'),
-        uk: require('@suite/locales/uk'),
-        zh: require('@suite/locales/zh'),
-        'zh-TW': require('@suite/locales/zh-TW'),
+        en: require('@trezor/suite-data/translations/l10n/en'),
+        bn: require('@trezor/suite-data/translations/l10n/bn'),
+        cs: require('@trezor/suite-data/translations/l10n/cs'),
+        de: require('@trezor/suite-data/translations/l10n/de'),
+        el: require('@trezor/suite-data/translations/l10n/el'),
+        es: require('@trezor/suite-data/translations/l10n/es'),
+        fr: require('@trezor/suite-data/translations/l10n/fr'),
+        id: require('@trezor/suite-data/translations/l10n/id'),
+        it: require('@trezor/suite-data/translations/l10n/it'),
+        ja: require('@trezor/suite-data/translations/l10n/ja'),
+        nl: require('@trezor/suite-data/translations/l10n/nl'),
+        pl: require('@trezor/suite-data/translations/l10n/pl'),
+        pt: require('@trezor/suite-data/translations/l10n/pt'),
+        ru: require('@trezor/suite-data/translations/l10n/ru'),
+        uk: require('@trezor/suite-data/translations/l10n/uk'),
+        zh: require('@trezor/suite-data/translations/l10n/zh'),
+        'zh-TW': require('@trezor/suite-data/translations/l10n/zh-TW'),
     };
 
     dispatch({
