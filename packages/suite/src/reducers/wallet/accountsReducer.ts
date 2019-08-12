@@ -22,7 +22,7 @@ export interface Account {
 
 export const initialState: Account[] = [];
 
-const create = (state: Account[], action: Action) => {
+// const create = (state: Account[], action: Action) => {
     // const { network, rates } = action;
     // const affected = state.find(f => f.network === network);
     // Object.keys(rates).map(k => rates[k].toFixed(2));
@@ -35,7 +35,7 @@ const create = (state: Account[], action: Action) => {
     //     affected.network = network;
     //     affected.rates = rates;
     // }
-};
+// };
 
 export default (state: Account[] = initialState, action: Action): Account[] => {
     return produce(state, draft => {
