@@ -1,22 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Link } from '@trezor/components';
+import { Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import {
     TREZOR_RESELLERS_URL,
     TREZOR_PACKAGING_URL,
     SUPPORT_URL,
-} from '@suite/constants/onboarding/urls';
-import { MD } from '@suite/config/onboarding/breakpoints';
-
-import Text from '@suite/components/onboarding/Text';
+} from '@onboarding-constants/urls';
+import { MD } from '@onboarding-config/breakpoints';
+import Text from '@onboarding-components/Text';
+import { ButtonBack, ButtonAlt, ButtonCta } from '@suite/components/onboarding/Buttons';
 import l10nCommonMessages from '@suite-support/Messages';
 
 import {
     StepWrapper,
     StepHeadingWrapper,
     StepBodyWrapper,
+    StepFooterWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 
@@ -26,7 +27,7 @@ import Hologram from './components/Hologram';
 import { AppState } from '@suite-types';
 
 const HologramWrapper = styled.div`
-    max-width: 500px;
+    max-width: 400px;
     margin: 10px;
 
     @media only screen and (min-width: ${MD}px) {
@@ -57,50 +58,44 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
             </StepHeadingWrapper>
             <StepBodyWrapper>
                 {activeSubStep !== 'hologram-different' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
                         <HologramWrapper>{model && <Hologram model={model} />}</HologramWrapper>
                         <ControlsWrapper>
                             {actualVersion && actualVersion !== model && (
-                                <React.Fragment>
-                                    <Button
-                                        onClick={() => onboardingActions.goToPreviousStep()}
-                                        isWhite
-                                    >
-                                        Go back and select correct device
-                                    </Button>
-                                </React.Fragment>
+                                <ButtonCta onClick={() => onboardingActions.goToPreviousStep()}>
+                                    Go back and select correct device
+                                </ButtonCta>
                             )}
                             {(!actualVersion || actualVersion === model) && (
                                 <React.Fragment>
-                                    <Button
+                                    <ButtonAlt
                                         data-test="button-hologram-different"
                                         onClick={() =>
                                             onboardingActions.goToSubStep('hologram-different')
                                         }
-                                        isWhite
                                     >
                                         <FormattedMessage
                                             {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_NOT_OK}
                                         />
-                                    </Button>
-                                    <Button
+                                    </ButtonAlt>
+                                    <ButtonCta
                                         data-test="button-continue"
                                         onClick={() => onboardingActions.goToNextStep()}
                                     >
                                         <FormattedMessage
                                             {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK}
                                         />
-                                    </Button>
+                                    </ButtonCta>
                                 </React.Fragment>
                             )}
                         </ControlsWrapper>
-                    </React.Fragment>
+                    </>
                 )}
                 {activeSubStep === 'hologram-different' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage
                                 {...l10nMessages.TR_DID_YOU_PURCHASE}
@@ -126,26 +121,32 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                             />
                         </Text>
                         <ControlsWrapper>
-                            <Button
-                                isWhite
+                            <ButtonAlt
                                 onClick={() => onboardingActions.goToSubStep(null)}
                                 data-test="button-back"
                             >
                                 Back
-                            </Button>
+                            </ButtonAlt>
 
                             <Link href={SUPPORT_URL} target="_self">
-                                <Button
+                                <ButtonCta
                                     data-test="button-contact-support"
                                     style={{ width: '100%' }}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
-                                </Button>
+                                </ButtonCta>
                             </Link>
                         </ControlsWrapper>
-                    </React.Fragment>
+                    </>
                 )}
             </StepBodyWrapper>
+            <StepFooterWrapper>
+                <ControlsWrapper>
+                    <ButtonBack onClick={() => onboardingActions.goToPreviousStep()}>
+                        Back to Trezor model selection
+                    </ButtonBack>
+                </ControlsWrapper>
+            </StepFooterWrapper>
         </StepWrapper>
     );
 };

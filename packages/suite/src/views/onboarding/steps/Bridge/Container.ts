@@ -16,6 +16,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
         goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
         goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     },
 });
 

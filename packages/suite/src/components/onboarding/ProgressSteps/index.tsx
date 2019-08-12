@@ -14,9 +14,12 @@ import colors from '@suite/config/onboarding/colors';
 import ProgressStep from './components/ProgressStep';
 
 const Wrapper = styled.div`
-    display: flex;
     width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
     border-bottom: 1px solid ${colors.grayLight};
+    display: ${({ isHidden }: { isHidden: boolean }) => (isHidden ? 'none' : 'flex')};
 `;
 
 const SECURITY_CLUSTER = [
@@ -106,28 +109,25 @@ class ProgressSteps extends React.Component<Props> {
     render() {
         const { isDisabled, onboardingActions, activeStep, hiddenOnSteps = [] } = this.props;
         const steps = this.getStepsWithDots();
+        const isHidden = hiddenOnSteps.includes(activeStep.id);
         return (
-            <React.Fragment>
-                <Wrapper>
-                    {!hiddenOnSteps.includes(activeStep.id) &&
-                        steps.map((step, index) => (
-                            <React.Fragment key={`${step.id}-${step.title}`}>
-                                <ProgressStep
-                                    isGoingForward={this.isGoingForward}
-                                    step={step}
-                                    index={index}
-                                    length={steps.length}
-                                    isActive={activeStep.title === step.title}
-                                    isFinished={this.isStepFinished(index, activeStep)}
-                                    isLast={steps.length - 1 === index}
-                                    onboardingActions={onboardingActions}
-                                    changeOverHowManySteps={this.changeOverHowManySteps}
-                                    isDisabled={isDisabled}
-                                />
-                            </React.Fragment>
-                        ))}
-                </Wrapper>
-            </React.Fragment>
+            <Wrapper isHidden={isHidden}>
+                {steps.map((step, index) => (
+                    <ProgressStep
+                        key={`${step.id}-${step.title}`}
+                        isGoingForward={this.isGoingForward}
+                        step={step}
+                        index={index}
+                        length={steps.length}
+                        isActive={activeStep.title === step.title}
+                        isFinished={this.isStepFinished(index, activeStep)}
+                        isLast={steps.length - 1 === index}
+                        onboardingActions={onboardingActions}
+                        changeOverHowManySteps={this.changeOverHowManySteps}
+                        isDisabled={isDisabled}
+                    />
+                ))}
+            </Wrapper>
         );
     }
 }

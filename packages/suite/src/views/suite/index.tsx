@@ -54,6 +54,16 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
+    // onboarding handles TrezorConnect events by itself
+    // and display proper view (install bridge, connect/disconnect device etc.)
+    if (router.app === 'onboarding') {
+        return (
+            <Layout fullscreenMode disableNotifications>
+                {props.children}
+            </Layout>
+        );
+    }
+
     // no available transport
     // TODO: redirect to brige page
     if (!suite.transport.type) {

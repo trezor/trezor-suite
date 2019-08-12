@@ -15,12 +15,20 @@ import * as STEP from '@suite/constants/onboarding/steps';
 
 const initialState: OnboardingReducer = {
     selectedModel: null,
-    // activeStepId: STEP.ID_RECOVERY_STEP,
     activeStepId: STEP.ID_WELCOME_STEP,
-
     activeSubStep: null,
     asNewDevice: null,
-    path: [STEP.PATH_CREATE, STEP.PATH_RECOVERY],
+    path: [],
+};
+
+const setPath = (newPath: OnboardingReducer['path']) => {
+    const updatedPath: OnboardingReducer['path'] = [];
+    newPath.forEach(path => {
+        if (!updatedPath.includes(path)) {
+            updatedPath.push(path);
+        }
+    });
+    return updatedPath;
 };
 
 const onboarding = (state: OnboardingReducer = initialState, action: OnboardingActionTypes) => {
@@ -30,18 +38,6 @@ const onboarding = (state: OnboardingReducer = initialState, action: OnboardingA
                 draft.activeStepId = action.stepId;
                 draft.activeSubStep = null;
                 break;
-            // todo: not sure about resolved steps, maybe will not be used
-            // case SET_STEP_RESOLVED:
-            //     draft.steps = state.steps.map((step: Step) => {
-            //         if (step.id === action.stepId) {
-            //             return {
-            //                 ...step,
-            //                 ...{ resolved: true },
-            //             };
-            //         }
-            //         return step;
-            //     });
-            //     break;
             case GO_TO_SUBSTEP:
                 draft.activeSubStep = action.subStepId;
                 break;
@@ -49,7 +45,7 @@ const onboarding = (state: OnboardingReducer = initialState, action: OnboardingA
                 draft.selectedModel = action.model;
                 break;
             case SET_PATH:
-                draft.path = action.value;
+                draft.path = setPath(action.value);
                 break;
             default:
                 return state;

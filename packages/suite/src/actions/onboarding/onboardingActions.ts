@@ -1,7 +1,6 @@
 import {
     SET_STEP_ACTIVE,
     GO_TO_SUBSTEP,
-    SET_STEP_RESOLVED,
     SELECT_TREZOR_MODEL,
     SET_PATH,
     OnboardingReducer,
@@ -34,14 +33,6 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const nextStep = findNextStep(activeStepId, stepsInPath);
     const activeStep = steps.find((step: Step) => step.id === activeStepId);
-
-    if (activeStep && !activeStep.resolved) {
-        dispatch({
-            type: SET_STEP_RESOLVED,
-            stepId: activeStepId,
-        });
-    }
-
     dispatch(goToStep(nextStep.id));
 };
 

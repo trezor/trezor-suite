@@ -1,19 +1,20 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { Select, Link, Button } from '@trezor/components';
+import { Select, Link } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
-
-import { goToSubStep, goToNextStep } from '@onboarding-actions/onboardingActions';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
 import Text from '@suite/components/onboarding/Text';
+import { goToSubStep, goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
+import { ButtonCta, ButtonBack } from '@onboarding-components/Buttons';
 import l10nCommonMessages from '@suite-support/Messages';
 import {
     StepWrapper,
     StepHeadingWrapper,
     StepBodyWrapper,
     ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
+    StepFooterWrapper,
+} from '@onboarding-components/Wrapper';
 
 import l10nCommonBridgeMessages from '@suite-views/bridge/index.messages';
 import l10nMessages from './index.messages';
@@ -31,12 +32,6 @@ const Download = styled.div`
     flex-wrap: wrap;
     justify-content: center;
 `;
-
-const DownloadBridgeButton = styled(Button)`
-    display: flex;
-    align-items: center;
-`;
-
 interface Installer {
     label: string;
     value: string;
@@ -56,6 +51,7 @@ interface Props {
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
         goToSubStep: typeof goToSubStep;
+        goToPreviousStep: typeof goToPreviousStep;
     };
 }
 
@@ -65,7 +61,7 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
         const installers = this.getInstallers();
         this.state = {
             target: installers.find((i: Installer) => i.preferred === true) || installers[0],
-            uri: 'https://data.trezor.io/',
+            uri: 'https://data.trezor.io/', // todo: urls
             installers,
         };
     }
@@ -124,22 +120,20 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                     </Text>
 
                     {status === null && (
-                        <React.Fragment>
-                            <Download>
-                                <SelectWrapper
-                                    isSearchable={false}
-                                    isClearable={false}
-                                    value={target}
-                                    onChange={(v: Installer) => this.onChange(v)}
-                                    options={installers}
-                                />
-                                <Link href={`${uri}${target.value}`}>
-                                    <DownloadBridgeButton onClick={() => this.download()}>
-                                        <FormattedMessage {...l10nMessages.TR_DOWNLOAD} />
-                                    </DownloadBridgeButton>
-                                </Link>
-                            </Download>
-                        </React.Fragment>
+                        <Download>
+                            <SelectWrapper
+                                isSearchable={false}
+                                isClearable={false}
+                                value={target}
+                                onChange={(v: Installer) => this.onChange(v)}
+                                options={installers}
+                            />
+                            <Link href={`${uri}${target.value}`}>
+                                <ButtonCta onClick={() => this.download()}>
+                                    <FormattedMessage {...l10nMessages.TR_DOWNLOAD} />
+                                </ButtonCta>
+                            </Link>
+                        </Download>
                     )}
 
                     {status === 'downloading' && (
@@ -174,13 +168,22 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                     {status === 'installed' && (
                         <React.Fragment>
                             <ControlsWrapper>
-                                <Button onClick={() => this.props.onboardingActions.goToNextStep()}>
+                                <ButtonCta
+                                    onClick={() => this.props.onboardingActions.goToNextStep()}
+                                >
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </Button>
+                                </ButtonCta>
                             </ControlsWrapper>
                         </React.Fragment>
                     )}
                 </StepBodyWrapper>
+                <StepFooterWrapper>
+                    <ControlsWrapper>
+                        <ButtonBack onClick={() => this.props.onboardingActions.goToPreviousStep()}>
+                            Back to hologram TODO: but if we have new device there is now holo!
+                        </ButtonBack>
+                    </ControlsWrapper>
+                </StepFooterWrapper>
             </StepWrapper>
         );
     }

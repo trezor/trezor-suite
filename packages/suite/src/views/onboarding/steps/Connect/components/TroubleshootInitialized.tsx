@@ -1,15 +1,16 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Link } from '@trezor/components';
+import { Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
-import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
-import * as STEP from '@suite/constants/onboarding/steps';
-import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
-import Text from '@suite/components/onboarding/Text';
 import l10nCommonMessages from '@suite-support/Messages';
+import { SUPPORT_URL } from '@onboarding-constants/urls';
+import * as STEP from '@onboarding-constants/steps';
+import { ControlsWrapper } from '@onboarding-components/Wrapper';
+import Text from '@onboarding-components/Text';
+import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
 import l10nMessages from './TroubleshootInitialized.messages';
 import { Dispatch, AppState } from '@suite-types';
 
@@ -29,16 +30,11 @@ const TroubleshootInitialized = (props: Props) => {
         <React.Fragment>
             {activeSubStep === null && (
                 <React.Fragment>
-                    {/* <H4>
-                            <FormattedMessage {...l10nMessages.TR_DEVICE_IS_INITIALIZED} />
-                        </H4> */}
                     <Text>
-                        {device.features.label && (
-                            <FormattedMessage
-                                {...l10nMessages.TR_DEVICE_LABEL}
-                                values={{ label: device.features.label }}
-                            />
-                        )}{' '}
+                        <FormattedMessage
+                            {...l10nMessages.TR_DEVICE_LABEL}
+                            values={{ label: device.label }}
+                        />{' '}
                         <FormattedMessage
                             {...l10nMessages.TR_DEVICE_FIRMWARE_VERSION}
                             values={{
@@ -47,75 +43,56 @@ const TroubleshootInitialized = (props: Props) => {
                         />
                     </Text>
                     <ControlsWrapper>
-                        <Button
+                        <ButtonAlt
                             onClick={() => onboardingActions.goToSubStep('user-worked-before')}
-                            isWhite
                         >
                             <FormattedMessage
                                 {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE}
                             />
-                        </Button>
-                        <Button
-                            onClick={() => onboardingActions.goToSubStep('is-brand-new')}
-                            isWhite
-                        >
+                        </ButtonAlt>
+                        <ButtonAlt onClick={() => onboardingActions.goToSubStep('is-brand-new')}>
                             <FormattedMessage
                                 {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE}
                             />
-                        </Button>
+                        </ButtonAlt>
                     </ControlsWrapper>
                 </React.Fragment>
             )}
 
             {activeSubStep === 'user-worked-before' && (
                 <React.Fragment>
-                    {/* <H4>
-                            <FormattedMessage
-                                {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE}
-                            />
-                        </H4> */}
                     <Text>
                         <FormattedMessage {...l10nMessages.TR_INSTRUCTION_TO_SKIP} />
                     </Text>
 
                     <ControlsWrapper>
-                        <Button
-                            onClick={() => onboardingActions.goToSubStep(null)}
-                            isWhite
-                            isInverse
-                        >
+                        <ButtonAlt onClick={() => onboardingActions.goToSubStep(null)}>
                             <FormattedMessage {...l10nCommonMessages.TR_BACK} />
-                        </Button>
-                        <Button
+                        </ButtonAlt>
+                        <ButtonCta
                             onClick={() => onboardingActions.goToNextStep(STEP.ID_FINAL_STEP)}
-                            isInverse
                         >
                             <FormattedMessage {...l10nCommonMessages.TR_SKIP_ALL} />
-                        </Button>
+                        </ButtonCta>
                     </ControlsWrapper>
                 </React.Fragment>
             )}
 
             {activeSubStep === 'is-brand-new' && (
                 <React.Fragment>
-                    {/* <H4>
-                        <FormattedMessage
-                            {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE}
-                        />
-                    </H4> */}
                     <Text>
                         <FormattedMessage
                             {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS}
                         />
                     </Text>
                     <ControlsWrapper>
-                        <Button onClick={() => onboardingActions.goToSubStep(null)} isWhite>
+                        <ButtonAlt onClick={() => onboardingActions.goToSubStep(null)}>
                             <FormattedMessage {...l10nCommonMessages.TR_BACK} />
-                        </Button>
+                        </ButtonAlt>
                         <Link href={SUPPORT_URL}>
-                            <Button style={{ width: '100%' }}>
+                            <ButtonCta style={{ width: '100%' }}>
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
-                            </Button>
+                            </ButtonCta>
                         </Link>
                     </ControlsWrapper>
                 </React.Fragment>

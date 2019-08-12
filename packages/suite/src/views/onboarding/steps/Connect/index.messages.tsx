@@ -26,6 +26,16 @@ const definedMessages = defineMessages({
         defaultMessage: 'Found an empty device, yay! You can continue now.',
         description: 'Case when device was connected and it is in expected state (not initialized)',
     },
+    TR_DEVICE_IN_BOOTLOADER_MODE: {
+        id: 'TR_DEVICE_IN_BOOTLOADER_MODE',
+        defaultMessage: 'Device in bootloader mode',
+        description: 'Indication that device is in bootloader mode',
+    },
+    TR_DEVICE_IS_INITIALIZED: {
+        id: 'TR_DEVICE_IS_INITIALIZED',
+        defaultMessage: 'Device is initialized',
+        description: 'Indication that device is in already initialized',
+    },
 });
 
 export default definedMessages;
