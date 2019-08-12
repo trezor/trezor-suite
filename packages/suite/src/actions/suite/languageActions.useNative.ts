@@ -3,7 +3,7 @@ import { SUITE } from './constants';
 import { Dispatch } from '@suite-types';
 
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {
-    fetch(resolveStaticPath(`@trezor/suite-data/files/l10n/${locale}.json`))
+    fetch(resolveStaticPath(`translations/l10n/${locale}.json`))
         .then(response => {
             if (response.ok) {
                 return response.json();

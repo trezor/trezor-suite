@@ -8,9 +8,6 @@
     ],
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Trezor data",
-    "main": "lib/index.js",
-    "module": "lib/index.es.js",
-    "types": "lib/index.d.ts",
     "scripts": {
         "copy-static-files": "ts-node ./index.ts"
     },
