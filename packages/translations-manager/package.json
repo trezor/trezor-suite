@@ -9,6 +9,7 @@
   "author": "Trezor <info@trezor.io>",
   "scripts": {
     "lint": "eslint .",
+    "postinstall": "lerna bootstrap",
     "clean": "rimraf lib",
     "build:lib": "yarn run clean && babel src --out-dir lib",
     "prepublishOnly": "yarn run lint && npm run build"

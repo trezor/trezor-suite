@@ -23,6 +23,7 @@
     "ws": "./lib/utils/ws.js"
   },
   "scripts": {
+    "postinstall": "lerna bootstrap",
     "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
     "build": "yarn build:lib && yarn build:workers",
     "build:workers": "rm -rf build && yarn build:workers-web && yarn build:workers-node && yarn build:workers-module",

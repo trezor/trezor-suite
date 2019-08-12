@@ -3389,13 +3389,6 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@tanem/svg-injector@^8.0.14":
-  version "8.0.17"
-  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.0.17.tgz#530d14a1422be6dd0ee44c80a05acf22a5d76714"
-  integrity sha512-Q3EIQg3DckUdHB5GcVY+7mTY0nGScGLLRq5GsjAe9HW36aQ4FDT/MNoBEr4h2505aisdAiVitFfaUbZc9TRo7Q==
-  dependencies:
-    "@babel/runtime" "^7.4.5"
-
 "@tanem/svg-injector@^8.0.23":
   version "8.0.23"
   resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.0.23.tgz#07a840a36bd6a4a2b7b7ec3b398c1ac4521deffb"
@@ -5148,7 +5141,7 @@ babel-plugin-react-docgen@^3.0.0:
     react-docgen "^4.1.0"
     recast "^0.14.7"
 
-babel-plugin-react-intl@^3.3.2, babel-plugin-react-intl@^3.3.3:
+babel-plugin-react-intl@^3.3.2:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-react-intl/-/babel-plugin-react-intl-3.4.1.tgz#b107b0756599c2fccb09f601454a7b805e8df659"
   integrity sha512-1Dp+b5E71ot3YjxPkX1u4l5pJkiLDmU4V6m6gatgrFRxGL8NQlQ67WrPA7GTNJhOhs75PYGmR3+l1PT7It4eyQ==
@@ -14708,11 +14701,6 @@ open@^6.1.0, open@^6.2.0:
   dependencies:
     is-wsl "^1.1.0"
 
-opencollective-postinstall@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/opencollective-postinstall/-/opencollective-postinstall-2.0.2.tgz#5657f1bede69b6e33a45939b061eb53d3c6c3a89"
-  integrity sha512-pVOEP16TrAO2/fjej1IdOyupJY8KDUM1CvsaScRbw6oddvpQoOfGk4ywha0HKKVAD6RkW4x6Q+tNBwhf3Bgpuw==
-
 opencollective@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/opencollective/-/opencollective-1.0.3.tgz#aee6372bc28144583690c3ca8daecfc120dd0ef1"
@@ -16816,15 +16804,6 @@ react-svg@^10.0.12:
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@tanem/svg-injector" "^8.0.23"
-    prop-types "^15.7.2"
-
-react-svg@^10.0.6:
-  version "10.0.9"
-  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-10.0.9.tgz#b8f5a3231243467799901132a2af7cd31ff7c610"
-  integrity sha512-da6qPsc+LZPBwncUZwIIpw9JOpzoThHBy64GqLYARFcWiAb8j793HGhTtamLw8hw1srulEJF2P6UOmjA0X3Uwg==
-  dependencies:
-    "@babel/runtime" "^7.4.5"
-    "@tanem/svg-injector" "^8.0.14"
     prop-types "^15.7.2"
 
 react-switch@^5.0.1:
@@ -18965,14 +18944,6 @@ styled-jsx@3.2.1:
     stylis "3.5.4"
     stylis-rule-sheet "0.0.10"
 
-styled-reset@^2.0.14:
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/styled-reset/-/styled-reset-2.0.16.tgz#4e747e6998676ec52442b40f6a6ac6c8f0ae0162"
-  integrity sha512-6FHc4gn9cuyq+bn5BA/Qnv5LNicIGlTGSEbI+uzUxdVowm26kWiR+T/R/wxRwKw95WeSjzYWXB2aPeLHAFuGLw==
-  dependencies:
-    opencollective "^1.0.3"
-    opencollective-postinstall "2.0.2"
-
 stylelint-config-recommended@^2.1.0, stylelint-config-recommended@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/stylelint-config-recommended/-/stylelint-config-recommended-2.2.0.tgz#46ab139db4a0e7151fd5f94af155512886c96d3f"
@@ -19609,11 +19580,6 @@ trezor-connect@extended:
     tiny-worker "^2.0.3"
     trezor-link "1.6.4"
     whatwg-fetch "^3.0.0"
-
-trezor-flags@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/trezor-flags/-/trezor-flags-1.0.2.tgz#594c6a52b91967dd1f0fc9fbd45711e99cd74198"
-  integrity sha512-eWMwDsxeHgh5+LW4RSViXYefkWi0UKsG8PpBeRqkaipwqQ17edj1TEKC0T75tvDcoKI66JhlO/nwabW0w5ajbw==
 
 trezor-link@1.6.4:
   version "1.6.4"

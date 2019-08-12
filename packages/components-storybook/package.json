@@ -6,6 +6,7 @@
     "author": "SatoshiLabs s.r.o.",
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
+        "postinstall": "lerna bootstrap",
         "lint": "yarn lint:styles && yarn lint:js",
         "lint:js": "eslint . --ext .tsx,.ts",
         "lint:styles": "npx stylelint './src/**/*.tsx'",

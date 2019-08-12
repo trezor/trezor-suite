@@ -14,6 +14,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest",
+    "postinstall": "lerna bootstrap",
     "test:watch": "jest --watch",
     "lint": "eslint '**/*{.ts,.tsx}'",
     "type-check": "tsc --project tsconfig.json",

@@ -7,6 +7,7 @@
     "main": "src/electron.js",
     "scripts": {
         "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
+        "postinstall": "lerna bootstrap",
         "dev:desktop": "yarn workspace @trezor/suite-data copy-static-files && electron .",
         "dev": "yarn workspace @trezor/suite-data copy-static-files && electron .",
         "preelectron-pack": "yarn build",
