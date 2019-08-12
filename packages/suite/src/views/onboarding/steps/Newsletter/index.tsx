@@ -2,19 +2,23 @@ import React, { FormEvent } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { Button, Link, Input, Checkbox, P } from '@trezor/components';
+import { Link, Input, Checkbox, P } from '@trezor/components';
 
-import {
-    SOCIAL_FACEBOOK_URL,
-    BLOG_URL,
-    SOCIAL_TWITTER_URL,
-} from '@suite/constants/onboarding/urls';
-import { IconSocial } from '@suite/components/onboarding/Icons';
+import l10nCommonMessages from '@suite-support/Messages';
 import { isEmail } from '@suite-utils/validators';
 import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
-import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
-import Text from '@suite/components/onboarding/Text';
-import l10nCommonMessages from '@suite-support/Messages';
+import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
+import { IconSocial } from '@onboarding-components/Icons';
+import { Dots } from '@onboarding-components/Loaders';
+import Text from '@onboarding-components/Text';
+import {
+    StepWrapper,
+    StepBodyWrapper,
+    StepHeadingWrapper,
+    ControlsWrapper,
+    CheckboxWrapper,
+} from '@onboarding-components/Wrapper';
+import { ButtonAlt, ButtonCta } from '@onboarding-components/Buttons';
 import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
 import {
     setSkipped,
@@ -22,18 +26,10 @@ import {
     submitEmail,
     toggleCheckbox,
 } from '@onboarding-actions/newsletterActions';
-
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-    CheckboxWrapper,
-} from '@suite/components/onboarding/Wrapper';
-
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
-import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
+
+import l10nMessages from './index.messages';
 
 const CheckboxexSection = styled.div`
     display: flex;
@@ -58,7 +54,6 @@ const InputWrapper = styled.div`
 `;
 
 interface Props {
-    fetchCall: AppState['onboarding']['fetchCall'];
     newsletter: AppState['onboarding']['newsletter'];
     device: AppState['onboarding']['connect']['device'];
     connectActions: {
@@ -79,22 +74,22 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
     }
 
     getEmailStatus() {
-        const { fetchCall, newsletter } = this.props;
-        if (fetchCall.name === SUBMIT_EMAIL && fetchCall.isProgress) {
+        const { newsletter } = this.props;
+        if (newsletter.isProgress) {
             return 'sending';
         }
-        if ((fetchCall.name === SUBMIT_EMAIL && fetchCall.result) || newsletter.skipped) {
+        if (newsletter.isSuccess || newsletter.skipped) {
             return 'success';
         }
-        if (fetchCall.name === SUBMIT_EMAIL && fetchCall.error) {
+        if (newsletter.error) {
             return 'error';
         }
         return null;
     }
 
     getStatus() {
-        const { fetchCall, newsletter } = this.props;
-        if ((fetchCall.name === SUBMIT_EMAIL && fetchCall.result) || newsletter.skipped) {
+        const { newsletter } = this.props;
+        if (newsletter.isSuccess || newsletter.skipped) {
             return 'socials';
         }
         return 'initial';
@@ -159,6 +154,14 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                                     isDisabled={this.getEmailStatus() === 'sending'}
                                 />
                             </InputWrapper>
+                            {newsletter.isProgress && (
+                                <Text>
+                                    Subscribing
+                                    <Dots />
+                                </Text>
+                            )}
+                            {newsletter.error && <Text>Subscribe failed</Text>}
+                            {newsletter.isSuccess && <Text>Subscribe success!</Text>}
 
                             <CheckboxexSection>
                                 {newsletter.checkboxes.map((checkbox: CheckboxType) => (
@@ -176,10 +179,10 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                             </CheckboxexSection>
 
                             <ControlsWrapper>
-                                <Button isWhite onClick={() => this.skipEmail()}>
+                                <ButtonAlt onClick={() => this.skipEmail()}>
                                     <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                                </Button>
-                                <Button
+                                </ButtonAlt>
+                                <ButtonCta
                                     isDisabled={
                                         this.validateInput().state !== 'success' ||
                                         this.getEmailStatus() === 'sending'
@@ -187,7 +190,7 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                                     onClick={this.submitEmail}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_SUBMIT} />
-                                </Button>
+                                </ButtonCta>
                             </ControlsWrapper>
                         </React.Fragment>
                     )}
@@ -216,9 +219,9 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                                 </Link>
                             </SocialWrapper>
                             <ControlsWrapper>
-                                <Button onClick={() => this.goToNextStep()}>
+                                <ButtonCta onClick={() => this.goToNextStep()}>
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </Button>
+                                </ButtonCta>
                             </ControlsWrapper>
                         </React.Fragment>
                     )}

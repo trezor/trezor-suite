@@ -1,8 +1,6 @@
-/* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_DEVICE_USED_IN_OTHER: {
         id: 'TR_DEVICE_USED_IN_OTHER',
         defaultMessage: 'Device is used in other window',

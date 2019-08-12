@@ -62,7 +62,8 @@ const ProgressStep = (props: Props) => {
         backgroundColor = colors.brandPrimary;
     }
 
-    const isClickable = Boolean(props.isFinished && !props.isDisabled && props.step.id);
+    // const isClickable = Boolean(props.isFinished && !props.isDisabled && props.step.id);
+    const isClickable = false;
 
     let order;
     if (props.isGoingForward) {

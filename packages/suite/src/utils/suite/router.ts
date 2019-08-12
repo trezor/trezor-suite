@@ -1,6 +1,8 @@
 import { routes } from '@suite-constants/routes';
 
-const PARAMS = ['coin', 'accountId'];
+type AnyRouteName = typeof routes[number]['name'];
+
+const PARAMS = ['coin', 'accountId'] as const;
 
 // Prefix a url with assetPrefix (eg. name of the branch in CI)
 // Useful with NextJS's Router.push() that accepts `as` prop as second arg
@@ -28,7 +30,7 @@ export const getParams = (url: string) => {
     return params;
 };
 
-export const getRoute = (name: string, params?: { [key: string]: string }) => {
+export const getRoute = (name: AnyRouteName | string, params?: { [key: string]: string }) => {
     const entry = routes.find(r => r.name === name);
     if (!entry) {
         // eslint-disable-next-line no-console
@@ -56,6 +58,7 @@ export const toInternalRoute = (route: string) => {
     // eg. https://suite.corp.sldev.cz/wallet/account/#/eth/0 will be split to
     // 'https://suite.corp.sldev.cz/wallet/account/' and '#/eth/0'
     try {
+        // https://suite.corp.sldev.cz/suite-web/onboarding/improvements/onboarding/
         // if there is an URL prefix remove it(eg. branch name on CI)
         const urlPrefix = process.env.assetPrefix;
         let strippedPrefix = route;
@@ -77,7 +80,7 @@ export const isInternalRoute = (route: string) => {
     return !!routes.find(r => r.pattern === toInternalRoute(route));
 };
 
-export const isStatic = (route: string) => {
+export const isStatic = (route: AnyRouteName | string) => {
     const routeFound = routes.find(r => r.pattern === route);
     return routeFound ? !!routeFound.isStatic : true; // 404 page act as a static
 };

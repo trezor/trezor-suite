@@ -1,11 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_DEVICE_IS_INITIALIZED: {
-        id: 'TR_DEVICE_IS_INITIALIZED',
-        defaultMessage: 'Device is initialized',
-        description: 'Indication that device is in already initialized',
-    },
     TR_DEVICE_LABEL: {
         id: 'TR_DEVICE_LABEL',
         defaultMessage: 'Device label: {label}.',
