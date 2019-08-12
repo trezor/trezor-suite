@@ -12,10 +12,8 @@
         "copy-static-files": "ts-node ./index.ts"
     },
     "dependencies": {
-        "@types/fs-extra": "^8.0.0"
-    },
-    "devDependencies": {
         "fs-extra": "^8.1.0",
-        "ts-node": "^8.3.0"
+        "ts-node": "^8.3.0",
+        "@types/fs-extra": "^8.0.0"
     }
 }
