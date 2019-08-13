@@ -29,7 +29,6 @@
     "jest-mock-random": "^1.0.2",
     "rollup": "^0.67.4",
     "rollup-plugin-cleanup": "^3.0.0",
-    "rollup-plugin-typescript2": "^0.21.2",
-    "ts-jest": "^24.0.2"
+    "rollup-plugin-typescript2": "^0.21.2"
   }
 }

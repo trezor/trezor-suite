@@ -1,16 +1,16 @@
 import React from 'react';
-import { Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
-
-import Text from '@suite/components/onboarding/Text';
+import * as STEP from '@onboarding-constants/steps';
+import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
+import Text from '@onboarding-components/Text';
 import {
     StepWrapper,
     StepBodyWrapper,
     StepHeadingWrapper,
     ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
+} from '@onboarding-components/Wrapper';
 
 import l10nMessages from './index.messages';
 
@@ -28,21 +28,20 @@ const SecurityStep = (props: Props) => (
                 <FormattedMessage {...l10nMessages.TR_SECURITY_SUBHEADING} />
             </Text>
             <ControlsWrapper>
-                <Button
-                    isWhite
+                <ButtonAlt
                     onClick={() => {
-                        props.goToNextStep();
+                        props.goToNextStep(STEP.ID_FINAL_STEP);
                     }}
                 >
                     <FormattedMessage {...l10nMessages.TR_SKIP_SECURITY} />
-                </Button>
-                <Button
+                </ButtonAlt>
+                <ButtonCta
                     onClick={() => {
                         props.goToNextStep();
                     }}
                 >
                     <FormattedMessage {...l10nMessages.TR_GO_TO_SECURITY} />
-                </Button>
+                </ButtonCta>
             </ControlsWrapper>
         </StepBodyWrapper>
     </StepWrapper>

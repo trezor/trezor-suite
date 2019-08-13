@@ -2,12 +2,19 @@ import React, { CSSProperties } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { createFilter } from 'react-select';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
-import { P, Button, Select, Link } from '@trezor/components';
+import { P, Select, Link } from '@trezor/components';
 
 import BlindMatrix from '@onboarding-components/BlindMatrix';
-import { OptionsList } from '@onboarding-components/Options';
+import Option from '@onboarding-components/Option';
 import Text from '@onboarding-components/Text';
-import { ControlsWrapper, StepWrapper, StepBodyWrapper } from '@onboarding-components/Wrapper';
+import {
+    ControlsWrapper,
+    StepWrapper,
+    StepBodyWrapper,
+    OptionsWrapper,
+    StepHeadingWrapper,
+} from '@onboarding-components/Wrapper';
+import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
 
 import colors from '@onboarding-config/colors';
 
@@ -145,8 +152,13 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
 
         return (
             <StepWrapper>
+                {/* getStatus: {JSON.stringify(this.getStatus())} */}
+
+                <StepHeadingWrapper>
+                    {this.getStatus() === null && 'Recover your device from seed'}
+                    {this.getStatus() === 'select-advanced-recovery' && 'Select recovery method'}
+                </StepHeadingWrapper>
                 <StepBodyWrapper>
-                    getStatus: {this.getStatus()}
                     {this.getStatus() === null && (
                         <React.Fragment>
                             {device!.features!.major_version === 1 && (
@@ -154,75 +166,57 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                     <Text>
                                         <FormattedMessage {...l10nMessages.TR_RECOVER_SUBHEADING} />
                                     </Text>
-                                    <OptionsList
-                                        options={[
-                                            {
-                                                content: (
-                                                    <div>
-                                                        <P>
-                                                            <FormattedMessage
-                                                                {...l10nMessages.TR_WORDS}
-                                                                values={{ count: '12' }}
-                                                            />
-                                                        </P>
-                                                    </div>
-                                                ),
-                                                value: 12,
-                                                key: 1,
-                                            },
-                                            {
-                                                content: (
-                                                    <div>
-                                                        <P>
-                                                            <FormattedMessage
-                                                                {...l10nMessages.TR_WORDS}
-                                                                values={{ count: '18' }}
-                                                            />
-                                                        </P>
-                                                    </div>
-                                                ),
-                                                value: 18,
-                                                key: 2,
-                                            },
-                                            {
-                                                content: (
-                                                    <div>
-                                                        <P>
-                                                            <FormattedMessage
-                                                                {...l10nMessages.TR_WORDS}
-                                                                values={{ count: '24' }}
-                                                            />
-                                                        </P>
-                                                    </div>
-                                                ),
-                                                value: 24,
-                                                key: 3,
-                                            },
-                                        ]}
-                                        selected={this.props.recovery.wordsCount}
-                                        selectedAccessor="value"
-                                        onSelect={(value: number) => {
-                                            this.props.recoveryActions.setWordsCount(value);
-                                        }}
-                                    />
+                                    <OptionsWrapper>
+                                        <Option
+                                            isSelected={this.props.recovery.wordsCount === 12}
+                                            onClick={() => {
+                                                this.props.recoveryActions.setWordsCount(12);
+                                            }}
+                                        >
+                                            <P>
+                                                <FormattedMessage
+                                                    {...l10nMessages.TR_WORDS}
+                                                    values={{ count: '12' }}
+                                                />
+                                            </P>
+                                        </Option>
+                                        <Option
+                                            isSelected={this.props.recovery.wordsCount === 18}
+                                            onClick={() => {
+                                                this.props.recoveryActions.setWordsCount(18);
+                                            }}
+                                        >
+                                            <P>
+                                                <FormattedMessage
+                                                    {...l10nMessages.TR_WORDS}
+                                                    values={{ count: '18' }}
+                                                />
+                                            </P>
+                                        </Option>
+                                        <Option
+                                            isSelected={this.props.recovery.wordsCount === 24}
+                                            onClick={() => {
+                                                this.props.recoveryActions.setWordsCount(24);
+                                            }}
+                                        >
+                                            <P>
+                                                <FormattedMessage
+                                                    {...l10nMessages.TR_WORDS}
+                                                    values={{ count: '24' }}
+                                                />
+                                            </P>
+                                        </Option>
+                                    </OptionsWrapper>
 
                                     <ControlsWrapper>
-                                        <Button
+                                        <ButtonCta
                                             isDisabled={this.props.recovery.wordsCount === null}
                                             onClick={() => {
                                                 this.setStatus('select-advanced-recovery');
                                             }}
                                         >
                                             <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                        </Button>
-                                        <Button
-                                            isWhite
-                                            onClick={() => {
-                                                this.props.onboardingActions.goToSubStep(null);
-                                            }}
-                                        >
-                                            <FormattedMessage {...l10nCommonMessages.TR_BACK} />
-                                        </Button>
+                                        </ButtonCta>
                                     </ControlsWrapper>
                                 </React.Fragment>
                             )}
@@ -233,13 +227,13 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                         <FormattedMessage {...l10nMessages.TR_RECOVER_SUBHEADING} />
                                     </Text>
                                     <ControlsWrapper>
-                                        <Button
+                                        <ButtonCta
                                             onClick={() => {
                                                 this.recoveryDevice();
                                             }}
                                         >
                                             <FormattedMessage {...l10nMessages.TR_START_RECOVERY} />
-                                        </Button>
+                                        </ButtonCta>
                                     </ControlsWrapper>
                                 </React.Fragment>
                             )}
@@ -261,54 +255,49 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                     }}
                                 />
                             </Text>
-                            <OptionsList
-                                options={[
-                                    {
-                                        content: (
-                                            <P>
-                                                <FormattedMessage
-                                                    {...l10nMessages.TR_BASIC_RECOVERY_OPTION}
-                                                />
-                                            </P>
-                                        ),
-                                        value: false,
-                                        key: 1,
-                                    },
-                                    {
-                                        content: (
-                                            <P>
-                                                <FormattedMessage
-                                                    {...l10nMessages.TR_ADVANCED_RECOVERY_OPTION}
-                                                />
-                                            </P>
-                                        ),
-                                        value: true,
-                                        key: 2,
-                                    },
-                                ]}
-                                selected={this.props.recovery.advancedRecovery}
-                                selectedAccessor="value"
-                                onSelect={(value: boolean) => {
-                                    this.props.recoveryActions.setAdvancedRecovery(value);
-                                }}
-                            />
+                            <OptionsWrapper>
+                                <Option
+                                    isSelected={this.props.recovery.advancedRecovery === false}
+                                    onClick={() => {
+                                        this.props.recoveryActions.setAdvancedRecovery(false);
+                                    }}
+                                >
+                                    <P>
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_BASIC_RECOVERY_OPTION}
+                                        />
+                                    </P>
+                                </Option>
+                                <Option
+                                    isSelected={this.props.recovery.advancedRecovery === true}
+                                    onClick={() => {
+                                        this.props.recoveryActions.setAdvancedRecovery(true);
+                                    }}
+                                >
+                                    <P>
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_ADVANCED_RECOVERY_OPTION}
+                                        />
+                                    </P>
+                                </Option>
+                            </OptionsWrapper>
 
                             <ControlsWrapper>
-                                <Button
+                                <ButtonAlt
+                                    onClick={() => {
+                                        // this.props.onboardingActions.goToSubStep(null);
+                                        this.setStatus(null);
+                                    }}
+                                >
+                                    <FormattedMessage {...l10nCommonMessages.TR_BACK} />
+                                </ButtonAlt>
+                                <ButtonCta
                                     onClick={() => {
                                         this.recoveryDevice();
                                     }}
                                 >
                                     <FormattedMessage {...l10nMessages.TR_START_RECOVERY} />
-                                </Button>
-                                <Button
-                                    isWhite
-                                    onClick={() => {
-                                        this.props.onboardingActions.goToSubStep(null);
-                                    }}
-                                >
-                                    <FormattedMessage {...l10nCommonMessages.TR_BACK} />
-                                </Button>
+                                </ButtonCta>
                             </ControlsWrapper>
                         </React.Fragment>
                     )}
@@ -405,9 +394,9 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                     )}
                     {this.getStatus() === 'success' && (
                         <ControlsWrapper>
-                            <Button onClick={() => this.props.onboardingActions.goToNextStep()}>
+                            <ButtonCta onClick={() => this.props.onboardingActions.goToNextStep()}>
                                 Continue
-                            </Button>
+                            </ButtonCta>
                         </ControlsWrapper>
                     )}
                     {this.getStatus() === 'error' && (
@@ -419,14 +408,14 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                 />
                             </Text>
 
-                            <Button
+                            <ButtonCta
                                 onClick={() => {
                                     this.props.connectActions.resetCall();
                                     this.setStatus(null);
                                 }}
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_RETRY} />
-                            </Button>
+                            </ButtonCta>
                         </React.Fragment>
                     )}
                 </StepBodyWrapper>

@@ -61,6 +61,25 @@ const baseStyles = createGlobalStyle`
         transform: translateX(-20%);
         transition: opacity ${STEP_ANIMATION_DURATION}ms cubic-bezier(0,1.01,0,1), transform ${STEP_ANIMATION_DURATION}ms linear;
     }
+
+    .fade-out-enter {
+        opacity: 0;
+    }
+
+    .fade-out-enter-active {
+        opacity: 1;
+        transition: opacity 1s
+    }
+
+    .fade-out-exit {
+        opacity: 1;
+    }
+
+    .fade-out-exit-active {
+        /* transform: translateY(-20%); */
+        opacity: 0;
+        transition: opacity 1s
+    }
 `;
 
 export default baseStyles;

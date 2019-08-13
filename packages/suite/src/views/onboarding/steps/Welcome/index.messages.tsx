@@ -8,7 +8,7 @@ const definedMessages = defineMessages({
     },
     TR_WELCOME_TO_TREZOR_TEXT: {
         id: 'TR_WELCOME_TO_TREZOR_TEXT',
-        defaultMessage: 'Welcome to Trezor, bla bla bla. we are cool as fuck.',
+        defaultMessage: 'Welcome to Trezor, bla bla bla.',
         description: 'Welcome message on welcome page, longer text.',
     },
     TR_GET_STARTED: {

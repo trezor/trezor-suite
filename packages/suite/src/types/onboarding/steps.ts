@@ -25,6 +25,7 @@ export type AnyStepId =
     | typeof STEP.ID_NAME_STEP
     | typeof STEP.ID_CONNECT_STEP
     | typeof STEP.ID_UNBOXING_STEP
+    | typeof STEP.ID_SHAMIR_STEP
     | typeof STEP.ID_RECOVERY_STEP;
 
 export type AnyStepDisallowedState =
@@ -50,6 +51,7 @@ export type AnyStepTitle =
     | typeof STEP.TITLE_NAME_STEP
     | typeof STEP.TITLE_CONNECT_STEP
     | typeof STEP.TITLE_UNBOXING_STEP
+    | typeof STEP.TITLE_LAUNCH_STEP
     | typeof STEP.TITLE_RECOVERY_STEP;
 
 export type AnyPath =

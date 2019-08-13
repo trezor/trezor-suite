@@ -1,11 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_DEVICE_IN_BOOTLOADER_MODE: {
-        id: 'TR_DEVICE_IN_BOOTLOADER_MODE',
-        defaultMessage: 'Device in bootloader mode',
-        description: 'Indication that device is in bootloader mode',
-    },
     TR_DEVICE_IN_BOOTLOADER_MODE_INSTRUCTIONS: {
         id: 'TR_DEVICE_IN_BOOTLOADER_MODE_INSTRUCTIONS',
         defaultMessage:

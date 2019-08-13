@@ -92,6 +92,9 @@
     },
     "exclude": [
         "node_modules",
+        "**/node_modules",
+        "**/lib",
+        "**/build",
         "**/api/generated/**/*.*",
         "**/_old/**/*.*",
         ".next"

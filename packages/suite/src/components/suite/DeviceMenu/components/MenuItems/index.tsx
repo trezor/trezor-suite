@@ -51,7 +51,7 @@ const IconWrapper = styled.div`
     margin-right: 15px;
 `;
 
-const Link = styled.a``;
+// const Link = styled.a``;
 
 const SwitchWrapper = styled.div``;
 
