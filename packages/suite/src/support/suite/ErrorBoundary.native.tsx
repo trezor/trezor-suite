@@ -13,7 +13,7 @@ interface State {
 class ErrorBoundary extends React.Component<Props, State> {
     state = { error: null };
 
-    componentDidCatch(error: Error, info: object) {
+    componentDidCatch(error: Error, _info: object) {
         this.setState({ error });
         // Alert.alert(
         //     'error',

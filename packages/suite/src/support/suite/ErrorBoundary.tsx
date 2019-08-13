@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
         this.state = { error: null };
     }
 
-    componentDidCatch(error: Error | null, errorInfo: object) {
+    componentDidCatch(error: Error | null, _errorInfo: object) {
         this.setState({ error });
         // todo: not in development and in production only if user opts in.
         // Sentry.withScope(scope => {
@@ -41,7 +41,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
             // render fallback UI
             return (
                 <Wrapper>
-                    <H1>Error occured</H1>
+                    <H1>Error occurred</H1>
                     <P>It appears something is broken. You might let us know by sending report</P>
                     {/* Sentry.showReportDialog({ eventId: this.state.eventId }) */}
                     <StyledButton onClick={() => Sentry.showReportDialog()}>

@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
-import Modals from '@suite-components/modals/Container';
+import Modals from '@suite-components/modals';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
 import suiteConfig from '@suite-config/index';

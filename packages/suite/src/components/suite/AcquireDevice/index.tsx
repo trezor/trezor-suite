@@ -10,19 +10,18 @@ import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
 interface Props extends InjectedIntlProps {
-    devices: AppState['devices'];
-    selectedDevice: AppState['suite']['device'];
+    device: AppState['suite']['device'];
     selectDevice: typeof selectDevice;
 }
 
 const Selection: FunctionComponent<Props> = props => {
-    const { devices, selectedDevice } = props;
+    const { device } = props;
 
-    if (!selectedDevice || devices.length < 1) return null;
+    if (!device) return null;
 
     const onClick = async () => {
         const resp = await TrezorConnect.getFeatures({
-            device: selectDevice,
+            device,
         });
 
         if (resp.success) {
@@ -52,8 +51,7 @@ const Selection: FunctionComponent<Props> = props => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-    devices: state.devices,
-    selectedDevice: state.suite.device,
+    device: state.suite.device,
 });
 
 export default injectIntl(
