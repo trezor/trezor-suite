@@ -5,7 +5,6 @@ import {
     SET_PATH,
     OnboardingReducer,
 } from '@suite/types/onboarding/onboarding';
-import { Step } from '@suite/types/onboarding/steps';
 import { AnyStepId } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
@@ -32,7 +31,7 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
     const { activeStepId, path } = getState().onboarding;
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const nextStep = findNextStep(activeStepId, stepsInPath);
-    const activeStep = steps.find((step: Step) => step.id === activeStepId);
+    // const activeStep = steps.find((step: Step) => step.id === activeStepId);
     dispatch(goToStep(nextStep.id));
 };
 

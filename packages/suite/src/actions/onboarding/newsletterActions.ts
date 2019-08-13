@@ -11,8 +11,6 @@ import {
 import { MAILCHIMP_U, MAILCHIMP_ID, MAILCHIMP_BASE } from '@suite/config/onboarding/mailchimp';
 import { Dispatch, GetState } from '@suite-types';
 
-import { fetchResource } from './fetchActions';
-
 const GET = 'GET';
 const MODE_NO_CORS: 'no-cors' = 'no-cors';
 
@@ -41,7 +39,7 @@ const submitEmail = () => async (dispatch: Dispatch, getState: GetState) => {
     url += `&EMAIL=${email}`;
     dispatch({ type: FETCH_START });
     try {
-        const response = await fetch(url, { options: { method: GET, mode: MODE_NO_CORS } });
+        const response = await fetch(url, { method: GET, mode: MODE_NO_CORS });
         // response.status === 0 is cors-hack, cors doesnt allow us to read response status,
         // mailchimp api cant be used as well as it does not support CORS
         if (response.status === 0) {

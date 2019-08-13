@@ -6,7 +6,6 @@ import newsletter from '@suite/reducers/onboarding/newsletterReducer';
 import { RecoveryActionTypes } from '@onboarding-types/recovery';
 import { FirmwareUpdateActionTypes } from '@onboarding-types/firmwareUpdate';
 import { NewsletterActionTypes } from '@onboarding-types/newsletter';
-import { FetchActionTypes } from '@onboarding-types/fetch';
 import { ConnectActionTypes } from '@onboarding-types/connect';
 import { OnboardingActionTypes, OnboardingReducer } from '@onboarding-types/onboarding';
 

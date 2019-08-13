@@ -40,6 +40,7 @@ const initialState = {
     ],
     isFetching: false,
     isSuccess: false,
+    isProgress: false,
     error: null,
 };
 
@@ -67,7 +68,6 @@ const newsletter = (state: NewsletterReducer = initialState, action: NewsletterA
             case FETCH_SUCCESS:
                 draft.isProgress = false;
                 draft.error = null;
-                draft.isSucces = action.result;
                 break;
             case FETCH_ERROR:
                 draft.isProgress = false;

@@ -17,10 +17,10 @@ import { GetState, Dispatch } from '@suite-types';
 const call = (name: string, params?: any) => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     try {
-        const currentCall = getState().onboarding.connect.deviceCall;
-        if (currentCall.isProgress) {
-            throw new Error('forbidden. another call in progress');
-        }
+        // const currentCall = getState().onboarding.connect.deviceCall;
+        // if (currentCall.isProgress) {
+        //     throw new Error('forbidden. another call in progress');
+        // }
 
         dispatch({ type: DEVICE_CALL_RESET });
 

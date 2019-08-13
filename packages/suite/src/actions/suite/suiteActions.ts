@@ -87,7 +87,7 @@ export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getS
     const { app } = getState().router;
     if (!selected) {
         dispatch(selectDevice(device));
-        if (device.mode === 'initialize' && app !== 'onboarding') {
+        if (device.type === 'acquired' && device.mode === 'initialize' && app !== 'onboarding') {
             goto(getRoute('onboarding-index'));
         }
     }
