@@ -4,87 +4,10 @@ import styled from 'styled-components';
 import { Input, Button, P, Icon, Select } from '@trezor/components';
 import { AppState } from '@suite-types/index';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import elementToHomescreen from '@suite/utils/suite/elementToHomescreen';
+import { elementToHomescreen } from '@suite-utils/homescreen';
+import { homescreensT1, homescreensT2 } from '@suite-constants';
 
-const IMAGE_NAMES_T1 = [
-    'original', // note - has to be first
-    'blank',
-    'circleweb',
-    'circuit',
-    'starweb',
-    'stars',
-    'bitcoin_b2',
-    'bitcoin_shade',
-    'bitcoin_b',
-    'bitcoin_full',
-    'bitcat',
-    'nyancat',
-    'coffee',
-    'flower',
-    'saturn',
-    'jupiter',
-    'einstein',
-    'piggy',
-    'honeybadger',
-    'dragon',
-    'narwal',
-    'rabbit',
-    'bunny',
-    'rooster',
-    'fancy',
-    'genesis',
-    'my_bank',
-    'candle',
-    'ancap',
-    'anonymous',
-    'mushroom',
-    'invader',
-    'mtgox',
-    'electrum',
-    'mycelium',
-    'ethereum',
-    'litecoin',
-    'myetherwallet',
-    'zcash',
-    'dash',
-    'bitcoin_cash',
-    'bitcoin_gold',
-    'vertcoin',
-    'namecoin',
-    'monacoin',
-    'doge',
-    'digibyte',
-    'decred',
-    'multibit',
-    'reddit',
-    'hacker',
-    'polis',
-] as const;
-
-const IMAGE_NAMES_T2 = [
-    'default',
-    'trezor',
-    'btc',
-    'ltc',
-    'eth',
-    'doge',
-    'dash',
-    'xmr',
-    'zec',
-    'anonymous',
-    'polis',
-    'hodl',
-    'moon',
-    'bitcoin_gold',
-    'decred',
-    'digibyte',
-    'fujicoin',
-    'monacoin',
-    'namecoin',
-    'vertcoin',
-] as const;
-
-type AnyImageName = typeof IMAGE_NAMES_T1[number] | typeof IMAGE_NAMES_T2[number];
+type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
 const Wrapper = styled.div`
     display: flex;
@@ -271,7 +194,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
 
             <BackgroundGallery>
                 {device.features.major_version === 1 &&
-                    IMAGE_NAMES_T1.map(image => (
+                    homescreensT1.map(image => (
                         <BackgroundImageT1
                             key={image}
                             id={image}
@@ -281,7 +204,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                     ))}
 
                 {device.features.major_version === 2 &&
-                    IMAGE_NAMES_T2.map(image => (
+                    homescreensT2.map(image => (
                         <BackgroundImageT2
                             key={image}
                             id={image}
