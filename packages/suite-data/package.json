@@ -1,0 +1,19 @@
+{
+    "name": "@trezor/suite-data",
+    "version": "1.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "keywords": [
+        "Trezor",
+        "trezor-data"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "Trezor data",
+    "scripts": {
+        "copy-static-files": "ts-node ./index.ts"
+    },
+    "dependencies": {
+        "fs-extra": "^8.1.0",
+        "ts-node": "^8.3.0",
+        "@types/fs-extra": "^8.0.0"
+    }
+}

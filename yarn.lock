@@ -3389,13 +3389,6 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@tanem/svg-injector@^8.0.14":
-  version "8.0.17"
-  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.0.17.tgz#530d14a1422be6dd0ee44c80a05acf22a5d76714"
-  integrity sha512-Q3EIQg3DckUdHB5GcVY+7mTY0nGScGLLRq5GsjAe9HW36aQ4FDT/MNoBEr4h2505aisdAiVitFfaUbZc9TRo7Q==
-  dependencies:
-    "@babel/runtime" "^7.4.5"
-
 "@tanem/svg-injector@^8.0.23":
   version "8.0.23"
   resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.0.23.tgz#07a840a36bd6a4a2b7b7ec3b398c1ac4521deffb"
@@ -3501,6 +3494,13 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
+
+"@types/fs-extra@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.0.0.tgz#d3e2c313ca29f95059f198dd60d1f774642d4b25"
+  integrity sha512-bCtL5v9zdbQW86yexOlXWTEGvLNqWxMFyi7gQA7Gcthbezr2cPSOb8SkESVKA937QD5cIwOFLDFt0MQoXOEr9Q==
+  dependencies:
+    "@types/node" "*"
 
 "@types/glob@^7.1.1":
   version "7.1.1"
@@ -4504,6 +4504,11 @@ are-we-there-yet@~1.1.2:
     delegates "^1.0.0"
     readable-stream "^2.0.6"
 
+arg@^4.1.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/arg/-/arg-4.1.1.tgz#485f8e7c390ce4c5f78257dbea80d4be11feda4c"
+  integrity sha512-SlmP3fEA88MBv0PypnXZ8ZfJhwmDeIE3SP71j37AiXQBXYosPV0x6uISAaHYSlSVhmHOVkomen0tbGk6Anlebw==
+
 argparse@^1.0.7:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
@@ -5136,7 +5141,7 @@ babel-plugin-react-docgen@^3.0.0:
     react-docgen "^4.1.0"
     recast "^0.14.7"
 
-babel-plugin-react-intl@^3.3.2, babel-plugin-react-intl@^3.3.3:
+babel-plugin-react-intl@^3.3.2:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-react-intl/-/babel-plugin-react-intl-3.4.1.tgz#b107b0756599c2fccb09f601454a7b805e8df659"
   integrity sha512-1Dp+b5E71ot3YjxPkX1u4l5pJkiLDmU4V6m6gatgrFRxGL8NQlQ67WrPA7GTNJhOhs75PYGmR3+l1PT7It4eyQ==
@@ -7687,6 +7692,11 @@ diff-sequences@^24.3.0:
   version "24.3.0"
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-24.3.0.tgz#0f20e8a1df1abddaf4d9c226680952e64118b975"
   integrity sha512-xLqpez+Zj9GKSnPWS0WZw1igGocZ+uua8+y+5dDNTT934N3QuY1sp2LkHzwiaYQGz60hMq0pjAshdeXm5VUOEw==
+
+diff@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.1.tgz#0c667cb467ebbb5cea7f14f135cc2dba7780a8ff"
+  integrity sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
 
 diffie-hellman@^5.0.0:
   version "5.0.3"
@@ -12778,7 +12788,7 @@ make-dir@^3.0.0:
   dependencies:
     semver "^6.0.0"
 
-make-error@1.x:
+make-error@1.x, make-error@^1.1.1:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/make-error/-/make-error-1.3.5.tgz#efe4e81f6db28cadd605c70f29c831b58ef776c8"
   integrity sha512-c3sIjNUow0+8swNwVpqoH4YCShKNFkMaw6oH1mNS2haDZQqkeZFlHS3dhoeEbKKmJB4vXpJucU6oH75aDYeE9g==
@@ -16801,15 +16811,6 @@ react-svg@^10.0.12:
     "@tanem/svg-injector" "^8.0.23"
     prop-types "^15.7.2"
 
-react-svg@^10.0.6:
-  version "10.0.9"
-  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-10.0.9.tgz#b8f5a3231243467799901132a2af7cd31ff7c610"
-  integrity sha512-da6qPsc+LZPBwncUZwIIpw9JOpzoThHBy64GqLYARFcWiAb8j793HGhTtamLw8hw1srulEJF2P6UOmjA0X3Uwg==
-  dependencies:
-    "@babel/runtime" "^7.4.5"
-    "@tanem/svg-injector" "^8.0.14"
-    prop-types "^15.7.2"
-
 react-switch@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/react-switch/-/react-switch-5.0.1.tgz#449277f4c3aed5286fffd0f50d5cbc2a23330406"
@@ -18948,10 +18949,10 @@ styled-jsx@3.2.1:
     stylis "3.5.4"
     stylis-rule-sheet "0.0.10"
 
-styled-reset@^2.0.14:
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/styled-reset/-/styled-reset-2.0.16.tgz#4e747e6998676ec52442b40f6a6ac6c8f0ae0162"
-  integrity sha512-6FHc4gn9cuyq+bn5BA/Qnv5LNicIGlTGSEbI+uzUxdVowm26kWiR+T/R/wxRwKw95WeSjzYWXB2aPeLHAFuGLw==
+styled-reset@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/styled-reset/-/styled-reset-3.0.2.tgz#45ff402fbea0290f58a6469e34f0fbd5ab2f8e6a"
+  integrity sha512-qZ9x5LJ5I2II4qgXF66gHdg4NGSPSzB3VMAWTs03VhSCmiFbUEIrEBpwmRX1rKHlqqi3ZjFoDa+IZNwoTlhXPw==
   dependencies:
     opencollective "^1.0.3"
     opencollective-postinstall "2.0.2"
@@ -19593,11 +19594,6 @@ trezor-connect@extended:
     trezor-link "1.6.4"
     whatwg-fetch "^3.0.0"
 
-trezor-flags@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/trezor-flags/-/trezor-flags-1.0.2.tgz#594c6a52b91967dd1f0fc9fbd45711e99cd74198"
-  integrity sha512-eWMwDsxeHgh5+LW4RSViXYefkWi0UKsG8PpBeRqkaipwqQ17edj1TEKC0T75tvDcoKI66JhlO/nwabW0w5ajbw==
-
 trezor-link@1.6.4:
   version "1.6.4"
   resolved "https://registry.yarnpkg.com/trezor-link/-/trezor-link-1.6.4.tgz#88d6c88b1af040b9ff39102054bbbff5eca766e2"
@@ -19687,6 +19683,17 @@ ts-loader@^6.0.4:
     loader-utils "^1.0.2"
     micromatch "^4.0.0"
     semver "^6.0.0"
+
+ts-node@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.3.0.tgz#e4059618411371924a1fb5f3b125915f324efb57"
+  integrity sha512-dyNS/RqyVTDcmNM4NIBAeDMpsAdaQ+ojdf0GOLqE6nwJOgzEkdRNzJywhDfwnuvB10oa6NLVG1rUJQCpRN7qoQ==
+  dependencies:
+    arg "^4.1.0"
+    diff "^4.0.1"
+    make-error "^1.1.1"
+    source-map-support "^0.5.6"
+    yn "^3.0.0"
 
 ts-pnp@^1.1.2:
   version "1.1.2"
@@ -21139,3 +21146,8 @@ yeast@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
   integrity sha1-AI4G2AlDIMNy28L47XagymyKxBk=
+
+yn@^3.0.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
+  integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==

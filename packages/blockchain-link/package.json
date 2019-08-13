@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
-    "build": "yarn build:lib && yarn build:workers",
+    "build:lib": "yarn build && yarn build:workers",
     "build:workers": "rm -rf build && yarn build:workers-web && yarn build:workers-node && yarn build:workers-module",
     "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
     "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
@@ -32,7 +32,7 @@
     "lint": "eslint '**/*{.ts,.tsx}'",
     "test": "jest --verbose -c jest.config.unit.js",
     "test:node": "jest -c jest.config.integration.js",
-    "build:lib": "rm -rf lib && tsc --p ./tsconfig.json && tsc --p ./tsconfig-workers.json"
+    "build": "rm -rf lib && tsc --p ./tsconfig.json && tsc --p ./tsconfig-workers.json"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

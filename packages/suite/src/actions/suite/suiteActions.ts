@@ -26,7 +26,7 @@ export const updateOnlineStatus = () => (dispatch: Dispatch) => {
     };
     statusHandler();
     // TODO: not working in react-native
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window.addEventListener) {
         window.addEventListener('online', statusHandler);
         window.addEventListener('offline', statusHandler);
     }
