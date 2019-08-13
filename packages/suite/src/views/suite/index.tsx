@@ -1,18 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Loader, Button } from '@trezor/components';
+import { Loader } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
 import { goto } from '@suite-actions/routerActions';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
-import AcquireDevice from '@suite-components/AcquireDevice';
 import Layout from '@suite-components/Layout';
 import Bridge from '@suite-views/bridge';
-import { getRoute } from '@suite/utils/suite/router';
 import { AppState } from '@suite-types';
 
 interface Props {
@@ -31,7 +28,7 @@ const LoaderWrapper = styled.div`
 `;
 
 const Index: FunctionComponent<Props> = props => {
-    const { suite, router } = props;
+    const { suite } = props;
 
     if (!suite.transport) {
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)

@@ -13,7 +13,6 @@ export interface OnboardingReducer {
     selectedModel: number | null;
     activeStepId: AnyStepId;
     activeSubStep: string | null;
-    asNewDevice: boolean | null;
     path: AnyPath[];
 }
 

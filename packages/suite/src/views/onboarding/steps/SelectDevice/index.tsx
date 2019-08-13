@@ -18,7 +18,6 @@ import {
     goToPreviousStep,
     selectTrezorModel,
 } from '@onboarding-actions/onboardingActions';
-import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
 
