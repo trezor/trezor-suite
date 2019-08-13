@@ -11,7 +11,7 @@ variables:
     CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
 cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: monorepo-cache
     paths:
         # cypress
         - cache/Cypress
