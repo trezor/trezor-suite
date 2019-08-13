@@ -42,22 +42,23 @@ import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
-import WelcomeStep from '@suite/views/onboarding/steps/Welcome/Container';
-import NewOrUsedStep from '@suite/views/onboarding/steps/NewOrUsed/Container';
-import SelectDeviceStep from '@suite/views/onboarding/steps/SelectDevice/Container';
-import HologramStep from '@suite/views/onboarding/steps/Hologram/Container';
-import BridgeStep from '@suite/views/onboarding/steps/Bridge/Container';
-import ConnectStep from '@suite/views/onboarding/steps/Connect/Container';
-import FirmwareStep from '@suite/views/onboarding/steps/Firmware/Container';
-import RecoveryStep from '@suite/views/onboarding/steps/Recovery/Container';
-import BackupStep from '@suite/views/onboarding/steps/Backup/Container';
-import SecurityStep from '@suite/views/onboarding/steps/Security/Container';
-import SetPinStep from '@suite/views/onboarding/steps/Pin/Container';
-import NameStep from '@suite/views/onboarding/steps/Name/Container';
-import BookmarkStep from '@suite/views/onboarding/steps/Bookmark/Container';
-import NewsletterStep from '@suite/views/onboarding/steps/Newsletter/Container';
+import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
+import NewOrUsedStep from '@onboarding-views/steps/NewOrUsed/Container';
+import SelectDeviceStep from '@onboarding-views/steps/SelectDevice/Container';
+import HologramStep from '@onboarding-views/steps/Hologram/Container';
+import BridgeStep from '@onboarding-views/steps/Bridge/Container';
+import ConnectStep from '@onboarding-views/steps/Connect/Container';
+import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
+import ShamirStep from '@onboarding-views/steps/Shamir/Container';
+import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
+import BackupStep from '@onboarding-views/steps/Backup/Container';
+import SecurityStep from '@onboarding-views/steps/Security/Container';
+import SetPinStep from '@onboarding-views/steps/Pin/Container';
+import NameStep from '@onboarding-views/steps/Name/Container';
+import BookmarkStep from '@onboarding-views/steps/Bookmark/Container';
+import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
+import FinalStep from '@onboarding-views/steps/Final';
 
-import FinalStep from '@suite/views/onboarding/steps/Final';
 import { AppState, Dispatch } from '@suite-types';
 
 const BORDER_RADIUS = 12;
@@ -124,13 +125,6 @@ const WrapperInside = styled.div<WrapperInsideProps>`
         overflow: hidden;
         height: 70%;
     }
-`;
-
-const ProgressStepsWrapper = styled.div`
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
 `;
 
 const ProgressStepsSlot = styled.div`
@@ -272,14 +266,13 @@ class Onboarding extends React.PureComponent<Props> {
             onboardingActions,
             connectActions,
 
-            selectedModel = 1,
+            selectedModel,
             activeStepId,
             deviceCall,
             deviceInteraction,
             uiInteraction,
         } = this.props;
-
-        const model = selectedModel as 1 | 2;
+        const model = selectedModel || (2 as 1 | 2);
         const errorState = this.getError();
         const activeStep = this.getStep(activeStepId);
         return (
@@ -302,15 +295,17 @@ class Onboarding extends React.PureComponent<Props> {
                             </UnexpectedStateOverlay>
                         )}
                         <ProgressStepsSlot>
-                            <ProgressStepsWrapper>
-                                <ProgressSteps
-                                    hiddenOnSteps={[STEP.ID_WELCOME_STEP, STEP.ID_SECURITY_STEP]}
-                                    steps={steps}
-                                    activeStep={activeStep}
-                                    onboardingActions={onboardingActions}
-                                    isDisabled={deviceCall.isProgress}
-                                />
-                            </ProgressStepsWrapper>
+                            <ProgressSteps
+                                hiddenOnSteps={[
+                                    STEP.ID_WELCOME_STEP,
+                                    STEP.ID_SECURITY_STEP,
+                                    STEP.ID_FINAL_STEP,
+                                ]}
+                                steps={steps}
+                                activeStep={activeStep}
+                                onboardingActions={onboardingActions}
+                                isDisabled={deviceCall.isProgress}
+                            />
                         </ProgressStepsSlot>
                         <ComponentWrapper>
                             {this.isGlobalInteraction() && (
@@ -364,6 +359,13 @@ class Onboarding extends React.PureComponent<Props> {
                                 {...TRANSITION_PROPS}
                             >
                                 <FirmwareStep />
+                            </CSSTransition>
+
+                            <CSSTransition
+                                in={activeStepId === STEP.ID_SHAMIR_STEP}
+                                {...TRANSITION_PROPS}
+                            >
+                                <ShamirStep />
                             </CSSTransition>
 
                             <CSSTransition

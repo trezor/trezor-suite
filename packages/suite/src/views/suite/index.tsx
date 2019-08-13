@@ -63,32 +63,6 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    // connected device is in unexpected mode
-    if (suite.device.type !== 'acquired') {
-        // TODO: render "acquire device" or "unreadable device" page
-        return (
-            <Layout>
-                <AcquireDevice />
-            </Layout>
-        );
-    }
-
-    if (suite.device.mode !== 'normal') {
-        // TODO: render "unexpected mode" page (bootloader, seedless, not initialized)
-        // not-initialized should redirect to onboarding
-        return (
-            <Layout>
-                <Text>Device is in unexpected mode: {suite.device.mode}</Text>{' '}
-                {suite.device.mode === 'initialize' && (
-                    <Button onClick={() => goto(getRoute('onboarding-index'))}>
-                        Go to onboarding
-                    </Button>
-                )}
-                <Text>Transport: {suite.transport.type}</Text>
-            </Layout>
-        );
-    }
-
     return <Layout showSuiteHeader>{props.children}</Layout>;
 };
 

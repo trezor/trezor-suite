@@ -3,6 +3,7 @@ module.exports = {
     globals: {
         'ts-jest': {
             tsConfig: 'tsconfig.json',
+            // diagnostics: false,
         },
     },
     moduleNameMapper: {
@@ -23,7 +24,7 @@ module.exports = {
     collectCoverageFrom: [
         '<rootDir>/src/reducers/**',
         '<rootDir>/src/utils/**',
-        // '<rootDir>/src/actions/**',
+        '<rootDir>/src/actions/**',
         '!**/constants/**',
     ],
     modulePathIgnorePatterns: ['node_modules'],

@@ -3,18 +3,19 @@ import { FormattedMessage } from 'react-intl';
 import { CallbackAction } from '@wallet-reducers/notificationReducer';
 import { NOTIFICATION } from './constants';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
-import { Action } from '@wallet-types';
+
+interface NotificationPayload {
+    variant: string;
+    title: React.ReactNode | FormattedMessage.MessageDescriptor;
+    message?: React.ReactNode;
+    cancelable: boolean;
+    actions?: CallbackAction[];
+}
 
 export type NotificationActions =
     | {
           type: typeof NOTIFICATION.ADD;
-          payload: {
-              variant: string;
-              title: React.ReactNode | FormattedMessage.MessageDescriptor;
-              message?: React.ReactNode;
-              cancelable: boolean;
-              actions?: CallbackAction[];
-          };
+          payload: NotificationPayload;
       }
     | {
           type: typeof NOTIFICATION.CLOSE;
@@ -24,7 +25,12 @@ export type NotificationActions =
           };
       };
 
-export const close = (payload: any = {}): Action => ({
+export const add = (payload: NotificationPayload): NotificationActions => ({
+    type: NOTIFICATION.ADD,
+    payload,
+});
+
+export const close = (payload: any = {}): NotificationActions => ({
     type: NOTIFICATION.CLOSE,
     payload,
 });

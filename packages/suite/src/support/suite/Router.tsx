@@ -18,6 +18,7 @@ import { Dispatch } from '@suite-types';
 const RouterHandler: FunctionComponent<Props> = ({ onLocationChange, onBeforePopState }) => {
     useEffect(() => {
         const onHashChanged = () => {
+            console.log('onHashChanged');
             // TODO: check if the view is not locked by the device request
             const windowPath = window.location.pathname + window.location.hash;
             onLocationChange(windowPath);
@@ -25,6 +26,7 @@ const RouterHandler: FunctionComponent<Props> = ({ onLocationChange, onBeforePop
 
         // handle browser back button
         Router.beforePopState(() => {
+            console.log('beforePopState');
             const locked = onBeforePopState();
             return locked;
         });
