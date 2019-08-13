@@ -95,7 +95,7 @@ describe('rules', () => {
             expect(
                 isNotNewDevice({
                     device: { features: { firmware_present: false } },
-                    path: ['new']
+                    path: ['new'],
                 }),
             ).toEqual(false);
         });
