@@ -30,10 +30,17 @@ const TrezorLogo = ({
     ...rest
 }: Props) => {
     return (
-        <SvgWrapper width={width} height={height} {...rest}>
+        <SvgWrapper
+            width={typeof width === 'number' ? `${width}px` : width}
+            height={typeof height === 'number' ? `${height}px` : height}
+            {...rest}
+        >
             <ReactSvg
                 src={LOGOS[type.toUpperCase()]}
                 beforeInjection={svg => {
+                    if (typeof height === 'number') {
+                        svg.setAttribute('height', `${height}px`);
+                    }
                     svg.setAttribute('fill', variant);
                 }}
                 loading={() => <span className="loading"></span>}

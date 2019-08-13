@@ -61,7 +61,7 @@ describe('Form', () => {
         'switch_noicon_small_disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
-            if (testName.match(/info|success|warning|error/)) {
+            if (testName.match(/info|success|warning|error|checkbox_checked/)) {
                 cy.getTestElement(testName)
                     .find('svg')
                     .should('be.visible');
