@@ -1,7 +1,5 @@
-/* eslint-disable */
+import { MODAL, CONNECT } from '@suite-actions/constants';
 import { TrezorDevice, Action } from '@suite-types';
-import * as MODAL from '@suite-actions/constants/modalConstants';
-import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 
 export type State =
     | { context: typeof MODAL.CONTEXT_NONE }
@@ -12,17 +10,15 @@ export type State =
           windowType?: string;
       };
 
-const initialState = {
+const initialState: State = {
     context: MODAL.CONTEXT_NONE,
 };
 
-export default function modal(state = initialState, action: Action) {
+export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
         // @ts-ignore TODO fix after connect types
-        case CONNECT.FORGET_REQUEST:
-        // @ts-ignore
-        case CONNECT.TRY_TO_DUPLICATE:
-        // @ts-ignore
+        // case CONNECT.FORGET_REQUEST:
+        // case CONNECT.TRY_TO_DUPLICATE:
         case CONNECT.REQUEST_WALLET_TYPE:
             return {
                 context: MODAL.CONTEXT_DEVICE,
@@ -34,4 +30,4 @@ export default function modal(state = initialState, action: Action) {
         default:
             return state;
     }
-}
+};
