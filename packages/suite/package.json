@@ -32,6 +32,7 @@
         "react-qr-svg": "^2.2.1",
         "react-redux": "^7.0.3",
         "react-scale-text": "^1.2.2",
+        "react-transition-group": "^4.2.2",
         "react-window": "^1.8.4",
         "redux": "^4.0.1",
         "redux-devtools-extension": "^2.13.8",

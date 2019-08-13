@@ -37,6 +37,18 @@ export const initialState: Account[] = [];
 // }
 // };
 
+export const findDeviceAccounts = (
+    accounts: Account[],
+    // device: TrezorDevice,
+    networkShortcut?: string,
+) => {
+    // TODO: should also filter deviceState
+    if (networkShortcut) {
+        return accounts.filter(a => a.network === networkShortcut);
+    }
+    return accounts;
+};
+
 export default (state: Account[] = initialState, action: Action): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
