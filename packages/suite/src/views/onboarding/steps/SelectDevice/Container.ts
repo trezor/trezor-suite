@@ -5,13 +5,9 @@ import {
     selectTrezorModel,
     goToPreviousStep,
 } from '@suite/actions/onboarding/onboardingActions';
-import { Dispatch, AppState } from '@suite-types/index';
+import { Dispatch } from '@suite-types/index';
 
 import Step from './index';
-
-const mapStateToProps = (state: AppState) => ({
-    asNewDevice: state.onboarding.asNewDevice,
-});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
@@ -22,6 +18,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps,
 )(Step);

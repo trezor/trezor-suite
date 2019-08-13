@@ -4,12 +4,10 @@ import {
     OnboardingReducer,
     OnboardingActionTypes,
     SET_STEP_ACTIVE,
-    // SET_STEP_RESOLVED,
     GO_TO_SUBSTEP,
     SELECT_TREZOR_MODEL,
     SET_PATH,
 } from '@suite/types/onboarding/onboarding';
-// import { Step } from '@suite/types/onboarding/steps';
 
 import * as STEP from '@suite/constants/onboarding/steps';
 
@@ -17,7 +15,6 @@ const initialState: OnboardingReducer = {
     selectedModel: null,
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
-    asNewDevice: null,
     path: [],
 };
 

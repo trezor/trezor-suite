@@ -49,14 +49,13 @@ export const isRequestingPin = ({ device }: { device?: Device }) => {
     return !!device.isRequestingPin;
 };
 
+// todo: new device does not work now.
 export const isNotNewDevice = ({
-    device,
-    asNewDevice,
+    device
 }: {
     device?: Device;
-    asNewDevice: boolean | null;
 }) => {
-    if (!device || !asNewDevice) {
+    if (!device) {
         return null;
     }
     return device.features.firmware_present !== false;

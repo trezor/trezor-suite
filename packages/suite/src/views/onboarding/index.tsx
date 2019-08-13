@@ -186,12 +186,9 @@ const UnexpectedStateOverlay = styled.div`
 
 interface Props {
     device: any; // todo
-    transport: any; // todo
 
     activeStepId: AppState['onboarding']['activeStepId'];
-    activeSubStep: AppState['onboarding']['activeSubStep'];
     selectedModel: AppState['onboarding']['selectedModel'];
-    asNewDevice: AppState['onboarding']['asNewDevice'];
 
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
     uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
@@ -229,7 +226,7 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const { device, prevDeviceId, activeStepId, asNewDevice } = this.props;
+        const { device, prevDeviceId, activeStepId } = this.props;
         if (!this.getStep(activeStepId)!.disallowedDeviceStates) {
             return null;
         }
@@ -237,7 +234,7 @@ class Onboarding extends React.PureComponent<Props> {
         return this.getStep(activeStepId)!.disallowedDeviceStates!.find(
             (state: AnyStepDisallowedState) => {
                 const fn = getFnForRule(state);
-                return fn({ device, prevDeviceId, asNewDevice });
+                return fn({ device, prevDeviceId });
             },
         );
     }
@@ -434,7 +431,6 @@ class Onboarding extends React.PureComponent<Props> {
 const mapStateToProps = (state: AppState) => {
     return {
         device: state.onboarding.connect.device,
-        transport: state.suite.transport,
 
         // connect reducer
         prevDeviceId: state.onboarding.connect.prevDeviceId,
@@ -445,8 +441,6 @@ const mapStateToProps = (state: AppState) => {
         // onboarding reducer
         selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
-        activeSubStep: state.onboarding.activeSubStep,
-        asNewDevice: state.onboarding.asNewDevice,
     };
 };
 

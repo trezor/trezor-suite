@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import styled, { css } from 'styled-components';
-import { Button, H1, P, variables } from '@trezor/components';
+import { H1, P, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 // todo reorganize to single import
@@ -16,7 +16,6 @@ import {
     OptionsWrapper,
 } from '@onboarding-components/Wrapper';
 import * as STEP from '@onboarding-constants/steps';
-import { SKIP_URL } from '@onboarding-constants/urls';
 import { goToNextStep, setPath } from '@onboarding-actions/onboardingActions';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
@@ -63,10 +62,6 @@ const Logo = styled.svg<LogoProps>`
 
 const Loader = styled(P)`
     text-align: center;
-`;
-
-const StyledButton = styled(Button)`
-    display: block;
 `;
 
 const Small = styled.div`
@@ -158,7 +153,6 @@ const WelcomeStep = (props: Props) => {
                                     props.onboardingActions.setPath([STEP.PATH_RECOVERY]);
                                     props.onboardingActions.goToNextStep();
                                 }}
-                                isInverse
                             >
                                 <Base>Restore existing wallet</Base>
                                 <Small>using your backup seed</Small>

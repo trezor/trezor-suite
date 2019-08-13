@@ -10,7 +10,7 @@ import {
 import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';
 
 export interface OnboardingReducer {
-    selectedModel: number | null;
+    selectedModel: 1 | 2 | null;
     activeStepId: AnyStepId;
     activeSubStep: string | null;
     path: AnyPath[];
@@ -48,7 +48,7 @@ interface GoToSubstepAction {
 
 interface SelectTrezorModelAction {
     type: typeof SELECT_TREZOR_MODEL;
-    model: number;
+    model: 1 | 2;
 }
 
 interface SetPath {
