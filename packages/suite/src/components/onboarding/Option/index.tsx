@@ -4,7 +4,7 @@ import colors from '@suite/config/onboarding/colors';
 import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
 
 const OptionWrapper = styled.div<{ isSelected: boolean }>`
-    flex-grow: 1;
+    /* flex-grow: 1; */
     width: 100%;
     padding: 10px;
     margin: 7px;
@@ -12,7 +12,7 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     border-radius: 4px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     cursor: pointer;
     box-shadow: ${({ isSelected }) =>
@@ -20,8 +20,8 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     border-color: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)};
 
     @media (min-width: ${BREAKPOINTS.SM}px) {
-        min-height: 280px;
-        min-width: 215px;
+        height: 280px;
+        width: 215px;
     }
 `;
 

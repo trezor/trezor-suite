@@ -10,17 +10,12 @@ const Wrapper = styled.div<{ count: number }>`
     width: 100%;
 
     @media (min-width: ${BREAKPOINT.SM}px) {
-        width: ${props => props.count * 200};
-        max-width: 120%;
+        width: ${props => props.count * 215};
         flex-direction: row;
     }
 `;
 
-interface Props {
-    children: React.ReactElement[];
-}
-
-const OptionsWrapper = (props: Props) => {
+const OptionsWrapper: React.FunctionComponent = (props) => {
     return <Wrapper count={props.children.length}>{props.children}</Wrapper>;
 };
 
