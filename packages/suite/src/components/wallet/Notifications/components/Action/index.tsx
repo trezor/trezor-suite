@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as NotificationActions from '@wallet-actions/NotificationActions';
+import * as NotificationActions from '@wallet-actions/notificationActions';
 import { NotificationEntry } from '@wallet-reducers/notificationReducer';
 import NotificationsGroups from './components/NotificationsGroups';
 

@@ -11,7 +11,6 @@ import {
     StepBodyWrapper,
     StepWrapper,
     StepFooterWrapper,
-    ControlsWrapper,
     OptionsWrapper,
 } from '@suite/components/onboarding/Wrapper';
 import { AppState } from '@suite/types/suite';

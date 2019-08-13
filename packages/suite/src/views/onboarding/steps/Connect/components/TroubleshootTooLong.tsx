@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { H6, Link, Button } from '@trezor/components';
+import { H6, Link } from '@trezor/components';
 
 import { SUPPORT_URL } from '@onboarding-constants/urls';
 import Text from '@onboarding-components/Text';

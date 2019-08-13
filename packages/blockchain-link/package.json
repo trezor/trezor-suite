@@ -56,7 +56,6 @@
     "jest": "^24.8.0",
     "ripple-lib": "^1.2.4",
     "tiny-worker": "^2.2.0",
-    "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.4",
