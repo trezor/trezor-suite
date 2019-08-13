@@ -180,7 +180,7 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                 <StepFooterWrapper>
                     <ControlsWrapper>
                         <ButtonBack onClick={() => this.props.onboardingActions.goToPreviousStep()}>
-                            Back to hologram TODO: but if we have new device there is now holo!
+                            Back
                         </ButtonBack>
                     </ControlsWrapper>
                 </StepFooterWrapper>

@@ -5,8 +5,9 @@ import {
     DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
     DISALLOWED_DEVICE_IS_REQUESTING_PIN,
     DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
-} from '@suite/constants/onboarding/steps';
-import { PrevDeviceId } from '@suite/types/onboarding/connect';
+} from '@onboarding-constants/steps';
+import { PrevDeviceId } from '@onboarding-types/connect';
+import { AnyPath } from '@onboarding-types/steps';
 
 type Device = any; // todo: finish when connect types ready.
 
@@ -49,13 +50,8 @@ export const isRequestingPin = ({ device }: { device?: Device }) => {
     return !!device.isRequestingPin;
 };
 
-// todo: new device does not work now.
-export const isNotNewDevice = ({
-    device
-}: {
-    device?: Device;
-}) => {
-    if (!device) {
+export const isNotNewDevice = ({ device, path }: { device?: Device; path?: AnyPath[] }) => {
+    if (!device || !path || !path.includes('new')) {
         return null;
     }
     return device.features.firmware_present !== false;

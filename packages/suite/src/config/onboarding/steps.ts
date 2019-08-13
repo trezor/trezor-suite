@@ -14,7 +14,7 @@ const steps: Step[] = [
     {
         id: STEP.ID_SELECT_DEVICE_STEP,
         title: STEP.TITLE_SELECT_DEVICE_STEP,
-        disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE],
+        // disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW],
     },
     {

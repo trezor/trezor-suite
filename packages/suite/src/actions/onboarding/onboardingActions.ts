@@ -2,10 +2,11 @@ import {
     SET_STEP_ACTIVE,
     GO_TO_SUBSTEP,
     SELECT_TREZOR_MODEL,
-    SET_PATH,
-    OnboardingReducer,
+    ADD_PATH,
+    REMOVE_PATH,
 } from '@suite/types/onboarding/onboarding';
-import { AnyStepId } from '@onboarding-types/steps';
+import * as STEP from '@onboarding-constants/steps';
+import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 import { GetState, Dispatch } from '@suite-types';
@@ -24,6 +25,25 @@ const goToSubStep = (subStepId: string | null) => (dispatch: Dispatch) => {
     });
 };
 
+const selectTrezorModel = (model: number) => ({
+    type: SELECT_TREZOR_MODEL,
+    model,
+});
+
+const addPath = (value: AnyPath) => (dispatch: Dispatch) => {
+    dispatch({
+        type: ADD_PATH,
+        value,
+    });
+};
+
+const removePath = (value: AnyPath[]) => (dispatch: Dispatch) => {
+    dispatch({
+        type: REMOVE_PATH,
+        value,
+    });
+};
+
 const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (stepId) {
         return dispatch(goToStep(stepId));
@@ -31,7 +51,6 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
     const { activeStepId, path } = getState().onboarding;
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const nextStep = findNextStep(activeStepId, stepsInPath);
-    // const activeStep = steps.find((step: Step) => step.id === activeStepId);
     dispatch(goToStep(nextStep.id));
 };
 
@@ -39,17 +58,29 @@ const goToPreviousStep = () => (dispatch: Dispatch, getState: GetState) => {
     const { activeStepId, path } = getState().onboarding;
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const prevStep = findPrevStep(activeStepId, stepsInPath);
+
+    // steps listed in case statements contain path decisions, so we need
+    // to remove saved paths from reducers to let user change it again.
+    switch (prevStep.id) {
+        case STEP.ID_NEW_OR_USED:
+            dispatch(removePath([STEP.PATH_NEW, STEP.PATH_USED]));
+            break;
+        case STEP.ID_WELCOME_STEP:
+            dispatch(removePath([STEP.PATH_CREATE, STEP.PATH_RECOVERY]));
+            break;
+        default:
+        // nothing
+    }
+
     dispatch(goToStep(prevStep.id));
 };
 
-const selectTrezorModel = (model: number) => ({
-    type: SELECT_TREZOR_MODEL,
-    model,
-});
-
-const setPath = (value: OnboardingReducer['path']) => ({
-    type: SET_PATH,
-    value,
-});
-
-export { goToNextStep, goToSubStep, goToStep, goToPreviousStep, selectTrezorModel, setPath };
+export {
+    goToNextStep,
+    goToSubStep,
+    goToStep,
+    goToPreviousStep,
+    selectTrezorModel,
+    addPath,
+    removePath,
+};

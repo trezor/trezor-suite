@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const OptionsWrapper: React.FunctionComponent = (props) => {
+const OptionsWrapper: React.FunctionComponent = props => {
     return <Wrapper>{props.children}</Wrapper>;
 };
 

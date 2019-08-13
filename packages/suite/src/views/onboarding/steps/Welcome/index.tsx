@@ -16,7 +16,7 @@ import {
     OptionsWrapper,
 } from '@onboarding-components/Wrapper';
 import * as STEP from '@onboarding-constants/steps';
-import { goToNextStep, setPath } from '@onboarding-actions/onboardingActions';
+import { goToNextStep, addPath } from '@onboarding-actions/onboardingActions';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
 import { AppState } from '@suite-types';
@@ -75,7 +75,7 @@ const Base = styled.div`
 interface Props {
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
-        setPath: typeof setPath;
+        addPath: typeof addPath;
     };
     suite: AppState['suite'];
 }
@@ -85,8 +85,12 @@ const WelcomeStep = (props: Props) => {
     const [introExited, setIntroExited] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => setIntroTimedout(true), 5000);
-    }, []);
+        if (!props.suite.loaded) {
+            setTimeout(() => setIntroTimedout(true), 5000);
+        } else {
+            setIntroTimedout(true);
+        }
+    }, [props.suite.loaded]);
 
     const introLeaved = introTimedout && props.suite.loaded;
 
@@ -95,7 +99,7 @@ const WelcomeStep = (props: Props) => {
             <CSSTransition
                 {...TRANSITION_PROPS}
                 in={!introLeaved}
-                timeout={1000}
+                timeout={0}
                 onExited={() => setIntroExited(true)}
             >
                 <StepBodyWrapper>
@@ -139,7 +143,7 @@ const WelcomeStep = (props: Props) => {
                             <Option
                                 data-test="button-path-create"
                                 onClick={() => {
-                                    props.onboardingActions.setPath([STEP.PATH_CREATE]);
+                                    props.onboardingActions.addPath(STEP.PATH_CREATE);
                                     props.onboardingActions.goToNextStep();
                                 }}
                             >
@@ -150,7 +154,7 @@ const WelcomeStep = (props: Props) => {
                             <Option
                                 data-test="button-path-recovery"
                                 onClick={() => {
-                                    props.onboardingActions.setPath([STEP.PATH_RECOVERY]);
+                                    props.onboardingActions.addPath(STEP.PATH_RECOVERY);
                                     props.onboardingActions.goToNextStep();
                                 }}
                             >

@@ -15,7 +15,7 @@ import {
     ControlsWrapper,
     OptionsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { goToNextStep, setPath, goToPreviousStep } from '@onboarding-actions/onboardingActions';
+import { goToNextStep, addPath, goToPreviousStep } from '@onboarding-actions/onboardingActions';
 
 // import l10nMessages from './index.messages';
 
@@ -24,7 +24,7 @@ interface Props {
     onboardingActions: {
         goToPreviousStep: typeof goToPreviousStep;
         goToNextStep: typeof goToNextStep;
-        setPath: typeof setPath;
+        addPath: typeof addPath;
     };
 }
 
@@ -43,7 +43,7 @@ const NewOrUsedStep = (props: Props) => (
                     <ButtonCta
                         data-test="button-new-path"
                         onClick={() => {
-                            props.onboardingActions.setPath([...props.path, STEP.PATH_NEW]);
+                            props.onboardingActions.addPath(STEP.PATH_NEW);
                             props.onboardingActions.goToNextStep();
                         }}
                     >
@@ -57,7 +57,7 @@ const NewOrUsedStep = (props: Props) => (
                     <ButtonAlt
                         data-test="button-used-path"
                         onClick={() => {
-                            props.onboardingActions.setPath([...props.path, STEP.PATH_USED]);
+                            props.onboardingActions.addPath(STEP.PATH_USED);
                             props.onboardingActions.goToNextStep();
                         }}
                     >
@@ -68,7 +68,11 @@ const NewOrUsedStep = (props: Props) => (
         </StepBodyWrapper>
         <StepFooterWrapper>
             <ControlsWrapper isVertical>
-                <ButtonBack onClick={() => props.onboardingActions.goToPreviousStep()}>
+                <ButtonBack
+                    onClick={() => {
+                        props.onboardingActions.goToPreviousStep();
+                    }}
+                >
                     Back
                 </ButtonBack>
             </ControlsWrapper>

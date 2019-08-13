@@ -93,10 +93,6 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
             props.animate &&
             css`
                 animation: ${backgroundAnimation} 1s linear;
-            `};
-        ${props =>
-            props.animate &&
-            css`
                 background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
                 background-size: cover;
             `};
@@ -189,6 +185,7 @@ interface Props {
 
     activeStepId: AppState['onboarding']['activeStepId'];
     selectedModel: AppState['onboarding']['selectedModel'];
+    path: AppState['onboarding']['path'];
 
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
     uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
@@ -226,17 +223,16 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const { device, prevDeviceId, activeStepId } = this.props;
-        if (!this.getStep(activeStepId)!.disallowedDeviceStates) {
+        const { device, prevDeviceId, activeStepId, path } = this.props;
+        const activeStep = this.getStep(activeStepId);
+        if (!activeStep.disallowedDeviceStates) {
             return null;
         }
 
-        return this.getStep(activeStepId)!.disallowedDeviceStates!.find(
-            (state: AnyStepDisallowedState) => {
-                const fn = getFnForRule(state);
-                return fn({ device, prevDeviceId });
-            },
-        );
+        return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
+            const fn = getFnForRule(state);
+            return fn({ device, prevDeviceId, path });
+        });
     }
 
     isGlobalInteraction() {
@@ -265,6 +261,7 @@ class Onboarding extends React.PureComponent<Props> {
 
             selectedModel,
             activeStepId,
+
             deviceCall,
             deviceInteraction,
             uiInteraction,
@@ -275,7 +272,6 @@ class Onboarding extends React.PureComponent<Props> {
         return (
             <>
                 <BaseStyles />
-
                 <WrapperOutside
                     animate={![STEP.ID_WELCOME_STEP, STEP.ID_FINAL_STEP].includes(activeStepId)}
                 >
@@ -441,6 +437,7 @@ const mapStateToProps = (state: AppState) => {
         // onboarding reducer
         selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
+        path: state.onboarding.path,
     };
 };
 

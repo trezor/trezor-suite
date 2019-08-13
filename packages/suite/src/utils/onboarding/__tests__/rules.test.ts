@@ -95,17 +95,13 @@ describe('rules', () => {
             expect(
                 isNotNewDevice({
                     device: { features: { firmware_present: false } },
-                    asNewDevice: true,
+                    path: ['new']
                 }),
             ).toEqual(false);
         });
 
         it('cant tell without device', () => {
-            expect(
-                isNotNewDevice({
-                    asNewDevice: true,
-                }),
-            ).toEqual(null);
+            expect(isNotNewDevice({})).toEqual(null);
         });
     });
 

@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
         goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-        setPath: bindActionCreators(onboardingActions.setPath, dispatch),
+        addPath: bindActionCreators(onboardingActions.addPath, dispatch),
     },
 });
 
