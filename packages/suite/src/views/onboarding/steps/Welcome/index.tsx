@@ -3,20 +3,25 @@ import { CSSTransition } from 'react-transition-group';
 import styled, { css } from 'styled-components';
 import { Button, H1, P, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
+
+// todo reorganize to single import
 import Option from '@onboarding-components/Option';
-import { Dots } from '@suite/components/onboarding/Loaders';
-import Text from '@suite/components/onboarding/Text';
+import { Dots } from '@onboarding-components/Loaders';
+import Text from '@onboarding-components/Text';
 import { ButtonBack, ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
 import {
     StepBodyWrapper,
     StepWrapper,
     StepFooterWrapper,
     OptionsWrapper,
-} from '@suite/components/onboarding/Wrapper';
-import { AppState } from '@suite/types/suite';
+} from '@onboarding-components/Wrapper';
 import * as STEP from '@onboarding-constants/steps';
 import { SKIP_URL } from '@onboarding-constants/urls';
-import { goToNextStep, setPath } from '@suite/actions/onboarding/onboardingActions';
+import { goToNextStep, setPath } from '@onboarding-actions/onboardingActions';
+import { goto } from '@suite-actions/routerActions';
+import { getRoute } from '@suite-utils/router';
+import { AppState } from '@suite-types';
+
 import l10nMessages from './index.messages';
 
 const ANIMATION_DURATION = 2.5;
@@ -164,7 +169,7 @@ const WelcomeStep = (props: Props) => {
                     <StepFooterWrapper>
                         <ButtonBack
                             data-test="button-use-wallet"
-                            onClick={() => (window.location.href = SKIP_URL)}
+                            onClick={() => goto(getRoute('wallet-index'))}
                         >
                             <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
                         </ButtonBack>

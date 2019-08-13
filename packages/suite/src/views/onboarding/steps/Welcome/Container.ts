@@ -1,8 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { AppState } from '@suite/types/suite';
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
-
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { Dispatch } from '@suite-types';
 
 import Step from './index';
