@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 
-import { applySettings, changePin } from '@suite-actions/trezorConnectActions';
+import { applySettings, changePin } from '@suite-actions/deviceSettingsActions';
 import { AppState, Dispatch } from '@suite-types/index';
 
 import DeviceSettings from './index';

@@ -176,7 +176,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                             <Label>Display rotation</Label>
                         </LabelCol>
                         <ActionCol>
-                            {DISPLAY_ROTATIONS.map(variant => (
+                            {/* {DISPLAY_ROTATIONS.map(variant => (
                                 <OrientationButton
                                     key={variant.icon}
                                     isWhite
@@ -186,7 +186,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                                 >
                                     <Icon icon={variant.icon} />
                                 </OrientationButton>
-                            ))}
+                            ))} */}
                         </ActionCol>
                     </Row>
                 </>

@@ -83,15 +83,3 @@ export const forgetDevice = (device: TrezorDevice): Action => ({
     type: CONNECT.FORGET_REQUEST,
     device,
 });
-
-// @ts-ignore
-export const applySettings = params => async () => {
-    // @ts-ignore
-    TrezorConnect.applySettings(params);
-};
-
-// @ts-ignore
-export const changePin = params => async () => {
-    // @ts-ignore
-    TrezorConnect.changePin(params);
-};
