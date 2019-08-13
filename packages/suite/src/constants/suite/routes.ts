@@ -23,7 +23,7 @@ export const routes = [
     },
     {
         name: 'suite-firmware-update',
-        pattern: '/firmware-update',
+        pattern: '/firmware',
         isStatic: false,
     },
     {
@@ -39,6 +39,11 @@ export const routes = [
     {
         name: 'suite-device-settings',
         pattern: '/settings',
+        isStatic: false,
+    },
+    {
+        name: 'suite-device-firmware',
+        pattern: '/firmware',
         isStatic: false,
     },
     {

@@ -29,7 +29,7 @@ const LoaderWrapper = styled.div`
 `;
 
 const Index: FunctionComponent<Props> = props => {
-    const { suite } = props;
+    const { suite, router } = props;
 
     if (!suite.transport) {
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)

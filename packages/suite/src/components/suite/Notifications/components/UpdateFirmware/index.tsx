@@ -14,8 +14,8 @@ interface Props extends InjectedIntlProps {
 }
 
 const UpdateFirmware = ({ device, pathname, intl }: Props) => {
-    // @ts-ignore TODO
-    const outdated = device && device.features && device.firmware === 'outdated';
+    if (!device || device.type !== 'acquired') return null;
+    const outdated = ['outdated', 'required'].includes(device.firmware);
     if (!outdated) return null;
 
     // don't show notification when user is on firmware update page
