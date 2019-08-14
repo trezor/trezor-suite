@@ -9,6 +9,7 @@ import Log from './Log';
 import Preloader from './Preloader';
 import StaticPageWrapper from './StaticPageWrapper';
 import Header from './Header';
+import FormattedNumber from './FormattedNumber';
 
 export {
     AcquireDevice,
@@ -22,4 +23,5 @@ export {
     Preloader,
     StaticPageWrapper,
     Header,
+    FormattedNumber,
 };

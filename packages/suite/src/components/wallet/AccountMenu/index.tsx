@@ -1,11 +1,8 @@
 /* eslint-disable react/style-prop-object */
 import React from 'react';
-import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import * as reducerUtils from '@wallet-utils/reducerUtils';
-// import * as stateUtils from 'reducers/utils';
 
 import { Loader, colors, variables } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -14,9 +11,8 @@ import Row from '@wallet-components/Row';
 import RowCoin from '@wallet-components/RowCoin';
 import { AppState } from '@suite/types/suite';
 import { connect } from 'react-redux';
-import { Link } from '@suite/components/suite';
+import { Link, FormattedNumber } from '@suite/components/suite';
 import networks from '@suite/config/suite/networks';
-import { Transaction } from '@suite/types/wallet';
 import { Account, findDeviceAccounts } from '@wallet-reducers/accountsReducer';
 import { getRoute } from '@suite/utils/suite/router';
 import { STATUS } from '@suite/reducers/wallet/discoveryReducer';
@@ -163,12 +159,7 @@ const AccountMenu = (props: Props) => {
                                 <Text>
                                     {balance}
                                     {fiatRates && (
-                                        <FormattedNumber
-                                            currency={localCurrency}
-                                            value={fiat}
-                                            minimumFractionDigits={2}
-                                            style="currency"
-                                        />
+                                        <FormattedNumber currency={localCurrency} value={fiat} />
                                     )}
                                 </Text>
                             )}
