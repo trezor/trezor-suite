@@ -652,6 +652,8 @@ declare module 'trezor-connect' {
         function off(event: any, callback: (event: any) => void): void;
 
         function uiResponse(a: UIResponse): void;
+
+        function renderWebUSBButton(): void;
     }
 
     export default TrezorConnect;

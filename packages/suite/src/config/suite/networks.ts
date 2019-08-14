@@ -7,6 +7,10 @@ export default [
         symbol: 'BTC',
         shortcut: 'btc',
         hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
     },
     {
         order: 2,

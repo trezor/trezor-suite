@@ -1,9 +1,13 @@
 import * as React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 // import { DEVICE } from 'trezor-connect';
 
 import styled from 'styled-components';
 import { colors, animations } from '@trezor/components';
 
+import * as ModalActions from '@suite-actions/modalActions';
 import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 
@@ -16,6 +20,7 @@ import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 import ForgetDeviceModal from '@suite-components/modals/Forget';
 import RememberDeviceModal from '@suite-components/modals/Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
+import { AppState, Dispatch } from '@suite-types';
 
 const ModalContainer = styled.div`
     position: fixed;
@@ -41,7 +46,18 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
-const getDeviceContextModal = props => {
+interface StateProps {
+    modal: AppState['modal'];
+    devices: AppState['devices'];
+}
+
+interface DispatchProps {
+    modalActions: typeof ModalActions;
+}
+
+type Props = StateProps & DispatchProps;
+
+const getDeviceContextModal = (props: Props) => {
     const { modal, modalActions } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE) return null;
 
@@ -124,7 +140,7 @@ const getDeviceContextModal = props => {
 // };
 
 // modal container component
-const Modal = props => {
+const Modal = (props: Props) => {
     const { modal } = props;
 
     if (modal.context === MODAL.CONTEXT_NONE) return null;
@@ -148,4 +164,19 @@ const Modal = props => {
     );
 };
 
-export default Modal;
+const mapStateToProps = (state: AppState) => ({
+    modal: state.modal,
+    devices: state.devices,
+    // connect: state.connect,
+    // selectedAccount: state.selectedAccount,
+    // localStorage: state.localStorage,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    modalActions: bindActionCreators(ModalActions, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Modal);

@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import BigNumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 import * as stateUtils from '@wallet-utils/reducerUtils';
 import { CoinLogo, Link, variables } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nSummaryMessages from '../../common.messages';
 import AccountBalance from './components/Balance';
+import { Account } from '@wallet-types';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
@@ -37,25 +37,16 @@ const StyledCoinLogo = styled(CoinLogo)`
 `;
 
 interface Props {
-    account: any;
+    account: Account;
     network: any;
-    pending: any;
     localCurrency: string;
     isHidden: boolean;
     fiatRates: any[];
 }
 
-const AccountHeader = ({
-    account,
-    network,
-    pending,
-    fiatRates,
-    localCurrency,
-    isHidden,
-}: Props) => {
+const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }: Props) => {
     const explorerLink = `${network.explorer.address}${account.descriptor}`;
-    const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
-    const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
+    const balance = account.availableBalance;
     const reserve: string =
         account.networkType === 'ripple' && !account.empty ? account.reserve : '0';
     return (
@@ -68,7 +59,7 @@ const AccountHeader = ({
                             {...(account.imported
                                 ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
                                 : l10nCommonMessages.TR_ACCOUNT_HASH)}
-                            values={{ number: parseInt(account.index, 10) + 1 }}
+                            values={{ number: String(account.index + 1) }}
                         />
                     </AccountTitle>
                 </AccountName>

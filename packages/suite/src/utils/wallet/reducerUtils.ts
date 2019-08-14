@@ -36,3 +36,15 @@ export const getAccountTokens = (tokens: Token[], account?: Account) => {
             t.deviceState === a.deviceState,
     );
 };
+
+export const getAccountPendingTx = (pending: Transaction[], account?: Account): Transaction[] => {
+    const a = account;
+    if (!a) return [];
+    return pending.filter(p => p.network === a.network && p.descriptor === a.descriptor);
+};
+
+// export const getPendingSequence = (pending: Transaction[]): number =>
+//     pending.reduce((value: number, tx: Transaction): number => {
+//         if (tx.rejected) return value;
+//         return Math.max(value, tx.sequence + 1);
+//     }, 0);

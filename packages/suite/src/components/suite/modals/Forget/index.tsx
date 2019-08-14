@@ -11,6 +11,8 @@ import { TrezorDevice } from '@suite-types';
 
 interface Props {
     device: TrezorDevice;
+    onForgetDevice: (device: TrezorDevice) => void;
+    onCancel: () => void;
 }
 
 const Wrapper = styled.div`
