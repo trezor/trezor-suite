@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import TrezorConnect from 'trezor-connect';
-import l10nCommonMessages from '@suite-views/index.messages';
-
-import { Button, P, H1, Link, colors, variables, animations } from '@trezor/components';
-
 import { FormattedMessage } from 'react-intl';
+import TrezorConnect from 'trezor-connect';
+import { Button, P, H1, Link, colors, variables, animations } from '@trezor/components';
+import l10nCommonMessages from '@suite-views/index.messages';
+import WebusbButton from '@suite-components/WebusbButton';
 import l10nMessages from './index.messages';
 
 interface Props {
@@ -40,21 +39,21 @@ const Wrapper = styled.div`
 
 const ConnectTrezorWrapper = styled.div`
     position: relative;
-    top: 1px;
-    margin: 15px 15px 0px 15px;
     animation: ${animations.PULSATE} 1.3s ease-out infinite;
     color: ${colors.GREEN_PRIMARY};
     font-size: ${variables.FONT_SIZE.BIG};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledP = styled(P)`
-    line-height: auto;
-    margin: 15px 15px 0px 15px;
+const And = styled(P)`
+    margin: 0px 15px 0px 15px;
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 15px 0 15px 0;
+    }
 `;
 
-const StyledButton = styled(Button)`
-    margin: 15px 15px 5px 15px;
+const ButtonWrapper = styled.div`
+    display: flex;
 `;
 
 const Image = styled.img`
@@ -180,16 +179,12 @@ class ConnectDevice extends PureComponent<Props> {
                     </ConnectTrezorWrapper>
                     {this.props.showWebUsb && !this.props.showDisconnect && (
                         <React.Fragment>
-                            <StyledP>
+                            <And>
                                 <FormattedMessage {...l10nMessages.TR_AND} />
-                            </StyledP>
-                            <StyledButton
-                                isInverse
-                                icon="PLUS"
-                                additionalClassName="trezor-webusb-button"
-                            >
-                                <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
-                            </StyledButton>
+                            </And>
+                            <ButtonWrapper>
+                                <WebusbButton />
+                            </ButtonWrapper>
                         </React.Fragment>
                     )}
                 </Wrapper>

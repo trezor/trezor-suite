@@ -10,6 +10,7 @@ import { Button, colors, variables, animations, Tooltip, Icon } from '@trezor/co
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
 import l10nCommonMessages from '@suite-views/index.messages';
+import WebusbButton from '@suite-components/WebusbButton';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 import l10nMessages from './index.messages';
@@ -268,13 +269,7 @@ const DeviceMenu = ({
                     />
                     {isWebUSB(transport) && (
                         <ButtonWrapper>
-                            <StyledButton
-                                isInverse
-                                icon="PLUS"
-                                additionalClassName="trezor-webusb-button"
-                            >
-                                <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
-                            </StyledButton>
+                            <WebusbButton />
                         </ButtonWrapper>
                     )}
                 </Menu>

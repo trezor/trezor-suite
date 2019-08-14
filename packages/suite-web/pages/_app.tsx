@@ -4,7 +4,7 @@ import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-
+import { Button } from '@trezor/components';
 import { initStore } from '@suite/reducers/store';
 import { isStatic } from '@suite-utils/router';
 import Preloader from '@suite-components/Preloader';
@@ -30,6 +30,12 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
+                <div id="web-usb-hideout" style={{ position: 'absolute' }}>
+                    <Button isInverse icon="PLUS" additionalClassName="trezor-webusb-button" style={{ width: '100%' }}>
+                        Check for devices
+                    </Button>
+                </div>
+
                 <Container>
                     <ReduxProvider store={store}>
                         <IntlProvider>
