@@ -1,9 +1,0 @@
-public
-build
-coverage
-cache/**
-node_modules
-scripts/solidity/**
-src/flowtype/npm
-scripts/solidity/.*
-**/_old/*

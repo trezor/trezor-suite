@@ -1,12 +1,35 @@
-.next/**
-_old/**
-build/**
-
+# general
 node_modules
 generated
+old
+_old
+examples
+docker
+public
+static
 
-next.config.js
+# libs and builds
+dist
+lib
+.rpt2_cache
+build
+build-electron
+docs
 
-ios/**
-android/**
-dist/**
+# debug files
+yarn-error.log
+cache
+.build
+solidity
+
+# folders
+packages/wallet
+ci
+
+# next js
+.next
+next-env.d.ts
+
+# native
+android
+ios
