@@ -7,9 +7,7 @@ const StepHeadingWrapper = styled.div`
     align-items: center;
     text-align: center;
     justify-self: center;
-    padding-left: 10%;
-    padding-right: 10%;
-    font-weight: 300;
+    font-weight: 500;
     font-size: 2rem;
     line-height: 2.3rem;
     width: 100%;

@@ -2,25 +2,24 @@ import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import TrezorConnect from 'trezor-connect';
-import { injectIntl } from 'react-intl';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { Button, colors, Notification } from '@trezor/components';
+import { Notification } from '@trezor/components';
 import { selectDevice } from '@suite-actions/suiteActions';
-import { AppState, TrezorDevice } from '@suite-types';
+import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
-interface Props {
-    devices: AppState['devices'];
-    selectedDevice: AppState['suite']['device'];
+interface Props extends InjectedIntlProps {
+    device: AppState['suite']['device'];
     selectDevice: typeof selectDevice;
 }
 
 const Selection: FunctionComponent<Props> = props => {
-    const { devices, selectedDevice } = props;
+    const { device } = props;
 
-    if (!selectedDevice || devices.length < 1) return null;
+    if (!device) return null;
 
-    const onClick = async (device: TrezorDevice) => {
+    const onClick = async () => {
         const resp = await TrezorConnect.getFeatures({
             device,
         });
@@ -52,8 +51,7 @@ const Selection: FunctionComponent<Props> = props => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-    devices: state.devices,
-    selectedDevice: state.suite.device,
+    device: state.suite.device,
 });
 
 export default injectIntl(

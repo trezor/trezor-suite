@@ -10,7 +10,7 @@
   "scripts": {
     "lint": "eslint .",
     "clean": "rimraf lib",
-    "build": "yarn run clean && babel src --out-dir lib",
+    "build:lib": "yarn run clean && babel src --out-dir lib",
     "prepublishOnly": "yarn run lint && npm run build"
   },
   "bin": {

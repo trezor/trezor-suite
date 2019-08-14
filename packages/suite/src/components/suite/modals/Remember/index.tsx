@@ -7,13 +7,14 @@ import { FormattedMessage } from 'react-intl';
 import commonMessages from '@suite-views/index.messages';
 import modalsMessages from '../messages';
 import messages from './messages';
+import { TrezorDevice } from '@suite-types';
 
-// type Props = {
-//     device: TrezorDevice,
-//     instances: ?Array<TrezorDevice>,
-//     onRememberDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onRememberDevice'>,
-//     onForgetDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onForgetDevice'>,
-// };
+interface Props {
+    device: TrezorDevice;
+    instances?: TrezorDevice[];
+    onRememberDevice: (device: TrezorDevice) => void;
+    onForgetDevice: (device: TrezorDevice) => void;
+}
 
 const ButtonContent = styled.div`
     display: flex;
@@ -61,7 +62,7 @@ interface Instance {
 }
 
 class RememberDevice extends PureComponent<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {

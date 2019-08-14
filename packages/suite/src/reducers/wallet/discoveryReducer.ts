@@ -20,7 +20,7 @@ export interface Discovery {
     // coins which failed to load
     failed: {
         network: string;
-        networkType: string;
+        accountType: string;
         error: string;
         fwException?: string;
     }[];
@@ -55,6 +55,8 @@ export default (state: State = initialState, action: Action): State => {
                 create(draft, action.payload);
                 break;
             case DISCOVERY.UPDATE:
+            case DISCOVERY.FAILED:
+            case DISCOVERY.STOP:
             case DISCOVERY.COMPLETE:
                 update(draft, action.payload);
                 break;

@@ -1,9 +1,9 @@
 {
     "extractedMessagesFilePattern": "translations/extractedMessages/**/*.json",
-    "localesOutputDir": "./src/locales/",
+    "localesOutputDir": "../suite-data/files/translations/",
     "outputDir": "translations/",
     "project": {
-        "identifier": "trezor-wallet-test",
+        "identifier": "trezor-suite",
         "filename": "master",
         "apiKeyEnv": "CROWDIN_API_KEY"
     },

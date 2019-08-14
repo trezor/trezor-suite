@@ -8,14 +8,13 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     model: state.onboarding.selectedModel,
-    deviceCall: state.onboarding.connect.deviceCall,
     device: state.onboarding.connect.device,
-    isResolved: false, // todo: maybe add maybe not.
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
         goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     },
 });
 

@@ -1,18 +1,17 @@
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite:latest
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
     PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
     PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
     PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-    PACKAGE_PATH_SUITE_ONBOARDING: 'packages/suite-onboarding'
     PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
     CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
 cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: monorepo-cache
     paths:
         # cypress
         - cache/Cypress
@@ -31,7 +30,6 @@ cache:
         - packages/suite-web/node_modules
         - packages/suite-desktop/node_modules
         - packages/suite-native/node_modules
-        - packages/suite-onboarding/node_modules
 
 stages:
     - install
@@ -55,7 +53,6 @@ include:
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
     - ci/packages/suite-native.yml
-    - ci/packages/suite-onboarding.yml
     - ci/packages/blockchain-link.yml
     - ci/packages/rollout.yml
     - ci/packages/connect-explorer.yml

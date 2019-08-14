@@ -1,4 +1,4 @@
-import modalActions from '../modalActions';
+import * as modalActions from '../modalActions';
 import { MODAL } from '../constants';
 
 describe('Modal Actions', () => {

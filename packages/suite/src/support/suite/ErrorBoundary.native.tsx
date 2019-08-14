@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { Sentry } from 'react-native-sentry';
+// import { Sentry } from 'react-native-sentry';
 
 interface Props {
     children: React.ReactNode;
@@ -13,7 +13,7 @@ interface State {
 class ErrorBoundary extends React.Component<Props, State> {
     state = { error: null };
 
-    componentDidCatch(error: Error, info: object) {
+    componentDidCatch(error: Error, _info: object) {
         this.setState({ error });
         // Alert.alert(
         //     'error',

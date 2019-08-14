@@ -1,5 +1,6 @@
 import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
 import { Dispatch, GetState } from '@suite-types/index';
+import { add as addNotification } from '@wallet-actions/notificationActions';
 import { Discovery, PartialDiscovery, DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import { ACCOUNT, DISCOVERY } from './constants';
 
@@ -62,14 +63,14 @@ const accountTypes: AccountType[] = [
     { path: "m/44'/0'/i'", coin: 'btc', type: 'legacy' },
     { path: "m/49'/2'/i'", coin: 'ltc' },
     { path: "m/44'/2'/i'", coin: 'ltc', type: 'legacy' },
-    // { path: "m/84'/1'/i'", coin: 'test' },
-    // { path: "m/49'/1'/i'", coin: 'test', type: 'segwit' },
-    // { path: "m/44'/1'/i'", coin: 'test', type: 'legacy' },
+    { path: "m/84'/1'/i'", coin: 'test' },
+    { path: "m/49'/1'/i'", coin: 'test', type: 'segwit' },
+    { path: "m/44'/1'/i'", coin: 'test', type: 'legacy' },
     { path: "m/44'/60'/0'/0/i", coin: 'eth', networkType: 'ethereum' },
     { path: "m/44'/61'/0'/0/i", coin: 'etc', networkType: 'ethereum' },
-    // { path: "m/44'/60'/0'/0/i", coin: 'trop', networkType: 'ethereum' },
-    // { path: "m/44'/144'/i'/0/0", coin: 'xrp', networkType: 'ripple' },
-    { path: "m/44'/1'/i'/0/0", coin: 'txrp', networkType: 'ripple' },
+    { path: "m/44'/60'/0'/0/i", coin: 'trop', networkType: 'ethereum' },
+    { path: "m/44'/144'/i'/0/0", coin: 'xrp', networkType: 'ripple' },
+    { path: "m/44'/144'/i'/0/0", coin: 'txrp', networkType: 'ripple' },
     { path: "m/44'/145'/i'", coin: 'bch' },
     { path: "m/49'/156'/i'", coin: 'btg' },
     { path: "m/44'/156'/i'", coin: 'btg', type: 'legacy' },
@@ -139,10 +140,12 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
                 {
                     device,
                     total,
+                    index: item.index,
+                    status: STATUS.RUNNING,
                     failed: discovery.failed.concat([
                         {
                             network: item.coin,
-                            networkType: item.networkType,
+                            accountType: item.type,
                             error,
                         },
                     ]),
@@ -157,6 +160,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
         update({
             device,
             index: item.index,
+            status: STATUS.RUNNING,
             loaded: discovery.loaded + 1,
             total,
         }),
@@ -184,15 +188,13 @@ const getBundle = (discovery: Discovery) => (
     const usedAccounts = accounts.filter(a => a.index === discovery.index && !a.empty);
     const bundle: DiscoveryItem[] = [];
     accountTypes.forEach(item => {
-        // check if previous account of this type exists
+        // check if previous account of requested type already exists
         const type = item.type || 'normal';
         const prevAccount = usedAccounts.find(a => a.type === type && a.network === item.coin);
-        // check if this coin not failed before
-        const failed = discovery.failed
-            ? discovery.failed.find(
-                  f => f.network === item.coin && f.networkType === item.networkType,
-              )
-            : null;
+        // check if requested coin not failed before
+        const failed = discovery.failed.find(
+            f => f.network === item.coin && f.accountType === type,
+        );
         const skip = failed || (discovery.index >= 0 && !prevAccount);
         for (let i = 1; i <= BUNDLE_SIZE; i++) {
             const accountIndex = discovery.index + 1;
@@ -219,7 +221,7 @@ const getBundle = (discovery: Discovery) => (
     return bundle;
 };
 
-export const start = () => async (dispatch: Dispatch, _getState: GetState): Promise<void> => {
+export const start = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // TODO:
     // - catch interruption and TrezorConnect error
     // - check id discovery is completed
@@ -250,26 +252,32 @@ export const start = () => async (dispatch: Dispatch, _getState: GetState): Prom
     // discovery process complete
     if (bundle.length === 0) {
         // call getFeatures to release device session
-        await TrezorConnect.getFeatures({ keepSession: false });
+        await TrezorConnect.getFeatures({
+            device: getState().suite.device,
+            keepSession: false,
+        });
         dispatch(
-            update({
-                device,
-                status: DISCOVERY_STATUS.COMPLETED,
-            }),
+            update(
+                {
+                    device,
+                    status: DISCOVERY_STATUS.COMPLETED,
+                },
+                DISCOVERY.COMPLETE,
+            ),
         );
         return;
     }
 
+    // handle trezor-connect event
     const onBundleProgress = (event: ProgressEvent) => {
         const { progress } = event;
+        // pass more parameters to handler
         dispatch(handleProgress(event, device, bundle[progress]));
     };
 
     TrezorConnect.on(UI.BUNDLE_PROGRESS, onBundleProgress);
     const result = await TrezorConnect.getAccountInfo({
-        // device: {
-        //     path: 'a',
-        // },
+        device: getState().suite.device,
         bundle,
         keepSession: true,
     });
@@ -277,7 +285,18 @@ export const start = () => async (dispatch: Dispatch, _getState: GetState): Prom
 
     // process response
     if (result.success) {
-        dispatch(start()); // try next index
+        if (dispatch(getDiscovery(device)).status === STATUS.RUNNING) {
+            await dispatch(start()); // try next index
+        } else {
+            dispatch(
+                addNotification({
+                    variant: 'error',
+                    title: 'Reading accounts error: Discovery process is not running',
+                    // message: (<>{result.payload.error}</>),
+                    cancelable: true,
+                }),
+            );
+        }
     } else {
         // this error will be thrown only at the beginning of discovery process
         // it will determine which coins are not supported because one of exceptions below
@@ -286,31 +305,63 @@ export const start = () => async (dispatch: Dispatch, _getState: GetState): Prom
         // - UI.FIRMWARE_OLD
         // those coins should be added to "failed" field
         if (result.payload.code === 'bundle_fw_exception') {
-            const coins: { index: number; coin: string; exception: string }[] = JSON.parse(
-                result.payload.error,
-            );
-            const failed: Discovery['failed'] = coins.map(c => ({
-                network: c.coin,
-                networkType: bundle[c.index].networkType,
-                error: c.exception,
-                fwException: c.exception,
-            }));
-            // add failed coins to discovery
-            dispatch(update({ device, failed, total: discovery.total - LIMIT * failed.length }));
+            try {
+                const coins: { index: number; coin: string; exception: string }[] = JSON.parse(
+                    result.payload.error,
+                );
+                if (!coins || !Array.isArray(coins)) {
+                    throw new Error(
+                        `Unexpected JSON error response from TrezorConnect: ${result.payload.error}`,
+                    );
+                }
+                const failed: Discovery['failed'] = coins.map(c => ({
+                    network: c.coin,
+                    accountType: bundle[c.index].type,
+                    error: c.exception,
+                    fwException: c.exception,
+                }));
+                // add failed coins to discovery
+                dispatch(
+                    update({ device, failed, total: discovery.total - LIMIT * failed.length }),
+                );
 
-            dispatch(start()); // restart process without failed coins
-        } else if (result.payload.error === 'discovery_interrupted') {
-            console.warn('BY USER!');
-            await TrezorConnect.getFeatures({ keepSession: false });
+                await dispatch(start()); // restart process, exclude failed coins
+                return;
+            } catch (error) {
+                // do nothing. error will be handled later
+            }
+        }
+
+        if (result.payload.error === 'discovery_interrupted') {
+            // if interruption comes from the user then device session should be released
+            await TrezorConnect.getFeatures({
+                device: getState().suite.device,
+                keepSession: false,
+            });
             dispatch(update({ device, status: DISCOVERY_STATUS.STOPPED }, DISCOVERY.STOP));
+            dispatch(
+                addNotification({
+                    variant: 'error',
+                    title: 'Reading accounts error',
+                    cancelable: true,
+                }),
+            );
         } else {
             // call getFeatures to release device session
             // await TrezorConnect.getFeatures({ keepSession: false });
             // discovery failed
             // TODO: reduce index to "start"
+            // handle
             dispatch(update({ device, status: DISCOVERY_STATUS.STOPPED }, DISCOVERY.STOP));
+            dispatch(
+                addNotification({
+                    variant: 'error',
+                    title: 'Reading accounts error',
+                    // message: (<>{result.payload.error}</>),
+                    cancelable: true,
+                }),
+            );
         }
-        console.warn(result);
     }
 };
 

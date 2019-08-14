@@ -11,7 +11,6 @@ import Step from './index';
 const mapStateToProps = (state: AppState) => ({
     device: state.onboarding.connect.device,
     newsletter: state.onboarding.newsletter,
-    fetchCall: state.onboarding.fetchCall,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

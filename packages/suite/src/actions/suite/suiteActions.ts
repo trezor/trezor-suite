@@ -26,7 +26,7 @@ export const updateOnlineStatus = () => (dispatch: Dispatch) => {
     };
     statusHandler();
     // TODO: not working in react-native
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window.addEventListener) {
         window.addEventListener('online', statusHandler);
         window.addEventListener('offline', statusHandler);
     }
@@ -87,7 +87,7 @@ export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getS
     const { app } = getState().router;
     if (!selected) {
         dispatch(selectDevice(device));
-        if (device.mode === 'initialize' && app !== 'onboarding') {
+        if (device.type === 'acquired' && device.mode === 'initialize' && app !== 'onboarding') {
             goto(getRoute('onboarding-index'));
         }
     }
