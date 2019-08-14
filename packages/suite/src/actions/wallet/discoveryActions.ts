@@ -232,7 +232,6 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     // - if currently load account is selected perform full transaction discovery?
 
     const discovery = dispatch(getDiscoveryForDevice());
-    console.log(discovery);
     if (!discovery) {
         addNotification({
             variant: 'error',
@@ -240,7 +239,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             cancelable: true,
         });
         return;
-    }; // TODO: throw error in notification?
+    } // TODO: throw error in notification?
     const { device } = discovery;
 
     // start process
@@ -370,6 +369,14 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 }),
             );
         }
+    }
+};
+
+export const init = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const discovery = dispatch(getDiscoveryForDevice());
+    console.log(discovery);
+    if (discovery && discovery.status === STATUS.IDLE) {
+        dispatch(start());
     }
 };
 

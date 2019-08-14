@@ -125,6 +125,6 @@ export const getDiscoveryProcess = (
     discoveries: Discovery[],
     device?: TrezorDevice,
 ): Discovery | null => {
-    if (!device) return null;
+    if (!device || !device.features) return null;
     return discoveries.find(d => d.device === device.features.device_id) || null;
 };

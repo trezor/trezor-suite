@@ -1,4 +1,4 @@
-// import { Dispatch, GetState } from '@suite-types/index';
+import { Dispatch, GetState } from '@suite-types/index';
 import { WALLET } from './constants';
 
 export type WalletActions =
@@ -13,6 +13,11 @@ export type WalletActions =
           error: string;
       };
 
-export const init = () => ({
-    type: WALLET.INIT,
-});
+export const init = () => (dispatch: Dispatch, getState: GetState) => {
+    const { status } = getState().wallet;
+    if (!status.loaded && !status.loading) {
+        dispatch({
+            type: WALLET.INIT,
+        });
+    }
+};

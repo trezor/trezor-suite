@@ -20,10 +20,9 @@ interface Props {
 }
 
 const AccountSummary = (props: Props) => {
-    const { device } = props;
+    const { device } = props.suite;
     const { account, network, discovery, shouldRender } = props.wallet.selectedAccount;
-
-    if (!device || !account || !discovery || !network || !shouldRender) {
+    if (!device || !account || !network || !shouldRender) {
         const { loader, exceptionPage } = props.wallet.selectedAccount;
         return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
     }
