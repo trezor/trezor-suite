@@ -6,6 +6,8 @@ import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import * as db from '@suite/storage/index';
 import { SUITE } from '@suite/actions/suite/constants';
+import { ACCOUNT } from '@suite/actions/wallet/constants';
+import { AccountInfo } from 'trezor-connect';
 
 const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
@@ -50,6 +52,35 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
         //     // @ts-ignore
         //     db.updateTransaction(action.txId, action.timestamp);
         //     break;
+
+        case ACCOUNT.CREATE: {
+            console.log('storage: ACCOUNT.CREATE');
+            try {
+                const account: AccountInfo = action.payload;
+                const { transactions } = account.history;
+                if (transactions) {
+                    transactions.forEach(async tx => {
+                        const txId = await db.addTransaction({
+                            ...tx,
+                            accountId: account.descriptor,
+                        });
+                        console.log(txId);
+                    });
+                }
+            } catch (error) {
+                if (error && error.name === 'ConstraintError') {
+                    console.log('Tx with such id already exists');
+                } else if (error) {
+                    console.error(error.name);
+                    console.error(error.message);
+                } else {
+                    console.error(error);
+                }
+            }
+
+            // api.dispatch(transactionActions.add(action.transaction));
+            break;
+        }
 
         case WALLET_SETTINGS.SET_HIDDEN_COINS:
         case WALLET_SETTINGS.SET_HIDDEN_COINS_EXTERNAL:

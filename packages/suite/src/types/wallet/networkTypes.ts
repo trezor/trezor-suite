@@ -23,7 +23,7 @@ export interface Network {
         tx: string;
         address: string;
     };
-    tokens: string;
+    tokens?: string;
     decimals: number;
     fee: {
         defaultFee: string;
@@ -38,4 +38,5 @@ export interface Network {
         urls: string[];
     }[];
     web3: string[];
+    hasSignVerify?: boolean; // custom
 }

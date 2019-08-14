@@ -7,9 +7,7 @@ import { AppState, Dispatch } from '@suite-types';
 import Summary from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    // TODO get selectedAccount from reducers
     wallet: state.wallet,
-    device: state.suite.device,
     fiat: state.wallet.fiat,
     router: state.router,
 });

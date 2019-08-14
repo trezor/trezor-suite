@@ -5,6 +5,7 @@ export default [
         type: 'bitcoin',
         name: 'Bitcoin',
         symbol: 'BTC',
+        bip44: "m/44'/0'/0'/0",
         shortcut: 'btc',
         hasSignVerify: true,
         explorer: {

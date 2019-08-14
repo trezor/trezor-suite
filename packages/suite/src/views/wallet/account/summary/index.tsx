@@ -21,31 +21,17 @@ interface Props {
 
 const AccountSummary = (props: Props) => {
     const { device } = props;
-    // const { account, network, tokens, pending, shouldRender } = props.selectedAccount;
-    const selectedCoin = props.router.params.coin;
-    const { accountId } = props.router.params;
-    const network = NETWORKS.find(n => n.shortcut === selectedCoin);
-    if (!network) return null;
+    const { account, network, discovery, shouldRender } = props.wallet.selectedAccount;
 
-    const selectedAccount = findDeviceAccounts(props.wallet.accounts, selectedCoin).find(
-        a => a.index === Number(accountId),
-    );
-
-    // if (!device || !account || !network || !shouldRender) {
-    if (!selectedAccount) {
-        // TODO: add message based on what is going on (or reimplement selectedAccount)
-        // const { loader, exceptionPage } = props.selectedAccount;
-        return (
-            <LayoutAccount>
-                <Content loader={{ message: 'loading' }} isLoading />
-            </LayoutAccount>
-        );
+    if (!device || !account || !discovery || !network || !shouldRender) {
+        const { loader, exceptionPage } = props.wallet.selectedAccount;
+        return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
     }
 
     return (
         <LayoutAccount>
             <AccountHeader
-                account={selectedAccount}
+                account={account}
                 network={network}
                 fiatRates={props.fiat}
                 localCurrency={props.wallet.settings.localCurrency}
@@ -53,7 +39,7 @@ const AccountSummary = (props: Props) => {
             />
             {network.type === 'ethereum' ? (
                 <Tokens
-                    account={selectedAccount}
+                    account={account}
                     loadTokens={props.loadTokens}
                     addToken={props.addToken}
                     removeToken={props.removeToken}

@@ -63,13 +63,16 @@ const onUpgrade = async (
     const shouldInitDB = oldVersion === 0;
     if (shouldInitDB) {
         // init db
+        // object store for wallet transactions
         const txsStore = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
         txsStore.createIndex('txId', 'txId', { unique: true });
-        txsStore.createIndex('timestamp', 'timestamp', { unique: false });
+        txsStore.createIndex('type', 'type', { unique: false }); // sent/recv
+        txsStore.createIndex('blockTime', 'blockTime', { unique: false });
         txsStore.createIndex('accountId', 'accountId', { unique: false });
-        txsStore.createIndex('accountId-timestamp', ['accountId', 'timestamp'], {
+        txsStore.createIndex('accountId-blockTime', ['accountId', 'blockTime'], {
             unique: false,
         });
+        // object store for settings
         db.createObjectStore('suiteSettings');
         db.createObjectStore('walletSettings');
     } else {

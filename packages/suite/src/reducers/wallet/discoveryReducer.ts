@@ -2,7 +2,7 @@ import produce from 'immer';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action } from '@wallet-types/index';
 
-export enum STATUS {
+export enum DISCOVERY_STATUS {
     IDLE = 0,
     STARTING = 1,
     RUNNING = 2,
@@ -16,7 +16,7 @@ export interface Discovery {
     index: number;
     total: number;
     loaded: number;
-    status: STATUS;
+    status: DISCOVERY_STATUS;
     // coins which failed to load
     failed: {
         network: string;
