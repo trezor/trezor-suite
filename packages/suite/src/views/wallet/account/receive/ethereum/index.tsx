@@ -6,17 +6,12 @@ import QrCode from '@wallet-components/QrCode';
 import VerifyAddressInput from '@wallet-components/inputs/VerifyAddress';
 
 import { FormattedMessage } from 'react-intl';
-import { AppState } from '@suite/reducers/store';
 import messages from './messages';
+import { ReceiveProps } from '../index';
 
 const Wrapper = styled.div``;
 
-interface Props {
-    account: AppState['wallet']['selectedAccount']['account'];
-    device: AppState['suite']['device'];
-}
-
-const EthereumReceive = (props: Props) => {
+const EthereumReceive = ({ className, ...props }: ReceiveProps) => {
     return (
         <Wrapper>
             <Title>

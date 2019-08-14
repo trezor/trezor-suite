@@ -374,7 +374,6 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
 export const init = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());
-    console.log(discovery);
     if (discovery && discovery.status === STATUS.IDLE) {
         dispatch(start());
     }

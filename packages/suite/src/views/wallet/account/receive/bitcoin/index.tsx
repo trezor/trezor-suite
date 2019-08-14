@@ -6,16 +6,17 @@ import { FormattedMessage } from 'react-intl';
 import QrCode from '@wallet-components/QrCode';
 import VerifyAddressInput from '@wallet-components/inputs/VerifyAddress';
 import messages from './messages';
+import { ReceiveProps } from '../index';
 
 const Wrapper = styled.div``;
 
-const BitcoinReceive = () => (
+const BitcoinReceive = ({ className, ...props }: ReceiveProps) => (
     <Wrapper>
         <Title>
             <FormattedMessage {...messages.TR_RECEIVE_BITCOIN} />
         </Title>
-        <VerifyAddressInput />
-        <QrCode value="2121212" />
+        <VerifyAddressInput {...props} />
+        <QrCode value="21s21212" />
     </Wrapper>
 );
 

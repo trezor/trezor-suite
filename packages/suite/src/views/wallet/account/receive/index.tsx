@@ -19,13 +19,27 @@ interface Props {
     showAddress: typeof showAddress;
 }
 
+export interface ReceiveProps {
+    className?: string;
+    account: AppState['wallet']['selectedAccount']['account'];
+    address: string;
+    isAddressVerifying: boolean;
+    isAddressUnverified: boolean;
+    isAddressHidden: boolean;
+    isAddressVerified: boolean;
+}
+
 const AccountReceive = (props: Props) => {
     const { device } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !account || !discovery || !network || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
-        return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
+        return (
+            <LayoutAccount>
+                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
+            </LayoutAccount>
+        );
     }
 
     const { isAddressVerified, isAddressUnverified } = props.receive;
@@ -42,22 +56,22 @@ const AccountReceive = (props: Props) => {
         address = account.descriptor;
     }
 
+    const componentProps = {
+        account,
+        device,
+        address,
+        showAddress: props.showAddress,
+        isAddressHidden,
+        isAddressVerified,
+        isAddressUnverified,
+        isAddressVerifying,
+    };
+
     return (
         <LayoutAccount>
-            {network.type === 'bitcoin' && <BitcoinTypeReceiveForm {...props} />}
-            {network.type === 'ethereum' && (
-                <EthereumTypeReceiveForm
-                    account={account}
-                    device={device}
-                    address={address}
-                    showAddress={props.showAddress}
-                    isAddressHidden={isAddressHidden}
-                    isAddressVerified={isAddressVerified}
-                    isAddressUnverified={isAddressUnverified}
-                    isAddressVerifying={isAddressVerifying}
-                />
-            )}
-            {network.type === 'ripple' && <RippleTypeReceiveForm {...props} />}
+            {network.type === 'bitcoin' && <BitcoinTypeReceiveForm {...componentProps} />}
+            {network.type === 'ethereum' && <EthereumTypeReceiveForm {...componentProps} />}
+            {network.type === 'ripple' && <RippleTypeReceiveForm {...componentProps} />}
         </LayoutAccount>
     );
 };

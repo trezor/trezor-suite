@@ -50,8 +50,6 @@ const ShowAddressButton = styled(Button)`
 interface Props extends InjectedIntlProps {
     account: AppState['wallet']['selectedAccount']['account'];
     address: string;
-    topLabel: string;
-    accountPath: string;
     isAddressVerifying: boolean;
     isAddressUnverified: boolean;
     isAddressHidden: boolean;
