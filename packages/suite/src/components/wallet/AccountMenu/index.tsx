@@ -118,7 +118,6 @@ const AccountMenu = (props: Props) => {
     const selected = props.suite.device;
     const { params } = props.router;
     const network = networks.find(c => c.shortcut === params.coin);
-
     if (!selected || !network) return null;
 
     // TODO
@@ -130,7 +129,7 @@ const AccountMenu = (props: Props) => {
 
     const selectedAccounts = deviceAccounts.map((account, i) => {
         const currentRoute = getRouteFromPath(props.router.pathname);
-        const url = getRoute(currentRoute? currentRoute.name : 'wallet-account', {
+        const url = getRoute(currentRoute ? currentRoute.name : 'wallet-account', {
             coin: network.shortcut,
             accountId: `${account.index}`,
         });
