@@ -1,7 +1,7 @@
 import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
 import { Dispatch, GetState } from '@suite-types/index';
 import { add as addNotification } from '@wallet-actions/notificationActions';
-import { Discovery, PartialDiscovery, DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
+import { Discovery, PartialDiscovery, STATUS } from '@wallet-reducers/discoveryReducer';
 import { ACCOUNT, DISCOVERY } from './constants';
 
 export type DiscoveryActions =
@@ -95,7 +95,7 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
         discovery.find(d => d.device === id) || {
             device: id,
             index: -1,
-            status: DISCOVERY_STATUS.IDLE,
+            status: STATUS.IDLE,
             // total: (LIMIT + BUNDLE_SIZE) * accountTypes.length,
             total: LIMIT * accountTypes.length,
             loaded: 0,
@@ -236,12 +236,12 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     const { device } = discovery;
 
     // start process
-    if (discovery.status === DISCOVERY_STATUS.IDLE) {
+    if (discovery.status === STATUS.IDLE) {
         await dispatch({
             type: DISCOVERY.START,
             payload: {
                 ...discovery,
-                status: DISCOVERY_STATUS.STARTING,
+                status: STATUS.STARTING,
             },
         });
     }
@@ -260,7 +260,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             update(
                 {
                     device,
-                    status: DISCOVERY_STATUS.COMPLETED,
+                    status: STATUS.COMPLETED,
                 },
                 DISCOVERY.COMPLETE,
             ),
@@ -338,7 +338,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 device: getState().suite.device,
                 keepSession: false,
             });
-            dispatch(update({ device, status: DISCOVERY_STATUS.STOPPED }, DISCOVERY.STOP));
+            dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
             dispatch(
                 addNotification({
                     variant: 'error',
@@ -352,7 +352,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             // discovery failed
             // TODO: reduce index to "start"
             // handle
-            dispatch(update({ device, status: DISCOVERY_STATUS.STOPPED }, DISCOVERY.STOP));
+            dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
             dispatch(
                 addNotification({
                     variant: 'error',
@@ -368,7 +368,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());
     if (discovery) {
-        dispatch(update({ device: discovery.device, status: DISCOVERY_STATUS.STOPPING }));
+        dispatch(update({ device: discovery.device, status: STATUS.STOPPING }));
         TrezorConnect.cancel('discovery_interrupted');
     }
 };

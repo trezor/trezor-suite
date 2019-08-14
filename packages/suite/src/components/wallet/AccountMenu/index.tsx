@@ -19,7 +19,7 @@ import networks from '@suite/config/suite/networks';
 import { Transaction } from '@suite/types/wallet';
 import { Account, findDeviceAccounts } from '@wallet-reducers/accountsReducer';
 import { getRoute, getRouteFromPath } from '@suite/utils/suite/router';
-import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import AddAccountButton from './components/AddAccountButton';
 import l10nMessages from './index.messages';
 

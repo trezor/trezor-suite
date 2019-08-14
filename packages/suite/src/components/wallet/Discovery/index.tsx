@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { AppState, Dispatch } from '@suite-types/index';
 import { H4, P, Button } from '@trezor/components';
-import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
+import { STATUS as DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import * as DiscoveryActions from '@wallet-actions/discoveryActions';
 
 interface Props {

@@ -18,7 +18,7 @@ import {
     ExceptionPage,
 } from '@wallet-reducers/selectedAccountReducer';
 
-import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 
 export type SelectedAccountActions =
