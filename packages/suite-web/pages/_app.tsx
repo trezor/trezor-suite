@@ -2,6 +2,7 @@ import React from 'react';
 import App, { Container, AppContext } from 'next/app';
 import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
 import { Button } from '@trezor/components';
@@ -11,6 +12,7 @@ import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import config from '@suite-config/index';
+import l10nCommonMessages from '@suite-views/index.messages';
 
 Sentry.init({ dsn: config.sentry });
 interface Props {
@@ -30,18 +32,26 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
-                <div id="web-usb-hideout" style={{ position: 'absolute' }}>
-                    <Button isInverse icon="PLUS" additionalClassName="trezor-webusb-button" style={{ width: '100%' }}>
-                        Check for devices
-                    </Button>
-                </div>
-
                 <Container>
                     <ReduxProvider store={store}>
                         <IntlProvider>
-                            <Preloader isStatic={isStaticRoute}>
-                                <Component {...pageProps} />
-                            </Preloader>
+                            <>
+                                <div id="web-usb-hideout" style={{ position: 'absolute' }}>
+                                    <Button
+                                        isInverse
+                                        icon="PLUS"
+                                        additionalClassName="trezor-webusb-button"
+                                        style={{ width: '100%' }}
+                                    >
+                                        <FormattedMessage
+                                            {...l10nCommonMessages.TR_CHECK_FOR_DEVICES}
+                                        />
+                                    </Button>
+                                </div>
+                                <Preloader isStatic={isStaticRoute}>
+                                    <Component {...pageProps} />
+                                </Preloader>
+                            </>
                         </IntlProvider>
                     </ReduxProvider>
                 </Container>
