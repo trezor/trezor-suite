@@ -1,8 +1,0 @@
-node_modules
-yarn-error.log
-lib
-coverage
-examples
-babel.config.js
-jest.config.js
-rollup.config.js
