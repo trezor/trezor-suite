@@ -6,7 +6,7 @@ export const isStepInPath = (step: Step, path: AnyPath[]) => {
         return true;
     }
     if (path.length === 0) {
-        return false;
+        return true;
     }
     return path.every((pathMember: AnyPath) => {
         // @ts-ignore

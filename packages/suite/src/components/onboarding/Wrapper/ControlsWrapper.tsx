@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
+import { variables } from '@trezor/components';
 
 interface Props {
     isVertical?: boolean;
@@ -17,7 +17,7 @@ const ControlsWrapper = styled.div<Props>`
         margin: 3px 10px 3px 10px;
     }
 
-    @media (max-width: ${BREAKPOINTS.SM}px) {
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
         & > * {
             margin: 3px 0 3px 0;

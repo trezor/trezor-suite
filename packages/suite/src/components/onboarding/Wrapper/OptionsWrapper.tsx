@@ -1,27 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import { variables } from '@trezor/components';
 
-import * as BREAKPOINT from '@onboarding-config/breakpoints';
-
-const Wrapper = styled.div<{ count: number }>`
+const Wrapper = styled.div`
     display: flex;
     justify-content: space-around;
     flex-direction: column;
     width: 100%;
 
-    @media (min-width: ${BREAKPOINT.SM}px) {
-        width: ${props => props.count * 200};
-        max-width: 120%;
+    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: row;
     }
 `;
 
-interface Props {
-    children: React.ReactElement[];
-}
-
-const OptionsWrapper = (props: Props) => {
-    return <Wrapper count={props.children.length}>{props.children}</Wrapper>;
+const OptionsWrapper: React.FunctionComponent = props => {
+    return <Wrapper>{props.children}</Wrapper>;
 };
 
 export default OptionsWrapper;

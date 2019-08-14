@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import styled, { css } from 'styled-components';
-import { Button, H1, P, variables } from '@trezor/components';
+import { H1, P, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
+
+// todo reorganize to single import
 import Option from '@onboarding-components/Option';
-import { Dots } from '@suite/components/onboarding/Loaders';
-import Text from '@suite/components/onboarding/Text';
+import { Dots } from '@onboarding-components/Loaders';
+import Text from '@onboarding-components/Text';
 import { ButtonBack, ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
 import {
     StepBodyWrapper,
     StepWrapper,
     StepFooterWrapper,
     OptionsWrapper,
-} from '@suite/components/onboarding/Wrapper';
-import { AppState } from '@suite/types/suite';
+} from '@onboarding-components/Wrapper';
 import * as STEP from '@onboarding-constants/steps';
-import { SKIP_URL } from '@onboarding-constants/urls';
-import { goToNextStep, setPath } from '@suite/actions/onboarding/onboardingActions';
+import { goToNextStep, addPath } from '@onboarding-actions/onboardingActions';
+import { goto } from '@suite-actions/routerActions';
+import { getRoute } from '@suite-utils/router';
+import { AppState } from '@suite-types';
+
 import l10nMessages from './index.messages';
 
 const ANIMATION_DURATION = 2.5;
@@ -60,10 +64,6 @@ const Loader = styled(P)`
     text-align: center;
 `;
 
-const StyledButton = styled(Button)`
-    display: block;
-`;
-
 const Small = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -75,7 +75,7 @@ const Base = styled.div`
 interface Props {
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
-        setPath: typeof setPath;
+        addPath: typeof addPath;
     };
     suite: AppState['suite'];
 }
@@ -85,8 +85,12 @@ const WelcomeStep = (props: Props) => {
     const [introExited, setIntroExited] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => setIntroTimedout(true), 5000);
-    }, []);
+        if (!props.suite.loaded) {
+            setTimeout(() => setIntroTimedout(true), 5000);
+        } else {
+            setIntroTimedout(true);
+        }
+    }, [props.suite.loaded]);
 
     const introLeaved = introTimedout && props.suite.loaded;
 
@@ -95,7 +99,7 @@ const WelcomeStep = (props: Props) => {
             <CSSTransition
                 {...TRANSITION_PROPS}
                 in={!introLeaved}
-                timeout={1000}
+                timeout={0}
                 onExited={() => setIntroExited(true)}
             >
                 <StepBodyWrapper>
@@ -139,7 +143,7 @@ const WelcomeStep = (props: Props) => {
                             <Option
                                 data-test="button-path-create"
                                 onClick={() => {
-                                    props.onboardingActions.setPath([STEP.PATH_CREATE]);
+                                    props.onboardingActions.addPath(STEP.PATH_CREATE);
                                     props.onboardingActions.goToNextStep();
                                 }}
                             >
@@ -150,10 +154,9 @@ const WelcomeStep = (props: Props) => {
                             <Option
                                 data-test="button-path-recovery"
                                 onClick={() => {
-                                    props.onboardingActions.setPath([STEP.PATH_RECOVERY]);
+                                    props.onboardingActions.addPath(STEP.PATH_RECOVERY);
                                     props.onboardingActions.goToNextStep();
                                 }}
-                                isInverse
                             >
                                 <Base>Restore existing wallet</Base>
                                 <Small>using your backup seed</Small>
@@ -164,7 +167,7 @@ const WelcomeStep = (props: Props) => {
                     <StepFooterWrapper>
                         <ButtonBack
                             data-test="button-use-wallet"
-                            onClick={() => (window.location.href = SKIP_URL)}
+                            onClick={() => goto(getRoute('wallet-index'))}
                         >
                             <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
                         </ButtonBack>

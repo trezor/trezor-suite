@@ -70,7 +70,6 @@ describe('router', () => {
                     coin: 'eth',
                 }),
             ).toEqual('/wallet/account#/eth');
-            expect(getRoute('does-not-exist')).toEqual('/');
         });
     });
 
