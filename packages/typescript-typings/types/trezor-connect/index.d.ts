@@ -263,6 +263,17 @@ declare module 'trezor-connect' {
         noBackup?: boolean;
     }
 
+    export interface ApplySettingsParams extends CommonParams {
+        homescreen?: string;
+        display_rotation?: 0 | 90 | 180 | 270;
+        use_passphrase?: boolean;
+        label?: string;
+    }
+
+    export interface ChangePinParams extends CommonParams {
+        remove?: boolean;
+    }
+
     export interface GetAddressParams extends CommonParams {
         path: string | number[];
         address?: string;
@@ -584,6 +595,10 @@ declare module 'trezor-connect' {
          * Performs device setup and generates a new seed.
          */
         function resetDevice(params: ResetDeviceParams): Promise<ResponseMessage<Message>>;
+
+        function applySettings(params: ApplySettingsParams): Promise<ResponseMessage<Message>>;
+
+        function changePin(params?: ChangePinParams): Promise<ResponseMessage<Message>>;
 
         /**
          * Display requested address derived by given BIP32 path on device and

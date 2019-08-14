@@ -9,6 +9,7 @@ import DeviceSettings from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
+    uiLocked: state.suite.uiLocked,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

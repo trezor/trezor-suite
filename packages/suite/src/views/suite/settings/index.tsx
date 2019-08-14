@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Input, Button, P, Icon, Select } from '@trezor/components';
-import { AppState } from '@suite-types/index';
+import { InjectedIntlProps } from 'react-intl';
+import { Input, Button, P, Icon } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
+import { applySettings, changePin } from '@suite-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
+import { AppState } from '@suite-types';
+
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
@@ -71,31 +74,43 @@ const BackgroundImageT1 = styled.img`
     margin: 5px;
 `;
 
-interface Props {
-    // device: AppState['suite']['device'];
-    device: any;
-    applySettings: any; // todo
-    changePin: any; // todo
+interface Props extends InjectedIntlProps {
+    device: AppState['suite']['device'];
+    applySettings: typeof applySettings;
+    changePin: typeof changePin;
+    uiLocked: boolean;
 }
 
-const Settings = ({ device, applySettings, changePin }: Props) => {
-    const { features } = device;
+const Settings = ({ device, uiLocked, applySettings, changePin }: Props) => {
+    // todo: need to solve typescript here.
 
     const [label, setLabel] = useState('');
 
     useEffect(() => {
-        setLabel(features.label);
-    }, [features.label, features.labels]);
+        if (!device) {
+            return;
+        }
+        setLabel(device.label);
+    }, [device]);
+
+    if (!device || device.type !== 'acquired') {
+        return null;
+    }
+
+    const { features } = device;
 
     const setHomescreen = (image: AnyImageName) => {
         const element = document.getElementById(image);
-        const hex = elementToHomescreen(element, features.major_version);
-        applySettings({ homescreen: hex });
+        if (element instanceof HTMLImageElement) {
+            const hex = elementToHomescreen(element, features.major_version);
+            applySettings({ homescreen: hex, device });
+        }
     };
 
     const DISPLAY_ROTATIONS = [
         { icon: 'ARROW_UP', value: 0 },
-        { icon: 'ARROW_RIGHT', value: 90 },
+        // blocked by components
+        // { icon: 'ARROW_RIGHT', value: 90 },
         { icon: 'ARROW_DOWN', value: 180 },
         { icon: 'ARROW_LEFT', value: 270 },
     ] as const;
@@ -109,13 +124,17 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                 <ValueCol>
                     <Input
                         value={label}
-                        onChange={(event: FormEvent<HTMLInputElement>) =>
+                        onChange={(event: React.FormEvent<HTMLInputElement>) =>
                             setLabel(event.currentTarget.value)
                         }
                     />
                 </ValueCol>
                 <ActionCol>
-                    <ActionButton isWhite onClick={() => applySettings({ label })}>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        isWhite
+                        onClick={() => applySettings({ label })}
+                    >
                         change
                     </ActionButton>
                 </ActionCol>
@@ -130,12 +149,20 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                 </ValueCol>
                 <ActionCol>
                     {!features.pin_protection && (
-                        <ActionButton isWhite onClick={() => changePin()}>
+                        <ActionButton
+                            isDisabled={uiLocked}
+                            isWhite
+                            onClick={() => changePin({ device })}
+                        >
                             enable
                         </ActionButton>
                     )}
                     {features.pin_protection && (
-                        <ActionButton isWhite onClick={() => changePin({ remove: true })}>
+                        <ActionButton
+                            isDisabled={uiLocked}
+                            isWhite
+                            onClick={() => changePin({ remove: true, device })}
+                        >
                             disable
                         </ActionButton>
                     )}
@@ -152,6 +179,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                 <ActionCol>
                     {!features.passphrase_protection && (
                         <ActionButton
+                            isDisabled={uiLocked}
                             isWhite
                             onClick={() => applySettings({ use_passphrase: true })}
                         >
@@ -160,6 +188,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                     )}
                     {features.passphrase_protection && (
                         <ActionButton
+                            isDisabled={uiLocked}
                             isWhite
                             onClick={() => applySettings({ use_passphrase: false })}
                         >
@@ -176,7 +205,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                             <Label>Display rotation</Label>
                         </LabelCol>
                         <ActionCol>
-                            {/* {DISPLAY_ROTATIONS.map(variant => (
+                            {DISPLAY_ROTATIONS.map(variant => (
                                 <OrientationButton
                                     key={variant.icon}
                                     isWhite
@@ -186,7 +215,7 @@ const Settings = ({ device, applySettings, changePin }: Props) => {
                                 >
                                     <Icon icon={variant.icon} />
                                 </OrientationButton>
-                            ))} */}
+                            ))}
                         </ActionCol>
                     </Row>
                 </>

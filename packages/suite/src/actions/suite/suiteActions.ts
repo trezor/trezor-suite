@@ -15,7 +15,8 @@ export type SuiteActions =
     | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
     | { type: typeof SUITE.TOGGLE_DEVICE_MENU; opened: boolean }
     | { type: typeof SUITE.TOGGLE_SIDEBAR }
-    | { type: typeof SUITE.ONLINE_STATUS; online: boolean };
+    | { type: typeof SUITE.ONLINE_STATUS; online: boolean }
+    | { type: typeof SUITE.LOCK_UI; payload: boolean };
 
 export const updateOnlineStatus = () => (dispatch: Dispatch) => {
     const statusHandler = () => {
@@ -162,4 +163,11 @@ export const observeSelectedDevice = (action: Action) => (
     }
 
     return reducersUtils.observeChanges(device, deviceFromReducer);
+};
+
+export const lockUI = (payload: boolean) => (dispatch: Dispatch) => {
+    dispatch({
+        type: SUITE.LOCK_UI,
+        payload,
+    });
 };
