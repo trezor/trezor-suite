@@ -10,11 +10,24 @@ variables:
 
     CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
-cache:
-    key: monorepo-cache
+stages:
+    - install
+    - lint
+    - type check
+    - test
+    - build
+    - deploy
+    - test integration
+
+install and build:
+    stage: install
+    script:
+        - yarn install
+        - npx lerna run build:lib
+    artifacts:
+        expire_in: 2 hours
+        when: always
     paths:
-        # cypress
-        - cache/Cypress
         # libs
         - packages/components/lib
         - packages/blockchain-link/lib
@@ -30,21 +43,6 @@ cache:
         - packages/suite-web/node_modules
         - packages/suite-desktop/node_modules
         - packages/suite-native/node_modules
-
-stages:
-    - install
-    - lint
-    - type check
-    - test
-    - build
-    - deploy
-    - test integration
-
-install and build:
-    stage: install
-    script:
-        - yarn install
-        - npx lerna run build:lib
 
 include:
     - ci/packages/components.yml

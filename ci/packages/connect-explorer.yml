@@ -3,18 +3,24 @@ connect-explorer lint:
     allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer lint
+    dependencies:
+        - install and build
 
 connect-explorer type check:
     stage: type check
     allow_failure: true
     script:
         - yarn workspace @trezor/connect-explorer type-check
+    dependencies:
+        - install and build
 
 connect-explorer type coverage:
     stage: type check
     allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer type-coverage
+    dependencies:
+        - install and build
 
 connect-explorer build:
     stage: build
@@ -25,6 +31,8 @@ connect-explorer build:
         when: always
         paths:
             - packages/connect-explorer/build
+    dependencies:
+        - install and build
 
 connect-explorer deploy dev:
     stage: deploy
@@ -48,6 +56,8 @@ connect-explorer deploy dev:
         - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 connect-explorer delete review:
     stage: deploy
@@ -63,6 +73,8 @@ connect-explorer delete review:
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 connect-explorer test integration:
     image: cypress/base:10
@@ -76,3 +88,5 @@ connect-explorer test integration:
         paths:
             - connect-explorer/test/snapshots
             - connect-explorer/test/screenshots
+    dependencies:
+        - install and build
