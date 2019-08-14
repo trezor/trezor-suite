@@ -19,6 +19,8 @@ stages:
     - deploy
     - test integration
 
+cache: {}
+
 install and build:
     stage: install
     script:
