@@ -1,8 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { AppState } from '@suite/types/suite';
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
-
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { Dispatch } from '@suite-types';
 
 import Step from './index';
@@ -14,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
         goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-        setPath: bindActionCreators(onboardingActions.setPath, dispatch),
+        addPath: bindActionCreators(onboardingActions.addPath, dispatch),
     },
 });
 

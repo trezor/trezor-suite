@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from '@trezor/components';
+import { Link, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -8,7 +8,6 @@ import {
     TREZOR_PACKAGING_URL,
     SUPPORT_URL,
 } from '@onboarding-constants/urls';
-import { MD } from '@onboarding-config/breakpoints';
 import Text from '@onboarding-components/Text';
 import { ButtonBack, ButtonAlt, ButtonCta } from '@suite/components/onboarding/Buttons';
 import l10nCommonMessages from '@suite-support/Messages';
@@ -30,7 +29,7 @@ const HologramWrapper = styled.div`
     max-width: 400px;
     margin: 10px;
 
-    @media only screen and (min-width: ${MD}px) {
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
         width: 70%;
     }
 `;

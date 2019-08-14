@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Link, P, Prompt } from '@trezor/components';
+import { Link, P, Prompt, variables } from '@trezor/components';
 import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -24,7 +24,6 @@ import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
 import steps from '@suite/config/onboarding/steps';
 
 import colors from '@suite/config/onboarding/colors';
-import { SM } from '@suite/config/onboarding/breakpoints';
 import { TOS_URL } from '@suite/constants/onboarding/urls';
 
 import {
@@ -86,17 +85,13 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
     width: 100%;
     overflow-x: hidden;
 
-    @media only screen and (min-width: ${SM}px) {
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         height: 100%;
 
         ${props =>
             props.animate &&
             css`
                 animation: ${backgroundAnimation} 1s linear;
-            `};
-        ${props =>
-            props.animate &&
-            css`
                 background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
                 background-size: cover;
             `};
@@ -119,7 +114,7 @@ const WrapperInside = styled.div<WrapperInsideProps>`
             ? `calc(100vh - ${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT} - ${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT})`
             : 'none'};
 
-    @media only screen and (min-width: ${SM}px) {
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         width: calc(55vw + 150px);
         margin: 50px auto;
         overflow: hidden;
@@ -186,12 +181,10 @@ const UnexpectedStateOverlay = styled.div`
 
 interface Props {
     device: any; // todo
-    transport: any; // todo
 
     activeStepId: AppState['onboarding']['activeStepId'];
-    activeSubStep: AppState['onboarding']['activeSubStep'];
     selectedModel: AppState['onboarding']['selectedModel'];
-    asNewDevice: AppState['onboarding']['asNewDevice'];
+    path: AppState['onboarding']['path'];
 
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
     uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
@@ -229,17 +222,16 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     getError() {
-        const { device, prevDeviceId, activeStepId, asNewDevice } = this.props;
-        if (!this.getStep(activeStepId)!.disallowedDeviceStates) {
+        const { device, prevDeviceId, activeStepId, path } = this.props;
+        const activeStep = this.getStep(activeStepId);
+        if (!activeStep.disallowedDeviceStates) {
             return null;
         }
 
-        return this.getStep(activeStepId)!.disallowedDeviceStates!.find(
-            (state: AnyStepDisallowedState) => {
-                const fn = getFnForRule(state);
-                return fn({ device, prevDeviceId, asNewDevice });
-            },
-        );
+        return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
+            const fn = getFnForRule(state);
+            return fn({ device, prevDeviceId, path });
+        });
     }
 
     isGlobalInteraction() {
@@ -268,6 +260,7 @@ class Onboarding extends React.PureComponent<Props> {
 
             selectedModel,
             activeStepId,
+
             deviceCall,
             deviceInteraction,
             uiInteraction,
@@ -278,7 +271,6 @@ class Onboarding extends React.PureComponent<Props> {
         return (
             <>
                 <BaseStyles />
-
                 <WrapperOutside
                     animate={![STEP.ID_WELCOME_STEP, STEP.ID_FINAL_STEP].includes(activeStepId)}
                 >
@@ -434,7 +426,6 @@ class Onboarding extends React.PureComponent<Props> {
 const mapStateToProps = (state: AppState) => {
     return {
         device: state.onboarding.connect.device,
-        transport: state.suite.transport,
 
         // connect reducer
         prevDeviceId: state.onboarding.connect.prevDeviceId,
@@ -445,8 +436,7 @@ const mapStateToProps = (state: AppState) => {
         // onboarding reducer
         selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
-        activeSubStep: state.onboarding.activeSubStep,
-        asNewDevice: state.onboarding.asNewDevice,
+        path: state.onboarding.path,
     };
 };
 
