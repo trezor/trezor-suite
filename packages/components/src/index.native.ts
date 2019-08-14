@@ -3,7 +3,7 @@ import colors from './config/colors';
 import * as variables from './config/variables';
 
 import { Button, ButtonProps } from './components/buttons/Button';
-import ButtonPin from './components/buttons/Pin';
+import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
 
 import { Input, InputProps } from './components/inputs/Input';
 import { InputPin, InputPinProps } from './components/inputs/Pin';
@@ -33,6 +33,7 @@ export {
     Button,
     ButtonProps,
     ButtonPin,
+    ButtonPinProps,
     Input,
     InputProps,
     InputPin,

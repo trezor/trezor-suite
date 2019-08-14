@@ -3,7 +3,7 @@ import colors from './config/colors';
 import * as variables from './config/variables';
 
 import { Button, ButtonProps } from './components/buttons/Button';
-import ButtonPin from './components/buttons/Pin';
+import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
 
 import { Input, InputProps } from './components/inputs/Input';
 import { InputPin, InputPinProps } from './components/inputs/Pin';
@@ -21,7 +21,7 @@ import { Link, LinkProps } from './components/Link';
 import { P, ParagraphProps } from './components/Paragraph';
 import { Tooltip, TooltipProps } from './components/Tooltip';
 
-import Modal from './components/Modal';
+import { Modal, ModalProps } from './components/Modal';
 import { Icon, IconProps } from './components/Icon';
 import { CoinLogo, CoinLogoProps } from './components/CoinLogo';
 import { Loader, LoaderProps } from './components/Loader';
@@ -38,6 +38,7 @@ export {
     Button,
     ButtonProps,
     ButtonPin,
+    ButtonPinProps,
     Input,
     InputProps,
     InputPin,
@@ -65,6 +66,7 @@ export {
     Tooltip,
     TooltipProps,
     Modal,
+    ModalProps,
     Icon,
     IconProps,
     CoinLogo,
