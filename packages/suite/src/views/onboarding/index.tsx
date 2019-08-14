@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Link, P, Prompt } from '@trezor/components';
+import { Link, P, Prompt, variables } from '@trezor/components';
 import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -24,7 +24,6 @@ import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
 import steps from '@suite/config/onboarding/steps';
 
 import colors from '@suite/config/onboarding/colors';
-import { SM } from '@suite/config/onboarding/breakpoints';
 import { TOS_URL } from '@suite/constants/onboarding/urls';
 
 import {
@@ -86,7 +85,7 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
     width: 100%;
     overflow-x: hidden;
 
-    @media only screen and (min-width: ${SM}px) {
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         height: 100%;
 
         ${props =>
@@ -115,7 +114,7 @@ const WrapperInside = styled.div<WrapperInsideProps>`
             ? `calc(100vh - ${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT} - ${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT})`
             : 'none'};
 
-    @media only screen and (min-width: ${SM}px) {
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         width: calc(55vw + 150px);
         margin: 50px auto;
         overflow: hidden;

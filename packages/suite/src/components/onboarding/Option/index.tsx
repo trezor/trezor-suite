@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 import colors from '@suite/config/onboarding/colors';
-import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
+import { variables } from '@trezor/components';
 
 const OptionWrapper = styled.div<{ isSelected: boolean }>`
     /* flex-grow: 1; */
@@ -19,7 +19,7 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
         isSelected ? `0px 0px 2px 1px ${colors.brandPrimary}` : '0px 0px 6px 2px rgba(0,0,0,0.05)'};
     border-color: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)};
 
-    @media (min-width: ${BREAKPOINTS.SM}px) {
+    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
         height: 280px;
         width: 215px;
     }

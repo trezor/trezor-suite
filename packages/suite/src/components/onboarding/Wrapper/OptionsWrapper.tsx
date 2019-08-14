@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
-import * as BREAKPOINT from '@onboarding-config/breakpoints';
+import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -9,7 +8,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     width: 100%;
 
-    @media (min-width: ${BREAKPOINT.SM}px) {
+    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: row;
     }
 `;
