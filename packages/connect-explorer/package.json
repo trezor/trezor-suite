@@ -14,6 +14,7 @@
     "scripts": {
         "dev": "webpack-dev-server --config ./webpack/dev.babel.js --mode development",
         "dev:local": "cross-env LOCAL=true webpack-dev-server --progress --colors --config ./webpack/local.babel.js --mode development --bail",
+        "stats": "webpack --config ./webpack/local.babel.js --json > build/stats.json",
         "build": "rm -rf build && webpack --config ./webpack/prod.babel.js --progress",
         "flow": "cd src/js && flow check"
     },
@@ -39,16 +40,16 @@
         "trezor-ui-components": "^1.0.0-beta.23"
     },
     "devDependencies": {
-        "@babel/cli": "^7.2.2",
-        "@babel/core": "^7.2.2",
-        "@babel/node": "^7.2.2",
-        "@babel/plugin-proposal-class-properties": "^7.3.0",
-        "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
-        "@babel/plugin-transform-runtime": "^7.2.0",
-        "@babel/preset-env": "^7.3.1",
+        "@babel/cli": "^7.5.5",
+        "@babel/core": "^7.5.5",
+        "@babel/node": "^7.5.5",
+        "@babel/plugin-proposal-class-properties": "^7.5.5",
+        "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+        "@babel/plugin-transform-runtime": "^7.5.5",
+        "@babel/preset-env": "^7.5.5",
         "@babel/preset-flow": "^7.0.0",
         "@babel/preset-react": "^7.0.0",
-        "@babel/runtime": "^7.3.1",
+        "@babel/runtime": "^7.5.5",
         "babel-eslint": "^10.0.1",
         "babel-loader": "^8.0.0",
         "copy-webpack-plugin": "^5.0.0",
@@ -63,8 +64,8 @@
         "mini-css-extract-plugin": "^0.5.0",
         "style-loader": "^0.23.1",
         "styled-components": "^4.3.2",
-        "webpack": "^4.12.0",
-        "webpack-cli": "^3.0.4",
-        "webpack-dev-server": "^3.1.4"
+        "webpack": "^4.38.0",
+        "webpack-cli": "^3.3.6",
+        "webpack-dev-server": "^3.7.2"
     }
 }
