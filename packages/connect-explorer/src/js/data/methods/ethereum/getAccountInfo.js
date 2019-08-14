@@ -1,19 +1,25 @@
 const name = 'getAccountInfo';
 const docs = 'methods/getAccountInfo.md';
 
-import { select } from './common';
+export const select = [
+    { value: 'eth', label: 'Ethereum', affectedValue: `m/44'/60'/0'/0/0` },
+    { value: 'etc', label: 'Ethereum Classic', affectedValue: `m/44'/61'/0'/0/0` },
+    { value: 'trop', label: 'Ropsten', affectedValue: `m/44'/60'/0'/0/0` },
+    { value: 'btc', label: 'Bitcoin', affectedValue: `m/84'/0'/0'` },
+    { value: 'test', label: 'Bitcoin Testnet', affectedValue: `m/49'/1'/0'` },
+];
 
 const batch = [
     {
         name: 'coin',
         type: 'select',
-        value: 'test',
+        value: 'trop',
         affect: 'path',
         data: select,
     },
     {
         name: 'descriptor',
-        label: 'Public key',
+        label: 'Ethereum address',
         type: 'input-long',
         optional: true,
         value: ``,
@@ -23,7 +29,7 @@ const batch = [
         label: 'OR Bip44 path',
         type: 'input',
         optional: true,
-        value: `m/84'/1'/0'`,
+        value: `m/44'/144'/0'/0/0`,
     },
 ];
 
@@ -31,7 +37,7 @@ const usingPath = [
     {
         name: 'coin',
         type: 'select',
-        value: 'test',
+        value: 'trop',
         affect: 'path',
         data: select,
     },
@@ -39,7 +45,7 @@ const usingPath = [
         name: 'path',
         label: 'Bip44 path',
         type: 'input',
-        value: `m/84'/1'/0'`,
+        value: `m/44'/144'/0'/0/0`,
     },
 ];
 
@@ -47,12 +53,12 @@ const usingAddress = [
     {
         name: 'coin',
         type: 'select',
-        value: 'test',
+        value: 'trop',
         data: select,
     },
     {
         name: 'descriptor',
-        label: 'Public key',
+        label: 'Ethereum address',
         type: 'input-long',
         value: ``,
     },
@@ -60,7 +66,7 @@ const usingAddress = [
 
 export default [
     {
-        url: '/method/getAccountInfo',
+        url: '/method/ethereumGetAccountInfo',
         name,
         docs,
         submitButton: 'Get account info',
@@ -68,7 +74,7 @@ export default [
         fields: usingPath,
     },
     {
-        url: '/method/getAccountInfo-xpub',
+        url: '/method/ethereumGetAccountInfo-address',
         name,
         docs,
         submitButton: 'Get account info',
@@ -76,7 +82,7 @@ export default [
         fields: usingAddress,
     },
     {
-        url: '/method/getAccountInfo-bundle',
+        url: '/method/ethereumGetAccountInfo-bundle',
         name,
         docs,
         submitButton: 'Get multiple accounts',
@@ -100,7 +106,7 @@ export default [
         ],
     },
     {
-        url: '/method/getAccountInfo-discovery',
+        url: '/method/ethereumGetAccountInfo-discovery',
         name,
         docs,
         submitButton: 'Get account info',
@@ -109,13 +115,13 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'test',
+                value: 'trop',
                 data: select,
             }
         ],
     },
     {
-        url: '/method/getAccountInfo-advanced',
+        url: '/method/ethereumGetAccountInfo-advanced',
         name,
         docs,
         submitButton: 'Get account info',
@@ -129,8 +135,8 @@ export default [
                 optional: true,
                 data: [
                     { value: 'basic', label: 'Basic' },
-                    { value: 'tokens', label: 'Tokens (Account addresses)' },
-                    { value: 'tokenBalances', label: 'Tokens with balances (Addresses with balances)' },
+                    { value: 'tokens', label: 'Tokens' },
+                    { value: 'tokenBalances', label: 'Tokens with balances' },
                     { value: 'txs', label: 'Transactions' },
                 ]
             },

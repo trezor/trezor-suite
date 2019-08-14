@@ -1,19 +1,22 @@
 const name = 'getAccountInfo';
 const docs = 'methods/getAccountInfo.md';
 
-import { select } from './common';
+export const select = [
+    { value: 'xrp', label: 'Ripple', affectedValue: `m/44'/144'/0'/0/0` },
+    { value: 'txrp', label: 'Ripple Testnet', affectedValue: `m/44'/144'/0'/0/0` },
+];
 
 const batch = [
     {
         name: 'coin',
         type: 'select',
-        value: 'test',
+        value: 'txrp',
         affect: 'path',
         data: select,
     },
     {
         name: 'descriptor',
-        label: 'Public key',
+        label: 'Ripple address',
         type: 'input-long',
         optional: true,
         value: ``,
@@ -23,7 +26,7 @@ const batch = [
         label: 'OR Bip44 path',
         type: 'input',
         optional: true,
-        value: `m/84'/1'/0'`,
+        value: `m/44'/144'/0'/0/0`,
     },
 ];
 
@@ -31,7 +34,7 @@ const usingPath = [
     {
         name: 'coin',
         type: 'select',
-        value: 'test',
+        value: 'txrp',
         affect: 'path',
         data: select,
     },
@@ -39,7 +42,7 @@ const usingPath = [
         name: 'path',
         label: 'Bip44 path',
         type: 'input',
-        value: `m/84'/1'/0'`,
+        value: `m/44'/144'/0'/0/0`,
     },
 ];
 
@@ -47,12 +50,12 @@ const usingAddress = [
     {
         name: 'coin',
         type: 'select',
-        value: 'test',
+        value: 'txrp',
         data: select,
     },
     {
         name: 'descriptor',
-        label: 'Public key',
+        label: 'Ripple address',
         type: 'input-long',
         value: ``,
     },
@@ -60,7 +63,7 @@ const usingAddress = [
 
 export default [
     {
-        url: '/method/getAccountInfo',
+        url: '/method/rippleGetAccountInfo',
         name,
         docs,
         submitButton: 'Get account info',
@@ -68,7 +71,7 @@ export default [
         fields: usingPath,
     },
     {
-        url: '/method/getAccountInfo-xpub',
+        url: '/method/rippleGetAccountInfo-address',
         name,
         docs,
         submitButton: 'Get account info',
@@ -76,7 +79,7 @@ export default [
         fields: usingAddress,
     },
     {
-        url: '/method/getAccountInfo-bundle',
+        url: '/method/rippleGetAccountInfo-bundle',
         name,
         docs,
         submitButton: 'Get multiple accounts',
@@ -100,7 +103,7 @@ export default [
         ],
     },
     {
-        url: '/method/getAccountInfo-discovery',
+        url: '/method/rippleGetAccountInfo-discovery',
         name,
         docs,
         submitButton: 'Get account info',
@@ -109,13 +112,13 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'test',
+                value: 'txrp',
                 data: select,
             }
         ],
     },
     {
-        url: '/method/getAccountInfo-advanced',
+        url: '/method/rippleGetAccountInfo-advanced',
         name,
         docs,
         submitButton: 'Get account info',
@@ -129,16 +132,8 @@ export default [
                 optional: true,
                 data: [
                     { value: 'basic', label: 'Basic' },
-                    { value: 'tokens', label: 'Tokens (Account addresses)' },
-                    { value: 'tokenBalances', label: 'Tokens with balances (Addresses with balances)' },
                     { value: 'txs', label: 'Transactions' },
                 ]
-            },
-            {
-                name: 'page',
-                type: 'number',
-                optional: true,
-                value: ``,
             },
             {
                 name: 'pageSize',
@@ -147,14 +142,8 @@ export default [
                 value: ``,
             },
             {
-                name: 'contractFilter',
-                type: 'input-long',
-                optional: true,
-                value: ``,
-            },
-            {
-                name: 'gap',
-                type: 'number',
+                name: 'marker',
+                type: 'json',
                 optional: true,
                 value: ``,
             },

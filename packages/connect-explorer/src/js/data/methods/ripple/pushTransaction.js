@@ -1,6 +1,9 @@
 /* @flow */
 
-import { select } from './common';
+const select = [
+    { value: 'xrp', label: 'Ripple', affectedValue: `m/44'/144'/0'/0/0` },
+    { value: 'txrp', label: 'Ripple Testnet', affectedValue: `m/44'/144'/0'/0/0` },
+];
 
 export default [
     {
@@ -13,7 +16,7 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'xrp',
+                value: 'txrp',
                 data: select,
             },
             {

@@ -5,13 +5,13 @@ import { select } from './common';
 const examples = {
     btc:`[
     {
-        amount: '20000',
+        amount: '498066',
         address: '3L6TyTisPBmrDAj6RoKmDzNnj4eQi54gD2',
     }
 ]`,
     test: `[
     {
-        amount: '20000',
+        amount: '2000',
         address: '2N4Q5FhU2497BryFfUgbqkAJE87aKHUhXMp',
     }
 ]`,

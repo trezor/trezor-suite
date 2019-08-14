@@ -46,9 +46,17 @@ export default [
                         url: '/method/getAccountInfo-xpub',
                     },
                     {
+                        name: 'using bundle',
+                        url: '/method/getAccountInfo-bundle',
+                    },
+                    {
                         name: 'using discovery',
                         url: '/method/getAccountInfo-discovery',
-                    }
+                    },
+                    {
+                        name: 'advanced',
+                        url: '/method/getAccountInfo-advanced',
+                    },
                 ]
             },
             {
@@ -135,10 +143,31 @@ export default [
                     }
                 ]
             },
-            // {
-            //     name: 'Account info',
-            //     url: '/eth-accountinfo',
-            // },
+            {
+                name: 'Account info',
+                children: [
+                    {
+                        name: 'using path',
+                        url: '/method/ethereumGetAccountInfo',
+                    },
+                    {
+                        name: 'using address',
+                        url: '/method/ethereumGetAccountInfo-address',
+                    },
+                    {
+                        name: 'using bundle',
+                        url: '/method/ethereumGetAccountInfo-bundle',
+                    },
+                    {
+                        name: 'using discovery',
+                        url: '/method/ethereumGetAccountInfo-discovery',
+                    },
+                    {
+                        name: 'advanced',
+                        url: '/method/ethereumGetAccountInfo-advanced',
+                    },
+                ]
+            },
             {
                 name: 'Sign transaction',
                 children: [
@@ -187,10 +216,31 @@ export default [
                     }
                 ]
             },
-            // {
-            //     name: 'Account info',
-            //     url: '/ripple-accountinfo',
-            // },
+            {
+                name: 'Account info',
+                children: [
+                    {
+                        name: 'using path',
+                        url: '/method/rippleGetAccountInfo',
+                    },
+                    {
+                        name: 'using address',
+                        url: '/method/rippleGetAccountInfo-address',
+                    },
+                    {
+                        name: 'using bundle',
+                        url: '/method/rippleGetAccountInfo-bundle',
+                    },
+                    {
+                        name: 'using discovery',
+                        url: '/method/rippleGetAccountInfo-discovery',
+                    },
+                    {
+                        name: 'advanced',
+                        url: '/method/rippleGetAccountInfo-advanced',
+                    },
+                ]
+            },
             {
                 name: 'Sign transaction',
                 url: '/method/rippleSignTransaction',
@@ -401,6 +451,59 @@ export default [
         ]
     },
     {
+        name: 'Binance',
+        children: [
+            {
+                name: 'Get public key',
+                children: [
+                    { 
+                        name: 'export public key',
+                        url: '/method/binanceGetPublicKey',
+                    },
+                    { 
+                        name: 'export multiple public keys',
+                        url: '/method/binanceGetPublicKey-multiple',
+                    },
+                ]
+            },
+            {
+                name: 'Get address',
+                children: [
+                    { 
+                        name: 'export address',
+                        url: '/method/binanceGetAddress',
+                    },
+                    { 
+                        name: 'export multiple addresses',
+                        url: '/method/binanceGetAddress-multiple',
+                    },
+                    { 
+                        name: 'verify address with custom UI handler',
+                        url: '/method/binanceGetAddress-validation',
+                    }
+                ]
+            },
+            {
+                name: 'Sign transaction',
+                children: [
+                    {
+                        name: 'Transfer',
+                        url: '/method/binanceSignTransaction-transfer',
+                    },
+                    {
+                        name: 'Place order',
+                        url: '/method/binanceSignTransaction-placeorder',
+                    },
+                    {
+                        name: 'Cancel order',
+                        url: '/method/binanceSignTransaction-cancelorder',
+                    },
+                ]
+            },
+            
+        ]
+    },
+    {
         name: 'Other methods',
         children: [
             {
@@ -486,22 +589,26 @@ export default [
             
         ]
     },
-    // {
-    //     name: 'Blockchain',
-    //     children: [
-    //         {
-    //             name: 'Subscribe',
-    //             url: '/method/blockchainSubscribe',
-    //         },
-    //         {
-    //             name: 'Unsubscribe',
-    //             url: '/method/blockchainUnsubscribe',
-    //         },
-    //         {
-    //             name: 'Disconnect',
-    //             url: '/method/blockchainDisconnect',
-    //         },
+    {
+        name: 'Blockchain',
+        children: [
+            {
+                name: 'Subscribe',
+                url: '/method/blockchainSubscribe',
+            },
+            {
+                name: 'Unsubscribe',
+                url: '/method/blockchainUnsubscribe',
+            },
+            {
+                name: 'Estimate Fee',
+                url: '/method/blockchainEstimateFee',
+            },
+            {
+                name: 'Disconnect',
+                url: '/method/blockchainDisconnect',
+            },
             
-    //     ]
-    // }
+        ]
+    }
 ];

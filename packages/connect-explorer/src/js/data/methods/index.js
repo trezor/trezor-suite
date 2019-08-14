@@ -9,9 +9,11 @@ import cardano from './cardano/index';
 import lisk from './lisk';
 import tezos from './tezos';
 import eos from './eos';
+import binance from './binance';
 import other from './other';
 
 import management from './management';
+import blockchain from './blockchain';
 
 export default [
     ...bitcoin,
@@ -23,8 +25,10 @@ export default [
     ...lisk,
     ...tezos,
     ...eos,
+    ...binance,
     ...other,
-    ...management
+    ...management,
+    ...blockchain,
 ];
 
 

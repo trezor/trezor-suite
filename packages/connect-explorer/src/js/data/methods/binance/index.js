@@ -1,13 +1,11 @@
 /* @flow */
 
+import getPublicKey from './getPublicKey';
 import getAddress from './getAddress';
-import getAccountInfo from './getAccountInfo';
 import signTransaction from './signTransaction';
-import pushTransaction from './pushTransaction';
 
 export default [
+    ...getPublicKey,
     ...getAddress,
-    ...getAccountInfo,
     ...signTransaction,
-    ...pushTransaction,
 ];

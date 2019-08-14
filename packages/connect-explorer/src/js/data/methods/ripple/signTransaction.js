@@ -4,11 +4,11 @@ const name = 'rippleSignTransaction';
 const docs = 'methods/rippleSignTransaction.md';
 
 const example = `{
-    fee: '100000',
+    fee: '12',
     flags: 0x80000000,
     sequence: 25,
     payment: {
-        amount: '100000000',
+        amount: '1000000',
         destination: 'rBKz5MC2iXdoS3XgnNSYmF69K1Yo4NS3Ws',
     }
 }`

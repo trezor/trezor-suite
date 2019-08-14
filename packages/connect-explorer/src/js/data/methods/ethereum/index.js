@@ -2,6 +2,7 @@
 
 import getPublicKey from './getPublicKey';
 import getAddress from './getAddress';
+import getAccountInfo from './getAccountInfo';
 import signTransaction from './signTransaction';
 import signTransactionERC20 from './signTransaction.erc20';
 import pushTransaction from './pushTransaction';
@@ -11,7 +12,7 @@ import verifyMessage from './verifyMessage';
 export default [
     ...getPublicKey,
     ...getAddress,
-    // ...getAccountInfo,
+    ...getAccountInfo,
     ...signTransaction,
     ...signTransactionERC20,
     ...pushTransaction,
