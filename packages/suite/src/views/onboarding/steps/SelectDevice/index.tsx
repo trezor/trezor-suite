@@ -69,7 +69,11 @@ const SelectDeviceStep: React.FC<Props> = ({ onboardingActions }) => {
             </StepBodyWrapper>
             <StepFooterWrapper>
                 <ControlsWrapper>
-                    <ButtonBack onClick={() => onboardingActions.goToPreviousStep()}>
+                    <ButtonBack
+                        onClick={() => {
+                            onboardingActions.goToPreviousStep();
+                        }}
+                    >
                         Back
                     </ButtonBack>
                 </ControlsWrapper>

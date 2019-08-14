@@ -30,14 +30,11 @@ export const getParams = (url: string) => {
     return params;
 };
 
-export const getRoute = (name: AnyRouteName | string, params?: { [key: string]: string }) => {
+export const getRoute = (name: AnyRouteName, params?: { [key: string]: string }) => {
     const entry = routes.find(r => r.name === name);
     if (!entry) {
-        // eslint-disable-next-line no-console
-        console.error(`Route for ${name} not found`);
-        return '/';
+        throw new Error(`route "${name}" not found`);
     }
-
     // attach params
     if (params && params !== {}) {
         let paramsString = '';

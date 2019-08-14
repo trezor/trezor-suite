@@ -1,10 +1,35 @@
-public/**
-build/**
-coverage/**
-cache/**
+# general
 node_modules
-src/flowtype/npm
-scripts/solidity/.*
-**/_old/*
-docs/**
-lib/**
+generated
+old
+_old
+examples
+docker
+public
+static
+
+# libs and builds
+dist
+lib
+.rpt2_cache
+build
+build-electron
+docs
+
+# debug files
+yarn-error.log
+cache
+.build
+solidity
+
+# folders
+packages/wallet
+ci
+
+# next js
+.next
+next-env.d.ts
+
+# native
+android
+ios

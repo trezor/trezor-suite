@@ -66,7 +66,6 @@ const SelectWrapper = styled.div`
 interface RecoveryStepProps {
     onboardingActions: {
         goToNextStep: typeof onboardingActions.goToNextStep;
-        setPath: typeof onboardingActions.setPath;
         goToSubStep: typeof onboardingActions.goToSubStep;
     };
     recoveryActions: {

@@ -13,7 +13,6 @@ const mapStateToProps = (state: AppState) => ({
     deviceInteraction: state.onboarding.connect.deviceInteraction,
     deviceCall: state.onboarding.connect.deviceCall,
     activeSubStep: state.onboarding.activeSubStep,
-    fetchCall: state.onboarding.fetchCall,
     firmwareUpdate: state.onboarding.firmwareUpdate,
 });
 

@@ -31,8 +31,8 @@ describe('steps', () => {
     });
 
     describe('isStepInPath', () => {
-        it('empty path means no step should be found', () => {
-            expect(isStepInPath(welcomeStep, [])).toEqual(false);
+        it('empty path means no restriction', () => {
+            expect(isStepInPath(welcomeStep, [])).toEqual(true);
         });
     });
 });
