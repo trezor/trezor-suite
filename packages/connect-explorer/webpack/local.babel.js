@@ -31,7 +31,7 @@ module.exports = {
     },
     devServer: {
         contentBase: SRC,
-        hot: true,
+        hot: false,
         https: false,
         port: PORT,
         stats: 'minimal',
@@ -71,10 +71,6 @@ module.exports = {
                     name: '[name].[ext]',
                 },
             },
-            // {
-            //     test: /.blake2b\.wasm$/,
-            //     use: '/Users/szymon.lesisz/Workspace/SatoshiLabs/trezor-connect/node_modules/blake2b-wasm/blake2b.js'
-            // },
             {
                 type: 'javascript/auto',
                 test: /\.wasm$/,
@@ -106,6 +102,9 @@ module.exports = {
     },
     plugins: [
         new webpack.NormalModuleReplacementPlugin(/.blake2b$/, './blake2b.js'),
+        new webpack.NormalModuleReplacementPlugin(/env\/node$/, './env/browser'),
+        new webpack.NormalModuleReplacementPlugin(/env\/node\/workers$/, '../env/browser/workers'),
+        new webpack.NormalModuleReplacementPlugin(/env\/node\/networkUtils$/, '../env/browser/networkUtils'),
 
         new MiniCssExtractPlugin({
             filename: '[name].css',
