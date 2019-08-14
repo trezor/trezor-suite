@@ -24,7 +24,11 @@ const AccountSummary = (props: Props) => {
     const { account, network, discovery, shouldRender } = props.wallet.selectedAccount;
     if (!device || !account || !network || !shouldRender) {
         const { loader, exceptionPage } = props.wallet.selectedAccount;
-        return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
+        return (
+            <LayoutAccount>
+                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
+            </LayoutAccount>
+        );
     }
 
     return (
