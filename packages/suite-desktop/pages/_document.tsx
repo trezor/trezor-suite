@@ -2,50 +2,8 @@ import Document, { Head, Main, DocumentContext, NextScript } from 'next/document
 import { ServerStyleSheet } from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import React from 'react';
-import { colors } from '@trezor/components';
 import { AppRegistry } from 'react-native';
-
-const FONT_SIZE_BASE = '14px';
-// Force Next-generated DOM elements to fill their parent's height.
-// Disable input and textarea outline because blinking caret is enough.
-// https://github.com/necolas/react-native-web/blob/master/docs/guides/client-side-rendering.md
-const globalStyles = `
-    #__next {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-    }
-
-    input, textarea {
-        outline: none;
-    }
-
-    body, html {
-      background: ${colors.BACKGROUND};
-      font-size: ${FONT_SIZE_BASE};
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    }
-
-    a {
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        outline: none;
-    }
-
-    *,
-    *:before,
-    *:after {
-        box-sizing: border-box;
-    }
-
-`;
+import globalStyles from '@suite-support/styles/global';
 
 interface Props {
     styleTags: any;

@@ -7,8 +7,6 @@ import { bindActionCreators } from 'redux';
 
 import { isDev } from '@suite-utils/build';
 
-import BaseStyles from '@suite/support/onboarding/BaseStyles';
-
 import { OnboardingActions } from '@onboarding-types/onboarding';
 import { ConnectActions } from '@onboarding-types/connect';
 import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
@@ -270,7 +268,6 @@ class Onboarding extends React.PureComponent<Props> {
         const activeStep = this.getStep(activeStepId);
         return (
             <>
-                <BaseStyles />
                 <WrapperOutside
                     animate={![STEP.ID_WELCOME_STEP, STEP.ID_FINAL_STEP].includes(activeStepId)}
                 >
