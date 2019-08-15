@@ -6,15 +6,17 @@ import { FormattedMessage } from 'react-intl';
 import QrCode from '@wallet-components/QrCode';
 import VerifyAddressInput from '@wallet-components/inputs/VerifyAddress';
 import messages from './messages';
+import { AppState } from '@suite-types';
+import { ReceiveProps } from '../index';
 
 const Wrapper = styled.div``;
 
-const RippleReceive = () => (
+const RippleReceive = ({ className, ...props }: ReceiveProps) => (
     <Wrapper>
         <Title>
             <FormattedMessage {...messages.TR_RECEIVE_RIPPLE} />
         </Title>
-        <VerifyAddressInput />
+        <VerifyAddressInput {...props} />
         <QrCode value="2121212" />
     </Wrapper>
 );

@@ -1,32 +1,33 @@
-/* @flow */
-import { LOCATION_CHANGE } from 'connected-react-router';
-import { BLOCKCHAIN } from 'trezor-connect';
-import * as WALLET from 'actions/constants/wallet';
-import * as ACCOUNT from 'actions/constants/account';
-import * as DISCOVERY from 'actions/constants/discovery';
-import * as TOKEN from 'actions/constants/token';
-import * as PENDING from 'actions/constants/pendingTx';
+import { LOCATION_CHANGE } from '@suite-actions/routerActions';
+// import { BLOCKCHAIN } from 'trezor-connect';
+import NETWORKS from '@suite-config/networks';
+import { SUITE } from '@suite-actions/constants';
+// import * as WALLET from '@wallet-actions/';
+import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
+// import * as DISCOVERY from 'actions/constants/discovery';
+// import * as TOKEN from 'actions/constants/token';
+// import * as PENDING from 'actions/constants/pendingTx';
 
-import * as reducerUtils from 'reducers/utils';
-import { getVersion } from 'utils/device';
-import { initialState } from 'reducers/SelectedAccountReducer';
-
-import type { PayloadAction, Action, GetState, Dispatch, State } from 'flowtype';
-
-import type {
+import * as reducerUtils from '@wallet-utils/reducerUtils';
+import { getVersion } from '@suite-utils/device';
+import {
+    initialState,
     State as SelectedAccountState,
     Loader,
-    Notification,
     ExceptionPage,
-} from 'reducers/SelectedAccountReducer';
+} from '@wallet-reducers/selectedAccountReducer';
 
-export type SelectedAccountAction =
+import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { Action, GetState, Dispatch, AppState } from '@suite-types';
+import { DISCOVERY } from './constants';
+
+export type SelectedAccountActions =
     | {
-          type: typeof ACCOUNT.DISPOSE,
+          type: typeof ACCOUNT.DISPOSE;
       }
     | {
-          type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT,
-          payload: SelectedAccountState,
+          type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT;
+          payload: SelectedAccountState;
       };
 
 export const dispose = (): Action => ({
@@ -34,8 +35,11 @@ export const dispose = (): Action => ({
 });
 
 // display exception page instead of component body
-const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): ?ExceptionPage => {
-    const device = state.wallet.selectedDevice;
+const getExceptionPage = (
+    state: AppState,
+    selectedAccount: SelectedAccountState,
+): ExceptionPage | null => {
+    const { device } = state.suite;
     const { discovery, network } = selectedAccount;
     if (!device || !device.features || !network || !discovery) return null;
 
@@ -62,11 +66,16 @@ const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): 
 };
 
 // display loader instead of component body
-const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): ?Loader => {
-    const device = state.wallet.selectedDevice;
+const getAccountLoader = (
+    state: AppState,
+    selectedAccount: SelectedAccountState,
+): Loader | null => {
+    const { device } = state.suite;
     const { account, discovery, network } = selectedAccount;
 
-    if (!device || !device.state) {
+    // TODO: uncomment once device.state is available (and remove condition below)
+    // if (!device || !device.state) {
+    if (!device) {
         return {
             type: 'progress',
             title: 'Loading device...',
@@ -110,7 +119,7 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
         };
     }
 
-    if (discovery.completed) {
+    if (discovery.status === DISCOVERY_STATUS.COMPLETED) {
         // case 4: account not found and discovery is completed
         return {
             type: 'info',
@@ -126,27 +135,29 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
 };
 
 // display notification above the component, with or without component body
-const getAccountNotification = (
-    state: State,
-    selectedAccount: SelectedAccountState
-): ?(Notification & { shouldRender: boolean }) => {
-    const device = state.wallet.selectedDevice;
+const getAccountNotification = (state: AppState, selectedAccount: SelectedAccountState) => {
+    const { device } = state.suite;
     const { account, network, discovery } = selectedAccount;
     if (!device || !network) return null;
 
-    // case 1: backend status
-    const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
-    if (blockchain && !blockchain.connected) {
-        return {
-            type: 'backend',
-            variant: 'error',
-            title: `${network.name} backend is not connected`,
-            shouldRender: false,
-        };
-    }
+    // // case 1: backend status
+    // const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
+    // if (blockchain && !blockchain.connected) {
+    //     return {
+    //         type: 'backend',
+    //         variant: 'error',
+    //         title: `${network.name} backend is not connected`,
+    //         shouldRender: false,
+    //     };
+    // }
 
     // case 2: account does exists and it's visible but shouldn't be active
-    if (account && discovery && !discovery.completed && !discovery.waitingForDevice) {
+    if (
+        account &&
+        discovery &&
+        discovery.status !== DISCOVERY_STATUS.COMPLETED &&
+        !discovery.waitingForDevice
+    ) {
         return {
             type: 'info',
             variant: 'info',
@@ -185,48 +196,53 @@ const getAccountNotification = (
 // other actions will be ignored
 const actions = [
     LOCATION_CHANGE,
-    ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
-    WALLET.SET_SELECTED_DEVICE,
-    WALLET.UPDATE_SELECTED_DEVICE,
+    // ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
+    SUITE.SELECT_DEVICE,
+    SUITE.UPDATE_SELECTED_DEVICE,
     ...Object.values(ACCOUNT).filter(
-        v => typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE
+        v =>
+            typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE,
     ), // exported values got unwanted "__esModule: true" as first element
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
-    ...Object.values(TOKEN).filter(v => typeof v === 'string'),
-    ...Object.values(PENDING).filter(v => typeof v === 'string'),
+    // ...Object.values(TOKEN).filter(v => typeof v === 'string'),
+    // ...Object.values(PENDING).filter(v => typeof v === 'string'),
 ];
 
 /*
  * Called from WalletService
  */
-export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (
+export const observe = (prevState: AppState, action: Action) => (
     dispatch: Dispatch,
-    getState: GetState
+    getState: GetState,
 ): boolean => {
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
-    const state: State = getState();
+    const state: AppState = getState();
 
-    const { location } = state.router;
+    const { params } = state.router;
     // displayed route is not an account route
-    if (!location.state.account) return false;
+    if (!params.accountId || !params.coin) return false;
 
     // get new values for selected account
-    const account = reducerUtils.getSelectedAccount(state);
-    const network = reducerUtils.getSelectedNetwork(state);
-    const discovery = reducerUtils.getDiscoveryProcess(state);
-    const tokens = reducerUtils.getAccountTokens(state.tokens, account);
-    const pending = reducerUtils.getAccountPendingTx(state.pending, account);
+    const account = reducerUtils.getSelectedAccount(
+        state.wallet.accounts,
+        state.suite.device,
+        state.router.params,
+    );
+    const network = reducerUtils.getSelectedNetwork(NETWORKS, state.router.params.coin);
+    const discovery = reducerUtils.getDiscoveryProcess(state.wallet.discovery, state.suite.device);
+    // const tokens = reducerUtils.getAccountTokens(state.tokens, account);
+    // const pending = reducerUtils.getAccountPendingTx(state.pending, account);
 
     // prepare new state for "selectedAccount" reducer
     const newState: SelectedAccountState = {
         ...initialState,
-        location: state.router.location.pathname,
+        // location: state.router.location.pathname,
         account,
         network,
         discovery,
-        tokens,
-        pending,
+        // tokens,
+        // pending,
     };
 
     // get "selectedAccount" status from newState
@@ -248,14 +264,17 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
     );
 
     // check if newState is different than previous state
-    const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, {
-        account: ['balance', 'nonce'],
+    // TODO: update filter (3rd param) to match new discovery/account format
+    const stateChanged = reducerUtils.observeChanges(prevState.wallet.selectedAccount, newState, {
+        account: ['descriptor', 'availableBalance', 'nonce'],
         discovery: [
-            'accountIndex',
-            'interrupted',
-            'completed',
-            'waitingForBlockchain',
-            'waitingForDevice',
+            'status',
+            'index',
+            // 'accountIndex',
+            // 'interrupted',
+            // 'completed',
+            // 'waitingForBlockchain',
+            // 'waitingForDevice',
         ],
     });
 

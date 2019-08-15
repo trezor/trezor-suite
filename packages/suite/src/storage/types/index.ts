@@ -2,32 +2,26 @@ import { DBSchema } from 'idb';
 
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState as SuiteSettings } from '@suite-reducers/suiteReducer';
+import { AccountTransaction } from 'trezor-connect';
 
 export const STORE_TXS = 'txs';
 export const STORE_SUITE_SETTINGS = 'suiteSettings';
 export const STORE_WALLET_SETTINGS = 'walletSettings';
 
-export interface WalletTransaction {
-    id?: number;
+export interface WalletAccountTransaction extends AccountTransaction {
     accountId: number;
-    txId: string;
-    timestamp: number;
-    details: {
-        name: string;
-        price: number;
-        productCode: string;
-    };
 }
 
 export interface MyDBV1 extends DBSchema {
     txs: {
         key: string;
-        value: WalletTransaction;
+        value: WalletAccountTransaction;
         indexes: {
-            txId: string;
-            accountId: number;
-            timestamp: number;
-            'accountId-timestamp': [number, number];
+            txId: AccountTransaction['txid'];
+            accountId: string; // custom field
+            blockTime: number; // blockTime can be undefined?
+            type: AccountTransaction['type'];
+            'accountId-blockTime': [number, number];
         };
     };
     suiteSettings: {

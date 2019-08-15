@@ -14,8 +14,8 @@ import { connect } from 'react-redux';
 import { Link, FormattedNumber } from '@suite/components/suite';
 import networks from '@suite/config/suite/networks';
 import { Account, findDeviceAccounts } from '@wallet-reducers/accountsReducer';
-import { getRoute } from '@suite/utils/suite/router';
-import { STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { getRoute, getRouteFromPath } from '@suite/utils/suite/router';
+import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import AddAccountButton from './components/AddAccountButton';
 import l10nMessages from './index.messages';
 
@@ -114,7 +114,6 @@ const AccountMenu = (props: Props) => {
     const selected = props.suite.device;
     const { params } = props.router;
     const network = networks.find(c => c.shortcut === params.coin);
-
     if (!selected || !network) return null;
 
     // TODO
@@ -125,10 +124,12 @@ const AccountMenu = (props: Props) => {
     );
 
     const selectedAccounts = deviceAccounts.map((account, i) => {
-        const url = getRoute('wallet-account', {
+        const currentRoute = getRouteFromPath(props.router.pathname);
+        const url = getRoute(currentRoute ? currentRoute.name : 'wallet-account', {
             coin: network.shortcut,
             accountId: `${account.index}`,
         });
+
         const { availableBalance } = account;
         const fiatRates = props.wallet.fiat.find(f => f.network === network.shortcut);
         const { localCurrency } = props.wallet.settings;
@@ -189,7 +190,7 @@ const AccountMenu = (props: Props) => {
         d => d.device === selected.features.device_id,
     );
 
-    if (discovery && discovery.status === STATUS.COMPLETED) {
+    if (discovery && discovery.status === DISCOVERY_STATUS.COMPLETED) {
         const lastAccount = discoveryAccounts[discoveryAccounts.length - 1];
         if (!selected.connected) {
             discoveryStatus = (

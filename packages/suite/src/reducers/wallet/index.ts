@@ -7,6 +7,9 @@ import tokensReducer from './tokenReducer';
 import transactionReducer from './transactionReducer';
 import discoveryReducer from './discoveryReducer';
 import accountsReducer from './accountsReducer';
+import selectedAccountReducer from './selectedAccountReducer';
+import receiveReducer from './receiveReducer';
+import statusReducer from './statusReducer';
 
 const WalletReducers = combineReducers({
     signVerify: signVerifyReducer,
@@ -17,6 +20,9 @@ const WalletReducers = combineReducers({
     transactions: transactionReducer,
     discovery: discoveryReducer,
     accounts: accountsReducer,
+    selectedAccount: selectedAccountReducer,
+    receive: receiveReducer,
+    status: statusReducer,
 });
 
 export default WalletReducers;
