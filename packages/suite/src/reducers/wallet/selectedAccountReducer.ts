@@ -42,7 +42,7 @@ export interface State {
 export const initialState: State = {
     // location: '/',
     account: null,
-    // network: null,
+    network: null,
     // tokens: [],
     // pending: [],
     discovery: null,
