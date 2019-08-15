@@ -10,7 +10,7 @@ import { FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
 
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
-import { WalletActions } from '@wallet-actions/WalletActions';
+import { WalletActions } from '@wallet-actions/walletActions';
 import { Network } from './networkTypes';
 import { Icon } from './iconTypes';
 import { NetworkToken, Token } from './tokenTypes';

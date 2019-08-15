@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { AppState, Dispatch } from '@suite-types';
+import { AppState } from '@suite-types';
 import Summary from './index';
 
 const mapStateToProps = (state: AppState) => ({
