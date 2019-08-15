@@ -3,9 +3,13 @@ suite-desktop lint:
     script:
         - env
         - yarn workspace @trezor/suite-desktop lint
+    dependencies:
+        - install and build
 
 suite-desktop type check:
     stage: type check
     allow_failure: true
     script:
         - yarn workspace @trezor/suite-desktop type-check
+    dependencies:
+        - install and build
