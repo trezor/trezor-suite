@@ -5,7 +5,7 @@ import messages from '@wallet-components/Notifications/actions.messages';
 import { SIGN_VERIFY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
 
-type inputNameType =
+export type inputNameType =
     | 'signAddress'
     | 'signMessage'
     | 'signSignature'
@@ -21,10 +21,10 @@ export type SignVerifyActions =
     | { type: typeof SIGN_VERIFY.TOUCH; inputName: inputNameType }
     | { type: typeof SIGN_VERIFY.ERROR; inputName: inputNameType; message?: string };
 
-const sign = (path: [number], message: string, hex: boolean = false) => async (
+export const sign = (path: [number], message: string, hex: boolean = false) => async (
     dispatch: Dispatch,
     getState: GetState,
-): Promise<void> => {
+) => {
     const selected = getState().suite.device;
     if (!selected) return;
 
@@ -59,12 +59,12 @@ const sign = (path: [number], message: string, hex: boolean = false) => async (
     }
 };
 
-const verify = (
+export const verify = (
     address: string,
     message: string,
     signature: string,
     hex: boolean = false,
-) => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+) => async (dispatch: Dispatch, getState: GetState) => {
     const selected = getState().suite.device;
     if (!selected) return;
     const error = validateAddress(address);
@@ -116,7 +116,7 @@ const verify = (
     }
 };
 
-const inputChange = (inputName: inputNameType, value: string) => (dispatch: Dispatch): void => {
+export const inputChange = (inputName: inputNameType, value: string) => (dispatch: Dispatch) => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
         inputName,
@@ -139,22 +139,10 @@ const inputChange = (inputName: inputNameType, value: string) => (dispatch: Disp
     }
 };
 
-const clearSign = () => (dispatch: Dispatch): void => {
-    dispatch({
-        type: SIGN_VERIFY.CLEAR_SIGN,
-    });
-};
+export const clearSign = (): SignVerifyActions => ({
+    type: SIGN_VERIFY.CLEAR_SIGN,
+});
 
-const clearVerify = () => (dispatch: Dispatch): void => {
-    dispatch({
-        type: SIGN_VERIFY.CLEAR_VERIFY,
-    });
-};
-
-export default {
-    sign,
-    verify,
-    clearSign,
-    clearVerify,
-    inputChange,
-};
+export const clearVerify = (): SignVerifyActions => ({
+    type: SIGN_VERIFY.CLEAR_VERIFY,
+});

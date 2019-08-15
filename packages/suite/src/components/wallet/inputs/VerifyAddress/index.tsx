@@ -115,6 +115,7 @@ const VerifyInput = ({
             <>
                 {!(isAddressVerified || isAddressUnverified) && ( // !account.imported
                     <ShowAddressButton
+                        // @ts-ignore
                         onClick={() => showAddress(account.path)}
                         // isDisabled={device.connected && !discovery.completed}
                         icon="EYE"
