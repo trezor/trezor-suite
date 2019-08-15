@@ -20,6 +20,7 @@ export interface SuiteState {
 interface Transport {
     type?: string;
     version?: string;
+    outdated?: boolean;
     bridge: {
         version: [];
         directory: '';
