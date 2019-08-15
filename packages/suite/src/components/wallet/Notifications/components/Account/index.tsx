@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';
-import { NotificationEntry } from '@wallet-reducers/notificationReducer';
-import l10nMessages from './index.messages';
 import { AppState } from '@suite/types/suite';
+import l10nMessages from './index.messages';
 // TODO
 interface Props extends InjectedIntlProps {
     blockchain: any;

@@ -70,6 +70,7 @@ export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]
         // 8. observe every key recursive
         for (let i = 0; i < currentKeys.length; i++) {
             const key = currentKeys[i];
+            // eslint-disable-next-line no-prototype-builtins
             if (filter && filter.hasOwnProperty(key) && prev[key] && current[key]) {
                 const prevFiltered = {};
                 const currentFiltered = {};

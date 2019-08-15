@@ -58,7 +58,7 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
                 const account: AccountInfo = action.payload;
                 const { transactions } = account.history;
                 if (transactions) {
-                    // TODO: check if txs already exists or just use txId as primary key 
+                    // TODO: check if txs already exists or just use txId as primary key
                     // transactions.forEach(async tx => {
                     //     const txId = await db.addTransaction({
                     //         ...tx,
