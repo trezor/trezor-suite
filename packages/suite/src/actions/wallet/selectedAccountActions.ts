@@ -14,12 +14,12 @@ import {
     initialState,
     State as SelectedAccountState,
     Loader,
-    Notification,
     ExceptionPage,
 } from '@wallet-reducers/selectedAccountReducer';
 
 import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
+import { DISCOVERY } from './constants';
 
 export type SelectedAccountActions =
     | {
@@ -203,7 +203,7 @@ const actions = [
         v =>
             typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE,
     ), // exported values got unwanted "__esModule: true" as first element
-    // ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
+    ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
     // ...Object.values(TOKEN).filter(v => typeof v === 'string'),
     // ...Object.values(PENDING).filter(v => typeof v === 'string'),
 ];
@@ -268,11 +268,13 @@ export const observe = (prevState: AppState, action: Action) => (
     const stateChanged = reducerUtils.observeChanges(prevState.wallet.selectedAccount, newState, {
         account: ['descriptor', 'availableBalance', 'nonce'],
         discovery: [
-            'accountIndex',
-            'interrupted',
-            'completed',
-            'waitingForBlockchain',
-            'waitingForDevice',
+            'status',
+            'index',
+            // 'accountIndex',
+            // 'interrupted',
+            // 'completed',
+            // 'waitingForBlockchain',
+            // 'waitingForDevice',
         ],
     });
 

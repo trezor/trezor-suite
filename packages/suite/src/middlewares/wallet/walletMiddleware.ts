@@ -5,7 +5,7 @@ import { loadStorage } from '@wallet-actions/storageActions';
 import * as walletActions from '@wallet-actions/walletActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { SUITE } from '@suite/actions/suite/constants';
-import { WALLET } from '@wallet-actions/constants';
+import { WALLET, DISCOVERY } from '@wallet-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 // Flow: LOCATION.CHANGE -> WALLET.INIT -> load storage -> WALLET.INIT_SUCCESS
@@ -20,6 +20,10 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     if (prevState.router.app !== 'wallet') return action;
 
     switch (action.type) {
+        case DISCOVERY.UPDATE:
+            // update discovery in selectedAccount
+            api.dispatch(selectedAccountActions.observe(prevState, action));
+            break;
         case LOCATION_CHANGE: {
             // update selected account if needed
             api.dispatch(selectedAccountActions.observe(prevState, action));
