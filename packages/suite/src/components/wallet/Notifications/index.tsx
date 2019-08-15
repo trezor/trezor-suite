@@ -24,7 +24,7 @@ interface Props {
 const Notifications = (props: Props) => (
     <React.Fragment>
         <StaticNotifications router={props.router} />
-        <AccountNotifications blockchain={[]} />
+        <AccountNotifications selectedAccount={props.selectedAccount} blockchain={[]} />
         <ActionNotifications notifications={props.notifications} close={props.close} />
     </React.Fragment>
 );
@@ -32,7 +32,7 @@ const Notifications = (props: Props) => (
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
     notifications: state.wallet.notifications,
-    selectedAccount: state.selectedAccount,
+    selectedAccount: state.wallet.selectedAccount,
     wallet: state.wallet,
     blockchain: state.blockchain,
 });

@@ -3,31 +3,15 @@ import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';
 import { NotificationEntry } from '@wallet-reducers/notificationReducer';
 import l10nMessages from './index.messages';
+import { AppState } from '@suite/types/suite';
 // TODO
 interface Props extends InjectedIntlProps {
     blockchain: any;
+    selectedAccount: AppState['wallet']['selectedAccount'];
 }
 // There could be only one account notification
 const AccountNotifications = (props: Props) => {
-    // TODO
-
-    interface FakeNotification extends NotificationEntry {
-        type?: string;
-    }
-    // remove this after implementing selectedAccount
-    interface FakeSelectedAccount {
-        notification?: FakeNotification | null;
-        network?: any;
-    }
-
-    const selectedAccount: FakeSelectedAccount = {
-        notification: null,
-        network: {
-            shortcut: 'xrp',
-        },
-    };
-    // const { network, notification } = props.selectedAccount;
-    const { network, notification } = selectedAccount;
+    const { network, notification } = props.selectedAccount;
 
     if (!network || !notification) return null;
     const blockchain = props.blockchain.find(b => b.shortcut === network.shortcut);
