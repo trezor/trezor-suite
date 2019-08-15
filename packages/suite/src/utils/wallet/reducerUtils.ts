@@ -76,7 +76,9 @@ export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]
                 const currentFiltered = {};
                 for (let i2 = 0; i2 < filter[key].length; i2++) {
                     const field = filter[key][i2];
+                    // @ts-ignore
                     prevFiltered[field] = prev[key][field];
+                    // @ts-ignore
                     currentFiltered[field] = current[key][field];
                 }
                 if (observeChanges(prevFiltered, currentFiltered)) return true;
