@@ -10,6 +10,7 @@ export interface Account extends AccountInfo {
     network: string;
     path: string;
     imported?: boolean;
+    deviceState: string;
 
     // connect
     availableBalance: string;
