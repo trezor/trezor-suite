@@ -131,6 +131,7 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
         </Section>
         <Section>
             <Coins
+                // @ts-ignore todo: szymon
                 networks={NETWORKS}
                 handleCoinVisibility={props.handleCoinVisibility}
                 toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
