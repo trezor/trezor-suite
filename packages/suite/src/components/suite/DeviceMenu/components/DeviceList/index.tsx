@@ -16,6 +16,7 @@ interface Props {
     devices: AppState['devices'];
     selectedDevice: AppState['suite']['device'];
     onSelectDevice: (device: TrezorDevice) => void;
+    forgetDevice: (device: TrezorDevice) => void;
 }
 
 class DeviceList extends PureComponent<Props> {
@@ -41,6 +42,7 @@ class DeviceList extends PureComponent<Props> {
                                     <React.Fragment>
                                         <IconClick
                                             onClick={event => {
+                                                this.props.forgetDevice(device);
                                                 event.stopPropagation();
                                                 event.preventDefault();
                                             }}
