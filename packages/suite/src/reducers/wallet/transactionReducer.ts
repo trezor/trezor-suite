@@ -27,7 +27,7 @@ export default (state: State = initialState, action: Action): State => {
                 draft.push(action.transaction);
                 break;
             case TRANSACTION.REMOVE:
-                draft.splice(draft.findIndex(tx => tx.txId === action.txId), 1);
+                draft.splice(draft.findIndex(tx => tx.txid === action.txId), 1);
                 break;
             case TRANSACTION.UPDATE:
                 update(draft, action);
