@@ -6,6 +6,7 @@ interface Props {
     size: number;
     color: string;
     hoverColor: string;
+    onClick: () => void;
 }
 
 const WalletType = ({

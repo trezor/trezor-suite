@@ -21,7 +21,7 @@ const getInfoUrl = (networkShortcut?: Props['networkShortcut']) => {
     };
 
     if (!networkShortcut) {
-        result = null;
+        result = urls.default;
     } else if (networkShortcut in urls) {
         result = urls[networkShortcut];
     } else {
@@ -66,7 +66,7 @@ const FirmwareUnsupported = (props: Props) => (
         <Row>
             {props.networkShortcut && (
                 <CoinLogoWrapper>
-                    <StyledCoinLogo standalone network={props.networkShortcut} />
+                    <StyledCoinLogo network={props.networkShortcut} />
                 </CoinLogoWrapper>
             )}
             <H4>{props.title}</H4>
