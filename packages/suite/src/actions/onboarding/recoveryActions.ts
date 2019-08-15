@@ -17,14 +17,13 @@ const setAdvancedRecovery = (value: boolean) => ({
     value,
 });
 
-const submit = (word?: string) => (dispatch: Dispatch, getState: GetState) => {
+const submit = (word?: string) => async (dispatch: Dispatch, getState: GetState) => {
     const normalizedWord = word || getState().onboarding.recovery.word;
     if (normalizedWord) {
-        dispatch(submitWord({ word: `${normalizedWord}` })).then(() => {
-            dispatch({
-                type: SET_WORD,
-                word: null,
-            });
+        await dispatch(submitWord({ word: `${normalizedWord}` }));
+        dispatch({
+            type: SET_WORD,
+            word: null,
         });
     }
 };
