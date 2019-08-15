@@ -251,9 +251,6 @@ class Onboarding extends React.PureComponent<Props> {
 
     render() {
         const {
-            onboardingActions,
-            connectActions,
-
             selectedModel,
             activeStepId,
 
@@ -275,8 +272,6 @@ class Onboarding extends React.PureComponent<Props> {
                                 <UnexpectedState
                                     caseType={errorState}
                                     model={model}
-                                    connectActions={connectActions}
-                                    onboardingActions={onboardingActions}
                                     uiInteraction={uiInteraction}
                                 />
                             </UnexpectedStateOverlay>
@@ -290,7 +285,6 @@ class Onboarding extends React.PureComponent<Props> {
                                 ]}
                                 steps={steps}
                                 activeStep={activeStep}
-                                onboardingActions={onboardingActions}
                                 isDisabled={deviceCall.isProgress}
                             />
                         </ProgressStepsSlot>
