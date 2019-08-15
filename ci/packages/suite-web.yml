@@ -1,5 +1,3 @@
---- # suite-web package # --------------------------------
-
 suite-web lint:
     stage: lint
     script:

@@ -2,9 +2,6 @@ import React from 'react';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as TokenActions from '@wallet-actions/tokenActions';
-import { findDeviceAccounts } from '@suite/reducers/wallet/accountsReducer';
-import NETWORKS from '@suite-config/networks';
-import Tokens from './components/Tokens';
 import AccountHeader from './components/AccountHeader';
 import { AppState } from '@suite-types';
 

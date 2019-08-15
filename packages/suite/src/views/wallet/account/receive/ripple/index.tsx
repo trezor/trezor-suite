@@ -6,7 +6,6 @@ import { FormattedMessage } from 'react-intl';
 import QrCode from '@wallet-components/QrCode';
 import VerifyAddressInput from '@wallet-components/inputs/VerifyAddress';
 import messages from './messages';
-import { AppState } from '@suite-types';
 import { ReceiveProps } from '../index';
 
 const Wrapper = styled.div``;
