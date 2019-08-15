@@ -3,7 +3,7 @@ import * as settingsActions from '@wallet-actions/settingsActions';
 import * as db from '@suite/storage';
 import { StorageUpdateMessage } from '@suite/storage/types/index';
 import { WALLET } from '@wallet-actions/constants';
-import { Dispatch, GetState, AppState } from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 
 const updateReducers = (message: StorageUpdateMessage) => async (
     dispatch: Dispatch,

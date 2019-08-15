@@ -1,21 +1,21 @@
 import { TRANSACTION } from '@wallet-actions/constants/index';
 
 import { Dispatch } from '@suite-types/index';
-import { WalletTransaction } from '@suite/storage/types';
+import { WalletAccountTransaction } from '@suite/storage/types';
 import * as db from '@suite/storage';
 
 export type TransactionAction =
-    | { type: typeof TRANSACTION.ADD; transaction: WalletTransaction }
+    | { type: typeof TRANSACTION.ADD; transaction: WalletAccountTransaction }
     | { type: typeof TRANSACTION.REMOVE; txId: string }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
-    | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletTransaction[] };
+    | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
 
-export const setTransactions = (transactions: WalletTransaction[]) => ({
+export const setTransactions = (transactions: WalletAccountTransaction[]) => ({
     type: TRANSACTION.FROM_STORAGE,
     transactions,
 });
 
-export const add = (transaction: WalletTransaction) => async (
+export const add = (transaction: WalletAccountTransaction) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
     try {

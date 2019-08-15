@@ -372,7 +372,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     }
 };
 
-export const init = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const init = () => async (dispatch: Dispatch, _getState: GetState): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());
     if (discovery && discovery.status === STATUS.IDLE) {
         dispatch(start());

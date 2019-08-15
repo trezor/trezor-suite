@@ -43,6 +43,7 @@ const getExceptionPage = (
     const { discovery, network } = selectedAccount;
     if (!device || !device.features || !network || !discovery) return null;
 
+    // @ts-ignore TODO
     if (discovery.fwOutdated) {
         // those values are not used because in this case views/Wallet/views/FirmwareUpdate component will be displayed and it already has text content
         return {
@@ -53,6 +54,7 @@ const getExceptionPage = (
         };
     }
 
+    // @ts-ignore TODO
     if (discovery.fwNotSupported) {
         return {
             type: 'fwNotSupported',
@@ -93,6 +95,7 @@ const getAccountLoader = (
     if (account) return null;
     // account not found (yet). checking why...
 
+    // @ts-ignore TODO
     if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
         if (device.connected) {
             // case 1: device is connected but discovery not started yet (probably waiting for auth)
@@ -156,6 +159,7 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
         account &&
         discovery &&
         discovery.status !== DISCOVERY_STATUS.COMPLETED &&
+        // @ts-ignore TODO
         !discovery.waitingForDevice
     ) {
         return {
@@ -229,6 +233,7 @@ export const observe = (prevState: AppState, action: Action) => (
         state.suite.device,
         state.router.params,
     );
+    // @ts-ignore TODO
     const network = reducerUtils.getSelectedNetwork(NETWORKS, state.router.params.coin);
     const discovery = reducerUtils.getDiscoveryProcess(state.wallet.discovery, state.suite.device);
     // const tokens = reducerUtils.getAccountTokens(state.tokens, account);
@@ -254,6 +259,7 @@ export const observe = (prevState: AppState, action: Action) => (
         newState.exceptionPage = exceptionPage;
     } else {
         newState.loader = loader;
+        // @ts-ignore TODO
         newState.notification = notification;
     }
 
