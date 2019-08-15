@@ -46,7 +46,9 @@ const AccountReceive = (props: Props) => {
 
     const CONTEXT_DEVICE = ''; // fake, TODO: correct import
     const isAddressVerifying =
+        // @ts-ignore TODO: add with modal
         props.modal.context === CONTEXT_DEVICE &&
+        // @ts-ignore TODO: add with modal
         props.modal.windowType === 'ButtonRequest_Address';
     const isAddressHidden =
         !isAddressVerifying && !isAddressVerified && !isAddressUnverified && !account.imported;
