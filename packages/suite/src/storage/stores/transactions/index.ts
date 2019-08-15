@@ -115,13 +115,14 @@ export const getTransactions = async (accountId?: number, offset?: number, count
     return txs;
 };
 
-export const updateTransaction = async (txId: string, timestamp: number) => {
+export const updateTransaction = async (txId: string, _timestamp: number) => {
     const db = await getDB();
     const tx = db.transaction(STORE_TXS, 'readwrite');
     const txIdIndex = tx.store.index('txId');
     const result = await txIdIndex.get(txId);
     if (result) {
-        result.timestamp = timestamp;
+        // TODO
+        // result.timestamp = timestamp;
         notify(STORE_TXS, [result.id]);
         return tx.store.put(result);
     }

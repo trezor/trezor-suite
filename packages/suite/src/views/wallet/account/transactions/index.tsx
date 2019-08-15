@@ -67,66 +67,6 @@ const Transactions = (props: Props) => {
             >
                 Get from storage for acc 0
             </Button>
-            <Button
-                onClick={() => {
-                    props.add({
-                        accountId: parseInt(params.accountId, 10),
-                        timestamp: Date.now(),
-                        txId: 'abc',
-                        details: {
-                            name: 'label',
-                            price: 2,
-                            productCode: 'code',
-                        },
-                    });
-                }}
-            >
-                Add tx
-            </Button>
-            <Button
-                onClick={() => {
-                    const addTx = () => {
-                        props.add({
-                            accountId: parseInt(params.accountId, 10),
-                            timestamp: Date.now(),
-                            txId: Math.random()
-                                .toString(36)
-                                .substring(7),
-                            details: {
-                                name: 'label',
-                                price: 2,
-                                productCode: 'code',
-                            },
-                        });
-                        // setTimeout(addTx, 100);
-                    };
-                    addTx();
-                }}
-            >
-                Add random tx to selected acc ({params.accountId})
-            </Button>
-            <Button
-                onClick={() => {
-                    const addTx = () => {
-                        props.add({
-                            accountId: Math.floor(Math.random() * 4),
-                            timestamp: Date.now(),
-                            txId: Math.random()
-                                .toString(36)
-                                .substring(7),
-                            details: {
-                                name: 'label',
-                                price: 2,
-                                productCode: 'code',
-                            },
-                        });
-                        // setTimeout(addTx, 100);
-                    };
-                    addTx();
-                }}
-            >
-                Add random tx to random acc (0-4)
-            </Button>
 
             {props.wallet.transactions.map(tx => {
                 return (
@@ -134,7 +74,7 @@ const Transactions = (props: Props) => {
                         {JSON.stringify(tx)}
                         <Button
                             onClick={() => {
-                                props.remove(tx.txId);
+                                props.remove(tx.txid);
                             }}
                             variant="error"
                         >
@@ -142,7 +82,7 @@ const Transactions = (props: Props) => {
                         </Button>
                         <Button
                             onClick={() => {
-                                props.update(tx.txId);
+                                props.update(tx.txid);
                             }}
                             variant="error"
                         >

@@ -9,6 +9,7 @@ export const STORE_SUITE_SETTINGS = 'suiteSettings';
 export const STORE_WALLET_SETTINGS = 'walletSettings';
 
 export interface WalletAccountTransaction extends AccountTransaction {
+    id?: number;
     accountId: number;
 }
 

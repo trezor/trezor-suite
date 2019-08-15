@@ -14,6 +14,7 @@ interface Props extends InjectedIntlProps {
 }
 
 const UpdateFirmware = ({ device, pathname, intl }: Props) => {
+    // @ts-ignore TODO
     const outdated = device && device.features && device.firmware === 'outdated';
     if (!outdated) return null;
 
