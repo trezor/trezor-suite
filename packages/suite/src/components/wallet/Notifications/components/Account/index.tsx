@@ -8,12 +8,17 @@ interface Props extends InjectedIntlProps {
     blockchain: any;
     selectedAccount: AppState['wallet']['selectedAccount'];
 }
+
+interface Network {
+    shortcut: string;
+}
+
 // There could be only one account notification
 const AccountNotifications = (props: Props) => {
     const { network, notification } = props.selectedAccount;
 
     if (!network || !notification) return null;
-    const blockchain = props.blockchain.find(b => b.shortcut === network.shortcut);
+    const blockchain = props.blockchain.find((b: Network) => b.shortcut === network.shortcut);
 
     if (notification.type === 'backend') {
         // special case: backend is down

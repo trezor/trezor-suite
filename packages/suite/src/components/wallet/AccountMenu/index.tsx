@@ -235,6 +235,7 @@ const AccountMenu = (props: Props) => {
         );
     }
 
+    // @ts-ignore TODO
     if (discovery && (discovery.fwNotSupported || discovery.fwOutdated)) {
         discoveryStatus = null;
     }

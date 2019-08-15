@@ -128,7 +128,7 @@ const definedMessages = defineMessages({
     },
     TR_SELECT_COINS_LINK: {
         id: 'TR_SELECT_COINS_LINK',
-        default: 'Select coins',
+        defaultMessage: 'Select coins',
     },
 });
 

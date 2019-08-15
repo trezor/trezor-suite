@@ -33,7 +33,7 @@ export interface State {
     // tokens: Token[];
     // pending: Transaction[];
     discovery?: Discovery | null;
-    loader?: Loader;
+    loader?: Loader | null;
     notification?: AccountNotification | null;
     exceptionPage?: ExceptionPage;
     shouldRender: boolean;

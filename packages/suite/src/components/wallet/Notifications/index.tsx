@@ -15,6 +15,7 @@ interface Props {
     notifications: AppState['wallet']['notifications'];
     selectedAccount: any; // TODO
     wallet: AppState['wallet'];
+    // @ts-ignore TODO: add blockchain
     blockchain: AppState['wallet']['blockchain'];
     children?: React.ReactNode;
     close: typeof NotificationActions.close;
@@ -34,6 +35,7 @@ const mapStateToProps = (state: AppState) => ({
     notifications: state.wallet.notifications,
     selectedAccount: state.wallet.selectedAccount,
     wallet: state.wallet,
+    // @ts-ignore TODO: add blockchain
     blockchain: state.blockchain,
 });
 
