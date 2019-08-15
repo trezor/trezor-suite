@@ -11,7 +11,7 @@ export interface Loader {
 }
 
 export interface Notification {
-    variant: string;
+    variant: 'info' | 'success' | 'warning' | 'error';
     title: string;
     message?: string;
 }
