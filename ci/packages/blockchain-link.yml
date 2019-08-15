@@ -2,12 +2,16 @@ blockchain-link lint:
     stage: lint
     script:
         - yarn workspace @trezor/blockchain-link lint
+    dependencies:
+        - install and build
 
 blockchain-link test:
     stage: test
     allow_failure: true
     script:
         - yarn workspace @trezor/blockchain-link test
+    dependencies:
+        - install and build
 
 blockchain-link build:
     stage: build
@@ -19,3 +23,5 @@ blockchain-link build:
         paths:
             - packages/blockchain-link/lib
             - packages/blockchain-link/build
+    dependencies:
+        - install and build

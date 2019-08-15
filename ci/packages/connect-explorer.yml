@@ -3,18 +3,24 @@ connect-explorer lint:
     allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer lint
+    dependencies:
+        - install and build
 
 connect-explorer type check:
     stage: type check
     allow_failure: true
     script:
         - yarn workspace @trezor/connect-explorer type-check
+    dependencies:
+        - install and build
 
 connect-explorer type coverage:
     stage: type check
     allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer type-coverage
+    dependencies:
+        - install and build
 
 connect-explorer build:
     stage: build
@@ -25,6 +31,8 @@ connect-explorer build:
         when: always
         paths:
             - packages/connect-explorer/build
+    dependencies:
+        - install and build
 
 connect-explorer deploy dev:
     stage: deploy
@@ -32,6 +40,7 @@ connect-explorer deploy dev:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect-explorer/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}
     dependencies:
+        - install and build
         - connect-explorer build
     environment:
         name: ${CI_BUILD_REF_NAME}
@@ -63,6 +72,8 @@ connect-explorer delete review:
         - 'rm -r "${DEPLOY_DIRECTORY}"'
     tags:
         - deploy
+    dependencies:
+        - install and build
 
 connect-explorer test integration:
     image: cypress/base:10
@@ -76,3 +87,5 @@ connect-explorer test integration:
         paths:
             - connect-explorer/test/snapshots
             - connect-explorer/test/screenshots
+    dependencies:
+        - install and build

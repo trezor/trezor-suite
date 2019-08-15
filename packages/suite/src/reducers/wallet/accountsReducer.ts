@@ -9,6 +9,7 @@ export interface Account extends AccountInfo {
     networkType: 'bitcoin' | 'ethereum' | 'ripple';
     network: string;
     path: string;
+    imported?: boolean;
 
     // connect
     availableBalance: string;

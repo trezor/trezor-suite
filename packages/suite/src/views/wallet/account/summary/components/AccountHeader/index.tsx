@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import * as stateUtils from '@wallet-utils/reducerUtils';
 import { CoinLogo, Link, variables } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nSummaryMessages from '../../common.messages';
