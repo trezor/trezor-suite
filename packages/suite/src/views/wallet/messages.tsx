@@ -126,6 +126,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Try again',
         description: 'Try to run the proccess again',
     },
+    TR_SELECT_COINS_LINK: {
+        id: 'TR_SELECT_COINS_LINK',
+        default: 'Select coins',
+    },
 });
 
 export default definedMessages;
