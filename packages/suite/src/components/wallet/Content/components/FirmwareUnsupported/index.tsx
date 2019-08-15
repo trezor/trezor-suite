@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 
 interface Props {
-    networkShortcut?: 'default' | 'xrp' | 'txrp' | null;
+    networkShortcut?: string | null;
     title?: string;
     message?: string;
 }
@@ -23,6 +23,7 @@ const getInfoUrl = (networkShortcut?: Props['networkShortcut']) => {
     if (!networkShortcut) {
         result = urls.default;
     } else if (networkShortcut in urls) {
+        // @ts-ignore
         result = urls[networkShortcut];
     } else {
         result = urls.default;
