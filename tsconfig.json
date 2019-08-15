@@ -86,9 +86,9 @@
         "strict": true,
         "target": "esnext",
         "typeRoots": [
-            "node_modules/@types",
-            "./packages/suite/src/types/trezor-connect"
-        ],
+            "node_modules/@trezor/typescript-typings/types",
+            "node_modules/@types"
+        ]
     },
     "exclude": [
         "node_modules",

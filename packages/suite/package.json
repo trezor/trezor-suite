@@ -18,6 +18,7 @@
         "@trezor/components": "^1.0.0",
         "@trezor/rollout": "^1.0.0",
         "@trezor/suite-data": "^1.0.0",
+        "@trezor/typescript-typings": "^1.0.0",
         "@types/jest": "^24.0.13",
         "@types/react-intl": "^2.3.17",
         "@types/react-window": "^1.8.0",
