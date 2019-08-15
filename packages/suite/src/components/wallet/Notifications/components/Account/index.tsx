@@ -16,7 +16,7 @@ const AccountNotifications = (props: Props) => {
     if (!network || !notification) return null;
     const blockchain = props.blockchain.find(b => b.shortcut === network.shortcut);
 
-    if (notification!.type === 'backend') {
+    if (notification.type === 'backend') {
         // special case: backend is down
         // TODO: this is a different component with "auto resolve" button
         return (

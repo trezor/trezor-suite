@@ -23,6 +23,9 @@ export interface ExceptionPage {
     shortcut: string;
 }
 
+interface AccountNotification extends Notification {
+    type: 'info' | 'backend';
+}
 export interface State {
     // location: string;
     account?: Account | null;
@@ -31,7 +34,7 @@ export interface State {
     // pending: Transaction[];
     discovery?: Discovery | null;
     loader?: Loader | null;
-    notification?: Notification | null;
+    notification?: AccountNotification | null;
     exceptionPage?: ExceptionPage | null;
     shouldRender: boolean;
 }
