@@ -7,7 +7,6 @@ blockchain-link lint:
 
 blockchain-link test:
     stage: test
-    allow_failure: true
     script:
         - yarn workspace @trezor/blockchain-link test
     dependencies:

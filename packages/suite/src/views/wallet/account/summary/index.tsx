@@ -40,17 +40,6 @@ const AccountSummary = (props: Props) => {
                 localCurrency={props.wallet.settings.localCurrency}
                 isHidden={props.wallet.settings.hideBalance}
             />
-            {network.type === 'ethereum' ? (
-                <Tokens
-                    account={account}
-                    loadTokens={props.loadTokens}
-                    addToken={props.addToken}
-                    removeToken={props.removeToken}
-                    tokens={[]}
-                    pending={[]}
-                    isBalanceHidden={props.wallet.settings.hideBalance}
-                />
-            ) : null}
         </LayoutAccount>
     );
 };

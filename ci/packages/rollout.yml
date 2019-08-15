@@ -7,7 +7,6 @@ rollout lint:
 
 rollout type check:
     stage: type check
-    allow_failure: false
     script:
         - yarn workspace @trezor/rollout type-check
     dependencies:
