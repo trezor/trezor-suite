@@ -11,8 +11,14 @@ import { LogActions } from '@suite-actions/logActions';
 import { Action as WalletActions } from '@wallet-types/index';
 import OnboardingActions from '@onboarding-types/actions';
 
-export { MessageDescriptor } from '@suite-support/ConnectedIntlProvider';
-export { Messages } from '@suite-support/ConnectedIntlProvider';
+import {
+    MessageDescriptor as MessageDescriptor$,
+    Messages as Messages$,
+} from '@suite-support/ConnectedIntlProvider';
+
+// this weird export is because of --isolatedModules and next.js 9
+export type MessageDescriptor = MessageDescriptor$;
+export type Messages = Messages$;
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
