@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import Icon from '../Icon';
+import { Icon } from '../Icon';
 
 import { Omit, TrezorModel, IconType } from '../../support/types';
 import colors from '../../config/colors';
@@ -81,4 +81,4 @@ Prompt.defaultProps = {
     size: 32,
 };
 
-export default Prompt;
+export { Prompt, Props as PromptProps };

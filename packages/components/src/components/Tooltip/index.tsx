@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Tippy, { TippyProps } from '@tippy.js/react';
 
-import Link from '../Link';
+import { Link } from '../Link';
 import colors from '../../config/colors';
 import { FONT_SIZE } from '../../config/variables';
 
@@ -83,4 +83,4 @@ Tooltip.propTypes = {
     ctaText: PropTypes.node,
 };
 
-export default Tooltip;
+export { Tooltip, Props as TooltipProps };

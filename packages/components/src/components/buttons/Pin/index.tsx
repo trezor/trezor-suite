@@ -1,7 +1,8 @@
+import React from 'react';
 import styled from 'styled-components';
 import colors from '../../../config/colors';
 
-const ButtonPin = styled.button`
+const Button = styled.button`
     width: 80px;
     height: 80px;
     border: 1px solid ${colors.DIVIDER};
@@ -38,4 +39,9 @@ const ButtonPin = styled.button`
     }
 `;
 
-export default ButtonPin;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+
+const ButtonPin = ({ onClick, ...rest }: Props) => <Button onClick={onClick} {...rest} />;
+
+export { ButtonPin, Props as ButtonPinProps };

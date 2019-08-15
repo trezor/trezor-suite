@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { DASH, GREEN_COLOR } from '../../config/animations';
 import { FONT_SIZE } from '../../config/variables';
-import Paragraph from '../Paragraph';
+import { P } from '../Paragraph';
 import colors from '../../config/colors';
 
 const Wrapper = styled.div<Props>`
@@ -47,7 +47,7 @@ const CircleWrapper = styled.circle<CircleProps>`
         `};
 `;
 
-const StyledParagraph = styled(Paragraph)<Props>`
+const StyledParagraph = styled(P)<Props>`
     font-size: ${props => (props.isSmallText ? FONT_SIZE.SMALL : FONT_SIZE.BIG)};
     color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
 `;
@@ -118,4 +118,4 @@ Loader.propTypes = {
     strokeWidth: PropTypes.number,
 };
 
-export default Loader;
+export { Loader, Props as LoaderProps };

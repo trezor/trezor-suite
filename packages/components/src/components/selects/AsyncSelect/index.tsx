@@ -41,4 +41,4 @@ AsyncSelect.propTypes = {
     onChange: PropTypes.func,
 };
 
-export default AsyncSelect;
+export { AsyncSelect, AsyncProps as AsyncSelectProps };

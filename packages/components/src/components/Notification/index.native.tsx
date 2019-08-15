@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { FONT_SIZE_NATIVE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
 import { getStateIcon } from '../../utils/icons';
-import Icon from '../Icon';
-import Button from '../buttons/Button';
+import { Icon } from '../Icon';
+import { Button } from '../buttons/Button';
 import { FeedbackType } from '../../support/types';
 
 const Wrapper = styled.View<WrapperProps>`
@@ -178,4 +178,4 @@ Notification.propTypes = {
     close: PropTypes.func,
 };
 
-export default Notification;
+export { Notification, Props as NotificationProps };

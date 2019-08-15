@@ -41,4 +41,4 @@ Modal.propTypes = {
     children: PropTypes.node,
 };
 
-export default Modal;
+export { Modal, Props as ModalProps };

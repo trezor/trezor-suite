@@ -45,4 +45,4 @@ P.propTypes = {
     textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify', 'inherit', 'initial']),
 };
 
-export default P;
+export { P, Props as ParagraphProps };

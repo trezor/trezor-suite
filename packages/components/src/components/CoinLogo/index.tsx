@@ -64,4 +64,4 @@ CoinLogo.propTypes = {
     className: PropTypes.string,
 };
 
-export default CoinLogo;
+export { CoinLogo, Props as CoinLogoProps };

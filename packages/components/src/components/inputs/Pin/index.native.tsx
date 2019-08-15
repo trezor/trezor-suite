@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 import { FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
-import Icon from '../../Icon';
+import { Icon } from '../../Icon';
 import colors from '../../../config/colors';
 
 const Wrapper = styled.View`
@@ -48,4 +48,4 @@ InputPin.propTypes = {
     onDeleteClick: PropTypes.func.isRequired,
 };
 
-export default InputPin;
+export { InputPin, Props as InputPinProps };
