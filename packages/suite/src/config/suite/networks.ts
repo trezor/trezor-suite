@@ -1,3 +1,4 @@
+// TODO: unify network objects structure
 export default [
     {
         order: 1,
