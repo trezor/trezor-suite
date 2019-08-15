@@ -8,7 +8,6 @@ suite-web lint:
 
 suite-web type check:
     stage: type check
-    allow_failure: true
     script:
         - yarn workspace @trezor/suite-web type-check
     dependencies:

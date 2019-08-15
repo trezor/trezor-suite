@@ -16,17 +16,17 @@ const Wrapper = styled.div`
     }
 `;
 
-const EyeButton = styled(Button)`
-    z-index: 10001;
-    padding: 0;
-    top: 10px;
-    position: absolute;
-    right: 10px;
+// const EyeButton = styled(Button)`
+//     z-index: 10001;
+//     padding: 0;
+//     top: 10px;
+//     position: absolute;
+//     right: 10px;
 
-    &:hover {
-        background: transparent;
-    }
-`;
+//     &:hover {
+//         background: transparent;
+//     }
+// `;
 
 const ShowAddressButton = styled(Button)`
     white-space: nowrap;
@@ -54,6 +54,7 @@ interface Props extends InjectedIntlProps {
     isAddressUnverified: boolean;
     isAddressHidden: boolean;
     isAddressVerified: boolean;
+    intl: InjectedIntl;
 }
 
 const VerifyInput = ({
@@ -85,31 +86,31 @@ const VerifyInput = ({
                         </React.Fragment>
                     ) : null
                 }
-                icon={
-                    (isAddressVerified || isAddressUnverified) &&
-                    !isAddressVerifying && (
-                        <EyeButton isTransparent onClick={() => showAddress(account.path)}>
-                            {/* <Tooltip
-                            placement="top"
-                            content={
-                                <VerifyAddressTooltip
-                                    isConnected={device.connected}
-                                    isAvailable={device.available}
-                                    addressUnverified={isAddressUnverified}
-                                />
-                            }
-                        >
-                            <Icon
-                                size={16}
-                                icon={isAddressUnverified ? "EYE_CROSSED" : "EYE"}
-                                color={
-                                    isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY
-                                }
-                            />
-                        </Tooltip> */}
-                        </EyeButton>
-                    )
-                }
+                // icon={
+                //     (isAddressVerified || isAddressUnverified) &&
+                //     !isAddressVerifying && (
+                //         <EyeButton isTransparent onClick={() => showAddress(account.path)}>
+                //             {/* <Tooltip
+                //             placement="top"
+                //             content={
+                //                 <VerifyAddressTooltip
+                //                     isConnected={device.connected}
+                //                     isAvailable={device.available}
+                //                     addressUnverified={isAddressUnverified}
+                //                 />
+                //             }
+                //         >
+                //             <Icon
+                //                 size={16}
+                //                 icon={isAddressUnverified ? "EYE_CROSSED" : "EYE"}
+                //                 color={
+                //                     isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY
+                //                 }
+                //             />
+                //         </Tooltip> */}
+                //         </EyeButton>
+                //     )
+                // }
             />
             <>
                 {!(isAddressVerified || isAddressUnverified) && ( // !account.imported

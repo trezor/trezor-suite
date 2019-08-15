@@ -4,6 +4,7 @@ import { AppState, Action, Dispatch } from '@suite-types/index';
 // import { SUITE } from '@suite-actions/constants';
 // import * as discoveryActions from '@wallet-actions/discoveryActions';
 
+// @ts-ignore // TODO: api parameter
 const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
