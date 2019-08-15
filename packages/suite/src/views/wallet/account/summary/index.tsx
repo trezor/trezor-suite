@@ -1,19 +1,14 @@
 import React from 'react';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
-import * as TokenActions from '@wallet-actions/tokenActions';
 import AccountHeader from './components/AccountHeader';
 import { AppState } from '@suite-types';
 
 interface Props {
     wallet: AppState['wallet'];
     suite: AppState['suite'];
-    tokens: AppState['wallet']['tokens'];
     router: AppState['router'];
     fiat: AppState['wallet']['fiat'];
-    addToken: typeof TokenActions.add;
-    loadTokens: typeof TokenActions.load;
-    removeToken: typeof TokenActions.remove;
 }
 
 const AccountSummary = (props: Props) => {

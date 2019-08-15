@@ -1,6 +1,5 @@
 import { SettingsActions } from '@wallet-actions/settingsActions';
 import { NotificationActions } from '@wallet-actions/notificationActions';
-import { TokenActions } from '@wallet-actions/tokenActions';
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
@@ -29,7 +28,6 @@ export type Action =
     | ReceiveActions
     | SignVerifyActions
     | NotificationActions
-    | TokenActions
     | TransactionAction
     | FiatRateActions
     | DiscoveryActions
