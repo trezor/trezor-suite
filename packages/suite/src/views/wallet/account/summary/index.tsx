@@ -7,7 +7,7 @@ import { AppState } from '@suite-types';
 
 interface Props {
     wallet: AppState['wallet'];
-    device: AppState['suite']['device'];
+    suite: AppState['suite'];
     tokens: AppState['wallet']['tokens'];
     router: AppState['router'];
     fiat: AppState['wallet']['fiat'];
@@ -18,7 +18,7 @@ interface Props {
 
 const AccountSummary = (props: Props) => {
     const { device } = props.suite;
-    const { account, network, discovery, shouldRender } = props.wallet.selectedAccount;
+    const { account, network, shouldRender } = props.wallet.selectedAccount;
     if (!device || !account || !network || !shouldRender) {
         const { loader, exceptionPage } = props.wallet.selectedAccount;
         return (
