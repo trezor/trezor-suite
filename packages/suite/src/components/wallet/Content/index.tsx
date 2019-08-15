@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { P, H4, Loader, colors, variables } from '@trezor/components';
+import { ExceptionPage } from '@wallet-reducers/selectedAccountReducer';
 
 // import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
@@ -52,13 +53,6 @@ const Row = styled.div`
     flex-direction: row;
     align-items: center;
 `;
-
-interface ExceptionPage {
-    shortcut: string;
-    message: string;
-    title: string;
-    type: string;
-}
 
 const getExceptionPage = (exceptionPage: ExceptionPage) => {
     const { title, message, shortcut } = exceptionPage;

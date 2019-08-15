@@ -33,9 +33,9 @@ export interface State {
     // tokens: Token[];
     // pending: Transaction[];
     discovery?: Discovery | null;
-    loader?: Loader | null;
+    loader?: Loader;
     notification?: AccountNotification | null;
-    exceptionPage?: ExceptionPage | null;
+    exceptionPage?: ExceptionPage;
     shouldRender: boolean;
 }
 
@@ -46,9 +46,7 @@ export const initialState: State = {
     // tokens: [],
     // pending: [],
     discovery: null,
-    loader: null,
     notification: null,
-    exceptionPage: null,
     shouldRender: false,
 };
 
