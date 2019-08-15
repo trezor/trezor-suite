@@ -6,10 +6,9 @@ import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { forgetDevice } from '@suite-actions/trezorConnectActions';
-import { Button, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
+import { colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
-import l10nCommonMessages from '@suite-views/index.messages';
 import WebusbButton from '@suite-components/WebusbButton';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
@@ -86,9 +85,6 @@ const ButtonWrapper = styled.div`
     padding: 0 24px;
     display: flex;
 `;
-const StyledButton = styled(Button)`
-    flex: 1;
-`;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     devices: AppState['devices'];
@@ -100,7 +96,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     isOpen: boolean;
     isSelected?: boolean;
     transport: AppState['suite']['transport'];
-    className?: string;
 }
 
 type WrapperProps = Omit<
@@ -121,7 +116,6 @@ const DeviceMenu = ({
     icon,
     disabled = false,
     isSelected = false,
-    className,
     selectDevice,
     toggleDeviceMenu,
     transport,
@@ -129,6 +123,7 @@ const DeviceMenu = ({
     ...rest
 }: Props) => {
     const [isAnimated, setIsAnimated] = useState(false);
+    const [animationFinished, setAnimationFinished] = useState(false);
 
     useEffect(() => {
         if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
@@ -141,10 +136,21 @@ const DeviceMenu = ({
             toggleDeviceMenu(false);
         }
     };
+
+    const onAnimationEnd = () => {
+        setTimeout(() => setAnimationFinished(true), 1);
+    };
+
     useEffect(() => {
         if (isOpen) {
             document.addEventListener('click', handleClickOutside, true);
+
+            const menuElement = document.getElementById('device-menu');
+            if (menuElement instanceof HTMLElement) {
+                menuElement.addEventListener('animationend', onAnimationEnd, true);
+            }
         } else {
+            setAnimationFinished(false);
             document.removeEventListener('click', handleClickOutside, true);
         }
         return () => {
@@ -160,7 +166,6 @@ const DeviceMenu = ({
 
     return (
         <Wrapper
-            className={className}
             onClick={() => {
                 setIsAnimated(true);
                 toggleDeviceMenu(!isOpen);
@@ -256,7 +261,7 @@ const DeviceMenu = ({
                 }
             />
             {isOpen && (
-                <Menu>
+                <Menu id="device-menu">
                     {selectedDeviceAccessible && (
                         <MenuItems device={selectedDevice as AcquiredDevice} />
                     )}
@@ -269,7 +274,7 @@ const DeviceMenu = ({
                     />
                     {isWebUSB(transport) && (
                         <ButtonWrapper>
-                            <WebusbButton />
+                            <WebusbButton ready={animationFinished} />
                         </ButtonWrapper>
                     )}
                 </Menu>

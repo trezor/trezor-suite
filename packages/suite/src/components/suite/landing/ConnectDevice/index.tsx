@@ -3,8 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
-import { Button, P, H1, Link, colors, variables, animations } from '@trezor/components';
-import l10nCommonMessages from '@suite-views/index.messages';
+import { P, H1, Link, colors, variables, animations } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
 import l10nMessages from './index.messages';
 
@@ -54,6 +53,7 @@ const And = styled(P)`
 
 const ButtonWrapper = styled.div`
     display: flex;
+    width: 200px;
 `;
 
 const Image = styled.img`
@@ -183,7 +183,7 @@ class ConnectDevice extends PureComponent<Props> {
                                 <FormattedMessage {...l10nMessages.TR_AND} />
                             </And>
                             <ButtonWrapper>
-                                <WebusbButton />
+                                <WebusbButton ready />
                             </ButtonWrapper>
                         </React.Fragment>
                     )}

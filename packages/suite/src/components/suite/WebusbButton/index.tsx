@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Button } from '@trezor/components';
 
 /*
     This component does a little hack.
@@ -10,34 +9,48 @@ import { Button } from '@trezor/components';
     turn on and off its visibility. 
 */
 
-const WebusbButton = () => {
+interface Props {
+    ready: boolean; // are all animations finished?
+}
+
+const WebusbButton = ({ ready }: Props) => {
     const moveWebusbIn = () => {
-        const elem = document.getElementById('web-usb-hideout');
-        // elem.style.display = 'block';
+        const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
         const placeholder = document.getElementById('web-usb-placeholder');
-        if (!elem || !placeholder) {
-            return;
-        }
-        placeholder.appendChild(elem.children[0]);
+        const iframe = document.getElementsByTagName('iframe')[0];
+        if (!elem || !placeholder) return;
+        const { top, left, right } = placeholder.getBoundingClientRect();
+        elem.style.top = `${top}px`;
+        elem.style.left = `${left}px`;
+        elem.style.width = `${right - left}px`;
+        iframe.style.width = `${right - left}px`;
+        elem.style.zIndex = '1000';
     };
 
     const moveWebusbOut = () => {
-        const elem = document.getElementById('web-usb-placeholder');
-        const hideout = document.getElementById('web-usb-hideout');
-        if (!elem || !hideout) {
-            return;
-        }
-        hideout.appendChild(elem.children[0]);
+        const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
+        if (!elem) return;
+        elem.style.zIndex = '-1000';
+        elem.style.top = '-1000px';
     };
 
     useEffect(() => {
-        moveWebusbIn();
-        return () => {
+        const onResize = () => {
             moveWebusbOut();
+            moveWebusbIn();
         };
-    }, []);
 
-    return <div id="web-usb-placeholder" style={{ width: '100%' }}></div>;
+        if (ready) {
+            moveWebusbIn();
+            window.addEventListener('resize', onResize);
+            return () => {
+                moveWebusbOut();
+                window.removeEventListener('resize', onResize);
+            };
+        }
+    }, [ready]);
+
+    return <div id="web-usb-placeholder" style={{ width: '100%', height: '40px' }}></div>;
 };
 
 export default WebusbButton;

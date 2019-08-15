@@ -36,18 +36,20 @@ class TrezorSuiteApp extends App<Props> {
                     <ReduxProvider store={store}>
                         <IntlProvider>
                             <>
-                                <div id="web-usb-hideout" style={{ position: 'absolute' }}>
-                                    <Button
-                                        isInverse
-                                        icon="PLUS"
-                                        additionalClassName="trezor-webusb-button"
-                                        style={{ width: '100%' }}
-                                    >
-                                        <FormattedMessage
-                                            {...l10nCommonMessages.TR_CHECK_FOR_DEVICES}
-                                        />
-                                    </Button>
-                                </div>
+                                {/*
+                                    initially rendered webusb button, only for web. whether displayed or not 
+                                    is handled by suite/components/Webusb component
+                                */}
+                                <Button
+                                    isInverse
+                                    icon="PLUS"
+                                    additionalClassName="trezor-webusb-button"
+                                    style={{ width: '100%', position: 'absolute', top: '-1000px' }}
+                                >
+                                    <FormattedMessage
+                                        {...l10nCommonMessages.TR_CHECK_FOR_DEVICES}
+                                    />
+                                </Button>
                                 <Preloader isStatic={isStaticRoute}>
                                     <Component {...pageProps} />
                                 </Preloader>
