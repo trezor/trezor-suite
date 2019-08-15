@@ -1,9 +1,10 @@
 /* eslint-disable react/style-prop-object */
 import React, { PureComponent } from 'react';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { FormattedNumber } from '@suite/components/suite';
 import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
@@ -172,12 +173,7 @@ class AccountBalance extends PureComponent<Props, State> {
                             <TooltipWrapper>
                                 <FiatValue>
                                     {fiatRates ? (
-                                        <FormattedNumber
-                                            value={fiat}
-                                            minimumFractionDigits={2}
-                                            style="currency"
-                                            currency={localCurrency}
-                                        />
+                                        <FormattedNumber currency={localCurrency} value={fiat} />
                                     ) : (
                                         'N/A'
                                     )}
@@ -208,10 +204,6 @@ class AccountBalance extends PureComponent<Props, State> {
                                         <FormattedNumber
                                             currency={localCurrency}
                                             value={fiatRateValue}
-                                            minimumFractionDigits={2}
-                                            maximumFractionDigits={2}
-                                            // eslint-disable-next-line react/style-prop-object
-                                            style="currency"
                                         />
                                     ) : (
                                         'N/A'

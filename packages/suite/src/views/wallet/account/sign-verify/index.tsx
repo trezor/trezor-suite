@@ -73,6 +73,8 @@ interface FormEvent {
     };
 }
 
+type InputNameType = Parameters<typeof signVerifyActions.inputChange>;
+
 class SignVerify extends Component<Props> {
     getError(inputName: string) {
         if (!this.props.signVerify) return null;
@@ -80,7 +82,10 @@ class SignVerify extends Component<Props> {
     }
 
     handleInputChange = (event: FormEvent) => {
-        this.props.signVerifyActions.inputChange(event.target.name, event.target.value);
+        this.props.signVerifyActions.inputChange(
+            event.target.name as InputNameType[0],
+            event.target.value,
+        );
     };
 
     render() {
@@ -153,9 +158,10 @@ class SignVerify extends Component<Props> {
                             <StyledButton
                                 // isDisabled={!device.connected}
                                 isDisabled={false}
-                                onClick={() =>
-                                    signVerifyActions.sign(account.accountPath, signMessage)
-                                }
+                                // TODO:
+                                // onClick={() =>
+                                //      signVerifyActions.sign(account.accountPath, signMessage)
+                                // }
                             >
                                 <FormattedMessage {...l10nMessages.TR_SIGN} />
                             </StyledButton>
@@ -172,7 +178,7 @@ class SignVerify extends Component<Props> {
                                 value={verifyAddress}
                                 onChange={this.handleInputChange}
                                 type="text"
-                                state={verifyAddressError ? 'error' : null}
+                                state={verifyAddressError ? 'error' : undefined}
                                 bottomText={verifyAddressError ? verifyAddressError.message : null}
                             />
                         </Row>

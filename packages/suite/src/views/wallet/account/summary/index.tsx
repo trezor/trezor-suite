@@ -20,7 +20,6 @@ interface Props {
 }
 
 const AccountSummary = (props: Props) => {
-    const { device } = props;
     // const { account, network, tokens, pending, shouldRender } = props.selectedAccount;
     const selectedCoin = props.router.params.coin;
     const { accountId } = props.router.params;
