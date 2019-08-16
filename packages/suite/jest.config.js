@@ -3,6 +3,7 @@ module.exports = {
     globals: {
         'ts-jest': {
             tsConfig: 'tsconfig.json',
+            // to speed up prototyping, this is how to disable ts in tests
             // diagnostics: false,
         },
     },
@@ -33,4 +34,5 @@ module.exports = {
         '^.+\\.(ts)$': 'ts-jest',
     },
     preset: 'ts-jest',
+    verbose: true,
 };
