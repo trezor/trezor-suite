@@ -10,7 +10,8 @@
         "start": "next start",
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "test:integration": "cypress run"
+        "test:integration": "cypress run",
+        "precommit": "yarn lint-staged"
     },
     "dependencies": {
         "@sentry/browser": "^5.4.0",

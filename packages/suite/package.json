@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "lint": "yarn lint:styles && yarn lint:js",
-        "lint:js": "eslint '**/*{.ts,.tsx}'",
+        "lint:js": "eslint '**/*{.ts,.tsx}'", 
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
         "translations:extract": "rimraf translations/extractedMessages && cross-env NODE_ENV=translations npx babel src/**/*.{tsx,ts} && yarn ttm merge-msgs && yarn ttm build-csv",
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations",
@@ -12,7 +12,8 @@
         "test": "run-s test:*",
         "test:unit": "jest",
         "test-unit:watch": "jest -o --watch",
-        "test:health": "jest -c jest.config.health.js"
+        "test:health": "jest -c jest.config.health.js",
+        "precommit": "yarn lint-staged"
     },
     "dependencies": {
         "@trezor/components": "^1.0.0",

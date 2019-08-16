@@ -1,0 +1,3 @@
+{
+    "*.{ts,tsx}": ["npx stylelint", "eslint"]
+}
