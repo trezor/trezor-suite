@@ -12,6 +12,7 @@ module.exports = api => {
                         // (after renaming routerActions.ts to routerActions.useNative.ts in suite folder)
                         '^@suite/actions/routerActions$': './packages/suite-native/src/actions/routerActions',
                         '^@suite/actions/(.+).useNative$': './packages/suite-native/src/actions/\\1', // every action file in suite/actions with .useNative extension will be replaced by a file in suite-native/actions directory
+                        '^@suite/(.+).placeholder$': './packages/suite-native/src/\\1.native', // every action file in suite/actions with .useNative extension will be replaced by a file in suite-native/actions directory
                         '^@suite/(.+)': './packages/suite/src/\\1', // relative to "projectRoot: ../../" defined in package.json
                         'node-fetch': 'whatwg-fetch',
                         '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',

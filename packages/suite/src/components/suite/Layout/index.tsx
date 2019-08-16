@@ -9,7 +9,7 @@ import Modals from '@suite-components/modals';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
 import suiteConfig from '@suite-config/index';
-import Router from '@suite-support/Router';
+import Router from '@suite-support/Router.placeholder';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 // import { Header as AppHeader, colors } from '@trezor/components';
 import { bindActionCreators } from 'redux';
-import Router from '@suite-support/Router';
+import Router from '@suite-support/Router.placeholder';
 
 import { goto } from '@suite-actions/routerActions';
 import AcquireDevice from '@suite-components/AcquireDevice';
