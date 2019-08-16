@@ -1,6 +1,6 @@
 import { unwrap } from 'idb';
-import { MyDBV1, STORE_TXS } from '@suite/storage/types/index';
-import { notify, getDB } from '@suite/storage';
+import { MyDBV1, STORE_TXS } from '../../types/index';
+import { notify, getDB } from '../../index';
 
 export const addTransaction = async (transaction: MyDBV1['txs']['value']) => {
     // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'

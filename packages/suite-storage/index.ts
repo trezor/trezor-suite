@@ -1,6 +1,10 @@
 import { openDB, IDBPDatabase } from 'idb';
-import { migrate } from '@suite/storage/migrations';
-import { MyDBV1, StorageUpdateMessage, StorageMessageEvent } from './types';
+import { migrate } from './migrations';
+import {
+    MyDBV1,
+    StorageUpdateMessage as StorageUpdateMessage$,
+    StorageMessageEvent,
+} from './types';
 import {
     saveSuiteSettings,
     saveWalletSettings,
@@ -21,6 +25,7 @@ let db: IDBPDatabase<MyDBV1>;
 // we reuse the same instance of broadcast channel for both sending the message
 // and setting a listener, so the sender tab (source) won't receive its own messages
 let broadcastChannel: BroadcastChannel;
+export type StorageUpdateMessage = StorageUpdateMessage$;
 
 export const isIndexedDBAvailable = (cb: (isAvailable: boolean) => void) => {
     // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.

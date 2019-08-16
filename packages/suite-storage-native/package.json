@@ -1,0 +1,13 @@
+{
+    "name": "@trezor/suite-storage-native",
+    "version": "1.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "keywords": [
+        "Trezor",
+        "trezor-storage-native"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "trezor suite storage native",
+    "scripts": {},
+    "dependencies": {}
+}

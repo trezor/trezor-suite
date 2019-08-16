@@ -3,15 +3,11 @@ import { DBSchema } from 'idb';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState as SuiteSettings } from '@suite-reducers/suiteReducer';
 import { AccountTransaction } from 'trezor-connect';
+import { WalletAccountTransaction } from '@storage-types';
 
 export const STORE_TXS = 'txs';
 export const STORE_SUITE_SETTINGS = 'suiteSettings';
 export const STORE_WALLET_SETTINGS = 'walletSettings';
-
-export interface WalletAccountTransaction extends AccountTransaction {
-    id?: number;
-    accountId: number;
-}
 
 export interface MyDBV1 extends DBSchema {
     txs: {

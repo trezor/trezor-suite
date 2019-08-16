@@ -6,9 +6,7 @@ module.exports = api => {
             'module-resolver',
             {
                 alias: {
-                    '^react-native$': 'react-native-web',
                     '^@suite/(.+)': '../../packages/suite/src/\\1',
-                    '^@suite-storage/(.+)': '../../packages/suite-storage/\\1',
                     '^@(.+)-views/(.+)': '../../packages/suite/src/views/\\1/\\2',
                     '^@(.+)-views': '../../packages/suite/src/views/\\1/index',
                     '^@(.+)-components/(.+)': '../../packages/suite/src/components/\\1/\\2',
@@ -32,18 +30,10 @@ module.exports = api => {
                 },
             },
         ],
-        [
-            'styled-components',
-            {
-                ssr: true,
-                displayName: true,
-                preprocess: false,
-            },
-        ],
     ];
 
     return {
-        presets: ['next/babel'],
+        presets: [],
         plugins,
     };
 };

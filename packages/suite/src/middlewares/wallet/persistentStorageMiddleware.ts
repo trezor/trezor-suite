@@ -4,7 +4,7 @@ import { Action as WalletAction } from '@wallet-types/index';
 // import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
-import * as db from '@suite/storage/index';
+import * as db from '@trezor/suite-storage';
 import { SUITE } from '@suite/actions/suite/constants';
 import { ACCOUNT } from '@suite/actions/wallet/constants';
 import { AccountInfo } from 'trezor-connect';

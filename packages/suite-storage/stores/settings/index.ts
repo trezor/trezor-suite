@@ -1,5 +1,5 @@
-import { MyDBV1, STORE_WALLET_SETTINGS, STORE_SUITE_SETTINGS } from '@suite/storage/types/index';
-import { getDB, notify } from '@suite/storage';
+import { MyDBV1, STORE_WALLET_SETTINGS, STORE_SUITE_SETTINGS } from '../../types/index';
+import { getDB, notify } from '../../index';
 
 export const saveWalletSettings = async (settings: MyDBV1['settings']['value']) => {
     const db = await getDB();

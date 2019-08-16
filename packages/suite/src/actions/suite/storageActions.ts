@@ -1,5 +1,5 @@
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
-import * as db from '@suite/storage';
+import * as db from '@trezor/suite-storage';
 import { Dispatch, GetState } from '@suite-types';
 import { STORAGE } from './constants/index';
 

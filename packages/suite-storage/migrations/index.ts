@@ -1,5 +1,5 @@
 import { IDBPDatabase } from 'idb';
-import { MyDBV1 } from '@suite/storage/types';
+import { MyDBV1 } from '../types';
 // import { STORE_TXS } from '../types';
 
 export const migrate = async (

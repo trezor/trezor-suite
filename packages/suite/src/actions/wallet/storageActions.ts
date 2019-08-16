@@ -1,11 +1,10 @@
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as settingsActions from '@wallet-actions/settingsActions';
-import * as db from '@suite/storage';
-import { StorageUpdateMessage } from '@suite/storage/types/index';
+import * as db from '@trezor/suite-storage';
 import { WALLET } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-const updateReducers = (message: StorageUpdateMessage) => async (
+const updateReducers = (message: db.StorageUpdateMessage) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {

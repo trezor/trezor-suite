@@ -37,6 +37,7 @@ module.exports = api => {
                         '^@trezor/components$': './packages/components',
                         '^@trezor/suite-data$': './packages/suite-data',
                         '^@trezor/blockchain-link$': './packages/blockchain-link',
+                        '^@trezor/suite-storage$': './packages/suite-storage-native',
                     },
                 },
             ],
