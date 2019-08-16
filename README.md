@@ -45,3 +45,5 @@ S2 Critical | Broken feature, workaround too complex & unacceptable
 S3 Major    | Broken feature, workaround acceptable
 S4 Low      | Functionality inconvenience or cosmetic issue
 
+### IDE specific settings
+Find specific settings for Integrated Development Environments (IDE) in [IDE.md](./IDE.md)
