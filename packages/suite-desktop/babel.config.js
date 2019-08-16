@@ -8,7 +8,7 @@ module.exports = api => {
                 {
                     alias: {
                         '^@suite/actions/(.+).useNative$': './src/actions/\\1', // every action file in suite/actions with .useNative extension will be replaced by a file in suite-native/actions directory
-                        '^@suite/(.+).placeholder': './src/\\1.web',
+                        '^@suite/(.+).placeholder': './src/\\1.dom',
                         '^react-native$': 'react-native-web',
                         '^@suite/(.+)': '../../packages/suite/src/\\1', // relative to this project
                         '^@(.+)-views/(.+)': '../../packages/suite/src/views/\\1/\\2',
