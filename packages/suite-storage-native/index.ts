@@ -13,11 +13,11 @@ import {
     removeTransaction,
 } from './stores/transactions/index';
 
-let db: string;
+// let db: string;
 // we reuse the same instance of broadcast channel for both sending the message
 // and setting a listener, so the sender tab (source) won't receive its own messages
 
-export const isIndexedDBAvailable = (cb: (isAvailable: boolean) => void) => {
+export const isIndexedDBAvailable = (_cb: (isAvailable: boolean) => void) => {
     return null;
 };
 
@@ -25,14 +25,14 @@ export const notify = () => {
     return null;
 };
 
-export const onChange = (handler: (event) => any) => {
+export const onChange = (_handler: (_event: any) => any) => {
     return null;
 };
 
 // TODO: for typing migration/upgrade functions look at https://github.com/jakearchibald/idb#typescript
-const onUpgrade = async () => {
-    return null;
-};
+// const onUpgrade = async () => {
+//     return null;
+// };
 
 export const getDB = async () => {
     return null;

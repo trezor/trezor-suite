@@ -1,15 +1,15 @@
-import { STORE_TXS } from '../../types/index';
-import { notify, getDB } from '../../index';
+// import { STORE_TXS } from '../../types/index';
+// import { notify, getDB } from '../../index';
 
-export const addTransaction = async _transaction => {
+export const addTransaction = async (_transaction: any) => {
     return null;
 };
 
-export const addTransactions = async _transactions => {
+export const addTransactions = async (_transactions: any) => {
     return null;
 };
 
-export const getTransaction = async (txId: string) => {
+export const getTransaction = async (_txId: string) => {
     return null;
 };
 

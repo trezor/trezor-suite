@@ -8,6 +8,6 @@ export interface StorageUpdateMessage {
     keys: any[];
 }
 
-export interface StorageMessageEvent extends MessageEvent {
+export interface StorageMessageEvent {
     data: StorageUpdateMessage;
 }
