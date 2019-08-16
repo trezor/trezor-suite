@@ -21,11 +21,11 @@ connect-explorer | [connect-explorer](./packages/connect-explorer)
 
 Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
 
-### Security vulnerability disclosure
+## Security vulnerability disclosure
 
 Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
-### Issue Labels
+## Issue Labels
 
 #### Priority
 
@@ -45,5 +45,5 @@ S2 Critical | Broken feature, workaround too complex & unacceptable
 S3 Major    | Broken feature, workaround acceptable
 S4 Low      | Functionality inconvenience or cosmetic issue
 
-### IDE specific settings
+## IDE specific settings
 Find specific settings for Integrated Development Environments (IDE) in [IDE.md](./IDE.md)
