@@ -2,6 +2,7 @@
     "name": "@trezor/suite-storage-native",
     "version": "1.0.0",
     "author": "Trezor <info@trezor.io>",
+    "private": true,
     "keywords": [
         "Trezor",
         "trezor-storage-native"
