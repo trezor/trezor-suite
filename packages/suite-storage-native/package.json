@@ -7,7 +7,14 @@
         "trezor-storage-native"
     ],
     "license": "SEE LICENSE IN LICENSE.md",
-    "description": "trezor suite storage native",
-    "scripts": {},
-    "dependencies": {}
+    "description": "trezor suite storage",
+    "scripts": {
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "type-check": "tsc --project tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "@babel/core": "^7.0.0"
+    }
 }
