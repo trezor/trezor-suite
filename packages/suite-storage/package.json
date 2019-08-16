@@ -8,7 +8,11 @@
     ],
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "trezor suite storage",
-    "scripts": {},
+    "scripts": {
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "type-check": "tsc --project tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch"
+    },
     "dependencies": {
         "idb": "^4.0.4"
     },
