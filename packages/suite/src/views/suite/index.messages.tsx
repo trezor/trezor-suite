@@ -136,7 +136,7 @@ const definedMessages = defineMessages({
     TR_TRY_AGAIN: {
         id: 'TR_TRY_AGAIN',
         defaultMessage: 'Try again',
-        description: 'Try to run the proccess again',
+        description: 'Try to run the process again',
     },
 });
 

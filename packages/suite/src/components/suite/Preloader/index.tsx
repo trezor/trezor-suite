@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
+import Router from '@suite-support/Router';
 import { SUITE } from '@suite-actions/constants';
-import SuiteWrapper from '@suite-views/index';
+import SuiteWrapper from '@suite-components/SuiteWrapper';
 import StaticPageWrapper from '@suite-components/StaticPageWrapper';
 import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
@@ -39,9 +40,20 @@ const Preloader: React.FunctionComponent<Props> = props => {
         );
     }
 
-    if (isStatic) return <StaticPageWrapper>{props.children}</StaticPageWrapper>;
+    if (isStatic)
+        return (
+            <StaticPageWrapper>
+                <Router />
+                {props.children}
+            </StaticPageWrapper>
+        );
 
-    return <SuiteWrapper>{loaded && props.children}</SuiteWrapper>;
+    return (
+        <SuiteWrapper>
+            <Router />
+            {loaded && props.children}
+        </SuiteWrapper>
+    );
 };
 
 const mapStateToProps = (state: AppState) => ({

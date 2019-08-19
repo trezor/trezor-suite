@@ -9,7 +9,6 @@ import Modals from '@suite-components/modals';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
 import suiteConfig from '@suite-config/index';
-import Router from '@suite-support/Router';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
@@ -57,7 +56,6 @@ const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
 interface Props {
     router: AppState['router'];
     suite: AppState['suite'];
-    devices: AppState['devices'];
     fetchLocale: typeof fetchLocale;
     toggleSidebar: () => void;
     isLanding?: boolean;
@@ -69,7 +67,6 @@ interface Props {
 
 const Layout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
-        <Router />
         <CommonHeader
             sidebarOpened={props.suite.showSidebar}
             toggleSidebar={props.toggleSidebar}
@@ -113,11 +110,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 <>
                     <Log />
                     {props.showSuiteHeader && <Header />}
-                    {props.suite.device && props.suite.device.type === 'unacquired' ? (
-                        <AcquireDevice />
-                    ) : (
-                        props.children
-                    )}
+                    {props.children}
                 </>
             </AppWrapper>
         </ErrorBoundary>
@@ -128,7 +121,6 @@ const Layout = (props: Props & InjectedIntlProps) => (
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
     suite: state.suite,
-    devices: state.devices,
 });
 
 export default injectIntl(
