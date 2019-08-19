@@ -15,9 +15,9 @@ module.exports = {
         },
     },
     coveragePathIgnorePatterns: [
-        'src/utils/fetch.ts' // mocked in tests
+        'src/utils/fetch.ts', // mocked in tests
     ],
-    testMatch: ['**/tests/*.ts'],
+    testMatch: ['**/__tests__/*.ts'],
     modulePaths: ['src'],
     moduleFileExtensions: ['js', 'ts', 'json'],
     modulePathIgnorePatterns: ['node_modules'],

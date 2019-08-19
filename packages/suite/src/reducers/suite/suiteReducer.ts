@@ -15,6 +15,7 @@ export interface SuiteState {
     deviceMenuOpened: boolean;
     showSidebar?: boolean;
     platform?: Platform;
+    uiLocked: boolean;
 }
 
 interface Transport {
@@ -45,6 +46,7 @@ const initialState: SuiteState = {
     messages: {},
     deviceMenuOpened: false,
     showSidebar: undefined,
+    uiLocked: false,
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -93,6 +95,10 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
 
             case SUITE.ONLINE_STATUS:
                 draft.online = action.online;
+                break;
+
+            case SUITE.LOCK_UI:
+                draft.uiLocked = action.payload;
                 break;
 
             case 'iframe-loaded':
