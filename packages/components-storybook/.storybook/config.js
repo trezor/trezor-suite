@@ -1,4 +1,6 @@
-import { addParameters, configure } from '@storybook/react';
+import { addParameters, addDecorator, configure } from '@storybook/react';
+import { withInfo } from '@storybook/addon-info';
+import { withKnobs } from '@storybook/addon-knobs';
 import Theme from './theme';
 
 addParameters({
@@ -6,6 +8,8 @@ addParameters({
         theme: Theme
     }
 });
+addDecorator(withInfo);
+addDecorator(withKnobs);
 
 function loadStories() {
     require('../src/stories/components/text.tsx');
@@ -14,7 +18,6 @@ function loadStories() {
     require('../src/stories/components/notifications.tsx');
     require('../src/stories/components/modal.tsx');
     require('../src/stories/components/other.tsx');
-    require('../src/stories/components/colors.tsx');
 }
 
 configure(loadStories, module);

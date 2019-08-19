@@ -1,9 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
-
-import { withInfo } from '@storybook/addon-info';
+import { text, boolean, select } from '@storybook/addon-knobs';
 import {
     Checkbox,
     Switch,
@@ -14,8 +12,8 @@ import {
     Select,
     H1,
     H5,
-    colors,
 } from '@trezor/components';
+import { infoOptions } from '../../support/info';
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -56,533 +54,520 @@ const DataWrapper = styled.div<DataWrapperProps>`
 
 Wrapper.displayName = 'Wrapper';
 
-storiesOf('Form', module).add('All', () => (
-    <Wrapper>
-        <H1>Input</H1>
-        <H5>Basic</H5>
-        <Row>
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_basic' }}
-            />
-
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_basic_info' }}
-                state="info"
-            />
-
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_basic_success' }}
-                state="success"
-            />
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_basic_warning' }}
-                state="warning"
-            />
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_basic_error' }}
-                state="error"
-            />
-
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_basic_disabled' }}
-                isDisabled
-            />
-        </Row>
-
-        <H5>with value</H5>
-        <Row>
-            <StyledInput
-                type="text"
-                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_value' }}
-            />
-
-            <StyledInput
-                type="text"
-                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_value_info' }}
-                state="info"
-            />
-
-            <StyledInput
-                type="text"
-                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_value_success' }}
-                state="success"
-            />
-            <StyledInput
-                type="text"
-                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_value_warning' }}
-                state="warning"
-            />
-            <StyledInput
-                type="text"
-                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_value_error' }}
-                state="error"
-            />
-
-            <StyledInput
-                type="text"
-                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_value_disabled' }}
-                isDisabled
-            />
-        </Row>
-
-        <H5>with label and bottomText </H5>
-        <Row>
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                bottomText="bottomText"
-                topLabel="Label"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_label_bottomText' }}
-            />
-
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                bottomText="bottomText"
-                topLabel="Label"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_label_bottomText_info' }}
-                state="info"
-            />
-
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                bottomText="bottomText"
-                topLabel="Label"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_label_bottomText_success' }}
-                state="success"
-            />
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                bottomText="bottomText"
-                topLabel="Label"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_label_bottomText_warning' }}
-                state="warning"
-            />
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                bottomText="bottomText"
-                topLabel="Label"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_label_bottomText_error' }}
-                state="error"
-            />
-
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                bottomText="bottomText"
-                topLabel="Label"
-                onChange={() => {}}
-                wrapperProps={{ 'data-test': 'input_label_bottomText_disabled' }}
-                isDisabled
-            />
-        </Row>
-
-        <H5>with tooltipAction</H5>
-        <Row>
-            <StyledInput
-                type="text"
-                value=""
-                placeholder="Placeholder"
-                onChange={() => {}}
-                tooltipAction="Example tooltipAction"
-                wrapperProps={{ 'data-test': 'input_tooltipAction' }}
-            />
-        </Row>
-
-        <H1>InputPin</H1>
-        <Row>
-            <InputPin
-                value="1234"
-                onDeleteClick={() => {}}
-                wrapperProps={{ 'data-test': 'input_pin' }}
-            />
-        </Row>
-
-        <H1>TextArea</H1>
-        <H5>Basic</H5>
-        <Row>
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_basic' }}
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_basic_info' }}
-                    state="info"
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_basic_success' }}
-                    state="success"
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_basic_warning' }}
-                    state="warning"
-                />
-            </Margin>
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_basic_error' }}
-                    state="error"
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_basic_disabled' }}
-                    isDisabled
-                />
-            </Margin>
-        </Row>
-
-        <H5>with label and bottomText </H5>
-        <Row>
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    bottomText="bottomText"
-                    topLabel="Label"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_label_bottomText' }}
-                />
-            </Margin>
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    bottomText="bottomText"
-                    topLabel="Label"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_info' }}
-                    state="info"
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    bottomText="bottomText"
-                    topLabel="Label"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_success' }}
-                    state="success"
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    bottomText="bottomText"
-                    topLabel="Label"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_warning' }}
-                    state="warning"
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    bottomText="bottomText"
-                    topLabel="Label"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_error' }}
-                    state="error"
-                />
-            </Margin>
-
-            <Margin size="30">
-                <TextArea
-                    value=""
-                    placeholder="Placeholder"
-                    bottomText="bottomText"
-                    topLabel="Label"
-                    onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_disabled' }}
-                    isDisabled
-                />
-            </Margin>
-        </Row>
-
-        <H1>Select</H1>
-        <Row>
+storiesOf('Form', module).add(
+    'All',
+    () => (
+        <Wrapper>
+            <H1>Input</H1>
             <H5>Basic</H5>
-            <DataWrapper width="100%" data-test="select_basic_placeholder">
-                <StyledSelect
-                    isSearchable
-                    placeholder="Example placeholder"
-                    options={[
-                        { value: 'hello', label: 'Hello' },
-                        { value: 'world', label: 'World' },
-                    ]}
+            <Row>
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_basic' }}
                 />
-            </DataWrapper>
-            <DataWrapper width="100%" data-test="select_basic">
-                <StyledSelect
-                    isSearchable
-                    value={{
-                        value: 'hello',
-                        label:
-                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
-                    }}
-                    options={[
-                        { value: 'hello', label: 'Hello' },
-                        { value: 'world', label: 'World' },
-                    ]}
-                />
-            </DataWrapper>
-            <H5>clearable</H5>
-            <DataWrapper width="100%" data-test="select_clearable">
-                <StyledSelect
-                    isSearchable
-                    isClearable
-                    withDropdownIndicator
-                    value={{
-                        value: 'hello',
-                        label:
-                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
-                    }}
-                    options={[
-                        { value: 'hello', label: 'Hello' },
-                        { value: 'world', label: 'World' },
-                    ]}
-                />
-            </DataWrapper>
 
-            <H5>without dropdown indicator</H5>
-            <DataWrapper width="100%" data-test="select_withoutDropdown">
-                <StyledSelect
-                    isSearchable
-                    withDropdownIndicator={false}
-                    value={{
-                        value: 'hello',
-                        label:
-                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
-                    }}
-                    options={[
-                        { value: 'hello', label: 'Hello' },
-                        { value: 'world', label: 'World' },
-                    ]}
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_basic_info' }}
+                    state="info"
                 />
-            </DataWrapper>
 
-            <H5>disabled</H5>
-            <DataWrapper width="100%" data-test="select_disabled">
-                <StyledSelect
-                    isSearchable
-                    isClearable
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_basic_success' }}
+                    state="success"
+                />
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_basic_warning' }}
+                    state="warning"
+                />
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_basic_error' }}
+                    state="error"
+                />
+
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_basic_disabled' }}
                     isDisabled
-                    withDropdownIndicator
-                    value={{
-                        value: 'hello',
-                        label:
-                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
-                    }}
-                    options={[
-                        { value: 'hello', label: 'Hello' },
-                        { value: 'world', label: 'World' },
-                    ]}
                 />
-            </DataWrapper>
-        </Row>
+            </Row>
 
-        <H1>Checkbox</H1>
-        <Row>
-            <Checkbox onClick={() => {}} data-test="checkbox_unchecked">
-                Label
-            </Checkbox>
-        </Row>
-        <Row>
-            <Checkbox onClick={() => {}} isChecked data-test="checkbox_checked">
-                Label
-            </Checkbox>
-        </Row>
-        <H1>Switch</H1>
-
-        <Row>
-            <DataWrapper data-test="switch_basic_unchecked">
-                <Switch onChange={() => {}} checked={false} />
-            </DataWrapper>
-            <DataWrapper data-test="switch_basic_checked">
-                <Switch onChange={() => {}} checked />
-            </DataWrapper>
-            <DataWrapper data-test="switch_basic_disabled">
-                <Switch onChange={() => {}} checked={false} disabled />
-            </DataWrapper>
-        </Row>
-
-        <H5>small</H5>
-        <Row>
-            <DataWrapper data-test="switch_small_unchecked">
-                <Switch onChange={() => {}} isSmall checked={false} />
-            </DataWrapper>
-
-            <DataWrapper data-test="switch_small_checked">
-                <Switch onChange={() => {}} isSmall checked />
-            </DataWrapper>
-
-            <DataWrapper data-test="switch_small_disabled">
-                <Switch onChange={() => {}} isSmall disabled checked={false} />
-            </DataWrapper>
-        </Row>
-        <H5>without icons </H5>
-        <Row>
-            <DataWrapper data-test="switch_noicon_unchecked">
-                <Switch
+            <H5>with value</H5>
+            <Row>
+                <StyledInput
+                    type="text"
+                    value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
-                    uncheckedIcon={false}
-                    checkedIcon={false}
-                    checked={false}
+                    wrapperProps={{ 'data-test': 'input_value' }}
                 />
-            </DataWrapper>
-            <DataWrapper data-test="switch_noicon_checked">
-                <Switch onChange={() => {}} uncheckedIcon={false} checkedIcon={false} checked />
-            </DataWrapper>
 
-            <DataWrapper data-test="switch_noicon_disabled">
-                <Switch
+                <StyledInput
+                    type="text"
+                    value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
-                    uncheckedIcon={false}
-                    checkedIcon={false}
-                    disabled
-                    checked={false}
+                    wrapperProps={{ 'data-test': 'input_value_info' }}
+                    state="info"
                 />
-            </DataWrapper>
-        </Row>
-        <Row>
-            <DataWrapper data-test="switch_noicon_small_unchecked">
-                <Switch
+
+                <StyledInput
+                    type="text"
+                    value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
-                    uncheckedIcon={false}
-                    checkedIcon={false}
-                    isSmall
-                    checked={false}
+                    wrapperProps={{ 'data-test': 'input_value_success' }}
+                    state="success"
                 />
-            </DataWrapper>
-            <DataWrapper data-test="switch_noicon_small_checked">
-                <Switch
+                <StyledInput
+                    type="text"
+                    value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
-                    uncheckedIcon={false}
-                    checkedIcon={false}
-                    isSmall
-                    checked
+                    wrapperProps={{ 'data-test': 'input_value_warning' }}
+                    state="warning"
                 />
-            </DataWrapper>
-            <DataWrapper data-test="switch_noicon_small_disabled">
-                <Switch
+                <StyledInput
+                    type="text"
+                    value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
                     onChange={() => {}}
-                    uncheckedIcon={false}
-                    checkedIcon={false}
-                    isSmall
-                    disabled
-                    checked={false}
+                    wrapperProps={{ 'data-test': 'input_value_error' }}
+                    state="error"
                 />
-            </DataWrapper>
-        </Row>
-    </Wrapper>
-));
+
+                <StyledInput
+                    type="text"
+                    value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_value_disabled' }}
+                    isDisabled
+                />
+            </Row>
+
+            <H5>with label and bottomText </H5>
+            <Row>
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_label_bottomText' }}
+                />
+
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_label_bottomText_info' }}
+                    state="info"
+                />
+
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_label_bottomText_success' }}
+                    state="success"
+                />
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_label_bottomText_warning' }}
+                    state="warning"
+                />
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_label_bottomText_error' }}
+                    state="error"
+                />
+
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_label_bottomText_disabled' }}
+                    isDisabled
+                />
+            </Row>
+
+            <H5>with tooltipAction</H5>
+            <Row>
+                <StyledInput
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    tooltipAction="Example tooltipAction"
+                    wrapperProps={{ 'data-test': 'input_tooltipAction' }}
+                />
+            </Row>
+
+            <H1>InputPin</H1>
+            <Row>
+                <InputPin
+                    value="1234"
+                    onDeleteClick={() => {}}
+                    wrapperProps={{ 'data-test': 'input_pin' }}
+                />
+            </Row>
+
+            <H1>TextArea</H1>
+            <H5>Basic</H5>
+            <Row>
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_basic' }}
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_basic_info' }}
+                        state="info"
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_basic_success' }}
+                        state="success"
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_basic_warning' }}
+                        state="warning"
+                    />
+                </Margin>
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_basic_error' }}
+                        state="error"
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_basic_disabled' }}
+                        isDisabled
+                    />
+                </Margin>
+            </Row>
+
+            <H5>with label and bottomText </H5>
+            <Row>
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        bottomText="bottomText"
+                        topLabel="Label"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_label_bottomText' }}
+                    />
+                </Margin>
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        bottomText="bottomText"
+                        topLabel="Label"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_label_bottomText_info' }}
+                        state="info"
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        bottomText="bottomText"
+                        topLabel="Label"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_label_bottomText_success' }}
+                        state="success"
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        bottomText="bottomText"
+                        topLabel="Label"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_label_bottomText_warning' }}
+                        state="warning"
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        bottomText="bottomText"
+                        topLabel="Label"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_label_bottomText_error' }}
+                        state="error"
+                    />
+                </Margin>
+
+                <Margin size="30">
+                    <TextArea
+                        value=""
+                        placeholder="Placeholder"
+                        bottomText="bottomText"
+                        topLabel="Label"
+                        onChange={() => {}}
+                        wrapperProps={{ 'data-test': 'textarea_label_bottomText_disabled' }}
+                        isDisabled
+                    />
+                </Margin>
+            </Row>
+
+            <H1>Select</H1>
+            <Row>
+                <H5>Basic</H5>
+                <DataWrapper width="100%" data-test="select_basic_placeholder">
+                    <StyledSelect
+                        isSearchable
+                        placeholder="Example placeholder"
+                        options={[
+                            { value: 'hello', label: 'Hello' },
+                            { value: 'world', label: 'World' },
+                        ]}
+                    />
+                </DataWrapper>
+                <DataWrapper width="100%" data-test="select_basic">
+                    <StyledSelect
+                        isSearchable
+                        value={{
+                            value: 'hello',
+                            label:
+                                'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                        }}
+                        options={[
+                            { value: 'hello', label: 'Hello' },
+                            { value: 'world', label: 'World' },
+                        ]}
+                    />
+                </DataWrapper>
+                <H5>clearable</H5>
+                <DataWrapper width="100%" data-test="select_clearable">
+                    <StyledSelect
+                        isSearchable
+                        isClearable
+                        withDropdownIndicator
+                        value={{
+                            value: 'hello',
+                            label:
+                                'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                        }}
+                        options={[
+                            { value: 'hello', label: 'Hello' },
+                            { value: 'world', label: 'World' },
+                        ]}
+                    />
+                </DataWrapper>
+
+                <H5>without dropdown indicator</H5>
+                <DataWrapper width="100%" data-test="select_withoutDropdown">
+                    <StyledSelect
+                        isSearchable
+                        withDropdownIndicator={false}
+                        value={{
+                            value: 'hello',
+                            label:
+                                'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                        }}
+                        options={[
+                            { value: 'hello', label: 'Hello' },
+                            { value: 'world', label: 'World' },
+                        ]}
+                    />
+                </DataWrapper>
+
+                <H5>disabled</H5>
+                <DataWrapper width="100%" data-test="select_disabled">
+                    <StyledSelect
+                        isSearchable
+                        isClearable
+                        isDisabled
+                        withDropdownIndicator
+                        value={{
+                            value: 'hello',
+                            label:
+                                'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                        }}
+                        options={[
+                            { value: 'hello', label: 'Hello' },
+                            { value: 'world', label: 'World' },
+                        ]}
+                    />
+                </DataWrapper>
+            </Row>
+
+            <H1>Checkbox</H1>
+            <Row>
+                <Checkbox onClick={() => {}} data-test="checkbox_unchecked">
+                    Label
+                </Checkbox>
+            </Row>
+            <Row>
+                <Checkbox onClick={() => {}} isChecked data-test="checkbox_checked">
+                    Label
+                </Checkbox>
+            </Row>
+            <H1>Switch</H1>
+
+            <Row>
+                <DataWrapper data-test="switch_basic_unchecked">
+                    <Switch onChange={() => {}} checked={false} />
+                </DataWrapper>
+                <DataWrapper data-test="switch_basic_checked">
+                    <Switch onChange={() => {}} checked />
+                </DataWrapper>
+                <DataWrapper data-test="switch_basic_disabled">
+                    <Switch onChange={() => {}} checked={false} disabled />
+                </DataWrapper>
+            </Row>
+
+            <H5>small</H5>
+            <Row>
+                <DataWrapper data-test="switch_small_unchecked">
+                    <Switch onChange={() => {}} isSmall checked={false} />
+                </DataWrapper>
+
+                <DataWrapper data-test="switch_small_checked">
+                    <Switch onChange={() => {}} isSmall checked />
+                </DataWrapper>
+
+                <DataWrapper data-test="switch_small_disabled">
+                    <Switch onChange={() => {}} isSmall disabled checked={false} />
+                </DataWrapper>
+            </Row>
+            <H5>without icons </H5>
+            <Row>
+                <DataWrapper data-test="switch_noicon_unchecked">
+                    <Switch
+                        onChange={() => {}}
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        checked={false}
+                    />
+                </DataWrapper>
+                <DataWrapper data-test="switch_noicon_checked">
+                    <Switch onChange={() => {}} uncheckedIcon={false} checkedIcon={false} checked />
+                </DataWrapper>
+
+                <DataWrapper data-test="switch_noicon_disabled">
+                    <Switch
+                        onChange={() => {}}
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        disabled
+                        checked={false}
+                    />
+                </DataWrapper>
+            </Row>
+            <Row>
+                <DataWrapper data-test="switch_noicon_small_unchecked">
+                    <Switch
+                        onChange={() => {}}
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        isSmall
+                        checked={false}
+                    />
+                </DataWrapper>
+                <DataWrapper data-test="switch_noicon_small_checked">
+                    <Switch
+                        onChange={() => {}}
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        isSmall
+                        checked
+                    />
+                </DataWrapper>
+                <DataWrapper data-test="switch_noicon_small_disabled">
+                    <Switch
+                        onChange={() => {}}
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        isSmall
+                        disabled
+                        checked={false}
+                    />
+                </DataWrapper>
+            </Row>
+        </Wrapper>
+    ),
+    {
+        info: {
+            disable: true,
+        },
+    }
+);
 
 storiesOf('Form', module)
-    .addDecorator(
-        withInfo({
-            header: false,
-            inline: true,
-            maxPropsIntoLine: 1,
-            styles: {
-                infoStory: {
-                    background: colors.LANDING,
-                    borderBottom: `1px solid ${colors.DIVIDER}`,
-                    padding: '30px',
-                    margin: '-8px',
-                },
-                infoBody: {
-                    border: 'none',
-                    padding: '15px',
-                },
-            },
-            excludedPropTypes: ['children'],
-        })
-    )
-    .addDecorator(withKnobs)
     .add(
         'Input',
         () => {
@@ -626,8 +611,8 @@ storiesOf('Form', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Input } from 'trezor-ui-components';
             ~~~
@@ -637,8 +622,8 @@ storiesOf('Form', module)
     )
     .add('Input Pin', () => <InputPin value={text('Input value', '')} onDeleteClick={() => {}} />, {
         info: {
+            ...infoOptions,
             text: `
-            ## Import
             ~~~js
             import { InputPin } from 'trezor-ui-components';
             ~~~
@@ -674,8 +659,8 @@ storiesOf('Form', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { TextArea } from 'trezor-ui-components';
             ~~~
@@ -695,8 +680,8 @@ storiesOf('Form', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Checkbox } from 'trezor-ui-components';
             ~~~
@@ -740,8 +725,8 @@ storiesOf('Form', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Switch } from 'trezor-ui-components';
             ~~~
@@ -783,8 +768,8 @@ storiesOf('Form', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Select } from 'trezor-ui-components';
             ~~~
@@ -816,8 +801,8 @@ storiesOf('Form', module)
         ),
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { AsyncSelect } from 'trezor-ui-components';
             ~~~

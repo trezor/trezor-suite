@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { storiesOf } from '@storybook/react';
-import { withKnobs, text, select, radios, number } from '@storybook/addon-knobs';
-import { withInfo } from '@storybook/addon-info';
-
-import { Tooltip, P, Link, H1, H2, H3, H4, H5, H6, colors } from '@trezor/components';
+import { text, select, radios, number } from '@storybook/addon-knobs';
+import { Tooltip, P, Link, H1, H2, H3, H4, H5, H6 } from '@trezor/components';
+import { infoOptions } from '../../support/info';
 
 const Center = styled.div`
     display: flex;
@@ -40,130 +39,117 @@ H4.displayName = 'H4';
 H5.displayName = 'H5';
 H6.displayName = 'H6';
 
-storiesOf('Typography', module).add('All', () => {
-    const pContent =
-        'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Et harum quidem rerum facilis est et expedita distinctio. Fusce tellus. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Mauris elementum mauris vitae tortor. Mauris metus.';
-    return (
-        <Wrapper>
-            <H1>Heading</H1>
-            <Row>
-                <H1 data-test="heading_1">Heading level 1</H1>
-                <H2 data-test="heading_2">Heading level 2</H2>
-                <H3 data-test="heading_3">Heading level 3</H3>
-                <H4 data-test="heading_4">Heading level 4</H4>
-                <H5 data-test="heading_5">Heading level 5</H5>
-                <H6 data-test="heading_6">Heading level 6</H6>
-            </Row>
-            <H1>Paragraph</H1>
+storiesOf('Typography', module).add(
+    'All',
+    () => {
+        const pContent =
+            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Et harum quidem rerum facilis est et expedita distinctio. Fusce tellus. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Mauris elementum mauris vitae tortor. Mauris metus.';
+        return (
+            <Wrapper>
+                <H1>Heading</H1>
+                <Row>
+                    <H1 data-test="heading_1">Heading level 1</H1>
+                    <H2 data-test="heading_2">Heading level 2</H2>
+                    <H3 data-test="heading_3">Heading level 3</H3>
+                    <H4 data-test="heading_4">Heading level 4</H4>
+                    <H5 data-test="heading_5">Heading level 5</H5>
+                    <H6 data-test="heading_6">Heading level 6</H6>
+                </Row>
+                <H1>Paragraph</H1>
 
-            <H5>small</H5>
-            <Row>
-                <P size="small" data-test="paragraph_small">
-                    This is a SMALL paragraph with{' '}
-                    <Link href="/test" isGreen>
-                        link
-                    </Link>
-                    .{pContent}
-                </P>
-            </Row>
+                <H5>small</H5>
+                <Row>
+                    <P size="small" data-test="paragraph_small">
+                        This is a SMALL paragraph with{' '}
+                        <Link href="/test" isGreen>
+                            link
+                        </Link>
+                        .{pContent}
+                    </P>
+                </Row>
 
-            <H5>medium</H5>
-            <Row>
-                <P size="medium" data-test="paragraph_medium">
-                    This is a MEDIUM paragraph with{' '}
-                    <Link href="/test" isGreen>
-                        link
-                    </Link>
-                    .{pContent}
-                </P>
-            </Row>
+                <H5>medium</H5>
+                <Row>
+                    <P size="medium" data-test="paragraph_medium">
+                        This is a MEDIUM paragraph with{' '}
+                        <Link href="/test" isGreen>
+                            link
+                        </Link>
+                        .{pContent}
+                    </P>
+                </Row>
 
-            <Row>
-                <H5>large</H5>
-                <P size="large" data-test="paragraph_large">
-                    This is a LARGE paragraph with{' '}
-                    <Link href="/test" isGray>
-                        {' '}
-                        gray link
-                    </Link>
-                    .{pContent}
-                </P>
-            </Row>
+                <Row>
+                    <H5>large</H5>
+                    <P size="large" data-test="paragraph_large">
+                        This is a LARGE paragraph with{' '}
+                        <Link href="/test" isGray>
+                            {' '}
+                            gray link
+                        </Link>
+                        .{pContent}
+                    </P>
+                </Row>
 
-            <Row>
-                <H5>xlarge</H5>
-                <P size="xlarge" data-test="paragraph_xlarge">
-                    This is a XLARGE paragraph with{' '}
-                    <Link href="/test" isGreen>
-                        link
-                    </Link>
-                    .{pContent}
-                </P>
-            </Row>
+                <Row>
+                    <H5>xlarge</H5>
+                    <P size="xlarge" data-test="paragraph_xlarge">
+                        This is a XLARGE paragraph with{' '}
+                        <Link href="/test" isGreen>
+                            link
+                        </Link>
+                        .{pContent}
+                    </P>
+                </Row>
 
-            <H1>Tooltip</H1>
-            <H5>basic</H5>
-            <Row>
-                <Tooltip
-                    maxWidth={280}
-                    placement="top"
-                    content="Passphrase is an optional feature."
-                >
-                    <HoverMe>Hover me</HoverMe>
-                </Tooltip>
-            </Row>
+                <H1>Tooltip</H1>
+                <H5>basic</H5>
+                <Row>
+                    <Tooltip
+                        maxWidth={280}
+                        placement="top"
+                        content="Passphrase is an optional feature."
+                    >
+                        <HoverMe>Hover me</HoverMe>
+                    </Tooltip>
+                </Row>
 
-            <H5>with CTA button</H5>
-            <Row>
-                <Tooltip
-                    maxWidth={280}
-                    placement="top"
-                    content="Passphrase is an optional feature."
-                    ctaLink="https://wiki.trezor.io/Passphrase"
-                    ctaText="Learn more"
-                >
-                    <HoverMe>Hover me</HoverMe>
-                </Tooltip>
-            </Row>
+                <H5>with CTA button</H5>
+                <Row>
+                    <Tooltip
+                        maxWidth={280}
+                        placement="top"
+                        content="Passphrase is an optional feature."
+                        ctaLink="https://wiki.trezor.io/Passphrase"
+                        ctaText="Learn more"
+                    >
+                        <HoverMe>Hover me</HoverMe>
+                    </Tooltip>
+                </Row>
 
-            <H5>maxWidth limit</H5>
-            <Row>
-                <Tooltip
-                    maxWidth={280}
-                    placement="top"
-                    content={`Passphrase is an optional feature. ${pContent}`}
-                    ctaLink="https://wiki.trezor.io/Passphrase"
-                    ctaText="Learn more"
-                >
-                    <HoverMe>Hover me</HoverMe>
-                </Tooltip>
-            </Row>
-        </Wrapper>
-    );
-});
+                <H5>maxWidth limit</H5>
+                <Row>
+                    <Tooltip
+                        maxWidth={280}
+                        placement="top"
+                        content={`Passphrase is an optional feature. ${pContent}`}
+                        ctaLink="https://wiki.trezor.io/Passphrase"
+                        ctaText="Learn more"
+                    >
+                        <HoverMe>Hover me</HoverMe>
+                    </Tooltip>
+                </Row>
+            </Wrapper>
+        );
+    },
+    {
+        info: {
+            disable: true,
+        },
+    }
+);
 
 storiesOf('Typography', module)
-    .addDecorator(
-        withInfo({
-            header: false,
-            inline: true,
-            maxPropsIntoLine: 1,
-            styles: {
-                infoStory: {
-                    background: colors.LANDING,
-                    borderBottom: `1px solid ${colors.DIVIDER}`,
-                    padding: '30px',
-                    margin: '-8px',
-                },
-                infoBody: {
-                    border: 'none',
-                    padding: '15px',
-                },
-            },
-            excludedPropTypes: ['children'],
-        })
-    )
-    .addDecorator(withKnobs)
     .add(
         'Headings',
         () => {
@@ -221,8 +207,8 @@ storiesOf('Typography', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-        ## Import
         ~~~js
         import { H1, H2, H3, H4, H5, H6 } from 'trezor-ui-components';
         ~~~
@@ -269,8 +255,8 @@ storiesOf('Typography', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Link, variables } from 'trezor-ui-components';
             ~~~
@@ -315,8 +301,8 @@ storiesOf('Typography', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { P } from 'trezor-ui-components';
             ~~~
@@ -354,8 +340,8 @@ storiesOf('Typography', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Tooltip } from 'trezor-ui-components';
             ~~~
