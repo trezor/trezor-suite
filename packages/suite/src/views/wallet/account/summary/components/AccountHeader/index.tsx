@@ -54,7 +54,7 @@ const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }:
         <>
             <AccountHeading>
                 <AccountName>
-                    <StyledCoinLogo height={23} network={account.network} />
+                    <StyledCoinLogo size={24} network={account.network} />
                     <AccountTitle>
                         <FormattedMessage
                             {...(account.imported
