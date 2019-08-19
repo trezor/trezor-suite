@@ -16,7 +16,6 @@ const rollout = (opts: RolloutOpts) => {
     };
 
     const modifyFirmware = ({ fw, features }: { fw: Firmware; features: Features }) => {
-
         const deviceBlVersion = findActualBlVersionInList(releasesList[features.major_version], [
             features.major_version,
             features.minor_version,
