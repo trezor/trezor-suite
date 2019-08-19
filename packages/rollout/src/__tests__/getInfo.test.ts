@@ -6,7 +6,7 @@ describe('getInfo()', () => {
     let rollout;
     beforeEach(() => {
         rollout = Rollout({
-            firmwareBaseUrl: 'foo',
+            baseUrl: 'foo',
             releasesListsPaths: {
                 1: 'doest matter, is mocked',
                 2: 'indeed',

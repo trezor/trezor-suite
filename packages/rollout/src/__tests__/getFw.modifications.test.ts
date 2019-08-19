@@ -6,7 +6,7 @@ describe('getFw() modifications of fw', () => {
     let rollout;
     beforeEach(() => {
         rollout = Rollout({
-            firmwareBaseUrl: 'foo',
+            baseUrl: 'foo',
             releasesListsPaths: {
                 1: 'test-1',
                 2: 'test-2',
