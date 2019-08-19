@@ -3618,6 +3618,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.10.tgz#e491484c6060af8d461e12ec81c0da8a3282b8de"
   integrity sha512-V8wj+w2YMNvGuhgl/MA5fmTxgjmVHVoasfIaxMMZJV6Y8Kk+Ydpi1z2whoShDCJ2BuNVoqH/h1hrygnBxkrw/Q==
 
+"@types/pako@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/pako/-/pako-1.0.1.tgz#33b237f3c9aff44d0f82fe63acffa4a365ef4a61"
+  integrity sha512-GdZbRSJ3Cv5fiwT6I0SQ3ckeN2PWNqxd26W9Z2fCK1tGrrasGy4puvNFtnddqH9UJFMQYXxEuuB7B8UK+LLwSg==
+
 "@types/prop-types@*":
   version "15.7.1"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
@@ -6157,6 +6162,15 @@ caniuse-lite@^1.0.30000971, caniuse-lite@^1.0.30000975:
   version "1.0.30000979"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000979.tgz#92f16d00186a6cf20d6c5711bb6e042a3d667029"
   integrity sha512-gcu45yfq3B7Y+WB05fOMfr0EiSlq+1u+m6rPHyJli/Wy3PVQNGaU7VA4bZE5qw+AU2UVOBR/N5g1bzADUqdvFw==
+
+canvas@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.5.0.tgz#cf0ef59d4790575689c0d50e59c7b8023a11f38a"
+  integrity sha512-wwRz2cLMgb9d+rnotOJCoc04Bzj3aJMpWc6JxAD6lP7bYz0ldcn0sKddoZ0vhD5T8HBxrK+XmRDJb68/2VqARw==
+  dependencies:
+    nan "^2.13.2"
+    node-pre-gyp "^0.11.0"
+    simple-get "^3.0.3"
 
 capture-exit@^1.2.0:
   version "1.2.0"
@@ -14004,7 +14018,7 @@ mz@^2.5.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nan@^2.12.1, nan@^2.14.0, nan@^2.2.1:
+nan@^2.12.1, nan@^2.13.2, nan@^2.14.0, nan@^2.2.1:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
@@ -14297,6 +14311,22 @@ node-notifier@^5.2.1:
     semver "^5.5.0"
     shellwords "^0.1.1"
     which "^1.3.0"
+
+node-pre-gyp@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.11.0.tgz#db1f33215272f692cd38f03238e3e9b47c5dd054"
+  integrity sha512-TwWAOZb0j7e9eGaf9esRx3ZcLaE5tQ2lvYy1pb5IAaG1a2e2Kv5Lms1Y4hpj+ciXJRofIxxlt5haeQ/2ANeE0Q==
+  dependencies:
+    detect-libc "^1.0.2"
+    mkdirp "^0.5.1"
+    needle "^2.2.1"
+    nopt "^4.0.1"
+    npm-packlist "^1.1.6"
+    npmlog "^4.0.2"
+    rc "^1.2.7"
+    rimraf "^2.6.1"
+    semver "^5.3.0"
+    tar "^4"
 
 node-pre-gyp@^0.12.0:
   version "0.12.0"
@@ -14994,7 +15024,7 @@ package-json@^6.3.0:
     registry-url "^5.0.0"
     semver "^6.1.1"
 
-pako@~1.0.5:
+pako@^1.0.10, pako@~1.0.5:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
   integrity sha512-0DTvPVU3ed8+HNXOu5Bs+o//Mbdj9VNQMUOe9oKCwh8l0GNwpTDMKCWbRjgtD291AWnkAgkqA/LOnQS8AmS1tw==
@@ -18201,6 +18231,20 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
   integrity sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=
+
+simple-concat@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/simple-concat/-/simple-concat-1.0.0.tgz#7344cbb8b6e26fb27d66b2fc86f9f6d5997521c6"
+  integrity sha1-c0TLuLbib7J9ZrL8hvn21Zl1IcY=
+
+simple-get@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-3.0.3.tgz#924528ac3f9d7718ce5e9ec1b1a69c0be4d62efa"
+  integrity sha512-Wvre/Jq5vgoz31Z9stYWPLn0PqRqmBDpFSdypAnHu5AvRVCYPRYGnvryNLiXu8GOBNDH82J2FRHUGMjjHUpXFw==
+  dependencies:
+    decompress-response "^3.3.0"
+    once "^1.3.1"
+    simple-concat "^1.0.0"
 
 simple-plist@^1.0.0:
   version "1.0.0"

@@ -2,13 +2,16 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { P, H2, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import * as STEP from '@suite/constants/onboarding/steps';
 import PinMatrix from '@suite/components/onboarding/PinMatrix';
 import Text from '@suite/components/onboarding/Text';
-import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { ConnectReducer } from '@suite/types/onboarding/connect';
 import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
+import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
+import { Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
 import Reconnect from './Reconnect';
 import { ControlsWrapper } from '../Wrapper';
@@ -19,13 +22,7 @@ const Wrapper = styled.div`
     width: 100%;
 `;
 
-interface UnexpectedStateCommonProps {
-    onboardingActions: OnboardingActions;
-}
-
-const UnexpectedStateCommon: FunctionComponent<
-    React.PropsWithChildren<UnexpectedStateCommonProps>
-> = ({ children }) => <Wrapper>{children}</Wrapper>;
+const UnexpectedStateCommon: React.SFC = ({ children }) => <Wrapper>{children}</Wrapper>;
 
 const IsSameDevice: FunctionComponent = () => (
     <P>
@@ -40,12 +37,12 @@ const IsNotInBootloader: FunctionComponent = () => (
 );
 
 interface IsDeviceRequestingPinProps {
-    connectActions: ConnectActions;
+    submitNewPin: typeof submitNewPin;
     uiInteraction: ConnectReducer['uiInteraction'];
 }
 
 const IsDeviceRequestingPin: FunctionComponent<IsDeviceRequestingPinProps> = ({
-    connectActions,
+    submitNewPin,
     uiInteraction,
 }) => (
     <React.Fragment>
@@ -64,17 +61,17 @@ const IsDeviceRequestingPin: FunctionComponent<IsDeviceRequestingPinProps> = ({
         </Text>
         <PinMatrix
             onPinSubmit={pin => {
-                connectActions.submitNewPin({ pin });
+                submitNewPin({ pin });
             }}
         />
     </React.Fragment>
 );
 
 interface DeviceIsUsedHereProps {
-    connectActions: ConnectActions;
+    getFeatures: typeof getFeatures;
 }
 
-const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ connectActions }) => (
+const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ getFeatures }) => (
     <React.Fragment>
         <H2>
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING} />
@@ -83,7 +80,7 @@ const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ connectAct
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT} />
         </P>
         <ControlsWrapper>
-            <Button onClick={connectActions.getFeatures}>
+            <Button onClick={getFeatures}>
                 <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
             </Button>
         </ControlsWrapper>
@@ -93,59 +90,63 @@ const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ connectAct
 interface UnexpectedStateProps {
     caseType: AnyStepDisallowedState;
     model: number;
-    connectActions: ConnectActions;
-    onboardingActions: OnboardingActions;
+    getFeatures: typeof getFeatures;
+    submitNewPin: typeof submitNewPin;
     uiInteraction: ConnectReducer['uiInteraction'];
 }
 
 const UnexpectedState = ({
     caseType,
     model,
-    connectActions,
-    onboardingActions,
+    submitNewPin,
+    getFeatures,
     uiInteraction,
-}: UnexpectedStateProps): any => {
+}: UnexpectedStateProps) => {
     switch (caseType) {
         case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
             return (
-                <UnexpectedStateCommon onboardingActions={onboardingActions}>
+                <UnexpectedStateCommon>
                     <Reconnect model={model} />
                 </UnexpectedStateCommon>
             );
         case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
             return (
-                <UnexpectedStateCommon onboardingActions={onboardingActions}>
+                <UnexpectedStateCommon>
                     <IsSameDevice />
                 </UnexpectedStateCommon>
             );
         case STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER:
             return (
-                <UnexpectedStateCommon onboardingActions={onboardingActions}>
+                <UnexpectedStateCommon>
                     <IsNotInBootloader />
                 </UnexpectedStateCommon>
             );
         case STEP.DISALLOWED_DEVICE_IS_REQUESTING_PIN:
             return (
-                <UnexpectedStateCommon onboardingActions={onboardingActions}>
+                <UnexpectedStateCommon>
                     <IsDeviceRequestingPin
                         uiInteraction={uiInteraction}
-                        connectActions={connectActions}
+                        submitNewPin={submitNewPin}
                     />
                 </UnexpectedStateCommon>
             );
         case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
             return (
-                <UnexpectedStateCommon onboardingActions={onboardingActions}>
-                    <DeviceIsUsedHere connectActions={connectActions} />
+                <UnexpectedStateCommon>
+                    <DeviceIsUsedHere getFeatures={getFeatures} />
                 </UnexpectedStateCommon>
             );
         default:
-            return (
-                <UnexpectedStateCommon onboardingActions={onboardingActions}>
-                    Error: {caseType}
-                </UnexpectedStateCommon>
-            );
+            return <UnexpectedStateCommon>Error: {caseType}</UnexpectedStateCommon>;
     }
 };
 
-export default UnexpectedState;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    getFeatures: bindActionCreators(getFeatures, dispatch),
+    submitNewPin: bindActionCreators(submitNewPin, dispatch),
+});
+
+export default connect(
+    null,
+    mapDispatchToProps,
+)(UnexpectedState);

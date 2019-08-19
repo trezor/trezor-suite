@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
-import { Dispatch } from '@trezor/suite-data/translations/l10n/types';
-import * as SUITE from '@suite-actions/constants/suite';
+import { SUITE } from '@suite-actions/constants';
+import { Dispatch } from '@suite-types';
 
 // TODO
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {

@@ -7,7 +7,6 @@ import {
     ID_BOOKMARK_STEP,
     ID_NEWSLETTER_STEP,
 } from '@suite/constants/onboarding/steps';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { Step, AnyStepId } from '@suite/types/onboarding/steps';
 import colors from '@suite/config/onboarding/colors';
 
@@ -32,7 +31,6 @@ const SECURITY_CLUSTER = [
 
 interface Props {
     isDisabled: boolean;
-    onboardingActions: OnboardingActions;
     activeStep: Step;
     steps: Step[];
     hiddenOnSteps?: AnyStepId[];
@@ -107,7 +105,7 @@ class ProgressSteps extends React.Component<Props> {
     }
 
     render() {
-        const { isDisabled, onboardingActions, activeStep, hiddenOnSteps = [] } = this.props;
+        const { isDisabled, activeStep, hiddenOnSteps = [] } = this.props;
         const steps = this.getStepsWithDots();
         const isHidden = hiddenOnSteps.includes(activeStep.id);
         return (
@@ -122,7 +120,6 @@ class ProgressSteps extends React.Component<Props> {
                         isActive={activeStep.title === step.title}
                         isFinished={this.isStepFinished(index, activeStep)}
                         isLast={steps.length - 1 === index}
-                        onboardingActions={onboardingActions}
                         changeOverHowManySteps={this.changeOverHowManySteps}
                         isDisabled={isDisabled}
                     />

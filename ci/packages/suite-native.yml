@@ -8,7 +8,8 @@ suite-native lint:
 
 suite-native type check:
     stage: type check
+    allow_failure: true
     script:
-        - yarn workspace @trezor/suite-web type-check
+        - yarn workspace @trezor/suite-native type-check
     dependencies:
         - install and build

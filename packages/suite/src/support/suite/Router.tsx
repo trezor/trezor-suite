@@ -15,35 +15,35 @@ import { Dispatch } from '@suite-types';
  * @param {*} { store }
  * @returns null
  */
-const RouterHandler: FunctionComponent<Props> = ({ onLocationChange, onBeforePopState }) => {
+const RouterHandler: FunctionComponent<Props> = (props: Props) => {
     useEffect(() => {
         const onHashChanged = () => {
             console.log('onHashChanged');
             // TODO: check if the view is not locked by the device request
             const windowPath = window.location.pathname + window.location.hash;
-            onLocationChange(windowPath);
+            props.onLocationChange(windowPath);
         };
 
         // handle browser back button
         Router.beforePopState(() => {
             console.log('beforePopState');
-            const locked = onBeforePopState();
-            return locked;
+            const locked = props.onBeforePopState();
+            return typeof locked === 'boolean' ? locked : true;
         });
 
         // handle hash changed (by hand)
         // check if the view is not locked by the device request
         window.addEventListener('hashchange', onHashChanged, false);
 
-        Router.events.on('routeChangeComplete', onLocationChange);
-        Router.events.on('hashChangeComplete', onLocationChange);
+        Router.events.on('routeChangeComplete', props.onLocationChange);
+        Router.events.on('hashChangeComplete', props.onLocationChange);
 
         return () => {
             window.removeEventListener('hashchange', onHashChanged, false);
-            Router.events.off('routeChangeComplete', onLocationChange);
-            Router.events.off('hashChangeComplete', onLocationChange);
+            Router.events.off('routeChangeComplete', props.onLocationChange);
+            Router.events.off('hashChangeComplete', props.onLocationChange);
         };
-    }, [onLocationChange, onBeforePopState]);
+    }, [props]);
 
     return null;
 };

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { colors, animations } from '@trezor/components';
 
-import * as ModalActions from '@suite-actions/modalActions';
+import * as modalActions from '@suite-actions/modalActions';
 import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as CONNECT from '@suite-actions/constants/trezorConnectConstants';
 
@@ -52,7 +52,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    modalActions: typeof ModalActions;
+    modalActions: typeof modalActions;
 }
 
 type Props = StateProps & DispatchProps;
@@ -173,7 +173,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(ModalActions, dispatch),
+    modalActions: bindActionCreators(modalActions, dispatch),
 });
 
 export default connect(

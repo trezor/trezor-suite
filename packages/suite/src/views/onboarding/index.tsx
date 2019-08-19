@@ -7,8 +7,6 @@ import { bindActionCreators } from 'redux';
 
 import { isDev } from '@suite-utils/build';
 
-import { OnboardingActions } from '@onboarding-types/onboarding';
-import { ConnectActions } from '@onboarding-types/connect';
 import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 import { AnyEvent } from '@onboarding-types/events';
 
@@ -180,17 +178,17 @@ const UnexpectedStateOverlay = styled.div`
 interface Props {
     device: any; // todo
 
-    activeStepId: AppState['onboarding']['activeStepId'];
-    selectedModel: AppState['onboarding']['selectedModel'];
-    path: AppState['onboarding']['path'];
+    activeStepId: StateProps['activeStepId'];
+    selectedModel: StateProps['selectedModel'];
+    path: StateProps['path'];
 
-    deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
-    deviceInteraction: AppState['onboarding']['connect']['deviceInteraction'];
-    prevDeviceId: AppState['onboarding']['connect']['prevDeviceId'];
+    deviceCall: StateProps['deviceCall'];
+    uiInteraction: StateProps['uiInteraction'];
+    deviceInteraction: StateProps['deviceInteraction'];
+    prevDeviceId: StateProps['prevDeviceId'];
 
-    connectActions: ConnectActions;
-    onboardingActions: OnboardingActions;
+    connectActions: DispatchProps['connectActions'];
+    onboardingActions: DispatchProps['onboardingActions'];
 }
 
 class Onboarding extends React.PureComponent<Props> {
@@ -253,9 +251,6 @@ class Onboarding extends React.PureComponent<Props> {
 
     render() {
         const {
-            onboardingActions,
-            connectActions,
-
             selectedModel,
             activeStepId,
 
@@ -277,8 +272,6 @@ class Onboarding extends React.PureComponent<Props> {
                                 <UnexpectedState
                                     caseType={errorState}
                                     model={model}
-                                    connectActions={connectActions}
-                                    onboardingActions={onboardingActions}
                                     uiInteraction={uiInteraction}
                                 />
                             </UnexpectedStateOverlay>
@@ -292,7 +285,6 @@ class Onboarding extends React.PureComponent<Props> {
                                 ]}
                                 steps={steps}
                                 activeStep={activeStep}
-                                onboardingActions={onboardingActions}
                                 isDisabled={deviceCall.isProgress}
                             />
                         </ProgressStepsSlot>
@@ -441,6 +433,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: bindActionCreators(onboardingActions, dispatch),
     connectActions: bindActionCreators(connectActions, dispatch),
 });
+
+export type StateProps = ReturnType<typeof mapStateToProps>;
+export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
 export default connect(
     mapStateToProps,
