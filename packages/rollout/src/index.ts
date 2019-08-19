@@ -27,6 +27,16 @@ const rollout = (opts: RolloutOpts) => {
             return fw;
         }
 
+        // ---------------------
+        // Model T modifications
+        // ---------------------
+        // there are currently none.
+        if (features.major_version === 2) return fw;
+
+        // -----------------------
+        // Model One modifications
+        // -----------------------
+
         // any version installed on bootloader 1.8.0 must be sliced of the first 256 bytes (containing old firmware header)
         // unluckily, we dont know the actual bootloader of connected device, but we can assume it is 1.8.0 in case
         // getInfo() returns firmware with version 1.8.1 or greater as it has bootloader version 1.8.0 (see releases.ts)
