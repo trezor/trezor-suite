@@ -5,7 +5,7 @@
     "private": true,
     "keywords": [
         "Trezor",
-        "trezor-storage"
+        "suite-storage"
     ],
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "trezor suite storage",
@@ -15,8 +15,8 @@
         "build": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
-    "main": "./native/index.native.ts",
-    "browser": "./web/index.ts",
+    "main": "./lib/native/index.native.ts",
+    "browser": "./lib/web/index.ts",
     "dependencies": {
         "idb": "^4.0.4"
     },

@@ -2,24 +2,22 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "baseUrl": "./",
-        "outDir": "./lib",
         "target": "es5",
-        "jsx": "preserve",
+        "module": "commonjs",
+        "lib": ["es2015", "dom"],
         "moduleResolution": "node",
-        "sourceMap": true,
-        "lib": [
-            "dom",
-            "es2017",
-            "esnext.asynciterable"
-        ],
-        "forceConsistentCasingInFileNames": true,
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "isolatedModules": false,
-        "noEmit": false,
-        "allowJs": false,
+        "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
-        "emitDeclarationOnly": false,
+        "strict": true,
+        "esModuleInterop": true,
         "declaration": true,
-    }
+        "declarationMap": false,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "jsx": "react",
+        "outDir": "./lib",
+    },
+    "include": ["./src"],
+    "exclude": ["node_modules", "**/__tests__/*"]
 }

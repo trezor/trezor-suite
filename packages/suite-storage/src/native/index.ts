@@ -21,6 +21,7 @@ export const onChange = (_handler: (event: StorageMessageEvent) => any) => {
 };
 
 export const getDB = async () => {
+    console.log('getting native db');
     if (!db) {
         db = null;
     }
