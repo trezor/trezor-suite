@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
-import Icon from '../../Icon';
+import { Icon } from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
@@ -277,4 +277,4 @@ Button.propTypes = {
     variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
 };
 
-export default Button;
+export { Button, Props as ButtonProps };

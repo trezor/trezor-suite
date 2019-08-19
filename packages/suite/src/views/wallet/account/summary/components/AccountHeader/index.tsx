@@ -46,8 +46,10 @@ interface Props {
 const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }: Props) => {
     const explorerLink = `${network.explorer.address}${account.descriptor}`;
     const balance = account.availableBalance;
-    const reserve: string =
-        account.networkType === 'ripple' && !account.empty ? account.reserve : '0';
+    const reserve =
+        account.networkType === 'ripple' && !account.empty && account.misc && account.misc.reserve
+            ? account.misc.reserve
+            : '0';
     return (
         <>
             <AccountHeading>

@@ -13,6 +13,7 @@ import {
     H1,
     H5,
     Icon,
+    IconProps,
     Loader,
     TrezorLogo,
     TrezorImage,
@@ -185,7 +186,7 @@ storiesOf('Other', module).add('All', () => (
 
         <H1>Icons</H1>
         <Icons>
-            {ICONS.map(icon => {
+            {ICONS.map((icon: IconProps['icon']) => {
                 const test = `icon_${icon.toLowerCase()}`;
                 return (
                     <Item key={icon}>

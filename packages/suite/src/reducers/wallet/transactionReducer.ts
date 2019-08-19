@@ -4,10 +4,10 @@ import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import produce from 'immer';
 
 import { Action } from '@wallet-types/index';
-import { WalletTransaction } from '@suite/storage/types';
+import { WalletAccountTransaction } from '@suite/storage/types';
 import { TransactionAction } from '@suite/actions/wallet/transactionActions';
 
-export type State = WalletTransaction[];
+export type State = WalletAccountTransaction[];
 
 const initialState: State = [];
 
@@ -27,7 +27,7 @@ export default (state: State = initialState, action: Action): State => {
                 draft.push(action.transaction);
                 break;
             case TRANSACTION.REMOVE:
-                draft.splice(draft.findIndex(tx => tx.txId === action.txId), 1);
+                draft.splice(draft.findIndex(tx => tx.txid === action.txId), 1);
                 break;
             case TRANSACTION.UPDATE:
                 update(draft, action);

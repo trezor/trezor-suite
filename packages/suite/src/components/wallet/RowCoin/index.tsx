@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Network, Icon as IconType } from '@wallet-types/index';
 import { CoinLogo, Icon, colors, variables } from '@trezor/components';
+import { Icon as IconType } from '@wallet-types/index';
+
 import Row from '../Row';
 
 const CoinNameWrapper = styled.div`
@@ -44,9 +45,9 @@ const IconWrapper = styled.div`
 `;
 
 interface Props {
-    network: Network;
-    iconLeft: IconType;
-    iconRight: IconType;
+    network: any; // todo: proper network
+    iconRight?: IconType;
+    iconLeft?: IconType;
 }
 
 const RowCoin = ({ network, iconLeft, iconRight }: Props) => (

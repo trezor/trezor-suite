@@ -18,4 +18,4 @@ CoinLogo.propTypes = {
     size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
-export default CoinLogo;
+export { CoinLogo, Props as CoinLogoProps };

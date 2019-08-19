@@ -58,4 +58,4 @@ class Link extends PureComponent<Props> {
     }
 }
 
-export default Link;
+export { Link, Props as LinkProps };

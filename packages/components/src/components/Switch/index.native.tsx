@@ -57,4 +57,4 @@ class Switch extends Component<Props> {
     }
 }
 
-export default Switch;
+export { Switch, Props as SwitchProps };

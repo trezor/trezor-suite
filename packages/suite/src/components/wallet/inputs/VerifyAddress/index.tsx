@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage, injectIntl, InjectedIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, InjectedIntl, InjectedIntlProps } from 'react-intl';
 import { Button, Input } from '@trezor/components';
 // import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 import commonMessages from '@wallet-views/messages';
 import messages from './messages';
+import { AppState } from '@suite-types';
+// import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 const Wrapper = styled.div`
     display: flex;
@@ -14,17 +16,17 @@ const Wrapper = styled.div`
     }
 `;
 
-const EyeButton = styled(Button)`
-    z-index: 10001;
-    padding: 0;
-    top: 10px;
-    position: absolute;
-    right: 10px;
+// const EyeButton = styled(Button)`
+//     z-index: 10001;
+//     padding: 0;
+//     top: 10px;
+//     position: absolute;
+//     right: 10px;
 
-    &:hover {
-        background: transparent;
-    }
-`;
+//     &:hover {
+//         background: transparent;
+//     }
+// `;
 
 const ShowAddressButton = styled(Button)`
     white-space: nowrap;
@@ -45,10 +47,9 @@ const ShowAddressButton = styled(Button)`
     }
 `;
 
-interface Props {
+interface Props extends InjectedIntlProps {
+    account: AppState['wallet']['selectedAccount']['account'];
     address: string;
-    topLabel: string;
-    accountPath: string;
     isAddressVerifying: boolean;
     isAddressUnverified: boolean;
     isAddressHidden: boolean;
@@ -57,8 +58,8 @@ interface Props {
 }
 
 const VerifyInput = ({
-    // @ts-ignore
     account,
+    address,
     // @ts-ignore
     device,
     isAddressHidden,
@@ -68,60 +69,63 @@ const VerifyInput = ({
     // @ts-ignore
     showAddress,
     intl,
-}: Props) => (
-    <Wrapper>
-        <Input
-            type="text"
-            readOnly
-            topLabel={intl.formatMessage(commonMessages.TR_ADDRESS)}
-            value="address"
-            isPartiallyHidden={isAddressHidden}
-            tooltipAction={
-                isAddressVerifying ? (
-                    <React.Fragment>
-                        {/* <StyledDeviceIcon size={16} device={device} color={colors.WHITE} /> */}
-                        <FormattedMessage {...messages.TR_CHECK_ADDRESS_ON_TREZOR} />
-                    </React.Fragment>
-                ) : null
-            }
-            icon={
-                (isAddressVerified || isAddressUnverified) &&
-                !isAddressVerifying && (
-                    <EyeButton isTransparent onClick={() => showAddress(account.accountPath)}>
-                        {/* <Tooltip
-                            placement="top"
-                            content={
-                                <VerifyAddressTooltip
-                                    isConnected={device.connected}
-                                    isAvailable={device.available}
-                                    addressUnverified={isAddressUnverified}
-                                />
-                            }
-                        >
-                            <Icon
-                                size={16}
-                                icon={isAddressUnverified ? "EYE_CROSSED" : "EYE"}
-                                color={
-                                    isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY
-                                }
-                            />
-                        </Tooltip> */}
-                    </EyeButton>
-                )
-            }
-        />
-        <>
-            {!(isAddressVerified || isAddressUnverified) && ( // !account.imported
-                <ShowAddressButton
-                    onClick={() => showAddress(account.accountPath)}
-                    // isDisabled={device.connected && !discovery.completed}
-                    icon="EYE"
-                >
-                    <FormattedMessage {...messages.TR_SHOW_FULL_ADDRESS} />
-                </ShowAddressButton>
-            )}
-        </>
-    </Wrapper>
-);
+}: Props) => {
+    return (
+        <Wrapper>
+            <Input
+                type="text"
+                readOnly
+                topLabel={intl.formatMessage(commonMessages.TR_ADDRESS)}
+                value={address}
+                isPartiallyHidden={isAddressHidden}
+                tooltipAction={
+                    isAddressVerifying ? (
+                        <React.Fragment>
+                            {/* <StyledDeviceIcon size={16} device={device} color={colors.WHITE} /> */}
+                            <FormattedMessage {...messages.TR_CHECK_ADDRESS_ON_TREZOR} />
+                        </React.Fragment>
+                    ) : null
+                }
+                // icon={
+                //     (isAddressVerified || isAddressUnverified) &&
+                //     !isAddressVerifying && (
+                //         <EyeButton isTransparent onClick={() => showAddress(account.path)}>
+                //             {/* <Tooltip
+                //             placement="top"
+                //             content={
+                //                 <VerifyAddressTooltip
+                //                     isConnected={device.connected}
+                //                     isAvailable={device.available}
+                //                     addressUnverified={isAddressUnverified}
+                //                 />
+                //             }
+                //         >
+                //             <Icon
+                //                 size={16}
+                //                 icon={isAddressUnverified ? "EYE_CROSSED" : "EYE"}
+                //                 color={
+                //                     isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY
+                //                 }
+                //             />
+                //         </Tooltip> */}
+                //         </EyeButton>
+                //     )
+                // }
+            />
+            <>
+                {!(isAddressVerified || isAddressUnverified) && ( // !account.imported
+                    <ShowAddressButton
+                        // @ts-ignore
+                        onClick={() => showAddress(account.path)}
+                        // isDisabled={device.connected && !discovery.completed}
+                        icon="EYE"
+                    >
+                        <FormattedMessage {...messages.TR_SHOW_FULL_ADDRESS} />
+                    </ShowAddressButton>
+                )}
+            </>
+        </Wrapper>
+    );
+};
 
 export default injectIntl(VerifyInput);

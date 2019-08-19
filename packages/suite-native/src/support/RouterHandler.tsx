@@ -6,7 +6,7 @@ import Index from '@suite-views/index';
 import Wallet from '@suite/views/wallet';
 import WalletSend from '@suite/views/wallet/account/send';
 import { onLocationChange } from '@suite-actions/routerActions';
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@suite-types';
 
 // sources:
 // https://blog.usejournal.com/react-native-and-redux-part-5-3185f8f0609b

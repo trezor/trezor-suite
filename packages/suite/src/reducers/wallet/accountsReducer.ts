@@ -1,14 +1,16 @@
 import produce from 'immer';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { Action } from '@wallet-types/index';
+import { AccountInfo } from 'trezor-connect';
 
-export interface Account {
+export interface Account extends AccountInfo {
     index: number;
     type: 'normal' | 'segwit' | 'legacy';
     networkType: 'bitcoin' | 'ethereum' | 'ripple';
     network: string;
     path: string;
     imported?: boolean;
+    deviceState: string;
 
     // connect
     availableBalance: string;

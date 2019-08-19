@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import { FONT_SIZE } from '../../config/variables';
-import Icon from '../Icon';
+import { Icon } from '../Icon';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';
 
@@ -99,4 +99,4 @@ class Checkbox extends PureComponent<Props> {
     }
 }
 
-export default Checkbox;
+export { Checkbox, Props as CheckboxProps };

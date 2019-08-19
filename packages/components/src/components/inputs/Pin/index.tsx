@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
-import Icon from '../../Icon';
+import { Icon } from '../../Icon';
 import colors from '../../../config/colors';
 
 const Wrapper = styled.div`
@@ -49,4 +49,4 @@ InputPin.propTypes = {
     value: PropTypes.string.isRequired,
 };
 
-export default InputPin;
+export { InputPin, Props as InputPinProps };

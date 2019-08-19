@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 
 interface Props {
-    networkShortcut?: 'default' | 'xrp' | 'txrp' | null;
+    networkShortcut?: string | null;
     title?: string;
     message?: string;
 }
@@ -21,8 +21,9 @@ const getInfoUrl = (networkShortcut?: Props['networkShortcut']) => {
     };
 
     if (!networkShortcut) {
-        result = null;
+        result = urls.default;
     } else if (networkShortcut in urls) {
+        // @ts-ignore
         result = urls[networkShortcut];
     } else {
         result = urls.default;
@@ -66,7 +67,7 @@ const FirmwareUnsupported = (props: Props) => (
         <Row>
             {props.networkShortcut && (
                 <CoinLogoWrapper>
-                    <StyledCoinLogo standalone network={props.networkShortcut} />
+                    <StyledCoinLogo network={props.networkShortcut} />
                 </CoinLogoWrapper>
             )}
             <H4>{props.title}</H4>

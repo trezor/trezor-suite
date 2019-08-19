@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { P, H4, Loader, colors, variables } from '@trezor/components';
-
+import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
 // import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
@@ -53,13 +53,6 @@ const Row = styled.div`
     align-items: center;
 `;
 
-interface ExceptionPage {
-    shortcut: string;
-    message: string;
-    title: string;
-    type: string;
-}
-
 const getExceptionPage = (exceptionPage: ExceptionPage) => {
     const { title, message, shortcut } = exceptionPage;
     switch (exceptionPage.type) {
@@ -79,11 +72,7 @@ interface Props {
     children?: ReactNode | ReactNode[];
     isLoading?: boolean;
     exceptionPage?: ExceptionPage;
-    loader?: {
-        type: string;
-        title?: string;
-        message?: string;
-    };
+    loader?: LoaderInterface | null;
 }
 
 const Content = ({ className, children, isLoading = false, loader, exceptionPage }: Props) => (

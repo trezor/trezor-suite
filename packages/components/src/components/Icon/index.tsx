@@ -124,4 +124,4 @@ Icon.propTypes = {
     onClick: PropTypes.func,
 };
 
-export default Icon;
+export { Icon, Props as IconProps };

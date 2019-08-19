@@ -33,24 +33,19 @@ const LandingLoader = styled(Loader)`
     margin: auto;
 `;
 
-const LandingWrapper = (props: Props) => (
+const LandingWrapper: React.SFC<Props> = ({ loading = false, error = null, ...props }) => (
     <Wrapper>
-        {props.loading && <LandingLoader text="Loading" size={100} />}
-        {!props.loading && (
+        {loading && <LandingLoader text="Loading" size={100} />}
+        {!loading && (
             <React.Fragment>
                 {/* <ContextNotifications /> */}
-                {props.error && <InitializationError error={props.error} />}
+                {error && <InitializationError error={error} />}
                 {/* <Log /> */}
-                {!props.error && <LandingContent>{props.children}</LandingContent>}
+                {!error && <LandingContent>{props.children}</LandingContent>}
                 {/* <Footer isLanding /> */}
             </React.Fragment>
         )}
     </Wrapper>
 );
-
-LandingWrapper.defaultProps = {
-    loading: false,
-    error: null,
-};
 
 export default LandingWrapper;

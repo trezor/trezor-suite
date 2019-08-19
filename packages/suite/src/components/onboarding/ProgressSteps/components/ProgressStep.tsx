@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import colors from '@suite/config/onboarding/colors';
 import { Step } from '@suite/types/onboarding/steps';
-import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 
 import Line from './Line';
 
@@ -43,14 +42,7 @@ interface Props {
     index: number;
     length: number;
     changeOverHowManySteps: number;
-    onboardingActions: OnboardingActions;
 }
-
-const goToStep = (goToStepFn: any, isClickable: boolean) => {
-    if (isClickable) {
-        goToStepFn();
-    }
-};
 
 const ProgressStep = (props: Props) => {
     const color = props.isActive ? colors.brandPrimary : colors.gray;
@@ -92,9 +84,6 @@ const ProgressStep = (props: Props) => {
                         ? `${LINE_TRANSITION_DURATION * 2}s`
                         : `${LINE_TRANSITION_DURATION * (order - props.index * 2)}s`,
                 }}
-                onClick={() => {
-                    goToStep(() => props.onboardingActions.goToStep(props.step.id), isClickable);
-                }}
             />
 
             <Line
@@ -113,9 +102,6 @@ const ProgressStep = (props: Props) => {
                     cursor: isClickable ? 'pointer' : 'initial',
                     flexBasis: '100%',
                     textAlign: 'center',
-                }}
-                onClick={() => {
-                    goToStep(() => props.onboardingActions.goToStep(props.step.id), isClickable);
                 }}
             >
                 {props.step.title}

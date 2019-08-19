@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Tooltip } from 'src';
 import {
     FONT_FAMILY,
     FONT_SIZE,
@@ -12,7 +11,7 @@ import {
 } from '../../../config/variables';
 import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
-import Icon from '../../Icon';
+import { Icon } from '../../Icon';
 import colors from '../../../config/colors';
 import { FeedbackType, IconType } from '../../../support/types';
 
@@ -262,4 +261,4 @@ Input.propTypes = {
     isPartiallyHidden: PropTypes.bool,
 };
 
-export default Input;
+export { Input, Props as InputProps };

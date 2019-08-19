@@ -77,6 +77,11 @@ export const isInternalRoute = (route: string) => {
     return !!routes.find(r => r.pattern === toInternalRoute(route));
 };
 
+// Returns Route which pattern match given param
+export const getRouteFromPath = (pathname: string) => {
+    return routes.find(r => r.pattern === toInternalRoute(pathname));
+};
+
 export const isStatic = (route: AnyRouteName | string) => {
     const routeFound = routes.find(r => r.pattern === route);
     return routeFound ? !!routeFound.isStatic : true; // 404 page act as a static

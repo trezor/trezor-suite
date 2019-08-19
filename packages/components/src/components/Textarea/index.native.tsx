@@ -107,4 +107,4 @@ TextArea.propTypes = {
     name: PropTypes.string,
 };
 
-export default TextArea;
+export { TextArea, Props as TextareaProps };

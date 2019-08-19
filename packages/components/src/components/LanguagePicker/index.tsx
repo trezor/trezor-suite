@@ -129,4 +129,4 @@ const LanguagePicker = ({ language, languages, onChange, ...rest }: Props) => (
     </SelectWrapper>
 );
 
-export default LanguagePicker;
+export { LanguagePicker, Props as LanguagePickerProps };

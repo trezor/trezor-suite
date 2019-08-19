@@ -25,7 +25,7 @@ const AddAccountIconWrapper = styled.div`
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     onClick?: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
-    tooltipContent?: React.ReactNode;
+    tooltipContent?: React.ReactChild;
     disabled?: boolean;
 }
 

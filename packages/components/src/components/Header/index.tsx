@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from '../Icon';
+import { Icon } from '../Icon';
 import { SCREEN_SIZE } from '../../config/variables';
 import colors from '../../config/colors';
 import TrezorLogo from '../TrezorLogo';
@@ -252,4 +252,4 @@ Header.propTypes = {
     ),
 };
 
-export default Header;
+export { Header, Props as HeaderProps };

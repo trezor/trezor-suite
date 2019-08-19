@@ -18,4 +18,4 @@ TrezorLogo.propTypes = {
     type: PropTypes.oneOf(['horizontal', 'vertical']),
 };
 
-export default TrezorLogo;
+export { TrezorLogo, Props as TrezorLogoProps };

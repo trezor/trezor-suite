@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
+import { TouchableHighlightProps, GestureResponderEvent } from 'react-native';
 import colors from '../../../config/colors';
 
 const Touchable = styled.TouchableHighlight`
@@ -20,8 +21,9 @@ const Dot = styled.View`
     background: ${colors.TEXT_PRIMARY};
 `;
 
-interface Props {
-    onClick: () => void;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props extends TouchableHighlightProps {
+    onClick: (event: GestureResponderEvent) => void;
 }
 
 const ButtonPin = ({ onClick }: Props) => {
@@ -36,4 +38,4 @@ ButtonPin.propTypes = {
     onClick: PropTypes.func,
 };
 
-export default ButtonPin;
+export { ButtonPin, Props as ButtonPinProps };

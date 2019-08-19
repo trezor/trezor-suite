@@ -18,4 +18,4 @@ TrezorImage.propTypes = {
     model: PropTypes.oneOf([1, 2]),
 };
 
-export default TrezorImage;
+export { TrezorImage, Props as TrezorImageProps };

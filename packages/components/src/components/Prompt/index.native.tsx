@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
-import Icon from '../Icon';
+import { Icon } from '../Icon';
 
 import { Omit, TrezorModel, IconType } from '../../support/types';
 import colors from '../../config/colors';
@@ -116,4 +116,4 @@ class Prompt extends React.Component<Props> {
     }
 }
 
-export default Prompt;
+export { Prompt, Props as PromptProps };

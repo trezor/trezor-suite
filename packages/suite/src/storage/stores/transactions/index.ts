@@ -84,7 +84,7 @@ export const getTransactions = async (accountId?: number, offset?: number, count
             //     return txs;
             // }
             // if 'offset' or 'count' param is passed use a compound index
-            const index = tx.store.index('accountId-timestamp');
+            const index = tx.store.index('accountId-blockTime');
             // cursor with keyrange for given accountId (covers all timestamps)
             let cursor = await index.openCursor(IDBKeyRange.bound([accountId], [accountId, '']));
             const txs = [];
@@ -103,7 +103,7 @@ export const getTransactions = async (accountId?: number, offset?: number, count
             return txs;
         }
         // if offset and count params are undefined just use getAll on index instead of cursor.
-        const index = tx.store.index('accountId-timestamp');
+        const index = tx.store.index('accountId-blockTime');
         // all txs for given accountId
         // bound([accountId, undefined], [accountId, '']) should cover all timestamps
         const keyRange = IDBKeyRange.bound([accountId], [accountId, '']);
@@ -115,13 +115,14 @@ export const getTransactions = async (accountId?: number, offset?: number, count
     return txs;
 };
 
-export const updateTransaction = async (txId: string, timestamp: number) => {
+export const updateTransaction = async (txId: string, _timestamp: number) => {
     const db = await getDB();
     const tx = db.transaction(STORE_TXS, 'readwrite');
     const txIdIndex = tx.store.index('txId');
     const result = await txIdIndex.get(txId);
     if (result) {
-        result.timestamp = timestamp;
+        // TODO
+        // result.timestamp = timestamp;
         notify(STORE_TXS, [result.id]);
         return tx.store.put(result);
     }

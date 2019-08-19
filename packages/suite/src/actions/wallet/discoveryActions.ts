@@ -206,7 +206,7 @@ const getBundle = (discovery: Discovery) => (
                 bundle.push({
                     path: item.path.replace('i', accountIndex.toString()),
                     coin: item.coin,
-                    // details: 'txs',
+                    details: 'txs',
                     index: accountIndex,
                     type,
                     networkType: item.networkType || 'bitcoin',
@@ -232,7 +232,14 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     // - if currently load account is selected perform full transaction discovery?
 
     const discovery = dispatch(getDiscoveryForDevice());
-    if (!discovery) return; // TODO: throw error in notification?
+    if (!discovery) {
+        addNotification({
+            variant: 'error',
+            title: 'No device',
+            cancelable: true,
+        });
+        return;
+    } // TODO: throw error in notification?
     const { device } = discovery;
 
     // start process
@@ -362,6 +369,13 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 }),
             );
         }
+    }
+};
+
+export const init = () => async (dispatch: Dispatch, _getState: GetState): Promise<void> => {
+    const discovery = dispatch(getDiscoveryForDevice());
+    if (discovery && discovery.status === STATUS.IDLE) {
+        dispatch(start());
     }
 };
 

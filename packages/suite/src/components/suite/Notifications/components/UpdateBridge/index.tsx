@@ -13,6 +13,7 @@ interface Props {
 }
 
 const UpdateBridge = ({ transport, intl }: Props & InjectedIntlProps) => {
+    // @ts-ignore TODO
     if (transport && transport.outdated) {
         return (
             <Notification
