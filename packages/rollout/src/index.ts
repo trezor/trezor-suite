@@ -16,6 +16,7 @@ const rollout = (opts: RolloutOpts) => {
     };
 
     const modifyFirmware = ({ fw, features }: { fw: Firmware; features: Features }) => {
+
         const deviceBlVersion = findActualBlVersionInList(releasesList[features.major_version], [
             features.major_version,
             features.minor_version,
@@ -26,6 +27,16 @@ const rollout = (opts: RolloutOpts) => {
             // at the same time, there is no need to modify them, so just return the fw.
             return fw;
         }
+
+        // ---------------------
+        // Model T modifications
+        // ---------------------
+        // there are currently none.
+        if (features.major_version === 2) return fw;
+
+        // -----------------------
+        // Model One modifications
+        // -----------------------
 
         // any version installed on bootloader 1.8.0 must be sliced of the first 256 bytes (containing old firmware header)
         // unluckily, we dont know the actual bootloader of connected device, but we can assume it is 1.8.0 in case

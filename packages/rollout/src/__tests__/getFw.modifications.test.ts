@@ -8,8 +8,8 @@ describe('getFw() modifications of fw', () => {
         rollout = Rollout({
             firmwareBaseUrl: 'foo',
             releasesListsPaths: {
-                1: 'doest matter, is mocked',
-                2: 'indeed',
+                1: 'test-1',
+                2: 'test-2',
             },
         });
     });
@@ -31,6 +31,16 @@ describe('getFw() modifications of fw', () => {
             bootloader_mode: false,
         });
 
+        expect(result.byteLength).toEqual(512);
+    });
+
+    it('currently, no modification should be done for model T', async () => {
+        const result = await rollout.getFw({
+            major_version: 2,
+            minor_version: 0,
+            patch_version: 5,
+            bootloader_mode: false,
+        });
         expect(result.byteLength).toEqual(512);
     });
 });
