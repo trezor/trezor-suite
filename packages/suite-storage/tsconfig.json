@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "baseUrl": "./",
+        "outDir": "./lib",
+        "target": "es5",
         "jsx": "preserve",
         "moduleResolution": "node",
         "sourceMap": true,
@@ -12,11 +15,11 @@
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "isolatedModules": true
-    },
-    "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx"
-    ]
+        "isolatedModules": false,
+        "noEmit": false,
+        "allowJs": false,
+        "skipLibCheck": true,
+        "emitDeclarationOnly": false,
+        "declaration": true,
+    }
 }

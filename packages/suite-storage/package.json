@@ -11,9 +11,12 @@
     "description": "trezor suite storage",
     "scripts": {
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "type-check": "tsc --project tsconfig.json",
+        "type-check": "tsc --project tsconfig.types.json",
+        "build": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
+    "main": "./native/index.native.ts",
+    "browser": "./web/index.ts",
     "dependencies": {
         "idb": "^4.0.4"
     },

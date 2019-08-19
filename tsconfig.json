@@ -71,9 +71,6 @@
             "@onboarding-config": ["./packages/suite/src/config/onboarding/index"],
             "@onboarding-middlewares/*": ["./packages/suite/src/middlewares/onboarding/*"],
             "@onboarding-middlewares": ["./packages/suite/src/middlewares/onboarding/index"],
-            // storage
-            "@storage-types/*": ["./packages/suite/src/types/storage/*"],
-            "@storage-types": ["./packages/suite/src/types/storage/index"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"],
