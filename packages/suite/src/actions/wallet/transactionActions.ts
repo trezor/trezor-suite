@@ -2,7 +2,7 @@ import { TRANSACTION } from '@wallet-actions/constants/index';
 
 import { Dispatch } from '@suite-types/index';
 import * as db from '@trezor/suite-storage';
-import { WalletAccountTransaction } from '@storage-types';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transaction: WalletAccountTransaction }

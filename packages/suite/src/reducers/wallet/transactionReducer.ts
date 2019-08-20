@@ -5,7 +5,12 @@ import produce from 'immer';
 
 import { Action } from '@wallet-types/index';
 import { TransactionAction } from '@suite/actions/wallet/transactionActions';
-import { WalletAccountTransaction } from '@trezor/suite-storage';
+import { AccountTransaction } from 'trezor-connect';
+
+export interface WalletAccountTransaction extends AccountTransaction {
+    id?: number;
+    accountId: number;
+}
 
 export type State = WalletAccountTransaction[];
 

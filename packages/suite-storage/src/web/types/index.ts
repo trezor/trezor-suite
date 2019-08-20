@@ -23,6 +23,7 @@ interface TransactionTarget {
     coinbase?: string;
 }
 
+// TODO: interface should be given as a param on db init from the app
 export interface WalletAccountTransaction {
     id?: number;
     accountId: number;
