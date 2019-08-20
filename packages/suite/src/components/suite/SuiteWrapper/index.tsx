@@ -8,6 +8,7 @@ import { Loader } from '@trezor/components';
 import { isWebUSB } from '@suite-utils/device';
 import { goto } from '@suite-actions/routerActions';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
+import AcquireDevice from '@suite-components/AcquireDevice';
 import Layout from '@suite-components/Layout';
 import Bridge from '@suite-views/bridge';
 import { AppState } from '@suite-types';
@@ -42,7 +43,7 @@ const Index: FunctionComponent<Props> = props => {
     }
 
     // no available transport
-    // TODO: redirect to brige page
+    // TODO: redirect to bridge page
     if (!suite.transport.type) {
         return (
             <Layout isLanding>
@@ -53,29 +54,6 @@ const Index: FunctionComponent<Props> = props => {
 
     // no available device
     if (!suite.device) {
-        // TODO
-        // const { initialized, browserState, transport } = props.connect;
-        // const { disconnectRequest } = props.wallet;
-        // const localStorageError = props.localStorage.error;
-        // const connectError = props.connect.error;
-
-        // if (props.wallet.showBetaDisclaimer) return <BetaDisclaimer />;
-
-        // const error = !initialized ? localStorageError || connectError : null;
-        // const shouldShowUnsupportedBrowser = browserState.supported === false;
-        // const shouldShowInstallBridge = initialized && connectError;
-        // const shouldShowConnectDevice = props.wallet.ready && props.devices.length < 1;
-        // const shouldShowDisconnectDevice = !!disconnectRequest;
-        // const isLoading =
-        //     !error &&
-        //     !shouldShowUnsupportedBrowser &&
-        //     !shouldShowConnectDevice &&
-        //     !shouldShowUnsupportedBrowser;
-
-        // const deviceLabel = disconnectRequest ? disconnectRequest.label : '';
-        // // corner case: display InstallBridge view on "/" route
-        // // it has it's own Container and props
-        // if (shouldShowInstallBridge) return <InstallBridge />;
         return (
             <Layout isLanding>
                 <ConnectDevice
@@ -85,6 +63,22 @@ const Index: FunctionComponent<Props> = props => {
                     deviceLabel=""
                     showDisconnect={false}
                 />
+            </Layout>
+        );
+    }
+
+    if (suite.device.type === 'unacquired') {
+        return (
+            <Layout showSuiteHeader>
+                <AcquireDevice />
+            </Layout>
+        );
+    }
+
+    if (suite.device.type === 'unreadable') {
+        return (
+            <Layout showSuiteHeader>
+                <AcquireDevice />
             </Layout>
         );
     }
