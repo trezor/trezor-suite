@@ -15,8 +15,8 @@
         "build": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
-    "main": "./lib/native/index.native.ts",
-    "browser": "./lib/web/index.ts",
+    "main": "./lib/native/index.js",
+    "browser": "./lib/web/index.js",
     "dependencies": {
         "idb": "^4.0.4"
     },
