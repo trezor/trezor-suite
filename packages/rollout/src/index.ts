@@ -112,11 +112,6 @@ const rollout = (opts: RolloutOpts) => {
     };
 
     const getInfoSync = (features, list: Release[], score?: number) => {
-        if (!list) {
-            throw new Error(
-                'no releasesList available, you might use async method getInfo() instead or provide releasesList as param'
-            );
-        }
         return getInfoCommon(features, list, score);
     };
 
