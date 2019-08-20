@@ -12,6 +12,10 @@ export default {
             network: 'xrp',
             url: 'https://api.coingecko.com/api/v3/coins/ripple',
         },
+        {
+            network: 'btc',
+            url: 'https://api.coingecko.com/api/v3/coins/bitcoin',
+        },
     ],
     currencies: [
         'usd',

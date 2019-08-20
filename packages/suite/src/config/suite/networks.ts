@@ -2,7 +2,7 @@
 export default [
     {
         order: 1,
-        isHidden: true,
+        isHidden: false,
         type: 'bitcoin',
         name: 'Bitcoin',
         symbol: 'BTC',

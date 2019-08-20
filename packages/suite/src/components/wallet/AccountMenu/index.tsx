@@ -143,7 +143,8 @@ const AccountMenu = (props: Props) => {
         }
 
         return (
-            <LinkNoUnderline href={url} key={url}>
+            // eslint-disable-next-line react/no-array-index-key
+            <LinkNoUnderline href={url} key={`${url}-${i}`}>
                 <Row>
                     <RowAccountWrapper
                         isSelected={parseInt(params.accountId, 10) === account.index}
