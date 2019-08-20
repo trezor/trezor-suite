@@ -20,6 +20,8 @@ import {
     removeTransaction,
 } from './stores/transactions/index';
 
+import { isDBAvailable } from './utils';
+
 const VERSION = 1;
 let db: IDBPDatabase<MyDBV1>;
 // we reuse the same instance of broadcast channel for both sending the message
@@ -27,25 +29,9 @@ let db: IDBPDatabase<MyDBV1>;
 let broadcastChannel: BroadcastChannel;
 export type StorageUpdateMessage = StorageUpdateMessage$;
 
-export const isIndexedDBAvailable = (cb: (isAvailable: boolean) => void) => {
-    // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
-    // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
-    // this solution calls callback function from within onerror/onsuccess event handlers.
-    // For other browsers checking the window.indexedDB should be enough.
-    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-    if (isFirefox) {
-        const r = indexedDB.open('test');
-        r.onerror = () => cb(false);
-        r.onsuccess = () => cb(true);
-    } else {
-        cb(!!indexedDB);
-    }
-};
-
 export const notify = (
     store: StorageUpdateMessage['store'],
-    keys: StorageUpdateMessage['keys'],
+    keys: StorageUpdateMessage['keys']
 ) => {
     // sends the message containing store, keys which were updated to other tabs/windows
     const message: StorageUpdateMessage = { store, keys };
@@ -62,7 +48,7 @@ const onUpgrade = async (
     db: IDBPDatabase<MyDBV1>,
     oldVersion: number,
     newVersion: number | null,
-    transaction: any,
+    transaction: any
     // transaction: IDBPTransaction<MyDBV1, "transactions"[]>,
 ) => {
     const shouldInitDB = oldVersion === 0;
@@ -98,7 +84,7 @@ export const getDB = async () => {
                     // Called if there are older versions of the database open on the origin, so this version cannot open.
                     // TODO
                     console.log(
-                        'Accessing the IDB is blocked by another window running older version.',
+                        'Accessing the IDB is blocked by another window running older version.'
                     );
                 },
                 blocking() {
@@ -114,7 +100,7 @@ export const getDB = async () => {
             if (error && error.name === 'VersionError') {
                 indexedDB.deleteDatabase('trezor-suite');
                 console.log(
-                    'SHOULD NOT HAPPEN IN PRODUCTION: IDB was deleted because your version is higher than it should be!',
+                    'SHOULD NOT HAPPEN IN PRODUCTION: IDB was deleted because your version is higher than it should be!'
                 );
                 throw error;
             } else {
@@ -125,12 +111,16 @@ export const getDB = async () => {
     return db;
 };
 
-export { saveSuiteSettings, saveWalletSettings, getSuiteSettings, getWalletSettings };
 export {
+    saveSuiteSettings,
+    saveWalletSettings,
+    getSuiteSettings,
+    getWalletSettings,
     addTransaction,
     addTransactions,
     getTransaction,
     getTransactions,
     updateTransaction,
     removeTransaction,
+    isDBAvailable,
 };

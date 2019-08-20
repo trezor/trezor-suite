@@ -60,7 +60,7 @@ export const update = (txId: string) => async (dispatch: Dispatch) => {
 export const getFromStorage = (accountId: number, from?: number, to?: number) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
-    db.getTransactions(accountId, from, to).then(transactions => {
+    db.getTransactions(accountId, from, to).then((transactions: WalletAccountTransaction[]) => {
         dispatch({
             type: TRANSACTION.FROM_STORAGE,
             transactions,

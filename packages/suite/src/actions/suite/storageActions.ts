@@ -9,7 +9,7 @@ export type StorageActions =
     | { type: typeof STORAGE.ERROR; error: any };
 
 export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState) => {
-    db.isIndexedDBAvailable(async (isAvailable: any) => {
+    db.isDBAvailable(async (isAvailable: any) => {
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');

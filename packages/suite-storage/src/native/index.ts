@@ -1,4 +1,20 @@
 import { StorageUpdateMessage as StorageUpdateMessage$, StorageMessageEvent } from './types';
+import { isDBAvailable } from './utils';
+import {
+    addTransaction,
+    addTransactions,
+    getTransaction,
+    getTransactions,
+    updateTransaction,
+    removeTransaction,
+} from './stores/transactions/index';
+
+import {
+    saveSuiteSettings,
+    saveWalletSettings,
+    getSuiteSettings,
+    getWalletSettings,
+} from './stores/settings/index';
 
 // const VERSION = 1;
 let db: any;
@@ -8,7 +24,7 @@ export type StorageUpdateMessage = StorageUpdateMessage$;
 
 export const notify = (
     store: StorageUpdateMessage['store'],
-    keys: StorageUpdateMessage['keys'],
+    keys: StorageUpdateMessage['keys']
 ) => {
     // sends the message containing store, keys which were updated to other tabs/windows
     // @ts-ignore
@@ -26,4 +42,18 @@ export const getDB = async () => {
         db = null;
     }
     return db;
+};
+
+export {
+    saveSuiteSettings,
+    saveWalletSettings,
+    getSuiteSettings,
+    getWalletSettings,
+    addTransaction,
+    addTransactions,
+    getTransaction,
+    getTransactions,
+    updateTransaction,
+    removeTransaction,
+    isDBAvailable,
 };

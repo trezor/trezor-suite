@@ -18,7 +18,7 @@ const updateReducers = (message: db.StorageUpdateMessage) => async (
 };
 
 export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState) => {
-    db.isIndexedDBAvailable(async (isAvailable: any) => {
+    db.isDBAvailable(async (isAvailable: any) => {
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');
