@@ -104,9 +104,7 @@ const Icon = ({
                     svg.setAttribute('height', `${size}px`);
                     svg.setAttribute('fill', color);
                 }}
-                afterInjection={err => {
-                    if (err) console.error(err);
-                }}
+                loading={() => <span className="loading"></span>}
             />
         </SvgWrapper>
     );
