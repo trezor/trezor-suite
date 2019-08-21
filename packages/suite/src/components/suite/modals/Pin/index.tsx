@@ -46,7 +46,6 @@ interface State {
 
 interface Props {
     device: TrezorDevice;
-    instances?: TrezorDevice[];
     onEnterPin: (device: TrezorDevice, value: string) => void;
 }
 
