@@ -84,15 +84,20 @@ const WelcomeStep = (props: Props) => {
     const [introTimedout, setIntroTimedout] = useState(false);
     const [introExited, setIntroExited] = useState(false);
 
+    const { suite } = props;
     useEffect(() => {
-        if (!props.suite.loaded) {
+        if (!suite.loaded) {
             setTimeout(() => setIntroTimedout(true), 5000);
         } else {
             setIntroTimedout(true);
         }
-    }, [props.suite.loaded]);
+    }, [suite.loaded]);
 
-    const introLeaved = introTimedout && props.suite.loaded;
+    const introLeaved = introTimedout && suite.loaded;
+
+    const isDeviceInitialized = () => {
+        return suite.device && suite.device.features && suite.device.features.initialized;
+    };
 
     return (
         <StepWrapper data-test="onboarding_first_page">
@@ -165,12 +170,14 @@ const WelcomeStep = (props: Props) => {
                         </OptionsWrapper>
                     </StepBodyWrapper>
                     <StepFooterWrapper>
-                        <ButtonBack
-                            data-test="button-use-wallet"
-                            onClick={() => goto(getRoute('wallet-index'))}
-                        >
-                            <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
-                        </ButtonBack>
+                        {isDeviceInitialized() && (
+                            <ButtonBack
+                                data-test="button-use-wallet"
+                                onClick={() => goto(getRoute('wallet-index'))}
+                            >
+                                <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
+                            </ButtonBack>
+                        )}
                     </StepFooterWrapper>
                 </>
             </CSSTransition>
