@@ -22,11 +22,6 @@ export const routes = [
         isStatic: true,
     },
     {
-        name: 'suite-firmware-update',
-        pattern: '/firmware',
-        isStatic: false,
-    },
-    {
         name: 'wallet-index',
         pattern: '/wallet',
         isStatic: false,

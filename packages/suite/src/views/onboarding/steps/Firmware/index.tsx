@@ -130,7 +130,7 @@ const FirmwareStep = ({
     const isInBootloader = device && device.mode === 'bootloader';
 
     const getError = () => {
-        return deviceCall.error || firmwareUpdate.error;
+        return deviceCall.error;
     };
 
     const getFirmwareStatus = () => {
@@ -254,14 +254,15 @@ const FirmwareStep = ({
                                         />
                                     </Text>
                                 )}
-                                {firmwareUpdate.error && (
+                                {/* todo: rework with notifications */}
+                                {/* {firmwareUpdate.error && (
                                     <Text style={{ color: colors.error }}>
                                         <FormattedMessage
                                             {...l10nMessages.TR_FETCH_ERROR_OCCURRED}
                                             values={{ error: firmwareUpdate.error }}
                                         />
                                     </Text>
-                                )}
+                                )} */}
                             </>
                         )}
                     </>

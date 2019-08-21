@@ -5,16 +5,14 @@ import { lockUI } from '@suite-actions/suiteActions';
 
 // todo: refactor to suite
 // import * as notificationActions from '@wallet-actions/notificationActions';
-
+import { SET_UPDATE_STATUS } from '@suite-actions/constants/firmware';
 import { Dispatch, GetState } from '@suite-types';
 
-export const SET_UPDATE_STATUS = '@suite/set-update-status';
-
-export const STARTED = 'started';
-export const DOWNLOADING = 'downloading';
-export const INSTALLING = 'installing';
-export const DONE = 'done';
-export const RESTARTING = 'restarting';
+const STARTED = 'started';
+const DOWNLOADING = 'downloading';
+const INSTALLING = 'installing';
+const DONE = 'done';
+const RESTARTING = 'restarting';
 
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     // todo remove error notification
@@ -63,7 +61,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     };
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
-    console.log('updateResponse', updateResponse);
     if (!updateResponse.success) {
         // todo dispatch error notification
     }

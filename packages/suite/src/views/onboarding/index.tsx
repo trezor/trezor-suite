@@ -258,7 +258,7 @@ class Onboarding extends React.PureComponent<Props> {
             deviceInteraction,
             uiInteraction,
         } = this.props;
-        const model = selectedModel || (2 as 1 | 2);
+        const model = selectedModel || 2;
         const errorState = this.getError();
         const activeStep = this.getStep(activeStepId);
         return (

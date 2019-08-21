@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 // import { FormattedMessage } from 'react-intl';
 
-import { Button, P, H1, H4, variables, Checkbox } from '@trezor/components';
+import { Button, P, H1, H4, H5, variables } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite/utils/suite/router';
 import { firmwareUpdate } from '@suite-actions/firmwareActions';
@@ -45,9 +45,10 @@ const Bottom = styled.div`
     flex: 1;
 `;
 
-const Checkboxes = styled.div`
-    flex: 1;
-`;
+// todo warnings checkboxes
+// const Checkboxes = styled.div`
+//     flex: 1;
+// `;
 
 const ChangeLog = styled.div`
     flex: 1;
@@ -69,137 +70,75 @@ interface Props {
 }
 
 const FirmwareUpdate = (props: Props) => {
-    // todo: this should go to reducer probably;
-    const [isSeedCardChecked, setIsSeedCardChecked] = useState(false);
     const { device, firmware } = props;
 
     if (!device || device.type !== 'acquired') return null;
-    // const getStatus = () => {
-    //     if (!device || !device.connected) {
-    //         return 'connect-device';
-    //     }
-    //     if (device.mode !== 'bootloader') {
-    //         return 'switch-to-bootloader';
-    //     }
-    //     if (
-    //         device.mode === 'bootloader' &&
-    //         (device.firmware === 'outdated' || device.firmware === 'unknown')
-    //     ) {
-    //         return 'install-button';
-    //     }
-    // };
-
-    // const isUpdateNeeded = () => {
-    //     return ['none', 'outdated', 'required'].includes(device.firmware);
-    // };
-
-    const isUpdateAvailable = () => {
-        return device.firmware !== 'valid';
-    };
 
     const isInProgress = () => {
-        if (!firmware.status) return null;
+        if (!firmware || !firmware.status) return null;
         return ['started', 'downloading', 'installing', 'restarting'].includes(firmware.status);
     };
 
-    if (!device || !device.connected) {
-        return (
-            <Wrapper>
-                {/* todo: use proper notifications */}
-                <WalletNotifications />
-                <Top>
-                    <TitleHeader>Reconnect device to continue</TitleHeader>
-                </Top>
-            </Wrapper>
-        );
-    }
-
-    if (!isUpdateAvailable()) {
-        return (
-            <Wrapper>
-                <WalletNotifications />
-                <Top>
-                    <TitleHeader>Device has the latest firmware</TitleHeader>
-                </Top>
-                <Bottom>
-                    <Button onClick={() => goto(getRoute('suite-index'))}>Go to wallet</Button>
-                </Bottom>
-            </Wrapper>
-        );
-    }
-
-    if (device.mode !== 'bootloader') {
-        return (
-            <Wrapper>
-                <WalletNotifications />
-                <Top>
-                    <TitleHeader>Firmware update</TitleHeader>
-                </Top>
-
-                <Middle>
-                    <ChangeLog>
-                        <H4>Changelog</H4>
-                        <div>{device.firmwareRelease.version.join('.')}</div>
-                        {device.firmwareRelease.changelog.split('*').map((row: string) => (
-                            <div key={row.substr(0, 8)}>{row}</div>
-                        ))}
-                    </ChangeLog>
-                </Middle>
-
-                <Bottom>
-                    <P>Switch device to bootloader to continue</P>
-                </Bottom>
-            </Wrapper>
-        );
-    }
-
-    // const currentVersion = `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`;
+    const getStatus = () => {
+        if (!device || !device.connected) {
+            return 'no-device';
+        }
+        if (isInProgress()) {
+            return 'in-progress';
+        }
+        if (device.mode === 'bootloader') {
+            return 'in-bl';
+        }
+        if (device.firmware === 'valid') {
+            return 'up-to-date';
+        }
+        if (['outdated', 'required'].includes(device.firmware)) {
+            return 'update-available';
+        }
+    };
 
     return (
         <Wrapper>
+            {/* todo: use proper notifications, leaving it here as a starting point for next iteration */}
             <WalletNotifications />
             <Top>
-                <TitleHeader>Firmware update</TitleHeader>
+                <TitleHeader>
+                    {/* todo: this does not appear right now, it displays ConnectDevice page. */}
+                    {getStatus() === 'no-device'
+                        ? 'Reconnect device to continue'
+                        : getStatus() === 'update-available'
+                        ? 'Firmware update'
+                        : getStatus() === 'up-to-date'
+                        ? 'Device has the latest firmware'
+                        : 'Firmware update'}
+                </TitleHeader>
             </Top>
 
             <Middle>
-                {isInProgress() && (
+                {getStatus() === 'update-available' && device.firmwareRelease ? (
+                    <ChangeLog>
+                        <H4>Changelog</H4>
+                        <H5>{device.firmwareRelease.version.join('.')}</H5>
+                        {device.firmwareRelease.changelog.split('*').map((row: string) => (
+                            <P key={row.substr(0, 8)}>{row}</P>
+                        ))}
+                    </ChangeLog>
+                ) : getStatus() === 'in-progress' ? (
                     <div>
-                        {firmware.status} <Dots />
+                        {firmware.status}
+                        <Dots />
                     </div>
-                )}
-                {!isInProgress() && firmware.error && (
-                    <>
-                        Failed to install firmware. Error: {firmware.error}
-                        <Button onClick={() => props.firmwareUpdate()}>Retry</Button>
-                    </>
-                )}
-
-                {!isInProgress() && device.firmware && (
-                    <>
-                        <Checkboxes>
-                            <Checkbox
-                                isChecked={isSeedCardChecked}
-                                onClick={() => setIsSeedCardChecked(!isSeedCardChecked)}
-                            >
-                                I have my seed card
-                            </Checkbox>
-                        </Checkboxes>
-                    </>
-                )}
+                ) : null}
             </Middle>
-            <Bottom>
-                {!isInProgress() && (
-                    <>
-                        {firmware.error && (
-                            <Button onClick={() => props.firmwareUpdate()}>Retry</Button>
-                        )}
 
-                        {!firmware.error && device.firmware !== 'valid' && (
-                            <Button onClick={() => props.firmwareUpdate()}>Install</Button>
-                        )}
-                    </>
-                )}
+            <Bottom>
+                {getStatus() === 'up-to-date' ? (
+                    <Button onClick={() => goto(getRoute('suite-index'))}>Go to wallet</Button>
+                ) : getStatus() === 'update-available' ? (
+                    <P>Switch device to bootloader to continue</P>
+                ) : getStatus() === 'in-bl' ? (
+                    <Button onClick={() => props.firmwareUpdate()}>Install</Button>
+                ) : null}
             </Bottom>
         </Wrapper>
     );

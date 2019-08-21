@@ -19,7 +19,7 @@ const UpdateFirmware = ({ device, pathname, intl }: Props) => {
     if (!outdated) return null;
 
     // don't show notification when user is on firmware update page
-    if (pathname === getRoute('suite-firmware-update')) return null;
+    if (pathname === getRoute('suite-device-firmware')) return null;
 
     return (
         <Notification
@@ -30,7 +30,7 @@ const UpdateFirmware = ({ device, pathname, intl }: Props) => {
             actions={[
                 {
                     label: intl.formatMessage(l10nCommonMessages.TR_SHOW_DETAILS),
-                    callback: () => goto(getRoute('suite-firmware-update')),
+                    callback: () => goto(getRoute('suite-device-firmware')),
                 },
             ]}
         />
