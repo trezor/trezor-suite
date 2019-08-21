@@ -6,22 +6,36 @@ import { H1, H4, P, H6 } from '@trezor/components';
 import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL, WALLET_URL } from '@onboarding-constants/urls';
 import Option from '@onboarding-components/Option';
 import { StepWrapper, OptionsWrapper } from '@onboarding-components/Wrapper';
+import { goto } from '@suite-actions/routerActions';
+import { getRoute } from '@suite-utils/router';
+
 import l10nMessages from './index.messages';
 
+const OptionHeading = styled(H6)`
+    display: flex;
+    align-items: flex-end;
+    flex: 2;
+    width: 100%;
+`;
+
 const OptionDesc = styled(P)`
+    display: flex;
+    flex: 3;
     font-size: 0.9rem;
+    align-items: flex-start;
+    width: 100%;
 `;
 
 // TODO: use url constants
 const WalletOption = () => (
     <Option
         onClick={() => {
-            window.location.href = WALLET_URL;
+            goto(getRoute('wallet-index'));
         }}
     >
-        <H6>
+        <OptionHeading>
             <FormattedMessage {...l10nMessages.TR_TREZOR_STABLE_WALLET} />
-        </H6>
+        </OptionHeading>
         <OptionDesc>
             <FormattedMessage {...l10nMessages.TR_TREZOR_STABLE_WALLET} />
         </OptionDesc>
@@ -34,9 +48,9 @@ const PasswordManagerOption = () => (
             window.location.href = PASSWORD_MANAGER_URL;
         }}
     >
-        <H6>
+        <OptionHeading>
             <FormattedMessage {...l10nMessages.TR_TREZOR_PASSWORD_MANAGER} />
-        </H6>
+        </OptionHeading>
         <OptionDesc>
             <FormattedMessage {...l10nMessages.TR_TREZOR_PASSWORD_MANAGER_DESCRIPTION} />
         </OptionDesc>
@@ -49,9 +63,9 @@ const EthereumBetaWalletOption = () => (
             window.location.href = NEXT_WALLET_URL;
         }}
     >
-        <H6>
+        <OptionHeading>
             <FormattedMessage {...l10nMessages.TR_TREZOR_ETHEREUM_WALLET} />
-        </H6>
+        </OptionHeading>
         <OptionDesc>
             <FormattedMessage {...l10nMessages.TR_TREZOR_ETHEREUM_WALLET_DESCRIPTION} />
         </OptionDesc>

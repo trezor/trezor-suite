@@ -7,7 +7,7 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     /* flex-grow: 1; */
     width: 100%;
     padding: 10px;
-    margin: 7px;
+    margin: 2%;
     border: solid 0.2px ${colors.gray};
     border-radius: 4px;
     display: flex;
