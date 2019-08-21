@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonPin, InputPin, P, H5, Link } from '@trezor/components';
@@ -50,71 +50,42 @@ interface Props {
     onEnterPin: (device: TrezorDevice) => void;
 }
 
-class Pin extends PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
+const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
+    const [value, setValue] = useState<State['value']>('');
 
-        this.state = {
-            value: '',
-        };
-    }
-
-    handleDelete() {
-        this.setState(state => {
-            return {
-                value: state.value.slice(0, -1),
-            };
-        });
-    }
-
-    handlePinButton(index: number) {
-        // TODO: get matrix from device
-        this.setState(state => {
-            return {
-                value: `${state.value}${index}`,
-            };
-        });
-    }
-
-    render() {
-        const { value } = this.state;
-
-        return (
-            <ModalWrapper>
-                <H5>Enter Trezor PIN</H5>
-                <TopMesssage size="small">The PIN layout is displayed on your Trezor.</TopMesssage>
-                <InputWrapper>
-                    <InputPin onDeleteClick={() => this.handleDelete()} value={value} />
-                </InputWrapper>
-                <PinRow>
-                    <ButtonPin onClick={() => this.handlePinButton(1)} />
-                    <ButtonPin onClick={() => this.handlePinButton(2)} />
-                    <ButtonPin onClick={() => this.handlePinButton(3)} />
-                </PinRow>
-                <PinRow>
-                    <ButtonPin onClick={() => this.handlePinButton(4)} />
-                    <ButtonPin onClick={() => this.handlePinButton(5)} />
-                    <ButtonPin onClick={() => this.handlePinButton(6)} />
-                </PinRow>
-                <PinRow>
-                    <ButtonPin onClick={() => this.handlePinButton(7)} />
-                    <ButtonPin onClick={() => this.handlePinButton(8)} />
-                    <ButtonPin onClick={() => this.handlePinButton(9)} />
-                </PinRow>
-                <PinFooter>
-                    <Button onClick={() => this.props.onEnterPin(this.props.device)}>
-                        Enter PIN
-                    </Button>
-                    <BottomMessage size="small">
-                        Not sure how PIN works?{' '}
-                        <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
-                            Learn more
-                        </Link>
-                    </BottomMessage>
-                </PinFooter>
-            </ModalWrapper>
-        );
-    }
-}
+    return (
+        <ModalWrapper>
+            <H5>Enter Trezor PIN</H5>
+            <TopMesssage size="small">The PIN layout is displayed on your Trezor.</TopMesssage>
+            <InputWrapper>
+                <InputPin onDeleteClick={() => setValue(value.slice(0, -1))} value={value} />
+            </InputWrapper>
+            <PinRow>
+                <ButtonPin onClick={() => setValue(`${value}${1}`)} />
+                <ButtonPin onClick={() => setValue(`${value}${2}`)} />
+                <ButtonPin onClick={() => setValue(`${value}${3}`)} />
+            </PinRow>
+            <PinRow>
+                <ButtonPin onClick={() => setValue(`${value}${4}`)} />
+                <ButtonPin onClick={() => setValue(`${value}${5}`)} />
+                <ButtonPin onClick={() => setValue(`${value}${6}`)} />
+            </PinRow>
+            <PinRow>
+                <ButtonPin onClick={() => setValue(`${value}${7}`)} />
+                <ButtonPin onClick={() => setValue(`${value}${8}`)} />
+                <ButtonPin onClick={() => setValue(`${value}${9}`)} />
+            </PinRow>
+            <PinFooter>
+                <Button onClick={() => onEnterPin(device)}>Enter PIN</Button>
+                <BottomMessage size="small">
+                    Not sure how PIN works?{' '}
+                    <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
+                        Learn more
+                    </Link>
+                </BottomMessage>
+            </PinFooter>
+        </ModalWrapper>
+    );
+};
 
 export default Pin;
