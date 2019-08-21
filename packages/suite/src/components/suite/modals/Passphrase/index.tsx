@@ -1,7 +1,7 @@
-import React, { PureComponent, ChangeEvent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
-import { H5, P, Button, Input, Checkbox } from '@trezor/components';
+import { H5, P, Button, Input, Checkbox, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import modalsMessages from '../messages';
@@ -11,7 +11,13 @@ import { TrezorDevice } from '@suite-types';
 const TopMesssage = styled(P)``;
 
 const BottomMessage = styled(P)`
-    margin: 20px 30px 0;
+    margin: 0 30px;
+`;
+
+const ErrorMessage = styled(P)<Error>`
+    padding: 10px 0 0;
+    opacity: ${props => (props.show ? 1 : 0)};
+    color: ${colors.ERROR_PRIMARY};
 `;
 
 const Wrapper = styled.div`
@@ -33,13 +39,14 @@ const FormRow = styled.div`
     padding: 15px 0;
 `;
 
-interface Instance {
-    instanceLabel: string;
+interface Error {
+    show: boolean;
 }
 
 interface State {
     value: string;
     valueAgain: string;
+    type: 'password' | 'text';
 }
 
 interface Props {
@@ -48,104 +55,61 @@ interface Props {
     onEnterPassphrase: (device: TrezorDevice) => void;
 }
 
-class Passphrase extends PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
+const Passphrase: FunctionComponent<Props> = ({ device, onEnterPassphrase }) => {
+    const [value, setValue] = useState<State['value']>('');
+    const [valueAgain, setValueAgain] = useState<State['valueAgain']>('');
+    const [showPassword, setShowPassword] = useState(false);
+    const type: State['type'] = showPassword ? 'text' : 'password';
 
-        this.state = {
-            value: '',
-            valueAgain: '',
-        };
-    }
-    componentDidMount(): void {
-        this.keyboardHandler = this.keyboardHandler.bind(this);
-        window.addEventListener('keydown', this.keyboardHandler, false);
-    }
-
-    componentWillUnmount(): void {
-        window.removeEventListener('keydown', this.keyboardHandler, false);
-    }
-
-    keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            this.props.onEnterPassphrase(this.props.device);
-        }
-    }
-
-    handleValue(event: ChangeEvent): void {
-        console.log(event);
-        // this.setState((state: State) => {
-        //     return {
-        //         value: event.target.value,
-        //         valueAgain: state.valueAgain,
-        //     };
-        // });
-    }
-
-    handleValueAgain(event: ChangeEvent): void {
-        console.log(event);
-        this.setState((state: State) => {
-            return {
-                value: state.value,
-                valueAgain: state.valueAgain,
-            };
-        });
-    }
-
-    render() {
-        const { device, instances, onEnterPassphrase } = this.props;
-        const { value, valueAgain } = this.state;
-
-        let { label } = device;
-        if (instances && instances.length > 0) {
-            label = instances.map((instance: Instance) => instance.instanceLabel).join(',');
-        }
-        return (
-            <Wrapper>
-                <H5>
-                    <FormattedMessage
-                        {...modalsMessages.TR_PASSPHRASE_LABEL}
-                        values={{
-                            deviceLabel: label,
-                        }}
-                    />
-                </H5>
-                <TopMesssage size="small">
-                    <FormattedMessage {...messages.PASSPHRASE_CASE_SENSITIVE} />
-                </TopMesssage>
-                <FormRow>
-                    <Input
-                        onChange={event => this.handleValue(event)}
-                        placeholder=""
-                        topLabel="Passphrase"
-                        type="text"
-                        value={value}
-                    />
-                </FormRow>
-                <FormRow>
-                    <Input
-                        onChange={event => this.handleValueAgain(event)}
-                        placeholder=""
-                        topLabel="Confirm Passphrase"
-                        type="text"
-                        value={valueAgain}
-                    />
-                </FormRow>
-                <FormRow>
-                    <Checkbox onClick={() => {}}>Show passphrase</Checkbox>
-                </FormRow>
-                <Column>
-                    <Button onClick={() => onEnterPassphrase(device)}>
-                        <FormattedMessage {...messages.TR_ENTER_PASSPHRASE} />
-                    </Button>
-                    <BottomMessage size="small">
-                        <FormattedMessage {...messages.PASSPHRASE_BLANK} />
-                    </BottomMessage>
-                </Column>
-            </Wrapper>
-        );
-    }
-}
+    return (
+        <Wrapper>
+            <H5>
+                <FormattedMessage
+                    {...modalsMessages.TR_PASSPHRASE_LABEL}
+                    values={{
+                        deviceLabel: device.label,
+                    }}
+                />
+            </H5>
+            <TopMesssage size="small">
+                <FormattedMessage {...messages.PASSPHRASE_CASE_SENSITIVE} />
+            </TopMesssage>
+            <FormRow>
+                <Input
+                    onChange={event => setValue(event.target.value)}
+                    placeholder=""
+                    topLabel="Passphrase"
+                    type={type}
+                    value={value}
+                />
+            </FormRow>
+            <FormRow>
+                <Input
+                    onChange={event => setValueAgain(event.target.value)}
+                    placeholder=""
+                    topLabel="Confirm Passphrase"
+                    type={type}
+                    value={valueAgain}
+                />
+            </FormRow>
+            <FormRow>
+                <Checkbox onClick={() => setShowPassword(!showPassword)} isChecked={showPassword}>
+                    Show passphrase
+                </Checkbox>
+            </FormRow>
+            <Column>
+                <Button onClick={() => onEnterPassphrase(device)} isDisabled={value !== valueAgain}>
+                    <FormattedMessage {...messages.TR_ENTER_PASSPHRASE} />
+                </Button>
+                <ErrorMessage size="small" show={value !== valueAgain}>
+                    <FormattedMessage {...messages.PASSPHRASE_DO_NOT_MATCH} />
+                </ErrorMessage>
+                <BottomMessage size="small">
+                    <FormattedMessage {...messages.PASSPHRASE_BLANK} />
+                </BottomMessage>
+            </Column>
+        </Wrapper>
+    );
+};
 
 export default Passphrase;
