@@ -1,3 +1,8 @@
+# IDE specific settings
+
+## Visual Studio Code
+Copy the code below to `.vscode/settings.json`
+```JSON
 {
     "eslint.validate": [
         "javascript",
