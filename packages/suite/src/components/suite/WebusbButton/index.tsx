@@ -14,34 +14,43 @@ interface Props {
 }
 
 const WebusbButton = ({ ready }: Props) => {
-    const moveWebusbIn = () => {
-        const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
-        const placeholder = document.getElementById('web-usb-placeholder');
-        const iframe = document.getElementsByTagName('iframe')[0];
-        if (!elem || !placeholder) return;
-        const { top, left, right } = placeholder.getBoundingClientRect();
-        elem.style.top = `${top}px`;
-        elem.style.left = `${left}px`;
-        elem.style.width = `${right - left}px`;
-        iframe.style.width = `${right - left}px`;
-        elem.style.zIndex = '1000';
-    };
-
-    const moveWebusbOut = () => {
-        const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
-        if (!elem) return;
-        elem.style.zIndex = '-1000';
-        elem.style.top = '-1000px';
+    const getOffset = el => {
+        const { top, left, right } = el.getBoundingClientRect();
+        return {
+            top: top + window.pageYOffset,
+            left: left + window.pageXOffset,
+            right: right + window.pageXOffset,
+        };
     };
 
     useEffect(() => {
+        const moveWebusbIn = () => {
+            const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
+            const placeholder = document.getElementById('web-usb-placeholder');
+            const iframe = document.getElementsByTagName('iframe')[0];
+            if (!elem || !placeholder) return;
+            const { top, left, right } = getOffset(placeholder);
+            elem.style.top = `${top}px`;
+            elem.style.left = `${left}px`;
+            elem.style.width = `${right - left}px`;
+            iframe.style.width = `${right - left}px`;
+            elem.style.zIndex = '1000';
+        };
+
+        const moveWebusbOut = () => {
+            const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
+            if (!elem) return;
+            elem.style.zIndex = '-1000';
+            elem.style.top = '-1000px';
+        };
+
         const onResize = () => {
             moveWebusbOut();
             moveWebusbIn();
         };
 
         if (ready) {
-            moveWebusbIn();
+            setTimeout(() => moveWebusbIn(), 0);
             window.addEventListener('resize', onResize);
             return () => {
                 moveWebusbOut();

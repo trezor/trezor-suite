@@ -104,18 +104,6 @@ const DeviceRect = styled.rect`
 `;
 
 class ConnectDevice extends PureComponent<Props> {
-    componentDidMount() {
-        if (this.props.showWebUsb) {
-            TrezorConnect.renderWebUSBButton();
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.props.showWebUsb) {
-            TrezorConnect.renderWebUSBButton();
-        }
-    }
-
     render() {
         return (
             <StyledConnectDevice>

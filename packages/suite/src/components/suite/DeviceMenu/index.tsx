@@ -125,10 +125,6 @@ const DeviceMenu = ({
     const [isAnimated, setIsAnimated] = useState(false);
     const [animationFinished, setAnimationFinished] = useState(false);
 
-    useEffect(() => {
-        if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
-    });
-
     // hooks managing closing the menu on click outside of the menu
     const ref = useRef<HTMLDivElement>(null);
     const handleClickOutside = (event: any) => {
@@ -137,17 +133,21 @@ const DeviceMenu = ({
         }
     };
 
+    const deviceMenuRef = useRef<HTMLDivElement>(null);
+
     const onAnimationEnd = () => {
         setTimeout(() => setAnimationFinished(true), 1);
+        if (deviceMenuRef.current) {
+            deviceMenuRef.current.removeEventListener('animationend', onAnimationEnd, true);
+        }
     };
 
     useEffect(() => {
         if (isOpen) {
             document.addEventListener('click', handleClickOutside, true);
 
-            const menuElement = document.getElementById('device-menu');
-            if (menuElement instanceof HTMLElement) {
-                menuElement.addEventListener('animationend', onAnimationEnd, true);
+            if (deviceMenuRef.current) {
+                deviceMenuRef.current.addEventListener('animationend', onAnimationEnd, true);
             }
         } else {
             setAnimationFinished(false);
@@ -261,7 +261,7 @@ const DeviceMenu = ({
                 }
             />
             {isOpen && (
-                <Menu id="device-menu">
+                <Menu ref={deviceMenuRef}>
                     {selectedDeviceAccessible && (
                         <MenuItems device={selectedDevice as AcquiredDevice} />
                     )}
