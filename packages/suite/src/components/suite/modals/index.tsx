@@ -3,9 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // import { DEVICE } from 'trezor-connect';
-
-import styled from 'styled-components';
-import { colors, animations } from '@trezor/components';
+import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as MODAL from '@suite-actions/constants/modalConstants';
@@ -21,30 +19,6 @@ import ForgetDeviceModal from '@suite-components/modals/Forget';
 import RememberDeviceModal from '@suite-components/modals/Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 import { AppState, Dispatch } from '@suite-types';
-
-const ModalContainer = styled.div`
-    position: fixed;
-    z-index: 10000;
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    background: rgba(0, 0, 0, 0.35);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: auto;
-    padding: 20px;
-    animation: ${animations.FADE_IN} 0.3s;
-`;
-
-const ModalWindow = styled.div`
-    margin: auto;
-    position: relative;
-    border-radius: 4px;
-    background-color: ${colors.WHITE};
-    text-align: center;
-`;
 
 interface StateProps {
     modal: AppState['modal'];
@@ -157,11 +131,7 @@ const Modal = (props: Props) => {
             break;
     }
 
-    return (
-        <ModalContainer>
-            <ModalWindow>{component}</ModalWindow>
-        </ModalContainer>
-    );
+    return <ModalComponent>{component}</ModalComponent>;
 };
 
 const mapStateToProps = (state: AppState) => ({
