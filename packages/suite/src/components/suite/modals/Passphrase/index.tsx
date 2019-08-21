@@ -52,7 +52,7 @@ interface State {
 interface Props {
     device: TrezorDevice;
     instances?: TrezorDevice[];
-    onEnterPassphrase: (device: TrezorDevice) => void;
+    onEnterPassphrase: (device: TrezorDevice, value: string) => void;
 }
 
 const Passphrase: FunctionComponent<Props> = ({ device, onEnterPassphrase }) => {
@@ -98,7 +98,10 @@ const Passphrase: FunctionComponent<Props> = ({ device, onEnterPassphrase }) => 
                 </Checkbox>
             </FormRow>
             <Column>
-                <Button onClick={() => onEnterPassphrase(device)} isDisabled={value !== valueAgain}>
+                <Button
+                    onClick={() => onEnterPassphrase(device, value)}
+                    isDisabled={value !== valueAgain}
+                >
                     <FormattedMessage {...messages.TR_ENTER_PASSPHRASE} />
                 </Button>
                 <ErrorMessage size="small" show={value !== valueAgain}>

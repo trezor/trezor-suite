@@ -47,7 +47,7 @@ interface State {
 interface Props {
     device: TrezorDevice;
     instances?: TrezorDevice[];
-    onEnterPin: (device: TrezorDevice) => void;
+    onEnterPin: (device: TrezorDevice, value: string) => void;
 }
 
 const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
@@ -76,7 +76,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <ButtonPin onClick={() => setValue(`${value}${9}`)} />
             </PinRow>
             <PinFooter>
-                <Button onClick={() => onEnterPin(device)}>Enter PIN</Button>
+                <Button onClick={() => onEnterPin(device, value)}>Enter PIN</Button>
                 <BottomMessage size="small">
                     Not sure how PIN works?{' '}
                     <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
