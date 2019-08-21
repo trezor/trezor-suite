@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import TrezorConnect from 'trezor-connect';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';

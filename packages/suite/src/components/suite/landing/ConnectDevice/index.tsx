@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { FormattedMessage } from 'react-intl';
-import TrezorConnect from 'trezor-connect';
 import { P, H1, Link, colors, variables, animations } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
 import l10nMessages from './index.messages';

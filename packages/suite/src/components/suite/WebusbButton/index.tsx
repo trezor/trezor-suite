@@ -14,7 +14,7 @@ interface Props {
 }
 
 const WebusbButton = ({ ready }: Props) => {
-    const getOffset = el => {
+    const getOffset = (el: HTMLElement) => {
         const { top, left, right } = el.getBoundingClientRect();
         return {
             top: top + window.pageYOffset,
@@ -50,6 +50,8 @@ const WebusbButton = ({ ready }: Props) => {
         };
 
         if (ready) {
+            // this setTimeout makes it work. I am not really sure why, or whether it is a good solution (probably not)
+            // but only this way button will move to the correct position.
             setTimeout(() => moveWebusbIn(), 0);
             window.addEventListener('resize', onResize);
             return () => {
