@@ -11,3 +11,10 @@ components type check:
         - yarn workspace @trezor/components type-check
     dependencies:
         - install and build
+
+components test unit:
+    stage: test
+    script:
+        - yarn workspace @trezor/components test:unit
+    dependencies:
+        - install and build

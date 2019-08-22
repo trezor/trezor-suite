@@ -36,6 +36,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Used in other window',
         description: 'Device status',
     },
+    TR_WAS_USED_IN_ANOTHER_WINDOW: {
+        id: 'TR_WAS_USED_IN_ANOTHER_WINDOW',
+        defaultMessage: 'Reload session',
+        description: 'Device status',
+    },
     TR_UNAVAILABLE: {
         id: 'TR_UNAVAILABLE',
         defaultMessage: 'Unavailable',

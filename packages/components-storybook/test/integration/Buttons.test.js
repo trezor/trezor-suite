@@ -42,6 +42,12 @@ describe('Buttons', () => {
         'button_inverse_icon_disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
+            if (testName.match(/icon/)) {
+                cy.getTestElement(testName)
+                    .find('svg')
+                    .should('be.visible');
+            }
+
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();

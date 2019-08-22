@@ -1,13 +1,13 @@
 suite-native lint:
     stage: lint
     script:
-        - env
         - yarn workspace @trezor/suite-native lint
     dependencies:
         - install and build
 
 suite-native type check:
     stage: type check
+    allow_failure: true
     script:
         - yarn workspace @trezor/suite-native type-check
     dependencies:

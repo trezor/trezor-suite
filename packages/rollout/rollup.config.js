@@ -17,8 +17,12 @@ export default {
     external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {})],
     plugins: [
         typescript({
-            typescript: require('typescript'),
+            tsconfigOverride: {
+                exclude: ['**/__tests__/**', '**/__mocks__/**'],
+            },
         }),
-        cleanup(),
+        cleanup({
+            comments: 'none',
+        }),
     ],
 };

@@ -48,7 +48,6 @@ connect-explorer deploy dev:
         on_stop: connect-explorer delete review
     before_script: []
     script:
-        - env
         - cd ${PACKAGE_PATH_CONNECT_EXPLORER}
         - echo "Deploy to dev servers"
         - mkdir -p ${DEPLOY_BASE_DIR}/connect-explorer

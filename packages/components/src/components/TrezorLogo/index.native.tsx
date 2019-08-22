@@ -3,10 +3,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SvgUri from 'react-native-svg-uri';
 import { LOGOS } from './logos';
+import { TrezorLogoType, TrezorLogoVariant } from '../../support/types';
 
 interface Props {
-    type: 'horizontal' | 'vertical';
-    variant?: 'white' | 'black';
+    type: TrezorLogoType;
+    variant?: TrezorLogoVariant;
 }
 
 const TrezorLogo = ({ type, variant = 'black', ...rest }: Props) => {

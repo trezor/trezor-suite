@@ -15,7 +15,6 @@
     },
     "include": ["src/**/*"],
     "exclude": [
-        "**/tests/**",
         "node_modules",
         "lib",
     ]

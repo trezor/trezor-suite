@@ -4,8 +4,10 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export type FeedbackType = 'success' | 'info' | 'warning' | 'error';
 
-export type TrezorModel = 1 | 2;
-
 export type IconType = typeof ICONS[number];
 
 export type CoinType = typeof COINS[number];
+
+export type TrezorLogoType = 'horizontal' | 'vertical' | 'symbol';
+
+export type TrezorLogoVariant = 'white' | 'black';

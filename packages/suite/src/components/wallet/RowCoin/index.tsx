@@ -61,7 +61,7 @@ const RowCoin = ({ network, iconLeft, iconRight }: Props) => (
                 )}
                 <CoinNameWrapper>
                     <CoinLogoWrapper>
-                        <CoinLogo height="23" network={network.shortcut} />
+                        <CoinLogo size={24} network={network.shortcut} />
                     </CoinLogoWrapper>
                     {network.name}
                 </CoinNameWrapper>

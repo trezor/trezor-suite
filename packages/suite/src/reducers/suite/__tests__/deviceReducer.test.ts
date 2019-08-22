@@ -1,0 +1,147 @@
+import deviceReducer from '@suite-reducers/deviceReducer';
+import { Action } from '@suite-types';
+import fixtures from './fixtures/deviceReducer';
+
+describe('DEVICE.CONNECT', () => {
+    fixtures.connect.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            // console.log('initialSTATE', state);
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a as Action);
+            });
+            // console.log('afterSTATE', state);
+            expect(state.length).toEqual(f.result.length);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+
+    // const f = fixtures.connect[6];
+    // it(f.description, async () => {
+    //     let state: ReturnType<typeof deviceReducer>;
+    //     // console.log('initialSTATE', state);
+    //     f.actions.forEach(a => {
+    //         state = deviceReducer(state || f.initialState, a as Action);
+    //     });
+    //     console.log('afterSTATE', state);
+    //     console.log('Res', f.result);
+    //     f.result.forEach((r, i) => {
+    //         expect(state[i]).toMatchObject(r);
+    //     });
+    //     // expect(state.length).arrayContaining(f.result);
+    // });
+});
+
+describe('DEVICE.CHANGED', () => {
+    fixtures.changed.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a as Action);
+            });
+            expect(state.length).toEqual(f.result.length);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});
+
+describe('DEVICE.DISCONNECT', () => {
+    fixtures.disconnect.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            f.actions.forEach(a => {
+                // intentionally use "undefined" as state to cover "initialState" line inside reducer
+                state = deviceReducer(state.length === 0 ? undefined : state, a as Action);
+            });
+            expect(state.length).toEqual(f.result.length);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});
+
+describe('SUITE.SELECT_DEVICE', () => {
+    fixtures.updateTimestamp.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a as Action);
+            });
+            expect(state.length).toEqual(f.result.length);
+            // console.log('afterSTATE', state);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+                if (f.ts[i] > 0) {
+                    expect(device.ts).toBeGreaterThan(0);
+                } else {
+                    expect(device.ts).toEqual(0);
+                }
+            });
+        });
+    });
+});
+
+describe('SUITE.RECEIVE_PASSPHRASE_MODE + SUITE.UPDATE_PASSPHRASE_MODE', () => {
+    fixtures.changePassphraseMode.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a as Action);
+            });
+            expect(state.length).toEqual(f.result.length);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});
+
+describe('SUITE.AUTH_DEVICE', () => {
+    fixtures.authDevice.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a as Action);
+            });
+            expect(state.length).toEqual(f.result.length);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});
+
+describe('SUITE.CREATE_DEVICE_INSTANCE', () => {
+    fixtures.createInstance.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a as Action);
+            });
+            expect(state.length).toEqual(f.result.length);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});
+
+describe('SUITE.FORGET_DEVICE + SUITE.FORGET_DEVICE_INSTANCE', () => {
+    fixtures.forget.forEach(f => {
+        it(f.description, () => {
+            let state: ReturnType<typeof deviceReducer> = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a as Action);
+            });
+            expect(state.length).toEqual(f.result.length);
+            state.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});

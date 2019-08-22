@@ -1,7 +1,6 @@
 suite-desktop lint:
     stage: lint
     script:
-        - env
         - yarn workspace @trezor/suite-desktop lint
     dependencies:
         - install and build
