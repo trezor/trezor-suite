@@ -6,23 +6,23 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as STEP from '@suite/constants/onboarding/steps';
-import PinMatrix from '@suite/components/onboarding/PinMatrix';
-import Text from '@suite/components/onboarding/Text';
 import { ConnectReducer } from '@suite/types/onboarding/connect';
 import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
 import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
+import { PinMatrix, Text, Wrapper } from '@onboarding-components';
 import { Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
 import Reconnect from './Reconnect';
-import { ControlsWrapper } from '../Wrapper';
 
-const Wrapper = styled.div`
+const CommonWrapper = styled.div`
     margin: auto 30px auto 30px;
     text-align: center;
     width: 100%;
 `;
 
-const UnexpectedStateCommon: React.SFC = ({ children }) => <Wrapper>{children}</Wrapper>;
+const UnexpectedStateCommon: React.SFC = ({ children }) => (
+    <CommonWrapper>{children}</CommonWrapper>
+);
 
 const IsSameDevice: FunctionComponent = () => (
     <P>
@@ -79,11 +79,11 @@ const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ getFeature
         <P>
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT} />
         </P>
-        <ControlsWrapper>
+        <Wrapper.Controls>
             <Button onClick={getFeatures}>
                 <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
             </Button>
-        </ControlsWrapper>
+        </Wrapper.Controls>
     </React.Fragment>
 );
 

@@ -7,15 +7,7 @@ import { Link, P } from '@trezor/components';
 import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
 import l10nCommonMessages from '@suite-support/Messages';
 import { PHISHING_URL } from '@onboarding-constants/urls';
-import Key from '@onboarding-components/Key';
-import Text from '@onboarding-components/Text';
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
-import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
+import { Wrapper, OnboardingButton, Key, Text } from '@suite/components/onboarding';
 import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
 import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
@@ -89,11 +81,11 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
         const ctrlKeys = BookmarkStep.CTRL_KEYS_WIN;
 
         return (
-            <StepWrapper>
-                <StepHeadingWrapper>
+            <Wrapper.Step>
+                <Wrapper.StepHeading>
                     <FormattedMessage {...l10nMessages.TR_BOOKMARK_HEADING} />
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
+                </Wrapper.StepHeading>
+                <Wrapper.StepBody>
                     <Text>
                         <FormattedMessage
                             {...l10nMessages.TR_BOOKMARK_SUBHEADING}
@@ -120,18 +112,18 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
                             <Key isPressed={keys[BookmarkStep.D_KEY] === true} text="D" />
                         </Keys>
                     </React.Fragment>
-                    <ControlsWrapper>
+                    <Wrapper.Controls>
                         {/* {!Platform.isMobile() && ( */}
                         <React.Fragment>
-                            <ButtonAlt onClick={() => this.setBookmarkFlagAndContinue()}>
+                            <OnboardingButton.Alt onClick={() => this.setBookmarkFlagAndContinue()}>
                                 <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                            </ButtonAlt>
-                            <ButtonCta
+                            </OnboardingButton.Alt>
+                            <OnboardingButton.Cta
                                 isDisabled={this.nextDisabled()}
                                 onClick={() => this.setBookmarkFlagAndContinue()}
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                            </ButtonCta>
+                            </OnboardingButton.Cta>
                         </React.Fragment>
                         {/* )} */}
                         {/*  todo: for mobile add to homescreen */}
@@ -145,9 +137,9 @@ class BookmarkStep extends React.Component<StepProps, StepState> {
                                 </Button>
                             </React.Fragment>
                         )} */}
-                    </ControlsWrapper>
-                </StepBodyWrapper>
-            </StepWrapper>
+                    </Wrapper.Controls>
+                </Wrapper.StepBody>
+            </Wrapper.Step>
         );
     }
 }

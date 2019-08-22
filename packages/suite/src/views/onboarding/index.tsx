@@ -29,10 +29,6 @@ import {
     NAVBAR_HEIGHT_UNIT,
 } from '@suite/config/onboarding/layout';
 
-import ProgressSteps from '@onboarding-components/ProgressSteps';
-import UnexpectedState from '@onboarding-components/UnexpectedState';
-import Preloader from '@onboarding-components/Preloader';
-
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
@@ -52,6 +48,7 @@ import NameStep from '@onboarding-views/steps/Name/Container';
 import BookmarkStep from '@onboarding-views/steps/Bookmark/Container';
 import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
 import FinalStep from '@onboarding-views/steps/Final';
+import { ProgressSteps, UnexpectedState, Preloader } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';
 

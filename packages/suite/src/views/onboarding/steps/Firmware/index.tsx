@@ -8,19 +8,9 @@ import commonMessages from '@suite-support/Messages';
 import colors from '@onboarding-config/colors';
 import { FIRMWARE_UPDATE } from '@onboarding-actions/constants/calls';
 import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
-import Text from '@onboarding-components/Text';
-import { ConnectDeviceIcon } from '@onboarding-components/Icons';
-import { Donut, Dots } from '@onboarding-components/Loaders';
-import { ButtonCta } from '@onboarding-components/Buttons';
-import {
-    StepWrapper,
-    StepHeadingWrapper,
-    StepBodyWrapper,
-    ControlsWrapper,
-} from '@onboarding-components/Wrapper';
-import { firmwareUpdate } from '@suite-actions/firmwareActions';
+import { firmwareUpdate } from '@onboarding-actions/firmwareUpdateActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
-// import { callActionAndGoToNextStep, resetDevice } from '@suite/actions/onboarding/connectActions';
+import { Text, OnboardingIcon, Loaders, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -59,10 +49,10 @@ const ContinueButton = ({ isConnected, onClick }: Omit<ButtonProps, 'isInBootloa
         placement="bottom"
         content="Connect device to continue"
     >
-        <ButtonCta isDisabled={!isConnected} onClick={() => onClick()}>
+        <OnboardingButton.Cta isDisabled={!isConnected} onClick={() => onClick()}>
             Finish basic setup
             {/* <FormattedMessage {...commonMessages.TR_CONTINUE} /> */}
-        </ButtonCta>
+        </OnboardingButton.Cta>
     </Tooltip>
 );
 
@@ -194,11 +184,11 @@ const FirmwareStep = ({
     };
 
     return (
-        <StepWrapper>
-            <StepHeadingWrapper>
+        <Wrapper.Step>
+            <Wrapper.StepHeading>
                 <FormattedMessage {...l10nMessages.TR_FIRMWARE_HEADING} />
-            </StepHeadingWrapper>
-            <StepBodyWrapper>
+            </Wrapper.StepHeading>
+            <Wrapper.StepBody>
                 {/*  text section */}
                 {getFirmwareStatus() === 'none' && (
                     <>
@@ -232,7 +222,7 @@ const FirmwareStep = ({
                 {/* progress donut section */}
                 {getUpdateStatus() && (
                     <>
-                        <Donut
+                        <Loaders.Donut
                             progress={progress}
                             radius={DONUT_RADIUS}
                             stroke={DONUT_STROKE}
@@ -243,10 +233,12 @@ const FirmwareStep = ({
                             <>
                                 <P>
                                     {getMessageForStatus()}
-                                    {getMessageForStatus() && <Dots />}
+                                    {getMessageForStatus() && <Loaders.Dots />}
                                 </P>
                                 {getUpdateStatus() === 'reconnect' && (
-                                    <ConnectDeviceIcon model={device.features.major_version} />
+                                    <OnboardingIcon.ConnectDeviceIcon
+                                        model={device.features.major_version}
+                                    />
                                 )}
                             </>
                         )}
@@ -276,7 +268,7 @@ const FirmwareStep = ({
 
                 {/* buttons section */}
                 {(!getUpdateStatus() || getUpdateStatus() === 'done') && (
-                    <ControlsWrapper>
+                    <Wrapper.Controls>
                         {getFirmwareStatus() === 'none' && !getError() && (
                             <>
                                 <InstallButton
@@ -292,9 +284,12 @@ const FirmwareStep = ({
                                 placement="bottom"
                                 content="Connect device to continue"
                             >
-                                <ButtonCta isDisabled={!isConnected} onClick={() => install()}>
+                                <OnboardingButton.Cta
+                                    isDisabled={!isConnected}
+                                    onClick={() => install()}
+                                >
                                     <FormattedMessage {...commonMessages.TR_RETRY} />
-                                </ButtonCta>
+                                </OnboardingButton.Cta>
                             </Tooltip>
                         )}
 
@@ -310,10 +305,10 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'success' && (
                             <ContinueButton isConnected={isConnected} onClick={getContinueFn()} />
                         )}
-                    </ControlsWrapper>
+                    </Wrapper.Controls>
                 )}
-            </StepBodyWrapper>
-        </StepWrapper>
+            </Wrapper.StepBody>
+        </Wrapper.Step>
     );
 };
 

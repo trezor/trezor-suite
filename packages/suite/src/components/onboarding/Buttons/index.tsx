@@ -1,5 +1,5 @@
-import ButtonBack from './components/ButtonBack';
-import ButtonAlt from './components/ButtonAlt';
-import ButtonCta from './components/ButtonCta';
+import Back from './components/ButtonBack';
+import Alt from './components/ButtonAlt';
+import Cta from './components/ButtonCta';
 
-export { ButtonBack, ButtonAlt, ButtonCta };
+export { Back, Alt, Cta };

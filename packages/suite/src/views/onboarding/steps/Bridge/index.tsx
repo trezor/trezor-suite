@@ -3,20 +3,11 @@ import styled from 'styled-components';
 import { Select, Link } from '@trezor/components';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { Dots } from '@suite/components/onboarding/Loaders';
-import Text from '@suite/components/onboarding/Text';
 import { goToSubStep, goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
-import { ButtonCta, ButtonBack } from '@onboarding-components/Buttons';
 import l10nCommonMessages from '@suite-support/Messages';
-import {
-    StepWrapper,
-    StepHeadingWrapper,
-    StepBodyWrapper,
-    ControlsWrapper,
-    StepFooterWrapper,
-} from '@onboarding-components/Wrapper';
 
 import l10nCommonBridgeMessages from '@suite-views/bridge/index.messages';
+import { Loaders, Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -98,11 +89,11 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
         const status = this.getStatus();
 
         return (
-            <StepWrapper>
-                <StepHeadingWrapper>
+            <Wrapper.Step>
+                <Wrapper.StepHeading>
                     <FormattedMessage {...l10nMessages.TR_BRIDGE_HEADING} />
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
+                </Wrapper.StepHeading>
+                <Wrapper.StepBody>
                     <Text size="small">
                         {status === 'installed' && (
                             <FormattedMessage
@@ -129,9 +120,9 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                                 options={installers}
                             />
                             <Link href={`${uri}${target.value}`}>
-                                <ButtonCta onClick={() => this.download()}>
+                                <OnboardingButton.Cta onClick={() => this.download()}>
                                     <FormattedMessage {...l10nMessages.TR_DOWNLOAD} />
-                                </ButtonCta>
+                                </OnboardingButton.Cta>
                             </Link>
                         </Download>
                     )}
@@ -160,31 +151,33 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                             <Text>3.</Text>
                             <Text>
                                 <FormattedMessage {...l10nMessages.TR_DETECTING_BRIDGE} />
-                                <Dots maxCount={3} />
+                                <Loaders.Dots maxCount={3} />
                             </Text>
                         </React.Fragment>
                     )}
 
                     {status === 'installed' && (
                         <React.Fragment>
-                            <ControlsWrapper>
-                                <ButtonCta
+                            <Wrapper.Controls>
+                                <OnboardingButton.Cta
                                     onClick={() => this.props.onboardingActions.goToNextStep()}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
-                </StepBodyWrapper>
-                <StepFooterWrapper>
-                    <ControlsWrapper>
-                        <ButtonBack onClick={() => this.props.onboardingActions.goToPreviousStep()}>
+                </Wrapper.StepBody>
+                <Wrapper.StepFooter>
+                    <Wrapper.Controls>
+                        <OnboardingButton.Back
+                            onClick={() => this.props.onboardingActions.goToPreviousStep()}
+                        >
                             Back
-                        </ButtonBack>
-                    </ControlsWrapper>
-                </StepFooterWrapper>
-            </StepWrapper>
+                        </OnboardingButton.Back>
+                    </Wrapper.Controls>
+                </Wrapper.StepFooter>
+            </Wrapper.Step>
         );
     }
 }

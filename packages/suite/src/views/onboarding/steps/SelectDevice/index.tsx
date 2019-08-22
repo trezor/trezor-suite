@@ -2,22 +2,12 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { H6, TrezorImage } from '@trezor/components';
 
-import Option from '@onboarding-components/Option';
-import Text from '@onboarding-components/Text';
-import { ButtonBack } from '@suite/components/onboarding/Buttons';
-import {
-    StepWrapper,
-    StepHeadingWrapper,
-    StepBodyWrapper,
-    StepFooterWrapper,
-    OptionsWrapper,
-    ControlsWrapper,
-} from '@onboarding-components/Wrapper';
 import {
     goToNextStep,
     goToPreviousStep,
     selectTrezorModel,
 } from '@onboarding-actions/onboardingActions';
+import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
 
 import l10nMessages from './index.messages';
 
@@ -33,14 +23,12 @@ interface Props {
 
 const SelectDeviceStep: React.FC<Props> = ({ onboardingActions }) => {
     return (
-        <StepWrapper>
-            <StepHeadingWrapper>
+        <Wrapper.Step>
+            <Wrapper.StepHeading>
                 <FormattedMessage {...l10nMessages.TR_SELECT_YOUR_DEVICE_HEADING} />
-            </StepHeadingWrapper>
-            <StepBodyWrapper>
-                <Text>Note -> isnt it nicer without the green buttons?</Text>
-
-                <OptionsWrapper>
+            </Wrapper.StepHeading>
+            <Wrapper.StepBody>
+                <Wrapper.Options>
                     <Option
                         data-test="option-model-one-path"
                         onClick={() => {
@@ -65,20 +53,20 @@ const SelectDeviceStep: React.FC<Props> = ({ onboardingActions }) => {
                             <FormattedMessage {...l10nMessages.TR_MODEL_T} />
                         </H6>
                     </Option>
-                </OptionsWrapper>
-            </StepBodyWrapper>
-            <StepFooterWrapper>
-                <ControlsWrapper>
-                    <ButtonBack
+                </Wrapper.Options>
+            </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <Wrapper.Controls>
+                    <OnboardingButton.Back
                         onClick={() => {
                             onboardingActions.goToPreviousStep();
                         }}
                     >
                         Back
-                    </ButtonBack>
-                </ControlsWrapper>
-            </StepFooterWrapper>
-        </StepWrapper>
+                    </OnboardingButton.Back>
+                </Wrapper.Controls>
+            </Wrapper.StepFooter>
+        </Wrapper.Step>
     );
 };
 

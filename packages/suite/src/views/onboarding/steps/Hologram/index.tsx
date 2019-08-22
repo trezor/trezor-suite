@@ -8,19 +8,10 @@ import {
     TREZOR_PACKAGING_URL,
     SUPPORT_URL,
 } from '@onboarding-constants/urls';
-import Text from '@onboarding-components/Text';
-import { ButtonBack, ButtonAlt, ButtonCta } from '@suite/components/onboarding/Buttons';
 import l10nCommonMessages from '@suite-support/Messages';
 
-import {
-    StepWrapper,
-    StepHeadingWrapper,
-    StepBodyWrapper,
-    StepFooterWrapper,
-    ControlsWrapper,
-} from '@suite/components/onboarding/Wrapper';
-
 import { goToPreviousStep, goToNextStep, goToSubStep } from '@onboarding-actions/onboardingActions';
+import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import Hologram from './components/Hologram';
 import { AppState } from '@suite-types';
@@ -51,26 +42,28 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
             ? device.features.major_version
             : null;
     return (
-        <StepWrapper>
-            <StepHeadingWrapper>
+        <Wrapper.Step>
+            <Wrapper.StepHeading>
                 <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_HEADING} />
-            </StepHeadingWrapper>
-            <StepBodyWrapper>
+            </Wrapper.StepHeading>
+            <Wrapper.StepBody>
                 {activeSubStep !== 'hologram-different' && (
                     <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
                         <HologramWrapper>{model && <Hologram model={model} />}</HologramWrapper>
-                        <ControlsWrapper>
+                        <Wrapper.Controls>
                             {actualVersion && actualVersion !== model && (
-                                <ButtonCta onClick={() => onboardingActions.goToPreviousStep()}>
+                                <OnboardingButton.Cta
+                                    onClick={() => onboardingActions.goToPreviousStep()}
+                                >
                                     Go back and select correct device
-                                </ButtonCta>
+                                </OnboardingButton.Cta>
                             )}
                             {(!actualVersion || actualVersion === model) && (
                                 <React.Fragment>
-                                    <ButtonAlt
+                                    <OnboardingButton.Alt
                                         data-test="button-hologram-different"
                                         onClick={() =>
                                             onboardingActions.goToSubStep('hologram-different')
@@ -79,18 +72,18 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                         <FormattedMessage
                                             {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_NOT_OK}
                                         />
-                                    </ButtonAlt>
-                                    <ButtonCta
+                                    </OnboardingButton.Alt>
+                                    <OnboardingButton.Cta
                                         data-test="button-continue"
                                         onClick={() => onboardingActions.goToNextStep()}
                                     >
                                         <FormattedMessage
                                             {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK}
                                         />
-                                    </ButtonCta>
+                                    </OnboardingButton.Cta>
                                 </React.Fragment>
                             )}
-                        </ControlsWrapper>
+                        </Wrapper.Controls>
                     </>
                 )}
                 {activeSubStep === 'hologram-different' && (
@@ -119,34 +112,34 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 }}
                             />
                         </Text>
-                        <ControlsWrapper>
-                            <ButtonAlt
+                        <Wrapper.Controls>
+                            <OnboardingButton.Alt
                                 onClick={() => onboardingActions.goToSubStep(null)}
                                 data-test="button-back"
                             >
                                 Back
-                            </ButtonAlt>
+                            </OnboardingButton.Alt>
 
                             <Link href={SUPPORT_URL} target="_self">
-                                <ButtonCta
+                                <OnboardingButton.Cta
                                     data-test="button-contact-support"
                                     style={{ width: '100%' }}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
-                                </ButtonCta>
+                                </OnboardingButton.Cta>
                             </Link>
-                        </ControlsWrapper>
+                        </Wrapper.Controls>
                     </>
                 )}
-            </StepBodyWrapper>
-            <StepFooterWrapper>
-                <ControlsWrapper>
-                    <ButtonBack onClick={() => onboardingActions.goToPreviousStep()}>
+            </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <Wrapper.Controls>
+                    <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
                         Back to Trezor model selection
-                    </ButtonBack>
-                </ControlsWrapper>
-            </StepFooterWrapper>
-        </StepWrapper>
+                    </OnboardingButton.Back>
+                </Wrapper.Controls>
+            </Wrapper.StepFooter>
+        </Wrapper.Step>
     );
 };
 

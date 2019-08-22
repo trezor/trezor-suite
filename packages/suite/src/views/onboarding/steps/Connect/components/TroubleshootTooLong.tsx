@@ -4,9 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { H6, Link } from '@trezor/components';
 
 import { SUPPORT_URL } from '@onboarding-constants/urls';
-import Text from '@onboarding-components/Text';
-import { ButtonAlt } from '@onboarding-components/Buttons';
-import { ControlsWrapper } from '@onboarding-components/Wrapper';
+import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './TroubleshootTooLong.messages';
 
 const Card = styled.div`
@@ -48,14 +46,14 @@ const TroubleshootSearchingTooLong = () => (
                 <FormattedMessage {...l10nMessages.TR_ANOTHER_CABLE_INSTRUCTION} />
             </Text>
         </Card>
-        <ControlsWrapper>
-            <ButtonAlt>
+        <Wrapper.Controls>
+            <OnboardingButton.Alt>
                 <FormattedMessage
                     {...l10nMessages.TR_LAST_RESORT_INSTRUCTION}
                     values={{ ContactSupportLink }}
                 />
-            </ButtonAlt>
-        </ControlsWrapper>
+            </OnboardingButton.Alt>
+        </Wrapper.Controls>
     </React.Fragment>
 );
 

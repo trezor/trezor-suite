@@ -5,16 +5,7 @@ import { AppState } from '@suite-types/index';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { callActionAndGoToNextStep, resetDevice } from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
-import Option from '@onboarding-components/Option';
-import Text from '@onboarding-components/Text';
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-    OptionsWrapper,
-} from '@onboarding-components/Wrapper';
-import { ButtonCta } from '@onboarding-components/Buttons';
+import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 
 // import l10nMessages from './index.messages';
 
@@ -40,13 +31,13 @@ const ShamirStep = (props: Props) => {
         return 2;
     };
     return (
-        <StepWrapper>
-            <StepHeadingWrapper>
+        <Wrapper.Step>
+            <Wrapper.StepHeading>
                 {getModel() === 1 && 'Almost there! Prepare to launch'}
                 {getModel() === 2 && 'Seed type'}
                 {/* <FormattedMessage {...l10nMessages.TR_SECURITY_HEADING} /> */}
-            </StepHeadingWrapper>
-            <StepBodyWrapper>
+            </Wrapper.StepHeading>
+            <Wrapper.StepBody>
                 <Text>
                     {getModel() === 1 && 'Just click the button and continue. What about TOS?'}
                     {getModel() === 2 &&
@@ -55,7 +46,7 @@ const ShamirStep = (props: Props) => {
                 </Text>
 
                 {getModel() === 2 && (
-                    <OptionsWrapper>
+                    <Wrapper.Options>
                         <Option
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
@@ -65,7 +56,7 @@ const ShamirStep = (props: Props) => {
                             }
                         >
                             <Text>Standard backup</Text>
-                            {/* <ButtonCta
+                            {/* <OnboardingButton.Cta
                         data-test="button-new-device"
                         onClick={() => {
                             props.onboardingActions.setPath([...props.path, STEP.PATH_NEW]);
@@ -73,7 +64,7 @@ const ShamirStep = (props: Props) => {
                         }}
                     >
                         New device
-                    </ButtonCta> */}
+                    </OnboardingButton.Cta> */}
                         </Option>
 
                         <Option
@@ -86,11 +77,11 @@ const ShamirStep = (props: Props) => {
                         >
                             <Text>Shamir backup (experimental)</Text>
                         </Option>
-                    </OptionsWrapper>
+                    </Wrapper.Options>
                 )}
                 {getModel() === 1 && (
-                    <ControlsWrapper>
-                        <ButtonCta
+                    <Wrapper.Controls>
+                        <OnboardingButton.Cta
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
                                     () => props.resetDevice(),
@@ -98,12 +89,12 @@ const ShamirStep = (props: Props) => {
                                 )
                             }
                         >
-                            Create the f* wallet
-                        </ButtonCta>
-                    </ControlsWrapper>
+                            Create the wallet
+                        </OnboardingButton.Cta>
+                    </Wrapper.Controls>
                 )}
-            </StepBodyWrapper>
-        </StepWrapper>
+            </Wrapper.StepBody>
+        </Wrapper.Step>
     );
 };
 

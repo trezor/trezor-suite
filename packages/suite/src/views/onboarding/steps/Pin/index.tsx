@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Link, Modal } from '@trezor/components';
@@ -8,17 +7,9 @@ import { FormattedMessage } from 'react-intl';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import l10nCommonMessages from '@suite-support/Messages';
 import { PIN_MANUAL_URL } from '@onboarding-constants/urls';
-import PinMatrix from '@onboarding-components/PinMatrix';
-import Text from '@onboarding-components/Text';
-import { ButtonAlt, ButtonCta } from '@onboarding-components/Buttons';
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-} from '@onboarding-components/Wrapper';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { changePin, submitNewPin } from '@onboarding-actions/connectActions';
+import { PinMatrix, Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
@@ -92,8 +83,8 @@ class SetPinStep extends React.Component<Props> {
 
     render() {
         return (
-            <StepWrapper>
-                <StepHeadingWrapper>
+            <Wrapper.Step>
+                <Wrapper.StepHeading>
                     {this.getStatus() === 'initial' && 'PIN'}
                     {this.getStatus() === 'first' && (
                         <FormattedMessage {...l10nMessages.TR_PIN_HEADING_FIRST} />
@@ -107,27 +98,27 @@ class SetPinStep extends React.Component<Props> {
                     {this.getStatus() === 'mismatch' && (
                         <FormattedMessage {...l10nMessages.TR_PIN_HEADING_MISMATCH} />
                     )}
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
+                </Wrapper.StepHeading>
+                <Wrapper.StepBody>
                     {this.getStatus() === 'initial' && (
                         <React.Fragment>
                             <Text>
                                 <FormattedMessage {...l10nMessages.TR_PIN_SUBHEADING} />
                             </Text>
-                            <ControlsWrapper>
-                                <ButtonAlt
+                            <Wrapper.Controls>
+                                <OnboardingButton.Alt
                                     onClick={() => this.props.onboardingActions.goToNextStep()}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                                </ButtonAlt>
-                                <ButtonCta
+                                </OnboardingButton.Alt>
+                                <OnboardingButton.Cta
                                     onClick={() => {
                                         this.props.connectActions.changePin();
                                     }}
                                 >
                                     <FormattedMessage {...l10nMessages.TR_SET_PIN} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
 
@@ -182,13 +173,13 @@ class SetPinStep extends React.Component<Props> {
                             <Text>
                                 <FormattedMessage {...l10nMessages.TR_PIN_SET_SUCCESS} />
                             </Text>
-                            <ControlsWrapper>
-                                <ButtonCta
+                            <Wrapper.Controls>
+                                <OnboardingButton.Cta
                                     onClick={() => this.props.onboardingActions.goToNextStep()}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
 
@@ -209,19 +200,19 @@ class SetPinStep extends React.Component<Props> {
                                 />
                             </Text>
 
-                            <ControlsWrapper>
-                                <ButtonCta
+                            <Wrapper.Controls>
+                                <OnboardingButton.Cta
                                     onClick={() => {
                                         this.props.connectActions.changePin();
                                     }}
                                 >
                                     <FormattedMessage {...l10nMessages.TR_START_AGAIN} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
-                </StepBodyWrapper>
-            </StepWrapper>
+                </Wrapper.StepBody>
+            </Wrapper.Step>
         );
     }
 }

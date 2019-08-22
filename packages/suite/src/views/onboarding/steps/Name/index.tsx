@@ -8,14 +8,7 @@ import { isASCII } from '@suite-utils/validators';
 import { applySettings } from '@onboarding-actions/connectActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import { DEFAULT_LABEL } from '@onboarding-constants/trezor';
-import Text from '@onboarding-components/Text';
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-} from '@onboarding-components/Wrapper';
-import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
+import { Wrapper, OnboardingButton, Text } from '@onboarding-components';
 import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
@@ -97,8 +90,8 @@ class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState>
         const { device } = this.props;
         const status = this.getStatus();
         return (
-            <StepWrapper>
-                <StepHeadingWrapper>
+            <Wrapper.Step>
+                <Wrapper.StepHeading>
                     {status === 'initial' && <FormattedMessage {...l10nMessages.TR_NAME_HEADING} />}
                     {status === 'changed' && (
                         <FormattedMessage
@@ -106,8 +99,8 @@ class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState>
                             values={{ label: device!.features!.label }}
                         />
                     )}
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
+                </Wrapper.StepHeading>
+                <Wrapper.StepBody>
                     {status === 'initial' && (
                         <React.Fragment>
                             <Text>
@@ -127,19 +120,19 @@ class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState>
                                 isDisabled={this.props.deviceCall.isProgress}
                             />
 
-                            <ControlsWrapper>
-                                <ButtonAlt
+                            <Wrapper.Controls>
+                                <OnboardingButton.Alt
                                     onClick={() => this.props.onboardingActions.goToNextStep()}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                                </ButtonAlt>
-                                <ButtonCta
+                                </OnboardingButton.Alt>
+                                <OnboardingButton.Cta
                                     isDisabled={this.validateInput().state !== 'success'}
                                     onClick={this.changeLabel}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_SUBMIT} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
 
@@ -148,17 +141,17 @@ class NameStep extends React.Component<StepProps & InjectedIntlProps, StepState>
                             <Text>
                                 <FormattedMessage {...l10nMessages.TR_NAME_CHANGED_TEXT} />
                             </Text>
-                            <ControlsWrapper>
-                                <ButtonCta
+                            <Wrapper.Controls>
+                                <OnboardingButton.Cta
                                     onClick={() => this.props.onboardingActions.goToNextStep()}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
-                </StepBodyWrapper>
-            </StepWrapper>
+                </Wrapper.StepBody>
+            </Wrapper.Step>
         );
     }
 }

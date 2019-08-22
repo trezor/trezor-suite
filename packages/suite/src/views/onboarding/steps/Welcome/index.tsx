@@ -3,20 +3,11 @@ import styled from 'styled-components';
 import { H1, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-// todo reorganize to single import
-import Option from '@onboarding-components/Option';
-import Text from '@onboarding-components/Text';
-import { ButtonBack, ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
-import {
-    StepBodyWrapper,
-    StepWrapper,
-    StepFooterWrapper,
-    OptionsWrapper,
-} from '@onboarding-components/Wrapper';
 import * as STEP from '@onboarding-constants/steps';
 import { goToNextStep, addPath } from '@onboarding-actions/onboardingActions';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
+import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
 import { AppState } from '@suite-types';
 
 import l10nMessages from './index.messages';
@@ -45,12 +36,12 @@ const WelcomeStep = (props: Props) => {
     };
 
     return (
-        <StepWrapper data-test="onboarding_first_page">
+        <Wrapper.Step data-test="onboarding_first_page">
             {/* {
                 TODO: what if connect fails to load
                 props.connectError && <Loader>Loading takes too long. But we are still trying. If the problem persist, contact Trezor support</Loader>
             } */}
-            <StepBodyWrapper>
+            <Wrapper.StepBody>
                 <H1>
                     <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} />
                 </H1>
@@ -59,7 +50,7 @@ const WelcomeStep = (props: Props) => {
                     <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR_TEXT} />
                 </Text>
 
-                <OptionsWrapper>
+                <Wrapper.Options>
                     <Option
                         data-test="button-path-create"
                         onClick={() => {
@@ -69,7 +60,7 @@ const WelcomeStep = (props: Props) => {
                     >
                         <Base>Create new Wallet</Base>
                         <Small>if you never had any Wallet</Small>
-                        <ButtonCta>Create a new Wallet</ButtonCta>
+                        <OnboardingButton.Cta>Create a new Wallet</OnboardingButton.Cta>
                     </Option>
                     <Option
                         data-test="button-path-recovery"
@@ -80,21 +71,21 @@ const WelcomeStep = (props: Props) => {
                     >
                         <Base>Restore existing wallet</Base>
                         <Small>using your backup seed</Small>
-                        <ButtonAlt>Recover an existing wallet</ButtonAlt>
+                        <OnboardingButton.Alt>Recover an existing wallet</OnboardingButton.Alt>
                     </Option>
-                </OptionsWrapper>
-            </StepBodyWrapper>
-            <StepFooterWrapper>
+                </Wrapper.Options>
+            </Wrapper.StepBody>
+            <Wrapper.StepFooter>
                 {isDeviceInitialized() && (
-                    <ButtonBack
+                    <OnboardingButton.Back
                         data-test="button-use-wallet"
                         onClick={() => goto(getRoute('wallet-index'))}
                     >
                         <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
-                    </ButtonBack>
+                    </OnboardingButton.Back>
                 )}
-            </StepFooterWrapper>
-        </StepWrapper>
+            </Wrapper.StepFooter>
+        </Wrapper.Step>
     );
 };
 

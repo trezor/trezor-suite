@@ -3,18 +3,10 @@ import { FormattedMessage } from 'react-intl';
 
 import { TrezorConnect } from '@onboarding-components/Prompts';
 import { Dots } from '@onboarding-components/Loaders';
-import Text from '@onboarding-components/Text';
-import { ButtonCta, ButtonBack } from '@onboarding-components/Buttons';
 import l10nCommonMessages from '@suite-support/Messages';
-import {
-    StepWrapper,
-    StepHeadingWrapper,
-    StepBodyWrapper,
-    ControlsWrapper,
-    StepFooterWrapper,
-} from '@suite/components/onboarding/Wrapper';
-
 import { goToNextStep, goToPreviousStep } from '@suite/actions/onboarding/onboardingActions';
+import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
+
 import TroubleshootBootloader from './components/TroubleshootBootloader';
 import TroubleshootInitialized from './components/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/TroubleshootTooLong';
@@ -85,8 +77,8 @@ const ConnectStep = ({ device, model, onboardingActions }: StepProps) => {
     };
 
     return (
-        <StepWrapper>
-            <StepHeadingWrapper>
+        <Wrapper.Step>
+            <Wrapper.StepHeading>
                 {(!getStatus() || getStatus() === 'searching') && (
                     <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
                 )}
@@ -100,8 +92,8 @@ const ConnectStep = ({ device, model, onboardingActions }: StepProps) => {
                 {getStatus() === 'unexpected-initialized' && (
                     <FormattedMessage {...l10nMessages.TR_DEVICE_IS_INITIALIZED} />
                 )}
-            </StepHeadingWrapper>
-            <StepBodyWrapper>
+            </Wrapper.StepHeading>
+            <Wrapper.StepBody>
                 {(!getStatus() || getStatus() === 'searching') && (
                     <>
                         <TrezorConnect model={model || 2} height={180} loop={!deviceIsConnected} />
@@ -124,25 +116,25 @@ const ConnectStep = ({ device, model, onboardingActions }: StepProps) => {
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} />
                         </Text>
-                        <ControlsWrapper>
-                            <ButtonCta onClick={() => onboardingActions.goToNextStep()}>
+                        <Wrapper.Controls>
+                            <OnboardingButton.Cta onClick={() => onboardingActions.goToNextStep()}>
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                            </ButtonCta>
-                        </ControlsWrapper>
+                            </OnboardingButton.Cta>
+                        </Wrapper.Controls>
                     </>
                 )}
-            </StepBodyWrapper>
-            <StepFooterWrapper>
-                <ControlsWrapper>
-                    <ButtonBack onClick={() => onboardingActions.goToPreviousStep()}>
+            </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <Wrapper.Controls>
+                    <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
                         Back
-                    </ButtonBack>
-                </ControlsWrapper>
-            </StepFooterWrapper>
+                    </OnboardingButton.Back>
+                </Wrapper.Controls>
+            </Wrapper.StepFooter>
             <Text>
                 // in case device is already connected, shouldnt we skip this step directly to fw?
             </Text>
-        </StepWrapper>
+        </Wrapper.Step>
     );
 };
 

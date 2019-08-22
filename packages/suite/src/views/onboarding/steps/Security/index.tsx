@@ -3,14 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import * as STEP from '@onboarding-constants/steps';
-import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
-import Text from '@onboarding-components/Text';
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-} from '@onboarding-components/Wrapper';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 
 import l10nMessages from './index.messages';
 
@@ -19,32 +12,32 @@ interface Props {
 }
 
 const SecurityStep = (props: Props) => (
-    <StepWrapper>
-        <StepHeadingWrapper>
+    <Wrapper.Step>
+        <Wrapper.StepHeading>
             <FormattedMessage {...l10nMessages.TR_SECURITY_HEADING} />
-        </StepHeadingWrapper>
-        <StepBodyWrapper>
+        </Wrapper.StepHeading>
+        <Wrapper.StepBody>
             <Text>
                 <FormattedMessage {...l10nMessages.TR_SECURITY_SUBHEADING} />
             </Text>
-            <ControlsWrapper>
-                <ButtonAlt
+            <Wrapper.Controls>
+                <OnboardingButton.Alt
                     onClick={() => {
                         props.goToNextStep(STEP.ID_FINAL_STEP);
                     }}
                 >
                     <FormattedMessage {...l10nMessages.TR_SKIP_SECURITY} />
-                </ButtonAlt>
-                <ButtonCta
+                </OnboardingButton.Alt>
+                <OnboardingButton.Cta
                     onClick={() => {
                         props.goToNextStep();
                     }}
                 >
                     <FormattedMessage {...l10nMessages.TR_GO_TO_SECURITY} />
-                </ButtonCta>
-            </ControlsWrapper>
-        </StepBodyWrapper>
-    </StepWrapper>
+                </OnboardingButton.Cta>
+            </Wrapper.Controls>
+        </Wrapper.StepBody>
+    </Wrapper.Step>
 );
 
 export default SecurityStep;

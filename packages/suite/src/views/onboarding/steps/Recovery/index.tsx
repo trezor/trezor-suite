@@ -4,18 +4,6 @@ import { createFilter } from 'react-select';
 import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 import { P, Select, Link } from '@trezor/components';
 
-import BlindMatrix from '@onboarding-components/BlindMatrix';
-import Option from '@onboarding-components/Option';
-import Text from '@onboarding-components/Text';
-import {
-    ControlsWrapper,
-    StepWrapper,
-    StepBodyWrapper,
-    OptionsWrapper,
-    StepHeadingWrapper,
-} from '@onboarding-components/Wrapper';
-import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
-
 import colors from '@onboarding-config/colors';
 
 import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
@@ -33,6 +21,7 @@ import * as connectActions from '@onboarding-actions/connectActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
 
 import l10nCommonMessages from '@suite-support/Messages';
+import { BlindMatrix, Option, Text, Wrapper, OnboardingButton } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -150,14 +139,14 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
         const { deviceCall, uiInteraction, device } = this.props;
 
         return (
-            <StepWrapper>
+            <Wrapper.Step>
                 {/* getStatus: {JSON.stringify(this.getStatus())} */}
 
-                <StepHeadingWrapper>
+                <Wrapper.StepHeading>
                     {this.getStatus() === null && 'Recover your device from seed'}
                     {this.getStatus() === 'select-advanced-recovery' && 'Select recovery method'}
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
+                </Wrapper.StepHeading>
+                <Wrapper.StepBody>
                     {this.getStatus() === null && (
                         <React.Fragment>
                             {device!.features!.major_version === 1 && (
@@ -165,7 +154,7 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                     <Text>
                                         <FormattedMessage {...l10nMessages.TR_RECOVER_SUBHEADING} />
                                     </Text>
-                                    <OptionsWrapper>
+                                    <Wrapper.Options>
                                         <Option
                                             isSelected={this.props.recovery.wordsCount === 12}
                                             onClick={() => {
@@ -205,18 +194,18 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                                 />
                                             </P>
                                         </Option>
-                                    </OptionsWrapper>
+                                    </Wrapper.Options>
 
-                                    <ControlsWrapper>
-                                        <ButtonCta
+                                    <Wrapper.Controls>
+                                        <OnboardingButton.Cta
                                             isDisabled={this.props.recovery.wordsCount === null}
                                             onClick={() => {
                                                 this.setStatus('select-advanced-recovery');
                                             }}
                                         >
                                             <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                        </ButtonCta>
-                                    </ControlsWrapper>
+                                        </OnboardingButton.Cta>
+                                    </Wrapper.Controls>
                                 </React.Fragment>
                             )}
 
@@ -225,15 +214,15 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                     <Text>
                                         <FormattedMessage {...l10nMessages.TR_RECOVER_SUBHEADING} />
                                     </Text>
-                                    <ControlsWrapper>
-                                        <ButtonCta
+                                    <Wrapper.Controls>
+                                        <OnboardingButton.Cta
                                             onClick={() => {
                                                 this.recoveryDevice();
                                             }}
                                         >
                                             <FormattedMessage {...l10nMessages.TR_START_RECOVERY} />
-                                        </ButtonCta>
-                                    </ControlsWrapper>
+                                        </OnboardingButton.Cta>
+                                    </Wrapper.Controls>
                                 </React.Fragment>
                             )}
                         </React.Fragment>
@@ -254,7 +243,7 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                     }}
                                 />
                             </Text>
-                            <OptionsWrapper>
+                            <Wrapper.Options>
                                 <Option
                                     isSelected={this.props.recovery.advancedRecovery === false}
                                     onClick={() => {
@@ -279,25 +268,25 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                         />
                                     </P>
                                 </Option>
-                            </OptionsWrapper>
+                            </Wrapper.Options>
 
-                            <ControlsWrapper>
-                                <ButtonAlt
+                            <Wrapper.Controls>
+                                <OnboardingButton.Alt
                                     onClick={() => {
                                         // this.props.onboardingActions.goToSubStep(null);
                                         this.setStatus(null);
                                     }}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_BACK} />
-                                </ButtonAlt>
-                                <ButtonCta
+                                </OnboardingButton.Alt>
+                                <OnboardingButton.Cta
                                     onClick={() => {
                                         this.recoveryDevice();
                                     }}
                                 >
                                     <FormattedMessage {...l10nMessages.TR_START_RECOVERY} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
                     {this.getStatus() === 'recovering' && (
@@ -392,11 +381,13 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                         </React.Fragment>
                     )}
                     {this.getStatus() === 'success' && (
-                        <ControlsWrapper>
-                            <ButtonCta onClick={() => this.props.onboardingActions.goToNextStep()}>
+                        <Wrapper.Controls>
+                            <OnboardingButton.Cta
+                                onClick={() => this.props.onboardingActions.goToNextStep()}
+                            >
                                 Continue
-                            </ButtonCta>
-                        </ControlsWrapper>
+                            </OnboardingButton.Cta>
+                        </Wrapper.Controls>
                     )}
                     {this.getStatus() === 'error' && (
                         <React.Fragment>
@@ -407,18 +398,18 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
                                 />
                             </Text>
 
-                            <ButtonCta
+                            <OnboardingButton.Cta
                                 onClick={() => {
                                     this.props.connectActions.resetCall();
                                     this.setStatus(null);
                                 }}
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_RETRY} />
-                            </ButtonCta>
+                            </OnboardingButton.Cta>
                         </React.Fragment>
                     )}
-                </StepBodyWrapper>
-            </StepWrapper>
+                </Wrapper.StepBody>
+            </Wrapper.Step>
         );
     }
 }

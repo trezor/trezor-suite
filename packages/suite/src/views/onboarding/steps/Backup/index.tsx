@@ -6,16 +6,8 @@ import { FormattedMessage } from 'react-intl';
 import colors from '@suite/config/onboarding/colors';
 import { SEED_MANUAL_URL } from '@suite/constants/onboarding/urls';
 import { BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
-import Text from '@suite/components/onboarding/Text';
 import l10nCommonMessages from '@suite-support/Messages';
 
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-    CheckboxWrapper,
-} from '@suite/components/onboarding/Wrapper';
 import { goToNextStep, goToSubStep } from '@suite/actions/onboarding/onboardingActions';
 import {
     wipeDevice,
@@ -24,6 +16,7 @@ import {
     resetCall,
     backupDevice,
 } from '@suite/actions/onboarding/connectActions';
+import { Wrapper, Text } from '@onboarding-components';
 import { SeedCard } from './components/SeedCard';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
@@ -102,8 +95,8 @@ const BackupStep: React.FC<BackupProps> = props => {
     };
 
     return (
-        <StepWrapper>
-            <StepHeadingWrapper>
+        <Wrapper.Step>
+            <Wrapper.StepHeading>
                 {getStatus() === 'initial' && 'Backup your device'}
                 {getStatus() === 'success' && 'Backup finished'}
                 {getStatus() === 'failed' && 'Backup failed'}
@@ -113,8 +106,8 @@ const BackupStep: React.FC<BackupProps> = props => {
                 {getStatus() === 'started' && deviceInteraction.counter > 24 && 'Check seed words'}
                 {getStatus() === 'recovery-card-front' && 'Get your recovery card'}
                 {getStatus() === 'recovery-card-back' && 'Get your recovery card'}
-            </StepHeadingWrapper>
-            <StepBodyWrapper>
+            </Wrapper.StepHeading>
+            <Wrapper.StepBody>
                 {getStatus() === 'initial' && (
                     <React.Fragment>
                         <P>
@@ -164,7 +157,7 @@ const BackupStep: React.FC<BackupProps> = props => {
                                 />
                             </P>
                         </Panel>
-                        <CheckboxWrapper>
+                        <Wrapper.Checkbox>
                             <Checkbox
                                 isChecked={userUnderstands}
                                 onClick={() => setUserUnderstands(!userUnderstands)}
@@ -175,9 +168,9 @@ const BackupStep: React.FC<BackupProps> = props => {
                                     />
                                 </P>
                             </Checkbox>
-                        </CheckboxWrapper>
+                        </Wrapper.Checkbox>
 
-                        <ControlsWrapper>
+                        <Wrapper.Controls>
                             {device.features.major_version === 1 && (
                                 <Button
                                     onClick={() => {
@@ -190,11 +183,14 @@ const BackupStep: React.FC<BackupProps> = props => {
                             )}
 
                             {device.features.major_version === 2 && (
-                                    <Button onClick={() => props.connectActions.backupDevice()} isDisabled={!device || !userUnderstands}>
+                                <Button
+                                    onClick={() => props.connectActions.backupDevice()}
+                                    isDisabled={!device || !userUnderstands}
+                                >
                                     <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
                                 </Button>
                             )}
-                        </ControlsWrapper>
+                        </Wrapper.Controls>
                     </React.Fragment>
                 )}
 
@@ -206,7 +202,7 @@ const BackupStep: React.FC<BackupProps> = props => {
                             device.
                         </Text>
                         <SeedCard flipOnMouseOver />
-                        <ControlsWrapper>
+                        <Wrapper.Controls>
                             <Button
                                 // onClick={() =>  setState({ showWords: true })}
                                 onClick={() => {
@@ -215,7 +211,7 @@ const BackupStep: React.FC<BackupProps> = props => {
                             >
                                 Flip it
                             </Button>
-                        </ControlsWrapper>
+                        </Wrapper.Controls>
                     </React.Fragment>
                 )}
 
@@ -229,7 +225,7 @@ const BackupStep: React.FC<BackupProps> = props => {
                             showBack
                             wordsNumber={device!.features!.major_version === 2 ? 12 : 24}
                         />
-                        <ControlsWrapper>
+                        <Wrapper.Controls>
                             <Button
                                 onClick={() => {
                                     props.connectActions.backupDevice();
@@ -237,7 +233,7 @@ const BackupStep: React.FC<BackupProps> = props => {
                             >
                                 <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
                             </Button>
-                        </ControlsWrapper>
+                        </Wrapper.Controls>
                     </React.Fragment>
                 )}
 
@@ -293,7 +289,7 @@ const BackupStep: React.FC<BackupProps> = props => {
                                 {...l10nMessages.TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION}
                             />
                         </P>
-                        <ControlsWrapper>
+                        <Wrapper.Controls>
                             {device!.features!.initialized === true && (
                                 <Button
                                     onClick={() => {
@@ -315,7 +311,7 @@ const BackupStep: React.FC<BackupProps> = props => {
                                     <FormattedMessage {...l10nCommonMessages.TR_RESET_DEVICE} />
                                 </Button>
                             )}
-                        </ControlsWrapper>
+                        </Wrapper.Controls>
                         {(!device || !device.connected) && (
                             <Text>
                                 <FormattedMessage {...l10nCommonMessages.TR_CONNECT_YOUR_DEVICE} />
@@ -330,15 +326,15 @@ const BackupStep: React.FC<BackupProps> = props => {
                             <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_TEXT} />
                         </Text>
 
-                        <ControlsWrapper>
+                        <Wrapper.Controls>
                             <Button onClick={() => props.onboardingActions.goToNextStep()}>
                                 <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_BUTTON} />
                             </Button>
-                        </ControlsWrapper>
+                        </Wrapper.Controls>
                     </React.Fragment>
                 )}
-            </StepBodyWrapper>
-        </StepWrapper>
+            </Wrapper.StepBody>
+        </Wrapper.Step>
     );
 };
 

@@ -4,10 +4,9 @@ import { FormattedMessage } from 'react-intl';
 import { H1, H4, P, H6 } from '@trezor/components';
 
 import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL } from '@onboarding-constants/urls';
-import Option from '@onboarding-components/Option';
-import { StepWrapper, OptionsWrapper } from '@onboarding-components/Wrapper';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
+import { Wrapper, Option } from '@onboarding-components';
 
 import l10nMessages from './index.messages';
 
@@ -73,7 +72,7 @@ const EthereumBetaWalletOption = () => (
 );
 
 const FinalStep = () => (
-    <StepWrapper>
+    <Wrapper.Step>
         <H1>
             <FormattedMessage {...l10nMessages.TR_FINAL_HEADING} />
         </H1>
@@ -82,12 +81,12 @@ const FinalStep = () => (
             <FormattedMessage {...l10nMessages.TR_FINAL_SUBHEADING} />
         </H4>
 
-        <OptionsWrapper>
+        <Wrapper.Options>
             <WalletOption />
             <PasswordManagerOption />
             <EthereumBetaWalletOption />
-        </OptionsWrapper>
-    </StepWrapper>
+        </Wrapper.Options>
+    </Wrapper.Step>
 );
 
 export default FinalStep;
