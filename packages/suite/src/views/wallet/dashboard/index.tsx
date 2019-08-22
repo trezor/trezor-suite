@@ -109,7 +109,7 @@ const Dashboard = (props: Props) => {
                                         accountId: '0',
                                     })}
                                 >
-                                    <StyledCoinLogo network={network.shortcut} height={32} />
+                                    <StyledCoinLogo network={network.shortcut} size={24} />
                                 </StyledLink>
                             ))}
                     </Coins>

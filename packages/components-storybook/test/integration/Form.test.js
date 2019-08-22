@@ -61,6 +61,15 @@ describe('Form', () => {
         'switch_noicon_small_disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
+            if (
+                testName.match(/info|success|warning|error|checkbox_checked/) &&
+                !testName.match(/textarea/)
+            ) {
+                cy.getTestElement(testName)
+                    .find('svg')
+                    .should('be.visible');
+            }
+
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();

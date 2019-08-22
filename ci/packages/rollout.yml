@@ -14,7 +14,6 @@ rollout type check:
 
 rollout test unit:
     stage: test
-    allow_failure: true
     script:
         - yarn workspace @trezor/rollout test
     dependencies:

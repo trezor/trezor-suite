@@ -9,3 +9,7 @@ export type TrezorModel = 1 | 2;
 export type IconType = typeof ICONS[number];
 
 export type CoinType = typeof COINS[number];
+
+export type TrezorLogoType = 'horizontal' | 'vertical' | 'symbol';
+
+export type TrezorLogoVariant = 'white' | 'black';

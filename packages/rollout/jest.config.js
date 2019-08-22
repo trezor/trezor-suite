@@ -24,11 +24,10 @@ module.exports = {
     automock: false,
     globals: {
         'ts-jest': {
-            diagnostics: false,
+            // diagnostics: false,
             tsConfig: {
                 target: 'esnext',
             },
         },
     },
-    setupFiles: ['./setupTests.ts'],
 };
