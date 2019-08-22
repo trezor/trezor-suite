@@ -1,13 +1,5 @@
-import {
-    StorageUpdateMessage,
-    StorageMessageEvent,
-    StoreNames,
-    StoreValue,
-    StoreKey,
-    IndexNames,
-    IndexKey,
-    IDBPDatabase,
-} from './types';
+import { StoreNames, StoreValue, StoreKey, IndexNames, IndexKey, IDBPDatabase } from 'idb';
+import { StorageUpdateMessage, StorageMessageEvent } from './types';
 
 class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
