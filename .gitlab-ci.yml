@@ -34,6 +34,7 @@ install and build:
             - packages/components/lib
             - packages/blockchain-link/lib
             - packages/rollout/lib
+            - packages/suite-storage/lib
             # node_modules
             - node_modules
             - packages/blockchain-link/node_modules
@@ -45,6 +46,7 @@ install and build:
             - packages/suite-web/node_modules
             - packages/suite-desktop/node_modules
             - packages/suite-native/node_modules
+            - packages/suite-storage/node_modules
 
 include:
     - ci/packages/components.yml
