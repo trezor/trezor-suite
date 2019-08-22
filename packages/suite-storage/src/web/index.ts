@@ -23,7 +23,7 @@ class CommonDB<TDBStructure> {
         oldVersion: number,
         newVersion: number | null,
         transaction: any
-    ) => any;
+    ) => void;
 
     constructor(
         dbName: string,
@@ -33,7 +33,7 @@ class CommonDB<TDBStructure> {
             oldVersion: number,
             newVersion: number | null,
             transaction: any
-        ) => any
+        ) => void
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;

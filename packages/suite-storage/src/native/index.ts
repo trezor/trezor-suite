@@ -13,14 +13,24 @@ class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
     dbName!: string;
     version!: number;
-    db!: any;
+    db!: IDBPDatabase<TDBStructure>;
     broadcastChannel!: any;
-    onUpgrade!: (db: any, oldVersion: number, newVersion: number | null, transaction: any) => any;
+    onUpgrade!: (
+        db: IDBPDatabase<TDBStructure>,
+        oldVersion: number,
+        newVersion: number | null,
+        transaction: any
+    ) => void;
 
     constructor(
         dbName: string,
         version: number,
-        onUpgrade: (db: any, oldVersion: number, newVersion: number | null, transaction: any) => any
+        onUpgrade: (
+            db: IDBPDatabase<TDBStructure>,
+            oldVersion: number,
+            newVersion: number | null,
+            transaction: any
+        ) => void
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
@@ -29,6 +39,7 @@ class CommonDB<TDBStructure> {
         this.dbName = dbName;
         this.version = version;
         this.onUpgrade = onUpgrade.bind(this);
+        // @ts-ignore
         this.db = null;
         // create global instance of broadcast channel
         this.broadcastChannel = null;
@@ -64,7 +75,7 @@ class CommonDB<TDBStructure> {
     };
 
     getDB = async (): Promise<IDBPDatabase<TDBStructure>> => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             resolve(this.db);
         });
     };
