@@ -8,9 +8,7 @@ import { TrezorDevice, AppState } from '@suite-types';
 
 const Wrapper = styled.div``;
 
-const IconClick = styled.div`
-    border: 5px solid red;
-`;
+const IconClick = styled.div``;
 
 interface Props {
     devices: AppState['devices'];
