@@ -11,10 +11,29 @@ rollout         | [rollout](./packages/rollout)
 blockchain-link | [blockchain-link](./packages/blockchain-link)
 connect-explorer | [connect-explorer](./packages/connect-explorer)
 
-## Development
+## Instalation
 
+Clone the repository:
 - `git clone git@github.com:trezor/trezor-suite.git`
-- `yarn`
+
+Enable the NodeSource repository:
+- `curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash`
+
+Install Node.js and npm:
+- `sudo apt install nodejs`
+
+Open cloned repository folder and Install yarn:
+- `curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
+- `echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`
+- `sudo apt-get update && sudo apt-get install yarn`
+
+Install dependencies from packages.json:
+- `npm install`
+
+Build packages:
+- `yarn build.libs`
+
+Run yarn:
 - `yarn suite:dev`
 
 ## Contribute
