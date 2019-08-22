@@ -10331,6 +10331,11 @@ hosted-git-info@^2.1.4, hosted-git-info@^2.6.0, hosted-git-info@^2.7.1:
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.7.1.tgz#97f236977bd6e125408930ff6de3eec6281ec047"
   integrity sha512-7T/BxH19zbcCTa8XkMlbK5lTo1WtgkFi3GvdWEyNuc4Vex7/9Dqbnpsf4JMydcfj9HCg4zUWFTL3Za6lapg5/w==
 
+hotkeys-js@3.6.12:
+  version "3.6.12"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.6.12.tgz#316a312dc6864f0cd5dae2b26f443d53b38490c0"
+  integrity sha512-M5HLqgE1NAh67v+4dOIL/mGY8t8oLXtJG5wu60c3NVHCpHQZdznxKS0BswSz7pgA4tEiYvh8dZFF9am3L3PFgg==
+
 hpack.js@^2.1.6:
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/hpack.js/-/hpack.js-2.1.6.tgz#87774c0949e513f42e84575b3c45681fade2a0b2"
@@ -16392,6 +16397,13 @@ react-hot-loader@4.12.9:
     react-lifecycles-compat "^3.0.4"
     shallowequal "^1.1.0"
     source-map "^0.7.3"
+
+react-hotkeys-hook@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/react-hotkeys-hook/-/react-hotkeys-hook-1.5.1.tgz#7c4eb387a64f56643125b9611e7027d5119d33c0"
+  integrity sha512-FfYUxwuw22P1z5XxCQor5pxKv8jddX7Yw/UEFN3bvPWmcaBN+DlYeGukJE+gfoYe+wL+zWu6wrkzkOiV3SoGXA==
+  dependencies:
+    hotkeys-js "3.6.12"
 
 react-hotkeys@2.0.0-pre4:
   version "2.0.0-pre4"
