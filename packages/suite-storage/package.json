@@ -12,7 +12,7 @@
     "scripts": {
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.types.json",
-        "build": "tsc --project tsconfig.json",
+        "build:lib": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
     "main": "./lib/native/index.js",
