@@ -4,7 +4,7 @@ import { Action as WalletAction } from '@wallet-types/index';
 // import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
-import * as db from '@trezor/suite-storage';
+import { db } from '@suite/storage';
 import { SUITE } from '@suite/actions/suite/constants';
 import { ACCOUNT } from '@suite/actions/wallet/constants';
 import { AccountInfo } from 'trezor-connect';
@@ -86,12 +86,22 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
         case WALLET_SETTINGS.SET_HIDDEN_COINS_EXTERNAL:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
-            db.saveWalletSettings(_api.getState().wallet.settings);
+            db.addItem(
+                'walletSettings',
+                {
+                    ..._api.getState().wallet.settings,
+                },
+                true,
+            );
             break;
         case SUITE.SET_LANGUAGE:
-            db.saveSuiteSettings({
-                language: _api.getState().suite.language,
-            });
+            db.addItem(
+                'suiteSettings',
+                {
+                    language: _api.getState().suite.language,
+                },
+                true,
+            );
             break;
         default:
             break;
