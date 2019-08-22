@@ -2,11 +2,11 @@ html, body {
     font-size: 14px;
     font-family: 'Roboto';
     line-height: 1.15;
-    text-size-adjust: 100%;
     margin: 0;
 }
 
 * {
+    text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
