@@ -28,6 +28,7 @@ module.exports = {
         '<rootDir>/src/utils/**',
         '<rootDir>/src/actions/**',
         '!**/constants/**',
+        '!**/__tests__/**',
     ],
     modulePathIgnorePatterns: ['node_modules'],
     testMatch: ['**/*.test.(ts|js)'],
