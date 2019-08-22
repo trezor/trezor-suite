@@ -31,7 +31,7 @@ Install dependencies from packages.json:
 - `npm install`
 
 Build packages:
-- `yarn build.libs`
+- `yarn build:libs`
 
 Run yarn:
 - `yarn suite:dev`
