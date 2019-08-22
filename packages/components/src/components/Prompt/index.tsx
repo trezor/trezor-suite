@@ -4,6 +4,7 @@ import { Icon } from '../Icon';
 
 import { Omit, IconType } from '../../support/types';
 import colors from '../../config/colors';
+import { getDeviceIcon } from '../../utils/icons';
 
 const PulseAnimation = keyframes`
     0% {
@@ -59,11 +60,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     model: number;
     size?: number;
 }
-
-const getDeviceIcon = (model: number): 'T1' | 'T2' => {
-    if (model === 2) return 'T2';
-    return 'T1';
-};
 
 const Prompt = ({ model, size, children, ...rest }: Props) => {
     return (

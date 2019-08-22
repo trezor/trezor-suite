@@ -6,6 +6,7 @@ import { Icon } from '../Icon';
 
 import { Omit, IconType } from '../../support/types';
 import colors from '../../config/colors';
+import { getDeviceIcon } from '../../utils/icons';
 
 const Pulse = styled.View<Omit<Props, 'model'>>`
     background-color: ${colors.GREEN_PRIMARY};
@@ -86,11 +87,6 @@ class Prompt extends React.Component<Props> {
             inputRange: [0, 0.25, 0.5, 1],
             outputRange: [0, 0.2, 0.3, 0],
         });
-
-        const getDeviceIcon = (model: number): 'T1' | 'T2' => {
-            if (model === 2) return 'T2';
-            return 'T1';
-        };
 
         return (
             <Wrapper>
