@@ -93,7 +93,7 @@ const Settings = ({ device, uiLocked, applySettings, changePin }: Props) => {
         setLabel(device.label);
     }, [device]);
 
-    if (!device || device.type !== 'acquired') {
+    if (!device || !device.features) {
         return null;
     }
 

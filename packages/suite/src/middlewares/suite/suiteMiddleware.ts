@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { DEVICE } from 'trezor-connect';
+import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { BLOCKCHAIN, SUITE, STORAGE } from '@suite-actions/constants';
 import { init as initBlockchain } from '@suite-actions/blockchainActions';
 import { init as initRouter } from '@suite-actions/routerActions';
@@ -27,6 +27,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
         case SUITE.CONNECT_INITIALIZED:
             // trezor-connect init successfully
             api.dispatch(initBlockchain());
+            if (process.env.SUITE_TYPE === 'web') TrezorConnect.renderWebUSBButton();
             break;
         case BLOCKCHAIN.READY:
             // dispatch initial location change
