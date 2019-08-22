@@ -41,7 +41,7 @@ export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', 1, async (
         // init db
         // object store for wallet transactions
         const txsStore = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
-        txsStore.createIndex('txId', 'txId', { unique: true });
+        txsStore.createIndex('txId', 'txid', { unique: true });
         txsStore.createIndex('type', 'type', { unique: false }); // sent/recv
         txsStore.createIndex('blockTime', 'blockTime', { unique: false });
         txsStore.createIndex('accountId', 'accountId', { unique: false });

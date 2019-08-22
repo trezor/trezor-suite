@@ -9,7 +9,7 @@ import { AccountTransaction } from 'trezor-connect';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
-    accountId: number;
+    accountId: string;
 }
 
 export type State = WalletAccountTransaction[];

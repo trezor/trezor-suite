@@ -140,8 +140,6 @@ class CommonDB<TDBStructure> {
                 this.notify(store, [req.result]);
                 resolve(req.result);
             };
-        }).catch(err => {
-            throw err;
         });
         return p;
     };

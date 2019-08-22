@@ -54,28 +54,27 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
         //     break;
 
         case ACCOUNT.CREATE: {
-            try {
-                const account: AccountInfo = action.payload;
-                const { transactions } = account.history;
-                if (transactions) {
-                    // TODO: check if txs already exists or just use txId as primary key
-                    // transactions.forEach(async tx => {
-                    //     const txId = await db.addTransaction({
-                    //         ...tx,
-                    //         accountId: account.descriptor,
-                    //     });
-                    //     console.log(txId);
-                    // });
-                }
-            } catch (error) {
-                if (error && error.name === 'ConstraintError') {
-                    console.log('Tx with such id already exists');
-                } else if (error) {
-                    console.error(error.name);
-                    console.error(error.message);
-                } else {
-                    console.error(error);
-                }
+            const account: AccountInfo = action.payload;
+            const { transactions } = account.history;
+            if (transactions) {
+                transactions.forEach(async tx => {
+                    try {
+                        const txId = await db.addItem('txs', {
+                            ...tx,
+                            accountId: account.descriptor,
+                        });
+                        console.log(txId);
+                    } catch (error) {
+                        if (error && error.name === 'ConstraintError') {
+                            console.log('Tx with such id already exists');
+                        } else if (error) {
+                            console.error(error.name);
+                            console.error(error.message);
+                        } else {
+                            console.error(error);
+                        }
+                    }
+                });
             }
 
             // api.dispatch(transactionActions.add(action.transaction));
