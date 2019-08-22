@@ -4,22 +4,20 @@
 import * as pako from 'pako';
 import * as _ from 'lodash';
 
-import { TrezorModel } from '@suite-types';
-
 const T1_WIDTH = 128;
 const T1_HEIGHT = 64;
 
 const T2_WIDTH = 144;
 const T2_HEIGHT = 144;
 
-const getWidth = (model: TrezorModel) => {
+const getWidth = (model: number) => {
     if (model === 2) {
         return T2_WIDTH;
     }
     return T1_WIDTH;
 };
 
-const getHeight = (model: TrezorModel) => {
+const getHeight = (model: number) => {
     if (model === 2) {
         return T2_HEIGHT;
     }
@@ -195,7 +193,7 @@ export const elementToImageData = (element: HTMLImageElement, width: number, hei
     return imageData;
 };
 
-export const checkImage = (origImage: HTMLImageElement, model: TrezorModel) => {
+export const checkImage = (origImage: HTMLImageElement, model: number) => {
     const height = getHeight(model);
     const width = getWidth(model);
     if (origImage.height !== height) {
@@ -233,13 +231,13 @@ export const checkImage = (origImage: HTMLImageElement, model: TrezorModel) => {
     }
 };
 
-export const check = (file: File, model: TrezorModel) => {
+export const check = (file: File, model: number) => {
     return fileToDataUrl(file)
         .then((url: string) => dataUrlToImage(url))
         .then(image => checkImage(image, model));
 };
 
-export const imageDataToHex = (imageData: ImageData, model: TrezorModel) => {
+export const imageDataToHex = (imageData: ImageData, model: number) => {
     const w = getWidth(model);
     const h = getHeight(model);
 
@@ -249,7 +247,7 @@ export const imageDataToHex = (imageData: ImageData, model: TrezorModel) => {
     return toig(w, h, imageData);
 };
 
-export const elementToHomescreen = (element: HTMLImageElement, model: TrezorModel) => {
+export const elementToHomescreen = (element: HTMLImageElement, model: number) => {
     const w = getWidth(model);
     const h = getHeight(model);
     const imageData = elementToImageData(element, w, h);

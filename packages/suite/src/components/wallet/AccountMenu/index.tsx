@@ -187,7 +187,7 @@ const AccountMenu = (props: Props) => {
     const discovery = props.discovery.find(
         // TODO: compare deviceState not just device id
         // d => d.device === selected.state && d.network === network.shortcut,
-        d => d.device === selected.features.device_id,
+        d => selected.features && d.device === selected.features.device_id,
     );
 
     if (discovery && discovery.status === DISCOVERY_STATUS.COMPLETED) {

@@ -106,7 +106,7 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
 
 const getDiscoveryForDevice = () => (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    if (!device || !device.features) return;
+    if (!device || !device.features || !device.features.device_id) return;
     return dispatch(getDiscovery(device.features.device_id));
 };
 

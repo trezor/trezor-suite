@@ -57,10 +57,6 @@ interface State {
     ticker?: number;
 }
 
-interface Instance {
-    instanceLabel: string;
-}
-
 class RememberDevice extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -113,7 +109,7 @@ class RememberDevice extends PureComponent<Props, State> {
         let { label } = device;
         const deviceCount = instances ? instances.length : 0;
         if (instances && instances.length > 0) {
-            label = instances.map((instance: Instance) => instance.instanceLabel).join(',');
+            label = instances.map(instance => instance.instanceLabel).join(',');
         }
         return (
             <Wrapper>

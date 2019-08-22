@@ -1,4 +1,4 @@
-import { Device, DEVICE } from 'trezor-connect';
+import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducers';
 import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
@@ -12,6 +12,13 @@ export type SuiteActions =
     | { type: typeof SUITE.ERROR; error: any }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
+    | { type: typeof SUITE.REQUEST_PASSPHRASE_MODE; payload: TrezorDevice }
+    | { type: typeof SUITE.RECEIVE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
+    | { type: typeof SUITE.UPDATE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
+    | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
+    | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice; name?: string }
+    | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
+    | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
     | { type: typeof SUITE.TOGGLE_DEVICE_MENU; opened: boolean }
     | { type: typeof SUITE.TOGGLE_SIDEBAR }
@@ -82,7 +89,6 @@ export const updateSelectedDevice = (device: TrezorDevice) => (dispatch: Dispatc
 
 export const selectFirstAvailableDevice = () => () => {};
 
-// export const handleDeviceEvent = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     const selected = getState().suite.device;
     const { app } = getState().router;
@@ -170,4 +176,67 @@ export const lockUI = (payload: boolean) => (dispatch: Dispatch) => {
         type: SUITE.LOCK_UI,
         payload,
     });
+};
+
+export const requestDeviceType = () => async (
+    dispatch: Dispatch,
+    getState: GetState,
+): Promise<void> => {
+    const { device } = getState().suite;
+    if (!device) return;
+    const isDeviceReady =
+        device.connected &&
+        device.features &&
+        !device.state &&
+        device.mode === 'normal' &&
+        device.firmware !== 'required';
+    if (!isDeviceReady) return;
+
+    if (device.features && device.features.passphrase_protection) {
+        dispatch({
+            type: SUITE.REQUEST_PASSPHRASE_MODE,
+            payload: device,
+        });
+    } else {
+        dispatch({
+            type: SUITE.RECEIVE_PASSPHRASE_MODE,
+            payload: device,
+            hidden: false,
+        });
+    }
+};
+
+export const authorizeDevice = () => async (
+    dispatch: Dispatch,
+    getState: GetState,
+): Promise<void> => {
+    const { device } = getState().suite;
+    if (!device) return;
+    const isDeviceReady =
+        device.connected &&
+        device.features &&
+        !device.state &&
+        device.mode === 'normal' &&
+        device.firmware !== 'required';
+    if (!isDeviceReady) return;
+
+    const response = await TrezorConnect.getDeviceState({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        useEmptyPassphrase: device.useEmptyPassphrase,
+    });
+
+    if (response.success) {
+        dispatch({
+            type: SUITE.AUTH_DEVICE,
+            payload: device,
+            state: response.payload.state,
+        });
+    } else {
+        // TODO: notification with error
+        // dispatch();
+    }
 };

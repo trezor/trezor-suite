@@ -142,7 +142,7 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }: { model: 1 | 2; event: AnyEvent }) => {
+const TrezorAction = ({ model, event }: { model: number; event: AnyEvent }) => {
     let TrezorActionText;
     if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
