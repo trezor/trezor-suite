@@ -91,7 +91,7 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
                 {
                     ..._api.getState().wallet.settings,
                 },
-                true,
+                'wallet',
             );
             break;
         case SUITE.SET_LANGUAGE:
@@ -100,7 +100,7 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
                 {
                     language: _api.getState().suite.language,
                 },
-                true,
+                'suite',
             );
             break;
         default:

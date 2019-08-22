@@ -14,7 +14,7 @@ class CommonDB<TDBStructure> {
     dbName!: string;
     version!: number;
     db!: any;
-    broadcastChannel!: BroadcastChannel;
+    broadcastChannel!: any;
     onUpgrade!: (db: any, oldVersion: number, newVersion: number | null, transaction: any) => any;
 
     constructor(
@@ -31,7 +31,7 @@ class CommonDB<TDBStructure> {
         this.onUpgrade = onUpgrade.bind(this);
         this.db = null;
         // create global instance of broadcast channel
-        this.broadcastChannel = new BroadcastChannel('storageChangeEvent');
+        this.broadcastChannel = null;
 
         CommonDB.instance = this;
     }
@@ -71,11 +71,12 @@ class CommonDB<TDBStructure> {
 
     addItem = async <
         TStoreName extends StoreNames<TDBStructure>,
-        TItem extends StoreValue<TDBStructure, TStoreName>
+        TItem extends StoreValue<TDBStructure, TStoreName>,
+        TKey extends StoreKey<TDBStructure, TStoreName>
     >(
         store: TStoreName,
         item: TItem,
-        upsert?: boolean
+        key?: TKey
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
         // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
         // and I couldn't figure out how to catch it. Maybe a bug in idb?
@@ -85,7 +86,7 @@ class CommonDB<TDBStructure> {
 
         const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
             const tx = db.transaction(store, 'readwrite');
-            const req: IDBRequest = upsert
+            const req: IDBRequest = key
                 ? tx.objectStore(store).put(item)
                 : tx.objectStore(store).add(item);
             req.onerror = _event => {
