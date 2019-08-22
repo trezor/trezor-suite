@@ -30,6 +30,14 @@ module.exports = {
         '!**/constants/**',
         '!**/__tests__/**',
     ],
+    coverageThreshold: {
+        global: {
+            branches: 37,
+            functions: 31,
+            lines: 33,
+            statements: 32,
+        },
+    },
     modulePathIgnorePatterns: ['node_modules'],
     testMatch: ['**/*.test.(ts|js)'],
     transform: {
