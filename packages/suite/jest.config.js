@@ -7,6 +7,7 @@ module.exports = {
             // diagnostics: false,
         },
     },
+    setupFiles: ['<rootDir>/src/support/tests/setupJest.ts'],
     moduleNameMapper: {
         '^@suite/(.+)': '<rootDir>/src/$1',
         '^@(.+)-views/(.+)': '<rootDir>/src/views/$1/$2',
