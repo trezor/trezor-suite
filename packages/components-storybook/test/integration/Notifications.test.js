@@ -26,8 +26,16 @@ describe('Notifications', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.getTestElement(testName)
+                .find('.loading')
+                .each(el => {
+                    cy.get(el).should('not.be.visible');
+                });
+
+            cy.getTestElement(testName)
                 .find('svg')
-                .should('be.visible');
+                .each(el => {
+                    cy.get(el).should('be.visible');
+                });
 
             cy.getTestElement(testName)
                 .should('be.visible')
