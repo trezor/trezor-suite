@@ -12,7 +12,7 @@ components type check:
     dependencies:
         - install and build
 
-suite test unit:
+components test unit:
     stage: test
     script:
         - yarn workspace @trezor/components test:unit
