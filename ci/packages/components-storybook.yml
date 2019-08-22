@@ -38,7 +38,6 @@ components-storybook deploy dev:
     on_stop: components-storybook delete review
   before_script: []
   script:
-    - env
     - cd packages/components-storybook
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/components-storybook
