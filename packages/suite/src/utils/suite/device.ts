@@ -100,7 +100,8 @@ export const getStatusColor = (deviceStatus: string): string => {
     }
 };
 
-export const isWebUSB = (transport: Transport) => !!(transport.type && transport.type === 'webusb');
+export const isWebUSB = (transport?: Transport) =>
+    !!(transport && transport.type && transport.type === 'webusb');
 
 /*
 TODO: is this util used anywhere?

@@ -75,9 +75,7 @@ const getAccountLoader = (
     const { device } = state.suite;
     const { account, discovery, network } = selectedAccount;
 
-    // TODO: uncomment once device.state is available (and remove condition below)
-    // if (!device || !device.state) {
-    if (!device) {
+    if (!device || !device.state) {
         return {
             type: 'progress',
             title: 'Loading device...',
@@ -109,7 +107,7 @@ const getAccountLoader = (
             // this is related to device instance in url, it's not used for now (device clones are disabled)
             return {
                 type: 'info',
-                title: `Device ${device.instanceLabel} is unavailable`,
+                title: `Device ${device.instanceLabel || device.label} is unavailable`,
                 message: 'Change passphrase settings to use this device',
             };
         }

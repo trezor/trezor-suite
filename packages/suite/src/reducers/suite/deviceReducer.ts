@@ -45,6 +45,8 @@ const connectDevice = (draft: State, device: Device) => {
         }
         draft.push({
             ...device,
+            connected: true,
+            available: false,
             features: undefined,
             instance: undefined,
             useEmptyPassphrase: true,

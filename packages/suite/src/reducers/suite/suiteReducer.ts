@@ -19,11 +19,11 @@ export interface SuiteState {
 }
 
 interface Transport {
-    type: string;
+    type?: string;
     version?: string;
     outdated?: boolean;
     bridge: {
-        version: string;
+        version: number[];
         directory: string;
         packages: {
             platform: string;

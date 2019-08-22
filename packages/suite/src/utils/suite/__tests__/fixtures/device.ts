@@ -9,7 +9,7 @@ const connected = { connected: true, available: true };
 const TRANSPORT = {
     type: 'bridge',
     bridge: {
-        version: '1.0.0',
+        version: [1, 0, 0],
         directory: '',
         packages: [{ platform: '', name: '', url: '' }],
         changelog: '',
@@ -108,8 +108,13 @@ const isWebUSB = [
         result: true,
     },
     {
-        description: `Transport is not webusb`,
+        description: `Transport is not webusb (bridge)`,
         transport: TRANSPORT,
+        result: false,
+    },
+    {
+        description: `Transport is not webusb (not defined)`,
+        transport: undefined,
         result: false,
     },
 ];
