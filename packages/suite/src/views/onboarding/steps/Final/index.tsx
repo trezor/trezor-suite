@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { H1, H4, P, H6 } from '@trezor/components';
 
-import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL, WALLET_URL } from '@onboarding-constants/urls';
+import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL } from '@onboarding-constants/urls';
 import Option from '@onboarding-components/Option';
 import { StepWrapper, OptionsWrapper } from '@onboarding-components/Wrapper';
 import { goto } from '@suite-actions/routerActions';

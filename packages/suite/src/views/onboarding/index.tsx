@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link, P, Prompt, variables } from '@trezor/components';
 import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
@@ -29,8 +29,9 @@ import {
     NAVBAR_HEIGHT_UNIT,
 } from '@suite/config/onboarding/layout';
 
-import ProgressSteps from '@suite/components/onboarding/ProgressSteps';
-import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
+import ProgressSteps from '@onboarding-components/ProgressSteps';
+import UnexpectedState from '@onboarding-components/UnexpectedState';
+import Preloader from '@onboarding-components/Preloader';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
@@ -66,11 +67,7 @@ const backgroundAnimation = keyframes`
     100% { opacity: 1 }
 `;
 
-interface WrapperOutsideProps extends React.HTMLAttributes<HTMLDivElement> {
-    animate: boolean;
-}
-
-const WrapperOutside = styled.div<WrapperOutsideProps>`
+const WrapperOutside = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -81,14 +78,9 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         height: 100%;
-
-        ${props =>
-            props.animate &&
-            css`
-                animation: ${backgroundAnimation} 1s linear;
-                background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
-                background-size: cover;
-            `};
+        animation: ${backgroundAnimation} 1s linear;
+        background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
+        background-size: cover;
     }
 `;
 
@@ -185,6 +177,8 @@ interface Props {
     deviceInteraction: StateProps['deviceInteraction'];
     prevDeviceId: StateProps['prevDeviceId'];
 
+    loaded: boolean;
+
     connectActions: DispatchProps['connectActions'];
     onboardingActions: DispatchProps['onboardingActions'];
 }
@@ -243,15 +237,16 @@ class Onboarding extends React.PureComponent<Props> {
             deviceCall,
             deviceInteraction,
             uiInteraction,
+
+            loaded,
         } = this.props;
         const model = selectedModel || 2;
         const errorState = this.getError();
         const activeStep = this.getStep(activeStepId);
+
         return (
-            <>
-                <WrapperOutside
-                    animate={![STEP.ID_WELCOME_STEP, STEP.ID_FINAL_STEP].includes(activeStepId)}
-                >
+            <Preloader loaded={loaded}>
+                <WrapperOutside>
                     <WrapperInside isGlobalInteraction={this.isGlobalInteraction()}>
                         {errorState && (
                             <UnexpectedStateOverlay>
@@ -393,7 +388,7 @@ class Onboarding extends React.PureComponent<Props> {
                         </ComponentWrapper>
                     </WrapperInside>
                 </WrapperOutside>
-            </>
+            </Preloader>
         );
     }
 }
@@ -401,6 +396,9 @@ class Onboarding extends React.PureComponent<Props> {
 const mapStateToProps = (state: AppState) => {
     return {
         device: state.onboarding.connect.device,
+
+        // suite reducer
+        loaded: state.suite.loaded,
 
         // connect reducer
         prevDeviceId: state.onboarding.connect.prevDeviceId,
