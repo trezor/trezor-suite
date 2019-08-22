@@ -19,14 +19,18 @@ export interface SuiteState {
 }
 
 interface Transport {
-    type?: string;
+    type: string;
     version?: string;
     outdated?: boolean;
     bridge: {
-        version: [];
-        directory: '';
-        packages: [];
-        changelog: [];
+        version: string;
+        directory: string;
+        packages: {
+            platform: string;
+            name: string;
+            url: string;
+        }[];
+        changelog: string;
     };
 }
 
