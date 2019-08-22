@@ -32,10 +32,10 @@ module.exports = {
     ],
     coverageThreshold: {
         global: {
-            branches: 37,
-            functions: 31,
-            lines: 33,
-            statements: 32,
+            statements: 33.2,
+            branches: 38.31,
+            functions: 32.03,
+            lines: 34.55,
         },
     },
     modulePathIgnorePatterns: ['node_modules'],
