@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import TrezorConnect from 'trezor-connect';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { forgetDevice } from '@suite-actions/trezorConnectActions';
-import { Button, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
+import { colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
-import l10nCommonMessages from '@suite-views/index.messages';
+import WebusbButton from '@suite-components/WebusbButton';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 import l10nMessages from './index.messages';
@@ -85,9 +84,6 @@ const ButtonWrapper = styled.div`
     padding: 0 24px;
     display: flex;
 `;
-const StyledButton = styled(Button)`
-    flex: 1;
-`;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     devices: AppState['devices'];
@@ -99,7 +95,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     isOpen: boolean;
     isSelected?: boolean;
     transport: AppState['suite']['transport'];
-    className?: string;
 }
 
 type WrapperProps = Omit<
@@ -120,7 +115,6 @@ const DeviceMenu = ({
     icon,
     disabled = false,
     isSelected = false,
-    className,
     selectDevice,
     toggleDeviceMenu,
     transport,
@@ -128,10 +122,7 @@ const DeviceMenu = ({
     ...rest
 }: Props) => {
     const [isAnimated, setIsAnimated] = useState(false);
-
-    useEffect(() => {
-        if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
-    });
+    const [animationFinished, setAnimationFinished] = useState(false);
 
     // hooks managing closing the menu on click outside of the menu
     const ref = useRef<HTMLDivElement>(null);
@@ -140,10 +131,25 @@ const DeviceMenu = ({
             toggleDeviceMenu(false);
         }
     };
+
+    const deviceMenuRef = useRef<HTMLDivElement>(null);
+
+    const onAnimationEnd = () => {
+        setTimeout(() => setAnimationFinished(true), 1);
+        if (deviceMenuRef.current) {
+            deviceMenuRef.current.removeEventListener('animationend', onAnimationEnd, true);
+        }
+    };
+
     useEffect(() => {
         if (isOpen) {
             document.addEventListener('click', handleClickOutside, true);
+
+            if (deviceMenuRef.current) {
+                deviceMenuRef.current.addEventListener('animationend', onAnimationEnd, true);
+            }
         } else {
+            setAnimationFinished(false);
             document.removeEventListener('click', handleClickOutside, true);
         }
         return () => {
@@ -159,7 +165,6 @@ const DeviceMenu = ({
 
     return (
         <Wrapper
-            className={className}
             onClick={() => {
                 setIsAnimated(true);
                 toggleDeviceMenu(!isOpen);
@@ -255,7 +260,7 @@ const DeviceMenu = ({
                 }
             />
             {isOpen && (
-                <Menu>
+                <Menu ref={deviceMenuRef}>
                     {selectedDeviceAccessible && (
                         <MenuItems device={selectedDevice as AcquiredDevice} />
                     )}
@@ -268,13 +273,7 @@ const DeviceMenu = ({
                     />
                     {isWebUSB(transport) && (
                         <ButtonWrapper>
-                            <StyledButton
-                                isInverse
-                                icon="PLUS"
-                                additionalClassName="trezor-webusb-button"
-                            >
-                                <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
-                            </StyledButton>
+                            <WebusbButton ready={animationFinished} />
                         </ButtonWrapper>
                     )}
                 </Menu>
