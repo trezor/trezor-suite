@@ -60,7 +60,6 @@ storiesOf('Examples', module)
         {
             info: {
                 text: `
-            ## Import
             ~~~js
             import { Modal } from 'trezor-ui-components';
             ~~~
@@ -115,7 +114,6 @@ storiesOf('Examples', module)
         {
             info: {
                 text: `
-            ## Import
             ~~~js
             import {
                 Modal,

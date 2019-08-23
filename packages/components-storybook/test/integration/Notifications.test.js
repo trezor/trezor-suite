@@ -1,6 +1,6 @@
 describe('Notifications', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768);
+        cy.viewport(1008, 768);
         cy.visit(
             '/iframe.html?selectedKind=Notifications&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
         );
@@ -26,8 +26,16 @@ describe('Notifications', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.getTestElement(testName)
+                .find('.loading')
+                .each(el => {
+                    cy.get(el).should('not.be.visible');
+                });
+
+            cy.getTestElement(testName)
                 .find('svg')
-                .should('be.visible');
+                .each(el => {
+                    cy.get(el).should('be.visible');
+                });
 
             cy.getTestElement(testName)
                 .should('be.visible')
