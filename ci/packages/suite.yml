@@ -15,6 +15,7 @@ suite type check:
 suite test unit:
     stage: test
     script:
+        - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite test:unit
     dependencies:
         - install and build
