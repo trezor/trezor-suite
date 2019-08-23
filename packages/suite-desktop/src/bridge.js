@@ -1,7 +1,13 @@
 const psList = require('ps-list');
 const os = require('os');
+const { exec } = require('child_process');
 
 const TREZOR_PROCESS_NAME = 'trezord';
+const STATUS = { OK: 'ok', ERROR: 'error' };
+
+const getBridgeVersion = () => {
+    return '2.0.27';
+};
 
 const getOS = () => {
     const platform = os.platform();
@@ -18,7 +24,22 @@ const getOS = () => {
         case 'win32':
             return 'win';
         default:
-            return 'cannot run bridge on unsupported OS';
+            return 'Cannot run bridge on unsupported OS';
+    }
+};
+
+const getBridgeLiByOs = () => {
+    const os = getOS();
+    const bridgeVersion = getBridgeVersion();
+    switch (os) {
+        case 'mac':
+            return `../static/bridge/trezor-bridge_${bridgeVersion}.pkg`;
+        case 'linux':
+            return `../static/bridge/trezor-bridge_${bridgeVersion}_amd64.deb`;
+        case 'win':
+            return `../static/bridge/trezor-bridge_${bridgeVersion}-win32-install`;
+        default:
+            return `Cannot run bridge lib on unknown os "${os}"`;
     }
 };
 
@@ -29,32 +50,41 @@ const isBridgeRunning = async () => {
 };
 
 const run = async () => {
-    const isBridgeAlreadyRunning = await isBridgeRunning();
     const os = getOS();
+    const isBridgeAlreadyRunning = await isBridgeRunning();
 
-    console.log({ os, isBridgeAlreadyRunning });
-
+    // bridge is already installed, nothing to do
     if (isBridgeAlreadyRunning) {
-        return true;
+        return { status: STATUS.OK };
     }
 
     // bridge is not running, run
     if (!isBridgeAlreadyRunning) {
+        const lib = getBridgeLiByOs();
+
         // run bridge on mac os
         if (os === 'mac') {
             console.log('running bridge on mac OS');
+            exec(lib);
         }
 
         // run bridge on linux
         if (os === 'linux') {
             console.log('running bridge on linux');
+            exec(lib);
         }
 
         // run bridge on windows
         if (os === 'win') {
             console.log('running bridge on win');
+            exec(lib);
         }
+
+        return {
+            status: STATUS.ERROR,
+            message: `Cannot run bridge os "${os}"`,
+        };
     }
 };
 
-run();
+const result = run();

@@ -18,7 +18,7 @@
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json",
-        "bridge-checker:dev": "nodemon --watch 'bridge-checker.ts' --exec babel-node bridge-checker.ts"
+        "bridge-checker:dev": "nodemon --watch 'src/bridge.js' --exec babel-node src/bridge.js"
     },
     "build": {
         "appId": "io.trezor.${name}",
