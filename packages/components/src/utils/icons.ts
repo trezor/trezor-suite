@@ -22,4 +22,9 @@ const getStateIcon = (type?: FeedbackType): ReturnType => {
     return icon;
 };
 
-export { getStateIcon };
+const getDeviceIcon = (model: number): 'T1' | 'T2' => {
+    if (typeof model !== 'number' || model < 2) return 'T1';
+    return 'T2';
+};
+
+export { getStateIcon, getDeviceIcon };
