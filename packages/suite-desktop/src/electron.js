@@ -16,7 +16,7 @@ const init = async () => {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
             nodeIntegration: false,
-            preload: path.join(__dirname, 'preload.ts'),
+            preload: path.join(__dirname, 'preload.js'),
         },
     });
 
