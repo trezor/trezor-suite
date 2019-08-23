@@ -4,8 +4,9 @@ html, body {
 
 * {
     font-family: 'Roboto';
+    line-height: 1.15;
+    margin: 0;
+    text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.15;
-    text-size-adjust: 100%;
 }
