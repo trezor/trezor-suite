@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     padding: 30px 48px;
 `;
 
-const InvalidPin = (props: Props) => (
+const PinInvalid = (props: Props) => (
     <Wrapper>
         <H5>
             <FormattedMessage
@@ -29,4 +29,4 @@ const InvalidPin = (props: Props) => (
     </Wrapper>
 );
 
-export default InvalidPin;
+export default PinInvalid;
