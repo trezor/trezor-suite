@@ -59,7 +59,7 @@ const WebusbButton = ({ ready }: Props) => {
                 window.removeEventListener('resize', onResize);
             };
         }
-    }, [ready]);
+    });
 
     return <div id="web-usb-placeholder" style={{ width: '100%', height: '40px' }}></div>;
 };

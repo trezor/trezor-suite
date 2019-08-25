@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { H6, Link } from '@trezor/components';
+import TrezorConnect from 'trezor-connect';
 
 import { SUPPORT_URL } from '@onboarding-constants/urls';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
@@ -19,7 +21,6 @@ const Card = styled.div`
         text-align: left;
         padding: 0;
     }
-    /* border-radius: 5px; */
 `;
 
 const ContactSupportLink = (
@@ -28,24 +29,45 @@ const ContactSupportLink = (
     </Link>
 );
 
-const TroubleshootSearchingTooLong = () => (
+interface Props {
+    webusb: boolean;
+}
+
+const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
     <React.Fragment>
-        <Text>
+        {/* <Text>
             <FormattedMessage {...l10nMessages.TR_SEARCHING_TAKES_TOO_LONG} />
-        </Text>
+        </Text> */}
 
         <Card>
-            <H6>Abcd</H6>
+            <H6>Troubleshooting guide</H6>
             <Text>
-                <FormattedMessage {...l10nMessages.TR_REFRESH_INSTRUCTION} />
+                Check out our interactive{' '}
+                <Link href="https://trezor.io/support/#technical-technical-issues">
+                    troubleshooting guide
+                </Link>
+                {/* <FormattedMessage {...l10nMessages.TR_REFRESH_INSTRUCTION} /> */}
             </Text>
         </Card>
-        <Card>
-            <H6>Abcd</H6>
-            <Text>
-                <FormattedMessage {...l10nMessages.TR_ANOTHER_CABLE_INSTRUCTION} />
-            </Text>
-        </Card>
+        {!webusb && (
+            <Card>
+                <H6>Broken cable</H6>
+                <Text>
+                    <FormattedMessage {...l10nMessages.TR_ANOTHER_CABLE_INSTRUCTION} />
+                </Text>
+            </Card>
+        )}
+
+        {webusb && (
+            <Card>
+                <H6>Try Trezor bridge</H6>
+                <Text>
+                    You may install{' '}
+                    <Link onClick={() => TrezorConnect.disableWebUSB()}>Trezor Bridge</Link> which
+                    is a special communication daemon running in background on your computer
+                </Text>
+            </Card>
+        )}
         <Wrapper.Controls>
             <OnboardingButton.Alt>
                 <FormattedMessage

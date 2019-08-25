@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link, P, Prompt, variables } from '@trezor/components';
-import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -36,8 +35,7 @@ import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
 import NewOrUsedStep from '@onboarding-views/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@onboarding-views/steps/SelectDevice/Container';
 import HologramStep from '@onboarding-views/steps/Hologram/Container';
-import BridgeStep from '@onboarding-views/steps/Bridge/Container';
-import ConnectStep from '@onboarding-views/steps/Connect/Container';
+import PairStep from '@onboarding-views/steps/Pair/Container';
 import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
 import ShamirStep from '@onboarding-views/steps/Shamir/Container';
 import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
@@ -51,6 +49,7 @@ import FinalStep from '@onboarding-views/steps/Final';
 import { ProgressSteps, UnexpectedState, Preloader } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';
+// import { CSSTransition } from 'react-transition-group';
 
 const BORDER_RADIUS = 12;
 const TRANSITION_PROPS = {
@@ -161,6 +160,15 @@ const UnexpectedStateOverlay = styled.div`
     z-index: 405;
     display: flex;
 `;
+
+// using css transitions somehow break webusb button logic. Temporary workaround to disable
+// transitions without need to rewrite much code.
+const CSSTransition = (props: any) => {
+    if (props.in) {
+        return props.children;
+    }
+    return null;
+};
 
 interface Props {
     device: any; // todo
@@ -299,18 +307,18 @@ class Onboarding extends React.PureComponent<Props> {
                                 <HologramStep />
                             </CSSTransition>
 
-                            <CSSTransition
+                            {/* <CSSTransition
                                 in={activeStepId === STEP.ID_BRIDGE_STEP}
                                 {...TRANSITION_PROPS}
                             >
                                 <BridgeStep />
-                            </CSSTransition>
+                            </CSSTransition> */}
 
                             <CSSTransition
-                                in={activeStepId === STEP.ID_CONNECT_STEP}
+                                in={activeStepId === STEP.ID_PAIR_DEVICE_STEP}
                                 {...TRANSITION_PROPS}
                             >
-                                <ConnectStep />
+                                <PairStep />
                             </CSSTransition>
 
                             <CSSTransition

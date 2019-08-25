@@ -16,98 +16,83 @@ import { GetState, Dispatch } from '@suite-types';
 
 const call = (name: string, params?: any) => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    try {
-        // const currentCall = getState().onboarding.connect.deviceCall;
-        // if (currentCall.isProgress) {
-        //     throw new Error('forbidden. another call in progress');
-        // }
+    dispatch({ type: DEVICE_CALL_RESET });
 
-        dispatch({ type: DEVICE_CALL_RESET });
+    dispatch({
+        type: DEVICE_CALL_START,
+        name,
+    });
 
-        dispatch({
-            type: DEVICE_CALL_START,
-            name,
-        });
-
-        if (device === null) {
-            dispatch({
-                type: DEVICE_CALL_ERROR,
-                error: 'no device connected',
-                name,
-            });
-            return null;
-        }
-
-        const callParams = {
-            useEmptyPassphrase: true,
-            device,
-        };
-        Object.assign(callParams, params);
-        let fn;
-        switch (name) {
-            case CALLS.FIRMWARE_UPDATE:
-                // @ts-ignore
-                fn = () => TrezorConnect.firmwareUpdate(callParams);
-                break;
-            case CALLS.RESET_DEVICE:
-                // @ts-ignore
-                fn = () => TrezorConnect.resetDevice(callParams);
-                break;
-            case CALLS.BACKUP_DEVICE:
-                // @ts-ignore
-                fn = () => TrezorConnect.backupDevice(callParams);
-                break;
-            case CALLS.APPLY_SETTINGS:
-                // @ts-ignore
-                fn = () => TrezorConnect.applySettings(callParams);
-                break;
-            case CALLS.APPLY_FLAGS:
-                // @ts-ignore
-                fn = () => TrezorConnect.applyFlags(callParams);
-                break;
-            case CALLS.GET_FEATURES:
-                // @ts-ignore
-                fn = () => TrezorConnect.getFeatures(callParams);
-                break;
-            case CALLS.CHANGE_PIN:
-                // @ts-ignore
-                fn = () => TrezorConnect.changePin(callParams);
-                break;
-            case CALLS.RECOVER_DEVICE:
-                // @ts-ignore
-                fn = () => TrezorConnect.recoveryDevice(callParams);
-                break;
-            case CALLS.WIPE_DEVICE:
-                // @ts-ignore
-                fn = () => TrezorConnect.wipeDevice(callParams);
-                break;
-            default:
-                throw new Error(`call ${name} does not exist`);
-        }
-        const response = await fn();
-        if (response.success) {
-            dispatch({
-                type: DEVICE_CALL_SUCCESS,
-                result: response.payload,
-                name,
-            });
-            return response;
-        }
+    if (device === null) {
         dispatch({
             type: DEVICE_CALL_ERROR,
-            error: response.payload.error,
+            error: 'no device connected',
+            name,
+        });
+        return null;
+    }
+
+    const callParams = {
+        useEmptyPassphrase: true,
+        device,
+    };
+    Object.assign(callParams, params);
+    let fn;
+    switch (name) {
+        case CALLS.FIRMWARE_UPDATE:
+            // @ts-ignore
+            fn = () => TrezorConnect.firmwareUpdate(callParams);
+            break;
+        case CALLS.RESET_DEVICE:
+            // @ts-ignore
+            fn = () => TrezorConnect.resetDevice(callParams);
+            break;
+        case CALLS.BACKUP_DEVICE:
+            // @ts-ignore
+            fn = () => TrezorConnect.backupDevice(callParams);
+            break;
+        case CALLS.APPLY_SETTINGS:
+            // @ts-ignore
+            fn = () => TrezorConnect.applySettings(callParams);
+            break;
+        case CALLS.APPLY_FLAGS:
+            // @ts-ignore
+            fn = () => TrezorConnect.applyFlags(callParams);
+            break;
+        case CALLS.GET_FEATURES:
+            // @ts-ignore
+            fn = () => TrezorConnect.getFeatures(callParams);
+            break;
+        case CALLS.CHANGE_PIN:
+            // @ts-ignore
+            fn = () => TrezorConnect.changePin(callParams);
+            break;
+        case CALLS.RECOVER_DEVICE:
+            // @ts-ignore
+            fn = () => TrezorConnect.recoveryDevice(callParams);
+            break;
+        case CALLS.WIPE_DEVICE:
+            // @ts-ignore
+            fn = () => TrezorConnect.wipeDevice(callParams);
+            break;
+        default:
+            throw new Error(`call ${name} does not exist`);
+    }
+    const response = await fn();
+    if (response.success) {
+        dispatch({
+            type: DEVICE_CALL_SUCCESS,
+            result: response.payload,
             name,
         });
         return response;
-    } catch (error) {
-        console.error(error);
-        // todo: this is probably not used anymore.
-        // dispatch({
-        //     type: SET_APPLICATION_ERROR,
-        //     error,
-        // });
-        return error;
     }
+    dispatch({
+        type: DEVICE_CALL_ERROR,
+        error: response.payload.error,
+        name,
+    });
+    return response;
 };
 
 const uiResponseCall = (name: string, params: any) => async () => {

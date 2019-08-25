@@ -22,14 +22,14 @@ const steps: Step[] = [
         title: STEP.TITLE_SELECT_DEVICE_STEP,
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW],
     },
+    // {
+    //     id: STEP.ID_BRIDGE_STEP,
+    //     title: STEP.TITLE_BRIDGE_STEP,
+    //     path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
+    // },
     {
-        id: STEP.ID_BRIDGE_STEP,
-        title: STEP.TITLE_BRIDGE_STEP,
-        path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
-    },
-    {
-        id: STEP.ID_CONNECT_STEP,
-        title: STEP.TITLE_BRIDGE_STEP,
+        id: STEP.ID_PAIR_DEVICE_STEP,
+        title: STEP.TITLE_PAIR_DEVICE_STEP,
         disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
     },

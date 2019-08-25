@@ -33,7 +33,7 @@ export const isNotUsedHere = ({ device }: { device?: Device }) => {
     if (!device || !device.connected) {
         return null;
     }
-    return device.status !== 'available' || device.type === 'unacquired';
+    return device.type === 'unacquired';
 };
 
 export const isInBootloader = ({ device }: { device?: Device }) => {

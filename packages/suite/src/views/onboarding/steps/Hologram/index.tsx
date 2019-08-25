@@ -55,11 +55,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         <HologramWrapper>{model && <Hologram model={model} />}</HologramWrapper>
                         <Wrapper.Controls>
                             {actualVersion && actualVersion !== model && (
-                                <OnboardingButton.Cta
-                                    onClick={() => onboardingActions.goToPreviousStep()}
-                                >
-                                    Go back and select correct device
-                                </OnboardingButton.Cta>
+                                <>
+                                    <OnboardingButton.Cta
+                                        onClick={() => onboardingActions.goToPreviousStep()}
+                                    >
+                                        Go back and select correct device
+                                    </OnboardingButton.Cta>
+                                </>
                             )}
                             {(!actualVersion || actualVersion === model) && (
                                 <React.Fragment>

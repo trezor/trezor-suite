@@ -9,7 +9,7 @@ import colors from '@onboarding-config/colors';
 import { FIRMWARE_UPDATE } from '@onboarding-actions/constants/calls';
 import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
 import { firmwareUpdate } from '@onboarding-actions/firmwareUpdateActions';
-import { goToNextStep } from '@onboarding-actions/onboardingActions';
+import { goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { Text, OnboardingIcon, Loaders, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
@@ -65,6 +65,7 @@ interface Props {
     };
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
+        goToPreviousStep: typeof goToPreviousStep;
     };
 }
 
@@ -308,6 +309,11 @@ const FirmwareStep = ({
                     </Wrapper.Controls>
                 )}
             </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
+                    Back
+                </OnboardingButton.Back>
+            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

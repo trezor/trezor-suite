@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { AppState, Dispatch } from '@suite-types/index';
 
-import { goToNextStep } from '@onboarding-actions/onboardingActions';
+import { goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { callActionAndGoToNextStep, resetDevice } from '@onboarding-actions/connectActions';
 
 import Step from './index';
@@ -13,8 +13,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goToNextStep: bindActionCreators(goToNextStep, dispatch),
     callActionAndGoToNextStep: bindActionCreators(callActionAndGoToNextStep, dispatch),
+    goToPreviousStep: bindActionCreators(goToPreviousStep, dispatch),
     resetDevice: bindActionCreators(resetDevice, dispatch),
 });
 

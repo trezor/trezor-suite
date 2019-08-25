@@ -13,7 +13,7 @@ export type AnyStepId =
     | typeof STEP.ID_INIT_DEVICE
     | typeof STEP.ID_BACKUP_STEP
     | typeof STEP.ID_BOOKMARK_STEP
-    | typeof STEP.ID_BRIDGE_STEP
+    | typeof STEP.ID_PAIR_DEVICE_STEP
     | typeof STEP.ID_NEW_OR_USED
     | typeof STEP.ID_FINAL_STEP
     | typeof STEP.ID_FIRMWARE_STEP
@@ -23,7 +23,6 @@ export type AnyStepId =
     | typeof STEP.ID_SECURITY_STEP
     | typeof STEP.ID_WELCOME_STEP
     | typeof STEP.ID_NAME_STEP
-    | typeof STEP.ID_CONNECT_STEP
     | typeof STEP.ID_UNBOXING_STEP
     | typeof STEP.ID_SHAMIR_STEP
     | typeof STEP.ID_RECOVERY_STEP;
@@ -40,7 +39,7 @@ export type AnyStepTitle =
     | typeof STEP.TITLE_INIT_DEVICE
     | typeof STEP.TITLE_BACKUP_STEP
     | typeof STEP.TITLE_BOOKMARK_STEP
-    | typeof STEP.TITLE_BRIDGE_STEP
+    | typeof STEP.TITLE_PAIR_DEVICE_STEP
     | typeof STEP.TITLE_FINAL_STEP
     | typeof STEP.TITLE_FIRMWARE_STEP
     | typeof STEP.TITLE_NEWSLETTER_STEP
@@ -49,7 +48,6 @@ export type AnyStepTitle =
     | typeof STEP.TITLE_SECURITY_STEP
     | typeof STEP.TITLE_WELCOME_STEP
     | typeof STEP.TITLE_NAME_STEP
-    | typeof STEP.TITLE_CONNECT_STEP
     | typeof STEP.TITLE_UNBOXING_STEP
     | typeof STEP.TITLE_LAUNCH_STEP
     | typeof STEP.TITLE_RECOVERY_STEP;

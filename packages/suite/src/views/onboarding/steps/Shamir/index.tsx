@@ -2,7 +2,7 @@ import React from 'react';
 // import { FormattedMessage } from 'react-intl';
 
 import { AppState } from '@suite-types/index';
-import { goToNextStep } from '@onboarding-actions/onboardingActions';
+import { goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { callActionAndGoToNextStep, resetDevice } from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
@@ -11,17 +11,10 @@ import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components'
 
 interface Props {
     device: AppState['onboarding']['connect']['device'];
-    goToNextStep: typeof goToNextStep;
+    goToPreviousStep: typeof goToPreviousStep;
     callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
     resetDevice: typeof resetDevice;
 }
-
-// if (path.includes(STEP.PATH_CREATE)) {
-//     return () => {
-//
-//     };
-// }
-// return () => onboardingActions.goToNextStep(STEP.ID_RECOVERY_STEP);
 
 const ShamirStep = (props: Props) => {
     const getModel = () => {
@@ -56,15 +49,6 @@ const ShamirStep = (props: Props) => {
                             }
                         >
                             <Text>Standard backup</Text>
-                            {/* <OnboardingButton.Cta
-                        data-test="button-new-device"
-                        onClick={() => {
-                            props.onboardingActions.setPath([...props.path, STEP.PATH_NEW]);
-                            props.onboardingActions.goToNextStep();
-                        }}
-                    >
-                        New device
-                    </OnboardingButton.Cta> */}
                         </Option>
 
                         <Option
@@ -94,6 +78,9 @@ const ShamirStep = (props: Props) => {
                     </Wrapper.Controls>
                 )}
             </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <OnboardingButton.Back onClick={props.goToPreviousStep}>Back</OnboardingButton.Back>
+            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

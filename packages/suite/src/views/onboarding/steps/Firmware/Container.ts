@@ -15,6 +15,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
         goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     },
     firmwareUpdateActions: {
         firmwareUpdate: bindActionCreators(firmwareUpdateActions.firmwareUpdate, dispatch),
