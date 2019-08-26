@@ -6,6 +6,7 @@ import { initialState, State } from '@wallet-reducers/receiveReducer';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
+import { FormattedMessage } from 'react-intl';
 
 export type ReceiveActions =
     | { type: typeof RECEIVE.INIT; state: State }
@@ -34,33 +35,17 @@ export const showUnverifiedAddress = (): Action => ({
     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
 });
 
-export const showAddress = (path: number[]) => async (
+export const showAddress = (path: string) => async (
     dispatch: Dispatch,
-    _getState: GetState,
+    getState: GetState,
 ): Promise<void> => {
-    // TODO
-    // replace with real data from reducers
-    // const selected = getState().wallet.selectedDevice;
-    // const { network } = getState().selectedAccount;
-    const selected = {
-        available: true,
-        connected: true,
-        instance: null,
-        path: '4C7098C3D916B10FBCFCE8A0',
-        state: null,
-        useEmptyPassphrase: true,
-    };
-    const network = {
-        type: 'ethereum',
-    };
-    // TODO: END
+    const selected = getState().suite.device;
+    const { network } = getState().wallet.selectedAccount;
 
     if (!selected || !network) return;
 
     if (selected && (!selected.connected || !selected.available)) {
         dispatch({
-            // remove once selected is really type of TrezorDevice
-            // @ts-ignore
             type: RECEIVE.REQUEST_UNVERIFIED,
             device: selected,
         });
@@ -113,12 +98,12 @@ export const showAddress = (path: number[]) => async (
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR,
+                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR.defaultMessage, // TODO intl support for Notification without the need to pass FormattedMessage
                 message: response.payload.error,
                 cancelable: true,
                 actions: [
                     {
-                        label: l10nCommonMessages.TR_TRY_AGAIN,
+                        label: l10nCommonMessages.TR_TRY_AGAIN.defaultMessage,
                         callback: () => {
                             dispatch(showAddress(path));
                         },

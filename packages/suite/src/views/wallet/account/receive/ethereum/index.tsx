@@ -18,7 +18,10 @@ const EthereumReceive = ({ className, ...props }: ReceiveProps) => {
                 <FormattedMessage {...messages.TR_RECEIVE_ETHEREUM_OR_TOKENS} />
             </Title>
             <VerifyAddressInput {...props} />
-            <QrCode value="2121212" />
+            {(props.isAddressVerified || props.isAddressUnverified) &&
+                !props.isAddressVerifying && (
+                    <QrCode value={props.account.descriptor} accountPath={props.account.path} />
+                )}
         </Wrapper>
     );
 };

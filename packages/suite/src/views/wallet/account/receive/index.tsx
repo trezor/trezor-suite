@@ -5,7 +5,8 @@ import LayoutAccount from '@wallet-components/LayoutAccount';
 import { AppState, Dispatch } from '@suite/types/suite';
 import { connect } from 'react-redux';
 import Content from '@suite/components/wallet/Content';
-import { showAddress } from '@suite/actions/wallet/receiveActions';
+import { CONTEXT_DEVICE } from '@suite-actions/constants/modalConstants';
+import { showAddress } from '@wallet-actions/receiveActions';
 import { bindActionCreators } from 'redux';
 import EthereumTypeReceiveForm from './ethereum';
 import RippleTypeReceiveForm from './ripple';
@@ -21,12 +22,16 @@ interface Props {
 
 export interface ReceiveProps {
     className?: string;
-    account: AppState['wallet']['selectedAccount']['account'];
+    // makes all props in selectedAccount required, so the account we need is not optional anymore
+    // also excludes null;
+    account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
     address: string;
     isAddressVerifying: boolean;
     isAddressUnverified: boolean;
     isAddressHidden: boolean;
     isAddressVerified: boolean;
+    showAddress: typeof showAddress;
+    device: Exclude<AppState['suite']['device'], undefined>;
 }
 
 const AccountReceive = (props: Props) => {
@@ -44,12 +49,13 @@ const AccountReceive = (props: Props) => {
 
     const { isAddressVerified, isAddressUnverified } = props.receive;
 
-    const CONTEXT_DEVICE = ''; // fake, TODO: correct import
+    // this logic below for figuring out if address is currently being verified (showing prompt on the device),
+    // based on the currently set modal dialog,
+    // should be imo implemented somewhere inside reducers (setting isVerifying prop inside the reducer)
     const isAddressVerifying =
-        // @ts-ignore TODO: add with modal
         props.modal.context === CONTEXT_DEVICE &&
-        // @ts-ignore TODO: add with modal
         props.modal.windowType === 'ButtonRequest_Address';
+
     const isAddressHidden =
         !isAddressVerifying && !isAddressVerified && !isAddressUnverified && !account.imported;
 
