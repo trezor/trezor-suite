@@ -90,7 +90,6 @@ const runBridgeProcess = async () => {
         if (os === 'win') {
             console.log('running bridge on win');
         }
-
     }
 };
 
