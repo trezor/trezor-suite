@@ -70,6 +70,10 @@ describe('Other', () => {
     ];
 
     tests.forEach(testName => {
+        cy.document().then(doc => {
+            cy.expect(doc.fonts.status).to.equal('loaded');
+        });
+
         it(`${testName}`, () => {
             if (testName.match(/icon|coin|logo|prompt|header/)) {
                 cy.getTestElement(testName)

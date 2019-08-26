@@ -61,6 +61,10 @@ describe('Form', () => {
         'switch_noicon_small_disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
+            cy.document().then(doc => {
+                cy.expect(doc.fonts.status).to.equal('loaded');
+            });
+
             if (
                 testName.match(/info|success|warning|error|checkbox_checked/) &&
                 !testName.match(/textarea/)
