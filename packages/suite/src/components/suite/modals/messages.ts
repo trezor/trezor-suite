@@ -9,6 +9,11 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_LABEL',
         defaultMessage: 'Enter "{deviceLabel}" passphrase',
     },
+    TR_ACCOUNT_HASH: {
+        id: 'TR_ACCOUNT_HASH',
+        defaultMessage: 'Account #{number}',
+        description: 'Used in auto-generated account label',
+    },
 });
 
 export default definedMessages;
