@@ -3,10 +3,15 @@ const isDev = require('electron-is-dev');
 const prepareNext = require('electron-next');
 const path = require('path');
 const url = require('url');
+// const { isBridgeRunning, runBridge } = require('./bridge');
 
 let mainWindow;
 
 const init = async () => {
+    // if (!isBridgeRunning) {
+    //     runBridge();
+    // }
+
     await prepareNext(path.resolve(__dirname, '../'));
 
     mainWindow = new BrowserWindow({

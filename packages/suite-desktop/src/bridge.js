@@ -1,12 +1,13 @@
 const psList = require('ps-list');
 const os = require('os');
+const { join } = require('path');
 const { exec } = require('child_process');
 
 const TREZOR_PROCESS_NAME = 'trezord';
 const STATUS = { OK: 'ok', ERROR: 'error' };
 
 const getBridgeVersion = () => {
-    return '2.0.27';
+    return '2.0.27'; // TODO: should not be hardcoded
 };
 
 const getOS = () => {
@@ -28,16 +29,30 @@ const getOS = () => {
     }
 };
 
-const getBridgeLiByOs = () => {
+const execute = command => {
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+    });
+};
+
+const getBridgeLibByOs = () => {
     const os = getOS();
     const bridgeVersion = getBridgeVersion();
+    const bridgeStaticFolder = `../static/bridge/${bridgeVersion}`;
+
     switch (os) {
+        // TODO determine root better?
         case 'mac':
-            return `../static/bridge/trezor-bridge_${bridgeVersion}.pkg`;
+            return join(bridgeStaticFolder, `trezor-bridge-${bridgeVersion}.pkg`);
         case 'linux':
-            return `../static/bridge/trezor-bridge_${bridgeVersion}_amd64.deb`;
+            return `../static/bridge/${bridgeVersion}/trezor-bridge_${bridgeVersion}_amd64.deb`;
         case 'win':
-            return `../static/bridge/trezor-bridge_${bridgeVersion}-win32-install`;
+            return `../static/bridge/${bridgeVersion}/trezor-bridge_${bridgeVersion}-win32-install`;
         default:
             return `Cannot run bridge lib on unknown os "${os}"`;
     }
@@ -49,7 +64,7 @@ const isBridgeRunning = async () => {
     return isRunning;
 };
 
-const run = async () => {
+const runBridge = async () => {
     const os = getOS();
     const isBridgeAlreadyRunning = await isBridgeRunning();
 
@@ -58,26 +73,20 @@ const run = async () => {
         return { status: STATUS.OK };
     }
 
-    // bridge is not running, run
     if (!isBridgeAlreadyRunning) {
-        const lib = getBridgeLiByOs();
+        const lib = getBridgeLibByOs();
 
-        // run bridge on mac os
         if (os === 'mac') {
             console.log('running bridge on mac OS');
-            exec(lib);
+            execute(`sudo installer -pkg ${lib} -target /`);
         }
 
-        // run bridge on linux
         if (os === 'linux') {
             console.log('running bridge on linux');
-            exec(lib);
         }
 
-        // run bridge on windows
         if (os === 'win') {
             console.log('running bridge on win');
-            exec(lib);
         }
 
         return {
@@ -87,4 +96,6 @@ const run = async () => {
     }
 };
 
-const result = run();
+const result = runBridge();
+
+export { isBridgeRunning, runBridge };
