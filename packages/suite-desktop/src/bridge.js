@@ -29,6 +29,23 @@ const getOS = () => {
     }
 };
 
+const getBridgeLibByOs = () => {
+    const os = getOS();
+    const bridgeVersion = getBridgeVersion();
+    const bridgeStaticFolder = `../static/bridge/${bridgeVersion}`;
+
+    switch (os) {
+        case 'mac':
+            return join(bridgeStaticFolder, `trezor-bridge-${bridgeVersion}.pkg`);
+        case 'linux':
+            return join(bridgeStaticFolder, `trezor-bridge_${bridgeVersion}_amd64.deb`);
+        case 'win':
+            return join(bridgeStaticFolder, `trezor-bridge_${bridgeVersion}-win32-install.exe`);
+        default:
+            return `Cannot run bridge lib on unknown os "${os}"`;
+    }
+};
+
 const execute = command => {
     exec(command, (error, stdout, stderr) => {
         if (error) {
@@ -38,24 +55,6 @@ const execute = command => {
         console.log(`stdout: ${stdout}`);
         console.error(`stderr: ${stderr}`);
     });
-};
-
-const getBridgeLibByOs = () => {
-    const os = getOS();
-    const bridgeVersion = getBridgeVersion();
-    const bridgeStaticFolder = `../static/bridge/${bridgeVersion}`;
-
-    switch (os) {
-        // TODO determine root better?
-        case 'mac':
-            return join(bridgeStaticFolder, `trezor-bridge-${bridgeVersion}.pkg`);
-        case 'linux':
-            return `../static/bridge/${bridgeVersion}/trezor-bridge_${bridgeVersion}_amd64.deb`;
-        case 'win':
-            return `../static/bridge/${bridgeVersion}/trezor-bridge_${bridgeVersion}-win32-install`;
-        default:
-            return `Cannot run bridge lib on unknown os "${os}"`;
-    }
 };
 
 const isBridgeRunning = async () => {
@@ -96,6 +95,6 @@ const runBridge = async () => {
     }
 };
 
-const result = runBridge();
+runBridge();
 
 export { isBridgeRunning, runBridge };
