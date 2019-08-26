@@ -31,6 +31,11 @@ const definedMessages = defineMessages({
         id: 'TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK',
         defaultMessage: 'Show address, I will take the risk',
     },
+    TR_TRY_AGAIN: {
+        id: 'TR_TRY_AGAIN',
+        defaultMessage: 'Try again',
+        description: 'Try to run the proccess again',
+    },
 });
 
 export default definedMessages;
