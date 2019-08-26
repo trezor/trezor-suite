@@ -18,11 +18,11 @@ describe('Typography', () => {
         'paragraph_large',
         'paragraph_xlarge',
     ].forEach(testName => {
-        cy.document().then(doc => {
-            cy.expect(doc.fonts.status).to.equal('loaded');
-        });
-
         it(`${testName}`, () => {
+            cy.document().then(doc => {
+                cy.expect(doc.fonts.status).to.equal('loaded');
+            });
+
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();
