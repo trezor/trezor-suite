@@ -69,14 +69,15 @@ const Preloader: React.SFC<Props> = props => {
         };
     }, [loaded, loadedTimeout]);
 
-    const preloaderFinished = loaded || introTimedout;
+
+    const preloaderFinished = loaded && introTimedout;
 
     return (
         <>
             <CSSTransition
                 {...TRANSITION_PROPS}
                 in={!preloaderFinished}
-                timeout={0}
+                timeout={1000}
                 onExited={() => setIntroExited(true)}
             >
                 <PreloaderWrapper>

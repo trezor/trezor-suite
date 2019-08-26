@@ -307,13 +307,6 @@ class Onboarding extends React.PureComponent<Props> {
                                 <HologramStep />
                             </CSSTransition>
 
-                            {/* <CSSTransition
-                                in={activeStepId === STEP.ID_BRIDGE_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <BridgeStep />
-                            </CSSTransition> */}
-
                             <CSSTransition
                                 in={activeStepId === STEP.ID_PAIR_DEVICE_STEP}
                                 {...TRANSITION_PROPS}

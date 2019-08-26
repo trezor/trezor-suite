@@ -37,9 +37,9 @@ const updateStore = (store: ReturnType<typeof createStore>) => {
 };
 
 const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
-    const store = createStore(initialState)
-    store.subscribe(() => updateStore(store)); 
-    return store; 
+    const store = createStore(initialState);
+    store.subscribe(() => updateStore(store));
+    return store;
 };
 
 describe('Onboarding Actions', () => {

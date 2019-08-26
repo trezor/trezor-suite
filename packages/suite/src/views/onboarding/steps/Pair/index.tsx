@@ -52,10 +52,6 @@ const PairDeviceStep: React.FC<StepProps> = props => {
         return Boolean(transport && transport.type === 'webusb');
     };
 
-    // const isBridge = () => {
-    //     return transport && transport.type === 'bridge';
-    // };
-
     const hasNoTransport = () => transport && !transport.type;
 
     const isDetectingDevice = () => {
@@ -69,23 +65,6 @@ const PairDeviceStep: React.FC<StepProps> = props => {
         if (isDeviceUnreadable()) return 'unreadable';
         return 'ok';
     };
-    // useEffect(() => {
-    //     // if (transport && transport.type === 'webusb') return;
-
-    //     let troubleshootTimeoutRef;
-
-    //     if (!isDetectingDevice(device)) {
-    //         troubleshootTimeoutRef = setTimeout(() => {
-    //             setShowTroubleshoot(true);
-    //         }, 3000);
-    //     } else {
-    //         setShowTroubleshoot(false);
-    //     }
-
-    //     return () => {
-    //         clearTimeout(troubleshootTimeoutRef);
-    //     };
-    // }, [isDetectingDevice, transport, device]);
 
     useEffect(() => {
         if (transport && transport.type) {
@@ -134,22 +113,20 @@ const PairDeviceStep: React.FC<StepProps> = props => {
                                     </>
                                 )}
                                 {getConnectedDeviceStatus() === 'unreadable' && (
-                                            <>
-                                                <Text>
-                                                    Your device is connected properly, but web
-                                                    interface can not communicate with it now. You
-                                                    will need to install special communication
-                                                    daemon.
-                                                </Text>
+                                    <>
+                                        <Text>
+                                            Your device is connected properly, but web interface can
+                                            not communicate with it now. You will need to install
+                                            special communication daemon.
+                                        </Text>
 
-                                                <OnboardingButton.Cta
-                                                    onClick={() => TrezorConnect.disableWebUSB()}
-                                                >
-                                                    Try bridge
-                                                </OnboardingButton.Cta>
-                                            </>
-                                        )
-                                        }
+                                        <OnboardingButton.Cta
+                                            onClick={() => TrezorConnect.disableWebUSB()}
+                                        >
+                                            Try bridge
+                                        </OnboardingButton.Cta>
+                                    </>
+                                )}
                             </>
                         )}
 
@@ -169,7 +146,6 @@ const PairDeviceStep: React.FC<StepProps> = props => {
                                                 </OnboardingButton.Alt>
                                             </Wrapper.Controls>
                                         )}
-                                        
                                     </>
                                 )}
                                 {!isWebusb() && (
