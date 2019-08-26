@@ -59,13 +59,14 @@ const PairDeviceStep: React.FC<StepProps> = props => {
     const hasNoTransport = () => transport && !transport.type;
 
     const isDetectingDevice = () => {
-        return Boolean(device && device.features && device.connected && !isDeviceUnreadable());
+        return Boolean((device && device.features && device.connected) || isDeviceUnreadable());
     };
 
     const getConnectedDeviceStatus = () => {
         if (isInBlWithFwPresent()) return 'in-bootloader';
         if (device && device.features && device.features.initialized) return 'initialized';
         if (device && device.features && device.features.no_backup) return 'seedles';
+        if (isDeviceUnreadable()) return 'unreadable';
         return 'ok';
     };
     // useEffect(() => {
@@ -132,6 +133,23 @@ const PairDeviceStep: React.FC<StepProps> = props => {
                                         </Wrapper.Controls>
                                     </>
                                 )}
+                                {getConnectedDeviceStatus() === 'unreadable' && (
+                                            <>
+                                                <Text>
+                                                    Your device is connected properly, but web
+                                                    interface can not communicate with it now. You
+                                                    will need to install special communication
+                                                    daemon.
+                                                </Text>
+
+                                                <OnboardingButton.Cta
+                                                    onClick={() => TrezorConnect.disableWebUSB()}
+                                                >
+                                                    Try bridge
+                                                </OnboardingButton.Cta>
+                                            </>
+                                        )
+                                        }
                             </>
                         )}
 
@@ -151,22 +169,7 @@ const PairDeviceStep: React.FC<StepProps> = props => {
                                                 </OnboardingButton.Alt>
                                             </Wrapper.Controls>
                                         )}
-                                        {isDeviceUnreadable() && (
-                                            <>
-                                                <Text>
-                                                    Your device is connected properly, but web
-                                                    interface can not communicate with it now. You
-                                                    will need to install special communication
-                                                    daemon.
-                                                </Text>
-
-                                                <OnboardingButton.Cta
-                                                    onClick={() => TrezorConnect.disableWebUSB()}
-                                                >
-                                                    Try bridge
-                                                </OnboardingButton.Cta>
-                                            </>
-                                        )}
+                                        
                                     </>
                                 )}
                                 {!isWebusb() && (
