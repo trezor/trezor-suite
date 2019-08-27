@@ -78,7 +78,6 @@
         "next-plugin-custom-babel-config": "^1.0.0",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "next-transpile-modules": "^2.0.0",
-        "nodemon": "^1.19.1",
         "rimraf": "^2.6.3"
     }
 }

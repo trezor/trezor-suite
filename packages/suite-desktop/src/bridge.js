@@ -6,6 +6,10 @@ const { spawn, exec } = require('child_process');
 const TREZOR_PROCESS_NAME = 'trezord';
 const STATUS = { OK: 'ok', ERROR: 'error' };
 
+const error = msg => {
+    throw new Error(`cannot run bridge library - ${msg}`);
+};
+
 const getBridgeVersion = () => {
     return '2.0.27'; // TODO: should not be hardcoded
 };
@@ -18,12 +22,12 @@ const getArch = () => {
         case 'x64':
             return 'x64';
         default:
-            console.error('cannot run bridge binary - unsupported system architecture');
+            error('unsupported system architecture');
     }
 };
 
 const getOS = () => {
-    const platform = os.platform();
+    const platform = 'aaa';
     switch (platform) {
         case 'aix':
         case 'freebsd':
@@ -37,7 +41,7 @@ const getOS = () => {
         case 'win32':
             return 'win';
         default:
-            return 'Cannot run bridge on unsupported OS';
+            error('unsupported OS');
     }
 };
 
@@ -55,28 +59,27 @@ const getBridgeLibByOs = () => {
         case 'win':
             return join(bridgeStaticFolder, `trezord-win.exe`);
         default:
-            return `Cannot run bridge lib on unknown os "${os}"`;
+            error(`cannot find library`);
     }
 };
 
 const spawnProcess = command => {
-    const trezorBridgeProcess = spawn(command, [], {
+    const spawnedProcess = spawn(command, [], {
         detached: true,
     });
 
-    trezorBridgeProcess.on('error', err => {
-        console.log(err);
+    spawnedProcess.on('error', err => {
+        error(err);
     });
 };
 
 const execute = command => {
     exec(command, (error, stdout, stderr) => {
         if (error) {
-            console.error(`exec error: ${error}`);
+            error(error);
             return;
         }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
+        error(`${stderr}`);
     });
 };
 
