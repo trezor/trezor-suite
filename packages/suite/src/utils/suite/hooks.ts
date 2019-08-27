@@ -6,7 +6,7 @@ export const useKeyPress = (targetKey: string) => {
 
     // If pressed key is our target key then set to true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const downHandler = (event: any) => {
+    const downHandler = (event: KeyboardEvent) => {
         if (event.key === targetKey) {
             setKeyPressed(true);
         }
@@ -14,7 +14,7 @@ export const useKeyPress = (targetKey: string) => {
 
     // If released key is our target key then set to false
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const upHandler = (event: any) => {
+    const upHandler = (event: KeyboardEvent) => {
         if (event.key === targetKey) {
             setKeyPressed(false);
         }
