@@ -18,7 +18,7 @@ import {
     StepBodyWrapper,
     ControlsWrapper,
 } from '@onboarding-components/Wrapper';
-import { updateFirmware } from '@onboarding-actions/firmwareUpdateActions';
+import { firmwareUpdate } from '@suite-actions/firmwareActions';
 import { goToNextStep } from '@onboarding-actions/onboardingActions';
 // import { callActionAndGoToNextStep, resetDevice } from '@suite/actions/onboarding/connectActions';
 import l10nMessages from './index.messages';
@@ -30,21 +30,30 @@ const DONUT_RADIUS = 60;
 interface ButtonProps {
     onClick: () => void;
     isConnected: boolean;
+    isInBootloader: boolean;
 }
 
-const InstallButton = ({ isConnected, onClick }: ButtonProps) => (
-    <Tooltip
-        trigger={isConnected ? 'manual' : 'mouseenter focus'}
-        placement="bottom"
-        content="Connect device to continue"
-    >
-        <ButtonCta isDisabled={!isConnected} onClick={() => onClick()}>
-            <FormattedMessage {...l10nMessages.TR_INSTALL} />
-        </ButtonCta>
-    </Tooltip>
-);
+const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) => {
+    let content = '';
+    if (!isConnected) {
+        content = 'Connect device to continue';
+    } else if (!isInBootloader) {
+        content = 'Go to bootloader';
+    }
+    return (
+        <Tooltip
+            trigger={isConnected && isInBootloader ? 'manual' : 'mouseenter focus'}
+            placement="bottom"
+            content={content}
+        >
+            <ButtonCta isDisabled={!isConnected || !isInBootloader} onClick={() => onClick()}>
+                <FormattedMessage {...l10nMessages.TR_INSTALL} />
+            </ButtonCta>
+        </Tooltip>
+    );
+};
 
-const ContinueButton = ({ isConnected, onClick }: ButtonProps) => (
+const ContinueButton = ({ isConnected, onClick }: Omit<ButtonProps, 'isInBootloader'>) => (
     <Tooltip
         trigger={isConnected ? 'manual' : 'mouseenter focus'}
         placement="bottom"
@@ -60,18 +69,13 @@ const ContinueButton = ({ isConnected, onClick }: ButtonProps) => (
 interface Props {
     device: AppState['onboarding']['connect']['device'];
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    firmwareUpdate: AppState['onboarding']['firmwareUpdate'];
-    // path: AppState['onboarding']['path'];
+    firmwareUpdate: AppState['firmware'];
     firmwareUpdateActions: {
-        updateFirmware: typeof updateFirmware;
+        firmwareUpdate: typeof firmwareUpdate;
     };
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
     };
-    // connectActions: {
-    //     resetDevice: typeof resetDevice;
-    //     callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
-    // };
 }
 
 const FirmwareStep = ({
@@ -129,9 +133,10 @@ const FirmwareStep = ({
     }, [firmwareUpdate.status, progress, maxProgress, device.features.major_version]);
 
     const isConnected = device && device.connected;
+    const isInBootloader = device && device.mode === 'bootloader';
 
     const getError = () => {
-        return deviceCall.error || firmwareUpdate.error;
+        return deviceCall.error;
     };
 
     const getFirmwareStatus = () => {
@@ -181,7 +186,7 @@ const FirmwareStep = ({
     const install = () => {
         setProgress(0);
         setMaxProgress(0);
-        firmwareUpdateActions.updateFirmware();
+        firmwareUpdateActions.firmwareUpdate();
     };
 
     const getContinueFn = () => {
@@ -255,14 +260,15 @@ const FirmwareStep = ({
                                         />
                                     </Text>
                                 )}
-                                {firmwareUpdate.error && (
+                                {/* todo: rework with notifications */}
+                                {/* {firmwareUpdate.error && (
                                     <Text style={{ color: colors.error }}>
                                         <FormattedMessage
                                             {...l10nMessages.TR_FETCH_ERROR_OCCURRED}
                                             values={{ error: firmwareUpdate.error }}
                                         />
                                     </Text>
-                                )}
+                                )} */}
                             </>
                         )}
                     </>
@@ -273,7 +279,11 @@ const FirmwareStep = ({
                     <ControlsWrapper>
                         {getFirmwareStatus() === 'none' && !getError() && (
                             <>
-                                <InstallButton isConnected={isConnected} onClick={install} />
+                                <InstallButton
+                                    isConnected={isConnected}
+                                    isInBootloader={isInBootloader}
+                                    onClick={install}
+                                />
                             </>
                         )}
                         {getFirmwareStatus() === 'none' && getError() && (
@@ -290,10 +300,10 @@ const FirmwareStep = ({
 
                         {getFirmwareStatus() === 'outdated' && (
                             <>
-                                <InstallButton isConnected={isConnected} onClick={install} />
-                                <ContinueButton
+                                <InstallButton
                                     isConnected={isConnected}
-                                    onClick={getContinueFn()}
+                                    isInBootloader={isInBootloader}
+                                    onClick={() => install()}
                                 />
                             </>
                         )}
