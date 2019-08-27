@@ -9,7 +9,7 @@ import modalsMessages from '../messages';
 import messages from './messages';
 import { TrezorDevice } from '@suite-types';
 
-const TopMesssage = styled(P)``;
+const TopMessage = styled(P)``;
 
 const BottomMessage = styled(P)`
     margin: 0 30px;
@@ -82,9 +82,9 @@ const Passphrase: FunctionComponent<Props> = ({
                     }}
                 />
             </H5>
-            <TopMesssage size="small">
+            <TopMessage size="small">
                 <FormattedMessage {...messages.PASSPHRASE_CASE_SENSITIVE} />
-            </TopMesssage>
+            </TopMessage>
             <FormRow>
                 <Input
                     onChange={event => setValue(event.target.value)}
