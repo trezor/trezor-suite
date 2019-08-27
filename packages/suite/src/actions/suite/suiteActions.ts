@@ -44,18 +44,14 @@ export const updateOnlineStatus = () => (dispatch: Dispatch) => {
     }
 };
 
-export const onSuiteReady = (): SuiteActions => {
-    return {
-        type: SUITE.READY,
-    };
-};
+export const onSuiteReady = (): SuiteActions => ({
+    type: SUITE.READY,
+});
 
-export const onSuiteError = (error: any): SuiteActions => {
-    return {
-        type: SUITE.ERROR,
-        error,
-    };
-};
+export const onSuiteError = (error: any): SuiteActions => ({
+    type: SUITE.ERROR,
+    error,
+});
 
 /**
  * Called from `trezor-connect` events handler: `handleDeviceConnect`, `handleDeviceDisconnect`
