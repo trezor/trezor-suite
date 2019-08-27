@@ -26,6 +26,7 @@ export default function onboardingApp(state: OnboardingAppState | undefined, act
         selectedModel: onboardingState.selectedModel,
         path: onboardingState.path,
         connect: connect(
+            // @ts-ignore: TODO
             onboardingState.connect,
             action as ConnectActionTypes,
         ),

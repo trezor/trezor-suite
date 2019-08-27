@@ -1,6 +1,5 @@
 import { ThunkDispatch } from 'redux-thunk';
 import {
-    UI,
     UiEvent,
     DeviceEvent,
     TransportEvent,
