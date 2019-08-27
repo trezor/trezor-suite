@@ -3,7 +3,7 @@ import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { BLOCKCHAIN, SUITE, STORAGE } from '@suite-actions/constants';
 import { init as initBlockchain } from '@suite-actions/blockchainActions';
 import { init as initRouter } from '@suite-actions/routerActions';
-import * as SuiteActions from '@suite-actions/suiteActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -16,7 +16,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
 
     switch (action.type) {
         case SUITE.INIT:
-            api.dispatch(SuiteActions.updateOnlineStatus());
+            api.dispatch(suiteActions.updateOnlineStatus());
             // load storage
             api.dispatch(loadStorage());
             break;
@@ -38,21 +38,17 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
 
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
-            api.dispatch(SuiteActions.handleDeviceConnect(action.payload));
+            api.dispatch(suiteActions.handleDeviceConnect(action.payload));
             break;
         case DEVICE.DISCONNECT:
-            api.dispatch(SuiteActions.handleDeviceDisconnect(action.payload));
-            break;
-        case DEVICE.CHANGED:
-            api.dispatch(SuiteActions.handleDeviceChanged(action.payload));
+            api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
             break;
         default:
             break;
     }
-    // keep suite reducer synchronized with other reducers (selected device)
-    // api.dispatch(SuiteActions.handleDeviceChanged(action.payload));
 
-    if (api.dispatch(SuiteActions.observeSelectedDevice(action))) {
+    // keep suite reducer synchronized with other reducers (selected device)
+    if (api.dispatch(suiteActions.observeSelectedDevice(action))) {
         // device changed
     }
 

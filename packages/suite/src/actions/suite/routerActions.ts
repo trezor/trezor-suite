@@ -49,20 +49,16 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
  * Called from ./support/RouterHandler
  * @param {string} url
  */
-export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState): boolean => {
-    const locked = false;
-    if (locked) {
-        // TODO: do not render if view is locked
-        return false;
-    }
-    return true;
+export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { uiLocked, routerLocked } = getState().suite;
+    return !uiLocked && !routerLocked;
 };
 
 // links inside of application
-export const goto = (url: string, preserveParams: boolean = false) => {
+export const goto = async (url: string, preserveParams: boolean = false) => {
     if (preserveParams) {
-        Router.push(url + window.location.hash, getPrefixedURL(url) + window.location.hash);
+        await Router.push(url + window.location.hash, getPrefixedURL(url) + window.location.hash);
     } else {
-        Router.push(url, getPrefixedURL(url));
+        await Router.push(url, getPrefixedURL(url));
     }
 };
