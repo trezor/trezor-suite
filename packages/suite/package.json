@@ -26,7 +26,6 @@
         "color-hash": "^1.0.3",
         "ethereumjs-util": "^6.0.0",
         "idb": "^4.0.4",
-        "lodash": "^4.17.15",
         "pako": "^1.0.10",
         "react": "16.8.6",
         "react-dom": "16.8.6",

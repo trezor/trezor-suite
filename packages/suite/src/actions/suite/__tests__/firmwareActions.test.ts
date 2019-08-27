@@ -3,8 +3,6 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import merge from 'lodash/merge';
-
 import firmwareReducer from '@suite-reducers/firmwareReducer';
 import * as firwmareActions from '../firmwareActions';
 import fixtures from './fixtures/firmwareActions';
@@ -63,6 +61,20 @@ jest.mock('trezor-connect', () => {
     };
 });
 
+const merge = (
+    target: Record<string, any>,
+    source: Record<string, any> | string | boolean | number,
+) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of Object.keys(source)) {
+        if (source instanceof Object && source[key] instanceof Object)
+            Object.assign(source[key], merge(target[key], source[key]));
+    }
+    // Join `target` and modified `source`
+    Object.assign(target || {}, source);
+    return target;
+};
+
 export const getInitialState = (override: any) => {
     const defaults = {
         suite: {
@@ -70,8 +82,6 @@ export const getInitialState = (override: any) => {
                 connected: true,
                 type: 'acquired',
                 features: {
-                    // eslint-disable-next-line @typescript-eslint/camelcase
-                    device_id: 'DEVICE-ID',
                     major_version: 2,
                 },
             },
@@ -115,11 +125,6 @@ describe('Firmware Actions', () => {
             await store.dispatch(firwmareActions.firmwareUpdate());
 
             const result = store.getState();
-
-            // console.log(f.description);
-            // console.log('state', state);
-            // console.log('result', '\n', result);
-            // console.log('store.getActions()', '\n', store.getActions());
 
             if (f.result) {
                 if (f.result.state) {

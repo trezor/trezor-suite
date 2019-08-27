@@ -1,8 +1,6 @@
 /* eslint-disable no-bitwise */
 /* eslint-disable prefer-spread */ // to be refactored
-
 import * as pako from 'pako';
-import * as _ from 'lodash';
 
 const T1_WIDTH = 128;
 const T1_HEIGHT = 64;
@@ -24,8 +22,22 @@ const getHeight = (model: number) => {
     return T1_HEIGHT;
 };
 
-const range = (a: number, b?: number) => {
-    return _.range(a, b);
+const range = (start: number, end?: number) => {
+    // Ensure the sign of `-0` is preserved.
+    if (end === undefined) {
+        end = start;
+        start = 0;
+    }
+    const step = 1;
+    let index = -1;
+    let length = Math.max(Math.ceil((end - start) / (step || 1)), 0);
+    const result = new Array(length);
+
+    while (length--) {
+        result[++index] = start;
+        start += step;
+    }
+    return result;
 };
 
 const byteArrayToHexString = (byteArray: Uint8Array) => {
