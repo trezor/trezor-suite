@@ -178,3 +178,26 @@ export const findInstanceIndex = (draft: TrezorDevice[], device: AcquiredDevice)
             d.features.device_id === device.features.device_id &&
             d.instance === device.instance,
     );
+
+/**
+ * Utility for retrieving fresh data from the "devices" reducer
+ * It's used for keeping "suite" reducer synchronized via `suiteMiddleware > suiteActions.observeSelectedDevice`
+ * @param {(Device | TrezorDevice)} device
+ * @param {TrezorDevice[]} devices
+ * @returns
+ */
+export const getSelectedDevice = (device: TrezorDevice, devices: TrezorDevice[]) => {
+    // selected device is not acquired
+    if (!device.features) return devices.find(d => d.path === device.path);
+    const { path, instance, features } = device;
+
+    return devices.find(d => {
+        if ((!d.features || d.mode === 'bootloader') && d.path === path) {
+            return true;
+        }
+        if (d.features && d.features.device_id === features.device_id && d.instance === instance) {
+            return true;
+        }
+        return false;
+    });
+};
