@@ -1,5 +1,6 @@
 import { ThunkDispatch } from 'redux-thunk';
 import {
+    UI,
     UiEvent,
     DeviceEvent,
     TransportEvent,
@@ -33,9 +34,9 @@ export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>
-    | Omit<UiEvent, 'event'>
+    | UiEvent
     | Omit<DeviceEvent, 'event'>
-    | { type: 'iframe-loaded'; payload: any };
+    | { type: 'iframe-loaded'; payload: { browser: any } };
 
 export type AppState = AppState;
 
