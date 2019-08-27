@@ -2,7 +2,6 @@
 export default [
     {
         order: 1,
-        isHidden: true,
         type: 'bitcoin',
         name: 'Bitcoin',
         symbol: 'BTC',

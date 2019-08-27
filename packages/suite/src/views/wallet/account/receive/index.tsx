@@ -64,7 +64,7 @@ const AccountReceive = (props: Props) => {
         address = account.descriptor;
     }
 
-    const componentProps = {
+    const commonComponentProps = {
         account,
         device,
         address,
@@ -74,12 +74,13 @@ const AccountReceive = (props: Props) => {
         isAddressUnverified,
         isAddressVerifying,
     };
+    console.log(account);
 
     return (
         <LayoutAccount>
-            {network.type === 'bitcoin' && <BitcoinTypeReceiveForm {...componentProps} />}
-            {network.type === 'ethereum' && <EthereumTypeReceiveForm {...componentProps} />}
-            {network.type === 'ripple' && <RippleTypeReceiveForm {...componentProps} />}
+            {network.type === 'bitcoin' && <BitcoinTypeReceiveForm {...commonComponentProps} />}
+            {network.type === 'ethereum' && <EthereumTypeReceiveForm {...commonComponentProps} />}
+            {network.type === 'ripple' && <RippleTypeReceiveForm {...commonComponentProps} />}
         </LayoutAccount>
     );
 };

@@ -7,6 +7,7 @@ import commonMessages from '@wallet-views/messages';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { ReceiveProps } from '@suite/views/wallet/account/receive';
 import messages from './messages';
+import ShowOnTrezorEyeButton from '../../ShowOnTrezorEyeButton';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,7 +17,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const EyeButton = styled(Button)`
+const EyeButton = styled(ShowOnTrezorEyeButton)`
     z-index: 10001;
     padding: 0;
     top: 10px;
@@ -51,11 +52,24 @@ const StyledDeviceIcon = styled(DeviceIcon)`
     margin-right: 6px;
 `;
 
-interface Props extends ReceiveProps, InjectedIntlProps {}
+interface Props
+    extends Pick<
+            ReceiveProps,
+            | 'isAddressVerifying'
+            | 'isAddressUnverified'
+            | 'isAddressHidden'
+            | 'isAddressVerified'
+            | 'showAddress'
+            | 'device'
+        >,
+        InjectedIntlProps {
+    accountPath: string;
+    accountAddress: string;
+}
 
 const VerifyInput = ({
-    account,
-    address,
+    accountPath,
+    accountAddress,
     device,
     isAddressHidden,
     isAddressVerified,
@@ -70,7 +84,7 @@ const VerifyInput = ({
                 type="text"
                 readOnly
                 topLabel={intl.formatMessage(commonMessages.TR_ADDRESS)}
-                value={address}
+                value={accountAddress}
                 isPartiallyHidden={isAddressHidden}
                 tooltipAction={
                     isAddressVerifying ? (
@@ -83,35 +97,22 @@ const VerifyInput = ({
                 icon={
                     (isAddressVerified || isAddressUnverified) &&
                     !isAddressVerifying && (
-                        <EyeButton isTransparent onClick={() => showAddress(account.path)}>
-                            <Tooltip
-                                placement="top"
-                                content={
-                                    <VerifyAddressTooltip
-                                        isConnected={device.connected}
-                                        isAvailable={device.available}
-                                        addressUnverified={isAddressUnverified}
-                                    />
-                                }
-                            >
-                                <Icon
-                                    size={16}
-                                    icon={isAddressUnverified ? 'EYE_CROSSED' : 'EYE'}
-                                    color={
-                                        isAddressUnverified
-                                            ? colors.ERROR_PRIMARY
-                                            : colors.TEXT_PRIMARY
-                                    }
-                                />
-                            </Tooltip>
-                        </EyeButton>
+                        <EyeButton
+                            device={device}
+                            accountPath={accountPath}
+                            isAddressVerifying={isAddressVerifying}
+                            isAddressUnverified={isAddressUnverified}
+                            isAddressHidden={isAddressHidden}
+                            isAddressVerified={isAddressVerified}
+                            showAddress={showAddress}
+                        />
                     )
                 }
             />
             <>
                 {!(isAddressVerified || isAddressUnverified) && ( // !account.imported
                     <ShowAddressButton
-                        onClick={() => showAddress(account.path)}
+                        onClick={() => showAddress(accountPath)}
                         // isDisabled={device.connected && !discovery.completed}
                         icon="EYE"
                     >

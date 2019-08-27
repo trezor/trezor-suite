@@ -3,6 +3,7 @@ import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
+import { Address } from 'trezor-connect';
 import messages from './messages';
 
 const Wrapper = styled.div`
@@ -38,7 +39,7 @@ interface Props {
     value: string;
     title?: string | React.ReactNode;
     width?: number;
-    accountPath?: string;
+    accountPath: string;
 }
 
 const QrCode = (props: Props) => (

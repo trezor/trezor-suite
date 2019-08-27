@@ -72,6 +72,9 @@ export const showAddress = (path: string) => async (
             // @ts-ignore
             response = await TrezorConnect.rippleGetAddress(params);
             break;
+        case 'bitcoin':
+            response = await TrezorConnect.getAddress(params);
+            break;
         default:
             response = {
                 payload: {
