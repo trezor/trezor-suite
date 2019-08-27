@@ -101,7 +101,7 @@ const UsedAddressesList = (props: Props) => {
     const totalCount = props.addresses.length;
     const perPage = 10;
     const [page, setPage] = useState(0);
-    const [hidden, setHidden] = useState(false);
+    const [hidden, setHidden] = useState(true);
     const endIndex = totalCount - 1;
     let startIndex = endIndex - (page + 1) * perPage;
     startIndex = startIndex > 0 ? startIndex : 0;
@@ -148,7 +148,7 @@ const UsedAddressesList = (props: Props) => {
         <>
             <TitleWrapper>
                 <SubHeading>Previous addresses</SubHeading>
-                {isPaginationEnabled ? (
+                {isPaginationEnabled || hidden ? (
                     <ShowMoreButton
                         isInverse
                         icon="ARROW_UP"
