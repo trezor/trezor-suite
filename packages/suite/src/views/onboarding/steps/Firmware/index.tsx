@@ -33,19 +33,25 @@ interface ButtonProps {
     isInBootloader: boolean;
 }
 
-const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) => (
-    <Tooltip
-        trigger={isConnected && isInBootloader ? 'manual' : 'mouseenter focus'}
-        placement="bottom"
-        content={
-            !isConnected ? 'Connect device to continue' : !isInBootloader ? 'Go to bootloader' : ''
-        }
-    >
-        <ButtonCta isDisabled={!isConnected || !isInBootloader} onClick={() => onClick()}>
-            <FormattedMessage {...l10nMessages.TR_INSTALL} />
-        </ButtonCta>
-    </Tooltip>
-);
+const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) => {
+    let content = '';
+    if (!isConnected) {
+        content = 'Connect device to continue';
+    } else if (!isInBootloader) {
+        content = 'Go to bootloader';
+    }
+    return (
+        <Tooltip
+            trigger={isConnected && isInBootloader ? 'manual' : 'mouseenter focus'}
+            placement="bottom"
+            content={content}
+        >
+            <ButtonCta isDisabled={!isConnected || !isInBootloader} onClick={() => onClick()}>
+                <FormattedMessage {...l10nMessages.TR_INSTALL} />
+            </ButtonCta>
+        </Tooltip>
+    );
+};
 
 const ContinueButton = ({ isConnected, onClick }: Omit<ButtonProps, 'isInBootloader'>) => (
     <Tooltip

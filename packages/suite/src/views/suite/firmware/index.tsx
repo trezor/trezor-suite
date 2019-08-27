@@ -97,48 +97,55 @@ const FirmwareUpdate = (props: Props) => {
         }
     };
 
+    const getTitleForStatus = () => {
+        switch (getStatus()) {
+            case 'no-device':
+                return 'Reconnect device to continue';
+            case 'up-to-date':
+                return 'Device is up to date';
+            default:
+                return 'Firmware update';
+        }
+    };
+
     return (
         <Wrapper>
             {/* todo: use proper notifications, leaving it here as a starting point for next iteration */}
             <WalletNotifications />
             <Top>
-                <TitleHeader>
-                    {/* todo: this does not appear right now, it displays ConnectDevice page. */}
-                    {getStatus() === 'no-device'
-                        ? 'Reconnect device to continue'
-                        : getStatus() === 'update-available'
-                        ? 'Firmware update'
-                        : getStatus() === 'up-to-date'
-                        ? 'Device has the latest firmware'
-                        : 'Firmware update'}
-                </TitleHeader>
+                <TitleHeader>{getTitleForStatus()}</TitleHeader>
             </Top>
 
             <Middle>
-                {getStatus() === 'update-available' && device.firmwareRelease ? (
-                    <ChangeLog>
-                        <H4>Changelog</H4>
-                        <H5>{device.firmwareRelease.version.join('.')}</H5>
-                        {device.firmwareRelease.changelog.split('*').map((row: string) => (
-                            <P key={row.substr(0, 8)}>{row}</P>
-                        ))}
-                    </ChangeLog>
-                ) : getStatus() === 'in-progress' ? (
+                {getStatus() === 'update-available' &&
+                    // checking device.firmwareRelase because of typescript. better way how to do it?
+                    device.firmwareRelease && (
+                        <ChangeLog>
+                            <H4>Changelog</H4>
+                            <H5>{device.firmwareRelease.version.join('.')}</H5>
+                            {device.firmwareRelease.changelog.split('*').map((row: string) => (
+                                <P key={row.substr(0, 8)}>{row}</P>
+                            ))}
+                        </ChangeLog>
+                    )}
+                {getStatus() === 'in-progress' && (
                     <div>
                         {firmware.status}
                         <Dots />
                     </div>
-                ) : null}
+                )}
             </Middle>
 
             <Bottom>
-                {getStatus() === 'up-to-date' ? (
+                {getStatus() === 'up-to-date' && (
                     <Button onClick={() => goto(getRoute('suite-index'))}>Go to wallet</Button>
-                ) : getStatus() === 'update-available' ? (
+                )}
+                {getStatus() === 'update-available' && (
                     <P>Switch device to bootloader to continue</P>
-                ) : getStatus() === 'in-bl' ? (
+                )}
+                {getStatus() === 'in-bl' && (
                     <Button onClick={() => props.firmwareUpdate()}>Install</Button>
-                ) : null}
+                )}
             </Bottom>
         </Wrapper>
     );
