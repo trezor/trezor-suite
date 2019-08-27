@@ -53,7 +53,7 @@ const getBridgeLibByOs = () => {
         case 'linux':
             return join(bridgeStaticFolder, `trezord-linux-${arch}`);
         case 'win':
-            return 'TODO'; // TODO get bridge lib for windows
+            return join(bridgeStaticFolder, `trezord-win.exe`);
         default:
             return `Cannot run bridge lib on unknown os "${os}"`;
     }
@@ -101,14 +101,7 @@ const runBridgeProcess = async () => {
     if (!isBridgeAlreadyRunning) {
         const lib = getBridgeLibByOs();
         console.log(`bridge is not running, starting bridge for ${os} ${arch}`);
-
-        if (os === 'mac' || os === 'linux') {
-            spawnProcess(lib);
-        }
-
-        if (os === 'win') {
-            console.log('running bridge on windows');
-        }
+        spawnProcess(lib);
     }
 };
 
