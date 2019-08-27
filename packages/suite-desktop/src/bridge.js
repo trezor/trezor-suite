@@ -46,8 +46,12 @@ const getBridgeLibByOs = () => {
 };
 
 const spawnProcess = command => {
-    spawn(command, [], {
+    const trezorBridgeProcess = spawn(command, [], {
         detached: true,
+    });
+
+    trezorBridgeProcess.on('error', err => {
+        console.log(err);
     });
 };
 
