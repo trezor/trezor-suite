@@ -25,10 +25,6 @@ describe('Notifications', () => {
         'notification_cancelable_action_loading_error',
     ].forEach(testName => {
         it(`${testName}`, () => {
-            cy.document().then(doc => {
-                cy.expect(doc.fonts.status).to.equal('loaded');
-            });
-
             cy.getTestElement(testName)
                 .find('.loading')
                 .each(el => {

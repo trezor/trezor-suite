@@ -42,10 +42,6 @@ describe('Buttons', () => {
         'button_inverse_icon_disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
-            cy.document().then(doc => {
-                cy.expect(doc.fonts.status).to.equal('loaded');
-            });
-
             if (testName.match(/icon/)) {
                 cy.getTestElement(testName)
                     .find('svg')
