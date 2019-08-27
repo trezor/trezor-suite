@@ -64,18 +64,6 @@ export const DEVICE_CALL_ERROR = '@onboarding/connect-device-call-error';
 export const DEVICE_INTERACTION_EVENT = '@onboarding/connect-device-interaction-event';
 export const UI_INTERACTION_EVENT = '@onboarding/connect-ui-interaction-event';
 
-// todo: these are temporary connect types
-export const DEVICE_CONNECT = 'device-connect';
-export const CONNECT_UNACQUIRED = 'device-connect_unacquired';
-export const DISCONNECT = 'device-disconnect';
-export const CHANGED = 'device-changed';
-export const ACQUIRE = 'device-acquire';
-export const RELEASE = 'device-release';
-export const ACQUIRED = 'device-acquired';
-export const RELEASED = 'device-released';
-export const USED_ELSEWHERE = 'device-used_elsewhere';
-export const UI_REQUEST_PIN = 'ui-request_pin';
-
 export type ConnectActionTypes =
     | {
           type: typeof DEVICE_CALL_RESET;
@@ -103,19 +91,4 @@ export type ConnectActionTypes =
     | {
           type: typeof UI_INTERACTION_EVENT;
           name: string;
-      }
-    | {
-          type: typeof UI_REQUEST_PIN;
-      }
-    | {
-          type: 'button';
-          payload: any;
-      }
-    | {
-          type: 'ui-button';
-          payload: any;
-      }
-    | {
-          type: 'ui-request_word';
-          payload: any;
       };
