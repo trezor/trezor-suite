@@ -70,3 +70,12 @@ describe('findInstanceIndex', () => {
         });
     });
 });
+
+describe('getSelectedDevice', () => {
+    fixtures.getSelectedDevice.forEach(f => {
+        it(f.description, () => {
+            const instance = utils.getSelectedDevice(f.device, f.state);
+            expect(instance).toEqual(f.result);
+        });
+    });
+});

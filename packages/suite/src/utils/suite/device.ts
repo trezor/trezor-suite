@@ -181,8 +181,8 @@ export const findInstanceIndex = (draft: TrezorDevice[], device: AcquiredDevice)
 
 /**
  * Utility for retrieving fresh data from the "devices" reducer
- * It's used for keeping "suite" reducer synchronized via `suiteMiddleware > suiteActions.observeSelectedDevice`
- * @param {(Device | TrezorDevice)} device
+ * It's used for keep "suite" reducer synchronized via `suiteMiddleware > suiteActions.observeSelectedDevice`
+ * @param {(TrezorDevice)} device
  * @param {TrezorDevice[]} devices
  * @returns
  */
