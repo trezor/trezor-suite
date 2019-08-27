@@ -42,6 +42,11 @@ export const routes = [
         isStatic: false,
     },
     {
+        name: 'suite-device-backup',
+        pattern: '/backup',
+        isStatic: false,
+    },
+    {
         name: 'wallet-settings',
         pattern: '/wallet/settings',
         isStatic: false,
