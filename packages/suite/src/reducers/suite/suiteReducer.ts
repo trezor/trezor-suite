@@ -16,6 +16,7 @@ export interface SuiteState {
     showSidebar?: boolean;
     platform?: Platform;
     uiLocked: boolean;
+    routerLocked: boolean;
 }
 
 interface Transport {
@@ -51,6 +52,7 @@ const initialState: SuiteState = {
     deviceMenuOpened: false,
     showSidebar: undefined,
     uiLocked: false,
+    routerLocked: false,
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
