@@ -266,3 +266,8 @@ export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetSta
         // dispatch();
     }
 };
+
+export const requestForgetDevice = (payload: TrezorDevice) => ({
+    type: SUITE.REQUEST_FORGET_DEVICE,
+    payload,
+});
