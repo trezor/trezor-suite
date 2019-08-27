@@ -10,6 +10,18 @@ const getBridgeVersion = () => {
     return '2.0.27'; // TODO: should not be hardcoded
 };
 
+const getArch = () => {
+    const arch = os.arch();
+    switch (arch) {
+        case 'x32':
+            return 'x32';
+        case 'x64':
+            return 'x64';
+        default:
+            console.error('cannot run bridge binary - unsupported system architecture');
+    }
+};
+
 const getOS = () => {
     const platform = os.platform();
     switch (platform) {
@@ -31,13 +43,15 @@ const getOS = () => {
 
 const getBridgeLibByOs = () => {
     const os = getOS();
+    const arch = getArch();
     const bridgeVersion = getBridgeVersion();
     const bridgeStaticFolder = `./static/bridge/${bridgeVersion}`;
 
     switch (os) {
         case 'mac':
+            return join(bridgeStaticFolder, `trezord-mac`);
         case 'linux':
-            return join(bridgeStaticFolder, `trezord`);
+            return join(bridgeStaticFolder, `trezord-linux-${arch}`);
         case 'win':
             return 'TODO'; // TODO get bridge lib for windows
         default:
@@ -74,6 +88,7 @@ const isBridgeRunning = async () => {
 
 const runBridgeProcess = async () => {
     const os = getOS();
+    const arch = getArch();
     const isBridgeAlreadyRunning = await isBridgeRunning();
 
     // bridge is already installed and running, nothing to do
@@ -85,14 +100,14 @@ const runBridgeProcess = async () => {
     // bridge is not installed, run as process in electron app
     if (!isBridgeAlreadyRunning) {
         const lib = getBridgeLibByOs();
-        console.log(`bridge is not running, starting bridge for ${os}`);
+        console.log(`bridge is not running, starting bridge for ${os} ${arch}`);
 
         if (os === 'mac' || os === 'linux') {
             spawnProcess(lib);
         }
 
         if (os === 'win') {
-            console.log('running bridge on win');
+            console.log('running bridge on windows');
         }
     }
 };
