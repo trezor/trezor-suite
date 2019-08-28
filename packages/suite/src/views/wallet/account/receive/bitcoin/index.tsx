@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import Title from '@wallet-components/Title';
 import { FormattedMessage } from 'react-intl';
@@ -8,6 +8,8 @@ import VerifyAddressInput from '@wallet-components/inputs/VerifyAddress';
 import UsedAddressesList from '@suite/components/wallet/UsedAddressesList';
 import { H6, variables, Button } from '@trezor/components';
 import { Address } from 'trezor-connect';
+import AddressItem from '@suite/components/wallet/AddressItem';
+import { selectText } from '@suite/utils/suite/dom';
 import messages from './messages';
 import { ReceiveProps } from '../index';
 
@@ -25,10 +27,18 @@ const ButtonsWrapper = styled.div`
     /* justify-content: flex-end; */
 `;
 
+const FreshAddress = styled(AddressItem)`
+    border: 1px solid #ccc;
+`;
+
 const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
+    const firstFreshAddrRef = useRef<HTMLDivElement>();
+
     const { addresses } = props.account;
-    const [selectedAddr, setSelectedAddr] = useState(null);
+    const [selectedAddr, setSelectedAddr] = useState<Address | null>(null);
     if (!addresses) return null;
+
+    const firstFreshAddress = addresses.unused[0];
     return (
         <Wrapper key={props.account.descriptor}>
             <Title>
@@ -46,7 +56,21 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 selectedAddress={selectedAddr}
             />
             <SubHeading>Fresh address</SubHeading>
-            <VerifyAddressInput
+            <FreshAddress
+                key={firstFreshAddress.address}
+                ref={firstFreshAddrRef}
+                onClick={() => {
+                    if (firstFreshAddrRef.current) {
+                        selectText(firstFreshAddrRef.current as HTMLElement);
+                    }
+                    setSelectedAddr(firstFreshAddress);
+                }}
+                isSelected={firstFreshAddress === selectedAddr}
+                addr={firstFreshAddress}
+                index={addresses.used.length + 1}
+                actions={<>b</>}
+            />
+            {/* <VerifyAddressInput
                 device={props.device}
                 accountPath={addresses.unused[0].path}
                 accountAddress={addresses.unused[0].address}
@@ -55,7 +79,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 isAddressUnverified={props.isAddressUnverified}
                 isAddressVerifying={props.isAddressVerifying}
                 showAddress={props.showAddress}
-            />
+            /> */}
             <ButtonsWrapper>
                 <AddFreshAddress isWhite onClick={() => {}} icon="PLUS">
                     Add fresh address

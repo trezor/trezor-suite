@@ -1,77 +1,11 @@
-import React, { useState, useRef } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import { Address } from 'trezor-connect';
-import { variables, colors, Tooltip, Link, Icon, Button, H6 } from '@trezor/components';
+import { variables, colors, Button, H6 } from '@trezor/components';
 import { ReceiveProps } from '@suite/views/wallet/account/receive';
 import ShowOnTrezorEyeButton from '@wallet-components/ShowOnTrezorEyeButton';
-
-const AddrWrapper = styled.div<{ isSelected: boolean }>`
-    display: flex;
-    width: 100%;
-    align-items: center;
-    border-top: 1px solid #ccc;
-    padding: 8px 16px;
-    cursor: pointer;
-
-    &:last-child() {
-        border-bottom: 1px solid #ccc;
-    }
-
-    &:hover {
-        background: #fafafa;
-    }
-
-    ${props =>
-        props.isSelected &&
-        css`
-            background: #eee;
-
-            &:hover {
-                background: #eee;
-            }
-        `};
-`;
-
-const PathWrapper = styled.div`
-    display: flex;
-    flex: 1;
-    width: 100%;
-    justify-items: center;
-    flex-direction: column;
-    margin-right: 10px;
-`;
-
-const ActionsWrapper = styled.div`
-    display: flex;
-    flex: 0;
-    align-items: center;
-`;
-
-const Index = styled.div`
-    flex: 0;
-    margin-right: 16px;
-    justify-content: center;
-    color: ${colors.TEXT_SECONDARY};
-    font-size: ${variables.FONT_SIZE.BIG};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    align-self: baseline;
-`;
-
-const Path = styled.div`
-    color: ${colors.TEXT_PRIMARY};
-    font-size: ${variables.FONT_SIZE.BASE};
-    font-family: ${variables.FONT_FAMILY.MONOSPACE};
-    margin-bottom: 4px;
-`;
-
-const SmallText = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.TEXT_SECONDARY};
-`;
-
-const TextGreen = styled.span`
-    color: ${colors.GREEN_PRIMARY};
-`;
+import { selectText } from '@suite/utils/suite/dom';
+import UsedAddressItem from '../AddressItem';
 
 const SubHeading = styled(H6)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -83,6 +17,10 @@ const TitleWrapper = styled.div`
     display: flex;
     padding: 4px;
     justify-content: space-between;
+`;
+
+const TextGreen = styled.span`
+    color: ${colors.GREEN_PRIMARY};
 `;
 
 interface Props
@@ -98,25 +36,12 @@ interface Props
     accountPath: string;
     addresses: Address[];
     setSelectedAddr: any;
-    selectedAddress: Address;
+    selectedAddress: Address | null;
 }
-
-const selectText = (element: HTMLElement) => {
-    const doc = document;
-    if (window.getSelection) {
-        const selection = window.getSelection();
-        if (selection) {
-            const range = doc.createRange();
-            range.selectNodeContents(element);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-    }
-};
 
 const UsedAddressesList = (props: Props) => {
     const addrRefs = Array.from({ length: props.addresses.length }, _a =>
-        React.createRef<HTMLElement>(),
+        React.createRef<HTMLDivElement>(),
     );
 
     const totalCount = props.addresses.length;
@@ -130,22 +55,24 @@ const UsedAddressesList = (props: Props) => {
 
     const items = props.addresses
         .map((addr, i) => (
-            <AddrWrapper
+            <UsedAddressItem
                 key={addr.address}
+                ref={addrRefs[i]}
                 onClick={() => {
-                    if (addrRefs[i] && addrRefs[i].current) selectText(addrRefs[i].current);
+                    if (addrRefs[i].current) {
+                        selectText(addrRefs[i].current as HTMLElement);
+                    }
                     props.setSelectedAddr(addr);
                 }}
-                isSelected={addr === props.selectedAddress}
-            >
-                <Index>{`/${i}`}</Index>
-                <PathWrapper>
-                    <Path ref={addrRefs[i]}>{addr.address}</Path>
-                    <SmallText>
+                secondaryText={
+                    <>
                         Total received: <TextGreen>x BTC</TextGreen>
-                    </SmallText>
-                </PathWrapper>
-                <ActionsWrapper>
+                    </>
+                }
+                isSelected={addr === props.selectedAddress}
+                addr={addr}
+                index={i}
+                actions={
                     <ShowOnTrezorEyeButton
                         device={props.device}
                         accountPath={addr.path}
@@ -155,8 +82,8 @@ const UsedAddressesList = (props: Props) => {
                         isAddressVerified={props.isAddressVerified}
                         showAddress={props.showAddress}
                     />
-                </ActionsWrapper>
-            </AddrWrapper>
+                }
+            />
         ))
         .slice(startIndex, endIndex + 1);
 
