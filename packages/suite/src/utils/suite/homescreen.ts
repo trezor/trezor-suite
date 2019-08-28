@@ -22,22 +22,8 @@ const getHeight = (model: number) => {
     return T1_HEIGHT;
 };
 
-const range = (start: number, end?: number) => {
-    // Ensure the sign of `-0` is preserved.
-    if (end === undefined) {
-        end = start;
-        start = 0;
-    }
-    const step = 1;
-    let index = -1;
-    let length = Math.max(Math.ceil((end - start) / (step || 1)), 0);
-    const result = new Array(length);
-
-    while (length--) {
-        result[++index] = start;
-        start += step;
-    }
-    return result;
+const range = (length: number) => {
+    return [...Array(length).keys()];
 };
 
 const byteArrayToHexString = (byteArray: Uint8Array) => {
