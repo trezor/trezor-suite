@@ -23,10 +23,10 @@ export default ({ device, pathname }: Props) => {
             message={<FormattedMessage {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />}
             actions={[
                 {
-                    // label: (
-                    //     <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
-                    // ),
-                    label: 'Create backup in 3 minutes',
+                    label: (
+                        <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
+                    ),
+                    // label: 'Create backup in 3 minutes',
                     callback: () => goto(getRoute('suite-device-backup')),
                 },
             ]}
