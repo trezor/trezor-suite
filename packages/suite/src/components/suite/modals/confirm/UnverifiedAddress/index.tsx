@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Link, Button, P, H5, colors } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
+import { useKeyPress } from '@suite-utils/hooks';
 
 import l10nCommonMessages from '../../messages';
 import l10nMessages from './messages';
@@ -57,26 +58,6 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     showUnverifiedAddress,
     onCancel,
 }) => {
-    // TODO: add keyboard shortcuts
-
-    // componentDidMount(): void {
-    //     this.keyboardHandler = this.keyboardHandler.bind(this);
-    //     window.addEventListener('keydown', this.keyboardHandler, false);
-    // }
-
-    // componentWillUnmount(): void {
-    //     window.removeEventListener('keydown', this.keyboardHandler, false);
-    // }
-
-    // keyboardHandler: (event: KeyboardEvent) => void;
-
-    // keyboardHandler(event: KeyboardEvent): void {
-    //     if (event.keyCode === 13) {
-    //         event.preventDefault();
-    //         this.verifyAddress();
-    //     }
-    // }
-
     const verifyAddress = () => {
         if (!account) return;
         onCancel();
@@ -87,6 +68,12 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
         onCancel();
         showUnverifiedAddress();
     };
+
+    const enterPressed = useKeyPress('Enter');
+
+    if (enterPressed) {
+        verifyAddress();
+    }
 
     let deviceStatus;
     let claim;
