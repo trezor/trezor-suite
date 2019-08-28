@@ -34,7 +34,7 @@ interface Props {
     device: TrezorDevice;
 }
 
-const Confirmation: FunctionComponent<Props> = ({ device, onReceiveConfirmation }) => (
+const ConfirmNoBackup: FunctionComponent<Props> = ({ device, onReceiveConfirmation }) => (
     <Wrapper>
         <H5>
             <FormattedMessage {...l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />
@@ -56,4 +56,4 @@ const Confirmation: FunctionComponent<Props> = ({ device, onReceiveConfirmation 
     </Wrapper>
 );
 
-export default Confirmation;
+export default ConfirmNoBackup;
