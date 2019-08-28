@@ -77,8 +77,8 @@ interface Props {
 }
 
 const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onCancel }) => {
-    const enterPressed = useKeyPress("Enter");
-    
+    const enterPressed = useKeyPress('Enter');
+
     if (enterPressed) {
         onWalletTypeRequest(false);
     }
