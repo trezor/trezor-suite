@@ -4,6 +4,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
+import { mergeObj } from '@suite-utils/mergeObj';
 import * as firwmareActions from '../firmwareActions';
 import fixtures from './fixtures/firmwareActions';
 
@@ -61,20 +62,6 @@ jest.mock('trezor-connect', () => {
     };
 });
 
-const merge = (
-    target: Record<string, any>,
-    source: Record<string, any> | string | boolean | number,
-) => {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key of Object.keys(source)) {
-        if (source instanceof Object && source[key] instanceof Object)
-            Object.assign(source[key], merge(target[key], source[key]));
-    }
-    // Join `target` and modified `source`
-    Object.assign(target || {}, source);
-    return target;
-};
-
 export const getInitialState = (override: any) => {
     const defaults = {
         suite: {
@@ -92,7 +79,7 @@ export const getInitialState = (override: any) => {
         },
     };
     if (override) {
-        return merge(defaults, override);
+        return mergeObj(defaults, override);
     }
     return defaults;
 };
