@@ -62,7 +62,7 @@
     "devDependencies": {
         "@babel/core": "^7.0.0",
         "@sentry/browser": "^5.4.0",
-        "@types/next": "^8.0.0",
+        "@types/next": "^8.0.6",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
@@ -71,7 +71,7 @@
         "electron": "^4.1.0",
         "electron-builder": "^20.41.0",
         "git-revision-webpack-plugin": "^3.0.3",
-        "next": "^9.0.2",
+        "next": "^9.0.5",
         "next-plugin-custom-babel-config": "^1.0.0",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "next-transpile-modules": "^2.0.0",
