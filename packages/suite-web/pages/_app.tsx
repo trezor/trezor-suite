@@ -45,9 +45,7 @@ class TrezorSuiteApp extends App<Props> {
                                 additionalClassName="trezor-webusb-button"
                                 style={{ width: '100%', position: 'absolute', top: '-1000px' }}
                             >
-                                <FormattedMessage
-                                    {...l10nCommonMessages.TR_CHECK_FOR_DEVICES}
-                                />
+                                <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
                             </Button>
                             <Preloader isStatic={isStaticRoute}>
                                 <Component {...pageProps} />
