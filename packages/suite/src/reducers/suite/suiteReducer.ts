@@ -23,10 +23,14 @@ interface Transport {
     version?: string;
     outdated?: boolean;
     bridge: {
-        version: [];
-        directory: '';
-        packages: [];
-        changelog: [];
+        version: number[];
+        directory: string;
+        packages: {
+            platform: string;
+            name: string;
+            url: string;
+        }[];
+        changelog: string;
     };
 }
 

@@ -7,6 +7,7 @@ module.exports = {
             // diagnostics: false,
         },
     },
+    setupFiles: ['<rootDir>/src/support/tests/setupJest.ts'],
     moduleNameMapper: {
         '^@suite/(.+)': '<rootDir>/src/$1',
         '^@(.+)-views/(.+)': '<rootDir>/src/views/$1/$2',
@@ -27,7 +28,16 @@ module.exports = {
         '<rootDir>/src/utils/**',
         '<rootDir>/src/actions/**',
         '!**/constants/**',
+        '!**/__tests__/**',
     ],
+    coverageThreshold: {
+        global: {
+            statements: 33.2,
+            branches: 38.31,
+            functions: 32.03,
+            lines: 34.55,
+        },
+    },
     modulePathIgnorePatterns: ['node_modules'],
     testMatch: ['**/*.test.(ts|js)'],
     transform: {

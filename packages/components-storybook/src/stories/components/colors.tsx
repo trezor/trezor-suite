@@ -1,6 +1,5 @@
 import React from 'react';
 import { colors, H1, H2 } from '@trezor/components';
-import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 
 type ColorBoxProps = { color: string; textColor?: string };
@@ -50,7 +49,7 @@ const Title = styled.div`
     margin-bottom: 0.5rem;
 `;
 
-storiesOf('Other', module).add('Colors', () => (
+export default () => (
     <Section>
         <H1>Colors</H1>
         <Code>{"import { colors } from 'trezor-ui-components';"}</Code>
@@ -184,4 +183,4 @@ storiesOf('Other', module).add('Colors', () => (
             </Column>
         </Wrapper>
     </Section>
-));
+);

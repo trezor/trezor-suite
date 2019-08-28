@@ -1,5 +1,14 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { UiEvent, DeviceEvent, TransportEvent } from 'trezor-connect';
+import {
+    UiEvent,
+    DeviceEvent,
+    TransportEvent,
+    Features,
+    DeviceStatus,
+    DeviceMode,
+    DeviceFirmwareStatus,
+    FirmwareRelease,
+} from 'trezor-connect';
 import { BlockchainActions } from '@suite-actions/blockchainActions';
 import { RouterActions } from '@suite-actions/routerActions';
 import { AppState } from '@suite/reducers/store';
@@ -46,18 +55,6 @@ export type Action =
 export type Dispatch = ThunkDispatch<AppState, any, Action>;
 export type GetState = () => AppState;
 
-// tmp
-type Features = any;
-type FirmwareRelease = any;
-// type DeviceStatus = 'available' | 'occupied' | 'used';
-// type DeviceMode = 'normal' | 'bootloader' | 'initialize' | 'seedless';
-// type DeviceFirmwareStatus = 'valid' | 'outdated' | 'required' | 'unknown' | 'none';
-type DeviceStatus = any;
-type DeviceMode = any;
-type DeviceFirmwareStatus = any;
-
-export type TrezorModel = 1 | 2;
-
 export interface AcquiredDevice {
     type: 'acquired';
     path: string;
@@ -68,13 +65,14 @@ export interface AcquiredDevice {
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
-    useEmptyPassphrase: boolean;
 
+    // suite specific
+    useEmptyPassphrase: boolean;
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     instance?: number;
-    instanceLabel: string;
+    instanceLabel: string | typeof undefined;
     instanceName?: string;
     ts: number;
 }
@@ -83,17 +81,22 @@ export interface UnknownDevice {
     type: 'unacquired' | 'unreadable';
     path: string;
     label: string;
-    features: undefined;
-    state: undefined;
+    connected: true;
+    available: false;
+    // types below are here just for compatibility
+    features: typeof undefined;
+    instance: typeof undefined;
+    instanceLabel?: typeof undefined;
+    state?: string;
     useEmptyPassphrase: boolean;
-
-    remember: boolean; // device should be remembered
-    connected: boolean; // device is connected
-    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
-    instance?: number;
-    instanceLabel: string;
-    instanceName?: string;
     ts: number;
+
+    // remember: boolean; // device should be remembered
+    //  // device is connected
+    // available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
+    // instance?: number;
+    // instanceName?: string;
+    // ts: number;
 }
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;

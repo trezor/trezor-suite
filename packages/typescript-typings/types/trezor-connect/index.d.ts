@@ -195,36 +195,6 @@ declare module 'trezor-connect' {
         depth: number; // BIP32 serialization format
     }
 
-    export interface Features {
-        vendor: string;
-        major_version: number;
-        minor_version: number;
-        patch_version: number;
-        bootloader_mode: boolean | null;
-        device_id: string;
-        pin_protection: boolean;
-        passphrase_protection: boolean;
-        language: string | null;
-        label: string | null;
-        initialized: true;
-        revision: string;
-        bootloader_hash: string;
-        imported: boolean;
-        pin_cached: boolean;
-        passphrase_cached: boolean;
-        firmware_present: boolean | null;
-        needs_backup: false;
-        flags: number;
-        model: string;
-        fw_major: number;
-        fw_minor: number;
-        fw_patch: number;
-        fw_vendor: string;
-        fw_vendor_keys: string;
-        unfinished_backup: boolean;
-        no_backup: boolean;
-    }
-
     interface LoginChallenge {
         challengeHidden: string;
         challengeVisual: string;
@@ -337,27 +307,53 @@ declare module 'trezor-connect' {
         changelog: string;
     }
 
+    export interface Features {
+        bootloader_hash?: string | null;
+        bootloader_mode?: boolean | null;
+        device_id: string | null;
+        firmware_present?: boolean | null;
+        flags: number;
+        fw_major?: number | null;
+        fw_minor?: number | null;
+        fw_patch?: number | null;
+        fw_vendor?: string | null;
+        fw_vendor_keys?: string | null;
+        imported?: boolean | null;
+        initialized: boolean;
+        label: string | null;
+        language?: string | null;
+        major_version: number;
+        minor_version: number;
+        model: string;
+        needs_backup: boolean;
+        no_backup: boolean;
+        passphrase_cached: boolean;
+        passphrase_protection: boolean;
+        patch_version: number;
+        pin_cached: boolean;
+        pin_protection: boolean;
+        revision: string;
+        unfinished_backup: boolean;
+        vendor: string;
+    }
+
     export type Device =
         | {
               type: 'acquired';
               path: string;
               label: string;
               firmware: DeviceFirmwareStatus;
-              firmwareRelease: FirmwareRelease;
+              firmwareRelease?: FirmwareRelease;
               status: DeviceStatus;
               mode: DeviceMode;
-              state: string | null;
+              state?: string;
               features: Features;
           }
         | {
-              type: 'unacquired';
+              type: 'unacquired' | 'unreadable';
               path: string;
               label: string;
-          }
-        | {
-              type: 'unreadable';
-              path: string;
-              label: string;
+              features: undefined;
           };
 
     export interface SignedTransaction {
@@ -459,6 +455,10 @@ declare module 'trezor-connect' {
 
     export interface TransactionID {
         txid: string;
+    }
+
+    export interface DeviceStateResponse {
+        state: string;
     }
 
     export namespace DEVICE {
@@ -669,6 +669,8 @@ declare module 'trezor-connect' {
         function uiResponse(a: UIResponse): void;
 
         function renderWebUSBButton(): void;
+
+        function getDeviceState(params: CommonParams): ResponseMessage<DeviceStateResponse>;
     }
 
     export default TrezorConnect;

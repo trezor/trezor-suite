@@ -1,4 +1,5 @@
-import React, { PureComponent } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
 import { H5, P, Loader, Button } from '@trezor/components';
@@ -8,13 +9,6 @@ import commonMessages from '@suite-views/index.messages';
 import modalsMessages from '../messages';
 import messages from './messages';
 import { TrezorDevice } from '@suite-types';
-
-interface Props {
-    device: TrezorDevice;
-    instances?: TrezorDevice[];
-    onRememberDevice: (device: TrezorDevice) => void;
-    onForgetDevice: (device: TrezorDevice) => void;
-}
 
 const ButtonContent = styled.div`
     display: flex;
@@ -54,106 +48,73 @@ const ButtonWithLoader = styled(Button)`
 
 interface State {
     countdown: number;
-    ticker?: number;
 }
 
-interface Instance {
-    instanceLabel: string;
+interface Props {
+    device: TrezorDevice;
+    instances?: TrezorDevice[];
+    onRememberDevice: (device: TrezorDevice) => void;
+    onForgetDevice: (device: TrezorDevice) => void;
 }
 
-class RememberDevice extends PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
+const RememberDevice: FunctionComponent<Props> = ({
+    device,
+    instances,
+    onRememberDevice,
+    onForgetDevice,
+}) => {
+    const [countdown, setCountdown] = useState<State['countdown']>(10);
+    const deviceCount = instances ? instances.length : 0;
+    useHotkeys('enter', () => onForgetDevice(device));
 
-        this.state = {
-            countdown: 10,
-        };
-    }
-
-    componentDidMount(): void {
-        const ticker = () => {
-            if (this.state.countdown - 1 <= 0) {
-                // TODO: possible race condition,
-                // device could be already connected but it didn't emit Device.CONNECT event yet
-                window.clearInterval(this.state.ticker);
-                this.props.onForgetDevice(this.props.device);
-            } else {
-                this.setState(previousState => ({
-                    countdown: previousState.countdown - 1,
-                }));
-            }
-        };
-
-        this.setState({
-            countdown: 10,
-            ticker: window.setInterval(ticker, 1000),
-        });
-
-        this.keyboardHandler = this.keyboardHandler.bind(this);
-        window.addEventListener('keydown', this.keyboardHandler, false);
-    }
-
-    componentWillUnmount(): void {
-        window.removeEventListener('keydown', this.keyboardHandler, false);
-        if (this.state.ticker) {
-            window.clearInterval(this.state.ticker);
+    useEffect(() => {
+        if (countdown > 0) {
+            setTimeout(() => {
+                setCountdown(countdown - 1);
+            }, 1000);
+        } else {
+            onForgetDevice(device);
         }
-    }
+    }, [countdown, device, onForgetDevice]);
 
-    keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            this.props.onForgetDevice(this.props.device);
-        }
-    }
-
-    render() {
-        const { device, instances, onRememberDevice, onForgetDevice } = this.props;
-
-        let { label } = device;
-        const deviceCount = instances ? instances.length : 0;
-        if (instances && instances.length > 0) {
-            label = instances.map((instance: Instance) => instance.instanceLabel).join(',');
-        }
-        return (
-            <Wrapper>
-                <H5>
-                    <FormattedMessage
-                        {...modalsMessages.TR_FORGET_LABEL}
-                        values={{
-                            deviceLabel: label,
-                        }}
-                    />
-                </H5>
-                <StyledP size="small">
-                    <FormattedMessage
-                        {...messages.TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO}
-                        values={{
-                            deviceCount,
-                        }}
-                    />
-                </StyledP>
-                <Column>
-                    <ButtonWithLoader onClick={() => onForgetDevice(device)}>
-                        <ButtonContent>
-                            <Text>
-                                <FormattedMessage {...commonMessages.TR_FORGET_DEVICE} />
-                            </Text>
-                            <StyledLoader
-                                isSmallText
-                                isWhiteText
-                                size={28}
-                                text={this.state.countdown.toString()}
-                            />
-                        </ButtonContent>
-                    </ButtonWithLoader>
-                    <Button isWhite onClick={() => onRememberDevice(device)}>
-                        <FormattedMessage {...messages.TR_REMEMBER_DEVICE} />
-                    </Button>
-                </Column>
-            </Wrapper>
-        );
-    }
-}
+    return (
+        <Wrapper>
+            <H5>
+                <FormattedMessage
+                    {...modalsMessages.TR_FORGET_LABEL}
+                    values={{
+                        deviceLabel: device.label,
+                    }}
+                />
+            </H5>
+            <StyledP size="small">
+                <FormattedMessage
+                    {...messages.TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO}
+                    values={{
+                        deviceCount,
+                    }}
+                />
+            </StyledP>
+            <Column>
+                <ButtonWithLoader onClick={() => onForgetDevice(device)}>
+                    <ButtonContent>
+                        <Text>
+                            <FormattedMessage {...commonMessages.TR_FORGET_DEVICE} />
+                        </Text>
+                        <StyledLoader
+                            isSmallText
+                            isWhiteText
+                            size={28}
+                            text={countdown.toString()}
+                        />
+                    </ButtonContent>
+                </ButtonWithLoader>
+                <Button isWhite onClick={() => onRememberDevice(device)}>
+                    <FormattedMessage {...messages.TR_REMEMBER_DEVICE} />
+                </Button>
+            </Column>
+        </Wrapper>
+    );
+};
 
 export default RememberDevice;

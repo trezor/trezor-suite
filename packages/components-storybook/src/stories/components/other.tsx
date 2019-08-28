@@ -1,11 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
-import { withInfo } from '@storybook/addon-info';
 import { Link } from 'react-router-dom';
-import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
+import { select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-react-router';
-
 import {
     colors,
     Header,
@@ -21,6 +19,8 @@ import {
     variables,
     LanguagePicker,
 } from '@trezor/components';
+import { infoOptions } from '../../support/info';
+import Colors from './colors';
 
 const { FONT_SIZE, COINS, ICONS } = variables;
 
@@ -65,174 +65,159 @@ const Title = styled.div`
     margin-bottom: 0.5rem;
 `;
 
-type TrezorModelType = 1 | 2;
-
-storiesOf('Other', module).add('All', () => (
-    <Wrapper>
-        <H1>Prompt</H1>
-        <H5>Trezor One</H5>
-        <Section>
-            <Prompt model={1} data-test="prompt_1">
-                Complete the action on your device
-            </Prompt>
-        </Section>
-
-        <H5>Trezor Model T</H5>
-        <Section>
-            <Prompt model={2} data-test="prompt_2">
-                Complete the action on your device
-            </Prompt>
-        </Section>
-
-        <H1>TrezorImage</H1>
-        <H5>Trezor One</H5>
-        <Section>
-            <TrezorImage height={310} model={1} data-test="trezor_image_1" />
-        </Section>
-
-        <H5>Trezor Model T</H5>
-        <Section>
-            <TrezorImage height={310} model={2} data-test="trezor_image_2" />
-        </Section>
-
-        <H1>TrezorLogo</H1>
-        <H5>Horizontal</H5>
-        <Section>
-            <TrezorLogo type="horizontal" width="90%" data-test="trezor_logo_horizontal" />
-        </Section>
-
-        <H5>Vertical</H5>
-        <Section>
-            <TrezorLogo type="vertical" width="50%" data-test="trezor_logo_vertical" />
-        </Section>
-
-        <H1>Header</H1>
-        <Section>
-            <Header
-                sidebarEnabled
-                sidebarOpened={false}
-                toggleSidebar={undefined}
-                togglerOpenText="Menu"
-                togglerCloseText="Close"
-                rightAddon={null}
-                links={[
-                    {
-                        href: 'https://trezor.io/',
-                        title: 'Trezor',
-                    },
-                    {
-                        href: 'https://wiki.trezor.io/',
-                        title: 'Wiki',
-                    },
-                    {
-                        href: 'https://blog.trezor.io/',
-                        title: 'Blog',
-                    },
-                ]}
-                data-test="header"
-            />
-        </Section>
-
-        <H1>Loader</H1>
-        <H5>default</H5>
-        <Section>
-            <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
-        </Section>
-
-        <H5>small text</H5>
-        <Section>
-            <Loader
-                size={100}
-                strokeWidth={2}
-                text="loading"
-                isSmallText
-                data-test="loader_small_text"
-            />
-        </Section>
-
-        <H5>transparent route</H5>
-        <Section>
-            <Loader
-                size={100}
-                strokeWidth={2}
-                text="loading"
-                transparentRoute
-                data-test="loader_transparent_route"
-            />
-        </Section>
-
-        <H5>white text</H5>
-        <SectionDark>
-            <Loader
-                size={100}
-                strokeWidth={2}
-                text="loading"
-                isWhiteText
-                data-test="loader_white_text"
-            />
-        </SectionDark>
-
-        <H5>white text &amp; transparent route</H5>
-        <SectionDark>
-            <Loader
-                size={100}
-                strokeWidth={2}
-                text="loading"
-                isWhiteText
-                transparentRoute
-                data-test="loader_white_text_transparent"
-            />
-        </SectionDark>
-
-        <H1>Icons</H1>
-        <Icons>
-            {ICONS.map((icon: IconProps['icon']) => {
-                const test = `icon_${icon.toLowerCase()}`;
-                return (
-                    <Item key={icon}>
-                        <Title>{icon}</Title>
-                        <Icon icon={icon} data-test={test} />
-                    </Item>
-                );
-            })}
-        </Icons>
-
-        <H1>Coins</H1>
-        <Icons>
-            {COINS.map((coin: string) => {
-                const test = `coin_${coin.toLowerCase()}`;
-                return (
-                    <Item key={coin}>
-                        <Title>{coin}</Title>
-                        <CoinLogo size={32} network={coin} data-test={test} />
-                    </Item>
-                );
-            })}
-        </Icons>
-    </Wrapper>
-));
-
 storiesOf('Other', module)
-    .addDecorator(
-        withInfo({
-            header: false,
-            inline: true,
-            maxPropsIntoLine: 1,
-            styles: {
-                infoStory: {
-                    background: colors.LANDING,
-                    borderBottom: `1px solid ${colors.DIVIDER}`,
-                    padding: '30px',
-                    margin: '-8px',
-                },
-                infoBody: {
-                    border: 'none',
-                    padding: '15px',
-                },
+    .add(
+        'All',
+        () => (
+            <Wrapper>
+                <H1>Prompt</H1>
+                <H5>Trezor One</H5>
+                <Section>
+                    <Prompt model={1} data-test="prompt_1">
+                        Complete the action on your device
+                    </Prompt>
+                </Section>
+
+                <H5>Trezor Model T</H5>
+                <Section>
+                    <Prompt model={2} data-test="prompt_2">
+                        Complete the action on your device
+                    </Prompt>
+                </Section>
+
+                <H1>TrezorImage</H1>
+                <H5>Trezor One</H5>
+                <Section>
+                    <TrezorImage height={310} model={1} data-test="trezor_image_1" />
+                </Section>
+
+                <H5>Trezor Model T</H5>
+                <Section>
+                    <TrezorImage height={310} model={2} data-test="trezor_image_2" />
+                </Section>
+
+                <H1>TrezorLogo</H1>
+                <H5>Horizontal</H5>
+                <Section>
+                    <TrezorLogo type="horizontal" width="90%" data-test="trezor_logo_horizontal" />
+                </Section>
+
+                <H5>Vertical</H5>
+                <Section>
+                    <TrezorLogo type="vertical" width="50%" data-test="trezor_logo_vertical" />
+                </Section>
+
+                <H1>Header</H1>
+                <Section>
+                    <Header
+                        sidebarEnabled
+                        sidebarOpened={false}
+                        toggleSidebar={undefined}
+                        togglerOpenText="Menu"
+                        togglerCloseText="Close"
+                        rightAddon={null}
+                        links={[
+                            {
+                                href: 'https://trezor.io/',
+                                title: 'Trezor',
+                            },
+                            {
+                                href: 'https://wiki.trezor.io/',
+                                title: 'Wiki',
+                            },
+                            {
+                                href: 'https://blog.trezor.io/',
+                                title: 'Blog',
+                            },
+                        ]}
+                        data-test="header"
+                    />
+                </Section>
+
+                <H1>Loader</H1>
+                <H5>default</H5>
+                <Section>
+                    <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
+                </Section>
+
+                <H5>small text</H5>
+                <Section>
+                    <Loader
+                        size={100}
+                        strokeWidth={2}
+                        text="loading"
+                        isSmallText
+                        data-test="loader_small_text"
+                    />
+                </Section>
+
+                <H5>transparent route</H5>
+                <Section>
+                    <Loader
+                        size={100}
+                        strokeWidth={2}
+                        text="loading"
+                        transparentRoute
+                        data-test="loader_transparent_route"
+                    />
+                </Section>
+
+                <H5>white text</H5>
+                <SectionDark>
+                    <Loader
+                        size={100}
+                        strokeWidth={2}
+                        text="loading"
+                        isWhiteText
+                        data-test="loader_white_text"
+                    />
+                </SectionDark>
+
+                <H5>white text &amp; transparent route</H5>
+                <SectionDark>
+                    <Loader
+                        size={100}
+                        strokeWidth={2}
+                        text="loading"
+                        isWhiteText
+                        transparentRoute
+                        data-test="loader_white_text_transparent"
+                    />
+                </SectionDark>
+
+                <H1>Icons</H1>
+                <Icons>
+                    {ICONS.map((icon: IconProps['icon']) => {
+                        const test = `icon_${icon.toLowerCase()}`;
+                        return (
+                            <Item key={icon}>
+                                <Title>{icon}</Title>
+                                <Icon icon={icon} data-test={test} />
+                            </Item>
+                        );
+                    })}
+                </Icons>
+
+                <H1>Coins</H1>
+                <Icons>
+                    {COINS.map((coin: string) => {
+                        const test = `coin_${coin.toLowerCase()}`;
+                        return (
+                            <Item key={coin}>
+                                <Title>{coin}</Title>
+                                <CoinLogo size={32} network={coin} data-test={test} />
+                            </Item>
+                        );
+                    })}
+                </Icons>
+            </Wrapper>
+        ),
+        {
+            info: {
+                disable: true,
             },
-        })
+        }
     )
-    .addDecorator(withKnobs)
     .add(
         'Coin',
         () => {
@@ -246,8 +231,8 @@ storiesOf('Other', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
 
             ~~~js
             Import { CoinLogo } from 'trezor-ui-components';
@@ -282,8 +267,8 @@ storiesOf('Other', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Icon } from 'trezor-ui-components';
             ~~~
@@ -306,7 +291,7 @@ storiesOf('Other', module)
                     '2': 2,
                 },
                 1
-            ) as TrezorModelType;
+            ) as number;
 
             return (
                 <Prompt model={model} size={number('size', 32)}>
@@ -316,8 +301,8 @@ storiesOf('Other', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-        ## Import
         ~~~js
         import { Prompt } from 'trezor-ui-components';
         ~~~
@@ -337,14 +322,14 @@ storiesOf('Other', module)
                     '2': 2,
                 },
                 1
-            ) as TrezorModelType;
+            );
 
             return <TrezorImage {...(width ? { width } : {})} height={height} model={model} />;
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-        ## Import
         ~~~js
         import { TrezorImage } from 'trezor-ui-components';
         ~~~
@@ -389,8 +374,8 @@ storiesOf('Other', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-        ## Import
         ~~~js
         import { TrezorLogo } from 'trezor-ui-components';
         ~~~
@@ -419,15 +404,17 @@ storiesOf('Other', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-            ## Import
             ~~~js
             import { Loader } from 'trezor-ui-components';
             ~~~
             `,
             },
         }
-    )
+    );
+
+storiesOf('Other', module)
     .addDecorator(StoryRouter())
     .add(
         'Header',
@@ -463,15 +450,17 @@ storiesOf('Other', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-        ## Import
         ~~~js
         import { Header } from 'trezor-ui-components';
         ~~~
         `,
             },
         }
-    )
+    );
+
+storiesOf('Other', module)
     .add(
         'LanguagePicker',
         () => {
@@ -531,12 +520,17 @@ storiesOf('Other', module)
         },
         {
             info: {
+                ...infoOptions,
                 text: `
-        ## Import
         ~~~js
         import { LanguagePicker } from 'trezor-ui-components';
         ~~~
         `,
             },
         }
-    );
+    )
+    .add('Colors', () => <Colors />, {
+        info: {
+            disable: true,
+        },
+    });

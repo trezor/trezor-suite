@@ -1,7 +1,6 @@
 suite-web lint:
     stage: lint
     script:
-        - env
         - yarn workspace @trezor/suite-web lint
     dependencies:
         - install and build
@@ -38,7 +37,6 @@ suite-web deploy dev:
         on_stop: suite-web delete review
     before_script: []
     script:
-        - env
         - cd ${PACKAGE_PATH_SUITE_WEB}
         - echo "Deploy to dev servers"
         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web

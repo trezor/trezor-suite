@@ -2,14 +2,14 @@ module.exports = {
     roots: ['./src'],
     globals: {
         'ts-jest': {
-            tsConfig: 'tsconfig.json'
+            tsConfig: 'tsconfig.json',
         },
     },
     moduleFileExtensions: ['js', 'ts'],
     coverageDirectory: 'coverage',
     collectCoverage: true,
     modulePathIgnorePatterns: ['node_modules'],
-    testMatch: ['**/tests/**/*.test.(ts|js)'],
+    testMatch: ['**/*.test.(ts|js)'],
     coverageThreshold: {
         global: {
             branches: 100,

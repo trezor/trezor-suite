@@ -14,7 +14,7 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build:lib",
-        "test": "jest"
+        "test:unit": "jest"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",
