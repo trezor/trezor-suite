@@ -27,7 +27,7 @@ const getArch = () => {
 };
 
 const getOS = () => {
-    const platform = 'aaa';
+    const platform = os.platform();
     switch (platform) {
         case 'aix':
         case 'freebsd':
