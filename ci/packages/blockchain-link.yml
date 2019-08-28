@@ -1,12 +1,12 @@
 blockchain-link lint:
-    stage: lint
+    stage: lint & prettier
     script:
         - yarn workspace @trezor/blockchain-link lint
     dependencies:
         - install and build
 
 blockchain-link test:
-    stage: test
+    stage: unit testing
     script:
         - yarn workspace @trezor/blockchain-link test
     dependencies:
