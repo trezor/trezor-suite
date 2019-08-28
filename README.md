@@ -17,7 +17,7 @@ connect-explorer | [connect-explorer](./packages/connect-explorer)
 - `yarn`
 - `yarn build:libs`
 
-*To set up your dev enviroment for the native app follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-native#development).*
+*To set up your dev enviroment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-native#development).*
 
 Run a dev build:
 - `yarn suite:dev` (web app)
