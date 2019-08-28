@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Address } from 'trezor-connect';
 import { variables, colors, Tooltip, Link, Icon, Button, H6 } from '@trezor/components';
@@ -13,19 +13,23 @@ const AddrWrapper = styled.div<{ isSelected: boolean }>`
     padding: 8px 16px;
     cursor: pointer;
 
-    ${props =>
-        props.isSelected &&
-        css`
-            background: #ccc;
-        `};
-
     &:last-child() {
         border-bottom: 1px solid #ccc;
     }
 
     &:hover {
-        background: #eeeeee;
+        background: #fafafa;
     }
+
+    ${props =>
+        props.isSelected &&
+        css`
+            background: #eee;
+
+            &:hover {
+                background: #eee;
+            }
+        `};
 `;
 
 const PathWrapper = styled.div`
@@ -97,7 +101,24 @@ interface Props
     selectedAddress: Address;
 }
 
+const selectText = (element: HTMLElement) => {
+    const doc = document;
+    if (window.getSelection) {
+        const selection = window.getSelection();
+        if (selection) {
+            const range = doc.createRange();
+            range.selectNodeContents(element);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    }
+};
+
 const UsedAddressesList = (props: Props) => {
+    const addrRefs = Array.from({ length: props.addresses.length }, _a =>
+        React.createRef<HTMLElement>(),
+    );
+
     const totalCount = props.addresses.length;
     const perPage = 10;
     const [page, setPage] = useState(0);
@@ -112,13 +133,14 @@ const UsedAddressesList = (props: Props) => {
             <AddrWrapper
                 key={addr.address}
                 onClick={() => {
+                    if (addrRefs[i] && addrRefs[i].current) selectText(addrRefs[i].current);
                     props.setSelectedAddr(addr);
                 }}
                 isSelected={addr === props.selectedAddress}
             >
                 <Index>{`/${i}`}</Index>
                 <PathWrapper>
-                    <Path>{addr.address}</Path>
+                    <Path ref={addrRefs[i]}>{addr.address}</Path>
                     <SmallText>
                         Total received: <TextGreen>x BTC</TextGreen>
                     </SmallText>
@@ -141,8 +163,6 @@ const UsedAddressesList = (props: Props) => {
     if (items.length === 0) {
         return null;
     }
-
-    console.log(page);
 
     return (
         <>

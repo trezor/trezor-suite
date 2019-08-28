@@ -22,7 +22,7 @@ const AddFreshAddress = styled(Button)``;
 const ButtonsWrapper = styled.div`
     display: flex;
     margin-top: 16px;
-    justify-content: flex-end;
+    /* justify-content: flex-end; */
 `;
 
 const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
@@ -42,9 +42,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 isAddressUnverified={props.isAddressUnverified}
                 isAddressVerifying={props.isAddressVerifying}
                 showAddress={props.showAddress}
-                setSeletedAddr={(addr: Address) => {
-                    setSelectedAddr(addr);
-                }}
+                setSelectedAddr={setSelectedAddr}
                 selectedAddress={selectedAddr}
             />
             <SubHeading>Fresh address</SubHeading>
@@ -59,7 +57,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 showAddress={props.showAddress}
             />
             <ButtonsWrapper>
-                <AddFreshAddress isInverse onClick={() => {}} icon="PLUS">
+                <AddFreshAddress isWhite onClick={() => {}} icon="PLUS">
                     Add fresh address
                 </AddFreshAddress>
             </ButtonsWrapper>
