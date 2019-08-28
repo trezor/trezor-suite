@@ -22,7 +22,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
         ...(isInternalLink && typeof href === 'string' ? { as: getPrefixedURL(href) } : {}),
     };
 
-    const { prefetch, shallow, scroll, replace, onError, ...linkProps } = rest;
+    const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
 
     return (
         <NextLink

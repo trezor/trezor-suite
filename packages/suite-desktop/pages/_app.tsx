@@ -1,5 +1,5 @@
 import React from 'react';
-import App, { Container, AppContext } from 'next/app';
+import App, { AppContext } from 'next/app';
 import { Store } from 'redux';
 import { isStatic } from '@suite-utils/router';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -31,15 +31,13 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
-                <Container>
-                    <ReduxProvider store={store}>
-                        <IntlProvider>
-                            <Preloader isStatic={isStaticRoute}>
-                                <Component {...pageProps} />
-                            </Preloader>
-                        </IntlProvider>
-                    </ReduxProvider>
-                </Container>
+                <ReduxProvider store={store}>
+                    <IntlProvider>
+                        <Preloader isStatic={isStaticRoute}>
+                            <Component {...pageProps} />
+                        </Preloader>
+                    </IntlProvider>
+                </ReduxProvider>
             </ErrorBoundary>
         );
     }
