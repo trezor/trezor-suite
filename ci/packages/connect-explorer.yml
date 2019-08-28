@@ -76,7 +76,7 @@ connect-explorer delete review:
 
 connect-explorer test integration:
     image: cypress/base:10
-    stage: test integration
+    stage: integration testing
     script:
         - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer test:integration
