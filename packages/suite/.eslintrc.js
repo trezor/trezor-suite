@@ -67,8 +67,6 @@ module.exports = {
         // It's fine.
         'react/no-multi-comp': 'off',
         'react/no-unescaped-entities': 'off',
-        // They are fine sometimes.
-        'no-nested-ternary': 'off',
         // This is fine.
         'class-methods-use-this': 'off',
         'lines-between-class-members': 'off',

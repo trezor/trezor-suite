@@ -110,7 +110,7 @@ const Settings = ({ device, uiLocked, applySettings, changePin }: Props) => {
     const DISPLAY_ROTATIONS = [
         { icon: 'ARROW_UP', value: 0 },
         // blocked by components
-        // { icon: 'ARROW_RIGHT', value: 90 },
+        { icon: 'ARROW_RIGHT', value: 90 },
         { icon: 'ARROW_DOWN', value: 180 },
         { icon: 'ARROW_LEFT', value: 270 },
     ] as const;
