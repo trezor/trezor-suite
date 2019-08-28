@@ -2,8 +2,8 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Link, Button, P, H5, colors } from '@trezor/components';
-import { TrezorDevice } from '@suite-types';
 import { useKeyPress } from '@suite-utils/hooks';
+import { TrezorDevice } from '@suite-types';
 
 import l10nCommonMessages from '../../messages';
 import l10nMessages from './messages';
@@ -45,6 +45,7 @@ const BackupButton = styled(Button)`
 
 interface Props {
     device: TrezorDevice;
+    // TODO: fix account type
     account: any;
     showAddress: (accountPath: string) => void;
     showUnverifiedAddress: () => void;
