@@ -92,7 +92,7 @@ const ButtonNotification = styled(Button)`
 `;
 
 interface CtaShape {
-    label: React.ReactNode;
+    label: React.ReactNode | string;
     callback: () => any;
 }
 
@@ -181,7 +181,7 @@ Notification.propTypes = {
     isActionInProgress: PropTypes.bool,
     actions: PropTypes.arrayOf(
         PropTypes.shape({
-            label: PropTypes.string,
+            label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
             callback: PropTypes.func,
         })
     ),
