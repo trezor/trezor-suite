@@ -1,5 +1,5 @@
 components lint:
-    stage: lint & prettier
+    stage: lint and prettier
     script:
         - yarn workspace @trezor/components lint
     dependencies:

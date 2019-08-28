@@ -10,7 +10,7 @@ variables:
 
 stages:
     - install and build libraries
-    - lint & prettier
+    - lint and prettier
     - typescript type check
     - unit testing
     - build

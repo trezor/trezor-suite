@@ -1,5 +1,5 @@
 suite-desktop lint:
-    stage: lint & prettier
+    stage: lint and prettier
     script:
         - yarn workspace @trezor/suite-desktop lint
     dependencies:

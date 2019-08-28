@@ -1,5 +1,5 @@
 rollout lint:
-    stage: lint & prettier
+    stage: lint and prettier
     script:
         - yarn workspace @trezor/rollout lint
     dependencies:

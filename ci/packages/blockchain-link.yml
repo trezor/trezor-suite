@@ -1,5 +1,5 @@
 blockchain-link lint:
-    stage: lint & prettier
+    stage: lint and prettier
     script:
         - yarn workspace @trezor/blockchain-link lint
     dependencies:

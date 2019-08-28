@@ -1,5 +1,5 @@
 components-storybook lint:
-  stage: lint & prettier
+  stage: lint and prettier
   script:
     - yarn workspace @trezor/components-storybook lint
   dependencies:
