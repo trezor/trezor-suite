@@ -1,8 +1,6 @@
 /* eslint-disable no-bitwise */
 /* eslint-disable prefer-spread */ // to be refactored
-
 import * as pako from 'pako';
-import * as _ from 'lodash';
 
 const T1_WIDTH = 128;
 const T1_HEIGHT = 64;
@@ -24,8 +22,8 @@ const getHeight = (model: number) => {
     return T1_HEIGHT;
 };
 
-const range = (a: number, b?: number) => {
-    return _.range(a, b);
+const range = (length: number) => {
+    return [...Array(length).keys()];
 };
 
 const byteArrayToHexString = (byteArray: Uint8Array) => {
