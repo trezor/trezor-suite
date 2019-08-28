@@ -6,6 +6,8 @@
 
 - [Notes on React Native setup inside a monorepo](./packages/componentsStorybookNative/README.md)
 
+- [Tests for custom hooks in suite are ignored (modulePathIgnorePatterns: '<rootDir>/src/utils/suite/hooks')](./packages/suite/jest.config.js)
+
 ## things to do in future
 
 ### Bridge in electron

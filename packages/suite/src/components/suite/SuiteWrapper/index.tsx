@@ -14,7 +14,6 @@ import Bridge from '@suite-views/bridge';
 import { AppState } from '@suite-types';
 
 interface Props {
-    router: AppState['router'];
     suite: AppState['suite'];
     devices: AppState['devices'];
     goto: typeof goto;
@@ -87,7 +86,6 @@ const Index: FunctionComponent<Props> = props => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-    router: state.router,
     suite: state.suite,
     devices: state.devices,
 });

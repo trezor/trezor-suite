@@ -1,4 +1,4 @@
-import { FirmwareUpdateActionTypes } from '@suite/types/onboarding/firmwareUpdate';
+import { FirmwareUpdateActionTypes } from '@suite-actions/firmwareActions';
 import { NewsletterActionTypes } from '@suite/types/onboarding/newsletter';
 import { RecoveryActionTypes } from '@suite/types/onboarding/recovery';
 import { OnboardingActionTypes } from '@suite/types/onboarding/onboarding';
