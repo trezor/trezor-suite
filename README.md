@@ -15,7 +15,13 @@ connect-explorer | [connect-explorer](./packages/connect-explorer)
 
 - `git clone git@github.com:trezor/trezor-suite.git`
 - `yarn`
-- `yarn suite:dev`
+- `yarn build:libs`
+
+Run a dev build:
+- `yarn suite:dev` (web app)
+- `yarn suite:dev:desktop` (electron app)
+- `yarn suite:dev:android` (react-native Android)
+- `yarn suite:dev:ios` (react-native iOS)
 
 ## Contribute
 
