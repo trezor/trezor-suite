@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CallbackAction } from '@wallet-reducers/notificationReducer';
+import { NotificationProps } from '@trezor/components';
 import { NOTIFICATION } from './constants';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
 
 interface NotificationPayload {
-    variant: string;
+    variant: NotificationProps['variant'];
     title: React.ReactNode | FormattedMessage.MessageDescriptor;
     message?: React.ReactNode;
     cancelable: boolean;

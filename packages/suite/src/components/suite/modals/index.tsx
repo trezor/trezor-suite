@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import FocusLock from 'react-focus-lock';
 
 // import { DEVICE } from 'trezor-connect';
 import { Modal as ModalComponent } from '@trezor/components';
@@ -131,7 +132,11 @@ const Modal = (props: Props) => {
             break;
     }
 
-    return <ModalComponent>{component}</ModalComponent>;
+    return (
+        <ModalComponent>
+            <FocusLock>{component}</FocusLock>
+        </ModalComponent>
+    );
 };
 
 const mapStateToProps = (state: AppState) => ({

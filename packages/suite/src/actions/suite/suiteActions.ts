@@ -62,7 +62,7 @@ export const selectDevice = (device: Device | TrezorDevice | undefined) => (
 
     // 2. TODO: check if device is acquired
 
-    // 3. TODO: check if device is in available mode (oinitialized, readable)
+    // 3. TODO: check if device is in available mode (initialized, readable)
 
     // 4. select this device
     const payload = device
@@ -137,18 +137,17 @@ export const toggleSidebar = () => ({
     type: SUITE.TOGGLE_SIDEBAR,
 });
 
-// list of all actions which has influence on "selectedDevice" field in "wallet" reducer
-// other actions will be ignored
-const actions: string[] = [
-    // SUITE.AUTH_DEVICE,
-    // SUITE.RECEIVE_WALLET_TYPE,
-    ...Object.values(DEVICE).filter(v => typeof v === 'string'),
-];
-
 export const observeSelectedDevice = (action: Action) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    // list of all actions which has influence on "selectedDevice" field in "wallet" reducer
+    // other actions will be ignored
+    const actions: string[] = [
+        // SUITE.AUTH_DEVICE,
+        // SUITE.RECEIVE_WALLET_TYPE,
+        ...Object.values(DEVICE).filter(v => typeof v === 'string'),
+    ];
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
 
