@@ -11,7 +11,7 @@ const error = msg => {
 };
 
 const getBridgeVersion = () => {
-    return '2.0.27'; // TODO: should not be hardcoded
+    return '2.0.27';
 };
 
 const getArch = () => {
