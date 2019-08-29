@@ -5,7 +5,7 @@ export const httpRequest = async (url: string, type: string = 'text'): Promise<a
     const response: Response = await fetch(url, { credentials: 'same-origin' });
     if (response.ok) {
         if (type === 'json') {
-            const txt: string = await response.text();
+            const txt = await response.text();
             return JSON.parse(txt);
         }
         if (type === 'binary') {
@@ -14,13 +14,4 @@ export const httpRequest = async (url: string, type: string = 'text'): Promise<a
         await response.text();
     }
     throw new Error(`${url} ${response.statusText}`);
-};
-
-export const JSONRequest = async (url: string): Promise<JSON> => {
-    const response: Response = await fetch(url, { credentials: 'same-origin' });
-    if (response.ok) {
-        const txt: string = await response.text();
-        return JSON.parse(txt);
-    }
-    throw new Error(`jsonRequest error: ${response.toString()}`);
 };

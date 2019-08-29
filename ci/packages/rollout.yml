@@ -1,19 +1,19 @@
 rollout lint:
-    stage: lint
+    stage: lint and prettier
     script:
         - yarn workspace @trezor/rollout lint
     dependencies:
         - install and build
 
 rollout type check:
-    stage: type check
+    stage: typescript type check
     script:
         - yarn workspace @trezor/rollout type-check
     dependencies:
         - install and build
 
 rollout test unit:
-    stage: test
+    stage: unit testing
     script:
         - yarn workspace @trezor/rollout test
     dependencies:

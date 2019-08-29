@@ -8,21 +8,17 @@ variables:
     PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
-    CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
-
 stages:
-    - install
-    - lint
-    - type check
-    - test
+    - install and build libraries
+    - lint and prettier
+    - typescript type check
+    - unit testing
     - build
-    - deploy
-    - test integration
-
-cache: {}
+    - deploy to dev servers
+    - integration testing
 
 install and build:
-    stage: install
+    stage: install and build libraries
     script:
         - yarn install
         - npx lerna run build:lib

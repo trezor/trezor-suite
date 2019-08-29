@@ -50,7 +50,7 @@ const TrezorLogo = ({
 };
 
 TrezorLogo.propTypes = {
-    type: PropTypes.oneOf(['horizontal', 'vertical']),
+    type: PropTypes.oneOf(['horizontal', 'vertical', 'symbol']),
 };
 
 export { TrezorLogo, Props as TrezorLogoProps };

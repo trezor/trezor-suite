@@ -18,7 +18,7 @@ const Notifications = (props: Props & InjectedIntlProps) => (
         <OnlineStatus isOnline={props.suite.online} />
         <UpdateBridge transport={props.suite.transport} />
         <UpdateFirmware device={props.suite.device} pathname={props.router.pathname} />
-        <NoBackup device={props.suite.device} />
+        <NoBackup device={props.suite.device} pathname={props.router.pathname} />
     </React.Fragment>
 );
 

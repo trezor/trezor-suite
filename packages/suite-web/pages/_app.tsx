@@ -1,5 +1,5 @@
 import React from 'react';
-import App, { Container, AppContext } from 'next/app';
+import App, { AppContext } from 'next/app';
 import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -32,31 +32,27 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
-                <Container>
-                    <ReduxProvider store={store}>
-                        <IntlProvider>
-                            <>
-                                {/*
-                                    initially rendered webusb button, only for web. whether displayed or not 
-                                    is handled by suite/components/Webusb component
-                                */}
-                                <Button
-                                    isInverse
-                                    icon="PLUS"
-                                    additionalClassName="trezor-webusb-button"
-                                    style={{ width: '100%', position: 'absolute', top: '-1000px' }}
-                                >
-                                    <FormattedMessage
-                                        {...l10nCommonMessages.TR_CHECK_FOR_DEVICES}
-                                    />
-                                </Button>
-                                <Preloader isStatic={isStaticRoute}>
-                                    <Component {...pageProps} />
-                                </Preloader>
-                            </>
-                        </IntlProvider>
-                    </ReduxProvider>
-                </Container>
+                <ReduxProvider store={store}>
+                    <IntlProvider>
+                        <>
+                            {/*
+                                initially rendered webusb button, only for web. whether displayed or not 
+                                is handled by suite/components/Webusb component
+                            */}
+                            <Button
+                                isInverse
+                                icon="PLUS"
+                                additionalClassName="trezor-webusb-button"
+                                style={{ width: '100%', position: 'absolute', top: '-1000px' }}
+                            >
+                                <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
+                            </Button>
+                            <Preloader isStatic={isStaticRoute}>
+                                <Component {...pageProps} />
+                            </Preloader>
+                        </>
+                    </IntlProvider>
+                </ReduxProvider>
             </ErrorBoundary>
         );
     }
