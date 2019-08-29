@@ -1,3 +1,3 @@
-import TrezorConnect from './TrezorConnect';
+import ConnectPrompt from './components/ConnectPrompt';
 
-export { TrezorConnect };
+export { ConnectPrompt };

@@ -12,7 +12,7 @@ interface StepProps {
 const ConnectStep = ({ model, deviceIsConnected }: StepProps) => {
     return (
         <>
-            <Prompts.TrezorConnect model={model || 2} height={180} loop={!deviceIsConnected} />
+            <Prompts.ConnectPrompt model={model || 2} height={180} loop={!deviceIsConnected} />
             {!deviceIsConnected && (
                 <Text>
                     <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}

@@ -1,4 +1,4 @@
-import Donut from './Donut';
-import Dots from './Dots';
+import Donut from './components/Donut';
+import Dots from './components/Dots';
 
 export { Donut, Dots };

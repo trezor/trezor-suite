@@ -69,7 +69,6 @@ const Preloader: React.SFC<Props> = props => {
         };
     }, [loaded, loadedTimeout]);
 
-
     const preloaderFinished = loaded && introTimedout;
 
     return (

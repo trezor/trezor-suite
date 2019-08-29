@@ -8,7 +8,7 @@ import commonMessages from '@suite-support/Messages';
 import colors from '@onboarding-config/colors';
 import { FIRMWARE_UPDATE } from '@onboarding-actions/constants/calls';
 import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
-import { firmwareUpdate } from '@onboarding-actions/firmwareUpdateActions';
+import { firmwareUpdate } from '@suite-actions/firmwareActions';
 import { goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { Text, OnboardingIcon, Loaders, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './index.messages';
@@ -36,9 +36,12 @@ const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =>
             placement="bottom"
             content={content}
         >
-            <ButtonCta isDisabled={!isConnected || !isInBootloader} onClick={() => onClick()}>
+            <OnboardingButton.Cta
+                isDisabled={!isConnected || !isInBootloader}
+                onClick={() => onClick()}
+            >
                 <FormattedMessage {...l10nMessages.TR_INSTALL} />
-            </ButtonCta>
+            </OnboardingButton.Cta>
         </Tooltip>
     );
 };

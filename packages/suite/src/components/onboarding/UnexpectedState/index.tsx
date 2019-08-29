@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { P, H2, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
@@ -12,7 +12,7 @@ import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
 import { PinMatrix, Text, Wrapper } from '@onboarding-components';
 import { Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
-import Reconnect from './Reconnect';
+import Reconnect from './components/Reconnect';
 
 const CommonWrapper = styled.div`
     margin: auto 30px auto 30px;
@@ -20,17 +20,17 @@ const CommonWrapper = styled.div`
     width: 100%;
 `;
 
-const UnexpectedStateCommon: React.SFC = ({ children }) => (
+const UnexpectedStateCommon = ({ children }: { children: ReactNode }) => (
     <CommonWrapper>{children}</CommonWrapper>
 );
 
-const IsSameDevice: FunctionComponent = () => (
+const IsSameDevice = () => (
     <P>
         <FormattedMessage {...l10nMessages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT} />
     </P>
 );
 
-const IsNotInBootloader: FunctionComponent = () => (
+const IsNotInBootloader = () => (
     <P>
         <FormattedMessage {...l10nMessages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER} />
     </P>
@@ -41,11 +41,8 @@ interface IsDeviceRequestingPinProps {
     uiInteraction: ConnectReducer['uiInteraction'];
 }
 
-const IsDeviceRequestingPin: FunctionComponent<IsDeviceRequestingPinProps> = ({
-    submitNewPin,
-    uiInteraction,
-}) => (
-    <React.Fragment>
+const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequestingPinProps) => (
+    <>
         <H2>
             {uiInteraction.counter === 1 && (
                 <FormattedMessage {...l10nMessages.TR_ENTER_PIN_HEADING} />
@@ -64,15 +61,15 @@ const IsDeviceRequestingPin: FunctionComponent<IsDeviceRequestingPinProps> = ({
                 submitNewPin({ pin });
             }}
         />
-    </React.Fragment>
+    </>
 );
 
 interface DeviceIsUsedHereProps {
     getFeatures: typeof getFeatures;
 }
 
-const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ getFeatures }) => (
-    <React.Fragment>
+const DeviceIsUsedHere = ({ getFeatures }: DeviceIsUsedHereProps) => (
+    <>
         <H2>
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING} />
         </H2>
@@ -84,7 +81,7 @@ const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ getFeature
                 <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
             </Button>
         </Wrapper.Controls>
-    </React.Fragment>
+    </>
 );
 
 interface UnexpectedStateProps {

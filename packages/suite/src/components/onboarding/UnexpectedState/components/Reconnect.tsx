@@ -12,7 +12,7 @@ const Reconnect = ({ model }: { model: number }) => (
             <FormattedMessage {...l10nMessages.TR_RECONNECT_HEADER} />
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
-            <Prompts.TrezorConnect model={model} loop />
+            <Prompts.ConnectPrompt model={model} loop />
             <P>
                 <FormattedMessage {...l10nMessages.TR_RECONNECT_TEXT} />
             </P>

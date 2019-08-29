@@ -1,11 +1,11 @@
-import Step from './StepWrapper';
-import StepHeading from './StepHeadingWrapper';
-import StepSubHeading from './StepSubHeadingWrapper';
-import StepBody from './StepBodyWrapper';
-import StepFooter from './StepFooterWrapper';
+import Step from './components/StepWrapper';
+import StepHeading from './components/StepHeadingWrapper';
+import StepSubHeading from './components/StepSubHeadingWrapper';
+import StepBody from './components/StepBodyWrapper';
+import StepFooter from './components/StepFooterWrapper';
 
-import Controls from './ControlsWrapper';
-import Checkbox from './CheckboxWrapper';
-import Options from './OptionsWrapper';
+import Controls from './components/ControlsWrapper';
+import Checkbox from './components/CheckboxWrapper';
+import Options from './components/OptionsWrapper';
 
 export { Step, StepBody, StepHeading, StepSubHeading, StepFooter, Controls, Checkbox, Options };
