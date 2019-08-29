@@ -199,13 +199,13 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                             )}
                             <SocialWrapper>
                                 <Link href={BLOG_URL}>
-                                    <OnboardingIcon.IconSocial name="medium" sizeMultiplier={2} />
+                                    <OnboardingIcon.SocialLogo name="medium" sizeMultiplier={2} />
                                 </Link>
                                 <Link href={SOCIAL_FACEBOOK_URL}>
-                                    <OnboardingIcon.IconSocial name="facebook" sizeMultiplier={2} />
+                                    <OnboardingIcon.SocialLogo name="facebook" sizeMultiplier={2} />
                                 </Link>
                                 <Link href={SOCIAL_TWITTER_URL}>
-                                    <OnboardingIcon.IconSocial name="twitter" sizeMultiplier={2} />
+                                    <OnboardingIcon.SocialLogo name="twitter" sizeMultiplier={2} />
                                 </Link>
                             </SocialWrapper>
                             <Wrapper.Controls>

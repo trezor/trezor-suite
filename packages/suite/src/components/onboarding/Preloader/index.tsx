@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 
 import { P, H1 } from '@trezor/components';
-import { Dots } from '@onboarding-components/Loaders';
+import { Loaders } from '@onboarding-components';
 
 const ANIMATION_DURATION = 2.5;
 
@@ -98,7 +98,7 @@ const Preloader: React.SFC<Props> = props => {
 
                     <Loader>
                         Loading
-                        <Dots maxCount={3} />
+                        <Loaders.Dots maxCount={3} />
                     </Loader>
                 </PreloaderWrapper>
             </CSSTransition>

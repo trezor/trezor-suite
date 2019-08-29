@@ -240,7 +240,7 @@ const FirmwareStep = ({
                                     {getMessageForStatus() && <Loaders.Dots />}
                                 </P>
                                 {getUpdateStatus() === 'reconnect' && (
-                                    <OnboardingIcon.ConnectDeviceIcon
+                                    <OnboardingIcon.ConnectDevice
                                         model={device.features.major_version}
                                     />
                                 )}

@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { P } from '@trezor/components';
 
-import { Prompts, Wrapper } from '@suite/components/onboarding';
+import { Prompts, Wrapper } from '@onboarding-components';
 
 import l10nMessages from './Reconnect.messages';
 
