@@ -17,8 +17,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     next(action);
 
     // runs only in wallet app
-    if (prevState.router.app !== 'wallet') return action;
-
+    if (prevState.router.app !== 'wallet' && action.type !== LOCATION_CHANGE) return action;
     switch (action.type) {
         case DISCOVERY.UPDATE:
             // update discovery in selectedAccount

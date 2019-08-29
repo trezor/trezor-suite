@@ -9,7 +9,7 @@ export interface SuiteState {
 }
 
 const initialState: SuiteState = {
-    loading: true,
+    loading: false,
     loaded: false,
     error: null,
 };

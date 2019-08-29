@@ -8,21 +8,17 @@ variables:
     PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
-    CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
-
 stages:
-    - install
-    - lint
-    - type check
-    - test
+    - install and build libraries
+    - lint and prettier
+    - typescript type check
+    - unit testing
     - build
-    - deploy
-    - test integration
-
-cache: {}
+    - deploy to dev servers
+    - integration testing
 
 install and build:
-    stage: install
+    stage: install and build libraries
     script:
         - yarn install
         - npx lerna run build:lib
@@ -34,6 +30,7 @@ install and build:
             - packages/components/lib
             - packages/blockchain-link/lib
             - packages/rollout/lib
+            - packages/suite-storage/lib
             # node_modules
             - node_modules
             - packages/blockchain-link/node_modules
@@ -45,6 +42,7 @@ install and build:
             - packages/suite-web/node_modules
             - packages/suite-desktop/node_modules
             - packages/suite-native/node_modules
+            - packages/suite-storage/node_modules
 
 include:
     - ci/packages/components.yml

@@ -1,5 +1,6 @@
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
-import * as db from '@suite/storage';
+import { db } from '@suite/storage';
+import SuiteDB from '@trezor/suite-storage';
 import { Dispatch, GetState } from '@suite-types';
 import { STORAGE } from './constants/index';
 
@@ -9,13 +10,13 @@ export type StorageActions =
     | { type: typeof STORAGE.ERROR; error: any };
 
 export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState) => {
-    db.isIndexedDBAvailable(async (isAvailable: any) => {
+    SuiteDB.isDBAvailable(async (isAvailable: any) => {
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');
         } else {
             //  load suite settings from indexedDB
-            const suiteSettings = await db.getSuiteSettings();
+            const suiteSettings = await db.getItemByPK('suiteSettings', 'suite');
             if (suiteSettings && suiteSettings.language) {
                 // @ts-ignore
                 dispatch(fetchLocale(suiteSettings.language));

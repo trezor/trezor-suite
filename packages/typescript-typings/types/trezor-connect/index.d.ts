@@ -654,6 +654,9 @@ declare module 'trezor-connect' {
          * Asks device to verify a message using the signer address and signature.
          */
         function verifyMessage(params: VerifyMessageParams): Promise<ResponseMessage<Message>>;
+        
+        // hmm, does it make sense to type it now?
+        function firmwareUpdate(params: any): Promise<ResponseMessage<Message>>;
 
         function dispose(): void;
 
