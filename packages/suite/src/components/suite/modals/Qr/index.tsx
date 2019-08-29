@@ -1,13 +1,15 @@
 import React, { FunctionComponent, useState } from 'react';
+import dynamic from 'next/dynamic';
+
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H5, P, Link, Icon, colors } from '@trezor/components';
+import { H5, P, colors } from '@trezor/components';
 
 import { parseUri, ParsedURI } from '@suite-utils/parseUri';
-import QrReader from 'react-qr-reader';
-import NoSSR from 'react-no-ssr';
 import l10nMessages from './messages';
+
+const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
 const Wrapper = styled.div`
     width: 90vw;
@@ -17,12 +19,6 @@ const Wrapper = styled.div`
 
 const Padding = styled.div`
     padding: 0px 48px;
-`;
-
-const CloseLink = styled(Link)`
-    position: absolute;
-    right: 15px;
-    top: 15px;
 `;
 
 const CameraPlaceholder = styled(P)`
@@ -41,10 +37,6 @@ const ErrorTitle = styled(P)`
 const ErrorMessage = styled.span`
     text-align: center;
     color: ${colors.TEXT_PRIMARY};
-`;
-
-const StyledQrReader = styled(QrReader)`
-    padding: 10px 0;
 `;
 
 // TODO fix types
@@ -111,9 +103,6 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
 
     return (
         <Wrapper>
-            <CloseLink onClick={handleCancel}>
-                <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
-            </CloseLink>
             <Padding>
                 <H5>
                     <FormattedMessage {...l10nMessages.TR_SCAN_QR_CODE} />
@@ -133,16 +122,14 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
                 )}
             </Padding>
             {!error && (
-                <NoSSR>
-                    <StyledQrReader
-                        delay={500}
-                        onError={handleError}
-                        onScan={handleScan}
-                        onLoad={onLoad}
-                        style={{ width: '100%' }}
-                        showViewFinder={false}
-                    />
-                </NoSSR>
+                <QrReader
+                    delay={500}
+                    onError={handleError}
+                    onScan={handleScan}
+                    onLoad={onLoad}
+                    style={{ width: '100%' }}
+                    showViewFinder={false}
+                />
             )}
         </Wrapper>
     );
