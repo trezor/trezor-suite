@@ -233,11 +233,14 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     const discovery = dispatch(getDiscoveryForDevice());
     if (!discovery) {
-        addNotification({
-            variant: 'error',
-            title: 'No device',
-            cancelable: true,
-        });
+        dispatch(
+            // TODO: notification with translations
+            addNotification({
+                variant: 'error',
+                title: 'No device',
+                cancelable: true,
+            }),
+        );
         return;
     } // TODO: throw error in notification?
     const { device } = discovery;
@@ -295,6 +298,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         if (dispatch(getDiscovery(device)).status === STATUS.RUNNING) {
             await dispatch(start()); // try next index
         } else {
+            // TODO: notification with translations
             dispatch(
                 addNotification({
                     variant: 'error',
@@ -346,6 +350,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 keepSession: false,
             });
             dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
+            // TODO: notification with translations
             dispatch(
                 addNotification({
                     variant: 'error',
@@ -360,6 +365,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             // TODO: reduce index to "start"
             // handle
             dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
+            // TODO: notification with translations
             dispatch(
                 addNotification({
                     variant: 'error',
@@ -372,12 +378,14 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     }
 };
 
-export const init = () => async (dispatch: Dispatch, _getState: GetState): Promise<void> => {
+/*
+export const init = () => async (dispatch: Dispatch): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());
     if (discovery && discovery.status === STATUS.IDLE) {
         dispatch(start());
     }
 };
+*/
 
 export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());

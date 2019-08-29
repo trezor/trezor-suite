@@ -132,8 +132,8 @@ export const getInitialState = () => ({
         },
     },
     wallet: {
-        discovery: [] as ReturnType<typeof discoveryReducer>,
-        accounts: [] as ReturnType<typeof accountsReducer>,
+        discovery: discoveryReducer(undefined, { type: 'foo' } as any),
+        accounts: accountsReducer(undefined, { type: 'foo' } as any),
     },
 });
 
@@ -142,17 +142,15 @@ const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk
 const updateStore = (store: ReturnType<typeof mockStore>) => {
     // there is not much redux logic in this test
     // just update state on every action manually
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { accounts, discovery } = store.getState().wallet;
+    const action = store.getActions().pop();
+    const { accounts, discovery } = store.getState().wallet;
 
-        store.getState().wallet = {
-            accounts: accountsReducer(accounts, action),
-            discovery: discoveryReducer(discovery, action),
-        };
-        // add action back to stack
-        store.getActions().push(action);
-    });
+    store.getState().wallet = {
+        accounts: accountsReducer(accounts, action),
+        discovery: discoveryReducer(discovery, action),
+    };
+    // add action back to stack
+    store.getActions().push(action);
 };
 
 describe('Discovery Actions', () => {
@@ -188,7 +186,38 @@ describe('Discovery Actions', () => {
             },
         });
         await store.dispatch(discoveryActions.start());
-        expect(store.getActions()).toEqual([]);
+        const action = store.getActions().pop();
+        expect(action.type).toEqual(NOTIFICATION.ADD);
+    });
+
+    it('Create discovery which already exist', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch({
+            type: DISCOVERY.START,
+            payload: {
+                device: 'device-id',
+            },
+        });
+        store.dispatch({
+            type: DISCOVERY.START,
+            payload: {
+                device: 'device-id',
+            },
+        });
+        expect(store.getState().wallet.discovery.length).toEqual(1);
+    });
+
+    it('Update discovery which does not exist', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch({
+            type: DISCOVERY.UPDATE,
+            payload: {
+                device: 'device-id',
+            },
+        });
+        expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
     it('Start/stop', async done => {
