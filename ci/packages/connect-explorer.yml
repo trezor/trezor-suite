@@ -1,5 +1,5 @@
 connect-explorer lint:
-    stage: lint
+    stage: lint and prettier
     allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer lint
@@ -7,7 +7,7 @@ connect-explorer lint:
         - install and build
 
 connect-explorer type check:
-    stage: type check
+    stage: typescript type check
     allow_failure: true
     script:
         - yarn workspace @trezor/connect-explorer type-check
@@ -15,7 +15,7 @@ connect-explorer type check:
         - install and build
 
 connect-explorer type coverage:
-    stage: type check
+    stage: typescript type check
     allow_failure: false
     script:
         - yarn workspace @trezor/connect-explorer type-coverage
@@ -35,7 +35,7 @@ connect-explorer build:
         - install and build
 
 connect-explorer deploy dev:
-    stage: deploy
+    stage: deploy to dev servers
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect-explorer/${CI_BUILD_REF_NAME}
         DEPLOY_URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}
@@ -58,7 +58,7 @@ connect-explorer deploy dev:
         - deploy
 
 connect-explorer delete review:
-    stage: deploy
+    stage: deploy to dev servers
     variables:
         GIT_STRATEGY: none
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect-explorer/${CI_BUILD_REF_NAME}
@@ -76,7 +76,7 @@ connect-explorer delete review:
 
 connect-explorer test integration:
     image: cypress/base:10
-    stage: test integration
+    stage: integration testing
     script:
         - npx cypress install
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer test:integration

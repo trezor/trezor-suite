@@ -1,8 +1,8 @@
 import { TRANSACTION } from '@wallet-actions/constants/index';
 
 import { Dispatch } from '@suite-types/index';
-import { WalletAccountTransaction } from '@suite/storage/types';
-import * as db from '@suite/storage';
+import { db } from '@suite/storage';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transaction: WalletAccountTransaction }
@@ -19,7 +19,7 @@ export const add = (transaction: WalletAccountTransaction) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
     try {
-        await db.addTransaction(transaction).then(_key => {
+        await db.addItem('txs', transaction).then(_key => {
             dispatch({
                 type: TRANSACTION.ADD,
                 transaction,
@@ -38,7 +38,7 @@ export const add = (transaction: WalletAccountTransaction) => async (
 };
 
 export const remove = (txId: string) => async (dispatch: Dispatch) => {
-    db.removeTransaction(txId).then(() => {
+    db.removeItem('txs', 'txId', txId).then(() => {
         dispatch({
             type: TRANSACTION.REMOVE,
             txId,
@@ -48,7 +48,7 @@ export const remove = (txId: string) => async (dispatch: Dispatch) => {
 
 export const update = (txId: string) => async (dispatch: Dispatch) => {
     const updatedTimestamp = Date.now();
-    db.updateTransaction(txId, updatedTimestamp).then(_key => {
+    db.updateItemByIndex('txs', 'txId', txId, { timestamp: updatedTimestamp }).then(_key => {
         dispatch({
             type: TRANSACTION.UPDATE,
             txId,
@@ -57,10 +57,14 @@ export const update = (txId: string) => async (dispatch: Dispatch) => {
     });
 };
 
-export const getFromStorage = (accountId: number, from?: number, to?: number) => async (
+export const getFromStorage = (accountId: number, offset?: number, count?: number) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
-    db.getTransactions(accountId, from, to).then(transactions => {
+    db.getItemsExtended('txs', 'accountId-blockTime', {
+        key: accountId,
+        offset,
+        count,
+    }).then((transactions: WalletAccountTransaction[]) => {
         dispatch({
             type: TRANSACTION.FROM_STORAGE,
             transactions,

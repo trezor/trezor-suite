@@ -3,9 +3,8 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import merge from 'lodash/merge';
-
 import firmwareReducer from '@suite-reducers/firmwareReducer';
+import { mergeObj } from '@suite-utils/mergeObj';
 import * as firwmareActions from '../firmwareActions';
 import fixtures from './fixtures/firmwareActions';
 
@@ -70,8 +69,6 @@ export const getInitialState = (override: any) => {
                 connected: true,
                 type: 'acquired',
                 features: {
-                    // eslint-disable-next-line @typescript-eslint/camelcase
-                    device_id: 'DEVICE-ID',
                     major_version: 2,
                 },
             },
@@ -82,7 +79,7 @@ export const getInitialState = (override: any) => {
         },
     };
     if (override) {
-        return merge(defaults, override);
+        return mergeObj(defaults, override);
     }
     return defaults;
 };
@@ -115,11 +112,6 @@ describe('Firmware Actions', () => {
             await store.dispatch(firwmareActions.firmwareUpdate());
 
             const result = store.getState();
-
-            // console.log(f.description);
-            // console.log('state', state);
-            // console.log('result', '\n', result);
-            // console.log('store.getActions()', '\n', store.getActions());
 
             if (f.result) {
                 if (f.result.state) {

@@ -4,7 +4,7 @@ import { Action as WalletAction } from '@wallet-types/index';
 // import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
-import * as db from '@suite/storage/index';
+import { db } from '@suite/storage';
 import { SUITE } from '@suite/actions/suite/constants';
 import { ACCOUNT } from '@suite/actions/wallet/constants';
 import { AccountInfo } from 'trezor-connect';
@@ -54,28 +54,27 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
         //     break;
 
         case ACCOUNT.CREATE: {
-            try {
-                const account: AccountInfo = action.payload;
-                const { transactions } = account.history;
-                if (transactions) {
-                    // TODO: check if txs already exists or just use txId as primary key
-                    // transactions.forEach(async tx => {
-                    //     const txId = await db.addTransaction({
-                    //         ...tx,
-                    //         accountId: account.descriptor,
-                    //     });
-                    //     console.log(txId);
-                    // });
-                }
-            } catch (error) {
-                if (error && error.name === 'ConstraintError') {
-                    console.log('Tx with such id already exists');
-                } else if (error) {
-                    console.error(error.name);
-                    console.error(error.message);
-                } else {
-                    console.error(error);
-                }
+            const account: AccountInfo = action.payload;
+            const { transactions } = account.history;
+            if (transactions) {
+                transactions.forEach(async tx => {
+                    try {
+                        const txId = await db.addItem('txs', {
+                            ...tx,
+                            accountId: account.descriptor,
+                        });
+                        console.log(txId);
+                    } catch (error) {
+                        if (error && error.name === 'ConstraintError') {
+                            console.log('Tx with such id already exists');
+                        } else if (error) {
+                            console.error(error.name);
+                            console.error(error.message);
+                        } else {
+                            console.error(error);
+                        }
+                    }
+                });
             }
 
             // api.dispatch(transactionActions.add(action.transaction));
@@ -86,12 +85,22 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
         case WALLET_SETTINGS.SET_HIDDEN_COINS_EXTERNAL:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
-            db.saveWalletSettings(_api.getState().wallet.settings);
+            db.addItem(
+                'walletSettings',
+                {
+                    ..._api.getState().wallet.settings,
+                },
+                'wallet',
+            );
             break;
         case SUITE.SET_LANGUAGE:
-            db.saveSuiteSettings({
-                language: _api.getState().suite.language,
-            });
+            db.addItem(
+                'suiteSettings',
+                {
+                    language: _api.getState().suite.language,
+                },
+                'suite',
+            );
             break;
         default:
             break;

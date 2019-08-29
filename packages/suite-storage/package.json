@@ -1,0 +1,26 @@
+{
+    "name": "@trezor/suite-storage",
+    "version": "1.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "private": true,
+    "keywords": [
+        "Trezor",
+        "suite-storage"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "trezor suite storage",
+    "scripts": {
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "type-check": "tsc --project tsconfig.types.json",
+        "build:lib": "tsc --project tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch"
+    },
+    "main": "./lib/native/index.js",
+    "browser": "./lib/web/index.js",
+    "dependencies": {
+        "idb": "^4.0.4"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.0.0"
+    }
+}

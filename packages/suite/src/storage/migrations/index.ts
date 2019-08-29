@@ -1,11 +1,10 @@
-import { IDBPDatabase } from 'idb';
-import { MyDBV1 } from '@suite/storage/types';
+// import { MyDBV1 } from '../types';
 // import { STORE_TXS } from '../types';
 
-export const migrate = async (
-    // @ts-ignore
+export const migrate = async <TDBType>(
     // 'db' is declared but its value is never read
-    db: IDBPDatabase<MyDBV1>,
+    // @ts-ignore
+    db: TDBType,
     oldVersion: number,
     newVersion: number | null,
     // @ts-ignore

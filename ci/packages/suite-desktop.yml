@@ -1,12 +1,12 @@
 suite-desktop lint:
-    stage: lint
+    stage: lint and prettier
     script:
         - yarn workspace @trezor/suite-desktop lint
     dependencies:
         - install and build
 
 suite-desktop type check:
-    stage: type check
+    stage: typescript type check
     script:
         - yarn workspace @trezor/suite-desktop type-check
     dependencies:
