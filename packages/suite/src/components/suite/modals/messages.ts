@@ -20,6 +20,7 @@ const definedMessages = defineMessages({
     TR_GO_TO_HIDDEN_WALLET: {
         id: 'TR_GO_TO_HIDDEN_WALLET',
         defaultMessage: 'Go to your hidden wallet',
+    },
     TR_ACCOUNT_HASH: {
         id: 'TR_ACCOUNT_HASH',
         defaultMessage: 'Account #{number}',
@@ -45,7 +46,7 @@ const definedMessages = defineMessages({
     TR_TRY_AGAIN: {
         id: 'TR_TRY_AGAIN',
         defaultMessage: 'Try again',
-        description: 'Try to run the proccess again',
+        description: 'Try to run the process again',
     },
 });
 
