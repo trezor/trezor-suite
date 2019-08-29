@@ -19,3 +19,4 @@ export const TOGGLE_DEVICE_MENU = '@suite/toggle_device_menu';
 export const TOGGLE_SIDEBAR = '@suite/toggle_sidebar';
 export const ONLINE_STATUS = '@suite/online_status';
 export const LOCK_UI = '@suite/lock-ui';
+export const LOCK_ROUTER = '@suite/lock-router';
