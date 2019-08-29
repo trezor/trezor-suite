@@ -9,6 +9,33 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_LABEL',
         defaultMessage: 'Enter "{deviceLabel}" passphrase',
     },
+    TR_ACCOUNT_HASH: {
+        id: 'TR_ACCOUNT_HASH',
+        defaultMessage: 'Account #{number}',
+        description: 'Used in auto-generated account label',
+    },
+    TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
+        id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
+        defaultMessage: 'Your Trezor is not backed up',
+    },
+    TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
+        id: 'TR_IF_YOUR_DEVICE_IS_EVER_LOST',
+        defaultMessage:
+            'If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.',
+    },
+    TR_CREATE_BACKUP_IN_3_MINUTES: {
+        id: 'TR_CREATE_BACKUP_IN_3_MINUTES',
+        defaultMessage: 'Create a backup in 3 minutes',
+    },
+    TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK: {
+        id: 'TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK',
+        defaultMessage: 'Show address, I will take the risk',
+    },
+    TR_TRY_AGAIN: {
+        id: 'TR_TRY_AGAIN',
+        defaultMessage: 'Try again',
+        description: 'Try to run the proccess again',
+    },
 });
 
 export default definedMessages;
