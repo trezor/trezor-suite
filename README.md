@@ -12,6 +12,8 @@ blockchain-link | [blockchain-link](./packages/blockchain-link)
 connect-explorer | [connect-explorer](./packages/connect-explorer)
 
 ## Development
+Before you start make sure you have downloaded and installed [Node.js LTS](https://nodejs.org/en/download/), [Yarn](https://yarnpkg.com/lang/en/docs/install/) and git.
+
 
 - `git clone git@github.com:trezor/trezor-suite.git`
 - `yarn`
