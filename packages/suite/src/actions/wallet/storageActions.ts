@@ -1,25 +1,27 @@
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as settingsActions from '@wallet-actions/settingsActions';
-import * as db from '@suite/storage';
-import { StorageUpdateMessage } from '@suite/storage/types/index';
+import { db, SuiteStorageUpdateMessage } from '@suite/storage/index';
+import SuiteDB from '@trezor/suite-storage';
 import { WALLET } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-const updateReducers = (message: StorageUpdateMessage) => async (
+const updateReducers = (message: SuiteStorageUpdateMessage) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     if (message.store === 'txs') {
         // txs objecStore was updated, we'll load transactions from db to reducer
         const { accountId } = getState().router.params;
-        const txs = await db.getTransactions(Number(accountId));
+        const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
+            key: Number(accountId),
+        });
         // @ts-ignore
         dispatch(transactionActions.setTransactions(txs));
     }
 };
 
 export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState) => {
-    db.isIndexedDBAvailable(async (isAvailable: any) => {
+    SuiteDB.isDBAvailable(async (isAvailable: any) => {
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');
@@ -28,14 +30,14 @@ export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState)
             // maybe we could run some form of data validation? Or delete corrupted object stores.
 
             //  load transactions from indexedDB
-            const txs = await db.getTransactions();
+            const txs = await db.getItemsExtended('txs');
             if (txs) {
                 // @ts-ignore
                 dispatch(transactionActions.setTransactions(txs));
             }
 
             //  load wallet settings from indexedDB
-            const walletSettings = await db.getWalletSettings();
+            const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
             if (walletSettings) {
                 // @ts-ignore
                 dispatch(settingsActions.fromStorage(walletSettings));
