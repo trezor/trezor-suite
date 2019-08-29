@@ -283,6 +283,8 @@ declare module 'trezor-connect' {
         coin?: string;
     }
 
+    export interface BackupDeviceParams extends CommonParams {}
+
     export interface SignedMessage {
         address: string; // signer address
         signature: string; // signature in base64 format
@@ -791,8 +793,9 @@ declare module 'trezor-connect' {
          */
         function verifyMessage(params: VerifyMessageParams): Promise<ResponseMessage<Message>>;
         
-        // hmm, does it make sense to type it now?
+        // todo:
         function firmwareUpdate(params: any): Promise<ResponseMessage<Message>>;
+        function backupDevice(params: BackupDeviceParams): Promise<ResponseMessage<Message>>;
 
         function dispose(): void;
 

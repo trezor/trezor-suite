@@ -3,6 +3,8 @@ import Rollout from '@trezor/rollout';
 
 import { lockUI } from '@suite-actions/suiteActions';
 
+//  TODO: should be reworked to deviceManagementActions
+
 // todo: refactor to suite
 // import * as notificationActions from '@wallet-actions/notificationActions';
 import { SET_UPDATE_STATUS } from '@suite-actions/constants/firmware';
