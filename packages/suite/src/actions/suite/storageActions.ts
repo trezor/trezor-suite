@@ -17,12 +17,11 @@ export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState)
         } else {
             //  load suite settings from indexedDB
             const suiteSettings = await db.getItemByPK('suiteSettings', 'suite');
-            if (suiteSettings && suiteSettings.language) {
-                // @ts-ignore
-                dispatch(fetchLocale(suiteSettings.language));
+            if (suiteSettings) {
+                await dispatch(fetchLocale(suiteSettings.language));
             }
         }
-        return dispatch({
+        dispatch({
             type: STORAGE.LOADED,
         });
     });
