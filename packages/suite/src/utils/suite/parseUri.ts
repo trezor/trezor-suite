@@ -18,7 +18,7 @@ const parseQuery = (str: string): {} =>
     str
         .split('&')
         .map(val => val.split('='))
-        .reduce((vals, pair) => {
+        .reduce((vals: { [key: string]: any }, pair: string[]) => {
             if (pair.length > 1) {
                 vals[pair[0]] = pair[1];
             }
@@ -30,9 +30,12 @@ const parseUri = (uri: string): ParsedURI => {
     const str = stripPrefix(uri);
     const query: string[] = str.split('?');
     const values: Record<string, any> = query.length > 1 ? parseQuery(query[1]) : {};
-    values.address = query[0];
+    const address = query[0];
 
-    return values;
+    return {
+        ...values,
+        address,
+    };
 };
 
 export { parseUri };
