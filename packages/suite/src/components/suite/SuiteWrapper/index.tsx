@@ -1,12 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { Loader } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
-import { goto } from '@suite-actions/routerActions';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import Layout from '@suite-components/Layout';
@@ -16,7 +14,6 @@ import { AppState } from '@suite-types';
 interface Props {
     suite: AppState['suite'];
     devices: AppState['devices'];
-    goto: typeof goto;
     children: React.ReactNode;
 }
 
@@ -90,9 +87,4 @@ const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
 });
 
-export default connect(
-    mapStateToProps,
-    dispatch => ({
-        goto: bindActionCreators(goto, dispatch),
-    }),
-)(Index);
+export default connect(mapStateToProps)(Index);
