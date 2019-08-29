@@ -16,7 +16,6 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
 
     switch (action.type) {
         case SUITE.INIT:
-            api.dispatch(suiteActions.updateOnlineStatus());
             // load storage
             api.dispatch(loadStorage());
             break;
@@ -33,7 +32,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
             // dispatch initial location change
             api.dispatch(initRouter());
             // backend connected, suite is ready to use
-            api.dispatch({ type: SUITE.READY });
+            api.dispatch(suiteActions.onSuiteReady());
             break;
 
         case DEVICE.CONNECT:

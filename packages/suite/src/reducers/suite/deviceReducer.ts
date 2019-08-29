@@ -15,7 +15,7 @@ const initialState: State = [];
  */
 const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): TrezorDevice => {
     let { instanceLabel } = device;
-    if (upcoming.label !== device.label) {
+    if (typeof upcoming.label === 'string' && upcoming.label !== device.label) {
         instanceLabel = upcoming.label;
         if (typeof device.instance === 'number') {
             instanceLabel += ` (${device.instanceName || device.instance})`;

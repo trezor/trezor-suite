@@ -72,7 +72,7 @@ export interface AcquiredDevice {
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     instance?: number;
-    instanceLabel: string | typeof undefined;
+    instanceLabel: string;
     instanceName?: string;
     ts: number;
 }

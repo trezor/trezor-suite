@@ -201,3 +201,17 @@ export const getSelectedDevice = (device: TrezorDevice, devices: TrezorDevice[])
         return false;
     });
 };
+
+/**
+ * Sort devices by "ts" field
+ * @param {TrezorDevice[]} devices
+ * @returns
+ */
+export const sort = (devices: TrezorDevice[]) => {
+    return devices.sort((a, b) => {
+        if (!a.ts || !b.ts) {
+            return -1;
+        }
+        return a.ts > b.ts ? -1 : 1;
+    });
+};

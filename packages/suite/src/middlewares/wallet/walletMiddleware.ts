@@ -3,7 +3,6 @@ import { LOCATION_CHANGE } from '@suite/actions/suite/routerActions';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import { loadStorage } from '@wallet-actions/storageActions';
 import * as walletActions from '@wallet-actions/walletActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { SUITE } from '@suite/actions/suite/constants';
 import { WALLET, DISCOVERY } from '@wallet-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -38,7 +37,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
         case SUITE.SELECT_DEVICE:
         case SUITE.UPDATE_SELECTED_DEVICE:
-            api.dispatch(discoveryActions.init());
             api.dispatch(selectedAccountActions.observe(prevState, action));
             break;
         default:

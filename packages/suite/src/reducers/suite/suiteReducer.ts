@@ -58,9 +58,6 @@ const initialState: SuiteState = {
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
     return produce(state, draft => {
         switch (action.type) {
-            case SUITE.INIT:
-                return initialState;
-
             case SUITE.READY:
                 draft.loading = false;
                 draft.loaded = true;
@@ -83,7 +80,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case SUITE.TOGGLE_DEVICE_MENU:
-                draft.deviceMenuOpened = action.opened;
+                draft.deviceMenuOpened = action.payload;
                 break;
 
             case TRANSPORT.START:
@@ -100,11 +97,15 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case SUITE.ONLINE_STATUS:
-                draft.online = action.online;
+                draft.online = action.payload;
                 break;
 
             case SUITE.LOCK_UI:
                 draft.uiLocked = action.payload;
+                break;
+
+            case SUITE.LOCK_ROUTER:
+                draft.routerLocked = action.payload;
                 break;
 
             case 'iframe-loaded':
