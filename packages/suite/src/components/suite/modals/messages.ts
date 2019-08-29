@@ -9,6 +9,17 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_LABEL',
         defaultMessage: 'Enter "{deviceLabel}" passphrase',
     },
+    TR_LEARN_MORE: {
+        id: 'TR_LEARN_MORE',
+        defaultMessage: 'Learn more',
+    },
+    TR_GO_TO_STANDARD_WALLET: {
+        id: 'TR_GO_TO_STANDARD_WALLET',
+        defaultMessage: 'Go to your standard wallet',
+    },
+    TR_GO_TO_HIDDEN_WALLET: {
+        id: 'TR_GO_TO_HIDDEN_WALLET',
+        defaultMessage: 'Go to your hidden wallet',
     TR_ACCOUNT_HASH: {
         id: 'TR_ACCOUNT_HASH',
         defaultMessage: 'Account #{number}',
