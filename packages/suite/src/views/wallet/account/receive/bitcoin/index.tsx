@@ -10,6 +10,7 @@ import { H6, variables, Button } from '@trezor/components';
 import { Address } from 'trezor-connect';
 import AddressItem from '@suite/components/wallet/AddressItem';
 import { selectText } from '@suite/utils/suite/dom';
+import ShowOnTrezorEyeButton from '@suite/components/wallet/ShowOnTrezorEyeButton';
 import messages from './messages';
 import { ReceiveProps } from '../index';
 
@@ -29,6 +30,29 @@ const ButtonsWrapper = styled.div`
 
 const FreshAddress = styled(AddressItem)`
     border: 1px solid #ccc;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 3px;
+    height: 47px;
+`;
+
+const ShowAddressButton = styled(Button)`
+    flex: 1 0 0;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    justify-content: center;
+
+    /* border-top-left-radius: 0;
+    border-bottom-left-radius: 0; */
+
+    /* @media screen and (max-width: 795px) {
+        width: 100%;
+        margin-top: 10px;
+        align-self: auto;
+        border-radius: 3px;
+    } */
 `;
 
 const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
@@ -47,7 +71,6 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
             <UsedAddressesList
                 addresses={addresses.used}
                 device={props.device}
-                isAddressHidden={props.isAddressHidden}
                 isAddressVerified={props.isAddressVerified}
                 isAddressUnverified={props.isAddressUnverified}
                 isAddressVerifying={props.isAddressVerifying}
@@ -60,15 +83,38 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 key={firstFreshAddress.address}
                 ref={firstFreshAddrRef}
                 onClick={() => {
-                    if (firstFreshAddrRef.current) {
+                    if (props.isAddressVerified && firstFreshAddrRef.current) {
                         selectText(firstFreshAddrRef.current as HTMLElement);
                     }
                     setSelectedAddr(firstFreshAddress);
                 }}
                 isSelected={firstFreshAddress === selectedAddr}
-                addr={firstFreshAddress}
+                address={firstFreshAddress.address}
                 index={addresses.used.length + 1}
-                actions={<>b</>}
+                isPartiallyHidden={props.isAddressPartiallyHidden}
+                readOnly
+                actions={
+                    <>
+                        {!(props.isAddressVerified || props.isAddressUnverified) && ( // !account.imported
+                            <ShowAddressButton
+                                onClick={() => props.showAddress(firstFreshAddress.path)}
+                                // isDisabled={device.connected && !discovery.completed}
+                                icon="EYE"
+                            >
+                                {/* <FormattedMessage {...messages.TR_SHOW_FULL_ADDRESS} /> */}
+                                Show full address
+                            </ShowAddressButton>
+                        )}
+                        {(props.isAddressVerified || props.isAddressUnverified) &&
+                            !props.isAddressVerifying && (
+                                <ShowOnTrezorEyeButton
+                                    device={props.device}
+                                    isAddressUnverified={props.isAddressUnverified}
+                                    onClick={() => props.showAddress(firstFreshAddress.path)}
+                                />
+                            )}
+                    </>
+                }
             />
             {/* <VerifyAddressInput
                 device={props.device}

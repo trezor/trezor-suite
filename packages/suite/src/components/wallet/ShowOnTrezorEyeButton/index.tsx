@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Tooltip, Icon, Button } from '@trezor/components';
-import { showAddress } from '@suite/actions/wallet/receiveActions';
+import { colors, Tooltip, Icon, Button, ButtonProps } from '@trezor/components';
 import { AppState } from '@suite/types/suite';
 import VerifyAddressTooltip from '../tooltips/VerifyAddressTooltip';
 
@@ -13,20 +12,15 @@ const EyeButton = styled(Button)`
     }
 `;
 
-interface Props {
+interface Props extends ButtonProps {
     className?: string;
     device: AppState['suite']['device'];
-    accountPath: string;
-    isAddressVerifying: boolean;
     isAddressUnverified: boolean;
-    isAddressHidden: boolean;
-    isAddressVerified: boolean;
-    showAddress: typeof showAddress;
 }
 
 const ShowOnTrezorEyeButton = (props: Props) => {
     return (
-        <EyeButton isTransparent onClick={() => props.showAddress(props.accountPath)} {...props}>
+        <EyeButton isTransparent {...props}>
             <Tooltip
                 placement="top"
                 content={

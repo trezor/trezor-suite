@@ -56,7 +56,7 @@ const AccountReceive = (props: Props) => {
         props.modal.context === CONTEXT_DEVICE &&
         props.modal.windowType === 'ButtonRequest_Address';
 
-    const isAddressHidden =
+    const isAddressPartiallyHidden =
         !isAddressVerifying && !isAddressVerified && !isAddressUnverified && !account.imported;
 
     let address = `${account.descriptor.substring(0, 20)}...`;
@@ -69,7 +69,7 @@ const AccountReceive = (props: Props) => {
         device,
         address,
         showAddress: props.showAddress,
-        isAddressHidden,
+        isAddressPartiallyHidden,
         isAddressVerified,
         isAddressUnverified,
         isAddressVerifying,

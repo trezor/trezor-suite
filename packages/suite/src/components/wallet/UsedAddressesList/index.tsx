@@ -9,14 +9,19 @@ import UsedAddressItem from '../AddressItem';
 
 const SubHeading = styled(H6)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 0;
 `;
 
-const ShowMoreButton = styled(Button)``;
+const ShowMoreButton = styled(Button)`
+    margin-left: auto;
+`;
 
 const TitleWrapper = styled.div`
     display: flex;
-    padding: 4px;
+    /* padding: 4px; */
     justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 10px;
 `;
 
 const TextGreen = styled.span`
@@ -28,7 +33,6 @@ interface Props
         ReceiveProps,
         | 'isAddressVerifying'
         | 'isAddressUnverified'
-        | 'isAddressHidden'
         | 'isAddressVerified'
         | 'showAddress'
         | 'device'
@@ -70,17 +74,13 @@ const UsedAddressesList = (props: Props) => {
                     </>
                 }
                 isSelected={addr === props.selectedAddress}
-                addr={addr}
+                address={addr.address}
                 index={i}
                 actions={
                     <ShowOnTrezorEyeButton
                         device={props.device}
-                        accountPath={addr.path}
-                        isAddressVerifying={props.isAddressVerifying}
                         isAddressUnverified={props.isAddressUnverified}
-                        isAddressHidden={props.isAddressHidden}
-                        isAddressVerified={props.isAddressVerified}
-                        showAddress={props.showAddress}
+                        onClick={() => props.showAddress(addr.path)}
                     />
                 }
             />
@@ -94,7 +94,7 @@ const UsedAddressesList = (props: Props) => {
     return (
         <>
             <TitleWrapper>
-                <SubHeading>Previous addresses</SubHeading>
+                {!hidden && <SubHeading>Previous addresses</SubHeading>}
                 {isPaginationEnabled || hidden ? (
                     <ShowMoreButton
                         isInverse
