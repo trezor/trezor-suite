@@ -8,9 +8,8 @@ import Layout from '@wallet-components/Layout';
 import Discovery from '@wallet-components/Discovery';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
-import NETWORKS from '@suite-config/networks';
-import EXTERNAL_COINS from '@suite-config/externalCoins';
 import { getRoute } from '@suite/utils/suite/router';
+import { networks } from '@suite-config';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -63,7 +62,8 @@ interface Props {
 
 const Dashboard = (props: Props) => {
     const isEmpty = () => {
-        const numberOfVisibleNetworks = NETWORKS.filter(item => !item.isHidden) // hide coins globally in config
+        const numberOfVisibleNetworks = networks
+            .filter(item => !item.isHidden) // hide coins globally in config
             .filter(item => !props.settings.hiddenCoins.includes(item.shortcut));
         const { hiddenCoinsExternal } = props.settings;
         const numberOfVisibleNetworksExternal = EXTERNAL_COINS.filter(
@@ -99,7 +99,8 @@ const Dashboard = (props: Props) => {
                         <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
                     </StyledP>
                     <Coins>
-                        {NETWORKS.filter(item => !item.isHidden)
+                        {networks
+                            .filter(item => !item.isHidden)
                             .filter(item => !props.settings.hiddenCoins.includes(item.shortcut))
                             .map(network => (
                                 <StyledLink

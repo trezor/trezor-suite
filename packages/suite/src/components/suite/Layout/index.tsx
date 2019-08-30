@@ -8,13 +8,14 @@ import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import Modals from '@suite-components/modals';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/components';
-import suiteConfig from '@suite-config/index';
+
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
 
 import NoSSR from '@suite/support/suite/NoSSR';
 import l10nMessages from './index.messages';
+import { languages } from '@suite-config';
 import { AppState } from '@suite-types';
 import { Header, Footer, Log } from '@suite-components';
 
@@ -76,7 +77,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 <NoSSR>
                     <LanguagePicker
                         language={props.suite.language}
-                        languages={suiteConfig.languages}
+                        languages={languages}
                         onChange={option => {
                             props.fetchLocale(option.value);
                         }}

@@ -3,7 +3,7 @@ import { CoinLogo, colors, variables, Loader } from '@trezor/components';
 import styled from 'styled-components';
 import { AppState } from '@suite/types/suite';
 import { connect } from 'react-redux';
-import suiteConfig from '@suite-config';
+import { networks } from '@suite-config';
 
 import ProgressBar from './ProgressBar';
 
@@ -116,7 +116,7 @@ const getLoadingProgress = (discovery: AppState['wallet']['discovery']) => {
 };
 
 const getCoinName = (networkType: string, accountType: string) => {
-    const result = suiteConfig.networks.find(
+    const result = networks.find(
         network => network.symbol === networkType && network.accountType === accountType,
     );
     return result ? result.name : 'unknown';

@@ -3,7 +3,7 @@ import { AppState, Action, Dispatch } from '@suite-types/index';
 import { SUITE } from '@suite-actions/constants';
 import { httpRequest } from '@wallet-utils/networkUtils';
 import { resolveAfter } from '@wallet-utils/promiseUtils';
-import fiatConfig from '@suite-config/fiat';
+import { fiat } from '@suite-config';
 
 export const RATE_UPDATE = '@rate/update';
 
@@ -23,7 +23,7 @@ const loadRateAction = () => async (dispatch: Dispatch): Promise<void> => {
     // if (!config) return;
 
     try {
-        fiatConfig.tickers.forEach(async ticker => {
+        fiat.tickers.forEach(async ticker => {
             const response = await httpRequest(
                 `${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`,
                 'json',

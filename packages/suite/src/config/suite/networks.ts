@@ -26,6 +26,7 @@ const accountTypes: AccountType[] = [
     { path: "m/44'/28'/i'", coin: 'vtc', type: 'legacy' },
     { path: "m/44'/133'/i'", coin: 'zec' },
 ];
+
 export default [
     // bitcoin
     {

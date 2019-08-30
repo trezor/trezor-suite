@@ -7,13 +7,4 @@ import flags from './flags';
 import supportedBrowsers from './supportedBrowsers';
 import sentry from './sentry';
 
-export default {
-    languages,
-    fiat,
-    settings,
-    externalCoins,
-    networks,
-    flags,
-    supportedBrowsers,
-    sentry,
-};
+export { languages, fiat, settings, externalCoins, networks, flags, supportedBrowsers, sentry };
