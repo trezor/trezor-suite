@@ -28,7 +28,7 @@ export interface ReceiveProps {
     address: string;
     isAddressVerifying: boolean;
     isAddressUnverified: boolean;
-    isAddressHidden: boolean;
+    isAddressPartiallyHidden: boolean;
     isAddressVerified: boolean;
     showAddress: typeof showAddress;
     device: Exclude<AppState['suite']['device'], undefined>;

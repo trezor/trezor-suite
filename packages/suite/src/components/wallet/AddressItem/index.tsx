@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Address } from 'trezor-connect';
 import { variables, colors } from '@trezor/components';
 
 const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
@@ -11,7 +10,7 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
     padding: 8px 16px;
     cursor: pointer;
 
-    &:last-child() {
+    &:last-child {
         border-bottom: 1px solid #ccc;
     }
 
@@ -28,16 +27,6 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
                 background: ${colors.GRAY_LIGHT};
             }
         `};
-
-    /* ${props =>
-        props.isSelected &&
-        css`
-            background: #eee;
-
-            &:hover {
-                background: #eee;
-            }
-        `}; */
 `;
 
 const DescriptorWrapper = styled.div`
@@ -101,7 +90,7 @@ const Overlay = styled.div<Pick<Props, 'isPartiallyHidden'>>`
 
 interface Props extends React.HTMLProps<HTMLDivElement> {
     address: string;
-    index: number;
+    index: string | number;
     isSelected: boolean;
     readOnly?: boolean;
     isPartiallyHidden?: boolean;
