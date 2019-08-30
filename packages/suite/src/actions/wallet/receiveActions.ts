@@ -1,7 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import { Action } from '@wallet-types/index';
-import { RECEIVE, NOTIFICATION } from '@wallet-actions/constants';
-
+import { RECEIVE } from '@wallet-actions/constants';
+import { NOTIFICATION } from '@suite-actions/constants';
 import { initialState, State } from '@wallet-reducers/receiveReducer';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';

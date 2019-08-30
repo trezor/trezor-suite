@@ -4,6 +4,7 @@ import devices from './deviceReducer';
 import modal from './modalReducer';
 import log from './logReducer';
 import firmware from './firmwareReducer';
+import notifications from './notificationReducer';
 
 export default {
     suite,
@@ -12,4 +13,5 @@ export default {
     devices,
     log,
     firmware,
+    notifications,
 };
