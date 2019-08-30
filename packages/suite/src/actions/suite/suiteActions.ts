@@ -3,7 +3,7 @@ import * as reducersUtils from '@suite-utils/reducers';
 import * as deviceUtils from '@suite-utils/device';
 import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
-import { add as addNotification } from '@wallet-actions/notificationActions';
+import { add as addNotification } from '@suite-actions/notificationActions';
 import { SUITE } from './constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 
