@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { DEVICE, TRANSPORT } from 'trezor-connect';
-import { SUITE, STORAGE } from '@suite-actions/constants';
-import { NOTIFICATION } from '@wallet-actions/constants';
+import { SUITE, STORAGE, NOTIFICATION } from '@suite-actions/constants';
 import * as suiteActions from '../../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
