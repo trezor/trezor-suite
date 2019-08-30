@@ -163,7 +163,7 @@ interface InputProps {
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-    innerRef?: any;
+    innerRef?: React.RefObject<HTMLInputElement>;
     height?: number;
     icon?: IconType;
     bottomText?: React.ReactNode;

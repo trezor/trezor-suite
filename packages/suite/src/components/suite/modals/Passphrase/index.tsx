@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 
 import { H5, P, Button, Input, Checkbox, colors } from '@trezor/components';
@@ -68,6 +68,13 @@ const Passphrase: FunctionComponent<Props> = ({
     const passwordsMatch = shouldShowSingleInput || showPassword ? true : value === valueAgain;
     const enterPressed = useKeyPress('Enter');
 
+    const ref = createRef<HTMLInputElement>();
+    useEffect(() => {
+        if (ref && ref.current) {
+            ref.current.focus();
+        }
+    }, [ref]);
+
     if (enterPressed) {
         onEnterPassphrase(value);
     }
@@ -83,7 +90,7 @@ const Passphrase: FunctionComponent<Props> = ({
                 />
             </H5>
             <TopMessage size="small">
-                <FormattedMessage {...messages.PASSPHRASE_CASE_SENSITIVE} />
+                <FormattedMessage {...messages.TR_PASSPHRASE_CASE_SENSITIVE} />
             </TopMessage>
             <FormRow>
                 <Input
@@ -92,6 +99,7 @@ const Passphrase: FunctionComponent<Props> = ({
                     topLabel="Passphrase"
                     type={type}
                     value={value}
+                    innerRef={ref}
                 />
             </FormRow>
             {!shouldShowSingleInput && (
@@ -108,7 +116,7 @@ const Passphrase: FunctionComponent<Props> = ({
             )}
             <FormRow>
                 <Checkbox onClick={() => setShowPassword(!showPassword)} isChecked={showPassword}>
-                    Show passphrase
+                    <FormattedMessage {...messages.TR_SHOW_PASSPHRASE} />
                 </Checkbox>
             </FormRow>
             <Column>
@@ -116,10 +124,10 @@ const Passphrase: FunctionComponent<Props> = ({
                     <FormattedMessage {...messages.TR_ENTER_PASSPHRASE} />
                 </Button>
                 <ErrorMessage size="small" show={!passwordsMatch}>
-                    <FormattedMessage {...messages.PASSPHRASE_DO_NOT_MATCH} />
+                    <FormattedMessage {...messages.TR_PASSPHRASE_DO_NOT_MATCH} />
                 </ErrorMessage>
                 <BottomMessage size="small">
-                    <FormattedMessage {...messages.PASSPHRASE_BLANK} />
+                    <FormattedMessage {...messages.TR_PASSPHRASE_BLANK} />
                 </BottomMessage>
             </Column>
         </Wrapper>
