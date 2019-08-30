@@ -1,8 +1,8 @@
 import React from 'react';
 import { CoinLogo, colors, variables, Loader } from '@trezor/components';
 import styled from 'styled-components';
-import { AppState } from '@suite/types/suite';
 import { connect } from 'react-redux';
+import { AppState } from '@suite-types';
 import { networks } from '@suite-config';
 
 import ProgressBar from './ProgressBar';

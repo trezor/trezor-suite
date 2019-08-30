@@ -5,8 +5,8 @@ interface Explorer {
 
 export interface Network {
     name: string;
-    isHidden: boolean | undefined | null;
-    networkType: string;
+    isHidden?: boolean;
+    networkType: 'bitcoin' | 'ripple' | 'ethereum';
     accountType: 'normal' | 'legacy' | 'segwit';
     symbol: string;
     bip44: string;

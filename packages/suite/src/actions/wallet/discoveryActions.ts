@@ -25,8 +25,8 @@ interface DiscoveryItem {
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     // wallet
     index: number;
-    type: 'normal' | 'segwit' | 'legacy';
-    networkType: 'bitcoin' | 'ethereum' | 'ripple';
+    networkType: 'bitcoin' | 'ripple' | 'ethereum';
+    accountType: 'normal' | 'segwit' | 'legacy';
 }
 
 // trezor-connect untyped event
@@ -97,7 +97,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
                     failed: discovery.failed.concat([
                         {
                             network: item.coin,
-                            accountType: item.type,
+                            accountType: item.accountType,
                             error,
                         },
                     ]),
@@ -122,7 +122,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
         type: ACCOUNT.CREATE,
         payload: {
             index: item.index,
-            type: item.type,
+            type: item.accountType,
             path: item.path,
             networkType: item.networkType,
             network: item.coin,
@@ -160,7 +160,7 @@ const getBundle = (discovery: Discovery) => (
                     coin: item.symbol,
                     details: 'txs',
                     index: accountIndex,
-                    type,
+                    accountType: type,
                     networkType: item.networkType || 'bitcoin',
                 });
             }
@@ -285,7 +285,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 }
                 const failed: Discovery['failed'] = coins.map(c => ({
                     network: c.coin,
-                    accountType: bundle[c.index].type,
+                    accountType: bundle[c.index].accountType,
                     error: c.exception,
                     fwException: c.exception,
                 }));

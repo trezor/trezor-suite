@@ -57,7 +57,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             const account: AccountInfo = action.payload;
             const { transactions } = account.history;
             if (transactions) {
-                transactions.forEach(async tx => {
+                transactions.forEach(async () => {
                     try {
                         // const txId = await db.addItem('txs', {
                         //     ...tx,
