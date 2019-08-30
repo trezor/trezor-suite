@@ -83,8 +83,6 @@ const Label = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const AccountType = styled.span``;
-
 const Balance = styled.div`
     display: flex;
     align-items: center;
@@ -117,38 +115,35 @@ const getLoadingProgress = (discovery: AppState['wallet']['discovery']) => {
     return 0;
 };
 
-const getCoinName = (networkType: string) => {
-    const networkFromConfig = suiteConfig.networks.find(network => network.type === networkType);
-    if (networkFromConfig) {
-        return networkFromConfig.name;
-    } else {
-        return 'unknown';
-    }
+const getCoinName = (networkType: string, accountType: string) => {
+    const result = suiteConfig.networks.find(
+        network => network.symbol === networkType && network.accountType === accountType,
+    );
+    return result ? result.name : 'unknown';
 };
+
+const getCoinLogo = (network: string) => (network === 'test' ? 'btc' : network); // TODO add icon for testnet
 
 const Menu = (props: Props) => (
     <Wrapper>
         <ProgressBar progress={getLoadingProgress(props.discovery)} />
-        {props.wallet.accounts.length === 0 && (
+        {props.wallet.accounts.length === 0 && ( // TODO check discovery progress not accounts
             <LoadingWrapper>
                 <Loader size={15} />
-                <LoadingText> loading accounts</LoadingText>
+                <LoadingText>Loading accounts</LoadingText>
             </LoadingWrapper>
         )}
         {props.wallet.accounts
-            .filter(account => !account.empty)
-            .map((account, i) => (
-                <Row key={`${account.network}-${account.networkType}`}>
+            // .filter(account => !account.empty)
+            .map(account => (
+                <Row>
                     <Left>
                         <LogoWrapper>
-                            <CoinLogo size={25} network={account.network} />
+                            <CoinLogo size={25} network={getCoinLogo(account.network)} />
                         </LogoWrapper>
                         <Name>
                             <CoinName>
-                                {getCoinName(account.networkType)}{' '}
-                                <AccountType>
-                                    {account.type !== 'normal' ? `(${account.type}) ` : ''}
-                                </AccountType>
+                                {getCoinName(account.network, account.type || 'normal')}
                             </CoinName>
                             <AccountIndex>
                                 <Label>ACCOUNT</Label>

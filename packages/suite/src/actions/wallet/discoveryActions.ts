@@ -3,41 +3,20 @@ import { Dispatch, GetState } from '@suite-types/index';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { Discovery, PartialDiscovery, STATUS } from '@wallet-reducers/discoveryReducer';
 import { ACCOUNT, DISCOVERY } from './constants';
+import suiteConfig from '@suite-config';
 
 export type DiscoveryActions =
-    | {
-          type: typeof DISCOVERY.START;
-          payload: Discovery;
-      }
-    | {
-          type: typeof DISCOVERY.UPDATE;
-          payload: PartialDiscovery;
-      }
-    | {
-          type: typeof DISCOVERY.FAILED;
-          payload: PartialDiscovery;
-      }
-    | {
-          type: typeof DISCOVERY.STOP;
-          payload: PartialDiscovery;
-      }
-    | {
-          type: typeof DISCOVERY.COMPLETE;
-          payload: PartialDiscovery;
-      };
+    | { type: typeof DISCOVERY.START; payload: Discovery }
+    | { type: typeof DISCOVERY.UPDATE; payload: PartialDiscovery }
+    | { type: typeof DISCOVERY.FAILED; payload: PartialDiscovery }
+    | { type: typeof DISCOVERY.STOP; payload: PartialDiscovery }
+    | { type: typeof DISCOVERY.COMPLETE; payload: PartialDiscovery };
 
 type UpdateActionType =
     | typeof DISCOVERY.UPDATE
     | typeof DISCOVERY.FAILED
     | typeof DISCOVERY.STOP
     | typeof DISCOVERY.COMPLETE;
-
-interface AccountType {
-    path: string;
-    coin: string;
-    type?: 'normal' | 'segwit' | 'legacy';
-    networkType?: 'bitcoin' | 'ethereum' | 'ripple';
-}
 
 interface DiscoveryItem {
     // trezor-connect
@@ -57,33 +36,6 @@ interface ProgressEvent {
     error?: string;
 }
 
-const accountTypes: AccountType[] = [
-    { path: "m/84'/0'/i'", coin: 'btc' },
-    { path: "m/49'/0'/i'", coin: 'btc', type: 'segwit' },
-    { path: "m/44'/0'/i'", coin: 'btc', type: 'legacy' },
-    { path: "m/49'/2'/i'", coin: 'ltc' },
-    { path: "m/44'/2'/i'", coin: 'ltc', type: 'legacy' },
-    { path: "m/84'/1'/i'", coin: 'test' },
-    { path: "m/49'/1'/i'", coin: 'test', type: 'segwit' },
-    { path: "m/44'/1'/i'", coin: 'test', type: 'legacy' },
-    { path: "m/44'/60'/0'/0/i", coin: 'eth', networkType: 'ethereum' },
-    { path: "m/44'/61'/0'/0/i", coin: 'etc', networkType: 'ethereum' },
-    { path: "m/44'/60'/0'/0/i", coin: 'trop', networkType: 'ethereum' },
-    { path: "m/44'/144'/i'/0/0", coin: 'xrp', networkType: 'ripple' },
-    { path: "m/44'/144'/i'/0/0", coin: 'txrp', networkType: 'ripple' },
-    { path: "m/44'/145'/i'", coin: 'bch' },
-    { path: "m/49'/156'/i'", coin: 'btg' },
-    { path: "m/44'/156'/i'", coin: 'btg', type: 'legacy' },
-    { path: "m/44'/5'/i'", coin: 'dash' },
-    { path: "m/49'/20'/i'", coin: 'dgb' },
-    { path: "m/44'/20'/i'", coin: 'dgb', type: 'legacy' },
-    { path: "m/44'/3'/i'", coin: 'doge' },
-    { path: "m/44'/7'/i'", coin: 'nmc' },
-    { path: "m/49'/28'/i'", coin: 'vtc' },
-    { path: "m/44'/28'/i'", coin: 'vtc', type: 'legacy' },
-    { path: "m/44'/133'/i'", coin: 'zec' },
-];
-
 const LIMIT = 10;
 const BUNDLE_SIZE = 1;
 
@@ -97,7 +49,7 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
             index: -1,
             status: STATUS.IDLE,
             // total: (LIMIT + BUNDLE_SIZE) * accountTypes.length,
-            total: LIMIT * accountTypes.length,
+            total: LIMIT * suiteConfig.networks.length,
             loaded: 0,
             failed: [],
         }
@@ -187,25 +139,25 @@ const getBundle = (discovery: Discovery) => (
     const { accounts } = getState().wallet;
     const usedAccounts = accounts.filter(a => a.index === discovery.index && !a.empty);
     const bundle: DiscoveryItem[] = [];
-    accountTypes.forEach(item => {
+    suiteConfig.networks.forEach(item => {
         // check if previous account of requested type already exists
-        const type = item.type || 'normal';
-        const prevAccount = usedAccounts.find(a => a.type === type && a.network === item.coin);
+        const type = item.accountType || 'normal';
+        const prevAccount = usedAccounts.find(a => a.type === type && a.network === item.symbol);
         // check if requested coin not failed before
         const failed = discovery.failed.find(
-            f => f.network === item.coin && f.accountType === type,
+            f => f.network === item.symbol && f.accountType === type,
         );
         const skip = failed || (discovery.index >= 0 && !prevAccount);
         for (let i = 1; i <= BUNDLE_SIZE; i++) {
             const accountIndex = discovery.index + 1;
             // check if this account wasn't created before
             const existedAccount = accounts.find(
-                a => a.type === type && a.network === item.coin && a.index === accountIndex,
+                a => a.type === type && a.network === item.symbol && a.index === accountIndex,
             );
             if (!skip && !existedAccount) {
                 bundle.push({
-                    path: item.path.replace('i', accountIndex.toString()),
-                    coin: item.coin,
+                    path: item.bip44.replace('i', accountIndex.toString()),
+                    coin: item.symbol,
                     details: 'txs',
                     index: accountIndex,
                     type,
