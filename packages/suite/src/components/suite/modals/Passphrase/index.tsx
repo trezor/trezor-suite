@@ -64,7 +64,7 @@ const Passphrase: FunctionComponent<Props> = ({
     const [value, setValue] = useState<State['value']>('');
     const [valueAgain, setValueAgain] = useState<State['valueAgain']>('');
     const [showPassword, setShowPassword] = useState(false);
-    const [focused, setFocused] = useState(false);
+    const [focusInput, setFocusInput] = useState(true);
     const type: State['type'] = showPassword ? 'text' : 'password';
     const passwordsMatch = shouldShowSingleInput || showPassword ? true : value === valueAgain;
     const enterPressed = useKeyPress('Enter');
@@ -89,11 +89,11 @@ const Passphrase: FunctionComponent<Props> = ({
     }
 
     useEffect(() => {
-        if (ref && ref.current && focused) {
+        if (ref && ref.current && !focusInput) {
             ref.current.focus();
-            setFocused(true);
+            setFocusInput(false);
         }
-    }, [ref, focused]);
+    }, [ref, focusInput]);
 
     return (
         <Wrapper>
