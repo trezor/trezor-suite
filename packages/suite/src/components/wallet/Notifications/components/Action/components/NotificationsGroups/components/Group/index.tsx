@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { colors, Notification, Icon, utils } from '@trezor/components';
-import { NotificationEntry } from '@wallet-reducers/notificationReducer';
+import { NotificationEntry } from '@suite-reducers/notificationReducer';
+import { close } from '@suite-actions/notificationActions';
 
 const { getPrimaryColor } = utils.colors;
 const { getStateIcon } = utils.icons;
@@ -45,8 +46,8 @@ const StyledIcon = styled(Icon)`
 
 // TODO
 interface Props {
-    variant: 'error' | 'success' | 'info' | 'warning';
-    close: () => any;
+    variant: NotificationEntry['variant'];
+    close: typeof close;
     groupNotifications: NotificationEntry[];
 }
 
@@ -83,7 +84,6 @@ class Group extends PureComponent<Props, StateProps> {
         const color = getPrimaryColor(variant);
         const stateIcon = getStateIcon(variant);
         if (!color || !stateIcon) return null;
-
         return (
             <Wrapper>
                 {groupNotifications.length > 1 && (
@@ -115,7 +115,7 @@ class Group extends PureComponent<Props, StateProps> {
                             message={notification.message}
                             cancelable={notification.cancelable}
                             actions={notification.actions}
-                            close={close}
+                            close={() => close({ key: notification.key })}
                         />
                     ))}
                 </Body>

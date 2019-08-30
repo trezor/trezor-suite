@@ -17,6 +17,7 @@ import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
+import { NotificationActions } from '@suite-actions/notificationActions';
 import { Action as WalletActions } from '@wallet-types/index';
 import OnboardingActions from '@onboarding-types/actions';
 
@@ -48,6 +49,7 @@ export type Action =
     | SuiteActions
     | LogActions
     | ModalActions
+    | NotificationActions
     | WalletActions
     | OnboardingActions;
 
@@ -100,3 +102,8 @@ export interface UnknownDevice {
 }
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
+
+// utils types todo: consider moving it to separate file
+
+// make key required
+export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
