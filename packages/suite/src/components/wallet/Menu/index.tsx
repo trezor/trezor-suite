@@ -79,6 +79,7 @@ const Right = styled.div`
 const Label = styled.span`
     display: flex;
     justify-content: center;
+    padding-right: 3px;
     font-size: ${variables.FONT_SIZE.COUNTER};
     color: ${colors.TEXT_SECONDARY};
 `;
@@ -159,8 +160,8 @@ const Menu = (props: Props) => (
                         </Balance>
                         {account.history.total !== -1 && (
                             <Transactions>
-                                <TransactionsValue>{account.history.total}</TransactionsValue>
                                 <Label>TRANSACTIONS</Label>
+                                <TransactionsValue>{account.history.total}</TransactionsValue>
                             </Transactions>
                         )}
                     </Right>
