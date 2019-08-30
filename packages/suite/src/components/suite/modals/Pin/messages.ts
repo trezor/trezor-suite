@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const definedMessages = defineMessages({
     TR_ENTER_DEVICE_PIN: {
         id: 'TR_ENTER_PIN',
-        defaultMessage: 'Enter "{device.label}" PIN',
+        defaultMessage: 'Enter "{deviceLabel}" PIN',
     },
     TR_PIN_LAYOUT_IS_DISPLAYED_ON_YOUR_DEVICE: {
         id: 'TR_PIN_LAYOUT_IS_DISPLAYED_ON_YOUR_DEVICE',

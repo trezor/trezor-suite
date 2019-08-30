@@ -49,7 +49,7 @@ interface State {
 
 interface Props {
     device: TrezorDevice;
-    onEnterPin: (device: TrezorDevice, value: string) => void;
+    onEnterPin: (value: string) => void;
 }
 
 const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
@@ -58,7 +58,12 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
     return (
         <ModalWrapper>
             <H5>
-                <FormattedMessage {...messages.TR_ENTER_DEVICE_PIN} />
+                <FormattedMessage
+                    {...messages.TR_ENTER_DEVICE_PIN}
+                    values={{
+                        deviceLabel: device.label,
+                    }}
+                />
             </H5>
             <TopMessage size="small">
                 <FormattedMessage {...messages.TR_PIN_LAYOUT_IS_DISPLAYED_ON_YOUR_DEVICE} />
@@ -82,7 +87,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <ButtonPin onClick={() => setValue(`${value}9`)} />
             </PinRow>
             <PinFooter>
-                <Button onClick={() => onEnterPin(device, value)}>
+                <Button onClick={() => onEnterPin(value)}>
                     <FormattedMessage {...messages.TR_ENTER_PIN} />
                 </Button>
                 <BottomMessage size="small">
