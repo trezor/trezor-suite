@@ -64,20 +64,36 @@ const Passphrase: FunctionComponent<Props> = ({
     const [value, setValue] = useState<State['value']>('');
     const [valueAgain, setValueAgain] = useState<State['valueAgain']>('');
     const [showPassword, setShowPassword] = useState(false);
+    const [focused, setFocused] = useState(false);
     const type: State['type'] = showPassword ? 'text' : 'password';
     const passwordsMatch = shouldShowSingleInput || showPassword ? true : value === valueAgain;
     const enterPressed = useKeyPress('Enter');
-
     const ref = createRef<HTMLInputElement>();
-    useEffect(() => {
-        if (ref && ref.current) {
-            ref.current.focus();
+
+    const handleShowPassword = () => {
+        if (showPassword) {
+            setValueAgain(value);
         }
-    }, [ref]);
+        setShowPassword(!showPassword);
+    };
+
+    const handleSetValue = (value: string) => {
+        if (showPassword) {
+            setValueAgain(value);
+        }
+        setValue(value);
+    };
 
     if (enterPressed) {
         onEnterPassphrase(value);
     }
+
+    useEffect(() => {
+        if (ref && ref.current && focused) {
+            ref.current.focus();
+            setFocused(true);
+        }
+    }, [ref, focused]);
 
     return (
         <Wrapper>
@@ -94,7 +110,7 @@ const Passphrase: FunctionComponent<Props> = ({
             </TopMessage>
             <FormRow>
                 <Input
-                    onChange={event => setValue(event.target.value)}
+                    onChange={event => handleSetValue(event.target.value)}
                     placeholder=""
                     topLabel="Passphrase"
                     type={type}
@@ -115,7 +131,7 @@ const Passphrase: FunctionComponent<Props> = ({
                 </FormRow>
             )}
             <FormRow>
-                <Checkbox onClick={() => setShowPassword(!showPassword)} isChecked={showPassword}>
+                <Checkbox onClick={() => handleShowPassword()} isChecked={showPassword}>
                     <FormattedMessage {...messages.TR_SHOW_PASSPHRASE} />
                 </Checkbox>
             </FormRow>
