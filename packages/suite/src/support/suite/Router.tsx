@@ -6,6 +6,17 @@ import Router from 'next/router';
 import { onLocationChange, onBeforePopState } from '@suite-actions/routerActions';
 import { Dispatch } from '@suite-types';
 
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            onLocationChange,
+            onBeforePopState,
+        },
+        dispatch,
+    );
+
+type Props = ReturnType<typeof mapDispatchToProps>;
+
 /**
  * Router handler for 'next/router' used in suite-web and suite-desktop apps
  * next/router and window event handlers needs to be wrapped inside component "onMount" event (useEffect) otherwise next.js compilation fail with error
@@ -15,7 +26,7 @@ import { Dispatch } from '@suite-types';
  * @param {*} { store }
  * @returns null
  */
-const RouterHandler: FunctionComponent<Props> = (props: Props) => {
+const RouterComponent: FunctionComponent<Props> = (props: Props) => {
     useEffect(() => {
         const onHashChanged = () => {
             console.log('onHashChanged');
@@ -48,18 +59,7 @@ const RouterHandler: FunctionComponent<Props> = (props: Props) => {
     return null;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            onLocationChange,
-            onBeforePopState,
-        },
-        dispatch,
-    );
-
-type Props = ReturnType<typeof mapDispatchToProps>;
-
 export default connect(
     null,
     mapDispatchToProps,
-)(RouterHandler);
+)(RouterComponent);

@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { getRoute } from '@suite-utils/router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { forgetDevice } from '@suite-actions/trezorConnectActions';
+import { requestForgetDevice } from '@suite-actions/suiteActions';
 import { goto } from '@suite-actions/routerActions';
 import { Switch, Icon, colors, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
@@ -105,11 +105,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
                     </Label>
                 </Item>
             )}
-            <Item
-                onClick={() => {
-                    forgetDevice(device);
-                }}
-            >
+            <Item onClick={() => requestForgetDevice(device)}>
                 <IconWrapper>
                     <Icon icon="EJECT" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>

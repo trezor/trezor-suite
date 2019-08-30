@@ -3,45 +3,35 @@ import TrezorConnect, {
     UI_EVENT,
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
-    UI,
 } from 'trezor-connect';
 
-import { SUITE, CONNECT } from '@suite-actions/constants';
+import { SUITE } from '@suite-actions/constants';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Dispatch, TrezorDevice, Action } from '@suite-types';
+import { Dispatch } from '@suite-types';
 
 export const init = () => async (dispatch: Dispatch) => {
-    // set listeners
+    // set event listeners
     TrezorConnect.on(DEVICE_EVENT, event => {
         // dispatch event as action
-        const { type, payload } = event;
-        dispatch({ type, payload });
+        delete event.event;
+        dispatch(event);
     });
 
     TrezorConnect.on(UI_EVENT, event => {
-        // TODO: temporary solution for confirmation (device with no backup)
-        // This should be handled in modal view
-        if (event.type === UI.REQUEST_CONFIRMATION) {
-            TrezorConnect.uiResponse({
-                type: UI.RECEIVE_CONFIRMATION,
-                payload: true,
-            });
-        }
-
         // dispatch event as action
-        const { type, payload } = event;
-        dispatch({ type, payload });
+        delete event.event;
+        dispatch(event);
     });
 
     TrezorConnect.on(TRANSPORT_EVENT, event => {
         // dispatch event as action
-        const { type, payload } = event;
-        dispatch({ type, payload });
+        delete event.event;
+        dispatch(event);
     });
 
-    // dispatch event to reducers
     TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
         // dispatch event as action
+        delete event.event;
         dispatch(event);
     });
 
@@ -76,10 +66,3 @@ export const init = () => async (dispatch: Dispatch) => {
         });
     }
 };
-
-// called from device menu (forget single instance)
-export const forgetDevice = (device: TrezorDevice): Action => ({
-    // @ts-ignore
-    type: CONNECT.FORGET_REQUEST,
-    device,
-});

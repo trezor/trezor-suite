@@ -9,7 +9,7 @@ import modalsMessages from '../messages';
 import messages from './messages';
 import { TrezorDevice } from '@suite-types';
 
-const TopMesssage = styled(P)``;
+const TopMessage = styled(P)``;
 
 const BottomMessage = styled(P)`
     margin: 0 30px;
@@ -52,7 +52,7 @@ interface State {
 
 interface Props {
     device: TrezorDevice;
-    onEnterPassphrase: (device: TrezorDevice, value: string) => void;
+    onEnterPassphrase: (value: string) => void;
     shouldShowSingleInput?: boolean;
 }
 
@@ -69,7 +69,7 @@ const Passphrase: FunctionComponent<Props> = ({
     const enterPressed = useKeyPress('Enter');
 
     if (enterPressed) {
-        onEnterPassphrase(device, value);
+        onEnterPassphrase(value);
     }
 
     return (
@@ -82,9 +82,9 @@ const Passphrase: FunctionComponent<Props> = ({
                     }}
                 />
             </H5>
-            <TopMesssage size="small">
+            <TopMessage size="small">
                 <FormattedMessage {...messages.PASSPHRASE_CASE_SENSITIVE} />
-            </TopMesssage>
+            </TopMessage>
             <FormRow>
                 <Input
                     onChange={event => setValue(event.target.value)}
@@ -112,10 +112,7 @@ const Passphrase: FunctionComponent<Props> = ({
                 </Checkbox>
             </FormRow>
             <Column>
-                <Button
-                    onClick={() => onEnterPassphrase(device, value)}
-                    isDisabled={!passwordsMatch}
-                >
+                <Button onClick={() => onEnterPassphrase(value)} isDisabled={!passwordsMatch}>
                     <FormattedMessage {...messages.TR_ENTER_PASSPHRASE} />
                 </Button>
                 <ErrorMessage size="small" show={!passwordsMatch}>

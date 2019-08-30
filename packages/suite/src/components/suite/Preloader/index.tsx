@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import Router from '@suite-support/Router';
+import OnlineStatus from '@suite-support/OnlineStatus';
 import { SUITE } from '@suite-actions/constants';
 import SuiteWrapper from '@suite-components/SuiteWrapper';
 import StaticPageWrapper from '@suite-components/StaticPageWrapper';
@@ -9,6 +10,7 @@ import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
+    loading: AppState['suite']['loading'];
     loaded: AppState['suite']['loaded'];
     error: AppState['suite']['error'];
     dispatch: Dispatch;
@@ -24,12 +26,12 @@ const styles = StyleSheet.create({
 });
 
 const Preloader: React.FunctionComponent<Props> = props => {
-    const { loaded, error, dispatch, isStatic } = props;
+    const { loading, loaded, error, dispatch, isStatic } = props;
     useEffect(() => {
-        if (!loaded) {
+        if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
         }
-    }, [dispatch, loaded, props.children]);
+    }, [dispatch, loaded, loading, error]);
 
     if (error) {
         return (
@@ -44,6 +46,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
         return (
             <StaticPageWrapper>
                 <Router />
+                <OnlineStatus />
                 {props.children}
             </StaticPageWrapper>
         );
@@ -51,12 +54,14 @@ const Preloader: React.FunctionComponent<Props> = props => {
     return (
         <SuiteWrapper>
             <Router />
+            <OnlineStatus />
             {loaded && props.children}
         </SuiteWrapper>
     );
 };
 
 const mapStateToProps = (state: AppState) => ({
+    loading: state.suite.loading,
     loaded: state.suite.loaded,
     error: state.suite.error,
 });

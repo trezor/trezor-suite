@@ -4,11 +4,10 @@
  */
 
 import Router from 'next/router';
-import { getPrefixedURL } from '@suite-utils/router';
+import { getPrefixedURL, getApp, getRoute } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 export const LOCATION_CHANGE = '@router/location-change';
-export const UPDATE = '@router/update';
 
 interface LocationChange {
     type: typeof LOCATION_CHANGE;
@@ -20,12 +19,15 @@ export type RouterActions = LocationChange;
 /**
  * Dispatch initial url
  */
-export const init = (): LocationChange => {
-    const url = Router.pathname + window.location.hash;
-    return {
-        type: LOCATION_CHANGE,
-        url,
-    };
+export const init = () => (dispatch: Dispatch, getState: GetState) => {
+    // check if location was not already changed by initialRedirection
+    if (getState().router.app === 'unknown') {
+        const url = Router.pathname + window.location.hash;
+        dispatch({
+            type: LOCATION_CHANGE,
+            url,
+        });
+    }
 };
 
 /**
@@ -49,20 +51,29 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
  * Called from ./support/RouterHandler
  * @param {string} url
  */
-export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState): boolean => {
-    const locked = false;
-    if (locked) {
-        // TODO: do not render if view is locked
-        return false;
-    }
-    return true;
+export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { uiLocked, routerLocked } = getState().suite;
+    return !uiLocked && !routerLocked;
 };
 
 // links inside of application
-export const goto = (url: string, preserveParams: boolean = false) => {
+export const goto = async (url: string, preserveParams: boolean = false) => {
     if (preserveParams) {
-        Router.push(url + window.location.hash, getPrefixedURL(url) + window.location.hash);
+        await Router.push(url + window.location.hash, getPrefixedURL(url) + window.location.hash);
     } else {
-        Router.push(url, getPrefixedURL(url));
+        await Router.push(url, getPrefixedURL(url));
+    }
+};
+
+/**
+ * Called from `@suite-middlewares/suiteMiddleware`
+ * Redirects to onboarding if `suite.initialRun` is set to true
+ */
+export const initialRedirection = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (getState().suite.initialRun) {
+        const app = getApp(Router.pathname);
+        if (app !== 'onboarding') {
+            await goto(getRoute('onboarding-index'));
+        }
     }
 };
