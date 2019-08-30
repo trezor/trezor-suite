@@ -642,7 +642,7 @@ const acquireDevice = [
     {
         description: `without device`,
         state: {},
-        result: undefined,
+        result: SUITE.CONNECT_INITIALIZED,
     },
 ];
 
