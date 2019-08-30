@@ -101,7 +101,7 @@ export default [
     // Ethereum
     {
         name: 'Ethereum',
-        networkType: 'rthereum',
+        networkType: 'ethereum',
         accountType: 'normal',
         symbol: 'eth',
         bip44: "m/44'/60'/0'/0/i",
@@ -162,7 +162,7 @@ export default [
     },
     {
         name: 'Bitcoin Cash',
-        networkType: 'ripple',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'bch',
         bip44: "m/44'/145'/i'",
@@ -174,7 +174,7 @@ export default [
     },
     {
         name: 'Bitcoin Gold',
-        networkType: 'btg',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'btg',
         bip44: "m/49'/156'/i'",
@@ -186,7 +186,7 @@ export default [
     },
     {
         name: 'Bitcoin Gold (legacy)',
-        networkType: 'btg',
+        networkType: 'bitcoin',
         accountType: 'legacy',
         symbol: 'btg',
         bip44: "m/49'/156'/i'",
@@ -198,7 +198,7 @@ export default [
     },
     {
         name: 'Dash',
-        networkType: 'dash',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'dash',
         bip44: "m/44'/5'/i'",
@@ -210,7 +210,7 @@ export default [
     },
     {
         name: 'DigiByte',
-        networkType: 'dgb',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'dgb',
         bip44: "m/49'/20'/i'",
@@ -222,7 +222,7 @@ export default [
     },
     {
         name: 'DigiByte (legacy)',
-        networkType: 'dgb',
+        networkType: 'bitcoin',
         accountType: 'legacy',
         symbol: 'dgb',
         bip44: "m/44'/20'/i'",
@@ -234,7 +234,7 @@ export default [
     },
     {
         name: 'Dogecoin',
-        networkType: 'doge',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'doge',
         bip44: "m/44'/3'/i'",
@@ -246,7 +246,7 @@ export default [
     },
     {
         name: 'Namecoin',
-        networkType: 'nmc',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'nmc',
         bip44: "m/44'/7'/i'",
@@ -258,7 +258,7 @@ export default [
     },
     {
         name: 'Vertcoin',
-        networkType: 'vtc',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'vtc',
         bip44: "m/49'/28'/i'",
@@ -270,7 +270,7 @@ export default [
     },
     {
         name: 'Vertcoin (legacy)',
-        networkType: 'vtc',
+        networkType: 'bitcoin',
         accountType: 'legacy',
         symbol: 'vtc',
         bip44: "m/44'/28'/i'",
@@ -282,7 +282,7 @@ export default [
     },
     {
         name: 'Zcash',
-        networkType: 'zec',
+        networkType: 'bitcoin',
         accountType: 'normal',
         symbol: 'zec',
         bip44: "m/44'/133'/i'",

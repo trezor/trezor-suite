@@ -159,7 +159,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                     onClick={() => {
                                         const allCoins = props.networks
                                             .filter(x => !x.isHidden)
-                                            .map(item => item.shortcut);
+                                            .map(item => item.symbol);
 
                                         props.toggleGroupCoinsVisibility(
                                             allCoins,
@@ -175,10 +175,10 @@ class CoinsSettings extends Component<Props, StateProps> {
                         {props.networks
                             .filter(network => !network.isHidden)
                             .map(network => (
-                                <CoinRow key={network.shortcut}>
+                                <CoinRow key={network.symbol}>
                                     <Left>
                                         <LogoWrapper>
-                                            <CoinLogo size={24} network={network.shortcut} />
+                                            <CoinLogo size={24} network={network.symbol} />
                                         </LogoWrapper>
                                         <Name>{network.name}</Name>
                                     </Left>
@@ -189,12 +189,12 @@ class CoinsSettings extends Component<Props, StateProps> {
                                             uncheckedIcon={false}
                                             onChange={visible => {
                                                 props.handleCoinVisibility(
-                                                    network.shortcut,
+                                                    network.symbol,
                                                     visible,
                                                     false,
                                                 );
                                             }}
-                                            checked={!props.hiddenCoins.includes(network.shortcut)}
+                                            checked={!props.hiddenCoins.includes(network.symbol)}
                                         />
                                     </Right>
                                 </CoinRow>

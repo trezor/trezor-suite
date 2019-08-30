@@ -60,7 +60,7 @@ const getExceptionPage = (
             type: 'fwNotSupported',
             title: `${network.name} is not supported with Trezor ${getVersion(device)}`,
             message: 'Find more information on Trezor Wiki.',
-            shortcut: network.shortcut,
+            shortcut: network.symbol,
         };
     }
 

@@ -38,7 +38,7 @@ const LayoutAccount = (props: Props) => (
                         route: getRoute('wallet-account-sign-verify'),
                         title: <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />,
                         isHidden: (coinShortcut: string) => {
-                            const network = networks.find(c => c.shortcut === coinShortcut);
+                            const network = networks.find(c => c.symbol === coinShortcut);
                             return network ? !network.hasSignVerify : false;
                         },
                     },

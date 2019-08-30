@@ -120,8 +120,8 @@ export const getSelectedAccount = (
     return accounts.find(a => a.index === index && a.network === routerParams.coin) || null;
 };
 
-export const getSelectedNetwork = (networks: Network[], networkShortcut: string) => {
-    return networks.find(c => c.shortcut === networkShortcut) || null;
+export const getSelectedNetwork = (networks: Network[], networkSymbol: string) => {
+    return networks.find(c => c.symbol === networkSymbol) || null;
 };
 
 export const getDiscoveryProcess = (

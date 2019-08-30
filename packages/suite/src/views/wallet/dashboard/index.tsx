@@ -64,7 +64,7 @@ const Dashboard = (props: Props) => {
     const isEmpty = () => {
         const numberOfVisibleNetworks = networks
             .filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => !props.settings.hiddenCoins.includes(item.shortcut));
+            .filter(item => !props.settings.hiddenCoins.includes(item.symbol));
         const { hiddenCoinsExternal } = props.settings;
         const numberOfVisibleNetworksExternal = externalCoins
             .filter(item => !item.isHidden)
@@ -101,16 +101,16 @@ const Dashboard = (props: Props) => {
                     <Coins>
                         {networks
                             .filter(item => !item.isHidden)
-                            .filter(item => !props.settings.hiddenCoins.includes(item.shortcut))
+                            .filter(item => !props.settings.hiddenCoins.includes(item.symbol))
                             .map(network => (
                                 <StyledLink
-                                    key={network.shortcut}
+                                    key={network.symbol}
                                     href={getRoute('wallet-account', {
-                                        coin: network.shortcut,
+                                        coin: network.symbol,
                                         accountId: '0',
                                     })}
                                 >
-                                    <StyledCoinLogo network={network.shortcut} size={24} />
+                                    <StyledCoinLogo network={network.symbol} size={24} />
                                 </StyledLink>
                             ))}
                     </Coins>

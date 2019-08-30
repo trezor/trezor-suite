@@ -36,6 +36,10 @@ const Row = styled.div`
     &:hover {
         background-color: ${colors.GRAY_LIGHT};
     }
+
+    &:first-child {
+        padding-top: 0;
+    }
 `;
 
 const LogoWrapper = styled.div`
@@ -70,15 +74,16 @@ const Name = styled.div`
 
 const Right = styled.div`
     display: flex;
+    flex: 1;
     align-items: flex-end;
     justify-content: center;
     flex-direction: column;
-    flex: 1;
 `;
 
 const Label = styled.span`
     display: flex;
     justify-content: center;
+    text-transform: uppercase;
     padding-right: 3px;
     font-size: ${variables.FONT_SIZE.COUNTER};
     color: ${colors.TEXT_SECONDARY};
@@ -116,7 +121,7 @@ const getLoadingProgress = (discovery: AppState['wallet']['discovery']) => {
     return 0;
 };
 
-const getCoinName = (networkType: string, accountType: string) => {
+const getCoinName = (networkType: string, accountType = 'normal') => {
     const result = networks.find(
         network => network.symbol === networkType && network.accountType === accountType,
     );
@@ -147,7 +152,7 @@ const Menu = (props: Props) => (
                                 {getCoinName(account.network, account.type || 'normal')}
                             </CoinName>
                             <AccountIndex>
-                                <Label>ACCOUNT</Label>
+                                <Label>account</Label>
                                 {`#${account.index}`}
                             </AccountIndex>
                         </Name>
@@ -160,7 +165,7 @@ const Menu = (props: Props) => (
                         </Balance>
                         {account.history.total !== -1 && (
                             <Transactions>
-                                <Label>TRANSACTIONS</Label>
+                                <Label>transactions</Label>
                                 <TransactionsValue>{account.history.total}</TransactionsValue>
                             </Transactions>
                         )}
