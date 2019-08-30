@@ -3,74 +3,99 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
-// import { DEVICE } from 'trezor-connect';
+import { UI } from 'trezor-connect';
 import { Modal as ModalComponent } from '@trezor/components';
 
-import * as modalActions from '@suite-actions/modalActions';
-import * as MODAL from '@suite-actions/constants/modalConstants';
-
-// import Pin from 'components/modals/pin/Pin';
-// import InvalidPin from 'components/modals/pin/Invalid';
-// import Passphrase from 'components/modals/passphrase/Passphrase';
-// import PassphraseType from 'components/modals/passphrase/Type';
-// import ConfirmAction from 'components/modals/confirm/Action';
-// import ConfirmNoBackup from 'components/modals/confirm/NoBackup';
-// import ForgetDeviceModal from '@suite-components/modals/Forget';
-// import RememberDeviceModal from '@suite-components/modals/Remember';
-// import DuplicateDevice from 'components/modals/device/Duplicate';
+import * as ModalActions from '@suite-actions/modalActions';
+import { MODAL, SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
+
+import Pin from './Pin';
+import PinInvalid from './PinInvalid';
+import Passphrase from './Passphrase';
+import PassphraseType from './PassphraseType';
+import ConfirmAction from './confirm/Action';
+// import ConfirmAddress from './confirm/Address';
+import ConfirmNoBackup from './confirm/NoBackup';
+import ConfirmSignTx from './confirm/SignTx';
+// import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
+import ForgetDevice from './Forget';
+import RememberDevice from './Remember';
+// import DuplicateDevice from 'components/modals/device/Duplicate';
+import WalletType from './WalletType';
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
-    const { modal } = props;
-    if (modal.context !== MODAL.CONTEXT_DEVICE) return null;
+    const { modal, device, modalActions } = props;
+    if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
-        // case UI.REQUEST_PIN:
-        //     return <Pin device={modal.device} onPinSubmit={modalActions.onPinSubmit} />;
+        case SUITE.REQUEST_PASSPHRASE_MODE:
+            return (
+                <WalletType
+                    device={device}
+                    onWalletTypeRequest={modalActions.onWalletTypeRequest}
+                    onCancel={modalActions.onCancel}
+                />
+            );
 
-        // case UI.INVALID_PIN:
-        //     return <InvalidPin device={modal.device} />;
+        case UI.REQUEST_PIN:
+            return <Pin device={device} onEnterPin={modalActions.onPinSubmit} />;
 
-        // case UI.REQUEST_PASSPHRASE:
-        //     return (
-        //         <Passphrase
-        //             device={modal.device}
-        //             selectedDevice={props.wallet.selectedDevice}
-        //             onPassphraseSubmit={modalActions.onPassphraseSubmit}
-        //         />
-        //     );
+        case UI.INVALID_PIN:
+            return <PinInvalid device={device} />;
 
-        // case 'ButtonRequest_PassphraseType':
-        //     return <PassphraseType device={modal.device} />;
+        case UI.REQUEST_PASSPHRASE:
+            return (
+                <Passphrase
+                    device={device}
+                    shouldShowSingleInput={!!device.state}
+                    onEnterPassphrase={modalActions.onPassphraseSubmit}
+                />
+            );
 
-        // case 'ButtonRequest_ProtectCall':
-        //     return <ConfirmAction device={modal.device} />;
+        case 'ButtonRequest_PassphraseType':
+            return <PassphraseType device={device} />;
 
-        // case 'ButtonRequest_Other':
-        // case 'ButtonRequest_ConfirmOutput':
-        //     return <ConfirmAction device={modal.device} />;
+        case 'ButtonRequest_ProtectCall':
+        case 'ButtonRequest_Other':
+        case 'ButtonRequest_ConfirmOutput':
+            return <ConfirmAction device={device} />;
+        case 'ButtonRequest_SignTx': {
+            return <ConfirmSignTx device={device} sendForm={null} />;
+        }
 
-        // case CONNECT.REMEMBER_REQUEST:
-        //     return (
-        //         <RememberDeviceModal
-        //             device={modal.device}
-        //             instances={modal.instances}
-        //             onRememberDevice={modalActions.onRememberDevice}
-        //             onForgetDevice={modalActions.onForgetDevice}
-        //         />
-        //     );
+        // case RECEIVE.REQUEST_UNVERIFIED:
+        //         return (
+        //             <ConfirmUnverifiedAddress
+        //                 device={modal.device}
+        //                 account={props.selectedAccount.account}
+        //                 onCancel={modalActions.onCancel}
+        //                 showAddress={props.receiveActions.showAddress}
+        //                 showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
+        //             />
+        //         );
 
-        // case CONNECT.FORGET_REQUEST:
-        //     return (
-        //         <ForgetDeviceModal
-        //             device={modal.device}
-        //             onForgetDevice={modalActions.onForgetDevice}
-        //             onCancel={modalActions.onCancel}
-        //         />
-        //     );
+        case SUITE.REQUEST_DEVICE_INSTANCE:
+            return (
+                <RememberDevice
+                    device={device}
+                    // instances={instances}
+                    onRememberDevice={modalActions.onRememberDevice}
+                    onForgetDevice={modalActions.onForgetDevice}
+                />
+            );
 
-        // case CONNECT.TRY_TO_DUPLICATE:
+        case SUITE.REQUEST_FORGET_DEVICE:
+            return (
+                <ForgetDevice
+                    device={device}
+                    onForgetDevice={modalActions.onForgetDevice}
+                    onCancel={modalActions.onCancel}
+                />
+            );
+
+        // case SUITE.REQUEST_DEVICE_INSTANCE:
         //     return (
         //         <DuplicateDevice
         //             device={modal.device}
@@ -85,23 +110,23 @@ const getDeviceContextModal = (props: Props) => {
     }
 };
 
-// const getConfirmationModal = props => {
-//     const { modal, modalActions, wallet } = props;
+const getConfirmationModal = (props: Props) => {
+    const { modal, device, modalActions } = props;
 
-//     if (modal.context !== MODAL.CONTEXT_CONFIRMATION) return null;
+    if (modal.context !== MODAL.CONTEXT_CONFIRMATION || !device) return null;
 
-//     switch (modal.windowType) {
-//         case 'no-backup':
-//             return (
-//                 <ConfirmNoBackup
-//                     device={wallet.selectedDevice}
-//                     onReceiveConfirmation={modalActions.onReceiveConfirmation}
-//                 />
-//             );
-//         default:
-//             return null;
-//     }
-// };
+    switch (modal.windowType) {
+        case 'no-backup':
+            return (
+                <ConfirmNoBackup
+                    device={device}
+                    onReceiveConfirmation={modalActions.onReceiveConfirmation}
+                />
+            );
+        default:
+            return null;
+    }
+};
 
 // modal container component
 const Modal = (props: Props) => {
@@ -114,9 +139,9 @@ const Modal = (props: Props) => {
         case MODAL.CONTEXT_DEVICE:
             component = getDeviceContextModal(props);
             break;
-        // case MODAL.CONTEXT_CONFIRMATION:
-        //     component = getConfirmationModal(props);
-        //     break;
+        case MODAL.CONTEXT_CONFIRMATION:
+            component = getConfirmationModal(props);
+            break;
         default:
             break;
     }
@@ -130,6 +155,7 @@ const Modal = (props: Props) => {
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
+    device: state.suite.device,
     devices: state.devices,
     // connect: state.connect,
     // selectedAccount: state.selectedAccount,
@@ -137,7 +163,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(modalActions, dispatch),
+    modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;

@@ -34,7 +34,7 @@ const PinFooter = styled.div`
     flex-direction: column;
 `;
 
-const TopMesssage = styled(P)``;
+const TopMessage = styled(P)``;
 
 const BottomMessage = styled(P)`
     margin: 20px 30px 0;
@@ -46,7 +46,7 @@ interface State {
 
 interface Props {
     device: TrezorDevice;
-    onEnterPin: (device: TrezorDevice, value: string) => void;
+    onEnterPin: (value: string) => void;
 }
 
 const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
@@ -54,8 +54,8 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
 
     return (
         <ModalWrapper>
-            <H5>Enter Trezor PIN</H5>
-            <TopMesssage size="small">The PIN layout is displayed on your Trezor.</TopMesssage>
+            <H5>Enter {device.label} PIN</H5>
+            <TopMessage size="small">The PIN layout is displayed on your Trezor.</TopMessage>
             <InputWrapper>
                 <InputPin onDeleteClick={() => setValue(value.slice(0, -1))} value={value} />
             </InputWrapper>
@@ -75,7 +75,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <ButtonPin onClick={() => setValue(`${value}9`)} />
             </PinRow>
             <PinFooter>
-                <Button onClick={() => onEnterPin(device, value)}>Enter PIN</Button>
+                <Button onClick={() => onEnterPin(value)}>Enter PIN</Button>
                 <BottomMessage size="small">
                     Not sure how PIN works?{' '}
                     <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>

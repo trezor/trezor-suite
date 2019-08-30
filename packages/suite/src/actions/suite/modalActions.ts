@@ -162,6 +162,7 @@ export const onWalletTypeRequest = (hidden: boolean) => (
         payload: device,
         hidden,
     });
+    dispatch(onCancel());
 };
 
 export const gotoExternalWallet = (id: string, url: string) => (dispatch: Dispatch): void => {
