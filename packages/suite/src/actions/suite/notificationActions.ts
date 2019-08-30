@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { NotificationProps } from '@trezor/components';
 import { CallbackAction } from '@suite/reducers/suite/notificationReducer';
 import { NOTIFICATION } from './constants';
-import { GetState, Dispatch, TrezorDevice } from '@suite-types';
+import { GetState, Dispatch, TrezorDevice, RequiredKey } from '@suite-types';
 
 export interface NotificationAddPayload {
     variant: NonNullable<NotificationProps['variant']>;
@@ -15,23 +15,16 @@ export interface NotificationAddPayload {
     actions?: CallbackAction[];
 }
 
-interface CloseByKey {
-    key: string;
-    id?: string;
-    devicePath?: string;
-}
-interface CloseById {
-    key?: string;
-    id: string;
-    devicePath?: string;
-}
-interface CloseByDevicePath {
+interface CloseProps {
     key?: string;
     id?: string;
-    devicePath: string;
+    devicePath?: string;
 }
 
-export type NotificationClosePayload = CloseByDevicePath | CloseById | CloseByKey;
+export type NotificationClosePayload =
+    | RequiredKey<CloseProps, 'devicePath'>
+    | RequiredKey<CloseProps, 'id'>
+    | RequiredKey<CloseProps, 'key'>;
 
 export type NotificationActions =
     | {
