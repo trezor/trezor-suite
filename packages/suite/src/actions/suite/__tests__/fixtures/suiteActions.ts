@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { DEVICE, TRANSPORT } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, STORAGE } from '@suite-actions/constants';
 import { NOTIFICATION } from '@wallet-actions/constants';
 import * as suiteActions from '../../suiteActions';
 
@@ -36,6 +36,40 @@ const reducerActions = [
                 loading: false,
                 loaded: false,
                 error: 'Error',
+            },
+        ],
+    },
+    {
+        description: `SUITE.INIT`,
+        actions: [
+            {
+                type: SUITE.INIT,
+            },
+        ],
+        result: [
+            {
+                loading: true,
+                loaded: false,
+            },
+        ],
+    },
+    {
+        description: `STORAGE.LOADED`,
+        actions: [
+            {
+                type: STORAGE.LOADED,
+                payload: {
+                    suite: {
+                        initialRun: false,
+                        language: 'cs',
+                    },
+                },
+            },
+        ],
+        result: [
+            {
+                initialRun: false,
+                language: 'cs',
             },
         ],
     },
@@ -187,6 +221,18 @@ const reducerActions = [
                 },
             },
         ],
+    },
+];
+
+const initialRun = [
+    {
+        description: `initialRunCompleted (initialRun = true)`,
+    },
+    {
+        description: `initialRunCompleted (initialRun = false)`,
+        state: {
+            initialRun: false,
+        },
     },
 ];
 
@@ -760,6 +806,7 @@ const authorizeDevice = [
 
 export default {
     reducerActions,
+    initialRun,
     selectDevice,
     handleDeviceConnect,
     handleDeviceDisconnect,

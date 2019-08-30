@@ -10,8 +10,9 @@ import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 export type SuiteActions =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
-    | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.ERROR; error: string }
+    | { type: typeof SUITE.INITIAL_RUN_COMPLETED }
+    | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_PASSPHRASE_MODE; payload: TrezorDevice }
@@ -30,6 +31,17 @@ export type SuiteActions =
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean };
+
+/**
+ * @returns {Action|void}
+ */
+export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState) => {
+    if (getState().suite.initialRun) {
+        dispatch({
+            type: SUITE.INITIAL_RUN_COMPLETED,
+        });
+    }
+};
 
 /**
  * Triggered by `@suite-support/OnlineStatus` or `@suite-native/support/OnlineStatus`

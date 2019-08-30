@@ -101,6 +101,17 @@ describe('Suite Actions', () => {
         });
     });
 
+    fixtures.initialRun.forEach(f => {
+        it(f.description, async () => {
+            const state = getInitialState(f.state);
+            const store = initStore(state);
+            store.dispatch(suiteActions.initialRunCompleted());
+            expect(store.getState().suite).toMatchObject({
+                initialRun: false,
+            });
+        });
+    });
+
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.devices);

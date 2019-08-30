@@ -2,15 +2,15 @@ import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { BLOCKCHAIN, SUITE, STORAGE } from '@suite-actions/constants';
 import { init as initBlockchain } from '@suite-actions/blockchainActions';
-import { init as initRouter } from '@suite-actions/routerActions';
+import { init as initRouter, initialRedirection } from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
-const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
+const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
-): Action => {
+): Promise<Action> => {
     // pass action to reducers
     next(action);
 
@@ -20,7 +20,10 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
             api.dispatch(loadStorage());
             break;
         case STORAGE.LOADED:
-            // initialize backends
+            // redirect to onboarding or leave url as is
+            await api.dispatch(initialRedirection());
+            api.dispatch(suiteActions.initialRunCompleted()); // TODO: move it to onboarding, cancel this flag after user selection
+            // initialize trezor-connect
             api.dispatch(trezorConnectActions.init());
             break;
         case SUITE.CONNECT_INITIALIZED:

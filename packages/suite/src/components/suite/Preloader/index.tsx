@@ -10,6 +10,7 @@ import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
+    loading: AppState['suite']['loading'];
     loaded: AppState['suite']['loaded'];
     error: AppState['suite']['error'];
     dispatch: Dispatch;
@@ -25,12 +26,12 @@ const styles = StyleSheet.create({
 });
 
 const Preloader: React.FunctionComponent<Props> = props => {
-    const { loaded, error, dispatch, isStatic } = props;
+    const { loading, loaded, error, dispatch, isStatic } = props;
     useEffect(() => {
-        if (!loaded) {
+        if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
         }
-    }, [dispatch, loaded, props.children]);
+    }, [dispatch, loaded, loading, error]);
 
     if (error) {
         return (
@@ -60,6 +61,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
 };
 
 const mapStateToProps = (state: AppState) => ({
+    loading: state.suite.loading,
     loaded: state.suite.loaded,
     error: state.suite.error,
 });

@@ -1,9 +1,10 @@
 import { TRANSPORT } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, STORAGE } from '@suite-actions/constants';
 import produce from 'immer';
 import { Action, TrezorDevice } from '@suite-types';
 
 export interface SuiteState {
+    initialRun: boolean;
     online: boolean;
     loading: boolean;
     loaded: boolean;
@@ -44,8 +45,9 @@ interface Platform {
 }
 
 const initialState: SuiteState = {
-    online: true, // correct value will be set on SUITE_INIT
-    loading: true,
+    initialRun: true,
+    online: true,
+    loading: false,
     loaded: false,
     language: 'en',
     messages: {},
@@ -58,6 +60,15 @@ const initialState: SuiteState = {
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
     return produce(state, draft => {
         switch (action.type) {
+            case SUITE.INIT:
+                draft.loading = true;
+                break;
+
+            case STORAGE.LOADED:
+                draft.initialRun = action.payload.suite.initialRun;
+                draft.language = action.payload.suite.language;
+                break;
+
             case SUITE.READY:
                 draft.loading = false;
                 draft.loaded = true;
@@ -67,6 +78,10 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.loading = false;
                 draft.loaded = false;
                 draft.error = action.error;
+                break;
+
+            case SUITE.INITIAL_RUN_COMPLETED:
+                draft.initialRun = false;
                 break;
 
             case SUITE.SELECT_DEVICE:
