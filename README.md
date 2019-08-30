@@ -1,17 +1,19 @@
-# Trezor Suite Monorepo
+# TREZOR SUITE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MONOREPO
 ![img](https://repository-images.githubusercontent.com/148657224/439f6100-765f-11e9-9bff-b725eef3c4a6)
 
 ## Packages
 
 Name            | Packages
 --------------- | ----------
-suite           | [core](./packages/suite), [web](./packages/suite-web), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [onboarding](./packages/suite-onboarding)
+suite           | [core](./packages/suite), [web](./packages/suite-web), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [onboarding](./packages/suite-onboarding), [data](./packages/suite-data), [storage](./packages/suite-storage)
 components      | [components](./packages/components), [storybook](./packages/components-storybook), [storybook native](./packages/components-storybook-native)
 rollout         | [rollout](./packages/rollout)
 blockchain-link | [blockchain-link](./packages/blockchain-link)
 connect-explorer | [connect-explorer](./packages/connect-explorer)
 
 ## Development
+Before you start make sure you have downloaded and installed [Node.js LTS](https://nodejs.org/en/download/), [Yarn](https://yarnpkg.com/lang/en/docs/install/) and git.
+
 
 - `git clone git@github.com:trezor/trezor-suite.git`
 - `yarn`

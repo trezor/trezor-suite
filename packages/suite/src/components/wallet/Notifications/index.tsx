@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // import { reconnect } from 'actions/DiscoveryActions';
-import * as NotificationActions from '@wallet-actions/notificationActions';
+import * as NotificationActions from '@suite-actions/notificationActions';
 
 import StaticNotifications from './components/Static';
 import AccountNotifications from './components/Account';
@@ -12,9 +12,8 @@ import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
     router: AppState['router'];
-    notifications: AppState['wallet']['notifications'];
+    notifications: AppState['notifications'];
     selectedAccount: any; // TODO
-    wallet: AppState['wallet'];
     // @ts-ignore TODO: add blockchain
     blockchain: AppState['wallet']['blockchain'];
     children?: React.ReactNode;
@@ -32,9 +31,8 @@ const Notifications = (props: Props) => (
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
-    notifications: state.wallet.notifications,
+    notifications: state.notifications,
     selectedAccount: state.wallet.selectedAccount,
-    wallet: state.wallet,
     // @ts-ignore TODO: add blockchain
     blockchain: state.blockchain,
 });

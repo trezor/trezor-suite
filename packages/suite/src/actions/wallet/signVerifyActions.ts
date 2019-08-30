@@ -1,6 +1,6 @@
 import TrezorConnect from 'trezor-connect';
 import { validateAddress } from '@suite/utils/wallet/ethUtils';
-import { NOTIFICATION } from '@wallet-actions/constants';
+import { NOTIFICATION } from '@suite-actions/constants';
 import messages from '@wallet-components/Notifications/actions.messages';
 import { SIGN_VERIFY } from './constants';
 import { Dispatch, GetState } from '@suite-types';

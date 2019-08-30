@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { NotificationEntry } from '@wallet-reducers/notificationReducer';
+import { NotificationEntry } from '@suite-reducers/notificationReducer';
+import { close } from '@suite-actions/notificationActions';
 import NOTIFICATIONS_CONSTANTS from '@wallet-constants/notification';
 import Group from './components/Group';
 
@@ -10,10 +11,10 @@ const Wrapper = styled.div`
 
 interface Props {
     notifications: NotificationEntry[];
-    close: () => any;
+    close: typeof close;
 }
 
-type GroupType = 'success' | 'warning' | 'info' | 'error';
+type GroupType = NotificationEntry['variant'];
 interface GroupedNotifications {
     [key: string]: NotificationEntry[];
 }
@@ -25,7 +26,7 @@ class NotificationsGroup extends PureComponent<Props> {
             if (!acc[key]) {
                 acc[key] = [];
             }
-            acc[key].push({ ...obj, key: new Date().getTime().toString() }); // key was previously set as obj, but that is not a string
+            acc[key].push({ ...obj });
             return acc;
         }, {});
     };
