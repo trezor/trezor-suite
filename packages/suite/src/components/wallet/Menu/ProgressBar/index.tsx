@@ -9,15 +9,13 @@ interface Props {
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    max-width: 1170px;
     flex-direction: row;
-    flex: 1 1 0%;
 `;
 
 const Line = styled.div<Props>`
-    height: 2px;
+    height: 1px;
     display: flex;
-    background: ${props => (props.progress !== 100 ? colors.GREEN_PRIMARY : colors.WHITE)};
+    background: ${props => (props.progress !== 100 ? colors.GREEN_PRIMARY : colors.GRAY_LIGHT)};
     width: ${props => props.progress}%;
 `;
 
