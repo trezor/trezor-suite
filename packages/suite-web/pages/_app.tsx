@@ -11,10 +11,10 @@ import { isStatic } from '@suite-utils/router';
 import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import config from '@suite-config/index';
 import l10nCommonMessages from '@suite-views/index.messages';
+import { sentry } from '@suite-config';
 
-Sentry.init({ dsn: config.sentry });
+Sentry.init({ dsn: sentry });
 interface Props {
     store: Store;
 }

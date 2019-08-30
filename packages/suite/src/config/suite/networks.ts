@@ -12,8 +12,10 @@ const accountTypes: AccountType[] = [
     { path: "m/44'/60'/0'/0/i", coin: 'eth', networkType: 'ethereum' },
     { path: "m/44'/61'/0'/0/i", coin: 'etc', networkType: 'ethereum' },
     { path: "m/44'/60'/0'/0/i", coin: 'trop', networkType: 'ethereum' },
+
     { path: "m/44'/144'/i'/0/0", coin: 'xrp', networkType: 'ripple' },
     { path: "m/44'/144'/i'/0/0", coin: 'txrp', networkType: 'ripple' },
+
     { path: "m/44'/145'/i'", coin: 'bch' },
     { path: "m/49'/156'/i'", coin: 'btg' },
     { path: "m/44'/156'/i'", coin: 'btg', type: 'legacy' },
@@ -28,10 +30,11 @@ const accountTypes: AccountType[] = [
 ];
 
 export default [
-    // bitcoin
+    // Bitcoin
     {
         name: 'Bitcoin',
         networkType: 'bitcoin',
+        accountType: 'normal',
         symbol: 'btc',
         bip44: "m/84'/0'/i'",
         hasSignVerify: true,
@@ -64,6 +67,131 @@ export default [
             address: 'https://example.com/address/',
         },
     },
+    // Litecoin
+    {
+        name: 'Litecoin',
+        networkType: 'litecoin',
+        accountType: 'normal',
+        symbol: 'ltc',
+        bip44: "m/49'/2'/i'",
+        hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    {
+        name: 'Litecoin (legacy)',
+        networkType: 'litecoin',
+        accountType: 'legacy',
+        symbol: 'ltc',
+        bip44: "m/44'/2'/i'",
+        hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    // Bitcoin testnet
+    {
+        name: 'Bitcoin Test',
+        networkType: 'bitcoin',
+        accountType: 'normal',
+        symbol: 'test',
+        bip44: "m/84'/1'/i'",
+        hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    {
+        name: 'Bitcoin Test (legacy)',
+        networkType: 'bitcoin',
+        accountType: 'segwit',
+        symbol: 'test',
+        bip44: "m/49'/1'/i'",
+        hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    {
+        name: 'Bitcoin test (legacy)',
+        networkType: 'bitcoin',
+        accountType: 'legacy',
+        symbol: 'test',
+        bip44: "m/44'/1'/i'",
+        hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    // Ethereum
+    {
+        name: 'Ethereum',
+        networkType: 'rthereum',
+        accountType: 'normal',
+        symbol: 'eth',
+        bip44: "m/44'/60'/0'/0/i",
+        hasSignVerify: false,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    {
+        name: 'Ethereum Classic',
+        networkType: 'ethereum',
+        accountType: 'normal',
+        symbol: 'etc',
+        bip44: "m/44'/61'/0'/0/i",
+        hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    {
+        name: 'Ethereum Ropsten',
+        networkType: 'ethereum',
+        accountType: 'normal',
+        symbol: 'trop',
+        bip44: "m/44'/60'/0'/0/i",
+        hasSignVerify: true,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    // Ripple
+    {
+        name: 'XRP',
+        networkType: 'ripple',
+        accountType: 'normal',
+        symbol: 'xrp',
+        bip44: "m/44'/144'/i'/0/0",
+        hasSignVerify: false,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    {
+        name: 'XRP testnet',
+        networkType: 'ripple',
+        accountType: 'normal',
+        symbol: 'txrp',
+        bip44: "m/44'/144'/i'/0/0",
+        hasSignVerify: false,
+        explorer: {
+            tx: 'https://example.com',
+            address: 'https://example.com/address/',
+        },
+    },
+    //
     //  { path: "m/49'/2'/i'", coin: 'ltc' },
     //{ path: "m/44'/2'/i'", coin: 'ltc', type: 'legacy' },
     // ethereum

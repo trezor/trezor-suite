@@ -9,7 +9,7 @@ import Discovery from '@wallet-components/Discovery';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
 import { getRoute } from '@suite/utils/suite/router';
-import { networks } from '@suite-config';
+import { networks, externalCoins } from '@suite-config';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -66,9 +66,9 @@ const Dashboard = (props: Props) => {
             .filter(item => !item.isHidden) // hide coins globally in config
             .filter(item => !props.settings.hiddenCoins.includes(item.shortcut));
         const { hiddenCoinsExternal } = props.settings;
-        const numberOfVisibleNetworksExternal = EXTERNAL_COINS.filter(
-            item => !item.isHidden,
-        ).filter(item => !hiddenCoinsExternal.includes(item.id));
+        const numberOfVisibleNetworksExternal = externalCoins
+            .filter(item => !item.isHidden)
+            .filter(item => !hiddenCoinsExternal.includes(item.id));
 
         return numberOfVisibleNetworks.length <= 0 && numberOfVisibleNetworksExternal.length <= 0;
     };
