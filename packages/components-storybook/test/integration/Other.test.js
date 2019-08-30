@@ -73,6 +73,12 @@ describe('Other', () => {
         it(`${testName}`, () => {
             if (testName.match(/icon|coin|logo|prompt|header/)) {
                 cy.getTestElement(testName)
+                    .find('.loading')
+                    .each(el => {
+                        cy.get(el).should('not.exist');
+                    });
+
+                cy.getTestElement(testName)
                     .find('svg')
                     .should('be.visible');
             }
