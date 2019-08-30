@@ -11,6 +11,8 @@ import { DISCOVERY, NOTIFICATION } from '@wallet-actions/constants';
 import * as discoveryActions from '../discoveryActions';
 import fixtures, { paramsError } from './fixtures/discoveryActions';
 
+const { getSuiteDevice } = global.JestMocks;
+
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 type Fixture = ArrayElement<typeof fixtures>;
 type Bundle = { path: string; coin: string }[];
@@ -122,14 +124,10 @@ jest.mock('trezor-connect', () => {
     };
 });
 
+const SUITE_DEVICE = getSuiteDevice({ state: 'device-state' });
 export const getInitialState = () => ({
     suite: {
-        device: {
-            features: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
-                device_id: 'DEVICE-ID',
-            },
-        },
+        device: SUITE_DEVICE,
     },
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
@@ -195,15 +193,11 @@ describe('Discovery Actions', () => {
         store.subscribe(() => updateStore(store));
         store.dispatch({
             type: DISCOVERY.START,
-            payload: {
-                device: 'device-id',
-            },
+            payload: SUITE_DEVICE,
         });
         store.dispatch({
             type: DISCOVERY.START,
-            payload: {
-                device: 'device-id',
-            },
+            payload: SUITE_DEVICE,
         });
         expect(store.getState().wallet.discovery.length).toEqual(1);
     });
@@ -213,9 +207,7 @@ describe('Discovery Actions', () => {
         store.subscribe(() => updateStore(store));
         store.dispatch({
             type: DISCOVERY.UPDATE,
-            payload: {
-                device: 'device-id',
-            },
+            payload: SUITE_DEVICE,
         });
         expect(store.getState().wallet.discovery.length).toEqual(0);
     });

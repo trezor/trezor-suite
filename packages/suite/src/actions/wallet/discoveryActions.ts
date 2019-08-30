@@ -106,8 +106,8 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
 
 const getDiscoveryForDevice = () => (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    if (!device || !device.features || !device.features.device_id) return;
-    return dispatch(getDiscovery(device.features.device_id));
+    if (!device || !device.state) return;
+    return dispatch(getDiscovery(device.state));
 };
 
 export const update = (
@@ -231,8 +231,9 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     // - filter coin by firmware (ex: xrp on T1)
     // - if currently load account is selected perform full transaction discovery?
 
+    const selected = getState().suite.device;
     const discovery = dispatch(getDiscoveryForDevice());
-    if (!discovery) {
+    if (!selected || !discovery) {
         dispatch(
             // TODO: notification with translations
             addNotification({
@@ -263,7 +264,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     if (bundle.length === 0) {
         // call getFeatures to release device session
         await TrezorConnect.getFeatures({
-            device: getState().suite.device,
+            device: selected,
             keepSession: false,
         });
         dispatch(
@@ -287,9 +288,14 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     TrezorConnect.on(UI.BUNDLE_PROGRESS, onBundleProgress);
     const result = await TrezorConnect.getAccountInfo({
-        device: getState().suite.device,
+        device: {
+            path: selected.path,
+            instance: selected.instance,
+            state: selected.state,
+        },
         bundle,
         keepSession: true,
+        useEmptyPassphrase: selected.useEmptyPassphrase,
     });
     TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 

@@ -24,6 +24,8 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
     return {
         ...device,
         ...upcoming,
+        state: device.state,
+        instance: device.instance,
         instanceLabel,
     };
 };
