@@ -17,11 +17,11 @@ const Wrapper = styled.div`
 const Line = styled.div<Props>`
     height: 2px;
     display: flex;
-    background: ${colors.GREEN_PRIMARY};
+    background: ${props => (props.progress !== 100 ? colors.GREEN_PRIMARY : colors.WHITE)};
     width: ${props => props.progress}%;
 `;
 
-const Loader = (props: Props) => {
+const ProgressBar = (props: Props) => {
     return (
         <Wrapper>
             <Line progress={props.progress} />
@@ -29,4 +29,4 @@ const Loader = (props: Props) => {
     );
 };
 
-export default Loader;
+export default ProgressBar;

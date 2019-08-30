@@ -59,8 +59,6 @@ const AccountDiscovery = (props: Props) => {
                     Stop
                 </Button>
             )}
-            <P>Progress: {perc}%</P>
-            {printAccounts(props.accounts)}
         </View>
     );
 };

@@ -65,7 +65,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case STORAGE.LOADED:
-                draft.initialRun = action.payload.suite.initialRun;
+                draft.initialRun = false;
                 draft.language = action.payload.suite.language;
                 break;
 

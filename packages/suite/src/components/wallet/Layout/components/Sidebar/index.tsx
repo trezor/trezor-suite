@@ -25,7 +25,6 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
     overflow-y: auto;
 
     background: ${colors.MAIN};
-    border-top-left-radius: 4px;
     border-right: 1px solid ${colors.DIVIDER};
 
     overflow-x: hidden;
