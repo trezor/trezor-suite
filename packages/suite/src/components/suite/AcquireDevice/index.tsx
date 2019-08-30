@@ -10,6 +10,7 @@ import l10nMessages from './index.messages';
 
 interface Props extends InjectedIntlProps {
     device: AppState['suite']['device'];
+    uiLocked: AppState['suite']['uiLocked'];
     acquireDevice: typeof acquireDevice;
 }
 
@@ -22,9 +23,7 @@ const Acquire: FunctionComponent<Props> = props => {
             message={props.intl.formatMessage(l10nMessages.TR_USE_YOUR_DEVICE_IN_THIS_WINDOW)}
             variant="info"
             cancelable={false}
-            // todo: imho currently there is no field in global state showing that call to device is in progress, but I could use local state
-            // here possibly too
-            // isActionInProgress={props.acquiring}
+            isActionInProgress={props.uiLocked}
             actions={[
                 {
                     label: props.intl.formatMessage(l10nMessages.TR_ACQUIRE_DEVICE),
@@ -37,6 +36,7 @@ const Acquire: FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
+    uiLocked: state.suite.uiLocked,
 });
 
 export default injectIntl(
