@@ -7,8 +7,8 @@ import thunk from 'redux-thunk';
 
 import accountsReducer from '@wallet-reducers/accountsReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
-import { DISCOVERY } from '@wallet-actions/constants';
 import { NOTIFICATION } from '@suite-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as discoveryActions from '../discoveryActions';
 import fixtures, { paramsError } from './fixtures/discoveryActions';
 

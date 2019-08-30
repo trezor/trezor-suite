@@ -166,9 +166,6 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
         type: SUITE.SELECT_DEVICE,
         payload,
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    // dispatch(authorizeDevice());
 };
 
 /**
