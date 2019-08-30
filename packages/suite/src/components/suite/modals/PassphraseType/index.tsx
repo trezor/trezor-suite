@@ -2,7 +2,11 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 import { P, Prompt } from '@trezor/components';
+import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
+
+import messages from './messages';
+import commonMessages from '../messages';
 
 interface Props {
     device: TrezorDevice;
@@ -22,11 +26,11 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
         <Wrapper>
             <Header>
                 <Prompt model={majorVersion} size={32}>
-                    Complete the action on "{device.label}" device
+                    <FormattedMessage {...commonMessages.TR_COMPLETE_ACTION_ON_DEVICE} />
                 </Prompt>
 
                 <P size="small">
-                    If you enter a wrong passphrase, you will not unlock the desired hidden wallet.
+                    <FormattedMessage {...messages.TR_ENTER_WRONG_PASSPHRASE} />
                 </P>
             </Header>
         </Wrapper>

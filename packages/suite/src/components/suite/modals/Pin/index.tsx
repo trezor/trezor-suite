@@ -2,7 +2,10 @@ import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonPin, InputPin, P, H5, Link } from '@trezor/components';
+import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
+
+import messages from './messages';
 
 const ModalWrapper = styled.div`
     padding: 30px 45px;
@@ -46,7 +49,7 @@ interface State {
 
 interface Props {
     device: TrezorDevice;
-    onEnterPin: (value: string) => void;
+    onEnterPin: (device: TrezorDevice, value: string) => void;
 }
 
 const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
@@ -54,8 +57,12 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
 
     return (
         <ModalWrapper>
-            <H5>Enter {device.label} PIN</H5>
-            <TopMessage size="small">The PIN layout is displayed on your Trezor.</TopMessage>
+            <H5>
+                <FormattedMessage {...messages.TR_ENTER_DEVICE_PIN} />
+            </H5>
+            <TopMessage size="small">
+                <FormattedMessage {...messages.TR_PIN_LAYOUT_IS_DISPLAYED_ON_YOUR_DEVICE} />
+            </TopMessage>
             <InputWrapper>
                 <InputPin onDeleteClick={() => setValue(value.slice(0, -1))} value={value} />
             </InputWrapper>
@@ -75,11 +82,13 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <ButtonPin onClick={() => setValue(`${value}9`)} />
             </PinRow>
             <PinFooter>
-                <Button onClick={() => onEnterPin(value)}>Enter PIN</Button>
+                <Button onClick={() => onEnterPin(device, value)}>
+                    <FormattedMessage {...messages.TR_ENTER_PIN} />
+                </Button>
                 <BottomMessage size="small">
-                    Not sure how PIN works?{' '}
+                    <FormattedMessage {...messages.TR_NOT_SURE_HOW_PIN_WORKS} />{' '}
                     <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
-                        Learn more
+                        <FormattedMessage {...messages.TR_LEARN_MORE} />
                     </Link>
                 </BottomMessage>
             </PinFooter>
