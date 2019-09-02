@@ -2,40 +2,39 @@
 // const pagesThatNeedDevice = ['/bridge', '/onboarding', '/settings', '/wallet'];
 
 describe('Pages', () => {
-    beforeEach(() => {
-        cy.viewport(1024, 768).visit('/');
-    });
-
     it(`test / page is online in initial run`, () => {
-        cy.visit('/', {
-            onBeforeLoad: win => {
-                win.initialState = {
-                    suite: {
-                        initialRun: true,
-                    },
-                };
-            },
-        })
+        cy.viewport(1024, 768)
+            .visit('/', {
+                onBeforeLoad: win => {
+                    win.initialState = {
+                        suite: {
+                            initialRun: true,
+                        },
+                    };
+                },
+            })
             .location('pathname')
             .should('match', /onboarding/);
     });
 
     it(`test / page is online after initial run`, () => {
-        cy.visit('/', {
-            onBeforeLoad: win => {
-                win.initialState = {
-                    suite: {
-                        initialRun: false,
-                    },
-                };
-            },
-        })
+        cy.viewport(1024, 768)
+            .visit('/', {
+                onBeforeLoad: win => {
+                    win.initialState = {
+                        suite: {
+                            initialRun: false,
+                        },
+                    };
+                },
+            })
             .get('html')
             .should('contain', 'Connect Trezor to continue');
     });
 
     it(`test /version page is online`, () => {
-        cy.visit('/version')
+        cy.viewport(1024, 768)
+            .visit('/version')
             .get('html')
             .should('contain', 'version');
     });
