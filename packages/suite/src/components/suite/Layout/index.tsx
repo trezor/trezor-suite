@@ -11,7 +11,7 @@ import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/componen
 
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
-import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
+import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/suite/urls';
 
 import NoSSR from '@suite/support/suite/NoSSR';
 import l10nMessages from './index.messages';

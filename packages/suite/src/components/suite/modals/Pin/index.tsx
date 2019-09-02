@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
 import messages from './messages';
 import modalsMessages from '../messages';
+import { URLS } from '@suite-constants';
 
 const ModalWrapper = styled.div`
     padding: 30px 45px;
@@ -92,7 +93,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 </Button>
                 <BottomMessage size="small">
                     <FormattedMessage {...messages.TR_HOW_PIN_WORKS} />{' '}
-                    <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
+                    <Link href={URLS.PIN_MANUAL_URL} isGreen>
                         <FormattedMessage {...modalsMessages.TR_LEARN_MORE} />
                     </Link>
                 </BottomMessage>

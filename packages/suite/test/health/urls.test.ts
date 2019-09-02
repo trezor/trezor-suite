@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-import * as suiteUrls from '@suite/constants/urls';
+import * as suiteUrls from '@suite/constants/suite/urls';
 import * as onboardingUrls from '@suite/constants/onboarding/urls';
 
 // Excluded urls
