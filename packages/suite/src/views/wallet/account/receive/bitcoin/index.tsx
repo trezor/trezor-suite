@@ -77,6 +77,10 @@ const FreshAddressList = styled(AddressList)`
     margin-top: 10px;
 `;
 
+const PreviousAddressList = styled(AddressList)`
+    margin-bottom: 10px;
+`;
+
 const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
     const firstFreshAddrRef = useRef<HTMLDivElement>();
 
@@ -98,7 +102,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
             <Title>
                 <FormattedMessage {...messages.TR_RECEIVE_BITCOIN} />
             </Title>
-            <AddressList
+            <PreviousAddressList
                 addresses={addresses.used}
                 setSelectedAddr={setSelectedAddr}
                 selectedAddress={selectedAddr}
