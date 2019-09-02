@@ -15,6 +15,7 @@ module.exports = {
         '^@(.+)-actions/(.+)': '<rootDir>/src/actions/$1/$2',
         '^@(.+)-reducers/(.+)': '<rootDir>/src/reducers/$1/$2',
         '^@(.+)-config/(.+)': '<rootDir>/src/config/$1/$2',
+        '^@(.+)-config': '<rootDir>/src/config/$1/index',
         '^@(.+)-constants/(.+)': '<rootDir>/src/constants/$1/$2',
         '^@(.+)-support/(.+)': '<rootDir>/src/support/$1/$2',
         '^@(.+)-utils/(.+)': '<rootDir>/src/utils/$1/$2',
