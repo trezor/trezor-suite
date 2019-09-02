@@ -46,7 +46,7 @@ const AddressList = ({
 
     const totalCount = addresses.length;
     const perPage = 10;
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(-1);
     const [isCollapsed, setIsCollapsed] = useState(true);
     const endIndex = totalCount - 1;
     let startIndex = endIndex - (page + 1) * perPage;
