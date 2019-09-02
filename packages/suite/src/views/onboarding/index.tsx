@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
-import { AnyEvent } from '@onboarding-types/events';
 
 import * as EVENTS from '@suite/actions/onboarding/constants/events';
 
@@ -128,7 +127,7 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }: { model: number; event: AnyEvent }) => {
+const TrezorAction = ({ model, event }: { model: number; event: string }) => {
     let TrezorActionText;
     if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
@@ -179,7 +178,7 @@ interface Props {
 
     deviceCall: StateProps['deviceCall'];
     uiInteraction: StateProps['uiInteraction'];
-    deviceInteraction: StateProps['deviceInteraction'];
+    // deviceInteraction: StateProps['deviceInteraction'];
     prevDeviceId: StateProps['prevDeviceId'];
 
     loaded: boolean;
@@ -216,7 +215,7 @@ class Onboarding extends React.PureComponent<Props> {
     }
 
     isGlobalInteraction() {
-        const { deviceInteraction, deviceCall } = this.props;
+        const { uiInteraction, deviceCall } = this.props;
         // if (deviceCall.name === RECOVER_DEVICE )
         const globals = [
             EVENTS.BUTTON_REQUEST__PROTECT_CALL,
@@ -226,7 +225,9 @@ class Onboarding extends React.PureComponent<Props> {
             EVENTS.BUTTON_REQUEST__MNEMONIC_INPUT,
             EVENTS.BUTTON_REQUEST__OTHER,
         ];
-        return globals.includes(deviceInteraction.name) && deviceCall.isProgress;
+        return Boolean(
+            uiInteraction.name && globals.includes(uiInteraction.name) && deviceCall.isProgress,
+        );
     }
 
     // todo: reconsider if we need resolved logic.
@@ -240,7 +241,6 @@ class Onboarding extends React.PureComponent<Props> {
             activeStepId,
 
             deviceCall,
-            deviceInteraction,
             uiInteraction,
 
             loaded,
@@ -275,8 +275,8 @@ class Onboarding extends React.PureComponent<Props> {
                             />
                         </ProgressStepsSlot>
                         <ComponentWrapper>
-                            {this.isGlobalInteraction() && (
-                                <TrezorAction model={model} event={deviceInteraction.name} />
+                            {uiInteraction.name && this.isGlobalInteraction() && (
+                                <TrezorAction model={model} event={uiInteraction.name} />
                             )}
 
                             <CSSTransition
@@ -401,7 +401,7 @@ const mapStateToProps = (state: AppState) => {
         // connect reducer
         prevDeviceId: state.onboarding.connect.prevDeviceId,
         deviceCall: state.onboarding.connect.deviceCall,
-        deviceInteraction: state.onboarding.connect.deviceInteraction,
+        // deviceInteraction: state.onboarding.connect.deviceInteraction,
         uiInteraction: state.onboarding.connect.uiInteraction,
 
         // onboarding reducer

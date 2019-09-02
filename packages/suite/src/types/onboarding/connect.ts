@@ -17,7 +17,7 @@ import {
 } from '@suite/actions/onboarding/connectActions';
 
 export interface UiInteraction {
-    name: null | string;
+    name: undefined | string;
     counter: number;
 }
 
@@ -32,10 +32,10 @@ export interface ConnectReducer {
         error: null | string;
         result: null | Record<string, any>;
     };
-    deviceInteraction: {
-        name: null | string; // todo: better
-        counter: number;
-    };
+    // deviceInteraction: {
+    //     name: undefined | string; // todo: better
+    //     counter: number;
+    // };
     uiInteraction: UiInteraction;
 }
 

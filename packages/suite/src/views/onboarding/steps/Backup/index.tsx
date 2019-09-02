@@ -47,7 +47,7 @@ const Instruction = styled.div`
 interface BackupProps {
     device: AppState['onboarding']['connect']['device'];
     deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    deviceInteraction: AppState['onboarding']['connect']['deviceInteraction'];
+    uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
     activeSubStep: AppState['onboarding']['activeSubStep'];
     connectActions: {
         wipeDevice: typeof wipeDevice;
@@ -69,7 +69,7 @@ const BackupStep: React.FC<BackupProps> = props => {
         props.connectActions.resetCall();
     }, [props.connectActions]);
 
-    const { device, deviceCall, deviceInteraction, activeSubStep } = props;
+    const { device, deviceCall, uiInteraction, activeSubStep } = props;
 
     const getStatus = () => {
         if (
@@ -82,7 +82,7 @@ const BackupStep: React.FC<BackupProps> = props => {
         if (device && device.features.needs_backup === false) {
             return 'success';
         }
-        if (device && device.features.needs_backup === true && deviceInteraction.counter > 0) {
+        if (device && device.features.needs_backup === true && uiInteraction.counter > 0) {
             return 'started';
         }
         if (activeSubStep === 'recovery-card-front' || activeSubStep === 'recovery-card-back') {
@@ -101,9 +101,9 @@ const BackupStep: React.FC<BackupProps> = props => {
                 {getStatus() === 'success' && 'Backup finished'}
                 {getStatus() === 'failed' && 'Backup failed'}
                 {getStatus() === 'started' &&
-                    deviceInteraction.counter <= 24 &&
+                    uiInteraction.counter <= 24 &&
                     'Write down seed words from your device'}
-                {getStatus() === 'started' && deviceInteraction.counter > 24 && 'Check seed words'}
+                {getStatus() === 'started' && uiInteraction.counter > 24 && 'Check seed words'}
                 {getStatus() === 'recovery-card-front' && 'Get your recovery card'}
                 {getStatus() === 'recovery-card-back' && 'Get your recovery card'}
             </Wrapper.StepHeading>
@@ -237,38 +237,31 @@ const BackupStep: React.FC<BackupProps> = props => {
                     </React.Fragment>
                 )}
 
-                {getStatus() === 'started' && (
+                {getStatus() === 'started' && device.features.major_version === 1 && (
                     <React.Fragment>
                         <SeedCard
                             showBack
                             wordsNumber={24}
                             words={Array.from(
-                                Array(
-                                    deviceInteraction.counter < 24
-                                        ? deviceInteraction.counter - 1
-                                        : 24,
-                                ),
+                                Array(uiInteraction.counter < 24 ? uiInteraction.counter - 1 : 24),
                             ).map(() => '*****')}
                             checkingWordNumber={
-                                deviceInteraction.counter - 24 > 0
-                                    ? deviceInteraction.counter - 24
-                                    : null
+                                uiInteraction.counter - 24 > 0 ? uiInteraction.counter - 24 : null
                             }
                             writingWordNumber={
-                                deviceInteraction.counter <= 24 ? deviceInteraction.counter : null
+                                uiInteraction.counter <= 24 ? uiInteraction.counter : null
                             }
                         />
                         <div style={{ marginTop: '100px' }}>
                             <Prompt model={device!.features.major_version} size={32}>
-                                {deviceInteraction.counter > 24 && (
+                                {uiInteraction.counter > 24 && (
                                     <Text>
-                                        Check the {deviceInteraction.counter - 24}. word on your
-                                        device
+                                        Check the {uiInteraction.counter - 24}. word on your device
                                     </Text>
                                 )}
-                                {deviceInteraction.counter <= 24 && (
+                                {uiInteraction.counter <= 24 && (
                                     <Text>
-                                        Write down the {deviceInteraction.counter}. word from your
+                                        Write down the {uiInteraction.counter}. word from your
                                         device
                                     </Text>
                                 )}

@@ -10,7 +10,8 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.onboarding.connect.device,
-    deviceInteraction: state.onboarding.connect.deviceInteraction,
+    // deviceInteraction: state.onboarding.connect.deviceInteraction,
+    uiInteraction: state.onboarding.connect.uiInteraction,
     deviceCall: state.onboarding.connect.deviceCall,
     activeSubStep: state.onboarding.activeSubStep,
 });
