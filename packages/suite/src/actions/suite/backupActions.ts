@@ -1,12 +1,24 @@
 import TrezorConnect, { BackupDeviceParams } from 'trezor-connect';
-import { lockUI } from '@suite-actions/suiteActions';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { Dispatch } from '@suite-types';
-
 //  TODO: should be reworked to deviceManagementActions
 
 export const backupDevice = (params: BackupDeviceParams) => async (dispatch: Dispatch) => {
-    dispatch(lockUI(true));
-    await TrezorConnect.backupDevice(params);
-    dispatch(lockUI(false));
-    // todo: dispatch result notification;
+    const result = await TrezorConnect.backupDevice(params);
+    if (result.success) {
+        return dispatch(
+            notificationActions.add({
+                variant: 'success',
+                title: 'backup successful',
+                cancelable: true,
+            }),
+        );
+    }
+    dispatch(
+        notificationActions.add({
+            variant: 'error',
+            title: 'backup failed',
+            cancelable: true,
+        }),
+    );
 };
