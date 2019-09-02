@@ -1,3 +1,5 @@
+import { Network } from '@wallet-types';
+
 export default [
     // Bitcoin
     {
@@ -292,4 +294,4 @@ export default [
             address: 'https://example.com/address/',
         },
     },
-];
+] as Network[];

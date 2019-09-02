@@ -164,7 +164,7 @@ const Menu = (props: Props) => (
                     key={`${account.accountType}-${account.network}`}
                     href={getRoute('wallet-account', {
                         coin: account.network,
-                        accountId: parseInt(account.index, 10),
+                        accountId: account.index,
                     })}
                 >
                     <Row>
