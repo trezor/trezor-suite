@@ -6,8 +6,30 @@ describe('Pages', () => {
         cy.viewport(1024, 768).visit('/');
     });
 
-    it(`test / page is online`, () => {
-        cy.visit('/')
+    it(`test / page is online in initial run`, () => {
+        cy.visit('/', {
+            onBeforeLoad: win => {
+                win.initialState = {
+                    suite: {
+                        initialRun: true,
+                    },
+                };
+            },
+        })
+            .location('pathname')
+            .should('eq', '/onboarding');
+    });
+
+    it(`test / page is online after initial run`, () => {
+        cy.visit('/', {
+            onBeforeLoad: win => {
+                win.initialState = {
+                    suite: {
+                        initialRun: false,
+                    },
+                };
+            },
+        })
             .get('html')
             .should('contain', 'Connect Trezor to continue');
     });

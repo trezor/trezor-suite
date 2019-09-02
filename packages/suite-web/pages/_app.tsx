@@ -13,6 +13,7 @@ import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import config from '@suite-config/index';
 import l10nCommonMessages from '@suite-views/index.messages';
+import CypressExportStore from '@suite-support/CypressExportStore';
 
 Sentry.init({ dsn: config.sentry });
 interface Props {
@@ -50,6 +51,7 @@ class TrezorSuiteApp extends App<Props> {
                             <Preloader isStatic={isStaticRoute}>
                                 <Component {...pageProps} />
                             </Preloader>
+                            <CypressExportStore store={store} />
                         </>
                     </IntlProvider>
                 </ReduxProvider>
