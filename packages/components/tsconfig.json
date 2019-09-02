@@ -15,7 +15,7 @@
         "declaration": true,
         // Only emit ‘.d.ts’ declaration files.
         "emitDeclarationOnly": true,
-        "declarationMap": false,
+        "declarationMap": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "noImplicitAny": true,
