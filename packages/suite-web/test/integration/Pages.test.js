@@ -17,7 +17,7 @@ describe('Pages', () => {
             },
         })
             .location('pathname')
-            .should('eq', '/onboarding');
+            .should('match', /onboarding/);
     });
 
     it(`test / page is online after initial run`, () => {
