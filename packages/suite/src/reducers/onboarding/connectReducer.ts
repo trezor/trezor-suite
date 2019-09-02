@@ -18,10 +18,6 @@ const initialState = {
         error: null,
         result: null,
     },
-    // deviceInteraction: {
-    //     name: undefined,
-    //     counter: 0,
-    // },
     uiInteraction: {
         name: undefined,
         counter: 0,
@@ -82,10 +78,6 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     error: null,
                     result: null,
                 };
-                // draft.deviceInteraction = {
-                //     name: undefined,
-                //     counter: 0,
-                // };
                 draft.uiInteraction = {
                     name: undefined,
                     counter: 0,
@@ -110,10 +102,6 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     error: null,
                     result: action.result,
                 };
-                // draft.deviceInteraction = {
-                //     name: undefined,
-                //     counter: 0,
-                // };
                 draft.uiInteraction = {
                     name: undefined,
                     counter: 0,
@@ -129,10 +117,6 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                 };
                 break;
             case UI.REQUEST_BUTTON:
-                // draft.deviceInteraction = {
-                //     name: action.payload.code,
-                //     counter: state.deviceInteraction.counter + 1,
-                // };
                 draft.uiInteraction = {
                     name: action.payload.code,
                     counter: state.uiInteraction.counter + 1,
@@ -143,10 +127,6 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     name: action.payload.type,
                     counter: state.uiInteraction.counter + 1,
                 };
-                // draft.deviceInteraction = {
-                //     name: action.payload.type,
-                //     counter: state.deviceInteraction.counter + 1,
-                // };
                 break;
             case UI.REQUEST_PIN:
                 draft.device = {
@@ -154,7 +134,6 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     isRequestingPin: state.device.isRequestingPin + 1,
                 };
                 draft.uiInteraction = { name: undefined, counter: 0 };
-                // draft.deviceInteraction = { name: undefined, counter: 0 };
                 break;
             // no default
         }

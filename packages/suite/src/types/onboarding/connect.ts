@@ -85,10 +85,6 @@ export type ConnectActionTypes =
           error: string;
       }
     | {
-          type: typeof DEVICE_INTERACTION_EVENT;
-          name: string;
-      }
-    | {
           type: typeof UI_INTERACTION_EVENT;
           name: string;
       };

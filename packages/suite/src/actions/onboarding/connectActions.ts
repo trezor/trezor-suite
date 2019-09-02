@@ -40,11 +40,9 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
     let fn;
     switch (name) {
         case CALLS.FIRMWARE_UPDATE:
-            // @ts-ignore
             fn = () => TrezorConnect.firmwareUpdate(callParams);
             break;
         case CALLS.RESET_DEVICE:
-            // @ts-ignore
             fn = () => TrezorConnect.resetDevice(callParams);
             break;
         case CALLS.BACKUP_DEVICE:
@@ -52,7 +50,6 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
             fn = () => TrezorConnect.backupDevice(callParams);
             break;
         case CALLS.APPLY_SETTINGS:
-            // @ts-ignore
             fn = () => TrezorConnect.applySettings(callParams);
             break;
         case CALLS.APPLY_FLAGS:
@@ -60,11 +57,9 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
             fn = () => TrezorConnect.applyFlags(callParams);
             break;
         case CALLS.GET_FEATURES:
-            // @ts-ignore
             fn = () => TrezorConnect.getFeatures(callParams);
             break;
         case CALLS.CHANGE_PIN:
-            // @ts-ignore
             fn = () => TrezorConnect.changePin(callParams);
             break;
         case CALLS.RECOVER_DEVICE:
@@ -72,7 +67,6 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
             fn = () => TrezorConnect.recoveryDevice(callParams);
             break;
         case CALLS.WIPE_DEVICE:
-            // @ts-ignore
             fn = () => TrezorConnect.wipeDevice(callParams);
             break;
         default:
