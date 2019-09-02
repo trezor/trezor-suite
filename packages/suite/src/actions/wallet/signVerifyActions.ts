@@ -25,20 +25,20 @@ export const sign = (path: [number], message: string, hex: boolean = false) => a
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const selected = getState().suite.device;
-    if (!selected) return;
+    const selectedDevice = getState().suite.device;
+    if (!selectedDevice) return;
 
     // @ts-ignore
     const response = await TrezorConnect.ethereumSignMessage({
         device: {
-            path: selected.path,
-            instance: selected.instance,
-            state: selected.state,
+            path: selectedDevice.path,
+            instance: selectedDevice.instance,
+            state: selectedDevice.state,
         },
         path,
         hex,
         message,
-        useEmptyPassphrase: selected.useEmptyPassphrase,
+        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
     });
 
     if (response && response.success) {
@@ -65,8 +65,8 @@ export const verify = (
     signature: string,
     hex: boolean = false,
 ) => async (dispatch: Dispatch, getState: GetState) => {
-    const selected = getState().suite.device;
-    if (!selected) return;
+    const selectedDevice = getState().suite.device;
+    if (!selectedDevice) return;
     const error = validateAddress(address);
 
     if (error) {
@@ -81,15 +81,15 @@ export const verify = (
         // @ts-ignore // TODO ADD TO CONNECT
         const response = await TrezorConnect.ethereumVerifyMessage({
             device: {
-                path: selected.path,
-                instance: selected.instance,
-                state: selected.state,
+                path: selectedDevice.path,
+                instance: selectedDevice.instance,
+                state: selectedDevice.state,
             },
             address,
             message,
             signature,
             hex,
-            useEmptyPassphrase: selected.useEmptyPassphrase,
+            useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
         });
 
         if (response && response.success) {

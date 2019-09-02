@@ -173,8 +173,8 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
  * @param {Device} device
  */
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
-    const selected = getState().suite.device;
-    if (!selected) {
+    const selectedDevice = getState().suite.device;
+    if (!selectedDevice) {
         dispatch(selectDevice(device));
     } else {
         // TODO: show some nice notification/tooltip in DeviceMenu
@@ -189,9 +189,9 @@ export const handleDeviceDisconnect = (device: Device) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const selected = getState().suite.device;
-    if (!selected) return;
-    if (selected.path !== device.path) return;
+    const selectedDevice = getState().suite.device;
+    if (!selectedDevice) return;
+    if (selectedDevice.path !== device.path) return;
 
     // selected device is disconnected, decide what to do next
     const { devices } = getState();
@@ -232,11 +232,11 @@ export const observeSelectedDevice = (action: Action) => (
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
 
-    const selected = getState().suite.device;
-    if (!selected) return false;
-    const deviceFromReducer = deviceUtils.getSelectedDevice(selected, getState().devices);
+    const selectedDevice = getState().suite.device;
+    if (!selectedDevice) return false;
+    const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
     if (!deviceFromReducer) return true;
-    const changed = reducersUtils.observeChanges(selected, deviceFromReducer);
+    const changed = reducersUtils.observeChanges(selectedDevice, deviceFromReducer);
     if (changed) {
         dispatch({
             type: SUITE.UPDATE_SELECTED_DEVICE,
@@ -256,14 +256,12 @@ export const acquireDevice = () => async (dispatch: Dispatch, getState: GetState
     const { device } = getState().suite;
     if (!device) return;
 
-    dispatch(lockUI(true));
     const response = await TrezorConnect.getFeatures({
         device: {
             path: device.path,
         },
         useEmptyPassphrase: true,
     });
-    dispatch(lockUI(false));
 
     if (!response.success) {
         // TODO: notification with translations
@@ -321,7 +319,6 @@ export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetSta
         device.firmware !== 'required';
     if (!isDeviceReady) return;
 
-    dispatch(lockUI(true));
     const response = await TrezorConnect.getDeviceState({
         device: {
             path: device.path,
@@ -331,7 +328,6 @@ export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetSta
         useEmptyPassphrase: device.useEmptyPassphrase,
         // useEmptyPassphrase: false,
     });
-    dispatch(lockUI(false));
 
     if (response.success) {
         dispatch({
