@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { getRoute } from '@suite-utils/router';
 import { Link } from '@suite-components';
 import { AppState } from '@suite-types';
-import { networks } from '@suite-config';
+import { NETWORKS } from '@suite-config';
 
 import ProgressBar from './ProgressBar';
 
@@ -140,7 +140,7 @@ const getLoadingProgress = (discovery: AppState['wallet']['discovery']) => {
 };
 
 const getCoinName = (networkType: string, accountType = 'normal') => {
-    const result = networks.find(
+    const result = NETWORKS.find(
         network => network.symbol === networkType && network.accountType === accountType,
     );
     return result ? result.name : 'unknown';

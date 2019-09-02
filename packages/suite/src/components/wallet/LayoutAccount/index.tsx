@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import TopNavigation from '@wallet-components/TopNavigation';
 import Layout from '@wallet-components/Layout';
 import { getRoute } from '@suite/utils/suite/router';
-import { networks, flags } from '@suite-config';
+import { NETWORKS, FLAGS } from '@suite-config';
 import l10nMessages from './index.messages';
 
 interface Props {
@@ -23,7 +23,7 @@ const LayoutAccount = (props: Props) => (
                         route: getRoute('wallet-account-transactions'),
                         title: <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />,
                         isHidden: () => {
-                            return !flags.transactions;
+                            return !FLAGS.transactions;
                         },
                     },
                     {
@@ -37,8 +37,8 @@ const LayoutAccount = (props: Props) => (
                     {
                         route: getRoute('wallet-account-sign-verify'),
                         title: <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />,
-                        isHidden: (coinShortcut: string) => {
-                            const network = networks.find(c => c.symbol === coinShortcut);
+                        isHidden: (networkType: string) => {
+                            const network = NETWORKS.find(c => c.symbol === networkType);
                             return network ? !network.hasSignVerify : false;
                         },
                     },

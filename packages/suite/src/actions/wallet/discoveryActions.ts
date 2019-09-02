@@ -2,9 +2,8 @@ import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
 import { Dispatch, GetState } from '@suite-types/index';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { Discovery, PartialDiscovery, STATUS } from '@wallet-reducers/discoveryReducer';
-import { Network } from '@wallet-types';
 import { ACCOUNT, DISCOVERY } from './constants';
-import { networks } from '@suite-config';
+import { NETWORKS } from '@suite-config';
 
 export type DiscoveryActions =
     | { type: typeof DISCOVERY.START; payload: Discovery }
@@ -50,7 +49,7 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
             index: -1,
             status: STATUS.IDLE,
             // total: (LIMIT + BUNDLE_SIZE) * accountTypes.length,
-            total: LIMIT * networks.length,
+            total: LIMIT * NETWORKS.length,
             loaded: 0,
             failed: [],
         }
@@ -140,7 +139,7 @@ const getBundle = (discovery: Discovery) => (
     const { accounts } = getState().wallet;
     const usedAccounts = accounts.filter(a => a.index === discovery.index && !a.empty);
     const bundle: DiscoveryItem[] = [];
-    networks.forEach((item: Network) => {
+    NETWORKS.forEach(item => {
         // check if previous account of requested type already exists
         const type = item.accountType || 'normal';
         const prevAccount = usedAccounts.find(

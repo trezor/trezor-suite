@@ -15,7 +15,7 @@ import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/ur
 
 import NoSSR from '@suite/support/suite/NoSSR';
 import l10nMessages from './index.messages';
-import { languages } from '@suite-config';
+import { LANGUAGES } from '@suite-config';
 import { AppState } from '@suite-types';
 import { Header, Footer, Log } from '@suite-components';
 
@@ -78,7 +78,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 <NoSSR>
                     <LanguagePicker
                         language={props.suite.language}
-                        languages={languages}
+                        languages={LANGUAGES}
                         onChange={option => {
                             props.fetchLocale(option.value);
                         }}

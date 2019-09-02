@@ -12,9 +12,9 @@ import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import l10nCommonMessages from '@suite-views/index.messages';
-import { sentry } from '@suite-config';
+import { SENTRY } from '@suite-config';
 
-Sentry.init({ dsn: sentry });
+Sentry.init({ dsn: SENTRY });
 interface Props {
     store: Store;
 }

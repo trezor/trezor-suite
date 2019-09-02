@@ -19,7 +19,7 @@ import {
 import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
-import { networks } from '@suite-config';
+import { NETWORKS } from '@suite-config';
 
 export type SelectedAccountActions =
     | {
@@ -232,7 +232,7 @@ export const observe = (prevState: AppState, action: Action) => (
         state.router.params,
     );
     // @ts-ignore TODO
-    const network = reducerUtils.getSelectedNetwork(networks, state.router.params.coin);
+    const network = reducerUtils.getSelectedNetwork(NETWORKS, state.router.params.coin);
     const discovery = reducerUtils.getDiscoveryProcess(state.wallet.discovery, state.suite.device);
     // const tokens = reducerUtils.getAccountTokens(state.tokens, account);
     // const pending = reducerUtils.getAccountPendingTx(state.pending, account);

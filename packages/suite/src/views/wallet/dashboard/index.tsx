@@ -9,10 +9,9 @@ import Discovery from '@wallet-components/Discovery';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
 import { getRoute } from '@suite/utils/suite/router';
-import { networks, externalCoins } from '@suite-config';
+import { NETWORKS, EXTERNAL_COINS } from '@suite-config';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
-import { Network } from '@wallet-types';
 
 const Row = styled.div`
     flex: 1;
@@ -64,13 +63,12 @@ interface Props {
 
 const Dashboard = (props: Props) => {
     const isEmpty = () => {
-        const numberOfVisibleNetworks = networks
-            .filter((item: Network) => !item.isHidden) // hide coins globally in config
+        const numberOfVisibleNetworks = NETWORKS.filter(item => !item.isHidden) // hide coins globally in config
             .filter(item => !props.settings.hiddenCoins.includes(item.symbol));
         const { hiddenCoinsExternal } = props.settings;
-        const numberOfVisibleNetworksExternal = externalCoins
-            .filter(item => !item.isHidden)
-            .filter(item => !hiddenCoinsExternal.includes(item.id));
+        const numberOfVisibleNetworksExternal = EXTERNAL_COINS.filter(
+            item => !item.isHidden,
+        ).filter(item => !hiddenCoinsExternal.includes(item.id));
 
         return numberOfVisibleNetworks.length <= 0 && numberOfVisibleNetworksExternal.length <= 0;
     };
@@ -101,8 +99,7 @@ const Dashboard = (props: Props) => {
                         <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
                     </StyledP>
                     <Coins>
-                        {networks
-                            .filter(item => !item.isHidden)
+                        {NETWORKS.filter(item => !item.isHidden)
                             .filter(item => !props.settings.hiddenCoins.includes(item.symbol))
                             .map(network => (
                                 <StyledLink

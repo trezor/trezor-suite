@@ -5,12 +5,12 @@ import { Network } from '@wallet-types/index';
 import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/components';
 import l10nMessages from '../../index.messages';
 import { AppState } from '@suite-types';
-import { externalCoins } from '@suite-config';
+import { EXTERNAL_COINS } from '@suite-config';
 
 const { FONT_SIZE } = variables;
 
 interface Props {
-    networks: Network[]; // TODO
+    networks: Network[];
     hiddenCoins: AppState['wallet']['settings']['hiddenCoins'];
     hiddenCoinsExternal: AppState['wallet']['settings']['hiddenCoinsExternal'];
     // handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility;
@@ -223,9 +223,9 @@ class CoinsSettings extends Component<Props, StateProps> {
                             <Right>
                                 <ToggleAll
                                     onClick={() => {
-                                        const allCoins = externalCoins
-                                            .filter(x => !x.isHidden)
-                                            .map(coin => coin.id);
+                                        const allCoins = EXTERNAL_COINS.filter(
+                                            x => !x.isHidden,
+                                        ).map(coin => coin.id);
 
                                         props.toggleGroupCoinsVisibility(
                                             allCoins,
@@ -240,35 +240,27 @@ class CoinsSettings extends Component<Props, StateProps> {
                                 </ToggleAll>
                             </Right>
                         </Label>
-                        {externalCoins
-                            .sort((a, b) => a.order - b.order)
-                            .map(network => (
-                                <CoinRow key={network.id}>
-                                    <Left>
-                                        <LogoWrapper>
-                                            <CoinLogo size={24} network={network.id} />
-                                        </LogoWrapper>
-                                        <Name>{network.coinName}</Name>
-                                    </Left>
-                                    <Right>
-                                        <Switch
-                                            isSmall
-                                            checkedIcon={false}
-                                            uncheckedIcon={false}
-                                            onChange={visible => {
-                                                props.handleCoinVisibility(
-                                                    network.id,
-                                                    visible,
-                                                    true,
-                                                );
-                                            }}
-                                            checked={
-                                                !props.hiddenCoinsExternal.includes(network.id)
-                                            }
-                                        />
-                                    </Right>
-                                </CoinRow>
-                            ))}
+                        {EXTERNAL_COINS.sort((a, b) => a.order - b.order).map(network => (
+                            <CoinRow key={network.id}>
+                                <Left>
+                                    <LogoWrapper>
+                                        <CoinLogo size={24} network={network.id} />
+                                    </LogoWrapper>
+                                    <Name>{network.coinName}</Name>
+                                </Left>
+                                <Right>
+                                    <Switch
+                                        isSmall
+                                        checkedIcon={false}
+                                        uncheckedIcon={false}
+                                        onChange={visible => {
+                                            props.handleCoinVisibility(network.id, visible, true);
+                                        }}
+                                        checked={!props.hiddenCoinsExternal.includes(network.id)}
+                                    />
+                                </Right>
+                            </CoinRow>
+                        ))}
                     </Content>
                 </Row>
             </Wrapper>
