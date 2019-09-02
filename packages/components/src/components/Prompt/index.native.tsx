@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
 import { Icon } from '../Icon';
 
-import { Omit, IconType } from '../../support/types';
+import { IconType } from '../../support/types';
 import colors from '../../config/colors';
 import { getDeviceIcon } from '../../utils/icons';
 

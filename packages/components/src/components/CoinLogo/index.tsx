@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactSvg from 'react-svg';
 import styled from 'styled-components';
-import { Omit } from '../../support/types';
 import { COINS } from './coins';
 
 const SvgWrapper = styled.div<Omit<Props, 'network'>>`
