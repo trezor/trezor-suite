@@ -12,6 +12,7 @@ import { getRoute } from '@suite/utils/suite/router';
 import { networks, externalCoins } from '@suite-config';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
+import { Network } from '@wallet-types';
 
 const Row = styled.div`
     flex: 1;
@@ -64,7 +65,7 @@ interface Props {
 const Dashboard = (props: Props) => {
     const isEmpty = () => {
         const numberOfVisibleNetworks = networks
-            .filter(item => !item.isHidden) // hide coins globally in config
+            .filter((item: Network) => !item.isHidden) // hide coins globally in config
             .filter(item => !props.settings.hiddenCoins.includes(item.symbol));
         const { hiddenCoinsExternal } = props.settings;
         const numberOfVisibleNetworksExternal = externalCoins
