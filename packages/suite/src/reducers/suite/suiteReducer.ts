@@ -1,9 +1,10 @@
 import { TRANSPORT } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, STORAGE } from '@suite-actions/constants';
 import produce from 'immer';
 import { Action, TrezorDevice } from '@suite-types';
 
 export interface SuiteState {
+    initialRun: boolean;
     online: boolean;
     loading: boolean;
     loaded: boolean;
@@ -16,6 +17,7 @@ export interface SuiteState {
     showSidebar?: boolean;
     platform?: Platform;
     uiLocked: boolean;
+    routerLocked: boolean;
 }
 
 interface Transport {
@@ -43,21 +45,29 @@ interface Platform {
 }
 
 const initialState: SuiteState = {
-    online: true, // correct value will be set on SUITE_INIT
-    loading: true,
+    initialRun: true,
+    online: true,
+    loading: false,
     loaded: false,
     language: 'en',
     messages: {},
     deviceMenuOpened: false,
     showSidebar: undefined,
     uiLocked: false,
+    routerLocked: false,
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
     return produce(state, draft => {
         switch (action.type) {
             case SUITE.INIT:
-                return initialState;
+                draft.loading = true;
+                break;
+
+            case STORAGE.LOADED:
+                draft.initialRun = action.payload.suite.initialRun;
+                draft.language = action.payload.suite.language;
+                break;
 
             case SUITE.READY:
                 draft.loading = false;
@@ -68,6 +78,10 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.loading = false;
                 draft.loaded = false;
                 draft.error = action.error;
+                break;
+
+            case SUITE.INITIAL_RUN_COMPLETED:
+                draft.initialRun = false;
                 break;
 
             case SUITE.SELECT_DEVICE:
@@ -81,7 +95,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case SUITE.TOGGLE_DEVICE_MENU:
-                draft.deviceMenuOpened = action.opened;
+                draft.deviceMenuOpened = action.payload;
                 break;
 
             case TRANSPORT.START:
@@ -98,11 +112,15 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case SUITE.ONLINE_STATUS:
-                draft.online = action.online;
+                draft.online = action.payload;
                 break;
 
             case SUITE.LOCK_UI:
                 draft.uiLocked = action.payload;
+                break;
+
+            case SUITE.LOCK_ROUTER:
+                draft.routerLocked = action.payload;
                 break;
 
             case 'iframe-loaded':

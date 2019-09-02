@@ -1,12 +1,12 @@
 import * as React from 'react';
-import * as NotificationActions from '@wallet-actions/notificationActions';
-import { NotificationEntry } from '@wallet-reducers/notificationReducer';
+import { close } from '@suite-actions/notificationActions';
+import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import NotificationsGroups from './components/NotificationsGroups';
 
 // TODO
 interface Props {
     notifications: NotificationEntry[];
-    close: typeof NotificationActions.close;
+    close: typeof close;
 }
 
 export default ({ notifications, close }: Props) => {

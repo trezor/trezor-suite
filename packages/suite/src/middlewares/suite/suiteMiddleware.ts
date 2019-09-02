@@ -2,26 +2,28 @@ import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { BLOCKCHAIN, SUITE, STORAGE } from '@suite-actions/constants';
 import { init as initBlockchain } from '@suite-actions/blockchainActions';
-import { init as initRouter } from '@suite-actions/routerActions';
-import * as SuiteActions from '@suite-actions/suiteActions';
+import { init as initRouter, initialRedirection } from '@suite-actions/routerActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
-const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
+const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
-): Action => {
+): Promise<Action> => {
     // pass action to reducers
     next(action);
 
     switch (action.type) {
         case SUITE.INIT:
-            api.dispatch(SuiteActions.updateOnlineStatus());
             // load storage
             api.dispatch(loadStorage());
             break;
         case STORAGE.LOADED:
-            // initialize backends
+            // redirect to onboarding or leave url as is
+            await api.dispatch(initialRedirection());
+            api.dispatch(suiteActions.initialRunCompleted()); // TODO: move it to onboarding, cancel this flag after user selection
+            // initialize trezor-connect
             api.dispatch(trezorConnectActions.init());
             break;
         case SUITE.CONNECT_INITIALIZED:
@@ -33,26 +35,22 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
             // dispatch initial location change
             api.dispatch(initRouter());
             // backend connected, suite is ready to use
-            api.dispatch({ type: SUITE.READY });
+            api.dispatch(suiteActions.onSuiteReady());
             break;
 
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
-            api.dispatch(SuiteActions.handleDeviceConnect(action.payload));
+            api.dispatch(suiteActions.handleDeviceConnect(action.payload));
             break;
         case DEVICE.DISCONNECT:
-            api.dispatch(SuiteActions.handleDeviceDisconnect(action.payload));
-            break;
-        case DEVICE.CHANGED:
-            api.dispatch(SuiteActions.handleDeviceChanged(action.payload));
+            api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
             break;
         default:
             break;
     }
-    // keep suite reducer synchronized with other reducers (selected device)
-    // api.dispatch(SuiteActions.handleDeviceChanged(action.payload));
 
-    if (api.dispatch(SuiteActions.observeSelectedDevice(action))) {
+    // keep suite reducer synchronized with other reducers (selected device)
+    if (api.dispatch(suiteActions.observeSelectedDevice(action))) {
         // device changed
     }
 

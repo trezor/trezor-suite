@@ -3,8 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
-import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
-import { forgetDevice } from '@suite-actions/trezorConnectActions';
+import { toggleDeviceMenu, selectDevice, requestForgetDevice } from '@suite-actions/suiteActions';
 import { colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
@@ -89,8 +88,9 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     devices: AppState['devices'];
     selectedDevice: AppState['suite']['device'];
     selectDevice: (device: TrezorDevice) => void;
+    forgetDevice: (device: TrezorDevice) => void;
     toggleDeviceMenu: (opened: boolean) => void;
-    icon?: any;
+    icon?: any; // TODO type and add to container
     disabled?: boolean;
     isOpen: boolean;
     isSelected?: boolean;
@@ -103,6 +103,7 @@ type WrapperProps = Omit<
     | 'devices'
     | 'selectedDevice'
     | 'selectDevice'
+    | 'forgetDevice'
     | 'icon'
     | 'device'
     | 'toggleDeviceMenu'
@@ -116,6 +117,7 @@ const DeviceMenu = ({
     disabled = false,
     isSelected = false,
     selectDevice,
+    forgetDevice,
     toggleDeviceMenu,
     transport,
     isOpen = false,
@@ -293,7 +295,7 @@ export default connect(
     mapStateToProps,
     dispatch => ({
         selectDevice: bindActionCreators(selectDevice, dispatch),
-        forgetDevice: bindActionCreators(forgetDevice, dispatch),
+        forgetDevice: bindActionCreators(requestForgetDevice, dispatch),
         toggleDeviceMenu: bindActionCreators(toggleDeviceMenu, dispatch),
     }),
 )(DeviceMenu);

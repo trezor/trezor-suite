@@ -7,9 +7,12 @@ import thunk from 'redux-thunk';
 
 import accountsReducer from '@wallet-reducers/accountsReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
-import { DISCOVERY, NOTIFICATION } from '@wallet-actions/constants';
+import { NOTIFICATION } from '@suite-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as discoveryActions from '../discoveryActions';
 import fixtures, { paramsError } from './fixtures/discoveryActions';
+
+const { getSuiteDevice } = global.JestMocks;
 
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 type Fixture = ArrayElement<typeof fixtures>;
@@ -122,18 +125,14 @@ jest.mock('trezor-connect', () => {
     };
 });
 
+const SUITE_DEVICE = getSuiteDevice({ state: 'device-state' });
 export const getInitialState = () => ({
     suite: {
-        device: {
-            features: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
-                device_id: 'DEVICE-ID',
-            },
-        },
+        device: SUITE_DEVICE,
     },
     wallet: {
-        discovery: [] as ReturnType<typeof discoveryReducer>,
-        accounts: [] as ReturnType<typeof accountsReducer>,
+        discovery: discoveryReducer(undefined, { type: 'foo' } as any),
+        accounts: accountsReducer(undefined, { type: 'foo' } as any),
     },
 });
 
@@ -142,17 +141,15 @@ const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk
 const updateStore = (store: ReturnType<typeof mockStore>) => {
     // there is not much redux logic in this test
     // just update state on every action manually
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { accounts, discovery } = store.getState().wallet;
+    const action = store.getActions().pop();
+    const { accounts, discovery } = store.getState().wallet;
 
-        store.getState().wallet = {
-            accounts: accountsReducer(accounts, action),
-            discovery: discoveryReducer(discovery, action),
-        };
-        // add action back to stack
-        store.getActions().push(action);
-    });
+    store.getState().wallet = {
+        accounts: accountsReducer(accounts, action),
+        discovery: discoveryReducer(discovery, action),
+    };
+    // add action back to stack
+    store.getActions().push(action);
 };
 
 describe('Discovery Actions', () => {
@@ -188,7 +185,32 @@ describe('Discovery Actions', () => {
             },
         });
         await store.dispatch(discoveryActions.start());
-        expect(store.getActions()).toEqual([]);
+        const action = store.getActions().pop();
+        expect(action.type).toEqual(NOTIFICATION.ADD);
+    });
+
+    it('Create discovery which already exist', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch({
+            type: DISCOVERY.START,
+            payload: SUITE_DEVICE,
+        });
+        store.dispatch({
+            type: DISCOVERY.START,
+            payload: SUITE_DEVICE,
+        });
+        expect(store.getState().wallet.discovery.length).toEqual(1);
+    });
+
+    it('Update discovery which does not exist', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch({
+            type: DISCOVERY.UPDATE,
+            payload: SUITE_DEVICE,
+        });
+        expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
     it('Start/stop', async done => {

@@ -39,7 +39,7 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
     if (dev && typeof dev.type === 'string' && dev.type !== 'acquired') {
         return {
             type: dev.type,
-            path: dev && dev.path ? dev.path : '',
+            path: dev && dev.path ? dev.path : '1',
             label: dev && dev.label ? dev.label : 'My Trezor',
             features: undefined,
         };
