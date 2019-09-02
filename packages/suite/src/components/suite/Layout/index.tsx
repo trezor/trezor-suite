@@ -62,6 +62,7 @@ interface Props {
     fullscreenMode?: boolean;
     children: React.ReactNode;
     disableNotifications?: boolean;
+    disableModals?: boolean;
 }
 
 const Layout = (props: Props & InjectedIntlProps) => (
@@ -104,7 +105,7 @@ const Layout = (props: Props & InjectedIntlProps) => (
         />
         <ErrorBoundary>
             {!props.disableNotifications && <SuiteNotifications />}
-            <Modals />
+            {!props.disableModals && <Modals />}
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
                     <Log />
