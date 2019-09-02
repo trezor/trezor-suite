@@ -57,12 +57,12 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             const account: AccountInfo = action.payload;
             const { transactions } = account.history;
             if (transactions) {
-                transactions.forEach(async () => {
+                transactions.forEach(async tx => {
                     try {
-                        // const txId = await db.addItem('txs', {
-                        //     ...tx,
-                        //     accountId: account.descriptor,
-                        // });
+                        await db.addItem('txs', {
+                            ...tx,
+                            accountId: account.descriptor,
+                        });
                     } catch (error) {
                         if (error && error.name === 'ConstraintError') {
                             console.log('Tx with such id already exists');
