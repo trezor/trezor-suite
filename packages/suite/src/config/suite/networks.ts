@@ -5,7 +5,6 @@ export default [
     {
         name: 'Bitcoin',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'btc',
         bip44: "m/84'/0'/i'",
         hasSignVerify: true,
@@ -42,7 +41,6 @@ export default [
     {
         name: 'Litecoin',
         networkType: 'litecoin',
-        accountType: 'normal',
         symbol: 'ltc',
         bip44: "m/49'/2'/i'",
         hasSignVerify: true,
@@ -67,7 +65,6 @@ export default [
     {
         name: 'Bitcoin Test',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'test',
         bip44: "m/84'/1'/i'",
         hasSignVerify: true,
@@ -104,7 +101,6 @@ export default [
     {
         name: 'Ethereum',
         networkType: 'ethereum',
-        accountType: 'normal',
         symbol: 'eth',
         bip44: "m/44'/60'/0'/0/i",
         hasSignVerify: false,
@@ -116,7 +112,6 @@ export default [
     {
         name: 'Ethereum Classic',
         networkType: 'ethereum',
-        accountType: 'normal',
         symbol: 'etc',
         bip44: "m/44'/61'/0'/0/i",
         hasSignVerify: true,
@@ -128,7 +123,6 @@ export default [
     {
         name: 'Ethereum Ropsten',
         networkType: 'ethereum',
-        accountType: 'normal',
         symbol: 'trop',
         bip44: "m/44'/60'/0'/0/i",
         hasSignVerify: true,
@@ -141,7 +135,6 @@ export default [
     {
         name: 'XRP',
         networkType: 'ripple',
-        accountType: 'normal',
         symbol: 'xrp',
         bip44: "m/44'/144'/i'/0/0",
         hasSignVerify: false,
@@ -153,7 +146,6 @@ export default [
     {
         name: 'XRP Testnet',
         networkType: 'ripple',
-        accountType: 'normal',
         symbol: 'txrp',
         bip44: "m/44'/144'/i'/0/0",
         hasSignVerify: false,
@@ -165,7 +157,6 @@ export default [
     {
         name: 'Bitcoin Cash',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'bch',
         bip44: "m/44'/145'/i'",
         hasSignVerify: false,
@@ -177,7 +168,6 @@ export default [
     {
         name: 'Bitcoin Gold',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'btg',
         bip44: "m/49'/156'/i'",
         hasSignVerify: true,
@@ -201,7 +191,6 @@ export default [
     {
         name: 'Dash',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'dash',
         bip44: "m/44'/5'/i'",
         hasSignVerify: true,
@@ -213,7 +202,6 @@ export default [
     {
         name: 'DigiByte',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'dgb',
         bip44: "m/49'/20'/i'",
         hasSignVerify: true,
@@ -237,7 +225,6 @@ export default [
     {
         name: 'Dogecoin',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'doge',
         bip44: "m/44'/3'/i'",
         hasSignVerify: true,
@@ -249,7 +236,6 @@ export default [
     {
         name: 'Namecoin',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'nmc',
         bip44: "m/44'/7'/i'",
         hasSignVerify: true,
@@ -261,7 +247,6 @@ export default [
     {
         name: 'Vertcoin',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'vtc',
         bip44: "m/49'/28'/i'",
         hasSignVerify: true,
@@ -285,7 +270,6 @@ export default [
     {
         name: 'Zcash',
         networkType: 'bitcoin',
-        accountType: 'normal',
         symbol: 'zec',
         bip44: "m/44'/133'/i'",
         hasSignVerify: true,

@@ -141,7 +141,8 @@ const getLoadingProgress = (discovery: AppState['wallet']['discovery']) => {
 
 const getCoinName = (networkType: string, accountType = 'normal') => {
     const result = NETWORKS.filter(
-        network => network.symbol === networkType && network.accountType === accountType,
+        network =>
+            network.symbol === networkType && (network.accountType || 'normal') === accountType,
     );
     return result[0].name;
 };
