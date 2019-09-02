@@ -155,7 +155,7 @@ const Menu = (props: Props) => (
                             </CoinName>
                             <AccountIndex>
                                 <Label>account</Label>
-                                {`#${account.index}`}
+                                {`#${account.index + 1}`}
                             </AccountIndex>
                         </Name>
                     </Left>
