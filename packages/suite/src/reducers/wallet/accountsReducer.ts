@@ -6,7 +6,7 @@ import { AccountInfo } from 'trezor-connect';
 export interface Account extends AccountInfo {
     index: number;
     accountType: 'normal' | 'segwit' | 'legacy';
-    networkType: 'bitcoin' | 'ethereum' | 'ripple';
+    type: 'bitcoin' | 'ethereum' | 'ripple';
     network: string;
     path: string;
     imported?: boolean;

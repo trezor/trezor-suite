@@ -143,7 +143,7 @@ const getBundle = (discovery: Discovery) => (
         // check if previous account of requested type already exists
         const type = item.accountType || 'normal';
         const prevAccount = usedAccounts.find(
-            a => a.accountType === type && a.networkType === item.symbol,
+            a => a.accountType === type && a.type === item.symbol,
         );
         // check if requested coin not failed before
         const failed = discovery.failed.find(
@@ -154,10 +154,7 @@ const getBundle = (discovery: Discovery) => (
             const accountIndex = discovery.index + 1;
             // check if this account wasn't created before
             const existedAccount = accounts.find(
-                a =>
-                    a.accountType === type &&
-                    a.networkType === item.symbol &&
-                    a.index === accountIndex,
+                a => a.accountType === type && a.type === item.symbol && a.index === accountIndex,
             );
             if (!skip && !existedAccount) {
                 bundle.push({
