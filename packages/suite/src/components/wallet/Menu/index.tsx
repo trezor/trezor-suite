@@ -28,7 +28,7 @@ const LoadingText = styled.div`
 const CoinName = styled.div``;
 
 const Row = styled.div`
-    padding: 7px 15px;
+    padding: 0 15px;
     display: flex;
     height: 55px;
     cursor: pointer;
@@ -108,6 +108,22 @@ const TransactionsValue = styled.div`
     align-items: center;
 `;
 
+// todo make no style link component
+const StyledLink = styled(Link)`
+    display: flex;
+    flex-direction: column;
+    color: ${colors.TEXT_PRIMARY};
+
+    &:focus,
+    &:hover,
+    &:visited,
+    &:link,
+    &:active {
+        color: ${colors.TEXT_PRIMARY};
+        text-decoration: none;
+    }
+`;
+
 interface Props {
     suite: AppState['suite'];
     wallet: AppState['wallet'];
@@ -144,35 +160,43 @@ const Menu = (props: Props) => (
         {props.wallet.accounts
             // .filter(account => !account.empty)
             .map(account => (
-                <Row>
-                    <Left>
-                        <LogoWrapper>
-                            <CoinLogo size={25} network={getCoinLogo(account.network)} />
-                        </LogoWrapper>
-                        <Name>
-                            <CoinName>
-                                {getCoinName(account.network, account.type || 'normal')}
-                            </CoinName>
-                            <AccountIndex>
-                                <Label>account</Label>
-                                {`#${account.index + 1}`}
-                            </AccountIndex>
-                        </Name>
-                    </Left>
-                    <Right>
-                        <Balance>
-                            <BalanceValue>
-                                {account.balance} {account.network}
-                            </BalanceValue>
-                        </Balance>
-                        {account.history.total !== -1 && (
-                            <Transactions>
-                                <Label>transactions</Label>
-                                <TransactionsValue>{account.history.total}</TransactionsValue>
-                            </Transactions>
-                        )}
-                    </Right>
-                </Row>
+                <StyledLink
+                    key={`${account.network}-${account.name}`}
+                    href={getRoute('wallet-account', {
+                        coin: account.network,
+                        accountId: parseInt(account.index, 10),
+                    })}
+                >
+                    <Row>
+                        <Left>
+                            <LogoWrapper>
+                                <CoinLogo size={25} network={getCoinLogo(account.network)} />
+                            </LogoWrapper>
+                            <Name>
+                                <CoinName>
+                                    {getCoinName(account.network, account.type || 'normal')}
+                                </CoinName>
+                                <AccountIndex>
+                                    <Label>account</Label>
+                                    {`#${account.index + 1}`}
+                                </AccountIndex>
+                            </Name>
+                        </Left>
+                        <Right>
+                            <Balance>
+                                <BalanceValue>
+                                    {account.balance} {account.network}
+                                </BalanceValue>
+                            </Balance>
+                            {account.history.total !== -1 && (
+                                <Transactions>
+                                    <Label>transactions</Label>
+                                    <TransactionsValue>{account.history.total}</TransactionsValue>
+                                </Transactions>
+                            )}
+                        </Right>
+                    </Row>
+                </StyledLink>
             ))}
     </Wrapper>
 );
