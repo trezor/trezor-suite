@@ -32,6 +32,7 @@ const StyledP = styled(P)`
 const Coins = styled.div`
     display: flex;
     flex-wrap: wrap;
+    max-width: 400px;
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
@@ -49,7 +50,7 @@ const StyledH4 = styled(H4)`
 `;
 
 const StyledLink = styled(Link)`
-    margin-right: 10px;
+    margin: 5px;
 
     &:last-child {
         margin-right: 0;
@@ -104,13 +105,16 @@ const Dashboard = (props: Props) => {
                             .filter(item => !props.settings.hiddenCoins.includes(item.symbol))
                             .map(network => (
                                 <StyledLink
-                                    key={network.symbol}
+                                    key={`${network.name}-${network.symbol}`}
                                     href={getRoute('wallet-account', {
                                         coin: network.symbol,
                                         accountId: '0',
                                     })}
                                 >
-                                    <StyledCoinLogo network={network.symbol} size={24} />
+                                    <StyledCoinLogo
+                                        network={network.symbol === 'test' ? 'btc' : network.symbol}
+                                        size={27}
+                                    />
                                 </StyledLink>
                             ))}
                     </Coins>

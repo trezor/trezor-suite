@@ -2,6 +2,8 @@ import React from 'react';
 import { CoinLogo, colors, variables, Loader } from '@trezor/components';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { getRoute } from '@suite-utils/router';
+import { Link } from '@suite-components';
 import { AppState } from '@suite-types';
 import { networks } from '@suite-config';
 
