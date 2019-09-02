@@ -24,6 +24,12 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         // TODO: if device have a state, run discovery
         api.dispatch(suiteActions.requestPassphraseMode());
     }
+    if (action.type === SUITE.UPDATE_SELECTED_DEVICE) {
+        const prevDevice = prevState.suite.device;
+        if (prevDevice && !prevDevice.features && action.payload && action.payload.features) {
+            api.dispatch(suiteActions.requestPassphraseMode());
+        }
+    }
     if (action.type === SUITE.RECEIVE_PASSPHRASE_MODE) {
         api.dispatch(suiteActions.authorizeDevice());
     }
