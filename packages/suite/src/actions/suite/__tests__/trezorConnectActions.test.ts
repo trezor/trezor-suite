@@ -114,8 +114,6 @@ describe('TrezorConnect Actions', () => {
         expect(actions.pop()).toEqual({ type: BLOCKCHAIN_EVENT });
 
         process.env.SUITE_TYPE = defaultSuiteType;
-
-        console.log(store.getActions(), actions);
     });
 
     it('Wrapped method', async () => {
@@ -133,7 +131,5 @@ describe('TrezorConnect Actions', () => {
             type: SUITE.LOCK_UI,
             payload: true,
         });
-
-        console.log(store.getActions());
     });
 });
