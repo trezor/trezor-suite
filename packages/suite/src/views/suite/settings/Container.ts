@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl } from 'react-intl';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { applySettings, changePin } from '@suite-actions/deviceSettingsActions';
 import { AppState, Dispatch } from '@suite-types/index';
@@ -16,6 +16,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     applySettings: bindActionCreators(applySettings, dispatch),
     changePin: bindActionCreators(changePin, dispatch),
 });
+
+export type Props = InjectedIntlProps &
+    ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 export default injectIntl(
     connect(
