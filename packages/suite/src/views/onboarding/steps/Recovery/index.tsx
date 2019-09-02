@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { createFilter } from 'react-select';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { P, Select, Link } from '@trezor/components';
 
 import colors from '@onboarding-config/colors';
@@ -16,14 +16,10 @@ import {
 import bip39List from '@onboarding-constants/bip39';
 import { RECOVERY_MODEL_ONE_URL } from '@onboarding-constants/urls';
 
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as connectActions from '@onboarding-actions/connectActions';
-import * as recoveryActions from '@onboarding-actions/recoveryActions';
-
 import l10nCommonMessages from '@suite-support/Messages';
 import { BlindMatrix, Option, Text, Wrapper, OnboardingButton } from '@onboarding-components';
 import l10nMessages from './index.messages';
-import { AppState } from '@suite-types';
+import { Props } from './Container';
 
 const sortedBip39 = bip39List.map(item => ({ label: item, value: item }));
 
@@ -52,33 +48,12 @@ const SelectWrapper = styled.div`
     margin-top: 10px;
 `;
 
-interface RecoveryStepProps {
-    onboardingActions: {
-        goToNextStep: typeof onboardingActions.goToNextStep;
-        goToSubStep: typeof onboardingActions.goToSubStep;
-    };
-    recoveryActions: {
-        setWordsCount: typeof recoveryActions.setWordsCount;
-        setWord: typeof recoveryActions.setWord;
-        submit: typeof recoveryActions.submit;
-        setAdvancedRecovery: typeof recoveryActions.setAdvancedRecovery;
-    };
-    connectActions: {
-        recoveryDevice: typeof connectActions.recoveryDevice;
-        resetCall: typeof connectActions.resetCall;
-    };
-    deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
-    device: AppState['onboarding']['connect']['device'];
-    recovery: AppState['onboarding']['recovery'];
-}
-
 type Status = null | 'select-advanced-recovery';
 interface RecoveryStepState {
     status: Status;
 }
 
-class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps> {
+class RecoveryStep extends React.Component<Props> {
     state: RecoveryStepState = {
         status: null,
     };
@@ -140,8 +115,6 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
 
         return (
             <Wrapper.Step>
-                {/* getStatus: {JSON.stringify(this.getStatus())} */}
-
                 <Wrapper.StepHeading>
                     {this.getStatus() === null && 'Recover your device from seed'}
                     {this.getStatus() === 'select-advanced-recovery' && 'Select recovery method'}
@@ -414,4 +387,4 @@ class RecoveryStep extends React.Component<RecoveryStepProps & InjectedIntlProps
     }
 }
 
-export default injectIntl(RecoveryStep);
+export default RecoveryStep;

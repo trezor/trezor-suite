@@ -1,5 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 
 import * as firmwareUpdateActions from '@suite-actions/firmwareActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
@@ -22,7 +23,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Step);
+export type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> &
+    InjectedIntlProps;
+
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps,
+    )(Step),
+);

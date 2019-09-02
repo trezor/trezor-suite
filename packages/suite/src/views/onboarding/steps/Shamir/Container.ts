@@ -18,6 +18,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     resetDevice: bindActionCreators(resetDevice, dispatch),
 });
 
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps,

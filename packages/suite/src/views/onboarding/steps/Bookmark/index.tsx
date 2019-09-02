@@ -8,28 +8,19 @@ import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
 import l10nCommonMessages from '@suite-support/Messages';
 import { PHISHING_URL } from '@onboarding-constants/urls';
 import { Wrapper, OnboardingButton, Key, Text } from '@suite/components/onboarding';
-import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
-import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
+import { Props } from './Container';
 
 const Keys = styled.div`
     display: flex;
     align-items: center;
 `;
 
-interface StepProps {
-    device: AppState['onboarding']['connect']['device'];
-    connectActions: {
-        applyFlags: typeof applyFlags;
-        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
-    };
-}
-
 interface StepState {
     keys: { [index: number]: boolean };
 }
 
-class BookmarkStep extends React.Component<StepProps, StepState> {
+class BookmarkStep extends React.Component<Props, StepState> {
     static readonly D_KEY = 68;
 
     static readonly CTRL_KEYS_WIN = [17];

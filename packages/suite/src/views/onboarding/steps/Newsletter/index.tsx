@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import { Link, Input, Checkbox, P } from '@trezor/components';
 
@@ -8,16 +8,10 @@ import l10nCommonMessages from '@suite-support/Messages';
 import { isEmail } from '@suite-utils/validators';
 import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
 import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
-import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
-import {
-    setSkipped,
-    setEmail,
-    submitEmail,
-    toggleCheckbox,
-} from '@onboarding-actions/newsletterActions';
+
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
 import { Wrapper, Text, OnboardingIcon, OnboardingButton, Loaders } from '@onboarding-components';
-import { AppState } from '@suite-types';
+import { Props } from './Container';
 
 import l10nMessages from './index.messages';
 
@@ -42,23 +36,7 @@ const InputWrapper = styled.div`
     align-items: flex-start;
     height: 70px;
 `;
-
-interface Props {
-    newsletter: AppState['onboarding']['newsletter'];
-    device: AppState['onboarding']['connect']['device'];
-    connectActions: {
-        applyFlags: typeof applyFlags;
-        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
-    };
-    newsletterActions: {
-        submitEmail: typeof submitEmail;
-        setEmail: typeof setEmail;
-        toggleCheckbox: typeof toggleCheckbox;
-        setSkipped: typeof setSkipped;
-    };
-}
-
-class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
+class NewsleterStep extends React.Component<Props> {
     getBottomText() {
         return this.validateInput().bottomText;
     }
@@ -221,4 +199,4 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
     }
 }
 
-export default injectIntl(NewsleterStep);
+export default NewsleterStep;

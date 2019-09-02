@@ -10,11 +10,10 @@ import {
 } from '@onboarding-constants/urls';
 import l10nCommonMessages from '@suite-support/Messages';
 
-import { goToPreviousStep, goToNextStep, goToSubStep } from '@onboarding-actions/onboardingActions';
 import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import Hologram from './components/Hologram';
-import { AppState } from '@suite-types';
+import { Props } from './Container';
 
 const HologramWrapper = styled.div`
     max-width: 400px;
@@ -24,17 +23,6 @@ const HologramWrapper = styled.div`
         width: 70%;
     }
 `;
-
-interface Props {
-    onboardingActions: {
-        goToPreviousStep: typeof goToPreviousStep;
-        goToNextStep: typeof goToNextStep;
-        goToSubStep: typeof goToSubStep;
-    };
-    activeSubStep: AppState['onboarding']['activeSubStep'];
-    model: AppState['onboarding']['selectedModel'];
-    device: AppState['onboarding']['connect']['device'];
-}
 
 const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props) => {
     const actualVersion =

@@ -4,12 +4,9 @@ import { H1, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import * as STEP from '@onboarding-constants/steps';
-import { goToNextStep, addPath } from '@onboarding-actions/onboardingActions';
-import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
 import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
-import { AppState } from '@suite-types';
-
+import { Props } from './Container';
 import l10nMessages from './index.messages';
 
 const Small = styled.div`
@@ -19,14 +16,6 @@ const Small = styled.div`
 const Base = styled.div`
     font-size: ${variables.FONT_SIZE.BASE};
 `;
-
-interface Props {
-    onboardingActions: {
-        goToNextStep: typeof goToNextStep;
-        addPath: typeof addPath;
-    };
-    suite: AppState['suite'];
-}
 
 const WelcomeStep = (props: Props) => {
     const { suite } = props;
@@ -79,7 +68,7 @@ const WelcomeStep = (props: Props) => {
                 {isDeviceInitialized() && (
                     <OnboardingButton.Back
                         data-test="button-use-wallet"
-                        onClick={() => goto(getRoute('wallet-index'))}
+                        onClick={() => props.goto(getRoute('wallet-index'))}
                     >
                         <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
                     </OnboardingButton.Back>

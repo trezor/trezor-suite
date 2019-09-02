@@ -1,27 +1,14 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { H6, TrezorImage } from '@trezor/components';
-
-import {
-    goToNextStep,
-    goToPreviousStep,
-    selectTrezorModel,
-} from '@onboarding-actions/onboardingActions';
 import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
 
 import l10nMessages from './index.messages';
+import { Props } from './Container';
 
 const DEVICE_HEIGHT = 130;
 
-interface Props {
-    onboardingActions: {
-        selectTrezorModel: typeof selectTrezorModel;
-        goToNextStep: typeof goToNextStep;
-        goToPreviousStep: typeof goToPreviousStep;
-    };
-}
-
-const SelectDeviceStep: React.FC<Props> = ({ onboardingActions }) => {
+const SelectDeviceStep = ({ onboardingActions }: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>

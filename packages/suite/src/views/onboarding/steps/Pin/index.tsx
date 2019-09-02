@@ -7,10 +7,8 @@ import { FormattedMessage } from 'react-intl';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import l10nCommonMessages from '@suite-support/Messages';
 import { PIN_MANUAL_URL } from '@onboarding-constants/urls';
-import { goToNextStep } from '@onboarding-actions/onboardingActions';
-import { changePin, submitNewPin } from '@onboarding-actions/connectActions';
 import { PinMatrix, Text, OnboardingButton, Wrapper } from '@onboarding-components';
-import { AppState } from '@suite-types';
+import { Props } from './Container';
 
 import l10nMessages from './index.messages';
 
@@ -34,19 +32,6 @@ const HowToSetPin = styled.img`
     width: 80%;
     object-fit: contain;
 `;
-
-interface Props {
-    deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    device: AppState['onboarding']['connect']['device'];
-    activeSubStep: AppState['onboarding']['activeSubStep'];
-    connectActions: {
-        changePin: typeof changePin;
-        submitNewPin: typeof submitNewPin;
-    };
-    onboardingActions: {
-        goToNextStep: typeof goToNextStep;
-    };
-}
 
 interface SetPinState {
     instructionsFocused: boolean;

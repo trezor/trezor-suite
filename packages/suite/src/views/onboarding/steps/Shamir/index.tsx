@@ -1,20 +1,11 @@
 import React from 'react';
 // import { FormattedMessage } from 'react-intl';
 
-import { AppState } from '@suite-types/index';
-import { goToPreviousStep } from '@onboarding-actions/onboardingActions';
-import { callActionAndGoToNextStep, resetDevice } from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 
 // import l10nMessages from './index.messages';
-
-interface Props {
-    device: AppState['onboarding']['connect']['device'];
-    goToPreviousStep: typeof goToPreviousStep;
-    callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
-    resetDevice: typeof resetDevice;
-}
+import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
     const getModel = () => {

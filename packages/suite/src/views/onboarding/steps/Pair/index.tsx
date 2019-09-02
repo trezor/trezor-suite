@@ -3,7 +3,6 @@ import styled from 'styled-components';
 // import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
 // import l10nCommonMessages from '@suite-support/Messages';
-import { goToNextStep, goToPreviousStep } from '@suite/actions/onboarding/onboardingActions';
 import WebusbButton from '@suite-components/WebusbButton';
 import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import Bridge from './components/Bridge/Container';
@@ -13,23 +12,13 @@ import TroubleshootBootloader from './components/Connect/TroubleshootBootloader'
 import TroubleshootInitialized from './components/Connect/TroubleshootInitialized';
 
 // import l10nMessages from '../Bridge/index.messages';
-import { AppState } from '@suite-types';
+import { Props } from './Container';
 
 const WebusbButtonWrapper = styled.div`
     width: 200px;
 `;
 
-interface StepProps {
-    device: AppState['suite']['device'];
-    transport: AppState['suite']['transport'];
-    model: AppState['onboarding']['selectedModel'];
-    onboardingActions: {
-        goToNextStep: typeof goToNextStep;
-        goToPreviousStep: typeof goToPreviousStep;
-    };
-}
-
-const PairDeviceStep: React.FC<StepProps> = props => {
+const PairDeviceStep = (props: Props) => {
     const { device, transport, model } = props;
     const [showTroubleshoot, setShowTroubleshoot] = useState(false);
 

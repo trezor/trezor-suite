@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { P, Tooltip } from '@trezor/components';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import commonMessages from '@suite-support/Messages';
 
@@ -8,11 +8,9 @@ import commonMessages from '@suite-support/Messages';
 import colors from '@onboarding-config/colors';
 import { FIRMWARE_UPDATE } from '@onboarding-actions/constants/calls';
 import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
-import { firmwareUpdate } from '@suite-actions/firmwareActions';
-import { goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { Text, OnboardingIcon, Loaders, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './index.messages';
-import { AppState } from '@suite-types';
+import { Props } from './Container';
 
 const DONUT_STROKE = 20;
 const DONUT_RADIUS = 60;
@@ -59,19 +57,6 @@ const ContinueButton = ({ isConnected, onClick }: Omit<ButtonProps, 'isInBootloa
     </Tooltip>
 );
 
-interface Props {
-    device: AppState['onboarding']['connect']['device'];
-    deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    firmwareUpdate: AppState['firmware'];
-    firmwareUpdateActions: {
-        firmwareUpdate: typeof firmwareUpdate;
-    };
-    onboardingActions: {
-        goToNextStep: typeof goToNextStep;
-        goToPreviousStep: typeof goToPreviousStep;
-    };
-}
-
 const FirmwareStep = ({
     device,
     deviceCall,
@@ -81,7 +66,7 @@ const FirmwareStep = ({
     firmwareUpdateActions,
     // connectActions,
     intl,
-}: Props & InjectedIntlProps) => {
+}: Props) => {
     const [maxProgress, setMaxProgress] = useState(0);
     const [progress, setProgress] = useState(0);
 
@@ -321,4 +306,4 @@ const FirmwareStep = ({
     );
 };
 
-export default injectIntl(FirmwareStep);
+export default FirmwareStep;

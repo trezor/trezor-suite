@@ -1,15 +1,11 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { goToNextStep } from '@onboarding-actions/onboardingActions';
 import * as STEP from '@onboarding-constants/steps';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 
 import l10nMessages from './index.messages';
-
-interface Props {
-    goToNextStep: typeof goToNextStep;
-}
+import { Props } from './Container';
 
 const SecurityStep = (props: Props) => (
     <Wrapper.Step>

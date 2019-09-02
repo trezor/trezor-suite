@@ -8,18 +8,10 @@ import { SEED_MANUAL_URL } from '@suite/constants/onboarding/urls';
 import { BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import l10nCommonMessages from '@suite-support/Messages';
 
-import { goToNextStep, goToSubStep } from '@suite/actions/onboarding/onboardingActions';
-import {
-    wipeDevice,
-    resetDevice,
-    callActionAndGoToNextStep,
-    resetCall,
-    backupDevice,
-} from '@suite/actions/onboarding/connectActions';
 import { Wrapper, Text } from '@onboarding-components';
 import { SeedCard } from './components/SeedCard';
+import { Props as BackupProps } from './Container';
 import l10nMessages from './index.messages';
-import { AppState } from '@suite-types';
 
 const Panel = styled.div`
     background-color: ${colors.grayLight};
@@ -43,24 +35,6 @@ const Instruction = styled.div`
     flex-direction: column;
     align-items: center;
 `;
-
-interface BackupProps {
-    device: AppState['onboarding']['connect']['device'];
-    deviceCall: AppState['onboarding']['connect']['deviceCall'];
-    uiInteraction: AppState['onboarding']['connect']['uiInteraction'];
-    activeSubStep: AppState['onboarding']['activeSubStep'];
-    connectActions: {
-        wipeDevice: typeof wipeDevice;
-        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
-        resetDevice: typeof resetDevice;
-        resetCall: typeof resetCall;
-        backupDevice: typeof backupDevice;
-    };
-    onboardingActions: {
-        goToNextStep: typeof goToNextStep;
-        goToSubStep: typeof goToSubStep;
-    };
-}
 
 const BackupStep: React.FC<BackupProps> = props => {
     const [userUnderstands, setUserUnderstands] = useState(false);

@@ -3,20 +3,9 @@ import React from 'react';
 import { H6 } from '@trezor/components';
 
 import * as STEP from '@onboarding-constants/steps';
-import { OnboardingReducer } from '@onboarding-types/onboarding';
-import { goToNextStep, addPath, goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
-
+import { Props } from './Container';
 // import l10nMessages from './index.messages';
-
-interface Props {
-    path: OnboardingReducer['path'];
-    onboardingActions: {
-        goToPreviousStep: typeof goToPreviousStep;
-        goToNextStep: typeof goToNextStep;
-        addPath: typeof addPath;
-    };
-}
 
 const NewOrUsedStep = (props: Props) => (
     <Wrapper.Step>
