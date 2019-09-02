@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import QrCode from '@wallet-components/QrCode';
 import AddressList from '@suite/components/wallet/AddressList';
-import { H6, variables, Button } from '@trezor/components';
+import { H6, variables, Button, colors, Icon, Link } from '@trezor/components';
 import { Address } from 'trezor-connect';
 import AddressItem from '@suite/components/wallet/AddressItem';
 import { selectText } from '@suite/utils/suite/dom';
@@ -14,6 +14,7 @@ import SETTINGS from '@suite-config/settings';
 import { parseBIP44Path } from '@suite/utils/wallet/accountUtils';
 import messages from './messages';
 import { ReceiveProps } from '../index';
+import { DeviceIcon } from '@suite-components';
 
 const Wrapper = styled.div``;
 
@@ -21,7 +22,11 @@ const Wrapper = styled.div``;
 //     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 // `;
 
-const AddFreshAddress = styled(Button)``;
+const SmallButton = styled(Button)`
+    padding: 8px 16px;
+`;
+
+const AddFreshAddress = styled(SmallButton)``;
 
 const ButtonsWrapper = styled.div`
     display: flex;
@@ -37,7 +42,7 @@ const FreshAddress = styled(AddressItem)`
     height: 47px;
 `;
 
-const ShowAddressButton = styled(Button)`
+const ShowAddressButton = styled(SmallButton)`
     flex: 1 0 0;
     white-space: nowrap;
     display: flex;
@@ -61,7 +66,26 @@ const SubHeading = styled(H6)`
     padding: 0;
 `;
 
-const ShowMoreButton = styled(Button)`
+const ControlsLink = styled(Link)`
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    & + & {
+        margin-left: 24px;
+    }
+`;
+
+const ControlsLinkIcon = styled(Icon)`
+    margin-right: 6px;
+`;
+
+const ControlsWrapper = styled.div`
+    display: flex;
     margin-left: auto;
 `;
 
@@ -74,11 +98,19 @@ const TitleWrapper = styled.div`
 `;
 
 const FreshAddressList = styled(AddressList)`
-    margin-top: 10px;
+    margin-top: 16px;
 `;
 
 const PreviousAddressList = styled(AddressList)`
-    margin-bottom: 10px;
+    margin-bottom: 16px;
+`;
+
+const TextGreen = styled.span`
+    color: ${colors.GREEN_PRIMARY};
+`;
+
+const StyledDeviceIcon = styled(DeviceIcon)`
+    margin-right: 6px;
 `;
 
 const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
@@ -97,16 +129,33 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
     if (!addresses) return null;
 
     const firstFreshAddress = addresses.unused[0];
+    // <FormattedMessage {...messages.TR_CHECK_ADDRESS_ON_TREZOR} />
+    const tooltipAction = (addr: Address) => {
+        return selectedAddr && selectedAddr.address === addr.address ? (
+            <>
+                <StyledDeviceIcon size={16} device={props.device} color={colors.WHITE} />
+                <div>CHeck addr on trezor'</div>
+            </>
+        ) : null;
+    };
+
     return (
         <Wrapper key={props.account.descriptor}>
             <Title>
                 <FormattedMessage {...messages.TR_RECEIVE_BITCOIN} />
             </Title>
+
             <PreviousAddressList
                 addresses={addresses.used}
                 setSelectedAddr={setSelectedAddr}
                 selectedAddress={selectedAddr}
                 paginationEnabled
+                secondaryText={_addr => (
+                    <>
+                        Total received: <TextGreen>x BTC</TextGreen>
+                    </>
+                )}
+                tooltipActions={tooltipAction}
                 actions={addrPath => (
                     <ShowOnTrezorEyeButton
                         device={props.device}
@@ -117,35 +166,47 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 controls={(page, setPage, isCollapsed, setIsCollapsed, moreItems) => (
                     <TitleWrapper>
                         {!isCollapsed && <SubHeading>Previous addresses</SubHeading>}
-                        {moreItems || isCollapsed ? (
-                            <ShowMoreButton
-                                isInverse
-                                icon="ARROW_UP"
-                                onClick={() => {
-                                    setPage(page + 1);
-                                    setIsCollapsed(false);
-                                }}
-                            >
-                                Show previous addresses
-                            </ShowMoreButton>
-                        ) : (
-                            <ShowMoreButton
-                                isInverse
-                                icon="ARROW_DOWN"
-                                onClick={() => {
-                                    setPage(-1);
-                                    setIsCollapsed(true);
-                                }}
-                            >
-                                Hide previous addresses
-                            </ShowMoreButton>
-                        )}
+
+                        <ControlsWrapper>
+                            {!isCollapsed && (
+                                <ControlsLink
+                                    onClick={() => {
+                                        setPage(-1);
+                                        setIsCollapsed(true);
+                                    }}
+                                >
+                                    <ControlsLinkIcon
+                                        size={12}
+                                        color={colors.GREEN_PRIMARY}
+                                        icon="ARROW_DOWN"
+                                    />
+                                    Hide previous addresses
+                                </ControlsLink>
+                            )}
+                            {(moreItems || isCollapsed) && (
+                                <ControlsLink
+                                    onClick={() => {
+                                        setPage(page + 1);
+                                        setIsCollapsed(false);
+                                    }}
+                                >
+                                    <ControlsLinkIcon
+                                        size={12}
+                                        color={colors.GREEN_PRIMARY}
+                                        icon="ARROW_UP"
+                                    />
+                                    Show previous addresses
+                                </ControlsLink>
+                            )}
+                        </ControlsWrapper>
                     </TitleWrapper>
                 )}
             />
+
             <TitleWrapper>
                 <SubHeading>Fresh address</SubHeading>
             </TitleWrapper>
+
             <FreshAddress
                 key={firstFreshAddress.address}
                 ref={firstFreshAddrRef}
@@ -159,6 +220,8 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 address={firstFreshAddress.address}
                 index={parseBIP44Path(firstFreshAddress.path)!.addrIndex}
                 isPartiallyHidden={props.isAddressPartiallyHidden}
+                isVerifying
+                tooltipActions={tooltipAction(firstFreshAddress)}
                 readOnly
                 actions={
                     <>
@@ -191,7 +254,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                         setFreshAddrCount(freshAddrCount + 1);
                     }}
                     icon="PLUS"
-                    idDisabled={freshAddrCount >= SETTINGS.FRESH_ADDRESS_LIMIT + 1}
+                    isDisabled={freshAddrCount >= SETTINGS.FRESH_ADDRESS_LIMIT + 1}
                 >
                     Add fresh address
                 </AddFreshAddress>
@@ -204,6 +267,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 selectedAddress={selectedAddr}
                 paginationEnabled={false}
                 collapsed={false}
+                tooltipActions={tooltipAction}
                 actions={addrPath => (
                     <>
                         {!(props.isAddressVerified || props.isAddressUnverified) && ( // !account.imported

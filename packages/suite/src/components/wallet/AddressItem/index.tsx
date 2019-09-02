@@ -4,15 +4,23 @@ import { variables, colors } from '@trezor/components';
 
 const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
     display: flex;
+    position: relative; /* needed for the tooltipAction */
     width: 100%;
     align-items: center;
-    border-top: 1px solid #ccc;
-    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 0px 16px;
+    height: 48px;
     cursor: pointer;
 
-    &:last-child {
-        border-bottom: 1px solid #ccc;
+    & + & {
+        margin-top: 5px;
     }
+
+    /* border-top: 1px solid #ccc; */
+    /* &:last-child {
+        border-bottom: 1px solid #ccc;
+    } */
 
     &:hover {
         background: #fafafa;
@@ -88,14 +96,44 @@ const Overlay = styled.div<Pick<Props, 'isPartiallyHidden'>>`
         `}
 `;
 
+const ArrowUp = styled.div`
+    position: absolute;
+    top: -9px;
+    left: 12px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 9px solid black;
+    z-index: 10001;
+`;
+
+const TooltipAction = styled.div`
+    /* display: ${props => (props.action ? 'flex' : 'none')}; */
+    display: flex;
+    align-items: center;
+    height: 37px;
+    margin: 0px 10px;
+    padding: 0 14px;
+    position: absolute;
+    top: 45px;
+    background: black;
+    color: ${colors.WHITE};
+    border-radius: 5px;
+    /* line-height: ${LINE_HEIGHT.TREZOR_ACTION}; */
+    z-index: 10002;
+`;
+
 interface Props extends React.HTMLProps<HTMLDivElement> {
     address: string;
     index: string | number;
     isSelected: boolean;
+    isVerifying?: boolean;
     readOnly?: boolean;
     isPartiallyHidden?: boolean;
     actions: React.ReactNode;
     secondaryText: React.ReactNode;
+    tooltipActions?: React.ReactNode;
     className?: string;
 }
 
@@ -107,6 +145,14 @@ const AddressItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElemen
             readOnly={props.readOnly}
             className={props.className}
         >
+            {props.tooltipActions && (
+                <>
+                    <TooltipAction>
+                        <ArrowUp />
+                        {props.tooltipActions}
+                    </TooltipAction>
+                </>
+            )}
             <Index>{`/${props.index}`}</Index>
             <DescriptorWrapper>
                 <Overlay isPartiallyHidden={props.isPartiallyHidden} />

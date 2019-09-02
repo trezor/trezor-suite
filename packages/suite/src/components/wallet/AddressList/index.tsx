@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Address } from 'trezor-connect';
-import { colors } from '@trezor/components';
 import { selectText } from '@suite/utils/suite/dom';
 import { parseBIP44Path } from '@suite/utils/wallet/accountUtils';
 import AddressItem from '../AddressItem';
 
 const Wrapper = styled.div``;
-
-const TextGreen = styled.span`
-    color: ${colors.GREEN_PRIMARY};
-`;
 
 interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
     accountPath: string;
@@ -27,6 +22,8 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
         setHidden: React.Dispatch<React.SetStateAction<boolean>>,
         moreItems: boolean,
     ) => React.ReactNode;
+    secondaryText?: (addr: Address) => React.ReactNode;
+    tooltipActions?: (addr: Address) => React.ReactNode;
 }
 
 const AddressList = ({
@@ -37,6 +34,8 @@ const AddressList = ({
     collapsed = true,
     actions,
     controls,
+    secondaryText,
+    tooltipActions,
     ...rest
 }: Props) => {
     // refs are passed to an element inside the AddressItem which contains addr descriptor
@@ -68,15 +67,12 @@ const AddressList = ({
                 }
                 setSelectedAddr(addr);
             }}
-            secondaryText={
-                <>
-                    Total received: <TextGreen>x BTC</TextGreen>
-                </>
-            }
+            secondaryText={secondaryText ? secondaryText(addr) : null}
             isSelected={addr === selectedAddress}
             address={addr.address}
             index={parseBIP44Path(addr.path)!.addrIndex}
             actions={actions ? actions(addr.path) : null}
+            tooltipActions={tooltipActions ? tooltipActions(addr) : null}
         />
     ));
 
