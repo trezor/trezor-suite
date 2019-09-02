@@ -1,9 +1,9 @@
 import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
-import { Dispatch, GetState } from '@suite-types/index';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { Discovery, PartialDiscovery, STATUS } from '@wallet-reducers/discoveryReducer';
 import { ACCOUNT, DISCOVERY } from './constants';
 import { NETWORKS } from '@suite-config';
+import { Dispatch, GetState } from '@suite-types';
 
 export type DiscoveryActions =
     | { type: typeof DISCOVERY.START; payload: Discovery }
