@@ -2,6 +2,7 @@ import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
 import { Dispatch, GetState } from '@suite-types/index';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { Discovery, PartialDiscovery, STATUS } from '@wallet-reducers/discoveryReducer';
+import { Network } from '@wallet-types';
 import { ACCOUNT, DISCOVERY } from './constants';
 import { networks } from '@suite-config';
 
@@ -25,8 +26,8 @@ interface DiscoveryItem {
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     // wallet
     index: number;
-    networkType: 'bitcoin' | 'ripple' | 'ethereum';
     accountType: 'normal' | 'segwit' | 'legacy';
+    networkType: 'bitcoin' | 'ripple' | 'ethereum';
 }
 
 // trezor-connect untyped event
@@ -139,10 +140,12 @@ const getBundle = (discovery: Discovery) => (
     const { accounts } = getState().wallet;
     const usedAccounts = accounts.filter(a => a.index === discovery.index && !a.empty);
     const bundle: DiscoveryItem[] = [];
-    networks.forEach(item => {
+    networks.forEach((item: Network) => {
         // check if previous account of requested type already exists
         const type = item.accountType || 'normal';
-        const prevAccount = usedAccounts.find(a => a.type === type && a.network === item.symbol);
+        const prevAccount = usedAccounts.find(
+            a => a.accountType === type && a.networkType === item.symbol,
+        );
         // check if requested coin not failed before
         const failed = discovery.failed.find(
             f => f.network === item.symbol && f.accountType === type,
@@ -152,7 +155,10 @@ const getBundle = (discovery: Discovery) => (
             const accountIndex = discovery.index + 1;
             // check if this account wasn't created before
             const existedAccount = accounts.find(
-                a => a.type === type && a.network === item.symbol && a.index === accountIndex,
+                a =>
+                    a.accountType === type &&
+                    a.networkType === item.symbol &&
+                    a.index === accountIndex,
             );
             if (!skip && !existedAccount) {
                 bundle.push({

@@ -161,7 +161,7 @@ const Menu = (props: Props) => (
             // .filter(account => !account.empty)
             .map(account => (
                 <StyledLink
-                    key={`${account.network}-${account.name}`}
+                    key={`${account.accountType}-${account.network}`}
                     href={getRoute('wallet-account', {
                         coin: account.network,
                         accountId: parseInt(account.index, 10),
@@ -174,7 +174,7 @@ const Menu = (props: Props) => (
                             </LogoWrapper>
                             <Name>
                                 <CoinName>
-                                    {getCoinName(account.network, account.type || 'normal')}
+                                    {getCoinName(account.network, account.accountType || 'normal')}
                                 </CoinName>
                                 <AccountIndex>
                                     <Label>account</Label>

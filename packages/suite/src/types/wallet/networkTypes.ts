@@ -10,6 +10,6 @@ export interface Network {
     accountType: 'normal' | 'legacy' | 'segwit';
     symbol: string;
     bip44: string;
-    hasSignVerify: boolean;
+    hasSignVerify?: boolean;
     explorer: Explorer;
 }
