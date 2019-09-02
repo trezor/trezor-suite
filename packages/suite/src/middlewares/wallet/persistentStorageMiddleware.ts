@@ -9,7 +9,7 @@ import { SUITE } from '@suite/actions/suite/constants';
 import { ACCOUNT } from '@suite/actions/wallet/constants';
 import { AccountInfo } from 'trezor-connect';
 
-const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
+const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
 ): Promise<SuiteAction | WalletAction> => {
     // pass action
@@ -88,20 +88,25 @@ const storageMiddleware = (_api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
             db.addItem(
                 'walletSettings',
                 {
-                    ..._api.getState().wallet.settings,
+                    ...api.getState().wallet.settings,
                 },
                 'wallet',
             );
             break;
+
         case SUITE.SET_LANGUAGE:
+        case SUITE.INITIAL_RUN_COMPLETED: {
+            const { suite } = api.getState();
             db.addItem(
                 'suiteSettings',
                 {
-                    language: _api.getState().suite.language,
+                    language: suite.language,
+                    initialRun: suite.initialRun,
                 },
                 'suite',
             );
             break;
+        }
         default:
             break;
     }

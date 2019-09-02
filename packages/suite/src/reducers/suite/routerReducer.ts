@@ -1,43 +1,42 @@
+import produce from 'immer';
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as routerUtils from '@suite-utils/router';
-import produce from 'immer';
 import { Action } from '@suite-types';
 
 interface Params {
     [key: string]: string;
 }
 
-interface RouterState {
+interface State {
     url: string;
     pathname: string;
     hash?: string;
     params: Params;
-    app: string;
+    app: ReturnType<typeof routerUtils.getApp>;
 }
 
-const initialState: RouterState = {
+const initialState: State = {
     url: '/',
     pathname: '/',
     params: {},
-    app: '/',
+    app: 'unknown',
 };
 
-const onLocationChange = (url: string) => {
+const onLocationChange = (draft: State, url: string) => {
     const [pathname, hash] = url.split('#');
-    return {
-        url,
-        pathname,
-        hash,
-        params: routerUtils.getParams(url),
-        app: routerUtils.getApp(url),
-    };
+    draft.url = url;
+    draft.pathname = pathname;
+    draft.hash = hash;
+    draft.params = routerUtils.getParams(url);
+    draft.app = routerUtils.getApp(url);
 };
 
-export default (state: RouterState = initialState, action: Action): RouterState => {
-    return produce(state, _draft => {
+export default (state: State = initialState, action: Action): State => {
+    return produce(state, draft => {
         switch (action.type) {
             case LOCATION_CHANGE:
-                return onLocationChange(action.url);
+                onLocationChange(draft, action.url);
+                break;
             // no default
         }
     });

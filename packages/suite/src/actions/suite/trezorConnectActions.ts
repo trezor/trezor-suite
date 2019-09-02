@@ -3,46 +3,50 @@ import TrezorConnect, {
     UI_EVENT,
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
-    UI,
 } from 'trezor-connect';
 
-import { SUITE, CONNECT } from '@suite-actions/constants';
+import { SUITE } from '@suite-actions/constants';
+import { lockUI } from '@suite-actions/suiteActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Dispatch, TrezorDevice, Action } from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 
-export const init = () => async (dispatch: Dispatch) => {
-    // set listeners
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+    // set event listeners
     TrezorConnect.on(DEVICE_EVENT, event => {
         // dispatch event as action
-        const { type, payload } = event;
-        dispatch({ type, payload });
+        delete event.event;
+        dispatch(event);
     });
 
     TrezorConnect.on(UI_EVENT, event => {
-        // TODO: temporary solution for confirmation (device with no backup)
-        // This should be handled in modal view
-        if (event.type === UI.REQUEST_CONFIRMATION) {
-            TrezorConnect.uiResponse({
-                type: UI.RECEIVE_CONFIRMATION,
-                payload: true,
-            });
-        }
-
         // dispatch event as action
-        const { type, payload } = event;
-        dispatch({ type, payload });
+        delete event.event;
+        dispatch(event);
     });
 
     TrezorConnect.on(TRANSPORT_EVENT, event => {
         // dispatch event as action
-        const { type, payload } = event;
-        dispatch({ type, payload });
+        delete event.event;
+        dispatch(event);
     });
 
-    // dispatch event to reducers
     TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
         // dispatch event as action
+        delete event.event;
         dispatch(event);
+    });
+
+    const wrappedMethods = ['getFeatures', 'getDeviceState', 'applySettings', 'changePin'] as const;
+    wrappedMethods.forEach(key => {
+        const original = TrezorConnect[key];
+        if (!original) return;
+        // typescript complains about params and return type, need to be "any"
+        (TrezorConnect[key] as any) = async (params: any) => {
+            dispatch(lockUI(true));
+            const result = await original(params);
+            dispatch(lockUI(false));
+            return result;
+        };
     });
 
     try {
@@ -59,8 +63,7 @@ export const init = () => async (dispatch: Dispatch) => {
             debug: false,
             popup: false,
             webusb: process.env.SUITE_TYPE === 'web',
-            // pendingTransportEvent: getState().devices.length < 1, // TODO: add devices reducer
-            pendingTransportEvent: true,
+            pendingTransportEvent: getState().devices.length < 1,
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite',
@@ -72,14 +75,7 @@ export const init = () => async (dispatch: Dispatch) => {
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,
-            error,
+            error: error.message,
         });
     }
 };
-
-// called from device menu (forget single instance)
-export const forgetDevice = (device: TrezorDevice): Action => ({
-    // @ts-ignore
-    type: CONNECT.FORGET_REQUEST,
-    device,
-});

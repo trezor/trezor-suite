@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
 import { mergeObj } from '@suite-utils/mergeObj';
-import * as firwmareActions from '../firmwareActions';
+import * as firmwareActions from '../firmwareActions';
 import fixtures from './fixtures/firmwareActions';
 
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
@@ -55,7 +55,7 @@ jest.mock('trezor-connect', () => {
             getFeatures: () => {},
             firmwareUpdate,
         },
-
+        DEVICE: {},
         setTestFixtures: (f: Fixture) => {
             fixture = f;
         },
@@ -109,7 +109,7 @@ describe('Firmware Actions', () => {
             const store = mockStore(state);
             store.subscribe(() => updateStore(store));
 
-            await store.dispatch(firwmareActions.firmwareUpdate());
+            await store.dispatch(firmwareActions.firmwareUpdate());
 
             const result = store.getState();
 

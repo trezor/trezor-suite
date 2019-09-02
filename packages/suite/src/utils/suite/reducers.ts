@@ -1,28 +1,3 @@
-import { TrezorDevice } from '@suite-types';
-
-// get selected device from reducer
-export const getSelectedDevice = (device: TrezorDevice, devices: TrezorDevice[]) => {
-    // selected device is unacquired
-    if (!device.features) return devices.find(d => d.path === device.path);
-
-    return devices.find(d => {
-        if (!d.features && d.path === device.path) {
-            return true;
-        }
-        if (d.type === 'acquired' && d.mode === 'bootloader' && d.path === device.path) {
-            return true;
-        }
-        if (
-            d.features &&
-            d.features.device_id === device.features.device_id
-            // && d.instance === instance
-        ) {
-            return true;
-        }
-        return false;
-    });
-};
-
 export const observeChanges = (
     prev: any,
     current: any,

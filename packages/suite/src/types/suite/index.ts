@@ -34,9 +34,9 @@ export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>
-    | Omit<UiEvent, 'event'>
+    | UiEvent
     | Omit<DeviceEvent, 'event'>
-    | { type: 'iframe-loaded'; payload: any };
+    | { type: 'iframe-loaded'; payload: { browser: any } };
 
 export type AppState = AppState;
 
@@ -74,7 +74,7 @@ export interface AcquiredDevice {
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     instance?: number;
-    instanceLabel: string | typeof undefined;
+    instanceLabel: string;
     instanceName?: string;
     ts: number;
 }

@@ -109,12 +109,12 @@ interface Props {
     addAccount: () => any; // TODO
 }
 
-// TODO: Refactorize deviceStatus & selectedAccounts
+// TODO: Refactor deviceStatus & selectedAccounts
 const AccountMenu = (props: Props) => {
-    const selected = props.suite.device;
+    const selectedDevice = props.suite.device;
     const { params } = props.router;
     const network = networks.find(c => c.shortcut === params.coin);
-    if (!selected || !network) return null;
+    if (!selectedDevice || !network) return null;
 
     // TODO
     const { accounts } = props.wallet;
@@ -187,12 +187,12 @@ const AccountMenu = (props: Props) => {
     const discovery = props.discovery.find(
         // TODO: compare deviceState not just device id
         // d => d.device === selected.state && d.network === network.shortcut,
-        d => selected.features && d.device === selected.features.device_id,
+        d => selectedDevice.features && d.device === selectedDevice.features.device_id,
     );
 
     if (discovery && discovery.status === DISCOVERY_STATUS.COMPLETED) {
         const lastAccount = discoveryAccounts[discoveryAccounts.length - 1];
-        if (!selected.connected) {
+        if (!selectedDevice.connected) {
             discoveryStatus = (
                 <AddAccountButton
                     disabled
