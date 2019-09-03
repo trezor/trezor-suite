@@ -3,15 +3,15 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
-import { toggleDeviceMenu, selectDevice, requestForgetDevice } from '@suite-actions/suiteActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
-import { isDeviceAccessible, isWebUSB } from '@suite-utils/device';
+import * as deviceUtils from '@suite-utils/device';
 import WebusbButton from '@suite-components/WebusbButton';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 import l10nMessages from './index.messages';
-import { AppState, Omit, TrezorDevice, AcquiredDevice } from '@suite-types';
+import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 const { SLIDE_DOWN } = animations;
@@ -84,18 +84,39 @@ const ButtonWrapper = styled.div`
     display: flex;
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    devices: AppState['devices'];
-    selectedDevice: AppState['suite']['device'];
-    selectDevice: (device: TrezorDevice) => void;
-    forgetDevice: (device: TrezorDevice) => void;
-    toggleDeviceMenu: (opened: boolean) => void;
+const mapStateToProps = (state: AppState) => ({
+    devices: state.devices,
+    selectedDevice: state.suite.device,
+    transport: state.suite.transport,
+    isOpen: state.suite.deviceMenuOpened,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
+    requestForgetDevice: bindActionCreators(suiteActions.requestForgetDevice, dispatch),
+    toggleDeviceMenu: bindActionCreators(suiteActions.toggleDeviceMenu, dispatch),
+});
+
+// interface Props1 extends React.HTMLAttributes<HTMLDivElement> {
+//     devices: AppState['devices'];
+//     selectedDevice: AppState['suite']['device'];
+//     selectDevice: (device: TrezorDevice) => void;
+//     forgetDevice: (device: TrezorDevice) => void;
+//     toggleDeviceMenu: (opened: boolean) => void;
+//     icon?: any; // TODO type and add to container
+//     disabled?: boolean;
+//     isOpen: boolean;
+//     isSelected?: boolean;
+//     transport: AppState['suite']['transport'];
+// }
+
+type Props = {
     icon?: any; // TODO type and add to container
     disabled?: boolean;
     isOpen: boolean;
     isSelected?: boolean;
-    transport: AppState['suite']['transport'];
-}
+} & ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 type WrapperProps = Omit<
     Props,
@@ -103,7 +124,7 @@ type WrapperProps = Omit<
     | 'devices'
     | 'selectedDevice'
     | 'selectDevice'
-    | 'forgetDevice'
+    | 'requestForgetDevice'
     | 'icon'
     | 'device'
     | 'toggleDeviceMenu'
@@ -117,7 +138,7 @@ const DeviceMenu = ({
     disabled = false,
     isSelected = false,
     selectDevice,
-    forgetDevice,
+    requestForgetDevice,
     toggleDeviceMenu,
     transport,
     isOpen = false,
@@ -161,9 +182,18 @@ const DeviceMenu = ({
     }, [isOpen]);
 
     if (!selectedDevice) return null; // TODO: can it happen? if so some placeholder would be better
+    // answer: it could happen during onboarding process (waiting for device to reconnect)
+    // however device menu is not displayed in onboarding...
+    // to avoid rendering error do some placeholder "Device not selected"
 
-    const selectedDeviceAccessible = isDeviceAccessible(selectedDevice);
-    const multipleDevices = devices.length > 1;
+    const selectedDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
+    const selectedInstances = deviceUtils.getDeviceInstances(selectedDevice, devices);
+    const otherDevices = deviceUtils.getOtherDevices(selectedDevice, devices);
+    const otherInstances: AcquiredDevice[][] = [];
+    otherDevices.forEach(d => otherInstances.push(deviceUtils.getDeviceInstances(d, devices)));
+
+    console.log('instances!', otherDevices);
+    const multipleDevices = otherDevices.length > 1;
 
     return (
         <Wrapper
@@ -215,7 +245,7 @@ const DeviceMenu = ({
                                 </WalletIconWrapper>
                             </Tooltip>
                         )} */}
-                        {devices.length > 1 && (
+                        {multipleDevices && (
                             <Tooltip
                                 content={
                                     <FormattedMessage {...l10nMessages.TR_NUMBER_OF_DEVICES} />
@@ -225,7 +255,7 @@ const DeviceMenu = ({
                                 delay={500}
                             >
                                 <DeviceIconWrapper>
-                                    <Counter>{devices.length}</Counter>
+                                    <Counter>{otherDevices.length}</Counter>
                                 </DeviceIconWrapper>
                             </Tooltip>
                         )}
@@ -264,16 +294,19 @@ const DeviceMenu = ({
             {isOpen && (
                 <Menu ref={deviceMenuRef}>
                     {selectedDeviceAccessible && (
-                        <MenuItems device={selectedDevice as AcquiredDevice} />
+                        <MenuItems
+                            device={selectedDevice as AcquiredDevice}
+                            instances={selectedInstances}
+                        />
                     )}
                     {multipleDevices && <StyledDivider>Other devices</StyledDivider>}
                     <DeviceList
-                        devices={devices}
-                        selectedDevice={selectedDevice}
-                        onSelectDevice={selectDevice}
-                        forgetDevice={forgetDevice}
+                        devices={otherDevices}
+                        instances={otherInstances}
+                        selectDevice={selectDevice}
+                        requestForgetDevice={requestForgetDevice}
                     />
-                    {isWebUSB(transport) && (
+                    {deviceUtils.isWebUSB(transport) && (
                         <ButtonWrapper>
                             <WebusbButton ready={animationFinished} />
                         </ButtonWrapper>
@@ -284,18 +317,7 @@ const DeviceMenu = ({
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    devices: state.devices,
-    selectedDevice: state.suite.device,
-    transport: state.suite.transport,
-    isOpen: state.suite.deviceMenuOpened,
-});
-
 export default connect(
     mapStateToProps,
-    dispatch => ({
-        selectDevice: bindActionCreators(selectDevice, dispatch),
-        forgetDevice: bindActionCreators(requestForgetDevice, dispatch),
-        toggleDeviceMenu: bindActionCreators(toggleDeviceMenu, dispatch),
-    }),
+    mapDispatchToProps,
 )(DeviceMenu);
