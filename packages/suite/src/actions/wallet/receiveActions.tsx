@@ -62,7 +62,7 @@ export const showAddress = (path: string) => async (
     };
 
     let response;
-    switch (network.type) {
+    switch (network.networkType) {
         case 'ethereum':
             // @ts-ignore
             response = await TrezorConnect.ethereumGetAddress(params);
@@ -77,7 +77,7 @@ export const showAddress = (path: string) => async (
         default:
             response = {
                 payload: {
-                    error: `ReceiveActions.showAddress: Unknown network type: ${network.type}`,
+                    error: `ReceiveActions.showAddress: Unknown network type: ${network.networkType}`,
                 },
             };
             break;
