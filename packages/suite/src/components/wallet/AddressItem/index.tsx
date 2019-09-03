@@ -35,7 +35,6 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
 
     ${props =>
         props.isSelected &&
-        !props.readOnly &&
         css`
             z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
             background: ${INPUT_HOVER};
@@ -132,7 +131,6 @@ interface Props extends React.HTMLProps<HTMLDivElement> {
     address: string;
     index: string | number;
     isSelected: boolean;
-    isVerifying?: boolean;
     readOnly?: boolean;
     isPartiallyHidden?: boolean;
     actions: React.ReactNode;
