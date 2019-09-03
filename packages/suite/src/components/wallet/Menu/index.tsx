@@ -163,8 +163,9 @@ const Menu = (props: Props) => (
                 <StyledLink
                     key={`${account.network}-${account.descriptor}`}
                     href={getRoute('wallet-account', {
-                        coin: account.network,
                         accountId: account.index,
+                        symbol: account.network,
+                        accountType: account.accountType,
                     })}
                 >
                     <Row>

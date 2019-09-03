@@ -61,10 +61,11 @@ describe('router', () => {
             expect(getRoute('wallet-account-transactions')).toEqual('/wallet/account/transactions');
             expect(
                 getRoute('wallet-account', {
-                    coin: 'eth',
+                    symbol: 'eth',
                     accountId: '0',
+                    accountType: 'segwit',
                 }),
-            ).toEqual('/wallet/account#/eth/0');
+            ).toEqual('/wallet/account#/eth/0/segwit');
             expect(
                 getRoute('wallet-account', {
                     coin: 'eth',
