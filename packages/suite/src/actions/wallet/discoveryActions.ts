@@ -1,6 +1,6 @@
-import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
-import { add as addNotification } from '@suite-actions/notificationActions';
 import { Discovery, PartialDiscovery, STATUS } from '@wallet-reducers/discoveryReducer';
+import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
+import { add as addNotification } from '@suite-actions/notificationActions';
 import { ACCOUNT, DISCOVERY } from './constants';
 import { NETWORKS } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
@@ -122,7 +122,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
         type: ACCOUNT.CREATE,
         payload: {
             index: item.index,
-            type: item.accountType,
+            accountType: item.accountType,
             path: item.path,
             networkType: item.networkType,
             network: item.coin,
@@ -135,35 +135,45 @@ const getBundle = (discovery: Discovery) => (
     _dispatch: Dispatch,
     getState: GetState,
 ): DiscoveryItem[] => {
+    const bundle: DiscoveryItem[] = [];
     // find not empty accounts
     const { accounts } = getState().wallet;
-    const usedAccounts = accounts.filter(a => a.index === discovery.index && !a.empty);
-    const bundle: DiscoveryItem[] = [];
-    NETWORKS.forEach(item => {
+    const usedAccounts = accounts.filter(
+        account => account.index === discovery.index && !account.empty,
+    );
+
+    NETWORKS.forEach(configNetwork => {
         // check if previous account of requested type already exists
-        const type = item.accountType || 'normal';
+        const accountType = configNetwork.accountType || 'normal';
         const prevAccount = usedAccounts.find(
-            a => a.accountType === type && a.type === item.symbol,
+            account =>
+                account.accountType === accountType && account.network === configNetwork.symbol,
         );
+
         // check if requested coin not failed before
         const failed = discovery.failed.find(
-            f => f.network === item.symbol && f.accountType === type,
+            account =>
+                account.network === configNetwork.symbol && account.accountType === accountType,
         );
+
         const skip = failed || (discovery.index >= 0 && !prevAccount);
         for (let i = 1; i <= BUNDLE_SIZE; i++) {
             const accountIndex = discovery.index + 1;
             // check if this account wasn't created before
             const existedAccount = accounts.find(
-                a => a.accountType === type && a.type === item.symbol && a.index === accountIndex,
+                account =>
+                    account.accountType === accountType &&
+                    account.network === configNetwork.symbol &&
+                    account.index === accountIndex,
             );
             if (!skip && !existedAccount) {
                 bundle.push({
-                    path: item.bip44.replace('i', accountIndex.toString()),
-                    coin: item.symbol,
+                    path: configNetwork.bip44.replace('i', accountIndex.toString()),
+                    coin: configNetwork.symbol,
                     details: 'txs',
                     index: accountIndex,
-                    accountType: type,
-                    networkType: item.networkType || 'bitcoin',
+                    accountType,
+                    networkType: configNetwork.networkType || 'bitcoin',
                 });
             }
         }
@@ -296,6 +306,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                     error: c.exception,
                     fwException: c.exception,
                 }));
+
                 // add failed coins to discovery
                 dispatch(
                     update({ device, failed, total: discovery.total - LIMIT * failed.length }),

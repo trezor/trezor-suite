@@ -5,11 +5,11 @@ interface Explorer {
 
 export interface Network {
     name: string;
-    isHidden?: boolean;
-    networkType: 'bitcoin' | 'ripple' | 'ethereum';
-    accountType: 'normal' | 'legacy' | 'segwit';
+    networkType?: 'bitcoin' | 'ripple' | 'ethereum';
+    accountType?: 'normal' | 'legacy' | 'segwit';
     symbol: string;
     bip44: string;
+    isHidden?: boolean;
     hasSignVerify?: boolean;
     explorer: Explorer;
 }
