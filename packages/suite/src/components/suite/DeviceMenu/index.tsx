@@ -97,19 +97,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     toggleDeviceMenu: bindActionCreators(suiteActions.toggleDeviceMenu, dispatch),
 });
 
-// interface Props1 extends React.HTMLAttributes<HTMLDivElement> {
-//     devices: AppState['devices'];
-//     selectedDevice: AppState['suite']['device'];
-//     selectDevice: (device: TrezorDevice) => void;
-//     forgetDevice: (device: TrezorDevice) => void;
-//     toggleDeviceMenu: (opened: boolean) => void;
-//     icon?: any; // TODO type and add to container
-//     disabled?: boolean;
-//     isOpen: boolean;
-//     isSelected?: boolean;
-//     transport: AppState['suite']['transport'];
-// }
-
 type Props = {
     icon?: any; // TODO type and add to container
     disabled?: boolean;
