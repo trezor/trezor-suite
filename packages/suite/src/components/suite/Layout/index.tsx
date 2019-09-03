@@ -11,9 +11,9 @@ import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/componen
 
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
-import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/suite/urls';
-
 import NoSSR from '@suite/support/suite/NoSSR';
+import { URLS } from '@suite-constants';
+
 import l10nMessages from './index.messages';
 import { LANGUAGES } from '@suite-config';
 import { AppState } from '@suite-types';
@@ -87,19 +87,19 @@ const Layout = (props: Props & InjectedIntlProps) => (
             }
             links={[
                 {
-                    href: TREZOR_URL,
+                    href: URLS.TREZOR_URL,
                     title: 'Trezor',
                 },
                 {
-                    href: WIKI_URL,
+                    href: URLS.WIKI_URL,
                     title: props.intl.formatMessage(l10nMessages.TR_WIKI),
                 },
                 {
-                    href: BLOG_URL,
+                    href: URLS.BLOG_URL,
                     title: props.intl.formatMessage(l10nMessages.TR_BLOG),
                 },
                 {
-                    href: SUPPORT_URL,
+                    href: URLS.SUPPORT_URL,
                     title: props.intl.formatMessage(l10nMessages.TR_SUPPORT),
                 },
             ]}

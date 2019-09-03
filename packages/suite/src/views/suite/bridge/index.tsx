@@ -6,8 +6,8 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
-import { TREZOR_DATA_URL } from '@suite/constants/suite/urls';
 import { getRoute } from '@suite/utils/suite/router';
+import { URLS } from '@suite-constants';
 import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
@@ -122,7 +122,7 @@ const InstallBridge = (props: BridgeProps) => {
         latestVersion: props.transport ? props.transport.bridge.version.join('.') : null,
         installers,
         target: preferredTarget || installers[0],
-        uri: TREZOR_DATA_URL,
+        uri: URLS.TREZOR_DATA_URL,
     };
 
     const target = selectedTarget || data.target;
