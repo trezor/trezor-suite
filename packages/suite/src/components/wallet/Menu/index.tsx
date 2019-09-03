@@ -139,10 +139,9 @@ const getLoadingProgress = (discovery: AppState['wallet']['discovery']) => {
     return 0;
 };
 
-const getCoinName = (networkType: string, accountType = 'normal') => {
+const getCoinName = (symbol: string, accountType: string) => {
     const result = NETWORKS.filter(
-        network =>
-            network.symbol === networkType && (network.accountType || 'normal') === accountType,
+        network => network.symbol === symbol && (network.accountType || 'normal') === accountType,
     );
     return result[0].name;
 };
@@ -162,7 +161,7 @@ const Menu = (props: Props) => (
             // .filter(account => !account.empty)
             .map(account => (
                 <StyledLink
-                    key={`${getCoinName(account.network, account.type)}-${account.accountType}`}
+                    key={`${account.network}-${account.descriptor}`}
                     href={getRoute('wallet-account', {
                         coin: account.network,
                         accountId: account.index,
@@ -174,7 +173,9 @@ const Menu = (props: Props) => (
                                 <CoinLogo size={25} network={getCoinLogo(account.network)} />
                             </LogoWrapper>
                             <Name>
-                                <CoinName>{getCoinName(account.network, account.type)}</CoinName>
+                                <CoinName>
+                                    {getCoinName(account.network, account.accountType)}
+                                </CoinName>
                                 <AccountIndex>
                                     <Label>account</Label>
                                     {`#${account.index + 1}`}
