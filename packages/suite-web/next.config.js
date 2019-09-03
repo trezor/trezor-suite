@@ -1,6 +1,7 @@
 const path = require('path');
 const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const withImages = require('next-images');
 
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
@@ -22,7 +23,8 @@ module.exports = withCustomBabelConfig(
             ],
             exportTrailingSlash: true,
             assetPrefix: process.env.assetPrefix || '',
-            webpack: config => {
+            webpack: (config, options) => {
+                if (options.isServer) config.plugins.push(new ForkTsCheckerWebpackPlugin());
                 config.plugins.push(
                     new webpack.DefinePlugin({
                         'process.env.SUITE_TYPE': JSON.stringify('web'),
