@@ -191,8 +191,6 @@ const DeviceMenu = ({
     const otherDevices = deviceUtils.getOtherDevices(selectedDevice, devices);
     const otherInstances: AcquiredDevice[][] = [];
     otherDevices.forEach(d => otherInstances.push(deviceUtils.getDeviceInstances(d, devices)));
-
-    console.log('instances!', otherDevices);
     const multipleDevices = otherDevices.length > 1;
 
     return (

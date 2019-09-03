@@ -1,5 +1,6 @@
 import { TRANSPORT } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import produce from 'immer';
 import { Action, TrezorDevice } from '@suite-types';
 
@@ -18,6 +19,7 @@ export interface SuiteState {
     platform?: Platform;
     uiLocked: boolean;
     routerLocked: boolean;
+    deviceLocked: boolean;
 }
 
 interface Transport {
@@ -55,6 +57,7 @@ const initialState: SuiteState = {
     showSidebar: undefined,
     uiLocked: false,
     routerLocked: false,
+    deviceLocked: false,
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -121,6 +124,15 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
 
             case SUITE.LOCK_ROUTER:
                 draft.routerLocked = action.payload;
+                break;
+
+            case DISCOVERY.START:
+            case DISCOVERY.INTERRUPT:
+                draft.deviceLocked = true;
+                break;
+            case DISCOVERY.STOP:
+            case DISCOVERY.COMPLETE:
+                draft.deviceLocked = false;
                 break;
 
             case 'iframe-loaded':

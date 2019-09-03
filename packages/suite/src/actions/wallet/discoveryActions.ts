@@ -58,7 +58,10 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
     );
 };
 
-export const getDiscoveryForDevice = () => (dispatch: Dispatch, getState: GetState) => {
+export const getDiscoveryForDevice = () => (
+    dispatch: Dispatch,
+    getState: GetState,
+): Discovery | void => {
     const { device } = getState().suite;
     if (!device || !device.state) return;
     return dispatch(getDiscovery(device.state));
@@ -123,6 +126,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
     dispatch({
         type: ACCOUNT.CREATE,
         payload: {
+            deviceState: device,
             index: item.index,
             accountType: item.accountType,
             path: item.path,
@@ -139,7 +143,7 @@ const getBundle = (discovery: Discovery) => (
 ): DiscoveryItem[] => {
     const bundle: DiscoveryItem[] = [];
     // find not empty accounts
-    const { accounts } = getState().wallet;
+    const accounts = getState().wallet.accounts.filter(a => a.deviceState === discovery.device);
     const usedAccounts = accounts.filter(
         account => account.index === discovery.index && !account.empty,
     );
