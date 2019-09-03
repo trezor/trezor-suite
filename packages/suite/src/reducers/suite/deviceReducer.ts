@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { Device, DEVICE } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, STORAGE } from '@suite-actions/constants';
 import { getNewInstanceNumber, findInstanceIndex } from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice, Action } from '@suite-types';
 
@@ -249,15 +249,12 @@ const authDevice = (draft: State, device: TrezorDevice, state: string) => {
 const createInstance = (draft: State, device: TrezorDevice, name?: string) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-
-    const instance = getNewInstanceNumber(draft, device);
+    const { instance } = device;
     const newDevice: TrezorDevice = {
         ...device,
+        useEmptyPassphrase: false,
         remember: false,
         state: undefined,
-        // instance, (instance is already part of device - added in modal) TODO: it shoudnt
         instance,
         instanceLabel: `${device.label} (${name || instance})`,
         instanceName: name,
@@ -303,6 +300,8 @@ const forgetInstance = (draft: State, device: TrezorDevice) => {
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.devices;
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
                 connectDevice(draft, action.payload);

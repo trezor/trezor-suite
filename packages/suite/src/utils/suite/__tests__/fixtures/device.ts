@@ -321,6 +321,131 @@ const getSelectedDevice = [
     },
 ];
 
+const sortByTimestamp = {
+    devices: [{ id: 1, ts: 1 }, { id: 2 }, { id: 3 }, { id: 5, ts: 3 }, { id: 4, ts: 2 }],
+    result: [{ id: 5, ts: 3 }, { id: 4, ts: 2 }, { id: 1, ts: 1 }, { id: 3 }, { id: 2 }],
+};
+
+const d = (obj: any) => ({
+    path: obj.path ? obj.path : obj.id,
+    features: obj.id
+        ? {
+              // eslint-disable-next-line @typescript-eslint/camelcase
+              device_id: obj.id,
+          }
+        : undefined,
+    mode: obj.mode || 'normal',
+    firmware: obj.fw || 'valid',
+    instance: obj.inst,
+    ts: obj.ts,
+});
+
+const getOtherDevices = [
+    {
+        description: 'Selected is unacquired',
+        selected: d({ path: '1' }),
+        devices: [d({ path: '1' }), d({ path: '2' }), d({ id: '3' })],
+        result: [d({ path: '2' }), d({ id: '3' })],
+    },
+    {
+        description: 'Selected is acquired',
+        selected: d({ id: '3' }),
+        devices: [d({ path: '1' }), d({ id: '2' }), d({ id: '3' }), d({ id: '4' })],
+        result: [d({ path: '1' }), d({ id: '2' }), d({ id: '4' })],
+    },
+    {
+        description: 'Selected is undefined (sort by priority)',
+        selected: undefined,
+        devices: [
+            d({ id: '9', ts: 1 }),
+            d({ path: '1' }),
+            d({ id: '7', inst: 1 }),
+            d({ id: '7', ts: 3 }),
+            d({ id: '8', ts: 2 }),
+            d({ id: '5', fw: 'outdated', inst: 1 }),
+            d({ path: '2' }),
+            d({ id: '5', fw: 'outdated' }),
+            d({ id: '3', mode: 'bootloader' }),
+            d({ id: '4', mode: 'seedless' }),
+            d({ id: '6', fw: 'required' }),
+            d({ id: '9', inst: 2 }),
+            d({ id: '9', inst: 1 }),
+        ],
+        result: [
+            d({ path: '1' }),
+            d({ path: '2' }),
+            d({ id: '3', mode: 'bootloader' }),
+            d({ id: '4', mode: 'seedless' }),
+            d({ id: '5', fw: 'outdated' }),
+            d({ id: '6', fw: 'required' }),
+            d({ id: '7', ts: 3 }),
+            d({ id: '8', ts: 2 }),
+            d({ id: '9', ts: 1 }),
+        ],
+    },
+];
+
+const getDeviceInstances = [
+    {
+        description: 'Selected is unacquired',
+        selected: d({ path: '1' }),
+        devices: [d({ path: '1' })],
+        result: [],
+    },
+    {
+        description: 'Selected is undefined',
+        selected: undefined,
+        devices: [d({ path: '1' })],
+        result: [],
+    },
+    {
+        description: 'Selected without device_id (bootloader)',
+        selected: { features: {} },
+        devices: [d({ path: '1' })],
+        result: [],
+    },
+    {
+        description: 'Selected is a base device',
+        selected: d({ id: '1' }),
+        devices: [d({ id: '1', inst: 2 }), d({ id: '1', inst: 1 }), d({ id: '1' })],
+        result: [d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })],
+    },
+    {
+        description: 'Selected is an instance',
+        selected: d({ id: '1', inst: 2 }),
+        devices: [
+            d({ id: '1' }),
+            d({ id: '1', inst: 2 }),
+            d({ id: '1', inst: 1 }),
+            d({ id: '1', inst: 4 }),
+            d({ id: '1', inst: 3 }),
+        ],
+        result: [
+            d({ id: '1' }),
+            d({ id: '1', inst: 1 }),
+            d({ id: '1', inst: 3 }),
+            d({ id: '1', inst: 4 }),
+        ],
+    },
+    {
+        description: 'Selected is an instance (base placed at the end)',
+        selected: d({ id: '1', inst: 2 }),
+        devices: [
+            d({ id: '1', inst: 2 }),
+            d({ id: '1', inst: 1 }),
+            d({ id: '1', inst: 4 }),
+            d({ id: '1', inst: 3 }),
+            d({ id: '1' }),
+        ],
+        result: [
+            d({ id: '1' }),
+            d({ id: '1', inst: 1 }),
+            d({ id: '1', inst: 3 }),
+            d({ id: '1', inst: 4 }),
+        ],
+    },
+];
+
 export default {
     getStatus,
     isWebUSB,
@@ -330,4 +455,7 @@ export default {
     getNewInstanceNumber,
     findInstanceIndex,
     getSelectedDevice,
+    sortByTimestamp,
+    getOtherDevices,
+    getDeviceInstances,
 };
