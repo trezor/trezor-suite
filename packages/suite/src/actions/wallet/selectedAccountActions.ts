@@ -75,9 +75,7 @@ const getAccountLoader = (
     const { device } = state.suite;
     const { account, discovery, network } = selectedAccount;
 
-    // TODO: uncomment once device.state is available (and remove condition below)
-    // if (!device || !device.state) {
-    if (!device) {
+    if (!device || !device.state) {
         return {
             type: 'progress',
             title: 'Loading device...',
