@@ -1,28 +1,28 @@
-# suite lint:
-#     stage: lint and prettier
-#     script:
-#         - yarn workspace @trezor/suite lint
-#     dependencies:
-#         - install and build
+suite lint:
+    stage: lint and prettier
+    script:
+        - yarn workspace @trezor/suite lint
+    dependencies:
+        - install and build
 
-# suite type check:
-#     stage: typescript type check
-#     script:
-#         - yarn workspace @trezor/suite type-check
-#     dependencies:
-#         - install and build
+suite type check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/suite type-check
+    dependencies:
+        - install and build
 
-# suite test unit:
-#     stage: unit testing
-#     script:
-#         - yarn workspace @trezor/suite-data copy-static-files
-#         - yarn workspace @trezor/suite test:unit
-#     dependencies:
-#         - install and build
+suite test unit:
+    stage: unit testing
+    script:
+        - yarn workspace @trezor/suite-data copy-static-files
+        - yarn workspace @trezor/suite test:unit
+    dependencies:
+        - install and build
 
-# suite test integration:
-#     stage: integration testing
-#     script:
-#         - yarn workspace @trezor/suite test:health
-#     dependencies:
-#         - install and build
+suite test integration:
+    stage: integration testing
+    script:
+        - yarn workspace @trezor/suite test:health
+    dependencies:
+        - install and build
