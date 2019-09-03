@@ -3,7 +3,6 @@ import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
-import { Address } from 'trezor-connect';
 import messages from './messages';
 
 const Wrapper = styled.div`

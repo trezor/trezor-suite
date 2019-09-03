@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Address } from 'trezor-connect';
+import { AccountAddresses } from 'trezor-connect';
 import { selectText } from '@suite/utils/suite/dom';
 import { parseBIP44Path } from '@suite/utils/wallet/accountUtils';
 import AddressItem from '../AddressItem';
 
 const Wrapper = styled.div``;
 
+type Addresses = AccountAddresses['used'] | AccountAddresses['unused'];
+type Address = Addresses[number];
+
 interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
-    accountPath: string;
     addresses: Address[];
     setSelectedAddr: any;
     selectedAddress: Address | null;

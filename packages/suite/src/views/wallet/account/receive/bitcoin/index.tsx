@@ -6,12 +6,12 @@ import { FormattedMessage } from 'react-intl';
 import QrCode from '@wallet-components/QrCode';
 import AddressList from '@suite/components/wallet/AddressList';
 import { H6, variables, Button, colors, Icon, Link } from '@trezor/components';
-import { Address } from 'trezor-connect';
 import AddressItem from '@suite/components/wallet/AddressItem';
 import { selectText } from '@suite/utils/suite/dom';
 import ShowOnTrezorEyeButton from '@suite/components/wallet/ShowOnTrezorEyeButton';
 import SETTINGS from '@suite-config/settings';
 import { parseBIP44Path } from '@suite/utils/wallet/accountUtils';
+import { AccountAddresses } from 'trezor-connect';
 import messages from './messages';
 import { ReceiveProps } from '../index';
 import { DeviceIcon } from '@suite-components';
@@ -113,8 +113,11 @@ const StyledDeviceIcon = styled(DeviceIcon)`
     margin-right: 6px;
 `;
 
+type Addresses = AccountAddresses['used'] | AccountAddresses['unused'];
+type Address = Addresses[number];
+
 const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
-    const firstFreshAddrRef = useRef<HTMLDivElement>();
+    const firstFreshAddrRef = useRef<HTMLDivElement>(null);
 
     const { addresses } = props.account;
     const [selectedAddr, setSelectedAddr] = useState<Address | null>(null);
@@ -160,7 +163,10 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                     <ShowOnTrezorEyeButton
                         device={props.device}
                         isAddressUnverified={props.isAddressUnverified}
-                        onClick={() => {setSelectedAddr(addr); props.showAddress(addr.path)}}
+                        onClick={() => {
+                            setSelectedAddr(addr);
+                            props.showAddress(addr.path);
+                        }}
                     />
                 )}
                 controls={(page, setPage, isCollapsed, setIsCollapsed, moreItems) => (

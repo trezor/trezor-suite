@@ -36,7 +36,6 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
             }
         `};
 
-
     ${props =>
         props.isSelected &&
         css`
@@ -140,12 +139,12 @@ interface Props extends React.HTMLProps<HTMLDivElement> {
     readOnly?: boolean;
     isPartiallyHidden?: boolean;
     actions: React.ReactNode;
-    secondaryText: React.ReactNode;
+    secondaryText?: React.ReactNode;
     tooltipActions?: React.ReactNode;
     className?: string;
 }
 
-const AddressItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement> | null) => {
+const AddressItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     return (
         <AddrWrapper
             onClick={props.onClick}
@@ -154,18 +153,16 @@ const AddressItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElemen
             className={props.className}
         >
             {props.tooltipActions && (
-                <>
-                    <TooltipAction>
-                        <ArrowUp />
-                        {props.tooltipActions}
-                    </TooltipAction>
-                </>
+                <TooltipAction>
+                    <ArrowUp />
+                    {props.tooltipActions}
+                </TooltipAction>
             )}
             <Index>{`/${props.index}`}</Index>
             <DescriptorWrapper>
                 <Overlay isPartiallyHidden={props.isPartiallyHidden} />
                 <Descriptor ref={ref}>{props.address}</Descriptor>
-                <SmallText>{props.secondaryText}</SmallText>
+                {props.secondaryText && <SmallText>{props.secondaryText}</SmallText>}
             </DescriptorWrapper>
             <ActionsWrapper>{props.actions}</ActionsWrapper>
         </AddrWrapper>

@@ -74,7 +74,6 @@ const AccountReceive = (props: Props) => {
         isAddressUnverified,
         isAddressVerifying,
     };
-    console.log(account);
 
     return (
         <LayoutAccount>
