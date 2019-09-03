@@ -2,12 +2,14 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { variables, colors } from '@trezor/components';
 
+const INPUT_HOVER = '#F9F9F9';
+
 const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
     display: flex;
     position: relative; /* needed for the tooltipAction */
     width: 100%;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 1px solid ${colors.INPUT_BORDER};
     border-radius: 3px;
     padding: 0px 16px;
     height: 48px;
@@ -17,13 +19,8 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
         margin-top: 5px;
     }
 
-    /* border-top: 1px solid #ccc; */
-    /* &:last-child {
-        border-bottom: 1px solid #ccc;
-    } */
-
     &:hover {
-        background: #fafafa;
+        background: ${INPUT_HOVER};
     }
 
     ${props =>
@@ -38,9 +35,10 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
 
     ${props =>
         props.isSelected &&
+        !props.readOnly &&
         css`
             z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
-            background: #fafafa;
+            background: ${INPUT_HOVER};
         `};
 `;
 
@@ -99,7 +97,7 @@ const Overlay = styled.div<Pick<Props, 'isPartiallyHidden'>>`
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(242, 242, 242, 1) 220px);
+            background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(242, 242, 242, 1) 75%);
         `}
 `;
 
@@ -116,7 +114,6 @@ const ArrowUp = styled.div`
 `;
 
 const TooltipAction = styled.div`
-    /* display: ${props => (props.action ? 'flex' : 'none')}; */
     display: flex;
     align-items: center;
     height: 37px;
@@ -127,7 +124,7 @@ const TooltipAction = styled.div`
     background: black;
     color: ${colors.WHITE};
     border-radius: 5px;
-    /* line-height: ${LINE_HEIGHT.TREZOR_ACTION}; */
+    line-height: ${variables.LINE_HEIGHT.TREZOR_ACTION};
     z-index: 10002;
 `;
 
