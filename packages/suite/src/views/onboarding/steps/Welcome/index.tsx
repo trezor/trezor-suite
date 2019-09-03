@@ -11,10 +11,12 @@ import l10nMessages from './index.messages';
 
 const Small = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
+    margin-bottom: 5px;
 `;
 
 const Base = styled.div`
     font-size: ${variables.FONT_SIZE.BASE};
+    margin-bottom: 5px;
 `;
 
 const WelcomeStep = (props: Props) => {
@@ -26,10 +28,6 @@ const WelcomeStep = (props: Props) => {
 
     return (
         <Wrapper.Step data-test="onboarding_first_page">
-            {/* {
-                TODO: what if connect fails to load
-                props.connectError && <Loader>Loading takes too long. But we are still trying. If the problem persist, contact Trezor support</Loader>
-            } */}
             <Wrapper.StepBody>
                 <H1>
                     <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} />

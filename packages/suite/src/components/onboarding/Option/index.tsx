@@ -20,7 +20,7 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     border-color: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)};
 
     @media (min-width: ${variables.SCREEN_SIZE.SM}) {
-        height: 280px;
+        height: 260px;
         width: 215px;
     }
 `;
