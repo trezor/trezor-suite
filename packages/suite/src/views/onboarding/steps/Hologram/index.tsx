@@ -40,39 +40,24 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
-                        <HologramWrapper>{model && <Hologram model={model} />}</HologramWrapper>
+                        <HologramWrapper>
+                            <Hologram model={model || actualVersion} />
+                        </HologramWrapper>
                         <Wrapper.Controls>
-                            {actualVersion && actualVersion !== model && (
-                                <>
-                                    <OnboardingButton.Cta
-                                        onClick={() => onboardingActions.goToPreviousStep()}
-                                    >
-                                        Go back and select correct device
-                                    </OnboardingButton.Cta>
-                                </>
-                            )}
-                            {(!actualVersion || actualVersion === model) && (
-                                <React.Fragment>
-                                    <OnboardingButton.Alt
-                                        data-test="button-hologram-different"
-                                        onClick={() =>
-                                            onboardingActions.goToSubStep('hologram-different')
-                                        }
-                                    >
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_NOT_OK}
-                                        />
-                                    </OnboardingButton.Alt>
-                                    <OnboardingButton.Cta
-                                        data-test="button-continue"
-                                        onClick={() => onboardingActions.goToNextStep()}
-                                    >
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK}
-                                        />
-                                    </OnboardingButton.Cta>
-                                </React.Fragment>
-                            )}
+                            <OnboardingButton.Alt
+                                data-test="button-hologram-different"
+                                onClick={() => onboardingActions.goToSubStep('hologram-different')}
+                            >
+                                <FormattedMessage
+                                    {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_NOT_OK}
+                                />
+                            </OnboardingButton.Alt>
+                            <OnboardingButton.Cta
+                                data-test="button-continue"
+                                onClick={() => onboardingActions.goToNextStep()}
+                            >
+                                <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK} />
+                            </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
                 )}
