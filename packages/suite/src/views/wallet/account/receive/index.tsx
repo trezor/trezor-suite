@@ -50,8 +50,8 @@ const AccountReceive = (props: Props) => {
     const { isAddressVerified, isAddressUnverified } = props.receive;
 
     // this logic below for figuring out if address is currently being verified (showing prompt on the device),
-    // based on the currently set modal dialog,
-    // should be imo implemented somewhere inside reducers (setting isVerifying prop inside the reducer)
+    // is based on the currently set modal dialog,
+    // imo it should be implemented somewhere inside reducers (setting isVerifying prop inside the reducer)
     const isAddressVerifying =
         props.modal.context === CONTEXT_DEVICE &&
         props.modal.windowType === 'ButtonRequest_Address';

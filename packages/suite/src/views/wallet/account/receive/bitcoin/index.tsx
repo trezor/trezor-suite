@@ -309,12 +309,10 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 )}
             />
 
-            {(props.isAddressVerified || props.isAddressUnverified) &&
+            {selectedAddr &&
+                (props.isAddressVerified || props.isAddressUnverified) &&
                 !props.isAddressVerifying && (
-                    <QrCode
-                        value={addresses ? addresses.unused[0].address : props.account.descriptor}
-                        accountPath={addresses ? addresses.unused[0].path : props.account.path}
-                    />
+                    <QrCode value={selectedAddr.address} accountPath={selectedAddr.path} />
                 )}
         </Wrapper>
     );
