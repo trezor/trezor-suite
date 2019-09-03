@@ -6,7 +6,6 @@ import { initialState, State } from '@wallet-reducers/receiveReducer';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
-import { FormattedMessage } from 'react-intl';
 
 export type ReceiveActions =
     | { type: typeof RECEIVE.INIT; state: State }

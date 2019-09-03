@@ -143,7 +143,7 @@ const AccountMenu = (props: Props) => {
         }
 
         return (
-            <LinkNoUnderline href={url} key={url+account.descriptor}>
+            <LinkNoUnderline href={url} key={url + account.descriptor}>
                 <Row>
                     <RowAccountWrapper
                         isSelected={parseInt(params.accountId, 10) === account.index}
