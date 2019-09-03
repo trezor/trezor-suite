@@ -8,7 +8,13 @@ addMatchImageSnapshotCommand({
 
 beforeEach(() => {
     cy.document().then(doc => {
-        cy.expect(doc.fonts.status).to.equal('loaded');
+        cy.wrap(null).then(() => {
+            // return a promise to cy.then() that
+            // is awaited until it resolves
+            return doc.fonts.ready.then(fontSet => {
+                cy.expect(fontSet.status).to.equal('loaded');
+            });
+        });
     });
 });
 
