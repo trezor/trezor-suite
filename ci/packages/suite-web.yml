@@ -1,78 +1,78 @@
-suite-web lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/suite-web lint
-    dependencies:
-        - install and build
+# suite-web lint:
+#     stage: lint and prettier
+#     script:
+#         - yarn workspace @trezor/suite-web lint
+#     dependencies:
+#         - install and build
 
-suite-web type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/suite-web type-check
-    dependencies:
-        - install and build
+# suite-web type check:
+#     stage: typescript type check
+#     script:
+#         - yarn workspace @trezor/suite-web type-check
+#     dependencies:
+#         - install and build
 
-suite-web build:
-    stage: build
-    script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 15 minutes
-        paths:
-            - $PACKAGE_PATH_SUITE_WEB/build
-    dependencies:
-        - install and build
+# suite-web build:
+#     stage: build
+#     script:
+#         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+#     artifacts:
+#         expire_in: 15 minutes
+#         paths:
+#             - $PACKAGE_PATH_SUITE_WEB/build
+#     dependencies:
+#         - install and build
 
-suite-web deploy dev:
-    stage: deploy to dev servers
-    variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-        DEPLOY_URL: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-    dependencies:
-        - install and build
-        - suite-web build
-    environment:
-        name: ${CI_BUILD_REF_NAME}
-        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-        on_stop: suite-web delete review
-    before_script: []
-    script:
-        - cd ${PACKAGE_PATH_SUITE_WEB}
-        - echo "Deploy to dev servers"
-        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-        - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
-    tags:
-        - deploy
+# suite-web deploy dev:
+#     stage: deploy to dev servers
+#     variables:
+#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+#         DEPLOY_URL: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+#     dependencies:
+#         - install and build
+#         - suite-web build
+#     environment:
+#         name: ${CI_BUILD_REF_NAME}
+#         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+#         on_stop: suite-web delete review
+#     before_script: []
+#     script:
+#         - cd ${PACKAGE_PATH_SUITE_WEB}
+#         - echo "Deploy to dev servers"
+#         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
+#         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+#         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+#         - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+#     tags:
+#         - deploy
 
-suite-web delete review:
-    stage: deploy to dev servers
-    variables:
-        GIT_STRATEGY: none
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-    when: manual
-    environment:
-        name: ${CI_BUILD_REF_NAME}
-        action: stop
-    script:
-        - cd packages/suite-web
-        - 'rm -r "${DEPLOY_DIRECTORY}"'
-    tags:
-        - deploy
-    dependencies:
-        - install and build
+# suite-web delete review:
+#     stage: deploy to dev servers
+#     variables:
+#         GIT_STRATEGY: none
+#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+#     when: manual
+#     environment:
+#         name: ${CI_BUILD_REF_NAME}
+#         action: stop
+#     script:
+#         - cd packages/suite-web
+#         - 'rm -r "${DEPLOY_DIRECTORY}"'
+#     tags:
+#         - deploy
+#     dependencies:
+#         - install and build
 
-suite-web test integration:
-    stage: integration testing
-    script:
-        - npx cypress install
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
-    artifacts:
-        expire_in: 2 days
-        when: always
-        paths:
-            - suite-web/test/snapshots
-            - suite-web/test/screenshots
-    dependencies:
-        - install and build
+# suite-web test integration:
+#     stage: integration testing
+#     script:
+#         - npx cypress install
+#         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
+#     artifacts:
+#         expire_in: 2 days
+#         when: always
+#         paths:
+#             - suite-web/test/snapshots
+#             - suite-web/test/screenshots
+#     dependencies:
+#         - install and build
