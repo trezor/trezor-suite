@@ -37,6 +37,18 @@ const definedMessages = defineMessages({
         id: 'TR_FRESH_ADDRESS',
         defaultMessage: 'Fresh address',
     },
+    TR_RECEIVE_BITCOIN: {
+        id: 'TR_RECEIVE_BITCOIN',
+        defaultMessage: 'Receive Bitcoin',
+    },
+    TR_RECEIVE_ETHEREUM_OR_TOKENS: {
+        id: 'TR_RECEIVE_ETHEREUM_OR_TOKENS',
+        defaultMessage: 'Receive Ethereum or tokens',
+    },
+    TR_RECEIVE_RIPPLE: {
+        id: 'TR_RECEIVE_RIPPLE',
+        defaultMessage: 'Receive Ripple',
+    },
 });
 
 export default definedMessages;

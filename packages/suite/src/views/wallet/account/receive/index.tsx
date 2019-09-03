@@ -8,9 +8,10 @@ import Content from '@suite/components/wallet/Content';
 import { CONTEXT_DEVICE } from '@suite-actions/constants/modalConstants';
 import { showAddress } from '@wallet-actions/receiveActions';
 import { bindActionCreators } from 'redux';
-import EthereumTypeReceiveForm from './ethereum';
-import RippleTypeReceiveForm from './ripple';
-import BitcoinTypeReceiveForm from './bitcoin';
+import { Network } from '@suite/types/wallet/networkTypes';
+import { FormattedMessage } from 'react-intl';
+import ReceiveForm from './ReceiveForm';
+import l10nMessages from './ReceiveForm/messages';
 
 interface Props {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -31,7 +32,9 @@ export interface ReceiveProps {
     isAddressPartiallyHidden: boolean;
     isAddressVerified: boolean;
     showAddress: typeof showAddress;
+    networkType: Network['networkType'];
     device: Exclude<AppState['suite']['device'], undefined>;
+    title: React.ReactNode;
 }
 
 const AccountReceive = (props: Props) => {
@@ -73,18 +76,28 @@ const AccountReceive = (props: Props) => {
         isAddressVerified,
         isAddressUnverified,
         isAddressVerifying,
+        networkType: network.networkType,
     };
 
     return (
         <LayoutAccount>
             {network.networkType === 'bitcoin' && (
-                <BitcoinTypeReceiveForm {...commonComponentProps} />
+                <ReceiveForm
+                    {...commonComponentProps}
+                    title={<FormattedMessage {...l10nMessages.TR_RECEIVE_BITCOIN} />}
+                />
             )}
             {network.networkType === 'ethereum' && (
-                <EthereumTypeReceiveForm {...commonComponentProps} />
+                <ReceiveForm
+                    {...commonComponentProps}
+                    title={<FormattedMessage {...l10nMessages.TR_RECEIVE_ETHEREUM_OR_TOKENS} />}
+                />
             )}
             {network.networkType === 'ripple' && (
-                <RippleTypeReceiveForm {...commonComponentProps} />
+                <ReceiveForm
+                    {...commonComponentProps}
+                    title={<FormattedMessage {...l10nMessages.TR_RECEIVE_RIPPLE} />}
+                />
             )}
         </LayoutAccount>
     );

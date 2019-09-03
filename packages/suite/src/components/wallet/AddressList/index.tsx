@@ -25,7 +25,7 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
         moreItems: boolean,
     ) => React.ReactNode;
     secondaryText?: (addr: Address) => React.ReactNode;
-    tooltipActions?: (addr: Address) => React.ReactNode;
+    tooltipActions?: (addr: string) => React.ReactNode;
 }
 
 const AddressList = ({
@@ -74,7 +74,7 @@ const AddressList = ({
             address={addr.address}
             index={parseBIP44Path(addr.path)!.addrIndex}
             actions={actions ? actions(addr) : null}
-            tooltipActions={tooltipActions ? tooltipActions(addr) : null}
+            tooltipActions={tooltipActions ? tooltipActions(addr.address) : null}
         />
     ));
 

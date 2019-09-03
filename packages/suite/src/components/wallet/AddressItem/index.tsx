@@ -24,6 +24,13 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
     }
 
     ${props =>
+        props.isSelected &&
+        css`
+            z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
+            background: ${INPUT_HOVER};
+        `};
+
+    ${props =>
         props.readOnly &&
         css`
             background: ${colors.GRAY_LIGHT};
@@ -31,13 +38,6 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
             &:hover {
                 background: ${colors.GRAY_LIGHT};
             }
-        `};
-
-    ${props =>
-        props.isSelected &&
-        css`
-            z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
-            background: ${INPUT_HOVER};
         `};
 `;
 
