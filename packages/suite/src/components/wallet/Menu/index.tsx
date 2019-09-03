@@ -50,7 +50,10 @@ const Menu = (props: Props) => (
         {props.wallet.accounts
             .filter(account => !account.empty)
             .map(account => (
-                <Row account={account} />
+                <Row
+                    key={`${account.network}-${account.descriptor}-${account.index}`}
+                    account={account}
+                />
             ))}
     </Wrapper>
 );

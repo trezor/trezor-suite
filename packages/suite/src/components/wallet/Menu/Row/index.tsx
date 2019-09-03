@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import { Link } from '@suite-components';
 import { NETWORKS } from '@suite-config';
+import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     padding: 0 15px;
@@ -113,9 +114,12 @@ const getCoinName = (symbol: string, accountType: string) => {
 
 const getCoinLogo = (network: string) => (network === 'test' ? 'btc' : network);
 
-const Row = ({ account }) => (
+interface Props {
+    account: Account;
+}
+
+const Row = ({ account }: Props) => (
     <StyledLink
-        key={`${account.network}-${account.descriptor}`}
         href={getRoute('wallet-account', {
             accountId: account.index,
             symbol: account.network,
