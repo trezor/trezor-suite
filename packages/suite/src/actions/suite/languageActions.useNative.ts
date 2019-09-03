@@ -13,6 +13,10 @@ export const fetchLocale = (locale: string) => async (dispatch: Dispatch) => {
             messages,
         });
     } catch (error) {
-        console.error('fetchLocale', error);
+        dispatch({
+            type: SUITE.SET_LANGUAGE,
+            locale: 'en',
+            messages: {},
+        });
     }
 };

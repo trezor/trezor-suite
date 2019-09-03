@@ -8,12 +8,14 @@ import { Dispatch, GetState } from '@suite-types';
 export type DiscoveryActions =
     | { type: typeof DISCOVERY.START; payload: Discovery }
     | { type: typeof DISCOVERY.UPDATE; payload: PartialDiscovery }
+    | { type: typeof DISCOVERY.INTERRUPT; payload: PartialDiscovery }
     | { type: typeof DISCOVERY.FAILED; payload: PartialDiscovery }
     | { type: typeof DISCOVERY.STOP; payload: PartialDiscovery }
     | { type: typeof DISCOVERY.COMPLETE; payload: PartialDiscovery };
 
 type UpdateActionType =
     | typeof DISCOVERY.UPDATE
+    | typeof DISCOVERY.INTERRUPT
     | typeof DISCOVERY.FAILED
     | typeof DISCOVERY.STOP
     | typeof DISCOVERY.COMPLETE;
@@ -56,7 +58,10 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
     );
 };
 
-const getDiscoveryForDevice = () => (dispatch: Dispatch, getState: GetState) => {
+export const getDiscoveryForDevice = () => (
+    dispatch: Dispatch,
+    getState: GetState,
+): Discovery | void => {
     const { device } = getState().suite;
     if (!device || !device.state) return;
     return dispatch(getDiscovery(device.state));
@@ -121,6 +126,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
     dispatch({
         type: ACCOUNT.CREATE,
         payload: {
+            deviceState: device,
             index: item.index,
             accountType: item.accountType,
             path: item.path,
@@ -137,7 +143,7 @@ const getBundle = (discovery: Discovery) => (
 ): DiscoveryItem[] => {
     const bundle: DiscoveryItem[] = [];
     // find not empty accounts
-    const { accounts } = getState().wallet;
+    const accounts = getState().wallet.accounts.filter(a => a.deviceState === discovery.device);
     const usedAccounts = accounts.filter(
         account => account.index === discovery.index && !account.empty,
     );
@@ -326,14 +332,6 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 keepSession: false,
             });
             dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
-            // TODO: notification with translations
-            dispatch(
-                addNotification({
-                    variant: 'error',
-                    title: 'Reading accounts error',
-                    cancelable: true,
-                }),
-            );
         } else {
             // call getFeatures to release device session
             // await TrezorConnect.getFeatures({ keepSession: false });
@@ -366,7 +364,9 @@ export const init = () => async (dispatch: Dispatch): Promise<void> => {
 export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());
     if (discovery) {
-        dispatch(update({ device: discovery.device, status: STATUS.STOPPING }));
+        dispatch(
+            update({ device: discovery.device, status: STATUS.STOPPING }, DISCOVERY.INTERRUPT),
+        );
         TrezorConnect.cancel('discovery_interrupted');
     }
 };

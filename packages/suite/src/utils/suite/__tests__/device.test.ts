@@ -79,3 +79,28 @@ describe('getSelectedDevice', () => {
         });
     });
 });
+
+describe('sortByTimestamp', () => {
+    it('sortByTimestamp', () => {
+        const result = utils.sortByTimestamp(fixtures.sortByTimestamp.devices as any);
+        expect(result).toEqual(fixtures.sortByTimestamp.result);
+    });
+});
+
+describe('getOtherDevices', () => {
+    fixtures.getOtherDevices.forEach(f => {
+        it(f.description, () => {
+            const sort = utils.getOtherDevices(f.selected as any, f.devices as any);
+            expect(sort).toEqual(f.result);
+        });
+    });
+});
+
+describe('getDeviceInstances', () => {
+    fixtures.getDeviceInstances.forEach(f => {
+        it(f.description, () => {
+            const sort = utils.getDeviceInstances(f.selected as any, f.devices as any);
+            expect(sort).toEqual(f.result);
+        });
+    });
+});
