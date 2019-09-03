@@ -8,9 +8,8 @@ import Layout from '@wallet-components/Layout';
 import Discovery from '@wallet-components/Discovery';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
-import NETWORKS from '@suite-config/networks';
-import EXTERNAL_COINS from '@suite-config/externalCoins';
 import { getRoute } from '@suite/utils/suite/router';
+import { NETWORKS, EXTERNAL_COINS } from '@suite-config';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -33,6 +32,7 @@ const StyledP = styled(P)`
 const Coins = styled.div`
     display: flex;
     flex-wrap: wrap;
+    max-width: 400px;
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
@@ -50,7 +50,7 @@ const StyledH4 = styled(H4)`
 `;
 
 const StyledLink = styled(Link)`
-    margin-right: 10px;
+    margin: 5px;
 
     &:last-child {
         margin-right: 0;
@@ -64,7 +64,7 @@ interface Props {
 const Dashboard = (props: Props) => {
     const isEmpty = () => {
         const numberOfVisibleNetworks = NETWORKS.filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => !props.settings.hiddenCoins.includes(item.shortcut));
+            .filter(item => !props.settings.hiddenCoins.includes(item.symbol));
         const { hiddenCoinsExternal } = props.settings;
         const numberOfVisibleNetworksExternal = EXTERNAL_COINS.filter(
             item => !item.isHidden,
@@ -100,16 +100,19 @@ const Dashboard = (props: Props) => {
                     </StyledP>
                     <Coins>
                         {NETWORKS.filter(item => !item.isHidden)
-                            .filter(item => !props.settings.hiddenCoins.includes(item.shortcut))
+                            .filter(item => !props.settings.hiddenCoins.includes(item.symbol))
                             .map(network => (
                                 <StyledLink
-                                    key={network.shortcut}
+                                    key={`${network.name}-${network.symbol}`}
                                     href={getRoute('wallet-account', {
-                                        coin: network.shortcut,
+                                        coin: network.symbol,
                                         accountId: '0',
                                     })}
                                 >
-                                    <StyledCoinLogo network={network.shortcut} size={24} />
+                                    <StyledCoinLogo
+                                        network={network.symbol === 'test' ? 'btc' : network.symbol}
+                                        size={27}
+                                    />
                                 </StyledLink>
                             ))}
                     </Coins>
