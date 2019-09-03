@@ -1,6 +1,5 @@
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 // import { BLOCKCHAIN } from 'trezor-connect';
-import NETWORKS from '@suite-config/networks';
 import { SUITE } from '@suite-actions/constants';
 // import * as WALLET from '@wallet-actions/';
 import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
@@ -20,6 +19,7 @@ import {
 import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
+import { NETWORKS } from '@suite-config';
 
 export type SelectedAccountActions =
     | {
@@ -60,7 +60,7 @@ const getExceptionPage = (
             type: 'fwNotSupported',
             title: `${network.name} is not supported with Trezor ${getVersion(device)}`,
             message: 'Find more information on Trezor Wiki.',
-            shortcut: network.shortcut,
+            shortcut: network.symbol,
         };
     }
 
