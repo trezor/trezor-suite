@@ -254,8 +254,8 @@ declare module 'trezor-connect' {
 
     export interface Address {
         address: string;
-        path: number[]; // TODO: is string in accounts.addresses
-        serializedPath: string; // TODO: doesnt exist in accounts.addresses
+        path: number[];
+        serializedPath: string;
     }
 
     export interface ComposeTransactionParams extends CommonParams {
