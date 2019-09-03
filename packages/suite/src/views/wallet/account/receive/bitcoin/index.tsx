@@ -131,7 +131,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
     const firstFreshAddress = addresses.unused[0];
     // <FormattedMessage {...messages.TR_CHECK_ADDRESS_ON_TREZOR} />
     const tooltipAction = (addr: Address) => {
-        return selectedAddr && selectedAddr.address === addr.address ? (
+        return props.isAddressVerifying && selectedAddr && selectedAddr.address === addr.address ? (
             <>
                 <StyledDeviceIcon size={16} device={props.device} color={colors.WHITE} />
                 <div>CHeck addr on trezor'</div>
@@ -156,11 +156,11 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                     </>
                 )}
                 tooltipActions={tooltipAction}
-                actions={addrPath => (
+                actions={addr => (
                     <ShowOnTrezorEyeButton
                         device={props.device}
                         isAddressUnverified={props.isAddressUnverified}
-                        onClick={() => props.showAddress(addrPath)}
+                        onClick={() => {setSelectedAddr(addr); props.showAddress(addr.path)}}
                     />
                 )}
                 controls={(page, setPage, isCollapsed, setIsCollapsed, moreItems) => (
@@ -268,11 +268,11 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 paginationEnabled={false}
                 collapsed={false}
                 tooltipActions={tooltipAction}
-                actions={addrPath => (
+                actions={addr => (
                     <>
                         {!(props.isAddressVerified || props.isAddressUnverified) && ( // !account.imported
                             <ShowAddressButton
-                                onClick={() => props.showAddress(addrPath)}
+                                onClick={() => props.showAddress(addr.path)}
                                 // isDisabled={device.connected && !discovery.completed}
                                 icon="EYE"
                             >
@@ -285,7 +285,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                                 <ShowOnTrezorEyeButton
                                     device={props.device}
                                     isAddressUnverified={props.isAddressUnverified}
-                                    onClick={() => props.showAddress(addrPath)}
+                                    onClick={() => props.showAddress(addr.path)}
                                 />
                             )}
                     </>

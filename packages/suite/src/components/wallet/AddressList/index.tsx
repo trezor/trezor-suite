@@ -14,7 +14,7 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
     selectedAddress: Address | null;
     collapsed?: boolean;
     paginationEnabled: boolean;
-    actions?: (addrPath: string) => React.ReactNode;
+    actions?: (addr: Address) => React.ReactNode;
     controls?: (
         page: number,
         setPage: React.Dispatch<React.SetStateAction<number>>,
@@ -71,7 +71,7 @@ const AddressList = ({
             isSelected={addr === selectedAddress}
             address={addr.address}
             index={parseBIP44Path(addr.path)!.addrIndex}
-            actions={actions ? actions(addr.path) : null}
+            actions={actions ? actions(addr) : null}
             tooltipActions={tooltipActions ? tooltipActions(addr) : null}
         />
     ));

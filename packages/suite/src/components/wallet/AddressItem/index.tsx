@@ -35,6 +35,14 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
                 background: ${colors.GRAY_LIGHT};
             }
         `};
+
+
+    ${props =>
+        props.isSelected &&
+        css`
+            z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
+            background: #fafafa;
+        `};
 `;
 
 const DescriptorWrapper = styled.div`
@@ -105,7 +113,7 @@ const ArrowUp = styled.div`
     border-left: 9px solid transparent;
     border-right: 9px solid transparent;
     border-bottom: 9px solid black;
-    z-index: 10001;
+    z-index: 10002;
 `;
 
 const TooltipAction = styled.div`

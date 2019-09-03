@@ -1,4 +1,5 @@
 import { MODAL, CONNECT } from '@suite-actions/constants';
+import { UI } from 'trezor-connect';
 import { TrezorDevice, Action } from '@suite-types';
 
 export type State =
@@ -16,6 +17,20 @@ const initialState: State = {
 
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
+        // @ts-ignore
+        case UI.REQUEST_BUTTON:
+            return {
+                context: MODAL.CONTEXT_DEVICE,
+                // @ts-ignore
+                device: action.payload.device,
+                // @ts-ignore
+                windowType: action.payload.code,
+            };
+
+        // @ts-ignore
+        case UI.CLOSE_UI_WINDOW:
+        case MODAL.CLOSE:
+            return initialState;
         // @ts-ignore TODO fix after connect types
         // case CONNECT.FORGET_REQUEST:
         // case CONNECT.TRY_TO_DUPLICATE:
