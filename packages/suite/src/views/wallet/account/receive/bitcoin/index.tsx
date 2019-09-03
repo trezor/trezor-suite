@@ -12,6 +12,7 @@ import ShowOnTrezorEyeButton from '@suite/components/wallet/ShowOnTrezorEyeButto
 import SETTINGS from '@suite-config/settings';
 import { parseBIP44Path } from '@suite/utils/wallet/accountUtils';
 import { AccountAddresses } from 'trezor-connect';
+import receiveMessages from '../messages';
 import messages from './messages';
 import { ReceiveProps } from '../index';
 import { DeviceIcon } from '@suite-components';
@@ -124,7 +125,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
     const [freshAddrCount, setFreshAddrCount] = useState(0);
 
     useEffect(() => {
-        // reset selected addr, showed fresh addresses on account change
+        // reset selected address and fresh addresses count on account change
         setSelectedAddr(null);
         setFreshAddrCount(0);
     }, [props.account]);
@@ -132,12 +133,11 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
     if (!addresses) return null;
 
     const firstFreshAddress = addresses.unused[0];
-    // <FormattedMessage {...messages.TR_CHECK_ADDRESS_ON_TREZOR} />
     const tooltipAction = (addr: Address) => {
         return props.isAddressVerifying && selectedAddr && selectedAddr.address === addr.address ? (
             <>
                 <StyledDeviceIcon size={16} device={props.device} color={colors.WHITE} />
-                <div>CHeck addr on trezor'</div>
+                <FormattedMessage {...receiveMessages.TR_CHECK_ADDRESS_ON_TREZOR} />
             </>
         ) : null;
     };
@@ -155,7 +155,10 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 paginationEnabled
                 secondaryText={_addr => (
                     <>
-                        Total received: <TextGreen>x BTC</TextGreen>
+                        <FormattedMessage
+                            {...receiveMessages.TR_TOTAL_RECEIVED}
+                            values={{ amount: <TextGreen>x BTC</TextGreen> }}
+                        />
                     </>
                 )}
                 tooltipActions={tooltipAction}
@@ -171,7 +174,11 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 )}
                 controls={(page, setPage, isCollapsed, setIsCollapsed, moreItems) => (
                     <TitleWrapper>
-                        {!isCollapsed && <SubHeading>Previous addresses</SubHeading>}
+                        {!isCollapsed && (
+                            <SubHeading>
+                                <FormattedMessage {...receiveMessages.TR_PREVIOUS_ADDRESSES} />
+                            </SubHeading>
+                        )}
 
                         <ControlsWrapper>
                             {!isCollapsed && (
@@ -186,7 +193,9 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                                         color={colors.GREEN_PRIMARY}
                                         icon="ARROW_DOWN"
                                     />
-                                    Hide previous addresses
+                                    <FormattedMessage
+                                        {...receiveMessages.TR_HIDE_PREVIOUS_ADDRESSES}
+                                    />
                                 </ControlsLink>
                             )}
                             {(moreItems || isCollapsed) && (
@@ -201,7 +210,9 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                                         color={colors.GREEN_PRIMARY}
                                         icon="ARROW_UP"
                                     />
-                                    Show previous addresses
+                                    <FormattedMessage
+                                        {...receiveMessages.TR_SHOW_PREVIOUS_ADDRESSES}
+                                    />
                                 </ControlsLink>
                             )}
                         </ControlsWrapper>
@@ -210,7 +221,9 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
             />
 
             <TitleWrapper>
-                <SubHeading>Fresh address</SubHeading>
+                <SubHeading>
+                    <FormattedMessage {...receiveMessages.TR_FRESH_ADDRESS} />
+                </SubHeading>
             </TitleWrapper>
 
             <FreshAddress
@@ -237,8 +250,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                                 // isDisabled={device.connected && !discovery.completed}
                                 icon="EYE"
                             >
-                                {/* <FormattedMessage {...messages.TR_SHOW_FULL_ADDRESS} /> */}
-                                Show full address
+                                <FormattedMessage {...receiveMessages.TR_SHOW_FULL_ADDRESS} />
                             </ShowAddressButton>
                         )}
                         {(props.isAddressVerified || props.isAddressUnverified) &&
@@ -262,7 +274,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                     icon="PLUS"
                     isDisabled={freshAddrCount >= SETTINGS.FRESH_ADDRESS_LIMIT + 1}
                 >
-                    Add fresh address
+                    <FormattedMessage {...receiveMessages.TR_ADD_FRESH_ADDRESS} />
                 </AddFreshAddress>
             </ButtonsWrapper>
 
@@ -282,8 +294,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                                 // isDisabled={device.connected && !discovery.completed}
                                 icon="EYE"
                             >
-                                {/* <FormattedMessage {...messages.TR_SHOW_FULL_ADDRESS} /> */}
-                                Show full address
+                                <FormattedMessage {...receiveMessages.TR_SHOW_FULL_ADDRESS} />
                             </ShowAddressButton>
                         )}
                         {(props.isAddressVerified || props.isAddressUnverified) &&
@@ -297,16 +308,7 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                     </>
                 )}
             />
-            {/* <VerifyAddressInput
-                device={props.device}
-                accountPath={addresses.unused[0].path}
-                accountAddress={addresses.unused[0].address}
-                isAddressHidden={props.isAddressHidden}
-                isAddressVerified={props.isAddressVerified}
-                isAddressUnverified={props.isAddressUnverified}
-                isAddressVerifying={props.isAddressVerifying}
-                showAddress={props.showAddress}
-            /> */}
+
             {(props.isAddressVerified || props.isAddressUnverified) &&
                 !props.isAddressVerifying && (
                     <QrCode
