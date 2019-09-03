@@ -4,7 +4,6 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
-
 import { SUITE } from '@suite-actions/constants';
 import { lockUI } from '@suite-actions/suiteActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
