@@ -282,6 +282,12 @@ declare module 'trezor-connect' {
         message: string;
         coin?: string;
     }
+    export interface FirmwareUpdateParams extends CommonParams {
+        payload: ArrayBuffer;
+        hash?: string;
+        offset?: number;
+        length?: number;  
+    }
 
     export interface BackupDeviceParams extends CommonParams {}
 
@@ -792,9 +798,14 @@ declare module 'trezor-connect' {
          * Asks device to verify a message using the signer address and signature.
          */
         function verifyMessage(params: VerifyMessageParams): Promise<ResponseMessage<Message>>;
-        
-        // todo:
-        function firmwareUpdate(params: any): Promise<ResponseMessage<Message>>;
+
+        /**
+         * Sends FirmwareErase message followed by FirmwareUpdate message
+         */
+        function firmwareUpdate(params: FirmwareUpdateParams): Promise<ResponseMessage<Message>>;
+        /**
+         * Asks device to initiate seed backup procedure
+         */
         function backupDevice(params: BackupDeviceParams): Promise<ResponseMessage<Message>>;
 
         function dispose(): void;
