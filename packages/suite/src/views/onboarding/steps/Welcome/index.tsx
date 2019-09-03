@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H1, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import * as STEP from '@onboarding-constants/steps';
@@ -29,9 +29,9 @@ const WelcomeStep = (props: Props) => {
     return (
         <Wrapper.Step data-test="onboarding_first_page">
             <Wrapper.StepBody>
-                <H1>
+                <Wrapper.StepHeading>
                     <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} />
-                </H1>
+                </Wrapper.StepHeading>
 
                 <Text>
                     <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR_TEXT} />
