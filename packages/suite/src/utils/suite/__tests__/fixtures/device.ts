@@ -284,6 +284,43 @@ const findInstanceIndex = [
     },
 ];
 
+const getSelectedDevice = [
+    {
+        description: `unacquired device`,
+        device: getSuiteDevice({ type: 'unacquired' }),
+        state: [getSuiteDevice({ type: 'unacquired' })],
+        result: getSuiteDevice({ type: 'unacquired' }),
+    },
+    {
+        description: `bootloader device`,
+        device: getSuiteDevice({ mode: 'bootloader' }),
+        state: [getSuiteDevice({ mode: 'bootloader' })],
+        result: getSuiteDevice({ mode: 'bootloader' }),
+    },
+    {
+        description: `acquired device`,
+        device: SUITE_DEVICE,
+        state: [SUITE_DEVICE],
+        result: SUITE_DEVICE,
+    },
+    {
+        description: `unknown device (empty state)`,
+        device: SUITE_DEVICE,
+        state: [],
+        result: undefined,
+    },
+    {
+        description: `unknown device (not found)`,
+        device: SUITE_DEVICE,
+        state: [
+            getSuiteDevice(undefined, {
+                device_id: 'ignored-device-id',
+            }),
+        ],
+        result: undefined,
+    },
+];
+
 export default {
     getStatus,
     isWebUSB,
@@ -292,4 +329,5 @@ export default {
     getVersion,
     getNewInstanceNumber,
     findInstanceIndex,
+    getSelectedDevice,
 };

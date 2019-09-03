@@ -17,6 +17,7 @@ import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
+import { NotificationActions } from '@suite-actions/notificationActions';
 import { Action as WalletActions } from '@wallet-types/index';
 import OnboardingActions from '@onboarding-types/actions';
 
@@ -33,9 +34,9 @@ export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>
-    | Omit<UiEvent, 'event'>
+    | UiEvent
     | Omit<DeviceEvent, 'event'>
-    | { type: 'iframe-loaded'; payload: any };
+    | { type: 'iframe-loaded'; payload: { browser: any } };
 
 export type AppState = AppState;
 
@@ -48,6 +49,7 @@ export type Action =
     | SuiteActions
     | LogActions
     | ModalActions
+    | NotificationActions
     | WalletActions
     | OnboardingActions;
 
@@ -72,7 +74,7 @@ export interface AcquiredDevice {
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     instance?: number;
-    instanceLabel: string | typeof undefined;
+    instanceLabel: string;
     instanceName?: string;
     ts: number;
 }
@@ -100,3 +102,8 @@ export interface UnknownDevice {
 }
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
+
+// utils types todo: consider moving it to separate file
+
+// make key required
+export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;

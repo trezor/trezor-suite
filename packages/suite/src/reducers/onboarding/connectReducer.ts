@@ -1,11 +1,10 @@
-import { DEVICE } from 'trezor-connect';
+import { DEVICE, UI } from 'trezor-connect';
 import {
     ConnectReducer,
     DEVICE_CALL_RESET,
     DEVICE_CALL_START,
     DEVICE_CALL_SUCCESS,
     DEVICE_CALL_ERROR,
-    UI_REQUEST_PIN,
 } from '@suite/types/onboarding/connect';
 import { Action } from '@suite-types';
 
@@ -142,23 +141,19 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     result: null,
                 },
             };
-        case 'button':
+        case UI.REQUEST_BUTTON:
             return {
                 ...state,
                 deviceInteraction: {
                     name: action.payload.code,
                     counter: state.deviceInteraction.counter + 1,
                 },
-            };
-        case 'ui-button':
-            return {
-                ...state,
                 uiInteraction: {
                     name: action.payload.code,
                     counter: state.uiInteraction.counter + 1,
                 },
             };
-        case 'ui-request_word':
+        case UI.REQUEST_WORD:
             return {
                 ...state,
                 uiInteraction: {
@@ -170,7 +165,7 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     counter: state.deviceInteraction.counter + 1,
                 },
             };
-        case UI_REQUEST_PIN:
+        case UI.REQUEST_PIN:
             return {
                 ...state,
                 device: {

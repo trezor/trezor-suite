@@ -1,7 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import { Action } from '@wallet-types/index';
-import { RECEIVE, NOTIFICATION } from '@wallet-actions/constants';
-
+import { RECEIVE } from '@wallet-actions/constants';
+import { NOTIFICATION } from '@suite-actions/constants';
 import { initialState, State } from '@wallet-reducers/receiveReducer';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
@@ -38,27 +38,27 @@ export const showAddress = (path: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ): Promise<void> => {
-    const selected = getState().suite.device;
+    const selectedDevice = getState().suite.device;
     const { network } = getState().wallet.selectedAccount;
 
-    if (!selected || !network) return;
+    if (!selectedDevice || !network) return;
 
-    if (selected && (!selected.connected || !selected.available)) {
+    if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         dispatch({
             type: RECEIVE.REQUEST_UNVERIFIED,
-            device: selected,
+            device: selectedDevice,
         });
         return;
     }
 
     const params = {
         device: {
-            path: selected.path,
-            instance: selected.instance,
-            state: selected.state,
+            path: selectedDevice.path,
+            instance: selectedDevice.instance,
+            state: selectedDevice.state,
         },
         path,
-        useEmptyPassphrase: selected.useEmptyPassphrase,
+        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
     };
 
     let response;
