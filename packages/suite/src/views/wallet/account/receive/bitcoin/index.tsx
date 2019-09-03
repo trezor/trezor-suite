@@ -153,11 +153,16 @@ const BitcoinReceive = ({ className, ...props }: ReceiveProps) => {
                 setSelectedAddr={setSelectedAddr}
                 selectedAddress={selectedAddr}
                 paginationEnabled
-                secondaryText={_addr => (
+                secondaryText={addr => (
                     <>
                         <FormattedMessage
                             {...receiveMessages.TR_TOTAL_RECEIVED}
-                            values={{ amount: <TextGreen>x BTC</TextGreen> }}
+                            values={{
+                                amount: (
+                                    // TODO: add to utils?
+                                    <TextGreen>{Number(addr.received) / 100000000} BTC</TextGreen>
+                                ),
+                            }}
                         />
                     </>
                 )}
