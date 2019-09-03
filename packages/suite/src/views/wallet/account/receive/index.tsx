@@ -77,9 +77,15 @@ const AccountReceive = (props: Props) => {
 
     return (
         <LayoutAccount>
-            {network.type === 'bitcoin' && <BitcoinTypeReceiveForm {...commonComponentProps} />}
-            {network.type === 'ethereum' && <EthereumTypeReceiveForm {...commonComponentProps} />}
-            {network.type === 'ripple' && <RippleTypeReceiveForm {...commonComponentProps} />}
+            {network.networkType === 'bitcoin' && (
+                <BitcoinTypeReceiveForm {...commonComponentProps} />
+            )}
+            {network.networkType === 'ethereum' && (
+                <EthereumTypeReceiveForm {...commonComponentProps} />
+            )}
+            {network.networkType === 'ripple' && (
+                <RippleTypeReceiveForm {...commonComponentProps} />
+            )}
         </LayoutAccount>
     );
 };

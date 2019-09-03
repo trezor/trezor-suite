@@ -30,7 +30,7 @@ export const getParams = (url: string) => {
     return params;
 };
 
-export const getRoute = (name: AnyRouteName, params?: { [key: string]: string }) => {
+export const getRoute = (name: AnyRouteName, params?: { [key: string]: string | number }) => {
     const entry = routes.find(r => r.name === name);
     if (!entry) {
         throw new Error(`route "${name}" not found`);

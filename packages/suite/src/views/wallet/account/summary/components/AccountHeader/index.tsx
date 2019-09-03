@@ -47,7 +47,7 @@ const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }:
     const explorerLink = `${network.explorer.address}${account.descriptor}`;
     const balance = account.availableBalance;
     const reserve =
-        account.networkType === 'ripple' && !account.empty && account.misc && account.misc.reserve
+        account.type === 'ripple' && !account.empty && account.misc && account.misc.reserve
             ? account.misc.reserve
             : '0';
     return (

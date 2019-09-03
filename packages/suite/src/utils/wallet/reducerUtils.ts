@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
-import { Transaction, Account, Token, Network } from '@wallet-types/index';
 import { AppState, TrezorDevice } from '@suite/types/suite';
 import { Discovery } from '@suite/reducers/wallet/discoveryReducer';
+import { Transaction, Account, Token, Network } from '@wallet-types';
 
 export const getPendingAmount = (
     pending: Transaction[],
@@ -120,8 +120,8 @@ export const getSelectedAccount = (
     return accounts.find(a => a.index === index && a.network === routerParams.coin) || null;
 };
 
-export const getSelectedNetwork = (networks: Network[], networkShortcut: string) => {
-    return networks.find(c => c.shortcut === networkShortcut) || null;
+export const getSelectedNetwork = (networks: Network[], symbol: string) => {
+    return networks.find(c => c.symbol === symbol) || null;
 };
 
 export const getDiscoveryProcess = (
