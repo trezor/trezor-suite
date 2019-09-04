@@ -18,5 +18,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
+  ],
+  "exclude": [
+    "test/integration/**.*.ts"
   ]
 }

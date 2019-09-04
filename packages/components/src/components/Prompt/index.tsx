@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Icon } from '../Icon';
 
-import { Omit, IconType } from '../../support/types';
+import { IconType } from '../../support/types';
 import colors from '../../config/colors';
 import { getDeviceIcon } from '../../utils/icons';
 

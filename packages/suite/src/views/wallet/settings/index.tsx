@@ -3,15 +3,13 @@ import styled from 'styled-components';
 import { FormattedMessage, InjectedIntlProps } from 'react-intl';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import { AppState } from '@suite-types/index';
-// import Content from 'views/Wallet/components/Content';
 import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
 import Link from '@suite-components/Link';
-import FIAT from '@suite-config/fiat';
-import NETWORKS from '@suite-config/networks';
 import l10nCommonMessages from '@suite-views/index.messages';
 import Layout from '@wallet-components/Layout';
 import TopNavigation from '@wallet-components/TopNavigation';
 import { getRoute } from '@suite/utils/suite/router';
+import { FIAT, NETWORKS } from '@suite-config';
 import Coins from './components/Coins';
 import l10nMessages from './index.messages';
 
@@ -131,7 +129,6 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
         </Section>
         <Section>
             <Coins
-                // @ts-ignore todo: szymon
                 networks={NETWORKS}
                 handleCoinVisibility={props.handleCoinVisibility}
                 toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
