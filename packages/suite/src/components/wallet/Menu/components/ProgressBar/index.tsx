@@ -4,6 +4,9 @@ import { colors } from '@trezor/components';
 
 interface Props {
     progress: number;
+}
+
+interface LineProps extends Props {
     isHidden: boolean;
 }
 
@@ -13,7 +16,7 @@ const Wrapper = styled.div`
     flex-direction: row;
 `;
 
-const Line = styled.div<Props>`
+const Line = styled.div<LineProps>`
     height: 1px;
     display: flex;
     background: ${props => (!props.isHidden ? colors.GREEN_PRIMARY : colors.GRAY_LIGHT)};
