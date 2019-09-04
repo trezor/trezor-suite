@@ -37,6 +37,45 @@ export interface ReceiveProps {
     title: React.ReactNode;
 }
 
+const getTitleForNetwork = (symbol: string) => {
+    switch (symbol.toUpperCase()) {
+        case 'BTC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_BITCOIN} />;
+        case 'BCH':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_BITCOIN_CASH} />;
+        case 'BTG':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_BITCOIN_GOLD} />;
+        case 'DASH':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_DASH} />;
+        case 'DGB':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_DIGIBYTE} />;
+        case 'DOGE':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_DOGECOIN} />;
+        case 'LTC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_LITECOIN} />;
+        case 'NMC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_NAMECOIN} />;
+        case 'VTC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_VERTCOIN} />;
+        case 'ZEC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_ZCASH} />;
+        case 'ETH':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_ETHEREUM_OR_TOKENS} />;
+        case 'ETC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_ETHEREUM_OR_TOKENS} />;
+        case 'NEM':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_NEM} />;
+        case 'XLM':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_STELLAR} />;
+        case 'ADA':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_CARDANO} />;
+        case 'XTZ':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_TEZOS} />;
+        default:
+            break;
+    }
+};
+
 const AccountReceive = (props: Props) => {
     const { device } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
@@ -67,38 +106,27 @@ const AccountReceive = (props: Props) => {
         address = account.descriptor;
     }
 
-    const commonComponentProps = {
-        account,
-        device,
-        address,
-        showAddress: props.showAddress,
-        isAddressPartiallyHidden,
-        isAddressVerified,
-        isAddressUnverified,
-        isAddressVerifying,
-        networkType: network.networkType,
-    };
-
     return (
         <LayoutAccount>
-            {network.networkType === 'bitcoin' && (
-                <ReceiveForm
-                    {...commonComponentProps}
-                    title={<FormattedMessage {...l10nMessages.TR_RECEIVE_BITCOIN} />}
-                />
-            )}
-            {network.networkType === 'ethereum' && (
-                <ReceiveForm
-                    {...commonComponentProps}
-                    title={<FormattedMessage {...l10nMessages.TR_RECEIVE_ETHEREUM_OR_TOKENS} />}
-                />
-            )}
-            {network.networkType === 'ripple' && (
-                <ReceiveForm
-                    {...commonComponentProps}
-                    title={<FormattedMessage {...l10nMessages.TR_RECEIVE_RIPPLE} />}
-                />
-            )}
+            <ReceiveForm
+                account={account}
+                device={device}
+                address={address}
+                showAddress={props.showAddress}
+                isAddressPartiallyHidden={isAddressPartiallyHidden}
+                isAddressVerified={isAddressVerified}
+                isAddressUnverified={isAddressUnverified}
+                isAddressVerifying={isAddressVerifying}
+                networkType={network.networkType}
+                title={
+                    <FormattedMessage
+                        {...l10nMessages.TR_RECEIVE_NETWORK}
+                        values={{
+                            network: getTitleForNetwork(account.network),
+                        }}
+                    />
+                }
+            />
         </LayoutAccount>
     );
 };
