@@ -82,6 +82,7 @@ components-storybook test snapshots:
 components-storybook make snapshot references:
   image: cypress/base:10
   stage: integration testing
+  when: manual
   script:
     - npx cypress install
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
