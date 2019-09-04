@@ -43,14 +43,14 @@ describe('router', () => {
         it('should object of params parsed from the url', () => {
             expect(getParams('/suite-web/wallet/account/receive/#/trop/0')).toEqual({
                 accountId: '0',
-                coin: 'trop',
+                symbol: 'trop',
             });
             expect(getParams('/suite-web/wallet/account/receive/#/eth/1')).toEqual({
                 accountId: '1',
-                coin: 'eth',
+                symbol: 'eth',
             });
             expect(getParams('/suite-web/wallet/account/receive/#/eth')).toEqual({
-                coin: 'eth',
+                symbol: 'eth',
             });
         });
     });
@@ -68,7 +68,7 @@ describe('router', () => {
             ).toEqual('/wallet/account#/eth/0/segwit');
             expect(
                 getRoute('wallet-account', {
-                    coin: 'eth',
+                    symbol: 'eth',
                 }),
             ).toEqual('/wallet/account#/eth');
         });

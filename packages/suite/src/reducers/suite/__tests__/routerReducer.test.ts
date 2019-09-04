@@ -28,7 +28,7 @@ describe('routerReducer', () => {
             pathname: '/wallet/',
             hash: '/coin/1',
             params: {
-                coin: 'coin',
+                symbol: 'coin',
                 accountId: '1',
             },
             app: 'wallet',
