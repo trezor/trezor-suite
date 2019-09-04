@@ -4,10 +4,10 @@ import { FormattedMessage } from 'react-intl';
 import { H6, variables, Button, colors, Icon, Link } from '@trezor/components';
 
 import Title from '@wallet-components/Title';
-import QrCode from '@wallet-components/QrCode';
-import AddressList from '@wallet-components/AddressList';
-import AddressItem from '@wallet-components/AddressItem';
-import ShowOnTrezorEyeButton from '@wallet-components/ShowOnTrezorEyeButton';
+import QrCode from '@wallet-components/ReceiveForm/components/QrCode';
+import AddressList from '@wallet-components/ReceiveForm/components/AddressList';
+import AddressItem from '@wallet-components/ReceiveForm/components/AddressItem';
+import ShowOnTrezorEyeButton from '@wallet-components/ReceiveForm/components/ShowOnTrezorEyeButton';
 
 import { selectText } from '@suite-utils/dom';
 import { parseBIP44Path } from '@wallet-utils/accountUtils';
@@ -15,7 +15,6 @@ import SETTINGS from '@suite-config/settings';
 import { AccountAddresses } from 'trezor-connect';
 import { DeviceIcon } from '@suite-components';
 import l10nMessages from './messages';
-import { ReceiveProps } from '../index';
 
 const Wrapper = styled.div``;
 
@@ -113,7 +112,23 @@ const StyledDeviceIcon = styled(DeviceIcon)`
 type Addresses = AccountAddresses['used'] | AccountAddresses['unused'];
 type Address = Addresses[number];
 
-const ReceiveForm = ({ className, ...props }: ReceiveProps) => {
+interface Props {
+    className?: string;
+    // makes all props in selectedAccount required, so the account we need is not optional anymore
+    // also excludes null;
+    account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
+    address: string;
+    isAddressVerifying: boolean;
+    isAddressUnverified: boolean;
+    isAddressPartiallyHidden: boolean;
+    isAddressVerified: boolean;
+    showAddress: typeof showAddress;
+    networkType: Network['networkType'];
+    device: Exclude<AppState['suite']['device'], undefined>;
+    title: React.ReactNode;
+}
+
+const ReceiveForm = ({ className, ...props }: Props) => {
     const firstFreshAddrRef = useRef<HTMLDivElement>(null);
 
     const { addresses } = props.account;

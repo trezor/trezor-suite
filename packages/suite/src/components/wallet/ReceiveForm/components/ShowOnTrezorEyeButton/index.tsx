@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, Tooltip, Icon, Button, ButtonProps } from '@trezor/components';
 import { AppState } from '@suite/types/suite';
-import VerifyAddressTooltip from '../tooltips/VerifyAddressTooltip';
+import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 
 const EyeButton = styled(Button)`
     padding: 0;

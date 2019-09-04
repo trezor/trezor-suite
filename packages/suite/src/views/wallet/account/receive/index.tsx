@@ -8,10 +8,9 @@ import Content from '@suite/components/wallet/Content';
 import { CONTEXT_DEVICE } from '@suite-actions/constants/modalConstants';
 import { showAddress } from '@wallet-actions/receiveActions';
 import { bindActionCreators } from 'redux';
-import { Network } from '@suite/types/wallet/networkTypes';
 import { FormattedMessage } from 'react-intl';
-import ReceiveForm from './ReceiveForm';
-import l10nMessages from './ReceiveForm/messages';
+import ReceiveForm from '@wallet-components/ReceiveForm';
+import l10nMessages from '@wallet-components/ReceiveForm/messages';
 
 interface Props {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -19,22 +18,6 @@ interface Props {
     modal: AppState['modal'];
     receive: AppState['wallet']['receive'];
     showAddress: typeof showAddress;
-}
-
-export interface ReceiveProps {
-    className?: string;
-    // makes all props in selectedAccount required, so the account we need is not optional anymore
-    // also excludes null;
-    account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
-    address: string;
-    isAddressVerifying: boolean;
-    isAddressUnverified: boolean;
-    isAddressPartiallyHidden: boolean;
-    isAddressVerified: boolean;
-    showAddress: typeof showAddress;
-    networkType: Network['networkType'];
-    device: Exclude<AppState['suite']['device'], undefined>;
-    title: React.ReactNode;
 }
 
 const getTitleForNetwork = (symbol: string) => {
@@ -137,6 +120,7 @@ const mapStateToProps = (state: AppState) => ({
     receive: state.wallet.receive,
     modal: state.modal,
 });
+
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     showAddress: bindActionCreators(showAddress, dispatch),
 });
