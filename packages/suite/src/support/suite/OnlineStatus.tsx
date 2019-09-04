@@ -31,7 +31,7 @@ const OnlineStatus: FunctionComponent<Props> = (props: Props) => {
             window.removeEventListener('online', statusHandler, false);
             window.removeEventListener('offline', statusHandler, false);
         };
-    }, [props]);
+    });
 
     return null;
 };

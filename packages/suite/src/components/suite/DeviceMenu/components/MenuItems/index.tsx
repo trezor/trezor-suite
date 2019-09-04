@@ -12,6 +12,8 @@ import { setHideBalance } from '@wallet-actions/settingsActions';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
+import DeviceInstances from '../DeviceInstances';
+
 import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
 
 const { FONT_SIZE } = variables;
@@ -62,20 +64,26 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setHideBalance: bindActionCreators(setHideBalance, dispatch),
     acquireDevice: bindActionCreators(suiteActions.acquireDevice, dispatch),
+    selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
     requestForgetDevice: bindActionCreators(suiteActions.requestForgetDevice, dispatch),
+    requestDeviceInstance: bindActionCreators(suiteActions.requestDeviceInstance, dispatch),
 });
 
 type Props = {
     device: AcquiredDevice;
+    instances: AcquiredDevice[];
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
 const MenuItems = ({
     device,
+    instances,
     setHideBalance,
     settings,
     acquireDevice,
+    selectDevice,
     requestForgetDevice,
+    requestDeviceInstance,
 }: Props) => {
     // const showDeviceMenu = device && device.mode === 'normal';
 
@@ -86,22 +94,18 @@ const MenuItems = ({
 
     return (
         <Wrapper>
-            <Item onClick={() => goto(getRoute('suite-device-settings'))}>
-                <IconWrapper>
-                    <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
-                </IconWrapper>
-                <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_DEVICE_SETTINGS} />
-                </Label>
-            </Item>
+            <DeviceInstances
+                instances={instances}
+                selectDevice={selectDevice}
+                requestForgetDevice={requestForgetDevice}
+            />
             {showClone && (
-                // <Item onClick={() => this.props.duplicateDevice(device)}>
-                <Item onClick={() => {}}>
+                <Item onClick={() => requestDeviceInstance(device)}>
                     <IconWrapper>
-                        <Icon icon="WALLET_STANDARD" size={14} color={colors.TEXT_SECONDARY} />
+                        <Icon icon="WALLET_HIDDEN" size={14} color={colors.TEXT_SECONDARY} />
                     </IconWrapper>
                     <Label>
-                        <FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} />
+                        <FormattedMessage {...l10nMessages.TR_ADD_HIDDEN_WALLET} />
                     </Label>
                 </Item>
             )}
@@ -115,6 +119,14 @@ const MenuItems = ({
                     </Label>
                 </Item>
             )}
+            <Item onClick={() => goto(getRoute('suite-device-settings'))}>
+                <IconWrapper>
+                    <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
+                </IconWrapper>
+                <Label>
+                    <FormattedMessage {...l10nCommonMessages.TR_DEVICE_SETTINGS} />
+                </Label>
+            </Item>
             <Item onClick={() => requestForgetDevice(device)}>
                 <IconWrapper>
                     <Icon icon="EJECT" size={14} color={colors.TEXT_SECONDARY} />

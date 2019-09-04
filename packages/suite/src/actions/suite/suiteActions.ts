@@ -119,6 +119,15 @@ export const requestForgetDevice = (payload: TrezorDevice) => ({
 });
 
 /**
+ * Called from <DeviceMenu /> component
+ * Display modal
+ */
+export const requestDeviceInstance = (payload: TrezorDevice) => ({
+    type: SUITE.REQUEST_DEVICE_INSTANCE,
+    payload,
+});
+
+/**
  * Called from:
  * - `trezor-connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
  * - from user action in `@suite-components/DeviceMenu`
@@ -148,6 +157,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     let payload: TrezorDevice | typeof undefined;
     // 5. find possible instances
     if (device) {
+        // "instanceLabel" is one of the field which distinguish Device from TrezorDevice
         const { instanceLabel } = device as TrezorDevice;
         if (typeof instanceLabel === 'string') {
             // requested device is a @suite TrezorDevice type. get exact instance from reducer
@@ -157,7 +167,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
             // find all instances and select recently used
             const instances = getState().devices.filter(d => d.path === device.path);
             // eslint-disable-next-line prefer-destructuring
-            payload = deviceUtils.sort(instances)[0];
+            payload = deviceUtils.sortByTimestamp(instances)[0];
         }
     }
 
@@ -200,14 +210,9 @@ export const handleDeviceDisconnect = (device: Device) => (
         dispatch({ type: SUITE.SELECT_DEVICE });
         return;
     }
-    const unacquired = devices.find(d => !d.features);
-    if (unacquired) {
-        dispatch({ type: SUITE.SELECT_DEVICE, payload: unacquired });
-    } else {
-        const latest = deviceUtils.sort(devices);
-        const firstConnected = latest.find(d => d.connected);
-        dispatch({ type: SUITE.SELECT_DEVICE, payload: firstConnected || latest[0] });
-    }
+
+    const available = deviceUtils.getOtherDevices(undefined, devices);
+    dispatch({ type: SUITE.SELECT_DEVICE, payload: available[0] });
 };
 
 /**
@@ -293,8 +298,9 @@ export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: 
 
     if (device.features && device.features.passphrase_protection) {
         dispatch({
-            type: SUITE.REQUEST_PASSPHRASE_MODE,
+            type: SUITE.RECEIVE_PASSPHRASE_MODE,
             payload: device,
+            hidden: !device.useEmptyPassphrase,
         });
     } else {
         dispatch({

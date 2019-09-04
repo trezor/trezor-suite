@@ -222,7 +222,7 @@ describe('Discovery Actions', () => {
         const store = mockStore(getInitialState());
         store.dispatch(discoveryActions.start()).then(() => {
             const action = store.getActions().pop();
-            done(expect(action.type).toEqual(NOTIFICATION.ADD));
+            done(expect(action.type).toEqual(DISCOVERY.STOP));
         });
         store.dispatch(discoveryActions.stop());
     });

@@ -184,9 +184,12 @@ export const findInstanceIndex = (draft: TrezorDevice[], device: AcquiredDevice)
  * It's used for keep "suite" reducer synchronized via `suiteMiddleware > suiteActions.observeSelectedDevice`
  * @param {(TrezorDevice)} device
  * @param {TrezorDevice[]} devices
- * @returns
+ * @returns {TrezorDevice | undefined }
  */
-export const getSelectedDevice = (device: TrezorDevice, devices: TrezorDevice[]) => {
+export const getSelectedDevice = (
+    device: TrezorDevice,
+    devices: TrezorDevice[],
+): TrezorDevice | undefined => {
     // selected device is not acquired
     if (!device.features) return devices.find(d => d.path === device.path);
     const { path, instance, features } = device;
@@ -203,15 +206,82 @@ export const getSelectedDevice = (device: TrezorDevice, devices: TrezorDevice[])
 };
 
 /**
- * Sort devices by "ts" field
+ * Used by suiteActions
+ * Sort devices by "ts" (timestamp) field
  * @param {TrezorDevice[]} devices
- * @returns
+ * @returns {TrezorDevice[]}
  */
-export const sort = (devices: TrezorDevice[]) => {
+export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] => {
     return devices.sort((a, b) => {
-        if (!a.ts || !b.ts) {
-            return -1;
+        if (!b.ts && a.ts) return -1;
+        if (!a.ts || !b.ts) return 1;
+        return b.ts - a.ts;
+    });
+};
+
+/**
+ * Used by suiteActions and <DeviceMenu />
+ * @param {TrezorDevice | undefined} selected
+ * @param {TrezorDevice[]} devices
+ * @returns {TrezorDevice[]}
+ */
+export const getOtherDevices = (
+    selected: TrezorDevice | typeof undefined,
+    devices: TrezorDevice[],
+): TrezorDevice[] => {
+    // ignore instances
+    devices = devices.filter(d => !d.instance);
+    // exclude selected device
+    if (selected) {
+        if (selected.features && selected.features.device_id) {
+            devices = devices.filter(
+                d =>
+                    !d.features ||
+                    (d.features && d.features.device_id !== selected.features.device_id),
+            );
+        } else {
+            devices = devices.filter(d => d.path !== selected.path);
         }
+    }
+
+    // sort by priority:
+    // 1. unacquired
+    // 2. unexpected mode
+    // 3. outdated firmware
+    // 5. timestamp
+    return devices.sort((a, b) => {
+        if (!b.features && a.features) return 1;
+        if (!b.features || !a.features) return -1;
+        if (a.mode !== 'normal') return -1;
+        if (b.mode !== 'normal') return 1;
+        if (a.firmware !== 'valid') return -1;
+        if (b.features && b.firmware !== 'valid') return 1;
+        if (!a.ts && !b.ts) return -1;
         return a.ts > b.ts ? -1 : 1;
     });
+};
+
+/**
+ * Used by <DeviceMenu />
+ * @param {TrezorDevice | undefined} device
+ * @param {TrezorDevice[]} devices
+ * @returns {TrezorDevice[]}
+ */
+export const getDeviceInstances = (
+    device: TrezorDevice,
+    devices: TrezorDevice[],
+): AcquiredDevice[] => {
+    if (!device || !device.features || !device.features.device_id) return [];
+    return devices
+        .filter(
+            d =>
+                d.features &&
+                d.features.device_id === device.features.device_id &&
+                d.instance !== device.instance,
+        )
+        .sort((a, b) => {
+            if (!a.instance) return -1;
+            if (!b.instance) return 1;
+            return a.instance > b.instance ? 1 : -1;
+        }) as AcquiredDevice[];
 };

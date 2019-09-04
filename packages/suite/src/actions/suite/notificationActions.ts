@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { NotificationProps } from '@trezor/components';
 import { CallbackAction } from '@suite/reducers/suite/notificationReducer';
 import { NOTIFICATION } from './constants';
-import { GetState, Dispatch, TrezorDevice, RequiredKey } from '@suite-types';
+import { RequiredKey } from '@suite-types';
 
 export interface NotificationAddPayload {
     variant: NonNullable<NotificationProps['variant']>;
@@ -48,6 +48,7 @@ export const close = (payload: NotificationClosePayload): NotificationActions =>
 
 // TODO: didnt touch it right now. imho not used anywhere now. relates to route handling probably.
 // called from RouterService
+/*
 export const clear = (currentDevice: TrezorDevice, requestedDevice: TrezorDevice) => (
     dispatch: Dispatch,
     getState: GetState,
@@ -70,3 +71,4 @@ export const clear = (currentDevice: TrezorDevice, requestedDevice: TrezorDevice
         });
     }
 };
+*/
