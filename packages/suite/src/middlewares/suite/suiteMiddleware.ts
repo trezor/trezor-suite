@@ -5,6 +5,7 @@ import { init as initBlockchain } from '@suite-actions/blockchainActions';
 import { init as initRouter, initialRedirection } from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { loadStorage } from '@suite-actions/storageActions';
+import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
@@ -20,6 +21,8 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(loadStorage());
             break;
         case STORAGE.LOADED:
+            // set language
+            await api.dispatch(fetchLocale(action.payload.suite.language));
             // redirect to onboarding or leave url as is
             await api.dispatch(initialRedirection());
             api.dispatch(suiteActions.initialRunCompleted()); // TODO: move it to onboarding, cancel this flag after user selection
@@ -44,6 +47,9 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             break;
         case DEVICE.DISCONNECT:
             api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
+            break;
+        case SUITE.CREATE_DEVICE_INSTANCE:
+            api.dispatch(suiteActions.selectDevice(action.payload));
             break;
         default:
             break;

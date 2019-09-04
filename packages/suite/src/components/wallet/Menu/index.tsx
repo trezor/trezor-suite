@@ -3,8 +3,10 @@ import { CoinLogo, colors, variables, Loader } from '@trezor/components';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { getRoute } from '@suite-utils/router';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { Discovery } from '@wallet-reducers/discoveryReducer';
 import { Link } from '@suite-components';
-import { AppState } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS } from '@suite-config';
 
 import ProgressBar from './ProgressBar';
@@ -124,45 +126,62 @@ const StyledLink = styled(Link)`
     }
 `;
 
-interface Props {
-    suite: AppState['suite'];
-    wallet: AppState['wallet'];
-    router: AppState['router'];
-    discovery: AppState['wallet']['discovery'];
-}
+const mapStateToProps = (state: AppState) => ({
+    device: state.suite.device,
+    accounts: state.wallet.accounts,
+    discovery: state.wallet.discovery,
+    router: state.router,
+});
 
-const getLoadingProgress = (discovery: AppState['wallet']['discovery']) => {
-    const d = discovery[0];
-    if (d && d.loaded && d.total) {
-        return Math.round((d.loaded / d.total) * 100);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    // getDiscoveryForDevice: bindActionCreators(discoveryActions.getDiscoveryForDevice, dispatch),
+    getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+const getLoadingProgress = (discovery?: Discovery) => {
+    if (discovery && discovery.loaded && discovery.total) {
+        return Math.round((discovery.loaded / discovery.total) * 100);
     }
     return 0;
 };
 
-const getCoinName = (networkType: string, accountType = 'normal') => {
+const getCoinName = (symbol: string, accountType: string) => {
     const result = NETWORKS.filter(
-        network =>
-            network.symbol === networkType && (network.accountType || 'normal') === accountType,
+        network => network.symbol === symbol && (network.accountType || 'normal') === accountType,
     );
     return result[0].name;
 };
 
 const getCoinLogo = (network: string) => (network === 'test' ? 'btc' : network); // TODO add icon for testnet
 
-const Menu = (props: Props) => (
-    <Wrapper>
-        <ProgressBar progress={getLoadingProgress(props.discovery)} />
-        {props.wallet.accounts.length === 0 && ( // TODO check discovery progress not accounts
-            <LoadingWrapper>
-                <Loader size={15} />
-                <LoadingText>Loading accounts</LoadingText>
-            </LoadingWrapper>
-        )}
-        {props.wallet.accounts
-            // .filter(account => !account.empty)
-            .map(account => (
+const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
+    const discovery = getDiscoveryForDevice();
+    if (!device || !discovery) {
+        return (
+            <Wrapper>
+                <LoadingWrapper>
+                    <Loader size={15} />
+                    <LoadingText>Loading accounts</LoadingText>
+                </LoadingWrapper>
+            </Wrapper>
+        );
+    }
+
+    const list = accounts.filter(account => account.deviceState === device.state);
+    return (
+        <Wrapper>
+            <ProgressBar progress={getLoadingProgress(discovery)} />
+            {list.length === 0 && ( // TODO check discovery progress not accounts
+                <LoadingWrapper>
+                    <Loader size={15} />
+                    <LoadingText>Loading accounts</LoadingText>
+                </LoadingWrapper>
+            )}
+            {list.map(account => (
                 <StyledLink
-                    key={`${getCoinName(account.network, account.type)}-${account.accountType}`}
+                    key={`${account.network}-${account.descriptor}`}
                     href={getRoute('wallet-account', {
                         coin: account.network,
                         accountId: account.index,
@@ -174,7 +193,9 @@ const Menu = (props: Props) => (
                                 <CoinLogo size={25} network={getCoinLogo(account.network)} />
                             </LogoWrapper>
                             <Name>
-                                <CoinName>{getCoinName(account.network, account.type)}</CoinName>
+                                <CoinName>
+                                    {getCoinName(account.network, account.accountType)}
+                                </CoinName>
                                 <AccountIndex>
                                     <Label>account</Label>
                                     {`#${account.index + 1}`}
@@ -197,14 +218,11 @@ const Menu = (props: Props) => (
                     </Row>
                 </StyledLink>
             ))}
-    </Wrapper>
-);
+        </Wrapper>
+    );
+};
 
-const mapStateToProps = (state: AppState) => ({
-    wallet: state.wallet,
-    suite: state.suite,
-    router: state.router,
-    discovery: state.wallet.discovery,
-});
-
-export default connect(mapStateToProps)(Menu);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Menu);

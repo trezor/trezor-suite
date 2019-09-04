@@ -1,4 +1,3 @@
-import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import { db } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
 import { Dispatch, GetState, AppState } from '@suite-types';
@@ -11,16 +10,15 @@ export type StorageActions =
 
 export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) => {
     SuiteDB.isDBAvailable(async (isAvailable: any) => {
-        let suiteState: Partial<AppState['suite']> | typeof undefined;
+        let suite: Partial<AppState['suite']> | typeof undefined;
+        let devices: AppState['devices'] = [];
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');
         } else {
-            //  load suite settings from indexedDB
-            suiteState = await db.getItemByPK('suiteSettings', 'suite');
-            if (suiteState && suiteState.language) {
-                await dispatch(fetchLocale(suiteState.language));
-            }
+            //  load state from database
+            suite = await db.getItemByPK('suiteSettings', 'suite');
+            devices = await db.getItemsExtended('devices');
         }
 
         const initialState = getState();
@@ -30,8 +28,9 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                 ...initialState,
                 suite: {
                     ...initialState.suite,
-                    ...suiteState,
+                    ...suite,
                 },
+                devices,
             },
         });
     });

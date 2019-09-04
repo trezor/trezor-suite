@@ -1,6 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import * as deviceUtils from '@suite-utils/device';
+import { Action, Dispatch, GetState, TrezorDevice, AcquiredDevice } from '@suite-types';
 
 export type ModalActions =
     | {
@@ -87,11 +88,22 @@ export const onForgetDeviceInstance = (payload: TrezorDevice): Action => ({
     payload,
 });
 
-export const onRequestInstance = (payload: TrezorDevice) => (dispatch: Dispatch) => {
+export const onCreateDeviceInstance = (device: AcquiredDevice, _name?: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     dispatch({
-        type: SUITE.REQUEST_DEVICE_INSTANCE,
-        payload,
+        type: SUITE.CREATE_DEVICE_INSTANCE,
+        payload: {
+            ...device,
+            instance: deviceUtils.getNewInstanceNumber(
+                getState().devices,
+                device as AcquiredDevice,
+            ),
+        },
     });
+
+    dispatch(onCancel());
 };
 
 /*

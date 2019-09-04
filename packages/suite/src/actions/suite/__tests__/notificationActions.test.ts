@@ -26,12 +26,12 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
     });
 };
 
-describe('Notificatinons Actions', () => {
+describe('Notifications Actions', () => {
     it('add notifications', () => {
         const store = mockStore(getInitialState());
         updateStore(store);
         store.dispatch(
-            notificationActions.add(getNotificationPayload({ title: 'frist', variant: 'error' })),
+            notificationActions.add(getNotificationPayload({ title: 'first', variant: 'error' })),
         );
         expect(store.getState().notifications.length).toEqual(1);
         store.dispatch(

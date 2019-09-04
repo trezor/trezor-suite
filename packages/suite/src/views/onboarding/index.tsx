@@ -5,8 +5,6 @@ import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { isDev } from '@suite-utils/build';
-
 import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 import { AnyEvent } from '@onboarding-types/events';
 
@@ -192,18 +190,6 @@ interface Props {
 }
 
 class Onboarding extends React.PureComponent<Props> {
-    componentDidMount() {
-        // todo: should be only for web
-        if (!isDev()) {
-            window.onbeforeunload = () => {
-                if (this.props.activeStepId !== STEP.ID_FINAL_STEP) {
-                    return 'Are you sure want to leave onboarding without saving?';
-                }
-                return null;
-            };
-        }
-    }
-
     getStep(activeStepId: AppState['onboarding']['activeStepId']): Step {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
         // todo: is there a better way how to solve lookup completeness with typescript?
