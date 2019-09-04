@@ -10,16 +10,16 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import * as suiteActions from '../suiteActions';
+import { init } from '../trezorConnectActions';
 import fixtures from './fixtures/suiteActions';
-
-// type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
-// type Fixture = ArrayElement<typeof fixtures>;
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
     return {
         __esModule: true, // this property makes it work
         default: {
+            init: () => {},
+            on: () => {},
             getFeatures: () =>
                 fixture || {
                     success: true,
@@ -74,7 +74,6 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        // const { accounts, discovery } = store.getState().wallet;
         const { suite, devices, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().devices = deviceReducer(devices, action);
@@ -86,10 +85,6 @@ const initStore = (state: State) => {
 };
 
 describe('Suite Actions', () => {
-    // beforeEach(() => {
-
-    // });
-
     fixtures.reducerActions.forEach(f => {
         it(f.description, async () => {
             const state = getInitialState();
@@ -183,6 +178,7 @@ describe('Suite Actions', () => {
             require('trezor-connect').setTestFixtures(f.getFeatures);
             const state = getInitialState(f.state);
             const store = initStore(state);
+            store.dispatch(init()); // trezorConnectActions.init needs to be called in order to wrap "getFeatures" with lockUi action
             await store.dispatch(suiteActions.acquireDevice());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);

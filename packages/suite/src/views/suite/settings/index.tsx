@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { InjectedIntlProps } from 'react-intl';
+import { back } from '@suite-actions/routerActions';
 import { Input, Button, P, Icon } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { applySettings, changePin } from '@suite-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
-import { AppState } from '@suite-types';
 
 import { homescreensT1, homescreensT2 } from '@suite-constants';
+
+import { Props } from './Container';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
@@ -74,13 +74,6 @@ const BackgroundImageT1 = styled.img`
     margin: 5px;
 `;
 
-interface Props extends InjectedIntlProps {
-    device: AppState['suite']['device'];
-    applySettings: typeof applySettings;
-    changePin: typeof changePin;
-    uiLocked: boolean;
-}
-
 const Settings = ({ device, uiLocked, applySettings, changePin }: Props) => {
     // todo: need to solve typescript here.
 
@@ -117,6 +110,11 @@ const Settings = ({ device, uiLocked, applySettings, changePin }: Props) => {
 
     return (
         <Wrapper>
+            <Row>
+                <ActionButton isDisabled={uiLocked} isWhite onClick={back}>
+                    BACK
+                </ActionButton>
+            </Row>
             <Row>
                 <LabelCol>
                     <Label>Label</Label>

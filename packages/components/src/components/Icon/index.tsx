@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSvg from 'react-svg';
 import colors from '../../config/colors';
-import { Omit, IconType } from '../../support/types';
+import { IconType } from '../../support/types';
 import { ICONS } from './icons';
 
 // TODO: make animation of icons better

@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { getRoute } from '@suite-utils/router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { requestForgetDevice } from '@suite-actions/suiteActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { goto } from '@suite-actions/routerActions';
 import { Switch, Icon, colors, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
@@ -12,7 +12,9 @@ import { setHideBalance } from '@wallet-actions/settingsActions';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
-import { AcquiredDevice, AppState } from '@suite-types';
+import DeviceInstances from '../DeviceInstances';
+
+import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
 
 const { FONT_SIZE } = variables;
 
@@ -55,13 +57,34 @@ const IconWrapper = styled.div`
 
 const SwitchWrapper = styled.div``;
 
-interface Props {
-    device: AcquiredDevice;
-    setHideBalance: typeof setHideBalance;
-    settings: AppState['wallet']['settings'];
-}
+const mapStateToProps = (state: AppState) => ({
+    settings: state.wallet.settings,
+});
 
-const MenuItems = ({ device, setHideBalance, settings }: Props) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    setHideBalance: bindActionCreators(setHideBalance, dispatch),
+    acquireDevice: bindActionCreators(suiteActions.acquireDevice, dispatch),
+    selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
+    requestForgetDevice: bindActionCreators(suiteActions.requestForgetDevice, dispatch),
+    requestDeviceInstance: bindActionCreators(suiteActions.requestDeviceInstance, dispatch),
+});
+
+type Props = {
+    device: AcquiredDevice;
+    instances: AcquiredDevice[];
+} & ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
+
+const MenuItems = ({
+    device,
+    instances,
+    setHideBalance,
+    settings,
+    acquireDevice,
+    selectDevice,
+    requestForgetDevice,
+    requestDeviceInstance,
+}: Props) => {
     // const showDeviceMenu = device && device.mode === 'normal';
 
     const showClone =
@@ -71,32 +94,23 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
 
     return (
         <Wrapper>
-            {/* <Item onClick={() => {
-                this.props.toggleDeviceDropdown(false);
-                this.props.gotoDeviceSettings(device);
-            }}
-            >
-                <Icon
-                    icon="COG"
-                    size={14}
-                    color={colors.TEXT_SECONDARY}
-                />
-                <Label><FormattedMessage {...l10nMessages.TR_DEVICE_SETTINGS} /></Label>
-            </Item> */}
+            <DeviceInstances
+                instances={instances}
+                selectDevice={selectDevice}
+                requestForgetDevice={requestForgetDevice}
+            />
             {showClone && (
-                // <Item onClick={() => this.props.duplicateDevice(device)}>
-                <Item onClick={() => {}}>
+                <Item onClick={() => requestDeviceInstance(device)}>
                     <IconWrapper>
-                        <Icon icon="WALLET_STANDARD" size={14} color={colors.TEXT_SECONDARY} />
+                        <Icon icon="WALLET_HIDDEN" size={14} color={colors.TEXT_SECONDARY} />
                     </IconWrapper>
                     <Label>
-                        <FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} />
+                        <FormattedMessage {...l10nMessages.TR_ADD_HIDDEN_WALLET} />
                     </Label>
                 </Item>
             )}
             {showRenewSession && (
-                // <Item onClick={() => this.props.acquireDevice()}>
-                <Item onClick={() => {}}>
+                <Item onClick={acquireDevice}>
                     <IconWrapper>
                         <DeviceIcon device={device} size={14} color={colors.TEXT_SECONDARY} />
                     </IconWrapper>
@@ -105,6 +119,14 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
                     </Label>
                 </Item>
             )}
+            <Item onClick={() => goto(getRoute('suite-device-settings'))}>
+                <IconWrapper>
+                    <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
+                </IconWrapper>
+                <Label>
+                    <FormattedMessage {...l10nCommonMessages.TR_DEVICE_SETTINGS} />
+                </Label>
+            </Item>
             <Item onClick={() => requestForgetDevice(device)}>
                 <IconWrapper>
                     <Icon icon="EJECT" size={14} color={colors.TEXT_SECONDARY} />
@@ -154,13 +176,7 @@ const MenuItems = ({ device, setHideBalance, settings }: Props) => {
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    settings: state.wallet.settings,
-});
-
 export default connect(
     mapStateToProps,
-    dispatch => ({
-        setHideBalance: bindActionCreators(setHideBalance, dispatch),
-    }),
+    mapDispatchToProps,
 )(MenuItems);

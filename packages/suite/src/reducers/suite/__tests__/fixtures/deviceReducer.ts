@@ -924,7 +924,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: SUITE_DEVICE,
+                payload: getSuiteDevice({ instance: 1 }),
             },
         ],
         result: [
@@ -955,7 +955,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: SUITE_DEVICE,
+                payload: getSuiteDevice({ instance: 1 }),
                 name: 'Custom name',
             },
         ],
@@ -990,7 +990,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: getSuiteDevice({ instance: 1 }),
+                payload: getSuiteDevice({ instance: 2 }),
             },
         ],
         result: [
@@ -1033,17 +1033,17 @@ const createInstance = [
             },
         ],
     },
-    {
-        description: `device doesn't exists in reducer`,
-        initialState: [],
-        actions: [
-            {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: [],
-    },
+    // {
+    //     description: `device doesn't exists in reducer`,
+    //     initialState: [],
+    //     actions: [
+    //         {
+    //             type: SUITE.CREATE_DEVICE_INSTANCE,
+    //             payload: SUITE_DEVICE,
+    //         },
+    //     ],
+    //     result: [],
+    // },
 ];
 
 const forget = [

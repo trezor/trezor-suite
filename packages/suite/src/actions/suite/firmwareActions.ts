@@ -18,7 +18,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     // todo remove error notification
     // dispatch(notificationActions.add({
     //     variant: "success",
-    //     title: 'ahoj',
+    //     title: 'hello',
     // }))
 
     const { device } = getState().suite;
@@ -57,7 +57,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         keepSession: false,
         skipFinalReload: true,
         device,
-        length: fw.byteLength, // todo: this should be inferred by connect automagically probably
+        length: fw.byteLength, // todo: this should be inferred by connect auto magically probably
     };
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);

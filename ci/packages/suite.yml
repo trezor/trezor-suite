@@ -21,8 +21,10 @@ suite test unit:
         - install and build
 
 suite test integration:
+    only:
+        - schedules
     stage: integration testing
     script:
-        - yarn workspace @trezor/suite test:health
+        - yarn workspace @trezor/suite test-health
     dependencies:
         - install and build

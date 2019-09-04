@@ -1,16 +1,15 @@
 import React from 'react';
 import { Platform, Text } from 'react-native';
 import { Provider } from 'react-redux';
-
 import './support/global';
 import { Sentry, SentryLog } from 'react-native-sentry';
-import config from '@suite-config/index';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import Preloader from './support/TemporaryPreloader';
+import { SENTRY } from '@suite-config';
 
 import { initStore } from './reducers/store';
 
-Sentry.config(config.sentry, {
+Sentry.config(SENTRY, {
     deactivateStacktraceMerging: false,
     logLevel: SentryLog.Verbose,
     disableNativeIntegration: false,

@@ -40,9 +40,9 @@ export const showAddress = (path: number[]) => async (
 ): Promise<void> => {
     // TODO
     // replace with real data from reducers
-    // const selected = getState().wallet.selectedDevice;
+    // const selectedDevice = getState().wallet.selectedDevice;
     // const { network } = getState().selectedAccount;
-    const selected = {
+    const selectedDevice = {
         available: true,
         connected: true,
         instance: null,
@@ -55,26 +55,26 @@ export const showAddress = (path: number[]) => async (
     };
     // TODO: END
 
-    if (!selected || !network) return;
+    if (!selectedDevice || !network) return;
 
-    if (selected && (!selected.connected || !selected.available)) {
+    if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         dispatch({
             // remove once selected is really type of TrezorDevice
             // @ts-ignore
             type: RECEIVE.REQUEST_UNVERIFIED,
-            device: selected,
+            device: selectedDevice,
         });
         return;
     }
 
     const params = {
         device: {
-            path: selected.path,
-            instance: selected.instance,
-            state: selected.state,
+            path: selectedDevice.path,
+            instance: selectedDevice.instance,
+            state: selectedDevice.state,
         },
         path,
-        useEmptyPassphrase: selected.useEmptyPassphrase,
+        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
     };
 
     let response;

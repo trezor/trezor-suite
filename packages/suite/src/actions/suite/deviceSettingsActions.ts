@@ -1,15 +1,24 @@
 import TrezorConnect, { ApplySettingsParams, ChangePinParams } from 'trezor-connect';
-import { lockUI } from '@suite-actions/suiteActions';
-import { Dispatch } from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 
-export const applySettings = (params: ApplySettingsParams) => async (dispatch: Dispatch) => {
-    dispatch(lockUI(true));
-    await TrezorConnect.applySettings(params);
-    dispatch(lockUI(false));
+export const applySettings = (params: ApplySettingsParams) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    await TrezorConnect.applySettings({
+        device,
+        ...params,
+    });
 };
 
-export const changePin = (params: ChangePinParams) => async (dispatch: Dispatch) => {
-    dispatch(lockUI(true));
-    TrezorConnect.changePin(params);
-    dispatch(lockUI(false));
+export const changePin = (params: ChangePinParams) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    await TrezorConnect.changePin({
+        device,
+        ...params,
+    });
 };

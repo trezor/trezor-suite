@@ -65,6 +65,10 @@ export const goto = async (url: string, preserveParams: boolean = false) => {
     }
 };
 
+export const back = async () => {
+    await Router.back();
+};
+
 /**
  * Called from `@suite-middlewares/suiteMiddleware`
  * Redirects to onboarding if `suite.initialRun` is set to true

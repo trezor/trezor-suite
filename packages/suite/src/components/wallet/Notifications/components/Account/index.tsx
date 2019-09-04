@@ -18,7 +18,7 @@ const AccountNotifications = (props: Props) => {
     const { network, notification } = props.selectedAccount;
 
     if (!network || !notification) return null;
-    const blockchain = props.blockchain.find((b: Network) => b.shortcut === network.shortcut);
+    const blockchain = props.blockchain.find((b: Network) => b.shortcut === network.symbol);
 
     if (notification.type === 'backend') {
         // special case: backend is down

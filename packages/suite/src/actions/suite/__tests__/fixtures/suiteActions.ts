@@ -142,6 +142,15 @@ const reducerActions = [
         ],
     },
     {
+        description: `requestDeviceInstance (just for coverage)`,
+        actions: [suiteActions.requestDeviceInstance(getSuiteDevice())],
+        result: [
+            {
+                online: true,
+            },
+        ],
+    },
+    {
         description: `TRANSPORT.START`,
         actions: [
             {
@@ -642,7 +651,7 @@ const acquireDevice = [
     {
         description: `without device`,
         state: {},
-        result: undefined,
+        result: SUITE.CONNECT_INITIALIZED,
     },
 ];
 
@@ -720,7 +729,7 @@ const requestPassphraseMode = [
                 },
             ),
         },
-        result: SUITE.REQUEST_PASSPHRASE_MODE,
+        result: SUITE.RECEIVE_PASSPHRASE_MODE,
     },
 ];
 

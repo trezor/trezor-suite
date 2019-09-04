@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '../../config/colors';
-import { Omit } from '../../support/types';
 
 const A = styled.Text<Omit<Props, 'href'>>`
     color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};

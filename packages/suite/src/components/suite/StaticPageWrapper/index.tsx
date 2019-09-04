@@ -7,7 +7,7 @@ interface Props {
 
 const StaticPageWrapper: React.FunctionComponent<Props> = props => {
     return (
-        <Layout fullscreenMode disableNotifications>
+        <Layout fullscreenMode disableNotifications disableModals>
             {props.children}
         </Layout>
     );

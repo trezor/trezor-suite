@@ -4,12 +4,12 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
-
 import { SUITE } from '@suite-actions/constants';
+import { lockUI } from '@suite-actions/suiteActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Dispatch } from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 
-export const init = () => async (dispatch: Dispatch) => {
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // set event listeners
     TrezorConnect.on(DEVICE_EVENT, event => {
         // dispatch event as action
@@ -35,6 +35,19 @@ export const init = () => async (dispatch: Dispatch) => {
         dispatch(event);
     });
 
+    const wrappedMethods = ['getFeatures', 'getDeviceState', 'applySettings', 'changePin'] as const;
+    wrappedMethods.forEach(key => {
+        const original = TrezorConnect[key];
+        if (!original) return;
+        // typescript complains about params and return type, need to be "any"
+        (TrezorConnect[key] as any) = async (params: any) => {
+            dispatch(lockUI(true));
+            const result = await original(params);
+            dispatch(lockUI(false));
+            return result;
+        };
+    });
+
     try {
         const connectSrc =
             process.env.SUITE_TYPE === 'desktop'
@@ -49,8 +62,7 @@ export const init = () => async (dispatch: Dispatch) => {
             debug: false,
             popup: false,
             webusb: process.env.SUITE_TYPE === 'web',
-            // pendingTransportEvent: getState().devices.length < 1, // TODO: add devices reducer
-            pendingTransportEvent: true,
+            pendingTransportEvent: getState().devices.length < 1,
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite',
@@ -62,7 +74,7 @@ export const init = () => async (dispatch: Dispatch) => {
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,
-            error,
+            error: error.message,
         });
     }
 };

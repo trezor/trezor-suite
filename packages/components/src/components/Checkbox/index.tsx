@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { FONT_SIZE } from '../../config/variables';
 import { Icon } from '../Icon';
 import colors from '../../config/colors';
-import { Omit } from '../../support/types';
 
 const Wrapper = styled.div`
     display: flex;

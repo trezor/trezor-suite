@@ -1,8 +1,9 @@
 import SuiteDB, { StorageUpdateMessage } from '@trezor/suite-storage';
 import { DBSchema } from 'idb';
-import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
+import { AcquiredDevice } from '@suite-types';
 import { migrate } from './migrations';
 
 export interface SuiteDBSchema extends DBSchema {
@@ -24,6 +25,10 @@ export interface SuiteDBSchema extends DBSchema {
     walletSettings: {
         key: string;
         value: WalletSettings;
+    };
+    devices: {
+        key: number;
+        value: AcquiredDevice;
     };
 }
 
@@ -51,6 +56,8 @@ export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', 1, async (
         // object store for settings
         db.createObjectStore('suiteSettings');
         db.createObjectStore('walletSettings');
+
+        db.createObjectStore('devices', { keyPath: 'id', autoIncrement: true });
     } else {
         migrate(db, oldVersion, newVersion, transaction);
     }
