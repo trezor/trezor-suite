@@ -3,9 +3,7 @@ import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as routerUtils from '@suite-utils/router';
 import { Action } from '@suite-types';
 
-interface Params {
-    [key: string]: string;
-}
+type Params = { [k in typeof routerUtils.PARAMS[number]]?: string };
 
 interface State {
     url: string;
