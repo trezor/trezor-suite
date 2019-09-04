@@ -106,6 +106,7 @@ const PreviousAddressList = styled(AddressList)`
 
 const TextGreen = styled.span`
     color: ${colors.GREEN_PRIMARY};
+    text-transform: uppercase;
 `;
 
 const StyledDeviceIcon = styled(DeviceIcon)`
@@ -182,7 +183,8 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                     amount: (
                                         // TODO: add to utils?
                                         <TextGreen>
-                                            {Number(addr.received) / 100000000} BTC
+                                            {Number(addr.received) / 100000000}{' '}
+                                            {props.account.network}
                                         </TextGreen>
                                     ),
                                 }}
