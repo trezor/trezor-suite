@@ -12,6 +12,7 @@ import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import l10nCommonMessages from '@suite-views/index.messages';
+import CypressExportStore from '../support/CypressExportStore';
 import { SENTRY } from '@suite-config';
 
 Sentry.init({ dsn: SENTRY });
@@ -32,6 +33,7 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
+                <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
                     <IntlProvider>
                         <>

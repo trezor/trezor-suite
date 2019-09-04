@@ -1,5 +1,8 @@
 import * as redux from 'redux';
 // TODO: follow bug in redux-thunk types: https://github.com/reduxjs/redux-thunk/pull/224
+
+// declare module 'cypress-image-snapshot/command';
+
 declare module 'redux' {
     /**
      * Overload for bindActionCreators redux function, returns expects responses
@@ -17,10 +20,6 @@ declare module 'redux' {
 
 declare global {
     interface Window {
-        mozIndexedDB: IDBDatabase | null;
-        webkitIndexedDB: IDBDatabase | null;
-        msIndexedDB: IDBDatabase | null;
-        shimIndexedDB: IDBDatabase | null;
         __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: () => any | null;
     }
 }
