@@ -8,7 +8,8 @@ import { Modal as ModalComponent } from '@trezor/components';
 
 import * as ModalActions from '@suite-actions/modalActions';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { AppState, Dispatch } from '@suite-types';
+import * as deviceUtils from '@suite-utils/device';
+import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
@@ -20,9 +21,25 @@ import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 // import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import ForgetDevice from './Forget';
-import RememberDevice from './Remember';
+import RequestInstance from './RequestInstance';
+// import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from './WalletType';
+
+const mapStateToProps = (state: AppState) => ({
+    modal: state.modal,
+    device: state.suite.device,
+    devices: state.devices,
+    // connect: state.connect,
+    // selectedAccount: state.selectedAccount,
+    // localStorage: state.localStorage,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    modalActions: bindActionCreators(ModalActions, dispatch),
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
@@ -76,15 +93,14 @@ const getDeviceContextModal = (props: Props) => {
         //             />
         //         );
 
-        case SUITE.REQUEST_DEVICE_INSTANCE:
-            return (
-                <RememberDevice
-                    device={device}
-                    // instances={instances}
-                    onRememberDevice={modalActions.onRememberDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
-                />
-            );
+        // case SUITE.REQUEST_REMEMBER_DEVICE:
+        //     return (
+        //         <RememberDevice
+        //             device={device}
+        //             onRememberDevice={modalActions.onRememberDevice}
+        //             onForgetDevice={modalActions.onForgetDevice}
+        //         />
+        //     );
 
         case SUITE.REQUEST_FORGET_DEVICE:
             return (
@@ -95,15 +111,18 @@ const getDeviceContextModal = (props: Props) => {
                 />
             );
 
-        // case SUITE.REQUEST_DEVICE_INSTANCE:
-        //     return (
-        //         <DuplicateDevice
-        //             device={modal.device}
-        //             devices={props.devices}
-        //             onDuplicateDevice={modalActions.onDuplicateDevice}
-        //             onCancel={modalActions.onCancel}
-        //         />
-        //     );
+        case SUITE.REQUEST_DEVICE_INSTANCE:
+            return (
+                <RequestInstance
+                    device={device as AcquiredDevice}
+                    instance={deviceUtils.getNewInstanceNumber(
+                        props.devices,
+                        device as AcquiredDevice,
+                    )}
+                    onCreateInstance={modalActions.onCreateDeviceInstance}
+                    onCancel={modalActions.onCancel}
+                />
+            );
 
         default:
             return null;
@@ -152,21 +171,6 @@ const Modal = (props: Props) => {
         </ModalComponent>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    modal: state.modal,
-    device: state.suite.device,
-    devices: state.devices,
-    // connect: state.connect,
-    // selectedAccount: state.selectedAccount,
-    // localStorage: state.localStorage,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(ModalActions, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 export default connect(
     mapStateToProps,

@@ -181,7 +181,7 @@ export default [
         networkType: 'bitcoin',
         accountType: 'legacy',
         symbol: 'btg',
-        bip44: "m/49'/156'/i'",
+        bip44: "m/44'/156'/i'",
         hasSignVerify: true,
         explorer: {
             tx: 'https://example.com',

@@ -55,6 +55,7 @@ export default (state: State = initialState, action: Action): State => {
                 create(draft, action.payload);
                 break;
             case DISCOVERY.UPDATE:
+            case DISCOVERY.INTERRUPT:
             case DISCOVERY.FAILED:
             case DISCOVERY.STOP:
             case DISCOVERY.COMPLETE:
