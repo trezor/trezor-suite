@@ -7,7 +7,7 @@ import Title from '@wallet-components/Title';
 import QrCode from '@wallet-components/ReceiveForm/components/QrCode';
 import AddressList from '@wallet-components/ReceiveForm/components/AddressList';
 import AddressItem from '@wallet-components/ReceiveForm/components/AddressItem';
-import ShowOnTrezorEyeButton from '@wallet-components/ReceiveForm/components/ShowOnTrezorEyeButton';
+import EyeButton from '@wallet-components/ReceiveForm/components/EyeButton';
 
 import { selectText } from '@suite-utils/dom';
 import { parseBIP44Path } from '@wallet-utils/accountUtils';
@@ -193,7 +193,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     )}
                     tooltipActions={tooltipAction}
                     actions={addr => (
-                        <ShowOnTrezorEyeButton
+                        <EyeButton
                             device={props.device}
                             isAddressUnverified={props.isAddressUnverified}
                             onClick={() => {
@@ -285,7 +285,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         )}
                         {(props.isAddressVerified || props.isAddressUnverified) &&
                             !props.isAddressVerifying && (
-                                <ShowOnTrezorEyeButton
+                                <EyeButton
                                     device={props.device}
                                     isAddressUnverified={props.isAddressUnverified}
                                     onClick={() => props.showAddress(firstFreshAddress.path)}
@@ -331,7 +331,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 )}
                                 {(props.isAddressVerified || props.isAddressUnverified) &&
                                     !props.isAddressVerifying && (
-                                        <ShowOnTrezorEyeButton
+                                        <EyeButton
                                             device={props.device}
                                             isAddressUnverified={props.isAddressUnverified}
                                             onClick={() => props.showAddress(addr.path)}

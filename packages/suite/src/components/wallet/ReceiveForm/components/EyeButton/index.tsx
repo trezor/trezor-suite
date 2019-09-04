@@ -4,7 +4,7 @@ import { colors, Tooltip, Icon, Button, ButtonProps } from '@trezor/components';
 import { AppState } from '@suite/types/suite';
 import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 
-const EyeButton = styled(Button)`
+const Wrapper = styled(Button)`
     padding: 0;
 
     &:hover {
@@ -18,9 +18,9 @@ interface Props extends ButtonProps {
     isAddressUnverified: boolean;
 }
 
-const ShowOnTrezorEyeButton = (props: Props) => {
+const EyeButton = (props: Props) => {
     return (
-        <EyeButton isTransparent {...props}>
+        <Wrapper isTransparent {...props}>
             <Tooltip
                 placement="top"
                 content={
@@ -37,8 +37,8 @@ const ShowOnTrezorEyeButton = (props: Props) => {
                     color={props.isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
                 />
             </Tooltip>
-        </EyeButton>
+        </Wrapper>
     );
 };
 
-export default ShowOnTrezorEyeButton;
+export default EyeButton;
