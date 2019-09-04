@@ -94,6 +94,21 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         default:
             break;
     }
+
+    // TODO: copy all logic from old WalletService middleware
+    const currentState = api.getState();
+    if (action.type === LOCATION_CHANGE && prevState.router.hash !== currentState.router.hash) {
+        // watch for account change
+        if (
+            prevState.router.params.accountId !== currentState.router.params.accountId ||
+            prevState.router.params.coin !== currentState.router.params.coin
+        ) {
+            // we have switched the selected account
+            // (couldn't this be called somewhere from selectedAccountActions instead of catching it like this)
+            api.dispatch(selectedAccountActions.dispose());
+        }
+    }
+
     return action;
 };
 

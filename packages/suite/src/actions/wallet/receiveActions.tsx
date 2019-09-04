@@ -34,33 +34,17 @@ export const showUnverifiedAddress = (): Action => ({
     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
 });
 
-export const showAddress = (path: number[]) => async (
+export const showAddress = (path: string) => async (
     dispatch: Dispatch,
-    _getState: GetState,
+    getState: GetState,
 ): Promise<void> => {
-    // TODO
-    // replace with real data from reducers
-    // const selectedDevice = getState().wallet.selectedDevice;
-    // const { network } = getState().selectedAccount;
-    const selectedDevice = {
-        available: true,
-        connected: true,
-        instance: null,
-        path: '4C7098C3D916B10FBCFCE8A0',
-        state: null,
-        useEmptyPassphrase: true,
-    };
-    const network = {
-        type: 'ethereum',
-    };
-    // TODO: END
+    const selectedDevice = getState().suite.device;
+    const { network } = getState().wallet.selectedAccount;
 
     if (!selectedDevice || !network) return;
 
     if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         dispatch({
-            // remove once selected is really type of TrezorDevice
-            // @ts-ignore
             type: RECEIVE.REQUEST_UNVERIFIED,
             device: selectedDevice,
         });
@@ -78,7 +62,7 @@ export const showAddress = (path: number[]) => async (
     };
 
     let response;
-    switch (network.type) {
+    switch (network.networkType) {
         case 'ethereum':
             // @ts-ignore
             response = await TrezorConnect.ethereumGetAddress(params);
@@ -87,10 +71,13 @@ export const showAddress = (path: number[]) => async (
             // @ts-ignore
             response = await TrezorConnect.rippleGetAddress(params);
             break;
+        case 'bitcoin':
+            response = await TrezorConnect.getAddress(params);
+            break;
         default:
             response = {
                 payload: {
-                    error: `ReceiveActions.showAddress: Unknown network type: ${network.type}`,
+                    error: `ReceiveActions.showAddress: Unknown network type: ${network.networkType}`,
                 },
             };
             break;
@@ -113,12 +100,12 @@ export const showAddress = (path: number[]) => async (
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR,
+                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR.defaultMessage, // TODO intl support for Notification without the need to pass FormattedMessage
                 message: response.payload.error,
                 cancelable: true,
                 actions: [
                     {
-                        label: l10nCommonMessages.TR_TRY_AGAIN,
+                        label: l10nCommonMessages.TR_TRY_AGAIN.defaultMessage,
                         callback: () => {
                             dispatch(showAddress(path));
                         },

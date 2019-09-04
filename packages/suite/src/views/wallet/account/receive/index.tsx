@@ -5,11 +5,12 @@ import LayoutAccount from '@wallet-components/LayoutAccount';
 import { AppState, Dispatch } from '@suite/types/suite';
 import { connect } from 'react-redux';
 import Content from '@suite/components/wallet/Content';
-import { showAddress } from '@suite/actions/wallet/receiveActions';
+import { CONTEXT_DEVICE } from '@suite-actions/constants/modalConstants';
+import { showAddress } from '@wallet-actions/receiveActions';
 import { bindActionCreators } from 'redux';
-import EthereumTypeReceiveForm from './ethereum';
-import RippleTypeReceiveForm from './ripple';
-import BitcoinTypeReceiveForm from './bitcoin';
+import { FormattedMessage } from 'react-intl';
+import ReceiveForm from '@wallet-components/ReceiveForm';
+import l10nMessages from '@wallet-components/ReceiveForm/messages';
 
 interface Props {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -19,15 +20,44 @@ interface Props {
     showAddress: typeof showAddress;
 }
 
-export interface ReceiveProps {
-    className?: string;
-    account: AppState['wallet']['selectedAccount']['account'];
-    address: string;
-    isAddressVerifying: boolean;
-    isAddressUnverified: boolean;
-    isAddressHidden: boolean;
-    isAddressVerified: boolean;
-}
+const getTitleForNetwork = (symbol: string) => {
+    switch (symbol.toUpperCase()) {
+        case 'BTC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_BITCOIN} />;
+        case 'BCH':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_BITCOIN_CASH} />;
+        case 'BTG':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_BITCOIN_GOLD} />;
+        case 'DASH':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_DASH} />;
+        case 'DGB':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_DIGIBYTE} />;
+        case 'DOGE':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_DOGECOIN} />;
+        case 'LTC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_LITECOIN} />;
+        case 'NMC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_NAMECOIN} />;
+        case 'VTC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_VERTCOIN} />;
+        case 'ZEC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_ZCASH} />;
+        case 'ETH':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_ETHEREUM_OR_TOKENS} />;
+        case 'ETC':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_ETHEREUM_OR_TOKENS} />;
+        case 'NEM':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_NEM} />;
+        case 'XLM':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_STELLAR} />;
+        case 'ADA':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_CARDANO} />;
+        case 'XTZ':
+            return <FormattedMessage {...l10nMessages.TR_NETWORK_TEZOS} />;
+        default:
+            break;
+    }
+};
 
 const AccountReceive = (props: Props) => {
     const { device } = props;
@@ -44,13 +74,14 @@ const AccountReceive = (props: Props) => {
 
     const { isAddressVerified, isAddressUnverified } = props.receive;
 
-    const CONTEXT_DEVICE = ''; // fake, TODO: correct import
+    // this logic below for figuring out if address is currently being verified (showing prompt on the device),
+    // is based on the currently set modal dialog,
+    // imo it should be implemented somewhere inside reducers (setting isVerifying prop inside the reducer)
     const isAddressVerifying =
-        // @ts-ignore TODO: add with modal
         props.modal.context === CONTEXT_DEVICE &&
-        // @ts-ignore TODO: add with modal
         props.modal.windowType === 'ButtonRequest_Address';
-    const isAddressHidden =
+
+    const isAddressPartiallyHidden =
         !isAddressVerifying && !isAddressVerified && !isAddressUnverified && !account.imported;
 
     let address = `${account.descriptor.substring(0, 20)}...`;
@@ -58,22 +89,27 @@ const AccountReceive = (props: Props) => {
         address = account.descriptor;
     }
 
-    const componentProps = {
-        account,
-        device,
-        address,
-        showAddress: props.showAddress,
-        isAddressHidden,
-        isAddressVerified,
-        isAddressUnverified,
-        isAddressVerifying,
-    };
-
     return (
         <LayoutAccount>
-            {network.networkType === 'bitcoin' && <BitcoinTypeReceiveForm {...componentProps} />}
-            {network.networkType === 'ethereum' && <EthereumTypeReceiveForm {...componentProps} />}
-            {network.networkType === 'ripple' && <RippleTypeReceiveForm {...componentProps} />}
+            <ReceiveForm
+                account={account}
+                device={device}
+                address={address}
+                showAddress={props.showAddress}
+                isAddressPartiallyHidden={isAddressPartiallyHidden}
+                isAddressVerified={isAddressVerified}
+                isAddressUnverified={isAddressUnverified}
+                isAddressVerifying={isAddressVerifying}
+                networkType={network.networkType}
+                title={
+                    <FormattedMessage
+                        {...l10nMessages.TR_RECEIVE_NETWORK}
+                        values={{
+                            network: getTitleForNetwork(account.network),
+                        }}
+                    />
+                }
+            />
         </LayoutAccount>
     );
 };
@@ -84,6 +120,7 @@ const mapStateToProps = (state: AppState) => ({
     receive: state.wallet.receive,
     modal: state.modal,
 });
+
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     showAddress: bindActionCreators(showAddress, dispatch),
 });
