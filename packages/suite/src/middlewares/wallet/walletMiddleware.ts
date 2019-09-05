@@ -101,7 +101,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         // watch for account change
         if (
             prevState.router.params.accountId !== currentState.router.params.accountId ||
-            prevState.router.params.coin !== currentState.router.params.coin
+            prevState.router.params.symbol !== currentState.router.params.symbol
         ) {
             // we have switched the selected account
             // (couldn't this be called somewhere from selectedAccountActions instead of catching it like this)
