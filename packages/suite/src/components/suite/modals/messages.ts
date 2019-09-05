@@ -9,6 +9,10 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_LABEL',
         defaultMessage: 'Enter "{deviceLabel}" passphrase',
     },
+    TR_CANCEL: {
+        id: 'TR_CANCEL',
+        defaultMessage: 'Cancel',
+    },
     TR_LEARN_MORE: {
         id: 'TR_LEARN_MORE',
         defaultMessage: 'Learn more',
