@@ -3,13 +3,11 @@ import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as routerUtils from '@suite-utils/router';
 import { Action } from '@suite-types';
 
-type Params = { [k in typeof routerUtils.PARAMS[number]]?: string };
-
 interface State {
     url: string;
     pathname: string;
     hash?: string;
-    params: Params;
+    params: routerUtils.ParamsProps;
     app: ReturnType<typeof routerUtils.getApp>;
 }
 
