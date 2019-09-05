@@ -23,20 +23,17 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
         name,
     });
 
-    if (device === null) {
-        dispatch({
-            type: DEVICE_CALL_ERROR,
-            error: 'no device connected',
-            name,
-        });
-        return null;
+    if (!device) {
+        // this should never happen
+        throw new Error('no device connected');
     }
 
     const callParams = {
         useEmptyPassphrase: true,
         device,
+        ...params,
     };
-    Object.assign(callParams, params);
+
     let fn;
     switch (name) {
         case CALLS.FIRMWARE_UPDATE:
@@ -46,7 +43,6 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
             fn = () => TrezorConnect.resetDevice(callParams);
             break;
         case CALLS.BACKUP_DEVICE:
-            // @ts-ignore
             fn = () => TrezorConnect.backupDevice(callParams);
             break;
         case CALLS.APPLY_SETTINGS:
