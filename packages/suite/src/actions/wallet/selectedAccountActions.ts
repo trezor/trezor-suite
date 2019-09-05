@@ -280,7 +280,7 @@ export const observe = (prevState: AppState, action: Action) => (
             // 'waitingForDevice',
         ],
     });
-    console.log('stateChanged', stateChanged);
+
     if (stateChanged) {
         // update values in reducer
         dispatch({
