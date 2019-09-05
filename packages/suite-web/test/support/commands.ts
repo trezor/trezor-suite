@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+import { Store } from '@suite-types';
+
 const command = require('cypress-image-snapshot/command');
 
 declare global {
@@ -17,11 +19,9 @@ declare global {
 declare global {
     interface Window {
         // todo: hmm how to share store declaration with CypressExportStore.tsx?
-        store: any;
+        store: Store;
     }
 }
-
-// declare cypress-image-snapshot
 
 command.addMatchImageSnapshotCommand({
     failureThreshold: 0.01, // threshold for entire image
@@ -50,6 +50,3 @@ export function getTestElement(selector: string) {
 
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
-
-// Cypress.Commands.add('foo', foo)
-// Cypress.Commands.add('foo2', foo2)

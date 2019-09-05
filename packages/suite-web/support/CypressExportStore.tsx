@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Store } from '@suite-types';
 
 interface Props {
-    store: Store;
+    store?: Store;
 }
 declare global {
     interface Window {
@@ -24,7 +24,7 @@ declare global {
  */
 const CypressExportStore = ({ store }: Props) => {
     useEffect(() => {
-        if (window && store && window.Cypress) {
+        if (typeof window !== 'undefined' && window.Cypress && store) {
             window.store = store;
         }
         return () => {

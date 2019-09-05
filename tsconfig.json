@@ -87,7 +87,7 @@
         "target": "esnext",
         "typeRoots": [
             "node_modules/@trezor/typescript-typings/types",
-            "node_modules/@types",
+            "node_modules/@types"
         ]
     },
     "exclude": [

@@ -1,8 +1,6 @@
 import * as redux from 'redux';
 // TODO: follow bug in redux-thunk types: https://github.com/reduxjs/redux-thunk/pull/224
 
-// declare module 'cypress-image-snapshot/command';
-
 declare module 'redux' {
     /**
      * Overload for bindActionCreators redux function, returns expects responses
