@@ -1,4 +1,5 @@
 import { ThunkDispatch } from 'redux-thunk';
+import { Store as ReduxStore } from 'redux';
 import {
     UiEvent,
     DeviceEvent,
@@ -107,3 +108,5 @@ export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 // make key required
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
+
+export type Store = ReduxStore<AppState, Action>;

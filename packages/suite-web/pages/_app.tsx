@@ -1,6 +1,5 @@
 import React from 'react';
 import App, { AppContext } from 'next/app';
-import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import withRedux from 'next-redux-wrapper';
@@ -13,6 +12,8 @@ import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { SENTRY } from '@suite-config';
+import { Store } from '@suite-types';
+import CypressExportStore from '../support/CypressExportStore';
 
 Sentry.init({ dsn: SENTRY });
 interface Props {
@@ -32,6 +33,7 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
+                <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
                     <IntlProvider>
                         <>
