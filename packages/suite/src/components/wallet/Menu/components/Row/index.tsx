@@ -118,42 +118,44 @@ interface Props {
     account: Account;
 }
 
-const Row = ({ account }: Props) => (
-    <StyledLink
-        href={getRoute('wallet-account', {
-            accountId: account.index,
-            symbol: account.network,
-            accountType: account.accountType,
-        })}
-    >
-        <Wrapper>
-            <Left>
-                <LogoWrapper>
-                    <CoinLogo size={25} network={getCoinLogo(account.network)} />
-                </LogoWrapper>
-                <Name>
-                    <CoinName>{getCoinName(account.network, account.accountType)}</CoinName>
-                    <AccountIndex>
-                        <Label>account</Label>
-                        {`#${account.index + 1}`}
-                    </AccountIndex>
-                </Name>
-            </Left>
-            <Right>
-                <Balance>
-                    <BalanceValue>
-                        {account.balance} {account.network}
-                    </BalanceValue>
-                </Balance>
-                {account.history.total !== -1 && (
-                    <Transactions>
-                        <Label>transactions</Label>
-                        <TransactionsValue>{account.history.total}</TransactionsValue>
-                    </Transactions>
-                )}
-            </Right>
-        </Wrapper>
-    </StyledLink>
-);
+const Row = React.memo(({ account }: Props) => {
+    return (
+        <StyledLink
+            href={getRoute('wallet-account', {
+                accountId: account.index,
+                symbol: account.network,
+                accountType: account.accountType,
+            })}
+        >
+            <Wrapper>
+                <Left>
+                    <LogoWrapper>
+                        <CoinLogo size={25} network={getCoinLogo(account.network)} />
+                    </LogoWrapper>
+                    <Name>
+                        <CoinName>{getCoinName(account.network, account.accountType)}</CoinName>
+                        <AccountIndex>
+                            <Label>account</Label>
+                            {`#${account.index + 1}`}
+                        </AccountIndex>
+                    </Name>
+                </Left>
+                <Right>
+                    <Balance>
+                        <BalanceValue>
+                            {account.balance} {account.network}
+                        </BalanceValue>
+                    </Balance>
+                    {account.history.total !== -1 && (
+                        <Transactions>
+                            <Label>transactions</Label>
+                            <TransactionsValue>{account.history.total}</TransactionsValue>
+                        </Transactions>
+                    )}
+                </Right>
+            </Wrapper>
+        </StyledLink>
+    );
+});
 
 export default Row;
