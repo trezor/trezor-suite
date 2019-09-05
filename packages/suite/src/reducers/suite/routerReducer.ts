@@ -1,14 +1,14 @@
 import produce from 'immer';
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
-import * as routerUtils from '@suite-utils/router';
+import { ParamsProps, getApp, getParams } from '@suite-utils/router';
 import { Action } from '@suite-types';
 
 interface State {
     url: string;
     pathname: string;
     hash?: string;
-    params: routerUtils.ParamsProps;
-    app: ReturnType<typeof routerUtils.getApp>;
+    params: ParamsProps;
+    app: ReturnType<typeof getApp>;
 }
 
 const initialState: State = {
@@ -23,8 +23,8 @@ const onLocationChange = (draft: State, url: string) => {
     draft.url = url;
     draft.pathname = pathname;
     draft.hash = hash;
-    draft.params = routerUtils.getParams(url);
-    draft.app = routerUtils.getApp(url);
+    draft.params = getParams(url);
+    draft.app = getApp(url);
 };
 
 export default (state: State = initialState, action: Action): State => {
