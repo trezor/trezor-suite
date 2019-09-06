@@ -15,6 +15,7 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
+        "@next/bundle-analyzer": "^9.0.5",
         "@trezor/components": "^1.0.0",
         "@trezor/rollout": "^1.0.0",
         "@trezor/suite-data": "^1.0.0",
@@ -24,7 +25,6 @@
         "@types/react-intl": "^2.3.17",
         "@types/react-qr-reader": "^2.1.2",
         "@types/react-window": "^1.8.0",
-        "@zeit/next-bundle-analyzer": "^0.1.2",
         "bignumber.js": "^9.0.0",
         "color-hash": "^1.0.3",
         "ethereumjs-util": "^6.0.0",
