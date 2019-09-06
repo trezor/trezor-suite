@@ -20,7 +20,6 @@ interface OnboardingAppState extends ReturnType<typeof onboarding> {
 }
 
 export default function onboardingApp(state: OnboardingAppState | undefined, action: Action) {
-    console.log('action', action);
     const onboardingState: OnboardingAppState = onboarding(state, action);
     return {
         prevDeviceId: onboardingState.prevDeviceId,

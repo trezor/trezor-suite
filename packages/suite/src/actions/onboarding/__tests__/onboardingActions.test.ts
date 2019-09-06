@@ -73,10 +73,21 @@ describe('Onboarding Actions', () => {
         expect(stateAfter.activeStepId).toEqual('welcome');
     });
 
-    it('addPath', async () => {
+    it('addPath: should add unique entry', async () => {
         const store = mockStore(
             getInitialState({
-                path: [],
+                path: ['new'],
+            }),
+        );
+        await store.dispatch(onboardingActions.addPath('create'));
+        const stateAfter = store.getState().onboarding;
+        expect(stateAfter.path).toEqual(['new', 'create']);
+    });
+
+    it('addPath: should not add duplicit entry', async () => {
+        const store = mockStore(
+            getInitialState({
+                path: ['create'],
             }),
         );
         await store.dispatch(onboardingActions.addPath('create'));
