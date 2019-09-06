@@ -44,18 +44,28 @@ const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =>
     );
 };
 
-const ContinueButton = ({ isConnected, onClick }: Omit<ButtonProps, 'isInBootloader'>) => (
-    <Tooltip
-        trigger={isConnected ? 'manual' : 'mouseenter focus'}
-        placement="bottom"
-        content="Connect device to continue"
-    >
-        <OnboardingButton.Cta isDisabled={!isConnected} onClick={() => onClick()}>
-            Finish basic setup
-            {/* <FormattedMessage {...commonMessages.TR_CONTINUE} /> */}
-        </OnboardingButton.Cta>
-    </Tooltip>
-);
+const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) => {
+    let content = '';
+    if (!isConnected) {
+        content = 'Connect device to continue';
+    } else if (isInBootloader) {
+        content = 'Leave bootloader mode to continue';
+    }
+    return (
+        <Tooltip
+            trigger={isConnected && !isInBootloader ? 'manual' : 'mouseenter focus'}
+            placement="bottom"
+            content={content}
+        >
+            <OnboardingButton.Cta
+                isDisabled={!isConnected || isInBootloader}
+                onClick={() => onClick()}
+            >
+                <FormattedMessage {...commonMessages.TR_CONTINUE} />
+            </OnboardingButton.Cta>
+        </Tooltip>
+    );
+};
 
 const FirmwareStep = ({
     device,
@@ -123,8 +133,12 @@ const FirmwareStep = ({
             return 'success';
         }
 
-        if (device.firmware === 'outdated' || device.firmware === 'required') {
+        if (device.firmware === 'outdated') {
             return 'outdated';
+        }
+
+        if (device.firmware === 'required') {
+            return 'required';
         }
 
         if (device.firmware === 'none' || device.firmware === 'unknown') {
@@ -187,7 +201,7 @@ const FirmwareStep = ({
                     </>
                 )}
 
-                {getFirmwareStatus() === 'outdated' && (
+                {getFirmwareStatus() === 'outdated' && !isInBootloader && (
                     <>
                         <Text>
                             <FormattedMessage
@@ -196,6 +210,25 @@ const FirmwareStep = ({
                                     version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
                                 }}
                             />
+                        </Text>
+                        <Text>
+                            You might either update your device now or continue and update it later.
+                        </Text>
+                    </>
+                )}
+
+                {getFirmwareStatus() === 'required' && !isInBootloader && (
+                    <>
+                        <Text>
+                            <FormattedMessage
+                                {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
+                                values={{
+                                    version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
+                                }}
+                            />
+                        </Text>
+                        <Text>
+                            This firmware is not longer supported, you will need to update it now.
                         </Text>
                     </>
                 )}
@@ -289,10 +322,28 @@ const FirmwareStep = ({
                                     isInBootloader={isInBootloader}
                                     onClick={() => install()}
                                 />
+                                <ContinueButton
+                                    isConnected={isConnected}
+                                    isInBootloader={isInBootloader}
+                                    onClick={getContinueFn()}
+                                />
+                            </>
+                        )}
+                        {getFirmwareStatus() === 'required' && (
+                            <>
+                                <InstallButton
+                                    isConnected={isConnected}
+                                    isInBootloader={isInBootloader}
+                                    onClick={() => install()}
+                                />
                             </>
                         )}
                         {getFirmwareStatus() === 'success' && (
-                            <ContinueButton isConnected={isConnected} onClick={getContinueFn()} />
+                            <ContinueButton
+                                isConnected={isConnected}
+                                isInBootloader={isInBootloader}
+                                onClick={getContinueFn()}
+                            />
                         )}
                     </Wrapper.Controls>
                 )}
