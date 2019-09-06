@@ -70,7 +70,7 @@ const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
                 </LoadingWrapper>
             )}
             {list.map(account => (
-                <Row key={`${account.descriptor}-${account.index}`} account={account} />
+                <Row account={account} />
             ))}
         </Wrapper>
     );

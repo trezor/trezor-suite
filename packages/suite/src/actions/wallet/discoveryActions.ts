@@ -31,11 +31,6 @@ interface DiscoveryItem {
     networkType: 'bitcoin' | 'ripple' | 'ethereum';
 }
 
-// run discovery for bitcoin only for now TODO
-const getNetworks = () => {
-    return NETWORKS.filter(network => network.name === 'Bitcoin');
-};
-
 // trezor-connect untyped event
 interface ProgressEvent {
     progress: number;
@@ -49,15 +44,14 @@ const BUNDLE_SIZE = 1;
 // Get discovery process for currently selected device.
 // Return new instance if not exists
 const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): Discovery => {
-    const networks = getNetworks();
     const { discovery } = getState().wallet;
-
     return (
         discovery.find(d => d.device === id) || {
             device: id,
             index: -1,
             status: STATUS.IDLE,
-            total: LIMIT * networks.length,
+            // total: (LIMIT + BUNDLE_SIZE) * accountTypes.length,
+            total: LIMIT * NETWORKS.length,
             loaded: 0,
             failed: [],
         }
@@ -148,14 +142,13 @@ const getBundle = (discovery: Discovery) => (
     getState: GetState,
 ): DiscoveryItem[] => {
     const bundle: DiscoveryItem[] = [];
-    const networks = getNetworks();
     // find not empty accounts
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === discovery.device);
     const usedAccounts = accounts.filter(
         account => account.index === discovery.index && !account.empty,
     );
 
-    networks.forEach(configNetwork => {
+    NETWORKS.forEach(configNetwork => {
         // check if previous account of requested type already exists
         const accountType = configNetwork.accountType || 'normal';
         const prevAccount = usedAccounts.find(
