@@ -36,9 +36,9 @@ describe('rules', () => {
         const deviceWithoutDeviceId: any = { features: { device_id: null } };
 
         it('should return false for prevDeviceId === null (no device was there before, so consider it "same" device)', () => {
-            expect(isNotSameDevice({ device: deviceWithDeviceId, prevDevice: deviceWithoutDeviceId })).toEqual(
-                false,
-            );
+            expect(
+                isNotSameDevice({ device: deviceWithDeviceId, prevDevice: deviceWithoutDeviceId }),
+            ).toEqual(false);
         });
         it('should return null for device.features.device_id === null', () => {
             expect(
@@ -51,9 +51,9 @@ describe('rules', () => {
             ).toEqual(false);
         });
         it('should return true when device.features.device_id !== prevDeviceId', () => {
-            expect(isNotSameDevice({ device: deviceWithDeviceId, prevDevice: deviceWithDeviceId2  })).toEqual(
-                true,
-            );
+            expect(
+                isNotSameDevice({ device: deviceWithDeviceId, prevDevice: deviceWithDeviceId2 }),
+            ).toEqual(true);
         });
     });
 
