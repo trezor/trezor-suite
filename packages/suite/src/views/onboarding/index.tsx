@@ -182,7 +182,7 @@ const mapStateToProps = (state: AppState) => {
         uiInteraction: state.onboarding.connect.uiInteraction,
 
         // onboarding reducer
-        prevDeviceId: state.onboarding.prevDeviceId,
+        prevDevice: state.onboarding.prevDevice,
         selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
         path: state.onboarding.path,
@@ -209,7 +209,7 @@ const Onboarding = (props: Props) => {
     };
 
     const getError = () => {
-        const { device, prevDeviceId, activeStepId, path } = props;
+        const { device, prevDevice, activeStepId, path } = props;
         const activeStep = getStep(activeStepId);
         if (!activeStep.disallowedDeviceStates) {
             return null;
@@ -217,7 +217,7 @@ const Onboarding = (props: Props) => {
 
         return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
             const fn = getFnForRule(state);
-            return fn({ device, prevDeviceId, path });
+            return fn({ device, prevDevice, path });
         });
     };
 

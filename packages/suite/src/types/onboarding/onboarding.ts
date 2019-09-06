@@ -7,11 +7,11 @@ import {
     addPath,
     removePath,
 } from '@suite/actions/onboarding/onboardingActions';
-
+import { Device } from 'trezor-connect';
 import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';
 
 export interface OnboardingReducer {
-    prevDeviceId: string | null;
+    prevDevice: Device | null;
     selectedModel: number | null;
     activeStepId: AnyStepId;
     activeSubStep: string | null;

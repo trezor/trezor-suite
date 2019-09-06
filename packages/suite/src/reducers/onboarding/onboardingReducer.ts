@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { DEVICE } from 'trezor-connect';
+import { DEVICE, Device } from 'trezor-connect';
 
 import {
     OnboardingReducer,
@@ -15,15 +15,15 @@ import steps from '@onboarding-config/steps';
 import { Action } from '@suite-types';
 
 const initialState: OnboardingReducer = {
-    prevDeviceId: null,
+    prevDevice: null,
     selectedModel: null,
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
 };
 
-const setPrevDeviceId = (state: OnboardingReducer, device: any) => {
-    // dont set prevDeviceId if we are in steps that dont care about it.
+const setPrevDevice = (state: OnboardingReducer, device: Device) => {
+    // dont set prevDevice if we are in steps that dont care about it.
     const activeStep = steps.find(s => s.id === state.activeStepId);
     if (
         activeStep &&
@@ -37,13 +37,13 @@ const setPrevDeviceId = (state: OnboardingReducer, device: any) => {
     if (!device.features) {
         return null;
     }
-    if (!state.prevDeviceId) {
-        return device.features.device_id;
+    if (!state.prevDevice || !state.prevDevice.features) {
+        return device;
     }
-    if (state.prevDeviceId !== device.features.device_id) {
-        return state.prevDeviceId;
+    if (state.prevDevice.features.device_id !== device.features.device_id) {
+        return state.prevDevice;
     }
-    return device.features.device_id;
+    return device;
 };
 
 const addPath = (path: AnyPath, state: OnboardingReducer) => {
@@ -77,7 +77,7 @@ const onboarding = (state: OnboardingReducer = initialState, action: Action) => 
                 draft.path = removePath(action.value, state);
                 break;
             case DEVICE.DISCONNECT:
-                draft.prevDeviceId = setPrevDeviceId(state, action.payload);
+                draft.prevDevice = setPrevDevice(state, action.payload);
                 break;
             default:
         }

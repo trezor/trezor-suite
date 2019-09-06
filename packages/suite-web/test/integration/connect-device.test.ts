@@ -10,15 +10,14 @@ describe('Connect device', () => {
         cy.visit('/')
             .get('html')
             .should('contain', 'Welcome to Trezor')
+            .window()
+            .its('store')
+            .invoke('dispatch', { type: DEVICE.CONNECT, payload: getConnectDevice() })
             .getTestElement('button-use-wallet')
             .click()
             .get('html')
             // todo: add snapshots in distance future when everything is stable
             // .matchImageSnapshot()
-            .should('contain', 'Connect Trezor to continue')
-            .window()
-            .its('store')
-            .invoke('dispatch', { type: DEVICE.CONNECT, payload: getConnectDevice() })
             .get('html')
             .should('contain', 'Please select your coin');
     });
