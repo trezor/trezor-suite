@@ -86,15 +86,20 @@ const DeviceIsUsedHere = ({ getFeatures }: DeviceIsUsedHereProps) => (
 
 interface UnexpectedStateProps {
     caseType: AnyStepDisallowedState;
-    model: number;
+    prevModel: number;
     getFeatures: typeof getFeatures;
     submitNewPin: typeof submitNewPin;
     uiInteraction: ConnectReducer['uiInteraction'];
 }
 
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    getFeatures: bindActionCreators(getFeatures, dispatch),
+    submitNewPin: bindActionCreators(submitNewPin, dispatch),
+});
+
 const UnexpectedState = ({
     caseType,
-    model,
+    prevModel,
     submitNewPin,
     getFeatures,
     uiInteraction,
@@ -103,7 +108,7 @@ const UnexpectedState = ({
         case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
             return (
                 <UnexpectedStateCommon>
-                    <Reconnect model={model} />
+                    <Reconnect model={prevModel} />
                 </UnexpectedStateCommon>
             );
         case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
@@ -137,11 +142,6 @@ const UnexpectedState = ({
             return <UnexpectedStateCommon>Error: {caseType}</UnexpectedStateCommon>;
     }
 };
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    getFeatures: bindActionCreators(getFeatures, dispatch),
-    submitNewPin: bindActionCreators(submitNewPin, dispatch),
-});
 
 export default connect(
     null,

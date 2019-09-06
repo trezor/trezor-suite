@@ -245,10 +245,12 @@ const Onboarding = (props: Props) => {
 
         loaded,
         device,
+        prevDevice,
     } = props;
 
     const model =
         (device && device.features && device.features.major_version) || selectedModel || 2;
+
     const errorState = getError();
     const activeStep = getStep(activeStepId);
 
@@ -260,7 +262,12 @@ const Onboarding = (props: Props) => {
                         <UnexpectedStateOverlay>
                             <UnexpectedState
                                 caseType={errorState}
-                                model={model}
+                                prevModel={
+                                    (prevDevice &&
+                                        prevDevice.features &&
+                                        prevDevice.features.major_version) ||
+                                    2
+                                }
                                 uiInteraction={uiInteraction}
                             />
                         </UnexpectedStateOverlay>
