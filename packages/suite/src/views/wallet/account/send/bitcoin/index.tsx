@@ -4,10 +4,6 @@ import Title from '@wallet-components/Title';
 
 const Wrapper = styled.div``;
 
-const BitcoinSend = () => (
-    <Wrapper>
-        <Title>Send Bitcoin</Title>
-    </Wrapper>
-);
+const BitcoinSend = () => <Wrapper></Wrapper>;
 
 export default BitcoinSend;

@@ -1,4 +1,5 @@
-import { parseBIP44Path } from '../accountUtils';
+import { parseBIP44Path, getTitleForNetwork } from '../accountUtils';
+import { accountTitleFixture } from './fixtures/accountUtils';
 
 describe('accountUtils', () => {
     it('accountUtils.parseBIP44Path', () => {
@@ -9,6 +10,7 @@ describe('accountUtils', () => {
             change: '1',
             addrIndex: '0',
         });
+
         expect(parseBIP44Path("m/44'/0'/0'/0/2")).toEqual({
             purpose: "44'",
             coinType: "0'",
@@ -16,6 +18,7 @@ describe('accountUtils', () => {
             change: '0',
             addrIndex: '2',
         });
+
         expect(parseBIP44Path("m/44'/0'/0'/0/48")).toEqual({
             purpose: "44'",
             coinType: "0'",
@@ -23,14 +26,8 @@ describe('accountUtils', () => {
             change: '0',
             addrIndex: '48',
         });
+
         expect(parseBIP44Path("m/44'/133'/0'/0/0")).toEqual({
-            purpose: "44'",
-            coinType: "133'",
-            account: "0'",
-            change: '0',
-            addrIndex: '0',
-        });
-        expect(parseBIP44Path("m/44'/133'/0'/0/")).toEqual({
             purpose: "44'",
             coinType: "133'",
             account: "0'",
@@ -41,5 +38,16 @@ describe('accountUtils', () => {
 
     it('parseBIP44Path: invalid format', () => {
         expect(parseBIP44Path("m/84'/0'/0'/1/")).toEqual(null);
+    });
+
+    describe('get title for network', () => {
+        const intlMock = { formatMessage: (s: any) => s.defaultMessage };
+        accountTitleFixture.forEach((fixture: any) => {
+            it(fixture.symbol, () => {
+                // @ts-ignore: InjectedIntl mock
+                const title = getTitleForNetwork(fixture.symbol, intlMock);
+                expect(title).toBe(fixture.title);
+            });
+        });
     });
 });

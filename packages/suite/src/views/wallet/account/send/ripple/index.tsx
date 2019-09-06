@@ -4,10 +4,6 @@ import Title from '@wallet-components/Title';
 
 const Wrapper = styled.div``;
 
-const RippleSend = () => (
-    <Wrapper>
-        <Title>Send Ripple</Title>
-    </Wrapper>
-);
+const RippleSend = () => <Wrapper></Wrapper>;
 
 export default RippleSend;

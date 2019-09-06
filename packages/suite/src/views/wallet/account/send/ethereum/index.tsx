@@ -4,10 +4,6 @@ import Title from '@wallet-components/Title';
 
 const Wrapper = styled.div``;
 
-const EthereumSend = () => (
-    <Wrapper>
-        <Title>Send Ethereum</Title>
-    </Wrapper>
-);
+const EthereumSend = () => <Wrapper></Wrapper>;
 
 export default EthereumSend;

@@ -54,4 +54,5 @@ module.exports = {
     },
     preset: 'ts-jest',
     verbose: false,
+    watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };
