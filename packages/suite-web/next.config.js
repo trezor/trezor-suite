@@ -1,4 +1,5 @@
 const path = require('path');
+const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
 const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -10,33 +11,47 @@ const packageJson = require('./package.json');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
-module.exports = withCustomBabelConfig(
-    withTranspileModules(
-        withImages({
-            inlineImageLimit: 0,
-            babelConfigFile: path.resolve('babel.config.js'),
-            // https://github.com/zeit/next.js/issues/6219
-            // target: 'serverless',
-            transpileModules: [
-                '@trezor',
-                '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
-            ],
-            exportTrailingSlash: true,
-            assetPrefix: process.env.assetPrefix || '',
-            webpack: (config, options) => {
-                if (options.isServer) config.plugins.push(new ForkTsCheckerWebpackPlugin());
-                config.plugins.push(
-                    new webpack.DefinePlugin({
-                        'process.env.SUITE_TYPE': JSON.stringify('web'),
-                        'process.env.VERSION': JSON.stringify(packageJson.version),
-                        'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
-                        'process.env.COMMITHASH': JSON.stringify(
-                            gitRevisionPlugin.commithash(),
-                        ),
-                    }),
-                );
-                return config;
-            },
-        }),
+module.exports = withBundleAnalyzer(
+    withCustomBabelConfig(
+        withTranspileModules(
+            withImages({
+                inlineImageLimit: 0,
+                babelConfigFile: path.resolve('babel.config.js'),
+                // https://github.com/zeit/next.js/issues/6219
+                // target: 'serverless',
+                transpileModules: [
+                    '@trezor',
+                    '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
+                ],
+                exportTrailingSlash: true,
+                assetPrefix: process.env.assetPrefix || '',
+                webpack: (config, options) => {
+                    if (options.isServer) config.plugins.push(new ForkTsCheckerWebpackPlugin());
+                    config.plugins.push(
+                        new webpack.DefinePlugin({
+                            'process.env.SUITE_TYPE': JSON.stringify('web'),
+                            'process.env.VERSION': JSON.stringify(packageJson.version),
+                            'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
+                            'process.env.COMMITHASH': JSON.stringify(
+                                gitRevisionPlugin.commithash(),
+                            ),
+                        }),
+                    );
+                    return config;
+                },
+                analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),
+                analyzeBrowser: ['browser', 'both'].includes(process.env.BUNDLE_ANALYZE),
+                bundleAnalyzerConfig: {
+                    server: {
+                        analyzerMode: 'static',
+                        reportFilename: '../bundles/server.html',
+                    },
+                    browser: {
+                        analyzerMode: 'static',
+                        reportFilename: '../bundles/client.html',
+                    },
+                },
+            }),
+        ),
     ),
 );

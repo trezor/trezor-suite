@@ -35,6 +35,7 @@ const Send = (props: Props) => {
             </LayoutAccount>
         );
     }
+
     return (
         <LayoutAccount>
             <Title>Send {getTitleForNetwork(network.symbol, props.intl)}</Title>
