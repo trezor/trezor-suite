@@ -18,3 +18,4 @@ export const WIKI_URL = 'https://wiki.trezor.io/';
 export const BLOG_URL = 'https://blog.trezor.io/';
 export const NEXT_WALLET_URL = 'https://beta-wallet.trezor.io/next/#/';
 export const PASSWORD_MANAGER_URL = 'https://trezor.io/passwords/';
+export const TROUBLESHOOTER_URL  = 'https://trezor.io/support/#technical-technical-issues';

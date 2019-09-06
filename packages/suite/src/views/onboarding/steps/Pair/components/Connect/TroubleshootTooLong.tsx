@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { H6, Link } from '@trezor/components';
 import TrezorConnect from 'trezor-connect';
 
-import { SUPPORT_URL } from '@onboarding-constants/urls';
+import { SUPPORT_URL, TROUBLESHOOTER_URL } from '@onboarding-constants/urls';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './TroubleshootTooLong.messages';
 
@@ -34,7 +34,7 @@ interface Props {
 }
 
 const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
-    <React.Fragment>
+    <>
         {/* <Text>
             <FormattedMessage {...l10nMessages.TR_SEARCHING_TAKES_TOO_LONG} />
         </Text> */}
@@ -43,9 +43,7 @@ const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
             <H6>Troubleshooting guide</H6>
             <Text>
                 Check out our interactive{' '}
-                <Link href="https://trezor.io/support/#technical-technical-issues">
-                    troubleshooting guide
-                </Link>
+                <Link href={TROUBLESHOOTER_URL}>troubleshooting guide</Link>
                 {/* <FormattedMessage {...l10nMessages.TR_REFRESH_INSTRUCTION} /> */}
             </Text>
         </Card>
@@ -76,7 +74,7 @@ const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
                 />
             </OnboardingButton.Alt>
         </Wrapper.Controls>
-    </React.Fragment>
+    </>
 );
 
 export default TroubleshootSearchingTooLong;
