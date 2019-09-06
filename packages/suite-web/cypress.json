@@ -2,7 +2,7 @@
     "integrationFolder": "test/integration",
     "fixturesFolder": "test/fixtures",
     "pluginsFile": "test/plugins/index.js",
-    "supportFile": "test/support/index.js",
+    "supportFile": "test/support/index.ts",
     "defaultCommandTimeout": 10000,
     "screenshotsFolder": "test/screenshots",
     "video": false,

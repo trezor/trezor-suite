@@ -35,7 +35,7 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
  * @param {Partial<Features>} [feat]
  * @returns {Device}
  */
-const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Device => {
+export const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Device => {
     if (dev && typeof dev.type === 'string' && dev.type !== 'acquired') {
         return {
             type: dev.type,

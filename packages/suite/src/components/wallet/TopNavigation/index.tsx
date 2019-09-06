@@ -85,12 +85,13 @@ interface Props {
 const TopNavigation = (props: Props) => {
     const { pathname, params } = props.router;
     const currentPath = pathname;
+    if (!params.symbol) return <>Invalid account</>;
 
     return (
         <Wrapper>
             {props.items.map(item => {
                 // show item if isHidden() returns false or when isHidden func is not defined
-                if ((item.isHidden && !item.isHidden(params.coin)) || !item.isHidden) {
+                if ((item.isHidden && !item.isHidden(params.symbol!)) || !item.isHidden) {
                     return (
                         <StyledNavLink
                             key={item.route}

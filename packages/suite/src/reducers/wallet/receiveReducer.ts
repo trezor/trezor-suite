@@ -1,7 +1,8 @@
-// import { UI } from 'trezor-connect';
+import { UI } from 'trezor-connect';
 import produce from 'immer';
 import { RECEIVE, ACCOUNT } from '@wallet-actions/constants';
-import { Action } from '@wallet-types/index';
+// import { Action } from '@wallet-types/index';
+import { Action as SuiteAction } from '@suite-types/index';
 
 export interface State {
     isAddressVerified: boolean;
@@ -13,7 +14,7 @@ export const initialState = {
     isAddressUnverified: false,
 };
 
-export default (state: State = initialState, action: Action): State => {
+export default (state: State = initialState, action: SuiteAction): State => {
     return produce(state, draft => {
         switch (action.type) {
             case RECEIVE.INIT:
@@ -37,10 +38,10 @@ export default (state: State = initialState, action: Action): State => {
 
             // @ts-ignore
             // need fix in connect?
-            // case UI.REQUEST_BUTTON:
-            //     if (action.payload.code === 'ButtonRequest_Address') {
-            //         draft.addressVerified = true;
-            //     }
+            case UI.REQUEST_BUTTON:
+                if (action.payload.code === 'ButtonRequest_Address') {
+                    draft.isAddressVerified = true;
+                }
             // no default
         }
     });

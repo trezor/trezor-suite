@@ -105,8 +105,9 @@ const Dashboard = (props: Props) => {
                                 <StyledLink
                                     key={`${network.name}-${network.symbol}`}
                                     href={getRoute('wallet-account', {
-                                        coin: network.symbol,
+                                        symbol: network.symbol,
                                         accountId: '0',
+                                        accountType: network.accountType || 'normal',
                                     })}
                                 >
                                     <StyledCoinLogo

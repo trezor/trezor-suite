@@ -165,7 +165,7 @@ interface InputProps {
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.RefObject<HTMLInputElement>;
     height?: number;
-    icon?: IconType;
+    icon?: IconType | React.ReactNode;
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;

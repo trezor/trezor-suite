@@ -26,19 +26,20 @@ interface Props {
 
 const Transactions = (props: Props) => {
     const { params } = props.router;
+    if (!params.accountId) return null;
     // todo: commented out for typescript
     // const { pathname, params } = props.router;
     // const baseUrl = `${pathname}#/${params.coin}/`;
     return (
         <LayoutAccount>
             <Text>
-                {params.coin} Account {params.accountId} Transactions
+                {params.symbol} Account {params.accountId} Transactions
             </Text>
             <Loader />
             <Button
                 variant="info"
                 onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId, 10), 10, 10);
+                    props.getFromStorage(parseInt(params.accountId!, 10), 10, 10);
                 }}
             >
                 Get from storage (offset 10, limit 10)
@@ -46,7 +47,7 @@ const Transactions = (props: Props) => {
             <Button
                 variant="info"
                 onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId, 10), 10);
+                    props.getFromStorage(parseInt(params.accountId!, 10), 10);
                 }}
             >
                 Get from storage (offset 10, limit undefined)
@@ -54,7 +55,7 @@ const Transactions = (props: Props) => {
             <Button
                 variant="info"
                 onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId, 10), undefined, 10);
+                    props.getFromStorage(parseInt(params.accountId!, 10), undefined, 10);
                 }}
             >
                 Get from storage (offset undefined, limit 10)
@@ -62,7 +63,7 @@ const Transactions = (props: Props) => {
             <Button
                 variant="info"
                 onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId, 10));
+                    props.getFromStorage(parseInt(params.accountId!, 10));
                 }}
             >
                 Get from storage for acc 0
