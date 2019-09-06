@@ -14,7 +14,6 @@ import l10nCommonMessages from '@suite-views/index.messages';
 import CypressExportStore from '@suite-support/CypressExportStore';
 import { SENTRY } from '@suite-config';
 import { Store } from '@suite-types';
-import CypressExportStore from '../support/CypressExportStore';
 
 Sentry.init({ dsn: SENTRY });
 interface Props {
