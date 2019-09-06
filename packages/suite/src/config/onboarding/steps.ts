@@ -33,7 +33,7 @@ const steps: Step[] = [
         title: STEP.TITLE_FIRMWARE_STEP,
         disallowedDeviceStates: [
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
-            STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            // STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
     },

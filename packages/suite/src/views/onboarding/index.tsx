@@ -244,8 +244,11 @@ const Onboarding = (props: Props) => {
         uiInteraction,
 
         loaded,
+        device,
     } = props;
-    const model = selectedModel || 2;
+
+    const model =
+        (device && device.features && device.features.major_version) || selectedModel || 2;
     const errorState = getError();
     const activeStep = getStep(activeStepId);
 

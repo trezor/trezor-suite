@@ -61,13 +61,18 @@ const PairDeviceStep = (props: Props) => {
         }
     }, [transport]);
 
+    const actualModel = device && device.features && device.features.major_version;
+
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>Pair device</Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {!showTroubleshoot && !hasNoTransport() && (
                     <>
-                        <Connect model={model} deviceIsConnected={isDetectingDevice()} />
+                        <Connect
+                            model={actualModel || model}
+                            deviceIsConnected={isDetectingDevice()}
+                        />
 
                         {isDetectingDevice() && (
                             <>

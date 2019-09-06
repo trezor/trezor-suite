@@ -22,8 +22,11 @@ export const isNotSameDevice = ({
     prevDeviceId: PrevDeviceId;
 }) => {
     // if no device was connected before, assume it is same device
-    const deviceId = device.features.device_id;
-    if (!prevDeviceId || !deviceId) {
+    if (!prevDeviceId) {
+        return false;
+    }
+    const deviceId = device && device.features && device.features.device_id;
+    if (!deviceId) {
         return null;
     }
     return deviceId !== prevDeviceId;
