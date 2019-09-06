@@ -24,7 +24,6 @@ export interface UiInteraction {
 export type PrevDeviceId = string | null;
 
 export interface ConnectReducer {
-    prevDeviceId: PrevDeviceId;
     device: any; // todo: remove any
     deviceCall: {
         name: null | string; // todo: better, make type AnyDeviceCall
@@ -32,10 +31,6 @@ export interface ConnectReducer {
         error: null | string;
         result: null | Record<string, any>;
     };
-    // deviceInteraction: {
-    //     name: undefined | string; // todo: better
-    //     counter: number;
-    // };
     uiInteraction: UiInteraction;
 }
 

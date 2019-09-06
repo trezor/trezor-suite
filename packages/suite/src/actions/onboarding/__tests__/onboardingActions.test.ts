@@ -3,11 +3,13 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
+import { OnboardingReducer } from '@suite/types/onboarding/onboarding';
 import * as onboardingActions from '../onboardingActions';
 
-export const getInitialState = (custom = {}) => {
+export const getInitialState = (custom?: any): { onboarding: OnboardingReducer } => {
     return {
         onboarding: {
+            prevDeviceId: null,
             selectedModel: null,
             activeStepId: 'welcome',
             activeSubStep: null,
@@ -69,5 +71,38 @@ describe('Onboarding Actions', () => {
 
         const stateAfter = store.getState().onboarding;
         expect(stateAfter.activeStepId).toEqual('welcome');
+    });
+
+    it('addPath', async () => {
+        const store = mockStore(
+            getInitialState({
+                path: [],
+            }),
+        );
+        await store.dispatch(onboardingActions.addPath('create'));
+        const stateAfter = store.getState().onboarding;
+        expect(stateAfter.path).toEqual(['create']);
+    });
+
+    it('removePath: one element', async () => {
+        const store = mockStore(
+            getInitialState({
+                path: ['create', 'new'],
+            }),
+        );
+        await store.dispatch(onboardingActions.removePath(['create']));
+        const stateAfter = store.getState().onboarding;
+        expect(stateAfter.path).toEqual(['new']);
+    });
+
+    it('removePath: multiple elements', async () => {
+        const store = mockStore(
+            getInitialState({
+                path: ['create', 'new', 'used'],
+            }),
+        );
+        await store.dispatch(onboardingActions.removePath(['create', 'new']));
+        const stateAfter = store.getState().onboarding;
+        expect(stateAfter.path).toEqual(['used']);
     });
 });

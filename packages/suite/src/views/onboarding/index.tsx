@@ -177,12 +177,12 @@ const mapStateToProps = (state: AppState) => {
         loaded: state.suite.loaded,
 
         // connect reducer
-        prevDeviceId: state.onboarding.connect.prevDeviceId,
         deviceCall: state.onboarding.connect.deviceCall,
         // deviceInteraction: state.onboarding.connect.deviceInteraction,
         uiInteraction: state.onboarding.connect.uiInteraction,
 
         // onboarding reducer
+        prevDeviceId: state.onboarding.prevDeviceId,
         selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
         path: state.onboarding.path,

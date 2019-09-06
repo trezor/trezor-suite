@@ -10,7 +10,6 @@ import {
 import { Action } from '@suite-types';
 
 const initialState = {
-    prevDeviceId: null,
     device: null,
     deviceCall: {
         name: null,
@@ -22,23 +21,6 @@ const initialState = {
         name: undefined,
         counter: 0,
     },
-};
-
-const setPrevDeviceId = (state: ConnectReducer, device: any) => {
-    // unacquired device
-    if (!device.features) {
-        return null;
-    }
-    if (!device.features.device_id) {
-        return state.prevDeviceId;
-    }
-    if (state.prevDeviceId === null) {
-        return device.features.device_id;
-    }
-    if (state.prevDeviceId !== device.features.device_id) {
-        return state.prevDeviceId;
-    }
-    return device.features.device_id;
 };
 
 const connect = (state: ConnectReducer = initialState, action: Action) => {
@@ -69,7 +51,6 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     name: undefined,
                     counter: 0,
                 };
-                draft.prevDeviceId = setPrevDeviceId(state, action.payload);
                 break;
             case DEVICE_CALL_RESET:
                 draft.deviceCall = {
@@ -82,7 +63,6 @@ const connect = (state: ConnectReducer = initialState, action: Action) => {
                     name: undefined,
                     counter: 0,
                 };
-                draft.prevDeviceId = null;
                 break;
             case DEVICE_CALL_START:
                 draft.deviceCall = {

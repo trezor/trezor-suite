@@ -11,6 +11,7 @@ import {
 import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';
 
 export interface OnboardingReducer {
+    prevDeviceId: string | null;
     selectedModel: number | null;
     activeStepId: AnyStepId;
     activeSubStep: string | null;
