@@ -99,9 +99,17 @@ class RecoveryStep extends React.Component<Props> {
         return this.state.status;
     };
 
-    recoveryDevice() {
-        this.props.connectActions.recoveryDevice();
-    }
+    hideForModelT = () => {
+        const { device, deviceCall } = this.props;
+        return (
+            !deviceCall.result &&
+            !deviceCall.error &&
+            deviceCall.name === RECOVER_DEVICE &&
+            device &&
+            device.features &&
+            device.features.major_version === 2
+        );
+    };
 
     keyboardHandler(event: KeyboardEvent) {
         // 13 enter, 9 tab
@@ -110,12 +118,19 @@ class RecoveryStep extends React.Component<Props> {
         }
     }
 
-    render() {
-        const { deviceCall, uiInteraction, device } = this.props;
+    recoveryDevice() {
+        this.props.connectActions.recoveryDevice();
+    }
 
+    render() {
+        const { uiInteraction, device } = this.props;
+
+        // todo: model T does not need UI
+        if (this.hideForModelT()) {
+            return null;
+        }
         return (
             <Wrapper.Step>
-                {this.getStatus()}
                 <Wrapper.StepHeading>
                     {this.getStatus() === null && 'Recover your device from seed'}
                     {this.getStatus() === 'recovering' && 'Entering seedwords'}
@@ -368,13 +383,13 @@ class RecoveryStep extends React.Component<Props> {
                     )}
                     {this.getStatus() === 'error' && (
                         <React.Fragment>
-                            <Text style={{ color: colors.error }}>
+                            Error // todo: rework
+                            {/* <Text style={{ color: colors.error }}>
                                 <FormattedMessage
                                     {...l10nMessages.TR_RECOVERY_ERROR}
-                                    values={{ error: deviceCall.error }}
+                                    values={{ error: deviceCall.error.code }}
                                 />
-                            </Text>
-
+                            </Text> */}
                             <OnboardingButton.Cta
                                 onClick={() => {
                                     this.props.connectActions.resetCall();

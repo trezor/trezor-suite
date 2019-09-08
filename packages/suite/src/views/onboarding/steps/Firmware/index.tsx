@@ -77,7 +77,11 @@ const FirmwareStep = ({
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
-        if (firmwareUpdate.status === 'error' || device.firmware === 'valid') {
+        if (
+            firmwareUpdate.status === 'error' ||
+            firmwareUpdate.status === 'restarting' ||
+            device.firmware === 'valid'
+        ) {
             setProgress(100);
         }
     }, [firmwareUpdate.status, device.firmware]);
@@ -241,9 +245,12 @@ const FirmwareStep = ({
                                 </>
                             )}
                         </P>
-                        {getUpdateStatus() === 'restarting' && (
-                            <OnboardingIcon.ConnectDevice model={device.features.major_version} />
-                        )}
+                        {getUpdateStatus() === 'restarting' &&
+                            device.features.major_version === 1 && (
+                                <OnboardingIcon.ConnectDevice
+                                    model={device.features.major_version}
+                                />
+                            )}
                     </>
                 )}
                 {getUpdateStatus() === 'error' && <Text>Error</Text>}

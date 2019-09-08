@@ -230,6 +230,8 @@ const Onboarding = (props: Props) => {
             EVENTS.BUTTON_REQUEST__MNEMONIC_WORD_COUNT,
             EVENTS.BUTTON_REQUEST__MNEMONIC_INPUT,
             EVENTS.BUTTON_REQUEST__OTHER,
+            'ButtonRequest_RecoveryHomepage',
+            'ButtonRequest_MnemonicWordCount',
         ];
         return Boolean(
             uiInteraction.name && globals.includes(uiInteraction.name) && deviceCall.isProgress,
