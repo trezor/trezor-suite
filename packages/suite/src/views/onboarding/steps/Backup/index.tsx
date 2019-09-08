@@ -68,6 +68,7 @@ const BackupStep: React.FC<BackupProps> = props => {
         return null;
     };
 
+    // TODO: rework this step to 2 separate components for T1 and T2, this is mess.
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
@@ -75,6 +76,9 @@ const BackupStep: React.FC<BackupProps> = props => {
                 {getStatus() === 'success' && 'Backup finished'}
                 {getStatus() === 'failed' && 'Backup failed'}
                 {getStatus() === 'started' &&
+                    device &&
+                    device.features &&
+                    device.features.major_version === 1 &&
                     uiInteraction.counter <= 24 &&
                     'Write down seed words from your device'}
                 {getStatus() === 'started' && uiInteraction.counter > 24 && 'Check seed words'}
@@ -106,21 +110,29 @@ const BackupStep: React.FC<BackupProps> = props => {
                         <Icons>
                             <Instruction>
                                 <Icon size={80} icon="CLOUD_CROSSED" />
-                                <FormattedMessage {...l10nMessages.TR_DO_NOT_UPLOAD_INSTRUCTION} />
+                                <Text>
+                                    <FormattedMessage
+                                        {...l10nMessages.TR_DO_NOT_UPLOAD_INSTRUCTION}
+                                    />
+                                </Text>
                             </Instruction>
 
                             <Instruction>
                                 <Icon size={80} icon="DOWNLOAD_CROSSED" />
-                                <FormattedMessage
-                                    {...l10nMessages.TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION}
-                                />
+                                <Text>
+                                    <FormattedMessage
+                                        {...l10nMessages.TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION}
+                                    />
+                                </Text>
                             </Instruction>
 
                             <Instruction>
                                 <Icon size={80} icon="PHOTO_CROSSED" />
-                                <FormattedMessage
-                                    {...l10nMessages.TR_DO_NOT_TAKE_PHOTO_INSTRUCTION}
-                                />
+                                <Text>
+                                    <FormattedMessage
+                                        {...l10nMessages.TR_DO_NOT_TAKE_PHOTO_INSTRUCTION}
+                                    />
+                                </Text>
                             </Instruction>
                         </Icons>
 

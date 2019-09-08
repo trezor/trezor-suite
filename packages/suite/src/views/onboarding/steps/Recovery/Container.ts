@@ -19,6 +19,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
         goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
         goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
+        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     },
     recoveryActions: {
         setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),

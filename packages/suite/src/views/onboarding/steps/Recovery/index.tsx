@@ -115,9 +115,12 @@ class RecoveryStep extends React.Component<Props> {
 
         return (
             <Wrapper.Step>
+                {this.getStatus()}
                 <Wrapper.StepHeading>
                     {this.getStatus() === null && 'Recover your device from seed'}
+                    {this.getStatus() === 'recovering' && 'Entering seedwords'}
                     {this.getStatus() === 'select-advanced-recovery' && 'Select recovery method'}
+                    {this.getStatus() === 'success' && 'Device recovered from seed'}
                 </Wrapper.StepHeading>
                 <Wrapper.StepBody>
                     {this.getStatus() === null && (
@@ -244,6 +247,14 @@ class RecoveryStep extends React.Component<Props> {
                             </Wrapper.Options>
 
                             <Wrapper.Controls>
+                                <OnboardingButton.Cta
+                                    onClick={() => {
+                                        this.recoveryDevice();
+                                    }}
+                                >
+                                    <FormattedMessage {...l10nMessages.TR_START_RECOVERY} />
+                                </OnboardingButton.Cta>
+
                                 <OnboardingButton.Alt
                                     onClick={() => {
                                         // this.props.onboardingActions.goToSubStep(null);
@@ -252,13 +263,6 @@ class RecoveryStep extends React.Component<Props> {
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_BACK} />
                                 </OnboardingButton.Alt>
-                                <OnboardingButton.Cta
-                                    onClick={() => {
-                                        this.recoveryDevice();
-                                    }}
-                                >
-                                    <FormattedMessage {...l10nMessages.TR_START_RECOVERY} />
-                                </OnboardingButton.Cta>
                             </Wrapper.Controls>
                         </React.Fragment>
                     )}
@@ -339,7 +343,7 @@ class RecoveryStep extends React.Component<Props> {
                                 <P size="small">
                                     <FormattedMessage
                                         {...l10nMessages.TR_MORE_WORDS_TO_ENTER}
-                                        values={{ count: 25 - uiInteraction.counter }}
+                                        values={{ count: 26 - uiInteraction.counter }}
                                     />
                                 </P>
                             )}
@@ -382,6 +386,16 @@ class RecoveryStep extends React.Component<Props> {
                         </React.Fragment>
                     )}
                 </Wrapper.StepBody>
+
+                <Wrapper.StepFooter>
+                    {this.getStatus() == null && (
+                        <OnboardingButton.Back
+                            onClick={this.props.onboardingActions.goToPreviousStep}
+                        >
+                            Back
+                        </OnboardingButton.Back>
+                    )}
+                </Wrapper.StepFooter>
             </Wrapper.Step>
         );
     }

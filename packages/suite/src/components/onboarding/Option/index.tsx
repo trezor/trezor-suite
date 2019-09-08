@@ -12,7 +12,7 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     border-radius: 4px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     cursor: pointer;
     box-shadow: ${({ isSelected }) =>
