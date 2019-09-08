@@ -5,9 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import commonMessages from '@suite-support/Messages';
 
 // import * as STEP from '@onboarding-constants/steps';
-import colors from '@onboarding-config/colors';
-import { FIRMWARE_UPDATE } from '@onboarding-actions/constants/calls';
-import * as FIRMWARE_UPDATE_STATUS from '@onboarding-actions/constants/firmwareUpdateStatus';
 import { Text, OnboardingIcon, Loaders, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import { Props } from './Container';
@@ -69,7 +66,6 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
 
 const FirmwareStep = ({
     device,
-    deviceCall,
     firmwareUpdate,
     // path,
     onboardingActions,
@@ -81,31 +77,27 @@ const FirmwareStep = ({
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
-        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.DONE || deviceCall.error) {
+        if (firmwareUpdate.status === 'error' || device.firmware === 'valid') {
             setProgress(100);
         }
-    }, [firmwareUpdate.status, deviceCall]);
+    }, [firmwareUpdate.status, device.firmware]);
 
     useEffect(() => {
-        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.DOWNLOADING) {
+        if (firmwareUpdate.status === 'downloading') {
             setMaxProgress(10);
         }
-        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.INSTALLING) {
-            setMaxProgress(99);
-        }
-        if (firmwareUpdate.status === FIRMWARE_UPDATE_STATUS.DONE) {
+        if (firmwareUpdate.status === 'installing') {
             setMaxProgress(100);
         }
-    }, [firmwareUpdate.status]);
+        // if (firmwareUpdate.status === 'restarting') {
+        //     setMaxProgress(100);
+        // }
+    }, [firmwareUpdate]);
 
     useEffect(() => {
         let interval: number;
 
-        const runOn = [
-            FIRMWARE_UPDATE_STATUS.STARTED,
-            FIRMWARE_UPDATE_STATUS.INSTALLING,
-            FIRMWARE_UPDATE_STATUS.DOWNLOADING,
-        ];
+        const runOn = ['started', 'installing', 'downloading', 'restarting'];
         if (firmwareUpdate.status && runOn.includes(firmwareUpdate.status)) {
             interval = setInterval(
                 () => {
@@ -124,50 +116,23 @@ const FirmwareStep = ({
     const isConnected = device && device.connected;
     const isInBootloader = device && device.mode === 'bootloader';
 
-    const getError = () => {
-        return deviceCall.error;
-    };
-
     const getFirmwareStatus = () => {
-        if (device.firmware === 'valid') {
-            return 'success';
-        }
-
-        if (device.firmware === 'outdated') {
-            return 'outdated';
-        }
-
-        if (device.firmware === 'required') {
-            return 'required';
-        }
-
-        if (device.firmware === 'none' || device.firmware === 'unknown') {
-            return 'none';
-        }
-
-        return null;
+        return device.firmware;
     };
 
     const getUpdateStatus = () => {
-        if (
-            deviceCall.name === FIRMWARE_UPDATE &&
-            deviceCall.result &&
-            device.firmware !== 'valid'
-        ) {
-            return 'reconnect';
-        }
         return firmwareUpdate.status;
     };
 
     const getMessageForStatus = () => {
         const status = getUpdateStatus();
-        if (status === 'reconnect' && !device.connected && device.features.major_version === 1) {
+        if (status === 'restarting' && !device.connected && device.features.major_version === 1) {
             return intl.formatMessage(l10nMessages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
-        if (status === 'reconnect' && device.connected && device.features.major_version === 1) {
+        if (status === 'restarting' && device.connected && device.features.major_version === 1) {
             return intl.formatMessage(l10nMessages.TR_DISCONNECT_YOUR_DEVICE);
         }
-        if (status === 'reconnect' && device.features.major_version === 2) {
+        if (status === 'restarting' && device.features.major_version === 2) {
             return intl.formatMessage(l10nMessages.TR_WAIT_FOR_REBOOT);
         }
         if (status === 'done') {
@@ -186,54 +151,72 @@ const FirmwareStep = ({
         return () => onboardingActions.goToNextStep();
     };
 
+    const shouldDisplayDonut = () => {
+        const status = getUpdateStatus();
+        return (
+            typeof status === 'string' &&
+            ['downloading', 'installing', 'restarting'].includes(status)
+        );
+    };
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
                 <FormattedMessage {...l10nMessages.TR_FIRMWARE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
+                {/* <div> updatestatus: {getUpdateStatus()}</div>
+                <div> getFirmwareStatus: {getFirmwareStatus()}</div> */}
+
                 {/*  text section */}
-                {getFirmwareStatus() === 'none' && (
+                {!getUpdateStatus() && (
                     <>
-                        <Text>
-                            <FormattedMessage {...l10nMessages.TR_FIRMWARE_SUBHEADING} />
-                        </Text>
+                        {getFirmwareStatus() === 'none' && (
+                            <>
+                                <Text>
+                                    <FormattedMessage {...l10nMessages.TR_FIRMWARE_SUBHEADING} />
+                                </Text>
+                            </>
+                        )}
+
+                        {getFirmwareStatus() === 'outdated' && !isInBootloader && (
+                            <>
+                                <Text>
+                                    <FormattedMessage
+                                        {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
+                                        values={{
+                                            version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
+                                        }}
+                                    />
+                                </Text>
+                                <Text>
+                                    You might either update your device now or continue and update
+                                    it later.
+                                </Text>
+                            </>
+                        )}
+
+                        {getFirmwareStatus() === 'required' && !isInBootloader && (
+                            <>
+                                <Text>
+                                    <FormattedMessage
+                                        {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
+                                        values={{
+                                            version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
+                                        }}
+                                    />
+                                </Text>
+                                <Text>
+                                    This firmware is not longer supported, you will need to update
+                                    it now.
+                                </Text>
+                            </>
+                        )}
                     </>
                 )}
 
-                {getFirmwareStatus() === 'outdated' && !isInBootloader && (
-                    <>
-                        <Text>
-                            <FormattedMessage
-                                {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
-                                values={{
-                                    version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
-                                }}
-                            />
-                        </Text>
-                        <Text>
-                            You might either update your device now or continue and update it later.
-                        </Text>
-                    </>
-                )}
+                {getUpdateStatus() === 'error' && <></>}
 
-                {getFirmwareStatus() === 'required' && !isInBootloader && (
-                    <>
-                        <Text>
-                            <FormattedMessage
-                                {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
-                                values={{
-                                    version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
-                                }}
-                            />
-                        </Text>
-                        <Text>
-                            This firmware is not longer supported, you will need to update it now.
-                        </Text>
-                    </>
-                )}
-
-                {getFirmwareStatus() === 'success' && (
+                {getFirmwareStatus() === 'valid' && (
                     <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_FIRMWARE_INSTALLED} />
@@ -241,66 +224,80 @@ const FirmwareStep = ({
                     </>
                 )}
 
-                {/* progress donut section */}
-                {getUpdateStatus() && (
+                {shouldDisplayDonut() && (
                     <>
+                        {/* todo move radius and stroke to defaults of Donut  */}
                         <Loaders.Donut
                             progress={progress}
                             radius={DONUT_RADIUS}
                             stroke={DONUT_STROKE}
-                            isSuccess={getFirmwareStatus() === 'success'}
-                            isError={!!getError()}
+                            isSuccess={getFirmwareStatus() === 'valid'}
                         />
-                        {!getError() && (
-                            <>
-                                <P>
+                        <P>
+                            {getMessageForStatus() && (
+                                <>
                                     {getMessageForStatus()}
-                                    {getMessageForStatus() && <Loaders.Dots />}
-                                </P>
-                                {getUpdateStatus() === 'reconnect' && (
-                                    <OnboardingIcon.ConnectDevice
-                                        model={device.features.major_version}
-                                    />
-                                )}
-                            </>
-                        )}
-                        {getError() && (
-                            <>
-                                {deviceCall.error && (
-                                    <Text style={{ color: colors.error }}>
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_INSTALL_ERROR_OCCURRED}
-                                            values={{ error: deviceCall.error }}
-                                        />
-                                    </Text>
-                                )}
-                                {/* todo: rework with notifications */}
-                                {/* {firmwareUpdate.error && (
-                                    <Text style={{ color: colors.error }}>
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_FETCH_ERROR_OCCURRED}
-                                            values={{ error: firmwareUpdate.error }}
-                                        />
-                                    </Text>
-                                )} */}
-                            </>
+                                    <Loaders.Dots />
+                                </>
+                            )}
+                        </P>
+                        {getUpdateStatus() === 'restarting' && (
+                            <OnboardingIcon.ConnectDevice model={device.features.major_version} />
                         )}
                     </>
                 )}
+                {getUpdateStatus() === 'error' && <Text>Error</Text>}
 
                 {/* buttons section */}
-                {(!getUpdateStatus() || getUpdateStatus() === 'done') && (
-                    <Wrapper.Controls>
-                        {getFirmwareStatus() === 'none' && !getError() && (
-                            <>
-                                <InstallButton
-                                    isConnected={isConnected}
-                                    isInBootloader={isInBootloader}
-                                    onClick={install}
-                                />
-                            </>
-                        )}
-                        {getFirmwareStatus() === 'none' && getError() && (
+                <Wrapper.Controls>
+                    {!getUpdateStatus() && (
+                        <>
+                            {(getFirmwareStatus() === 'none' ||
+                                getFirmwareStatus() === 'unknown') && (
+                                <>
+                                    <InstallButton
+                                        isConnected={isConnected}
+                                        isInBootloader={isInBootloader}
+                                        onClick={install}
+                                    />
+                                </>
+                            )}
+
+                            {getFirmwareStatus() === 'outdated' && (
+                                <>
+                                    <InstallButton
+                                        isConnected={isConnected}
+                                        isInBootloader={isInBootloader}
+                                        onClick={() => install()}
+                                    />
+                                    <ContinueButton
+                                        isConnected={isConnected}
+                                        isInBootloader={isInBootloader}
+                                        onClick={getContinueFn()}
+                                    />
+                                </>
+                            )}
+
+                            {getFirmwareStatus() === 'required' && (
+                                <>
+                                    <InstallButton
+                                        isConnected={isConnected}
+                                        isInBootloader={isInBootloader}
+                                        onClick={() => install()}
+                                    />
+                                </>
+                            )}
+                        </>
+                    )}
+                    {getFirmwareStatus() === 'valid' && (
+                        <ContinueButton
+                            isConnected={isConnected}
+                            isInBootloader={isInBootloader}
+                            onClick={getContinueFn()}
+                        />
+                    )}
+                    {getUpdateStatus() === 'error' &&
+                        (getFirmwareStatus() === 'none' || getFirmwareStatus() === 'unknown') && (
                             <Tooltip
                                 trigger={isConnected ? 'manual' : 'mouseenter focus'}
                                 placement="bottom"
@@ -314,39 +311,7 @@ const FirmwareStep = ({
                                 </OnboardingButton.Cta>
                             </Tooltip>
                         )}
-
-                        {getFirmwareStatus() === 'outdated' && (
-                            <>
-                                <InstallButton
-                                    isConnected={isConnected}
-                                    isInBootloader={isInBootloader}
-                                    onClick={() => install()}
-                                />
-                                <ContinueButton
-                                    isConnected={isConnected}
-                                    isInBootloader={isInBootloader}
-                                    onClick={getContinueFn()}
-                                />
-                            </>
-                        )}
-                        {getFirmwareStatus() === 'required' && (
-                            <>
-                                <InstallButton
-                                    isConnected={isConnected}
-                                    isInBootloader={isInBootloader}
-                                    onClick={() => install()}
-                                />
-                            </>
-                        )}
-                        {getFirmwareStatus() === 'success' && (
-                            <ContinueButton
-                                isConnected={isConnected}
-                                isInBootloader={isInBootloader}
-                                onClick={getContinueFn()}
-                            />
-                        )}
-                    </Wrapper.Controls>
-                )}
+                </Wrapper.Controls>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
