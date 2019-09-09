@@ -1,5 +1,5 @@
 import * as Canvas from 'canvas';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 import * as homescreen from '../homescreen';
 
