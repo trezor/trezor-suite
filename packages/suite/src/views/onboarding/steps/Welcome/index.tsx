@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
+import { goto } from '@suite-actions/routerActions';
 import * as STEP from '@onboarding-constants/steps';
 import { getRoute } from '@suite-utils/router';
 import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
@@ -66,7 +67,7 @@ const WelcomeStep = (props: Props) => {
                 {isDeviceInitialized() && (
                     <OnboardingButton.Back
                         data-test="button-use-wallet"
-                        onClick={() => props.goto(getRoute('wallet-index'))}
+                        onClick={() => goto(getRoute('wallet-index'))}
                     >
                         <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
                     </OnboardingButton.Back>
