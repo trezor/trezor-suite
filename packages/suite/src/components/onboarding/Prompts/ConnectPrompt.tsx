@@ -5,14 +5,14 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 
 interface Props {
     model: number;
-    height: number;
-    loop: boolean;
+    height?: number;
+    loop?: boolean;
 }
 
-const TrezorConnect = ({ model, height, loop }: Props) => {
+const ConnectPrompt = ({ model, height = 200, loop = false }: Props) => {
     const path = `videos/onboarding/trezor-click-${model}.mp4`;
     return (
-        <React.Fragment>
+        <>
             {/* just a hack to switch loop from true to false without need to forward ref to the video */}
             {loop && (
                 <video height={height} autoPlay loop={loop}>
@@ -24,13 +24,8 @@ const TrezorConnect = ({ model, height, loop }: Props) => {
                     <source src={resolveStaticPath(path)} type="video/mp4" />
                 </video>
             )}
-        </React.Fragment>
+        </>
     );
 };
 
-TrezorConnect.defaultProps = {
-    height: 200,
-    loop: false,
-};
-
-export default TrezorConnect;
+export default ConnectPrompt;

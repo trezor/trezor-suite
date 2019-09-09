@@ -23,13 +23,8 @@ const steps: Step[] = [
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW],
     },
     {
-        id: STEP.ID_BRIDGE_STEP,
-        title: STEP.TITLE_BRIDGE_STEP,
-        path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
-    },
-    {
-        id: STEP.ID_CONNECT_STEP,
-        title: STEP.TITLE_BRIDGE_STEP,
+        id: STEP.ID_PAIR_DEVICE_STEP,
+        title: STEP.TITLE_PAIR_DEVICE_STEP,
         disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
     },
@@ -38,7 +33,7 @@ const steps: Step[] = [
         title: STEP.TITLE_FIRMWARE_STEP,
         disallowedDeviceStates: [
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
-            STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            // STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
     },
@@ -47,6 +42,7 @@ const steps: Step[] = [
         title: STEP.TITLE_LAUNCH_STEP,
         disallowedDeviceStates: [
             STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED,
+            STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
         ],
@@ -57,6 +53,7 @@ const steps: Step[] = [
         title: STEP.TITLE_LAUNCH_STEP,
         disallowedDeviceStates: [
             STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED,
+            STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
         ],

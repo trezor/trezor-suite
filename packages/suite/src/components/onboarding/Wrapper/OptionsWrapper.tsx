@@ -4,7 +4,7 @@ import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-direction: column;
     width: 100%;
 

@@ -1,10 +1,12 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
 import * as connectActions from '@onboarding-actions/connectActions';
-import Step from './index';
 import { Dispatch, AppState } from '@suite-types';
+
+import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.onboarding.connect.device,
@@ -17,6 +19,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
         goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
         goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
+        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     },
     recoveryActions: {
         setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
@@ -30,7 +33,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Step);
+export type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> &
+    InjectedIntlProps;
+
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps,
+    )(Step),
+);

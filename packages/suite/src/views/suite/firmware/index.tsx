@@ -8,10 +8,11 @@ import { Button, P, H1, H4, H5, variables } from '@trezor/components';
 import { goto } from '@suite-actions/routerActions';
 import { getRoute } from '@suite/utils/suite/router';
 import { firmwareUpdate } from '@suite-actions/firmwareActions';
-import { Dots } from '@suite/components/onboarding/Loaders';
+// todo: now used in suite, refactor from onboarding
+import WalletNotifications from '@wallet-components/Notifications';
+import { Loaders } from '@onboarding-components';
 
 // todo: rework to common notifications
-import WalletNotifications from '@wallet-components/Notifications';
 
 import { AppState } from '@suite-types';
 // import l10nMessages from './index.messages';
@@ -131,7 +132,7 @@ const FirmwareUpdate = (props: Props) => {
                 {getStatus() === 'in-progress' && (
                     <div>
                         {firmware.status}
-                        <Dots />
+                        <Loaders.Dots />
                     </div>
                 )}
             </Middle>

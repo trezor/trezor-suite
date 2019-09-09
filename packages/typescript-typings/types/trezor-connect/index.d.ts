@@ -824,6 +824,8 @@ declare module 'trezor-connect' {
         function renderWebUSBButton(): void;
 
         function getDeviceState(params: CommonParams): ResponseMessage<DeviceStateResponse>;
+
+        function disableWebUSB(): void;
     }
 
     export default TrezorConnect;
