@@ -1,15 +1,21 @@
 import React from 'react';
-import Content from '@wallet-components/Content';
+import styled from 'styled-components';
 import { AppState } from '@suite/types/suite';
 import { injectIntl, InjectedIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import Title from '@wallet-components/Title';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
-import LayoutAccount from '@wallet-components/LayoutAccount';
 
-import EthereumTypeSendForm from './ethereum';
-import RippleTypeSendForm from './ripple';
-import BitcoinTypeSendForm from './bitcoin';
+import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
+import {
+    AddressInput,
+    BitcoinTypeAdditionalForm,
+    RippleTypeAdditionalForm,
+    EthereumTypeAdditionalForm,
+} from './components';
+
+const Row = styled.div`
+    padding: 0 0 20px 0;
+`;
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -18,9 +24,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = () => ({});
 
-type Props = {
-    intl: InjectedIntl;
-} & ReturnType<typeof mapStateToProps> &
+type Props = { intl: InjectedIntl } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
 const Send = (props: Props) => {
@@ -30,19 +34,24 @@ const Send = (props: Props) => {
     if (!device || !account || !discovery || !network || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
-            <LayoutAccount>
+            <Layout>
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </LayoutAccount>
+            </Layout>
         );
     }
 
     return (
-        <LayoutAccount>
+        <Layout>
             <Title>Send {getTitleForNetwork(network.symbol, props.intl)}</Title>
-            {network.networkType === 'bitcoin' && <BitcoinTypeSendForm />}
-            {network.networkType === 'ethereum' && <EthereumTypeSendForm />}
-            {network.networkType === 'ripple' && <RippleTypeSendForm />}
-        </LayoutAccount>
+            <Row>
+                <AddressInput />
+            </Row>
+            <Row>
+                {network.networkType === 'bitcoin' && <BitcoinTypeAdditionalForm />}
+                {network.networkType === 'ethereum' && <EthereumTypeAdditionalForm />}
+                {network.networkType === 'ripple' && <RippleTypeAdditionalForm />}
+            </Row>
+        </Layout>
     );
 };
 

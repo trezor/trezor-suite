@@ -51,6 +51,8 @@ export const getTitleForNetwork = (symbol: string, intl: InjectedIntl) => {
             return intl.formatMessage(l10nMessages.TR_NETWORK_CARDANO);
         case 'xtz':
             return intl.formatMessage(l10nMessages.TR_NETWORK_TEZOS);
+        case 'xrp':
+            return intl.formatMessage(l10nMessages.TR_NETWORK_XRP);
         default:
             return intl.formatMessage(l10nMessages.TR_NETWORK_UNKNOWN);
     }

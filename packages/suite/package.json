@@ -48,7 +48,9 @@
         "redux-thunk": "^2.3.0",
         "styled-components": "^4.3.2",
         "styled-reset": "^3.0.2",
-        "trezor-connect": "extended"
+        "trezor-connect": "extended",
+        "validator": "^11.1.0",
+        "wallet-address-validator": "^0.2.4"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",
