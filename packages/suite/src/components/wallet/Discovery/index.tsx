@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { AppState, Dispatch } from '@suite-types/index';
 import { Button } from '@trezor/components';
-import { STATUS as DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
+import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import * as DiscoveryActions from '@wallet-actions/discoveryActions';
 
 interface Props {
@@ -20,17 +20,20 @@ const AccountDiscovery = (props: Props) => {
 
     return (
         <View>
-            <Button onClick={props.start} isLoading>
+            <Button
+                onClick={props.start}
+                isLoading={d.status > 0 && d.status < DISCOVERY_STATUS.IDLE}
+                isDisabled={d.status > 0 && d.status < DISCOVERY_STATUS.IDLE}
+            >
                 Start
             </Button>
-            <Button onClick={props.stop} isInverse>
+            <Button
+                onClick={props.stop}
+                isInverse
+                isDisabled={d.status !== DISCOVERY_STATUS.RUNNING}
+            >
                 Stop
             </Button>
-            {d.status === DISCOVERY_STATUS.RUNNING && (
-                <Button onClick={props.stop} isInverse>
-                    Stop
-                </Button>
-            )}
         </View>
     );
 };
