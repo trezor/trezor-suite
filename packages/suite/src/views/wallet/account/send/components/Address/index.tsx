@@ -16,7 +16,7 @@ interface Props {
     intl: InjectedIntl;
 }
 
-const AddressInput = (props: Props) => (
+const Address = (props: Props) => (
     <Input
         state="success"
         autoComplete="off"
@@ -35,4 +35,4 @@ const AddressInput = (props: Props) => (
     />
 );
 
-export default injectIntl(AddressInput);
+export default injectIntl(Address);

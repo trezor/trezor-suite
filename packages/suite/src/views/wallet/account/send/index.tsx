@@ -6,12 +6,7 @@ import { connect } from 'react-redux';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 
 import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
-import {
-    AddressInput,
-    BitcoinTypeAdditionalForm,
-    RippleTypeAdditionalForm,
-    EthereumTypeAdditionalForm,
-} from './components';
+import { Address, Amount, Fee, Buttons, AdditionalForm } from './components';
 
 const Row = styled.div`
     padding: 0 0 20px 0;
@@ -44,13 +39,18 @@ const Send = (props: Props) => {
         <Layout>
             <Title>Send {getTitleForNetwork(network.symbol, props.intl)}</Title>
             <Row>
-                <AddressInput />
+                <Address />
             </Row>
             <Row>
-                {network.networkType === 'bitcoin' && <BitcoinTypeAdditionalForm />}
-                {network.networkType === 'ethereum' && <EthereumTypeAdditionalForm />}
-                {network.networkType === 'ripple' && <RippleTypeAdditionalForm />}
+                <Amount />
             </Row>
+            <Row>
+                <Fee />
+            </Row>
+            <Row>
+                <AdditionalForm networkType={network.networkType} />
+            </Row>
+            <Buttons />
         </Layout>
     );
 };

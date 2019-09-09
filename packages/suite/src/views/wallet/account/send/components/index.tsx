@@ -1,11 +1,7 @@
-import AddressInput from './AddressInput';
-import BitcoinTypeAdditionalForm from './BitcoinTypeAdditionalForm';
-import EthereumTypeAdditionalForm from './EthereumTypeAdditionalForm';
-import RippleTypeAdditionalForm from './RippleTypeAdditionalForm';
+import Address from './Address';
+import Amount from './Amount';
+import Fee from './Fee';
+import Buttons from './Buttons';
+import AdditionalForm from './AdditionalForm';
 
-export {
-    AddressInput,
-    BitcoinTypeAdditionalForm,
-    EthereumTypeAdditionalForm,
-    RippleTypeAdditionalForm,
-};
+export { Address, Amount, Fee, AdditionalForm, Buttons };
