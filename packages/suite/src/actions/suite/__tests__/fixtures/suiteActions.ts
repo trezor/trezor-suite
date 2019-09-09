@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DEVICE, TRANSPORT } from 'trezor-connect';
+import { DEVICE, TRANSPORT, IFRAME } from 'trezor-connect';
 import { SUITE, STORAGE, NOTIFICATION } from '@suite-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as suiteActions from '../../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
@@ -101,10 +102,10 @@ const reducerActions = [
         actions: [suiteActions.lockUI(true), suiteActions.lockUI(false)],
         result: [
             {
-                uiLocked: true,
+                locks: [SUITE.LOCK_TYPE.UI],
             },
             {
-                uiLocked: false,
+                locks: [],
             },
         ],
     },
@@ -113,10 +114,10 @@ const reducerActions = [
         actions: [suiteActions.lockRouter(true), suiteActions.lockRouter(false)],
         result: [
             {
-                routerLocked: true,
+                locks: [SUITE.LOCK_TYPE.ROUTER],
             },
             {
-                routerLocked: false,
+                locks: [],
             },
         ],
     },
@@ -211,10 +212,41 @@ const reducerActions = [
         ],
     },
     {
-        description: `iframe-loaded`,
+        description: `DISCOVERY.START/DISCOVERY.STOP + DISCOVERY.START/DISCOVERY.COMPLETE`,
         actions: [
             {
-                type: 'iframe-loaded',
+                type: DISCOVERY.START,
+            },
+            {
+                type: DISCOVERY.STOP,
+            },
+            {
+                type: DISCOVERY.START,
+            },
+            {
+                type: DISCOVERY.COMPLETE,
+            },
+        ],
+        result: [
+            {
+                locks: [SUITE.LOCK_TYPE.DEVICE],
+            },
+            {
+                locks: [],
+            },
+            {
+                locks: [SUITE.LOCK_TYPE.DEVICE],
+            },
+            {
+                locks: [],
+            },
+        ],
+    },
+    {
+        description: `IFRAME.LOADED`,
+        actions: [
+            {
+                type: IFRAME.LOADED,
                 payload: {
                     browser: {
                         name: 'env',
@@ -246,19 +278,19 @@ const initialRun = [
 
 const selectDevice = [
     {
-        description: `with uiLocked`,
+        description: `with ui locked`,
         state: {
             suite: {
-                uiLocked: true,
+                locks: [SUITE.LOCK_TYPE.UI],
             },
         },
         device: SUITE_DEVICE,
     },
     {
-        description: `with routerLocked`,
+        description: `with router locked`,
         state: {
             suite: {
-                routerLocked: true,
+                locks: [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE],
             },
         },
         device: SUITE_DEVICE,
@@ -455,11 +487,11 @@ const handleDeviceDisconnect = [
         },
     },
     {
-        description: `disconnected selected device with routerLocked`,
+        description: `disconnected selected device with router locked`,
         state: {
             suite: {
                 device: SUITE_DEVICE,
-                routerLocked: true,
+                locks: [SUITE.LOCK_TYPE.ROUTER],
             },
             devices: [
                 SUITE_DEVICE,
