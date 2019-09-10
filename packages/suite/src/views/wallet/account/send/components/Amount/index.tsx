@@ -58,12 +58,10 @@ const StyledIcon = styled(Icon)`
 const LocalAmountWrapper = styled.div`
     display: flex;
     align-self: flex-start;
-    margin-top: 26px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex: 1 0 100%;
         justify-content: flex-end;
-        margin-top: 0px;
         padding-top: 28px;
     }
 `;
@@ -108,7 +106,7 @@ const Amount = (props: Props) => (
             topLabel={
                 <AmountInputLabelWrapper>
                     <AmountInputLabel>
-                        {/* <FormattedMessage {...messages.TR_AMOUNT} /> */}
+                        <FormattedMessage {...messages.TR_AMOUNT} />
                     </AmountInputLabel>
                     {true && (
                         <AmountInputLabel>
@@ -120,9 +118,9 @@ const Amount = (props: Props) => (
                     )}
                 </AmountInputLabelWrapper>
             }
-            value={23}
+            value={''}
             onChange={() => {}}
-            bottomText="bottom text"
+            bottomText=""
             sideAddons={[
                 <SetMaxAmountButton key="icon" onClick={() => {}} isWhite={false}>
                     {/* {!setMax && (

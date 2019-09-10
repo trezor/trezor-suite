@@ -22,11 +22,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Imported account #{number}',
         description: 'Used in auto-generated label for imported accounts',
     },
-    TR_CLEAR: {
-        id: 'TR_CLEAR',
-        defaultMessage: 'Clear',
-        description: 'Clear form button',
-    },
     TR_CHECK_FOR_DEVICES: {
         id: 'TR_CHECK_FOR_DEVICES',
         defaultMessage: 'Check for devices',

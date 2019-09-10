@@ -18,14 +18,14 @@ interface Props {
 
 const Address = (props: Props) => (
     <Input
-        state="success"
+        state={undefined}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck={false}
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
-        bottomText="bottom text"
-        value="test"
+        bottomText={null}
+        value=""
         onChange={() => console.log('click')}
         sideAddons={[
             <QrButton key="qrButton" isWhite onClick={() => console.log('click')}>

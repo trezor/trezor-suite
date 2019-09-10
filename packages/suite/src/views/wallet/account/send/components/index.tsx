@@ -1,8 +1,8 @@
 import Address from './Address';
 import Amount from './Amount';
 import Fee from './Fee';
-import Buttons from './Buttons';
+import SendAndClear from './SendAndClear';
 import AdditionalForm from './AdditionalForm';
-import ToggleAdditionalButton from './ToggleAdditionalButton';
+import ButtonToggleAdditional from './ButtonToggleAdditional';
 
-export { Address, Amount, Fee, AdditionalForm, Buttons, ToggleAdditionalButton };
+export { Address, Amount, Fee, AdditionalForm, SendAndClear, ButtonToggleAdditional };

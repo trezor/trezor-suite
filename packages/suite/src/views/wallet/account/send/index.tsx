@@ -9,9 +9,9 @@ import {
     Address,
     Amount,
     Fee,
-    Buttons,
+    SendAndClear,
     AdditionalForm,
-    ToggleAdditionalButton,
+    ButtonToggleAdditional,
 } from './components';
 
 const Row = styled.div`
@@ -19,7 +19,7 @@ const Row = styled.div`
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
-    const { device, sendFormActions } = props;
+    const { device, sendFormActions, send } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !account || !discovery || !network || !shouldRender) {
@@ -30,9 +30,6 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             </Layout>
         );
     }
-
-    const id = `${account.network}-${account.accountType}-${account.index}`;
-    const isAdditionalFormVisible = props.send.isAdditionalFormVisible.includes(id);
 
     return (
         <Layout>
@@ -46,16 +43,23 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Fee />
             </Row>
-            <ToggleAdditionalButton
-                toggle={sendFormActions.toggleAdditionalFormVisibility}
-                isActive={isAdditionalFormVisible}
-            />
-            {isAdditionalFormVisible && (
+            <Row>
+                <ButtonToggleAdditional
+                    toggle={sendFormActions.toggleAdditionalFormVisibility}
+                    isActive={send.isAdditionalFormVisible}
+                />
+            </Row>
+            {send.isAdditionalFormVisible && (
                 <Row>
                     <AdditionalForm networkType={network.networkType} />
                 </Row>
             )}
-            <Buttons />
+            <SendAndClear
+                isDisabled={false}
+                sendButtonText={'send'}
+                clear={() => {}}
+                send={() => {}}
+            />
         </Layout>
     );
 };
