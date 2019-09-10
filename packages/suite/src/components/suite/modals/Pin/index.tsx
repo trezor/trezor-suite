@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { Button, ButtonPin, InputPin, P, H5, Link } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
+import messages from './messages';
+import { FormattedMessage } from 'react-intl';
 
 const ModalWrapper = styled.div`
     padding: 30px 45px;
@@ -54,8 +56,17 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
 
     return (
         <ModalWrapper>
-            <H5>Enter {device.label} PIN</H5>
-            <TopMessage size="small">The PIN layout is displayed on your Trezor.</TopMessage>
+            <H5>
+                <FormattedMessage
+                    {...messages.TR_ENTER_PIN}
+                    values={{
+                        deviceLabel: device.instanceLabel,
+                    }}
+                />
+            </H5>
+            <TopMessage size="small">
+                <FormattedMessage {...messages.TR_PIN_DISPLAY} />
+            </TopMessage>
             <InputWrapper>
                 <InputPin onDeleteClick={() => setValue(value.slice(0, -1))} value={value} />
             </InputWrapper>
@@ -75,11 +86,13 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <ButtonPin onClick={() => setValue(`${value}9`)} />
             </PinRow>
             <PinFooter>
-                <Button onClick={() => onEnterPin(value)}>Enter PIN</Button>
+                <Button onClick={() => onEnterPin(value)}>
+                    <FormattedMessage {...messages.TR_ENTER_PIN} />
+                </Button>
                 <BottomMessage size="small">
-                    Not sure how PIN works?{' '}
+                    <FormattedMessage {...messages.TR_HOW_PIN_WORKS} />{' '}
                     <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
-                        Learn more
+                        <FormattedMessage {...messages.TR_LEARN_MORE} />
                     </Link>
                 </BottomMessage>
             </PinFooter>
