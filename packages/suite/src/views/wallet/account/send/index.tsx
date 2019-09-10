@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AppState } from '@suite/types/suite';
-import { injectIntl, InjectedIntl } from 'react-intl';
-import { connect } from 'react-redux';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { InjectedIntl } from 'react-intl';
 
+import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { StateProps, DispatchProps } from './Container';
 import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
 import { Address, Amount, Fee, Buttons, AdditionalForm } from './components';
 
@@ -12,18 +11,8 @@ const Row = styled.div`
     padding: 0 0 20px 0;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
-    device: state.suite.device,
-});
-
-const mapDispatchToProps = () => ({});
-
-type Props = { intl: InjectedIntl } & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
-
-const Send = (props: Props) => {
-    const { device } = props;
+const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
+    const { device, sendActions } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !account || !discovery || !network || !shouldRender) {
@@ -34,6 +23,8 @@ const Send = (props: Props) => {
             </Layout>
         );
     }
+
+    const id = `${account.network}-${account.accountType}-${account.index}`;
 
     return (
         <Layout>
@@ -47,17 +38,17 @@ const Send = (props: Props) => {
             <Row>
                 <Fee />
             </Row>
-            <Row>
-                <AdditionalForm networkType={network.networkType} />
+            <Row onClick={() => sendActions.toggleAdditionalFormVisibility()}>
+                Click to show addition form
             </Row>
+            {props.send.isAdditionalFormVisible.includes(id) && (
+                <Row>
+                    <AdditionalForm networkType={network.networkType} />
+                </Row>
+            )}
             <Buttons />
         </Layout>
     );
 };
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Send),
-);
+export default Send;
