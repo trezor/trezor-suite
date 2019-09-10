@@ -5,7 +5,7 @@ interface Explorer {
 
 export interface Network {
     name: string;
-    networkType?: 'bitcoin' | 'ripple' | 'ethereum';
+    networkType: 'bitcoin' | 'ripple' | 'ethereum';
     accountType?: 'normal' | 'legacy' | 'segwit';
     symbol: string;
     bip44: string;

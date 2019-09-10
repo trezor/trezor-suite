@@ -16,7 +16,7 @@ import {
     ExceptionPage,
 } from '@wallet-reducers/selectedAccountReducer';
 
-import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
 import { NETWORKS } from '@suite-config';
