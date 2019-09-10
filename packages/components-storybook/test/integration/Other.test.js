@@ -1,7 +1,7 @@
 describe('Other', () => {
     beforeEach(() => {
         cy.viewport(1008, 768);
-        cy.visit('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
+        cy.loadContent('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
     });
 
     const tests = [

@@ -1,7 +1,7 @@
 describe('Typography', () => {
     beforeEach(() => {
         cy.viewport(1008, 768);
-        cy.visit(
+        cy.loadContent(
             '/iframe.html?selectedKind=Typography&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
         );
     });
