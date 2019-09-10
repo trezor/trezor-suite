@@ -106,7 +106,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
             <Content>
                 <Left>
                     <StyledLink href="http://satoshilabs.com" isGreen>
-                    SatoshiLabs
+                        SatoshiLabs
                     </StyledLink>
                     <StyledLink href="https://trezor.io/tos" isGreen>
                         <FormattedMessage {...l10nMessages.TR_TERMS} />
