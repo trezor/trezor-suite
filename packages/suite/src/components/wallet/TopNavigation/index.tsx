@@ -74,7 +74,7 @@ const LinkContent = styled.div`
 interface NavigationItem {
     title: React.ReactNode;
     route: string;
-    isHidden?: (coinShortcut: string) => boolean;
+    isHidden?: (symbol: string) => boolean;
 }
 
 interface Props {

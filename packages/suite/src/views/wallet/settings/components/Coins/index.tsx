@@ -6,6 +6,7 @@ import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/comp
 import l10nMessages from '../../index.messages';
 import { AppState } from '@suite-types';
 import { EXTERNAL_COINS } from '@suite-config';
+import { Props as BaseProps } from '../../Container';
 
 const { FONT_SIZE } = variables;
 
@@ -13,10 +14,8 @@ interface Props {
     networks: Network[];
     hiddenCoins: AppState['wallet']['settings']['hiddenCoins'];
     hiddenCoinsExternal: AppState['wallet']['settings']['hiddenCoinsExternal'];
-    // handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility;
-    // toggleGroupCoinsVisibility: typeof LocalStorageActions.toggleGroupCoinsVisibility;
-    handleCoinVisibility: any;
-    toggleGroupCoinsVisibility: any;
+    handleCoinVisibility: BaseProps['handleCoinVisibility'];
+    toggleGroupCoinsVisibility: BaseProps['toggleGroupCoinsVisibility'];
 }
 
 interface StateProps {

@@ -63,14 +63,14 @@ const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
     return (
         <Wrapper>
             <ProgressBar progress={getLoadingProgress(discovery)} />
-            {list.length === 0 && ( // TODO check discovery progress not accounts
+            {list.length === 0 && (
                 <LoadingWrapper>
                     <Loader size={15} />
                     <LoadingText>Loading accounts</LoadingText>
                 </LoadingWrapper>
             )}
             {list.map(account => (
-                <Row account={account} />
+                <Row account={account} key={`${account.descriptor}-${account.symbol}`} />
             ))}
         </Wrapper>
     );
