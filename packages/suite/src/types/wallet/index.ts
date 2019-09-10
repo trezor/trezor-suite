@@ -1,7 +1,7 @@
 import { SettingsActions } from '@wallet-actions/settingsActions';
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
-import { SendActions } from '@wallet-actions/SendActions';
+import { SendFormActions } from '@wallet-actions/sendFormActions';
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
 import { Account as Account$ } from '@wallet-reducers/accountsReducer';
@@ -31,7 +31,7 @@ interface BlockchainLinkToken {
 export type Action =
     | SettingsActions
     | ReceiveActions
-    | SendActions
+    | SendFormActions
     | SignVerifyActions
     | TransactionAction
     | FiatRateActions

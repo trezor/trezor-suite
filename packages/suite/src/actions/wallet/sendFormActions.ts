@@ -1,17 +1,13 @@
 import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-export interface SendActions {
+export interface SendFormActions {
     type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY;
     id: string;
 }
 
 const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetState) => {
-    const {
-        wallet: {
-            selectedAccount: { account },
-        },
-    } = getState();
+    const { account } = getState().wallet.selectedAccount;
     if (!account) return null;
 
     const { accountType, network, index } = account;

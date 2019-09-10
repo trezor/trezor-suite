@@ -5,14 +5,21 @@ import { InjectedIntl } from 'react-intl';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { StateProps, DispatchProps } from './Container';
 import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
-import { Address, Amount, Fee, Buttons, AdditionalForm } from './components';
+import {
+    Address,
+    Amount,
+    Fee,
+    Buttons,
+    AdditionalForm,
+    ToggleAdditionalButton,
+} from './components';
 
 const Row = styled.div`
     padding: 0 0 20px 0;
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
-    const { device, sendActions } = props;
+    const { device, sendFormActions } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !account || !discovery || !network || !shouldRender) {
@@ -25,6 +32,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     }
 
     const id = `${account.network}-${account.accountType}-${account.index}`;
+    const isAdditionalFormVisible = props.send.isAdditionalFormVisible.includes(id);
 
     return (
         <Layout>
@@ -38,10 +46,11 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Fee />
             </Row>
-            <Row onClick={() => sendActions.toggleAdditionalFormVisibility()}>
-                Click to show addition form
-            </Row>
-            {props.send.isAdditionalFormVisible.includes(id) && (
+            <ToggleAdditionalButton
+                toggle={sendFormActions.toggleAdditionalFormVisibility}
+                isActive={isAdditionalFormVisible}
+            />
+            {isAdditionalFormVisible && (
                 <Row>
                     <AdditionalForm networkType={network.networkType} />
                 </Row>

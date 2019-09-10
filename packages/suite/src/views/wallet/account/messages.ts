@@ -24,11 +24,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Click here to use them',
         description: 'Button to use recommended updated fees.',
     },
-    TR_ADVANCED_SETTINGS: {
-        id: 'TR_ADVANCED_SETTINGS',
-        defaultMessage: 'Advanced settings',
-        description: 'Shows advanced sending form',
-    },
     TR_DEVICE_IS_NOT_CONNECTED: {
         id: 'TR_DEVICE_IS_NOT_CONNECTED',
         defaultMessage: 'Device is not connected',
