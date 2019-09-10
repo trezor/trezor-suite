@@ -30,7 +30,7 @@ const ProgressBar = (props: Props) => {
         if (props.progress === 100) {
             setTimeout(() => {
                 setHide(true);
-            }, 2000);
+            }, 500);
         }
     });
 
