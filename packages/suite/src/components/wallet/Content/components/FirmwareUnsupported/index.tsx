@@ -7,12 +7,12 @@ import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 
 interface Props {
-    networkShortcut?: string | null;
+    symbol?: string | null;
     title?: string;
     message?: string;
 }
 
-const getInfoUrl = (networkShortcut?: Props['networkShortcut']) => {
+const getInfoUrl = (symbol?: Props['symbol']) => {
     let result;
     const urls = {
         default: 'https://wiki.trezor.io',
@@ -20,11 +20,11 @@ const getInfoUrl = (networkShortcut?: Props['networkShortcut']) => {
         txrp: 'https://wiki.trezor.io/Ripple_(XRP)',
     };
 
-    if (!networkShortcut) {
+    if (!symbol) {
         result = urls.default;
-    } else if (networkShortcut in urls) {
+    } else if (symbol in urls) {
         // @ts-ignore
-        result = urls[networkShortcut];
+        result = urls[symbol];
     } else {
         result = urls.default;
     }
@@ -65,14 +65,14 @@ const FirmwareUnsupported = (props: Props) => (
     // TODO: localization
     <Wrapper>
         <Row>
-            {props.networkShortcut && (
+            {props.symbol && (
                 <CoinLogoWrapper>
-                    <StyledCoinLogo network={props.networkShortcut} />
+                    <StyledCoinLogo symbol={props.symbol} />
                 </CoinLogoWrapper>
             )}
             <H4>{props.title}</H4>
             <Message>{props.message}</Message>
-            <Link href={getInfoUrl(props.networkShortcut)}>
+            <Link href={getInfoUrl(props.symbol)}>
                 <Button>
                     <FormattedMessage {...l10nMessages.TR_FIND_OUT_MORE_INFO} />
                 </Button>

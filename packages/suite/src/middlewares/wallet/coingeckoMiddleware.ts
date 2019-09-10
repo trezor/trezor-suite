@@ -8,13 +8,13 @@ import { FIAT } from '@suite-config';
 export const RATE_UPDATE = '@rate/update';
 
 export interface NetworkRate {
-    network: string;
+    symbol: string;
     rates: { [key: string]: number };
 }
 
 export interface FiatRateActions {
     type: typeof RATE_UPDATE;
-    network: string;
+    symbol: string;
     rates: { [key: string]: number };
 }
 
@@ -31,7 +31,7 @@ const loadRateAction = () => async (dispatch: Dispatch): Promise<void> => {
             if (response) {
                 dispatch({
                     type: RATE_UPDATE,
-                    network: response.symbol,
+                    symbol: response.symbol,
                     rates: response.market_data.current_price,
                 });
             }

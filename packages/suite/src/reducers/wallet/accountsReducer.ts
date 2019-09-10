@@ -3,24 +3,24 @@ import { ACCOUNT } from '@wallet-actions/constants';
 import { Action } from '@wallet-types/index';
 import { AccountInfo } from 'trezor-connect';
 
-export interface Account extends AccountInfo {
-    index: number;
-    accountType: 'normal' | 'segwit' | 'legacy';
-    type: 'bitcoin' | 'ethereum' | 'ripple';
-    network: string;
-    path: string;
-    imported?: boolean;
+export interface Account {
     deviceState: string;
-
-    // connect
-    availableBalance: string;
-    balance: string;
+    index: number;
+    path: string;
     descriptor: string;
+    accountType: 'normal' | 'segwit' | 'legacy';
+    networkType: 'bitcoin' | 'ethereum' | 'ripple';
+    symbol: string;
     empty: boolean;
-    history: {
-        total: number;
-        unconfirmed: number;
-    };
+    visible: boolean;
+    imported?: boolean;
+    balance: string;
+    availableBalance: string;
+    tokens: AccountInfo['tokens'];
+    addresses: AccountInfo['addresses'];
+    utxo: AccountInfo['utxo'];
+    history: Omit<AccountInfo['history'], 'transactions' | 'txids'>;
+    misc: AccountInfo['misc'];
 }
 
 export const initialState: Account[] = [];
@@ -43,11 +43,11 @@ export const initialState: Account[] = [];
 export const findDeviceAccounts = (
     accounts: Account[],
     // device: TrezorDevice,
-    networkShortcut?: string,
+    symbol?: string,
 ) => {
     // TODO: should also filter deviceState
-    if (networkShortcut) {
-        return accounts.filter(a => a.network === networkShortcut);
+    if (symbol) {
+        return accounts.filter(a => a.symbol === symbol);
     }
     return accounts;
 };

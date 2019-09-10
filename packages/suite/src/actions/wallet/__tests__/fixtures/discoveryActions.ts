@@ -38,17 +38,17 @@ const fixtures = [
             failed: [
                 {
                     error: 'Runtime discovery error',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'normal',
                 },
                 {
                     error: 'Runtime discovery error',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'segwit',
                 },
                 {
                     error: 'Runtime discovery error',
-                    network: 'ltc',
+                    symbol: 'ltc',
                     accountType: 'legacy',
                 },
             ],
@@ -78,7 +78,7 @@ const fixtures = [
                 {
                     error: 'Btc not supported',
                     fwException: 'Btc not supported',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'normal',
                 },
             ],
@@ -109,13 +109,13 @@ const fixtures = [
                 {
                     error: 'Btc p2sh not supported',
                     fwException: 'Btc p2sh not supported',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'segwit',
                 },
                 {
                     error: 'Ltc legacy not supported',
                     fwException: 'Ltc legacy not supported',
-                    network: 'ltc',
+                    symbol: 'ltc',
                     accountType: 'legacy',
                 },
             ],

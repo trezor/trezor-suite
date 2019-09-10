@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
+import { Account, Network } from '@wallet-types';
 
 import l10nMessages from './messages';
 import l10nCommonMessages from '../../messages';
@@ -11,8 +12,8 @@ const { FONT_SIZE } = variables;
 
 interface Props {
     device: TrezorDevice;
-    account: any;
-    network: any;
+    account: Account;
+    network: Network;
 }
 
 const Wrapper = styled.div`

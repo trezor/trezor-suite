@@ -178,7 +178,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                 <CoinRow key={network.symbol}>
                                     <Left>
                                         <LogoWrapper>
-                                            <CoinLogo size={24} network={network.symbol} />
+                                            <CoinLogo size={24} symbol={network.symbol} />
                                         </LogoWrapper>
                                         <Name>{network.name}</Name>
                                     </Left>
@@ -244,7 +244,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                             <CoinRow key={network.id}>
                                 <Left>
                                     <LogoWrapper>
-                                        <CoinLogo size={24} network={network.id} />
+                                        <CoinLogo size={24} symbol={network.id} />
                                     </LogoWrapper>
                                     <Name>{network.coinName}</Name>
                                 </Left>
