@@ -78,7 +78,7 @@ const Passphrase: FunctionComponent<Props> = ({
                 <FormattedMessage
                     {...modalsMessages.TR_PASSPHRASE_LABEL}
                     values={{
-                        deviceLabel: device.label,
+                        deviceLabel: device.instanceLabel,
                     }}
                 />
             </H5>
@@ -108,7 +108,7 @@ const Passphrase: FunctionComponent<Props> = ({
             )}
             <FormRow>
                 <Checkbox onClick={() => setShowPassword(!showPassword)} isChecked={showPassword}>
-                    Show passphrase
+                <FormattedMessage {...messages.TR_SHOW_PASSPHRASE} />
                 </Checkbox>
             </FormRow>
             <Column>
