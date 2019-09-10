@@ -18,11 +18,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     action: Action,
 ): Promise<Action> => {
     const prevState = api.getState();
-    // code below runs only in wallet context
-    // if (prevState.router.app !== 'wallet') {
-    //     return next(action);
-    // }
-
     const prevDiscovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
     const discoveryIsRunning = prevDiscovery && prevDiscovery.status !== DISCOVERY_STATUS.COMPLETED;
 
@@ -46,16 +41,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     if (interruptionIntent && discoveryIsRunning) {
         await api.dispatch(discoveryActions.stop());
     }
-
-    // const prevSuite = prevState.suite;
-    // const prevDevice = prevSuite.device;
-    // const prevDiscovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
-    // const prevDiscovery
-    // if (action.type === SUITE.SELECT_DEVICE) {
-    //     if (prevDiscovery && prevDiscovery.status !== DISCOVERY_STATUS.COMPLETED) {
-    //         await api.dispatch(discoveryActions.stop());
-    //     }
-    // }
 
     // propagate action to reducers
     await next(action);

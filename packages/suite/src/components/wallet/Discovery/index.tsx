@@ -22,8 +22,8 @@ const AccountDiscovery = (props: Props) => {
         <View>
             <Button
                 onClick={props.start}
-                isLoading={d.status > 0 && d.status < DISCOVERY_STATUS.IDLE}
-                isDisabled={d.status > 0 && d.status < DISCOVERY_STATUS.IDLE}
+                isLoading={d.status > 0 && d.status < DISCOVERY_STATUS.STOPPING}
+                isDisabled={d.status > 0 && d.status < DISCOVERY_STATUS.STOPPING}
             >
                 Start
             </Button>
