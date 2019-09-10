@@ -60,7 +60,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <FormattedMessage
                     {...messages.TR_ENTER_PIN}
                     values={{
-                        deviceLabel: device.instanceLabel,
+                        deviceLabel: device.label,
                     }}
                 />
             </H5>

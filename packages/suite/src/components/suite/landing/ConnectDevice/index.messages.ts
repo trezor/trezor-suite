@@ -22,10 +22,6 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING',
         defaultMessage: 'Device not recognized? Try installing the {link}.',
     },
-    TR_BRIDGE: {
-        id: 'TR_BRIDGE',
-        defaultMessage: 'Trezor Bridge',
-    },
     TR_DONT_HAVE_A_TREZOR: {
         id: 'TR_DONT_HAVE_A_TREZOR_GET',
         defaultMessage: "Don't have a Trezor? {getOne}",

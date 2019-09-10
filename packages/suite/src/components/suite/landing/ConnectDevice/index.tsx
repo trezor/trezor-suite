@@ -185,7 +185,7 @@ class ConnectDevice extends PureComponent<Props> {
                                     values={{
                                         link: (
                                             <StyledLink to="/bridge" isGreen>
-                                                <FormattedMessage {...l10nMessages.TR_BRIDGE} />
+                                                Trezor Bridge
                                             </StyledLink>
                                         ),
                                     }}
