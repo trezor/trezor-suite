@@ -7,7 +7,11 @@ export interface SendActions {
 }
 
 const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetState) => {
-    const account = getState().wallet.selectedAccount.account;
+    const {
+        wallet: {
+            selectedAccount: { account },
+        },
+    } = getState();
     if (!account) return null;
 
     const { accountType, network, index } = account;
@@ -19,4 +23,4 @@ const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetS
     });
 };
 
-export default { toggleAdditionalFormVisibility };
+export { toggleAdditionalFormVisibility };

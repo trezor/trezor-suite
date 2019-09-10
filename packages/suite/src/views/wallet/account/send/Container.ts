@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
+import * as sendActions from '@wallet-actions/sendActions';
 
-import sendActions from '@wallet-actions/sendActions';
 import { AppState, Dispatch } from '@suite-types';
 import SendIndex from './index';
 
