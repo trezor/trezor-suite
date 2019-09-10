@@ -72,8 +72,6 @@ const AccountReceive = (props: Props) => {
         );
     }
 
-    const { isAddressVerified, isAddressUnverified } = props.receive;
-
     // this logic below for figuring out if address is currently being verified (showing prompt on the device),
     // is based on the currently set modal dialog,
     // imo it should be implemented somewhere inside reducers (setting isVerifying prop inside the reducer)
@@ -81,12 +79,22 @@ const AccountReceive = (props: Props) => {
         props.modal.context === CONTEXT_DEVICE &&
         props.modal.windowType === 'ButtonRequest_Address';
 
-    const isAddressPartiallyHidden =
-        !isAddressVerifying && !isAddressVerified && !isAddressUnverified && !account.imported;
+    const isAddressPartiallyHidden = (descriptor: string) => {
+        const receiveInfo = props.receive.addresses.find(r => r.descriptor === descriptor);
+        console.log(receiveInfo);
+        console.log(isAddressVerifying);
+        if (receiveInfo) {
+            return !isAddressVerifying && !receiveInfo.isAddressVerified && !receiveInfo.isAddressUnverified && !account.imported
+        }
+        return true;
+    }
 
-    let address = `${account.descriptor.substring(0, 20)}...`;
-    if (isAddressVerified || isAddressUnverified || isAddressVerifying || account.imported) {
-        address = account.descriptor;
+    const getAddressReceiveInfo = (descriptor: string) => {
+        const receiveInfo = props.receive.addresses.find(r => r.descriptor === descriptor);
+        if (receiveInfo) {
+            return receiveInfo
+        }
+        return null;
     }
 
     return (
@@ -94,11 +102,9 @@ const AccountReceive = (props: Props) => {
             <ReceiveForm
                 account={account}
                 device={device}
-                address={address}
                 showAddress={props.showAddress}
                 isAddressPartiallyHidden={isAddressPartiallyHidden}
-                isAddressVerified={isAddressVerified}
-                isAddressUnverified={isAddressUnverified}
+                getAddressReceiveInfo={getAddressReceiveInfo}
                 isAddressVerifying={isAddressVerifying}
                 networkType={network.networkType}
                 title={

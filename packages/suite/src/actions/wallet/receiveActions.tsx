@@ -8,30 +8,20 @@ import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
 
 export type ReceiveActions =
-    | { type: typeof RECEIVE.INIT; state: State }
+    | { type: typeof RECEIVE.INIT; descriptor: string }
     | { type: typeof RECEIVE.DISPOSE }
     | { type: typeof RECEIVE.REQUEST_UNVERIFIED; device: TrezorDevice }
-    | { type: typeof RECEIVE.SHOW_ADDRESS }
-    | { type: typeof RECEIVE.HIDE_ADDRESS }
-    | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS };
-
-export const init = () => (dispatch: Dispatch) => {
-    const state: State = {
-        ...initialState,
-    };
-
-    dispatch({
-        type: RECEIVE.INIT,
-        state,
-    });
-};
+    | { type: typeof RECEIVE.SHOW_ADDRESS; descriptor: string }
+    | { type: typeof RECEIVE.HIDE_ADDRESS; descriptor: string }
+    | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS; descriptor: string };
 
 export const dispose = (): Action => ({
     type: RECEIVE.DISPOSE,
 });
 
-export const showUnverifiedAddress = (): Action => ({
+export const showUnverifiedAddress = (path: string): Action => ({
     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
+    descriptor: path
 });
 
 export const showAddress = (path: string) => async (
@@ -42,6 +32,12 @@ export const showAddress = (path: string) => async (
     const { network } = getState().wallet.selectedAccount;
 
     if (!selectedDevice || !network) return;
+
+    dispatch({
+        type: RECEIVE.INIT,
+        descriptor: path
+    });
+
 
     if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         dispatch({
@@ -86,10 +82,12 @@ export const showAddress = (path: string) => async (
     if (response.success) {
         dispatch({
             type: RECEIVE.SHOW_ADDRESS,
+            descriptor: path
         });
     } else {
         dispatch({
             type: RECEIVE.HIDE_ADDRESS,
+            descriptor: path
         });
 
         // special case: device no-backup permissions not granted
@@ -117,7 +115,6 @@ export const showAddress = (path: string) => async (
 };
 
 export default {
-    init,
     dispose,
     showAddress,
     showUnverifiedAddress,

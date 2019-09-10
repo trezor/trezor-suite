@@ -16,6 +16,7 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
     selectedAddress: Address | null;
     collapsed?: boolean;
     paginationEnabled: boolean;
+    isAddressPartiallyHidden?: (descriptor: string) => boolean;
     actions?: (addr: Address) => React.ReactNode;
     controls?: (
         page: number,
@@ -34,6 +35,7 @@ const AddressList = ({
     selectedAddress,
     paginationEnabled,
     collapsed = true,
+    isAddressPartiallyHidden,
     actions,
     controls,
     secondaryText,
@@ -69,6 +71,7 @@ const AddressList = ({
                 }
                 setSelectedAddr(addr);
             }}
+            isPartiallyHidden={isAddressPartiallyHidden ? isAddressPartiallyHidden(addr.path) : false}
             secondaryText={secondaryText ? secondaryText(addr) : null}
             isSelected={addr === selectedAddress}
             address={addr.address}
