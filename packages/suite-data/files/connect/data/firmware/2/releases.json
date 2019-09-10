@@ -1,6 +1,26 @@
 [
 	{
 		"required": false,
+		"version": [2, 1, 5],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 5],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.1.5.bin",
+		"fingerprint": "40e4bfaf3c5ec77872c1aaaac085aafcc443f60279ca2bb38d29c669233fdf62",
+		"changelog": "* Introduce Bitcoin-only firmware\n* Fix for sluggish U2F authentication when using Shamir\n* Fix UI for Shamir with 33 words\n* Fix Wanchain signing"
+	},
+	{
+		"required": false,
+		"version": [2, 1, 4],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 5],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.1.4.bin",
+		"fingerprint": "820611a92605b1ccc612b9bf8550617aec6962bd2484fcb6ae4792bc498654e4",
+		"changelog": "* Shamir Backup with Recovery persistence\n* Touchscreen freeze fix\n* Fix display of non-divisible OMNI amounts"
+	},
+	{
+		"required": false,
 		"version": [2, 1, 1],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 5],

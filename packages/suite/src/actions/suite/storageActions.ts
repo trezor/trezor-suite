@@ -9,7 +9,7 @@ export type StorageActions =
     | { type: typeof STORAGE.ERROR; error: any };
 
 export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) => {
-    SuiteDB.isDBAvailable(async (isAvailable: any) => {
+    SuiteDB.isDBAvailable(async (isAvailable: boolean) => {
         let suite: Partial<AppState['suite']> | typeof undefined;
         let devices: AppState['devices'] = [];
         if (!isAvailable) {
