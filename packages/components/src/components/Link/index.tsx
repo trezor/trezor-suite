@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
@@ -54,36 +54,10 @@ interface Props {
     children?: React.ReactNode;
 }
 
-class Link extends PureComponent<Props> {
-    static propTypes = {
-        children: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.object,
-            PropTypes.array,
-            PropTypes.node,
-        ]).isRequired,
-        className: PropTypes.string,
-        href: PropTypes.string,
-        target: PropTypes.string,
-        to: PropTypes.string,
-        onClick: PropTypes.func,
-        isGreen: PropTypes.bool,
-        isGray: PropTypes.bool,
-        hasNoStyle: PropTypes.bool,
-    };
-
-    render() {
-        return (
-            <A
-                href={this.props.href}
-                target={this.props.target || '_blank'}
-                rel="noreferrer noopener"
-                {...this.props}
-            >
-                {this.props.children}
-            </A>
-        );
-    }
-}
+const Link: FunctionComponent<Props> = (props) => (
+    <A href={props.href} target={props.target || '_blank'} rel="noreferrer noopener" {...props}>
+        {props.children}
+    </A>
+);
 
 export { Link, Props as LinkProps };
