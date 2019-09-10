@@ -2,14 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import { Input, variables, colors, Icon, Button, Select } from '@trezor/components';
-import accountMessages from '@wallet-views/account/messages';
 import messages from './index.messages';
 import { FIAT } from '@suite-config';
 
 const Wrapper = styled.div`
     display: flex;
-    align-items: flex-end;
-    padding-bottom: 28px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-wrap: wrap;
@@ -25,12 +22,12 @@ const LocalCurrencySelect = styled(Select)`
     }
 `;
 
-const AmountInputLabelWrapper = styled.div`
+const AmountLabelWrapper = styled.div`
     display: flex;
     justify-content: space-between;
 `;
 
-const AmountInputLabel = styled.span`
+const AmountLabel = styled.span`
     text-align: right;
     color: ${colors.TEXT_SECONDARY};
 `;
@@ -51,28 +48,14 @@ const EqualsSign = styled.div`
     }
 `;
 
-const StyledIcon = styled(Icon)`
-    margin-right: 6px;
-`;
-
 const LocalAmountWrapper = styled.div`
     display: flex;
-    align-self: flex-start;
+    align-self: flex-end;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex: 1 0 100%;
         justify-content: flex-end;
         padding-top: 28px;
-    }
-`;
-
-const AmountRow = styled.div`
-    display: flex;
-    align-items: flex-end;
-    padding-bottom: 28px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-wrap: wrap;
     }
 `;
 
@@ -104,19 +87,19 @@ const Amount = (props: Props) => (
             autoCapitalize="off"
             spellCheck={false}
             topLabel={
-                <AmountInputLabelWrapper>
-                    <AmountInputLabel>
+                <AmountLabelWrapper>
+                    <AmountLabel>
                         <FormattedMessage {...messages.TR_AMOUNT} />
-                    </AmountInputLabel>
+                    </AmountLabel>
                     {true && (
-                        <AmountInputLabel>
+                        <AmountLabel>
                             {/* <FormattedMessage
                                 {...accountMessages.TR_XRP_RESERVE}
                                 values={{ value: '`${accountReserve} ${network.symbol}`' }}
                             /> */}
-                        </AmountInputLabel>
+                        </AmountLabel>
                     )}
-                </AmountInputLabelWrapper>
+                </AmountLabelWrapper>
             }
             value={''}
             onChange={() => {}}
@@ -142,12 +125,12 @@ const Amount = (props: Props) => (
         <LocalAmountWrapper>
             <EqualsSign>=</EqualsSign>
             <LocalAmountInput
-                state={'success'}
+                state={undefined}
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck={false}
-                value={1231}
+                value={''}
                 onChange={() => {}}
                 sideAddons={[
                     <LocalCurrencySelect

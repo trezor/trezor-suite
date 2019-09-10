@@ -2,13 +2,12 @@
 import addressValidator from 'wallet-address-validator';
 import { Network } from '@wallet-types';
 
-export const validateAddress = (network: Network['networkType'], address: string) => {
-    const upperCaseAddress = address.toUpperCase();
+export const isAddressValid = (address: string, network: Network['networkType']) => {
     switch (network) {
         case 'ethereum':
         case 'bitcoin':
         case 'ripple':
-            return addressValidator.validate(upperCaseAddress, network);
+            return addressValidator.validate(address, network);
         // no default
     }
 };

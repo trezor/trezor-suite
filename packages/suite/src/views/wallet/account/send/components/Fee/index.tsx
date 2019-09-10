@@ -6,7 +6,8 @@ import accountMessages from '@wallet-views/account/messages';
 
 const Wrapper = styled.div`
     display: flex;
-    align-items: center;
+    flex: 1;
+    flex-direction: column;
 `;
 
 const FeeLabel = styled.span`

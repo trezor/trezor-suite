@@ -14,21 +14,24 @@ const QrButton = styled(Button)`
 
 interface Props {
     intl: InjectedIntl;
+    state: 'success' | 'warning' | 'error' | undefined;
+    value: string;
+    handleAddressChange: (e: HTMLInputElement) => string;
 }
 
 const Address = (props: Props) => (
     <Input
-        state={undefined}
+        state={props.state}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck={false}
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
-        bottomText={null}
-        value=""
-        onChange={() => console.log('click')}
+        bottomText={props.state === 'error' ? 'not valid' : ''}
+        value={props.value}
+        onChange={() => props.handleAddressChange((e: HTMLInputElement) => e.target.value)}
         sideAddons={[
-            <QrButton key="qrButton" isWhite onClick={() => console.log('click')}>
+            <QrButton key="qrButton" isWhite onClick={() => console.log('qr button click')}>
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />
             </QrButton>,
         ]}

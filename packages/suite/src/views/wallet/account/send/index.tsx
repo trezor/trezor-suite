@@ -15,7 +15,7 @@ import {
 } from './components';
 
 const Row = styled.div`
-    padding: 0 0 20px 0;
+    padding: 0 0 30px 0;
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
@@ -35,7 +35,11 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
         <Layout>
             <Title>Send {getTitleForNetwork(network.symbol, props.intl)}</Title>
             <Row>
-                <Address />
+                <Address
+                    value={send.address}
+                    state={undefined}
+                    handleAddressChange={sendFormActions.handleAddressChange}
+                />
             </Row>
             <Row>
                 <Amount />
