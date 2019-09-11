@@ -13,7 +13,7 @@ export const DISCOVERY_STATUS = {
 } as const;
 
 export interface Discovery {
-    device: string;
+    deviceState: string;
     index: number;
     total: number;
     loaded: number;
@@ -28,13 +28,13 @@ export interface Discovery {
     }[];
 }
 
-export type PartialDiscovery = { device: string } & Partial<Discovery>;
+export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
 
 type State = Discovery[];
 const initialState: State = [];
 
 const update = (state: State, payload: PartialDiscovery) => {
-    const index = state.findIndex(f => f.device === payload.device);
+    const index = state.findIndex(f => f.deviceState === payload.deviceState);
     if (index >= 0) {
         state[index] = {
             ...state[index],
@@ -44,7 +44,7 @@ const update = (state: State, payload: PartialDiscovery) => {
 };
 
 const create = (state: State, payload: Discovery) => {
-    const index = state.findIndex(f => f.device === payload.device);
+    const index = state.findIndex(f => f.deviceState === payload.deviceState);
     if (index < 0) {
         state.push(payload);
     } else {

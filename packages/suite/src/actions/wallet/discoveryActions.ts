@@ -47,11 +47,11 @@ const BUNDLE_SIZE = 1;
 
 // Get discovery process for currently selected device.
 // Return new instance if not exists
-const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): Discovery => {
+const getDiscovery = (state: string) => (_dispatch: Dispatch, getState: GetState): Discovery => {
     const { discovery } = getState().wallet;
     return (
-        discovery.find(d => d.device === id) || {
-            device: id,
+        discovery.find(d => d.deviceState === state) || {
+            deviceState: state,
             index: -1,
             status: STATUS.IDLE,
             // total: (LIMIT + BUNDLE_SIZE) * accountTypes.length,
@@ -80,11 +80,11 @@ export const update = (
     payload,
 });
 
-const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryItem) => (
+const handleProgress = (event: ProgressEvent, deviceState: string, item: DiscoveryItem) => (
     dispatch: Dispatch,
 ) => {
     // get fresh discovery data
-    const discovery = dispatch(getDiscovery(device));
+    const discovery = dispatch(getDiscovery(deviceState));
     if (discovery.status > STATUS.RUNNING) return;
     const { response, error } = event;
     const indexBeyondLimit = item.index + 1 >= LIMIT;
@@ -97,7 +97,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
     }
 
     const partial: PartialDiscovery = {
-        device,
+        deviceState,
         index: item.index,
         bundleSize: discovery.bundleSize - 1,
         total,
@@ -137,7 +137,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
     dispatch({
         type: ACCOUNT.CREATE,
         payload: {
-            deviceState: device,
+            deviceState,
             index: item.index,
             path: item.path,
             descriptor: response.descriptor,
@@ -153,6 +153,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
             utxo: response.utxo,
             history: response.history,
             misc: response.misc,
+            marker: response.marker,
         },
     });
 };
@@ -166,7 +167,9 @@ const getBundle = (discovery: Discovery) => (
     // const index = discovery.index;
     const bundle: DiscoveryItem[] = [];
     // find not empty accounts
-    const accounts = getState().wallet.accounts.filter(a => a.deviceState === discovery.device);
+    const accounts = getState().wallet.accounts.filter(
+        a => a.deviceState === discovery.deviceState,
+    );
     const usedAccounts = accounts.filter(account => account.index === index && !account.empty);
 
     NETWORKS.forEach(configNetwork => {
@@ -235,7 +238,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         );
         return;
     } // TODO: throw error in notification?
-    const { device } = discovery;
+    const { deviceState } = discovery;
 
     // start process
     if (discovery.status === STATUS.IDLE || discovery.status > STATUS.RUNNING) {
@@ -266,7 +269,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         dispatch(
             update(
                 {
-                    device,
+                    deviceState,
                     status: STATUS.COMPLETED,
                 },
                 DISCOVERY.COMPLETE,
@@ -275,13 +278,13 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         return;
     }
 
-    dispatch(update({ device, bundleSize: bundle.length }));
+    dispatch(update({ deviceState, bundleSize: bundle.length }));
 
     // handle trezor-connect event
     const onBundleProgress = (event: ProgressEvent) => {
         const { progress } = event;
         // pass more parameters to handler
-        dispatch(handleProgress(event, device, bundle[progress]));
+        dispatch(handleProgress(event, deviceState, bundle[progress]));
     };
 
     TrezorConnect.on(UI.BUNDLE_PROGRESS, onBundleProgress);
@@ -300,11 +303,11 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     // process response
     if (result.success) {
-        const currentDiscovery = dispatch(getDiscovery(device));
+        const currentDiscovery = dispatch(getDiscovery(deviceState));
         if (currentDiscovery.status === STATUS.RUNNING) {
             await dispatch(start()); // try next index
         } else if (currentDiscovery.status === STATUS.STOPPING) {
-            dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
+            dispatch(update({ deviceState, status: STATUS.STOPPED }, DISCOVERY.STOP));
         } else {
             // TODO: notification with translations
             dispatch(
@@ -343,7 +346,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 // add failed coins to discovery
                 dispatch(
                     update({
-                        device,
+                        deviceState,
                         failed,
                         total: discovery.total - LIMIT * failed.length,
                         bundleSize: discovery.bundleSize - failed.length,
@@ -357,7 +360,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             }
         }
 
-        dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
+        dispatch(update({ deviceState, status: STATUS.STOPPED }, DISCOVERY.STOP));
 
         if (result.payload.error !== 'discovery_interrupted') {
             // TODO: notification with translations
@@ -377,7 +380,10 @@ export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());
     if (discovery) {
         dispatch(
-            update({ device: discovery.device, status: STATUS.STOPPING }, DISCOVERY.INTERRUPT),
+            update(
+                { deviceState: discovery.deviceState, status: STATUS.STOPPING },
+                DISCOVERY.INTERRUPT,
+            ),
         );
         TrezorConnect.cancel('discovery_interrupted');
     }
