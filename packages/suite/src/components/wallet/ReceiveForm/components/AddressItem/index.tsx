@@ -100,6 +100,7 @@ const Overlay = styled.div<Pick<Props, 'isPartiallyHidden' | 'readOnly' | 'isSel
                 `};
 
             ${props.isSelected &&
+                !props.readOnly &&
                 css`
                     background: linear-gradient(to right, transparent, ${colors.SELECT_HOVER} 75%);
                 `};

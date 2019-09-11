@@ -1,4 +1,4 @@
-import { UI } from 'trezor-connect';
+// import { UI } from 'trezor-connect';
 import produce from 'immer';
 import { RECEIVE, ACCOUNT } from '@wallet-actions/constants';
 // import { Action } from '@wallet-types/index';
@@ -88,10 +88,10 @@ export default (state: State = initialState, action: SuiteAction): State => {
 
             // @ts-ignore
             // need fix in connect?
-            case UI.REQUEST_BUTTON:
-                if (action.payload.code === 'ButtonRequest_Address') {
-                    draft.isAddressVerified = true;
-                }
+            // case UI.REQUEST_BUTTON:
+            //     if (action.payload.code === 'ButtonRequest_Address') {
+            //         draft.isAddressVerified = true;
+            //     }
             // no default
         }
     });
