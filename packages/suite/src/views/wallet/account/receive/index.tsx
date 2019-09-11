@@ -81,8 +81,6 @@ const AccountReceive = (props: Props) => {
 
     const isAddressPartiallyHidden = (descriptor: string) => {
         const receiveInfo = props.receive.addresses.find(r => r.descriptor === descriptor);
-        console.log(receiveInfo);
-        console.log(isAddressVerifying);
         if (receiveInfo) {
             return (
                 !isAddressVerifying &&
