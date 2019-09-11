@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import colors from '../../config/colors';
+import { BooleanLiteral } from '@babel/types';
 
 const A = styled.a<Props>`
     text-decoration: none;
@@ -45,6 +46,7 @@ const A = styled.a<Props>`
 interface Props {
     isGray?: boolean;
     isGreen?: boolean;
+    hasNoStyle: boolean;
     href?: string;
     to?: any;
     target?: string;
