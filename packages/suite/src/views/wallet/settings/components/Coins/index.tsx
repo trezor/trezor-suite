@@ -6,6 +6,7 @@ import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/comp
 import l10nMessages from '../../index.messages';
 import { AppState } from '@suite-types';
 import { EXTERNAL_COINS } from '@suite-config';
+import { Props as BaseProps } from '../../Container';
 
 const { FONT_SIZE } = variables;
 
@@ -13,10 +14,8 @@ interface Props {
     networks: Network[];
     hiddenCoins: AppState['wallet']['settings']['hiddenCoins'];
     hiddenCoinsExternal: AppState['wallet']['settings']['hiddenCoinsExternal'];
-    // handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility;
-    // toggleGroupCoinsVisibility: typeof LocalStorageActions.toggleGroupCoinsVisibility;
-    handleCoinVisibility: any;
-    toggleGroupCoinsVisibility: any;
+    handleCoinVisibility: BaseProps['handleCoinVisibility'];
+    toggleGroupCoinsVisibility: BaseProps['toggleGroupCoinsVisibility'];
 }
 
 interface StateProps {
@@ -178,7 +177,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                 <CoinRow key={network.symbol}>
                                     <Left>
                                         <LogoWrapper>
-                                            <CoinLogo size={24} network={network.symbol} />
+                                            <CoinLogo size={24} symbol={network.symbol} />
                                         </LogoWrapper>
                                         <Name>{network.name}</Name>
                                     </Left>
@@ -244,7 +243,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                             <CoinRow key={network.id}>
                                 <Left>
                                     <LogoWrapper>
-                                        <CoinLogo size={24} network={network.id} />
+                                        <CoinLogo size={24} symbol={network.id} />
                                     </LogoWrapper>
                                     <Name>{network.coinName}</Name>
                                 </Left>

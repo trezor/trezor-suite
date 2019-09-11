@@ -21,7 +21,7 @@ export interface ExceptionPage {
     type?: string;
     title?: string;
     message?: string;
-    shortcut: string;
+    symbol: string;
 }
 
 interface AccountNotification extends Notification {
@@ -29,13 +29,13 @@ interface AccountNotification extends Notification {
 }
 export interface State {
     // location: string;
-    account?: Account | null;
-    network?: Network | null;
+    account: Account | null;
+    network: Network | null;
     // tokens: Token[];
     // pending: Transaction[];
-    discovery?: Discovery | null;
-    loader?: Loader | null;
-    notification?: AccountNotification | null;
+    discovery: Discovery | null;
+    loader: Loader | null;
+    notification: AccountNotification | null;
     exceptionPage?: ExceptionPage;
     shouldRender: boolean;
 }
@@ -47,6 +47,7 @@ export const initialState: State = {
     // tokens: [],
     // pending: [],
     discovery: null,
+    loader: null,
     notification: null,
     shouldRender: false,
 };

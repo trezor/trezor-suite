@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Fiat } from '@wallet-reducers/fiatRateReducer';
+import { Fiat } from '@wallet-types';
 
 const toFiatCurrency = (amount: string, fiatCurrency: string, networkRates: Fiat) => {
     // calculate amount in local currency

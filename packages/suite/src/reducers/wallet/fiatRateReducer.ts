@@ -2,24 +2,24 @@ import { RATE_UPDATE, FiatRateActions } from '@wallet-middlewares/coingeckoMiddl
 import produce from 'immer';
 
 export interface Fiat {
-    network: string;
+    symbol: string;
     rates: { [key: string]: number };
 }
 
 export const initialState: Fiat[] = [];
 
 const update = (state: Fiat[], action: FiatRateActions) => {
-    const { network, rates } = action;
-    const affected = state.find(f => f.network === network);
+    const { symbol, rates } = action;
+    const affected = state.find(f => f.symbol === symbol);
 
     Object.keys(rates).map(k => rates[k].toFixed(2));
     if (!affected) {
         state.push({
-            network,
+            symbol,
             rates,
         });
     } else {
-        affected.network = network;
+        affected.symbol = symbol;
         affected.rates = rates;
     }
 };
