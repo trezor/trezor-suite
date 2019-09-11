@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
+import accountMessages from '@wallet-views/account/messages';
+import { State } from '@wallet-reducers/sendFormReducer';
 import { Input, variables, colors, Icon, Button, Select } from '@trezor/components';
-import messages from './index.messages';
 import { FIAT } from '@suite-config';
+import messages from './index.messages';
+import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -74,14 +77,32 @@ const CurrencySelect = styled(Select)`
     flex: 0.2;
 `;
 
+const StyledIcon = styled(Icon)``;
+
 interface Props {
     intl: InjectedIntl;
+    value: null | number;
+    error: State['errors']['amount'];
+    sendFormActions: DispatchProps['sendFormActions'];
 }
+
+const setMax = false;
+
+const getErrorMessage = (error: State['errors']['amount']) => {
+    switch (error) {
+        case 'empty':
+            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_SET} />;
+        case 'is-not-number':
+            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
+        default:
+            return null;
+    }
+};
 
 const Amount = (props: Props) => (
     <Wrapper>
         <Input
-            state={undefined}
+            state={props.error ? 'error' : undefined}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
@@ -101,22 +122,20 @@ const Amount = (props: Props) => (
                     )}
                 </AmountLabelWrapper>
             }
-            value={''}
-            onChange={() => {}}
-            bottomText=""
+            value={props.value}
+            onChange={e => props.sendFormActions.handleAmountChange(e.target.value)}
+            bottomText={getErrorMessage(props.error)}
             sideAddons={[
                 <SetMaxAmountButton key="icon" onClick={() => {}} isWhite={false}>
-                    {/* {!setMax && (
-                        <StyledIcon icon={ICONS.TOP} size={14} color={colors.TEXT_SECONDARY} />
-                    )}
-                    {setMax && <StyledIcon icon={ICONS.SUCCESS} size={14} color={colors.WHITE} />} */}
+                    {!setMax && <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />}
+                    {setMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />}
                     <FormattedMessage {...messages.TR_SET_MAX} />
                 </SetMaxAmountButton>,
                 <CurrencySelect
                     key="currency"
                     isSearchable={false}
                     isClearable={false}
-                    value={'value'}
+                    value={props.value}
                     isDisabled
                     options={'tokensSelectData'}
                 />,

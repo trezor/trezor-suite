@@ -42,7 +42,11 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 />
             </Row>
             <Row>
-                <Amount />
+                <Amount
+                    value={send.amount}
+                    error={send.errors.amount}
+                    sendFormActions={sendFormActions}
+                />
             </Row>
             <Row>
                 <Fee />
@@ -58,12 +62,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     <AdditionalForm networkType={network.networkType} />
                 </Row>
             )}
-            <SendAndClear
-                isDisabled={false}
-                sendButtonText={'send'}
-                clear={() => {}}
-                send={() => {}}
-            />
+            <SendAndClear errors={send.errors} clear={() => {}} send={() => {}} />
         </Layout>
     );
 };

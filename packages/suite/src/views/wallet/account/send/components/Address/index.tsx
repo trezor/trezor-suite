@@ -3,8 +3,9 @@ import { Input, Button, Icon, colors } from '@trezor/components';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import commonMessages from '@wallet-views/messages';
-import messages from './index.messages';
 
+import { State } from '@wallet-reducers/sendFormReducer';
+import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 
 const QrButton = styled(Button)`
@@ -17,18 +18,19 @@ const QrButton = styled(Button)`
 
 interface Props {
     intl: InjectedIntl;
-    error: 'empty' | 'not-valid';
-    value: string;
+    error: State['errors']['address'];
+    value: null | string;
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getErrorMessage = (error: 'empty' | 'not-valid') => {
+const getErrorMessage = (error: State['errors']['address']) => {
     switch (error) {
         case 'empty':
             return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_SET} />;
         case 'not-valid':
             return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_VALID} />;
-        // no default
+        default:
+            return null;
     }
 };
 
