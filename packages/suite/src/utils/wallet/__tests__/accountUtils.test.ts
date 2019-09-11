@@ -30,13 +30,6 @@ describe('accountUtils', () => {
             change: '0',
             addrIndex: '0',
         });
-        expect(parseBIP44Path("m/44'/133'/0'/0/")).toEqual({
-            purpose: "44'",
-            coinType: "133'",
-            account: "0'",
-            change: '0',
-            addrIndex: '0',
-        });
     });
 
     it('parseBIP44Path: invalid format', () => {
