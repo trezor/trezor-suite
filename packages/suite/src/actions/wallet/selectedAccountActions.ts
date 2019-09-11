@@ -50,7 +50,7 @@ const getExceptionPage = (
             type: 'fwOutdated',
             title: 'not-used',
             message: 'not-used',
-            shortcut: 'not-used',
+            symbol: 'not-used',
         };
     }
 
@@ -60,7 +60,7 @@ const getExceptionPage = (
             type: 'fwNotSupported',
             title: `${network.name} is not supported with Trezor ${getVersion(device)}`,
             message: 'Find more information on Trezor Wiki.',
-            shortcut: network.symbol,
+            symbol: network.symbol,
         };
     }
 
@@ -142,7 +142,7 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
     if (!device || !network) return null;
 
     // // case 1: backend status
-    // const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
+    // const blockchain = state.blockchain.find(b => b.symbol === network.symbol);
     // if (blockchain && !blockchain.connected) {
     //     return {
     //         type: 'backend',

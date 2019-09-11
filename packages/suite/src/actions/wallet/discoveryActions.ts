@@ -114,7 +114,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
                     total: total - 1,
                     failed: discovery.failed.concat([
                         {
-                            network: item.coin,
+                            symbol: item.coin,
                             accountType: item.accountType,
                             error,
                         },
@@ -139,11 +139,20 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
         payload: {
             deviceState: device,
             index: item.index,
-            accountType: item.accountType,
             path: item.path,
+            descriptor: response.descriptor,
+            accountType: item.accountType,
             networkType: item.networkType,
-            network: item.coin,
-            ...response,
+            symbol: item.coin,
+            empty: response.empty,
+            visible: true,
+            balance: response.balance,
+            availableBalance: response.availableBalance,
+            tokens: response.tokens,
+            addresses: response.addresses,
+            utxo: response.utxo,
+            history: response.history,
+            misc: response.misc,
         },
     });
 };
@@ -165,13 +174,13 @@ const getBundle = (discovery: Discovery) => (
         const accountType = configNetwork.accountType || 'normal';
         const prevAccount = usedAccounts.find(
             account =>
-                account.accountType === accountType && account.network === configNetwork.symbol,
+                account.accountType === accountType && account.symbol === configNetwork.symbol,
         );
 
         // check if requested coin not failed before
         const failed = discovery.failed.find(
             account =>
-                account.network === configNetwork.symbol && account.accountType === accountType,
+                account.symbol === configNetwork.symbol && account.accountType === accountType,
         );
 
         const skip = failed || (index >= 0 && !prevAccount);
@@ -181,7 +190,7 @@ const getBundle = (discovery: Discovery) => (
             const existedAccount = accounts.find(
                 account =>
                     account.accountType === accountType &&
-                    account.network === configNetwork.symbol &&
+                    account.symbol === configNetwork.symbol &&
                     account.index === accountIndex,
             );
             if (!skip && !existedAccount) {
@@ -325,7 +334,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                     );
                 }
                 const failed: Discovery['failed'] = coins.map(c => ({
-                    network: c.coin,
+                    symbol: c.coin,
                     accountType: bundle[c.index].accountType,
                     error: c.exception,
                     fwException: c.exception,

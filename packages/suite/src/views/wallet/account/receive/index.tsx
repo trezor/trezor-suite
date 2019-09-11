@@ -105,7 +105,7 @@ const AccountReceive = (props: Props) => {
                     <FormattedMessage
                         {...l10nMessages.TR_RECEIVE_NETWORK}
                         values={{
-                            network: getTitleForNetwork(account.network),
+                            network: getTitleForNetwork(account.symbol),
                         }}
                     />
                 }
