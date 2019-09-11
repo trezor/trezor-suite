@@ -5,10 +5,15 @@ import validator from 'validator';
 
 import { isAddressValid } from '@wallet-utils/validation';
 
+export interface LocalCurrency {
+    value: string;
+    label: string;
+}
+
 export interface State {
     address: null | string;
     amount: null | string;
-    localCurrency: string;
+    localCurrency: LocalCurrency;
     isAdditionalFormVisible: boolean;
     errors: {
         address: null | 'empty' | 'not-valid';
@@ -19,7 +24,7 @@ export interface State {
 export const initialState: State = {
     address: null,
     amount: null,
-    localCurrency: 'usd',
+    localCurrency: { value: 'usd', label: 'USD' },
     isAdditionalFormVisible: false,
     errors: {
         address: null,
@@ -69,6 +74,14 @@ export default (state: State = initialState, action: Action): State => {
                     return draft;
                 }
 
+                break;
+            }
+
+            // Change input "LocalCurrency"
+            case SEND.HANDLE_LOCAL_CURRENCY_CHANGE: {
+                const { localCurrency, networkType } = action;
+                console.log('networkType', networkType);
+                draft.localCurrency = localCurrency;
                 break;
             }
 

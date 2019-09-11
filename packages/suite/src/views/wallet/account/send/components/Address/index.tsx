@@ -44,7 +44,7 @@ const Address = (props: Props) => (
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
         bottomText={getErrorMessage(props.error)}
         value={props.value || ''}
-        onChange={option => props.sendFormActions.handleAddressChange(option)}
+        onChange={e => props.sendFormActions.handleAddressChange(e.target.value)}
         sideAddons={[
             <QrButton key="qrButton" isWhite onClick={() => console.log('qr button click')}>
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />

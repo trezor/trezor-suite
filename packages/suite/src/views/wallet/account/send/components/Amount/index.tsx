@@ -45,7 +45,7 @@ const StyledIcon = styled(Icon)``;
 interface Props {
     intl: InjectedIntl;
     value: State['amount'];
-    localCurrency: string;
+    localCurrency: State['localCurrency'];
     error: State['errors']['amount'];
     sendFormActions: DispatchProps['sendFormActions'];
 }

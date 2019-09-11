@@ -2,6 +2,11 @@ import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 
+interface LocalCurrency {
+    value: string;
+    label: string;
+}
+
 export type SendFormActions =
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
     | { type: typeof SEND.CLEAR }
@@ -17,7 +22,7 @@ export type SendFormActions =
       }
     | {
           type: typeof SEND.HANDLE_LOCAL_CURRENCY_CHANGE;
-          localCurrency: string;
+          localCurrency: LocalCurrency;
           networkType: Account['networkType'];
       };
 
@@ -66,7 +71,7 @@ const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: Ge
 /*
     Change value in input "LocalCurrency"
  */
-const handleLocalCurrencyChange = (localCurrency: string) => (
+const handleLocalCurrencyChange = (localCurrency: LocalCurrency) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {

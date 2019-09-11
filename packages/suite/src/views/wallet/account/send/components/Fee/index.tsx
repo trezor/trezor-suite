@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors, variables, Select, P } from '@trezor/components';
+import { colors, Select, P } from '@trezor/components';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import accountMessages from '@wallet-views/account/messages';
