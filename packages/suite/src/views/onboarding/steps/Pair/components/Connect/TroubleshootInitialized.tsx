@@ -8,9 +8,7 @@ import * as onboardingActions from '@suite/actions/onboarding/onboardingActions'
 import l10nCommonMessages from '@suite-support/Messages';
 import { SUPPORT_URL } from '@onboarding-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
-import { ControlsWrapper } from '@onboarding-components/Wrapper';
-import Text from '@onboarding-components/Text';
-import { ButtonCta, ButtonAlt } from '@onboarding-components/Buttons';
+import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import l10nMessages from './TroubleshootInitialized.messages';
 import { Dispatch, AppState } from '@suite-types';
 
@@ -42,20 +40,22 @@ const TroubleshootInitialized = (props: Props) => {
                             }}
                         />
                     </Text>
-                    <ControlsWrapper>
-                        <ButtonAlt
+                    <Wrapper.Controls>
+                        <OnboardingButton.Alt
                             onClick={() => onboardingActions.goToSubStep('user-worked-before')}
                         >
                             <FormattedMessage
                                 {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE}
                             />
-                        </ButtonAlt>
-                        <ButtonAlt onClick={() => onboardingActions.goToSubStep('is-brand-new')}>
+                        </OnboardingButton.Alt>
+                        <OnboardingButton.Alt
+                            onClick={() => onboardingActions.goToSubStep('is-brand-new')}
+                        >
                             <FormattedMessage
                                 {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE}
                             />
-                        </ButtonAlt>
-                    </ControlsWrapper>
+                        </OnboardingButton.Alt>
+                    </Wrapper.Controls>
                 </React.Fragment>
             )}
 
@@ -65,16 +65,16 @@ const TroubleshootInitialized = (props: Props) => {
                         <FormattedMessage {...l10nMessages.TR_INSTRUCTION_TO_SKIP} />
                     </Text>
 
-                    <ControlsWrapper>
-                        <ButtonAlt onClick={() => onboardingActions.goToSubStep(null)}>
+                    <Wrapper.Controls>
+                        <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
                             <FormattedMessage {...l10nCommonMessages.TR_BACK} />
-                        </ButtonAlt>
-                        <ButtonCta
+                        </OnboardingButton.Alt>
+                        <OnboardingButton.Cta
                             onClick={() => onboardingActions.goToNextStep(STEP.ID_FINAL_STEP)}
                         >
                             <FormattedMessage {...l10nCommonMessages.TR_SKIP_ALL} />
-                        </ButtonCta>
-                    </ControlsWrapper>
+                        </OnboardingButton.Cta>
+                    </Wrapper.Controls>
                 </React.Fragment>
             )}
 
@@ -85,16 +85,16 @@ const TroubleshootInitialized = (props: Props) => {
                             {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS}
                         />
                     </Text>
-                    <ControlsWrapper>
-                        <ButtonAlt onClick={() => onboardingActions.goToSubStep(null)}>
+                    <Wrapper.Controls>
+                        <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
                             <FormattedMessage {...l10nCommonMessages.TR_BACK} />
-                        </ButtonAlt>
+                        </OnboardingButton.Alt>
                         <Link href={SUPPORT_URL}>
-                            <ButtonCta style={{ width: '100%' }}>
+                            <OnboardingButton.Cta style={{ width: '100%' }}>
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
-                            </ButtonCta>
+                            </OnboardingButton.Cta>
                         </Link>
-                    </ControlsWrapper>
+                    </Wrapper.Controls>
                 </React.Fragment>
             )}
         </React.Fragment>

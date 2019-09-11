@@ -9,9 +9,8 @@ export interface NetworkToken {
 export interface Token {
     loaded: boolean;
     deviceState: string;
-    network: string;
-    name: string;
     symbol: string;
+    name: string;
     address: string;
     ethAddress: string; // foreign key
     decimals: number;

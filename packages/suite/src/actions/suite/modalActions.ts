@@ -63,7 +63,7 @@ export const onPassphraseSubmit = (value: string) => async (
     dispatch(onCancel());
 };
 
-export const onReceiveConfirmation = (confirmation: any) => async (dispatch: Dispatch) => {
+export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch: Dispatch) => {
     await TrezorConnect.uiResponse({
         type: UI.RECEIVE_CONFIRMATION,
         payload: confirmation,

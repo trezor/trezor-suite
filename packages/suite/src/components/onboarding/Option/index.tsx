@@ -7,12 +7,12 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     /* flex-grow: 1; */
     width: 100%;
     padding: 10px;
-    margin: 7px;
+    margin: 2%;
     border: solid 0.2px ${colors.gray};
     border-radius: 4px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     cursor: pointer;
     box-shadow: ${({ isSelected }) =>
@@ -20,7 +20,7 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     border-color: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)};
 
     @media (min-width: ${variables.SCREEN_SIZE.SM}) {
-        height: 280px;
+        height: 260px;
         width: 215px;
     }
 `;

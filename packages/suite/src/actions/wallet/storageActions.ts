@@ -21,7 +21,7 @@ const updateReducers = (message: SuiteStorageUpdateMessage) => async (
 };
 
 export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState) => {
-    SuiteDB.isDBAvailable(async (isAvailable: any) => {
+    SuiteDB.isDBAvailable(async (isAvailable: boolean) => {
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');

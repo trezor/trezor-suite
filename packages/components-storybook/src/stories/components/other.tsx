@@ -205,7 +205,7 @@ storiesOf('Other', module)
                         return (
                             <Item key={coin}>
                                 <Title>{coin}</Title>
-                                <CoinLogo size={32} network={coin} data-test={test} />
+                                <CoinLogo size={32} symbol={coin} data-test={test} />
                             </Item>
                         );
                     })}
@@ -225,9 +225,9 @@ storiesOf('Other', module)
             COINS.forEach((coin: string) => {
                 coinsObject[coin] = coin;
             });
-            const coinSelect = select('network', coinsObject, 'ada');
+            const coinSelect = select('symbol', coinsObject, 'ada');
             const size = number('size', 32);
-            return <CoinLogo size={size} network={coinSelect} />;
+            return <CoinLogo size={size} symbol={coinSelect} />;
         },
         {
             info: {

@@ -17,24 +17,19 @@ import {
 } from '@suite/actions/onboarding/connectActions';
 
 export interface UiInteraction {
-    name: null | string;
+    name: undefined | string;
     counter: number;
 }
 
 export type PrevDeviceId = string | null;
 
 export interface ConnectReducer {
-    prevDeviceId: PrevDeviceId;
     device: any; // todo: remove any
     deviceCall: {
         name: null | string; // todo: better, make type AnyDeviceCall
         isProgress: boolean;
         error: null | string;
         result: null | Record<string, any>;
-    };
-    deviceInteraction: {
-        name: null | string; // todo: better
-        counter: number;
     };
     uiInteraction: UiInteraction;
 }
@@ -83,10 +78,6 @@ export type ConnectActionTypes =
           type: typeof DEVICE_CALL_ERROR;
           name: string; // todo: why use name here and not in success?
           error: string;
-      }
-    | {
-          type: typeof DEVICE_INTERACTION_EVENT;
-          name: string;
       }
     | {
           type: typeof UI_INTERACTION_EVENT;

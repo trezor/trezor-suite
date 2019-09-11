@@ -21,3 +21,9 @@ export const TOGGLE_SIDEBAR = '@suite/toggle_sidebar';
 export const ONLINE_STATUS = '@suite/online_status';
 export const LOCK_UI = '@suite/lock-ui';
 export const LOCK_ROUTER = '@suite/lock-router';
+export const LOCK_TYPE = {
+    NONE: 0,
+    ROUTER: 1, // restricted route changes, all other actions are possible
+    DEVICE: 2, // restricted device call (TrezorConnect)
+    UI: 3, // restricted most of the UI actions (buttons, keyboard etc.)
+} as const;

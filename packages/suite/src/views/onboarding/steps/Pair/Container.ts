@@ -7,8 +7,9 @@ import { Dispatch, AppState } from '@suite-types';
 import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
+    transport: state.suite.transport,
+    device: state.suite.device,
     model: state.onboarding.selectedModel,
-    device: state.onboarding.connect.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -17,6 +18,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     },
 });
+
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 export default connect(
     mapStateToProps,

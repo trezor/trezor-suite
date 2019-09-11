@@ -13,13 +13,11 @@ const Card = styled.div`
     width: ${WIDTH}px;
     height: ${WIDTH * RATIO}px;
     font-size: 12px;
-
     perspective: 1000px;
 `;
 
 const CardInner = styled.div<{ showBack: boolean; flipOnMouseOver: boolean }>`
     position: relative;
-
     width: 100%;
     height: 100%;
     text-align: center;
@@ -164,7 +162,7 @@ interface Props {
     flipOnMouseOver?: boolean;
 }
 
-const SeedCardModelT = ({
+const SeedCard = ({
     showBack = false,
     words = [],
     wordsNumber = 24,
@@ -213,4 +211,4 @@ const SeedCardModelT = ({
     </Card>
 );
 
-export { SeedCardModelT };
+export { SeedCard };

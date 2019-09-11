@@ -11,6 +11,7 @@ const fixtures = [
         description: 'All accounts are empty',
         connect: {
             success: true,
+            interruption: ['only-for-type-correctness'],
         },
         result: {
             failed: [],
@@ -37,17 +38,17 @@ const fixtures = [
             failed: [
                 {
                     error: 'Runtime discovery error',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'normal',
                 },
                 {
                     error: 'Runtime discovery error',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'segwit',
                 },
                 {
                     error: 'Runtime discovery error',
-                    network: 'ltc',
+                    symbol: 'ltc',
                     accountType: 'legacy',
                 },
             ],
@@ -77,7 +78,7 @@ const fixtures = [
                 {
                     error: 'Btc not supported',
                     fwException: 'Btc not supported',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'normal',
                 },
             ],
@@ -108,13 +109,13 @@ const fixtures = [
                 {
                     error: 'Btc p2sh not supported',
                     fwException: 'Btc p2sh not supported',
-                    network: 'btc',
+                    symbol: 'btc',
                     accountType: 'segwit',
                 },
                 {
                     error: 'Ltc legacy not supported',
                     fwException: 'Ltc legacy not supported',
-                    network: 'ltc',
+                    symbol: 'ltc',
                     accountType: 'legacy',
                 },
             ],
@@ -128,6 +129,43 @@ const fixtures = [
                 code: undefined,
             },
         },
+    },
+];
+
+export const interruptionFixtures = [
+    {
+        description: 'Interruption after 1st account, rejected event after 3rd account',
+        connect: {
+            success: true,
+            interruption: ["m/44'/0'/0'"],
+        },
+        trigger: ["m/84'/0'/0'"],
+    },
+    {
+        description: 'Interruption in third row (5 rows total)',
+        connect: {
+            success: true,
+            usedAccounts: ["m/44'/0'/4'", "m/49'/0'/4'", "m/49'/2'/4'"],
+            interruption: ["m/44'/0'/2'"],
+        },
+        trigger: ["m/49'/0'/2'"],
+    },
+    {
+        description: 'Multiple interruptions',
+        connect: {
+            success: true,
+            usedAccounts: ["m/84'/0'/4'", "m/49'/0'/4'", "m/44'/0'/4'"],
+            interruption: ["m/49'/0'/0'", "m/49'/0'/1'", "m/44'/0'/1'", "m/44'/0'/2'"],
+        },
+        trigger: ["m/84'/0'/0'", "m/84'/0'/1'", "m/49'/0'/1'", "m/84'/0'/2'"],
+    },
+    {
+        description:
+            'Last account discovered, results from trezor-connect are ok, but discovery is expecting interruption',
+        connect: {
+            success: true,
+        },
+        trigger: 'last',
     },
 ];
 

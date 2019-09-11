@@ -49,9 +49,9 @@
         "short-uuid": "^3.1.1",
         "styled-components": "^4.3.2",
         "styled-reset": "^3.0.2",
-        "trezor-connect": "extended",
         "validator": "^11.1.0",
-        "wallet-address-validator": "^0.2.4"
+        "wallet-address-validator": "^0.2.4",
+        "trezor-connect": "8.0.3-extended"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",

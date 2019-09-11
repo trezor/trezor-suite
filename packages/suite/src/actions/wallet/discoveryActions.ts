@@ -1,4 +1,8 @@
-import { Discovery, PartialDiscovery, STATUS } from '@wallet-reducers/discoveryReducer';
+import {
+    Discovery,
+    PartialDiscovery,
+    DISCOVERY_STATUS as STATUS,
+} from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { ACCOUNT, DISCOVERY } from './constants';
@@ -57,7 +61,9 @@ const getDiscovery = (id: string) => (_dispatch: Dispatch, getState: GetState): 
             device: id,
             index: -1,
             status: STATUS.IDLE,
-            total: LIMIT * networks.length,
+            // total: (LIMIT + BUNDLE_SIZE) * accountTypes.length,
+            total: LIMIT * NETWORKS.length,
+            bundleSize: 0,
             loaded: 0,
             failed: [],
         }
@@ -86,6 +92,7 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
 ) => {
     // get fresh discovery data
     const discovery = dispatch(getDiscovery(device));
+    if (discovery.status > STATUS.RUNNING) return;
     const { response, error } = event;
     const indexBeyondLimit = item.index + 1 >= LIMIT;
     let { total } = discovery;
@@ -96,18 +103,25 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
         total += 1;
     }
 
+    const partial: PartialDiscovery = {
+        device,
+        index: item.index,
+        bundleSize: discovery.bundleSize - 1,
+        total,
+        status: STATUS.RUNNING,
+    };
+
     if (error) {
-        total -= 1; // reduce total since this one will not be counted as "loaded"
+        // - reduce total since this account will not be counted as "loaded"
+        // - add to "failed" accounts
         dispatch(
             update(
                 {
-                    device,
-                    total,
-                    index: item.index,
-                    status: STATUS.RUNNING,
+                    ...partial,
+                    total: total - 1,
                     failed: discovery.failed.concat([
                         {
-                            network: item.coin,
+                            symbol: item.coin,
                             accountType: item.accountType,
                             error,
                         },
@@ -119,13 +133,11 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
         return;
     }
 
+    // increase "loaded" value
     dispatch(
         update({
-            device,
-            index: item.index,
-            status: STATUS.RUNNING,
+            ...partial,
             loaded: discovery.loaded + 1,
-            total,
         }),
     );
 
@@ -134,11 +146,20 @@ const handleProgress = (event: ProgressEvent, device: string, item: DiscoveryIte
         payload: {
             deviceState: device,
             index: item.index,
-            accountType: item.accountType,
             path: item.path,
+            descriptor: response.descriptor,
+            accountType: item.accountType,
             networkType: item.networkType,
-            network: item.coin,
-            ...response,
+            symbol: item.coin,
+            empty: response.empty,
+            visible: true,
+            balance: response.balance,
+            availableBalance: response.availableBalance,
+            tokens: response.tokens,
+            addresses: response.addresses,
+            utxo: response.utxo,
+            history: response.history,
+            misc: response.misc,
         },
     });
 };
@@ -147,36 +168,37 @@ const getBundle = (discovery: Discovery) => (
     _dispatch: Dispatch,
     getState: GetState,
 ): DiscoveryItem[] => {
+    const index =
+        discovery.bundleSize > 0 && discovery.index >= 0 ? discovery.index - 1 : discovery.index;
+    // const index = discovery.index;
     const bundle: DiscoveryItem[] = [];
     const networks = getNetworks();
     // find not empty accounts
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === discovery.device);
-    const usedAccounts = accounts.filter(
-        account => account.index === discovery.index && !account.empty,
-    );
+    const usedAccounts = accounts.filter(account => account.index === index && !account.empty);
 
     networks.forEach(configNetwork => {
         // check if previous account of requested type already exists
         const accountType = configNetwork.accountType || 'normal';
         const prevAccount = usedAccounts.find(
             account =>
-                account.accountType === accountType && account.network === configNetwork.symbol,
+                account.accountType === accountType && account.symbol === configNetwork.symbol,
         );
 
         // check if requested coin not failed before
         const failed = discovery.failed.find(
             account =>
-                account.network === configNetwork.symbol && account.accountType === accountType,
+                account.symbol === configNetwork.symbol && account.accountType === accountType,
         );
 
-        const skip = failed || (discovery.index >= 0 && !prevAccount);
+        const skip = failed || (index >= 0 && !prevAccount);
         for (let i = 1; i <= BUNDLE_SIZE; i++) {
-            const accountIndex = discovery.index + 1;
-            // check if this account wasn't created before
+            const accountIndex = index + 1;
+            // check if requested account was already created
             const existedAccount = accounts.find(
                 account =>
                     account.accountType === accountType &&
-                    account.network === configNetwork.symbol &&
+                    account.symbol === configNetwork.symbol &&
                     account.index === accountIndex,
             );
             if (!skip && !existedAccount) {
@@ -186,7 +208,7 @@ const getBundle = (discovery: Discovery) => (
                     details: 'txs',
                     index: accountIndex,
                     accountType,
-                    networkType: configNetwork.networkType || 'bitcoin',
+                    networkType: configNetwork.networkType,
                 });
             }
         }
@@ -224,8 +246,8 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     const { device } = discovery;
 
     // start process
-    if (discovery.status === STATUS.IDLE) {
-        await dispatch({
+    if (discovery.status === STATUS.IDLE || discovery.status > STATUS.RUNNING) {
+        dispatch({
             type: DISCOVERY.START,
             payload: {
                 ...discovery,
@@ -261,6 +283,8 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         return;
     }
 
+    dispatch(update({ device, bundleSize: bundle.length }));
+
     // handle trezor-connect event
     const onBundleProgress = (event: ProgressEvent) => {
         const { progress } = event;
@@ -277,14 +301,18 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         },
         bundle,
         keepSession: true,
+        skipFinalReload: true,
         useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
     });
     TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 
     // process response
     if (result.success) {
-        if (dispatch(getDiscovery(device)).status === STATUS.RUNNING) {
+        const currentDiscovery = dispatch(getDiscovery(device));
+        if (currentDiscovery.status === STATUS.RUNNING) {
             await dispatch(start()); // try next index
+        } else if (currentDiscovery.status === STATUS.STOPPING) {
+            dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
         } else {
             // TODO: notification with translations
             dispatch(
@@ -314,7 +342,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                     );
                 }
                 const failed: Discovery['failed'] = coins.map(c => ({
-                    network: c.coin,
+                    symbol: c.coin,
                     accountType: bundle[c.index].accountType,
                     error: c.exception,
                     fwException: c.exception,
@@ -322,30 +350,24 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
                 // add failed coins to discovery
                 dispatch(
-                    update({ device, failed, total: discovery.total - LIMIT * failed.length }),
+                    update({
+                        device,
+                        failed,
+                        total: discovery.total - LIMIT * failed.length,
+                        bundleSize: discovery.bundleSize - failed.length,
+                    }),
                 );
 
                 await dispatch(start()); // restart process, exclude failed coins
                 return;
             } catch (error) {
-                // do nothing. error will be handled later
+                // do nothing. error will be handled in lower block
             }
         }
 
-        if (result.payload.error === 'discovery_interrupted') {
-            // if interruption comes from the user then device session should be released
-            await TrezorConnect.getFeatures({
-                device: getState().suite.device,
-                keepSession: false,
-            });
-            dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
-        } else {
-            // call getFeatures to release device session
-            // await TrezorConnect.getFeatures({ keepSession: false });
-            // discovery failed
-            // TODO: reduce index to "start"
-            // handle
-            dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
+        dispatch(update({ device, status: STATUS.STOPPED }, DISCOVERY.STOP));
+
+        if (result.payload.error !== 'discovery_interrupted') {
             // TODO: notification with translations
             dispatch(
                 addNotification({
@@ -358,15 +380,6 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         }
     }
 };
-
-/*
-export const init = () => async (dispatch: Dispatch): Promise<void> => {
-    const discovery = dispatch(getDiscoveryForDevice());
-    if (discovery && discovery.status === STATUS.IDLE) {
-        dispatch(start());
-    }
-};
-*/
 
 export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());

@@ -89,7 +89,7 @@ export const toggleSidebar = (): Action => ({
 /**
  * Called from multiple places before and after TrezorConnect call
  * Prevent from mad clicking
- * Set `uiLocked` field in suite reducer
+ * Set `lock` field in suite reducer
  * @returns {Action}
  */
 export const lockUI = (payload: boolean): Action => ({
@@ -100,7 +100,7 @@ export const lockUI = (payload: boolean): Action => ({
 /**
  * Prevent route change and rendering
  * Called before and after specific process, like onboarding
- * Set `routerLocked` field in suite reducer
+ * Set `lock` field in suite reducer
  * @returns {Action}
  */
 export const lockRouter = (payload: boolean): Action => ({
@@ -138,8 +138,8 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     getState: GetState,
 ) => {
     // 1. check if ui is not locked by device request or application itself (for example onboarding process)
-    const { uiLocked, routerLocked } = getState().suite;
-    if (uiLocked || routerLocked) return;
+    const { locks } = getState().suite;
+    if (locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI)) return;
     // 2. check if device is acquired
 
     if (device && device.features) {
@@ -205,7 +205,7 @@ export const handleDeviceDisconnect = (device: Device) => (
 
     // selected device is disconnected, decide what to do next
     const { devices } = getState();
-    const { routerLocked } = getState().suite;
+    const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
     if (devices.length < 1 || routerLocked) {
         dispatch({ type: SUITE.SELECT_DEVICE });
         return;
@@ -314,16 +314,19 @@ export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: 
  * Called from `walletMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
-export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
+export const authorizeDevice = () => async (
+    dispatch: Dispatch,
+    getState: GetState,
+): Promise<boolean> => {
     const { device } = getState().suite;
-    if (!device) return;
+    if (!device) return false;
     const isDeviceReady =
         device.connected &&
         device.features &&
         !device.state &&
         device.mode === 'normal' &&
         device.firmware !== 'required';
-    if (!isDeviceReady) return;
+    if (!isDeviceReady) return false;
 
     const response = await TrezorConnect.getDeviceState({
         device: {
@@ -332,7 +335,6 @@ export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetSta
             state: device.state,
         },
         useEmptyPassphrase: device.useEmptyPassphrase,
-        // useEmptyPassphrase: false,
     });
 
     if (response.success) {
@@ -341,14 +343,15 @@ export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetSta
             payload: device,
             state: response.payload.state,
         });
-    } else {
-        // TODO: notification with translations
-        dispatch(
-            addNotification({
-                variant: 'error',
-                title: 'authorizeDevice error',
-                cancelable: true,
-            }),
-        );
+        return true;
     }
+    // TODO: notification with translations
+    dispatch(
+        addNotification({
+            variant: 'error',
+            title: `authorizeDevice error ${response.payload.error}`,
+            cancelable: true,
+        }),
+    );
+    return false;
 };
