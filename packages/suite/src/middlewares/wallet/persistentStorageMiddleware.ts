@@ -57,8 +57,13 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
             // TODO: move this to wallet middleware?
             //  load transactions for selected acc from indexedDB
-            if (action.payload.account && prevState.wallet.selectedAccount.account !== action.payload.account) {
-                api.dispatch(transactionActions.fetchFromStorage(action.payload.account.descriptor));
+            if (
+                action.payload.account &&
+                prevState.wallet.selectedAccount.account !== action.payload.account
+            ) {
+                api.dispatch(
+                    transactionActions.fetchFromStorage(action.payload.account.descriptor),
+                );
             }
             break;
 

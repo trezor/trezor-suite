@@ -8,10 +8,10 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transaction: WalletAccountTransaction }
     | { type: typeof TRANSACTION.REMOVE; txId: string }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
-    | { type: typeof TRANSACTION.FETCH_INIT; }
-    | { type: typeof TRANSACTION.FETCH_SUCCESS; transactions: WalletAccountTransaction[]; }
-    | { type: typeof TRANSACTION.FETCH_ERROR; error: string; };
-    // | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
+    | { type: typeof TRANSACTION.FETCH_INIT }
+    | { type: typeof TRANSACTION.FETCH_SUCCESS; transactions: WalletAccountTransaction[] }
+    | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
+// | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
 
 // export const setTransactions = (transactions: WalletAccountTransaction[]) => ({
 //     type: TRANSACTION.FROM_STORAGE,
@@ -72,16 +72,17 @@ export const fetchFromStorage = (accountId: string, offset?: number, count?: num
         key: accountId,
         offset,
         count,
-    }).then((transactions: WalletAccountTransaction[]) => {
-        dispatch({
-            type: TRANSACTION.FETCH_SUCCESS,
-            transactions,
+    })
+        .then((transactions: WalletAccountTransaction[]) => {
+            dispatch({
+                type: TRANSACTION.FETCH_SUCCESS,
+                transactions,
+            });
+        })
+        .catch(error => {
+            dispatch({
+                type: TRANSACTION.FETCH_ERROR,
+                error,
+            });
         });
-    }).catch(error => {
-        dispatch({
-            type: TRANSACTION.FETCH_ERROR,
-            error: error
-        });
-    });
-
 };

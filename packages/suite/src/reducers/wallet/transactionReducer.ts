@@ -12,11 +12,11 @@ export interface WalletAccountTransaction extends AccountTransaction {
     accountId: string;
 }
 
-export type State = {
+export interface State {
     transactions: WalletAccountTransaction[];
     isLoading: boolean;
     error: string | null;
-};
+}
 
 const initialState: State = {
     transactions: [],
@@ -40,7 +40,10 @@ export default (state: State = initialState, action: Action): State => {
                 draft.transactions.push(action.transaction);
                 break;
             case TRANSACTION.REMOVE:
-                draft.transactions.splice(draft.transactions.findIndex(tx => tx.txid === action.txId), 1);
+                draft.transactions.splice(
+                    draft.transactions.findIndex(tx => tx.txid === action.txId),
+                    1,
+                );
                 break;
             case TRANSACTION.UPDATE:
                 update(draft, action);
