@@ -5,6 +5,7 @@ import { State as ReducerState } from '@wallet-reducers/sendFormReducer';
 import { FormattedMessage } from 'react-intl';
 import { DispatchProps } from '../../Container';
 import messages from './index.messages';
+import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,10 +27,16 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
     errors: ReducerState['errors'];
     amount: ReducerState['amount'];
+    address: ReducerState['address'];
+    symbol: Account['symbol'];
 }
 
-const isDisabled = (errors: ReducerState['errors']) => {
-    return errors.address !== null || errors.amount !== null;
+const isDisabled = (
+    errors: ReducerState['errors'],
+    amount: ReducerState['amount'],
+    address: ReducerState['address'],
+) => {
+    return errors.address !== null || errors.amount !== null || !amount || !address;
 };
 
 const SendAndClear = (props: Props) => (
@@ -37,10 +44,13 @@ const SendAndClear = (props: Props) => (
         <Clear isWhite onClick={() => props.sendFormActions.clear()}>
             <FormattedMessage {...messages.TR_CLEAR} />
         </Clear>
-        <Send isDisabled={isDisabled(props.errors)} onClick={() => props.sendFormActions.send()}>
-            {isDisabled(props.errors)
-                ? 'cannot send please fill the mandatory fields'
-                : `send ${props.amount || ''}`}
+        <Send
+            isDisabled={isDisabled(props.errors, props.address, props.amount)}
+            onClick={() => props.sendFormActions.send()}
+        >
+            {isDisabled(props.errors, props.address, props.amount)
+                ? 'Cannot send please fill the mandatory fields'
+                : `Send ${props.amount || ''} ${props.symbol.toUpperCase()}`}
         </Send>
     </Wrapper>
 );

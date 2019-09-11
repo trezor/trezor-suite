@@ -1,18 +1,18 @@
+import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
+import { State as ReducerState } from '@wallet-reducers/sendFormReducer';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-
-interface LocalCurrency {
-    value: string;
-    label: string;
-}
 
 export type SendFormActions =
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
     | { type: typeof SEND.CLEAR }
     | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; amount: string }
-    | { type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE; localCurrency: LocalCurrency }
-    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: string }
+    | {
+          type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
+          localCurrency: ReducerState['localCurrency'];
+      }
+    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: null | string }
     | {
           type: typeof SEND.HANDLE_ADDRESS_CHANGE;
           address: string;
@@ -62,6 +62,7 @@ const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: Ge
     if (!fiatNetwork) return null;
 
     const rate = fiatNetwork.rates[send.localCurrency.value];
+    const fiatValue = new BigNumber(amount).multipliedBy(new BigNumber(rate)).toFixed(2) || null;
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
@@ -71,14 +72,14 @@ const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: Ge
 
     dispatch({
         type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-        fiatValue: parseInt(amount, 10) * rate,
+        fiatValue,
     });
 };
 
 /*
     Change value in select "LocalCurrency"
  */
-const handleSelectCurrencyChange = (localCurrency: LocalCurrency) => (
+const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -95,7 +96,10 @@ const handleSelectCurrencyChange = (localCurrency: LocalCurrency) => (
 /*
     Change value in input "FiatInput"
  */
-const handleFiatInputChange = (fiatValue: string) => (dispatch: Dispatch, getState: GetState) => {
+const handleFiatInputChange = (fiatValue: null | string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { account } = getState().wallet.selectedAccount;
     if (account) {
         dispatch({

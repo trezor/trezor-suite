@@ -46,8 +46,6 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getFiatValue = () => {};
-
 const LocalCurrency = (props: Props) => (
     <Wrapper>
         <EqualsSign>=</EqualsSign>
@@ -56,8 +54,7 @@ const LocalCurrency = (props: Props) => (
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
-            spellCheck={false}
-            value={props.fiatValue}
+            value={props.fiatValue || ''}
             onChange={() => {}}
             sideAddons={[
                 <LocalCurrencySelect

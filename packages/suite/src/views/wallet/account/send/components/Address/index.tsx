@@ -34,13 +34,21 @@ const getErrorMessage = (error: State['errors']['address']) => {
     }
 };
 
+const getState = (error, address) => {
+    if (error) {
+        return 'error';
+    }
+    if (address && !error) {
+        return 'success';
+    }
+};
+
 const Address = (props: Props) => (
     <Input
-        state={props.error ? 'error' : undefined}
+        state={getState(props.error, props.value)}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
-        spellCheck={false}
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
         bottomText={getErrorMessage(props.error)}
         value={props.value || ''}

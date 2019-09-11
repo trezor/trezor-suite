@@ -40,7 +40,9 @@ const CurrencySelect = styled(Select)`
     flex: 0.2;
 `;
 
-const StyledIcon = styled(Icon)``;
+const StyledIcon = styled(Icon)`
+    padding: 0 5px 0 0;
+`;
 
 interface Props {
     intl: InjectedIntl;
@@ -70,7 +72,6 @@ const Amount = (props: Props) => (
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
-            spellCheck={false}
             topLabel={
                 <LabelWrapper>
                     <Label>

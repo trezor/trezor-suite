@@ -61,12 +61,17 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             </Row>
             {send.isAdditionalFormVisible && (
                 <Row>
-                    <AdditionalForm networkType={network.networkType} />
+                    <AdditionalForm
+                        sendFormActions={sendFormActions}
+                        networkType={network.networkType}
+                    />
                 </Row>
             )}
             <SendAndClear
                 amount={send.amount}
+                address={send.address}
                 errors={send.errors}
+                symbol={network.symbol}
                 sendFormActions={sendFormActions}
             />
         </Layout>
