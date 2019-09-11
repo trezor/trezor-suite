@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { State as ReducerState } from '@wallet-reducers/sendFormReducer';
 import { FormattedMessage } from 'react-intl';
+import { DispatchProps } from '../../Container';
 import messages from './index.messages';
 
 const Wrapper = styled.div`
@@ -14,31 +15,30 @@ const Wrapper = styled.div`
     }
 `;
 
-const SendButton = styled(Button)`
+const Send = styled(Button)`
     word-break: break-all;
     flex: 1;
 `;
 
-const ClearButton = styled(Button)``;
+const Clear = styled(Button)``;
 
 interface Props {
-    clear: () => void;
+    sendFormActions: DispatchProps['sendFormActions'];
     errors: ReducerState['errors'];
-    send: () => void;
 }
 
 const isDisabled = (errors: ReducerState['errors']) => {
-    return errors.address !== null && errors.amount !== null;
+    return errors.address !== null || errors.amount !== null;
 };
 
 const SendAndClear = (props: Props) => (
     <Wrapper>
-        <ClearButton isWhite onClick={() => props.clear()}>
+        <Clear isWhite onClick={() => props.sendFormActions.clear()}>
             <FormattedMessage {...messages.TR_CLEAR} />
-        </ClearButton>
-        <SendButton isDisabled={isDisabled(props.errors)} onClick={() => props.send()}>
+        </Clear>
+        <Send isDisabled={isDisabled(props.errors)} onClick={() => props.sendFormActions.send()}>
             {isDisabled(props.errors) ? 'cannot send please fill the mandatory fields' : 'send'}
-        </SendButton>
+        </Send>
     </Wrapper>
 );
 

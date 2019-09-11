@@ -3,6 +3,7 @@ import { variables, Button, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import messages from './index.messages';
+import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div``;
 
@@ -23,12 +24,15 @@ const ToggleIcon = styled(Icon)`
 
 interface Props {
     isActive: boolean;
-    toggle: () => void;
+    sendFormActions: DispatchProps['sendFormActions'];
 }
 
 const ToggleAdditionalButton = (props: Props) => (
     <Wrapper>
-        <ToggleButton isTransparent onClick={() => props.toggle()}>
+        <ToggleButton
+            isTransparent
+            onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}
+        >
             <FormattedMessage {...messages.TR_ADVANCED_SETTINGS} />
             <ToggleIcon
                 icon="ARROW_DOWN"

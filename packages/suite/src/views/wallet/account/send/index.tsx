@@ -53,8 +53,8 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             </Row>
             <Row>
                 <ButtonToggleAdditional
-                    toggle={sendFormActions.toggleAdditionalFormVisibility}
                     isActive={send.isAdditionalFormVisible}
+                    sendFormActions={sendFormActions}
                 />
             </Row>
             {send.isAdditionalFormVisible && (
@@ -62,7 +62,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     <AdditionalForm networkType={network.networkType} />
                 </Row>
             )}
-            <SendAndClear errors={send.errors} clear={() => {}} send={() => {}} />
+            <SendAndClear errors={send.errors} sendFormActions={sendFormActions} />
         </Layout>
     );
 };

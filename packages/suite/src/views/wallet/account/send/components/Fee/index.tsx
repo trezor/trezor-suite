@@ -12,6 +12,7 @@ const Wrapper = styled.div`
 
 const FeeLabel = styled.span`
     color: ${colors.TEXT_SECONDARY};
+    padding-bottom: 10px;
 `;
 
 const FeeOptionWrapper = styled.div`
