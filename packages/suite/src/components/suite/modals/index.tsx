@@ -22,7 +22,7 @@ import ConfirmSignTx from './confirm/SignTx';
 // import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import ForgetDevice from './Forget';
 import RequestInstance from './RequestInstance';
-// import RememberDevice from './Remember';
+import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from './WalletType';
 
@@ -93,19 +93,19 @@ const getDeviceContextModal = (props: Props) => {
         //             />
         //         );
 
-        // case SUITE.REQUEST_REMEMBER_DEVICE:
-        //     return (
-        //         <RememberDevice
-        //             device={device}
-        //             onRememberDevice={modalActions.onRememberDevice}
-        //             onForgetDevice={modalActions.onForgetDevice}
-        //         />
-        //     );
+        case SUITE.REQUEST_REMEMBER_DEVICE:
+            return (
+                <RememberDevice
+                    device={modal.device as AcquiredDevice}
+                    onRememberDevice={modalActions.onRememberDevice}
+                    onForgetDevice={modalActions.onForgetDevice}
+                />
+            );
 
         case SUITE.REQUEST_FORGET_DEVICE:
             return (
                 <ForgetDevice
-                    device={device}
+                    device={modal.device as AcquiredDevice}
                     onForgetDevice={modalActions.onForgetDevice}
                     onCancel={modalActions.onCancel}
                 />

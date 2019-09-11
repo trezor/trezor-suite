@@ -68,13 +68,17 @@ const RememberDevice: FunctionComponent<Props> = ({
     useHotkeys('enter', () => onForgetDevice(device));
 
     useEffect(() => {
+        let timeout = -1;
         if (countdown > 0) {
-            setTimeout(() => {
+            timeout = setTimeout(() => {
                 setCountdown(countdown - 1);
             }, 1000);
         } else {
             onForgetDevice(device);
         }
+        return () => {
+            clearTimeout(timeout);
+        };
     }, [countdown, device, onForgetDevice]);
 
     return (

@@ -1,12 +1,12 @@
-import { UI, DEVICE } from 'trezor-connect';
+import { UI, DEVICE, Device } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { Action } from '@suite-types';
+import { Action, TrezorDevice } from '@suite-types';
 
 export type State =
     | { context: typeof MODAL.CONTEXT_NONE }
     | {
           context: typeof MODAL.CONTEXT_DEVICE;
-          devicePath: string;
+          device: TrezorDevice | Device;
           windowType?: string;
       }
     | {
@@ -38,7 +38,7 @@ export default (state: State = initialState, action: Action): State => {
         case DEVICE.DISCONNECT:
             if (
                 state.context === MODAL.CONTEXT_DEVICE &&
-                action.payload.path === state.devicePath
+                action.payload.path === state.device.path
             ) {
                 return initialState;
             }
@@ -49,13 +49,13 @@ export default (state: State = initialState, action: Action): State => {
         case UI.REQUEST_PASSPHRASE:
             return {
                 context: MODAL.CONTEXT_DEVICE,
-                devicePath: action.payload.device.path,
+                device: action.payload.device,
                 windowType: action.type,
             };
         case UI.REQUEST_BUTTON:
             return {
                 context: MODAL.CONTEXT_DEVICE,
-                devicePath: action.payload.device.path,
+                device: action.payload.device,
                 windowType: action.payload.code,
             };
         case UI.REQUEST_CONFIRMATION:
@@ -64,16 +64,17 @@ export default (state: State = initialState, action: Action): State => {
                 windowType: action.payload.view,
             };
         // TODO: case RECEIVE.REQUEST_UNVERIFIED:
+        case SUITE.REQUEST_REMEMBER_DEVICE:
         case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
         case SUITE.REQUEST_PASSPHRASE_MODE:
             return {
                 context: MODAL.CONTEXT_DEVICE,
-                devicePath: action.payload.path,
+                device: action.payload,
                 windowType: action.type,
             };
         // close modal
-        case UI.CLOSE_UI_WINDOW:
+        // case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
         case MODAL.CLOSE:
         case SUITE.FORGET_DEVICE:
         case SUITE.FORGET_DEVICE_INSTANCE:
