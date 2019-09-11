@@ -8,6 +8,7 @@ import { isAddressValid } from '@wallet-utils/validation';
 export interface State {
     address: null | string;
     amount: null | string;
+    localCurrency: string;
     isAdditionalFormVisible: boolean;
     errors: {
         address: null | 'empty' | 'not-valid';
@@ -18,6 +19,7 @@ export interface State {
 export const initialState: State = {
     address: null,
     amount: null,
+    localCurrency: 'usd',
     isAdditionalFormVisible: false,
     errors: {
         address: null,

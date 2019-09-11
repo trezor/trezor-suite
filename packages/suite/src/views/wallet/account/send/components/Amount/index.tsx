@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
-import accountMessages from '@wallet-views/account/messages';
 import { State } from '@wallet-reducers/sendFormReducer';
 import { Input, variables, colors, Icon, Button, Select } from '@trezor/components';
-import { FIAT } from '@suite-config';
+import LocalCurrency from './components/LocalCurrency';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 
@@ -16,50 +15,14 @@ const Wrapper = styled.div`
     }
 `;
 
-const LocalCurrencySelect = styled(Select)`
-    min-width: 77px;
-    height: 40px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex: 1 1 0;
-    }
-`;
-
-const AmountLabelWrapper = styled.div`
+const LabelWrapper = styled.div`
     display: flex;
     justify-content: space-between;
 `;
 
-const AmountLabel = styled.span`
+const Label = styled.span`
     text-align: right;
     color: ${colors.TEXT_SECONDARY};
-`;
-
-const LocalAmountInput = styled(Input)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex: 1 1 100%;
-    }
-`;
-
-const EqualsSign = styled.div`
-    align-self: center;
-    padding: 0 10px;
-    font-size: ${variables.FONT_SIZE.BIGGER};
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        display: none;
-    }
-`;
-
-const LocalAmountWrapper = styled.div`
-    display: flex;
-    align-self: flex-end;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex: 1 0 100%;
-        justify-content: flex-end;
-        padding-top: 28px;
-    }
 `;
 
 const SetMaxAmountButton = styled(Button)`
@@ -81,7 +44,8 @@ const StyledIcon = styled(Icon)``;
 
 interface Props {
     intl: InjectedIntl;
-    value: null | number;
+    value: State['amount'];
+    localCurrency: string;
     error: State['errors']['amount'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
@@ -108,21 +72,21 @@ const Amount = (props: Props) => (
             autoCapitalize="off"
             spellCheck={false}
             topLabel={
-                <AmountLabelWrapper>
-                    <AmountLabel>
+                <LabelWrapper>
+                    <Label>
                         <FormattedMessage {...messages.TR_AMOUNT} />
-                    </AmountLabel>
+                    </Label>
                     {true && (
-                        <AmountLabel>
+                        <Label>
                             {/* <FormattedMessage
                                 {...accountMessages.TR_XRP_RESERVE}
                                 values={{ value: '`${accountReserve} ${network.symbol}`' }}
                             /> */}
-                        </AmountLabel>
+                        </Label>
                     )}
-                </AmountLabelWrapper>
+                </LabelWrapper>
             }
-            value={props.value}
+            value={props.value || ''}
             onChange={e => props.sendFormActions.handleAmountChange(e.target.value)}
             bottomText={getErrorMessage(props.error)}
             sideAddons={[
@@ -139,30 +103,13 @@ const Amount = (props: Props) => (
                     isDisabled
                     options={'tokensSelectData'}
                 />,
+                <LocalCurrency
+                    state={props.error ? 'error' : undefined}
+                    sendFormActions={props.sendFormActions}
+                    localCurrency={props.localCurrency}
+                />,
             ]}
         />
-        <LocalAmountWrapper>
-            <EqualsSign>=</EqualsSign>
-            <LocalAmountInput
-                state={undefined}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                value={''}
-                onChange={() => {}}
-                sideAddons={[
-                    <LocalCurrencySelect
-                        key="local-currency"
-                        isSearchable
-                        isClearable={false}
-                        onChange={() => {}}
-                        value={'111'}
-                        options={FIAT.currencies.map(() => {})}
-                    />,
-                ]}
-            />
-        </LocalAmountWrapper>
     </Wrapper>
 );
 

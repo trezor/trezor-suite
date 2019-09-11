@@ -11,11 +11,11 @@ const definedMessages = defineMessages({
         description: 'Used for setting maximum amount in Send form',
     },
     TR_AMOUNT_IS_NOT_SET: {
-        id: 'TR_ADDRESS_IS_NOT_SET',
+        id: 'TR_AMOUNT_IS_NOT_SET',
         defaultMessage: 'Amount is not set',
     },
     TR_AMOUNT_IS_NOT_NUMBER: {
-        id: 'TR_ADDRESS_IS_NOT_NUMBER',
+        id: 'TR_AMOUNT_IS_NOT_NUMBER',
         defaultMessage: 'Amount is not a number',
     },
 });

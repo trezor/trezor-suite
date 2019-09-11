@@ -45,6 +45,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 <Amount
                     value={send.amount}
                     error={send.errors.amount}
+                    localCurrency={send.localCurrency}
                     sendFormActions={sendFormActions}
                 />
             </Row>

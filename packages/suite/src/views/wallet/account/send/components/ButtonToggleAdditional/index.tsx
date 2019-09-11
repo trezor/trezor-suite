@@ -9,7 +9,6 @@ const Wrapper = styled.div``;
 
 const ToggleButton = styled(Button)`
     min-height: 40px;
-    padding: 0;
     display: flex;
     flex: 1 1 0;
     align-items: center;

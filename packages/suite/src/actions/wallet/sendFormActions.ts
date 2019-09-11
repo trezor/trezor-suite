@@ -14,6 +14,11 @@ export type SendFormActions =
           type: typeof SEND.HANDLE_AMOUNT_CHANGE;
           amount: string;
           networkType: Account['networkType'];
+      }
+    | {
+          type: typeof SEND.HANDLE_LOCAL_CURRENCY_CHANGE;
+          localCurrency: string;
+          networkType: Account['networkType'];
       };
 
 /*
@@ -58,4 +63,27 @@ const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: Ge
     }
 };
 
-export { toggleAdditionalFormVisibility, clear, handleAddressChange, handleAmountChange };
+/*
+    Change value in input "LocalCurrency"
+ */
+const handleLocalCurrencyChange = (localCurrency: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { account } = getState().wallet.selectedAccount;
+    if (account) {
+        dispatch({
+            type: SEND.HANDLE_LOCAL_CURRENCY_CHANGE,
+            localCurrency,
+            networkType: account.networkType,
+        });
+    }
+};
+
+export {
+    toggleAdditionalFormVisibility,
+    clear,
+    handleAddressChange,
+    handleAmountChange,
+    handleLocalCurrencyChange,
+};
