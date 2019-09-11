@@ -25,7 +25,11 @@ const TransactionList = ({
 }: Props) => {
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
-    const slicedTransactions = useMemo( () => transactions.slice(startIndex, stopIndex), [transactions, startIndex, stopIndex])
+    const slicedTransactions = useMemo(() => transactions.slice(startIndex, stopIndex), [
+        transactions,
+        startIndex,
+        stopIndex,
+    ]);
 
     return (
         <Wrapper>

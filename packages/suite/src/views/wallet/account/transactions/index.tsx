@@ -16,13 +16,13 @@ const LoaderWrapper = styled.div`
     align-items: center;
 `;
 const LoaderText = styled.div`
-  color: ${colors.TEXT_SECONDARY};
-  text-align: center;
+    color: ${colors.TEXT_SECONDARY};
+    text-align: center;
 `;
 
 const NoTransactions = styled.div`
-  color: ${colors.TEXT_SECONDARY};
-  text-align: center;
+    color: ${colors.TEXT_SECONDARY};
+    text-align: center;
 `;
 interface Props {
     suite: AppState['suite'];
@@ -49,15 +49,15 @@ const Transactions = (props: Props) => {
             <Title>Transactions</Title>
             {transactions.isLoading && (
                 <LoaderWrapper>
-                    <Loader size={40}/>
+                    <Loader size={40} />
                     <LoaderText>Loading transactions</LoaderText>
                 </LoaderWrapper>
-            )} 
+            )}
             {transactions.transactions.length === 0 && !transactions.isLoading && (
                 <LoaderWrapper>
                     <NoTransactions>No transactions :(</NoTransactions>
                 </LoaderWrapper>
-            )} 
+            )}
             {transactions.transactions.length > 0 && (
                 <TransactionList
                     transactions={props.wallet.transactions.transactions}
