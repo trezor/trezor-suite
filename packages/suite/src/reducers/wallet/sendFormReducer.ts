@@ -5,15 +5,11 @@ import validator from 'validator';
 
 import { isAddressValid } from '@wallet-utils/validation';
 
-export interface LocalCurrency {
-    value: string;
-    label: string;
-}
-
 export interface State {
     address: null | string;
     amount: null | string;
-    localCurrency: LocalCurrency;
+    fiatValue: null | string;
+    localCurrency: { value: string; label: string };
     isAdditionalFormVisible: boolean;
     errors: {
         address: null | 'empty' | 'not-valid';
@@ -24,6 +20,7 @@ export interface State {
 export const initialState: State = {
     address: null,
     amount: null,
+    fiatValue: null,
     localCurrency: { value: 'usd', label: 'USD' },
     isAdditionalFormVisible: false,
     errors: {
@@ -60,8 +57,7 @@ export default (state: State = initialState, action: Action): State => {
 
             // Change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { amount, networkType } = action;
-                console.log('networkType', networkType);
+                const { amount } = action;
                 draft.errors.amount = null;
                 draft.amount = amount;
 
@@ -73,21 +69,25 @@ export default (state: State = initialState, action: Action): State => {
                     draft.errors.amount = 'is-not-number';
                     return draft;
                 }
-
                 break;
             }
 
-            // Change input "LocalCurrency"
-            case SEND.HANDLE_LOCAL_CURRENCY_CHANGE: {
-                const { localCurrency, networkType } = action;
-                console.log('networkType', networkType);
+            // Change select "Currency"
+            case SEND.HANDLE_SELECT_CURRENCY_CHANGE: {
+                const { localCurrency } = action;
                 draft.localCurrency = localCurrency;
                 break;
             }
 
-            case SEND.CLEAR: {
-                draft.address = '';
+            // Change input "Fiat"
+            case SEND.HANDLE_FIAT_VALUE_CHANGE: {
+                const { fiatValue } = action;
+                draft.fiatValue = fiatValue;
                 break;
+            }
+
+            case SEND.CLEAR: {
+                return initialState;
             }
 
             // no default

@@ -41,10 +41,12 @@ const EqualsSign = styled.div`
 `;
 
 interface Props {
-    localCurrency: State['localCurrency'];
+    fiatValue: string;
     state: 'error' | undefined;
     sendFormActions: DispatchProps['sendFormActions'];
 }
+
+const getFiatValue = () => {};
 
 const LocalCurrency = (props: Props) => (
     <Wrapper>
@@ -55,7 +57,7 @@ const LocalCurrency = (props: Props) => (
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
-            value={props.localCurrency.value}
+            value={props.fiatValue}
             onChange={() => {}}
             sideAddons={[
                 <LocalCurrencySelect
@@ -63,9 +65,9 @@ const LocalCurrency = (props: Props) => (
                     isSearchable
                     isClearable={false}
                     onChange={(option: State['localCurrency']) =>
-                        props.sendFormActions.handleLocalCurrencyChange(option)
+                        props.sendFormActions.handleSelectCurrencyChange(option)
                     }
-                    value={props.localCurrency}
+                    value={props.fiatValue}
                     options={FIAT.currencies.map((currency: string) =>
                         getCurrencyOptions(currency),
                     )}

@@ -106,7 +106,7 @@ const Amount = (props: Props) => (
                 <LocalCurrency
                     state={props.error ? 'error' : undefined}
                     sendFormActions={props.sendFormActions}
-                    localCurrency={props.localCurrency}
+                    fiatValue={props.fiatValue}
                 />,
             ]}
         />

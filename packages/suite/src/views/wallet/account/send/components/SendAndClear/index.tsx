@@ -25,6 +25,7 @@ const Clear = styled(Button)``;
 interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
     errors: ReducerState['errors'];
+    amount: ReducerState['amount'];
 }
 
 const isDisabled = (errors: ReducerState['errors']) => {
@@ -37,7 +38,9 @@ const SendAndClear = (props: Props) => (
             <FormattedMessage {...messages.TR_CLEAR} />
         </Clear>
         <Send isDisabled={isDisabled(props.errors)} onClick={() => props.sendFormActions.send()}>
-            {isDisabled(props.errors) ? 'cannot send please fill the mandatory fields' : 'send'}
+            {isDisabled(props.errors)
+                ? 'cannot send please fill the mandatory fields'
+                : `send ${props.amount || ''}`}
         </Send>
     </Wrapper>
 );

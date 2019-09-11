@@ -1,17 +1,9 @@
 export default {
     tickers: [
-        {
-            symbol: 'eth',
-            url: 'https://api.coingecko.com/api/v3/coins/ethereum',
-        },
-        {
-            symbol: 'etc',
-            url: 'https://api.coingecko.com/api/v3/coins/ethereum-classic',
-        },
-        {
-            symbol: 'xrp',
-            url: 'https://api.coingecko.com/api/v3/coins/ripple',
-        },
+        { symbol: 'eth', url: 'https://api.coingecko.com/api/v3/coins/ethereum' },
+        { symbol: 'etc', url: 'https://api.coingecko.com/api/v3/coins/ethereum-classic' },
+        { symbol: 'xrp', url: 'https://api.coingecko.com/api/v3/coins/ripple' },
+        { symbol: 'btc', url: 'https://api.coingecko.com/api/v3/coins/bitcoin' },
     ],
     currencies: [
         'usd',
