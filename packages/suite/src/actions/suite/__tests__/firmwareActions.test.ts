@@ -72,7 +72,7 @@ export const getInitialState = (override: any) => {
                     major_version: 2,
                 },
             },
-            uiLocked: false,
+            locks: [3],
         },
         firmware: {
             status: null,

@@ -1,6 +1,5 @@
 import React from 'react';
 import App, { AppContext } from 'next/app';
-import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import withRedux from 'next-redux-wrapper';
@@ -12,9 +11,11 @@ import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import l10nCommonMessages from '@suite-views/index.messages';
+import { isDev } from '@suite-utils/build';
 import { SENTRY } from '@suite-config';
+import { Store } from '@suite-types';
+import CypressExportStore from '../support/CypressExportStore';
 
-Sentry.init({ dsn: SENTRY });
 interface Props {
     store: Store;
 }
@@ -26,12 +27,19 @@ class TrezorSuiteApp extends App<Props> {
         };
     }
 
+    componentDidMount() {
+        if (!window.Cypress && !isDev()) {
+            Sentry.init({ dsn: SENTRY });
+        }
+    }
+
     render() {
         const { Component, pageProps, store, router } = this.props;
         const isStaticRoute = isStatic(router.pathname);
 
         return (
             <ErrorBoundary>
+                <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
                     <IntlProvider>
                         <>

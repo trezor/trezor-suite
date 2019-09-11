@@ -19,7 +19,7 @@ export const setHideBalance = (toggled: boolean) => ({
 });
 
 export const handleCoinVisibility = (
-    coinShortcut: string,
+    symbol: string,
     shouldBeVisible: boolean,
     isExternal: boolean,
 ) => (dispatch: Dispatch, getState: GetState) => {
@@ -27,12 +27,12 @@ export const handleCoinVisibility = (
         ? getState().wallet.settings.hiddenCoinsExternal
         : getState().wallet.settings.hiddenCoins;
     let newConfig: string[] = configuration;
-    const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
+    const isAlreadyHidden = configuration.find(coin => coin === symbol);
 
     if (shouldBeVisible) {
-        newConfig = configuration.filter(coin => coin !== coinShortcut);
+        newConfig = configuration.filter(coin => coin !== symbol);
     } else if (!isAlreadyHidden) {
-        newConfig = [...configuration, coinShortcut];
+        newConfig = [...configuration, symbol];
     }
 
     if (isExternal) {

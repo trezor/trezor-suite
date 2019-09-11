@@ -60,9 +60,9 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <InputPin onDeleteClick={() => setValue(value.slice(0, -1))} value={value} />
             </InputWrapper>
             <PinRow>
-                <ButtonPin onClick={() => setValue(`${value}1`)} />
-                <ButtonPin onClick={() => setValue(`${value}2`)} />
-                <ButtonPin onClick={() => setValue(`${value}3`)} />
+                <ButtonPin onClick={() => setValue(`${value}7`)} />
+                <ButtonPin onClick={() => setValue(`${value}8`)} />
+                <ButtonPin onClick={() => setValue(`${value}9`)} />
             </PinRow>
             <PinRow>
                 <ButtonPin onClick={() => setValue(`${value}4`)} />
@@ -70,9 +70,9 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <ButtonPin onClick={() => setValue(`${value}6`)} />
             </PinRow>
             <PinRow>
-                <ButtonPin onClick={() => setValue(`${value}7`)} />
-                <ButtonPin onClick={() => setValue(`${value}8`)} />
-                <ButtonPin onClick={() => setValue(`${value}9`)} />
+                <ButtonPin onClick={() => setValue(`${value}1`)} />
+                <ButtonPin onClick={() => setValue(`${value}2`)} />
+                <ButtonPin onClick={() => setValue(`${value}3`)} />
             </PinRow>
             <PinFooter>
                 <Button onClick={() => onEnterPin(value)}>Enter PIN</Button>

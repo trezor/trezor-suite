@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { P, H4, Loader, colors, variables } from '@trezor/components';
 import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
-// import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 import l10nMessages from './index.messages';
@@ -54,14 +53,12 @@ const Row = styled.div`
 `;
 
 const getExceptionPage = (exceptionPage: ExceptionPage) => {
-    const { title, message, shortcut } = exceptionPage;
+    const { title, message, symbol } = exceptionPage;
     switch (exceptionPage.type) {
         case 'fwOutdated':
             return '<FirmwareUpdate />';
         case 'fwNotSupported':
-            return (
-                <FirmwareUnsupported title={title} message={message} networkShortcut={shortcut} />
-            );
+            return <FirmwareUnsupported title={title} message={message} symbol={symbol} />;
         default:
             return null;
     }

@@ -5,7 +5,7 @@ import ReactSvg from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
 
-const SvgWrapper = styled.div<Omit<Props, 'network'>>`
+const SvgWrapper = styled.div<Omit<Props, 'symbol'>>`
     display: inline-block;
     height: ${props => props.size}px;
 
@@ -16,16 +16,16 @@ const SvgWrapper = styled.div<Omit<Props, 'network'>>`
 `;
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
-    network: string;
+    symbol: string;
     className?: string;
     size?: number;
 }
 
-const CoinLogo = ({ network, className, size = 32, ...rest }: Props) => {
+const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => {
     return (
         <SvgWrapper className={className} size={size} {...rest}>
             <ReactSvg
-                src={COINS[network]}
+                src={COINS[symbol]}
                 beforeInjection={svg => {
                     svg.setAttribute('width', `${size}px`);
                     svg.setAttribute('height', `${size}px`);

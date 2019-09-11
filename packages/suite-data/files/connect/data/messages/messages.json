@@ -389,13 +389,6 @@
                     "type": "bytes",
                     "name": "public_key",
                     "id": 2
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "string",
-                    "name": "json",
-                    "id": 3
                 }
             ],
             "enums": [],
@@ -2355,7 +2348,22 @@
         },
         {
             "name": "DebugLinkGetState",
-            "fields": [],
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wait_word_list",
+                    "id": 1
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wait_word_pos",
+                    "id": 2
+                }
+            ],
             "enums": [],
             "messages": [],
             "options": {},
@@ -4435,9 +4443,87 @@
                     "type": "bool",
                     "name": "recovery_mode",
                     "id": 29
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "Capability",
+                    "name": "capabilities",
+                    "id": 30
                 }
             ],
-            "enums": [],
+            "enums": [
+                {
+                    "name": "Capability",
+                    "values": [
+                        {
+                            "name": "Capability_Bitcoin",
+                            "id": 1
+                        },
+                        {
+                            "name": "Capability_Bitcoin_like",
+                            "id": 2
+                        },
+                        {
+                            "name": "Capability_Binance",
+                            "id": 3
+                        },
+                        {
+                            "name": "Capability_Cardano",
+                            "id": 4
+                        },
+                        {
+                            "name": "Capability_Crypto",
+                            "id": 5
+                        },
+                        {
+                            "name": "Capability_EOS",
+                            "id": 6
+                        },
+                        {
+                            "name": "Capability_Ethereum",
+                            "id": 7
+                        },
+                        {
+                            "name": "Capability_Lisk",
+                            "id": 8
+                        },
+                        {
+                            "name": "Capability_Monero",
+                            "id": 9
+                        },
+                        {
+                            "name": "Capability_NEM",
+                            "id": 10
+                        },
+                        {
+                            "name": "Capability_Ripple",
+                            "id": 11
+                        },
+                        {
+                            "name": "Capability_Stellar",
+                            "id": 12
+                        },
+                        {
+                            "name": "Capability_Tezos",
+                            "id": 13
+                        },
+                        {
+                            "name": "Capability_U2F",
+                            "id": 14
+                        },
+                        {
+                            "name": "Capability_Shamir",
+                            "id": 15
+                        },
+                        {
+                            "name": "Capability_ShamirGroups",
+                            "id": 16
+                        }
+                    ],
+                    "options": {}
+                }
+            ],
             "messages": [],
             "options": {},
             "oneofs": {}

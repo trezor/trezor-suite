@@ -3,6 +3,11 @@
   "compilerOptions": {
     "noEmit": false,
     "isolatedModules": false,
-    "types": ["cypress", "trezor-connect"],
-  }
+    "types": ["trezor-connect", "cypress"],
+    "allowJs": true
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": []
 }

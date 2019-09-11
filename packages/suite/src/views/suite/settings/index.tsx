@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { back } from '@suite-actions/routerActions';
+import { SUITE } from '@suite-actions/constants';
 import { Input, Button, P, Icon } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
@@ -74,9 +75,10 @@ const BackgroundImageT1 = styled.img`
     margin: 5px;
 `;
 
-const Settings = ({ device, uiLocked, applySettings, changePin }: Props) => {
+const Settings = ({ device, locks, applySettings, changePin }: Props) => {
     // todo: need to solve typescript here.
 
+    const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
 
     useEffect(() => {

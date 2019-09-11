@@ -17,21 +17,6 @@ describe('DEVICE.CONNECT', () => {
             });
         });
     });
-
-    // const f = fixtures.connect[6];
-    // it(f.description, async () => {
-    //     let state: ReturnType<typeof deviceReducer>;
-    //     // console.log('initialSTATE', state);
-    //     f.actions.forEach(a => {
-    //         state = deviceReducer(state || f.initialState, a as Action);
-    //     });
-    //     console.log('afterSTATE', state);
-    //     console.log('Res', f.result);
-    //     f.result.forEach((r, i) => {
-    //         expect(state[i]).toMatchObject(r);
-    //     });
-    //     // expect(state.length).arrayContaining(f.result);
-    // });
 });
 
 describe('DEVICE.CHANGED', () => {

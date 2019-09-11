@@ -41,10 +41,10 @@ module.exports = {
     ],
     coverageThreshold: {
         global: {
-            statements: 49.41,
-            branches: 54.48,
-            functions: 46.22,
-            lines: 50.79,
+            statements: 54,
+            branches: 58.34,
+            functions: 51.84,
+            lines: 55.1,
         },
     },
     modulePathIgnorePatterns: ['node_modules', '<rootDir>/src/utils/suite/hooks'],

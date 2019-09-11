@@ -46,7 +46,7 @@ export const getInitialState = (override: any) => {
                     major_version: 2,
                 },
             },
-            uiLocked: false,
+            locks: [3],
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
         devices: [],

@@ -111,7 +111,7 @@ const Dashboard = (props: Props) => {
                                     })}
                                 >
                                     <StyledCoinLogo
-                                        network={network.symbol === 'test' ? 'btc' : network.symbol}
+                                        symbol={network.symbol === 'test' ? 'btc' : network.symbol}
                                         size={27}
                                     />
                                 </StyledLink>

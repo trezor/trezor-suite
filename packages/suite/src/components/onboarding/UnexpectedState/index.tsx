@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { P, H2, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
@@ -6,31 +6,31 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as STEP from '@suite/constants/onboarding/steps';
-import PinMatrix from '@suite/components/onboarding/PinMatrix';
-import Text from '@suite/components/onboarding/Text';
 import { ConnectReducer } from '@suite/types/onboarding/connect';
 import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
 import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
+import { PinMatrix, Text, Wrapper } from '@onboarding-components';
 import { Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
-import Reconnect from './Reconnect';
-import { ControlsWrapper } from '../Wrapper';
+import Reconnect from './components/Reconnect';
 
-const Wrapper = styled.div`
+const CommonWrapper = styled.div`
     margin: auto 30px auto 30px;
     text-align: center;
     width: 100%;
 `;
 
-const UnexpectedStateCommon: React.SFC = ({ children }) => <Wrapper>{children}</Wrapper>;
+const UnexpectedStateCommon = ({ children }: { children: ReactNode }) => (
+    <CommonWrapper>{children}</CommonWrapper>
+);
 
-const IsSameDevice: FunctionComponent = () => (
+const IsSameDevice = () => (
     <P>
         <FormattedMessage {...l10nMessages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT} />
     </P>
 );
 
-const IsNotInBootloader: FunctionComponent = () => (
+const IsNotInBootloader = () => (
     <P>
         <FormattedMessage {...l10nMessages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER} />
     </P>
@@ -41,11 +41,8 @@ interface IsDeviceRequestingPinProps {
     uiInteraction: ConnectReducer['uiInteraction'];
 }
 
-const IsDeviceRequestingPin: FunctionComponent<IsDeviceRequestingPinProps> = ({
-    submitNewPin,
-    uiInteraction,
-}) => (
-    <React.Fragment>
+const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequestingPinProps) => (
+    <>
         <H2>
             {uiInteraction.counter === 1 && (
                 <FormattedMessage {...l10nMessages.TR_ENTER_PIN_HEADING} />
@@ -64,40 +61,45 @@ const IsDeviceRequestingPin: FunctionComponent<IsDeviceRequestingPinProps> = ({
                 submitNewPin({ pin });
             }}
         />
-    </React.Fragment>
+    </>
 );
 
 interface DeviceIsUsedHereProps {
     getFeatures: typeof getFeatures;
 }
 
-const DeviceIsUsedHere: FunctionComponent<DeviceIsUsedHereProps> = ({ getFeatures }) => (
-    <React.Fragment>
+const DeviceIsUsedHere = ({ getFeatures }: DeviceIsUsedHereProps) => (
+    <>
         <H2>
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING} />
         </H2>
         <P>
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT} />
         </P>
-        <ControlsWrapper>
+        <Wrapper.Controls>
             <Button onClick={getFeatures}>
                 <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
             </Button>
-        </ControlsWrapper>
-    </React.Fragment>
+        </Wrapper.Controls>
+    </>
 );
 
 interface UnexpectedStateProps {
     caseType: AnyStepDisallowedState;
-    model: number;
+    prevModel: number;
     getFeatures: typeof getFeatures;
     submitNewPin: typeof submitNewPin;
     uiInteraction: ConnectReducer['uiInteraction'];
 }
 
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    getFeatures: bindActionCreators(getFeatures, dispatch),
+    submitNewPin: bindActionCreators(submitNewPin, dispatch),
+});
+
 const UnexpectedState = ({
     caseType,
-    model,
+    prevModel,
     submitNewPin,
     getFeatures,
     uiInteraction,
@@ -106,7 +108,7 @@ const UnexpectedState = ({
         case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
             return (
                 <UnexpectedStateCommon>
-                    <Reconnect model={model} />
+                    <Reconnect model={prevModel} />
                 </UnexpectedStateCommon>
             );
         case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
@@ -140,11 +142,6 @@ const UnexpectedState = ({
             return <UnexpectedStateCommon>Error: {caseType}</UnexpectedStateCommon>;
     }
 };
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    getFeatures: bindActionCreators(getFeatures, dispatch),
-    submitNewPin: bindActionCreators(submitNewPin, dispatch),
-});
 
 export default connect(
     null,
