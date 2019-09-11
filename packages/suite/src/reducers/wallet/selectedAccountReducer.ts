@@ -28,11 +28,8 @@ interface AccountNotification extends Notification {
     type: 'info' | 'backend';
 }
 export interface State {
-    // location: string;
     account?: Account | null;
     network?: Network | null;
-    // tokens: Token[];
-    // pending: Transaction[];
     discovery?: Discovery | null;
     loader?: Loader | null;
     notification?: AccountNotification | null;
@@ -41,11 +38,8 @@ export interface State {
 }
 
 export const initialState: State = {
-    // location: '/',
     account: null,
     network: null,
-    // tokens: [],
-    // pending: [],
     discovery: null,
     notification: null,
     shouldRender: false,

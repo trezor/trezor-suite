@@ -12,13 +12,21 @@ export interface WalletAccountTransaction extends AccountTransaction {
     accountId: string;
 }
 
-export type State = WalletAccountTransaction[];
+export type State = {
+    transactions: WalletAccountTransaction[];
+    isLoading: boolean;
+    error: string | null;
+};
 
-const initialState: State = [];
+const initialState: State = {
+    transactions: [],
+    isLoading: false,
+    error: null,
+};
 
 const update = (draft: State, action: TransactionAction) => {
     // @ts-ignore TODO: figure out why it doesn't pick correct action
-    const tx = draft.find(tx => tx.txId === action.txId);
+    const tx = draft.transactions.find(tx => tx.txId === action.txId);
     if (tx) {
         // @ts-ignore TODO: figure out why it doesn't pick correct action
         tx.timestamp = action.timestamp;
@@ -29,16 +37,27 @@ export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case TRANSACTION.ADD:
-                draft.push(action.transaction);
+                draft.transactions.push(action.transaction);
                 break;
             case TRANSACTION.REMOVE:
-                draft.splice(draft.findIndex(tx => tx.txid === action.txId), 1);
+                draft.transactions.splice(draft.transactions.findIndex(tx => tx.txid === action.txId), 1);
                 break;
             case TRANSACTION.UPDATE:
                 update(draft, action);
                 break;
-            case TRANSACTION.FROM_STORAGE:
-                return action.transactions;
+            case TRANSACTION.FETCH_INIT:
+                draft.isLoading = true;
+                break;
+            case TRANSACTION.FETCH_SUCCESS:
+                draft.isLoading = false;
+                draft.transactions = action.transactions;
+                break;
+            case TRANSACTION.FETCH_ERROR:
+                draft.error = action.error;
+                draft.isLoading = false;
+                break;
+            // case TRANSACTION.FROM_STORAGE:
+            //     draft.transactions = action.transactions;
             // no default
         }
     });

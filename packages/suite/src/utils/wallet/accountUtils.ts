@@ -2,7 +2,7 @@ export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
     const tokens = path.match(regEx);
     if (!tokens || tokens.length !== 6) {
-        return null;
+        return undefined;
     }
     return {
         purpose: tokens[1],

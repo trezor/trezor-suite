@@ -1,19 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-
-import { Text } from 'react-native';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import { Button, Loader } from '@trezor/components';
+import { Button, Loader, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
+import Title from '@wallet-components/Title';
+import TransactionList from '@suite/components/wallet/TransactionList';
 import { AppState, Dispatch } from '@suite-types';
 
-const TxWrapper = styled.div`
+const LoaderWrapper = styled.div`
     display: flex;
-    border-bottom: 1px solid #ccc;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+`;
+const LoaderText = styled.div`
+  color: ${colors.TEXT_SECONDARY};
+  text-align: center;
 `;
 
+const NoTransactions = styled.div`
+  color: ${colors.TEXT_SECONDARY};
+  text-align: center;
+`;
 interface Props {
     suite: AppState['suite'];
     router: AppState['router'];
@@ -21,77 +31,42 @@ interface Props {
     add: typeof transactionActions.add;
     remove: typeof transactionActions.remove;
     update: typeof transactionActions.update;
-    getFromStorage: typeof transactionActions.getFromStorage;
+    getFromStorage: typeof transactionActions.fetchFromStorage;
 }
 
 const Transactions = (props: Props) => {
-    const { params } = props.router;
-    if (!params.accountId) return null;
-    // todo: commented out for typescript
-    // const { pathname, params } = props.router;
-    // const baseUrl = `${pathname}#/${params.coin}/`;
+    const { selectedAccount, transactions } = props.wallet;
+    const [selectedPage, setSelectedPage] = useState(1);
+    if (!selectedAccount || !selectedAccount.account) return null;
+    const { index = null, size = null, total = null } = selectedAccount.account.page || {};
+
+    const onPageSelected = (page: number) => {
+        setSelectedPage(page);
+    };
+
     return (
         <LayoutAccount>
-            <Text>
-                {params.symbol} Account {params.accountId} Transactions
-            </Text>
-            <Loader />
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId!, 10), 10, 10);
-                }}
-            >
-                Get from storage (offset 10, limit 10)
-            </Button>
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId!, 10), 10);
-                }}
-            >
-                Get from storage (offset 10, limit undefined)
-            </Button>
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId!, 10), undefined, 10);
-                }}
-            >
-                Get from storage (offset undefined, limit 10)
-            </Button>
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(parseInt(params.accountId!, 10));
-                }}
-            >
-                Get from storage for acc 0
-            </Button>
-
-            {props.wallet.transactions.map(tx => {
-                return (
-                    <TxWrapper key={tx.id}>
-                        {JSON.stringify(tx)}
-                        <Button
-                            onClick={() => {
-                                props.remove(tx.txid);
-                            }}
-                            variant="error"
-                        >
-                            X
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                props.update(tx.txid);
-                            }}
-                            variant="error"
-                        >
-                            update
-                        </Button>
-                    </TxWrapper>
-                );
-            })}
+            <Title>Transactions</Title>
+            {transactions.isLoading && (
+                <LoaderWrapper>
+                    <Loader size={40}/>
+                    <LoaderText>Loading transactions</LoaderText>
+                </LoaderWrapper>
+            )} 
+            {transactions.transactions.length === 0 && !transactions.isLoading && (
+                <LoaderWrapper>
+                    <NoTransactions>No transactions :(</NoTransactions>
+                </LoaderWrapper>
+            )} 
+            {transactions.transactions.length > 0 && (
+                <TransactionList
+                    transactions={props.wallet.transactions.transactions}
+                    currentPage={selectedPage}
+                    perPage={size}
+                    totalPages={total || undefined}
+                    onPageSelected={onPageSelected}
+                />
+            )}
         </LayoutAccount>
     );
 };
@@ -106,7 +81,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     add: bindActionCreators(transactionActions.add, dispatch),
     remove: bindActionCreators(transactionActions.remove, dispatch),
     update: bindActionCreators(transactionActions.update, dispatch),
-    getFromStorage: bindActionCreators(transactionActions.getFromStorage, dispatch),
+    fetchFromStorage: bindActionCreators(transactionActions.fetchFromStorage, dispatch),
 });
 
 export default connect(
