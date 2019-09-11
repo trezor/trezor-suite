@@ -1,14 +1,19 @@
 import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
+import { Network } from '@wallet-types';
 
 export type SendFormActions =
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
-    | { type: typeof SEND.HANDLE_ADDRESS_CHANGE; address: string }
+    | {
+          type: typeof SEND.HANDLE_ADDRESS_CHANGE;
+          address: string;
+          networkType: Network['networkType'];
+      }
     | { type: typeof SEND.TOUCH }
     | { type: typeof SEND.CLEAR };
 
 /*
-    show and hide addition send form - extra coin properties
+    Show and hide addition send form - extra coin properties
 */
 const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
@@ -22,13 +27,17 @@ const clear = () => (dispatch: Dispatch) => {
     dispatch({ type: SEND.CLEAR });
 };
 
+/*
+    Change value in input "Address"
+ */
+
 const handleAddressChange = (address: string) => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     if (account) {
         dispatch({
             type: SEND.HANDLE_ADDRESS_CHANGE,
             address,
-            networkType: account.network,
+            networkType: account.networkType,
         });
     }
 };
