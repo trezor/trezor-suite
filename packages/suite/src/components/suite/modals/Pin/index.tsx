@@ -67,7 +67,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 />
             </H5>
             <TopMessage size="small">
-                <FormattedMessage {...messages.TR_PIN_DISPLAY} />
+                <FormattedMessage {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
             </TopMessage>
             <InputWrapper>
                 <InputPin onDeleteClick={() => setValue(value.slice(0, -1))} value={value} />
