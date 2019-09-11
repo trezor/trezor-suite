@@ -28,7 +28,7 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
                     <FormattedMessage
                         {...messages.TR_COMPLETE_ON_DEVICE}
                         values={{
-                            deviceLabel: device.label,
+                            deviceLabel: device.instanceLabel,
                         }}
                     />
                 </Prompt>
