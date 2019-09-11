@@ -36,8 +36,8 @@ const A = styled.a<Props>`
             &:visited,
             &:active,
             &:hover {
-                text-decoration: none;
-                color: inherit;
+                text-decoration: underline;
+                color: ${colors.TEXT};
             }
         `}
 `;
