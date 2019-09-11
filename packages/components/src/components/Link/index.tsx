@@ -46,7 +46,7 @@ const A = styled.a<Props>`
 interface Props {
     isGray?: boolean;
     isGreen?: boolean;
-    hasNoStyle: boolean;
+    hasNoStyle?: boolean;
     href?: string;
     to?: any;
     target?: string;
