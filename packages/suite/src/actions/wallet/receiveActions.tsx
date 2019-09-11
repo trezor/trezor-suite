@@ -2,7 +2,6 @@ import TrezorConnect from 'trezor-connect';
 import { Action } from '@wallet-types/index';
 import { RECEIVE } from '@wallet-actions/constants';
 import { NOTIFICATION } from '@suite-actions/constants';
-import { initialState, State } from '@wallet-reducers/receiveReducer';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
@@ -21,7 +20,7 @@ export const dispose = (): Action => ({
 
 export const showUnverifiedAddress = (path: string): Action => ({
     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
-    descriptor: path
+    descriptor: path,
 });
 
 export const showAddress = (path: string) => async (
@@ -35,9 +34,8 @@ export const showAddress = (path: string) => async (
 
     dispatch({
         type: RECEIVE.INIT,
-        descriptor: path
+        descriptor: path,
     });
-
 
     if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         dispatch({
@@ -82,12 +80,12 @@ export const showAddress = (path: string) => async (
     if (response.success) {
         dispatch({
             type: RECEIVE.SHOW_ADDRESS,
-            descriptor: path
+            descriptor: path,
         });
     } else {
         dispatch({
             type: RECEIVE.HIDE_ADDRESS,
-            descriptor: path
+            descriptor: path,
         });
 
         // special case: device no-backup permissions not granted
