@@ -2,7 +2,7 @@ import * as utils from '../fiatConverterUtils';
 
 describe('fiatConverter utils: toFiatCurrency', () => {
     const ratesETH = {
-        network: 'eth',
+        symbol: 'eth',
         rates: {
             czk: 3007.1079886708517,
             eos: 36.852136278995445,
@@ -32,7 +32,7 @@ describe('fiatConverter utils: toFiatCurrency', () => {
 
 describe('fiatConverter utils: fromFiatCurrency', () => {
     const ratesETH = {
-        network: 'eth',
+        symbol: 'eth',
         rates: {
             czk: 3007.1079886708517,
             eos: 36.852136278995445,

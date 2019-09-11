@@ -5,7 +5,7 @@ import { CoinLogo, Link, variables } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nSummaryMessages from '../../common.messages';
 import AccountBalance from './components/Balance';
-import { Account } from '@wallet-types';
+import { Account, Network, Fiat } from '@wallet-types';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
@@ -37,24 +37,24 @@ const StyledCoinLogo = styled(CoinLogo)`
 
 interface Props {
     account: Account;
-    network: any;
+    network: Network;
     localCurrency: string;
     isHidden: boolean;
-    fiatRates: any[];
+    fiatRates: Fiat[];
 }
 
 const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }: Props) => {
     const explorerLink = `${network.explorer.address}${account.descriptor}`;
     const balance = account.availableBalance;
     const reserve =
-        account.type === 'ripple' && !account.empty && account.misc && account.misc.reserve
+        account.networkType === 'ripple' && !account.empty && account.misc && account.misc.reserve
             ? account.misc.reserve
             : '0';
     return (
         <>
             <AccountHeading>
                 <AccountName>
-                    <StyledCoinLogo size={24} network={account.network} />
+                    <StyledCoinLogo size={24} symbol={account.symbol} />
                     <AccountTitle>
                         <FormattedMessage
                             {...(account.imported

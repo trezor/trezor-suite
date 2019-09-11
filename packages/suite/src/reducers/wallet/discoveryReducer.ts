@@ -21,7 +21,7 @@ export interface Discovery {
     status: ObjectValues<typeof DISCOVERY_STATUS>;
     // coins which failed to load
     failed: {
-        network: string;
+        symbol: string;
         accountType: string;
         error: string;
         fwException?: string;

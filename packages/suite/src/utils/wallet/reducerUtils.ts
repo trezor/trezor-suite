@@ -17,7 +17,7 @@ export const getPendingAmount = (
         }
         if (tx.tokens) {
             // token transactions
-            const allTokens = tx.tokens.filter(t => t.shortcut === currency);
+            const allTokens = tx.tokens.filter(t => t.symbol === currency);
             const tokensValue: BigNumber = allTokens.reduce(
                 (_, t) => new BigNumber(value).plus(t.value),
                 new BigNumber('0'),
@@ -34,7 +34,7 @@ export const getAccountTokens = (tokens: Token[], account?: Account) => {
     return tokens.filter(
         t =>
             t.ethAddress === a.descriptor &&
-            t.network === a.network &&
+            t.symbol === a.symbol &&
             t.deviceState === a.deviceState,
     );
 };
@@ -122,7 +122,7 @@ export const getSelectedAccount = (
         accounts.find(
             a =>
                 a.index === index &&
-                a.network === routerParams.symbol &&
+                a.symbol === routerParams.symbol &&
                 a.accountType === routerParams.accountType,
         ) || null
     );

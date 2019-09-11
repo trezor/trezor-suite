@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, InjectedIntlProps } from 'react-intl';
-import * as settingsActions from '@wallet-actions/settingsActions';
-import { AppState } from '@suite-types/index';
 import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
 import Link from '@suite-components/Link';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -12,6 +10,7 @@ import { getRoute } from '@suite/utils/suite/router';
 import { FIAT, NETWORKS } from '@suite-config';
 import Coins from './components/Coins';
 import l10nMessages from './index.messages';
+import { Props } from './Container';
 
 const { FONT_SIZE } = variables;
 
@@ -68,14 +67,6 @@ const buildCurrencyOption = (currency: string) => {
         label: currency.toUpperCase(),
     };
 };
-
-interface Props {
-    wallet: AppState['wallet'];
-    setLocalCurrency: typeof settingsActions.setLocalCurrency;
-    setHideBalance: typeof settingsActions.setHideBalance;
-    handleCoinVisibility: typeof settingsActions.handleCoinVisibility;
-    toggleGroupCoinsVisibility: typeof settingsActions.toggleGroupCoinsVisibility;
-}
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
     <Layout

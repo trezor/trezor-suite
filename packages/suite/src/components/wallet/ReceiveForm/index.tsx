@@ -193,7 +193,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                         // TODO: add to utils?
                                         <TextGreen>
                                             {Number(addr.received) / 100000000}{' '}
-                                            {props.account.network}
+                                            {props.account.symbol}
                                         </TextGreen>
                                     ),
                                 }}

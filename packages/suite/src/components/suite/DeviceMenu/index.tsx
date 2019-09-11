@@ -98,7 +98,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 type Props = {
-    icon?: any; // TODO type and add to container
     disabled?: boolean;
     isOpen: boolean;
     isSelected?: boolean;
@@ -112,7 +111,6 @@ type WrapperProps = Omit<
     | 'selectedDevice'
     | 'selectDevice'
     | 'requestForgetDevice'
-    | 'icon'
     | 'device'
     | 'toggleDeviceMenu'
     | 'transport'
@@ -121,7 +119,6 @@ type WrapperProps = Omit<
 const DeviceMenu = ({
     devices,
     selectedDevice,
-    icon,
     disabled = false,
     isSelected = false,
     selectDevice,
