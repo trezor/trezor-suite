@@ -3,7 +3,9 @@ import styled from 'styled-components';
 
 import { Button, ButtonPin, InputPin, P, H5, Link } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
+
 import messages from './messages';
+import modalsMessages from '../messages';
 import { FormattedMessage } from 'react-intl';
 
 const ModalWrapper = styled.div`
@@ -60,7 +62,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <FormattedMessage
                     {...messages.TR_ENTER_PIN}
                     values={{
-                        deviceLabel: device.label,
+                        deviceLabel: device.instanceLabel,
                     }}
                 />
             </H5>
@@ -92,7 +94,7 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <BottomMessage size="small">
                     <FormattedMessage {...messages.TR_HOW_PIN_WORKS} />{' '}
                     <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
-                        <FormattedMessage {...messages.TR_LEARN_MORE} />
+                        <FormattedMessage {...modalsMessages.TR_LEARN_MORE} />
                     </Link>
                 </BottomMessage>
             </PinFooter>

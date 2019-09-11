@@ -13,10 +13,6 @@ const definedMessages = defineMessages({
         id: 'TR_HOW_PIN_WORKS',
         defaultMessage: 'Not sure how PIN works?',
     },
-    TR_LEARN_MORE: {
-        id: 'TR_LEARN_MORE',
-        defaultMessage: 'Learn more',
-    },
 });
 
 export default definedMessages;
