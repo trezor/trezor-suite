@@ -14,11 +14,11 @@ import { parseBIP44Path } from '@wallet-utils/accountUtils';
 import SETTINGS from '@suite-config/settings';
 import { AccountAddresses } from 'trezor-connect';
 import { showAddress } from '@suite/actions/wallet/receiveActions';
+import { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 import { DeviceIcon } from '@suite-components';
 import l10nMessages from './messages';
 import { AppState } from '@suite-types';
 import { Network } from '@wallet-types';
-import { ReceiveInfo } from '@suite/reducers/wallet/receiveReducer';
 
 const Wrapper = styled.div``;
 
@@ -124,7 +124,7 @@ interface Props {
     account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
     isAddressPartiallyHidden: (descriptor: string) => boolean;
     isAddressVerifying: boolean;
-    getAddressReceiveInfo: (descriptor: string) => ReceiveInfo;
+    getAddressReceiveInfo: (descriptor: string) => ReceiveInfo | null;
     showAddress: typeof showAddress;
     networkType: Network['networkType'];
     device: Exclude<AppState['suite']['device'], undefined>;
@@ -137,7 +137,6 @@ const ReceiveForm = ({ className, ...props }: Props) => {
     const { addresses } = props.account;
     const [selectedAddr, setSelectedAddr] = useState<Address | null>(null);
     const [freshAddrCount, setFreshAddrCount] = useState(0);
-    const [uncoveredAddresses, setUncoveredAddresses] = useState<Address[]>([]);
 
     // pick addr from unused addresses in case of bitcoin-like networks otherwise pull info from the props.account (eg. for ethereum/ripple)
     const firstFreshAddress = addresses
@@ -271,7 +270,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 key={firstFreshAddress.address}
                 ref={firstFreshAddrRef}
                 onClick={() => {
-                    if (props.isAddressVerified && firstFreshAddrRef.current) {
+                    if (isAddressVerified(firstFreshAddress.path) && firstFreshAddrRef.current) {
                         selectText(firstFreshAddrRef.current as HTMLElement);
                     }
                     setSelectedAddr(firstFreshAddress);
@@ -284,11 +283,13 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 readOnly
                 actions={
                     <>
-                        {!(isAddressVerified(firstFreshAddress.path) || isAddressUnverified(firstFreshAddress.path)) && ( // !account.imported
+                        {!(
+                            isAddressVerified(firstFreshAddress.path) ||
+                            isAddressUnverified(firstFreshAddress.path)
+                        ) && ( // !account.imported
                             <ShowAddressButton
                                 onClick={() => {
                                     props.showAddress(firstFreshAddress.path);
-                                    setUncoveredAddresses([...uncoveredAddresses, firstFreshAddress]);
                                 }}
                                 // isDisabled={device.connected && !discovery.completed}
                                 icon="EYE"
@@ -296,12 +297,17 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
                             </ShowAddressButton>
                         )}
-                        {(isAddressVerified((firstFreshAddress.path)) || isAddressUnverified(firstFreshAddress.path)) &&
+                        {(isAddressVerified(firstFreshAddress.path) ||
+                            isAddressUnverified(firstFreshAddress.path)) &&
                             !props.isAddressVerifying && (
                                 <EyeButton
                                     device={props.device}
-                                    isAddressUnverified={isAddressUnverified(firstFreshAddress.path)}
-                                    onClick={() => {props.showAddress(firstFreshAddress.path); setUncoveredAddresses([...uncoveredAddresses, firstFreshAddress]);}}
+                                    isAddressUnverified={isAddressUnverified(
+                                        firstFreshAddress.path,
+                                    )}
+                                    onClick={() => {
+                                        props.showAddress(firstFreshAddress.path);
+                                    }}
                                 />
                             )}
                     </>
@@ -334,7 +340,9 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         isAddressPartiallyHidden={props.isAddressPartiallyHidden}
                         actions={addr => (
                             <>
-                                {!(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) && ( // !account.imported
+                                {!(
+                                    isAddressVerified(addr.path) || isAddressUnverified(addr.path)
+                                ) && ( // !account.imported
                                     <ShowAddressButton
                                         onClick={() => props.showAddress(addr.path)}
                                         // isDisabled={device.connected && !discovery.completed}

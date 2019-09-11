@@ -4,20 +4,22 @@ import { RECEIVE, ACCOUNT } from '@wallet-actions/constants';
 // import { Action } from '@wallet-types/index';
 import { Action as SuiteAction } from '@suite-types/index';
 
-export interface ReceiveInfo{
+export interface ReceiveInfo {
     descriptor: string;
     isAddressVerified: boolean;
     isAddressUnverified: boolean;
 }
 
-export type State = { addresses: ReceiveInfo[]};
+export interface State {
+    addresses: ReceiveInfo[];
+}
 
 export const initialState: State = {
     addresses: [],
 };
 
 const initAddress = (draft: State, descriptor: string) => {
-    const receiveInfo = draft.addresses.find(r => r.descriptor === descriptor)
+    const receiveInfo = draft.addresses.find(r => r.descriptor === descriptor);
     if (!receiveInfo) {
         draft.addresses.push({
             descriptor,
@@ -25,11 +27,10 @@ const initAddress = (draft: State, descriptor: string) => {
             isAddressUnverified: false,
         });
     }
-}
-
+};
 
 const showAddress = (draft: State, descriptor: string) => {
-    const receiveInfo = draft.addresses.find(r => r.descriptor === descriptor)
+    const receiveInfo = draft.addresses.find(r => r.descriptor === descriptor);
     if (receiveInfo) {
         receiveInfo.isAddressVerified = true;
         receiveInfo.isAddressUnverified = false;
@@ -40,11 +41,10 @@ const showAddress = (draft: State, descriptor: string) => {
             isAddressUnverified: false,
         });
     }
-}
-
+};
 
 const showUnverifiedAddress = (draft: State, descriptor: string) => {
-    const receiveInfo = draft.addresses.find(r => r.descriptor === descriptor)
+    const receiveInfo = draft.addresses.find(r => r.descriptor === descriptor);
     if (receiveInfo) {
         receiveInfo.isAddressVerified = false;
         receiveInfo.isAddressUnverified = true;
@@ -55,15 +55,14 @@ const showUnverifiedAddress = (draft: State, descriptor: string) => {
             isAddressUnverified: true,
         });
     }
-}
+};
 
 const hideAddress = (draft: State, descriptor: string) => {
     const receiveInfoIndex = draft.addresses.findIndex(r => r.descriptor === descriptor);
     if (receiveInfoIndex) {
         draft.addresses.splice(receiveInfoIndex, 1);
-
     }
-}
+};
 
 export default (state: State = initialState, action: SuiteAction): State => {
     return produce(state, draft => {
@@ -71,7 +70,7 @@ export default (state: State = initialState, action: SuiteAction): State => {
             case RECEIVE.INIT:
                 initAddress(draft, action.descriptor);
                 break;
-    
+
             case ACCOUNT.DISPOSE:
                 return initialState;
 

@@ -84,18 +84,23 @@ const AccountReceive = (props: Props) => {
         console.log(receiveInfo);
         console.log(isAddressVerifying);
         if (receiveInfo) {
-            return !isAddressVerifying && !receiveInfo.isAddressVerified && !receiveInfo.isAddressUnverified && !account.imported
+            return (
+                !isAddressVerifying &&
+                !receiveInfo.isAddressVerified &&
+                !receiveInfo.isAddressUnverified &&
+                !account.imported
+            );
         }
         return true;
-    }
+    };
 
     const getAddressReceiveInfo = (descriptor: string) => {
         const receiveInfo = props.receive.addresses.find(r => r.descriptor === descriptor);
         if (receiveInfo) {
-            return receiveInfo
+            return receiveInfo;
         }
         return null;
-    }
+    };
 
     return (
         <LayoutAccount>
