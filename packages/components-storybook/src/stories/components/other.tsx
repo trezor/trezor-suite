@@ -225,7 +225,7 @@ storiesOf('Other', module)
             COINS.forEach((coin: string) => {
                 coinsObject[coin] = coin;
             });
-            const coinSelect = select('network', coinsObject, 'ada');
+            const coinSelect = select('symbol', coinsObject, 'ada');
             const size = number('size', 32);
             return <CoinLogo size={size} symbol={coinSelect} />;
         },
