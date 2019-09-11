@@ -37,8 +37,8 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Address
                     value={send.address}
-                    state={undefined}
-                    handleAddressChange={sendFormActions.handleAddressChange}
+                    error={send.errors.address}
+                    sendFormActions={sendFormActions}
                 />
             </Row>
             <Row>

@@ -1,13 +1,13 @@
 import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
-import { Network } from '@wallet-types';
+import { Account } from '@wallet-types';
 
 export type SendFormActions =
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
     | {
           type: typeof SEND.HANDLE_ADDRESS_CHANGE;
           address: string;
-          networkType: Network['networkType'];
+          networkType: Account['networkType'];
       }
     | { type: typeof SEND.TOUCH }
     | { type: typeof SEND.CLEAR };

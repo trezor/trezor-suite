@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@wallet-types/index';
-import { isEmpty } from 'validator';
+import validator from 'validator';
 
 import { isAddressValid } from '@wallet-utils/validation';
 
@@ -9,14 +9,18 @@ export interface State {
     address: string;
     isAdditionalFormVisible: boolean;
     touched: boolean;
-    errors: string[];
+    errors: {
+        address: string | null;
+    };
 }
 
 export const initialState: State = {
     address: '',
     isAdditionalFormVisible: false,
     touched: false,
-    errors: [],
+    errors: {
+        address: null,
+    },
 };
 
 export default (state: State = initialState, action: Action): State => {
@@ -31,13 +35,14 @@ export default (state: State = initialState, action: Action): State => {
             // Change input "Address"
             case SEND.HANDLE_ADDRESS_CHANGE: {
                 const { address, networkType } = action;
+                draft.errors.address = null;
                 draft.address = address;
-                if (isEmpty(address) === '') {
-                    draft.errors.push('address-not-set');
+                if (validator.isEmpty(address)) {
+                    draft.errors.address = 'empty';
                     return draft;
                 }
                 if (!isAddressValid(action.address, networkType)) {
-                    draft.errors.push('address-not-valid');
+                    draft.errors.address = 'not-valid';
                     return draft;
                 }
                 break;
