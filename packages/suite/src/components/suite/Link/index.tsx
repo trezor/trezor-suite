@@ -24,7 +24,10 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
 
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
 
-    return (
+    // Next.js Link component should be only used for internal navigation
+    // for non-internal href we just return our styled <A>
+    // https://github.com/zeit/next.js/blob/master/errors/invalid-href-passed.md
+    return isInternalLink ? (
         <NextLink
             href={href}
             prefetch={prefetch}
@@ -38,6 +41,10 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
                 {children}
             </TLink>
         </NextLink>
+    ) : (
+        <TLink href={href as string} target={target} {...linkProps} className={className}>
+            {children}
+        </TLink>
     );
 };
 
