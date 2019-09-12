@@ -32,12 +32,12 @@ const A = styled.a<Props>`
     ${props =>
         props.hasNoStyle &&
         css`
-            color: ${colors.TEXT};
+            color: inherit;
             &:visited,
             &:active,
             &:hover {
-                text-decoration: underline;
-                color: ${colors.TEXT};
+                text-decoration: none;
+                color: inherit;
             }
         `}
 `;

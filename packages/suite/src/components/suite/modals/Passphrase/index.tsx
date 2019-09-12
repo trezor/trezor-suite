@@ -78,7 +78,7 @@ const Passphrase: FunctionComponent<Props> = ({
                 <FormattedMessage
                     {...modalsMessages.TR_PASSPHRASE_LABEL}
                     values={{
-                        deviceLabel: device.instanceLabel,
+                        deviceLabel: device.label,
                     }}
                 />
             </H5>
