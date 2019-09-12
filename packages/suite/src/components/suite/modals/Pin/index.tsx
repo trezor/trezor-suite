@@ -2,10 +2,10 @@ import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonPin, InputPin, P, H5, Link } from '@trezor/components';
+import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
 import messages from './messages';
 import modalsMessages from '../messages';
-import { FormattedMessage } from 'react-intl';
 
 const ModalWrapper = styled.div`
     padding: 30px 45px;
