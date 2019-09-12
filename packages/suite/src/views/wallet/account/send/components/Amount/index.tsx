@@ -103,7 +103,7 @@ const Amount = (props: Props) => (
                     isClearable={false}
                     value={props.value}
                     isDisabled
-                    options={'tokensSelectData'}
+                    options={null}
                 />,
                 <LocalCurrency
                     state={props.error ? 'error' : undefined}
