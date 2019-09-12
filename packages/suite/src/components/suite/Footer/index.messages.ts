@@ -10,14 +10,6 @@ const definedMessages = defineMessages({
         id: 'TR_EXCHANGE_RATES_BY',
         defaultMessage: 'Exchange rates by {service}',
     },
-    TR_COINGECKO: {
-        id: 'COINGECKO',
-        defaultMessage: 'Coingecko',
-    },
-    TR_SATOSHILABS: {
-        id: 'SATOSHILABS',
-        defaultMessage: 'SatoshiLabs',
-    },
     TR_WE_THANK_OUR_TRANSLATORS: {
         id: 'TR_WE_THANK_OUR_TRANSLATORS',
         defaultMessage: 'We thank our translators for their {TR_CONTRIBUTION}',

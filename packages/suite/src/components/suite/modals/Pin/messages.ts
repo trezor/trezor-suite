@@ -5,17 +5,13 @@ const definedMessages = defineMessages({
         id: 'TR_ENTER_PIN',
         defaultMessage: 'Enter {device.label} PIN'
     },
-    TR_PIN_DISPLAY: {
-        id: 'TR_PIN_DISPLAY',
+    TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
+        id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
     },
     TR_HOW_PIN_WORKS: {
         id: 'TR_HOW_PIN_WORKS',
         defaultMessage: 'Not sure how PIN works?',
-    },
-    TR_LEARN_MORE: {
-        id: 'TR_LEARN_MORE',
-        defaultMessage: 'Learn more',
     },
 });
 

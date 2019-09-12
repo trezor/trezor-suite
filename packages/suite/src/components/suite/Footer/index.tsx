@@ -95,7 +95,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
             values={{
                 service: (
                     <Link href="https://www.coingecko.com" isGreen>
-                        <FormattedMessage {...l10nMessages.TR_COINGECKO} />
+                        Coingecko
                     </Link>
                 ),
             }}
@@ -106,7 +106,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
             <Content>
                 <Left>
                     <StyledLink href="http://satoshilabs.com" isGreen>
-                        <FormattedMessage {...l10nMessages.TR_SATOSHILABS} />
+                        SatoshiLabs
                     </StyledLink>
                     <StyledLink href="https://trezor.io/tos" isGreen>
                         <FormattedMessage {...l10nMessages.TR_TERMS} />
