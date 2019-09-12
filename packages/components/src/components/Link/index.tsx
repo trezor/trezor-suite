@@ -1,25 +1,52 @@
 import React, { PureComponent } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import colors from '../../config/colors';
+import { BooleanLiteral } from '@babel/types';
 
 const A = styled.a<Props>`
     text-decoration: none;
     cursor: pointer;
-    color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
-
-    &:visited,
-    &:active,
-    &:hover {
-        text-decoration: underline;
-        color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
-    }
+    ${props =>
+        props.isGray &&
+        css`
+            color: ${colors.TEXT_SECONDARY};
+            &:visited,
+            &:active,
+            &:hover {
+                text-decoration: underline;
+                color: ${colors.TEXT_SECONDARY};
+            }
+        `}
+    ${props =>
+        props.isGreen &&
+        css`
+            color: ${colors.GREEN_PRIMARY};
+            &:visited,
+            &:active,
+            &:hover {
+                text-decoration: underline;
+                color: ${colors.GREEN_PRIMARY};
+            }
+        `}
+    ${props =>
+        props.hasNoStyle &&
+        css`
+            color: ${colors.TEXT};
+            &:visited,
+            &:active,
+            &:hover {
+                text-decoration: none;
+                color: inherit;
+            }
+        `}
 `;
 
 interface Props {
     isGray?: boolean;
     isGreen?: boolean;
+    hasNoStyle?: boolean;
     href?: string;
     to?: any;
     target?: string;
@@ -42,6 +69,7 @@ class Link extends PureComponent<Props> {
         onClick: PropTypes.func,
         isGreen: PropTypes.bool,
         isGray: PropTypes.bool,
+        hasNoStyle: PropTypes.bool,
     };
 
     render() {
