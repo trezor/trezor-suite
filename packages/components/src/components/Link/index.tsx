@@ -52,6 +52,7 @@ interface Props {
     target?: string;
     onClick?: (event: React.MouseEvent<any>) => void;
     children?: React.ReactNode;
+    className?: string;
 }
 
 const Link: FunctionComponent<Props> = props => (
