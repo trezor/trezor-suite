@@ -48,6 +48,7 @@ interface Props {
     intl: InjectedIntl;
     fiatValue: State['fiatValue'];
     value: State['amount'];
+    symbol: State['symbol'];
     localCurrency: State['localCurrency'];
     error: State['errors']['amount'];
     sendFormActions: DispatchProps['sendFormActions'];
@@ -101,7 +102,7 @@ const Amount = (props: Props) => (
                     key="currency"
                     isSearchable={false}
                     isClearable={false}
-                    value={props.value}
+                    value={{ value: props.symbol, label: props.symbol.toUpperCase() }} // TODO select ethereum tokens and other tokens
                     isDisabled
                     options={null}
                 />,

@@ -57,7 +57,7 @@ const LocalCurrency = (props: Props) => (
             autoCapitalize="off"
             spellCheck={false}
             value={props.fiatValue || ''}
-            onChange={() => {}}
+            onChange={e => props.sendFormActions.handleFiatInputChange(e.target.value)}
             sideAddons={[
                 <LocalCurrencySelect
                     key="local-currency"

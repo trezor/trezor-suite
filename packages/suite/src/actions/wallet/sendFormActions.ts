@@ -59,20 +59,22 @@ const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: Ge
     if (!account || !send || !fiat) return null;
 
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+
     if (!fiatNetwork) return null;
 
     const rate = fiatNetwork.rates[send.localCurrency.value];
-    const fiatValue = new BigNumber(amount).multipliedBy(new BigNumber(rate)).toFixed(2) || null;
+    const fiatValueBigNumber = new BigNumber(amount).multipliedBy(new BigNumber(rate));
+    const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
+
+    dispatch({
+        type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+        fiatValue,
+    });
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
         amount,
         networkType: account.networkType,
-    });
-
-    dispatch({
-        type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-        fiatValue,
     });
 };
 

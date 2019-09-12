@@ -26,10 +26,19 @@ interface Props {
     children?: React.ReactNode;
 }
 
-const Link = (props: Props) => (
-    <A href={props.href} target={props.target || '_blank'} rel="noreferrer noopener" {...props}>
-        {props.children}
-    </A>
-);
+class Link extends PureComponent<Props> {
+    render() {
+        return (
+            <A
+                href={this.props.href}
+                target={this.props.target || '_blank'}
+                rel="noreferrer noopener"
+                {...this.props}
+            >
+                {this.props.children}
+            </A>
+        );
+    }
+}
 
 export { Link, Props as LinkProps };
