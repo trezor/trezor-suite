@@ -2,9 +2,9 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 import { P, Prompt } from '@trezor/components';
+import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
 import messages from './messages';
-import { FormattedMessage } from 'react-intl';
 
 interface Props {
     device: TrezorDevice;
@@ -24,7 +24,6 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
         <Wrapper>
             <Header>
                 <Prompt model={majorVersion} size={32}>
-                
                     <FormattedMessage
                         {...messages.TR_COMPLETE_ON_DEVICE}
                         values={{
