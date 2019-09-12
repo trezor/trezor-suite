@@ -36,7 +36,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Title>Send {getTitleForNetwork(network.symbol, props.intl)}</Title>
             <Row>
                 <Address
-                    value={send.address}
+                    address={send.address}
                     error={send.errors.address}
                     sendFormActions={sendFormActions}
                 />

@@ -19,7 +19,7 @@ const QrButton = styled(Button)`
 interface Props {
     intl: InjectedIntl;
     error: State['errors']['address'];
-    value: State['address'];
+    address: State['address'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
@@ -34,7 +34,7 @@ const getErrorMessage = (error: State['errors']['address']) => {
     }
 };
 
-const getState = (error, address) => {
+const getState = (error: State['errors']['address'], address: State['address']) => {
     if (error) {
         return 'error';
     }
@@ -45,13 +45,13 @@ const getState = (error, address) => {
 
 const Address = (props: Props) => (
     <Input
-        state={getState(props.error, props.value)}
+        state={getState(props.error, props.address)}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
         bottomText={getErrorMessage(props.error)}
-        value={props.value || ''}
+        value={props.address || ''}
         onChange={e => props.sendFormActions.handleAddressChange(e.target.value)}
         sideAddons={[
             <QrButton key="qrButton" isWhite onClick={() => console.log('qr button click')}>

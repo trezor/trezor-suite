@@ -46,6 +46,7 @@ const StyledIcon = styled(Icon)`
 
 interface Props {
     intl: InjectedIntl;
+    fiatValue: State['fiatValue'];
     value: State['amount'];
     localCurrency: State['localCurrency'];
     error: State['errors']['amount'];
@@ -108,6 +109,7 @@ const Amount = (props: Props) => (
                     state={props.error ? 'error' : undefined}
                     sendFormActions={props.sendFormActions}
                     fiatValue={props.fiatValue}
+                    localCurrency={props.localCurrency}
                 />,
             ]}
         />

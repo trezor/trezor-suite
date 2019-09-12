@@ -41,7 +41,8 @@ const EqualsSign = styled.div`
 `;
 
 interface Props {
-    fiatValue: string;
+    fiatValue: State['fiatValue'];
+    localCurrency: State['localCurrency'];
     state: 'error' | undefined;
     sendFormActions: DispatchProps['sendFormActions'];
 }
@@ -64,7 +65,7 @@ const LocalCurrency = (props: Props) => (
                     onChange={(option: State['localCurrency']) =>
                         props.sendFormActions.handleSelectCurrencyChange(option)
                     }
-                    value={props.fiatValue}
+                    value={props.localCurrency}
                     options={FIAT.currencies.map((currency: string) =>
                         getCurrencyOptions(currency),
                     )}
