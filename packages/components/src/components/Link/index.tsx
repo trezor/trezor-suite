@@ -53,7 +53,7 @@ interface Props {
     children?: React.ReactNode;
 }
 
-const Link: FunctionComponent<Props> = (props) => (
+const Link: FunctionComponent<Props> = props => (
     <A href={props.href} target={props.target || '_blank'} rel="noreferrer noopener" {...props}>
         {props.children}
     </A>
