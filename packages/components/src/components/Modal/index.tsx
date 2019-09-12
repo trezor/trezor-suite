@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import colors from '../../config/colors';
@@ -36,9 +35,5 @@ const Modal = ({ children }: Props) => (
         <ModalWindow>{children}</ModalWindow>
     </ModalContainer>
 );
-
-Modal.propTypes = {
-    children: PropTypes.node,
-};
 
 export { Modal, Props as ModalProps };

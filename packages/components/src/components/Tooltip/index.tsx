@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import React from 'react';
-import PropTypes from 'prop-types';
 import Tippy, { TippyProps } from '@tippy.js/react';
 
 import { Link } from '../Link';
@@ -71,16 +70,6 @@ const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...
             <span>{children}</span>
         </Tippy>
     );
-};
-
-Tooltip.propTypes = {
-    className: PropTypes.string,
-    placement: PropTypes.string,
-    children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-    maxWidth: PropTypes.number,
-    content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-    ctaLink: PropTypes.string,
-    ctaText: PropTypes.node,
 };
 
 export { Tooltip, Props as TooltipProps };

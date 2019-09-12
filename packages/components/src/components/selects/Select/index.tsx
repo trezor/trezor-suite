@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import { Props as SelectProps } from 'react-select/lib/Select';
@@ -17,18 +16,5 @@ const Select = ({ isSearchable = true, withDropdownIndicator = true, ...rest }: 
         {...rest}
     />
 );
-
-Select.propTypes = {
-    isAsync: PropTypes.bool,
-    isSearchable: PropTypes.bool,
-    withDropdownIndicator: PropTypes.bool,
-    // TODO
-    // eslint-disable-next-line react/forbid-prop-types
-    options: PropTypes.array,
-    // TODO
-    // eslint-disable-next-line react/forbid-prop-types
-    value: PropTypes.object,
-    onChange: PropTypes.func,
-};
 
 export { Select, Props as SelectProps };

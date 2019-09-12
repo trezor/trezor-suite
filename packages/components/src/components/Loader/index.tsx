@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -105,17 +104,5 @@ const Loader = ({
         </SvgWrapper>
     </Wrapper>
 );
-
-Loader.propTypes = {
-    isWhiteText: PropTypes.bool,
-    isSmallText: PropTypes.bool,
-    className: PropTypes.string,
-    text: PropTypes.string,
-    // eslint-disable-next-line react/forbid-prop-types
-    animationColor: PropTypes.object,
-    transparentRoute: PropTypes.bool,
-    size: PropTypes.number,
-    strokeWidth: PropTypes.number,
-};
 
 export { Loader, Props as LoaderProps };

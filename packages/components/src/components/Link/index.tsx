@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import PropTypes from 'prop-types';
 import colors from '../../config/colors';
 
 const A = styled.a<Props>`
@@ -27,35 +26,10 @@ interface Props {
     children?: React.ReactNode;
 }
 
-class Link extends PureComponent<Props> {
-    static propTypes = {
-        children: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.object,
-            PropTypes.array,
-            PropTypes.node,
-        ]).isRequired,
-        className: PropTypes.string,
-        href: PropTypes.string,
-        target: PropTypes.string,
-        to: PropTypes.string,
-        onClick: PropTypes.func,
-        isGreen: PropTypes.bool,
-        isGray: PropTypes.bool,
-    };
-
-    render() {
-        return (
-            <A
-                href={this.props.href}
-                target={this.props.target || '_blank'}
-                rel="noreferrer noopener"
-                {...this.props}
-            >
-                {this.props.children}
-            </A>
-        );
-    }
-}
+const Link = (props: Props) => (
+    <A href={props.href} target={props.target || '_blank'} rel="noreferrer noopener" {...props}>
+        {props.children}
+    </A>
+);
 
 export { Link, Props as LinkProps };

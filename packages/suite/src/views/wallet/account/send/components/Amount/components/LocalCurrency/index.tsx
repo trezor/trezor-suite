@@ -55,6 +55,7 @@ const LocalCurrency = (props: Props) => (
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
+            spellCheck={false}
             value={props.fiatValue || ''}
             onChange={() => {}}
             sideAddons={[

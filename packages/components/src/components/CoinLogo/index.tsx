@@ -1,6 +1,5 @@
 /* eslint-disable global-require */
 import React from 'react';
-import PropTypes from 'prop-types';
 import ReactSvg from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
@@ -34,11 +33,6 @@ const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => {
             />
         </SvgWrapper>
     );
-};
-
-CoinLogo.propTypes = {
-    network: PropTypes.string,
-    className: PropTypes.string,
 };
 
 export { CoinLogo, Props as CoinLogoProps };
