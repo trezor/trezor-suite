@@ -62,7 +62,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
                 prevState.wallet.selectedAccount.account !== action.payload.account
             ) {
                 api.dispatch(
-                    transactionActions.fetchFromStorage(action.payload.account.descriptor),
+                    transactionActions.fetchTransactions(action.payload.account.descriptor),
                 );
             }
             break;

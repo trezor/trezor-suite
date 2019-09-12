@@ -31,7 +31,7 @@ interface Props {
     add: typeof transactionActions.add;
     remove: typeof transactionActions.remove;
     update: typeof transactionActions.update;
-    getFromStorage: typeof transactionActions.fetchFromStorage;
+    fetchTransactions: typeof transactionActions.fetchTransactions;
 }
 
 const Transactions = (props: Props) => {
@@ -42,6 +42,7 @@ const Transactions = (props: Props) => {
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
+        props.fetchTransactions(selectedAccount.account!.descriptor, page, size);
     };
 
     return (
@@ -81,7 +82,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     add: bindActionCreators(transactionActions.add, dispatch),
     remove: bindActionCreators(transactionActions.remove, dispatch),
     update: bindActionCreators(transactionActions.update, dispatch),
-    fetchFromStorage: bindActionCreators(transactionActions.fetchFromStorage, dispatch),
+    fetchTransactions: bindActionCreators(transactionActions.fetchTransactions, dispatch),
 });
 
 export default connect(

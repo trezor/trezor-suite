@@ -13,7 +13,7 @@ const updateReducers = (message: SuiteStorageUpdateMessage) => async (
         // txs objecStore was updated, we'll load transactions from db to reducer
         const { account } = getState().wallet.selectedAccount;
         if (account) {
-            dispatch(transactionActions.fetchFromStorage(account.descriptor));
+            dispatch(transactionActions.fetchTransactions(account.descriptor));
         }
     }
 };
@@ -26,7 +26,7 @@ export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState)
         } else {
             // TODO: Since user can edit data in IDB outside of the Suite,
             // maybe we could run some form of data validation? Or delete corrupted object stores.
-            
+
             //  load wallet settings from indexedDB
             const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
             if (walletSettings) {

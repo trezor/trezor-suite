@@ -1,8 +1,9 @@
 import { TRANSACTION } from '@wallet-actions/constants/index';
 
-import { Dispatch } from '@suite-types/index';
+import { Dispatch, GetState } from '@suite-types/index';
 import { db } from '@suite/storage';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import TrezorConnect from 'trezor-connect';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transaction: WalletAccountTransaction }
@@ -60,29 +61,51 @@ export const update = (txId: string) => async (dispatch: Dispatch) => {
     });
 };
 
-export const fetchFromStorage = (accountId: string, offset?: number, count?: number) => async (
+export const fetchTransactions = (descriptor: string, page?: number, perPage?: number) => async (
     dispatch: Dispatch,
+    getState: GetState,
 ): Promise<void> => {
+    const offset = page && perPage ? (page - 1) * perPage : undefined;
+    const count = perPage || undefined;
     dispatch({
         type: TRANSACTION.FETCH_INIT,
     });
-
-    // TODO: check if everything is already stored in db, fetch from blockbook when necessary
-    db.getItemsExtended('txs', 'accountId-blockTime', {
-        key: accountId,
-        offset,
-        count,
-    })
-        .then((transactions: WalletAccountTransaction[]) => {
-            dispatch({
-                type: TRANSACTION.FETCH_SUCCESS,
-                transactions,
-            });
-        })
-        .catch(error => {
-            dispatch({
-                type: TRANSACTION.FETCH_ERROR,
-                error,
-            });
+    console.log(offset);
+    console.log(count);
+    try {
+        // TODO: check if everything is already stored in db, fetch from blockbook when necessary
+        let transactions = await db.getItemsExtended('txs', 'accountId-blockTime', {
+            key: descriptor,
+            offset,
+            count,
         });
+
+        if (transactions.length < perPage) {
+            const result = await TrezorConnect.getAccountInfo({
+                coin: getState().wallet.selectedAccount!.account!.network,
+                descriptor,
+                details: 'txs',
+                page,
+                pageSize: 25,
+            });
+            console.log(result);
+
+            if (result.success) {
+                transactions = result.payload.history.transactions;
+            } else {
+                throw new Error(result.payload.error);
+            }
+        }
+
+        dispatch({
+            type: TRANSACTION.FETCH_SUCCESS,
+            transactions,
+        });
+    } catch (error) {
+        console.log(error);
+        dispatch({
+            type: TRANSACTION.FETCH_ERROR,
+            error,
+        });
+    }
 };
