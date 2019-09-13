@@ -102,7 +102,10 @@ const Amount = (props: Props) => (
                     key="currency"
                     isSearchable={false}
                     isClearable={false}
-                    value={{ value: props.symbol, label: props.symbol.toUpperCase() }} // TODO select ethereum tokens and other tokens
+                    value={{
+                        value: props.symbol,
+                        label: props.symbol.toUpperCase(),
+                    }} // TODO select ethereum tokens and other tokens
                     isDisabled
                     options={null}
                 />,

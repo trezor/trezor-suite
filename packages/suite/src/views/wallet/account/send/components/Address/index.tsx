@@ -48,7 +48,7 @@ const Address = (props: Props) => (
         state={getState(props.error, props.address)}
         autoComplete="off"
         autoCorrect="off"
-        spellCheck="off"
+        spellCheck={false}
         autoCapitalize="off"
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
         bottomText={getErrorMessage(props.error)}
