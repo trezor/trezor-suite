@@ -15,6 +15,7 @@ import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
+    flex: 1;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-wrap: wrap;
@@ -91,9 +92,14 @@ const Amount = (props: Props) => (
             onChange={e => props.sendFormActions.handleAmountChange(e.target.value)}
             bottomText={getErrorMessage(props.error)}
             sideAddons={[
-                <SetMax sendFormActions={props.sendFormActions} canSetMax={props.canSetMax} />,
-                <CurrencySelect symbol={props.symbol} />,
+                <SetMax
+                    key="set-max"
+                    sendFormActions={props.sendFormActions}
+                    canSetMax={props.canSetMax}
+                />,
+                <CurrencySelect key="currency-select" symbol={props.symbol} />,
                 <Fiat
+                    key="fiat-input"
                     state={props.error ? 'error' : undefined}
                     sendFormActions={props.sendFormActions}
                     value={props.fiatValue}
