@@ -46,18 +46,18 @@ const Fee = (props: Props) => (
         <Select
             isSearchable={false}
             isClearable={false}
-            value="test"
+            value="aaa"
             onChange={() => {}}
-            options="aaa"
+            options={{ value: 'aaa', label: 'aaa' }}
             formatOptionLabel={option => (
                 <FeeOptionWrapper>
-                    <OptionValue>
+                    {/* <OptionValue>
                         {option.localizedValue ? (
                             <FormattedMessage {...option.localizedValue} />
                         ) : (
                             option.value
                         )}
-                    </OptionValue>
+                    </OptionValue> */}
                     <OptionLabel>{option.label}</OptionLabel>
                 </FeeOptionWrapper>
             )}
