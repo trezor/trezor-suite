@@ -119,7 +119,7 @@ interface Props {
     account: Account;
 }
 
-const Row = ({ account }: Props) => (
+const Row = React.memo(({ account }: Props) => (
     <StyledLink
         href={getRoute('wallet-account', {
             accountId: account.index,
@@ -155,6 +155,6 @@ const Row = ({ account }: Props) => (
             </Right>
         </Wrapper>
     </StyledLink>
-);
+));
 
 export default Row;

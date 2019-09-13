@@ -13,6 +13,10 @@ const definedMessages = defineMessages({
         id: 'PASSPHRASE_DO_NOT_MATCH',
         defaultMessage: 'Passphrases do not match!',
     },
+    TR_SHOW_PASSPHRASE: {
+        id: 'SHOW_PASSPHRASE',
+        defaultMessage: 'Show passphrase',
+    },
     TR_ENTER_PASSPHRASE: {
         id: 'TR_ENTER_PASSPHRASE',
         defaultMessage: 'Enter',
