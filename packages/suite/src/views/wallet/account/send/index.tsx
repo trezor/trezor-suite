@@ -16,13 +16,22 @@ import {
 
 const Row = styled.div`
     padding: 0 0 30px 0;
+    display: flex;
+
+    &:last-child {
+        padding: 0;
+    }
+`;
+
+const RowColumn = styled(Row)`
+    flex-direction: column;
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     const { device, sendFormActions, send } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
-    if (!device || !account || !discovery || !network || !shouldRender) {
+    if (!device || !send || !account || !discovery || !network || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
             <Layout>
@@ -43,7 +52,8 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             </Row>
             <Row>
                 <Amount
-                    value={send.amount}
+                    amount={send.amount}
+                    canSetMax={(send.amount || 0) > account.availableBalance}
                     symbol={account.symbol}
                     error={send.errors.amount}
                     fiatValue={send.fiatValue}
@@ -54,27 +64,40 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Fee />
             </Row>
-            <Row>
-                <ButtonToggleAdditional
-                    isActive={send.isAdditionalFormVisible}
-                    sendFormActions={sendFormActions}
-                />
-            </Row>
-            {send.isAdditionalFormVisible && (
+            {!send.isAdditionalFormVisible && (
                 <Row>
+                    <ButtonToggleAdditional
+                        isActive={send.isAdditionalFormVisible}
+                        sendFormActions={sendFormActions}
+                    />
+                    <SendAndClear
+                        amount={send.amount}
+                        address={send.address}
+                        errors={send.errors}
+                        symbol={network.symbol}
+                        sendFormActions={sendFormActions}
+                    />
+                </Row>
+            )}
+            {send.isAdditionalFormVisible && (
+                <RowColumn>
+                    <ButtonToggleAdditional
+                        isActive={send.isAdditionalFormVisible}
+                        sendFormActions={sendFormActions}
+                    />
                     <AdditionalForm
                         sendFormActions={sendFormActions}
                         networkType={network.networkType}
                     />
-                </Row>
+                    <SendAndClear
+                        amount={send.amount}
+                        address={send.address}
+                        errors={send.errors}
+                        symbol={network.symbol}
+                        sendFormActions={sendFormActions}
+                    />
+                </RowColumn>
             )}
-            <SendAndClear
-                amount={send.amount}
-                address={send.address}
-                errors={send.errors}
-                symbol={network.symbol}
-                sendFormActions={sendFormActions}
-            />
         </Layout>
     );
 };

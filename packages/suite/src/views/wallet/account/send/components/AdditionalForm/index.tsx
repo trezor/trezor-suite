@@ -6,7 +6,14 @@ import NetworkTypeXrp from './NetworkTypeXrp';
 
 import { Network } from '@wallet-types';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    display: flex;
+    min-height: 150px;
+    margin: 0 0 20px 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed gray;
+`;
 
 interface Props {
     networkType: Network['networkType'];

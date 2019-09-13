@@ -9,16 +9,14 @@ import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
-    flex: 1 1;
+    flex: 1;
 
-    button + button {
-        margin-left: 5px;
-    }
+    justify-content: flex-end;
 `;
 
 const Send = styled(Button)`
-    word-break: break-all;
-    flex: 1;
+    min-width: 200px;
+    margin-left: 5px;
 `;
 
 const Clear = styled(Button)``;
@@ -49,7 +47,7 @@ const SendAndClear = (props: Props) => (
             onClick={() => props.sendFormActions.send()}
         >
             {isDisabled(props.errors, props.address, props.amount)
-                ? 'Cannot send please fill the mandatory fields'
+                ? 'Send'
                 : `Send ${props.amount || ''} ${props.symbol.toUpperCase()}`}
         </Send>
     </Wrapper>

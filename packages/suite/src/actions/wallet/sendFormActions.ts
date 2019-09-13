@@ -9,9 +9,10 @@ export type SendFormActions =
     | {
           type: typeof SEND.HANDLE_ADDRESS_CHANGE;
           address: string;
-          networkType: Account['networkType'];
+          symbol: Account['symbol'];
       }
     | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; amount: string; availableBalance: string }
+    | { type: typeof SEND.SET_MAX }
     | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: null | string }
     | {
           type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
@@ -19,22 +20,6 @@ export type SendFormActions =
       }
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
     | { type: typeof SEND.CLEAR };
-
-/*
-    Show and hide addition send form - extra coin properties
-*/
-const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
-    dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-};
-
-/* 
-    Reset input values to default state
-*/
-const clear = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: SEND.CLEAR,
-    });
-};
 
 /*
     Change value in input "Address"
@@ -46,7 +31,7 @@ const handleAddressChange = (address: string) => (dispatch: Dispatch, getState: 
     dispatch({
         type: SEND.HANDLE_ADDRESS_CHANGE,
         address,
-        networkType: account.networkType,
+        symbol: account.symbol,
     });
 };
 
@@ -143,9 +128,34 @@ const handleFiatInputChange = (fiatValue: null | string) => (
     });
 };
 
+/*
+    Click on "set max"
+ */
+const setMax = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { account } = getState().wallet.selectedAccount;
+    const { fiat, send } = getState().wallet;
+
+    if (!account || !fiat || !send) return null;
+    handleAmountChange(account.availableBalance);
+};
+
+const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
+    dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
+};
+
+/*
+    Clear to default state
+*/
+const clear = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: SEND.CLEAR,
+    });
+};
+
 export {
     handleAddressChange,
     handleAmountChange,
+    setMax,
     handleFiatInputChange,
     handleSelectCurrencyChange,
     toggleAdditionalFormVisibility,

@@ -41,13 +41,13 @@ const EqualsSign = styled.div`
 `;
 
 interface Props {
-    fiatValue: State['fiatValue'];
+    value: State['fiatValue'];
     localCurrency: State['localCurrency'];
     state: 'error' | undefined;
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const LocalCurrency = (props: Props) => (
+const Fiat = (props: Props) => (
     <Wrapper>
         <EqualsSign>=</EqualsSign>
         <LocalCurrencyInput
@@ -56,7 +56,7 @@ const LocalCurrency = (props: Props) => (
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
-            value={props.fiatValue || ''}
+            value={props.value || ''}
             onChange={e => props.sendFormActions.handleFiatInputChange(e.target.value)}
             sideAddons={[
                 <LocalCurrencySelect
@@ -76,4 +76,4 @@ const LocalCurrency = (props: Props) => (
     </Wrapper>
 );
 
-export default LocalCurrency;
+export default Fiat;

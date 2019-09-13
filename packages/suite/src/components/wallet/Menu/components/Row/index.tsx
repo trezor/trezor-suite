@@ -5,6 +5,7 @@ import { getRoute } from '@suite-utils/router';
 import { Link } from '@suite-components';
 import { NETWORKS } from '@suite-config';
 import { Account } from '@wallet-types';
+import numberAbbr from 'number-abbreviate';
 
 const Wrapper = styled.div`
     padding: 0 15px;
@@ -142,7 +143,7 @@ const Row = ({ account }: Props) => (
             <Right>
                 <Balance>
                     <BalanceValue>
-                        {account.balance} {account.symbol}
+                        {numberAbbr(account.balance)} {account.symbol}
                     </BalanceValue>
                 </Balance>
                 {account.history.total !== -1 && (

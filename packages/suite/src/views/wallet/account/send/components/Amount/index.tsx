@@ -2,11 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import { State } from '@wallet-reducers/sendFormReducer';
-import { Input, variables, colors, Icon, Button, Select } from '@trezor/components';
-import LocalCurrency from './components/LocalCurrency';
-import messages from './index.messages';
+import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+
+import Fiat from './components/Fiat';
+import CurrencySelect from './components/CurrencySelect';
+import SetMax from './components/SetMax';
+
+import messages from './index.messages';
 import { DispatchProps } from '../../Container';
+import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,36 +31,16 @@ const Label = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const SetMaxAmountButton = styled(Button)`
-    padding: 0 10px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    transition: all 0s;
-    border-radius: 0;
-    border-right: 0;
-    border-left: 0;
-`;
-
-const CurrencySelect = styled(Select)`
-    min-width: 77px;
-    height: 40px;
-    flex: 0.2;
-`;
-
-const StyledIcon = styled(Icon)`
-    padding: 0 5px 0 0;
-`;
-
 interface Props {
     intl: InjectedIntl;
     fiatValue: State['fiatValue'];
-    value: State['amount'];
-    symbol: State['symbol'];
+    amount: State['amount'];
+    symbol: Account['symbol'];
+    canSetMax: boolean;
     localCurrency: State['localCurrency'];
     error: State['errors']['amount'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
-
-const setMax = false;
 
 const getErrorMessage = (error: State['errors']['amount']) => {
     switch (error) {
@@ -70,13 +55,23 @@ const getErrorMessage = (error: State['errors']['amount']) => {
     }
 };
 
+const getState = (error: State['errors']['amount'], amount: State['address']) => {
+    if (error) {
+        return 'error';
+    }
+    if (amount && !error) {
+        return 'success';
+    }
+};
+
 const Amount = (props: Props) => (
     <Wrapper>
         <Input
-            state={props.error ? 'error' : undefined}
+            state={getState(props.error, props.amount)}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
+            spellCheck={false}
             topLabel={
                 <LabelWrapper>
                     <Label>
@@ -92,30 +87,16 @@ const Amount = (props: Props) => (
                     )}
                 </LabelWrapper>
             }
-            value={props.value || ''}
+            value={props.amount || ''}
             onChange={e => props.sendFormActions.handleAmountChange(e.target.value)}
             bottomText={getErrorMessage(props.error)}
             sideAddons={[
-                <SetMaxAmountButton key="icon" onClick={() => {}} isWhite={false}>
-                    {!setMax && <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />}
-                    {setMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />}
-                    <FormattedMessage {...messages.TR_SET_MAX} />
-                </SetMaxAmountButton>,
-                <CurrencySelect
-                    key="currency"
-                    isSearchable={false}
-                    isClearable={false}
-                    value={{
-                        value: props.symbol,
-                        label: props.symbol.toUpperCase(),
-                    }} // TODO select ethereum tokens and other tokens
-                    isDisabled
-                    options={null}
-                />,
-                <LocalCurrency
+                <SetMax sendFormActions={props.sendFormActions} canSetMax={props.canSetMax} />,
+                <CurrencySelect symbol={props.symbol} />,
+                <Fiat
                     state={props.error ? 'error' : undefined}
                     sendFormActions={props.sendFormActions}
-                    fiatValue={props.fiatValue}
+                    value={props.fiatValue}
                     localCurrency={props.localCurrency}
                 />,
             ]}

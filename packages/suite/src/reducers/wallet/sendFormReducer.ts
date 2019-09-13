@@ -37,73 +37,74 @@ export const initialState: State = {
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
-            // Show additional form
+            // show additional form
             case SEND.SET_ADDITIONAL_FORM_VISIBILITY: {
                 draft.isAdditionalFormVisible = !state.isAdditionalFormVisible;
                 break;
             }
 
-            // Change input "Address"
+            // change input "Address"
             case SEND.HANDLE_ADDRESS_CHANGE: {
-                const { address, networkType } = action;
+                const { address, symbol } = action;
                 draft.errors.address = null;
                 draft.address = address;
 
                 if (validator.isEmpty(address)) {
-                    draft.errors.address = 'is-empty';
+                    draft.errors.address = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
-                if (!isAddressValid(action.address, networkType)) {
-                    draft.errors.address = 'not-valid';
+                if (!isAddressValid(action.address, symbol)) {
+                    draft.errors.address = VALIDATION_ERRORS.NOT_VALID;
                     return draft;
                 }
                 break;
             }
 
-            // Change input "Amount"
+            // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
                 const { amount, availableBalance } = action;
                 draft.errors.amount = null;
                 draft.amount = amount;
 
                 if (validator.isEmpty(amount)) {
-                    draft.errors.amount = 'is-empty';
+                    draft.errors.amount = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
                 if (!validator.isNumeric(amount)) {
-                    draft.errors.amount = 'not-number';
+                    draft.errors.amount = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
 
                 if (availableBalance < amount || availableBalance === '0') {
-                    draft.errors.amount = 'not-enough';
+                    draft.errors.amount = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
 
                 break;
             }
 
-            // Change select "Currency"
+            // change select "Currency"
             case SEND.HANDLE_SELECT_CURRENCY_CHANGE: {
                 const { localCurrency } = action;
                 draft.localCurrency = localCurrency;
                 break;
             }
 
-            // Change input "Fiat"
+            // change input "Fiat"
             case SEND.HANDLE_FIAT_VALUE_CHANGE: {
                 const { fiatValue } = action;
                 draft.fiatValue = fiatValue;
                 break;
             }
 
-            // Change input "SetMax"
-            case SEND.SET_MAX_AMOUNT: {
+            // click button "SetMax"
+            case SEND.SET_MAX: {
                 return state;
             }
 
+            // click button "Clear"
             case SEND.CLEAR: {
                 return initialState;
             }
