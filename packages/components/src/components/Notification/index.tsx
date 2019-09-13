@@ -43,18 +43,20 @@ const Body = styled.div`
 
 const Message = styled.div`
     font-size: ${FONT_SIZE.SMALL};
+    line-height: 1;
 `;
 
 const Title = styled.div`
-    padding-bottom: 5px;
-    padding-top: 1px;
+    padding-bottom: 8px;
     font-weight: ${FONT_WEIGHT.MEDIUM};
+    line-height: 1;
 `;
 
 const CloseClick = styled.div`
     margin-left: 24px;
-    align-self: flex-start;
+    align-self: center;
     cursor: pointer;
+    padding-bottom: 10px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -64,6 +66,8 @@ const StyledIcon = styled(Icon)`
 
 const IconWrapper = styled.div`
     min-width: 30px;
+    display: flex;
+    align-items: center;
 `;
 
 const Texts = styled.div`
@@ -74,6 +78,7 @@ const Texts = styled.div`
 
 const AdditionalContent = styled.div`
     display: flex;
+    /* align-self: center; */
     justify-content: flex-end;
     align-items: flex-end;
     flex: 1 1 auto;
