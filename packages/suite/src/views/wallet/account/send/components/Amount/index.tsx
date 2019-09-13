@@ -5,6 +5,7 @@ import { State } from '@wallet-reducers/sendFormReducer';
 import { Input, variables, colors, Icon, Button, Select } from '@trezor/components';
 import LocalCurrency from './components/LocalCurrency';
 import messages from './index.messages';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
@@ -58,10 +59,12 @@ const setMax = false;
 
 const getErrorMessage = (error: State['errors']['amount']) => {
     switch (error) {
-        case 'empty':
+        case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_SET} />;
-        case 'is-not-number':
+        case VALIDATION_ERRORS.NOT_NUMBER:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
+        case VALIDATION_ERRORS.NOT_ENOUGH:
+            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
         default:
             return null;
     }

@@ -3,6 +3,7 @@ import { Input, Button, Icon, colors } from '@trezor/components';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import commonMessages from '@wallet-views/messages';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
 import { State } from '@wallet-reducers/sendFormReducer';
 import messages from './index.messages';
@@ -25,9 +26,9 @@ interface Props {
 
 const getErrorMessage = (error: State['errors']['address']) => {
     switch (error) {
-        case 'empty':
+        case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_SET} />;
-        case 'not-valid':
+        case VALIDATION_ERRORS.NOT_VALID:
             return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_VALID} />;
         default:
             return null;

@@ -18,6 +18,10 @@ const definedMessages = defineMessages({
         id: 'TR_AMOUNT_IS_NOT_NUMBER',
         defaultMessage: 'Amount is not a number',
     },
+    TR_AMOUNT_IS_NOT_ENOUGH: {
+        id: 'TR_AMOUNT_IS_NOT_ENOUGH',
+        defaultMessage: 'Not enough funds',
+    },
 });
 
 export default definedMessages;

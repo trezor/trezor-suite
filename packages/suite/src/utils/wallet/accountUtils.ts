@@ -1,5 +1,6 @@
 import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
+import BigNumber from 'bignumber.js';
 
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
@@ -15,6 +16,13 @@ export const parseBIP44Path = (path: string) => {
         change: tokens[4],
         addrIndex: tokens[5],
     };
+};
+
+export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
+    const fiatValueBigNumber = new BigNumber(amount).multipliedBy(new BigNumber(rate));
+    const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(fixedTo);
+
+    return fiatValue;
 };
 
 export const getTitleForNetwork = (symbol: string, intl: InjectedIntl) => {
