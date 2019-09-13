@@ -1,18 +1,18 @@
 import React from 'react';
-import { variables, Button, colors, Icon } from '@trezor/components';
+import { variables, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 
-const Wrapper = styled.div``;
-
-const ToggleButton = styled(Button)`
-    min-height: 40px;
+const Wrapper = styled.div`
     display: flex;
+    cursor: pointer;
+    min-height: 41px;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    justify-content: flex-start;
+    font-size: ${variables.FONT_SIZE.BIG};
+    color: ${colors.TEXT_PRIMARY};
 `;
 
 const ToggleIcon = styled(Icon)`
@@ -26,20 +26,15 @@ interface Props {
 }
 
 const ToggleAdditionalButton = (props: Props) => (
-    <Wrapper>
-        <ToggleButton
-            isTransparent
-            onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}
-        >
-            <FormattedMessage {...messages.TR_ADVANCED_SETTINGS} />
-            <ToggleIcon
-                icon="ARROW_DOWN"
-                color={colors.TEXT_SECONDARY}
-                size={12}
-                isActive={props.isActive}
-                canAnimate={props.isActive}
-            />
-        </ToggleButton>
+    <Wrapper onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
+        <FormattedMessage {...messages.TR_ADVANCED_SETTINGS} />
+        <ToggleIcon
+            icon="ARROW_DOWN"
+            color={colors.TEXT_SECONDARY}
+            size={12}
+            isActive={props.isActive}
+            canAnimate={props.isActive}
+        />
     </Wrapper>
 );
 

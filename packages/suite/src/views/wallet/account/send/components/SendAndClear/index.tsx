@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 
 const Send = styled(Button)`
     min-width: 200px;
-    margin-left: 5px;
+    margin-left: 10px;
 `;
 
 const Clear = styled(Button)``;
