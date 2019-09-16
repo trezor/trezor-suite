@@ -25,6 +25,7 @@ interface DiscoveryItem {
     path: string;
     coin: string;
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
+    pageSize?: number;
     // wallet
     index: number;
     accountType: 'normal' | 'segwit' | 'legacy';
@@ -177,6 +178,7 @@ const getBundle = (discovery: Discovery) => (
                     path: configNetwork.bip44.replace('i', accountIndex.toString()),
                     coin: configNetwork.symbol,
                     details: 'txs',
+                    pageSize: 25,
                     index: accountIndex,
                     accountType,
                     networkType: configNetwork.networkType || 'bitcoin',

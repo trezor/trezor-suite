@@ -6,7 +6,7 @@ import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect from 'trezor-connect';
 
 export type TransactionAction =
-    | { type: typeof TRANSACTION.ADD; transaction: WalletAccountTransaction }
+    | { type: typeof TRANSACTION.ADD; transactions: WalletAccountTransaction[] }
     | { type: typeof TRANSACTION.REMOVE; txId: string }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
     | { type: typeof TRANSACTION.FETCH_INIT }
@@ -19,26 +19,35 @@ export type TransactionAction =
 //     transactions,
 // });
 
-export const add = (transaction: WalletAccountTransaction) => async (
+// export const add = (transaction: WalletAccountTransaction) => async (
+//     dispatch: Dispatch,
+// ): Promise<void> => {
+//     try {
+//         await db.addItem('txs', transaction).then(_key => {
+//             dispatch({
+//                 type: TRANSACTION.ADD,
+//                 transaction,
+//             });
+//         });
+//     } catch (error) {
+//         if (error && error.name === 'ConstraintError') {
+//             console.log('Tx with such id already exists');
+//         } else if (error) {
+//             console.error(error.name);
+//             console.error(error.message);
+//         } else {
+//             console.error(error);
+//         }
+//     }
+// };
+
+export const add = (transactions: WalletAccountTransaction) => async (
     dispatch: Dispatch,
 ): Promise<void> => {
-    try {
-        await db.addItem('txs', transaction).then(_key => {
-            dispatch({
-                type: TRANSACTION.ADD,
-                transaction,
-            });
-        });
-    } catch (error) {
-        if (error && error.name === 'ConstraintError') {
-            console.log('Tx with such id already exists');
-        } else if (error) {
-            console.error(error.name);
-            console.error(error.message);
-        } else {
-            console.error(error);
-        }
-    }
+    dispatch({
+        type: TRANSACTION.ADD,
+        transactions,
+    });
 };
 
 export const remove = (txId: string) => async (dispatch: Dispatch) => {
@@ -61,51 +70,96 @@ export const update = (txId: string) => async (dispatch: Dispatch) => {
     });
 };
 
+export const getAccountTransactions = (descriptor: string) => (
+    _dispatch: Dispatch,
+    getState: GetState,
+): WalletAccountTransaction[] => {
+    const { selectedAccount } = getState().wallet;
+    const transactions = getState().wallet.transactions.transactions.filter(
+        t => t.accountDescriptor === descriptor,
+    );
+    return transactions;
+};
+
+const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
+    try {
+        const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
+            key: descriptor,
+            offset,
+            count,
+        });
+        return txs;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
 export const fetchTransactions = (descriptor: string, page?: number, perPage?: number) => async (
     dispatch: Dispatch,
     getState: GetState,
 ): Promise<void> => {
     const offset = page && perPage ? (page - 1) * perPage : undefined;
     const count = perPage || undefined;
+    let storedTxs = null;
+
+    const { selectedAccount } = getState().wallet;
+    const totalTxs = selectedAccount.account!.history.total;
+    const reducerTxs = dispatch(getAccountTransactions(descriptor));
+
+    console.log('descriptor', descriptor);
+    console.log('page', page);
+
+    // we already got all txs in reducer
+    if (totalTxs === reducerTxs.length) return;
+
     dispatch({
         type: TRANSACTION.FETCH_INIT,
     });
-    console.log(offset);
-    console.log(count);
-    try {
-        // TODO: check if everything is already stored in db, fetch from blockbook when necessary
-        let transactions = await db.getItemsExtended('txs', 'accountId-blockTime', {
-            key: descriptor,
-            offset,
-            count,
+
+    console.log('offset', offset);
+    console.log('count', count);
+    storedTxs = await getTransactionsFromStorage(descriptor, offset, count);
+
+    if (storedTxs) {
+        console.log('stored txs length', storedTxs.length);
+    } else {
+        console.log('no stored txs for the acc', descriptor);
+    }
+
+    const shouldFetchFromBackend = storedTxs === null || storedTxs.length < perPage;
+    if (shouldFetchFromBackend) {
+        const result = await TrezorConnect.getAccountInfo({
+            coin: getState().wallet.selectedAccount!.account!.network,
+            // path: getState().wallet.selectedAccount!.account!.path,
+            descriptor,
+            details: 'txs',
+            page,
+            pageSize: 25,
         });
 
-        if (transactions.length < perPage) {
-            const result = await TrezorConnect.getAccountInfo({
-                coin: getState().wallet.selectedAccount!.account!.network,
-                descriptor,
-                details: 'txs',
-                page,
-                pageSize: 25,
+        if (result.success) {
+            console.log('fetched from the blockbook:');
+            console.log(result.payload.history.transactions);
+            dispatch({
+                type: TRANSACTION.FETCH_SUCCESS,
+                transactions: (result.payload.history.transactions || []).map(tx => ({
+                    ...tx,
+                    accountDescriptor: descriptor,
+                })),
             });
-            console.log(result);
-
-            if (result.success) {
-                transactions = result.payload.history.transactions;
-            } else {
-                throw new Error(result.payload.error);
-            }
+        } else {
+            dispatch({
+                type: TRANSACTION.FETCH_ERROR,
+                error: result.payload.error,
+            });
         }
-
+    } else {
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
-            transactions,
-        });
-    } catch (error) {
-        console.log(error);
-        dispatch({
-            type: TRANSACTION.FETCH_ERROR,
-            error,
+            transactions: transactionsFromBackend
+                ? transactionsFromBackend.map(t => ({ ...t, accountId: descriptor }))
+                : [],
         });
     }
 };

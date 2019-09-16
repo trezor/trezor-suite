@@ -2,14 +2,14 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import Pagination from '@wallet-components/Pagination';
 import TransactionItem from '@suite/components/wallet/TransactionItem';
-import { AccountTransaction } from 'trezor-connect';
+import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
 
 const Wrapper = styled.div``;
 
 const Transactions = styled.div``;
 
 interface Props {
-    transactions: AccountTransaction[];
+    transactions: WalletAccountTransaction[];
     currentPage: number;
     perPage: number;
     totalPages?: number;

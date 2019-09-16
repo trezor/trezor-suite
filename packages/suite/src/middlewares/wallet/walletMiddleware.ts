@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';
@@ -7,9 +7,10 @@ import * as selectedAccountActions from '@wallet-actions/selectedAccountActions'
 import { loadStorage } from '@wallet-actions/storageActions';
 import * as walletActions from '@wallet-actions/walletActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as transactionActions from '@wallet-actions/transactionActions';
 import { STATUS } from '@wallet-reducers/discoveryReducer';
 
-import { WALLET, DISCOVERY } from '@wallet-actions/constants';
+import { WALLET, DISCOVERY, ACCOUNT } from '@wallet-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 // Flow: LOCATION.CHANGE -> WALLET.INIT -> load storage -> WALLET.INIT_SUCCESS
@@ -71,6 +72,21 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     }
 
     switch (action.type) {
+        case ACCOUNT.CREATE:
+            {
+                const account = action.payload;
+                const { transactions } = account.history;
+                if (transactions) {
+                    // add last 25 txs to the history
+                    const enhancedTxs = transactions.map(tx => ({
+                        accountDescriptor: account.descriptor,
+                        ...tx,
+                    }));
+                    api.dispatch(transactionActions.add(enhancedTxs));
+                }
+            }
+            break;
+
         case DISCOVERY.UPDATE:
             // update discovery in selectedAccount
             api.dispatch(selectedAccountActions.observe(prevState, action));
@@ -100,9 +116,9 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     if (action.type === LOCATION_CHANGE && prevState.router.hash !== currentState.router.hash) {
         // watch for account change
         if (
-            prevState.router.params.accountId !== currentState.router.params.accountId 
-            || prevState.router.params.symbol !== currentState.router.params.symbol
-            || prevState.router.params.accountType !== currentState.router.params.accountType
+            prevState.router.params.accountId !== currentState.router.params.accountId ||
+            prevState.router.params.symbol !== currentState.router.params.symbol ||
+            prevState.router.params.accountType !== currentState.router.params.accountType
         ) {
             // we have switched the selected account
             // (couldn't this be called somewhere from selectedAccountActions instead of catching it like this)

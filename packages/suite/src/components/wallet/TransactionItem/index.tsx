@@ -136,13 +136,15 @@ const TransactionItem = React.memo(
                 </Heading>
                 <Row>
                     <Targets>
-                        {targets.map(target => (
-                            <Target>
-                                {target.addresses.map(addr => (
-                                    <Addr>{addr}</Addr>
-                                ))}
-                            </Target>
-                        ))}
+                        {targets &&
+                            targets.map(target => (
+                                <Target>
+                                    {target.addresses &&
+                                        target.addresses.map(addr => (
+                                            <Addr key={addr}>{addr}</Addr>
+                                        ))}
+                                </Target>
+                            ))}
                     </Targets>
                     <Col>
                         {/* <Fee>

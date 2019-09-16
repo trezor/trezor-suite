@@ -9,7 +9,7 @@ import { AccountTransaction } from 'trezor-connect';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
-    accountId: string;
+    accountDescriptor: string;
 }
 
 export interface State {
@@ -26,18 +26,50 @@ const initialState: State = {
 
 const update = (draft: State, action: TransactionAction) => {
     // @ts-ignore TODO: figure out why it doesn't pick correct action
-    const tx = draft.transactions.find(tx => tx.txId === action.txId);
+    const tx = draft.transactions.find(tx => tx.txid === action.txid);
     if (tx) {
         // @ts-ignore TODO: figure out why it doesn't pick correct action
         tx.timestamp = action.timestamp;
     }
 };
 
+const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
+    // if both are missing the blockHeight don't change their order
+    if (!a.blockHeight && !b.blockHeight) return 0;
+    // tx with no blockHeight comes first
+    if (!a.blockHeight) return -1;
+    if (!b.blockHeight) return 1;
+    return b.blockHeight - a.blockHeight;
+};
+
+const alreadyAdded = (draft: State, transaction: WalletAccountTransaction) => {
+    // two txs may have same id if they belong to two different accounts
+    return draft.transactions.find(
+        t => t.txid === transaction.txid && t.accountDescriptor === transaction.accountDescriptor,
+    );
+};
+
+const add = (draft: State, transactions: WalletAccountTransaction[]) => {
+    const pushed: string[] = [];
+    const duplicates: string[] = [];
+    transactions.forEach(transaction => {
+        if (!alreadyAdded(draft, transaction)) {
+            draft.transactions.push(transaction);
+            pushed.push(transaction.txid);
+        } else {
+            duplicates.push(transaction.txid);
+        }
+    });
+    console.log('pushed', pushed);
+    console.log('duplicates', duplicates);
+    draft.transactions.sort(sortByBlockHeight);
+};
+
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case TRANSACTION.ADD:
-                draft.transactions.push(action.transaction);
+                add(draft, action.transactions);
                 break;
             case TRANSACTION.REMOVE:
                 draft.transactions.splice(
@@ -52,8 +84,8 @@ export default (state: State = initialState, action: Action): State => {
                 draft.isLoading = true;
                 break;
             case TRANSACTION.FETCH_SUCCESS:
+                add(draft, action.transactions);
                 draft.isLoading = false;
-                draft.transactions = action.transactions;
                 break;
             case TRANSACTION.FETCH_ERROR:
                 draft.error = action.error;

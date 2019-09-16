@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import { Button, Loader, colors, Icon } from '@trezor/components';
+import { Loader, colors } from '@trezor/components';
 import styled from 'styled-components';
 import Title from '@wallet-components/Title';
 import TransactionList from '@suite/components/wallet/TransactionList';
@@ -24,20 +24,15 @@ const NoTransactions = styled.div`
     color: ${colors.TEXT_SECONDARY};
     text-align: center;
 `;
-interface Props {
-    suite: AppState['suite'];
-    router: AppState['router'];
-    wallet: AppState['wallet'];
-    add: typeof transactionActions.add;
-    remove: typeof transactionActions.remove;
-    update: typeof transactionActions.update;
-    fetchTransactions: typeof transactionActions.fetchTransactions;
-}
 
 const Transactions = (props: Props) => {
     const { selectedAccount, transactions } = props.wallet;
     const [selectedPage, setSelectedPage] = useState(1);
     if (!selectedAccount || !selectedAccount.account) return null;
+
+    const accountTransactions = transactions.transactions.filter(
+        t => t.accountDescriptor === selectedAccount.account!.descriptor,
+    );
     const { index = null, size = null, total = null } = selectedAccount.account.page || {};
 
     const onPageSelected = (page: number) => {
@@ -48,20 +43,21 @@ const Transactions = (props: Props) => {
     return (
         <LayoutAccount>
             <Title>Transactions</Title>
+            {console.log('accountTransactions', accountTransactions)}
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />
                     <LoaderText>Loading transactions</LoaderText>
                 </LoaderWrapper>
             )}
-            {transactions.transactions.length === 0 && !transactions.isLoading && (
+            {accountTransactions.length === 0 && !transactions.isLoading && (
                 <LoaderWrapper>
                     <NoTransactions>No transactions :(</NoTransactions>
                 </LoaderWrapper>
             )}
-            {transactions.transactions.length > 0 && (
+            {accountTransactions.length > 0 && (
                 <TransactionList
-                    transactions={props.wallet.transactions.transactions}
+                    transactions={accountTransactions}
                     currentPage={selectedPage}
                     perPage={size}
                     totalPages={total || undefined}
@@ -73,17 +69,14 @@ const Transactions = (props: Props) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-    suite: state.suite,
-    router: state.router,
     wallet: state.wallet,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    add: bindActionCreators(transactionActions.add, dispatch),
-    remove: bindActionCreators(transactionActions.remove, dispatch),
-    update: bindActionCreators(transactionActions.update, dispatch),
     fetchTransactions: bindActionCreators(transactionActions.fetchTransactions, dispatch),
 });
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 export default connect(
     mapStateToProps,
