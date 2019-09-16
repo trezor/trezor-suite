@@ -26,7 +26,8 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected' | 'isVerify
         `};
 
     ${props =>
-        props.isVerifying && props.isSelected &&
+        props.isVerifying &&
+        props.isSelected &&
         css`
             z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
         `};
