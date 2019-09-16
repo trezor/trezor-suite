@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
-import { URLS as SUITE_URLS }  from '@suite-constants';
-import { URLS as ONBOARDING_URLS} from '@onboarding-constants';
+import { URLS as SUITE_URLS } from '@suite-constants';
+import { URLS as ONBOARDING_URLS } from '@onboarding-constants';
 
 // Excluded urls
 const excluded = [
