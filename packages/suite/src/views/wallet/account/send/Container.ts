@@ -9,6 +9,7 @@ import SendIndex from './index';
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
     send: state.wallet.send,
+    fiat: state.wallet.fiat,
     device: state.suite.device,
 });
 

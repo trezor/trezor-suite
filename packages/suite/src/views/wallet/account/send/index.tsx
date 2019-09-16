@@ -28,7 +28,7 @@ const RowColumn = styled(Row)`
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
-    const { device, sendFormActions, send } = props;
+    const { device, sendFormActions, send, fiat } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !send || !account || !discovery || !network || !shouldRender) {
@@ -53,7 +53,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Amount
                     amount={send.amount}
-                    canSetMax={(send.amount || 0) > account.availableBalance}
+                    canSetMax={send.amount > account.availableBalance}
                     symbol={account.symbol}
                     error={send.errors.amount}
                     fiatValue={send.fiatValue}

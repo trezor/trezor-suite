@@ -131,12 +131,28 @@ const handleFiatInputChange = (fiatValue: null | string) => (
 /*
     Click on "set max"
  */
-const setMax = () => (_dispatch: Dispatch, getState: GetState) => {
+const setMax = () => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
     if (!account || !fiat || !send) return null;
-    handleAmountChange(account.availableBalance);
+
+    const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+    if (!fiatNetwork) return null;
+
+    const rate = fiatNetwork.rates[send.localCurrency.value].toString();
+    const fiatValue = getFiatValue(account.availableBalance, rate);
+
+    dispatch({
+        type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+        fiatValue,
+    });
+
+    dispatch({
+        type: SEND.HANDLE_AMOUNT_CHANGE,
+        amount: account.availableBalance,
+        availableBalance: account.availableBalance,
+    });
 };
 
 const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {

@@ -28,10 +28,9 @@ const SetMax = (props: Props) => (
     <SetMaxButton
         key="icon"
         onClick={() => props.sendFormActions.setMax()}
-        isWhite={!props.canSetMax}
-        isDisabled={props.canSetMax}
+        isWhite={props.canSetMax}
     >
-        {props.canSetMax && <StyledIcon icon="CLOSE" size={14} color={colors.TEXT_SECONDARY} />}
+        {props.canSetMax && <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />}
         {!props.canSetMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />}
         <FormattedMessage {...messages.TR_SET_MAX} />
     </SetMaxButton>
