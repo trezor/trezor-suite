@@ -2,14 +2,6 @@ import { DEVICE, UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
-
-const initialState = {
-    context: MODAL.CONTEXT_NONE,
-};
-const deviceContextState = {
-    context: MODAL.CONTEXT_DEVICE,
-    devicePath: '1',
-};
 // Default devices
 const CONNECT_DEVICE = getConnectDevice({
     path: '1',
@@ -17,6 +9,14 @@ const CONNECT_DEVICE = getConnectDevice({
 const SUITE_DEVICE = getSuiteDevice({
     path: '1',
 });
+
+const initialState = {
+    context: MODAL.CONTEXT_NONE,
+};
+const deviceContextState = {
+    context: MODAL.CONTEXT_DEVICE,
+    device: SUITE_DEVICE,
+};
 
 export default [
     {
@@ -69,7 +69,9 @@ export default [
         description: 'Disconnect device, modal is opened and should not be closed',
         initialState: {
             context: MODAL.CONTEXT_DEVICE,
-            devicePath: '2',
+            device: getConnectDevice({
+                path: '2',
+            }),
         },
         actions: [
             {
@@ -79,7 +81,9 @@ export default [
         ],
         result: {
             context: MODAL.CONTEXT_DEVICE,
-            devicePath: '2',
+            device: getConnectDevice({
+                path: '2',
+            }),
         },
     },
     {
@@ -95,6 +99,7 @@ export default [
         ],
         result: {
             ...deviceContextState,
+            device: CONNECT_DEVICE,
             windowType: UI.REQUEST_PIN,
         },
     },
@@ -111,6 +116,7 @@ export default [
         ],
         result: {
             ...deviceContextState,
+            device: CONNECT_DEVICE,
             windowType: UI.INVALID_PIN,
         },
     },
@@ -127,6 +133,7 @@ export default [
         ],
         result: {
             ...deviceContextState,
+            device: CONNECT_DEVICE,
             windowType: UI.REQUEST_PASSPHRASE,
         },
     },
@@ -144,6 +151,7 @@ export default [
         ],
         result: {
             ...deviceContextState,
+            device: CONNECT_DEVICE,
             windowType: 'ButtonRequest_SignTx',
         },
     },
@@ -177,6 +185,20 @@ export default [
     //         windowType: RECEIVE.REQUEST_UNVERIFIED,
     //     },
     // },
+    {
+        description: 'SUITE.REQUEST_REMEMBER_DEVICE',
+        initialState,
+        actions: [
+            {
+                type: SUITE.REQUEST_REMEMBER_DEVICE,
+                payload: SUITE_DEVICE,
+            },
+        ],
+        result: {
+            ...deviceContextState,
+            windowType: SUITE.REQUEST_REMEMBER_DEVICE,
+        },
+    },
     {
         description: 'SUITE.REQUEST_FORGET_DEVICE',
         initialState,
@@ -219,16 +241,16 @@ export default [
             windowType: SUITE.REQUEST_PASSPHRASE_MODE,
         },
     },
-    {
-        description: 'UI.CLOSE_UI_WINDOW',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: UI.CLOSE_UI_WINDOW,
-            },
-        ],
-        result: initialState,
-    },
+    // {
+    //     description: 'UI.CLOSE_UI_WINDOW',
+    //     initialState: deviceContextState,
+    //     actions: [
+    //         {
+    //             type: UI.CLOSE_UI_WINDOW,
+    //         },
+    //     ],
+    //     result: initialState,
+    // },
     {
         description: 'MODAL.CLOSE',
         initialState: deviceContextState,

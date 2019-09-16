@@ -1,12 +1,11 @@
-import { Dispatch, GetState, AppState } from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 import { SETTINGS } from './constants';
 
 export type SettingsActions =
     | { type: typeof SETTINGS.CHANGE_NETWORKS; payload: string[] }
     | { type: typeof SETTINGS.CHANGE_EXTERNAL_NETWORKS; payload: string[] }
     | { type: typeof SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
-    | { type: typeof SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
-    | { type: typeof SETTINGS.FROM_STORAGE; payload: AppState['wallet']['settings'] };
+    | { type: typeof SETTINGS.SET_HIDE_BALANCE; toggled: boolean };
 
 export const setLocalCurrency = (localCurrency: string) => ({
     type: SETTINGS.SET_LOCAL_CURRENCY,
@@ -54,10 +53,5 @@ export const toggleGroupCoinsVisibility = (
 
 export const changeNetworks = (payload: string[]) => ({
     type: SETTINGS.CHANGE_NETWORKS,
-    payload,
-});
-
-export const fromStorage = (payload: AppState['wallet']['settings']) => ({
-    type: SETTINGS.FROM_STORAGE,
     payload,
 });
