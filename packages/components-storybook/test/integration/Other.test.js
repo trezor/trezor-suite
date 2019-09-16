@@ -83,9 +83,23 @@ describe('Other', () => {
                     .should('be.visible');
             }
 
-            cy.getTestElement(testName)
-                .should('be.visible')
-                .matchImageSnapshot();
+            if (testName === 'trezor_image_1') {
+                cy.fixture('../../../components/src/images/trezor-1.png').then(() => {
+                    cy.getTestElement(testName)
+                        .should('be.visible')
+                        .matchImageSnapshot();
+                });
+            } else if (testName === 'trezor_image_2') {
+                cy.fixture('../../../components/src/images/trezor-2.png').then(() => {
+                    cy.getTestElement(testName)
+                        .should('be.visible')
+                        .matchImageSnapshot();
+                });
+            } else {
+                cy.getTestElement(testName)
+                    .should('be.visible')
+                    .matchImageSnapshot();
+            }
         });
     });
 });
