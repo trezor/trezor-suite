@@ -92,7 +92,7 @@ const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
-        amount: amountBigNumber.toFixed(20),
+        amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
         availableBalance: account.availableBalance,
     });
 };
@@ -155,6 +155,13 @@ const setMax = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
+/*
+    Change value in select "Fee"
+ */
+const handleFeeValueChange = val => () => {
+    console.log(val);
+};
+
 const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
 };
@@ -163,9 +170,7 @@ const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
     Clear to default state
 */
 const clear = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: SEND.CLEAR,
-    });
+    dispatch({ type: SEND.CLEAR });
 };
 
 export {
@@ -174,6 +179,7 @@ export {
     setMax,
     handleFiatInputChange,
     handleSelectCurrencyChange,
+    handleFeeValueChange,
     toggleAdditionalFormVisibility,
     clear,
 };

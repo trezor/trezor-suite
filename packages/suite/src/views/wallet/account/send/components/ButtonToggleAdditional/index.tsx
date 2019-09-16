@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     min-height: 41px;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.BIG};
+    font-size: ${variables.FONT_SIZE.BASE};
     color: ${colors.TEXT_PRIMARY};
 `;
 

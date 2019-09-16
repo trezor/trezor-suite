@@ -4,13 +4,12 @@ import { injectIntl } from 'react-intl';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 
 import { AppState, Dispatch } from '@suite-types';
-import SendIndex from './index';
+import AdditionalFormRipple from './index';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
     send: state.wallet.send,
     fiat: state.wallet.fiat,
-    fees: state.wallet.fees,
     device: state.suite.device,
 });
 
@@ -25,5 +24,5 @@ export default injectIntl(
     connect(
         mapStateToProps,
         mapDispatchToProps,
-    )(SendIndex),
+    )(AdditionalFormRipple),
 );

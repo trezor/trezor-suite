@@ -28,10 +28,10 @@ const RowColumn = styled(Row)`
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
-    const { device, sendFormActions, send, fiat } = props;
+    const { device, sendFormActions, send, fees } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
-    if (!device || !send || !account || !discovery || !network || !shouldRender) {
+    if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
             <Layout>
@@ -53,7 +53,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Amount
                     amount={send.amount}
-                    canSetMax={send.amount > account.availableBalance}
+                    canSetMax={(send.amount || 0) > account.availableBalance}
                     symbol={account.symbol}
                     error={send.errors.amount}
                     fiatValue={send.fiatValue}
@@ -62,7 +62,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 />
             </Row>
             <Row>
-                <Fee />
+                <Fee fees={fees} sendFormActions={sendFormActions} symbol={network.symbol} />
             </Row>
             {!send.isAdditionalFormVisible && (
                 <Row>
@@ -85,10 +85,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                         isActive={send.isAdditionalFormVisible}
                         sendFormActions={sendFormActions}
                     />
-                    <AdditionalForm
-                        sendFormActions={sendFormActions}
-                        networkType={network.networkType}
-                    />
+                    <AdditionalForm networkType={network.networkType} />
                     <SendAndClear
                         amount={send.amount}
                         address={send.address}

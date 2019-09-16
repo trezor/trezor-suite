@@ -20,6 +20,15 @@ export interface State {
             | typeof VALIDATION_ERRORS.NOT_NUMBER
             | typeof VALIDATION_ERRORS.NOT_ENOUGH;
     };
+    xrp: {
+        fee: null | string;
+        destinationTag: null | string;
+    };
+    eth: {
+        gasLimit: null | string;
+        gasPrice: null | string;
+        data: null | string;
+    };
 }
 
 export const initialState: State = {
@@ -28,9 +37,15 @@ export const initialState: State = {
     fiatValue: null,
     localCurrency: { value: 'usd', label: 'USD' },
     isAdditionalFormVisible: false,
-    errors: {
-        address: null,
-        amount: null,
+    errors: { address: null, amount: null },
+    xrp: {
+        fee: null,
+        destinationTag: null,
+    },
+    eth: {
+        gasPrice: null,
+        gasLimit: null,
+        data: null,
     },
 };
 
@@ -106,7 +121,10 @@ export default (state: State = initialState, action: Action): State => {
 
             // click button "Clear"
             case SEND.CLEAR: {
-                return initialState;
+                return {
+                    ...initialState,
+                    isAdditionalFormVisible: draft.isAdditionalFormVisible,
+                };
             }
 
             // no default

@@ -3,6 +3,7 @@ import { colors, Select, P } from '@trezor/components';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import accountMessages from '@wallet-views/account/messages';
+import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,13 +22,11 @@ const FeeOptionWrapper = styled.div`
 `;
 
 const OptionValue = styled(P)`
-    flex: 1 0 auto;
     min-width: 70px;
     margin-right: 5px;
 `;
 
 const OptionLabel = styled(P)`
-    flex: 0 1 auto;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: right;
@@ -35,6 +34,9 @@ const OptionLabel = styled(P)`
 `;
 
 interface Props {
+    fees: any;
+    symbol: string;
+    sendFormActions: DispatchProps['sendFormActions'];
     intl: InjectedIntl;
 }
 
@@ -46,19 +48,13 @@ const Fee = (props: Props) => (
         <Select
             isSearchable={false}
             isClearable={false}
-            value="aaa"
-            onChange={() => {}}
-            options={{ value: 'aaa', label: 'aaa' }}
+            value={props.fees[props.symbol][0]}
+            onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
+            options={props.fees[props.symbol]}
             formatOptionLabel={option => (
                 <FeeOptionWrapper>
-                    {/* <OptionValue>
-                        {option.localizedValue ? (
-                            <FormattedMessage {...option.localizedValue} />
-                        ) : (
-                            option.value
-                        )}
-                    </OptionValue> */}
                     <OptionLabel>{option.label}</OptionLabel>
+                    <OptionValue>{option.value}</OptionValue>
                 </FeeOptionWrapper>
             )}
         />
