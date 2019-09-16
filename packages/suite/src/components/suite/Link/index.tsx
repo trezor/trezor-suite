@@ -24,8 +24,8 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
     };
 
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
-    const WrappedLink = React.forwardRef(() => (
-        <TLink target={target} {...linkProps} className={className}>
+    const RefLinkComponent = React.forwardRef((props: typeof linkProps, _ref: any) => (
+        <TLink target={target} {...props} className={className}>
             {children}
         </TLink>
     ));
@@ -40,7 +40,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
             passHref
             {...overrideAsProp}
         >
-            <WrappedLink />
+            <RefLinkComponent {...linkProps} />
         </NextLink>
     );
 };
