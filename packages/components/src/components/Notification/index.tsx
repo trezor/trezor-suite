@@ -44,10 +44,11 @@ const Body = styled.div`
 const Message = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     line-height: 1;
+    padding-top: 10px;
 `;
 
 const Title = styled.div`
-    padding-bottom: 8px;
+    padding-bottom: 0;
     font-weight: ${FONT_WEIGHT.MEDIUM};
     line-height: 1;
 `;
@@ -74,6 +75,7 @@ const Texts = styled.div`
     display: flex;
     padding: 0 10px 0 0;
     flex-direction: column;
+    justify-content: center;
 `;
 
 const AdditionalContent = styled.div`
