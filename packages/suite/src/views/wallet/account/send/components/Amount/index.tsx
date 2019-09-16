@@ -65,6 +65,19 @@ const getState = (error: State['errors']['amount'], amount: State['address']) =>
     }
 };
 
+const hasRates = (fiat, localCurrency: State['localCurrency'], symbol: Account['symbol']) => {
+    const fiatNetwork = fiat.find(item => item.symbol === symbol);
+
+    if (fiatNetwork) {
+        const rate = fiatNetwork.rates[localCurrency.value].toString();
+        if (rate) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 const Amount = (props: Props) => (
     <Wrapper>
         <Input

@@ -7,12 +7,15 @@ import messages from './index.messages';
 import { DispatchProps } from '../../../../Container';
 
 const SetMaxButton = styled(Button)`
-    padding: 0 10px;
     font-size: ${variables.FONT_SIZE.SMALL};
     transition: all 0s;
     border-radius: 0;
+    height: 40px;
     border-right: 0;
+    display: flex;
     border-left: 0;
+    padding: 0;
+    min-width: 85px;
 `;
 
 const StyledIcon = styled(Icon)`

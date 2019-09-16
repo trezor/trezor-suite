@@ -8,7 +8,6 @@ import { FIAT } from '@suite-config';
 const Wrapper = styled.div`
     display: flex;
     align-self: flex-end;
-    max-width: 250px;
 `;
 
 const getCurrencyOptions = (currency: string) => {
@@ -16,7 +15,7 @@ const getCurrencyOptions = (currency: string) => {
 };
 
 const LocalCurrencySelect = styled(Select)`
-    min-width: 77px;
+    width: 80px;
     height: 40px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
@@ -25,6 +24,7 @@ const LocalCurrencySelect = styled(Select)`
 `;
 
 const LocalCurrencyInput = styled(Input)`
+    min-width: 100px;
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex: 1 1 100%;
     }

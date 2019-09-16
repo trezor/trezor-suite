@@ -44,15 +44,17 @@ const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: Ge
     if (!account || !send || !fiat) return null;
 
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    if (!fiatNetwork) return null;
 
-    const rate = fiatNetwork.rates[send.localCurrency.value].toString();
-    const fiatValue = getFiatValue(amount, rate);
-
-    dispatch({
-        type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-        fiatValue,
-    });
+    if (fiatNetwork) {
+        const rate = fiatNetwork.rates[send.localCurrency.value].toString();
+        const fiatValue = getFiatValue(amount, rate);
+        if (rate) {
+            dispatch({
+                type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+                fiatValue,
+            });
+        }
+    }
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,

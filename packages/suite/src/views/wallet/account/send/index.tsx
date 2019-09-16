@@ -28,7 +28,7 @@ const RowColumn = styled(Row)`
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
-    const { device, sendFormActions, send, fees } = props;
+    const { device, sendFormActions, send, fees, fiat } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
@@ -57,6 +57,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     symbol={account.symbol}
                     error={send.errors.amount}
                     fiatValue={send.fiatValue}
+                    fiat={fiat}
                     localCurrency={send.localCurrency}
                     sendFormActions={sendFormActions}
                 />

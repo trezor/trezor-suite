@@ -34,11 +34,21 @@ const OptionLabel = styled(P)`
 `;
 
 interface Props {
-    fees: any;
+    fees: any; // TODO ts
     symbol: string;
     sendFormActions: DispatchProps['sendFormActions'];
     intl: InjectedIntl;
 }
+
+const getValue = (fees, symbol) => {
+    let value;
+    try {
+        value = fees[symbol];
+    } catch {
+        value = { label: 'High', value: '0.000012' };
+    }
+    return value;
+};
 
 const Fee = (props: Props) => (
     <Wrapper>
@@ -48,13 +58,15 @@ const Fee = (props: Props) => (
         <Select
             isSearchable={false}
             isClearable={false}
-            value={props.fees[props.symbol][0]}
+            value={getValue(props.fees, props.symbol)}
             onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
-            options={props.fees[props.symbol]}
+            options={[{ label: 'High', value: '0.000012' }]}
             formatOptionLabel={option => (
                 <FeeOptionWrapper>
                     <OptionLabel>{option.label}</OptionLabel>
-                    <OptionValue>{option.value}</OptionValue>
+                    <OptionValue>
+                        {option.value} {props.symbol.toUpperCase()}
+                    </OptionValue>
                 </FeeOptionWrapper>
             )}
         />
