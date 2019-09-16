@@ -9,6 +9,7 @@ export interface State {
     btc: Fee[];
     xrp: Fee[];
     eth: Fee[];
+    txrp: Fee[];
 }
 
 export const initialState: State = {
@@ -18,6 +19,7 @@ export const initialState: State = {
         { label: 'low', value: '0.001575' },
     ],
     xrp: [{ label: 'normal', value: '0.000012' }],
+    txrp: [{ label: 'normal', value: '0.000012' }],
     eth: [{ label: 'normal', value: '0.000012' }],
 };
 

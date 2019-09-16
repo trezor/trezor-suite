@@ -60,7 +60,7 @@ const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
     }
 
     const list = accounts
-        .filter(account => !account.empty)
+        // .filter(account => !account.empty)
         .filter(account => account.deviceState === device.state);
 
     return (

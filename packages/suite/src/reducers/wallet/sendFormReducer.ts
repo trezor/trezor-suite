@@ -11,6 +11,7 @@ export interface State {
     amount: null | string;
     fiatValue: null | string;
     localCurrency: { value: string; label: string };
+    fee: null | string;
     isAdditionalFormVisible: boolean;
     errors: {
         address: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_VALID;
@@ -21,7 +22,6 @@ export interface State {
             | typeof VALIDATION_ERRORS.NOT_ENOUGH;
     };
     xrp: {
-        fee: null | string;
         destinationTag: null | string;
     };
     eth: {
@@ -35,11 +35,11 @@ export const initialState: State = {
     address: null,
     amount: null,
     fiatValue: null,
+    fee: null,
     localCurrency: { value: 'usd', label: 'USD' },
     isAdditionalFormVisible: false,
     errors: { address: null, amount: null },
     xrp: {
-        fee: null,
         destinationTag: null,
     },
     eth: {

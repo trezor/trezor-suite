@@ -8,3 +8,7 @@ export const HANDLE_SELECT_CURRENCY_CHANGE = '@wallet_send_form/handle_local_cur
 export const HANDLE_FIAT_VALUE_CHANGE = '@wallet_send_form/handle_fiat_value_change';
 
 export const CLEAR = '@wallet_send_form/clear';
+
+// xrp specific
+export const HANDLE_XRP_DESTINATION_TAG_CHANGE =
+    '@wallet_send_form/xrp_handle-destination-tag-change';

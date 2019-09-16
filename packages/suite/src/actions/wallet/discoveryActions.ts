@@ -170,7 +170,7 @@ const getBundle = (discovery: Discovery) => (
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === discovery.device);
     const usedAccounts = accounts.filter(account => account.index === index && !account.empty);
 
-    NETWORKS.forEach(configNetwork => {
+    NETWORKS.filter(n => n.symbol === 'xrp').forEach(configNetwork => {
         // check if previous account of requested type already exists
         const accountType = configNetwork.accountType || 'normal';
         const prevAccount = usedAccounts.find(

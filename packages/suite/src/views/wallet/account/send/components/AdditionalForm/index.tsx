@@ -10,10 +10,7 @@ import { Network } from '@wallet-types';
 const Wrapper = styled.div`
     display: flex;
     min-height: 150px;
-    margin: 20px 0 20px 0;
-    align-items: center;
-    justify-content: center;
-    border: 1px dashed gray;
+    margin: 20px 0;
 `;
 
 interface Props {
