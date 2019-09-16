@@ -74,7 +74,7 @@ export default (state: State = initialState, action: Action): State => {
                 windowType: action.type,
             };
         // close modal
-        // case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
+        case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
         case MODAL.CLOSE:
         case SUITE.AUTH_DEVICE:
         case SUITE.FORGET_DEVICE:

@@ -184,6 +184,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     setSelectedAddr={setSelectedAddr}
                     selectedAddress={selectedAddr}
                     paginationEnabled
+                    isAddressVerifying={props.isAddressVerifying}
                     secondaryText={addr => (
                         <>
                             <FormattedMessage
@@ -281,6 +282,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 isPartiallyHidden={props.isAddressPartiallyHidden(firstFreshAddress.path)}
                 tooltipActions={tooltipAction(firstFreshAddress.address)}
                 readOnly
+                isVerifying={props.isAddressVerifying}
                 actions={
                     <>
                         {!(
@@ -335,6 +337,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         setSelectedAddr={setSelectedAddr}
                         selectedAddress={selectedAddr}
                         paginationEnabled={false}
+                        isAddressVerifying={props.isAddressVerifying}
                         collapsed={false}
                         tooltipActions={tooltipAction}
                         isAddressPartiallyHidden={props.isAddressPartiallyHidden}
