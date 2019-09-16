@@ -8,6 +8,7 @@ export default [
         symbol: 'btc',
         bip44: "m/84'/0'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -20,6 +21,7 @@ export default [
         symbol: 'btc',
         bip44: "m/49'/0'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -32,6 +34,7 @@ export default [
         symbol: 'btc',
         bip44: "m/44'/0'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -44,6 +47,7 @@ export default [
         symbol: 'ltc',
         bip44: "m/49'/2'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -56,6 +60,7 @@ export default [
         symbol: 'ltc',
         bip44: "m/44'/2'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -63,35 +68,41 @@ export default [
     },
     // Bitcoin testnet
     {
-        name: 'Bitcoin Test',
+        name: 'Bitcoin Testnet',
         networkType: 'bitcoin',
         symbol: 'test',
         bip44: "m/84'/1'/i'",
         hasSignVerify: true,
+        decimals: 8,
+        testnet: true,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
         },
     },
     {
-        name: 'Bitcoin Test (segwit)',
+        name: 'Bitcoin Testnet (segwit)',
         networkType: 'bitcoin',
         accountType: 'segwit',
         symbol: 'test',
         bip44: "m/49'/1'/i'",
         hasSignVerify: true,
+        decimals: 8,
+        testnet: true,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
         },
     },
     {
-        name: 'Bitcoin Test (legacy)',
+        name: 'Bitcoin Testnet (legacy)',
         networkType: 'bitcoin',
         accountType: 'legacy',
         symbol: 'test',
         bip44: "m/44'/1'/i'",
         hasSignVerify: true,
+        decimals: 8,
+        testnet: true,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -104,6 +115,7 @@ export default [
         symbol: 'eth',
         bip44: "m/44'/60'/0'/0/i",
         hasSignVerify: false,
+        decimals: 18,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -115,6 +127,7 @@ export default [
         symbol: 'etc',
         bip44: "m/44'/61'/0'/0/i",
         hasSignVerify: true,
+        decimals: 18,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -126,6 +139,8 @@ export default [
         symbol: 'trop',
         bip44: "m/44'/60'/0'/0/i",
         hasSignVerify: true,
+        decimals: 18,
+        testnet: true,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -138,6 +153,7 @@ export default [
         symbol: 'xrp',
         bip44: "m/44'/144'/i'/0/0",
         hasSignVerify: false,
+        decimals: 6,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -149,6 +165,8 @@ export default [
         symbol: 'txrp',
         bip44: "m/44'/144'/i'/0/0",
         hasSignVerify: false,
+        decimals: 6,
+        testnet: true,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -160,6 +178,7 @@ export default [
         symbol: 'bch',
         bip44: "m/44'/145'/i'",
         hasSignVerify: false,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -171,6 +190,7 @@ export default [
         symbol: 'btg',
         bip44: "m/49'/156'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -183,6 +203,7 @@ export default [
         symbol: 'btg',
         bip44: "m/44'/156'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -194,6 +215,7 @@ export default [
         symbol: 'dash',
         bip44: "m/44'/5'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -205,6 +227,7 @@ export default [
         symbol: 'dgb',
         bip44: "m/49'/20'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -217,6 +240,7 @@ export default [
         symbol: 'dgb',
         bip44: "m/44'/20'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -228,6 +252,7 @@ export default [
         symbol: 'doge',
         bip44: "m/44'/3'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -239,6 +264,7 @@ export default [
         symbol: 'nmc',
         bip44: "m/44'/7'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -250,6 +276,7 @@ export default [
         symbol: 'vtc',
         bip44: "m/49'/28'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -262,6 +289,7 @@ export default [
         symbol: 'vtc',
         bip44: "m/44'/28'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',
@@ -273,6 +301,7 @@ export default [
         symbol: 'zec',
         bip44: "m/44'/133'/i'",
         hasSignVerify: true,
+        decimals: 8,
         explorer: {
             tx: 'https://example.com',
             address: 'https://example.com/address/',

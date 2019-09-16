@@ -14,12 +14,14 @@ export const CREATE_DEVICE_INSTANCE = '@suite/create-device-instance';
 export const REQUEST_FORGET_DEVICE = '@suite/request-forget-device';
 export const FORGET_DEVICE = '@suite/forget-device';
 export const FORGET_DEVICE_INSTANCE = '@suite/forget-device-instance';
+export const REQUEST_REMEMBER_DEVICE = '@suite/request-remember-device';
 export const REMEMBER_DEVICE = '@suite/remember-device';
 export const SET_LANGUAGE = '@suite/set-language';
 export const TOGGLE_DEVICE_MENU = '@suite/toggle_device_menu';
 export const TOGGLE_SIDEBAR = '@suite/toggle_sidebar';
 export const ONLINE_STATUS = '@suite/online_status';
 export const LOCK_UI = '@suite/lock-ui';
+export const LOCK_DEVICE = '@suite/lock-device';
 export const LOCK_ROUTER = '@suite/lock-router';
 export const LOCK_TYPE = {
     NONE: 0,

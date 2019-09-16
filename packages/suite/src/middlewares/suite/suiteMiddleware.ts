@@ -4,6 +4,7 @@ import { BLOCKCHAIN, SUITE, STORAGE } from '@suite-actions/constants';
 import { init as initBlockchain } from '@suite-actions/blockchainActions';
 import { init as initRouter, initialRedirection } from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
+import { resolveRememberRequest } from '@suite-actions/modalActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
@@ -43,9 +44,14 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
 
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
+            api.dispatch(resolveRememberRequest(action.payload));
             api.dispatch(suiteActions.handleDeviceConnect(action.payload));
             break;
         case DEVICE.DISCONNECT:
+            api.dispatch(resolveRememberRequest(action.payload));
+            api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
+            break;
+        case SUITE.FORGET_DEVICE:
             api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
             break;
         case SUITE.CREATE_DEVICE_INSTANCE:

@@ -6,8 +6,8 @@ import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import { db } from '@suite/storage';
 import { SUITE } from '@suite/actions/suite/constants';
-import { ACCOUNT } from '@suite/actions/wallet/constants';
-import { AccountInfo } from 'trezor-connect';
+// import { ACCOUNT } from '@suite/actions/wallet/constants';
+// import { AccountInfo } from 'trezor-connect';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
@@ -53,6 +53,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         //     db.updateTransaction(action.txId, action.timestamp);
         //     break;
 
+        /*
+        TODO: only if device is remembered
         case ACCOUNT.CREATE: {
             const account: AccountInfo = action.payload;
             const { transactions } = account.history;
@@ -79,9 +81,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             // api.dispatch(transactionActions.add(action.transaction));
             break;
         }
+        */
 
-        case WALLET_SETTINGS.SET_HIDDEN_COINS:
-        case WALLET_SETTINGS.SET_HIDDEN_COINS_EXTERNAL:
+        case WALLET_SETTINGS.CHANGE_NETWORKS:
+        case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
             db.addItem(

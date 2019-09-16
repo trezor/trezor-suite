@@ -5,6 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { mergeObj } from '@suite-utils/mergeObj';
 import { init } from '@suite-actions/trezorConnectActions';
+import { SUITE } from '@suite-actions/constants';
 
 import * as backupActions from '../backupActions';
 
@@ -68,11 +69,11 @@ describe('Backup Actions', () => {
         await store.dispatch(init());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
-        // discard @suite/trezor-connect-initialized action we dont care about it in this test
+        // discard @suite/trezor-connect-initialized action we don't care about it in this test
         store.getActions().shift();
 
-        expect(store.getActions().shift()).toEqual({ type: '@suite/lock-ui', payload: true });
-        expect(store.getActions().shift()).toEqual({ type: '@suite/lock-ui', payload: false });
+        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
+        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@notification/add',
             payload: { variant: 'success' },
@@ -87,11 +88,11 @@ describe('Backup Actions', () => {
         await store.dispatch(init());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
-        // discard @suite/trezor-connect-initialized action we dont care about it in this test
+        // discard @suite/trezor-connect-initialized action we don't care about it in this test
         store.getActions().shift();
 
-        expect(store.getActions().shift()).toEqual({ type: '@suite/lock-ui', payload: true });
-        expect(store.getActions().shift()).toEqual({ type: '@suite/lock-ui', payload: false });
+        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
+        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@notification/add',
             payload: { variant: 'error' },

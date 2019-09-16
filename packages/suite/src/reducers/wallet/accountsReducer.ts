@@ -19,8 +19,9 @@ export interface Account {
     tokens: AccountInfo['tokens'];
     addresses: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
-    history: Omit<AccountInfo['history'], 'transactions' | 'txids'>;
+    history: AccountInfo['history'];
     misc: AccountInfo['misc'];
+    marker: AccountInfo['marker'];
 }
 
 export const initialState: Account[] = [];
@@ -40,23 +41,20 @@ export const initialState: Account[] = [];
 // }
 // };
 
-export const findDeviceAccounts = (
-    accounts: Account[],
-    // device: TrezorDevice,
-    symbol?: string,
-) => {
-    // TODO: should also filter deviceState
-    if (symbol) {
-        return accounts.filter(a => a.symbol === symbol);
+const create = (draft: Account[], account: Account) => {
+    // TODO: check if account already exist, for example 2 device instances with same passphrase
+    // remove "transactions" field, they are stored in "transactionReducer"
+    if (account.history) {
+        delete account.history.transactions;
     }
-    return accounts;
+    draft.push(account);
 };
 
 export default (state: Account[] = initialState, action: Action): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:
-                draft.push(action.payload);
+                create(draft, action.payload);
                 break;
             // no default
         }
