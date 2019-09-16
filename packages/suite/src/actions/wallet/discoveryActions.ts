@@ -410,7 +410,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
 export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     const discovery = dispatch(getDiscoveryForDevice());
-    if (discovery) {
+    if (discovery && discovery.running) {
         dispatch(
             update(
                 { deviceState: discovery.deviceState, status: STATUS.STOPPING },
@@ -418,8 +418,7 @@ export const stop = () => async (dispatch: Dispatch): Promise<void> => {
             ),
         );
         TrezorConnect.cancel('discovery_interrupted');
-        if (discovery.running) {
-            return discovery.running.promise;
-        }
+
+        return discovery.running.promise;
     }
 };

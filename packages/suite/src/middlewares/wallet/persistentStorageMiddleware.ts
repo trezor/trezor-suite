@@ -6,8 +6,8 @@ import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import { db } from '@suite/storage';
 import { SUITE } from '@suite/actions/suite/constants';
-import { ACCOUNT } from '@suite/actions/wallet/constants';
-import { AccountInfo } from 'trezor-connect';
+// import { ACCOUNT } from '@suite/actions/wallet/constants';
+// import { AccountInfo } from 'trezor-connect';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
