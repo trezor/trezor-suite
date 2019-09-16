@@ -30,17 +30,17 @@ const selectTrezorModel = (model: number) => ({
     model,
 });
 
-const addPath = (value: AnyPath) => (dispatch: Dispatch) => {
+const addPath = (payload: AnyPath) => (dispatch: Dispatch) => {
     dispatch({
         type: ADD_PATH,
-        value,
+        payload,
     });
 };
 
-const removePath = (value: AnyPath[]) => (dispatch: Dispatch) => {
+const removePath = (payload: AnyPath[]) => (dispatch: Dispatch) => {
     dispatch({
         type: REMOVE_PATH,
-        value,
+        payload,
     });
 };
 

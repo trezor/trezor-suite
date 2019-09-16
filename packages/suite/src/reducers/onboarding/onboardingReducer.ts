@@ -21,9 +21,13 @@ import {
 import { Action } from '@suite-types';
 
 const initialState: OnboardingReducer = {
+    // todo: prevDevice is now used to solve two different things and it cant work
+    // would be better to implement field "isMatchingPrevDevice" along with prevDevice
+    // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
+    // and here leave only isMatchingPrevDevice ?
     prevDevice: null,
     selectedModel: null,
-    activeStepId: STEP.ID_WELCOME_STEP,
+    activeStepId: STEP.ID_NAME_STEP,
     activeSubStep: null,
     path: [],
     deviceCall: {
@@ -42,14 +46,14 @@ const setPrevDevice = (state: OnboardingReducer, device: Device) => {
     // dont set prevDevice if we are in steps that dont care about it.
     const activeStep = steps.find(s => s.id === state.activeStepId);
     if (
-        activeStep &&
-        activeStep.disallowedDeviceStates &&
+        !activeStep ||
+        !activeStep.disallowedDeviceStates ||
         !activeStep.disallowedDeviceStates.includes(STEP.DISALLOWED_IS_NOT_SAME_DEVICE)
     ) {
         return null;
     }
 
-    // unacquired device
+    // ts.
     if (!device.features) {
         return null;
     }
@@ -104,10 +108,10 @@ const onboarding = (state: OnboardingReducer = initialState, action: Action) => 
                 draft.selectedModel = action.model;
                 break;
             case ADD_PATH:
-                draft.path = addPath(action.value, state);
+                draft.path = addPath(action.payload, state);
                 break;
             case REMOVE_PATH:
-                draft.path = removePath(action.value, state);
+                draft.path = removePath(action.payload, state);
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);

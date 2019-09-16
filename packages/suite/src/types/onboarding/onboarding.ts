@@ -69,11 +69,11 @@ interface SelectTrezorModelAction {
 
 interface AddPath {
     type: typeof ADD_PATH;
-    value: AnyPath;
+    payload: AnyPath;
 }
 interface RemovePath {
     type: typeof REMOVE_PATH;
-    value: AnyPath[];
+    payload: AnyPath[];
 }
 
 export type OnboardingActionTypes =

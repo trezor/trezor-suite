@@ -1,32 +1,30 @@
-import { UI } from 'trezor-connect';
-import reducer from '@onboarding-reducers/onboardingReducer';
-import { OnboardingReducer } from '@onboarding-types/onboarding';
+/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/no-object-literal-type-assertion */
+
+import { UI, DEVICE } from 'trezor-connect';
+import onboardingReducer from '@onboarding-reducers/onboardingReducer';
+import * as STEP from '@onboarding-constants/steps';
+import { Action } from '@suite-types';
+
+const { getConnectDevice, getDeviceFeatures } = global.JestMocks;
 
 const getUiRequestButtonPayload = () => ({
     code: 'bar',
-    device: {},
-    data: {},
+    device: getConnectDevice(),
 });
 
 const getUiRequestPinPayload = () => ({
-    device: {},
+    device: getConnectDevice(),
 });
 
-const getInitialState = () => ({
-    uiInteraction: {
-        name: undefined,
-        counter: 0,
-    },
+type State = ReturnType<typeof onboardingReducer>;
+const getInitialState = (state?: Partial<State>): State => ({
+    ...onboardingReducer(undefined, {} as Action),
+    ...state,
 });
-
-// limit types only to those of interest for this test suite;
-type PartialState = Pick<OnboardingReducer, 'uiInteraction'>;
-type PartialReducer = (state: PartialState, action: any) => PartialState;
-// need to retype to unknown first, typescript wants it.
-const onboardingReducer = (reducer as unknown) as PartialReducer;
 
 describe('onboarding reducer', () => {
-    describe('setInteraction', () => {
+    describe('UI.REQUEST_BUTTON, UI.REQUEST_WORD, UI.REQUEST_PIN', () => {
         it('same events should KEEP name and INCREMENT counter', () => {
             const stateAfterFirstEvent = onboardingReducer(getInitialState(), {
                 type: UI.REQUEST_BUTTON,
@@ -77,6 +75,44 @@ describe('onboarding reducer', () => {
                     name: UI.REQUEST_PIN,
                 },
             });
+        });
+    });
+
+    describe('DEVICE.DISCONNECT', () => {
+        it('should not change state if current step does not care about prevDevice (initial state step does not care)', () => {
+            const state = onboardingReducer(
+                getInitialState({ activeStepId: STEP.ID_WELCOME_STEP }),
+                {
+                    type: DEVICE.DISCONNECT,
+                    payload: getConnectDevice(),
+                },
+            );
+            expect(state.prevDevice).toEqual(null);
+        });
+
+        it('should change prevDevice field on step that does care', () => {
+            const device = getConnectDevice();
+            const state = onboardingReducer(getInitialState({ activeStepId: STEP.ID_NAME_STEP }), {
+                type: DEVICE.DISCONNECT,
+                payload: device,
+            });
+            expect(state.prevDevice).toEqual(device);
+        });
+
+        it('if new prevDevice to be does not match current prevDevice, do not change prevDevice', () => {
+            const device1 = getConnectDevice({ features: getDeviceFeatures({ device_id: '1' }) });
+            const device2 = getConnectDevice({ features: getDeviceFeatures({ device_id: '2' }) });
+
+            const state = onboardingReducer(
+                getInitialState({ prevDevice: device1, activeStepId: STEP.ID_NAME_STEP }),
+                {} as Action,
+            );
+
+            const result = onboardingReducer(state, {
+                type: DEVICE.DISCONNECT,
+                payload: device2,
+            });
+            expect(result.prevDevice).toEqual(device1);
         });
     });
 });
