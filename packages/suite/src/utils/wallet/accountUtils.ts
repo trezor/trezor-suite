@@ -1,6 +1,7 @@
 import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
 import BigNumber from 'bignumber.js';
+import { NETWORKS } from '@suite-config';
 
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
@@ -65,3 +66,24 @@ export const getTitleForNetwork = (symbol: string, intl: InjectedIntl) => {
             return intl.formatMessage(l10nMessages.TR_NETWORK_UNKNOWN);
     }
 };
+
+export const formatAmount = (amount: string, symbol: string) => {
+    const network = NETWORKS.find(n => n.symbol === symbol);
+    if (!network) return amount;
+    return new BigNumber(amount).div(10 ** network.decimals).toString(10);
+};
+
+// export const sortByCoin = (accounts: Account[]) => {
+//     return accounts.sort((a, b) => {
+//         const aIndex = NETWORKS.findIndex(
+//             n => n.accountType === a.accountType && n.symbol === a.symbol,
+//         );
+//         const bIndex = NETWORKS.findIndex(
+//             n => n.accountType === b.accountType && b.symbol === a.symbol,
+//         );
+
+//         if ()
+
+//         return aIndex - bIndex;
+//     });
+// };

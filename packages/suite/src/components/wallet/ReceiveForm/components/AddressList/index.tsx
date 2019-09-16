@@ -16,6 +16,7 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
     selectedAddress: Address | null;
     collapsed?: boolean;
     paginationEnabled: boolean;
+    isAddressPartiallyHidden?: (descriptor: string) => boolean;
     actions?: (addr: Address) => React.ReactNode;
     controls?: (
         page: number,
@@ -34,6 +35,7 @@ const AddressList = ({
     selectedAddress,
     paginationEnabled,
     collapsed = true,
+    isAddressPartiallyHidden,
     actions,
     controls,
     secondaryText,
@@ -59,24 +61,29 @@ const AddressList = ({
         setIsCollapsed(collapsed);
     }, [collapsed]);
 
-    const items = addresses.map((addr, i) => (
-        <AddressItem
-            key={addr.address}
-            ref={addrRefs[i]}
-            onClick={() => {
-                if (addrRefs[i].current) {
-                    selectText(addrRefs[i].current as HTMLElement);
-                }
-                setSelectedAddr(addr);
-            }}
-            secondaryText={secondaryText ? secondaryText(addr) : null}
-            isSelected={addr === selectedAddress}
-            address={addr.address}
-            index={parseBIP44Path(addr.path)!.addrIndex}
-            actions={actions ? actions(addr) : null}
-            tooltipActions={tooltipActions ? tooltipActions(addr.address) : null}
-        />
-    ));
+    const items = addresses.map((addr, i) => {
+        const isHidden = isAddressPartiallyHidden ? isAddressPartiallyHidden(addr.path) : false;
+        return (
+            <AddressItem
+                key={addr.address}
+                ref={addrRefs[i]}
+                onClick={() => {
+                    // select only addr if it is not hidden
+                    if (addrRefs[i].current && !isHidden) {
+                        selectText(addrRefs[i].current as HTMLElement);
+                    }
+                    setSelectedAddr(addr);
+                }}
+                isPartiallyHidden={isHidden}
+                secondaryText={secondaryText ? secondaryText(addr) : null}
+                isSelected={addr === selectedAddress}
+                address={addr.address}
+                index={parseBIP44Path(addr.path)!.addrIndex}
+                actions={actions ? actions(addr) : null}
+                tooltipActions={tooltipActions ? tooltipActions(addr.address) : null}
+            />
+        );
+    });
 
     if (items.length === 0) {
         // do not render controls or items

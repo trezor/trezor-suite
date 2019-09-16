@@ -19,10 +19,6 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
         margin-top: 5px;
     }
 
-    &:hover {
-        background: ${INPUT_HOVER};
-    }
-
     ${props =>
         props.isSelected &&
         css`
@@ -86,7 +82,7 @@ const SmallText = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const Overlay = styled.div<Pick<Props, 'isPartiallyHidden'>>`
+const Overlay = styled.div<Pick<Props, 'isPartiallyHidden' | 'readOnly' | 'isSelected'>>`
     ${props =>
         props.isPartiallyHidden &&
         css`
@@ -96,7 +92,18 @@ const Overlay = styled.div<Pick<Props, 'isPartiallyHidden'>>`
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(242, 242, 242, 1) 75%);
+            background: linear-gradient(to right, transparent, ${colors.WHITE} 75%);
+
+            ${props.readOnly &&
+                css`
+                    background: linear-gradient(to right, transparent, rgba(242, 242, 242, 1) 75%);
+                `};
+
+            ${props.isSelected &&
+                !props.readOnly &&
+                css`
+                    background: linear-gradient(to right, transparent, ${colors.SELECT_HOVER} 75%);
+                `};
         `}
 `;
 
@@ -155,7 +162,11 @@ const AddressItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElemen
             )}
             <Index>{`/${props.index}`}</Index>
             <DescriptorWrapper>
-                <Overlay isPartiallyHidden={props.isPartiallyHidden} />
+                <Overlay
+                    isPartiallyHidden={props.isPartiallyHidden}
+                    isSelected={props.isSelected}
+                    readOnly={props.readOnly}
+                />
                 <Descriptor ref={ref}>{props.address}</Descriptor>
                 {props.secondaryText && <SmallText>{props.secondaryText}</SmallText>}
             </DescriptorWrapper>

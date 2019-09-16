@@ -127,11 +127,11 @@ describe('TrezorConnect Actions', () => {
         const actions = store.getActions();
         // check actions in reversed order
         expect(actions.pop()).toEqual({
-            type: SUITE.LOCK_UI,
+            type: SUITE.LOCK_DEVICE,
             payload: false,
         });
         expect(actions.pop()).toEqual({
-            type: SUITE.LOCK_UI,
+            type: SUITE.LOCK_DEVICE,
             payload: true,
         });
     });

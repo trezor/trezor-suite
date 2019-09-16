@@ -113,8 +113,6 @@ const getCoinName = (symbol: string, accountType: string) => {
     return result[0].name;
 };
 
-const getCoinLogo = (symbol: string) => (symbol === 'test' ? 'btc' : symbol);
-
 interface Props {
     account: Account;
 }
@@ -130,7 +128,7 @@ const Row = React.memo(({ account }: Props) => (
         <Wrapper>
             <Left>
                 <LogoWrapper>
-                    <CoinLogo size={25} symbol={getCoinLogo(account.symbol)} />
+                    <CoinLogo size={25} symbol={account.symbol} />
                 </LogoWrapper>
                 <Name>
                     <CoinName>{getCoinName(account.symbol, account.accountType)}</CoinName>

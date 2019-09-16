@@ -1,24 +1,29 @@
 import produce from 'immer';
+import { STORAGE } from '@suite-actions/constants';
 import { SETTINGS } from '@wallet-actions/constants';
-import { Action } from '@wallet-types/index';
+import { Action } from '@suite-types';
+import { EXTERNAL_NETWORKS } from '@suite-config';
 
 export interface State {
     localCurrency: string;
     hideBalance: boolean;
-    hiddenCoins: string[];
-    hiddenCoinsExternal: string[];
+    enabledNetworks: string[];
+    enabledExternalNetworks: string[];
 }
 
 export const initialState: State = {
     localCurrency: 'usd',
     hideBalance: false,
-    hiddenCoins: [],
-    hiddenCoinsExternal: [],
+    enabledNetworks: ['btc', 'test'],
+    enabledExternalNetworks: EXTERNAL_NETWORKS.filter(n => !n.isHidden).map(n => n.symbol),
 };
 
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.wallet.settings;
+
             case SETTINGS.SET_LOCAL_CURRENCY:
                 draft.localCurrency = action.localCurrency;
                 break;
@@ -27,16 +32,13 @@ export default (state: State = initialState, action: Action): State => {
                 draft.hideBalance = action.toggled;
                 break;
 
-            case SETTINGS.SET_HIDDEN_COINS:
-                draft.hiddenCoins = action.hiddenCoins;
+            case SETTINGS.CHANGE_NETWORKS:
+                draft.enabledNetworks = action.payload;
                 break;
 
-            case SETTINGS.SET_HIDDEN_COINS_EXTERNAL:
-                draft.hiddenCoinsExternal = action.hiddenCoinsExternal;
+            case SETTINGS.CHANGE_EXTERNAL_NETWORKS:
+                draft.enabledExternalNetworks = action.payload;
                 break;
-
-            case SETTINGS.FROM_STORAGE:
-                return action.payload;
             // no default
         }
     });
