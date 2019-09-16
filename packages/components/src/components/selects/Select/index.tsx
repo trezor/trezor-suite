@@ -22,7 +22,7 @@ const TopLabel = styled.span`
 interface Props extends SelectProps<OptionProps> {
     isSearchable?: boolean;
     withDropdownIndicator?: boolean;
-    topLabel: React.ReactNode;
+    topLabel?: React.ReactNode;
     wrapperProps?: Record<string, any>;
 }
 
