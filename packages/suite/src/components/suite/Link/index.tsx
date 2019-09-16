@@ -7,6 +7,7 @@ interface Props extends LinkProps {
     className?: string;
     isGray?: boolean;
     isGreen?: boolean;
+    hasNoStyle?: boolean;
     target?: string;
     children: React.ReactNode;
 }
