@@ -26,7 +26,12 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
         <Wrapper>
             <Header>
                 <Prompt model={majorVersion} size={32}>
-                    <FormattedMessage {...commonMessages.TR_COMPLETE_ACTION_ON_DEVICE} />
+                    <FormattedMessage
+                        {...commonMessages.TR_COMPLETE_ACTION_ON_DEVICE}
+                        values={{
+                            deviceLabel: device.label,
+                        }}
+                    />
                 </Prompt>
 
                 <P size="small">
