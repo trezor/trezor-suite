@@ -138,6 +138,7 @@ const changeDevice = (
     const affectedDevices = draft.filter(
         d =>
             d.features &&
+            d.connected &&
             ((d.features.device_id === features.device_id &&
                 d.features.passphrase_protection === features.passphrase_protection) ||
                 (d.path.length > 0 && d.path === device.path)),
@@ -163,32 +164,44 @@ const changeDevice = (
  * @param {Device} device
  */
 const disconnectDevice = (draft: State, device: Device) => {
-    // find all devices with "path" or "device_id"
-    const affectedDevices = draft.filter(
-        d =>
-            d.path === device.path ||
-            (d.features && device.features && d.features.device_id === device.features.device_id),
-    );
-    const otherDevices = draft.filter(d => affectedDevices.indexOf(d) === -1);
-
-    if (affectedDevices.length > 0) {
-        // remembered devices shouldn't be removed from reducer
-        const rememberedDevices = affectedDevices.filter(
-            d => d.features && d.remember,
-        ) as AcquiredDevice[];
-        // clear draft
-        draft.splice(0, draft.length);
-        // fill draft with not affected devices
-        otherDevices.forEach(d => draft.push(d));
-        // fill draft with affected but remembered devices
-        rememberedDevices.forEach(d => {
+    // find all devices with "path"
+    const affectedDevices = draft.filter(d => d.path === device.path);
+    affectedDevices.forEach(d => {
+        // do not remove devices with state, they are potential candidates to remember if not remembered already
+        const skip = d.features && d.state;
+        if (skip) {
             d.connected = false;
             d.available = false;
-            d.status = 'available';
             d.path = '';
-            draft.push(d);
-        });
-    }
+        } else {
+            draft.splice(draft.indexOf(d), 1);
+        }
+    });
+
+    // remove.forEach(d => {
+    //     draft.splice(draft.indexOf(d), 1);
+    // });
+
+    // if (remove.length >)
+
+    // if (affectedDevices.length > 0) {
+    //     // remembered devices shouldn't be removed from reducer
+    //     const rememberedDevices = affectedDevices.filter(
+    //         d => d.features && d.remember,
+    //     ) as AcquiredDevice[];
+    //     // clear draft
+    //     draft.splice(0, draft.length);
+    //     // fill draft with not affected devices
+    //     otherDevices.forEach(d => draft.push(d));
+    //     // fill draft with affected but remembered devices
+    //     rememberedDevices.forEach(d => {
+    //         d.connected = false;
+    //         d.available = false;
+    //         d.status = 'available';
+    //         d.path = '';
+    //         draft.push(d);
+    //     });
+    // }
 };
 
 /**
@@ -253,7 +266,7 @@ const createInstance = (draft: State, device: TrezorDevice, name?: string) => {
     const newDevice: TrezorDevice = {
         ...device,
         useEmptyPassphrase: false,
-        remember: false,
+        remember: device.remember,
         state: undefined,
         instance,
         instanceLabel: `${device.label} (${name || instance})`,
@@ -261,6 +274,22 @@ const createInstance = (draft: State, device: TrezorDevice, name?: string) => {
         ts: new Date().getTime(),
     };
     draft.push(newDevice);
+};
+
+/**
+ * Action handler: SUITE.REMEMBER_DEVICE
+ * Remove single device instance
+ * @param {State} draft
+ * @param {TrezorDevice} device
+ */
+const remember = (draft: State, device: TrezorDevice) => {
+    // only acquired devices
+    if (!device || !device.features || !device.state) return;
+    draft.forEach(d => {
+        if (d.features && d.state && d.features.device_id === device.features.device_id) {
+            d.remember = true;
+        }
+    });
 };
 
 /**
@@ -276,11 +305,14 @@ const forget = (draft: State, device: TrezorDevice) => {
     const affectedDevices = draft.filter(
         d => d.features && d.features.device_id === device.features.device_id,
     );
-    const otherDevices = draft.filter(d => affectedDevices.indexOf(d) === -1);
-    // clear draft
-    draft.splice(0, draft.length);
-    // fill draft with not affected devices
-    otherDevices.forEach(d => draft.push(d));
+    affectedDevices.forEach(d => {
+        draft.splice(draft.indexOf(d), 1);
+    });
+    // const otherDevices = draft.filter(d => affectedDevices.indexOf(d) === -1);
+    // // clear draft
+    // draft.splice(0, draft.length);
+    // // fill draft with not affected devices
+    // otherDevices.forEach(d => draft.push(d));
 };
 
 /**
@@ -324,6 +356,9 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case SUITE.CREATE_DEVICE_INSTANCE:
                 createInstance(draft, action.payload, action.name);
+                break;
+            case SUITE.REMEMBER_DEVICE:
+                remember(draft, action.payload);
                 break;
             case SUITE.FORGET_DEVICE:
                 forget(draft, action.payload);

@@ -1,5 +1,6 @@
-import reducer from '@wallet-reducers/settingsReducer';
-import * as types from '@wallet-actions/constants/settingsConstants';
+import reducer, { initialState } from '@wallet-reducers/settingsReducer';
+import { STORAGE } from '@suite-actions/constants';
+import { SETTINGS } from '@wallet-actions/constants';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -8,67 +9,67 @@ describe('settings reducer', () => {
                 // @ts-ignore
                 type: 'none',
             }),
-        ).toEqual({
-            localCurrency: 'usd',
-            hideBalance: false,
-            hiddenCoins: [],
-            hiddenCoinsExternal: [],
-        });
+        ).toEqual(initialState);
+    });
+
+    it('STORAGE.LOADED', () => {
+        expect(
+            reducer(undefined, {
+                type: STORAGE.LOADED,
+                payload: {
+                    wallet: {
+                        settings: initialState,
+                    },
+                },
+            } as any),
+        ).toEqual(initialState);
     });
 
     it('SET_LOCAL_CURRENCY', () => {
         expect(
             reducer(undefined, {
-                type: types.SET_LOCAL_CURRENCY,
+                type: SETTINGS.SET_LOCAL_CURRENCY,
                 localCurrency: 'czk',
             }),
         ).toEqual({
+            ...initialState,
             localCurrency: 'czk',
-            hideBalance: false,
-            hiddenCoins: [],
-            hiddenCoinsExternal: [],
         });
     });
 
     it('SET_HIDE_BALANCE', () => {
         expect(
             reducer(undefined, {
-                type: types.SET_HIDE_BALANCE,
+                type: SETTINGS.SET_HIDE_BALANCE,
                 toggled: true,
             }),
         ).toEqual({
-            localCurrency: 'usd',
+            ...initialState,
             hideBalance: true,
-            hiddenCoins: [],
-            hiddenCoinsExternal: [],
         });
     });
 
-    it('SET_HIDDEN_COINS', () => {
+    it('CHANGE_NETWORKS', () => {
         expect(
             reducer(undefined, {
-                type: types.SET_HIDDEN_COINS,
-                hiddenCoins: ['eth'],
+                type: SETTINGS.CHANGE_NETWORKS,
+                payload: ['eth'],
             }),
         ).toEqual({
-            localCurrency: 'usd',
-            hideBalance: false,
-            hiddenCoins: ['eth'],
-            hiddenCoinsExternal: [],
+            ...initialState,
+            enabledNetworks: ['eth'],
         });
     });
 
-    it('SET_HIDDEN_COINS_EXTERNAL', () => {
+    it('CHANGE_EXTERNAL_NETWORKS', () => {
         expect(
             reducer(undefined, {
-                type: types.SET_HIDDEN_COINS_EXTERNAL,
-                hiddenCoinsExternal: ['eth'],
+                type: SETTINGS.CHANGE_EXTERNAL_NETWORKS,
+                payload: ['eth'],
             }),
         ).toEqual({
-            localCurrency: 'usd',
-            hideBalance: false,
-            hiddenCoins: [],
-            hiddenCoinsExternal: ['eth'],
+            ...initialState,
+            enabledExternalNetworks: ['eth'],
         });
     });
 });

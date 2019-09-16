@@ -9,7 +9,9 @@ export interface Network {
     accountType?: 'normal' | 'legacy' | 'segwit';
     symbol: string;
     bip44: string;
+    testnet?: boolean;
     isHidden?: boolean;
     hasSignVerify?: boolean;
+    decimals: number;
     explorer: Explorer;
 }

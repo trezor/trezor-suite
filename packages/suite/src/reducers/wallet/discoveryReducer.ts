@@ -1,19 +1,18 @@
 import produce from 'immer';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { Action } from '@wallet-types';
-import { ObjectValues } from '@suite-types';
+import { Deferred, createDeferred } from '@suite-utils/deferred';
+import { Action, ObjectValues } from '@suite-types';
 
 export const DISCOVERY_STATUS = {
     IDLE: 0,
-    STARTING: 1,
-    RUNNING: 2,
-    STOPPING: 3,
-    STOPPED: 4,
-    COMPLETED: 5,
+    RUNNING: 1,
+    STOPPING: 2,
+    STOPPED: 3,
+    COMPLETED: 4,
 } as const;
 
 export interface Discovery {
-    device: string;
+    deviceState: string;
     index: number;
     total: number;
     loaded: number;
@@ -22,48 +21,76 @@ export interface Discovery {
     // coins which failed to load
     failed: {
         symbol: string;
+        index: number;
         accountType: string;
         error: string;
         fwException?: string;
     }[];
+    networks: string[];
+    running?: Deferred<void>;
 }
 
-export type PartialDiscovery = { device: string } & Partial<Discovery>;
+export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
 
 type State = Discovery[];
 const initialState: State = [];
 
-const update = (state: State, payload: PartialDiscovery) => {
-    const index = state.findIndex(f => f.device === payload.device);
+const create = (draft: State, discovery: Discovery) => {
+    const index = draft.findIndex(d => d.deviceState === discovery.deviceState);
+    if (index < 0) {
+        draft.push(discovery);
+    }
+};
+
+const start = (draft: State, payload: PartialDiscovery) => {
+    const index = draft.findIndex(f => f.deviceState === payload.deviceState);
     if (index >= 0) {
-        state[index] = {
-            ...state[index],
+        draft[index] = {
+            ...draft[index],
             ...payload,
+            running: createDeferred(),
         };
     }
 };
 
-const create = (state: State, payload: Discovery) => {
-    const index = state.findIndex(f => f.device === payload.device);
-    if (index < 0) {
-        state.push(payload);
-    } else {
-        update(state, payload);
+const update = (draft: State, payload: PartialDiscovery, resolve?: boolean) => {
+    const index = draft.findIndex(f => f.deviceState === payload.deviceState);
+    if (index >= 0) {
+        const dfd = draft[index].running;
+        draft[index] = {
+            ...draft[index],
+            ...payload,
+        };
+        if (resolve && dfd) {
+            dfd.resolve();
+        }
     }
+};
+
+const remove = (draft: State, payload: PartialDiscovery) => {
+    const index = draft.findIndex(f => f.deviceState === payload.deviceState);
+    draft.splice(index, 1);
 };
 
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
-            case DISCOVERY.START:
+            case DISCOVERY.CREATE:
                 create(draft, action.payload);
+                break;
+            case DISCOVERY.START:
+                start(draft, action.payload);
                 break;
             case DISCOVERY.UPDATE:
             case DISCOVERY.INTERRUPT:
-            case DISCOVERY.FAILED:
+                update(draft, action.payload);
+                break;
             case DISCOVERY.STOP:
             case DISCOVERY.COMPLETE:
-                update(draft, action.payload);
+                update(draft, action.payload, true);
+                break;
+            case DISCOVERY.REMOVE:
+                remove(draft, action.payload);
                 break;
             // no default
         }

@@ -279,6 +279,7 @@ const disconnect = [
             getSuiteDevice({
                 path: '1',
                 remember: true,
+                state: 'abc',
             }),
         ],
         actions: [
@@ -294,6 +295,7 @@ const disconnect = [
                 path: '',
                 connected: false,
                 available: false,
+                state: 'abc',
             },
         ],
     },
@@ -303,11 +305,13 @@ const disconnect = [
             getSuiteDevice({
                 path: '1',
                 remember: true,
+                state: 'abc',
             }),
             getSuiteDevice({
                 path: '1',
                 remember: true,
                 instance: 1,
+                state: 'cba',
             }),
         ],
         actions: [
@@ -324,12 +328,14 @@ const disconnect = [
                 instance: undefined,
                 connected: false,
                 available: false,
+                state: 'abc',
             },
             {
                 path: '',
                 instance: 1,
                 connected: false,
                 available: false,
+                state: 'cba',
             },
         ],
     },
@@ -402,7 +408,7 @@ const disconnect = [
 const changed = [
     {
         description: `Change device label (using device_id)`,
-        initialState: [SUITE_DEVICE],
+        initialState: [getSuiteDevice({ connected: true })],
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -428,7 +434,10 @@ const changed = [
     },
     {
         description: `Change device label (2 instances, 2 affected)`,
-        initialState: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        initialState: [
+            getSuiteDevice({ connected: true }),
+            getSuiteDevice({ connected: true, instance: 1 }),
+        ],
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -467,6 +476,7 @@ const changed = [
             getSuiteDevice(
                 {
                     path: '1',
+                    connected: true,
                 },
                 {
                     device_id: null,
@@ -516,7 +526,7 @@ const changed = [
             getSuiteDevice(undefined, {
                 device_id: 'ignored-device-id',
             }),
-            SUITE_DEVICE,
+            getSuiteDevice({ connected: true }),
         ],
         actions: [
             {
@@ -1167,6 +1177,138 @@ const forget = [
     },
 ];
 
+const remember = [
+    {
+        description: `Remember undefined device`,
+        initialState: [SUITE_DEVICE],
+        actions: [
+            {
+                type: SUITE.REMEMBER_DEVICE,
+            },
+        ],
+        result: [SUITE_DEVICE],
+    },
+    {
+        description: `Remember unacquired device`,
+        initialState: [SUITE_DEVICE],
+        actions: [
+            {
+                type: SUITE.REMEMBER_DEVICE,
+                payload: getSuiteDevice({ type: 'unacquired' }),
+            },
+        ],
+        result: [SUITE_DEVICE],
+    },
+    {
+        description: `Remember stateless device`,
+        initialState: [SUITE_DEVICE],
+        actions: [
+            {
+                type: SUITE.REMEMBER_DEVICE,
+                payload: SUITE_DEVICE,
+            },
+        ],
+        result: [SUITE_DEVICE],
+    },
+    {
+        description: `Remember stateless device`,
+        initialState: [SUITE_DEVICE],
+        actions: [
+            {
+                type: SUITE.REMEMBER_DEVICE,
+                payload: SUITE_DEVICE,
+            },
+        ],
+        result: [SUITE_DEVICE],
+    },
+    {
+        description: `Remember device success`,
+        initialState: [
+            getSuiteDevice({
+                state: 'abc',
+            }),
+        ],
+        actions: [
+            {
+                type: SUITE.REMEMBER_DEVICE,
+                payload: getSuiteDevice({
+                    state: 'abc',
+                }),
+            },
+        ],
+        result: [
+            getSuiteDevice({
+                state: 'abc',
+                remember: true,
+            }),
+        ],
+    },
+    {
+        description: `Remember device with multiple instances (few are stateless)`,
+        initialState: [
+            getSuiteDevice({
+                state: 'abc',
+            }),
+            getSuiteDevice({
+                state: 'abc',
+                instance: 1,
+            }),
+            getSuiteDevice({
+                instance: 2,
+            }),
+            getSuiteDevice({
+                state: 'abc',
+                instance: 3,
+            }),
+            getSuiteDevice(
+                {
+                    state: 'abc',
+                    path: '2',
+                },
+                {
+                    device_id: 'ignored-device',
+                },
+            ),
+        ],
+        actions: [
+            {
+                type: SUITE.REMEMBER_DEVICE,
+                payload: getSuiteDevice({
+                    state: 'abc',
+                }),
+            },
+        ],
+        result: [
+            getSuiteDevice({
+                state: 'abc',
+                remember: true,
+            }),
+            getSuiteDevice({
+                state: 'abc',
+                instance: 1,
+                remember: true,
+            }),
+            getSuiteDevice({
+                instance: 2,
+            }),
+            getSuiteDevice({
+                state: 'abc',
+                instance: 3,
+                remember: true,
+            }),
+            getSuiteDevice(
+                {
+                    state: 'abc',
+                    path: '2',
+                },
+                {
+                    device_id: 'ignored-device',
+                },
+            ),
+        ],
+    },
+];
+
 export default {
     connect,
     disconnect,
@@ -1176,4 +1318,5 @@ export default {
     authDevice,
     createInstance,
     forget,
+    remember,
 };

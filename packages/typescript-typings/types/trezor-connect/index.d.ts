@@ -28,8 +28,8 @@ declare module 'trezor-connect' {
         blockHash?: string;
 
         amount: string;
-        fee?: string;
-        total?: string; // amount + total
+        fee: string;
+        // total?: string; // amount + total
 
         targets: TransactionTarget[];
         tokens: TokenTransfer[];
