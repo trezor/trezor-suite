@@ -25,13 +25,7 @@ interface Props extends SelectProps<OptionProps> {
     topLabel: React.ReactNode;
     wrapperProps?: Record<string, any>;
 }
-// const Select = ({ isSearchable = true, withDropdownIndicator = true, ...rest }: Props) => (
-//     <ReactSelect
-//         styles={styles(isSearchable, withDropdownIndicator)}
-//         isSearchable={isSearchable}
-//         {...rest}
-//     />
-// );
+
 const Select = ({
     isSearchable = true,
     withDropdownIndicator = true,
@@ -47,7 +41,6 @@ const Select = ({
                 styles={styles(isSearchable, withDropdownIndicator)}
                 isSearchable={isSearchable}
                 {...rest}
-                ƒ
             />
         </Wrapper>
     );
@@ -60,10 +53,10 @@ Select.propTypes = {
     // TODO
     // eslint-disable-next-line react/forbid-prop-types
     options: PropTypes.array,
+    topLabel: PropTypes.node,
     // TODO
     // eslint-disable-next-line react/forbid-prop-types
-    topLabel: PropTypes.node,
-    value: PropTypes.string,
+    value: PropTypes.object,
     onChange: PropTypes.func,
 };
 
