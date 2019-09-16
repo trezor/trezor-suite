@@ -6,6 +6,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 10px;
+    flex-wrap: wrap;
 `;
 
 const PageItem = styled.div<{ isActive?: boolean }>`
@@ -43,7 +44,11 @@ const Pagination = ({ currentPage, totalPages, onPageSelected }: Props) => {
             </Actions>
             {totalPages ? (
                 calculatedPages.map(i => (
-                    <PageItem key={i} onClick={() => onPageSelected(i)} isActive={i === currentPage}>
+                    <PageItem
+                        key={i}
+                        onClick={() => onPageSelected(i)}
+                        isActive={i === currentPage}
+                    >
                         {i}
                     </PageItem>
                 ))
