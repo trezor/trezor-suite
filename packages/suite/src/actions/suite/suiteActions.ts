@@ -24,12 +24,14 @@ export type SuiteActions =
     | { type: typeof SUITE.REQUEST_FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
+    | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
     | { type: typeof SUITE.TOGGLE_DEVICE_MENU; payload: boolean }
     | { type: typeof SUITE.TOGGLE_SIDEBAR }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
+    | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean };
 
 /**
@@ -94,6 +96,17 @@ export const toggleSidebar = (): Action => ({
  */
 export const lockUI = (payload: boolean): Action => ({
     type: SUITE.LOCK_UI,
+    payload,
+});
+
+/**
+ * Prevent TrezorConnect multiple calls
+ * Called before and after specific process, like onboarding
+ * Set `lock` field in suite reducer
+ * @returns {Action}
+ */
+export const lockDevice = (payload: boolean): Action => ({
+    type: SUITE.LOCK_DEVICE,
     payload,
 });
 
@@ -184,6 +197,8 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
  */
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
+    // const { deviceId } = getState().modal;
+    // if ()
     if (!selectedDevice) {
         dispatch(selectDevice(device));
     } else {
@@ -205,6 +220,24 @@ export const handleDeviceDisconnect = (device: Device) => (
 
     // selected device is disconnected, decide what to do next
     const { devices } = getState();
+    // device is still present in reducer (remembered or candidate to remember)
+    const devicePresent = deviceUtils.getSelectedDevice(selectedDevice, devices);
+    const deviceInstances = deviceUtils.getDeviceInstances(selectedDevice, devices, true);
+    if (deviceInstances.length > 0) {
+        // if selected device is gone from reducer, switch to first instance
+        if (!devicePresent) {
+            dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
+        }
+        // show modal if one of the instances in not remembered
+        const remember = deviceInstances.filter(d => !d.remember);
+        if (remember.length > 0) {
+            dispatch({
+                type: SUITE.REQUEST_REMEMBER_DEVICE,
+                payload: deviceInstances[0],
+            });
+        }
+        return;
+    }
     const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
     if (devices.length < 1 || routerLocked) {
         dispatch({ type: SUITE.SELECT_DEVICE });
