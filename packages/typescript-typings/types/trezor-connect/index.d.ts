@@ -175,6 +175,7 @@ declare module 'trezor-connect' {
         useEmptyPassphrase?: boolean;
         allowSeedlessDevice?: boolean;
         keepSession?: boolean;
+        skipFinalReload?: boolean;
     }
 
     export interface GetPublicKeyParams extends CommonParams {
@@ -282,6 +283,14 @@ declare module 'trezor-connect' {
         message: string;
         coin?: string;
     }
+    export interface FirmwareUpdateParams extends CommonParams {
+        payload: ArrayBuffer;
+        hash?: string;
+        offset?: number;
+        length?: number;  
+    }
+
+    export interface BackupDeviceParams extends CommonParams {}
 
     export interface SignedMessage {
         address: string; // signer address
@@ -586,6 +595,14 @@ declare module 'trezor-connect' {
         export const ADDRESS_VALIDATION = 'ui-address_validation';
     }
 
+    export namespace IFRAME {
+        export const BOOTSTRAP = 'iframe-bootstrap';
+        export const LOADED = 'iframe-loaded';
+        export const INIT = 'iframe-init';
+        export const ERROR = 'iframe-error';
+        export const CALL = 'iframe-call';
+    }
+
     export type UiEvent =
         | {
               type: typeof UI.REQUEST_PIN
@@ -644,6 +661,18 @@ declare module 'trezor-connect' {
                 | typeof UI.CLOSE_UI_WINDOW
                 | typeof UI.LOGIN_CHALLENGE_REQUEST;
               payload: undefined;
+          }
+        | {
+              type: typeof IFRAME.LOADED;
+              payload: {
+                  browser: {
+                      name: string;
+                      osname: string;
+                      mobile?: boolean;
+                      outdated: boolean;
+                      supported: boolean;
+                  }
+              };
           };
 
     export type UIResponse = 
@@ -790,9 +819,15 @@ declare module 'trezor-connect' {
          * Asks device to verify a message using the signer address and signature.
          */
         function verifyMessage(params: VerifyMessageParams): Promise<ResponseMessage<Message>>;
-        
-        // hmm, does it make sense to type it now?
-        function firmwareUpdate(params: any): Promise<ResponseMessage<Message>>;
+
+        /**
+         * Sends FirmwareErase message followed by FirmwareUpdate message
+         */
+        function firmwareUpdate(params: FirmwareUpdateParams): Promise<ResponseMessage<Message>>;
+        /**
+         * Asks device to initiate seed backup procedure
+         */
+        function backupDevice(params: BackupDeviceParams): Promise<ResponseMessage<Message>>;
 
         function dispose(): void;
 
@@ -810,6 +845,8 @@ declare module 'trezor-connect' {
         function renderWebUSBButton(): void;
 
         function getDeviceState(params: CommonParams): ResponseMessage<DeviceStateResponse>;
+
+        function disableWebUSB(): void;
     }
 
     export default TrezorConnect;

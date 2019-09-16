@@ -5,15 +5,15 @@ import styled from 'styled-components';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { FormattedNumber } from '@suite/components/suite';
-import { AppState } from '@suite-types';
+import { Network, Fiat } from '@wallet-types';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
 interface Props {
-    network: { shortcut: string; symbol: string };
+    network: Network;
     balance: string;
-    fiat: AppState['wallet']['fiat'];
+    fiat: Fiat[];
     localCurrency: string;
     isHidden: boolean;
     xrpReserve?: string;
@@ -133,7 +133,7 @@ class AccountBalance extends PureComponent<Props, State> {
 
     render() {
         const { network, localCurrency } = this.props;
-        const fiatRates = this.props.fiat.find(f => f.network === network.shortcut);
+        const fiatRates = this.props.fiat.find(f => f.symbol === network.symbol);
         let fiatRateValue = NaN;
         let fiat = '';
         if (fiatRates) {

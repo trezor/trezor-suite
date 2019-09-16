@@ -35,7 +35,13 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch(event);
     });
 
-    const wrappedMethods = ['getFeatures', 'getDeviceState', 'applySettings', 'changePin'] as const;
+    const wrappedMethods = [
+        'getFeatures',
+        'getDeviceState',
+        'applySettings',
+        'changePin',
+        'backupDevice',
+    ] as const;
     wrappedMethods.forEach(key => {
         const original = TrezorConnect[key];
         if (!original) return;

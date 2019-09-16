@@ -66,6 +66,8 @@ const newsletter = (state: NewsletterReducer = initialState, action: NewsletterA
                 draft.isProgress = true;
                 break;
             case FETCH_SUCCESS:
+                console.log('aaa');
+                draft.isSuccess = true;
                 draft.isProgress = false;
                 draft.error = null;
                 break;
@@ -75,7 +77,7 @@ const newsletter = (state: NewsletterReducer = initialState, action: NewsletterA
                 draft.error = action.error;
                 break;
             default:
-                return state;
+            // no default
         }
     });
 };

@@ -108,7 +108,7 @@ const Passphrase: FunctionComponent<Props> = ({
             )}
             <FormRow>
                 <Checkbox onClick={() => setShowPassword(!showPassword)} isChecked={showPassword}>
-                    Show passphrase
+                    <FormattedMessage {...messages.TR_SHOW_PASSPHRASE} />
                 </Checkbox>
             </FormRow>
             <Column>

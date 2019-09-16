@@ -1,7 +1,7 @@
 describe('Form', () => {
     beforeEach(() => {
         cy.viewport(784, 768);
-        cy.visit(
+        cy.loadContent(
             '/iframe.html?selectedKind=Form&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
         );
     });

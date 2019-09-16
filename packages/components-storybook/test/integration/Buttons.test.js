@@ -1,7 +1,7 @@
 describe('Buttons', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
-        cy.visit('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
+        cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
     });
 
     [

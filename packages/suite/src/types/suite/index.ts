@@ -1,4 +1,5 @@
 import { ThunkDispatch } from 'redux-thunk';
+import { Store as ReduxStore } from 'redux';
 import {
     UiEvent,
     DeviceEvent,
@@ -30,13 +31,7 @@ import {
 export type MessageDescriptor = MessageDescriptor$;
 export type Messages = Messages$;
 
-export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
-
-type TrezorConnectEvents =
-    | Omit<TransportEvent, 'event'>
-    | UiEvent
-    | Omit<DeviceEvent, 'event'>
-    | { type: 'iframe-loaded'; payload: { browser: any } };
+type TrezorConnectEvents = Omit<TransportEvent, 'event'> | UiEvent | Omit<DeviceEvent, 'event'>;
 
 export type AppState = AppState;
 
@@ -107,3 +102,8 @@ export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 // make key required
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
+
+// object values types
+export type ObjectValues<T extends object> = T[keyof T];
+
+export type Store = ReduxStore<AppState, Action>;

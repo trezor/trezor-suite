@@ -30,29 +30,30 @@ describe('rules', () => {
     });
 
     describe('isNotSameDevice', () => {
-        const device_id = '028FFD8215822B61ACB55D7D';
-        const deviceWithDeviceId = { features: { device_id } };
+        const deviceWithDeviceId = { features: { device_id: '1' } };
+        const deviceWithDeviceId2 = { features: { device_id: '2' } };
+
         const deviceWithoutDeviceId: any = { features: { device_id: null } };
 
-        it('should return null for prevDeviceId === null', () => {
-            expect(isNotSameDevice({ device: deviceWithDeviceId, prevDeviceId: null })).toEqual(
-                null,
-            );
+        it('should return false for prevDeviceId === null (no device was there before, so consider it "same" device)', () => {
+            expect(
+                isNotSameDevice({ device: deviceWithDeviceId, prevDevice: deviceWithoutDeviceId }),
+            ).toEqual(false);
         });
         it('should return null for device.features.device_id === null', () => {
             expect(
-                isNotSameDevice({ device: deviceWithoutDeviceId, prevDeviceId: device_id }),
+                isNotSameDevice({ device: deviceWithoutDeviceId, prevDevice: deviceWithDeviceId }),
             ).toEqual(null);
         });
         it('should return false when device.features.device_id === prevDeviceId', () => {
             expect(
-                isNotSameDevice({ device: deviceWithDeviceId, prevDeviceId: device_id }),
+                isNotSameDevice({ device: deviceWithDeviceId, prevDevice: deviceWithDeviceId }),
             ).toEqual(false);
         });
         it('should return true when device.features.device_id !== prevDeviceId', () => {
-            expect(isNotSameDevice({ device: deviceWithDeviceId, prevDeviceId: 'foo' })).toEqual(
-                true,
-            );
+            expect(
+                isNotSameDevice({ device: deviceWithDeviceId, prevDevice: deviceWithDeviceId2 }),
+            ).toEqual(true);
         });
     });
 

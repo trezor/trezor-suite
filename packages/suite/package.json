@@ -27,6 +27,7 @@
         "bignumber.js": "^9.0.0",
         "color-hash": "^1.0.3",
         "ethereumjs-util": "^6.0.0",
+        "fork-ts-checker-webpack-plugin": "^1.5.0",
         "pako": "^1.0.10",
         "react": "16.8.6",
         "react-dom": "16.8.6",
@@ -46,7 +47,7 @@
         "redux-thunk": "^2.3.0",
         "styled-components": "^4.3.2",
         "styled-reset": "^3.0.2",
-        "trezor-connect": "extended"
+        "trezor-connect": "8.0.3-extended"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",

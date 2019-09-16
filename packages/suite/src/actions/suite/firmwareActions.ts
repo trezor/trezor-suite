@@ -3,6 +3,8 @@ import Rollout from '@trezor/rollout';
 
 import { lockUI } from '@suite-actions/suiteActions';
 
+//  TODO: should be reworked to deviceManagementActions
+
 // todo: refactor to suite
 // import * as notificationActions from '@wallet-actions/notificationActions';
 import { SET_UPDATE_STATUS } from '@suite-actions/constants/firmware';
@@ -13,6 +15,7 @@ const DOWNLOADING = 'downloading';
 const INSTALLING = 'installing';
 const DONE = 'done';
 const RESTARTING = 'restarting';
+const ERROR = 'error';
 
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     // todo remove error notification
@@ -59,15 +62,14 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         device,
         length: fw.byteLength, // todo: this should be inferred by connect auto magically probably
     };
-
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
     if (!updateResponse.success) {
         // todo dispatch error notification
+        dispatch({ type: SET_UPDATE_STATUS, payload: ERROR });
+        return dispatch(lockUI(false));
     }
 
-    if (device.features.major_version === 2) {
-        dispatch({ type: SET_UPDATE_STATUS, payload: RESTARTING });
-    }
+    dispatch({ type: SET_UPDATE_STATUS, payload: RESTARTING });
 
     dispatch(lockUI(false));
 };
@@ -90,6 +92,7 @@ export type AnyStatus =
     | typeof DOWNLOADING
     | typeof INSTALLING
     | typeof RESTARTING
+    | typeof ERROR
     | typeof DONE;
 
 export type FirmwareUpdateActionTypes = SetUpdateStatusAction;

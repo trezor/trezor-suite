@@ -6,16 +6,13 @@ addMatchImageSnapshotCommand({
     failureThresholdType: 'percent', // percent of image or number of pixels
 });
 
-beforeEach(() => {
-    cy.document().then(doc => {
-        cy.wrap(null).then(() => {
-            // return a promise to cy.then() that
-            // is awaited until it resolves
-            return doc.fonts.ready.then(fontSet => {
-                cy.expect(fontSet.status).to.equal('loaded');
+Cypress.Commands.add('getTestElement', selector => cy.get(`[data-test="${selector}"]`));
+Cypress.Commands.add('loadContent', url => {
+    return cy.visit(url).then(() => {
+        return cy.document().then(doc => {
+            doc.fonts.ready.then(() => {
+                return doc.fonts.load('12px Roboto');
             });
         });
     });
 });
-
-Cypress.Commands.add('getTestElement', selector => cy.get(`[data-test="${selector}"]`));

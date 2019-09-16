@@ -16,7 +16,7 @@ import {
     ExceptionPage,
 } from '@wallet-reducers/selectedAccountReducer';
 
-import { STATUS as DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
 import { NETWORKS } from '@suite-config';
@@ -50,7 +50,7 @@ const getExceptionPage = (
             type: 'fwOutdated',
             title: 'not-used',
             message: 'not-used',
-            shortcut: 'not-used',
+            symbol: 'not-used',
         };
     }
 
@@ -60,7 +60,7 @@ const getExceptionPage = (
             type: 'fwNotSupported',
             title: `${network.name} is not supported with Trezor ${getVersion(device)}`,
             message: 'Find more information on Trezor Wiki.',
-            shortcut: network.symbol,
+            symbol: network.symbol,
         };
     }
 
@@ -142,7 +142,7 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
     if (!device || !network) return null;
 
     // // case 1: backend status
-    // const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
+    // const blockchain = state.blockchain.find(b => b.symbol === network.symbol);
     // if (blockchain && !blockchain.connected) {
     //     return {
     //         type: 'backend',
@@ -223,16 +223,15 @@ export const observe = (prevState: AppState, action: Action) => (
 
     const { params } = state.router;
     // displayed route is not an account route
-    if (!params.accountId || !params.coin) return false;
-
+    if (!params.accountId || !params.symbol) return false;
     // get new values for selected account
     const account = reducerUtils.getSelectedAccount(
         state.wallet.accounts,
         state.suite.device,
         state.router.params,
     );
-    // @ts-ignore TODO
-    const network = reducerUtils.getSelectedNetwork(NETWORKS, state.router.params.coin);
+    // @ts-ignore TODO: missing discovery process results in silent fail
+    const network = reducerUtils.getSelectedNetwork(NETWORKS, state.router.params.symbol);
     const discovery = reducerUtils.getDiscoveryProcess(state.wallet.discovery, state.suite.device);
     // const tokens = reducerUtils.getAccountTokens(state.tokens, account);
     // const pending = reducerUtils.getAccountPendingTx(state.pending, account);

@@ -42,12 +42,11 @@ const submitEmail = () => async (dispatch: Dispatch, getState: GetState) => {
         const response = await fetch(url, { method: GET, mode: MODE_NO_CORS });
         // response.status === 0 is cors-hack, cors doesnt allow us to read response status,
         // mailchimp api cant be used as well as it does not support CORS
-        if (response.status === 0) {
+        if (response.ok || response.status === 0) {
             dispatch({ type: FETCH_SUCCESS });
         } else {
-            dispatch({ type: FETCH_ERROR, error: response.statusText });
+            throw new Error(response.statusText);
         }
-        return response;
     } catch (error) {
         dispatch({ type: FETCH_ERROR, error });
     }
