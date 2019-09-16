@@ -1,15 +1,16 @@
-// import * as CONNECT from '@wallet-actions/constants/TrezorConnect';
-// import * as WALLET from '@wallet-actions/constants/wallet';
-import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
+import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import produce from 'immer';
 
-import { Action } from '@wallet-types/index';
-import { TransactionAction } from '@suite/actions/wallet/transactionActions';
+import { Account, Action } from '@wallet-types/index';
+import { TransactionAction } from '@wallet-actions/transactionActions';
+import { formatAmount } from '@wallet-utils/accountUtils';
 import { AccountTransaction } from 'trezor-connect';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
-    accountId: string;
+    deviceState: string;
+    descriptor: string;
+    symbol: string;
 }
 
 export type State = WalletAccountTransaction[];
@@ -25,9 +26,39 @@ const update = (draft: State, action: TransactionAction) => {
     }
 };
 
+const add = (draft: State, payload: Account) => {
+    if (payload.history.transactions) {
+        payload.history.transactions.forEach(tx => {
+            const exists = draft.find(t => t.txid === tx.txid);
+            if (!exists) {
+                draft.push({
+                    descriptor: payload.descriptor,
+                    deviceState: payload.deviceState,
+                    symbol: payload.symbol,
+                    ...tx,
+                    amount: formatAmount(tx.amount, payload.symbol),
+                    fee: formatAmount(tx.fee, payload.symbol),
+                    targets: tx.targets.map(tr => {
+                        if (typeof tr.amount === 'string') {
+                            return {
+                                ...tr,
+                                amount: formatAmount(tr.amount, payload.symbol),
+                            };
+                        }
+                        return tr;
+                    }),
+                });
+            }
+        });
+    }
+};
+
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
+            case ACCOUNT.CREATE:
+                add(draft, action.payload);
+                break;
             case TRANSACTION.ADD:
                 draft.push(action.transaction);
                 break;

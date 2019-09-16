@@ -5,7 +5,7 @@ import TrezorConnect, {
     BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import { lockUI } from '@suite-actions/suiteActions';
+import { lockDevice } from '@suite-actions/suiteActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Dispatch, GetState } from '@suite-types';
 
@@ -38,6 +38,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const wrappedMethods = [
         'getFeatures',
         'getDeviceState',
+        'getAddress',
         'applySettings',
         'changePin',
         'backupDevice',
@@ -47,9 +48,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         if (!original) return;
         // typescript complains about params and return type, need to be "any"
         (TrezorConnect[key] as any) = async (params: any) => {
-            dispatch(lockUI(true));
+            dispatch(lockDevice(true));
             const result = await original(params);
-            dispatch(lockUI(false));
+            dispatch(lockDevice(false));
             return result;
         };
     });
@@ -59,8 +60,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
                 : 'https://connect.trezor.io/8/';
-        //   'https://localhost:8088/';
-        // : 'https://connect.sldev.cz/connect-electron/';
+        // : 'https://localhost:8088/';
 
         await TrezorConnect.init({
             connectSrc,

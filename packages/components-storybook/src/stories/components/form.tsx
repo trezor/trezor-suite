@@ -742,6 +742,7 @@ storiesOf('Form', module)
             const isClearable = boolean('Clearable', false);
             const isDisabled = boolean('Disabled', false);
             const withDropdownIndicator = boolean('withDropdownIndicator', true);
+            const topLabel = text('Top label', 'Input label');
             const values: any = {
                 None: null,
                 Hello: { value: 'hello', label: 'Hello' },
@@ -763,6 +764,7 @@ storiesOf('Form', module)
                     {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
                     value={select('Value', values, null)}
                     options={options}
+                    topLabel={topLabel}
                 />
             );
         },

@@ -12,6 +12,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
     SuiteDB.isDBAvailable(async (isAvailable: boolean) => {
         let suite: Partial<AppState['suite']> | typeof undefined;
         let devices: AppState['devices'] = [];
+        let walletSettings: AppState['wallet']['settings'] | typeof undefined;
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');
@@ -19,6 +20,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
             //  load state from database
             suite = await db.getItemByPK('suiteSettings', 'suite');
             devices = await db.getItemsExtended('devices');
+            walletSettings = await db.getItemByPK('walletSettings', 'wallet');
         }
 
         const initialState = getState();
@@ -31,6 +33,13 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     ...suite,
                 },
                 devices,
+                wallet: {
+                    ...initialState.wallet,
+                    settings: {
+                        ...initialState.wallet.settings,
+                        ...walletSettings,
+                    },
+                },
             },
         });
     });

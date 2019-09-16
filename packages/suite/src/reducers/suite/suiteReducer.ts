@@ -129,6 +129,10 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
                 break;
 
+            case SUITE.LOCK_DEVICE:
+                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, action.payload);
+                break;
+
             case SUITE.LOCK_ROUTER:
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
