@@ -43,7 +43,9 @@ class BookmarkStep extends React.Component<Props, StepState> {
     }
 
     setBookmarkFlagAndContinue() {
-        const flags = addToFlags(HAS_BOOKMARK_FLAG, this.props.device.features.flags);
+        const { device } = this.props;
+        if (!device || !device.features) return;
+        const flags = addToFlags(HAS_BOOKMARK_FLAG, device.features.flags);
         this.props.connectActions.callActionAndGoToNextStep(() =>
             this.props.connectActions.applyFlags({ flags }),
         );

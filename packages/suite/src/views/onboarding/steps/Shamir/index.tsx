@@ -8,12 +8,17 @@ import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components'
 import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
+    const { device } = props;
+
+    // this step expects device
+    if (!device || !device.features) {
+        return null;
+    }
+
     const getModel = () => {
-        if (props.device.features.major_version === 1) {
-            return 1;
-        }
-        return 2;
+        return device.features.major_version;
     };
+
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>

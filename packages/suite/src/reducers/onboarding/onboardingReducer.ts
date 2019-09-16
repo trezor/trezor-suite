@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { DEVICE, Device } from 'trezor-connect';
+import { DEVICE, UI, Device } from 'trezor-connect';
 
 import {
     OnboardingReducer,
@@ -12,6 +12,12 @@ import {
 import { AnyPath } from '@onboarding-types/steps';
 import * as STEP from '@suite/constants/onboarding/steps';
 import steps from '@onboarding-config/steps';
+import {
+    DEVICE_CALL_RESET,
+    DEVICE_CALL_START,
+    DEVICE_CALL_SUCCESS,
+    DEVICE_CALL_ERROR,
+} from '@suite/types/onboarding/connect';
 import { Action } from '@suite-types';
 
 const initialState: OnboardingReducer = {
@@ -20,6 +26,16 @@ const initialState: OnboardingReducer = {
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
+    deviceCall: {
+        name: null,
+        isProgress: false,
+        error: null,
+        result: null,
+    },
+    uiInteraction: {
+        name: undefined,
+        counter: 0,
+    },
 };
 
 const setPrevDevice = (state: OnboardingReducer, device: Device) => {
@@ -57,6 +73,22 @@ const removePath = (paths: AnyPath[], state: OnboardingReducer) => {
     return state.path.filter(p => !paths.includes(p));
 };
 
+const setInteraction = (
+    currentInteraction: OnboardingReducer['uiInteraction'],
+    newInteraction: string,
+) => {
+    if (currentInteraction.name === newInteraction) {
+        return {
+            name: currentInteraction.name,
+            counter: currentInteraction.counter + 1,
+        };
+    }
+    return {
+        name: newInteraction,
+        counter: 0,
+    };
+};
+
 const onboarding = (state: OnboardingReducer = initialState, action: Action) => {
     // return if not init
     return produce(state, draft => {
@@ -79,8 +111,62 @@ const onboarding = (state: OnboardingReducer = initialState, action: Action) => 
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);
+                draft.uiInteraction = {
+                    name: undefined,
+                    counter: 0,
+                };
+                break;
+            case DEVICE_CALL_RESET:
+                draft.deviceCall = {
+                    name: null,
+                    isProgress: false,
+                    error: null,
+                    result: null,
+                };
+                draft.uiInteraction = {
+                    name: undefined,
+                    counter: 0,
+                };
+                break;
+            case DEVICE_CALL_START:
+                draft.deviceCall = {
+                    ...state.deviceCall,
+                    name: action.name,
+                    isProgress: true,
+                };
+                break;
+            case DEVICE_CALL_SUCCESS:
+                draft.deviceCall = {
+                    ...state.deviceCall,
+                    isProgress: false,
+                    error: null,
+                    result: action.result,
+                };
+                draft.uiInteraction = {
+                    name: undefined,
+                    counter: 0,
+                };
+                break;
+            case DEVICE_CALL_ERROR:
+                draft.deviceCall = {
+                    ...state.deviceCall,
+                    name: action.name,
+                    isProgress: false,
+                    error: action.error,
+                    result: null,
+                };
+                break;
+            case UI.REQUEST_BUTTON:
+                draft.uiInteraction = setInteraction(state.uiInteraction, action.payload.code);
+                break;
+            case UI.REQUEST_WORD:
+                draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
+                break;
+            case UI.REQUEST_PIN:
+                draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
                 break;
             default:
+            //  no default
         }
     });
 };

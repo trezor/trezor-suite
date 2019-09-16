@@ -10,12 +10,24 @@ import {
 import { Device } from 'trezor-connect';
 import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';
 
+export interface UiInteraction {
+    name: undefined | string;
+    counter: number;
+}
+
 export interface OnboardingReducer {
     prevDevice: Device | null;
     selectedModel: number | null;
     activeStepId: AnyStepId;
     activeSubStep: string | null;
     path: AnyPath[];
+    deviceCall: {
+        name: null | string; // todo: better, make type AnyDeviceCall
+        isProgress: boolean;
+        error: null | string;
+        result: null | Record<string, any>;
+    };
+    uiInteraction: UiInteraction;
 }
 
 export interface OnboardingActions {

@@ -301,7 +301,7 @@ declare module 'trezor-connect' {
 
     export type DeviceMode = 'normal' | 'bootloader' | 'initialize' | 'seedless';
 
-    export type DeviceFirmwareStatus = 'valid' | 'outdated' | 'required';
+    export type DeviceFirmwareStatus = 'valid' | 'outdated' | 'required' | 'unknown' | 'none';
 
     export interface FirmwareRelease {
         required: boolean;
