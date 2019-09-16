@@ -99,7 +99,8 @@ export const getSelectedAccount = (
     device: AppState['suite']['device'],
     routerParams: AppState['router']['params'],
 ) => {
-    if (!device || !routerParams.symbol || !routerParams.accountId) return null;
+    if (!device || !routerParams.symbol || !routerParams.accountId || !routerParams.accountType)
+        return null;
 
     // imported account index has 'i' prefix
     const isImported = /^i\d+$/i.test(routerParams.accountId);
@@ -117,7 +118,14 @@ export const getSelectedAccount = (
     //         a.network === routerParams.coin
     // ) || null;
 
-    return accounts.find(a => a.index === index && a.symbol === routerParams.symbol) || null;
+    return (
+        accounts.find(
+            a =>
+                a.index === index &&
+                a.symbol === routerParams.symbol &&
+                a.accountType === routerParams.accountType,
+        ) || null
+    );
 };
 
 export const getSelectedNetwork = (networks: Network[], symbol: string) => {
