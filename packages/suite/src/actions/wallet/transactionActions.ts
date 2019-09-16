@@ -10,7 +10,11 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.REMOVE; txId: string }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
     | { type: typeof TRANSACTION.FETCH_INIT }
-    | { type: typeof TRANSACTION.FETCH_SUCCESS; transactions: WalletAccountTransaction[] }
+    | {
+          type: typeof TRANSACTION.FETCH_SUCCESS;
+          transactions: WalletAccountTransaction[];
+          marker?: any;
+      }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 // | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
 
@@ -95,10 +99,12 @@ const getTransactionsFromStorage = async (descriptor: string, offset?: number, c
     }
 };
 
-export const fetchTransactions = (descriptor: string, page?: number, perPage?: number) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-): Promise<void> => {
+export const fetchTransactions = (
+    descriptor: string,
+    networkType: string,
+    page?: number,
+    perPage?: number,
+) => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const offset = page && perPage ? (page - 1) * perPage : undefined;
     const count = perPage || undefined;
     let storedTxs = null;
@@ -130,19 +136,35 @@ export const fetchTransactions = (descriptor: string, page?: number, perPage?: n
         console.log('no stored txs for the acc', descriptor);
     }
 
-    const shouldFetchFromBackend = storedTxs === null || storedTxs.length < perPage;
+    const shouldFetchFromBackend =
+        storedTxs === null || storedTxs.length === 0 || storedTxs.length < perPage;
     if (shouldFetchFromBackend) {
-        const result = await TrezorConnect.getAccountInfo({
-            coin: getState().wallet.selectedAccount!.account!.network,
-            // path: getState().wallet.selectedAccount!.account!.path,
-            descriptor,
-            details: 'txs',
-            page,
-            pageSize: 25,
-        });
+        console.log('networkType', networkType);
+        console.log('fetching page', page);
+        let result = null;
+
+        if (networkType === 'ripple') {
+            const marker = getState().wallet.transactions.marker || selectedAccount.account!.marker;
+            result = await TrezorConnect.getAccountInfo({
+                coin: selectedAccount!.account!.network,
+                descriptor,
+                details: 'txs',
+                marker: marker,
+            });
+            console.log('req marker', marker);
+        } else {
+            result = await TrezorConnect.getAccountInfo({
+                coin: getState().wallet.selectedAccount!.account!.network,
+                descriptor,
+                details: 'txs',
+                page,
+                pageSize: 25,
+            });
+        }
 
         if (result.success) {
             console.log('fetched from the blockbook:');
+            console.log('marker', result.payload.marker);
             console.log('fetched accountINfo', result.payload);
             console.log(result.payload.history.transactions);
             dispatch({
@@ -152,7 +174,9 @@ export const fetchTransactions = (descriptor: string, page?: number, perPage?: n
                     page,
                     accountDescriptor: descriptor,
                 })),
+                marker: result.payload.marker ? result.payload.marker : undefined,
             });
+            console.log('res marker', result.payload.marker ? result.payload.marker : undefined);
         } else {
             dispatch({
                 type: TRANSACTION.FETCH_ERROR,

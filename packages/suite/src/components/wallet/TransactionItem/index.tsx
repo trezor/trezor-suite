@@ -136,6 +136,11 @@ const TransactionItem = React.memo(
                 </Heading>
                 <Row>
                     <Targets>
+                        {type === 'self' && (
+                            <Target>
+                                <Addr>(sent to self)</Addr>
+                            </Target>
+                        )}
                         {targets &&
                             targets.map(target => (
                                 <Target>

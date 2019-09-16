@@ -17,11 +17,13 @@ export interface State {
     transactions: WalletAccountTransaction[];
     isLoading: boolean;
     error: string | null;
+    marker?: any;
 }
 
 const initialState: State = {
     transactions: [],
     isLoading: false,
+    marker: null,
     error: null,
 };
 
@@ -86,6 +88,7 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case TRANSACTION.FETCH_SUCCESS:
                 add(draft, action.transactions);
+                draft.marker = action.marker;
                 draft.isLoading = false;
                 break;
             case TRANSACTION.FETCH_ERROR:

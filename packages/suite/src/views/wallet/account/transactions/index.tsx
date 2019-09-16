@@ -37,7 +37,12 @@ const Transactions = (props: Props) => {
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
-        props.fetchTransactions(selectedAccount.account!.descriptor, page, size);
+        props.fetchTransactions(
+            selectedAccount.account!.descriptor,
+            selectedAccount.account!.networkType,
+            page,
+            size,
+        );
     };
 
     return (
