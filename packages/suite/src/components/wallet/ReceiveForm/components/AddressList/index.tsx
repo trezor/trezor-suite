@@ -14,6 +14,7 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
     addresses: Address[];
     setSelectedAddr: any;
     selectedAddress: Address | null;
+    isAddressVerifying?: boolean;
     collapsed?: boolean;
     paginationEnabled: boolean;
     isAddressPartiallyHidden?: (descriptor: string) => boolean;
@@ -36,6 +37,7 @@ const AddressList = ({
     paginationEnabled,
     collapsed = true,
     isAddressPartiallyHidden,
+    isAddressVerifying,
     actions,
     controls,
     secondaryText,
@@ -77,6 +79,7 @@ const AddressList = ({
                 isPartiallyHidden={isHidden}
                 secondaryText={secondaryText ? secondaryText(addr) : null}
                 isSelected={addr === selectedAddress}
+                isVerifying={isAddressVerifying}
                 address={addr.address}
                 index={parseBIP44Path(addr.path)!.addrIndex}
                 actions={actions ? actions(addr) : null}
