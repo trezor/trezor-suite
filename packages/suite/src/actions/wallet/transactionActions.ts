@@ -110,8 +110,11 @@ export const fetchTransactions = (descriptor: string, page?: number, perPage?: n
     console.log('descriptor', descriptor);
     console.log('page', page);
 
+    const txsForPage = reducerTxs.filter(t => t.page === page);
+    // we already got txs for the page in reducer
+    if (txsForPage.length > 0) return;
     // we already got all txs in reducer
-    if (totalTxs === reducerTxs.length) return;
+    // if (totalTxs === reducerTxs.length) return;
 
     dispatch({
         type: TRANSACTION.FETCH_INIT,
@@ -140,11 +143,13 @@ export const fetchTransactions = (descriptor: string, page?: number, perPage?: n
 
         if (result.success) {
             console.log('fetched from the blockbook:');
+            console.log('fetched accountINfo', result.payload);
             console.log(result.payload.history.transactions);
             dispatch({
                 type: TRANSACTION.FETCH_SUCCESS,
                 transactions: (result.payload.history.transactions || []).map(tx => ({
                     ...tx,
+                    page,
                     accountDescriptor: descriptor,
                 })),
             });
@@ -157,9 +162,7 @@ export const fetchTransactions = (descriptor: string, page?: number, perPage?: n
     } else {
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
-            transactions: transactionsFromBackend
-                ? transactionsFromBackend.map(t => ({ ...t, accountId: descriptor }))
-                : [],
+            transactions: storedTxs ? storedTxs.map(t => ({ ...t, accountId: descriptor })) : [],
         });
     }
 };

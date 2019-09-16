@@ -11,16 +11,6 @@ export interface Account extends AccountInfo {
     path: string;
     imported?: boolean;
     deviceState: string;
-
-    // connect
-    availableBalance: string;
-    balance: string;
-    descriptor: string;
-    empty: boolean;
-    history: {
-        total: number;
-        unconfirmed: number;
-    };
 }
 
 export const initialState: Account[] = [];

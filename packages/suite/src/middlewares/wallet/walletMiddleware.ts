@@ -80,6 +80,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
                     // add last 25 txs to the history
                     const enhancedTxs = transactions.map(tx => ({
                         accountDescriptor: account.descriptor,
+                        page: 1,
                         ...tx,
                     }));
                     api.dispatch(transactionActions.add(enhancedTxs));
