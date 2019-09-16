@@ -7,10 +7,16 @@ import thunk from 'redux-thunk';
 
 import accountsReducer from '@wallet-reducers/accountsReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
+import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
+import { DISCOVERY, ACCOUNT, SETTINGS } from '@wallet-actions/constants';
 import * as discoveryActions from '../discoveryActions';
-import fixtures, { paramsError } from './fixtures/discoveryActions';
+import {
+    paramsError,
+    fixtures,
+    interruptionFixtures,
+    changeNetworksFixtures,
+} from './fixtures/discoveryActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -19,8 +25,8 @@ type Fixture = ArrayElement<typeof fixtures>;
 type Bundle = { path: string; coin: string }[];
 
 jest.mock('trezor-connect', () => {
-    let callback: Function = () => {};
-    let fixture: Fixture | Promise<Fixture> | typeof undefined;
+    let progressCallback: Function = () => {};
+    let fixture: Fixture | Promise<Fixture> | Function | typeof undefined;
 
     // mocked function
     const getAccountInfo = async (params: { bundle: Bundle }) => {
@@ -31,6 +37,10 @@ jest.mock('trezor-connect', () => {
         // this promise will be resolved by TrezorConnect.cancel
         if (fixture instanceof Promise) {
             return fixture;
+        }
+
+        if (typeof fixture === 'function') {
+            return fixture.call(null, progressCallback);
         }
 
         const { connect } = fixture;
@@ -53,6 +63,19 @@ jest.mock('trezor-connect', () => {
                 .join('/');
             let isEmpty = true;
             let isFailed = false;
+
+            if (connect.interruption) {
+                const interrupted = connect.interruption.indexOf(param.path);
+                if (interrupted >= 0) {
+                    connect.interruption[interrupted] = 'interruption-item-used';
+                    return {
+                        success: false,
+                        payload: {
+                            error: 'discovery_interrupted',
+                        },
+                    };
+                }
+            }
 
             if (connect.usedAccounts) {
                 connect.usedAccounts.some(a => {
@@ -77,13 +100,13 @@ jest.mock('trezor-connect', () => {
             }
 
             if (isFailed) {
-                callback.call(null, {
+                progressCallback.call(null, {
                     progress: i,
                     response: null,
                     error: 'Runtime discovery error',
                 });
             } else {
-                callback.call(null, {
+                progressCallback.call(null, {
                     progress: i,
                     response: {
                         descriptor: param.path,
@@ -108,10 +131,10 @@ jest.mock('trezor-connect', () => {
         default: {
             getFeatures: () => {},
             off: () => {
-                callback = () => {};
+                progressCallback = () => {};
             },
             on: (_event: string, cb: Function) => {
-                callback = cb;
+                progressCallback = cb;
             },
             getAccountInfo,
             cancel: () => {},
@@ -125,7 +148,7 @@ jest.mock('trezor-connect', () => {
     };
 });
 
-const SUITE_DEVICE = getSuiteDevice({ state: 'device-state' });
+const SUITE_DEVICE = getSuiteDevice({ state: 'device-state', connected: true });
 export const getInitialState = () => ({
     suite: {
         device: SUITE_DEVICE,
@@ -133,6 +156,7 @@ export const getInitialState = () => ({
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
+        settings: walletSettingsReducer(undefined, { type: 'foo' } as any),
     },
 });
 
@@ -142,11 +166,12 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
     // there is not much redux logic in this test
     // just update state on every action manually
     const action = store.getActions().pop();
-    const { accounts, discovery } = store.getState().wallet;
+    const { accounts, discovery, settings } = store.getState().wallet;
 
     store.getState().wallet = {
         accounts: accountsReducer(accounts, action),
         discovery: discoveryReducer(discovery, action),
+        settings: walletSettingsReducer(settings, action),
     };
     // add action back to stack
     store.getActions().push(action);
@@ -162,16 +187,104 @@ describe('Discovery Actions', () => {
             const store = mockStore(state);
             store.subscribe(() => updateStore(store));
 
+            store.dispatch(discoveryActions.create('device-state'));
+            await store.dispatch(discoveryActions.start());
             await store.dispatch(discoveryActions.start());
 
             const result = store.getState().wallet.discovery[0];
             if (f.result) {
                 expect(result.failed).toEqual(f.result.failed);
                 expect(result.loaded).toEqual(result.total);
+                expect(result.loaded).toEqual(store.getState().wallet.accounts.length);
+                expect(result.bundleSize).toEqual(0);
             } else {
                 const action = store.getActions().pop();
                 expect(action.type).toEqual(NOTIFICATION.ADD);
             }
+        });
+    });
+
+    // Detailed info about this test could be found in fixtures
+    interruptionFixtures.forEach(f => {
+        it(`Start/stop/restart: ${f.description}`, async done => {
+            require('trezor-connect').setTestFixtures(f);
+            const store = mockStore(getInitialState());
+            store.subscribe(() => updateStore(store));
+            // additional action listener for triggering "discovery.stop" action
+            store.subscribe(() => {
+                const actions = store.getActions();
+                const a = actions[actions.length - 1];
+                if (a.type === ACCOUNT.CREATE) {
+                    // call "stop" if added account is a trigger from fixtures
+                    const trigger = f.trigger.find(t => a.payload.path.indexOf(t) >= 0);
+                    if (trigger) {
+                        store.dispatch(discoveryActions.stop());
+                    }
+                }
+            });
+
+            store.dispatch(discoveryActions.create('device-state'));
+
+            // restart discovery until complete
+            const loop = async (): Promise<any> => {
+                await store.dispatch(discoveryActions.start());
+                const lastAction = store.getActions().pop();
+                if (lastAction.type === DISCOVERY.STOP) {
+                    // since interruption is always called after account creation
+                    // correct order for recent actions is: stop < update < interrupt (discoveryActions.handleProgress)
+                    const update = store.getActions().pop();
+                    const interrupt = store.getActions().pop();
+                    expect(update.type).toEqual(DISCOVERY.UPDATE);
+                    expect(interrupt.type).toEqual(DISCOVERY.INTERRUPT);
+                    store.clearActions();
+                    return loop();
+                }
+                return lastAction;
+            };
+
+            const complete = await loop();
+            expect(complete.type).toEqual(DISCOVERY.COMPLETE);
+            const discovery = store.getState().wallet.discovery[0];
+            expect(discovery.loaded).toEqual(store.getState().wallet.accounts.length);
+            done(expect(discovery.total).toEqual(discovery.loaded));
+        });
+    });
+
+    changeNetworksFixtures.forEach(f => {
+        it(`Change network: ${f.description}`, async done => {
+            require('trezor-connect').setTestFixtures(f);
+            const store = mockStore(getInitialState());
+            store.subscribe(() => updateStore(store));
+            // additional action listener for triggering "discovery.stop" action
+            store.subscribe(() => {
+                const actions = store.getActions();
+                const a = actions[actions.length - 1];
+                if (a.type === ACCOUNT.CREATE) {
+                    // call "stop" if added account is a trigger from fixtures
+                    const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
+                    if (trigger) {
+                        store.dispatch({
+                            type: SETTINGS.CHANGE_NETWORKS,
+                            payload: trigger.networks,
+                        });
+                        store.dispatch(discoveryActions.updateNetworkSettings());
+                    }
+                }
+            });
+
+            store.dispatch(discoveryActions.create('device-state'));
+            await store.dispatch(discoveryActions.start());
+            const complete = store.getActions().pop();
+            expect(complete.type).toEqual(DISCOVERY.COMPLETE);
+            const discovery = store.getState().wallet.discovery[0];
+            const accounts = store
+                .getState()
+                .wallet.accounts.filter(a => discovery.networks.includes(a.symbol));
+
+            // length of accounts in reducer are equal discovery.loaded
+            expect(discovery.loaded).toEqual(accounts.length);
+            // 100% progress
+            done(expect(discovery.total).toEqual(discovery.loaded));
         });
     });
 
@@ -192,14 +305,8 @@ describe('Discovery Actions', () => {
     it('Create discovery which already exist', async () => {
         const store = mockStore(getInitialState());
         store.subscribe(() => updateStore(store));
-        store.dispatch({
-            type: DISCOVERY.START,
-            payload: SUITE_DEVICE,
-        });
-        store.dispatch({
-            type: DISCOVERY.START,
-            payload: SUITE_DEVICE,
-        });
+        store.dispatch(discoveryActions.create('device-state'));
+        store.dispatch(discoveryActions.create('device-state'));
         expect(store.getState().wallet.discovery.length).toEqual(1);
     });
 
@@ -220,29 +327,11 @@ describe('Discovery Actions', () => {
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
         const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state'));
         store.dispatch(discoveryActions.start()).then(() => {
             const action = store.getActions().pop();
             done(expect(action.type).toEqual(DISCOVERY.STOP));
-        });
-        store.dispatch(discoveryActions.stop());
-    });
-
-    it('Start/stop/restart', async done => {
-        const f = new Promise(resolve => {
-            setTimeout(() => resolve(paramsError('discovery_interrupted')), 100);
-        });
-        // set fixtures in trezor-connect
-        require('trezor-connect').setTestFixtures(f);
-        const store = mockStore(getInitialState());
-        store.dispatch(discoveryActions.start()).then(async () => {
-            // reset fixtures
-            require('trezor-connect').setTestFixtures(fixtures[0]); // fixture: all empty
-
-            store.subscribe(() => updateStore(store));
-            // restart process
-            await store.dispatch(discoveryActions.start());
-            const action = store.getActions().pop();
-            done(expect(action.type).toEqual(DISCOVERY.COMPLETE));
         });
         store.dispatch(discoveryActions.stop());
     });
@@ -260,32 +349,73 @@ describe('Discovery Actions', () => {
         expect(store.getActions()).toEqual([]);
     });
 
-    it('First iteration malformed error (not a json)', async done => {
+    it(`TrezorConnect responded with success but discovery was removed`, async done => {
+        const f = new Promise(resolve => {
+            setTimeout(() => resolve({ success: true }), 100);
+        });
+        // set fixtures in trezor-connect
+        require('trezor-connect').setTestFixtures(f);
+
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state'));
+        store.dispatch(discoveryActions.start()).then(() => {
+            const action = store.getActions().pop();
+            done(expect(action.type).toEqual(DISCOVERY.REMOVE));
+        });
+        store.dispatch(discoveryActions.remove('device-state'));
+    });
+
+    it(`TrezorConnect responded with success but discovery is not running`, async done => {
+        const f = new Promise(resolve => {
+            setTimeout(() => resolve({ success: true }), 100);
+        });
+        // set fixtures in trezor-connect
+        require('trezor-connect').setTestFixtures(f);
+
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state'));
+        store.dispatch(discoveryActions.start()).then(() => {
+            const action = store.getActions().pop();
+            done(expect(action.type).toEqual(NOTIFICATION.ADD));
+        });
+        store.dispatch(
+            discoveryActions.update({
+                deviceState: 'device-state',
+                status: 3, // STATUS.STOP
+            }),
+        );
+    });
+
+    it('First iteration malformed error (not a json)', async () => {
         const f = new Promise(resolve => {
             setTimeout(() => resolve(paramsError('not-a-json', 'bundle_fw_exception')), 100);
         });
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
+
         const store = mockStore(getInitialState());
-        store.dispatch(discoveryActions.start()).then(() => {
-            const action = store.getActions().pop();
-            done(expect(action.type).toEqual(NOTIFICATION.ADD));
-        });
-        store.dispatch(discoveryActions.stop());
+        store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state'));
+        await store.dispatch(discoveryActions.start());
+        const action = store.getActions().pop();
+        expect(action.type).toEqual(NOTIFICATION.ADD);
     });
 
-    it('First iteration malformed error (invalid json)', async done => {
+    it('First iteration malformed error (invalid json not an array)', async () => {
         const f = new Promise(resolve => {
             setTimeout(() => resolve(paramsError('{}', 'bundle_fw_exception')), 100);
         });
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
+
         const store = mockStore(getInitialState());
-        store.dispatch(discoveryActions.start()).then(() => {
-            const action = store.getActions().pop();
-            done(expect(action.type).toEqual(NOTIFICATION.ADD));
-        });
-        store.dispatch(discoveryActions.stop());
+        store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state'));
+        await store.dispatch(discoveryActions.start());
+        const action = store.getActions().pop();
+        expect(action.type).toEqual(NOTIFICATION.ADD);
     });
 
     it('TrezorConnect did not emit any progress event', async () => {
@@ -296,6 +426,7 @@ describe('Discovery Actions', () => {
             success: true,
         });
         const store = mockStore(getInitialState());
+        store.dispatch(discoveryActions.create('device-state'));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
         // restore original mocked fn
@@ -325,6 +456,7 @@ describe('Discovery Actions', () => {
         // run process
         const store = mockStore(getInitialState());
         store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state'));
         await store.dispatch(discoveryActions.start());
         // restore original mocked fn
         require('trezor-connect').default.getAccountInfo = originalFn;
@@ -355,6 +487,7 @@ describe('Discovery Actions', () => {
         // run process
         const store = mockStore(getInitialState());
         store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state'));
         await store.dispatch(discoveryActions.start());
         // restore original mocked fn
         require('trezor-connect').default.getAccountInfo = originalFn;

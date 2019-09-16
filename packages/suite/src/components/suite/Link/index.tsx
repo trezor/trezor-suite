@@ -7,6 +7,7 @@ interface Props extends LinkProps {
     className?: string;
     isGray?: boolean;
     isGreen?: boolean;
+    hasNoStyle?: boolean;
     target?: string;
     children: React.ReactNode;
 }
@@ -23,6 +24,11 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
     };
 
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
+    const WrappedLink = React.forwardRef(() => (
+        <TLink target={target} {...linkProps} className={className}>
+            {children}
+        </TLink>
+    ));
 
     return (
         <NextLink
@@ -34,9 +40,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
             passHref
             {...overrideAsProp}
         >
-            <TLink target={target} {...linkProps} className={className}>
-                {children}
-            </TLink>
+            <WrappedLink />
         </NextLink>
     );
 };

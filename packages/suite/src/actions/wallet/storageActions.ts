@@ -1,5 +1,4 @@
 import * as transactionActions from '@wallet-actions/transactionActions';
-import * as settingsActions from '@wallet-actions/settingsActions';
 import { db, SuiteStorageUpdateMessage } from '@suite/storage/index';
 import SuiteDB from '@trezor/suite-storage';
 import { WALLET } from '@wallet-actions/constants';
@@ -10,7 +9,7 @@ const updateReducers = (message: SuiteStorageUpdateMessage) => async (
     getState: GetState,
 ) => {
     if (message.store === 'txs') {
-        // txs objecStore was updated, we'll load transactions from db to reducer
+        // txs objectStore was updated, we'll load transactions from db to reducer
         const { accountId } = getState().router.params;
         const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
             key: Number(accountId),
@@ -21,7 +20,7 @@ const updateReducers = (message: SuiteStorageUpdateMessage) => async (
 };
 
 export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState) => {
-    SuiteDB.isDBAvailable(async (isAvailable: any) => {
+    SuiteDB.isDBAvailable(async (isAvailable: boolean) => {
         if (!isAvailable) {
             // TODO: Display error for the user (eg. redirect to unsupported browser page)
             console.warn('IndexedDB not supported');
@@ -29,18 +28,11 @@ export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState)
             // TODO: Since user can edit data in IDB outside of the Suite,
             // maybe we could run some form of data validation? Or delete corrupted object stores.
 
-            //  load transactions from indexedDB
+            // load transactions from indexedDB
             const txs = await db.getItemsExtended('txs');
             if (txs) {
                 // @ts-ignore
                 dispatch(transactionActions.setTransactions(txs));
-            }
-
-            //  load wallet settings from indexedDB
-            const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
-            if (walletSettings) {
-                // @ts-ignore
-                dispatch(settingsActions.fromStorage(walletSettings));
             }
 
             db.onChange(event => {

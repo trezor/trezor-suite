@@ -9,7 +9,7 @@ import Discovery from '@wallet-components/Discovery';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
 import { getRoute } from '@suite/utils/suite/router';
-import { NETWORKS, EXTERNAL_COINS } from '@suite-config';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@suite-config';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -64,11 +64,11 @@ interface Props {
 const Dashboard = (props: Props) => {
     const isEmpty = () => {
         const numberOfVisibleNetworks = NETWORKS.filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => !props.settings.hiddenCoins.includes(item.symbol));
-        const { hiddenCoinsExternal } = props.settings;
-        const numberOfVisibleNetworksExternal = EXTERNAL_COINS.filter(
-            item => !item.isHidden,
-        ).filter(item => !hiddenCoinsExternal.includes(item.id));
+            .filter(item => props.settings.enabledNetworks.includes(item.symbol));
+        const { enabledExternalNetworks } = props.settings;
+        const numberOfVisibleNetworksExternal = EXTERNAL_NETWORKS.filter(
+            n => !n.isHidden && enabledExternalNetworks.includes(n.symbol),
+        );
 
         return numberOfVisibleNetworks.length <= 0 && numberOfVisibleNetworksExternal.length <= 0;
     };
@@ -99,23 +99,22 @@ const Dashboard = (props: Props) => {
                         <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
                     </StyledP>
                     <Coins>
-                        {NETWORKS.filter(item => !item.isHidden)
-                            .filter(item => !props.settings.hiddenCoins.includes(item.symbol))
-                            .map(network => (
-                                <StyledLink
-                                    key={`${network.name}-${network.symbol}`}
-                                    href={getRoute('wallet-account', {
-                                        symbol: network.symbol,
-                                        accountId: '0',
-                                        accountType: network.accountType || 'normal',
-                                    })}
-                                >
-                                    <StyledCoinLogo
-                                        network={network.symbol === 'test' ? 'btc' : network.symbol}
-                                        size={27}
-                                    />
-                                </StyledLink>
-                            ))}
+                        {NETWORKS.filter(
+                            item =>
+                                !item.isHidden &&
+                                props.settings.enabledNetworks.includes(item.symbol),
+                        ).map(network => (
+                            <StyledLink
+                                key={`${network.name}-${network.symbol}`}
+                                href={getRoute('wallet-account', {
+                                    symbol: network.symbol,
+                                    accountId: '0',
+                                    accountType: network.accountType || 'normal',
+                                })}
+                            >
+                                <StyledCoinLogo symbol={network.symbol} size={27} />
+                            </StyledLink>
+                        ))}
                     </Coins>
                 </Row>
             </Content>

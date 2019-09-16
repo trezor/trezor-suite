@@ -10,7 +10,7 @@ interface Props extends InjectedIntlProps {
 }
 
 interface Network {
-    shortcut: string;
+    symbol: string;
 }
 
 // There could be only one account notification
@@ -18,7 +18,7 @@ const AccountNotifications = (props: Props) => {
     const { network, notification } = props.selectedAccount;
 
     if (!network || !notification) return null;
-    const blockchain = props.blockchain.find((b: Network) => b.shortcut === network.symbol);
+    const blockchain = props.blockchain.find((b: Network) => b.symbol === network.symbol);
 
     if (notification.type === 'backend') {
         // special case: backend is down
@@ -34,7 +34,7 @@ const AccountNotifications = (props: Props) => {
                         label: props.intl.formatMessage(l10nMessages.TR_CONNECT_TO_BACKEND),
                         callback: () => {},
                         // callback: async () => {
-                        //     await props.blockchainReconnect(network.shortcut);
+                        //     await props.blockchainReconnect(network.symbol);
                         // },
                     },
                 ]}

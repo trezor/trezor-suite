@@ -10,6 +10,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goToNextStep: bindActionCreators(goToNextStep, dispatch),
 });
 
+export type Props = ReturnType<typeof mapDispatchToProps>;
+
 export default connect(
     null,
     mapDispatchToProps,

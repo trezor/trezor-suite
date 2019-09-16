@@ -5,6 +5,7 @@ import { Button, ButtonPin, InputPin, P, H5, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
 
+import modalsMessages from '../messages';
 import messages from './messages';
 
 const ModalWrapper = styled.div`
@@ -59,22 +60,22 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
         <ModalWrapper>
             <H5>
                 <FormattedMessage
-                    {...messages.TR_ENTER_DEVICE_PIN}
+                    {...messages.TR_ENTER_PIN}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
             </H5>
             <TopMessage size="small">
-                <FormattedMessage {...messages.TR_PIN_LAYOUT_IS_DISPLAYED_ON_YOUR_DEVICE} />
+                <FormattedMessage {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
             </TopMessage>
             <InputWrapper>
                 <InputPin onDeleteClick={() => setValue(value.slice(0, -1))} value={value} />
             </InputWrapper>
             <PinRow>
-                <ButtonPin onClick={() => setValue(`${value}1`)} />
-                <ButtonPin onClick={() => setValue(`${value}2`)} />
-                <ButtonPin onClick={() => setValue(`${value}3`)} />
+                <ButtonPin onClick={() => setValue(`${value}7`)} />
+                <ButtonPin onClick={() => setValue(`${value}8`)} />
+                <ButtonPin onClick={() => setValue(`${value}9`)} />
             </PinRow>
             <PinRow>
                 <ButtonPin onClick={() => setValue(`${value}4`)} />
@@ -82,18 +83,18 @@ const Pin: FunctionComponent<Props> = ({ device, onEnterPin }) => {
                 <ButtonPin onClick={() => setValue(`${value}6`)} />
             </PinRow>
             <PinRow>
-                <ButtonPin onClick={() => setValue(`${value}7`)} />
-                <ButtonPin onClick={() => setValue(`${value}8`)} />
-                <ButtonPin onClick={() => setValue(`${value}9`)} />
+                <ButtonPin onClick={() => setValue(`${value}1`)} />
+                <ButtonPin onClick={() => setValue(`${value}2`)} />
+                <ButtonPin onClick={() => setValue(`${value}3`)} />
             </PinRow>
             <PinFooter>
                 <Button onClick={() => onEnterPin(value)}>
                     <FormattedMessage {...messages.TR_ENTER_PIN} />
                 </Button>
                 <BottomMessage size="small">
-                    <FormattedMessage {...messages.TR_NOT_SURE_HOW_PIN_WORKS} />{' '}
+                    <FormattedMessage {...messages.TR_HOW_PIN_WORKS} />{' '}
                     <Link href="https://wiki.trezor.io/User_manual:Entering_PIN" isGreen>
-                        <FormattedMessage {...messages.TR_LEARN_MORE} />
+                        <FormattedMessage {...modalsMessages.TR_LEARN_MORE} />
                     </Link>
                 </BottomMessage>
             </PinFooter>

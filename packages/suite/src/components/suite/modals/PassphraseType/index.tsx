@@ -30,7 +30,7 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
                 </Prompt>
 
                 <P size="small">
-                    <FormattedMessage {...messages.TR_ENTER_WRONG_PASSPHRASE} />
+                    <FormattedMessage {...messages.TR_IF_WRONG_PASSPHRASE} />
                 </P>
             </Header>
         </Wrapper>

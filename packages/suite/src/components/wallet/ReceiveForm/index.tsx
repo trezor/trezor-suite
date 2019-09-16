@@ -14,6 +14,7 @@ import { parseBIP44Path } from '@wallet-utils/accountUtils';
 import SETTINGS from '@suite-config/settings';
 import { AccountAddresses } from 'trezor-connect';
 import { showAddress } from '@suite/actions/wallet/receiveActions';
+import { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 import { DeviceIcon } from '@suite-components';
 import l10nMessages from './messages';
 import { AppState } from '@suite-types';
@@ -121,11 +122,9 @@ interface Props {
     // makes all props in selectedAccount required, so the account we need is not optional anymore
     // also excludes null;
     account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
-    address: string;
+    isAddressPartiallyHidden: (descriptor: string) => boolean;
     isAddressVerifying: boolean;
-    isAddressUnverified: boolean;
-    isAddressPartiallyHidden: boolean;
-    isAddressVerified: boolean;
+    getAddressReceiveInfo: (descriptor: string) => ReceiveInfo | null;
     showAddress: typeof showAddress;
     networkType: Network['networkType'];
     device: Exclude<AppState['suite']['device'], undefined>;
@@ -158,6 +157,16 @@ const ReceiveForm = ({ className, ...props }: Props) => {
         ) : null;
     };
 
+    const isAddressUnverified = (descriptor: string) => {
+        const addrInfo = props.getAddressReceiveInfo(descriptor);
+        return addrInfo ? addrInfo.isAddressUnverified : false;
+    };
+
+    const isAddressVerified = (descriptor: string) => {
+        const addrInfo = props.getAddressReceiveInfo(descriptor);
+        return addrInfo ? addrInfo.isAddressVerified : false;
+    };
+
     useEffect(() => {
         // reset selected address and fresh addresses count on account change
         setSelectedAddr(null);
@@ -184,7 +193,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                         // TODO: add to utils?
                                         <TextGreen>
                                             {Number(addr.received) / 100000000}{' '}
-                                            {props.account.network}
+                                            {props.account.symbol}
                                         </TextGreen>
                                     ),
                                 }}
@@ -195,7 +204,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     actions={addr => (
                         <EyeButton
                             device={props.device}
-                            isAddressUnverified={props.isAddressUnverified}
+                            isAddressUnverified={isAddressUnverified(addr.path)}
                             onClick={() => {
                                 setSelectedAddr(addr);
                                 props.showAddress(addr.path);
@@ -261,7 +270,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 key={firstFreshAddress.address}
                 ref={firstFreshAddrRef}
                 onClick={() => {
-                    if (props.isAddressVerified && firstFreshAddrRef.current) {
+                    if (isAddressVerified(firstFreshAddress.path) && firstFreshAddrRef.current) {
                         selectText(firstFreshAddrRef.current as HTMLElement);
                     }
                     setSelectedAddr(firstFreshAddress);
@@ -269,26 +278,36 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 isSelected={addresses ? firstFreshAddress === selectedAddr : true}
                 address={firstFreshAddress.address}
                 index={parseBIP44Path(firstFreshAddress.path)!.addrIndex}
-                isPartiallyHidden={props.isAddressPartiallyHidden}
+                isPartiallyHidden={props.isAddressPartiallyHidden(firstFreshAddress.path)}
                 tooltipActions={tooltipAction(firstFreshAddress.address)}
                 readOnly
                 actions={
                     <>
-                        {!(props.isAddressVerified || props.isAddressUnverified) && ( // !account.imported
+                        {!(
+                            isAddressVerified(firstFreshAddress.path) ||
+                            isAddressUnverified(firstFreshAddress.path)
+                        ) && ( // !account.imported
                             <ShowAddressButton
-                                onClick={() => props.showAddress(firstFreshAddress.path)}
+                                onClick={() => {
+                                    props.showAddress(firstFreshAddress.path);
+                                }}
                                 // isDisabled={device.connected && !discovery.completed}
                                 icon="EYE"
                             >
                                 <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
                             </ShowAddressButton>
                         )}
-                        {(props.isAddressVerified || props.isAddressUnverified) &&
+                        {(isAddressVerified(firstFreshAddress.path) ||
+                            isAddressUnverified(firstFreshAddress.path)) &&
                             !props.isAddressVerifying && (
                                 <EyeButton
                                     device={props.device}
-                                    isAddressUnverified={props.isAddressUnverified}
-                                    onClick={() => props.showAddress(firstFreshAddress.path)}
+                                    isAddressUnverified={isAddressUnverified(
+                                        firstFreshAddress.path,
+                                    )}
+                                    onClick={() => {
+                                        props.showAddress(firstFreshAddress.path);
+                                    }}
                                 />
                             )}
                     </>
@@ -318,9 +337,12 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         paginationEnabled={false}
                         collapsed={false}
                         tooltipActions={tooltipAction}
+                        isAddressPartiallyHidden={props.isAddressPartiallyHidden}
                         actions={addr => (
                             <>
-                                {!(props.isAddressVerified || props.isAddressUnverified) && ( // !account.imported
+                                {!(
+                                    isAddressVerified(addr.path) || isAddressUnverified(addr.path)
+                                ) && ( // !account.imported
                                     <ShowAddressButton
                                         onClick={() => props.showAddress(addr.path)}
                                         // isDisabled={device.connected && !discovery.completed}
@@ -329,11 +351,11 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                         <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
                                     </ShowAddressButton>
                                 )}
-                                {(props.isAddressVerified || props.isAddressUnverified) &&
+                                {(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) &&
                                     !props.isAddressVerifying && (
                                         <EyeButton
                                             device={props.device}
-                                            isAddressUnverified={props.isAddressUnverified}
+                                            isAddressUnverified={isAddressUnverified(addr.path)}
                                             onClick={() => props.showAddress(addr.path)}
                                         />
                                     )}
@@ -344,7 +366,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
             )}
 
             {selectedAddr &&
-                (props.isAddressVerified || props.isAddressUnverified) &&
+                (isAddressVerified(selectedAddr.path) || isAddressUnverified(selectedAddr.path)) &&
                 !props.isAddressVerifying && (
                     <QrCode value={selectedAddr.address} accountPath={selectedAddr.path} />
                 )}

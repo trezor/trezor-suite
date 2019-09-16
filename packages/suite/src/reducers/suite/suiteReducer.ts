@@ -1,8 +1,10 @@
-import { TRANSPORT } from 'trezor-connect';
+import { TRANSPORT, IFRAME } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import produce from 'immer';
-import { Action, TrezorDevice } from '@suite-types';
+import { Action, TrezorDevice, ObjectValues } from '@suite-types';
+
+type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
 
 export interface SuiteState {
     initialRun: boolean;
@@ -17,9 +19,7 @@ export interface SuiteState {
     deviceMenuOpened: boolean;
     showSidebar?: boolean;
     platform?: Platform;
-    uiLocked: boolean;
-    routerLocked: boolean;
-    deviceLocked: boolean;
+    locks: Lock[];
 }
 
 interface Transport {
@@ -39,7 +39,7 @@ interface Transport {
 }
 
 interface Platform {
-    mobile: boolean | undefined; // todo: there is maybe a bug in connect, mobile shouldnt be undefined imho
+    mobile?: boolean;
     name: string;
     osname: string;
     outdated: boolean;
@@ -55,9 +55,16 @@ const initialState: SuiteState = {
     messages: {},
     deviceMenuOpened: false,
     showSidebar: undefined,
-    uiLocked: false,
-    routerLocked: false,
-    deviceLocked: false,
+    locks: [],
+};
+
+const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
+    if (enabled) {
+        draft.locks.push(lock);
+    } else {
+        const index = draft.locks.lastIndexOf(lock);
+        draft.locks.splice(index, 1);
+    }
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -119,23 +126,26 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case SUITE.LOCK_UI:
-                draft.uiLocked = action.payload;
+                changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
+                break;
+
+            case SUITE.LOCK_DEVICE:
+                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, action.payload);
                 break;
 
             case SUITE.LOCK_ROUTER:
-                draft.routerLocked = action.payload;
+                changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
 
             case DISCOVERY.START:
-            case DISCOVERY.INTERRUPT:
-                draft.deviceLocked = true;
+                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, true);
                 break;
             case DISCOVERY.STOP:
             case DISCOVERY.COMPLETE:
-                draft.deviceLocked = false;
+                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
 
-            case 'iframe-loaded':
+            case IFRAME.LOADED:
                 draft.platform = action.payload.browser;
                 break;
             // no default

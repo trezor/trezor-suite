@@ -112,27 +112,25 @@ const getCoinName = (symbol: string, accountType: string) => {
     return result[0].name;
 };
 
-const getCoinLogo = (network: string) => (network === 'test' ? 'btc' : network);
-
 interface Props {
     account: Account;
 }
 
-const Row = ({ account }: Props) => (
+const Row = React.memo(({ account }: Props) => (
     <StyledLink
         href={getRoute('wallet-account', {
             accountId: account.index,
-            symbol: account.network,
+            symbol: account.symbol,
             accountType: account.accountType,
         })}
     >
         <Wrapper>
             <Left>
                 <LogoWrapper>
-                    <CoinLogo size={25} network={getCoinLogo(account.network)} />
+                    <CoinLogo size={25} symbol={account.symbol} />
                 </LogoWrapper>
                 <Name>
-                    <CoinName>{getCoinName(account.network, account.accountType)}</CoinName>
+                    <CoinName>{getCoinName(account.symbol, account.accountType)}</CoinName>
                     <AccountIndex>
                         <Label>account</Label>
                         {`#${account.index + 1}`}
@@ -142,7 +140,7 @@ const Row = ({ account }: Props) => (
             <Right>
                 <Balance>
                     <BalanceValue>
-                        {account.balance} {account.network}
+                        {account.balance} {account.symbol}
                     </BalanceValue>
                 </Balance>
                 {account.history.total !== -1 && (
@@ -154,6 +152,6 @@ const Row = ({ account }: Props) => (
             </Right>
         </Wrapper>
     </StyledLink>
-);
+));
 
 export default Row;

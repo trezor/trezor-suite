@@ -1,4 +1,4 @@
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI, Device } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { Action, Dispatch, GetState, TrezorDevice, AcquiredDevice } from '@suite-types';
@@ -63,7 +63,7 @@ export const onPassphraseSubmit = (value: string) => async (
     dispatch(onCancel());
 };
 
-export const onReceiveConfirmation = (confirmation: any) => async (dispatch: Dispatch) => {
+export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch: Dispatch) => {
     await TrezorConnect.uiResponse({
         type: UI.RECEIVE_CONFIRMATION,
         payload: confirmation,
@@ -135,18 +135,19 @@ export const onRememberRequest = (prevState: State) => (
 };
 */
 
-/*
-export const onDeviceConnect = (device: Device) => (
+export const resolveRememberRequest = (device: Device) => (
     dispatch: Dispatch,
     getState: GetState,
 ): void => {
     // interrupt process of remembering device (force forget)
     // TODO: the same for disconnect more than 1 device at once
     const { modal } = getState();
-    if (modal.context === MODAL.CONTEXT_DEVICE && modal.windowType === CONNECT.REMEMBER_REQUEST) {
+    if (
+        modal.context === MODAL.CONTEXT_DEVICE &&
+        modal.windowType === SUITE.REQUEST_REMEMBER_DEVICE
+    ) {
         if (
             device.features &&
-            modal.device &&
             modal.device.features &&
             modal.device.features.device_id === device.features.device_id
         ) {
@@ -156,12 +157,11 @@ export const onDeviceConnect = (device: Device) => (
         } else {
             dispatch({
                 type: SUITE.FORGET_DEVICE,
-                device: modal.device,
+                payload: modal.device as TrezorDevice,
             });
         }
     }
 };
-*/
 
 export const onWalletTypeRequest = (hidden: boolean) => (
     dispatch: Dispatch,

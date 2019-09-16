@@ -3,24 +3,25 @@ import { ACCOUNT } from '@wallet-actions/constants';
 import { Action } from '@wallet-types/index';
 import { AccountInfo } from 'trezor-connect';
 
-export interface Account extends AccountInfo {
-    index: number;
-    accountType: 'normal' | 'segwit' | 'legacy';
-    type: 'bitcoin' | 'ethereum' | 'ripple';
-    network: string;
-    path: string;
-    imported?: boolean;
+export interface Account {
     deviceState: string;
-
-    // connect
-    availableBalance: string;
-    balance: string;
+    index: number;
+    path: string;
     descriptor: string;
+    accountType: 'normal' | 'segwit' | 'legacy';
+    networkType: 'bitcoin' | 'ethereum' | 'ripple';
+    symbol: string;
     empty: boolean;
-    history: {
-        total: number;
-        unconfirmed: number;
-    };
+    visible: boolean;
+    imported?: boolean;
+    balance: string;
+    availableBalance: string;
+    tokens: AccountInfo['tokens'];
+    addresses: AccountInfo['addresses'];
+    utxo: AccountInfo['utxo'];
+    history: AccountInfo['history'];
+    misc: AccountInfo['misc'];
+    marker: AccountInfo['marker'];
 }
 
 export const initialState: Account[] = [];
@@ -40,23 +41,20 @@ export const initialState: Account[] = [];
 // }
 // };
 
-export const findDeviceAccounts = (
-    accounts: Account[],
-    // device: TrezorDevice,
-    networkShortcut?: string,
-) => {
-    // TODO: should also filter deviceState
-    if (networkShortcut) {
-        return accounts.filter(a => a.network === networkShortcut);
+const create = (draft: Account[], account: Account) => {
+    // TODO: check if account already exist, for example 2 device instances with same passphrase
+    // remove "transactions" field, they are stored in "transactionReducer"
+    if (account.history) {
+        delete account.history.transactions;
     }
-    return accounts;
+    draft.push(account);
 };
 
 export default (state: Account[] = initialState, action: Action): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:
-                draft.push(action.payload);
+                create(draft, action.payload);
                 break;
             // no default
         }

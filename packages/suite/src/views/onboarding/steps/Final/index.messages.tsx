@@ -24,7 +24,7 @@ const definedMessages = defineMessages({
     },
     TR_TREZOR_PASSWORD_MANAGER: {
         id: 'TR_TREZOR_PASSWORD_MANAGER',
-        defaultMessage: 'Trezor Password Manager',
+        defaultMessage: 'Password Manager',
         description: 'Name of application that might be used with Trezor',
     },
     TR_TREZOR_PASSWORD_MANAGER_DESCRIPTION: {

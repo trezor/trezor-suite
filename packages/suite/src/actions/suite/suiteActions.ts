@@ -24,12 +24,14 @@ export type SuiteActions =
     | { type: typeof SUITE.REQUEST_FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
+    | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
     | { type: typeof SUITE.TOGGLE_DEVICE_MENU; payload: boolean }
     | { type: typeof SUITE.TOGGLE_SIDEBAR }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
+    | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean };
 
 /**
@@ -89,7 +91,7 @@ export const toggleSidebar = (): Action => ({
 /**
  * Called from multiple places before and after TrezorConnect call
  * Prevent from mad clicking
- * Set `uiLocked` field in suite reducer
+ * Set `lock` field in suite reducer
  * @returns {Action}
  */
 export const lockUI = (payload: boolean): Action => ({
@@ -98,9 +100,20 @@ export const lockUI = (payload: boolean): Action => ({
 });
 
 /**
+ * Prevent TrezorConnect multiple calls
+ * Called before and after specific process, like onboarding
+ * Set `lock` field in suite reducer
+ * @returns {Action}
+ */
+export const lockDevice = (payload: boolean): Action => ({
+    type: SUITE.LOCK_DEVICE,
+    payload,
+});
+
+/**
  * Prevent route change and rendering
  * Called before and after specific process, like onboarding
- * Set `routerLocked` field in suite reducer
+ * Set `lock` field in suite reducer
  * @returns {Action}
  */
 export const lockRouter = (payload: boolean): Action => ({
@@ -138,8 +151,8 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     getState: GetState,
 ) => {
     // 1. check if ui is not locked by device request or application itself (for example onboarding process)
-    const { uiLocked, routerLocked } = getState().suite;
-    if (uiLocked || routerLocked) return;
+    const { locks } = getState().suite;
+    if (locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI)) return;
     // 2. check if device is acquired
 
     if (device && device.features) {
@@ -184,6 +197,8 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
  */
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
+    // const { deviceId } = getState().modal;
+    // if ()
     if (!selectedDevice) {
         dispatch(selectDevice(device));
     } else {
@@ -205,7 +220,25 @@ export const handleDeviceDisconnect = (device: Device) => (
 
     // selected device is disconnected, decide what to do next
     const { devices } = getState();
-    const { routerLocked } = getState().suite;
+    // device is still present in reducer (remembered or candidate to remember)
+    const devicePresent = deviceUtils.getSelectedDevice(selectedDevice, devices);
+    const deviceInstances = deviceUtils.getDeviceInstances(selectedDevice, devices, true);
+    if (deviceInstances.length > 0) {
+        // if selected device is gone from reducer, switch to first instance
+        if (!devicePresent) {
+            dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
+        }
+        // show modal if one of the instances in not remembered
+        const remember = deviceInstances.filter(d => !d.remember);
+        if (remember.length > 0) {
+            dispatch({
+                type: SUITE.REQUEST_REMEMBER_DEVICE,
+                payload: deviceInstances[0],
+            });
+        }
+        return;
+    }
+    const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
     if (devices.length < 1 || routerLocked) {
         dispatch({ type: SUITE.SELECT_DEVICE });
         return;
@@ -314,16 +347,19 @@ export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: 
  * Called from `walletMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
-export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
+export const authorizeDevice = () => async (
+    dispatch: Dispatch,
+    getState: GetState,
+): Promise<boolean> => {
     const { device } = getState().suite;
-    if (!device) return;
+    if (!device) return false;
     const isDeviceReady =
         device.connected &&
         device.features &&
         !device.state &&
         device.mode === 'normal' &&
         device.firmware !== 'required';
-    if (!isDeviceReady) return;
+    if (!isDeviceReady) return false;
 
     const response = await TrezorConnect.getDeviceState({
         device: {
@@ -332,7 +368,6 @@ export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetSta
             state: device.state,
         },
         useEmptyPassphrase: device.useEmptyPassphrase,
-        // useEmptyPassphrase: false,
     });
 
     if (response.success) {
@@ -341,14 +376,15 @@ export const authorizeDevice = () => async (dispatch: Dispatch, getState: GetSta
             payload: device,
             state: response.payload.state,
         });
-    } else {
-        // TODO: notification with translations
-        dispatch(
-            addNotification({
-                variant: 'error',
-                title: 'authorizeDevice error',
-                cancelable: true,
-            }),
-        );
+        return true;
     }
+    // TODO: notification with translations
+    dispatch(
+        addNotification({
+            variant: 'error',
+            title: `authorizeDevice error ${response.payload.error}`,
+            cancelable: true,
+        }),
+    );
+    return false;
 };
