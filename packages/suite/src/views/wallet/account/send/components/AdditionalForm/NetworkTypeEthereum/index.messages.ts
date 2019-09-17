@@ -1,8 +1,6 @@
-/* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype';
 
-const definedMessages: Messages = defineMessages({
+const definedMessages = defineMessages({
     TR_GAS_LIMIT: {
         id: 'TR_GAS_LIMIT',
         defaultMessage: 'Gas limit',
@@ -10,7 +8,7 @@ const definedMessages: Messages = defineMessages({
     TR_GAS_LIMIT_REFERS_TO: {
         id: 'TR_GAS_LIMIT_REFERS_TO',
         defaultMessage:
-            'Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.',
+            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.',
     },
     TR_GAS_QUOTATION: {
         id: 'TR_GAS_QUOTATION',

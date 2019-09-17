@@ -1,8 +1,207 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FormattedMessage } from 'react-intl';
 
-const Wrapper = styled.div``;
+import { Input, Tooltip, Icon, colors, Link, TextArea } from '@trezor/components';
+import commonMessages from '@wallet-views/messages';
+import localMessages from './index.messages';
 
-const EthereumAdditionalForm = () => <Wrapper>ethereum additional form</Wrapper>;
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
 
-export default EthereumAdditionalForm;
+const Row = styled.div`
+    padding: 0 0 30px 0;
+    display: flex;
+
+    &:last-child {
+        padding: 0;
+    }
+`;
+
+const Left = styled.div``;
+
+const SmallScreenWidth = '850px';
+
+const InputLabelWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const GreenSpan = styled.span`
+    color: ${colors.GREEN_PRIMARY};
+`;
+
+const Right = styled.div``;
+
+const TooltipContainer = styled.div``;
+
+const StyledLink = styled(Link)``;
+
+const GasInput = styled(Input)`
+    /* min-height: 85px; */
+    padding-bottom: 28px;
+    &:first-child {
+        padding-right: 20px;
+    }
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        &:first-child {
+            padding-right: 0;
+        }
+    }
+`;
+
+const StyledIcon = styled(Icon)``;
+
+const StyledTextarea = styled(TextArea)`
+    padding-bottom: 28px;
+    min-height: 80px;
+`;
+
+const NetworkTypeEthereum = () => (
+    <Wrapper>
+        <Row>
+            <GasInput
+                state={undefined}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                topLabel={
+                    <InputLabelWrapper>
+                        <Left>
+                            <FormattedMessage {...localMessages.TR_GAS_LIMIT} />
+                            <TooltipContainer>
+                                <Tooltip
+                                    content={
+                                        <FormattedMessage
+                                            {...localMessages.TR_GAS_LIMIT_REFERS_TO}
+                                            values={{
+                                                TR_GAS_QUOTATION: (
+                                                    <GreenSpan>
+                                                        <FormattedMessage
+                                                            {...localMessages.TR_GAS_QUOTATION}
+                                                        />
+                                                    </GreenSpan>
+                                                ),
+                                                gasLimitTooltipValue: <GreenSpan>aaaaaa</GreenSpan>,
+                                            }}
+                                        />
+                                    }
+                                    maxWidth={410}
+                                    ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
+                                    ctaText={<FormattedMessage {...commonMessages.TR_LEARN_MORE} />}
+                                    placement="top"
+                                >
+                                    <StyledIcon
+                                        icon="HELP"
+                                        color={colors.TEXT_SECONDARY}
+                                        size={12}
+                                    />
+                                </Tooltip>
+                            </TooltipContainer>
+                        </Left>
+                        {true && (
+                            <Right>
+                                <StyledLink onClick={() => {}} isGreen>
+                                    <FormattedMessage {...localMessages.TR_SET_DEFAULT} />
+                                </StyledLink>
+                            </Right>
+                        )}
+                    </InputLabelWrapper>
+                }
+                bottomText={undefined}
+                value={1} // TODO: figure out translations in inputs
+                isDisabled={false}
+                onChange={() => {}}
+            />
+
+            <GasInput
+                state={undefined}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                topLabel={
+                    <InputLabelWrapper>
+                        <Left>
+                            <FormattedMessage {...localMessages.TR_GAS_PRICE} />
+                            <TooltipContainer>
+                                <Tooltip
+                                    content={
+                                        <FormattedMessage
+                                            {...localMessages.TR_GAS_PRICE_REFERS_TO}
+                                            values={{
+                                                TR_GAS_PRICE_QUOTATION: (
+                                                    <GreenSpan>
+                                                        <FormattedMessage
+                                                            {...localMessages.TR_GAS_PRICE_QUOTATION}
+                                                        />
+                                                    </GreenSpan>
+                                                ),
+                                                recommendedGasPrice: (
+                                                    <GreenSpan>{'recommendedGasPrice'}</GreenSpan>
+                                                ),
+                                            }}
+                                        />
+                                    }
+                                    maxWidth={400}
+                                    ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
+                                    ctaText={<FormattedMessage {...commonMessages.TR_LEARN_MORE} />}
+                                    placement="top"
+                                >
+                                    <StyledIcon
+                                        icon="HELP"
+                                        color={colors.TEXT_SECONDARY}
+                                        size={12}
+                                    />
+                                </Tooltip>
+                            </TooltipContainer>
+                        </Left>
+                    </InputLabelWrapper>
+                }
+                bottomText="aaa"
+                value="aaa"
+                onChange={() => {}}
+            />
+        </Row>
+        <Row>
+            <StyledTextarea
+                topLabel={
+                    <InputLabelWrapper>
+                        <Left>
+                            <FormattedMessage {...localMessages.TR_DATA} />
+                            <TooltipContainer>
+                                <Tooltip
+                                    content={
+                                        <FormattedMessage
+                                            {...localMessages.TR_DATA_IS_USUALLY_USED}
+                                        />
+                                    }
+                                    placement="top"
+                                >
+                                    <StyledIcon
+                                        icon="HELP"
+                                        color={colors.TEXT_SECONDARY}
+                                        size={12}
+                                    />
+                                </Tooltip>
+                            </TooltipContainer>
+                        </Left>
+                    </InputLabelWrapper>
+                }
+                state={undefined}
+                bottomText={'aa'}
+                isDisabled={'not'}
+                value={'val'}
+                onChange={() => {}}
+            />
+        </Row>
+    </Wrapper>
+);
+
+export default NetworkTypeEthereum;
