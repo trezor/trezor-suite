@@ -5,7 +5,6 @@ import LayoutAccount from '@wallet-components/LayoutAccount';
 import { AppState, Dispatch } from '@suite/types/suite';
 import { connect } from 'react-redux';
 import Content from '@suite/components/wallet/Content';
-import { CONTEXT_DEVICE } from '@suite-actions/constants/modalConstants';
 import { showAddress } from '@wallet-actions/receiveActions';
 import { bindActionCreators } from 'redux';
 import { FormattedMessage } from 'react-intl';

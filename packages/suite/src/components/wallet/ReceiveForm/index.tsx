@@ -163,7 +163,6 @@ const ReceiveForm = ({ className, ...props }: Props) => {
 
     // tooltipAction components that renders only for the selectedAddress and only if address is being verified
     const tooltipAction = (descriptor: string) => {
-        // return props.isAddressVerifying(addr) && selectedAddr && selectedAddr.address === addr ? (
         return isAddressVerifying(descriptor) ? (
             <>
                 <StyledDeviceIcon size={16} device={props.device} color={colors.WHITE} />
