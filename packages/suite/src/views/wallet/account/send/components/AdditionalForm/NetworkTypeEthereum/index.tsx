@@ -21,9 +21,9 @@ const Row = styled.div`
     }
 `;
 
-const Left = styled.div``;
-
-const SmallScreenWidth = '850px';
+const LabelLeft = styled.div`
+    display: flex;
+`;
 
 const InputLabelWrapper = styled.div`
     display: flex;
@@ -42,23 +42,18 @@ const TooltipContainer = styled.div``;
 const StyledLink = styled(Link)``;
 
 const GasInput = styled(Input)`
-    /* min-height: 85px; */
     padding-bottom: 28px;
     &:first-child {
         padding-right: 20px;
     }
-
-    @media screen and (max-width: ${SmallScreenWidth}) {
-        &:first-child {
-            padding-right: 0;
-        }
-    }
 `;
 
-const StyledIcon = styled(Icon)``;
+const StyledIcon = styled(Icon)`
+    height: 100%;
+    margin: 0 0 0 7px;
+`;
 
 const StyledTextarea = styled(TextArea)`
-    padding-bottom: 28px;
     min-height: 80px;
 `;
 
@@ -73,7 +68,7 @@ const NetworkTypeEthereum = () => (
                 spellCheck={false}
                 topLabel={
                     <InputLabelWrapper>
-                        <Left>
+                        <LabelLeft>
                             <FormattedMessage {...localMessages.TR_GAS_LIMIT} />
                             <TooltipContainer>
                                 <Tooltip
@@ -104,7 +99,7 @@ const NetworkTypeEthereum = () => (
                                     />
                                 </Tooltip>
                             </TooltipContainer>
-                        </Left>
+                        </LabelLeft>
                         {true && (
                             <Right>
                                 <StyledLink onClick={() => {}} isGreen>
@@ -128,7 +123,7 @@ const NetworkTypeEthereum = () => (
                 spellCheck={false}
                 topLabel={
                     <InputLabelWrapper>
-                        <Left>
+                        <LabelLeft>
                             <FormattedMessage {...localMessages.TR_GAS_PRICE} />
                             <TooltipContainer>
                                 <Tooltip
@@ -161,11 +156,11 @@ const NetworkTypeEthereum = () => (
                                     />
                                 </Tooltip>
                             </TooltipContainer>
-                        </Left>
+                        </LabelLeft>
                     </InputLabelWrapper>
                 }
-                bottomText="aaa"
-                value="aaa"
+                bottomText=""
+                value=""
                 onChange={() => {}}
             />
         </Row>
@@ -173,7 +168,7 @@ const NetworkTypeEthereum = () => (
             <StyledTextarea
                 topLabel={
                     <InputLabelWrapper>
-                        <Left>
+                        <LabelLeft>
                             <FormattedMessage {...localMessages.TR_DATA} />
                             <TooltipContainer>
                                 <Tooltip
@@ -191,13 +186,13 @@ const NetworkTypeEthereum = () => (
                                     />
                                 </Tooltip>
                             </TooltipContainer>
-                        </Left>
+                        </LabelLeft>
                     </InputLabelWrapper>
                 }
                 state={undefined}
-                bottomText={'aa'}
-                isDisabled={'not'}
-                value={'val'}
+                bottomText=""
+                isDisabled={false}
+                value=""
                 onChange={() => {}}
             />
         </Row>
