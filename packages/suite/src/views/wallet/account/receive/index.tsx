@@ -5,7 +5,7 @@ import LayoutAccount from '@wallet-components/LayoutAccount';
 import { AppState, Dispatch } from '@suite/types/suite';
 import { connect } from 'react-redux';
 import Content from '@suite/components/wallet/Content';
-import { showAddress } from '@wallet-actions/receiveActions';
+import * as receiveActions from '@wallet-actions/receiveActions';
 import { bindActionCreators } from 'redux';
 import { FormattedMessage } from 'react-intl';
 import ReceiveForm from '@wallet-components/ReceiveForm';
@@ -122,7 +122,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    showAddress: bindActionCreators(showAddress, dispatch),
+    showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
 });
 
 export default connect(
