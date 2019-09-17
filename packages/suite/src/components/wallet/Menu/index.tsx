@@ -27,6 +27,7 @@ const LoadingText = styled.div`
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     accounts: state.wallet.accounts,
+    hideBalance: state.wallet.settings.hideBalance,
     discovery: state.wallet.discovery,
     router: state.router,
 });
@@ -46,7 +47,7 @@ const DiscoveryStatus = () => (
     </Wrapper>
 );
 
-const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
+const Menu = ({ device, accounts, hideBalance, getDiscoveryForDevice }: Props) => {
     const discovery = getDiscoveryForDevice();
     if (!device || !discovery) {
         return <DiscoveryStatus />;
@@ -64,7 +65,11 @@ const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
         <Wrapper>
             {discoveryIsRunning && list.length === 0 && <DiscoveryStatus />}
             {normalAccounts.map(account => (
-                <Row account={account} key={`${account.descriptor}-${account.symbol}`} />
+                <Row
+                    account={account}
+                    hideBalance={hideBalance}
+                    key={`${account.descriptor}-${account.symbol}`}
+                />
             ))}
             {legacyAccounts.length > 0 && (
                 <LoadingWrapper>
@@ -72,7 +77,11 @@ const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
                 </LoadingWrapper>
             )}
             {legacyAccounts.map(account => (
-                <Row account={account} key={`${account.descriptor}-${account.symbol}`} />
+                <Row
+                    account={account}
+                    hideBalance={hideBalance}
+                    key={`${account.descriptor}-${account.symbol}`}
+                />
             ))}
             {discoveryIsRunning && list.length > 0 && <DiscoveryStatus />}
             {discovery.status === 4 && <AddAccountButton />}
