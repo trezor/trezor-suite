@@ -23,10 +23,10 @@ describe('accountUtils', () => {
 
     describe('get title for network', () => {
         const intlMock = { formatMessage: (s: any) => s.defaultMessage };
-        accountTitleFixture.forEach((fixture: any) => {
+        fixtures.accountTitleFixture.forEach((fixture: any) => {
             it(fixture.symbol, () => {
                 // @ts-ignore: InjectedIntl mock
-                const title = getTitleForNetwork(fixture.symbol, intlMock);
+                const title = accountUtils.getTitleForNetwork(fixture.symbol, intlMock);
                 expect(title).toBe(fixture.title);
             });
         });

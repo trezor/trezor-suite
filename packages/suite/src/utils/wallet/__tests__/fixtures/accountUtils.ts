@@ -1,4 +1,4 @@
-const accountTitleFixture = [
+export const accountTitleFixture = [
     { symbol: 'btc', title: 'Bitcoin' },
     { symbol: 'bch', title: 'Bitcoin Cash' },
     { symbol: 'btg', title: 'Bitcoin Gold' },
@@ -20,7 +20,6 @@ const accountTitleFixture = [
     { symbol: 'c', title: 'unknown' },
 ];
 
-export { accountTitleFixture };
 export const parseBIP44Path = [
     {
         path: `m/84'/0'/0'/1/0`,
