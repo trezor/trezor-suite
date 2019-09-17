@@ -30,7 +30,6 @@
         "color-hash": "^1.0.3",
         "ethereumjs-util": "^6.0.0",
         "fork-ts-checker-webpack-plugin": "^1.5.0",
-        "number-abbreviate": "^2.0.0",
         "pako": "^1.0.10",
         "react": "16.8.6",
         "react-dom": "16.8.6",
