@@ -23,6 +23,7 @@ const RowAddAccountWrapper = styled.div<Props>`
     align-items: center;
     color: ${colors.TEXT_SECONDARY};
     padding: 16px 20px;
+    transition: color 0.3s;
     &:hover {
         cursor: ${props => (props.disabled ? 'default' : 'pointer')};
         color: ${props => (props.disabled ? colors.TEXT_SECONDARY : colors.TEXT_PRIMARY)};
@@ -31,6 +32,7 @@ const RowAddAccountWrapper = styled.div<Props>`
 
 const AddAccountIconWrapper = styled.div`
     margin-right: 12px;
+    padding-top: 2px;
 `;
 
 const AddAccountButton = ({ onClick, tooltipContent, disabled }: Props) => {
