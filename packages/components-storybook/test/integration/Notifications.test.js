@@ -28,7 +28,7 @@ describe('Notifications', () => {
             cy.getTestElement(testName)
                 .find('.loading')
                 .each(el => {
-                    cy.get(el).should('not.be.visible');
+                    cy.get(el).should('not.exist');
                 });
 
             cy.getTestElement(testName)
