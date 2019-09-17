@@ -9,7 +9,6 @@ import { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
-    min-height: 150px;
     margin: 20px 0;
 `;
 

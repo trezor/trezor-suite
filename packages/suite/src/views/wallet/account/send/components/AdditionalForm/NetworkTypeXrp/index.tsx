@@ -35,7 +35,7 @@ const StyledIcon = styled(Icon)`
     height: 100%;
 `;
 
-const XrpAdditionalForm = () => (
+const NetworkTypeXrp = () => (
     <Wrapper>
         <Row>
             <Input
@@ -96,4 +96,4 @@ const XrpAdditionalForm = () => (
     </Wrapper>
 );
 
-export default XrpAdditionalForm;
+export default NetworkTypeXrp;
