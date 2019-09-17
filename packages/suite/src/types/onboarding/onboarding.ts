@@ -15,6 +15,8 @@ export interface UiInteraction {
     counter: number;
 }
 
+type DeviceCallError = { code: string } | string;
+
 export interface OnboardingReducer {
     prevDevice: Device | null;
     selectedModel: number | null;
@@ -24,7 +26,7 @@ export interface OnboardingReducer {
     deviceCall: {
         name: null | string; // todo: better, make type AnyDeviceCall
         isProgress: boolean;
-        error: null | string;
+        error: null | DeviceCallError;
         result: null | Record<string, any>;
     };
     uiInteraction: UiInteraction;

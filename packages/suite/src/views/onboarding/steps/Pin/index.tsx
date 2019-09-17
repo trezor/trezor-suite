@@ -178,7 +178,7 @@ const SetPinStep = (props: Props) => {
                                 {...l10nMessages.TR_PIN_ERROR_TROUBLESHOOT}
                                 values={{
                                     TR_DOCUMENTATION: (
-                                        <Link href={PIN_MANUAL_URL}>
+                                        <Link href={URLS.PIN_MANUAL_URL}>
                                             <FormattedMessage {...l10nMessages.TR_DOCUMENTATION} />
                                         </Link>
                                     ),
@@ -201,6 +201,5 @@ const SetPinStep = (props: Props) => {
         </Wrapper.Step>
     );
 };
->>>>>>> refactoring
 
 export default SetPinStep;

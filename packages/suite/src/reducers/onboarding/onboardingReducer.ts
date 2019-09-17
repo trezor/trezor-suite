@@ -27,7 +27,7 @@ const initialState: OnboardingReducer = {
     // and here leave only isMatchingPrevDevice ?
     prevDevice: null,
     selectedModel: null,
-    activeStepId: STEP.ID_NAME_STEP,
+    activeStepId: STEP.ID_RECOVERY_STEP,
     activeSubStep: null,
     path: [],
     deviceCall: {
@@ -164,7 +164,11 @@ const onboarding = (state: OnboardingReducer = initialState, action: Action) => 
                 draft.uiInteraction = setInteraction(state.uiInteraction, action.payload.code);
                 break;
             case UI.REQUEST_WORD:
-                draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
+                draft.uiInteraction = setInteraction(
+                    state.uiInteraction,
+                    // todo: maybe fix type in connect, it should be always string imho.
+                    action.payload.type as string,
+                );
                 break;
             case UI.REQUEST_PIN:
                 draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
