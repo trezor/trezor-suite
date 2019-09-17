@@ -114,9 +114,10 @@ const getCoinName = (symbol: string, accountType: string) => {
 
 interface Props {
     account: Account;
+    hideBalance: boolean;
 }
 
-const Row = React.memo(({ account }: Props) => (
+const Row = React.memo(({ account, hideBalance }: Props) => (
     <StyledLink
         href={getRoute('wallet-account', {
             accountId: account.index,
@@ -137,19 +138,21 @@ const Row = React.memo(({ account }: Props) => (
                     </AccountIndex>
                 </Name>
             </Left>
-            <Right>
-                <Balance>
-                    <BalanceValue>
-                        {account.balance} {account.symbol}
-                    </BalanceValue>
-                </Balance>
-                {account.history.total !== -1 && (
-                    <Transactions>
-                        <Label>transactions</Label>
-                        <TransactionsValue>{account.history.total}</TransactionsValue>
-                    </Transactions>
-                )}
-            </Right>
+            {!hideBalance && (
+                <Right>
+                    <Balance>
+                        <BalanceValue>
+                            {account.balance} {account.symbol}
+                        </BalanceValue>
+                    </Balance>
+                    {account.history.total !== -1 && (
+                        <Transactions>
+                            <Label>transactions</Label>
+                            <TransactionsValue>{account.history.total}</TransactionsValue>
+                        </Transactions>
+                    )}
+                </Right>
+            )}
         </Wrapper>
     </StyledLink>
 ));

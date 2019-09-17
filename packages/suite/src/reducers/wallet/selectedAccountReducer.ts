@@ -1,9 +1,7 @@
-import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
-
-import { Action } from '@suite/types/suite';
-import { Network, Account } from '@suite/types/wallet';
 import produce from 'immer';
-import { Discovery } from './discoveryReducer';
+import { ACCOUNT } from '@wallet-actions/constants';
+import { Action } from '@suite-types';
+import { Network, Account, Discovery } from '@wallet-types';
 
 export interface Loader {
     type: string;

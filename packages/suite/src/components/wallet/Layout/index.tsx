@@ -1,21 +1,25 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
 import Sidebar from './components/Sidebar';
+import ProgressBar from './components/ProgressBar';
 import { AppState } from '@suite-types';
 
 const { SCREEN_SIZE } = variables;
 
-interface Props {
-    router: AppState['router'];
-    suite: AppState['suite'];
-    wallet: AppState['wallet'];
-    topNavigationComponent?: ReactNode;
-    children: ReactNode;
-}
+const mapStateToProps = (state: AppState) => ({
+    router: state.router,
+    suite: state.suite,
+    wallet: state.wallet,
+});
+
+type Props = {
+    topNavigationComponent?: React.ReactNode;
+    children?: React.ReactNode;
+} & ReturnType<typeof mapStateToProps>;
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,6 +49,7 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 const Layout = (props: Props) => {
     return (
         <Wrapper>
+            <ProgressBar />
             <Sidebar isOpen={props.suite.showSidebar} />
             <ContentWrapper preventBgScroll={props.suite.showSidebar}>
                 {props.topNavigationComponent}
@@ -54,11 +59,5 @@ const Layout = (props: Props) => {
         </Wrapper>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    router: state.router,
-    suite: state.suite,
-    wallet: state.wallet,
-});
 
 export default connect(mapStateToProps)(Layout);
