@@ -22,6 +22,8 @@ const Row = styled.div`
     &:last-child {
         padding: 0;
     }
+
+    flex-direction: ${(props: { isColumn?: boolean }) => (props.isColumn ? 'column' : 'row')};
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
@@ -31,10 +33,6 @@ const StyledCoinLogo = styled(CoinLogo)`
 const StyledTitle = styled(Title)`
     display: flex;
     align-items: center;
-`;
-
-const RowColumn = styled(Row)`
-    flex-direction: column;
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
@@ -54,7 +52,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
 
     return (
         <Layout>
-            <StyledTitle className="styled-title">
+            <StyledTitle>
                 <StyledCoinLogo size={24} symbol={account.symbol} />
                 Send {getTitleForNetwork(network.symbol, props.intl)}
                 {accountType ? ` (${accountType})` : ''}
@@ -81,37 +79,23 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Fee fees={fees} sendFormActions={sendFormActions} symbol={network.symbol} />
             </Row>
-            {!send.isAdditionalFormVisible && (
-                <Row>
-                    <ButtonToggleAdditional
-                        isActive={send.isAdditionalFormVisible}
-                        sendFormActions={sendFormActions}
-                    />
-                    <SendAndClear
-                        amount={send.amount}
-                        address={send.address}
-                        errors={send.errors}
-                        symbol={network.symbol}
-                        sendFormActions={sendFormActions}
-                    />
-                </Row>
-            )}
-            {send.isAdditionalFormVisible && (
-                <RowColumn>
-                    <ButtonToggleAdditional
-                        isActive={send.isAdditionalFormVisible}
-                        sendFormActions={sendFormActions}
-                    />
+            <Row isColumn={send.isAdditionalFormVisible}>
+                <ButtonToggleAdditional
+                    isActive={send.isAdditionalFormVisible}
+                    sendFormActions={sendFormActions}
+                />
+                {send.isAdditionalFormVisible && (
                     <AdditionalForm networkType={network.networkType} />
-                    <SendAndClear
-                        amount={send.amount}
-                        address={send.address}
-                        errors={send.errors}
-                        symbol={network.symbol}
-                        sendFormActions={sendFormActions}
-                    />
-                </RowColumn>
-            )}
+                )}
+                <SendAndClear
+                    amount={send.amount}
+                    address={send.address}
+                    networkType={account.networkType}
+                    errors={send.errors}
+                    symbol={network.symbol}
+                    sendFormActions={sendFormActions}
+                />
+            </Row>
         </Layout>
     );
 };

@@ -1,18 +1,18 @@
 import produce from 'immer';
 
-interface Fee {
+export interface FeeItem {
     value: string;
     label: string;
 }
 
-export interface State {
-    btc: Fee[];
-    xrp: Fee[];
-    eth: Fee[];
-    txrp: Fee[];
+export interface Fee {
+    btc: FeeItem[];
+    xrp: FeeItem[];
+    eth: FeeItem[];
+    txrp: FeeItem[];
 }
 
-export const initialState: State = {
+export const initialState: Fee = {
     btc: [
         { label: 'high', value: '0.0001995' },
         { label: 'normal', value: '0.000315' },
@@ -23,7 +23,7 @@ export const initialState: State = {
     eth: [{ label: 'normal', value: '0.000012' }],
 };
 
-export default (state: State = initialState) => {
+export default (state: Fee = initialState) => {
     return produce(state, _draft => {
         return state;
     });

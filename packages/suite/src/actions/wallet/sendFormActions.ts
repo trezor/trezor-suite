@@ -175,6 +175,21 @@ const clear = () => (dispatch: Dispatch) => {
     dispatch({ type: SEND.CLEAR });
 };
 
+/*
+    Click on button "Send"
+*/
+const send = (networkType: Account['networkType']) => () => {
+    switch (networkType) {
+        case 'bitcoin':
+            return console.log('validate and send bitcoin like transaction');
+        case 'ethereum':
+            return console.log('validate and send ethereum like transaction');
+        case 'ripple':
+            return console.log('validate and send ripple like transaction');
+        // no default
+    }
+};
+
 export {
     handleAddressChange,
     handleAmountChange,
@@ -184,4 +199,5 @@ export {
     handleFeeValueChange,
     toggleAdditionalFormVisibility,
     clear,
+    send,
 };

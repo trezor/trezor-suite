@@ -110,6 +110,7 @@ interface Props extends StyledTextareaProps {
     isDisabled?: boolean;
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;
+    maxRows?: number;
     wrapperProps?: Record<string, any>;
     state?: FeedbackType;
 }

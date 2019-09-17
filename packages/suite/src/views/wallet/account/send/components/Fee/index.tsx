@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import accountMessages from '@wallet-views/account/messages';
 import { DispatchProps } from '../../Container';
+import { Fee, Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,15 +35,16 @@ const OptionLabel = styled(P)`
 `;
 
 interface Props {
-    fees: any; // TODO ts
+    fees: Fee;
     symbol: string;
     sendFormActions: DispatchProps['sendFormActions'];
     intl: InjectedIntl;
 }
 
-const getValue = (fees, symbol) => {
+const getValue = (fees: Fee, symbol: Account['symbol']) => {
     let value;
     try {
+        // @ts-ignore // TODO FIX TYPE
         value = fees[symbol];
     } catch {
         value = { label: 'High', value: '0.000012' };
@@ -50,7 +52,7 @@ const getValue = (fees, symbol) => {
     return value;
 };
 
-const Fee = (props: Props) => (
+const FeeComponent = (props: Props) => (
     <Wrapper>
         <FeeLabel>
             <FormattedMessage {...accountMessages.TR_FEE} />
@@ -73,4 +75,4 @@ const Fee = (props: Props) => (
     </Wrapper>
 );
 
-export default injectIntl(Fee);
+export default injectIntl(FeeComponent);

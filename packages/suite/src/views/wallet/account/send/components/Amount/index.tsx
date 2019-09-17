@@ -5,13 +5,13 @@ import { State } from '@wallet-reducers/sendFormReducer';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
-import Fiat from './components/Fiat';
+import FiatComponent from './components/Fiat';
 import CurrencySelect from './components/CurrencySelect';
 import SetMax from './components/SetMax';
 
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
-import { Account } from '@wallet-types';
+import { Account, Fiat } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,7 +35,7 @@ const Label = styled.span`
 interface Props {
     intl: InjectedIntl;
     fiatValue: State['fiatValue'];
-    fiat: any;
+    fiat: Fiat[];
     amount: State['amount'];
     symbol: Account['symbol'];
     canSetMax: boolean;
@@ -118,7 +118,7 @@ const Amount = (props: Props) => (
                         <CurrencySelect key="currency-select" symbol={props.symbol} />
                     )}
                     {hasRates(props.fiat, props.localCurrency, props.symbol) && (
-                        <Fiat
+                        <FiatComponent
                             key="fiat-input"
                             state={props.error ? 'error' : undefined}
                             sendFormActions={props.sendFormActions}

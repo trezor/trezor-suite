@@ -37,7 +37,13 @@ module.exports = {
         '<rootDir>/src/utils/**',
         '<rootDir>/src/actions/**',
         '!**/constants/**',
+        '!**/constants/**',
         '!**/__tests__/**',
+        // TODO REMOVE THIS
+        '!<rootDir>/src/reducers/wallet/sendFormReducer',
+        '!<rootDir>/src/reducers/wallet/feesReducer',
+        '!<rootDir>/src/actions/wallet/sendFormActions',
+        '!<rootDir>/src/actions/wallet/send/**',
     ],
     coverageThreshold: {
         global: {

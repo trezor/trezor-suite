@@ -26,6 +26,7 @@ interface Props {
     errors: ReducerState['errors'];
     amount: ReducerState['amount'];
     address: ReducerState['address'];
+    networkType: Account['networkType'];
     symbol: Account['symbol'];
 }
 
@@ -44,7 +45,7 @@ const SendAndClear = (props: Props) => (
         </Clear>
         <Send
             isDisabled={isDisabled(props.errors, props.address, props.amount)}
-            onClick={() => props.sendFormActions.send()}
+            onClick={() => props.sendFormActions.send(props.networkType)}
         >
             {isDisabled(props.errors, props.address, props.amount)
                 ? 'Send'
