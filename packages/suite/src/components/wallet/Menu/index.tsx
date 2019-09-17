@@ -1,12 +1,14 @@
 import React from 'react';
-import { colors, variables, Loader } from '@trezor/components';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+import styled from 'styled-components';
+import { colors, variables, Loader } from '@trezor/components';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
 import Row from './components/Row';
 import AddAccountButton from './components/AddAccount';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div``;
 
@@ -42,7 +44,9 @@ const DiscoveryStatus = () => (
     <Wrapper>
         <LoadingWrapper>
             <Loader size={15} />
-            <LoadingText>Loading accounts</LoadingText>
+            <LoadingText>
+                <FormattedMessage {...l10nMessages.TR_LOADING_ACCOUNTS} />
+            </LoadingText>
         </LoadingWrapper>
     </Wrapper>
 );
@@ -73,7 +77,9 @@ const Menu = ({ device, accounts, hideBalance, getDiscoveryForDevice }: Props) =
             ))}
             {legacyAccounts.length > 0 && (
                 <LoadingWrapper>
-                    <LoadingText>Legacy accounts (TODO: Fold it)</LoadingText>
+                    <LoadingText>
+                        <FormattedMessage {...l10nMessages.TR_LEGACY_ACCOUNTS} />
+                    </LoadingText>
                 </LoadingWrapper>
             )}
             {legacyAccounts.map(account => (
@@ -84,7 +90,11 @@ const Menu = ({ device, accounts, hideBalance, getDiscoveryForDevice }: Props) =
                 />
             ))}
             {discoveryIsRunning && list.length > 0 && <DiscoveryStatus />}
-            {discovery.status === 4 && <AddAccountButton />}
+            {discovery.status === 4 && (
+                <AddAccountButton
+                    tooltipContent={<FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />}
+                />
+            )}
         </Wrapper>
     );
 };

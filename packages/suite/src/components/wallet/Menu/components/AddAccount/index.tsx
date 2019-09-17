@@ -6,7 +6,7 @@ import l10nMessages from '../../index.messages';
 
 interface Props {
     onClick?: () => any;
-    tooltipContent?: React.ReactNode;
+    tooltipContent?: React.ReactChild;
     disabled?: boolean;
 }
 

@@ -17,8 +17,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 type Props = {
-    topNavigationComponent: React.ReactNode;
-    children: React.ReactNode;
+    topNavigationComponent?: React.ReactNode;
+    children?: React.ReactNode;
 } & ReturnType<typeof mapStateToProps>;
 
 const Wrapper = styled.div`
