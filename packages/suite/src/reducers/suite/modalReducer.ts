@@ -19,6 +19,9 @@ export type State =
       }
     | {
           context: typeof MODAL.CONTEXT_SCAN_QR;
+      }
+    | {
+          context: typeof MODAL.OVERLAY_ONLY;
       };
 
 const initialState: State = {
@@ -74,7 +77,7 @@ export default (state: State = initialState, action: Action): State => {
                 windowType: action.type,
             };
         // close modal
-        case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
+        // case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
         case MODAL.CLOSE:
         case SUITE.AUTH_DEVICE:
         case SUITE.FORGET_DEVICE:
@@ -93,6 +96,11 @@ export default (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_SCAN_QR,
             };
 
+        case MODAL.OVERLAY_ONLY:
+            return {
+                context: MODAL.OVERLAY_ONLY,
+            };
+            
         default:
             return state;
     }

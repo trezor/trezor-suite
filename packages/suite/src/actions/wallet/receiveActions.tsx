@@ -1,7 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import { Action } from '@wallet-types/index';
 import { RECEIVE } from '@wallet-actions/constants';
-import { NOTIFICATION } from '@suite-actions/constants';
+import { NOTIFICATION, MODAL } from '@suite-actions/constants';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
@@ -36,6 +36,9 @@ export const showAddress = (path: string) => async (
         type: RECEIVE.INIT,
         descriptor: path,
     });
+    dispatch({
+        type: MODAL.OVERLAY_ONLY
+    })
 
     if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         dispatch({
@@ -110,6 +113,9 @@ export const showAddress = (path: string) => async (
             },
         });
     }
+    dispatch({
+        type: MODAL.CLOSE
+    })
 };
 
 export default {

@@ -14,7 +14,7 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
     addresses: Address[];
     setSelectedAddr: any;
     selectedAddress: Address | null;
-    isAddressVerifying?: boolean;
+    isAddressVerifying?: (descriptor: string) => boolean;
     collapsed?: boolean;
     paginationEnabled: boolean;
     isAddressPartiallyHidden?: (descriptor: string) => boolean;
@@ -27,7 +27,7 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'controls'> {
         moreItems: boolean,
     ) => React.ReactNode;
     secondaryText?: (addr: Address) => React.ReactNode;
-    tooltipActions?: (addr: string) => React.ReactNode;
+    tooltipActions?: (descriptor: string) => React.ReactNode;
 }
 
 const AddressList = ({
@@ -79,11 +79,11 @@ const AddressList = ({
                 isPartiallyHidden={isHidden}
                 secondaryText={secondaryText ? secondaryText(addr) : null}
                 isSelected={addr === selectedAddress}
-                isVerifying={isAddressVerifying}
+                isVerifying={isAddressVerifying ? isAddressVerifying(addr.path) : false}
                 address={addr.address}
                 index={parseBIP44Path(addr.path)!.addrIndex}
                 actions={actions ? actions(addr) : null}
-                tooltipActions={tooltipActions ? tooltipActions(addr.address) : null}
+                tooltipActions={tooltipActions ? tooltipActions(addr.path) : null}
             />
         );
     });
