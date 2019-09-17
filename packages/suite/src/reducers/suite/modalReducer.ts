@@ -1,5 +1,6 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
+import { RECEIVE } from '@suite/actions/wallet/constants';
 import { Action, TrezorDevice } from '@suite-types';
 
 export type State =
@@ -8,6 +9,7 @@ export type State =
           context: typeof MODAL.CONTEXT_DEVICE;
           device: TrezorDevice | Device;
           windowType?: string;
+          addressPath?: string;
       }
     | {
           context: typeof MODAL.CONTEXT_CONFIRMATION;
@@ -66,7 +68,6 @@ export default (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_CONFIRMATION,
                 windowType: action.payload.view,
             };
-        // TODO: case RECEIVE.REQUEST_UNVERIFIED:
         case SUITE.REQUEST_REMEMBER_DEVICE:
         case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
@@ -75,6 +76,13 @@ export default (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload,
                 windowType: action.type,
+            };
+        case RECEIVE.REQUEST_UNVERIFIED:
+            return {
+                context: MODAL.CONTEXT_DEVICE,
+                device: action.payload,
+                windowType: action.type,
+                addressPath: action.addressPath,
             };
         // close modal
         // case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
@@ -100,7 +108,7 @@ export default (state: State = initialState, action: Action): State => {
             return {
                 context: MODAL.OVERLAY_ONLY,
             };
-            
+
         default:
             return state;
     }

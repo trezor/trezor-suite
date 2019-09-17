@@ -45,29 +45,27 @@ const BackupButton = styled(Button)`
 
 interface Props {
     device: TrezorDevice;
-    // TODO: fix account type
-    account: any;
+    addressPath: string;
     showAddress: (accountPath: string) => void;
-    showUnverifiedAddress: () => void;
+    showUnverifiedAddress: (accountPath: string) => void;
     onCancel: () => void;
 }
 
 const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     device,
-    account,
+    addressPath,
     showAddress,
     showUnverifiedAddress,
     onCancel,
 }) => {
     const verifyAddress = () => {
-        if (!account) return;
         onCancel();
-        showAddress(account.path);
+        showAddress(addressPath);
     };
 
     const unverifiedAddress = () => {
         onCancel();
-        showUnverifiedAddress();
+        showUnverifiedAddress(addressPath);
     };
 
     const enterPressed = useKeyPress('Enter');
@@ -118,7 +116,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             </Content>
             <Content>
                 <Row>
-                    <Button onClick={() => (!account ? verifyAddress() : 'false')}>
+                    <Button onClick={() => verifyAddress()}>
                         <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />
                     </Button>
                     <Button isInverse variant="warning" onClick={() => unverifiedAddress()}>

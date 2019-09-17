@@ -15,9 +15,9 @@ export type ModalActions =
     | {
           type: typeof MODAL.OPEN_SCAN_QR;
       }
-      | {
-        type: typeof MODAL.OVERLAY_ONLY;
-    };
+    | {
+          type: typeof MODAL.OVERLAY_ONLY;
+      };
 
 export const onCancel = (): Action => ({
     type: MODAL.CLOSE,

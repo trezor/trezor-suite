@@ -290,10 +290,8 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 isVerifying={isAddressVerifying(firstFreshAddress.path)}
                 actions={
                     <>
-                        {!(
-                            isAddressVerified(firstFreshAddress.path) ||
-                            isAddressUnverified(firstFreshAddress.path)
-                        ) &&
+                        {!isAddressVerified(firstFreshAddress.path) &&
+                        !isAddressUnverified(firstFreshAddress.path) &&
                         !isAddressVerifying(firstFreshAddress.path) && ( // !account.imported
                                 <ShowAddressButton
                                     onClick={() => {
@@ -349,17 +347,19 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         isAddressPartiallyHidden={props.isAddressPartiallyHidden}
                         actions={addr => (
                             <>
-                                {!(
-                                    isAddressVerified(addr.path) || isAddressUnverified(addr.path)
-                                ) && !isAddressVerifying(addr.path) && ( // !account.imported
-                                    <ShowAddressButton
-                                        onClick={() => props.showAddress(addr.path)}
-                                        // isDisabled={device.connected && !discovery.completed}
-                                        icon="EYE"
-                                    >
-                                        <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
-                                    </ShowAddressButton>
-                                )}
+                                {!isAddressVerified(addr.path) &&
+                                !isAddressUnverified(addr.path) &&
+                                !isAddressVerifying(addr.path) && ( // !account.imported
+                                        <ShowAddressButton
+                                            onClick={() => props.showAddress(addr.path)}
+                                            // isDisabled={device.connected && !discovery.completed}
+                                            icon="EYE"
+                                        >
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_SHOW_FULL_ADDRESS}
+                                            />
+                                        </ShowAddressButton>
+                                    )}
                                 {(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) &&
                                     !isAddressVerifying(addr.path) && (
                                         <EyeButton
