@@ -8,6 +8,7 @@ import { FIAT } from '@suite-config';
 const Wrapper = styled.div`
     display: flex;
     align-self: flex-end;
+    width: 280px;
 `;
 
 const getCurrencyOptions = (currency: string) => {

@@ -53,7 +53,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             <Row>
                 <Amount
                     amount={send.amount}
-                    canSetMax={(send.amount || 0) > account.availableBalance}
+                    canSetMax={(send.amount || 0) >= account.availableBalance}
                     symbol={account.symbol}
                     error={send.errors.amount}
                     fiatValue={send.fiatValue}

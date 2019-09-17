@@ -4,9 +4,8 @@ import { Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 
 const CurrencySelect = styled(Select)`
-    min-width: 77px;
+    width: 60px;
     height: 40px;
-    flex: 0.2;
 `;
 
 interface Props {

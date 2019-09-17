@@ -78,9 +78,11 @@ const hasRates = (fiat, localCurrency: State['localCurrency'], symbol: Account['
     return false;
 };
 
+const StyledInput = styled(Input)``;
+
 const Amount = (props: Props) => (
     <Wrapper>
-        <Input
+        <StyledInput
             state={getState(props.error, props.amount)}
             autoComplete="off"
             autoCorrect="off"
