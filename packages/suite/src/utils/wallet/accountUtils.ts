@@ -30,8 +30,9 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
 export const getTitleForNetwork = (symbol: Account['symbol'], intl: InjectedIntl) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
-        case 'test':
             return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN);
+        case 'test':
+            return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN_TESTNET);
         case 'bch':
             return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN_CASH);
         case 'btg':
@@ -52,6 +53,8 @@ export const getTitleForNetwork = (symbol: Account['symbol'], intl: InjectedIntl
             return intl.formatMessage(l10nMessages.TR_NETWORK_ZCASH);
         case 'eth':
             return intl.formatMessage(l10nMessages.TR_NETWORK_ETHEREUM);
+        case 'trop':
+            return intl.formatMessage(l10nMessages.TR_NETWORK_ETHEREUM_TESTNET);
         case 'etc':
             return intl.formatMessage(l10nMessages.TR_NETWORK_ETHEREUM_CLASSIC);
         case 'xem':
@@ -64,6 +67,8 @@ export const getTitleForNetwork = (symbol: Account['symbol'], intl: InjectedIntl
             return intl.formatMessage(l10nMessages.TR_NETWORK_TEZOS);
         case 'xrp':
             return intl.formatMessage(l10nMessages.TR_NETWORK_XRP);
+        case 'txrp':
+            return intl.formatMessage(l10nMessages.TR_NETWORK_XRP_TESTNET);
         default:
             return intl.formatMessage(l10nMessages.TR_NETWORK_UNKNOWN);
     }

@@ -48,6 +48,10 @@ const definedMessages = defineMessages({
         id: 'TR_NETWORK_BITCOIN',
         defaultMessage: 'Bitcoin',
     },
+    TR_NETWORK_BITCOIN_TESTNET: {
+        id: 'TR_NETWORK_BITCOIN_TESTNET',
+        defaultMessage: 'Bitcoin Testnet',
+    },
     TR_NETWORK_BITCOIN_CASH: {
         id: 'TR_NETWORK_BITCOIN_CASH',
         defaultMessage: 'Bitcoin Cash',
@@ -60,6 +64,10 @@ const definedMessages = defineMessages({
         id: 'TR_NETWORK_ETHEREUM',
         defaultMessage: 'Ethereum and tokens',
     },
+    TR_NETWORK_ETHEREUM_TESTNET: {
+        id: 'TR_NETWORK_ETHEREUM_TESTNET',
+        defaultMessage: 'Ethereum Testnet',
+    },
     TR_NETWORK_ETHEREUM_CLASSIC: {
         id: 'TR_NETWORK_ETHEREUM_CLASSIC',
         defaultMessage: 'Ethereum Classic and tokens',
@@ -67,6 +75,10 @@ const definedMessages = defineMessages({
     TR_NETWORK_XRP: {
         id: 'TR_NETWORK_XRP',
         defaultMessage: 'XRP',
+    },
+    TR_NETWORK_XRP_TESTNET: {
+        id: 'TR_NETWORK_XRP_TESTNET',
+        defaultMessage: 'XRP Testnet',
     },
     TR_NETWORK_DASH: {
         id: 'TR_NETWORK_DASH',
