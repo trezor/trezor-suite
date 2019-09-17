@@ -4,6 +4,7 @@ import {
     SELECT_TREZOR_MODEL,
     ADD_PATH,
     REMOVE_PATH,
+    RESET_ONBOARDING,
 } from '@suite/types/onboarding/onboarding';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
@@ -75,6 +76,12 @@ const goToPreviousStep = () => (dispatch: Dispatch, getState: GetState) => {
     dispatch(goToStep(prevStep.id));
 };
 
+const resetOnboarding = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: RESET_ONBOARDING,
+    });
+};
+
 export {
     goToNextStep,
     goToSubStep,
@@ -83,4 +90,5 @@ export {
     selectTrezorModel,
     addPath,
     removePath,
+    resetOnboarding,
 };

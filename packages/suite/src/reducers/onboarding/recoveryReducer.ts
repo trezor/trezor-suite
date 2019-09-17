@@ -1,6 +1,6 @@
 import produce from 'immer';
 import {
-    RecoveryReducer,
+    RecoveryState,
     RecoveryActionTypes,
     SET_WORDS_COUNT,
     SET_ADVANCED_RECOVERY,
@@ -11,7 +11,7 @@ const initialState = {
     wordsCount: 12,
 };
 
-const recovery = (state: RecoveryReducer = initialState, action: RecoveryActionTypes) => {
+const recovery = (state: RecoveryState = initialState, action: RecoveryActionTypes) => {
     return produce(state, draft => {
         switch (action.type) {
             case SET_WORDS_COUNT:

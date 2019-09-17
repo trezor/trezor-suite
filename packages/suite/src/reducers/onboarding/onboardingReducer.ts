@@ -2,13 +2,14 @@ import produce from 'immer';
 import { DEVICE, UI, Device } from 'trezor-connect';
 
 import {
-    OnboardingReducer,
+    OnboardingState,
     SET_STEP_ACTIVE,
     GO_TO_SUBSTEP,
     SELECT_TREZOR_MODEL,
     ADD_PATH,
     REMOVE_PATH,
-} from '@suite/types/onboarding/onboarding';
+    RESET_ONBOARDING,
+} from '@onboarding-types/onboarding';
 import { AnyPath } from '@onboarding-types/steps';
 import * as STEP from '@suite/constants/onboarding/steps';
 import steps from '@onboarding-config/steps';
@@ -20,14 +21,14 @@ import {
 } from '@suite/types/onboarding/connect';
 import { Action } from '@suite-types';
 
-const initialState: OnboardingReducer = {
+const initialState: OnboardingState = {
     // todo: prevDevice is now used to solve two different things and it cant work
     // would be better to implement field "isMatchingPrevDevice" along with prevDevice
     // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
     // and here leave only isMatchingPrevDevice ?
     prevDevice: null,
     selectedModel: null,
-    activeStepId: STEP.ID_RECOVERY_STEP,
+    activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
     deviceCall: {
@@ -42,7 +43,7 @@ const initialState: OnboardingReducer = {
     },
 };
 
-const setPrevDevice = (state: OnboardingReducer, device: Device) => {
+const setPrevDevice = (state: OnboardingState, device: Device) => {
     // dont set prevDevice if we are in steps that dont care about it.
     const activeStep = steps.find(s => s.id === state.activeStepId);
     if (
@@ -66,19 +67,19 @@ const setPrevDevice = (state: OnboardingReducer, device: Device) => {
     return device;
 };
 
-const addPath = (path: AnyPath, state: OnboardingReducer) => {
+const addPath = (path: AnyPath, state: OnboardingState) => {
     if (!state.path.includes(path)) {
         return [...state.path, path];
     }
     return [...state.path];
 };
 
-const removePath = (paths: AnyPath[], state: OnboardingReducer) => {
+const removePath = (paths: AnyPath[], state: OnboardingState) => {
     return state.path.filter(p => !paths.includes(p));
 };
 
 const setInteraction = (
-    currentInteraction: OnboardingReducer['uiInteraction'],
+    currentInteraction: OnboardingState['uiInteraction'],
     newInteraction: string,
 ) => {
     if (currentInteraction.name === newInteraction) {
@@ -93,8 +94,7 @@ const setInteraction = (
     };
 };
 
-const onboarding = (state: OnboardingReducer = initialState, action: Action) => {
-    // return if not init
+const onboarding = (state: OnboardingState = initialState, action: Action) => {
     return produce(state, draft => {
         switch (action.type) {
             case SET_STEP_ACTIVE:
@@ -173,6 +173,8 @@ const onboarding = (state: OnboardingReducer = initialState, action: Action) => 
             case UI.REQUEST_PIN:
                 draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
                 break;
+            case RESET_ONBOARDING:
+                return initialState;
             default:
             //  no default
         }

@@ -1,19 +1,17 @@
+/* eslint-disable @typescript-eslint/no-object-literal-type-assertion */
 /* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
-import { OnboardingReducer } from '@suite/types/onboarding/onboarding';
+import { OnboardingState } from '@suite/types/onboarding/onboarding';
 import * as onboardingActions from '../onboardingActions';
+import { Action } from '@suite-types';
 
-export const getInitialState = (custom?: any): { onboarding: OnboardingReducer } => {
+export const getInitialState = (custom?: any): { onboarding: OnboardingState } => {
     return {
         onboarding: {
-            prevDeviceId: null,
-            selectedModel: null,
-            activeStepId: 'welcome',
-            activeSubStep: null,
-            path: [],
+            ...onboardingReducer(undefined, {} as Action),
             ...custom,
         },
     };
@@ -115,5 +113,18 @@ describe('Onboarding Actions', () => {
         await store.dispatch(onboardingActions.removePath(['create', 'new']));
         const stateAfter = store.getState().onboarding;
         expect(stateAfter.path).toEqual(['used']);
+    });
+
+    it('resetOnboarding: should set onboarding reducer to initial state', () => {
+        // set some data
+        const store = mockStore(
+            getInitialState({
+                path: ['create', 'new', 'used'],
+                activeStepId: 'recovery',
+            }),
+        );
+        store.dispatch(onboardingActions.resetOnboarding());
+        const stateAfter = store.getState().onboarding;
+        expect(stateAfter).toEqual(getInitialState().onboarding);
     });
 });

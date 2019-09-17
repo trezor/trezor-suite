@@ -4,7 +4,7 @@ import {
     submit,
 } from '@suite/actions/onboarding/recoveryActions';
 
-export interface RecoveryReducer {
+export interface RecoveryState {
     advancedRecovery: boolean;
     wordsCount: number;
 }

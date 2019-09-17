@@ -59,7 +59,7 @@ const WelcomeStep = (props: Props) => {
                     >
                         <Base>Restore existing wallet</Base>
                         <Small>using your backup seed</Small>
-                        
+
                         <OnboardingButton.Alt>Restore existing</OnboardingButton.Alt>
                     </Option>
                 </Wrapper.Options>
