@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import colors from '../../config/colors';
@@ -13,47 +13,37 @@ interface StateProps {
     checked: boolean;
 }
 
-class Switch extends Component<Props, StateProps> {
-    static propTypes = {
-        onChange: PropTypes.func.isRequired,
-        disabled: PropTypes.bool,
-        isSmall: PropTypes.bool,
+const Switch: FunctionComponent<Props> = ({ onChange, disabled, isSmall, ...rest }) => {
+    const [checked, setChecked] = useState<StateProps['checked']>(false);
+    const smallProps = isSmall
+        ? {
+              width: 36,
+              height: 18,
+              handleDiameter: 14,
+          }
+        : {};
+
+    const handleChange = (checked: boolean) => {
+        onChange(checked);
+        setChecked(checked);
     };
 
-    constructor(props: Props) {
-        super(props);
-        this.state = { checked: false };
-        this.handleChange = this.handleChange.bind(this);
-    }
+    return (
+        <ReactSwitch
+            checked={checked}
+            disabled={disabled}
+            onChange={handleChange}
+            onColor={colors.GREEN_PRIMARY}
+            {...smallProps}
+            {...rest}
+        />
+    );
+};
 
-    handleChange(checked: boolean) {
-        const shouldUpdateState = this.props.onChange(checked);
-        if (shouldUpdateState !== false) {
-            this.setState({ checked });
-        }
-    }
-
-    render() {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { onChange, disabled, isSmall, ...rest }: Props = this.props;
-        const smallProps = isSmall
-            ? {
-                  width: 36,
-                  height: 18,
-                  handleDiameter: 14,
-              }
-            : {};
-        return (
-            <ReactSwitch
-                checked={this.state.checked}
-                disabled={disabled}
-                onChange={this.handleChange}
-                onColor={colors.GREEN_PRIMARY}
-                {...smallProps}
-                {...rest}
-            />
-        );
-    }
-}
+Switch.propTypes = {
+    onChange: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
+    isSmall: PropTypes.bool,
+};
 
 export { Switch, Props as SwitchProps };
