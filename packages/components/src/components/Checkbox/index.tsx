@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import { FONT_SIZE } from '../../config/variables';
 import { Icon } from '../Icon';
 import colors from '../../config/colors';
+import { useKeyPress } from '../../utils/hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,48 +55,42 @@ const Label = styled.div<IconWrapperProps>`
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
+    onClick: (
+        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null
+    ) => any;
     isChecked?: boolean;
 }
 
 type IconWrapperProps = Omit<Props, 'onClick'>;
 
-class Checkbox extends PureComponent<Props> {
-    static propTypes = {
-        onClick: PropTypes.func.isRequired,
-        isChecked: PropTypes.bool,
-        children: PropTypes.node,
-    };
+const Checkbox: FunctionComponent<Props> = ({ isChecked, children, onClick, ...rest }) => {
+    const enterPressed = useKeyPress('Enter');
 
-    handleKeyboard(event: React.KeyboardEvent<HTMLElement>) {
-        if (event.keyCode === 32) {
-            this.props.onClick(event);
-        }
+    if (enterPressed) {
+        onClick(null);
     }
 
-    render() {
-        const { isChecked, children, onClick, ...rest } = this.props;
-        return (
-            <Wrapper
-                onClick={onClick}
-                onKeyUp={event => this.handleKeyboard(event)}
-                tabIndex={0}
-                {...rest}
-            >
-                <IconWrapper isChecked={isChecked}>
-                    {isChecked && (
-                        <Icon
-                            hoverColor={colors.WHITE}
-                            size={10}
-                            color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
-                            icon="SUCCESS"
-                        />
-                    )}
-                </IconWrapper>
-                <Label isChecked={isChecked}>{children}</Label>
-            </Wrapper>
-        );
-    }
-}
+    return (
+        <Wrapper onClick={onClick} tabIndex={0} {...rest}>
+            <IconWrapper isChecked={isChecked}>
+                {isChecked && (
+                    <Icon
+                        hoverColor={colors.WHITE}
+                        size={10}
+                        color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
+                        icon="SUCCESS"
+                    />
+                )}
+            </IconWrapper>
+            <Label isChecked={isChecked}>{children}</Label>
+        </Wrapper>
+    );
+};
+
+Checkbox.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    isChecked: PropTypes.bool,
+    children: PropTypes.node,
+};
 
 export { Checkbox, Props as CheckboxProps };
