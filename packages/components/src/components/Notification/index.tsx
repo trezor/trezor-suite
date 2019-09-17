@@ -43,14 +43,12 @@ const Body = styled.div`
 
 const Message = styled.div`
     font-size: ${FONT_SIZE.SMALL};
-    line-height: 1;
     padding-top: 10px;
 `;
 
 const Title = styled.div`
     padding-bottom: 0;
     font-weight: ${FONT_WEIGHT.MEDIUM};
-    line-height: 1;
 `;
 
 const CloseClick = styled.div`
@@ -80,7 +78,6 @@ const Texts = styled.div`
 
 const AdditionalContent = styled.div`
     display: flex;
-    /* align-self: center; */
     justify-content: flex-end;
     align-items: flex-end;
     flex: 1 1 auto;
