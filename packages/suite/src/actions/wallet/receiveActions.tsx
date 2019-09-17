@@ -124,9 +124,3 @@ export const showAddress = (path: string) => async (
         type: MODAL.CLOSE,
     });
 };
-
-export default {
-    dispose,
-    showAddress,
-    showUnverifiedAddress,
-};

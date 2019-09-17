@@ -45,7 +45,7 @@ const BackupButton = styled(Button)`
 
 interface Props {
     device: TrezorDevice;
-    addressPath: string;
+    addressPath?: string;
     showAddress: (accountPath: string) => void;
     showUnverifiedAddress: (accountPath: string) => void;
     onCancel: () => void;
@@ -59,11 +59,13 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     onCancel,
 }) => {
     const verifyAddress = () => {
+        if (!addressPath) return;
         onCancel();
         showAddress(addressPath);
     };
 
     const unverifiedAddress = () => {
+        if (!addressPath) return;
         onCancel();
         showUnverifiedAddress(addressPath);
     };
