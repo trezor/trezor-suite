@@ -3,11 +3,10 @@ import { colors, variables, Loader } from '@trezor/components';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { Discovery } from '@wallet-reducers/discoveryReducer';
+import { sortByCoin } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
-
-import ProgressBar from './components/ProgressBar';
 import Row from './components/Row';
+import AddAccountButton from './components/AddAccount';
 
 const Wrapper = styled.div``;
 
@@ -33,45 +32,50 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    // getDiscoveryForDevice: bindActionCreators(discoveryActions.getDiscoveryForDevice, dispatch),
     getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const getLoadingProgress = (discovery?: Discovery) => {
-    if (discovery && discovery.loaded && discovery.total) {
-        return Math.round((discovery.loaded / discovery.total) * 100);
-    }
-    return 0;
-};
+const DiscoveryStatus = () => (
+    <Wrapper>
+        <LoadingWrapper>
+            <Loader size={15} />
+            <LoadingText>Loading accounts</LoadingText>
+        </LoadingWrapper>
+    </Wrapper>
+);
 
 const Menu = ({ device, accounts, getDiscoveryForDevice }: Props) => {
     const discovery = getDiscoveryForDevice();
     if (!device || !discovery) {
-        return (
-            <Wrapper>
-                <LoadingWrapper>
-                    <Loader size={15} />
-                    <LoadingText>Loading accounts</LoadingText>
-                </LoadingWrapper>
-            </Wrapper>
-        );
+        return <DiscoveryStatus />;
     }
+    const discoveryIsRunning = discovery.status <= 2;
 
-    const list = accounts.filter(account => account.deviceState === device.state);
+    const list = sortByCoin(
+        accounts.filter(
+            a => a.deviceState === device.state && (!a.empty || (a.empty && a.visible)),
+        ),
+    );
+    const normalAccounts = list.filter(a => a.accountType === 'normal');
+    const legacyAccounts = list.filter(a => a.accountType !== 'normal');
     return (
         <Wrapper>
-            <ProgressBar progress={getLoadingProgress(discovery)} />
-            {list.length === 0 && (
-                <LoadingWrapper>
-                    <Loader size={15} />
-                    <LoadingText>Loading accounts</LoadingText>
-                </LoadingWrapper>
-            )}
-            {list.map(account => (
+            {discoveryIsRunning && list.length === 0 && <DiscoveryStatus />}
+            {normalAccounts.map(account => (
                 <Row account={account} key={`${account.descriptor}-${account.symbol}`} />
             ))}
+            {legacyAccounts.length > 0 && (
+                <LoadingWrapper>
+                    <LoadingText>Legacy accounts (TODO: Fold it)</LoadingText>
+                </LoadingWrapper>
+            )}
+            {legacyAccounts.map(account => (
+                <Row account={account} key={`${account.descriptor}-${account.symbol}`} />
+            ))}
+            {discoveryIsRunning && list.length > 0 && <DiscoveryStatus />}
+            {discovery.status === 4 && <AddAccountButton />}
         </Wrapper>
     );
 };
