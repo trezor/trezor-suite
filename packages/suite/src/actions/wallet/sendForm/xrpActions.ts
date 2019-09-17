@@ -1,10 +1,10 @@
 import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-export type SendFormXrpActions = {
+export interface SendFormXrpActions {
     type: typeof SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE;
     destinationTag: string;
-};
+}
 
 /*
     Change value in input "destination tag"

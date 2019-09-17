@@ -160,7 +160,7 @@ const setMax = () => (dispatch: Dispatch, getState: GetState) => {
 /*
     Change value in select "Fee"
  */
-const handleFeeValueChange = val => () => {
+const handleFeeValueChange = (val: any) => () => {
     console.log(val);
 };
 

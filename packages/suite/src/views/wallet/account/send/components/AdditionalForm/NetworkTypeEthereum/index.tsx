@@ -49,8 +49,7 @@ const GasInput = styled(Input)`
 `;
 
 const StyledIcon = styled(Icon)`
-    height: 100%;
-    margin: 0 0 0 7px;
+    padding: 0 0 0 7px;
 `;
 
 const StyledTextarea = styled(TextArea)`
@@ -139,7 +138,7 @@ const NetworkTypeEthereum = () => (
                                                     </GreenSpan>
                                                 ),
                                                 recommendedGasPrice: (
-                                                    <GreenSpan>{'recommendedGasPrice'}</GreenSpan>
+                                                    <GreenSpan>recommendedGasPrice</GreenSpan>
                                                 ),
                                             }}
                                         />

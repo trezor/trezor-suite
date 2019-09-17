@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-import { Input, Tooltip, Icon, colors } from '@trezor/components';
+import { Input } from '@trezor/components';
 import sendMessages from '@wallet-views/account/messages';
-import commonMessages from '@wallet-views/messages';
 
 const Wrapper = styled.div`
     display: flex;

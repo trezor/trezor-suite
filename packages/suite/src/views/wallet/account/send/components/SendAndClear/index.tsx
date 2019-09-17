@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { State as ReducerState } from '@wallet-reducers/sendFormReducer';
 import { FormattedMessage } from 'react-intl';
+import commonMessages from '@wallet-views/messages';
 import { DispatchProps } from '../../Container';
-import messages from './index.messages';
 import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
@@ -40,7 +40,7 @@ const isDisabled = (
 const SendAndClear = (props: Props) => (
     <Wrapper>
         <Clear isWhite onClick={() => props.sendFormActions.clear()}>
-            <FormattedMessage {...messages.TR_CLEAR} />
+            <FormattedMessage {...commonMessages.TR_CLEAR} />
         </Clear>
         <Send
             isDisabled={isDisabled(props.errors, props.address, props.amount)}

@@ -4,7 +4,7 @@ import { variables } from '@trezor/components';
 
 interface OwnProps {
     children?: React.ReactNode;
-    className: string;
+    className?: string;
 }
 
 const Wrapper = styled.div`

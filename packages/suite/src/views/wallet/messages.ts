@@ -6,6 +6,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Account #{number}',
         description: 'Used in auto-generated account label',
     },
+    TR_CLEAR: {
+        id: 'TR_CLEAR',
+        defaultMessage: 'Clear',
+        description: 'Clear form button',
+    },
     TR_DEVICE_LABEL_ACCOUNT_HASH: {
         id: 'TR_DEVICE_LABEL_ACCOUNT_HASH',
         defaultMessage: '{deviceLabel} Account #{number}',
