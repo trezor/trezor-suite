@@ -10,7 +10,7 @@ Cypress.Commands.add('getTestElement', selector => cy.get(`[data-test="${selecto
 Cypress.Commands.add('loadContent', url => {
     return cy.visit(url).then(() => {
         return cy.document().then(doc => {
-            doc.fonts.ready.then(() => {
+            return doc.fonts.ready.then(() => {
                 return doc.fonts.load('12px Roboto');
             });
         });

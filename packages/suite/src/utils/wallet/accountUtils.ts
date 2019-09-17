@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@suite-config';
-// import { Account } from '@wallet-types';
+import { Account } from '@wallet-types';
 
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
@@ -23,17 +23,17 @@ export const formatAmount = (amount: string, symbol: string) => {
     return new BigNumber(amount).div(10 ** network.decimals).toString(10);
 };
 
-// export const sortByCoin = (accounts: Account[]) => {
-//     return accounts.sort((a, b) => {
-//         const aIndex = NETWORKS.findIndex(
-//             n => n.accountType === a.accountType && n.symbol === a.symbol,
-//         );
-//         const bIndex = NETWORKS.findIndex(
-//             n => n.accountType === b.accountType && b.symbol === a.symbol,
-//         );
-
-//         if ()
-
-//         return aIndex - bIndex;
-//     });
-// };
+export const sortByCoin = (accounts: Account[]) => {
+    return accounts.sort((a, b) => {
+        const aIndex = NETWORKS.findIndex(n => {
+            const accountType = n.accountType || 'normal';
+            return accountType === a.accountType && n.symbol === a.symbol;
+        });
+        const bIndex = NETWORKS.findIndex(n => {
+            const accountType = n.accountType || 'normal';
+            return accountType === b.accountType && n.symbol === b.symbol;
+        });
+        if (aIndex === bIndex) return a.index - b.index;
+        return aIndex - bIndex;
+    });
+};

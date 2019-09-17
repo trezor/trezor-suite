@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { AppState, TrezorDevice } from '@suite/types/suite';
-import { Discovery } from '@suite/reducers/wallet/discoveryReducer';
-import { Transaction, Account, Token, Network } from '@wallet-types';
+import { AppState, TrezorDevice } from '@suite-types';
+import { Transaction, Account, Token, Network, Discovery } from '@wallet-types';
 
 export const getPendingAmount = (
     pending: Transaction[],
