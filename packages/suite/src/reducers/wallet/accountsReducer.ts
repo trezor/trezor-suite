@@ -42,11 +42,33 @@ export const findDeviceAccounts = (
     return accounts;
 };
 
+const update = (draft: Account[], updatedAccount: Account) => {
+    const accountIndex = draft.findIndex(
+        a => a.descriptor === updatedAccount.descriptor && a.network === updatedAccount.network,
+    );
+    console.log('accountIndex', accountIndex)
+    if (accountIndex !== -1) {
+        console.log('acc to update', draft[accountIndex]);
+        draft[accountIndex].marker = updatedAccount.marker;
+        // draft.splice(accountIndex, 1);
+        // draft.push(updatedAccount);
+    }
+
+    // const account = draft.find(a => a.descriptor === updatedAccount.descriptor);
+    // if (account) {
+    //     console.log('updatujem');
+    //     account.marker = updatedAccount.marker;
+    // }
+};
+
 export default (state: Account[] = initialState, action: Action): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:
                 draft.push(action.payload);
+                break;
+            case ACCOUNT.UPDATE:
+                update(draft, action.payload);
                 break;
             // no default
         }

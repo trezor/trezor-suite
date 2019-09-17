@@ -118,7 +118,14 @@ export const getSelectedAccount = (
     //         a.network === routerParams.coin
     // ) || null;
 
-    return accounts.find(a => a.index === index && a.network === routerParams.symbol && a.accountType === routerParams.accountType) || null;
+    return (
+        accounts.find(
+            a =>
+                a.index === index &&
+                a.network === routerParams.symbol &&
+                a.accountType === routerParams.accountType,
+        ) || null
+    );
 };
 
 export const getSelectedNetwork = (networks: Network[], symbol: string) => {

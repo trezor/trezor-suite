@@ -13,7 +13,7 @@ const updateReducers = (message: SuiteStorageUpdateMessage) => async (
         // txs objecStore was updated, we'll load transactions from db to reducer
         const { account } = getState().wallet.selectedAccount;
         if (account) {
-            dispatch(transactionActions.fetchTransactions(account.descriptor, account.type));
+            dispatch(transactionActions.fetchTransactions(account));
         }
     }
 };

@@ -1,9 +1,10 @@
-import { TRANSACTION } from '@wallet-actions/constants/index';
+import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants/index';
 
 import { Dispatch, GetState } from '@suite-types/index';
 import { db } from '@suite/storage';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect from 'trezor-connect';
+import { Account } from '@wallet-types';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transactions: WalletAccountTransaction[] }
@@ -13,7 +14,6 @@ export type TransactionAction =
     | {
           type: typeof TRANSACTION.FETCH_SUCCESS;
           transactions: WalletAccountTransaction[];
-          marker?: any;
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 // | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
@@ -99,21 +99,19 @@ const getTransactionsFromStorage = async (descriptor: string, offset?: number, c
     }
 };
 
-export const fetchTransactions = (
-    descriptor: string,
-    networkType: string,
-    page?: number,
-    perPage?: number,
-) => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const fetchTransactions = (account: Account, page?: number, perPage?: number) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+): Promise<void> => {
     const offset = page && perPage ? (page - 1) * perPage : undefined;
     const count = perPage || undefined;
     let storedTxs = null;
 
     const { selectedAccount } = getState().wallet;
     const totalTxs = selectedAccount.account!.history.total;
-    const reducerTxs = dispatch(getAccountTransactions(descriptor));
+    const reducerTxs = dispatch(getAccountTransactions(account.descriptor));
 
-    console.log('descriptor', descriptor);
+    console.log('descriptor', account.descriptor);
     console.log('page', page);
 
     const txsForPage = reducerTxs.filter(t => t.page === page);
@@ -128,34 +126,34 @@ export const fetchTransactions = (
 
     console.log('offset', offset);
     console.log('count', count);
-    storedTxs = await getTransactionsFromStorage(descriptor, offset, count);
+    storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
 
     if (storedTxs) {
         console.log('stored txs length', storedTxs.length);
     } else {
-        console.log('no stored txs for the acc', descriptor);
+        console.log('no stored txs for the acc', account.descriptor);
     }
 
     const shouldFetchFromBackend =
         storedTxs === null || storedTxs.length === 0 || storedTxs.length < perPage;
     if (shouldFetchFromBackend) {
-        console.log('networkType', networkType);
+        console.log('networkType', account.networkType);
         console.log('fetching page', page);
         let result = null;
 
-        if (networkType === 'ripple') {
-            const marker = getState().wallet.transactions.marker || selectedAccount.account!.marker;
+        if (account.networkType === 'ripple') {
+            const { marker } = selectedAccount.account!;
             result = await TrezorConnect.getAccountInfo({
                 coin: selectedAccount!.account!.network,
-                descriptor,
+                descriptor: account.descriptor,
                 details: 'txs',
-                marker: marker,
+                marker,
             });
             console.log('req marker', marker);
         } else {
             result = await TrezorConnect.getAccountInfo({
                 coin: getState().wallet.selectedAccount!.account!.network,
-                descriptor,
+                descriptor: account.descriptor,
                 details: 'txs',
                 page,
                 pageSize: 25,
@@ -172,9 +170,12 @@ export const fetchTransactions = (
                 transactions: (result.payload.history.transactions || []).map(tx => ({
                     ...tx,
                     page,
-                    accountDescriptor: descriptor,
+                    accountDescriptor: account.descriptor,
                 })),
-                marker: result.payload.marker ? result.payload.marker : undefined,
+            });
+            dispatch({
+                type: ACCOUNT.UPDATE,
+                payload: { ...account, ...result.payload },
             });
             console.log('res marker', result.payload.marker ? result.payload.marker : undefined);
         } else {
@@ -186,7 +187,9 @@ export const fetchTransactions = (
     } else {
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
-            transactions: storedTxs ? storedTxs.map(t => ({ ...t, accountId: descriptor })) : [],
+            transactions: storedTxs
+                ? storedTxs.map(t => ({ ...t, accountId: account.descriptor }))
+                : [],
         });
     }
 };

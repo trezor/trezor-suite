@@ -230,6 +230,7 @@ export const observe = (prevState: AppState, action: Action) => (
         state.suite.device,
         state.router.params,
     );
+    console.log('account', account);
     // @ts-ignore TODO: missing discovery process results in silent fail
     const network = reducerUtils.getSelectedNetwork(NETWORKS, state.router.params.symbol);
     const discovery = reducerUtils.getDiscoveryProcess(state.wallet.discovery, state.suite.device);
@@ -268,7 +269,7 @@ export const observe = (prevState: AppState, action: Action) => (
     // check if newState is different than previous state
     // TODO: update filter (3rd param) to match new discovery/account format
     const stateChanged = reducerUtils.observeChanges(prevState.wallet.selectedAccount, newState, {
-        account: ['descriptor', 'availableBalance', 'nonce'],
+        account: ['descriptor', 'availableBalance', 'nonce', 'marker'],
         discovery: [
             'status',
             'index',
@@ -279,6 +280,9 @@ export const observe = (prevState: AppState, action: Action) => (
             // 'waitingForDevice',
         ],
     });
+    console.log('stateChanged', stateChanged);
+    console.log('selectedAccount', prevState.wallet.selectedAccount);
+    console.log('newState', newState);
 
     if (stateChanged) {
         // update values in reducer
