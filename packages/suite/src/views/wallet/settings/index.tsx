@@ -69,18 +69,7 @@ const buildCurrencyOption = (currency: string) => {
 };
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
-    <Layout
-        topNavigationComponent={
-            <TopNavigation
-                items={[
-                    {
-                        route: getRoute('wallet-settings'),
-                        title: <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />,
-                    },
-                ]}
-            />
-        }
-    >
+    <Layout>
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
