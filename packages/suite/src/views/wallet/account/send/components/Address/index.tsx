@@ -55,11 +55,11 @@ const Address = (props: Props) => (
         bottomText={getErrorMessage(props.error)}
         value={props.address || ''}
         onChange={e => props.sendFormActions.handleAddressChange(e.target.value)}
-        sideAddons={[
+        sideAddons={
             <QrButton key="qrButton" isWhite onClick={() => console.log('qr button click')}>
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />
-            </QrButton>,
-        ]}
+            </QrButton>
+        }
     />
 );
 

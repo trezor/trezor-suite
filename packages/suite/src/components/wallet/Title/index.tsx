@@ -4,6 +4,7 @@ import { variables } from '@trezor/components';
 
 interface OwnProps {
     children?: React.ReactNode;
+    className: string;
 }
 
 const Wrapper = styled.div`
@@ -12,6 +13,8 @@ const Wrapper = styled.div`
     padding-bottom: 35px;
 `;
 
-const Title = ({ children }: OwnProps) => <Wrapper>{children}</Wrapper>;
+const Title = ({ children, className }: OwnProps) => (
+    <Wrapper className={className}>{children}</Wrapper>
+);
 
 export default Title;

@@ -35,6 +35,7 @@ const Label = styled.span`
 interface Props {
     intl: InjectedIntl;
     fiatValue: State['fiatValue'];
+    fiat: any;
     amount: State['amount'];
     symbol: Account['symbol'];
     canSetMax: boolean;
@@ -65,8 +66,8 @@ const getState = (error: State['errors']['amount'], amount: State['address']) =>
     }
 };
 
-const hasRates = (fiat, localCurrency: State['localCurrency'], symbol: Account['symbol']) => {
-    const fiatNetwork = fiat.find(item => item.symbol === symbol);
+const hasRates = (fiat: any, localCurrency: State['localCurrency'], symbol: Account['symbol']) => {
+    const fiatNetwork = fiat.find((item: any) => item.symbol === symbol);
 
     if (fiatNetwork) {
         const rate = fiatNetwork.rates[localCurrency.value].toString();
@@ -106,21 +107,27 @@ const Amount = (props: Props) => (
             value={props.amount || ''}
             onChange={e => props.sendFormActions.handleAmountChange(e.target.value)}
             bottomText={getErrorMessage(props.error)}
-            sideAddons={[
-                <SetMax
-                    key="set-max"
-                    sendFormActions={props.sendFormActions}
-                    canSetMax={props.canSetMax}
-                />,
-                <CurrencySelect key="currency-select" symbol={props.symbol} />,
-                <Fiat
-                    key="fiat-input"
-                    state={props.error ? 'error' : undefined}
-                    sendFormActions={props.sendFormActions}
-                    value={props.fiatValue}
-                    localCurrency={props.localCurrency}
-                />,
-            ]}
+            sideAddons={
+                <>
+                    <SetMax
+                        key="set-max"
+                        sendFormActions={props.sendFormActions}
+                        canSetMax={props.canSetMax}
+                    />
+                    {hasRates(props.fiat, props.localCurrency, props.symbol) && (
+                        <CurrencySelect key="currency-select" symbol={props.symbol} />
+                    )}
+                    {hasRates(props.fiat, props.localCurrency, props.symbol) && (
+                        <Fiat
+                            key="fiat-input"
+                            state={props.error ? 'error' : undefined}
+                            sendFormActions={props.sendFormActions}
+                            value={props.fiatValue}
+                            localCurrency={props.localCurrency}
+                        />
+                    )}
+                </>
+            }
         />
     </Wrapper>
 );

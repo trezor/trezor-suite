@@ -59,7 +59,7 @@ const Fiat = (props: Props) => (
             spellCheck={false}
             value={props.value || ''}
             onChange={e => props.sendFormActions.handleFiatInputChange(e.target.value)}
-            sideAddons={[
+            sideAddons={
                 <LocalCurrencySelect
                     key="local-currency"
                     isSearchable
@@ -71,8 +71,8 @@ const Fiat = (props: Props) => (
                     options={FIAT.currencies.map((currency: string) =>
                         getCurrencyOptions(currency),
                     )}
-                />,
-            ]}
+                />
+            }
         />
     </Wrapper>
 );

@@ -112,6 +112,14 @@ const definedMessages = defineMessages({
         id: 'TR_NETWORK_TEZOS',
         defaultMessage: 'Tezos',
     },
+    TR_NETWORK_TYPE_LEGACY: {
+        id: 'TR_NETWORK_TYPE_LEGACY',
+        defaultMessage: 'legacy',
+    },
+    TR_NETWORK_TYPE_SEGWIT: {
+        id: 'TR_NETWORK_TYPE_SEGWIT',
+        defaultMessage: 'segwit',
+    },
 });
 
 export default definedMessages;

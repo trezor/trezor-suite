@@ -168,7 +168,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;
-    sideAddons?: React.ReactNode[];
+    sideAddons?: React.ReactNode;
     isDisabled?: boolean;
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
@@ -229,7 +229,7 @@ const Input = ({
                         {tooltipAction}
                     </TooltipAction>
                 </InputIconWrapper>
-                {sideAddons && sideAddons.map(sideAddon => sideAddon)}
+                {sideAddons}
             </InputWrapper>
             {bottomText && <BottomText color={stateColor}>{bottomText}</BottomText>}
         </Wrapper>

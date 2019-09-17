@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { InjectedIntl } from 'react-intl';
+import { CoinLogo } from '@trezor/components';
 
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { StateProps, DispatchProps } from './Container';
 import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
 import {
@@ -23,6 +24,15 @@ const Row = styled.div`
     }
 `;
 
+const StyledCoinLogo = styled(CoinLogo)`
+    margin-right: 10px;
+`;
+
+const StyledTitle = styled(Title)`
+    display: flex;
+    align-items: center;
+`;
+
 const RowColumn = styled(Row)`
     flex-direction: column;
 `;
@@ -40,9 +50,15 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
         );
     }
 
+    const accountType = getTypeForNetwork(account.accountType, props.intl);
+
     return (
         <Layout>
-            <Title>Send {getTitleForNetwork(network.symbol, props.intl)}</Title>
+            <StyledTitle className="styled-title">
+                <StyledCoinLogo size={24} symbol={account.symbol} />
+                Send {getTitleForNetwork(network.symbol, props.intl)}
+                {accountType ? ` (${accountType})` : ''}
+            </StyledTitle>
             <Row>
                 <Address
                     address={send.address}

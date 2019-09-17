@@ -1,6 +1,7 @@
 import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
 import BigNumber from 'bignumber.js';
+import { Account } from '@wallet-types';
 import { NETWORKS } from '@suite-config';
 
 export const parseBIP44Path = (path: string) => {
@@ -26,9 +27,10 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
     return fiatValue;
 };
 
-export const getTitleForNetwork = (symbol: string, intl: InjectedIntl) => {
+export const getTitleForNetwork = (symbol: Account['symbol'], intl: InjectedIntl) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
+        case 'test':
             return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN);
         case 'bch':
             return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN_CASH);
@@ -64,6 +66,18 @@ export const getTitleForNetwork = (symbol: string, intl: InjectedIntl) => {
             return intl.formatMessage(l10nMessages.TR_NETWORK_XRP);
         default:
             return intl.formatMessage(l10nMessages.TR_NETWORK_UNKNOWN);
+    }
+};
+
+export const getTypeForNetwork = (accountType: Account['accountType'], intl: InjectedIntl) => {
+    switch (accountType) {
+        case 'normal':
+            return null;
+        case 'segwit':
+            return intl.formatMessage(l10nMessages.TR_NETWORK_TYPE_SEGWIT);
+        case 'legacy':
+            return intl.formatMessage(l10nMessages.TR_NETWORK_TYPE_LEGACY);
+        // no default
     }
 };
 
