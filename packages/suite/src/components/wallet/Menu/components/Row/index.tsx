@@ -1,13 +1,12 @@
 import React from 'react';
 import { CoinLogo, colors, variables } from '@trezor/components';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import { Link } from '@suite-components';
 import { NETWORKS } from '@suite-config';
 import { Account } from '@wallet-types';
-import numberAbbr from 'number-abbreviate';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ selected: boolean }>`
     padding: 0 15px;
     display: flex;
     height: 55px;
@@ -22,6 +21,17 @@ const Wrapper = styled.div`
     &:first-child {
         padding-top: 0;
     }
+
+    ${props =>
+        props.selected &&
+        css`
+            padding-left: 13px;
+            border-left: 2px solid ${colors.GREEN_PRIMARY};
+            background-color: ${colors.WHITE};
+            &:hover {
+                background-color: ${colors.WHITE};
+            }
+        `}
 `;
 
 const CoinName = styled.div``;
@@ -115,9 +125,11 @@ const getCoinName = (symbol: string, accountType: string) => {
 
 interface Props {
     account: Account;
+    hideBalance: boolean;
+    selected: boolean;
 }
 
-const Row = React.memo(({ account }: Props) => (
+const Row = React.memo(({ account, hideBalance, selected }: Props) => (
     <StyledLink
         href={getRoute('wallet-account', {
             accountId: account.index,
@@ -125,7 +137,7 @@ const Row = React.memo(({ account }: Props) => (
             accountType: account.accountType,
         })}
     >
-        <Wrapper>
+        <Wrapper selected={selected}>
             <Left>
                 <LogoWrapper>
                     <CoinLogo size={25} symbol={account.symbol} />
@@ -138,19 +150,21 @@ const Row = React.memo(({ account }: Props) => (
                     </AccountIndex>
                 </Name>
             </Left>
-            <Right>
-                <Balance>
-                    <BalanceValue>
-                        {numberAbbr(account.balance)} {account.symbol}
-                    </BalanceValue>
-                </Balance>
-                {account.history.total !== -1 && (
-                    <Transactions>
-                        <Label>transactions</Label>
-                        <TransactionsValue>{account.history.total}</TransactionsValue>
-                    </Transactions>
-                )}
-            </Right>
+            {!hideBalance && (
+                <Right>
+                    <Balance>
+                        <BalanceValue>
+                            {account.balance} {account.symbol}
+                        </BalanceValue>
+                    </Balance>
+                    {account.history.total !== -1 && (
+                        <Transactions>
+                            <Label>transactions</Label>
+                            <TransactionsValue>{account.history.total}</TransactionsValue>
+                        </Transactions>
+                    )}
+                </Right>
+            )}
         </Wrapper>
     </StyledLink>
 ));

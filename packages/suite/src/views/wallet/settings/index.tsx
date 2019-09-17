@@ -5,7 +5,6 @@ import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezo
 import Link from '@suite-components/Link';
 import l10nCommonMessages from '@suite-views/index.messages';
 import Layout from '@wallet-components/Layout';
-import TopNavigation from '@wallet-components/TopNavigation';
 import { getRoute } from '@suite/utils/suite/router';
 import { FIAT, NETWORKS } from '@suite-config';
 import Coins from './components/Coins';
@@ -69,18 +68,7 @@ const buildCurrencyOption = (currency: string) => {
 };
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
-    <Layout
-        topNavigationComponent={
-            <TopNavigation
-                items={[
-                    {
-                        route: getRoute('wallet-settings'),
-                        title: <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />,
-                    },
-                ]}
-            />
-        }
-    >
+    <Layout>
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />

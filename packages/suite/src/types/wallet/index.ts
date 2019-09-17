@@ -7,6 +7,7 @@ import { SendFormXrpActions } from '@wallet-actions/sendForm/xrpActions';
 
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
+import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
 import { Account as Account$ } from '@wallet-reducers/accountsReducer';
 import { Fiat as Fiat$ } from '@wallet-reducers/fiatRateReducer';
 
@@ -26,6 +27,7 @@ export type Token = Token$;
 export type Account = Account$;
 export type Icon = Icon$;
 export type Fiat = Fiat$;
+export type Discovery = Discovery$;
 
 interface BlockchainLinkToken {
     name: string;

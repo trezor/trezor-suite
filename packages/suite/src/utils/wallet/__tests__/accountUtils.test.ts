@@ -1,43 +1,24 @@
-import { parseBIP44Path, getTitleForNetwork } from '../accountUtils';
-import { accountTitleFixture } from './fixtures/accountUtils';
+import * as accountUtils from '../accountUtils';
+import * as fixtures from './fixtures/accountUtils';
+import { Account } from '@wallet-types';
 
 describe('accountUtils', () => {
-    it('accountUtils.parseBIP44Path', () => {
-        expect(parseBIP44Path("m/84'/0'/0'/1/0")).toEqual({
-            purpose: "84'",
-            coinType: "0'",
-            account: "0'",
-            change: '1',
-            addrIndex: '0',
-        });
-
-        expect(parseBIP44Path("m/44'/0'/0'/0/2")).toEqual({
-            purpose: "44'",
-            coinType: "0'",
-            account: "0'",
-            change: '0',
-            addrIndex: '2',
-        });
-
-        expect(parseBIP44Path("m/44'/0'/0'/0/48")).toEqual({
-            purpose: "44'",
-            coinType: "0'",
-            account: "0'",
-            change: '0',
-            addrIndex: '48',
-        });
-
-        expect(parseBIP44Path("m/44'/133'/0'/0/0")).toEqual({
-            purpose: "44'",
-            coinType: "133'",
-            account: "0'",
-            change: '0',
-            addrIndex: '0',
+    fixtures.parseBIP44Path.forEach(f => {
+        it('accountUtils.parseBIP44Path', () => {
+            expect(accountUtils.parseBIP44Path(f.path)).toEqual(f.result);
         });
     });
 
-    it('parseBIP44Path: invalid format', () => {
-        expect(parseBIP44Path("m/84'/0'/0'/1/")).toEqual(null);
+    fixtures.formatAmount.forEach(f => {
+        it('accountUtils.formatAmount', () => {
+            expect(accountUtils.formatAmount(f.amount, f.symbol)).toEqual(f.result);
+        });
+    });
+
+    fixtures.sortByCoin.forEach(f => {
+        it('accountUtils.sortByCoin', () => {
+            expect(accountUtils.sortByCoin(f.accounts as Account[])).toEqual(f.result);
+        });
     });
 
     describe('get title for network', () => {

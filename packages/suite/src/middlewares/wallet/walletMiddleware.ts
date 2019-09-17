@@ -8,6 +8,7 @@ import { getApp } from '@suite-utils/router';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import { loadStorage } from '@wallet-actions/storageActions';
 import * as walletActions from '@wallet-actions/walletActions';
+import * as accountActions from '@wallet-actions/accountActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -55,7 +56,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     if (action.type === SETTINGS.CHANGE_NETWORKS) {
         api.dispatch(discoveryActions.updateNetworkSettings());
-        // TODO: delete transactions and accounts from reducer and db
+        api.dispatch(accountActions.disableAccounts());
     }
 
     // and only if device is unlocked
@@ -105,15 +106,14 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         action.type === SUITE.SELECT_DEVICE ||
         action.type === WALLET.INIT_SUCCESS ||
         action.type === SUITE.AUTH_DEVICE ||
-        // action.type === DISCOVERY.STOP ||
+        action.type === SETTINGS.CHANGE_NETWORKS ||
         (action.type === LOCATION_CHANGE && prevState.router.app !== 'wallet')
     ) {
         const discovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
         if (
             device &&
             device.connected &&
-            discovery &&
-            discovery.status !== DISCOVERY_STATUS.COMPLETED
+            (discovery && (discovery.status === 0 || discovery.status >= DISCOVERY_STATUS.STOPPED))
         ) {
             api.dispatch(discoveryActions.start());
         }
