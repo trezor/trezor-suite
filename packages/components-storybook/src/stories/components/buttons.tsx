@@ -264,6 +264,7 @@ storiesOf('Buttons', module)
 
             const isTransparent = boolean('Transparent', false);
             const isWhite = boolean('White', false);
+            const fullWidth = boolean('FullWidth', false);
 
             return (
                 <Button
@@ -274,6 +275,7 @@ storiesOf('Buttons', module)
                     {...(isInverse ? { isInverse } : {})}
                     {...(icon ? { icon } : {})}
                     {...(isLoading ? { isLoading } : {})}
+                    {...(fullWidth ? { fullWidth } : {})}
                 >
                     {buttonText}
                 </Button>
