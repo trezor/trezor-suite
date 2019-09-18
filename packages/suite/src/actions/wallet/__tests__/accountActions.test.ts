@@ -110,19 +110,6 @@ describe('Account Actions', () => {
     });
 
     it('Request new account', async () => {
-        const store = initStore(
-            getInitialState({
-                accounts: [getAccount({ symbol: 'ltc' }) as Account, getAccount() as Account],
-                settings: {
-                    enabledNetworks: ['ltc'],
-                },
-            }),
-        );
-        store.dispatch(accountActions.disableAccounts());
-        expect(store.getState().wallet.accounts.length).toEqual(1);
-    });
-
-    it('Request new account', async () => {
         const store = initStore(getInitialState());
         store.dispatch(accountActions.requestNewAccount());
         expect(store.getActions().length).toEqual(1);
