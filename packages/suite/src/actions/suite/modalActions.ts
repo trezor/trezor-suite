@@ -55,7 +55,7 @@ export const onPassphraseSubmit = (value: string) => async (
         });
     }
 
-    await TrezorConnect.uiResponse({
+    TrezorConnect.uiResponse({
         type: UI.RECEIVE_PASSPHRASE,
         payload: {
             value,
@@ -67,7 +67,7 @@ export const onPassphraseSubmit = (value: string) => async (
 };
 
 export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch: Dispatch) => {
-    await TrezorConnect.uiResponse({
+    TrezorConnect.uiResponse({
         type: UI.RECEIVE_CONFIRMATION,
         payload: confirmation,
     });
