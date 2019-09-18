@@ -166,7 +166,7 @@ const getBundle = (discovery: Discovery) => (_d: Dispatch, getState: GetState): 
             });
 
         // check if requested coin already have an empty account
-        const hasEmptyAccount = prevAccounts.find(a => a.empty);
+        const hasEmptyAccount = prevAccounts.find(a => a.empty && !a.visible);
 
         // check if requested coin not failed before
         const failed = discovery.failed.find(

@@ -36,6 +36,18 @@ const create = (draft: Account[], account: Account) => {
     draft.push(account);
 };
 
+const changeVisibility = (draft: Account[], account: Account) => {
+    const index = draft.findIndex(
+        a =>
+            a.symbol === account.symbol &&
+            a.accountType === account.accountType &&
+            a.path === account.path,
+    );
+    if (draft[index]) {
+        draft[index].visible = true;
+    }
+};
+
 const remove = (draft: Account[], accounts: Account[]) => {
     accounts.forEach(a => {
         const index = draft.findIndex(
@@ -75,6 +87,9 @@ export default (state: Account[] = initialState, action: Action): Account[] => {
                 break;
             case ACCOUNT.UPDATE:
                 update(draft, action.payload);
+                break;
+            case ACCOUNT.CHANGE_VISIBILITY:
+                changeVisibility(draft, action.payload);
                 break;
             case ACCOUNT.REMOVE:
                 remove(draft, action.payload);

@@ -3,12 +3,14 @@ import { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import { Account } from '@wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { NETWORKS } from '@suite-config';
 
 export type AccountActions =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
     | { type: typeof ACCOUNT.REMOVE; payload: Account[] }
+    | { type: typeof ACCOUNT.REQUEST_NEW_ACCOUNT; payload: TrezorDevice }
+    | { type: typeof ACCOUNT.CHANGE_VISIBILITY; payload: Account }
     | { type: typeof ACCOUNT.UPDATE; payload: Account };
 
 export const create = (
@@ -54,3 +56,17 @@ export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) =>
         payload: accountsToRemove,
     });
 };
+
+export const requestNewAccount = () => (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+    if (!device) return;
+    dispatch({
+        type: ACCOUNT.REQUEST_NEW_ACCOUNT,
+        payload: device,
+    });
+};
+
+export const changeAccountVisibility = (payload: Account) => ({
+    type: ACCOUNT.CHANGE_VISIBILITY,
+    payload,
+});
