@@ -73,7 +73,7 @@ interface Props {
 const FirmwareUpdate = (props: Props) => {
     const { device, firmware } = props;
 
-    if (!device || device.type !== 'acquired') {
+    if (!device || !device.features) {
         return (
             <Wrapper>
                 <Top>
