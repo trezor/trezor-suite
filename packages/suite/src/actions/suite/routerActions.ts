@@ -52,7 +52,7 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
  */
 export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
     const { locks } = getState().suite;
-    return locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI);
+    return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
 };
 
 // links inside of application
