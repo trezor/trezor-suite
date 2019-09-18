@@ -310,6 +310,16 @@ describe('Discovery Actions', () => {
         expect(store.getState().wallet.discovery.length).toEqual(1);
     });
 
+    it('Start discovery which does not exist', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch({
+            type: DISCOVERY.START,
+            payload: SUITE_DEVICE,
+        });
+        expect(store.getState().wallet.discovery.length).toEqual(0);
+    });
+
     it('Update discovery which does not exist', async () => {
         const store = mockStore(getInitialState());
         store.subscribe(() => updateStore(store));

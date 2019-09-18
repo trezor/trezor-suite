@@ -14,6 +14,9 @@ interface Args {
 }
 
 export const getInitialState = ({ accounts, settings }: Args = {}) => ({
+    suite: {
+        device: true,
+    },
     wallet: {
         accounts: accounts || accountsReducer(undefined, { type: 'foo' } as any),
         settings: {
@@ -104,5 +107,65 @@ describe('Account Actions', () => {
         );
         store.dispatch(accountActions.disableAccounts());
         expect(store.getState().wallet.accounts.length).toEqual(1);
+    });
+
+    it('Request new account', async () => {
+        const store = initStore(
+            getInitialState({
+                accounts: [getAccount({ symbol: 'ltc' }) as Account, getAccount() as Account],
+                settings: {
+                    enabledNetworks: ['ltc'],
+                },
+            }),
+        );
+        store.dispatch(accountActions.disableAccounts());
+        expect(store.getState().wallet.accounts.length).toEqual(1);
+    });
+
+    it('Request new account', async () => {
+        const store = initStore(getInitialState());
+        store.dispatch(accountActions.requestNewAccount());
+        expect(store.getActions().length).toEqual(1);
+    });
+
+    it('Request new account (no device)', async () => {
+        const store = initStore({
+            ...getInitialState(),
+            suite: {
+                device: false,
+            },
+        });
+        store.dispatch(accountActions.requestNewAccount());
+        expect(store.getActions().length).toEqual(0);
+    });
+
+    it('Change account visibility', async () => {
+        const store = initStore(
+            getInitialState({
+                accounts: [getAccount({ symbol: 'ltc', path: '1', visible: false }) as Account],
+            }),
+        );
+        store.dispatch(
+            accountActions.changeAccountVisibility(getAccount({
+                symbol: 'ltc',
+                path: '1',
+                visible: false,
+            }) as Account),
+        );
+        expect(store.getState().wallet.accounts[0]).toEqual(
+            getAccount({ symbol: 'ltc', path: '1', visible: true }),
+        );
+    });
+
+    it('Change account visibility (account not found)', async () => {
+        const store = initStore(getInitialState());
+        store.dispatch(
+            accountActions.changeAccountVisibility(getAccount({
+                symbol: 'ltc',
+                path: '1',
+                visible: false,
+            }) as Account),
+        );
+        expect(store.getState().wallet.accounts.length).toEqual(0);
     });
 });
