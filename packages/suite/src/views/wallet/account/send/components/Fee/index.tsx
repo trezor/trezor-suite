@@ -62,6 +62,7 @@ const FeeComponent = (props: Props) => (
             isClearable={false}
             value={getValue(props.fees, props.symbol)}
             onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
+            // @ts-ignore fix this
             options={[{ label: 'High', value: '0.000012' }]}
             formatOptionLabel={option => (
                 <FeeOptionWrapper>

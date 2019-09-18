@@ -16,14 +16,13 @@ import {
 } from './components';
 
 const Row = styled.div`
-    padding: 0 0 30px 0;
     display: flex;
+    flex-direction: ${(props: { isColumn?: boolean }) => (props.isColumn ? 'column' : 'row')};
+    padding: 0 0 30px 0;
 
     &:last-child {
         padding: 0;
     }
-
-    flex-direction: ${(props: { isColumn?: boolean }) => (props.isColumn ? 'column' : 'row')};
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
