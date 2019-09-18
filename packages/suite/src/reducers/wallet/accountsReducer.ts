@@ -22,6 +22,7 @@ export interface Account {
     history: AccountInfo['history'];
     misc: AccountInfo['misc'];
     marker: AccountInfo['marker'];
+    page: AccountInfo['page'];
 }
 
 const initialState: Account[] = [];
@@ -51,10 +52,10 @@ const remove = (draft: Account[], accounts: Account[]) => {
 const update = (draft: Draft<Account[]>, account: Account) => {
     const accountIndex = draft.findIndex(
         ac =>
-                ac.deviceState === account.deviceState &&
-                ac.descriptor === account.descriptor &&
-                ac.accountType === account.accountType &&
-                ac.symbol === account.symbol
+            ac.deviceState === account.deviceState &&
+            ac.descriptor === account.descriptor &&
+            ac.accountType === account.accountType &&
+            ac.symbol === account.symbol,
     );
 
     if (accountIndex !== -1) {

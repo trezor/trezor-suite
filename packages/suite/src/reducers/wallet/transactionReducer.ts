@@ -44,48 +44,57 @@ const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransact
     return b.blockHeight - a.blockHeight;
 };
 
-const alreadyAdded = (draft: State, transaction: WalletAccountTransaction) => {
+const enhanceTransaction = (
+    tx: AccountTransaction,
+    account: Account,
+    page?: number,
+): WalletAccountTransaction => {
+    return {
+        descriptor: account.descriptor,
+        deviceState: account.deviceState,
+        symbol: account.symbol,
+        ...tx,
+        amount: formatAmount(tx.amount, account.symbol),
+        fee: formatAmount(tx.fee, account.symbol),
+        targets: tx.targets.map(tr => {
+            if (typeof tr.amount === 'string') {
+                return {
+                    ...tr,
+                    amount: formatAmount(tr.amount, account.symbol),
+                };
+            }
+            return tr;
+        }),
+        page: page || account.page ? account.page.index : undefined,
+    };
+};
+
+const alreadyExists = (draft: State, transaction: WalletAccountTransaction) => {
     // two txs may have same id if they belong to two different accounts
     return draft.transactions.find(
         t => t.txid === transaction.txid && t.descriptor === transaction.descriptor,
     );
 };
 
-const add = (draft: State, payload: Account) => {
-    if (payload.history.transactions) {
-        payload.history.transactions.forEach(tx => {
-            if (!alreadyExists(draft, transaction)) {
-                draft.transactions.push({
-                    descriptor: payload.descriptor,
-                    deviceState: payload.deviceState,
-                    symbol: payload.symbol,
-                    ...tx,
-                    amount: formatAmount(tx.amount, payload.symbol),
-                    fee: formatAmount(tx.fee, payload.symbol),
-                    targets: tx.targets.map(tr => {
-                        if (typeof tr.amount === 'string') {
-                            return {
-                                ...tr,
-                                amount: formatAmount(tr.amount, payload.symbol),
-                            };
-                        }
-                        return tr;
-                    }),
-                });
-            }
-        });
-    }
+const add = (draft: State, transactions: AccountTransaction[], account: Account) => {
+    transactions.forEach(tx => {
+        const enhancedTx = enhanceTransaction(tx, account);
+        if (!alreadyExists(draft, enhancedTx)) {
+            draft.transactions.push(enhancedTx);
+        }
+    });
 };
 
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:
-                add(draft, action.payload);
+                // gather transactions from account creation
+                add(draft, action.payload.history.transactions || [], action.payload);
                 break;
-            case TRANSACTION.ADD:
-                add(draft, action.payload);
-                break;
+            // case TRANSACTION.ADD:
+            //     add(draft, action.payload);
+            //     break;
             case TRANSACTION.REMOVE:
                 draft.transactions.splice(
                     draft.transactions.findIndex(tx => tx.txid === action.txId),
@@ -99,7 +108,7 @@ export default (state: State = initialState, action: Action): State => {
                 draft.isLoading = true;
                 break;
             case TRANSACTION.FETCH_SUCCESS:
-                add(draft, action.payload);
+                add(draft, action.transactions, action.account);
                 draft.isLoading = false;
                 break;
             case TRANSACTION.FETCH_ERROR:

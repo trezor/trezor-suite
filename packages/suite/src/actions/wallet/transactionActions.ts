@@ -3,7 +3,8 @@ import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants/index';
 import { Dispatch, GetState } from '@suite-types/index';
 import { db } from '@suite/storage';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { AccountInfo } from 'trezor-connect';
+import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import { Account } from '@wallet-types';
 
 export type TransactionAction =
@@ -13,6 +14,7 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {
           type: typeof TRANSACTION.FETCH_SUCCESS;
+          account: Account;
           transactions: WalletAccountTransaction[];
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
@@ -45,14 +47,14 @@ export type TransactionAction =
 //     }
 // };
 
-export const add = (transactions: WalletAccountTransaction) => async (
-    dispatch: Dispatch,
-): Promise<void> => {
-    dispatch({
-        type: TRANSACTION.ADD,
-        transactions,
-    });
-};
+// export const add = (transactions: WalletAccountTransaction) => async (
+//     dispatch: Dispatch,
+// ): Promise<void> => {
+//     dispatch({
+//         type: TRANSACTION.ADD,
+//         transactions,
+//     });
+// };
 
 export const remove = (txId: string) => async (dispatch: Dispatch) => {
     db.removeItem('txs', 'txId', txId).then(() => {
@@ -72,17 +74,6 @@ export const update = (txId: string) => async (dispatch: Dispatch) => {
             timestamp: updatedTimestamp,
         });
     });
-};
-
-export const getAccountTransactions = (descriptor: string) => (
-    _dispatch: Dispatch,
-    getState: GetState,
-): WalletAccountTransaction[] => {
-    const { selectedAccount } = getState().wallet;
-    const transactions = getState().wallet.transactions.transactions.filter(
-        t => t.accountDescriptor === descriptor,
-    );
-    return transactions;
 };
 
 const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
@@ -108,8 +99,9 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
     let storedTxs = null;
 
     const { selectedAccount } = getState().wallet;
-    const totalTxs = selectedAccount.account!.history.total;
-    const reducerTxs = dispatch(getAccountTransactions(account.descriptor));
+    // const totalTxs = selectedAccount.account!.history.total;
+    const { transactions } = getState().wallet.transactions;
+    const reducerTxs = getAccountTransactions(transactions, account);
 
     const txsForPage = reducerTxs.filter(t => t.page === page);
     // we already got txs for the page in reducer
@@ -130,14 +122,14 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
         if (account.networkType === 'ripple') {
             const { marker } = selectedAccount.account!;
             result = await TrezorConnect.getAccountInfo({
-                coin: selectedAccount!.account!.network,
+                coin: selectedAccount.account!.symbol,
                 descriptor: account.descriptor,
                 details: 'txs',
                 marker,
             });
         } else {
             result = await TrezorConnect.getAccountInfo({
-                coin: getState().wallet.selectedAccount!.account!.network,
+                coin: getState().wallet.selectedAccount.account!.symbol,
                 descriptor: account.descriptor,
                 details: 'txs',
                 page,
@@ -146,24 +138,23 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
         }
 
         if (result.success) {
+            const updatedAccount = {
+                ...account,
+                ...result.payload,
+                path: account.path, // preserve account path (fetched account comes without it)
+                ...{ marker: result.payload.marker ? result.payload.marker : null },
+            };
             dispatch({
                 type: TRANSACTION.FETCH_SUCCESS,
-                transactions: (result.payload.history.transactions || []).map(tx => ({
-                    ...tx,
-                    page,
-                    accountDescriptor: account.descriptor,
-                })),
+                account: updatedAccount,
+                transactions: result.payload.history.transactions || [],
             });
+
             dispatch({
                 type: ACCOUNT.UPDATE,
                 // immer.js used in reducer doesn't update fields that are set to undefined,
                 // so when the backend returns undefined, we change it to null.
-                payload: {
-                    ...account,
-                    ...result.payload,
-                    path: account.path, // preserve account path (fetched account comes without it)
-                    ...{ marker: result.payload.marker ? result.payload.marker : null },
-                },
+                payload: updatedAccount,
             });
         } else {
             dispatch({
@@ -174,9 +165,8 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
     } else {
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
-            transactions: storedTxs
-                ? storedTxs.map(t => ({ ...t, accountId: account.descriptor }))
-                : [],
+            transactions: storedTxs || [],
+            account,
         });
     }
 };

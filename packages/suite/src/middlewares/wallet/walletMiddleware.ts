@@ -3,7 +3,7 @@ import TrezorConnect, { UI, AccountInfo } from 'trezor-connect';
 import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';
-import { SETTINGS, WALLET, DISCOVERY } from '@wallet-actions/constants';
+import { SETTINGS, WALLET, ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 import { getApp } from '@suite-utils/router';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import { loadStorage } from '@wallet-actions/storageActions';
@@ -13,7 +13,6 @@ import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
-import { WALLET, DISCOVERY, ACCOUNT } from '@wallet-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 // Flow: LOCATION.CHANGE -> WALLET.INIT -> load storage -> WALLET.INIT_SUCCESS
@@ -123,22 +122,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     }
 
     switch (action.type) {
-        case ACCOUNT.CREATE:
-            {
-                const account = action.payload;
-                const { transactions } = account.history;
-                if (transactions) {
-                    // add last 25 txs to the history
-                    const enhancedTxs = transactions.map(tx => ({
-                        accountDescriptor: account.descriptor,
-                        page: 1,
-                        ...tx,
-                    }));
-                    api.dispatch(transactionActions.add(enhancedTxs));
-                }
-            }
-            break;
-
         case ACCOUNT.UPDATE:
             api.dispatch(selectedAccountActions.observe(prevState, action));
             break;

@@ -35,6 +35,7 @@ export const create = (
         history: accountInfo.history,
         misc: accountInfo.misc,
         marker: accountInfo.marker,
+        page: accountInfo.page,
     },
 });
 

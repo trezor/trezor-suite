@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Transaction, Account, Token, Network, Discovery } from '@wallet-types';
 
@@ -137,4 +138,16 @@ export const getDiscoveryProcess = (
 ): Discovery | null => {
     if (!device || !device.features) return null;
     return discoveries.find(d => d.deviceState === device.state) || null;
+};
+
+export const getAccountTransactions = (
+    transactions: WalletAccountTransaction[],
+    account: Account,
+) => {
+    return transactions.filter(
+        t =>
+            t.descriptor === account.descriptor &&
+            t.symbol === account.symbol &&
+            t.deviceState === account.deviceState,
+    );
 };

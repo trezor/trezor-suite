@@ -7,6 +7,7 @@ import { Loader, colors } from '@trezor/components';
 import styled from 'styled-components';
 import Title from '@wallet-components/Title';
 import TransactionList from '@suite/components/wallet/TransactionList';
+import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import { AppState, Dispatch } from '@suite-types';
 
 const LoaderWrapper = styled.div`
@@ -30,10 +31,13 @@ const Transactions = (props: Props) => {
     const [selectedPage, setSelectedPage] = useState(1);
     if (!selectedAccount || !selectedAccount.account) return null;
 
-    const accountTransactions = transactions.transactions.filter(
-        t => t.accountDescriptor === selectedAccount.account!.descriptor,
+    const accountTransactions = getAccountTransactions(
+        transactions.transactions,
+        selectedAccount.account,
     );
+    console.log(accountTransactions);
     const { index = null, size = null, total = null } = selectedAccount.account.page || {};
+    console.log(size, total)
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
