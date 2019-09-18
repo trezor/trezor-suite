@@ -1,4 +1,4 @@
-import produce from 'immer';
+import produce, { Draft } from 'immer';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { Action } from '@wallet-types/index';
 import { AccountInfo } from 'trezor-connect';
@@ -42,23 +42,18 @@ export const findDeviceAccounts = (
     return accounts;
 };
 
-const update = (draft: Account[], updatedAccount: Account) => {
+const update = (draft: Draft<Account[]>, updatedAccount: Account) => {
     const accountIndex = draft.findIndex(
         a => a.descriptor === updatedAccount.descriptor && a.network === updatedAccount.network,
     );
-    console.log('accountIndex', accountIndex)
-    if (accountIndex !== -1) {
-        console.log('acc to update', draft[accountIndex]);
-        draft[accountIndex].marker = updatedAccount.marker;
-        // draft.splice(accountIndex, 1);
-        // draft.push(updatedAccount);
-    }
 
-    // const account = draft.find(a => a.descriptor === updatedAccount.descriptor);
-    // if (account) {
-    //     console.log('updatujem');
-    //     account.marker = updatedAccount.marker;
-    // }
+    if (accountIndex !== -1) {
+        draft[accountIndex] = { ...updatedAccount };
+    } else {
+        console.warn(
+            `Tried to update account that does not exist: ${updatedAccount.descriptor} (symbol: ${updatedAccount.network})`,
+        );
+    }
 };
 
 export default (state: Account[] = initialState, action: Action): Account[] => {

@@ -134,8 +134,7 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
         console.log('no stored txs for the acc', account.descriptor);
     }
 
-    const shouldFetchFromBackend =
-        storedTxs === null || storedTxs.length === 0 || storedTxs.length < perPage;
+    const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
     if (shouldFetchFromBackend) {
         console.log('networkType', account.networkType);
         console.log('fetching page', page);
@@ -175,9 +174,16 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
             });
             dispatch({
                 type: ACCOUNT.UPDATE,
-                payload: { ...account, ...result.payload },
+                // immer.js used in reducer doesn't update fields that are set to undefined,
+                // so when the backend returns undefined, we change it to null.
+                payload: {
+                    ...account,
+                    ...result.payload,
+                    path: account.path, // preserve account path (fetched account comes without it)
+                    ...{ marker: result.payload.marker ? result.payload.marker : null },
+                },
             });
-            console.log('res marker', result.payload.marker ? result.payload.marker : undefined);
+            console.log('res marker', result.payload.marker);
         } else {
             dispatch({
                 type: TRANSACTION.FETCH_ERROR,
