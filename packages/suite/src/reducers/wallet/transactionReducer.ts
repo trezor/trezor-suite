@@ -51,18 +51,11 @@ const alreadyAdded = (draft: State, transaction: WalletAccountTransaction) => {
 };
 
 const add = (draft: State, transactions: WalletAccountTransaction[]) => {
-    const pushed: string[] = [];
-    const duplicates: string[] = [];
     transactions.forEach(transaction => {
         if (!alreadyAdded(draft, transaction)) {
             draft.transactions.push(transaction);
-            pushed.push(transaction.txid);
-        } else {
-            duplicates.push(transaction.txid);
         }
     });
-    console.log('pushed', pushed);
-    console.log('duplicates', duplicates);
     draft.transactions.sort(sortByBlockHeight);
 };
 

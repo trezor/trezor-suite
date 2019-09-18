@@ -89,7 +89,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
             break;
 
         case ACCOUNT.UPDATE:
-            console.log('dispatch observer')
             api.dispatch(selectedAccountActions.observe(prevState, action));
             break;
 

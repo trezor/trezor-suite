@@ -111,9 +111,6 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
     const totalTxs = selectedAccount.account!.history.total;
     const reducerTxs = dispatch(getAccountTransactions(account.descriptor));
 
-    console.log('descriptor', account.descriptor);
-    console.log('page', page);
-
     const txsForPage = reducerTxs.filter(t => t.page === page);
     // we already got txs for the page in reducer
     if (txsForPage.length > 0) return;
@@ -124,20 +121,10 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
         type: TRANSACTION.FETCH_INIT,
     });
 
-    console.log('offset', offset);
-    console.log('count', count);
     storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
-
-    if (storedTxs) {
-        console.log('stored txs length', storedTxs.length);
-    } else {
-        console.log('no stored txs for the acc', account.descriptor);
-    }
 
     const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
     if (shouldFetchFromBackend) {
-        console.log('networkType', account.networkType);
-        console.log('fetching page', page);
         let result = null;
 
         if (account.networkType === 'ripple') {
@@ -148,7 +135,6 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
                 details: 'txs',
                 marker,
             });
-            console.log('req marker', marker);
         } else {
             result = await TrezorConnect.getAccountInfo({
                 coin: getState().wallet.selectedAccount!.account!.network,
@@ -160,10 +146,6 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
         }
 
         if (result.success) {
-            console.log('fetched from the blockbook:');
-            console.log('marker', result.payload.marker);
-            console.log('fetched accountINfo', result.payload);
-            console.log(result.payload.history.transactions);
             dispatch({
                 type: TRANSACTION.FETCH_SUCCESS,
                 transactions: (result.payload.history.transactions || []).map(tx => ({
@@ -183,7 +165,6 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
                     ...{ marker: result.payload.marker ? result.payload.marker : null },
                 },
             });
-            console.log('res marker', result.payload.marker);
         } else {
             dispatch({
                 type: TRANSACTION.FETCH_ERROR,

@@ -43,7 +43,6 @@ const Transactions = (props: Props) => {
     return (
         <LayoutAccount>
             <Title>Transactions</Title>
-            {console.log('accountTransactions', accountTransactions)}
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />
