@@ -17,8 +17,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
 ): Promise<Action> => {
     const prevApp = api.getState().router.app;
     if (action.type === ROUTER.LOCATION_CHANGE && getApp(action.url) !== prevApp) {
-        api.dispatch({ type: SUITE.APP_DISPOSE, payload: prevApp });
-        api.dispatch({ type: SUITE.APP_INIT, payload: getApp(action.url) });
+        api.dispatch({ type: SUITE.APP_CHANGE, payload: getApp(action.url) });
     }
 
     // pass action to reducers

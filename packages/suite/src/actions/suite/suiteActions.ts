@@ -34,8 +34,7 @@ export type SuiteActions =
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
-    | { type: typeof SUITE.APP_INIT; payload: ReturnType<typeof getApp> }
-    | { type: typeof SUITE.APP_DISPOSE; payload: ReturnType<typeof getApp> };
+    | { type: typeof SUITE.APP_CHANGE; payload: ReturnType<typeof getApp> };
 
 /**
  * @returns {Action|void}

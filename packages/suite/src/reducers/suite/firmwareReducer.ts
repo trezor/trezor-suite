@@ -5,6 +5,7 @@ import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { TrezorDevice, Action } from '@suite-types';
 
 const initialState = {
+    // initialized means that reducer is listening for actions.
     initialized: false,
     status: null,
     // device: null,
@@ -27,13 +28,13 @@ const handleDeviceChange = (
 };
 
 const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
-    if (action.type === SUITE.APP_INIT && action.payload === 'firmware') {
+    if (action.type === SUITE.APP_CHANGE && action.payload === 'firmware' && !state.initialized) {
         return produce(state, draft => {
             draft.initialized = true;
         });
     }
 
-    if (action.type === SUITE.APP_DISPOSE && action.payload === 'firmware') {
+    if (action.type === SUITE.APP_CHANGE && action.payload !== 'firmware') {
         return initialState;
     }
 
