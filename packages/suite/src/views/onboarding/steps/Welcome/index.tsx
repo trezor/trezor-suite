@@ -21,10 +21,10 @@ const Base = styled.div`
 `;
 
 const WelcomeStep = (props: Props) => {
-    const { suite } = props;
+    const { device } = props;
 
     const isDeviceInitialized = () => {
-        return suite.device && suite.device.features && suite.device.features.initialized;
+        return device && device.features && device.features.initialized;
     };
 
     return (

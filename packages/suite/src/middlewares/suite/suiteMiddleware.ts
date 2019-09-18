@@ -33,7 +33,6 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             await api.dispatch(fetchLocale(action.payload.suite.language));
             // redirect to onboarding or leave url as is
             await api.dispatch(initialRedirection());
-            api.dispatch(suiteActions.initialRunCompleted()); // TODO: move it to onboarding, cancel this flag after user selection
             // initialize trezor-connect
             api.dispatch(trezorConnectActions.init());
             break;

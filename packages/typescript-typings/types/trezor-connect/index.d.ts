@@ -240,6 +240,17 @@ declare module 'trezor-connect' {
         use_passphrase?: boolean;
         label?: string;
     }
+    export interface ApplyFlagsParams extends CommonParams {
+        flags: number;
+    }
+    export interface RecoveryDeviceParams extends CommonParams {
+        passphrase_protection?: boolean;
+        pin_protection?: boolean;
+        label?: string;
+        type?: number;
+        dry_run?: boolean;
+        // there are more of them but dont have a valid usecase now
+    }
 
     export interface ChangePinParams extends CommonParams {
         remove?: boolean;
@@ -828,6 +839,15 @@ declare module 'trezor-connect' {
          * Asks device to initiate seed backup procedure
          */
         function backupDevice(params: BackupDeviceParams): Promise<ResponseMessage<Message>>;
+        /**
+         * Ask device to initiate recovery procedure
+         */
+        function recoveryDevice(params: RecoveryDeviceParams): Promise<ResponseMessage<Message>>;
+
+        /**
+         * Increment saved flag on device 
+         */
+        function applyFlags(params: ApplyFlagsParams): Promise<ResponseMessage<Message>>;
 
         function dispose(): void;
 
