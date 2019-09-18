@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { UI } from 'trezor-connect';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { SETTINGS, WALLET, DISCOVERY } from '@wallet-actions/constants';
+import { SETTINGS, WALLET, DISCOVERY, ACCOUNT } from '@wallet-actions/constants';
 import { getApp } from '@suite-utils/router';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import { loadStorage } from '@wallet-actions/storageActions';
@@ -106,6 +106,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         action.type === WALLET.INIT_SUCCESS ||
         action.type === SUITE.AUTH_DEVICE ||
         action.type === SETTINGS.CHANGE_NETWORKS ||
+        action.type === ACCOUNT.CHANGE_VISIBILITY ||
         (action.type === ROUTER.LOCATION_CHANGE && prevState.router.app !== 'wallet')
     ) {
         const discovery = api.dispatch(discoveryActions.getDiscoveryForDevice());

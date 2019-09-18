@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
+import * as accountActions from '@wallet-actions/accountActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
@@ -39,6 +41,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
+    requestNewAccount: bindActionCreators(accountActions.requestNewAccount, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -57,7 +60,14 @@ const DiscoveryStatus = () => (
     </Wrapper>
 );
 
-const Menu = ({ device, accounts, hideBalance, getDiscoveryForDevice, selectedAccount }: Props) => {
+const Menu = ({
+    device,
+    accounts,
+    selectedAccount,
+    hideBalance,
+    getDiscoveryForDevice,
+    requestNewAccount,
+}: Props) => {
     const [legacyVisibleState, setLegacyVisibleState] = useState<State['legacyVisible']>(false);
     const discovery = getDiscoveryForDevice();
     if (!device || !discovery) {
@@ -101,6 +111,7 @@ const Menu = ({ device, accounts, hideBalance, getDiscoveryForDevice, selectedAc
             {discoveryIsRunning && list.length > 0 && <DiscoveryStatus />}
             {discovery.status === 4 && (
                 <AddAccountButton
+                    onClick={requestNewAccount}
                     tooltipContent={<FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />}
                 />
             )}
