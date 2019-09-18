@@ -4,7 +4,7 @@ import SuiteDB from '@trezor/suite-storage';
 import { WALLET } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-const updateReducers = (message: SuiteStorageUpdateMessage) => async (
+const updateReducersOnMessage = (message: SuiteStorageUpdateMessage) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -39,7 +39,7 @@ export const loadStorage = () => async (dispatch: Dispatch, _getState: GetState)
                 // listen on db changes from other windows
                 const message = event.data;
                 console.log('DB was updated from another window', message);
-                dispatch(updateReducers(message));
+                dispatch(updateReducersOnMessage(message));
             });
         }
         return dispatch({
