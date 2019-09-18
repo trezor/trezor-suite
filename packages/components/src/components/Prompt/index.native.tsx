@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
 import { Icon } from '../Icon';
 
-import { IconType } from '../../support/types';
 import colors from '../../config/colors';
 import { getDeviceIcon } from '../../utils/icons';
 
@@ -46,23 +45,21 @@ const Animation = styled(Animated.View)`
 interface Props {
     model: number;
     size?: number;
-    ratio?: number;
     children?: React.ReactNode;
 }
 
-class Prompt extends React.Component<Props> {
-    state = {
-        blinkAnim: new Animated.Value(0),
-    };
+const Prompt: FunctionComponent<Props> = ({ model, size = 32, children }) => {
+    const blinkAnim = new Animated.Value(0);
+    const scale = blinkAnim.interpolate({
+        inputRange: [0, 0.25, 0.5, 1],
+        outputRange: [0, 0.75, 1.5, 4],
+    });
+    const opacity = blinkAnim.interpolate({
+        inputRange: [0, 0.25, 0.5, 1],
+        outputRange: [0, 0.2, 0.3, 0],
+    });
 
-    static propTypes = {
-        model: PropTypes.oneOf([1, 2]),
-        size: PropTypes.number,
-    };
-
-    componentDidMount() {
-        const { blinkAnim } = this.state;
-
+    useEffect(() => {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(blinkAnim, {
@@ -72,40 +69,30 @@ class Prompt extends React.Component<Props> {
                 }),
             ])
         ).start();
-    }
+    });
 
-    render() {
-        const { size = 32, model, children } = this.props;
-        const { blinkAnim } = this.state;
+    return (
+        <Wrapper>
+            <IconWrapper size={size}>
+                <Animation
+                    style={{
+                        opacity,
+                        transform: [{ scaleX: scale }, { scaleY: scale }],
+                    }}
+                    size={size}
+                >
+                    <Pulse size={size} />
+                </Animation>
+                <Icon icon={getDeviceIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
+            </IconWrapper>
+            <ContentWrapper>{children}</ContentWrapper>
+        </Wrapper>
+    );
+};
 
-        const scale = blinkAnim.interpolate({
-            inputRange: [0, 0.25, 0.5, 1],
-            outputRange: [0, 0.75, 1.5, 4],
-        });
-
-        const opacity = blinkAnim.interpolate({
-            inputRange: [0, 0.25, 0.5, 1],
-            outputRange: [0, 0.2, 0.3, 0],
-        });
-
-        return (
-            <Wrapper>
-                <IconWrapper size={size}>
-                    <Animation
-                        style={{
-                            opacity,
-                            transform: [{ scaleX: scale }, { scaleY: scale }],
-                        }}
-                        size={size}
-                    >
-                        <Pulse size={size} />
-                    </Animation>
-                    <Icon icon={getDeviceIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
-                </IconWrapper>
-                <ContentWrapper>{children}</ContentWrapper>
-            </Wrapper>
-        );
-    }
-}
+Prompt.propTypes = {
+    model: PropTypes.number.isRequired,
+    size: PropTypes.number,
+};
 
 export { Prompt, Props as PromptProps };
