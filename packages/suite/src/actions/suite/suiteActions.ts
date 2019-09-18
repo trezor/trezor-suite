@@ -4,8 +4,9 @@ import * as deviceUtils from '@suite-utils/device';
 import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
 import { add as addNotification } from '@suite-actions/notificationActions';
+
 import { SUITE } from './constants';
-import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice, AnyApp } from '@suite-types';
 
 export type SuiteActions =
     | { type: typeof SUITE.INIT }
@@ -32,7 +33,8 @@ export type SuiteActions =
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
-    | { type: typeof SUITE.LOCK_ROUTER; payload: boolean };
+    | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
+    | { type: typeof SUITE.APP_CHANGE; payload: AnyApp };
 
 /**
  * @returns {Action|void}
@@ -154,17 +156,15 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     const { locks } = getState().suite;
     if (locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI)) return;
     // 2. check if device is acquired
-
     if (device && device.features) {
-        const { app } = getState().router;
         // 3. device is not initialized, redirect to "onboarding"
-        if (device.mode === 'initialize' && app !== 'onboarding') {
+        if (device.mode === 'initialize') {
             await goto(getRoute('onboarding-index'));
         }
         // 4. device firmware update required, redirect to "firmware update"
-        // if (device.firmware === 'required' && app !== 'suite-firmware-update') {
-        //     await goto(getRoute('suite-firmware-update'));
-        // }
+        else if (device.firmware === 'required') {
+            await goto(getRoute('suite-device-firmware'));
+        }
     }
 
     let payload: TrezorDevice | typeof undefined;

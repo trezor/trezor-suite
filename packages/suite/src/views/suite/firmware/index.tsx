@@ -10,6 +10,7 @@ import { getRoute } from '@suite/utils/suite/router';
 import { firmwareUpdate } from '@suite-actions/firmwareActions';
 // todo: now used in suite, refactor from onboarding
 import WalletNotifications from '@wallet-components/Notifications';
+import { lockRouter } from '@suite-actions/suiteActions';
 import { Loaders } from '@onboarding-components';
 
 // todo: rework to common notifications
@@ -73,7 +74,24 @@ interface Props {
 const FirmwareUpdate = (props: Props) => {
     const { device, firmware } = props;
 
-    if (!device || device.type !== 'acquired') return null;
+    const leave = () => {
+        lockRouter(false);
+        goto(getRoute('suite-index'));
+    };
+
+    if (!device || !device.features) {
+        return (
+            <Wrapper>
+                <Top>
+                    <TitleHeader>Firmware update</TitleHeader>
+                </Top>
+                <Middle>Connect your device to continue</Middle>
+                <Bottom>
+                    <Button onClick={() => leave()}>Go to wallet</Button>
+                </Bottom>
+            </Wrapper>
+        );
+    }
 
     const isInProgress = () => {
         if (!firmware || !firmware.status) return null;
@@ -109,11 +127,15 @@ const FirmwareUpdate = (props: Props) => {
         }
     };
 
+    // todo: handle bootloader mode
+    // todo: handle unacquired
+
     return (
         <Wrapper>
             {/* todo: use proper notifications, leaving it here as a starting point for next iteration */}
             <WalletNotifications />
             <Top>
+                {getStatus()}
                 <TitleHeader>{getTitleForStatus()}</TitleHeader>
             </Top>
 
@@ -139,7 +161,7 @@ const FirmwareUpdate = (props: Props) => {
 
             <Bottom>
                 {getStatus() === 'up-to-date' && (
-                    <Button onClick={() => goto(getRoute('suite-index'))}>Go to wallet</Button>
+                    <Button onClick={() => leave()}>Go to wallet</Button>
                 )}
                 {getStatus() === 'update-available' && (
                     <P>Switch device to bootloader to continue</P>
@@ -147,6 +169,8 @@ const FirmwareUpdate = (props: Props) => {
                 {getStatus() === 'in-bl' && (
                     <Button onClick={() => props.firmwareUpdate()}>Install</Button>
                 )}
+                {/* button just for debugging */}
+                <Button onClick={() => leave()}>Go to wallet</Button>
             </Bottom>
         </Wrapper>
     );
