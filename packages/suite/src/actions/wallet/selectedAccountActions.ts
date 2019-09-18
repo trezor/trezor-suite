@@ -230,8 +230,8 @@ export const observe = (prevState: AppState, action: Action) => (
         state.router.params,
     );
 
-    // @ts-ignore TODO: missing discovery process results in silent fail
-    const network = reducerUtils.getSelectedNetwork(NETWORKS, state.router.params.symbol);
+    // TODO: missing discovery process results in silent fail
+    const network = reducerUtils.getSelectedNetwork(NETWORKS, params.symbol);
     const discovery = reducerUtils.getDiscoveryProcess(state.wallet.discovery, state.suite.device);
     // const tokens = reducerUtils.getAccountTokens(state.tokens, account);
     // const pending = reducerUtils.getAccountPendingTx(state.pending, account);
