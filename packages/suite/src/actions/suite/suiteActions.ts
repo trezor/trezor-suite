@@ -156,15 +156,13 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     const { locks } = getState().suite;
     if (locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI)) return;
     // 2. check if device is acquired
-
     if (device && device.features) {
-        const { app } = getState().router;
         // 3. device is not initialized, redirect to "onboarding"
-        if (device.mode === 'initialize' && !['onboarding', 'firmware'].includes(app)) {
+        if (device.mode === 'initialize') {
             await goto(getRoute('onboarding-index'));
         }
         // 4. device firmware update required, redirect to "firmware update"
-        else if (device.firmware === 'required' && !['onboarding', 'firmware'].includes(app)) {
+        else if (device.firmware === 'required') {
             await goto(getRoute('suite-device-firmware'));
         }
     }

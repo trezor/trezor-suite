@@ -5,7 +5,7 @@
 
 import Router from 'next/router';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { getPrefixedURL, getApp, getRoute } from '@suite-utils/router';
+import { getPrefixedURL, getRoute } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 interface LocationChange {
@@ -73,10 +73,8 @@ export const back = async () => {
  * Redirects to onboarding if `suite.initialRun` is set to true
  */
 export const initialRedirection = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (getState().suite.initialRun) {
-        const app = getApp(Router.pathname);
-        if (!['onboarding', 'firmware'].includes(app)) {
-            await goto(getRoute('onboarding-index'));
-        }
+    const { initialRun, locks } = getState().suite;
+    if (initialRun && !locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
+        await goto(getRoute('onboarding-index'));
     }
 };
