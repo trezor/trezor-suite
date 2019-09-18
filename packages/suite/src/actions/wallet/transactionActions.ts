@@ -57,25 +57,25 @@ export type TransactionAction =
 //     });
 // };
 
-export const remove = (txId: string) => async (dispatch: Dispatch) => {
-    db.removeItem('txs', 'txId', txId).then(() => {
-        dispatch({
-            type: TRANSACTION.REMOVE,
-            txId,
-        });
-    });
-};
+// export const remove = (txId: string) => async (dispatch: Dispatch) => {
+//         db.removeItem('txs', 'txId', txId).then(() => {
+//         dispatch({
+//             type: TRANSACTION.REMOVE,
+//             txId,
+//         });
+//     });
+// };
 
-export const update = (txId: string) => async (dispatch: Dispatch) => {
-    const updatedTimestamp = Date.now();
-    db.updateItemByIndex('txs', 'txId', txId, { timestamp: updatedTimestamp }).then(_key => {
-        dispatch({
-            type: TRANSACTION.UPDATE,
-            txId,
-            timestamp: updatedTimestamp,
-        });
-    });
-};
+// export const update = (txId: string) => async (dispatch: Dispatch) => {
+//     const updatedTimestamp = Date.now();
+//     db.updateItemByIndex('txs', 'txId', txId, { timestamp: updatedTimestamp }).then(_key => {
+//         dispatch({
+//             type: TRANSACTION.UPDATE,
+//             txId,
+//             timestamp: updatedTimestamp,
+//         });
+//     });
+// };
 
 const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
     try {
@@ -130,7 +130,7 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
             });
         } else {
             result = await TrezorConnect.getAccountInfo({
-                coin: getState().wallet.selectedAccount.account!.symbol,
+                coin: selectedAccount.account!.symbol,
                 descriptor: account.descriptor,
                 details: 'txs',
                 page,
