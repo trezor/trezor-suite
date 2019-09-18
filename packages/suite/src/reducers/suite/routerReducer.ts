@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { LOCATION_CHANGE } from '@suite-actions/routerActions';
+import { ROUTER } from '@suite-actions/constants';
 import { ParamsProps, getApp, getParams } from '@suite-utils/router';
 import { Action } from '@suite-types';
 
@@ -30,7 +30,7 @@ const onLocationChange = (draft: State, url: string) => {
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
-            case LOCATION_CHANGE:
+            case ROUTER.LOCATION_CHANGE:
                 onLocationChange(draft, action.url);
                 break;
             // no default

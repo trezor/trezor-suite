@@ -58,6 +58,7 @@ const removePath = (paths: AnyPath[], state: OnboardingReducer) => {
 };
 
 const onboarding = (state: OnboardingReducer = initialState, action: Action) => {
+    // return if not init
     return produce(state, draft => {
         switch (action.type) {
             case SET_STEP_ACTIVE:
