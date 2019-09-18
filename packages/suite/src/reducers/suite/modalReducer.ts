@@ -80,7 +80,7 @@ export default (state: State = initialState, action: Action): State => {
         case RECEIVE.REQUEST_UNVERIFIED:
             return {
                 context: MODAL.CONTEXT_DEVICE,
-                device: action.payload,
+                device: action.device,
                 windowType: action.type,
                 addressPath: action.addressPath,
             };
