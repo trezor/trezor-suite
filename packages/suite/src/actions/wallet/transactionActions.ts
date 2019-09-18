@@ -94,7 +94,7 @@ const getTransactionsFromStorage = async (descriptor: string, offset?: number, c
 export const fetchTransactions = (account: Account, page?: number, perPage?: number) => async (
     dispatch: Dispatch,
     getState: GetState,
-): Promise<void> => {
+) => {
     const offset = page && perPage ? (page - 1) * perPage : undefined;
     const count = perPage || undefined;
     let storedTxs = null;
@@ -107,8 +107,6 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
     const txsForPage = reducerTxs.filter(t => t.page === page);
     // we already got txs for the page in reducer
     if (txsForPage.length > 0) return;
-    // we already got all txs in reducer
-    // if (totalTxs === reducerTxs.length) return;
 
     dispatch({
         type: TRANSACTION.FETCH_INIT,

@@ -35,7 +35,7 @@ const Transactions = (props: Props) => {
         transactions.transactions,
         selectedAccount.account,
     );
-    const { index = null, size = null, total = null } = selectedAccount.account.page || {};
+    const { size = undefined, total = undefined } = selectedAccount.account.page || {};
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
@@ -60,8 +60,7 @@ const Transactions = (props: Props) => {
                 <TransactionList
                     transactions={accountTransactions}
                     currentPage={selectedPage}
-                    perPage={size}
-                    totalPages={total || undefined}
+                    totalPages={total}
                     onPageSelected={onPageSelected}
                 />
             )}

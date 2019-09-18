@@ -11,7 +11,6 @@ const Transactions = styled.div``;
 interface Props {
     transactions: WalletAccountTransaction[];
     currentPage: number;
-    perPage: number;
     totalPages?: number;
     onPageSelected: (page: number) => void;
 }
@@ -19,7 +18,6 @@ interface Props {
 const TransactionList = ({
     transactions,
     currentPage,
-    perPage,
     totalPages,
     onPageSelected,
 }: Props) => {
