@@ -21,7 +21,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
     }
 
     // pass action to reducers
-    await next(action);
+    next(action);
 
     switch (action.type) {
         case SUITE.INIT:
