@@ -256,6 +256,7 @@ export const observe = (prevState: AppState, action: Action) => (
         newState.exceptionPage = exceptionPage;
     } else {
         newState.loader = loader;
+        // @ts-ignore TODO
         newState.notification = notification;
     }
 
