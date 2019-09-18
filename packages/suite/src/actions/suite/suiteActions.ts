@@ -1,12 +1,12 @@
 import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducers';
 import * as deviceUtils from '@suite-utils/device';
-import { getRoute, getApp } from '@suite-utils/router';
+import { getRoute } from '@suite-utils/router';
 import { goto } from '@suite-actions/routerActions';
 import { add as addNotification } from '@suite-actions/notificationActions';
 
 import { SUITE } from './constants';
-import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice, AnyApp } from '@suite-types';
 
 export type SuiteActions =
     | { type: typeof SUITE.INIT }
@@ -34,7 +34,7 @@ export type SuiteActions =
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
-    | { type: typeof SUITE.APP_CHANGE; payload: ReturnType<typeof getApp> };
+    | { type: typeof SUITE.APP_CHANGE; payload: AnyApp };
 
 /**
  * @returns {Action|void}
