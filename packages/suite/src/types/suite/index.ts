@@ -13,6 +13,7 @@ import {
 import { BlockchainActions } from '@suite-actions/blockchainActions';
 import { RouterActions } from '@suite-actions/routerActions';
 import { AppState } from '@suite/reducers/store';
+import { getApp } from '@suite-utils/router';
 
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
@@ -107,3 +108,5 @@ export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>
 export type ObjectValues<T extends object> = T[keyof T];
 
 export type Store = ReduxStore<AppState, Action>;
+
+export type AnyApp = ReturnType<typeof getApp>;

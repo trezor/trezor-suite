@@ -8,14 +8,8 @@ import { lockUI } from '@suite-actions/suiteActions';
 // todo: refactor to suite
 // import * as notificationActions from '@wallet-actions/notificationActions';
 import { SET_UPDATE_STATUS } from '@suite-actions/constants/firmware';
+import { AnyStatus } from '@suite-reducers/firmwareReducer';
 import { Dispatch, GetState } from '@suite-types';
-
-const STARTED = 'started';
-const DOWNLOADING = 'downloading';
-const INSTALLING = 'installing';
-const DONE = 'done';
-const RESTARTING = 'restarting';
-const ERROR = 'error';
 
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     // todo remove error notification
@@ -30,8 +24,8 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         // todo: probably dispatch error notification?
     }
     dispatch(lockUI(true));
-    dispatch({ type: SET_UPDATE_STATUS, payload: STARTED });
-    dispatch({ type: SET_UPDATE_STATUS, payload: DOWNLOADING });
+    dispatch({ type: SET_UPDATE_STATUS, payload: 'started' });
+    dispatch({ type: SET_UPDATE_STATUS, payload: 'downloading' });
 
     const rollout = Rollout({
         releasesListsPaths: {
@@ -52,7 +46,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         return;
     }
 
-    dispatch({ type: SET_UPDATE_STATUS, payload: INSTALLING });
+    dispatch({ type: SET_UPDATE_STATUS, payload: 'installing' });
 
     // todo: when types in connect ready
     const payload: any = {
@@ -65,18 +59,14 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
     if (!updateResponse.success) {
         // todo dispatch error notification
-        dispatch({ type: SET_UPDATE_STATUS, payload: ERROR });
+        dispatch({ type: SET_UPDATE_STATUS, payload: 'error' });
         return dispatch(lockUI(false));
     }
 
-    dispatch({ type: SET_UPDATE_STATUS, payload: RESTARTING });
+    dispatch({ type: SET_UPDATE_STATUS, payload: 'restarting' });
 
     dispatch(lockUI(false));
 };
-
-export interface FirmwareUpdateReducer {
-    status: null | AnyStatus;
-}
 
 export interface FirmwareUpdateActions {
     updateFirmware: typeof firmwareUpdate;
@@ -86,13 +76,5 @@ interface SetUpdateStatusAction {
     type: typeof SET_UPDATE_STATUS;
     payload: AnyStatus;
 }
-
-export type AnyStatus =
-    | typeof STARTED
-    | typeof DOWNLOADING
-    | typeof INSTALLING
-    | typeof RESTARTING
-    | typeof ERROR
-    | typeof DONE;
 
 export type FirmwareUpdateActionTypes = SetUpdateStatusAction;

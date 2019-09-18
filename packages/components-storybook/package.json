@@ -15,7 +15,8 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "ci:test:snapshots": "cypress run",
-        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots"
+        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots",
+        "ci:test:open": "cypress open"
     },
     "dependencies": {
         "@babel/cli": "^7.2.3",

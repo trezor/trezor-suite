@@ -1,6 +1,14 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
+    TR_LOADING_ACCOUNTS: {
+        id: 'TR_LOADING_ACCOUNTS',
+        defaultMessage: 'Loading accounts...',
+    },
+    TR_LEGACY_ACCOUNTS: {
+        id: 'TR_LEGACY_ACCOUNTS',
+        defaultMessage: 'Legacy accounts',
+    },
     TR_TO_ADD_A_NEW_ACCOUNT_LAST: {
         id: 'TR_TO_ADD_A_NEW_ACCOUNT_LAST',
         defaultMessage: 'To add a new account, last account must have some transactions.',
