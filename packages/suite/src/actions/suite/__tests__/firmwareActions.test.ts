@@ -75,7 +75,7 @@ export const getInitialState = (override: any) => {
             locks: [3],
         },
         firmware: {
-            initialized: true,
+            reducerEnabled: true,
             status: null,
         },
     };

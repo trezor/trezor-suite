@@ -1,12 +1,31 @@
 import produce, { Draft } from 'immer';
 
-import { FirmwareUpdateState } from '@suite-actions/firmwareActions';
 import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { TrezorDevice, Action } from '@suite-types';
 
+const STARTED = 'started';
+const DOWNLOADING = 'downloading';
+const INSTALLING = 'installing';
+const DONE = 'done';
+const RESTARTING = 'restarting';
+const ERROR = 'error';
+
+export type AnyStatus =
+    | typeof STARTED
+    | typeof DOWNLOADING
+    | typeof INSTALLING
+    | typeof RESTARTING
+    | typeof ERROR
+    | typeof DONE;
+
+export interface FirmwareUpdateState {
+    reducerEnabled: boolean;
+    status: null | AnyStatus;
+}
+
 const initialState = {
-    // initialized means that reducer is listening for actions.
-    initialized: false,
+    // reducerEnabled means that reducer is listening for actions.
+    reducerEnabled: false,
     status: null,
     // device: null,
 };
@@ -28,9 +47,13 @@ const handleDeviceChange = (
 };
 
 const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
-    if (action.type === SUITE.APP_CHANGE && action.payload === 'firmware' && !state.initialized) {
+    if (
+        action.type === SUITE.APP_CHANGE &&
+        action.payload === 'firmware' &&
+        !state.reducerEnabled
+    ) {
         return produce(state, draft => {
-            draft.initialized = true;
+            draft.reducerEnabled = true;
         });
     }
 
@@ -38,7 +61,7 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
         return initialState;
     }
 
-    if (!state.initialized) {
+    if (!state.reducerEnabled) {
         return state;
     }
 
