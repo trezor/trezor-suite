@@ -271,7 +271,7 @@ const Button = ({
                     {children}
                 </IconWrapper>
             )}
-            {/* {justText && (
+            {/* {justTextt && (
                 {children}
             )} */}
         </Wrapper>
