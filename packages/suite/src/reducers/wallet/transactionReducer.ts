@@ -65,7 +65,7 @@ const enhanceTransaction = (
             }
             return tr;
         }),
-        page: page || account.page ? account.page.index : undefined,
+        page,
     };
 };
 
@@ -76,9 +76,9 @@ const alreadyExists = (draft: State, transaction: WalletAccountTransaction) => {
     );
 };
 
-const add = (draft: State, transactions: AccountTransaction[], account: Account) => {
+const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
     transactions.forEach(tx => {
-        const enhancedTx = enhanceTransaction(tx, account);
+        const enhancedTx = enhanceTransaction(tx, account, page);
         if (!alreadyExists(draft, enhancedTx)) {
             draft.transactions.push(enhancedTx);
         }
@@ -90,7 +90,7 @@ export default (state: State = initialState, action: Action): State => {
         switch (action.type) {
             case ACCOUNT.CREATE:
                 // gather transactions from account creation
-                add(draft, action.payload.history.transactions || [], action.payload);
+                add(draft, action.payload.history.transactions || [], action.payload, 1);
                 break;
             // case TRANSACTION.ADD:
             //     add(draft, action.payload);
@@ -108,7 +108,7 @@ export default (state: State = initialState, action: Action): State => {
                 draft.isLoading = true;
                 break;
             case TRANSACTION.FETCH_SUCCESS:
-                add(draft, action.transactions, action.account);
+                add(draft, action.transactions, action.account, action.page);
                 draft.isLoading = false;
                 break;
             case TRANSACTION.FETCH_ERROR:

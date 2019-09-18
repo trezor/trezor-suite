@@ -14,8 +14,9 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {
           type: typeof TRANSACTION.FETCH_SUCCESS;
-          account: Account;
           transactions: WalletAccountTransaction[];
+          account: Account;
+          page?: number;
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 // | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
@@ -148,6 +149,7 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
                 type: TRANSACTION.FETCH_SUCCESS,
                 account: updatedAccount,
                 transactions: result.payload.history.transactions || [],
+                page,
             });
 
             dispatch({

@@ -35,9 +35,7 @@ const Transactions = (props: Props) => {
         transactions.transactions,
         selectedAccount.account,
     );
-    console.log(accountTransactions);
     const { index = null, size = null, total = null } = selectedAccount.account.page || {};
-    console.log(size, total)
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
