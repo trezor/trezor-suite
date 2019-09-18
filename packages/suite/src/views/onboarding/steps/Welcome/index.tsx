@@ -23,8 +23,12 @@ const Base = styled.div`
 const WelcomeStep = (props: Props) => {
     const { device } = props;
 
-    const isDeviceInitialized = () => {
-        return device && device.features && device.features.initialized;
+    const shouldDisplayLeaveButton = () => {
+        if (device && device.features && !device.features.initialized) {
+            return false;
+        }
+        // rather show than not
+        return true;
     };
 
     return (
@@ -65,14 +69,18 @@ const WelcomeStep = (props: Props) => {
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                {isDeviceInitialized() && (
-                    <OnboardingButton.Back
-                        data-test="button-use-wallet"
-                        onClick={() => goto(getRoute('wallet-index'))}
-                    >
-                        <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
-                    </OnboardingButton.Back>
-                )}
+                {
+                    shouldDisplayLeaveButton() && (
+<OnboardingButton.Back
+                            data-test="button-use-wallet"
+                            onClick={() => goto(getRoute('wallet-index'))}
+                        >
+                            <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
+                        </OnboardingButton.Back>
+
+                    )
+                }
+                        
             </Wrapper.StepFooter>
         </Wrapper.Step>
     );
