@@ -54,7 +54,6 @@ const remove = (draft: Account[], accounts: Account[]) => {
             ac =>
                 ac.deviceState === a.deviceState &&
                 ac.descriptor === a.descriptor &&
-                ac.accountType === a.accountType && // is accountType needed? can 2 accs have same descriptor but different accountType?
                 ac.symbol === a.symbol,
         );
         draft.splice(index, 1);
@@ -66,7 +65,6 @@ const update = (draft: Draft<Account[]>, account: Account) => {
         ac =>
             ac.deviceState === account.deviceState &&
             ac.descriptor === account.descriptor &&
-            ac.accountType === account.accountType &&
             ac.symbol === account.symbol,
     );
 
