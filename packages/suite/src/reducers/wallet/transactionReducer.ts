@@ -1,16 +1,17 @@
-// import * as CONNECT from '@wallet-actions/constants/TrezorConnect';
-// import * as WALLET from '@wallet-actions/constants/wallet';
-import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
+import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import produce from 'immer';
 
-import { Action } from '@wallet-types/index';
-import { TransactionAction } from '@suite/actions/wallet/transactionActions';
+import { Account, Action } from '@wallet-types/index';
+import { TransactionAction } from '@wallet-actions/transactionActions';
+import { formatAmount } from '@wallet-utils/accountUtils';
 import { AccountTransaction } from 'trezor-connect';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
-    accountDescriptor: string;
     page?: number;
+    deviceState: string;
+    descriptor: string;
+    symbol: string;
 }
 
 export interface State {
@@ -46,24 +47,44 @@ const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransact
 const alreadyAdded = (draft: State, transaction: WalletAccountTransaction) => {
     // two txs may have same id if they belong to two different accounts
     return draft.transactions.find(
-        t => t.txid === transaction.txid && t.accountDescriptor === transaction.accountDescriptor,
+        t => t.txid === transaction.txid && t.descriptor === transaction.descriptor,
     );
 };
 
-const add = (draft: State, transactions: WalletAccountTransaction[]) => {
-    transactions.forEach(transaction => {
-        if (!alreadyAdded(draft, transaction)) {
-            draft.transactions.push(transaction);
-        }
-    });
-    draft.transactions.sort(sortByBlockHeight);
+const add = (draft: State, payload: Account) => {
+    if (payload.history.transactions) {
+        payload.history.transactions.forEach(tx => {
+            if (!alreadyExists(draft, transaction)) {
+                draft.transactions.push({
+                    descriptor: payload.descriptor,
+                    deviceState: payload.deviceState,
+                    symbol: payload.symbol,
+                    ...tx,
+                    amount: formatAmount(tx.amount, payload.symbol),
+                    fee: formatAmount(tx.fee, payload.symbol),
+                    targets: tx.targets.map(tr => {
+                        if (typeof tr.amount === 'string') {
+                            return {
+                                ...tr,
+                                amount: formatAmount(tr.amount, payload.symbol),
+                            };
+                        }
+                        return tr;
+                    }),
+                });
+            }
+        });
+    }
 };
 
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
+            case ACCOUNT.CREATE:
+                add(draft, action.payload);
+                break;
             case TRANSACTION.ADD:
-                add(draft, action.transactions);
+                add(draft, action.payload);
                 break;
             case TRANSACTION.REMOVE:
                 draft.transactions.splice(
@@ -78,7 +99,7 @@ export default (state: State = initialState, action: Action): State => {
                 draft.isLoading = true;
                 break;
             case TRANSACTION.FETCH_SUCCESS:
-                add(draft, action.transactions);
+                add(draft, action.payload);
                 draft.isLoading = false;
                 break;
             case TRANSACTION.FETCH_ERROR:

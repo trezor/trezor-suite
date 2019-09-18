@@ -4,6 +4,7 @@
  */
 
 import Router from 'next/router';
+import { SUITE } from '@suite-actions/constants';
 import { getPrefixedURL, getApp, getRoute } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
@@ -52,8 +53,8 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
  * @param {string} url
  */
 export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
-    const { uiLocked, routerLocked } = getState().suite;
-    return !uiLocked && !routerLocked;
+    const { locks } = getState().suite;
+    return locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI);
 };
 
 // links inside of application

@@ -16,7 +16,7 @@ export const isStepInPath = (step: Step, path: AnyPath[]) => {
 
 export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
     const currentIndex = steps.findIndex((step: Step) => step.id === currentStepId);
-    if (currentIndex + 1 > steps.length) {
+    if (!steps[currentIndex + 1]) {
         throw new Error('no next step exists');
     }
     return steps[currentIndex + 1];
@@ -24,8 +24,8 @@ export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
 
 export const findPrevStep = (currentStepId: AnyStepId, steps: Step[]) => {
     const currentIndex = steps.findIndex((step: Step) => step.id === currentStepId);
-    if (currentIndex - 1 > steps.length) {
-        throw new Error('no next step exists');
+    if (!steps[currentIndex - 1]) {
+        throw new Error('no prev step exists');
     }
     return steps[currentIndex - 1];
 };

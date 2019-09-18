@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DEVICE, TRANSPORT } from 'trezor-connect';
+import { DEVICE, TRANSPORT, IFRAME } from 'trezor-connect';
 import { SUITE, STORAGE, NOTIFICATION } from '@suite-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as suiteActions from '../../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 
-const SUITE_DEVICE = getSuiteDevice();
+const SUITE_DEVICE = getSuiteDevice({ path: '1' });
 const SUITE_DEVICE_UNACQUIRED = getSuiteDevice({
     type: 'unacquired',
+    path: '2',
 });
-const CONNECT_DEVICE = getConnectDevice();
+const CONNECT_DEVICE = getConnectDevice({ path: '1' });
 
 const reducerActions = [
     {
@@ -101,10 +103,22 @@ const reducerActions = [
         actions: [suiteActions.lockUI(true), suiteActions.lockUI(false)],
         result: [
             {
-                uiLocked: true,
+                locks: [SUITE.LOCK_TYPE.UI],
             },
             {
-                uiLocked: false,
+                locks: [],
+            },
+        ],
+    },
+    {
+        description: `lockDevice (true/false)`,
+        actions: [suiteActions.lockDevice(true), suiteActions.lockDevice(false)],
+        result: [
+            {
+                locks: [SUITE.LOCK_TYPE.DEVICE],
+            },
+            {
+                locks: [],
             },
         ],
     },
@@ -113,10 +127,10 @@ const reducerActions = [
         actions: [suiteActions.lockRouter(true), suiteActions.lockRouter(false)],
         result: [
             {
-                routerLocked: true,
+                locks: [SUITE.LOCK_TYPE.ROUTER],
             },
             {
-                routerLocked: false,
+                locks: [],
             },
         ],
     },
@@ -211,10 +225,41 @@ const reducerActions = [
         ],
     },
     {
-        description: `iframe-loaded`,
+        description: `DISCOVERY.START/DISCOVERY.STOP + DISCOVERY.START/DISCOVERY.COMPLETE`,
         actions: [
             {
-                type: 'iframe-loaded',
+                type: DISCOVERY.START,
+            },
+            {
+                type: DISCOVERY.STOP,
+            },
+            {
+                type: DISCOVERY.START,
+            },
+            {
+                type: DISCOVERY.COMPLETE,
+            },
+        ],
+        result: [
+            {
+                locks: [SUITE.LOCK_TYPE.DEVICE],
+            },
+            {
+                locks: [],
+            },
+            {
+                locks: [SUITE.LOCK_TYPE.DEVICE],
+            },
+            {
+                locks: [],
+            },
+        ],
+    },
+    {
+        description: `IFRAME.LOADED`,
+        actions: [
+            {
+                type: IFRAME.LOADED,
                 payload: {
                     browser: {
                         name: 'env',
@@ -246,19 +291,19 @@ const initialRun = [
 
 const selectDevice = [
     {
-        description: `with uiLocked`,
+        description: `with ui locked`,
         state: {
             suite: {
-                uiLocked: true,
+                locks: [SUITE.LOCK_TYPE.UI],
             },
         },
         device: SUITE_DEVICE,
     },
     {
-        description: `with routerLocked`,
+        description: `with router locked`,
         state: {
             suite: {
-                routerLocked: true,
+                locks: [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE],
             },
         },
         device: SUITE_DEVICE,
@@ -448,6 +493,7 @@ const handleDeviceDisconnect = [
             suite: {
                 device: SUITE_DEVICE,
             },
+            devices: [SUITE_DEVICE],
         },
         device: CONNECT_DEVICE,
         result: {
@@ -455,17 +501,127 @@ const handleDeviceDisconnect = [
         },
     },
     {
-        description: `disconnected selected device with routerLocked`,
+        description: `disconnected selected remembered device (no action)`,
         state: {
             suite: {
                 device: SUITE_DEVICE,
-                routerLocked: true,
+            },
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    state: 'abc',
+                    remember: true,
+                }),
+            ],
+        },
+        device: CONNECT_DEVICE,
+    },
+    {
+        description: `disconnected selected device (3 instances: 1 remembered, 1 with state, 1 stateless which will be removed, remember request)`,
+        state: {
+            suite: {
+                device: SUITE_DEVICE,
             },
             devices: [
                 SUITE_DEVICE,
                 getSuiteDevice({
-                    path: '2',
+                    path: '1',
+                    state: 'cba',
+                    instance: 2,
+                    remember: true,
                 }),
+                getSuiteDevice({
+                    path: '1',
+                    state: 'abc',
+                    instance: 1,
+                }),
+            ],
+        },
+        device: CONNECT_DEVICE,
+        result: {
+            type: SUITE.REQUEST_REMEMBER_DEVICE,
+            payload: getSuiteDevice({
+                state: 'abc',
+                instance: 1,
+            }),
+        },
+    },
+    {
+        description: `disconnected selected device (3 instances: 2 remembered, 1 stateless which will be removed, no action)`,
+        state: {
+            suite: {
+                device: SUITE_DEVICE,
+            },
+            devices: [
+                SUITE_DEVICE,
+                getSuiteDevice({
+                    path: '1',
+                    state: 'cba',
+                    instance: 2,
+                    remember: true,
+                }),
+                getSuiteDevice({
+                    path: '1',
+                    state: 'abc',
+                    instance: 1,
+                    remember: true,
+                }),
+            ],
+        },
+        device: CONNECT_DEVICE,
+        result: {
+            type: SUITE.SELECT_DEVICE,
+            payload: getSuiteDevice({
+                state: 'abc',
+                instance: 1,
+                remember: true,
+            }),
+        },
+    },
+    {
+        description: `disconnected selected device with state (remember request)`,
+        state: {
+            suite: {
+                device: getSuiteDevice({
+                    path: '1',
+                    state: 'abc',
+                }),
+            },
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    state: 'abc',
+                }),
+            ],
+        },
+        device: CONNECT_DEVICE,
+        result: {
+            type: SUITE.REQUEST_REMEMBER_DEVICE,
+            payload: getSuiteDevice({
+                connected: false,
+                available: false,
+                path: '',
+                state: 'abc',
+            }),
+        },
+    },
+    {
+        description: `disconnected selected device with router locked`,
+        state: {
+            suite: {
+                device: SUITE_DEVICE,
+                locks: [SUITE.LOCK_TYPE.ROUTER],
+            },
+            devices: [
+                SUITE_DEVICE,
+                getSuiteDevice(
+                    {
+                        path: '2',
+                    },
+                    {
+                        device_id: '2',
+                    },
+                ),
             ],
         },
         device: CONNECT_DEVICE,
@@ -489,9 +645,14 @@ const handleDeviceDisconnect = [
                     type: 'unacquired',
                     path: '2',
                 }),
-                getSuiteDevice({
-                    path: '4',
-                }),
+                getSuiteDevice(
+                    {
+                        path: '4',
+                    },
+                    {
+                        device_id: '4',
+                    },
+                ),
             ],
         },
         device: CONNECT_DEVICE,
@@ -509,28 +670,48 @@ const handleDeviceDisconnect = [
                 device: SUITE_DEVICE,
             },
             devices: [
-                getSuiteDevice({
-                    path: '2',
-                }),
-                getSuiteDevice({
-                    connected: true,
-                    path: '3',
-                    ts: 1,
-                }),
-                getSuiteDevice({
-                    connected: true,
-                    path: '4',
-                    ts: 2,
-                }),
+                getSuiteDevice(
+                    {
+                        path: '2',
+                    },
+                    {
+                        device_id: '2',
+                    },
+                ),
+                getSuiteDevice(
+                    {
+                        path: '3',
+                        connected: true,
+                        ts: 1,
+                    },
+                    {
+                        device_id: '3',
+                    },
+                ),
+                getSuiteDevice(
+                    {
+                        path: '4',
+                        connected: true,
+                        ts: 2,
+                    },
+                    {
+                        device_id: '4',
+                    },
+                ),
             ],
         },
         device: CONNECT_DEVICE,
         result: {
-            payload: getSuiteDevice({
-                connected: true,
-                path: '4',
-                ts: 2,
-            }),
+            payload: getSuiteDevice(
+                {
+                    connected: true,
+                    path: '4',
+                    ts: 2,
+                },
+                {
+                    device_id: '4',
+                },
+            ),
         },
     },
     {
@@ -540,26 +721,46 @@ const handleDeviceDisconnect = [
                 device: SUITE_DEVICE,
             },
             devices: [
-                getSuiteDevice({
-                    path: '2',
-                    ts: 2,
-                }),
-                getSuiteDevice({
-                    path: '3',
-                    ts: 3,
-                }),
-                getSuiteDevice({
-                    path: '4',
-                    ts: 1,
-                }),
+                getSuiteDevice(
+                    {
+                        path: '2',
+                        ts: 2,
+                    },
+                    {
+                        device_id: '2',
+                    },
+                ),
+                getSuiteDevice(
+                    {
+                        path: '3',
+                        ts: 3,
+                    },
+                    {
+                        device_id: '3',
+                    },
+                ),
+                getSuiteDevice(
+                    {
+                        path: '4',
+                        ts: 1,
+                    },
+                    {
+                        device_id: '4',
+                    },
+                ),
             ],
         },
         device: CONNECT_DEVICE,
         result: {
-            payload: getSuiteDevice({
-                path: '3',
-                ts: 3,
-            }),
+            payload: getSuiteDevice(
+                {
+                    path: '3',
+                    ts: 3,
+                },
+                {
+                    device_id: '3',
+                },
+            ),
         },
     },
 ];
@@ -633,7 +834,7 @@ const acquireDevice = [
         state: {
             device: SUITE_DEVICE,
         },
-        result: SUITE.LOCK_UI,
+        result: SUITE.LOCK_DEVICE,
     },
     {
         description: `with TrezorConnect error`,

@@ -1,3 +1,5 @@
+const config = require('./jest.config');
+
 module.exports = {
     globals: {
         'ts-jest': {
@@ -5,7 +7,7 @@ module.exports = {
         },
     },
     moduleNameMapper: {
-        '^@suite/(.+)': '<rootDir>/src/$1',
+        ...config.moduleNameMapper,
     },
     moduleFileExtensions: ['js', 'ts'],
     modulePathIgnorePatterns: ['node_modules'],

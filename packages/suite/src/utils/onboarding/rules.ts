@@ -6,7 +6,6 @@ import {
     DISALLOWED_DEVICE_IS_REQUESTING_PIN,
     DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
 } from '@onboarding-constants/steps';
-import { PrevDeviceId } from '@onboarding-types/connect';
 import { AnyPath } from '@onboarding-types/steps';
 
 type Device = any; // todo: finish when connect types ready.
@@ -16,14 +15,18 @@ export const isNotConnected = ({ device }: { device?: Device }) =>
 
 export const isNotSameDevice = ({
     device,
-    prevDeviceId,
+    prevDevice,
 }: {
     device?: Device;
-    prevDeviceId: PrevDeviceId;
+    prevDevice: Device;
 }) => {
+    const prevDeviceId = prevDevice && prevDevice.features && prevDevice.features.device_id;
     // if no device was connected before, assume it is same device
-    const deviceId = device.features.device_id;
-    if (!prevDeviceId || !deviceId) {
+    if (!prevDeviceId) {
+        return false;
+    }
+    const deviceId = device && device.features && device.features.device_id;
+    if (!deviceId) {
         return null;
     }
     return deviceId !== prevDeviceId;
@@ -33,7 +36,7 @@ export const isNotUsedHere = ({ device }: { device?: Device }) => {
     if (!device || !device.connected) {
         return null;
     }
-    return device.status !== 'available' || device.type === 'unacquired';
+    return device.type === 'unacquired';
 };
 
 export const isInBootloader = ({ device }: { device?: Device }) => {

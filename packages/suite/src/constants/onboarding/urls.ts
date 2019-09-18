@@ -1,7 +1,6 @@
 export const SUPPORT_URL = 'https://trezor.io/support/';
 export const USER_MANUAL_URL = 'https://wiki.trezor.io/User_manual';
 export const TOS_URL = 'https://trezor.io/tos';
-export const PIN_MANUAL_URL = 'https://wiki.trezor.io/User_manual:Entering_PIN';
 export const SEED_MANUAL_URL = 'https://wiki.trezor.io/Recovery_seed';
 export const PHISHING_URL =
     'https://blog.trezor.io/phishing-attacks-used-to-steal-your-coins-recommended-reading-a39c0679c55d';
@@ -18,3 +17,4 @@ export const WIKI_URL = 'https://wiki.trezor.io/';
 export const BLOG_URL = 'https://blog.trezor.io/';
 export const NEXT_WALLET_URL = 'https://beta-wallet.trezor.io/next/#/';
 export const PASSWORD_MANAGER_URL = 'https://trezor.io/passwords/';
+export const TROUBLESHOOTER_URL = 'https://trezor.io/support/#technical-technical-issues';

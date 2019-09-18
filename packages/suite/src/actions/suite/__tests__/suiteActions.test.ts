@@ -5,7 +5,7 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
+import { DEVICE } from 'trezor-connect';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
@@ -34,10 +34,14 @@ jest.mock('trezor-connect', () => {
         },
         DEVICE: {
             CONNECT: 'device-connect',
+            DISCONNECT: 'device-disconnect',
         },
         TRANSPORT: {
             START: 'transport-start',
             ERROR: 'transport-error',
+        },
+        IFRAME: {
+            LOADED: 'iframe-loaded',
         },
         setTestFixtures: (f: any) => {
             fixture = f;
@@ -148,11 +152,18 @@ describe('Suite Actions', () => {
         it(`handleDeviceDisconnect: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.devices);
             const store = initStore(state);
-            await store.dispatch(suiteActions.handleDeviceDisconnect(f.device));
+            store.dispatch({
+                type: DEVICE.DISCONNECT, // TrezorConnect event to affect "deviceReducer"
+                payload: f.device,
+            });
+            store.dispatch(suiteActions.handleDeviceDisconnect(f.device));
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(store.getActions().length).toEqual(1); // only DEVICE.DISCONNECT action present
             } else {
                 const action = store.getActions().pop();
+                if (f.result.type) {
+                    expect(action.type).toEqual(f.result.type);
+                }
                 expect(action.payload).toEqual(f.result.payload);
             }
         });

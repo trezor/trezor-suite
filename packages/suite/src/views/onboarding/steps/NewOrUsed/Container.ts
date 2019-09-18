@@ -9,6 +9,7 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     path: state.onboarding.path,
+    device: state.onboarding.connect.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -18,6 +19,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         addPath: bindActionCreators(onboardingActions.addPath, dispatch),
     },
 });
+
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 export default connect(
     mapStateToProps,

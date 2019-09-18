@@ -1,7 +1,7 @@
 describe('Form', () => {
     beforeEach(() => {
         cy.viewport(784, 768);
-        cy.visit(
+        cy.loadContent(
             '/iframe.html?selectedKind=Form&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
         );
     });
@@ -65,6 +65,12 @@ describe('Form', () => {
                 testName.match(/info|success|warning|error|checkbox_checked/) &&
                 !testName.match(/textarea/)
             ) {
+                cy.getTestElement(testName)
+                    .find('.loading')
+                    .each(el => {
+                        cy.get(el).should('not.exist');
+                    });
+
                 cy.getTestElement(testName)
                     .find('svg')
                     .should('be.visible');

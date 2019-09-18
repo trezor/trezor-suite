@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { DEVICE, UI } from 'trezor-connect';
 import {
     ConnectReducer,
@@ -9,7 +10,6 @@ import {
 import { Action } from '@suite-types';
 
 const initialState = {
-    prevDeviceId: null,
     device: null,
     deviceCall: {
         name: null,
@@ -17,167 +17,107 @@ const initialState = {
         error: null,
         result: null,
     },
-    deviceInteraction: {
-        name: null,
-        counter: 0,
-    },
     uiInteraction: {
-        name: null,
+        name: undefined,
         counter: 0,
     },
-};
-
-const setPrevDeviceId = (state: ConnectReducer, device: any) => {
-    // unacquired device
-    if (!device.features) {
-        return null;
-    }
-    if (!device.features.device_id) {
-        return state.prevDeviceId;
-    }
-    if (state.prevDeviceId === null) {
-        return device.features.device_id;
-    }
-    if (state.prevDeviceId !== device.features.device_id) {
-        return state.prevDeviceId;
-    }
-    return device.features.device_id;
 };
 
 const connect = (state: ConnectReducer = initialState, action: Action) => {
-    switch (action.type) {
-        case DEVICE.CONNECT:
-        case DEVICE.CONNECT_UNACQUIRED:
-            return {
-                ...state,
-                device: {
+    return produce(state, draft => {
+        switch (action.type) {
+            case DEVICE.CONNECT:
+            case DEVICE.CONNECT_UNACQUIRED:
+                draft.device = {
                     isRequestingPin: 0,
                     connected: true,
                     ...action.payload,
-                },
-            };
-        case DEVICE.CHANGED:
-            return {
-                ...state,
-                device: {
+                };
+                break;
+            case DEVICE.CHANGED:
+                draft.device = {
                     ...state.device,
                     connected: true,
                     ...action.payload,
-                },
-            };
-        case DEVICE.DISCONNECT:
-            return {
-                ...state,
-                device: {
+                };
+                break;
+            case DEVICE.DISCONNECT:
+                draft.device = {
                     isRequestingPin: 0,
                     connected: false,
                     ...action.payload,
-                },
-                uiInteraction: {
-                    name: null,
+                };
+                draft.uiInteraction = {
+                    name: undefined,
                     counter: 0,
-                },
-                prevDeviceId: setPrevDeviceId(state, action.payload),
-            };
-        case DEVICE_CALL_RESET: {
-            return {
-                ...state,
-                deviceCall: {
+                };
+                break;
+            case DEVICE_CALL_RESET:
+                draft.deviceCall = {
                     name: null,
                     isProgress: false,
                     error: null,
                     result: null,
-                },
-                deviceInteraction: {
-                    name: null,
+                };
+                draft.uiInteraction = {
+                    name: undefined,
                     counter: 0,
-                },
-                uiInteraction: {
-                    name: null,
-                    counter: 0,
-                },
-                prevDeviceId: null,
-            };
-        }
-        case DEVICE_CALL_START:
-            return {
-                ...state,
-                deviceCall: {
+                };
+                break;
+            case DEVICE_CALL_START:
+                draft.deviceCall = {
                     ...state.deviceCall,
                     name: action.name,
                     isProgress: true,
-                },
-            };
-        case DEVICE_CALL_SUCCESS:
-            return {
-                ...state,
-                device: {
+                };
+                break;
+            case DEVICE_CALL_SUCCESS:
+                draft.device = {
                     ...state.device,
                     isRequestingPin: 0,
-                },
-                deviceCall: {
+                };
+                draft.deviceCall = {
                     ...state.deviceCall,
                     isProgress: false,
                     error: null,
                     result: action.result,
-                },
-                deviceInteraction: {
-                    name: null,
+                };
+                draft.uiInteraction = {
+                    name: undefined,
                     counter: 0,
-                },
-                uiInteraction: {
-                    name: null,
-                    counter: 0,
-                },
-            };
-        case DEVICE_CALL_ERROR:
-            return {
-                ...state,
-                deviceCall: {
+                };
+                break;
+            case DEVICE_CALL_ERROR:
+                draft.deviceCall = {
                     ...state.deviceCall,
                     name: action.name,
                     isProgress: false,
                     error: action.error,
                     result: null,
-                },
-            };
-        case UI.REQUEST_BUTTON:
-            return {
-                ...state,
-                deviceInteraction: {
-                    name: action.payload.code,
-                    counter: state.deviceInteraction.counter + 1,
-                },
-                uiInteraction: {
+                };
+                break;
+            case UI.REQUEST_BUTTON:
+                draft.uiInteraction = {
                     name: action.payload.code,
                     counter: state.uiInteraction.counter + 1,
-                },
-            };
-        case UI.REQUEST_WORD:
-            return {
-                ...state,
-                uiInteraction: {
+                };
+                break;
+            case UI.REQUEST_WORD:
+                draft.uiInteraction = {
                     name: action.payload.type,
                     counter: state.uiInteraction.counter + 1,
-                },
-                deviceInteraction: {
-                    name: action.payload.type,
-                    counter: state.deviceInteraction.counter + 1,
-                },
-            };
-        case UI.REQUEST_PIN:
-            return {
-                ...state,
-                device: {
+                };
+                break;
+            case UI.REQUEST_PIN:
+                draft.device = {
                     ...state.device,
                     isRequestingPin: state.device.isRequestingPin + 1,
-                },
-                uiInteraction: { name: null, counter: 0 },
-                deviceInteraction: { name: null, counter: 0 },
-            };
-        default:
-            return state;
-    }
+                };
+                draft.uiInteraction = { name: undefined, counter: 0 };
+                break;
+            // no default
+        }
+    });
 };
 
 export default connect;

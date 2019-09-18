@@ -1,7 +1,7 @@
 describe('Other', () => {
     beforeEach(() => {
         cy.viewport(1008, 768);
-        cy.visit('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
+        cy.loadContent('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
     });
 
     const tests = [
@@ -73,13 +73,33 @@ describe('Other', () => {
         it(`${testName}`, () => {
             if (testName.match(/icon|coin|logo|prompt|header/)) {
                 cy.getTestElement(testName)
+                    .find('.loading')
+                    .each(el => {
+                        cy.get(el).should('not.exist');
+                    });
+
+                cy.getTestElement(testName)
                     .find('svg')
                     .should('be.visible');
             }
 
-            cy.getTestElement(testName)
-                .should('be.visible')
-                .matchImageSnapshot();
+            if (testName === 'trezor_image_1') {
+                cy.fixture('../../../components/src/images/trezor-1.png').then(() => {
+                    cy.getTestElement(testName)
+                        .should('be.visible')
+                        .matchImageSnapshot();
+                });
+            } else if (testName === 'trezor_image_2') {
+                cy.fixture('../../../components/src/images/trezor-2.png').then(() => {
+                    cy.getTestElement(testName)
+                        .should('be.visible')
+                        .matchImageSnapshot();
+                });
+            } else {
+                cy.getTestElement(testName)
+                    .should('be.visible')
+                    .matchImageSnapshot();
+            }
         });
     });
 });

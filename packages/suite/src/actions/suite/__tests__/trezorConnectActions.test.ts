@@ -30,6 +30,9 @@ jest.mock('trezor-connect', () => {
         BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
         DEVICE: {},
         TRANSPORT: {},
+        IFRAME: {
+            LOADED: 'iframe-loaded',
+        },
         // custom method for test purpose
         setTestFixtures: (f: any) => {
             fixture = f;
@@ -124,11 +127,11 @@ describe('TrezorConnect Actions', () => {
         const actions = store.getActions();
         // check actions in reversed order
         expect(actions.pop()).toEqual({
-            type: SUITE.LOCK_UI,
+            type: SUITE.LOCK_DEVICE,
             payload: false,
         });
         expect(actions.pop()).toEqual({
-            type: SUITE.LOCK_UI,
+            type: SUITE.LOCK_DEVICE,
             payload: true,
         });
     });

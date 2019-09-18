@@ -1,9 +1,7 @@
-import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
-
-import { Action } from '@suite/types/suite';
-import { Network, Account } from '@suite/types/wallet';
 import produce from 'immer';
-import { Discovery } from './discoveryReducer';
+import { ACCOUNT } from '@wallet-actions/constants';
+import { Action } from '@suite-types';
+import { Network, Account, Discovery } from '@wallet-types';
 
 export interface Loader {
     type: string;
@@ -21,18 +19,21 @@ export interface ExceptionPage {
     type?: string;
     title?: string;
     message?: string;
-    shortcut: string;
+    symbol: string;
 }
 
 interface AccountNotification extends Notification {
     type: 'info' | 'backend';
 }
 export interface State {
-    account?: Account | null;
-    network?: Network | null;
-    discovery?: Discovery | null;
-    loader?: Loader | null;
-    notification?: AccountNotification | null;
+    // location: string;
+    account: Account | null;
+    network: Network | null;
+    // tokens: Token[];
+    // pending: Transaction[];
+    discovery: Discovery | null;
+    loader: Loader | null;
+    notification: AccountNotification | null;
     exceptionPage?: ExceptionPage;
     shouldRender: boolean;
 }
@@ -41,6 +42,7 @@ export const initialState: State = {
     account: null,
     network: null,
     discovery: null,
+    loader: null,
     notification: null,
     shouldRender: false,
 };

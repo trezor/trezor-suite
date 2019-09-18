@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { AppState, TrezorDevice } from '@suite/types/suite';
-import { Discovery } from '@suite/reducers/wallet/discoveryReducer';
-import { Transaction, Account, Token, Network } from '@wallet-types';
+import { AppState, TrezorDevice } from '@suite-types';
+import { Transaction, Account, Token, Network, Discovery } from '@wallet-types';
 
 export const getPendingAmount = (
     pending: Transaction[],
@@ -17,7 +16,7 @@ export const getPendingAmount = (
         }
         if (tx.tokens) {
             // token transactions
-            const allTokens = tx.tokens.filter(t => t.shortcut === currency);
+            const allTokens = tx.tokens.filter(t => t.symbol === currency);
             const tokensValue: BigNumber = allTokens.reduce(
                 (_, t) => new BigNumber(value).plus(t.value),
                 new BigNumber('0'),
@@ -34,7 +33,7 @@ export const getAccountTokens = (tokens: Token[], account?: Account) => {
     return tokens.filter(
         t =>
             t.ethAddress === a.descriptor &&
-            t.network === a.network &&
+            t.symbol === a.symbol &&
             t.deviceState === a.deviceState,
     );
 };
@@ -99,8 +98,8 @@ export const getSelectedAccount = (
     device: AppState['suite']['device'],
     routerParams: AppState['router']['params'],
 ) => {
-    console.log(routerParams);
-    if (!device || !routerParams.symbol || !routerParams.accountId || !routerParams.accountType) return null;
+    if (!device || !routerParams.symbol || !routerParams.accountId || !routerParams.accountType)
+        return null;
 
     // imported account index has 'i' prefix
     const isImported = /^i\d+$/i.test(routerParams.accountId);
@@ -122,7 +121,7 @@ export const getSelectedAccount = (
         accounts.find(
             a =>
                 a.index === index &&
-                a.network === routerParams.symbol &&
+                a.symbol === routerParams.symbol &&
                 a.accountType === routerParams.accountType,
         ) || null
     );
@@ -137,5 +136,5 @@ export const getDiscoveryProcess = (
     device?: TrezorDevice,
 ): Discovery | null => {
     if (!device || !device.features) return null;
-    return discoveries.find(d => d.device === device.state) || null;
+    return discoveries.find(d => d.deviceState === device.state) || null;
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { storiesOf } from '@storybook/react';
-import { text, select, radios, number } from '@storybook/addon-knobs';
+import { text, select, radios, number, boolean } from '@storybook/addon-knobs';
 import { Tooltip, P, Link, H1, H2, H3, H4, H5, H6 } from '@trezor/components';
 import { infoOptions } from '../../support/info';
 
@@ -229,6 +229,7 @@ storiesOf('Typography', module)
                 },
                 'green'
             );
+            const hasNoStyle = boolean('No Style', false);
             const target = select(
                 'Target',
                 {
@@ -248,6 +249,7 @@ storiesOf('Typography', module)
                     href={href}
                     {...(target ? { target } : {})}
                     {...(color === 'green' ? { isGreen } : { isGray })}
+                    {...(hasNoStyle ? { hasNoStyle } : {})}
                 >
                     {linkText}
                 </Link>

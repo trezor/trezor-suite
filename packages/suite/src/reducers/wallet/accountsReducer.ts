@@ -3,55 +3,65 @@ import { ACCOUNT } from '@wallet-actions/constants';
 import { Action } from '@wallet-types/index';
 import { AccountInfo } from 'trezor-connect';
 
-export interface Account extends AccountInfo {
-    index: number;
-    accountType: 'normal' | 'segwit' | 'legacy';
-    type: 'bitcoin' | 'ethereum' | 'ripple';
-    network: string;
-    path: string;
-    imported?: boolean;
+export interface Account {
     deviceState: string;
+    index: number;
+    path: string;
+    descriptor: string;
+    accountType: 'normal' | 'segwit' | 'legacy';
+    networkType: 'bitcoin' | 'ethereum' | 'ripple';
+    symbol: string;
+    empty: boolean;
+    visible: boolean;
+    imported?: boolean;
+    balance: string;
+    availableBalance: string;
+    tokens: AccountInfo['tokens'];
+    addresses: AccountInfo['addresses'];
+    utxo: AccountInfo['utxo'];
+    history: AccountInfo['history'];
+    misc: AccountInfo['misc'];
+    marker: AccountInfo['marker'];
 }
 
-export const initialState: Account[] = [];
+const initialState: Account[] = [];
 
-// const create = (state: Account[], action: Action) => {
-// const { network, rates } = action;
-// const affected = state.find(f => f.network === network);
-// Object.keys(rates).map(k => rates[k].toFixed(2));
-// if (!affected) {
-//     state.push({
-//         network,
-//         rates,
-//     });
-// } else {
-//     affected.network = network;
-//     affected.rates = rates;
-// }
-// };
-
-export const findDeviceAccounts = (
-    accounts: Account[],
-    // device: TrezorDevice,
-    networkShortcut?: string,
-) => {
-    // TODO: should also filter deviceState
-    if (networkShortcut) {
-        return accounts.filter(a => a.network === networkShortcut);
+const create = (draft: Account[], account: Account) => {
+    // TODO: check if account already exist, for example 2 device instances with same passphrase
+    // remove "transactions" field, they are stored in "transactionReducer"
+    if (account.history) {
+        delete account.history.transactions;
     }
-    return accounts;
+    draft.push(account);
 };
 
-const update = (draft: Draft<Account[]>, updatedAccount: Account) => {
+const remove = (draft: Account[], accounts: Account[]) => {
+    accounts.forEach(a => {
+        const index = draft.findIndex(
+            ac =>
+                ac.deviceState === a.deviceState &&
+                ac.descriptor === a.descriptor &&
+                ac.accountType === a.accountType && // is accountType needed? can 2 accs have same descriptor but different accountType?
+                ac.symbol === a.symbol,
+        );
+        draft.splice(index, 1);
+    });
+};
+
+const update = (draft: Draft<Account[]>, account: Account) => {
     const accountIndex = draft.findIndex(
-        a => a.descriptor === updatedAccount.descriptor && a.network === updatedAccount.network,
+        ac =>
+                ac.deviceState === account.deviceState &&
+                ac.descriptor === account.descriptor &&
+                ac.accountType === account.accountType &&
+                ac.symbol === account.symbol
     );
 
     if (accountIndex !== -1) {
-        draft[accountIndex] = { ...updatedAccount };
+        draft[accountIndex] = { ...account };
     } else {
         console.warn(
-            `Tried to update account that does not exist: ${updatedAccount.descriptor} (symbol: ${updatedAccount.network})`,
+            `Tried to update account that does not exist: ${account.descriptor} (symbol: ${account.symbol})`,
         );
     }
 };
@@ -60,11 +70,13 @@ export default (state: Account[] = initialState, action: Action): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:
-                draft.push(action.payload);
+                create(draft, action.payload);
                 break;
             case ACCOUNT.UPDATE:
                 update(draft, action.payload);
                 break;
+            case ACCOUNT.REMOVE:
+                remove(draft, action.payload);
             // no default
         }
     });

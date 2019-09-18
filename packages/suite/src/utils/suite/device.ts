@@ -270,6 +270,7 @@ export const getOtherDevices = (
 export const getDeviceInstances = (
     device: TrezorDevice,
     devices: TrezorDevice[],
+    includeCurrent: boolean = false,
 ): AcquiredDevice[] => {
     if (!device || !device.features || !device.features.device_id) return [];
     return devices
@@ -277,7 +278,7 @@ export const getDeviceInstances = (
             d =>
                 d.features &&
                 d.features.device_id === device.features.device_id &&
-                d.instance !== device.instance,
+                (includeCurrent || (!includeCurrent && d.instance !== device.instance)),
         )
         .sort((a, b) => {
             if (!a.instance) return -1;

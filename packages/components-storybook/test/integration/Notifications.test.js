@@ -1,7 +1,7 @@
 describe('Notifications', () => {
     beforeEach(() => {
         cy.viewport(1008, 768);
-        cy.visit(
+        cy.loadContent(
             '/iframe.html?selectedKind=Notifications&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
         );
     });
@@ -28,7 +28,7 @@ describe('Notifications', () => {
             cy.getTestElement(testName)
                 .find('.loading')
                 .each(el => {
-                    cy.get(el).should('not.be.visible');
+                    cy.get(el).should('not.exist');
                 });
 
             cy.getTestElement(testName)

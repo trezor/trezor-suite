@@ -15,6 +15,8 @@ export const getPrefixedURL = (url: string) => {
 export const getApp = (url: string) => {
     if (url === '/' || url.indexOf(getPrefixedURL('/wallet')) === 0) return 'wallet';
     if (url.indexOf(getPrefixedURL('/onboarding')) === 0) return 'onboarding';
+    if (url.indexOf(getPrefixedURL('/firmware')) === 0) return 'firmware';
+    if (url.indexOf(getPrefixedURL('/settings')) === 0) return 'deviceManagement';
 
     return 'unknown';
 };

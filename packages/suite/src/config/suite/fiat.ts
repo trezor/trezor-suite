@@ -1,15 +1,15 @@
 export default {
     tickers: [
         {
-            network: 'eth',
+            symbol: 'eth',
             url: 'https://api.coingecko.com/api/v3/coins/ethereum',
         },
         {
-            network: 'etc',
+            symbol: 'etc',
             url: 'https://api.coingecko.com/api/v3/coins/ethereum-classic',
         },
         {
-            network: 'xrp',
+            symbol: 'xrp',
             url: 'https://api.coingecko.com/api/v3/coins/ripple',
         },
     ],

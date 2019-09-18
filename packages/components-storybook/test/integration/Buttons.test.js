@@ -1,7 +1,7 @@
 describe('Buttons', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
-        cy.visit('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
+        cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
     });
 
     [
@@ -43,6 +43,12 @@ describe('Buttons', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             if (testName.match(/icon/)) {
+                cy.getTestElement(testName)
+                    .find('.loading')
+                    .each(el => {
+                        cy.get(el).should('not.exist');
+                    });
+
                 cy.getTestElement(testName)
                     .find('svg')
                     .should('be.visible');

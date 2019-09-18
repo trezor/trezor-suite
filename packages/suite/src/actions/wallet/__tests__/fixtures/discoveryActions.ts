@@ -6,11 +6,12 @@ export const paramsError = (error: string, code?: string) => ({
     },
 });
 
-const fixtures = [
+export const fixtures = [
     {
         description: 'All accounts are empty',
         connect: {
             success: true,
+            interruption: ['only-for-type-correctness'],
         },
         result: {
             failed: [],
@@ -30,24 +31,27 @@ const fixtures = [
         description: 'Few accounts failed on runtime',
         connect: {
             success: true,
-            usedAccounts: ["m/44'/0'/1'", "m/49'/0'/2'", "m/44'/2'/3'"],
-            failedAccounts: ["m/84'/0'/0'", "m/49'/0'/1'", "m/44'/2'/3'"],
+            usedAccounts: ["m/44'/0'/1'", "m/49'/0'/2'", "m/44'/1'/3'"],
+            failedAccounts: ["m/84'/0'/0'", "m/49'/0'/1'", "m/44'/1'/3'"],
         },
         result: {
             failed: [
                 {
                     error: 'Runtime discovery error',
-                    network: 'btc',
+                    index: 0,
+                    symbol: 'btc',
                     accountType: 'normal',
                 },
                 {
                     error: 'Runtime discovery error',
-                    network: 'btc',
+                    index: 1,
+                    symbol: 'btc',
                     accountType: 'segwit',
                 },
                 {
                     error: 'Runtime discovery error',
-                    network: 'ltc',
+                    index: 3,
+                    symbol: 'test',
                     accountType: 'legacy',
                 },
             ],
@@ -77,7 +81,8 @@ const fixtures = [
                 {
                     error: 'Btc not supported',
                     fwException: 'Btc not supported',
-                    network: 'btc',
+                    index: 0,
+                    symbol: 'btc',
                     accountType: 'normal',
                 },
             ],
@@ -94,9 +99,9 @@ const fixtures = [
                         exception: 'Btc p2sh not supported',
                     },
                     {
-                        index: 4,
-                        coin: 'ltc',
-                        exception: 'Ltc legacy not supported',
+                        index: 5,
+                        coin: 'test',
+                        exception: 'Testnet legacy not supported',
                     },
                 ]),
                 code: 'bundle_fw_exception',
@@ -108,13 +113,15 @@ const fixtures = [
                 {
                     error: 'Btc p2sh not supported',
                     fwException: 'Btc p2sh not supported',
-                    network: 'btc',
+                    index: 0,
+                    symbol: 'btc',
                     accountType: 'segwit',
                 },
                 {
-                    error: 'Ltc legacy not supported',
-                    fwException: 'Ltc legacy not supported',
-                    network: 'ltc',
+                    error: 'Testnet legacy not supported',
+                    fwException: 'Testnet legacy not supported',
+                    index: 0,
+                    symbol: 'test',
                     accountType: 'legacy',
                 },
             ],
@@ -131,4 +138,110 @@ const fixtures = [
     },
 ];
 
-export default fixtures;
+// Trigger is called from test after account creation (TrezorConnect progress event)
+// since TrezorConnect.cancel is an async method it will be resolved later, even after few more "progress events"
+// If mocked TrezorConnect is requested for a next account which was found in fixture "connect.interruption" field it will throw "discovery_interrupted" error
+// To understand this logic here's a simplified description based on 'Multiple interruptions' test:
+// 1. TrezorConnect.getAccountInfo received first bundle: ["m/84'/0'/0'", "m/49'/0'/0'", "m/44'/0'/0'"....]
+// 2. Account "m/84'/0'/0'" is emitted by TrezorConnect progress event and account is created in reducer
+// 3. ACCOUNT.CREATE action is captured by test and its path is matching the first item in "trigger" field, Discovery.stop() is called
+// 4. Discovery process has now status = DISCOVERY.STOPPING, from now on it will ignore any progress event until TrezorConnect return response (success = false)
+// 5. Returned error from TrezorConnect has a "discovery_interrupted" error. Discovery process status in now = DISCOVERY.STOPPED
+// 6. Since test captured DISCOVERY.STOP action and previous actions (DISCOVERY.INTERRUPTED) was present, test will start new iteration (restart discovery)
+// 7. TrezorConnect.getAccountInfo received a second bundle. Account "m/84'/0'/0'" is already created so bundle starts with "m/84'/0'/1'" and is followed by missing accounts: "m/49'/0'/0'", "m/44'/0'/0'"...
+// 8. Second bundle is completed without interruption. Created accounts: ["m/84'/0'/0'", "m/84'/0'/1'", "m/49'/0'/0'", "m/44'/0'/0'"....], Discovery process requests for another bundle.
+// 9. TrezorConnect.getAccountInfo received third bundle. Bundle starts with ["m/84'/0'/2'", "m/49'/0'/1'", "m/44'/0'/1'"...]
+// 10. Account "m/84'/0'/2'" is created in reducer, interruption is triggered from test, TrezorConnect is requested for "m/49'/0'/1'" and throws error...
+// ...and so on, until discovery calls DISCOVERY.COMPLETE action
+export const interruptionFixtures = [
+    {
+        description:
+            'Interruption triggered after 1st account, rejected error from TrezorConnect after 3rd account',
+        connect: {
+            success: true,
+            interruption: ["m/44'/0'/0'"],
+        },
+        trigger: ["m/84'/0'/0'"],
+    },
+    {
+        description: 'Interruption triggered in third bundle',
+        connect: {
+            success: true,
+            usedAccounts: ["m/44'/0'/4'", "m/49'/0'/4'", "m/49'/2'/4'"],
+            interruption: ["m/44'/0'/2'"],
+        },
+        trigger: ["m/49'/0'/2'"],
+    },
+    {
+        description: 'Multiple interruptions',
+        connect: {
+            success: true,
+            usedAccounts: ["m/84'/0'/4'", "m/49'/0'/4'", "m/44'/0'/4'"],
+            interruption: ["m/49'/0'/0'", "m/49'/0'/1'", "m/44'/0'/1'", "m/44'/0'/2'"],
+        },
+        trigger: ["m/84'/0'/0'", "m/84'/0'/2'", "m/49'/0'/1'", "m/49'/0'/3'"],
+    },
+    {
+        description:
+            'Last account discovered, results from trezor-connect are ok, but discovery is expecting interruption',
+        connect: {
+            success: true,
+        },
+        trigger: ["m/44'/1'/0'"],
+    },
+];
+
+// Discovery process can be modified when running
+export const changeNetworksFixtures = [
+    {
+        description: 'Enable LTC after 1st account',
+        connect: {
+            success: true,
+        },
+        trigger: [
+            {
+                path: "m/84'/0'/0'",
+                networks: ['btc', 'ltc', 'test'],
+            },
+        ],
+    },
+    {
+        description: 'Disable TEST after 1st account',
+        connect: {
+            success: true,
+            usedAccounts: ["m/84'/0'/4'"],
+        },
+        trigger: [
+            {
+                path: "m/84'/0'/0'",
+                networks: ['btc'],
+            },
+        ],
+    },
+    {
+        description: 'Enable LTC in third bundle',
+        connect: {
+            success: true,
+            usedAccounts: ["m/84'/0'/4'", "m/49'/0'/4'", "m/44'/0'/4'"],
+        },
+        trigger: [
+            {
+                path: "m/84'/0'/2'",
+                networks: ['btc', 'ltc', 'test'],
+            },
+        ],
+    },
+    {
+        description: 'Enable LTC + disable TEST in third bundle',
+        connect: {
+            success: true,
+            usedAccounts: ["m/84'/0'/4'"],
+        },
+        trigger: [
+            {
+                path: "m/84'/0'/2'",
+                networks: ['btc', 'ltc'],
+            },
+        ],
+    },
+];

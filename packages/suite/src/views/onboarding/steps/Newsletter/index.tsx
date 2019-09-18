@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import { Link, Input, Checkbox, P } from '@trezor/components';
 
@@ -8,26 +8,10 @@ import l10nCommonMessages from '@suite-support/Messages';
 import { isEmail } from '@suite-utils/validators';
 import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
 import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
-import { IconSocial } from '@onboarding-components/Icons';
-import { Dots } from '@onboarding-components/Loaders';
-import Text from '@onboarding-components/Text';
-import {
-    StepWrapper,
-    StepBodyWrapper,
-    StepHeadingWrapper,
-    ControlsWrapper,
-    CheckboxWrapper,
-} from '@onboarding-components/Wrapper';
-import { ButtonAlt, ButtonCta } from '@onboarding-components/Buttons';
-import { callActionAndGoToNextStep, applyFlags } from '@onboarding-actions/connectActions';
-import {
-    setSkipped,
-    setEmail,
-    submitEmail,
-    toggleCheckbox,
-} from '@onboarding-actions/newsletterActions';
+
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
-import { AppState } from '@suite-types';
+import { Wrapper, Text, OnboardingIcon, OnboardingButton, Loaders } from '@onboarding-components';
+import { Props } from './Container';
 
 import l10nMessages from './index.messages';
 
@@ -52,23 +36,7 @@ const InputWrapper = styled.div`
     align-items: flex-start;
     height: 70px;
 `;
-
-interface Props {
-    newsletter: AppState['onboarding']['newsletter'];
-    device: AppState['onboarding']['connect']['device'];
-    connectActions: {
-        applyFlags: typeof applyFlags;
-        callActionAndGoToNextStep: typeof callActionAndGoToNextStep;
-    };
-    newsletterActions: {
-        submitEmail: typeof submitEmail;
-        setEmail: typeof setEmail;
-        toggleCheckbox: typeof toggleCheckbox;
-        setSkipped: typeof setSkipped;
-    };
-}
-
-class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
+class NewsleterStep extends React.Component<Props> {
     getBottomText() {
         return this.validateInput().bottomText;
     }
@@ -134,11 +102,11 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
         const status = this.getStatus();
         const { newsletter, newsletterActions } = this.props;
         return (
-            <StepWrapper>
-                <StepHeadingWrapper>
+            <Wrapper.Step>
+                <Wrapper.StepHeading>
                     <FormattedMessage {...l10nMessages.TR_NEWSLETTER_HEADING} />
-                </StepHeadingWrapper>
-                <StepBodyWrapper>
+                </Wrapper.StepHeading>
+                <Wrapper.StepBody>
                     {status === 'initial' && (
                         <React.Fragment>
                             <Text>
@@ -157,7 +125,7 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                             {newsletter.isProgress && (
                                 <Text>
                                     Subscribing
-                                    <Dots />
+                                    <Loaders.Dots />
                                 </Text>
                             )}
                             {newsletter.error && <Text>Subscribe failed</Text>}
@@ -165,7 +133,7 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
 
                             <CheckboxexSection>
                                 {newsletter.checkboxes.map((checkbox: CheckboxType) => (
-                                    <CheckboxWrapper key={checkbox.label}>
+                                    <Wrapper.Checkbox key={checkbox.label}>
                                         <Checkbox
                                             isChecked={checkbox.value}
                                             onClick={() =>
@@ -174,15 +142,15 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                                         >
                                             <P>{checkbox.label}</P>
                                         </Checkbox>
-                                    </CheckboxWrapper>
+                                    </Wrapper.Checkbox>
                                 ))}
                             </CheckboxexSection>
 
-                            <ControlsWrapper>
-                                <ButtonAlt onClick={() => this.skipEmail()}>
+                            <Wrapper.Controls>
+                                <OnboardingButton.Alt onClick={() => this.skipEmail()}>
                                     <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
-                                </ButtonAlt>
-                                <ButtonCta
+                                </OnboardingButton.Alt>
+                                <OnboardingButton.Cta
                                     isDisabled={
                                         this.validateInput().state !== 'success' ||
                                         this.getEmailStatus() === 'sending'
@@ -190,8 +158,8 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                                     onClick={this.submitEmail}
                                 >
                                     <FormattedMessage {...l10nCommonMessages.TR_SUBMIT} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
 
@@ -209,26 +177,26 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
                             )}
                             <SocialWrapper>
                                 <Link href={BLOG_URL}>
-                                    <IconSocial name="medium" sizeMultiplier={2} />
+                                    <OnboardingIcon.SocialLogo name="medium" sizeMultiplier={2} />
                                 </Link>
                                 <Link href={SOCIAL_FACEBOOK_URL}>
-                                    <IconSocial name="facebook" sizeMultiplier={2} />
+                                    <OnboardingIcon.SocialLogo name="facebook" sizeMultiplier={2} />
                                 </Link>
                                 <Link href={SOCIAL_TWITTER_URL}>
-                                    <IconSocial name="twitter" sizeMultiplier={2} />
+                                    <OnboardingIcon.SocialLogo name="twitter" sizeMultiplier={2} />
                                 </Link>
                             </SocialWrapper>
-                            <ControlsWrapper>
-                                <ButtonCta onClick={() => this.goToNextStep()}>
+                            <Wrapper.Controls>
+                                <OnboardingButton.Cta onClick={() => this.goToNextStep()}>
                                     <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
-                                </ButtonCta>
-                            </ControlsWrapper>
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
                         </React.Fragment>
                     )}
-                </StepBodyWrapper>
-            </StepWrapper>
+                </Wrapper.StepBody>
+            </Wrapper.Step>
         );
     }
 }
 
-export default injectIntl(NewsleterStep);
+export default NewsleterStep;

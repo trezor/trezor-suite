@@ -1,12 +1,10 @@
 import React from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link, P, Prompt, variables } from '@trezor/components';
-import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { AnyStepId, AnyStepDisallowedState, Step } from '@onboarding-types/steps';
-import { AnyEvent } from '@onboarding-types/events';
+import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 
 import * as EVENTS from '@suite/actions/onboarding/constants/events';
 
@@ -29,9 +27,6 @@ import {
     NAVBAR_HEIGHT_UNIT,
 } from '@suite/config/onboarding/layout';
 
-import ProgressSteps from '@suite/components/onboarding/ProgressSteps';
-import UnexpectedState from '@suite/components/onboarding/UnexpectedState';
-
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
@@ -39,8 +34,7 @@ import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
 import NewOrUsedStep from '@onboarding-views/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@onboarding-views/steps/SelectDevice/Container';
 import HologramStep from '@onboarding-views/steps/Hologram/Container';
-import BridgeStep from '@onboarding-views/steps/Bridge/Container';
-import ConnectStep from '@onboarding-views/steps/Connect/Container';
+import PairStep from '@onboarding-views/steps/Pair/Container';
 import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
 import ShamirStep from '@onboarding-views/steps/Shamir/Container';
 import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
@@ -51,8 +45,10 @@ import NameStep from '@onboarding-views/steps/Name/Container';
 import BookmarkStep from '@onboarding-views/steps/Bookmark/Container';
 import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
 import FinalStep from '@onboarding-views/steps/Final';
+import { ProgressSteps, UnexpectedState, Preloader } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';
+// import { CSSTransition } from 'react-transition-group';
 
 const BORDER_RADIUS = 12;
 const TRANSITION_PROPS = {
@@ -66,11 +62,7 @@ const backgroundAnimation = keyframes`
     100% { opacity: 1 }
 `;
 
-interface WrapperOutsideProps extends React.HTMLAttributes<HTMLDivElement> {
-    animate: boolean;
-}
-
-const WrapperOutside = styled.div<WrapperOutsideProps>`
+const WrapperOutside = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -81,14 +73,9 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         height: 100%;
-
-        ${props =>
-            props.animate &&
-            css`
-                animation: ${backgroundAnimation} 1s linear;
-                background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
-                background-size: cover;
-            `};
+        animation: ${backgroundAnimation} 1s linear;
+        background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
+        background-size: cover;
     }
 `;
 
@@ -140,7 +127,7 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-const TrezorAction = ({ model, event }: { model: number; event: AnyEvent }) => {
+const TrezorAction = ({ model, event }: { model: number; event: string }) => {
     let TrezorActionText;
     if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
         TrezorActionText = () => (
@@ -173,242 +160,29 @@ const UnexpectedStateOverlay = styled.div`
     display: flex;
 `;
 
-interface Props {
-    device: any; // todo
-
-    activeStepId: StateProps['activeStepId'];
-    selectedModel: StateProps['selectedModel'];
-    path: StateProps['path'];
-
-    deviceCall: StateProps['deviceCall'];
-    uiInteraction: StateProps['uiInteraction'];
-    deviceInteraction: StateProps['deviceInteraction'];
-    prevDeviceId: StateProps['prevDeviceId'];
-
-    connectActions: DispatchProps['connectActions'];
-    onboardingActions: DispatchProps['onboardingActions'];
-}
-
-class Onboarding extends React.PureComponent<Props> {
-    getStep(activeStepId: AppState['onboarding']['activeStepId']): Step {
-        const lookup = steps.find((step: Step) => step.id === activeStepId);
-        // todo: is there a better way how to solve lookup completeness with typescript?
-        if (!lookup) {
-            throw new TypeError('step not found by step id. unexepected.');
-        }
-        return lookup;
+// using css transitions somehow break webusb button logic. Temporary workaround to disable
+// transitions without need to rewrite much code.
+const CSSTransition = (props: any) => {
+    if (props.in) {
+        return props.children;
     }
-
-    getScreen() {
-        return this.props.activeStepId;
-    }
-
-    getError() {
-        const { device, prevDeviceId, activeStepId, path } = this.props;
-        const activeStep = this.getStep(activeStepId);
-        if (!activeStep.disallowedDeviceStates) {
-            return null;
-        }
-
-        return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
-            const fn = getFnForRule(state);
-            return fn({ device, prevDeviceId, path });
-        });
-    }
-
-    isGlobalInteraction() {
-        const { deviceInteraction, deviceCall } = this.props;
-        // if (deviceCall.name === RECOVER_DEVICE )
-        const globals = [
-            EVENTS.BUTTON_REQUEST__PROTECT_CALL,
-            EVENTS.BUTTON_REQUEST__WIPE_DEVICE,
-            EVENTS.BUTTON_REQUEST__RESET_DEVICE,
-            EVENTS.BUTTON_REQUEST__MNEMONIC_WORD_COUNT,
-            EVENTS.BUTTON_REQUEST__MNEMONIC_INPUT,
-            EVENTS.BUTTON_REQUEST__OTHER,
-        ];
-        return globals.includes(deviceInteraction.name) && deviceCall.isProgress;
-    }
-
-    // todo: reconsider if we need resolved logic.
-    isStepResolved(stepId: AnyStepId) {
-        return Boolean(steps.find((step: Step) => step.id === stepId)!.resolved);
-    }
-
-    render() {
-        const {
-            selectedModel,
-            activeStepId,
-
-            deviceCall,
-            deviceInteraction,
-            uiInteraction,
-        } = this.props;
-        const model = selectedModel || 2;
-        const errorState = this.getError();
-        const activeStep = this.getStep(activeStepId);
-        return (
-            <>
-                <WrapperOutside
-                    animate={![STEP.ID_WELCOME_STEP, STEP.ID_FINAL_STEP].includes(activeStepId)}
-                >
-                    <WrapperInside isGlobalInteraction={this.isGlobalInteraction()}>
-                        {errorState && (
-                            <UnexpectedStateOverlay>
-                                <UnexpectedState
-                                    caseType={errorState}
-                                    model={model}
-                                    uiInteraction={uiInteraction}
-                                />
-                            </UnexpectedStateOverlay>
-                        )}
-                        <ProgressStepsSlot>
-                            <ProgressSteps
-                                hiddenOnSteps={[
-                                    STEP.ID_WELCOME_STEP,
-                                    STEP.ID_SECURITY_STEP,
-                                    STEP.ID_FINAL_STEP,
-                                ]}
-                                steps={steps}
-                                activeStep={activeStep}
-                                isDisabled={deviceCall.isProgress}
-                            />
-                        </ProgressStepsSlot>
-                        <ComponentWrapper>
-                            {this.isGlobalInteraction() && (
-                                <TrezorAction model={model} event={deviceInteraction.name} />
-                            )}
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_WELCOME_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <WelcomeStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_NEW_OR_USED}
-                                {...TRANSITION_PROPS}
-                            >
-                                <NewOrUsedStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SELECT_DEVICE_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <SelectDeviceStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_UNBOXING_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <HologramStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_BRIDGE_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <BridgeStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_CONNECT_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <ConnectStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_FIRMWARE_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <FirmwareStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SHAMIR_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <ShamirStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_RECOVERY_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <RecoveryStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SECURITY_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <SecurityStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_BACKUP_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <BackupStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SET_PIN_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <SetPinStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_NAME_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <NameStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_NEWSLETTER_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <NewsletterStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_BOOKMARK_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <BookmarkStep />
-                            </CSSTransition>
-
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_FINAL_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <FinalStep />
-                            </CSSTransition>
-                        </ComponentWrapper>
-                    </WrapperInside>
-                </WrapperOutside>
-            </>
-        );
-    }
-}
+    return null;
+};
 
 const mapStateToProps = (state: AppState) => {
     return {
         device: state.onboarding.connect.device,
 
+        // suite reducer
+        loaded: state.suite.loaded,
+
         // connect reducer
-        prevDeviceId: state.onboarding.connect.prevDeviceId,
         deviceCall: state.onboarding.connect.deviceCall,
-        deviceInteraction: state.onboarding.connect.deviceInteraction,
+        // deviceInteraction: state.onboarding.connect.deviceInteraction,
         uiInteraction: state.onboarding.connect.uiInteraction,
 
         // onboarding reducer
+        prevDevice: state.onboarding.prevDevice,
         selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
         path: state.onboarding.path,
@@ -422,6 +196,211 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type Props = StateProps & DispatchProps;
+
+const Onboarding = (props: Props) => {
+    const getStep = (activeStepId: AppState['onboarding']['activeStepId']) => {
+        const lookup = steps.find((step: Step) => step.id === activeStepId);
+        // todo: is there a better way how to solve lookup completeness with typescript?
+        if (!lookup) {
+            throw new TypeError('step not found by step id. unexepected.');
+        }
+        return lookup;
+    };
+
+    const getError = () => {
+        const { device, prevDevice, activeStepId, path } = props;
+        const activeStep = getStep(activeStepId);
+        if (!activeStep.disallowedDeviceStates) {
+            return null;
+        }
+
+        return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
+            const fn = getFnForRule(state);
+            return fn({ device, prevDevice, path });
+        });
+    };
+
+    const isGlobalInteraction = () => {
+        const { uiInteraction, deviceCall } = props;
+        const globals = [
+            EVENTS.BUTTON_REQUEST__PROTECT_CALL,
+            EVENTS.BUTTON_REQUEST__WIPE_DEVICE,
+            EVENTS.BUTTON_REQUEST__RESET_DEVICE,
+            EVENTS.BUTTON_REQUEST__MNEMONIC_WORD_COUNT,
+            EVENTS.BUTTON_REQUEST__MNEMONIC_INPUT,
+            EVENTS.BUTTON_REQUEST__OTHER,
+            'ButtonRequest_RecoveryHomepage',
+            'ButtonRequest_MnemonicWordCount',
+        ];
+        return Boolean(
+            uiInteraction.name && globals.includes(uiInteraction.name) && deviceCall.isProgress,
+        );
+    };
+
+    const {
+        selectedModel,
+        activeStepId,
+
+        deviceCall,
+        uiInteraction,
+
+        loaded,
+        device,
+        prevDevice,
+    } = props;
+
+    const model =
+        (device && device.features && device.features.major_version) || selectedModel || 2;
+
+    const errorState = getError();
+    const activeStep = getStep(activeStepId);
+
+    return (
+        <Preloader loaded={loaded}>
+            <WrapperOutside>
+                <WrapperInside isGlobalInteraction={isGlobalInteraction()}>
+                    {errorState && (
+                        <UnexpectedStateOverlay>
+                            <UnexpectedState
+                                caseType={errorState}
+                                prevModel={
+                                    (prevDevice &&
+                                        prevDevice.features &&
+                                        prevDevice.features.major_version) ||
+                                    2
+                                }
+                                uiInteraction={uiInteraction}
+                            />
+                        </UnexpectedStateOverlay>
+                    )}
+                    <ProgressStepsSlot>
+                        <ProgressSteps
+                            hiddenOnSteps={[
+                                STEP.ID_WELCOME_STEP,
+                                STEP.ID_SECURITY_STEP,
+                                STEP.ID_FINAL_STEP,
+                            ]}
+                            steps={steps}
+                            activeStep={activeStep}
+                            isDisabled={deviceCall.isProgress}
+                        />
+                    </ProgressStepsSlot>
+                    <ComponentWrapper>
+                        {uiInteraction.name && isGlobalInteraction() && (
+                            <TrezorAction model={model} event={uiInteraction.name} />
+                        )}
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_WELCOME_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <WelcomeStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_NEW_OR_USED}
+                            {...TRANSITION_PROPS}
+                        >
+                            <NewOrUsedStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SELECT_DEVICE_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <SelectDeviceStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_UNBOXING_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <HologramStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_PAIR_DEVICE_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <PairStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_FIRMWARE_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <FirmwareStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SHAMIR_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <ShamirStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_RECOVERY_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <RecoveryStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SECURITY_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <SecurityStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_BACKUP_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <BackupStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SET_PIN_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <SetPinStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_NAME_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <NameStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_NEWSLETTER_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <NewsletterStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_BOOKMARK_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <BookmarkStep />
+                        </CSSTransition>
+
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_FINAL_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <FinalStep />
+                        </CSSTransition>
+                    </ComponentWrapper>
+                </WrapperInside>
+            </WrapperOutside>
+        </Preloader>
+    );
+};
 
 export default connect(
     mapStateToProps,

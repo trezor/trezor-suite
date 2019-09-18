@@ -3,7 +3,9 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
+import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
 import { Account as Account$ } from '@wallet-reducers/accountsReducer';
+import { Fiat as Fiat$ } from '@wallet-reducers/fiatRateReducer';
 
 import { FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
 
@@ -20,10 +22,12 @@ export type NetworkToken = NetworkToken$;
 export type Token = Token$;
 export type Account = Account$;
 export type Icon = Icon$;
+export type Fiat = Fiat$;
+export type Discovery = Discovery$;
 
 interface BlockchainLinkToken {
     name: string;
-    shortcut: string;
+    symbol: string;
     value: string;
 }
 
@@ -59,6 +63,6 @@ export interface BlockchainLinkTransaction {
 
 export interface Transaction extends BlockchainLinkTransaction {
     deviceState: string;
-    network: string;
+    symbol: string;
     rejected?: boolean;
 }
