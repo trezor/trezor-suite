@@ -4,14 +4,12 @@
  */
 
 import Router from 'next/router';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import { getPrefixedURL, getApp, getRoute } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
-export const LOCATION_CHANGE = '@router/location-change';
-
 interface LocationChange {
-    type: typeof LOCATION_CHANGE;
+    type: typeof ROUTER.LOCATION_CHANGE;
     url: string;
 }
 
@@ -25,7 +23,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     if (getState().router.app === 'unknown') {
         const url = Router.pathname + window.location.hash;
         dispatch({
-            type: LOCATION_CHANGE,
+            type: ROUTER.LOCATION_CHANGE,
             url,
         });
     }
@@ -42,7 +40,7 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
     // TODO: check if the view is not locked by the device request
 
     return dispatch({
-        type: LOCATION_CHANGE,
+        type: ROUTER.LOCATION_CHANGE,
         url,
     });
 };
@@ -77,7 +75,7 @@ export const back = async () => {
 export const initialRedirection = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (getState().suite.initialRun) {
         const app = getApp(Router.pathname);
-        if (app !== 'onboarding') {
+        if (!['onboarding', 'firmware'].includes(app)) {
             await goto(getRoute('onboarding-index'));
         }
     }

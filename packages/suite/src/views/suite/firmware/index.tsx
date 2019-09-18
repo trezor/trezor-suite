@@ -73,7 +73,16 @@ interface Props {
 const FirmwareUpdate = (props: Props) => {
     const { device, firmware } = props;
 
-    if (!device || device.type !== 'acquired') return null;
+    if (!device || device.type !== 'acquired') {
+        return (
+            <Wrapper>
+                <Top>
+                    <TitleHeader>Firmware update</TitleHeader>
+                </Top>
+                <Middle>Connect your device to continue</Middle>
+            </Wrapper>
+        );
+    }
 
     const isInProgress = () => {
         if (!firmware || !firmware.status) return null;
@@ -109,11 +118,15 @@ const FirmwareUpdate = (props: Props) => {
         }
     };
 
+    // todo: handle bootloader mode
+    // todo: handle unacquired
+
     return (
         <Wrapper>
             {/* todo: use proper notifications, leaving it here as a starting point for next iteration */}
             <WalletNotifications />
             <Top>
+                {getStatus()}
                 <TitleHeader>{getTitleForStatus()}</TitleHeader>
             </Top>
 
@@ -147,6 +160,7 @@ const FirmwareUpdate = (props: Props) => {
                 {getStatus() === 'in-bl' && (
                     <Button onClick={() => props.firmwareUpdate()}>Install</Button>
                 )}
+                <Button onClick={() => goto(getRoute('suite-index'))}>Go to wallet</Button>
             </Bottom>
         </Wrapper>
     );

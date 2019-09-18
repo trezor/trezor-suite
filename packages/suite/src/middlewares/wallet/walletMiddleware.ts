@@ -1,8 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import { SETTINGS, WALLET, DISCOVERY } from '@wallet-actions/constants';
 import { getApp } from '@suite-utils/router';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
@@ -37,7 +36,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     // consider if discovery should be interrupted
     let interruptionIntent = action.type === SUITE.SELECT_DEVICE;
-    if (action.type === LOCATION_CHANGE) {
+    if (action.type === ROUTER.LOCATION_CHANGE) {
         interruptionIntent = getApp(action.url) !== 'wallet';
     }
 
@@ -107,7 +106,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         action.type === WALLET.INIT_SUCCESS ||
         action.type === SUITE.AUTH_DEVICE ||
         action.type === SETTINGS.CHANGE_NETWORKS ||
-        (action.type === LOCATION_CHANGE && prevState.router.app !== 'wallet')
+        (action.type === ROUTER.LOCATION_CHANGE && prevState.router.app !== 'wallet')
     ) {
         const discovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
         if (
@@ -124,7 +123,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
             // update discovery in selectedAccount
             api.dispatch(selectedAccountActions.observe(prevState, action));
             break;
-        case LOCATION_CHANGE:
+        case ROUTER.LOCATION_CHANGE:
             // update selected account if needed
             api.dispatch(selectedAccountActions.observe(prevState, action));
 
@@ -146,7 +145,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     // TODO: copy all logic from old WalletService middleware
     const currentState = api.getState();
-    if (action.type === LOCATION_CHANGE && prevState.router.hash !== currentState.router.hash) {
+    if (action.type === ROUTER.LOCATION_CHANGE && prevState.router.hash !== currentState.router.hash) {
         // watch for account change
         if (
             prevState.router.params.accountId !== currentState.router.params.accountId ||

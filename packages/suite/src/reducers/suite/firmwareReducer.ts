@@ -1,16 +1,18 @@
 import produce, { Draft } from 'immer';
 
-import { FirmwareUpdateReducer } from '@suite-actions/firmwareActions';
+import { FirmwareUpdateState } from '@suite-actions/firmwareActions';
 import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { TrezorDevice, Action } from '@suite-types';
 
 const initialState = {
+    initialized: false,
     status: null,
+    // device: null,
 };
 
 const handleDeviceChange = (
-    state: FirmwareUpdateReducer,
-    draft: Draft<FirmwareUpdateReducer>,
+    state: FirmwareUpdateState,
+    draft: Draft<FirmwareUpdateState>,
     device?: TrezorDevice,
 ) => {
     if (!device || device.type !== 'acquired') {
@@ -24,7 +26,21 @@ const handleDeviceChange = (
     }
 };
 
-const firmwareUpdate = (state: FirmwareUpdateReducer = initialState, action: Action) => {
+const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
+    if (action.type === SUITE.APP_INIT && action.payload === 'firmware') {
+        return produce(state, draft => {
+            draft.initialized = true;
+        });
+    }
+
+    if (action.type === SUITE.APP_DISPOSE && action.payload === 'firmware') {
+        return initialState;
+    }
+
+    if (!state.initialized) {
+        return state;
+    }
+
     return produce(state, draft => {
         switch (action.type) {
             case FIRMWARE.SET_UPDATE_STATUS:
@@ -32,6 +48,7 @@ const firmwareUpdate = (state: FirmwareUpdateReducer = initialState, action: Act
                 break;
             case SUITE.SELECT_DEVICE:
             case SUITE.UPDATE_SELECTED_DEVICE:
+                // draft.device = action.payload;
                 handleDeviceChange(state, draft, action.payload);
                 break;
             default:

@@ -74,7 +74,8 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     dispatch(lockUI(false));
 };
 
-export interface FirmwareUpdateReducer {
+export interface FirmwareUpdateState {
+    initialized: boolean;
     status: null | AnyStatus;
 }
 
