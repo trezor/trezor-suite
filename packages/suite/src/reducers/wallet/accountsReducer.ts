@@ -37,6 +37,7 @@ const create = (draft: Account[], account: Account) => {
 };
 
 const changeVisibility = (draft: Account[], account: Account) => {
+    // TODO: extract the find filter condition to separate function
     const index = draft.findIndex(
         a =>
             a.symbol === account.symbol &&
