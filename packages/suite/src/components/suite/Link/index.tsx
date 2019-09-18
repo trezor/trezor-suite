@@ -24,7 +24,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
     };
 
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
-    const RefLinkComponent = React.forwardRef((props: typeof linkProps, _ref: any) => (
+    const RefLinkComponent = React.forwardRef((props: any, _ref: any) => (
         <TLink target={target} {...props} className={className}>
             {children}
         </TLink>
@@ -46,9 +46,9 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
             <RefLinkComponent {...linkProps} />
         </NextLink>
     ) : (
-        <TLink href={href as string} target={target} {...linkProps} className={className}>
+        <RefLinkComponent href={href as string} target={target} className={className} {...linkProps}>
             {children}
-        </TLink>
+        </RefLinkComponent>
     );
 };
 
