@@ -16,7 +16,7 @@ interface Props {
     device: AppState['suite']['device'];
     modal: AppState['modal'];
     receive: AppState['wallet']['receive'];
-    showAddress: typeof showAddress;
+    showAddress: typeof receiveActions.showAddress;
 }
 
 const getTitleForNetwork = (symbol: string) => {
