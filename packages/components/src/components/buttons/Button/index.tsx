@@ -50,6 +50,7 @@ const Wrapper = styled.button<Props>`
     align-items: center;
     justify-content: center;
     padding: 11px 24px;
+    text-align: center;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BASE};
     font-weight: ${FONT_WEIGHT.LIGHT};
@@ -130,7 +131,16 @@ const Wrapper = styled.button<Props>`
                 }
             }
         `}
-
+    /* ${props =>
+        props.justText
+        } */
+    ${props =>
+        props.fullWidth &&
+        css`
+            /* display: block; */
+            width: 100%;
+            vertical-align: middle;
+        `}
     ${props =>
         props.isWhite &&
         css`
@@ -208,6 +218,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isLoading?: boolean;
     icon?: IconType;
     variant?: FeedbackType;
+    fullWidth?: boolean;
 }
 
 const Button = ({
@@ -220,6 +231,8 @@ const Button = ({
     isTransparent = false,
     isInverse = false,
     isLoading = false,
+    fullWidth = false,
+    // justText = true,
     icon,
     ...rest
 }: Props) => {
@@ -232,6 +245,7 @@ const Button = ({
             isTransparent={isTransparent}
             isInverse={isInverse}
             isLoading={isLoading}
+            fullWidth={fullWidth}
             variant={variant}
             icon={icon}
             {...rest}
@@ -244,6 +258,7 @@ const Button = ({
                         <div />
                         <div />
                     </FluidSpinner>
+                    {children}
                 </IconWrapper>
             )}
             {!isLoading && icon && (
@@ -253,9 +268,12 @@ const Button = ({
                         size={14}
                         color={isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE}
                     />
+                    {children}
                 </IconWrapper>
             )}
-            {children}
+            {/* {justText && (
+                {children}
+            )} */}
         </Wrapper>
     );
 };
@@ -272,6 +290,7 @@ Button.propTypes = {
     isWhite: PropTypes.bool,
     isTransparent: PropTypes.bool,
     isInverse: PropTypes.bool,
+    fullWidth: PropTypes.bool,
     isLoading: PropTypes.bool,
     icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
