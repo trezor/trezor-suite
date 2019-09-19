@@ -23,6 +23,8 @@
         "appId": "io.trezor.${name}",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
+        "electronVersion": "6.0.3",
+        "asar": false,
         "directories": {
             "output": "build-electron"
         },
@@ -47,13 +49,13 @@
             ]
         },
         "mac": {
-            "icon": "build/icons/icon.icns"
+            "icon": "build/static/images/suite/icons/64x64.png"
         },
         "win": {
-            "icon": "build/icons/icon.ico"
+            "icon": "build/static/images/suite/icons/64x64.ico"
         },
         "linux": {
-            "icon": "build/icons"
+            "icon": "build/static/images/suite/icons/64x64.png"
         }
     },
     "dependencies": {
@@ -72,7 +74,7 @@
         "@types/react-native": "^0.57.41",
         "@types/react-redux": "^7.0.8",
         "electron": "^6.0.3",
-        "electron-builder": "^20.41.0",
+        "electron-builder": "^21.2.0",
         "git-revision-webpack-plugin": "^3.0.3",
         "next": "^9.0.5",
         "next-plugin-custom-babel-config": "^1.0.0",
