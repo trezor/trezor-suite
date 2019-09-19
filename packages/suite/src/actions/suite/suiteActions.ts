@@ -156,7 +156,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     const { locks } = getState().suite;
     if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) return;
     // 2. check if device is acquired
-    if (device && device.features) {
+    if (device && device.features && !locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
         // 3. device is not initialized, redirect to "onboarding"
         if (device.mode === 'initialize') {
             await goto(getRoute('onboarding-index'));
