@@ -3,10 +3,10 @@ import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants/index';
 import { Dispatch, GetState } from '@suite-types/index';
 import { db } from '@suite/storage';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import TrezorConnect, { AccountInfo } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
-import { Account } from '@wallet-types';
 import { SETTINGS } from '@suite/config/suite';
+import { Account } from '@wallet-types';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transactions: WalletAccountTransaction[] }
