@@ -49,7 +49,7 @@ const getBridgeLibByOs = () => {
     const os = getOS();
     const arch = getArch();
     const bridgeVersion = getBridgeVersion();
-    const bridgeStaticFolder = `./static/bridge/${bridgeVersion}`;
+    const bridgeStaticFolder = join(__dirname, `../build/static/bridge/${bridgeVersion}`);
 
     switch (os) {
         case 'mac':
@@ -67,7 +67,6 @@ const spawnProcess = command => {
     const spawnedProcess = spawn(command, [], {
         detached: true,
     });
-
     spawnedProcess.on('error', err => {
         error(err);
     });
@@ -96,16 +95,11 @@ const runBridgeProcess = async () => {
 
     // bridge is already installed and running, nothing to do
     if (isBridgeAlreadyRunning) {
-        console.log('bridge is already running');
         return { status: STATUS.OK };
     }
 
-    // bridge is not installed, run as process in electron app
-    if (!isBridgeAlreadyRunning) {
-        const lib = getBridgeLibByOs();
-        console.log(`bridge is not running, starting bridge for ${os} ${arch}`);
-        spawnProcess(lib);
-    }
+    const lib = getBridgeLibByOs();
+    spawnProcess(lib);
 };
 
 const killBridgeProcess = async () => {
