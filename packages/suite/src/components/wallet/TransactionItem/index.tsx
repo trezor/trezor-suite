@@ -90,28 +90,28 @@ const satoshiToBtc = (amount: number) => {
     return amount / 100000000;
 };
 
-const groupByTimePeriod = (obj: any[], timestampField: string, period: string) => {
-    const objPeriod = {};
-    const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
-    for (let i = 0; i < obj.length; i++) {
-        let d = new Date(obj[i][timestamp] * 1000);
-        if (period == 'day') {
-            d = Math.floor(d.getTime() / oneDay);
-        } else if (period == 'week') {
-            d = Math.floor(d.getTime() / (oneDay * 7));
-        } else if (period == 'month') {
-            d = (d.getFullYear() - 1970) * 12 + d.getMonth();
-        } else if (period == 'year') {
-            d = d.getFullYear();
-        } else {
-            console.log('groupByTimePeriod: You have to set a period! day | week | month | year');
-        }
-        // define object key
-        objPeriod[d] = objPeriod[d] || [];
-        objPeriod[d].push(obj[i]);
-    }
-    return objPeriod;
-};
+// const groupByTimePeriod = (obj: any[], timestampField: string, period: string) => {
+//     const objPeriod = {};
+//     const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+//     for (let i = 0; i < obj.length; i++) {
+//         let d = new Date(obj[i][timestamp] * 1000);
+//         if (period == 'day') {
+//             d = Math.floor(d.getTime() / oneDay);
+//         } else if (period == 'week') {
+//             d = Math.floor(d.getTime() / (oneDay * 7));
+//         } else if (period == 'month') {
+//             d = (d.getFullYear() - 1970) * 12 + d.getMonth();
+//         } else if (period == 'year') {
+//             d = d.getFullYear();
+//         } else {
+//             console.log('groupByTimePeriod: You have to set a period! day | week | month | year');
+//         }
+//         // define object key
+//         objPeriod[d] = objPeriod[d] || [];
+//         objPeriod[d].push(obj[i]);
+//     }
+//     return objPeriod;
+// };
 
 const TransactionItem = React.memo(
     ({ type, txid, blockTime, blockHash, amount, fee, targets, tokens, accountId }: Props) => {
