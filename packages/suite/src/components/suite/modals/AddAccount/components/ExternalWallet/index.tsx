@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Button, H5, Link, P } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { ExternalNetwork } from '@wallet-types';
+import { Network, ExternalNetwork } from '@wallet-types';
 import l10nMessages from './messages';
 
 const Wrapper = styled.div`
@@ -40,24 +40,31 @@ const getHeader = (symbol: string) => {
     }
 };
 
-type Props = { onCancel: () => void } & ExternalNetwork;
+interface Props {
+    selectedNetwork?: Network | ExternalNetwork;
+    onCancel: () => void;
+}
 
-const ExternalWallet = ({ symbol, url, onCancel }: Props) => (
-    <Wrapper>
-        <Img src={resolveStaticPath(`images/wallet/external-wallets/${symbol}.png`)} />
-        <H5>
-            <FormattedMessage {...getHeader(symbol)} />
-        </H5>
-        <P size="small">
-            <FormattedMessage {...l10nMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL} />
-        </P>
+const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
+    if (!selectedNetwork || selectedNetwork.networkType !== 'external') return null;
+    const { symbol, url } = selectedNetwork;
+    return (
+        <Wrapper>
+            <Img src={resolveStaticPath(`images/wallet/external-wallets/${symbol}.png`)} />
+            <H5>
+                <FormattedMessage {...getHeader(symbol)} />
+            </H5>
+            <P size="small">
+                <FormattedMessage {...l10nMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL} />
+            </P>
 
-        <Link href={url}>
-            <StyledButton onClick={onCancel}>
-                <FormattedMessage {...l10nMessages.TR_GO_TO_EXTERNAL_WALLET} />
-            </StyledButton>
-        </Link>
-    </Wrapper>
-);
+            <Link href={url}>
+                <StyledButton onClick={onCancel}>
+                    <FormattedMessage {...l10nMessages.TR_GO_TO_EXTERNAL_WALLET} />
+                </StyledButton>
+            </Link>
+        </Wrapper>
+    );
+};
 
 export default ExternalWallet;

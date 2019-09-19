@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { P, Button, variables, colors } from '@trezor/components';
 import { Network, ExternalNetwork, Account } from '@wallet-types';
 import { NETWORKS } from '@suite-config';
-import ExternalWallet from './ExternalWallet';
 import l10nMessages from '../messages';
 
 interface Props {
@@ -13,7 +12,6 @@ interface Props {
     accounts: Account[];
     onEnableAccount: (account: Account) => void;
     onEnableNetwork: (symbol: string) => void;
-    onCancel: () => void;
 }
 
 const StyledButton = styled(Button)`
@@ -96,12 +94,9 @@ const AccountSelect = ({
     accounts,
     onEnableAccount,
     onEnableNetwork,
-    onCancel,
 }: Props) => {
-    if (!selectedNetwork) return null;
+    if (!selectedNetwork || selectedNetwork.networkType === 'external') return null;
     const { symbol } = selectedNetwork;
-    if (selectedNetwork.networkType === 'external')
-        return <ExternalWallet {...selectedNetwork} onCancel={onCancel} />;
     if (!enabledNetworks.includes(selectedNetwork.symbol)) {
         return (
             <EnableNetwork selectedNetwork={selectedNetwork} onEnableNetwork={onEnableNetwork} />

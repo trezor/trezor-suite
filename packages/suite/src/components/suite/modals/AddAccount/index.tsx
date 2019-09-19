@@ -13,6 +13,7 @@ import l10nMessages from './messages';
 import l10CommonMessages from '../messages';
 import NetworkSelect from './components/NetworkSelect';
 import AccountSelect from './components/AccountSelect';
+import ExternalWallet from './components/ExternalWallet';
 
 const Wrapper = styled.div`
     padding: 30px 48px;
@@ -82,8 +83,8 @@ const AddAccount = (props: Props) => {
                     props.onCancel();
                     props.changeCoinVisibility(symbol, true, false);
                 }}
-                onCancel={props.onCancel}
             />
+            <ExternalWallet selectedNetwork={selectedNetwork} onCancel={props.onCancel} />
             <StyledButton onClick={props.onCancel} isWhite>
                 <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
             </StyledButton>
