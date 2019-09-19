@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { H5, Button } from '@trezor/components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
-import { handleCoinVisibility } from '@wallet-actions/settingsActions';
+import { changeCoinVisibility } from '@wallet-actions/settingsActions';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 import { NETWORKS } from '@suite-config';
@@ -32,7 +32,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     changeAccountVisibility: bindActionCreators(changeAccountVisibility, dispatch),
-    handleCoinVisibility: bindActionCreators(handleCoinVisibility, dispatch),
+    changeCoinVisibility: bindActionCreators(changeCoinVisibility, dispatch),
 });
 
 type Props = {
@@ -77,7 +77,7 @@ const AddAccount = (props: Props) => {
                 }}
                 onEnableNetwork={(symbol: string) => {
                     props.onCancel();
-                    props.handleCoinVisibility(symbol, true, false);
+                    props.changeCoinVisibility(symbol, true, false);
                 }}
             />
             <StyledButton onClick={props.onCancel} isWhite>

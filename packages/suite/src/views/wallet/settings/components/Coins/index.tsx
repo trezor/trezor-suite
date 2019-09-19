@@ -13,7 +13,7 @@ interface Props {
     networks: Network[];
     enabledNetworks: string[];
     externalNetworks: string[];
-    handleCoinVisibility: BaseProps['handleCoinVisibility'];
+    changeCoinVisibility: BaseProps['changeCoinVisibility'];
     toggleGroupCoinsVisibility: BaseProps['toggleGroupCoinsVisibility'];
 }
 
@@ -186,7 +186,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                             checkedIcon={false}
                                             uncheckedIcon={false}
                                             onChange={visible => {
-                                                props.handleCoinVisibility(
+                                                props.changeCoinVisibility(
                                                     network.symbol,
                                                     visible,
                                                     false,
@@ -250,7 +250,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                         checkedIcon={false}
                                         uncheckedIcon={false}
                                         onChange={visible => {
-                                            props.handleCoinVisibility(
+                                            props.changeCoinVisibility(
                                                 network.symbol,
                                                 visible,
                                                 true,
