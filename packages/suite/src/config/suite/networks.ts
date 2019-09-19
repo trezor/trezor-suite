@@ -43,7 +43,7 @@ export default [
     // Litecoin
     {
         name: 'Litecoin',
-        networkType: 'litecoin',
+        networkType: 'bitcoin',
         symbol: 'ltc',
         bip44: "m/49'/2'/i'",
         hasSignVerify: true,
@@ -55,7 +55,7 @@ export default [
     },
     {
         name: 'Litecoin (legacy)',
-        networkType: 'litecoin',
+        networkType: 'bitcoin',
         accountType: 'legacy',
         symbol: 'ltc',
         bip44: "m/44'/2'/i'",

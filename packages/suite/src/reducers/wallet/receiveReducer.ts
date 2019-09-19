@@ -8,6 +8,7 @@ export interface ReceiveInfo {
     descriptor: string;
     isAddressVerified: boolean;
     isAddressUnverified: boolean;
+    isAddressVerifying: boolean;
 }
 
 export interface State {
@@ -25,7 +26,10 @@ const initAddress = (draft: State, descriptor: string) => {
             descriptor,
             isAddressVerified: false,
             isAddressUnverified: false,
+            isAddressVerifying: true,
         });
+    } else {
+        receiveInfo.isAddressVerifying = true;
     }
 };
 
@@ -34,11 +38,13 @@ const showAddress = (draft: State, descriptor: string) => {
     if (receiveInfo) {
         receiveInfo.isAddressVerified = true;
         receiveInfo.isAddressUnverified = false;
+        receiveInfo.isAddressVerifying = false;
     } else {
         draft.addresses.push({
             descriptor,
             isAddressVerified: true,
             isAddressUnverified: false,
+            isAddressVerifying: false,
         });
     }
 };
@@ -48,11 +54,13 @@ const showUnverifiedAddress = (draft: State, descriptor: string) => {
     if (receiveInfo) {
         receiveInfo.isAddressVerified = false;
         receiveInfo.isAddressUnverified = true;
+        receiveInfo.isAddressVerifying = false;
     } else {
         draft.addresses.push({
             descriptor,
             isAddressVerified: false,
             isAddressUnverified: true,
+            isAddressVerifying: false,
         });
     }
 };

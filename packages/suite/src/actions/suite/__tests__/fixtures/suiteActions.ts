@@ -291,15 +291,6 @@ const initialRun = [
 
 const selectDevice = [
     {
-        description: `with ui locked`,
-        state: {
-            suite: {
-                locks: [SUITE.LOCK_TYPE.UI],
-            },
-        },
-        device: SUITE_DEVICE,
-    },
-    {
         description: `with router locked`,
         state: {
             suite: {

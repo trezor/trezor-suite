@@ -10,16 +10,21 @@ import { SUPPORT_URL } from '@onboarding-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import l10nMessages from './TroubleshootInitialized.messages';
-import { Dispatch, AppState } from '@suite-types';
+import { Dispatch, AppState, AcquiredDevice } from '@suite-types';
 
-interface Props {
-    device: AppState['onboarding']['connect']['device'];
-    activeSubStep: AppState['onboarding']['activeSubStep'];
+const mapStateToProps = (state: AppState) => ({
+    activeSubStep: state.onboarding.activeSubStep,
+    device: state.suite.device as AcquiredDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: {
-        goToSubStep: typeof onboardingActions.goToSubStep;
-        goToNextStep: typeof onboardingActions.goToNextStep;
-    };
-}
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+        goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
+    },
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const TroubleshootInitialized = (props: Props) => {
     const { device, activeSubStep, onboardingActions } = props;
@@ -100,18 +105,6 @@ const TroubleshootInitialized = (props: Props) => {
         </React.Fragment>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    activeSubStep: state.onboarding.activeSubStep,
-    device: state.onboarding.connect.device,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: {
-        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-        goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
-    },
-});
 
 export default connect(
     mapStateToProps,

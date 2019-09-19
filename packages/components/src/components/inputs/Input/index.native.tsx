@@ -1,7 +1,6 @@
 import React from 'react';
 import { TextInputProperties } from 'react-native';
 import styled, { css } from 'styled-components/native';
-import PropTypes from 'prop-types';
 
 import { FONT_SIZE_NATIVE, FONT_WEIGHT, LINE_HEIGHT } from '../../../config/variables';
 import { getStateIcon } from '../../../utils/icons';
@@ -209,21 +208,6 @@ const Input = ({
             </Wrapper>
         </Wrapper>
     );
-};
-
-Input.propTypes = {
-    innerRef: PropTypes.func,
-    type: PropTypes.string,
-    height: PropTypes.number,
-    icon: PropTypes.node,
-    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
-    bottomText: PropTypes.node,
-    topLabel: PropTypes.node,
-    tooltipAction: PropTypes.node,
-    sideAddons: PropTypes.arrayOf(PropTypes.node),
-    isDisabled: PropTypes.bool,
-    isSmallText: PropTypes.bool,
-    isPartiallyHidden: PropTypes.bool,
 };
 
 export { Input, Props as InputProps };

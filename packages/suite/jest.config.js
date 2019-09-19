@@ -37,14 +37,20 @@ module.exports = {
         '<rootDir>/src/utils/**',
         '<rootDir>/src/actions/**',
         '!**/constants/**',
+        '!**/constants/**',
         '!**/__tests__/**',
+        // TODO REMOVE THIS
+        '!<rootDir>/src/reducers/wallet/sendFormReducer.ts',
+        '!<rootDir>/src/reducers/wallet/feesReducer.ts',
+        '!<rootDir>/src/actions/wallet/sendFormActions.ts',
+        '!<rootDir>/src/actions/wallet/sendFormSpecific/**',
     ],
     coverageThreshold: {
         global: {
-            statements: 57.7,
-            branches: 62.03,
-            functions: 55.24,
-            lines: 59,
+            statements: 61.56,
+            branches: 64.24,
+            functions: 56.93,
+            lines: 63.05,
         },
     },
     modulePathIgnorePatterns: ['node_modules', '<rootDir>/src/utils/suite/hooks'],
@@ -54,4 +60,5 @@ module.exports = {
     },
     preset: 'ts-jest',
     verbose: false,
+    watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };

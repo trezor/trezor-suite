@@ -1,3 +1,35 @@
+export const accountTitleFixture = [
+    { symbol: 'btc', title: 'Bitcoin' },
+    { symbol: 'test', title: 'Bitcoin Testnet' },
+    { symbol: 'bch', title: 'Bitcoin Cash' },
+    { symbol: 'btg', title: 'Bitcoin Gold' },
+    { symbol: 'dash', title: 'Dash' },
+    { symbol: 'xrp', title: 'XRP' },
+    { symbol: 'txrp', title: 'XRP Testnet' },
+    { symbol: 'trop', title: 'Ethereum Testnet' },
+    { symbol: 'dgb', title: 'Digibyte' },
+    { symbol: 'doge', title: 'Dogecoin' },
+    { symbol: 'ltc', title: 'Litecoin' },
+    { symbol: 'nmc', title: 'Namecoin' },
+    { symbol: 'vtc', title: 'Vertcoin' },
+    { symbol: 'zec', title: 'Zcash' },
+    { symbol: 'eth', title: 'Ethereum and tokens' },
+    { symbol: 'etc', title: 'Ethereum Classic and tokens' },
+    { symbol: 'xem', title: 'NEM' },
+    { symbol: 'xlm', title: 'Stellar' },
+    { symbol: 'ada', title: 'Cardano' },
+    { symbol: 'xtz', title: 'Tezos' },
+    { symbol: 'aaaaaa', title: 'unknown' },
+    { symbol: 'bbb', title: 'unknown' },
+    { symbol: 'c', title: 'unknown' },
+];
+
+export const accountTypeFixture = [
+    { networkType: 'normal', title: null },
+    { networkType: 'segwit', title: 'segwit' },
+    { networkType: 'legacy', title: 'legacy' },
+];
+
 export const parseBIP44Path = [
     {
         path: `m/84'/0'/0'/1/0`,

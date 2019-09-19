@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import colors from '../../config/colors';
 
@@ -14,12 +13,6 @@ interface StateProps {
 }
 
 class Switch extends Component<Props, StateProps> {
-    static propTypes = {
-        onChange: PropTypes.func.isRequired,
-        disabled: PropTypes.bool,
-        isSmall: PropTypes.bool,
-    };
-
     constructor(props: Props) {
         super(props);
         this.state = { checked: false };

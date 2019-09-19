@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
@@ -170,22 +169,6 @@ const Notification = ({
             </Content>
         </Wrapper>
     );
-};
-
-Notification.propTypes = {
-    close: PropTypes.func,
-    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
-    title: PropTypes.node,
-    message: PropTypes.node,
-    cancelable: PropTypes.bool,
-    isActionInProgress: PropTypes.bool,
-    actions: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-            callback: PropTypes.func,
-        })
-    ),
-    className: PropTypes.string,
 };
 
 export { Notification, Props as NotificationProps };

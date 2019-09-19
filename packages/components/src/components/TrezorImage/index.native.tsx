@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
 
 const models = {
     // eslint-disable-next-line global-require
@@ -17,10 +16,6 @@ interface Props {
 
 const TrezorImage = ({ model, ...rest }: Props) => {
     return <Img source={models[model]} {...rest} />;
-};
-
-TrezorImage.propTypes = {
-    model: PropTypes.oneOf([1, 2]),
 };
 
 export { TrezorImage, Props as TrezorImageProps };

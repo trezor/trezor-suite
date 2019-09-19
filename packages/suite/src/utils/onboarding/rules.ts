@@ -10,8 +10,7 @@ import { AnyPath } from '@onboarding-types/steps';
 
 type Device = any; // todo: finish when connect types ready.
 
-export const isNotConnected = ({ device }: { device?: Device }) =>
-    device && device !== null && device.connected !== true;
+export const isNotConnected = ({ device }: { device?: Device }) => !device;
 
 export const isNotSameDevice = ({
     device,
@@ -33,7 +32,7 @@ export const isNotSameDevice = ({
 };
 
 export const isNotUsedHere = ({ device }: { device?: Device }) => {
-    if (!device || !device.connected) {
+    if (!device) {
         return null;
     }
     return device.type === 'unacquired';

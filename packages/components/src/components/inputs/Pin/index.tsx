@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -43,10 +42,5 @@ const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
         <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon="BACK" />
     </Wrapper>
 );
-
-InputPin.propTypes = {
-    onDeleteClick: PropTypes.func.isRequired,
-    value: PropTypes.string.isRequired,
-};
 
 export { InputPin, Props as InputPinProps };
