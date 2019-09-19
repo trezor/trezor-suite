@@ -109,7 +109,7 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
         <Section>
             <Coins
                 networks={NETWORKS}
-                handleCoinVisibility={props.handleCoinVisibility}
+                changeCoinVisibility={props.changeCoinVisibility}
                 toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
                 enabledNetworks={props.wallet.settings.enabledNetworks}
                 externalNetworks={props.wallet.settings.enabledExternalNetworks}
