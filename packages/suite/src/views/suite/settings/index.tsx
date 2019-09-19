@@ -75,7 +75,7 @@ const BackgroundImageT1 = styled.img`
     margin: 5px;
 `;
 
-const Settings = ({ device, locks, applySettings, changePin }: Props) => {
+const Settings = ({ device, uiLocked, applySettings, changePin, wipeDevice }: Props) => {
     // todo: need to solve typescript here.
 
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -220,7 +220,6 @@ const Settings = ({ device, locks, applySettings, changePin }: Props) => {
                     </Row>
                 </>
             )}
-
             <BackgroundGallery>
                 {device.features.major_version === 1 &&
                     homescreensT1.map(image => (
@@ -242,6 +241,21 @@ const Settings = ({ device, locks, applySettings, changePin }: Props) => {
                         />
                     ))}
             </BackgroundGallery>
+            <Row>
+                <LabelCol>
+                    <Label>Wipe</Label>
+                </LabelCol>
+                <ActionCol>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        isWhite
+                        onClick={() => wipeDevice({ device })}
+                    >
+                        Wipe
+                    </ActionButton>
+                </ActionCol>
+            </Row>
+
             {/* 
                 TODO for both:
                 { name: 'homescreen', type: 'string' }, custom load
