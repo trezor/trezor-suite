@@ -15,12 +15,7 @@ interface Props {
     onPageSelected: (page: number) => void;
 }
 
-const TransactionList = ({
-    transactions,
-    currentPage,
-    totalPages,
-    onPageSelected,
-}: Props) => {
+const TransactionList = ({ transactions, currentPage, totalPages, onPageSelected }: Props) => {
     const slicedTransactions = useMemo(() => transactions.filter(t => t.page === currentPage), [
         transactions,
         currentPage,

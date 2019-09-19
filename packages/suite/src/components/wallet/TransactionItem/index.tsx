@@ -84,8 +84,6 @@ const Red = styled.span`
     color: red;
 `;
 
-interface Props extends AccountTransaction {}
-
 const satoshiToBtc = (amount: number) => {
     return amount / 100000000;
 };
@@ -114,7 +112,17 @@ const satoshiToBtc = (amount: number) => {
 // };
 
 const TransactionItem = React.memo(
-    ({ type, txid, blockTime, blockHash, amount, fee, targets, tokens, accountId }: Props) => {
+    ({
+        type,
+        txid,
+        blockTime,
+        blockHash,
+        amount,
+        fee,
+        targets,
+        tokens,
+        accountId,
+    }: AccountTransaction) => {
         return (
             <Wrapper>
                 <Heading>
