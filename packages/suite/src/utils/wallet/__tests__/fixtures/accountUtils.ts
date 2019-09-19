@@ -1,8 +1,12 @@
 export const accountTitleFixture = [
     { symbol: 'btc', title: 'Bitcoin' },
+    { symbol: 'test', title: 'Bitcoin Testnet' },
     { symbol: 'bch', title: 'Bitcoin Cash' },
     { symbol: 'btg', title: 'Bitcoin Gold' },
     { symbol: 'dash', title: 'Dash' },
+    { symbol: 'xrp', title: 'XRP' },
+    { symbol: 'txrp', title: 'XRP Testnet' },
+    { symbol: 'trop', title: 'Ethereum Testnet' },
     { symbol: 'dgb', title: 'Digibyte' },
     { symbol: 'doge', title: 'Dogecoin' },
     { symbol: 'ltc', title: 'Litecoin' },

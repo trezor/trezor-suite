@@ -2,6 +2,8 @@ import * as accountUtils from '../accountUtils';
 import * as fixtures from './fixtures/accountUtils';
 import { Account } from '@wallet-types';
 
+const { intlMock } = global.JestMocks;
+
 describe('accountUtils', () => {
     fixtures.parseBIP44Path.forEach(f => {
         it('accountUtils.parseBIP44Path', () => {
@@ -22,7 +24,6 @@ describe('accountUtils', () => {
     });
 
     describe('get title for network', () => {
-        const intlMock = { formatMessage: (s: any) => s.defaultMessage };
         fixtures.accountTitleFixture.forEach((fixture: any) => {
             it(fixture.symbol, () => {
                 // @ts-ignore: InjectedIntl mock
@@ -33,7 +34,6 @@ describe('accountUtils', () => {
     });
 
     describe('get type for network', () => {
-        const intlMock = { formatMessage: (s: any) => s.defaultMessage };
         fixtures.accountTypeFixture.forEach((fixture: any) => {
             it(fixture.networkType, () => {
                 // @ts-ignore: InjectedIntl mock
@@ -41,5 +41,11 @@ describe('accountUtils', () => {
                 expect(title).toBe(fixture.title);
             });
         });
+    });
+
+    it('get fiat value', () => {
+        expect(accountUtils.getFiatValue('1', '10')).toEqual('10.00');
+        expect(accountUtils.getFiatValue('1', '10', 5)).toEqual('10.00000');
+        expect(accountUtils.getFiatValue('s', '10')).toEqual('');
     });
 });
