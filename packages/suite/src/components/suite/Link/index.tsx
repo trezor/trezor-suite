@@ -12,6 +12,12 @@ interface Props extends LinkProps {
     children: React.ReactNode;
 }
 
+const RefLinkComponent = React.forwardRef((props: Props, _ref: any) => (
+    <TLink {...props} href={props.href as string}>
+        {props.children}
+    </TLink>
+));
+
 const Link = ({ children, href, className, target = '_self', ...rest }: Props) => {
     /*  
         if href prop refers to internal url puts assetPrefix in front and
@@ -24,11 +30,17 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
     };
 
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
-    const RefLinkComponent = React.forwardRef((props: any, _ref: any) => (
-        <TLink target={target} {...props} className={className}>
+
+    const StyledLink = (
+        <RefLinkComponent
+            href={href as string}
+            target={target}
+            className={className}
+            {...linkProps}
+        >
             {children}
-        </TLink>
-    ));
+        </RefLinkComponent>
+    );
 
     // Next.js Link component should be only used for internal navigation
     // for non-internal href we just return our styled <A>
@@ -43,12 +55,10 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
             passHref
             {...overrideAsProp}
         >
-            <RefLinkComponent {...linkProps} />
+            {StyledLink}
         </NextLink>
     ) : (
-        <RefLinkComponent href={href as string} target={target} className={className} {...linkProps}>
-            {children}
-        </RefLinkComponent>
+        StyledLink
     );
 };
 
