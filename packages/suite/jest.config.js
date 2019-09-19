@@ -40,10 +40,10 @@ module.exports = {
         '!**/constants/**',
         '!**/__tests__/**',
         // TODO REMOVE THIS
-        '!<rootDir>/src/reducers/wallet/sendFormReducer',
-        '!<rootDir>/src/reducers/wallet/feesReducer',
-        '!<rootDir>/src/actions/wallet/sendFormActions',
-        '!<rootDir>/src/actions/wallet/send/**',
+        '!<rootDir>/src/reducers/wallet/sendFormReducer.ts',
+        '!<rootDir>/src/reducers/wallet/feesReducer.ts',
+        '!<rootDir>/src/actions/wallet/sendFormActions.ts',
+        '!<rootDir>/src/actions/wallet/sendFormSpecific/**',
     ],
     coverageThreshold: {
         global: {

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
+import TrezorConnect from 'trezor-connect';
 import { State as ReducerState } from '@wallet-reducers/sendFormReducer';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Dispatch, GetState } from '@suite-types';
@@ -164,6 +165,9 @@ const handleFeeValueChange = (val: any) => () => {
     console.log(val);
 };
 
+/*
+    Click on button "Advanced settings"
+ */
 const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
 };
