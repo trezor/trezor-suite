@@ -18,6 +18,7 @@ export interface UiInteraction {
 type DeviceCallError = { code: string } | string;
 
 export interface OnboardingState {
+    reducerEnabled: boolean;
     prevDevice: Device | null;
     selectedModel: number | null;
     activeStepId: AnyStepId;
@@ -49,6 +50,8 @@ export const SELECT_TREZOR_MODEL = '@onboarding/select-trezor-model';
 export const ADD_PATH = '@onboarding/add-path';
 export const REMOVE_PATH = '@onboarding/remove-path';
 export const RESET_ONBOARDING = '@onboarding/reset-onboarding';
+export const ENABLE_ONBOARDING_REDUCER = '@onboarding/enable-onboarding-reducer';
+
 interface SetStepActiveAction {
     type: typeof SET_STEP_ACTIVE;
     stepId: AnyStepId;
@@ -82,6 +85,11 @@ interface ResetOnboarding {
     type: typeof RESET_ONBOARDING;
 }
 
+interface EnableOnboardingReducer {
+    type: typeof ENABLE_ONBOARDING_REDUCER;
+    payload: boolean;
+}
+
 export type OnboardingActionTypes =
     | SetStepActiveAction
     | SetStepResolvedAction
@@ -89,4 +97,5 @@ export type OnboardingActionTypes =
     | SelectTrezorModelAction
     | AddPath
     | RemovePath
-    | ResetOnboarding;
+    | ResetOnboarding
+    | EnableOnboardingReducer;

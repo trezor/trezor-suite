@@ -12,6 +12,7 @@ export const getInitialState = (custom?: any): { onboarding: OnboardingState } =
     return {
         onboarding: {
             ...onboardingReducer(undefined, {} as Action),
+            reducerEnabled: true,
             ...custom,
         },
     };
@@ -125,6 +126,6 @@ describe('Onboarding Actions', () => {
         );
         store.dispatch(onboardingActions.resetOnboarding());
         const stateAfter = store.getState().onboarding;
-        expect(stateAfter).toEqual(getInitialState().onboarding);
+        expect(stateAfter).toEqual(getInitialState({ reducerEnabled: false }).onboarding);
     });
 });

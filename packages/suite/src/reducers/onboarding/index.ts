@@ -15,6 +15,7 @@ interface OnboardingAppState extends ReturnType<typeof onboarding> {
 export default function onboardingApp(state: OnboardingAppState | undefined, action: Action) {
     const onboardingState: OnboardingAppState = onboarding(state, action);
     return {
+        reducerEnabled: onboardingState.reducerEnabled,
         prevDevice: onboardingState.prevDevice,
         activeStepId: onboardingState.activeStepId,
         activeSubStep: onboardingState.activeSubStep,

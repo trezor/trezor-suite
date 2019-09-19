@@ -20,6 +20,7 @@ const getUiRequestPinPayload = () => ({
 type State = ReturnType<typeof onboardingReducer>;
 const getInitialState = (state?: Partial<State>): State => ({
     ...onboardingReducer(undefined, {} as Action),
+    reducerEnabled: true,
     ...state,
 });
 

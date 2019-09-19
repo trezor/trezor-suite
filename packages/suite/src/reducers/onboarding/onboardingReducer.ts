@@ -9,6 +9,7 @@ import {
     ADD_PATH,
     REMOVE_PATH,
     RESET_ONBOARDING,
+    ENABLE_ONBOARDING_REDUCER,
 } from '@onboarding-types/onboarding';
 import { AnyPath } from '@onboarding-types/steps';
 import * as STEP from '@suite/constants/onboarding/steps';
@@ -22,6 +23,7 @@ import {
 import { Action } from '@suite-types';
 
 const initialState: OnboardingState = {
+    reducerEnabled: false,
     // todo: prevDevice is now used to solve two different things and it cant work
     // would be better to implement field "isMatchingPrevDevice" along with prevDevice
     // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
@@ -95,8 +97,18 @@ const setInteraction = (
 };
 
 const onboarding = (state: OnboardingState = initialState, action: Action) => {
+    if (
+        !state.reducerEnabled &&
+        ![RESET_ONBOARDING, ENABLE_ONBOARDING_REDUCER].includes(action.type)
+    ) {
+        return state;
+    }
+
     return produce(state, draft => {
         switch (action.type) {
+            case ENABLE_ONBOARDING_REDUCER:
+                draft.reducerEnabled = action.payload;
+                break;
             case SET_STEP_ACTIVE:
                 draft.activeStepId = action.stepId;
                 draft.activeSubStep = null;
