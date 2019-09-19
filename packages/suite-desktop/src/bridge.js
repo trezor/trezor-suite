@@ -1,5 +1,6 @@
 const psList = require('ps-list');
 const os = require('os');
+const isDev = require('electron-is-dev');
 const { join } = require('path');
 const { spawn, exec } = require('child_process');
 
@@ -49,7 +50,9 @@ const getBridgeLibByOs = () => {
     const os = getOS();
     const arch = getArch();
     const bridgeVersion = getBridgeVersion();
-    const bridgeStaticFolder = join(__dirname, `../build/static/bridge/${bridgeVersion}`);
+    const filePath = `static/bridge/${bridgeVersion}`;
+    const prefixedFilePath = isDev ? filePath : `build/${filePath}`;
+    const bridgeStaticFolder = join(__dirname, `../${prefixedFilePath}`);
 
     switch (os) {
         case 'mac':
