@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AccountTransaction } from 'trezor-connect';
 import { FormattedDate } from 'react-intl';
 import { colors, variables } from '@trezor/components';
 import Link from '@suite/components/suite/Link';
+import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -58,10 +58,20 @@ const Target = styled.div`
     flex-direction: column;
 `;
 
-const Balances = styled.div<{ addrType: string }>`
+const Balances = styled.div`
+    display: flex;
+    flex-direction: row;
+    color: ${colors.TEXT_PRIMARY};
+`;
+
+const Symbol = styled.div`
+    color: ${colors.TEXT_SECONDARY};
+`;
+
+const Amount = styled.div<{ txType: string }>`
     display: flex;
     flex-direction: column;
-    color: ${props => (props.addrType === 'sent' ? 'red' : 'green')};
+    color: ${props => (props.txType === 'sent' ? 'red' : 'green')};
 `;
 
 const Addr = styled.div`
@@ -104,7 +114,7 @@ const Addr = styled.div`
 // };
 
 const TransactionItem = React.memo(
-    ({ type, txid, blockTime, amount, targets }: AccountTransaction) => {
+    ({ symbol, type, txid, blockTime, amount, targets }: WalletAccountTransaction) => {
         return (
             <Wrapper>
                 <Heading>
@@ -148,10 +158,17 @@ const TransactionItem = React.memo(
                         {/* <Fee>
                             <Red>-{fee}</Red>
                         </Fee> */}
-                        <Balances addrType={type}>
-                            {type === 'recv' && '+'}
-                            {type === 'sent' && '-'}
-                            {amount}
+                        <Balances>
+                            {amount !== '0' && (
+                                <>
+                                    <Amount txType={type}>
+                                        {type === 'recv' && '+'}
+                                        {type === 'sent' && '-'}
+                                        {amount}&nbsp;
+                                    </Amount>
+                                    <Symbol>{symbol.toUpperCase()}</Symbol>
+                                </>
+                            )}
                         </Balances>
                     </Col>
                 </Row>
