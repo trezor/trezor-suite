@@ -110,3 +110,5 @@ export type ObjectValues<T extends object> = T[keyof T];
 export type Store = ReduxStore<AppState, Action>;
 
 export type AnyApp = ReturnType<typeof getApp>;
+
+export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];

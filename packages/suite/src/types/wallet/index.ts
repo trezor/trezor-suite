@@ -17,12 +17,13 @@ import { FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
 import { WalletActions } from '@wallet-actions/walletActions';
-import { Network as Network$ } from './networkTypes';
+import { Network as Network$, ExternalNetwork as ExternalNetwork$ } from './networkTypes';
 import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
 
 // this weird export is because of --isolatedModules and next.js 9
 export type Network = Network$;
+export type ExternalNetwork = ExternalNetwork$;
 export type Fee = Fee$;
 export type NetworkToken = NetworkToken$;
 export type Token = Token$;
