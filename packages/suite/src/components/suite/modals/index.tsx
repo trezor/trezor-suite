@@ -8,6 +8,7 @@ import { Modal as ModalComponent } from '@trezor/components';
 
 import * as ModalActions from '@suite-actions/modalActions';
 import { MODAL, SUITE } from '@suite-actions/constants';
+import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
@@ -25,6 +26,7 @@ import RequestInstance from './RequestInstance';
 import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from './WalletType';
+import AddAccount from './AddAccount';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -122,6 +124,11 @@ const getDeviceContextModal = (props: Props) => {
                     onCreateInstance={modalActions.onCreateDeviceInstance}
                     onCancel={modalActions.onCancel}
                 />
+            );
+
+        case ACCOUNT.REQUEST_NEW_ACCOUNT:
+            return (
+                <AddAccount device={device as AcquiredDevice} onCancel={modalActions.onCancel} />
             );
 
         default:

@@ -1,10 +1,10 @@
-import { LOCATION_CHANGE } from '@suite-actions/routerActions';
+import { ROUTER } from '@suite-actions/constants';
 import routerReducer from '../routerReducer';
 
 describe('routerReducer', () => {
     it('wallet', () => {
         const state = routerReducer(undefined, {
-            type: LOCATION_CHANGE,
+            type: ROUTER.LOCATION_CHANGE,
             url: '/',
         });
 
@@ -19,7 +19,7 @@ describe('routerReducer', () => {
 
     it('wallet with hash params', () => {
         const state = routerReducer(undefined, {
-            type: LOCATION_CHANGE,
+            type: ROUTER.LOCATION_CHANGE,
             url: '/wallet/#/coin/1',
         });
 
