@@ -171,15 +171,15 @@ const CSSTransition = (props: any) => {
 
 const mapStateToProps = (state: AppState) => {
     return {
-        device: state.onboarding.connect.device,
+        device: state.suite.device,
 
         // suite reducer
         loaded: state.suite.loaded,
 
         // connect reducer
-        deviceCall: state.onboarding.connect.deviceCall,
+        deviceCall: state.onboarding.deviceCall,
         // deviceInteraction: state.onboarding.connect.deviceInteraction,
-        uiInteraction: state.onboarding.connect.uiInteraction,
+        uiInteraction: state.onboarding.uiInteraction,
 
         // onboarding reducer
         prevDevice: state.onboarding.prevDevice,

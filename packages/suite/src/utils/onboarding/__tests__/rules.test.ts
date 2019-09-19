@@ -19,13 +19,15 @@ import {
     getFnForRule,
 } from '../rules';
 
+const { getSuiteDevice } = global.JestMocks;
+
 describe('rules', () => {
     describe('isNotConneted', () => {
-        it('should return true for device.connected === false', () => {
-            expect(isNotConnected({ device: { connected: false } })).toEqual(true);
+        it('should return true', () => {
+            expect(isNotConnected({ device: undefined })).toEqual(true);
         });
         it('should return false for device.connected === true', () => {
-            expect(isNotConnected({ device: { connected: true } })).toEqual(false);
+            expect(isNotConnected({ device: getSuiteDevice() })).toEqual(false);
         });
     });
 

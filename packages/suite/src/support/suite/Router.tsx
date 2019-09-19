@@ -39,6 +39,7 @@ const RouterComponent: FunctionComponent<Props> = (props: Props) => {
         Router.beforePopState(() => {
             console.log('beforePopState');
             const locked = props.onBeforePopState();
+            console.log('locked', locked);
             return typeof locked === 'boolean' ? locked : true;
         });
 

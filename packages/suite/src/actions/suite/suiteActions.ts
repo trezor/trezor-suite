@@ -152,11 +152,11 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    // 1. check if ui is not locked by device request or application itself (for example onboarding process)
+    // 1. check if device is not locked by device request or application itself (for example onboarding process)
     const { locks } = getState().suite;
-    if (locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI)) return;
+    if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) return;
     // 2. check if device is acquired
-    if (device && device.features) {
+    if (device && device.features && !locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
         // 3. device is not initialized, redirect to "onboarding"
         if (device.mode === 'initialize') {
             await goto(getRoute('onboarding-index'));

@@ -1,31 +1,20 @@
-import { SET_WORD, SET_WORDS_COUNT, SET_ADVANCED_RECOVERY } from '@suite/types/onboarding/recovery';
-import { submitWord } from './connectActions';
-import { Dispatch, GetState } from '@suite-types';
+import { SET_WORDS_COUNT, SET_ADVANCED_RECOVERY } from '@onboarding-types/recovery';
 
-const setWord = (word: string) => ({
-    type: SET_WORD,
-    word,
-});
+import { submitWord } from './connectActions';
+import { Dispatch } from '@suite-types';
 
 const setWordsCount = (count: number) => ({
     type: SET_WORDS_COUNT,
-    count,
+    payload: count,
 });
 
 const setAdvancedRecovery = (value: boolean) => ({
     type: SET_ADVANCED_RECOVERY,
-    value,
+    payload: value,
 });
 
-const submit = (word?: string) => async (dispatch: Dispatch, getState: GetState) => {
-    const normalizedWord = word || getState().onboarding.recovery.word;
-    if (normalizedWord) {
-        await dispatch(submitWord({ word: `${normalizedWord}` }));
-        dispatch({
-            type: SET_WORD,
-            word: null,
-        });
-    }
+const submit = (word: string) => async (dispatch: Dispatch) => {
+    await dispatch(submitWord({ word }));
 };
 
-export { setWord, submit, setWordsCount, setAdvancedRecovery };
+export { submit, setWordsCount, setAdvancedRecovery };
