@@ -134,10 +134,10 @@ const Wrapper = styled.button<Props>`
     ${props =>
         props.fullWidth &&
         css`
-            /* display: block; */
             width: 100%;
             vertical-align: middle;
         `}
+
     ${props =>
         props.isWhite &&
         css`
@@ -198,7 +198,6 @@ const Wrapper = styled.button<Props>`
 `;
 
 const IconWrapper = styled.div`
-    flex: 1;
     align-items: center;
     margin-right: 0.8rem;
     display: flex;
@@ -229,7 +228,6 @@ const Button = ({
     isInverse = false,
     isLoading = false,
     fullWidth = false,
-    // justText = true,
     icon,
     ...rest
 }: Props) => {
@@ -255,20 +253,18 @@ const Button = ({
                         <div />
                         <div />
                     </FluidSpinner>
-                    {children}
                 </IconWrapper>
             )}
             {!isLoading && icon && (
-                <IconWrapper paddingRight={1}>
+                <IconWrapper>
                     <Icon
                         icon={icon}
                         size={14}
                         color={isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE}
                     />
-                    {children}
                 </IconWrapper>
             )}
-            {!isLoading && !icon && <IconWrapper>{children}</IconWrapper>}
+            {children}
         </Wrapper>
     );
 };
