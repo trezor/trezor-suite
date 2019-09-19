@@ -20,6 +20,12 @@ export const accountTitleFixture = [
     { symbol: 'c', title: 'unknown' },
 ];
 
+export const accountTypeFixture = [
+    { networkType: 'normal', title: null },
+    { networkType: 'segwit', title: 'segwit' },
+    { networkType: 'legacy', title: 'legacy' },
+];
+
 export const parseBIP44Path = [
     {
         path: `m/84'/0'/0'/1/0`,

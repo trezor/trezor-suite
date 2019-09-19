@@ -31,4 +31,15 @@ describe('accountUtils', () => {
             });
         });
     });
+
+    describe('get type for network', () => {
+        const intlMock = { formatMessage: (s: any) => s.defaultMessage };
+        fixtures.accountTypeFixture.forEach((fixture: any) => {
+            it(fixture.networkType, () => {
+                // @ts-ignore: InjectedIntl mock
+                const title = accountUtils.getTypeForNetwork(fixture.networkType, intlMock);
+                expect(title).toBe(fixture.title);
+            });
+        });
+    });
 });
