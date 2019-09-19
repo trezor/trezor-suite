@@ -131,9 +131,6 @@ const Wrapper = styled.button<Props>`
                 }
             }
         `}
-    /* ${props =>
-        props.justText
-        } */
     ${props =>
         props.fullWidth &&
         css`
@@ -262,7 +259,7 @@ const Button = ({
                 </IconWrapper>
             )}
             {!isLoading && icon && (
-                <IconWrapper>
+                <IconWrapper paddingRight={1}>
                     <Icon
                         icon={icon}
                         size={14}
@@ -271,9 +268,7 @@ const Button = ({
                     {children}
                 </IconWrapper>
             )}
-            {/* {justTextt && (
-                {children}
-            )} */}
+            {!isLoading && !icon && <IconWrapper>{children}</IconWrapper>}
         </Wrapper>
     );
 };

@@ -40,6 +40,7 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
 const SvgWrapper = styled.div<WrapperProps>`
     display: inline-block;
     height: ${props => props.size}px;
+    /* padding-right: ${props => props.paddingRight}em; */
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
@@ -60,6 +61,7 @@ interface Props extends React.SVGAttributes<HTMLDivElement> {
     className?: string;
     icon: IconType;
     size?: number;
+    // paddingRight?: number;
     color?: string;
     isActive?: boolean;
     canAnimate?: boolean;
@@ -73,6 +75,7 @@ interface Props extends React.SVGAttributes<HTMLDivElement> {
 const Icon = ({
     icon,
     size = 24,
+    // paddingRight,
     color = colors.TEXT_SECONDARY,
     isActive,
     canAnimate,
@@ -95,6 +98,7 @@ const Icon = ({
             onFocus={onFocus}
             isActive={isActive}
             size={size}
+            // paddingRight={paddingRight}
             {...rest}
         >
             <ReactSvg
@@ -116,6 +120,7 @@ Icon.propTypes = {
     canAnimate: PropTypes.bool,
     icon: PropTypes.string.isRequired,
     size: PropTypes.number,
+    // paddingRight: PropTypes.number,
     isActive: PropTypes.bool,
     color: PropTypes.string,
     onMouseEnter: PropTypes.func,
