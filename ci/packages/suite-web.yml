@@ -68,7 +68,7 @@ suite-web test integration:
     script:
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
-        - DEBUG=cypress:* CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration
+        - DEBUG=cypress:* CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser chrome
     artifacts:
         expire_in: 2 days
         when: always
