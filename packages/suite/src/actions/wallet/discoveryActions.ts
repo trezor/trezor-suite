@@ -7,7 +7,7 @@ import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { create as createAccount } from '@wallet-actions/accountActions';
 import { DISCOVERY } from './constants';
-import { NETWORKS } from '@suite-config';
+import { NETWORKS, SETTINGS } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 
 export type DiscoveryActions =
@@ -181,7 +181,7 @@ const getBundle = (discovery: Discovery) => (_d: Dispatch, getState: GetState): 
                 coin: configNetwork.symbol,
                 details: 'txs',
                 index,
-                pageSize: 25,
+                pageSize: SETTINGS.TXS_PER_PAGE,
                 accountType,
                 networkType: configNetwork.networkType,
             });

@@ -25,12 +25,13 @@ const Actions = styled.div<{ isActive: boolean }>`
 interface Props {
     currentPage: number;
     totalPages?: number;
+    isOnLastPage?: boolean;
     onPageSelected: (page: number) => void;
 }
 
-const Pagination = ({ currentPage, totalPages, onPageSelected }: Props) => {
+const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: Props) => {
     // if totalPages is undefined show only start/prev/next buttons
-    const showNext = totalPages ? currentPage < totalPages : true;
+    const showNext = totalPages ? currentPage < totalPages : !isOnLastPage;
     const showPrevious = currentPage > 1;
     const calculatedPages = useMemo(() => [...Array(totalPages)].map((_p, i) => i + 1), [
         totalPages,

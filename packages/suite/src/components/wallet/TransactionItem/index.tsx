@@ -84,10 +84,6 @@ const Red = styled.span`
     color: red;
 `;
 
-const satoshiToBtc = (amount: number) => {
-    return amount / 100000000;
-};
-
 // const groupByTimePeriod = (obj: any[], timestampField: string, period: string) => {
 //     const objPeriod = {};
 //     const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
@@ -150,8 +146,9 @@ const TransactionItem = React.memo(
                             </Target>
                         )}
                         {targets &&
-                            targets.map(target => (
-                                <Target>
+                            targets.map((target, i) => (
+                                // eslint-disable-next-line react/no-array-index-key
+                                <Target key={i}>
                                     {target.addresses &&
                                         target.addresses.map(addr => (
                                             <Addr key={addr}>{addr}</Addr>
@@ -166,7 +163,7 @@ const TransactionItem = React.memo(
                         <Balances addrType={type}>
                             {type === 'recv' && '+'}
                             {type === 'sent' && '-'}
-                            {satoshiToBtc(amount)}
+                            {amount}
                         </Balances>
                     </Col>
                 </Row>

@@ -6,6 +6,7 @@ import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect, { AccountInfo } from 'trezor-connect';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import { Account } from '@wallet-types';
+import { SETTINGS } from '@suite/config/suite';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transactions: WalletAccountTransaction[] }
@@ -132,7 +133,7 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
                 descriptor: account.descriptor,
                 details: 'txs',
                 page,
-                pageSize: 25,
+                pageSize: SETTINGS.TXS_PER_PAGE,
             });
         }
 

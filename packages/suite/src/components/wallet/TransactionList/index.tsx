@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Pagination from '@wallet-components/Pagination';
 import TransactionItem from '@suite/components/wallet/TransactionItem';
 import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
+import { SETTINGS } from '@suite/config/suite';
 
 const Wrapper = styled.div``;
 
@@ -38,6 +39,7 @@ const TransactionList = ({ transactions, currentPage, totalPages, onPageSelected
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
+                isOnLastPage={slicedTransactions.length < SETTINGS.TXS_PER_PAGE}
                 onPageSelected={onPageSelected}
             />
         </Wrapper>
