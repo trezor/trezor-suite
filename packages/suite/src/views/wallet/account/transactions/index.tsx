@@ -6,9 +6,12 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import { Loader, colors } from '@trezor/components';
 import styled from 'styled-components';
 import Title from '@wallet-components/Title';
+import { FormattedMessage } from 'react-intl';
 import TransactionList from '@suite/components/wallet/TransactionList';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
+import Content from '@suite/components/wallet/Content';
 import { AppState, Dispatch } from '@suite-types';
+import l10nMessages from './index.messages';
 
 const LoaderWrapper = styled.div`
     display: flex;
@@ -29,7 +32,14 @@ const NoTransactions = styled.div`
 const Transactions = (props: Props) => {
     const { selectedAccount, transactions } = props.wallet;
     const [selectedPage, setSelectedPage] = useState(1);
-    if (!selectedAccount || !selectedAccount.account) return null;
+    if (!selectedAccount.account) {
+        const { loader, exceptionPage } = selectedAccount;
+        return (
+            <LayoutAccount>
+                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
+            </LayoutAccount>
+        );
+    }
 
     const accountTransactions = getAccountTransactions(
         transactions.transactions,
@@ -44,16 +54,22 @@ const Transactions = (props: Props) => {
 
     return (
         <LayoutAccount>
-            <Title>Transactions</Title>
+            <Title>
+                <FormattedMessage {...l10nMessages.TR_TRANSACTIONS} />
+            </Title>
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />
-                    <LoaderText>Loading transactions</LoaderText>
+                    <LoaderText>
+                        <FormattedMessage {...l10nMessages.TR_LOADING_TRANSACTIONS} />
+                    </LoaderText>
                 </LoaderWrapper>
             )}
             {accountTransactions.length === 0 && !transactions.isLoading && (
                 <LoaderWrapper>
-                    <NoTransactions>No transactions :(</NoTransactions>
+                    <NoTransactions>
+                        <FormattedMessage {...l10nMessages.TR_NO_TRANSACTIONS} />
+                    </NoTransactions>
                 </LoaderWrapper>
             )}
             {accountTransactions.length > 0 && (
