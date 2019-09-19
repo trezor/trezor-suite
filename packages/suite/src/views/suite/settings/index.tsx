@@ -75,7 +75,7 @@ const BackgroundImageT1 = styled.img`
     margin: 5px;
 `;
 
-const Settings = ({ device, uiLocked, applySettings, changePin, wipeDevice }: Props) => {
+const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props) => {
     // todo: need to solve typescript here.
 
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
