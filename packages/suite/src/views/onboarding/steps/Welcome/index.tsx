@@ -69,18 +69,14 @@ const WelcomeStep = (props: Props) => {
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                {
-                    shouldDisplayLeaveButton() && (
-<OnboardingButton.Back
-                            data-test="button-use-wallet"
-                            onClick={() => goto(getRoute('wallet-index'))}
-                        >
-                            <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
-                        </OnboardingButton.Back>
-
-                    )
-                }
-                        
+                {shouldDisplayLeaveButton() && (
+                    <OnboardingButton.Back
+                        data-test="button-use-wallet"
+                        onClick={() => goto(getRoute('wallet-index'))}
+                    >
+                        <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
+                    </OnboardingButton.Back>
+                )}
             </Wrapper.StepFooter>
         </Wrapper.Step>
     );

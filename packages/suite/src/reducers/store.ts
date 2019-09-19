@@ -4,7 +4,7 @@ import { createLogger } from 'redux-logger';
 
 import suiteMiddlewares from '@suite-middlewares/index';
 import walletMiddlewares from '@wallet-middlewares/index';
-import onboardingMiddleware from '@onboarding-middlewares/index';
+import onboardingMiddlewares from '@onboarding-middlewares/index';
 
 import suiteReducers from '@suite-reducers/index';
 import walletReducers from '@wallet-reducers/index';
@@ -22,7 +22,7 @@ const middlewares = [
     thunkMiddleware,
     ...suiteMiddlewares,
     ...walletMiddlewares,
-    onboardingMiddleware,
+    ...onboardingMiddlewares,
 ];
 
 const enhancers: any[] = [];
