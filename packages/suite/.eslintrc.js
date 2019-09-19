@@ -53,9 +53,13 @@ module.exports = {
         // https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
         'import/named': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.
-        'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
+        'func-style': ['error', 'declaration', {
+            allowArrowFunctions: true
+        }],
         // Fix for TypeScript.
-        'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
+        'react/jsx-filename-extension': ['error', {
+            extensions: ['.tsx']
+        }],
         // I believe shadowing is a nice language feature.
         'no-shadow': 'off',
         // Does not work with TypeScript export type.

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { StyleSheet, Platform } from 'react-native';
 import RNPickerSelect, { Item, PickerProps } from 'react-native-picker-select';
 import { Icon } from '../../Icon';
@@ -80,20 +79,5 @@ const Select = ({
         {...rest}
     />
 );
-
-const propTypes = {
-    onChange: PropTypes.func,
-    withDropdownIndicator: PropTypes.bool,
-    isDisabled: PropTypes.bool,
-    placeholder: PropTypes.string,
-    // TODO
-    // eslint-disable-next-line react/forbid-prop-types
-    options: PropTypes.object,
-    // TODO
-    // eslint-disable-next-line react/forbid-prop-types
-    value: PropTypes.object,
-};
-
-Select.propTypes = propTypes;
 
 export { Select, Props as SelectProps };

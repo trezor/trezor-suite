@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Switch as SwitchNative, SwitchProps } from 'react-native';
-import PropTypes from 'prop-types';
 import colors from '../../config/colors';
 
 interface Props extends SwitchProps {
@@ -13,13 +12,6 @@ interface Props extends SwitchProps {
 class Switch extends Component<Props> {
     state = {
         checked: false,
-    };
-
-    static propTypes = {
-        onChange: PropTypes.func.isRequired,
-        disabled: PropTypes.bool,
-        isSmall: PropTypes.bool,
-        checked: PropTypes.bool,
     };
 
     constructor(props: Props) {

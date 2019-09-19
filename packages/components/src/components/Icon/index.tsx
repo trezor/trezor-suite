@@ -1,7 +1,6 @@
 /* eslint-disable global-require */
 import styled, { keyframes } from 'styled-components';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSvg from 'react-svg';
 import colors from '../../config/colors';
@@ -108,20 +107,6 @@ const Icon = ({
             />
         </SvgWrapper>
     );
-};
-
-Icon.propTypes = {
-    className: PropTypes.string,
-    hoverColor: PropTypes.string,
-    canAnimate: PropTypes.bool,
-    icon: PropTypes.string.isRequired,
-    size: PropTypes.number,
-    isActive: PropTypes.bool,
-    color: PropTypes.string,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onFocus: PropTypes.func,
-    onClick: PropTypes.func,
 };
 
 export { Icon, Props as IconProps };

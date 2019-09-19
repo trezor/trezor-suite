@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
 
 import { GestureResponderEvent } from 'react-native';
 import { FONT_SIZE_NATIVE as FONT_SIZE } from '../../config/variables';
@@ -61,12 +60,6 @@ const Checkbox = ({ onClick, isChecked, children, ...rest }: Props) => {
             </Wrapper>
         </Touchable>
     );
-};
-
-Checkbox.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    isChecked: PropTypes.bool,
-    children: PropTypes.node,
 };
 
 export { Checkbox, Props as CheckboxProps };

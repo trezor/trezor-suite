@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components/native';
 
@@ -42,10 +41,5 @@ const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
         </IconWrapper>
     </Wrapper>
 );
-
-InputPin.propTypes = {
-    value: PropTypes.string.isRequired,
-    onDeleteClick: PropTypes.func.isRequired,
-};
 
 export { InputPin, Props as InputPinProps };
