@@ -6,9 +6,9 @@ import { FormattedMessage } from 'react-intl';
 import { H5, Button } from '@trezor/components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@wallet-actions/settingsActions';
-import { AppState, Dispatch, TrezorDevice } from '@suite-types';
+import { AppState, Dispatch, TrezorDevice, ArrayElement } from '@suite-types';
 import { Account } from '@wallet-types';
-import { NETWORKS } from '@suite-config';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@suite-config';
 import l10nMessages from './messages';
 import l10CommonMessages from '../messages';
 import NetworkSelect from './components/NetworkSelect';
@@ -41,18 +41,21 @@ type Props = {
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-interface State {
-    selectedSymbol: string;
-}
+type NetworkUnion = (ArrayElement<typeof EXTERNAL_NETWORKS> | ArrayElement<typeof NETWORKS>)[];
 
 const AddAccount = (props: Props) => {
-    const networks = NETWORKS.filter(n => !n.accountType);
+    // Collect all Networks without "accountType" (normal) and join ExternalNetworks
+    const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden) as NetworkUnion;
+    const externalNetworks = EXTERNAL_NETWORKS.filter(n => !n.isHidden) as NetworkUnion;
+    const networks = internalNetworks.concat(externalNetworks);
+
+    // Collect accounts for selected device
     const accounts = props.accounts.filter(a => a.deviceState === props.device.state);
 
-    const [selectedSymbol, setSelectedNetwork] = useState<State['selectedSymbol']>(
-        networks[0].symbol,
-    );
-    const selectedNetwork = NETWORKS.find(n => n.symbol === selectedSymbol && !n.accountType);
+    // Use component state, default value is first network item (btc)
+    const [selectedSymbol, setSelectedNetwork] = useState(networks[0].symbol);
+    // Find selected network
+    const selectedNetwork = networks.find(n => n.symbol === selectedSymbol);
 
     return (
         <Wrapper>
@@ -79,6 +82,7 @@ const AddAccount = (props: Props) => {
                     props.onCancel();
                     props.changeCoinVisibility(symbol, true, false);
                 }}
+                onCancel={props.onCancel}
             />
             <StyledButton onClick={props.onCancel} isWhite>
                 <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
