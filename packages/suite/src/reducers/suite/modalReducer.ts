@@ -1,6 +1,6 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { RECEIVE } from '@suite/actions/wallet/constants';
+import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 
 export type State =
@@ -72,6 +72,7 @@ export default (state: State = initialState, action: Action): State => {
         case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
         case SUITE.REQUEST_PASSPHRASE_MODE:
+        case ACCOUNT.REQUEST_NEW_ACCOUNT:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload,
