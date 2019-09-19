@@ -4,7 +4,7 @@ import { variables, colors } from '@trezor/components';
 
 const INPUT_HOVER = '#F9F9F9';
 
-const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
+const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected' | 'isVerifying'>>`
     display: flex;
     position: relative; /* needed for the tooltipAction */
     width: 100%;
@@ -22,8 +22,14 @@ const AddrWrapper = styled.div<Pick<Props, 'readOnly' | 'isSelected'>>`
     ${props =>
         props.isSelected &&
         css`
-            z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
             background: ${INPUT_HOVER};
+        `};
+
+    ${props =>
+        props.isVerifying &&
+        props.isSelected &&
+        css`
+            z-index: 10001; /* needed for the tooltipAction that activates modal overlay */
         `};
 
     ${props =>
@@ -138,6 +144,7 @@ interface Props extends React.HTMLProps<HTMLDivElement> {
     address: string;
     index: string | number;
     isSelected: boolean;
+    isVerifying?: boolean;
     readOnly?: boolean;
     isPartiallyHidden?: boolean;
     actions: React.ReactNode;
@@ -151,6 +158,7 @@ const AddressItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElemen
         <AddrWrapper
             onClick={props.onClick}
             isSelected={props.isSelected}
+            isVerifying={props.isVerifying}
             readOnly={props.readOnly}
             className={props.className}
         >

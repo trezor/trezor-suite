@@ -123,7 +123,6 @@ interface Props {
     // also excludes null;
     account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
     isAddressPartiallyHidden: (descriptor: string) => boolean;
-    isAddressVerifying: boolean;
     getAddressReceiveInfo: (descriptor: string) => ReceiveInfo | null;
     showAddress: typeof showAddress;
     networkType: Network['networkType'];
@@ -147,16 +146,6 @@ const ReceiveForm = ({ className, ...props }: Props) => {
               transfers: props.account.history.total,
           };
 
-    // tooltipAction components that renders only for the selectedAddress and only if address is being verified
-    const tooltipAction = (addr: string) => {
-        return props.isAddressVerifying && selectedAddr && selectedAddr.address === addr ? (
-            <>
-                <StyledDeviceIcon size={16} device={props.device} color={colors.WHITE} />
-                <FormattedMessage {...l10nMessages.TR_CHECK_ADDRESS_ON_TREZOR} />
-            </>
-        ) : null;
-    };
-
     const isAddressUnverified = (descriptor: string) => {
         const addrInfo = props.getAddressReceiveInfo(descriptor);
         return addrInfo ? addrInfo.isAddressUnverified : false;
@@ -165,6 +154,21 @@ const ReceiveForm = ({ className, ...props }: Props) => {
     const isAddressVerified = (descriptor: string) => {
         const addrInfo = props.getAddressReceiveInfo(descriptor);
         return addrInfo ? addrInfo.isAddressVerified : false;
+    };
+
+    const isAddressVerifying = (descriptor: string) => {
+        const addrInfo = props.getAddressReceiveInfo(descriptor);
+        return addrInfo ? addrInfo.isAddressVerifying : false;
+    };
+
+    // tooltipAction components that renders only for the selectedAddress and only if address is being verified
+    const tooltipAction = (descriptor: string) => {
+        return isAddressVerifying(descriptor) ? (
+            <>
+                <StyledDeviceIcon size={16} device={props.device} color={colors.WHITE} />
+                <FormattedMessage {...l10nMessages.TR_CHECK_ADDRESS_ON_TREZOR} />
+            </>
+        ) : null;
     };
 
     useEffect(() => {
@@ -184,6 +188,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     setSelectedAddr={setSelectedAddr}
                     selectedAddress={selectedAddr}
                     paginationEnabled
+                    isAddressVerifying={isAddressVerifying}
                     secondaryText={addr => (
                         <>
                             <FormattedMessage
@@ -279,27 +284,27 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 address={firstFreshAddress.address}
                 index={parseBIP44Path(firstFreshAddress.path)!.addrIndex}
                 isPartiallyHidden={props.isAddressPartiallyHidden(firstFreshAddress.path)}
-                tooltipActions={tooltipAction(firstFreshAddress.address)}
+                tooltipActions={tooltipAction(firstFreshAddress.path)}
                 readOnly
+                isVerifying={isAddressVerifying(firstFreshAddress.path)}
                 actions={
                     <>
-                        {!(
-                            isAddressVerified(firstFreshAddress.path) ||
-                            isAddressUnverified(firstFreshAddress.path)
-                        ) && ( // !account.imported
-                            <ShowAddressButton
-                                onClick={() => {
-                                    props.showAddress(firstFreshAddress.path);
-                                }}
-                                // isDisabled={device.connected && !discovery.completed}
-                                icon="EYE"
-                            >
-                                <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
-                            </ShowAddressButton>
-                        )}
+                        {!isAddressVerified(firstFreshAddress.path) &&
+                        !isAddressUnverified(firstFreshAddress.path) &&
+                        !isAddressVerifying(firstFreshAddress.path) && ( // !account.imported
+                                <ShowAddressButton
+                                    onClick={() => {
+                                        props.showAddress(firstFreshAddress.path);
+                                    }}
+                                    // isDisabled={device.connected && !discovery.completed}
+                                    icon="EYE"
+                                >
+                                    <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
+                                </ShowAddressButton>
+                            )}
                         {(isAddressVerified(firstFreshAddress.path) ||
                             isAddressUnverified(firstFreshAddress.path)) &&
-                            !props.isAddressVerifying && (
+                            !isAddressVerifying(firstFreshAddress.path) && (
                                 <EyeButton
                                     device={props.device}
                                     isAddressUnverified={isAddressUnverified(
@@ -335,24 +340,27 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         setSelectedAddr={setSelectedAddr}
                         selectedAddress={selectedAddr}
                         paginationEnabled={false}
+                        isAddressVerifying={isAddressVerifying}
                         collapsed={false}
                         tooltipActions={tooltipAction}
                         isAddressPartiallyHidden={props.isAddressPartiallyHidden}
                         actions={addr => (
                             <>
-                                {!(
-                                    isAddressVerified(addr.path) || isAddressUnverified(addr.path)
-                                ) && ( // !account.imported
-                                    <ShowAddressButton
-                                        onClick={() => props.showAddress(addr.path)}
-                                        // isDisabled={device.connected && !discovery.completed}
-                                        icon="EYE"
-                                    >
-                                        <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
-                                    </ShowAddressButton>
-                                )}
+                                {!isAddressVerified(addr.path) &&
+                                !isAddressUnverified(addr.path) &&
+                                !isAddressVerifying(addr.path) && ( // !account.imported
+                                        <ShowAddressButton
+                                            onClick={() => props.showAddress(addr.path)}
+                                            // isDisabled={device.connected && !discovery.completed}
+                                            icon="EYE"
+                                        >
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_SHOW_FULL_ADDRESS}
+                                            />
+                                        </ShowAddressButton>
+                                    )}
                                 {(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) &&
-                                    !props.isAddressVerifying && (
+                                    !isAddressVerifying(addr.path) && (
                                         <EyeButton
                                             device={props.device}
                                             isAddressUnverified={isAddressUnverified(addr.path)}
@@ -367,7 +375,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
 
             {selectedAddr &&
                 (isAddressVerified(selectedAddr.path) || isAddressUnverified(selectedAddr.path)) &&
-                !props.isAddressVerifying && (
+                !isAddressVerifying(selectedAddr.path) && (
                     <QrCode value={selectedAddr.address} accountPath={selectedAddr.path} />
                 )}
         </Wrapper>
