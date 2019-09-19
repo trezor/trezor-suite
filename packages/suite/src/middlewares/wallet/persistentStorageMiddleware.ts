@@ -3,7 +3,7 @@ import { AppState, Action as SuiteAction, Dispatch } from '@suite-types/index';
 import { Action as WalletAction } from '@wallet-types/index';
 // import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
-import * as transactionActions from '@wallet-actions/transactionActions';
+// import * as transactionActions from '@wallet-actions/transactionActions';
 import { db } from '@suite/storage';
 import { SUITE } from '@suite/actions/suite/constants';
 // import { ACCOUNT } from '@suite/actions/wallet/constants';
@@ -12,6 +12,7 @@ import { SUITE } from '@suite/actions/suite/constants';
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
 ): Promise<SuiteAction | WalletAction> => {
+    // @ts-ignore
     const prevState = api.getState();
     // pass action
     next(action);

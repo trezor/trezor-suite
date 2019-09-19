@@ -5,8 +5,8 @@ import { WALLET } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
 const updateReducersOnMessage = (message: SuiteStorageUpdateMessage) => async (
-    dispatch: Dispatch,
-    getState: GetState,
+    _dispatch: Dispatch,
+    _getState: GetState,
 ) => {
     if (message.store === 'txs') {
         // txs objecStore was updated, we'll load transactions from db to reducer

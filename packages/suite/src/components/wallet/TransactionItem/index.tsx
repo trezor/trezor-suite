@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { AccountTransaction } from 'trezor-connect';
 import { FormattedDate } from 'react-intl';
-import { Icon, colors, variables } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import Link from '@suite/components/suite/Link';
 
 const Wrapper = styled.div`
@@ -23,7 +23,7 @@ const Timestamp = styled.div`
     flex: 1;
 `;
 
-const BlockHash = styled.div`
+const TxHash = styled.div`
     /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
     color: ${colors.TEXT_SECONDARY};
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -58,10 +58,6 @@ const Target = styled.div`
     flex-direction: column;
 `;
 
-const ArrowWrapper = styled.div`
-    display: flex;
-`;
-
 const Balances = styled.div<{ addrType: string }>`
     display: flex;
     flex-direction: column;
@@ -76,13 +72,13 @@ const Addr = styled.div`
     text-overflow: ellipsis;
     margin-right: 10px;
 `;
-const Fee = styled.div`
-    color: ${colors.TEXT_SECONDARY};
-`;
+// const Fee = styled.div`
+//     color: ${colors.TEXT_SECONDARY};
+// `;
 
-const Red = styled.span`
-    color: red;
-`;
+// const Red = styled.span`
+//     color: red;
+// `;
 
 // const groupByTimePeriod = (obj: any[], timestampField: string, period: string) => {
 //     const objPeriod = {};
@@ -108,35 +104,27 @@ const Red = styled.span`
 // };
 
 const TransactionItem = React.memo(
-    ({
-        type,
-        txid,
-        blockTime,
-        blockHash,
-        amount,
-        fee,
-        targets,
-        tokens,
-        accountId,
-    }: AccountTransaction) => {
+    ({ type, txid, blockTime, amount, targets }: AccountTransaction) => {
         return (
             <Wrapper>
                 <Heading>
                     <Timestamp>
-                        <FormattedDate
-                            value={new Date(blockTime * 1000)}
-                            day="numeric"
-                            month="long"
-                            year="numeric"
-                            hour="numeric"
-                            minute="numeric"
-                        />
+                        {blockTime && (
+                            <FormattedDate
+                                value={new Date(blockTime * 1000)}
+                                day="numeric"
+                                month="long"
+                                year="numeric"
+                                hour="numeric"
+                                minute="numeric"
+                            />
+                        )}
                     </Timestamp>
-                    <BlockHash>
+                    <TxHash>
                         <Link isGray href={`https://www.blockchain.com/btc/tx/${txid}`}>
                             {txid}
                         </Link>
-                    </BlockHash>
+                    </TxHash>
                 </Heading>
                 <Row>
                     <Targets>
@@ -158,7 +146,7 @@ const TransactionItem = React.memo(
                     </Targets>
                     <Col>
                         {/* <Fee>
-                            <Red>-{satoshiToBtc(fee)}</Red>
+                            <Red>-{fee}</Red>
                         </Fee> */}
                         <Balances addrType={type}>
                             {type === 'recv' && '+'}

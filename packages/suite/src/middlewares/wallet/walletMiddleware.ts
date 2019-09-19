@@ -9,7 +9,7 @@ import { loadStorage } from '@wallet-actions/storageActions';
 import * as walletActions from '@wallet-actions/walletActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
+// import * as transactionActions from '@wallet-actions/transactionActions';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
 import { AppState, Action, Dispatch } from '@suite-types';

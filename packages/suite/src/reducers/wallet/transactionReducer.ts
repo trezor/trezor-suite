@@ -35,14 +35,14 @@ const update = (draft: State, action: TransactionAction) => {
     }
 };
 
-const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
-    // if both are missing the blockHeight don't change their order
-    if (!a.blockHeight && !b.blockHeight) return 0;
-    // tx with no blockHeight comes first
-    if (!a.blockHeight) return -1;
-    if (!b.blockHeight) return 1;
-    return b.blockHeight - a.blockHeight;
-};
+// const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
+//     // if both are missing the blockHeight don't change their order
+//     if (!a.blockHeight && !b.blockHeight) return 0;
+//     // tx with no blockHeight comes first
+//     if (!a.blockHeight) return -1;
+//     if (!b.blockHeight) return 1;
+//     return b.blockHeight - a.blockHeight;
+// };
 
 const enhanceTransaction = (
     tx: AccountTransaction,

@@ -21,7 +21,7 @@ export interface Account {
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     misc: AccountInfo['misc'];
-    marker: AccountInfo['marker'];
+    marker: AccountInfo['marker'] | null;
     page: AccountInfo['page'];
 }
 

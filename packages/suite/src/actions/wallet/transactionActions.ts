@@ -3,7 +3,7 @@ import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants/index';
 import { Dispatch, GetState } from '@suite-types/index';
 import { db } from '@suite/storage';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { ResponseMessage, AccountInfo, AccountTransaction } from 'trezor-connect';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import { SETTINGS } from '@suite/config/suite';
 import { Account } from '@wallet-types';
@@ -15,7 +15,7 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {
           type: typeof TRANSACTION.FETCH_SUCCESS;
-          transactions: WalletAccountTransaction[];
+          transactions: AccountTransaction[];
           account: Account;
           page?: number;
       }
@@ -117,10 +117,10 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
 
     const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
     if (shouldFetchFromBackend) {
-        let result = null;
+        let result: ResponseMessage<AccountInfo> | null = null;
 
         if (account.networkType === 'ripple') {
-            const { marker } = selectedAccount.account!;
+            const marker = selectedAccount.account!.marker || undefined;
             result = await TrezorConnect.getAccountInfo({
                 coin: selectedAccount.account!.symbol,
                 descriptor: account.descriptor,
@@ -137,11 +137,13 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
             });
         }
 
-        if (result.success) {
-            const updatedAccount = {
+        if (result && result.success) {
+            const updatedAccount: Account = {
                 ...account,
                 ...result.payload,
                 path: account.path, // preserve account path (fetched account comes without it)
+                // immer.js (used in reducer) doesn't update fields that are set to undefined,
+                // so when a marker is undefined, we change it to null.
                 ...{ marker: result.payload.marker ? result.payload.marker : null },
             };
             dispatch({
@@ -153,14 +155,12 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
 
             dispatch({
                 type: ACCOUNT.UPDATE,
-                // immer.js used in reducer doesn't update fields that are set to undefined,
-                // so when the backend returns undefined, we change it to null.
                 payload: updatedAccount,
             });
         } else {
             dispatch({
                 type: TRANSACTION.FETCH_ERROR,
-                error: result.payload.error,
+                error: result ? result.payload.error : 'unknown error',
             });
         }
     } else {
