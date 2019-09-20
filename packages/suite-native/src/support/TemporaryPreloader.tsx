@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
-import { AppState, Dispatch } from '@suite-types';
 import { H1, P } from '@trezor/components';
 import Discovery from '@wallet-components/Discovery';
+import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
     loaded: AppState['suite']['loaded'];
