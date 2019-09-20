@@ -1,5 +1,5 @@
-import { AppState, TrezorDevice } from '@suite-types';
 import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
+import { AppState, TrezorDevice } from '@suite-types';
 import { Account, Network, Discovery } from '@wallet-types';
 
 export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
