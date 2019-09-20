@@ -2,7 +2,8 @@ describe('Other', () => {
     beforeEach(() => {
         cy.viewport(1008, 768);
         cy.loadContent('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
-        cy.wait(1000);
+        // hack to wait for page to load (last coin logo)
+        cy.getTestElement('coin_xtz').should('be.visible');
     });
 
     const tests = [
