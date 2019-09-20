@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components/native';
 import React from 'react';
 import { TextInputProps } from 'react-native';
@@ -90,21 +89,6 @@ const TextArea = ({
             )}
         </Wrapper>
     );
-};
-
-TextArea.propTypes = {
-    maxLength: PropTypes.string,
-    topLabel: PropTypes.node,
-    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
-    bottomText: PropTypes.string,
-    isDisabled: PropTypes.bool,
-    onChange: PropTypes.func,
-    placeholder: PropTypes.string,
-    value: PropTypes.string,
-    readOnly: PropTypes.bool,
-    maxRows: PropTypes.number,
-    rows: PropTypes.number,
-    name: PropTypes.string,
 };
 
 export { TextArea, Props as TextareaProps };

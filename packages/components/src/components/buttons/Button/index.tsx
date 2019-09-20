@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import { Icon } from '../../Icon';
@@ -257,23 +256,6 @@ const Button = ({
             {children}
         </Wrapper>
     );
-};
-
-Button.propTypes = {
-    children: PropTypes.node.isRequired,
-    className: PropTypes.string,
-    additionalClassName: PropTypes.string,
-    onClick: PropTypes.func,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onFocus: PropTypes.func,
-    isDisabled: PropTypes.bool,
-    isWhite: PropTypes.bool,
-    isTransparent: PropTypes.bool,
-    isInverse: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error', 'white']),
 };
 
 export { Button, Props as ButtonProps };

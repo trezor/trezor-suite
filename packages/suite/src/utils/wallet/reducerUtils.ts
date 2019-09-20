@@ -1,42 +1,5 @@
-import BigNumber from 'bignumber.js';
 import { AppState, TrezorDevice } from '@suite-types';
-import { Transaction, Account, Token, Network, Discovery } from '@wallet-types';
-
-export const getPendingAmount = (
-    pending: Transaction[],
-    currency: string,
-    token: boolean = false,
-): BigNumber =>
-    pending.reduce((value: BigNumber, tx: Transaction): BigNumber => {
-        if (tx.type !== 'send') return value;
-        if (!token) {
-            // regular transactions
-            // add fees from token txs and amount from regular txs
-            return new BigNumber(value).plus(tx.tokens ? tx.fee : tx.total);
-        }
-        if (tx.tokens) {
-            // token transactions
-            const allTokens = tx.tokens.filter(t => t.symbol === currency);
-            const tokensValue: BigNumber = allTokens.reduce(
-                (_, t) => new BigNumber(value).plus(t.value),
-                new BigNumber('0'),
-            );
-            return new BigNumber(value).plus(tokensValue);
-        }
-        // default
-        return value;
-    }, new BigNumber('0'));
-
-export const getAccountTokens = (tokens: Token[], account?: Account) => {
-    const a = account;
-    if (!a) return [];
-    return tokens.filter(
-        t =>
-            t.ethAddress === a.descriptor &&
-            t.symbol === a.symbol &&
-            t.deviceState === a.deviceState,
-    );
-};
+import { Account, Network, Discovery } from '@wallet-types';
 
 export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
     // 1. both objects are the same (solves simple types like string, boolean and number)

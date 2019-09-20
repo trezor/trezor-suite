@@ -10,7 +10,7 @@ import l10nCommonMessages from '@suite-support/Messages';
 
 import { Wrapper, Text } from '@onboarding-components';
 import { SeedCard } from './components/SeedCard';
-import { Props as BackupProps } from './Container';
+import { Props } from './Container';
 import l10nMessages from './index.messages';
 
 const Panel = styled.div`
@@ -36,20 +36,24 @@ const Instruction = styled.div`
     align-items: center;
 `;
 
-const BackupStep: React.FC<BackupProps> = props => {
+const BackupStep = (props: Props) => {
+    const { device, deviceCall, uiInteraction, activeSubStep } = props;
+
     const [userUnderstands, setUserUnderstands] = useState(false);
 
     useEffect(() => {
         props.connectActions.resetCall();
     }, [props.connectActions]);
 
-    const { device, deviceCall, uiInteraction, activeSubStep } = props;
+    if (!device || !device.features) {
+        return null;
+    }
 
     const getStatus = () => {
         if (
             (deviceCall!.name === BACKUP_DEVICE && deviceCall.error) ||
-            device!.features!.no_backup === true ||
-            device!.features!.initialized === false
+            device.features.no_backup === true ||
+            device.features.initialized === false
         ) {
             return 'failed';
         }

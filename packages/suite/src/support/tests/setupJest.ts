@@ -91,13 +91,20 @@ declare global {
                 getDeviceFeatures: typeof getDeviceFeatures;
                 getConnectDevice: typeof getConnectDevice;
                 getSuiteDevice: typeof getSuiteDevice;
+                intlMock: typeof intlMock;
             };
         }
     }
 }
 
+const intlMock = {
+    // @ts-ignore
+    formatMessage: (s: any) => s.defaultMessage,
+};
+
 global.JestMocks = {
     getDeviceFeatures,
     getConnectDevice,
     getSuiteDevice,
+    intlMock,
 };

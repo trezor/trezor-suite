@@ -38,9 +38,9 @@ const create = (draft: Account[], account: Account) => {
 const changeVisibility = (draft: Account[], account: Account) => {
     const index = draft.findIndex(
         a =>
+            a.deviceState === account.deviceState &&
             a.symbol === account.symbol &&
-            a.accountType === account.accountType &&
-            a.path === account.path,
+            a.descriptor === account.descriptor,
     );
     if (draft[index]) {
         draft[index].visible = true;

@@ -1,6 +1,6 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { ACCOUNT } from '@wallet-actions/constants';
+import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 
 export type State =
@@ -9,6 +9,7 @@ export type State =
           context: typeof MODAL.CONTEXT_DEVICE;
           device: TrezorDevice | Device;
           windowType?: string;
+          addressPath?: string;
       }
     | {
           context: typeof MODAL.CONTEXT_CONFIRMATION;
@@ -20,6 +21,9 @@ export type State =
       }
     | {
           context: typeof MODAL.CONTEXT_SCAN_QR;
+      }
+    | {
+          context: typeof MODAL.OVERLAY_ONLY;
       };
 
 const initialState: State = {
@@ -64,7 +68,6 @@ export default (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_CONFIRMATION,
                 windowType: action.payload.view,
             };
-        // TODO: case RECEIVE.REQUEST_UNVERIFIED:
         case SUITE.REQUEST_REMEMBER_DEVICE:
         case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
@@ -75,10 +78,16 @@ export default (state: State = initialState, action: Action): State => {
                 device: action.payload,
                 windowType: action.type,
             };
+        case RECEIVE.REQUEST_UNVERIFIED:
+            return {
+                context: MODAL.CONTEXT_DEVICE,
+                device: action.device,
+                windowType: action.type,
+                addressPath: action.addressPath,
+            };
         // close modal
-        // case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
+        case UI.CLOSE_UI_WINDOW:
         case MODAL.CLOSE:
-        case SUITE.AUTH_DEVICE:
         case SUITE.FORGET_DEVICE:
         case SUITE.FORGET_DEVICE_INSTANCE:
         case SUITE.REMEMBER_DEVICE:
@@ -93,6 +102,11 @@ export default (state: State = initialState, action: Action): State => {
         case MODAL.OPEN_SCAN_QR:
             return {
                 context: MODAL.CONTEXT_SCAN_QR,
+            };
+
+        case MODAL.OVERLAY_ONLY:
+            return {
+                context: MODAL.OVERLAY_ONLY,
             };
 
         default:

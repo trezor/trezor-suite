@@ -4,12 +4,14 @@ import {
     SELECT_TREZOR_MODEL,
     ADD_PATH,
     REMOVE_PATH,
+    RESET_ONBOARDING,
+    ENABLE_ONBOARDING_REDUCER,
 } from '@suite/types/onboarding/onboarding';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
-import { GetState, Dispatch } from '@suite-types';
+import { GetState, Dispatch, Action } from '@suite-types';
 
 const goToStep = (stepId: AnyStepId) => (dispatch: Dispatch) => {
     dispatch({
@@ -30,17 +32,17 @@ const selectTrezorModel = (model: number) => ({
     model,
 });
 
-const addPath = (value: AnyPath) => (dispatch: Dispatch) => {
+const addPath = (payload: AnyPath) => (dispatch: Dispatch) => {
     dispatch({
         type: ADD_PATH,
-        value,
+        payload,
     });
 };
 
-const removePath = (value: AnyPath[]) => (dispatch: Dispatch) => {
+const removePath = (payload: AnyPath[]) => (dispatch: Dispatch) => {
     dispatch({
         type: REMOVE_PATH,
-        value,
+        payload,
     });
 };
 
@@ -75,7 +77,31 @@ const goToPreviousStep = () => (dispatch: Dispatch, getState: GetState) => {
     dispatch(goToStep(prevStep.id));
 };
 
+// TODO: probaaably not needed
+
+/**
+ * Set onboarding reducer to initial state.
+ */
+const resetOnboarding = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: RESET_ONBOARDING,
+    });
+};
+
+// TODO: probaaably not needed
+
+/**
+ * Make onboarding reducer listen to actions.
+ * @param payload,
+ */
+
+const enableOnboardingReducer = (payload: boolean): Action => ({
+    type: ENABLE_ONBOARDING_REDUCER,
+    payload,
+});
+
 export {
+    enableOnboardingReducer,
     goToNextStep,
     goToSubStep,
     goToStep,
@@ -83,4 +109,5 @@ export {
     selectTrezorModel,
     addPath,
     removePath,
+    resetOnboarding,
 };

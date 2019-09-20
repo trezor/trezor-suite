@@ -6,6 +6,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Account #{number}',
         description: 'Used in auto-generated account label',
     },
+    TR_CLEAR: {
+        id: 'TR_CLEAR',
+        defaultMessage: 'Clear',
+        description: 'Clear form button',
+    },
     TR_DEVICE_LABEL_ACCOUNT_HASH: {
         id: 'TR_DEVICE_LABEL_ACCOUNT_HASH',
         defaultMessage: '{deviceLabel} Account #{number}',
@@ -21,11 +26,6 @@ const definedMessages = defineMessages({
         id: 'TR_IMPORTED_ACCOUNT_HASH',
         defaultMessage: 'Imported account #{number}',
         description: 'Used in auto-generated label for imported accounts',
-    },
-    TR_CLEAR: {
-        id: 'TR_CLEAR',
-        defaultMessage: 'Clear',
-        description: 'Clear form button',
     },
     TR_CHECK_FOR_DEVICES: {
         id: 'TR_CHECK_FOR_DEVICES',

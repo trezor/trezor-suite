@@ -21,10 +21,14 @@ const Base = styled.div`
 `;
 
 const WelcomeStep = (props: Props) => {
-    const { suite } = props;
+    const { device } = props;
 
-    const isDeviceInitialized = () => {
-        return suite.device && suite.device.features && suite.device.features.initialized;
+    const shouldDisplayLeaveButton = () => {
+        if (device && device.features && !device.features.initialized) {
+            return false;
+        }
+        // rather show than not
+        return true;
     };
 
     return (
@@ -59,12 +63,13 @@ const WelcomeStep = (props: Props) => {
                     >
                         <Base>Restore existing wallet</Base>
                         <Small>using your backup seed</Small>
+
                         <OnboardingButton.Alt>Restore existing</OnboardingButton.Alt>
                     </Option>
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                {isDeviceInitialized() && (
+                {shouldDisplayLeaveButton() && (
                     <OnboardingButton.Back
                         data-test="button-use-wallet"
                         onClick={() => goto(getRoute('wallet-index'))}

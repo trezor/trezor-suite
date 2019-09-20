@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { P, H2, Button } from '@trezor/components';
+import { P, H2 } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,10 +9,11 @@ import * as STEP from '@suite/constants/onboarding/steps';
 import { ConnectReducer } from '@suite/types/onboarding/connect';
 import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
 import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
-import { PinMatrix, Text, Wrapper } from '@onboarding-components';
+import { PinMatrix, Text, Wrapper, OnboardingButton } from '@onboarding-components';
 import { Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
 import Reconnect from './components/Reconnect';
+import IsSameDevice from './components/IsSameDevice';
 
 const CommonWrapper = styled.div`
     margin: auto 30px auto 30px;
@@ -22,12 +23,6 @@ const CommonWrapper = styled.div`
 
 const UnexpectedStateCommon = ({ children }: { children: ReactNode }) => (
     <CommonWrapper>{children}</CommonWrapper>
-);
-
-const IsSameDevice = () => (
-    <P>
-        <FormattedMessage {...l10nMessages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT} />
-    </P>
 );
 
 const IsNotInBootloader = () => (
@@ -65,10 +60,10 @@ const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequesti
 );
 
 interface DeviceIsUsedHereProps {
-    getFeatures: typeof getFeatures;
+    actionCta: typeof getFeatures;
 }
 
-const DeviceIsUsedHere = ({ getFeatures }: DeviceIsUsedHereProps) => (
+const DeviceIsUsedHere = ({ actionCta }: DeviceIsUsedHereProps) => (
     <>
         <H2>
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING} />
@@ -77,9 +72,9 @@ const DeviceIsUsedHere = ({ getFeatures }: DeviceIsUsedHereProps) => (
             <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT} />
         </P>
         <Wrapper.Controls>
-            <Button onClick={getFeatures}>
+            <OnboardingButton.Cta onClick={actionCta}>
                 <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
-            </Button>
+            </OnboardingButton.Cta>
         </Wrapper.Controls>
     </>
 );
@@ -135,7 +130,7 @@ const UnexpectedState = ({
         case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
             return (
                 <UnexpectedStateCommon>
-                    <DeviceIsUsedHere getFeatures={getFeatures} />
+                    <DeviceIsUsedHere actionCta={getFeatures} />
                 </UnexpectedStateCommon>
             );
         default:

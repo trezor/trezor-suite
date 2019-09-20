@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import { FONT_SIZE, LINE_HEIGHT } from '../../config/variables';
 import colors from '../../config/colors';
@@ -37,12 +36,5 @@ const P = ({ children, className, size = 'medium', textAlign, ...rest }: Props) 
         {children}
     </Paragraph>
 );
-
-P.propTypes = {
-    className: PropTypes.string,
-    children: PropTypes.node,
-    size: PropTypes.oneOf(['small', 'medium', 'large', 'xlarge']),
-    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify', 'inherit', 'initial']),
-};
 
 export { P, Props as ParagraphProps };

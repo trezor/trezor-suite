@@ -9,10 +9,10 @@ import { Dispatch, AppState } from '@suite-types';
 import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    device: state.onboarding.connect.device,
+    device: state.suite.device,
     // deviceInteraction: state.onboarding.connect.deviceInteraction,
-    uiInteraction: state.onboarding.connect.uiInteraction,
-    deviceCall: state.onboarding.connect.deviceCall,
+    uiInteraction: state.onboarding.uiInteraction,
+    deviceCall: state.onboarding.deviceCall,
     activeSubStep: state.onboarding.activeSubStep,
 });
 

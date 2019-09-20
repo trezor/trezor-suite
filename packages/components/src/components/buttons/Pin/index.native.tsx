@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
 import { TouchableHighlightProps, GestureResponderEvent } from 'react-native';
 import colors from '../../../config/colors';
 
@@ -32,10 +31,6 @@ const ButtonPin = ({ onClick }: Props) => {
             <Dot />
         </Touchable>
     );
-};
-
-ButtonPin.propTypes = {
-    onClick: PropTypes.func,
 };
 
 export { ButtonPin, Props as ButtonPinProps };

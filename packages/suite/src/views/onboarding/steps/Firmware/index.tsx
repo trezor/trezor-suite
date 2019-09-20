@@ -66,6 +66,7 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
 
 const FirmwareStep = ({
     device,
+    prevDevice,
     firmwareUpdate,
     // path,
     onboardingActions,
@@ -76,7 +77,12 @@ const FirmwareStep = ({
     const [maxProgress, setMaxProgress] = useState(0);
     const [progress, setProgress] = useState(0);
 
+    // TODO: add custom handling of is not same device logic
+
     useEffect(() => {
+        if (!device || !device.features) {
+            return;
+        }
         if (
             firmwareUpdate.status === 'error' ||
             firmwareUpdate.status === 'restarting' ||
@@ -84,7 +90,7 @@ const FirmwareStep = ({
         ) {
             setProgress(100);
         }
-    }, [firmwareUpdate.status, device.firmware]);
+    }, [firmwareUpdate.status, device]);
 
     useEffect(() => {
         if (firmwareUpdate.status === 'downloading') {
@@ -99,6 +105,10 @@ const FirmwareStep = ({
     }, [firmwareUpdate]);
 
     useEffect(() => {
+        if (!device || !device.features) {
+            return;
+        }
+
         let interval: number;
 
         const runOn = ['started', 'installing', 'downloading', 'restarting'];
@@ -115,13 +125,13 @@ const FirmwareStep = ({
         return () => {
             clearInterval(interval);
         };
-    }, [firmwareUpdate.status, progress, maxProgress, device.features.major_version]);
+    }, [firmwareUpdate.status, progress, maxProgress, device]);
 
-    const isConnected = device && device.connected;
-    const isInBootloader = device && device.mode === 'bootloader';
+    const isConnected = !!device;
+    const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
 
     const getFirmwareStatus = () => {
-        return device.firmware;
+        return device && device.features && device.firmware;
     };
 
     const getUpdateStatus = () => {
@@ -130,13 +140,30 @@ const FirmwareStep = ({
 
     const getMessageForStatus = () => {
         const status = getUpdateStatus();
-        if (status === 'restarting' && !device.connected && device.features.major_version === 1) {
+        if (
+            status === 'restarting' &&
+            !device &&
+            prevDevice &&
+            prevDevice.features &&
+            prevDevice.features.major_version === 1
+        ) {
             return intl.formatMessage(l10nMessages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
-        if (status === 'restarting' && device.connected && device.features.major_version === 1) {
+        if (
+            status === 'restarting' &&
+            device &&
+            prevDevice &&
+            prevDevice.features &&
+            prevDevice.features.major_version === 1
+        ) {
             return intl.formatMessage(l10nMessages.TR_DISCONNECT_YOUR_DEVICE);
         }
-        if (status === 'restarting' && device.features.major_version === 2) {
+        if (
+            status === 'restarting' &&
+            prevDevice &&
+            prevDevice.features &&
+            prevDevice.features.major_version === 2
+        ) {
             return intl.formatMessage(l10nMessages.TR_WAIT_FOR_REBOOT);
         }
         if (status === 'done') {
@@ -162,6 +189,14 @@ const FirmwareStep = ({
             ['downloading', 'installing', 'restarting'].includes(status)
         );
     };
+
+    const getVersionStr = () => {
+        if (device && device.features) {
+            return `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`;
+        }
+        return '';
+    };
+
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
@@ -188,7 +223,7 @@ const FirmwareStep = ({
                                     <FormattedMessage
                                         {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
                                         values={{
-                                            version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
+                                            version: getVersionStr(),
                                         }}
                                     />
                                 </Text>
@@ -205,7 +240,7 @@ const FirmwareStep = ({
                                     <FormattedMessage
                                         {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
                                         values={{
-                                            version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
+                                            version: getVersionStr(),
                                         }}
                                     />
                                 </Text>
@@ -246,6 +281,8 @@ const FirmwareStep = ({
                             )}
                         </P>
                         {getUpdateStatus() === 'restarting' &&
+                            device &&
+                            device.features &&
                             device.features.major_version === 1 && (
                                 <OnboardingIcon.ConnectDevice
                                     model={device.features.major_version}
