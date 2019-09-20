@@ -4,12 +4,9 @@ describe('Other', () => {
         cy.loadContent('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
     });
 
-    const png = [
+    const tests = [
         'trezor_image_1',
         'trezor_image_2',
-    ];
-
-    const tests = [
         'prompt_1',
         'prompt_2',
         'trezor_logo_horizontal',
@@ -73,6 +70,18 @@ describe('Other', () => {
     ];
 
     tests.forEach(testName => {
+        if (testName.match(/icon|coin|logo|prompt|header/)) {
+            cy.getTestElement(testName)
+                .find('.loading')
+                .each(el => {
+                    cy.get(el).should('not.exist');
+                });
+
+            cy.getTestElement(testName)
+                .find('svg')
+                .should('be.visible');
+        }
+
         it(`${testName}`, () => {
             cy.getTestElement(testName)
                 .matchImageSnapshot();
