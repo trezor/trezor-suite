@@ -1,5 +1,5 @@
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import { NETWORKS } from '@suite-config';
+import { NETWORKS } from '@wallet-config';
 import * as reducerUtils from '../reducerUtils';
 import * as fixtures from './fixtures/reducerUtils';
 import { Account, Discovery } from '@wallet-types';
@@ -37,13 +37,7 @@ describe('reducerUtils', () => {
     fixtures.observeChanges.forEach(f => {
         it(`reducerUtils.observeChanges${f.testName}`, () => {
             // @ts-ignore
-            expect(
-                reducerUtils.observeChanges(
-                    f.prev,
-                    f.current,
-                    f.filter,
-                ),
-            ).toEqual(f.result);
+            expect(reducerUtils.observeChanges(f.prev, f.current, f.filter)).toEqual(f.result);
         });
     });
 });
