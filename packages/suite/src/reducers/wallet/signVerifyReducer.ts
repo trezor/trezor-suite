@@ -1,6 +1,6 @@
-import { SIGN_VERIFY } from '@wallet-actions/constants';
-import { Action } from '@wallet-types/index';
 import produce from 'immer';
+import { SIGN_VERIFY } from '@wallet-actions/constants';
+import { Action } from '@wallet-types';
 
 interface Error {
     inputName: string;

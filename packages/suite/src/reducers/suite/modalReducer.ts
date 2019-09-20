@@ -94,11 +94,6 @@ export default (state: State = initialState, action: Action): State => {
             return initialState;
 
         // other contexts
-        case MODAL.OPEN_EXTERNAL_WALLET:
-            return {
-                context: MODAL.CONTEXT_EXTERNAL_WALLET,
-                windowType: action.id,
-            };
         case MODAL.OPEN_SCAN_QR:
             return {
                 context: MODAL.CONTEXT_SCAN_QR,

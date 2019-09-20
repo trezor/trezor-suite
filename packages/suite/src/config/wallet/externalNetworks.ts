@@ -1,6 +1,6 @@
-import { ExternalNetwork } from '@wallet-types';
+import { ArrayElement } from '@suite/types/utils';
 
-export default [
+const networks = [
     {
         networkType: 'external',
         symbol: 'xem',
@@ -25,4 +25,8 @@ export default [
         name: 'Tezos',
         url: 'https://wallet.simplestaking.com/tezos/wallet/start',
     },
-] as ExternalNetwork[];
+] as const;
+
+type ExternalNetwork = { isHidden?: boolean } & ArrayElement<typeof networks>;
+
+export default [...networks] as ExternalNetwork[];

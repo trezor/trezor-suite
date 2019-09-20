@@ -1,8 +1,8 @@
 import produce from 'immer';
 import { STORAGE } from '@suite-actions/constants';
 import { SETTINGS } from '@wallet-actions/constants';
+import { EXTERNAL_NETWORKS } from '@wallet-config';
 import { Action } from '@suite-types';
-import { EXTERNAL_NETWORKS } from '@suite-config';
 
 export interface State {
     localCurrency: string;

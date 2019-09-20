@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
 import { mergeObj } from '@suite-utils/mergeObj';
-import { ArrayElement } from '@suite-types';
+import { ArrayElement } from '@suite/types/utils';
 import * as firmwareActions from '../firmwareActions';
 import fixtures from './fixtures/firmwareActions';
 

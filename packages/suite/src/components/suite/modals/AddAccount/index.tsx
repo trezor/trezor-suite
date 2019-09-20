@@ -6,9 +6,9 @@ import { FormattedMessage } from 'react-intl';
 import { H5, Button } from '@trezor/components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@wallet-actions/settingsActions';
-import { AppState, Dispatch, TrezorDevice, ArrayElement } from '@suite-types';
-import { Account } from '@wallet-types';
-import { NETWORKS, EXTERNAL_NETWORKS } from '@suite-config';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
+import { AppState, Dispatch, TrezorDevice } from '@suite-types';
+import { Account, Network, ExternalNetwork } from '@wallet-types';
 import l10nMessages from './messages';
 import l10CommonMessages from '../messages';
 import NetworkSelect from './components/NetworkSelect';
@@ -42,7 +42,7 @@ type Props = {
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-type NetworkUnion = (ArrayElement<typeof EXTERNAL_NETWORKS> | ArrayElement<typeof NETWORKS>)[];
+type NetworkUnion = (Network | ExternalNetwork)[];
 
 const AddAccount = (props: Props) => {
     // Collect all Networks without "accountType" (normal) and join ExternalNetworks

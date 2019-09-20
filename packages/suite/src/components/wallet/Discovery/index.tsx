@@ -2,10 +2,10 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
-import { AppState, Dispatch } from '@suite-types/index';
 import { Button } from '@trezor/components';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import * as DiscoveryActions from '@wallet-actions/discoveryActions';
+import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
     discovery: AppState['wallet']['discovery'];

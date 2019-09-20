@@ -36,7 +36,7 @@ const OptionLabel = styled(P)`
 
 interface Props {
     fees: Fee;
-    symbol: string;
+    symbol: Account['symbol'];
     sendFormActions: DispatchProps['sendFormActions'];
     intl: InjectedIntl;
 }

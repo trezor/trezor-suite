@@ -1,7 +1,7 @@
 import { db } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
+import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState } from '@suite-types';
-import { STORAGE } from './constants/index';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
