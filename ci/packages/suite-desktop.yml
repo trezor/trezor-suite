@@ -18,7 +18,7 @@ suite-desktop build:
     script:
         - yarn workspace @trezor/suite-desktop build:linux
     artifacts:
-        expire_in: 15 minutes
+        expire_in: 1 day
         paths:
             - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
     dependencies:
