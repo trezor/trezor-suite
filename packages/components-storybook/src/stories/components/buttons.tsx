@@ -261,10 +261,22 @@ storiesOf('Buttons', module)
             });
 
             const icon = select('Icon', iconOptions, null);
-
             const isTransparent = boolean('Transparent', false);
             const isWhite = boolean('White', false);
             const fullWidth = boolean('FullWidth', false);
+
+            let textAlign;
+            if (fullWidth) {
+                textAlign = select(
+                    'textAlign',
+                    {
+                        Center: null,
+                        Left: 'left',
+                        Right: 'right',
+                    },
+                    null
+                );
+            }
 
             return (
                 <Button
@@ -276,6 +288,7 @@ storiesOf('Buttons', module)
                     {...(icon ? { icon } : {})}
                     {...(isLoading ? { isLoading } : {})}
                     {...(fullWidth ? { fullWidth } : {})}
+                    {...(fullWidth && textAlign ? { textAlign } : {})}
                 >
                     {buttonText}
                 </Button>
