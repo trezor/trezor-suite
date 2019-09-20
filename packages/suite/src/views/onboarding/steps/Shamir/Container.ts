@@ -1,11 +1,8 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-import { AppState, Dispatch } from '@suite-types';
-
 import { goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { callActionAndGoToNextStep, resetDevice } from '@onboarding-actions/connectActions';
-
+import { AppState, Dispatch } from '@suite-types';
 import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
