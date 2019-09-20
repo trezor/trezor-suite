@@ -2,13 +2,15 @@ describe('Other', () => {
     beforeEach(() => {
         cy.viewport(1008, 768);
         cy.loadContent('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
+        // hack to wait for page to load (last coin logo)
+        cy.getTestElement('coin_xtz').should('be.visible');
     });
 
     const tests = [
-        'prompt_1',
-        'prompt_2',
         'trezor_image_1',
         'trezor_image_2',
+        'prompt_1',
+        'prompt_2',
         'trezor_logo_horizontal',
         'trezor_logo_vertical',
         'header',
@@ -73,33 +75,13 @@ describe('Other', () => {
         it(`${testName}`, () => {
             if (testName.match(/icon|coin|logo|prompt|header/)) {
                 cy.getTestElement(testName)
-                    .find('.loading')
-                    .each(el => {
-                        cy.get(el).should('not.exist');
-                    });
-
-                cy.getTestElement(testName)
                     .find('svg')
-                    .should('be.visible');
+                    .should('exist')
+                    .should('be.visible')
             }
 
-            if (testName === 'trezor_image_1') {
-                cy.fixture('../../../components/src/images/trezor-1.png').then(() => {
-                    cy.getTestElement(testName)
-                        .should('be.visible')
-                        .matchImageSnapshot();
-                });
-            } else if (testName === 'trezor_image_2') {
-                cy.fixture('../../../components/src/images/trezor-2.png').then(() => {
-                    cy.getTestElement(testName)
-                        .should('be.visible')
-                        .matchImageSnapshot();
-                });
-            } else {
-                cy.getTestElement(testName)
-                    .should('be.visible')
-                    .matchImageSnapshot();
-            }
+            cy.getTestElement(testName)
+                .matchImageSnapshot();
         });
     });
 });
