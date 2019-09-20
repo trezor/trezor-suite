@@ -1,10 +1,9 @@
-import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import produce from 'immer';
-
-import { Account, Action } from '@wallet-types/index';
+import { AccountTransaction } from 'trezor-connect';
+import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { formatAmount } from '@wallet-utils/accountUtils';
-import { AccountTransaction } from 'trezor-connect';
+import { Account, Action } from '@wallet-types';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;

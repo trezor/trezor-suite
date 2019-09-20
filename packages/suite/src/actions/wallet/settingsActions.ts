@@ -17,7 +17,7 @@ export const setHideBalance = (toggled: boolean) => ({
     toggled,
 });
 
-export const handleCoinVisibility = (
+export const changeCoinVisibility = (
     symbol: string,
     shouldBeVisible: boolean,
     isExternal: boolean,

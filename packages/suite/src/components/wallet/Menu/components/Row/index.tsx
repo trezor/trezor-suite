@@ -3,7 +3,7 @@ import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import { Link } from '@suite-components';
-import { NETWORKS } from '@suite-config';
+import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 
 const Wrapper = styled.div<{ selected: boolean }>`

@@ -1,10 +1,10 @@
 import TrezorConnect from 'trezor-connect';
-import { Action } from '@wallet-types/index';
 import { RECEIVE } from '@wallet-actions/constants';
 import { NOTIFICATION, MODAL } from '@suite-actions/constants';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
+import { Action } from '@wallet-types';
 
 export type ReceiveActions =
     | { type: typeof RECEIVE.INIT; descriptor: string }
@@ -78,13 +78,7 @@ export const showAddress = (path: string) => async (
         case 'bitcoin':
             response = await TrezorConnect.getAddress(params);
             break;
-        default:
-            response = {
-                payload: {
-                    error: `ReceiveActions.showAddress: Unknown network type: ${network.networkType}`,
-                },
-            };
-            break;
+        // no default
     }
 
     if (response.success) {

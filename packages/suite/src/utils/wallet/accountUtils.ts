@@ -2,7 +2,7 @@ import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Account } from '@wallet-types';
-import { NETWORKS } from '@suite-config';
+import { NETWORKS } from '@wallet-config';
 
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;

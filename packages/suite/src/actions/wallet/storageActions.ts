@@ -1,5 +1,5 @@
 // import * as transactionActions from '@wallet-actions/transactionActions';
-import { db, SuiteStorageUpdateMessage } from '@suite/storage/index';
+import { db, SuiteStorageUpdateMessage } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
 import { WALLET } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';

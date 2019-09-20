@@ -1,13 +1,12 @@
-import { TRANSACTION } from '@wallet-actions/constants/index';
-
-import { Dispatch, GetState } from '@suite-types/index';
-import { db } from '@suite/storage';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect, { ResponseMessage, AccountInfo, AccountTransaction } from 'trezor-connect';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { SETTINGS } from '@suite/config/suite';
 import { Account } from '@wallet-types';
+import { TRANSACTION } from '@wallet-actions/constants';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { db } from '@suite/storage';
+import { Dispatch, GetState } from '@suite-types';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transactions: WalletAccountTransaction[] }

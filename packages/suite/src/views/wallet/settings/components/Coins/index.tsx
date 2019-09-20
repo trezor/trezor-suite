@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Network } from '@wallet-types/index';
 import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/components';
+import { EXTERNAL_NETWORKS } from '@wallet-config';
+import { Network } from '@wallet-types';
 import l10nMessages from '../../index.messages';
-import { EXTERNAL_NETWORKS } from '@suite-config';
 import { Props as BaseProps } from '../../Container';
 
 const { FONT_SIZE } = variables;
@@ -13,7 +13,7 @@ interface Props {
     networks: Network[];
     enabledNetworks: string[];
     externalNetworks: string[];
-    handleCoinVisibility: BaseProps['handleCoinVisibility'];
+    changeCoinVisibility: BaseProps['changeCoinVisibility'];
     toggleGroupCoinsVisibility: BaseProps['toggleGroupCoinsVisibility'];
 }
 
@@ -186,7 +186,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                             checkedIcon={false}
                                             uncheckedIcon={false}
                                             onChange={visible => {
-                                                props.handleCoinVisibility(
+                                                props.changeCoinVisibility(
                                                     network.symbol,
                                                     visible,
                                                     false,
@@ -250,7 +250,7 @@ class CoinsSettings extends Component<Props, StateProps> {
                                         checkedIcon={false}
                                         uncheckedIcon={false}
                                         onChange={visible => {
-                                            props.handleCoinVisibility(
+                                            props.changeCoinVisibility(
                                                 network.symbol,
                                                 visible,
                                                 true,

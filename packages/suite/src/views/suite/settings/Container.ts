@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { applySettings, changePin, wipeDevice } from '@suite-actions/deviceSettingsActions';
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 
 import DeviceSettings from './index';
 

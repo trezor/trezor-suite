@@ -1,6 +1,6 @@
-import { Network } from '@wallet-types';
+import { ArrayElement } from '@suite/types/utils';
 
-export default [
+const networks = [
     // Bitcoin
     {
         name: 'Bitcoin',
@@ -114,7 +114,7 @@ export default [
         networkType: 'ethereum',
         symbol: 'eth',
         bip44: "m/44'/60'/0'/0/i",
-        hasSignVerify: false,
+        hasSignVerify: true,
         decimals: 18,
         explorer: {
             tx: 'https://example.com',
@@ -152,7 +152,6 @@ export default [
         networkType: 'ripple',
         symbol: 'xrp',
         bip44: "m/44'/144'/i'/0/0",
-        hasSignVerify: false,
         decimals: 6,
         explorer: {
             tx: 'https://example.com',
@@ -164,7 +163,6 @@ export default [
         networkType: 'ripple',
         symbol: 'txrp',
         bip44: "m/44'/144'/i'/0/0",
-        hasSignVerify: false,
         decimals: 6,
         testnet: true,
         explorer: {
@@ -177,7 +175,6 @@ export default [
         networkType: 'bitcoin',
         symbol: 'bch',
         bip44: "m/44'/145'/i'",
-        hasSignVerify: false,
         decimals: 8,
         explorer: {
             tx: 'https://example.com',
@@ -307,4 +304,13 @@ export default [
             address: 'https://example.com/address/',
         },
     },
-] as Network[];
+] as const;
+
+type Network = {
+    accountType?: 'normal' | 'legacy' | 'segwit';
+    testnet?: boolean;
+    isHidden?: boolean;
+    hasSignVerify?: boolean;
+} & ArrayElement<typeof networks>;
+
+export default [...networks] as Network[];

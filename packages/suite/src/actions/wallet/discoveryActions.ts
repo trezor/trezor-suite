@@ -7,8 +7,10 @@ import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { create as createAccount } from '@wallet-actions/accountActions';
 import { DISCOVERY } from './constants';
-import { NETWORKS, SETTINGS } from '@suite-config';
+import { SETTINGS } from '@suite-config';
+import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
+import { Account } from '@wallet-types';
 
 export type DiscoveryActions =
     | { type: typeof DISCOVERY.CREATE; payload: Discovery }
@@ -28,13 +30,13 @@ type UpdateActionType =
 export interface DiscoveryItem {
     // trezor-connect
     path: string;
-    coin: string;
+    coin: Account['symbol'];
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     pageSize?: number;
     // wallet
     index: number;
-    accountType: 'normal' | 'segwit' | 'legacy';
-    networkType: 'bitcoin' | 'ripple' | 'ethereum';
+    accountType: Account['accountType'];
+    networkType: Account['networkType'];
 }
 
 // TODO: trezor-connect untyped event

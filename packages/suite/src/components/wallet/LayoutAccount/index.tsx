@@ -3,7 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import TopNavigation from '@wallet-components/TopNavigation';
 import Layout from '@wallet-components/Layout';
 import { getRoute } from '@suite/utils/suite/router';
-import { NETWORKS, FLAGS } from '@suite-config';
+import { FLAGS } from '@suite-config';
+import { NETWORKS } from '@wallet-config';
 import l10nMessages from './index.messages';
 
 interface Props {
