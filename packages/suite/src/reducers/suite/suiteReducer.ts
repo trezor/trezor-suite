@@ -1,8 +1,9 @@
+import produce from 'immer';
 import { TRANSPORT, IFRAME } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import produce from 'immer';
-import { Action, TrezorDevice, ObjectValues } from '@suite-types';
+import { ObjectValues } from '@suite/types/utils';
+import { Action, TrezorDevice } from '@suite-types';
 
 type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
 

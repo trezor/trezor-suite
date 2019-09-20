@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { AppState, Dispatch } from '@suite-types/index';
+import { AppState, Dispatch } from '@suite-types';
 
 import { goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import { callActionAndGoToNextStep, resetDevice } from '@onboarding-actions/connectActions';

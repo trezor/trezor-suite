@@ -1,10 +1,9 @@
 import produce from 'immer';
-import { SEND } from '@wallet-actions/constants';
-import { Action } from '@wallet-types/index';
 import validator from 'validator';
+import { SEND } from '@wallet-actions/constants';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-
 import { isAddressValid } from '@wallet-utils/validation';
+import { Action } from '@wallet-types';
 
 export interface State {
     address: null | string;

@@ -8,11 +8,6 @@ export type ModalActions =
           type: typeof MODAL.CLOSE;
       }
     | {
-          type: typeof MODAL.OPEN_EXTERNAL_WALLET;
-          id: string;
-          url: string;
-      }
-    | {
           type: typeof MODAL.OPEN_SCAN_QR;
       }
     | {
@@ -178,14 +173,6 @@ export const onWalletTypeRequest = (hidden: boolean) => (
         hidden,
     });
     dispatch(onCancel());
-};
-
-export const gotoExternalWallet = (id: string, url: string) => (dispatch: Dispatch): void => {
-    dispatch({
-        type: MODAL.OPEN_EXTERNAL_WALLET,
-        id,
-        url,
-    });
 };
 
 export const openQrModal = () => (dispatch: Dispatch): void => {

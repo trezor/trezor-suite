@@ -25,7 +25,7 @@ const Img = styled.img`
     padding-bottom: 20px;
 `;
 
-const getHeader = (symbol: string) => {
+const getHeader = (symbol: ExternalNetwork['symbol']) => {
     switch (symbol) {
         case 'xem':
             return l10nMessages.TR_NEM_WALLET;
@@ -35,8 +35,7 @@ const getHeader = (symbol: string) => {
             return l10nMessages.TR_CARDANO_WALLET;
         case 'xtz':
             return l10nMessages.TR_TEZOS_WALLET;
-        default:
-            return { id: 'unknown-external-wallet' };
+        // no default
     }
 };
 

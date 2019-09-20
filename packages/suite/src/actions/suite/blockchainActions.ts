@@ -1,5 +1,5 @@
 import { Dispatch, GetState } from '@suite-types';
-import { BLOCKCHAIN } from './constants/index';
+import { BLOCKCHAIN } from './constants';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event

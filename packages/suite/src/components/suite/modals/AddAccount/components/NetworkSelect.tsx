@@ -37,7 +37,7 @@ const NetworkOption = ({ value, label }: Option) => (
 interface Props {
     selectedNetwork?: Network | ExternalNetwork;
     networks: (Network | ExternalNetwork)[];
-    setSelectedNetwork: (n: string) => void;
+    setSelectedNetwork: (n: Network['symbol'] | ExternalNetwork['symbol']) => void;
 }
 
 const NetworkSelect = ({ selectedNetwork, networks, setSelectedNetwork }: Props) => (

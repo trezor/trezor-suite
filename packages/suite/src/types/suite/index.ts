@@ -14,19 +14,17 @@ import { BlockchainActions } from '@suite-actions/blockchainActions';
 import { RouterActions } from '@suite-actions/routerActions';
 import { AppState } from '@suite/reducers/store';
 import { getApp } from '@suite-utils/router';
-
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
-import { Action as WalletActions } from '@wallet-types/index';
 import OnboardingActions from '@onboarding-types/actions';
-
 import {
     MessageDescriptor as MessageDescriptor$,
     Messages as Messages$,
 } from '@suite-support/ConnectedIntlProvider';
+import { Action as WalletActions } from '@wallet-types';
 
 // this weird export is because of --isolatedModules and next.js 9
 export type MessageDescriptor = MessageDescriptor$;
@@ -99,16 +97,6 @@ export interface UnknownDevice {
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
-// utils types todo: consider moving it to separate file
-
-// make key required
-export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
-
-// object values types
-export type ObjectValues<T extends object> = T[keyof T];
-
 export type Store = ReduxStore<AppState, Action>;
 
 export type AnyApp = ReturnType<typeof getApp>;
-
-export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];

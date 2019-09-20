@@ -1,10 +1,9 @@
 import { AccountInfo } from 'trezor-connect';
-// import { Dispatch, GetState } from '@suite-types/index';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
+import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
-import { NETWORKS } from '@suite-config';
 
 export type AccountActions =
     | { type: typeof ACCOUNT.CREATE; payload: Account }

@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { P, Button, variables, colors } from '@trezor/components';
 import { Network, ExternalNetwork, Account } from '@wallet-types';
-import { NETWORKS } from '@suite-config';
+import { NETWORKS } from '@wallet-config';
 import l10nMessages from '../messages';
 
 interface Props {

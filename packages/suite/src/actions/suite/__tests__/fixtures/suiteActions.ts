@@ -366,6 +366,54 @@ const selectDevice = [
         },
     },
     {
+        description: `redirect to firmware update (trezor-connect Device)`,
+        state: {
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    firmware: 'required',
+                }),
+            ],
+        },
+        device: getConnectDevice({
+            path: '1',
+            firmware: 'required',
+        }),
+        result: {
+            payload: getSuiteDevice({
+                path: '1',
+                firmware: 'required',
+            }),
+            router: {
+                app: 'firmware',
+            },
+        },
+    },
+    {
+        description: `redirect to onboarding (@suite TrezorDevice)`,
+        state: {
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    firmware: 'required',
+                }),
+            ],
+        },
+        device: getSuiteDevice({
+            path: '1',
+            firmware: 'required',
+        }),
+        result: {
+            payload: getSuiteDevice({
+                path: '1',
+                firmware: 'required',
+            }),
+            router: {
+                app: 'firmware',
+            },
+        },
+    },
+    {
         description: `one unacquired device`,
         state: {
             devices: [SUITE_DEVICE_UNACQUIRED],

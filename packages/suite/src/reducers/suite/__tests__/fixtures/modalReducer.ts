@@ -1,5 +1,6 @@
 import { DEVICE, UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
+import { RECEIVE } from '@wallet-actions/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 // Default devices
@@ -171,20 +172,22 @@ export default [
             windowType: 'no-backup',
         },
     },
-    // {
-    //     description: 'RECEIVE.REQUEST_UNVERIFIED',
-    //     initialState,
-    //     actions: [
-    //         {
-    //             type: RECEIVE.REQUEST_UNVERIFIED,
-    //             payload: SUITE_DEVICE,
-    //         },
-    //     ],
-    //     result: {
-    //         ...deviceContextState,
-    //         windowType: RECEIVE.REQUEST_UNVERIFIED,
-    //     },
-    // },
+    {
+        description: 'RECEIVE.REQUEST_UNVERIFIED',
+        initialState,
+        actions: [
+            {
+                type: RECEIVE.REQUEST_UNVERIFIED,
+                device: SUITE_DEVICE,
+                addressPath: `m/44'/0'/0'/0/0`,
+            },
+        ],
+        result: {
+            ...deviceContextState,
+            windowType: RECEIVE.REQUEST_UNVERIFIED,
+            addressPath: `m/44'/0'/0'/0/0`,
+        },
+    },
     {
         description: 'SUITE.REQUEST_REMEMBER_DEVICE',
         initialState,
@@ -228,6 +231,18 @@ export default [
         },
     },
     {
+        description: 'MODAL.OVERLAY_ONLY',
+        initialState,
+        actions: [
+            {
+                type: MODAL.OVERLAY_ONLY,
+            },
+        ],
+        result: {
+            context: MODAL.OVERLAY_ONLY,
+        },
+    },
+    {
         description: 'SUITE.REQUEST_PASSPHRASE_MODE',
         initialState,
         actions: [
@@ -241,16 +256,16 @@ export default [
             windowType: SUITE.REQUEST_PASSPHRASE_MODE,
         },
     },
-    // {
-    //     description: 'UI.CLOSE_UI_WINDOW',
-    //     initialState: deviceContextState,
-    //     actions: [
-    //         {
-    //             type: UI.CLOSE_UI_WINDOW,
-    //         },
-    //     ],
-    //     result: initialState,
-    // },
+    {
+        description: 'UI.CLOSE_UI_WINDOW',
+        initialState: deviceContextState,
+        actions: [
+            {
+                type: UI.CLOSE_UI_WINDOW,
+            },
+        ],
+        result: initialState,
+    },
     {
         description: 'MODAL.CLOSE',
         initialState: deviceContextState,
@@ -290,20 +305,6 @@ export default [
             },
         ],
         result: initialState,
-    },
-    {
-        description: 'MODAL.OPEN_EXTERNAL_WALLET',
-        initialState,
-        actions: [
-            {
-                type: MODAL.OPEN_EXTERNAL_WALLET,
-                id: 'wallet-id',
-            },
-        ],
-        result: {
-            context: MODAL.CONTEXT_EXTERNAL_WALLET,
-            windowType: 'wallet-id',
-        },
     },
     {
         description: 'MODAL.OPEN_SCAN_QR',
