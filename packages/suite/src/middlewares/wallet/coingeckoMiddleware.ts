@@ -1,9 +1,9 @@
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch } from '@suite-types/index';
 import { SUITE } from '@suite-actions/constants';
 import { httpRequest } from '@wallet-utils/networkUtils';
 import { resolveAfter } from '@wallet-utils/promiseUtils';
 import { FIAT } from '@suite-config';
+import { AppState, Action, Dispatch } from '@suite-types';
 
 export const RATE_UPDATE = '@rate/update';
 

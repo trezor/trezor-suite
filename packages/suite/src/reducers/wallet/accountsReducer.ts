@@ -1,16 +1,16 @@
 import produce from 'immer';
-import { ACCOUNT } from '@wallet-actions/constants';
-import { Action } from '@wallet-types/index';
 import { AccountInfo } from 'trezor-connect';
+import { ACCOUNT } from '@wallet-actions/constants';
+import { Action, Network } from '@wallet-types';
 
 export interface Account {
     deviceState: string;
     index: number;
     path: string;
     descriptor: string;
-    accountType: 'normal' | 'segwit' | 'legacy';
-    networkType: 'bitcoin' | 'ethereum' | 'ripple';
-    symbol: string;
+    accountType: NonNullable<Network['accountType']>;
+    networkType: Network['networkType'];
+    symbol: Network['symbol'];
     empty: boolean;
     visible: boolean;
     imported?: boolean;

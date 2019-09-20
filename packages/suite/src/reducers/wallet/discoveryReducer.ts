@@ -1,7 +1,8 @@
 import produce from 'immer';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Deferred, createDeferred } from '@suite-utils/deferred';
-import { Action, ObjectValues } from '@suite-types';
+import { ObjectValues } from '@suite/types/utils';
+import { Action } from '@suite-types';
 
 export const DISCOVERY_STATUS = {
     IDLE: 0,

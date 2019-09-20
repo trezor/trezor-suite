@@ -1,8 +1,8 @@
 // import { UI } from 'trezor-connect';
 import produce from 'immer';
 import { RECEIVE, ACCOUNT } from '@wallet-actions/constants';
-// import { Action } from '@wallet-types/index';
-import { Action as SuiteAction } from '@suite-types/index';
+// import { Action } from '@wallet-types';
+import { Action as SuiteAction } from '@suite-types';
 
 export interface ReceiveInfo {
     descriptor: string;

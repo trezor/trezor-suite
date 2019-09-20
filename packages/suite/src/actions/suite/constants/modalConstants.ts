@@ -1,5 +1,4 @@
 export const CLOSE = '@modal/close';
-export const OPEN_EXTERNAL_WALLET = '@modal/external-wallet';
 export const CONTEXT_NONE = '@modal/context-none';
 export const CONTEXT_DEVICE = '@modal/context-device';
 export const CONTEXT_EXTERNAL_WALLET = '@modal/context-external-wallet';

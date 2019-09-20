@@ -43,10 +43,6 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
         case 'zec':
         case 'eth':
         case 'etc':
-        case 'xem':
-        case 'xlm':
-        case 'ada':
-        case 'xtz':
             return addressValidator.validate(
                 address,
                 symbolWithoutTestnets.toUpperCase(),
