@@ -89,7 +89,7 @@ export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:
-                // gather transactions from account creation
+                // gather transactions from account.create action
                 add(draft, action.payload.history.transactions || [], action.payload, 1);
                 break;
             // case TRANSACTION.ADD:

@@ -1,10 +1,11 @@
-import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants/index';
+import { TRANSACTION } from '@wallet-actions/constants/index';
 
 import { Dispatch, GetState } from '@suite-types/index';
 import { db } from '@suite/storage';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect, { ResponseMessage, AccountInfo, AccountTransaction } from 'trezor-connect';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
+import * as accountActions from '@wallet-actions/accountActions';
 import { SETTINGS } from '@suite/config/suite';
 import { Account } from '@wallet-types';
 
@@ -153,10 +154,7 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
                 page,
             });
 
-            dispatch({
-                type: ACCOUNT.UPDATE,
-                payload: updatedAccount,
-            });
+            dispatch(accountActions.update(account, result.payload));
         } else {
             dispatch({
                 type: TRANSACTION.FETCH_ERROR,
