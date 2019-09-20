@@ -15,6 +15,7 @@ import l10nCommonMessages from '@suite-views/index.messages';
 import { isDev } from '@suite-utils/build';
 import { SENTRY } from '@suite-config';
 import { Store } from '@suite-types';
+import ImagesPreloader from '../support/ImagesPreloader';
 
 interface Props {
     store: Store;
@@ -39,6 +40,7 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
+                <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
                     <IntlProvider>
