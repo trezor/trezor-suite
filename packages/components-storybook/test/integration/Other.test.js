@@ -70,19 +70,14 @@ describe('Other', () => {
     ];
 
     tests.forEach(testName => {
-        if (testName.match(/icon|coin|logo|prompt|header/)) {
-            cy.getTestElement(testName)
-                .find('.loading')
-                .each(el => {
-                    cy.get(el).should('not.exist');
-                });
-
-            cy.getTestElement(testName)
-                .find('svg')
-                .should('be.visible');
-        }
-
         it(`${testName}`, () => {
+            if (testName.match(/icon|coin|logo|prompt|header/)) {
+                cy.getTestElement(testName)
+                    .find('svg')
+                    .should('exist')
+                    .should('be.visible');
+            }
+
             cy.getTestElement(testName)
                 .matchImageSnapshot();
         });
