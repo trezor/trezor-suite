@@ -47,7 +47,6 @@ const Wrapper = styled.button<Props>`
     display: flex;
     position: relative;
     align-items: center;
-    justify-content: center;
     padding: 11px 24px;
     text-align: center;
     border-radius: 3px;
@@ -59,6 +58,8 @@ const Wrapper = styled.button<Props>`
     color: ${colors.WHITE};
     border: 1px solid ${props => getPrimaryColor(props.variant)};
     transition: ${TRANSITION.HOVER};
+    justify-content: ${(props: Props) =>
+        props.textAlign === 'right' ? 'flex-end' : props.textAlign || 'center'};
 
     &:hover {
         background: ${props => getSecondaryColor(props.variant)};
@@ -195,7 +196,7 @@ const Wrapper = styled.button<Props>`
             }
         `}
 `;
-
+const TextWrapper = styled.div``;
 const IconWrapper = styled.div`
     align-items: center;
     margin-right: 0.8rem;
@@ -214,6 +215,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: IconType;
     variant?: FeedbackType;
     fullWidth?: boolean;
+    textAlign?: string;
 }
 
 const Button = ({
@@ -227,6 +229,7 @@ const Button = ({
     isInverse = false,
     isLoading = false,
     fullWidth = false,
+    textAlign = 'center',
     icon,
     ...rest
 }: Props) => {
@@ -242,6 +245,7 @@ const Button = ({
             fullWidth={fullWidth}
             variant={variant}
             icon={icon}
+            textAlign={textAlign}
             {...rest}
         >
             {isLoading && (
@@ -263,7 +267,7 @@ const Button = ({
                     />
                 </IconWrapper>
             )}
-            {children}
+            <TextWrapper>{children}</TextWrapper>
         </Wrapper>
     );
 };
