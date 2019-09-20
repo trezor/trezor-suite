@@ -1,7 +1,7 @@
 import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
 import BigNumber from 'bignumber.js';
-import { Account, Network } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 
 export const parseBIP44Path = (path: string) => {
@@ -94,7 +94,7 @@ export const formatAmount = (amount: string, symbol: string) => {
 
 export const sortByCoin = (accounts: Account[]) => {
     return accounts.sort((a, b) => {
-        const aIndex = NETWORKS.findIndex((n: Network) => {
+        const aIndex = NETWORKS.findIndex(n => {
             const accountType = n.accountType || 'normal';
             return accountType === a.accountType && n.symbol === a.symbol;
         });

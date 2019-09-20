@@ -3,7 +3,6 @@ import { STORAGE } from '@suite-actions/constants';
 import { SETTINGS } from '@wallet-actions/constants';
 import { EXTERNAL_NETWORKS } from '@wallet-config';
 import { Action } from '@suite-types';
-import { ExternalNetwork } from '@wallet-types';
 
 export interface State {
     localCurrency: string;
@@ -16,9 +15,7 @@ export const initialState: State = {
     localCurrency: 'usd',
     hideBalance: false,
     enabledNetworks: ['btc', 'test'],
-    enabledExternalNetworks: EXTERNAL_NETWORKS.filter((n: ExternalNetwork) => !n.isHidden).map(
-        n => n.symbol,
-    ),
+    enabledExternalNetworks: EXTERNAL_NETWORKS.filter(n => !n.isHidden).map(n => n.symbol),
 };
 
 export default (state: State = initialState, action: Action): State => {
