@@ -7,7 +7,7 @@ import { Icon } from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
-import { FeedbackType, IconType } from '../../../support/types';
+import { ButtonVariant, IconType } from '../../../support/types';
 
 interface FluidSpinnerProps {
     size: number;
@@ -132,9 +132,8 @@ const Wrapper = styled.button<Props>`
         `}
 
     ${props =>
-        props.isWhite &&
+        props.variant === 'white' &&
         css`
-            background: ${colors.WHITE};
             color: ${colors.TEXT_SECONDARY};
             border: 1px solid ${colors.DIVIDER};
 
@@ -207,7 +206,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isTransparent?: boolean;
     isLoading?: boolean;
     icon?: IconType;
-    variant?: FeedbackType;
+    variant?: ButtonVariant;
 }
 
 const Button = ({
@@ -274,7 +273,7 @@ Button.propTypes = {
     isInverse: PropTypes.bool,
     isLoading: PropTypes.bool,
     icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
+    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error', 'white']),
 };
 
 export { Button, Props as ButtonProps };
