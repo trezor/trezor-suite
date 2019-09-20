@@ -2,6 +2,34 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Device, Features } from 'trezor-connect';
 import { TrezorDevice } from '@suite-types';
+import { Account } from '@wallet-types';
+
+/**
+ * Generate wallet account
+ * @param {Partial<Features>} [feat]
+ * @returns {Features}
+ */
+const getWalletAccount = (account?: Partial<Account>): Account => ({
+    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+    index: 1,
+    path: "m/44'/60'/0'/0/1",
+    descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
+    accountType: 'normal',
+    networkType: 'ethereum',
+    symbol: 'eth',
+    empty: false,
+    visible: true,
+    balance: '0',
+    availableBalance: '0',
+    tokens: [],
+    history: { total: 13, tokens: 0, unconfirmed: 0 },
+    misc: { nonce: '6' },
+    page: { index: 1, size: 25, total: 1 },
+    utxo: undefined,
+    marker: undefined,
+    addresses: undefined,
+    ...account,
+});
 
 /**
  * Generate device Features
@@ -91,6 +119,7 @@ declare global {
                 getDeviceFeatures: typeof getDeviceFeatures;
                 getConnectDevice: typeof getConnectDevice;
                 getSuiteDevice: typeof getSuiteDevice;
+                getWalletAccount: typeof getWalletAccount;
                 intlMock: typeof intlMock;
             };
         }
@@ -106,5 +135,6 @@ global.JestMocks = {
     getDeviceFeatures,
     getConnectDevice,
     getSuiteDevice,
+    getWalletAccount,
     intlMock,
 };

@@ -18,54 +18,12 @@ export const getAccountTransactions = [
     {
         testName: 'BTC account, 2txs',
         transactions: TXS,
-        account: {
+        account: global.JestMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-            index: 0,
-            path: "m/84'/0'/0'",
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-            accountType: 'normal',
-            networkType: 'bitcoin',
             symbol: 'btc',
-            empty: false,
-            visible: true,
-            balance: '0',
-            availableBalance: '0',
-            addresses: {
-                change: [
-                    {
-                        address: 'bc1qktmhrsmsenepnnfst8x6j27l0uqv7ggrg8x38q',
-                        path: "m/84'/0'/0'/1/0",
-                        transfers: 0,
-                    },
-                ],
-                used: [
-                    {
-                        address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
-                        path: "m/84'/0'/0'/0/0",
-                        transfers: 2,
-                        balance: '0',
-                        sent: '9426',
-                        received: '9426',
-                    },
-                ],
-                unused: [
-                    {
-                        address: 'bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m',
-                        path: "m/84'/0'/0'/0/1",
-                        transfers: 0,
-                    },
-                    {
-                        address: 'bc1qgg7cs4eq2l4qddud4nqhqh656560x6r7mlftfl',
-                        path: "m/84'/0'/0'/0/20",
-                        transfers: 0,
-                    },
-                ],
-            },
-            utxo: [],
-            history: { total: 2, unconfirmed: 0 },
-            page: { index: 1, size: 25, total: 1 },
-        },
+        }),
         result: [
             {
                 amount: '0.00006497',
@@ -109,22 +67,11 @@ export const getAccountTransactions = [
     {
         testName: 'XRP testnet account, 2',
         transactions: TXS,
-        account: {
+        account: global.JestMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-            index: 0,
-            path: "m/44'/144'/0'/0/0",
             descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
-            accountType: 'normal',
-            networkType: 'ripple',
             symbol: 'txrp',
-            empty: false,
-            visible: true,
-            balance: '935200000',
-            availableBalance: '915200000',
-            history: { total: -1, unconfirmed: 0, transactions: [] },
-            misc: { sequence: 1, reserve: '20000000' },
-            marker: null,
-        },
+        }),
         result: [
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
@@ -174,32 +121,11 @@ export const getAccountTransactions = [
     {
         testName: 'eth account, 13 txs',
         transactions: TXS,
-        account: {
+        account: global.JestMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-            index: 1,
-            path: "m/44'/60'/0'/0/1",
             descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
-            accountType: 'normal',
-            networkType: 'ethereum',
             symbol: 'eth',
-            empty: false,
-            visible: true,
-            balance: '0',
-            availableBalance: '0',
-            tokens: [
-                {
-                    type: 'ERC20',
-                    name: 'Golem Network Token',
-                    symbol: 'GNT',
-                    address: '0xa74476443119a942de498590fe1f2454d7d4ac0d',
-                    balance: '0',
-                    decimals: 18,
-                },
-            ],
-            history: { total: 13, tokens: 2, unconfirmed: 0 },
-            misc: { nonce: '6' },
-            page: { index: 1, size: 25, total: 1 },
-        },
+        }),
         result: [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -571,22 +497,11 @@ export const getAccountTransactions = [
     {
         testName: 'eth account, 0 txs',
         transactions: TXS,
-        account: {
+        account: global.JestMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-            index: 5,
-            path: "m/44'/60'/0'/0/5",
             descriptor: '0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2',
-            accountType: 'normal',
-            networkType: 'ethereum',
             symbol: 'eth',
-            empty: true,
-            visible: true,
-            balance: '0',
-            availableBalance: '0',
-            history: { total: 0, unconfirmed: 0 },
-            misc: { nonce: '0' },
-            page: { index: 1, size: 25, total: 1 },
-        },
+        }),
         result: [],
     },
 ];
