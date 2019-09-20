@@ -1,10 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_COMPLETE_ON_DEVICE: {
-        id: 'COMPLETE_OND_DEVICE',
-        defaultMessage: 'Complete the action on {deviceLabel} device',
-    },
     TR_IF_WRONG_PASSPHRASE: {
         id: 'TR_IF_WRONG_PASSPHRASE',
         defaultMessage:
