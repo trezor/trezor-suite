@@ -52,6 +52,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Try again',
         description: 'Try to run the process again',
     },
+    TR_COMPLETE_ACTION_ON_DEVICE: {
+        id: 'TR_COMPLETE_ACTION_ON_DEVICE',
+        defaultMessage: 'Complete the action on "{device.label}" device',
+    },
 });
 
 export default definedMessages;
