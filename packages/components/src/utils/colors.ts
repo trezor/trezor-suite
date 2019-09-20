@@ -1,29 +1,7 @@
 import colors from '../config/colors';
 import { FeedbackType, ButtonVariant } from '../support/types';
 
-const getPrimaryColor = (type?: FeedbackType) => {
-    let color;
-    switch (type) {
-        case 'info':
-            color = colors.INFO_PRIMARY;
-            break;
-        case 'error':
-            color = colors.ERROR_PRIMARY;
-            break;
-        case 'warning':
-            color = colors.WARNING_PRIMARY;
-            break;
-        case 'success':
-            color = colors.SUCCESS_PRIMARY;
-            break;
-        default:
-            color = null;
-    }
-
-    return color;
-};
-
-const getPrimaryColorBtn = (type?: ButtonVariant) => {
+const getPrimaryColor = (type?: ButtonVariant) => {
     let color;
     switch (type) {
         case 'info':
@@ -39,7 +17,7 @@ const getPrimaryColorBtn = (type?: ButtonVariant) => {
             color = colors.SUCCESS_PRIMARY;
             break;
         case 'white':
-            color = colors.INFO_PRIMARY;
+            color = colors.WHITE;
             break;
         default:
             color = null;
@@ -48,29 +26,7 @@ const getPrimaryColorBtn = (type?: ButtonVariant) => {
     return color;
 };
 
-const getSecondaryColor = (type?: FeedbackType) => {
-    let color;
-    switch (type) {
-        case 'info':
-            color = colors.INFO_SECONDARY;
-            break;
-        case 'error':
-            color = colors.ERROR_SECONDARY;
-            break;
-        case 'warning':
-            color = colors.WARNING_SECONDARY;
-            break;
-        case 'success':
-            color = colors.SUCCESS_SECONDARY;
-            break;
-        default:
-            color = null;
-    }
-
-    return color;
-};
-
-const getSecondaryColorBtn = (type?: ButtonVariant) => {
+const getSecondaryColor = (type?: ButtonVariant) => {
     let color;
     switch (type) {
         case 'info':
@@ -117,10 +73,4 @@ const getNotificationBgColor = (type?: FeedbackType) => {
     return color;
 };
 
-export {
-    getPrimaryColor,
-    getPrimaryColorBtn,
-    getSecondaryColor,
-    getSecondaryColorBtn,
-    getNotificationBgColor,
-};
+export { getPrimaryColor, getSecondaryColor, getNotificationBgColor };

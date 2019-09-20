@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import { Icon } from '../../Icon';
-import { getPrimaryColorBtn, getSecondaryColorBtn } from '../../../utils/colors';
+import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
 import { ButtonVariant, IconType } from '../../../support/types';
@@ -55,13 +55,13 @@ const Wrapper = styled.button<Props>`
     font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;
     outline: none;
-    background: ${props => getPrimaryColorBtn(props.variant)};
+    background: ${props => getPrimaryColor(props.variant)};
     color: ${colors.WHITE};
-    border: 1px solid ${props => getPrimaryColorBtn(props.variant)};
+    border: 1px solid ${props => getPrimaryColor(props.variant)};
     transition: ${TRANSITION.HOVER};
 
     &:hover {
-        background: ${props => getSecondaryColorBtn(props.variant)};
+        background: ${props => getSecondaryColor(props.variant)};
     }
 
     &:focus {
@@ -69,7 +69,7 @@ const Wrapper = styled.button<Props>`
     }
 
     &:active {
-        background: ${props => getSecondaryColorBtn(props.variant)};
+        background: ${props => getSecondaryColor(props.variant)};
     }
 
     ${props =>
@@ -88,11 +88,11 @@ const Wrapper = styled.button<Props>`
         !props.isLoading &&
         css`
             background: transparent;
-            color: ${getPrimaryColorBtn(props.variant)};
-            border: 1px solid ${getPrimaryColorBtn(props.variant)};
+            color: ${getPrimaryColor(props.variant)};
+            border: 1px solid ${getPrimaryColor(props.variant)};
             &:hover,
             &:active {
-                background: ${getPrimaryColorBtn(props.variant)};
+                background: ${getPrimaryColor(props.variant)};
                 color: ${colors.WHITE};
 
                 &:before,
@@ -108,7 +108,7 @@ const Wrapper = styled.button<Props>`
             }
 
             &:active {
-                background: ${getPrimaryColorBtn(props.variant)};
+                background: ${getPrimaryColor(props.variant)};
             }
         `}
 
@@ -134,7 +134,6 @@ const Wrapper = styled.button<Props>`
     ${props =>
         props.variant === 'white' &&
         css`
-            background: ${colors.WHITE};
             color: ${colors.TEXT_SECONDARY};
             border: 1px solid ${colors.DIVIDER};
 
@@ -251,9 +250,7 @@ const Button = ({
                     <Icon
                         icon={icon}
                         size={14}
-                        color={
-                            isInverse ? getPrimaryColorBtn(variant) || colors.WHITE : colors.WHITE
-                        }
+                        color={isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE}
                     />
                 </IconWrapper>
             )}
