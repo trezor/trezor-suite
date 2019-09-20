@@ -15,3 +15,10 @@ export interface Network {
     decimals: number;
     explorer: Explorer;
 }
+export interface ExternalNetwork {
+    networkType: 'external';
+    name: string;
+    symbol: string;
+    url: string;
+    isHidden?: boolean;
+}
