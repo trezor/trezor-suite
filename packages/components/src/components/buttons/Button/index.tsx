@@ -47,8 +47,8 @@ const Wrapper = styled.button<Props>`
     display: flex;
     position: relative;
     align-items: center;
-    justify-content: center;
     padding: 11px 24px;
+    text-align: center;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BASE};
     font-weight: ${FONT_WEIGHT.LIGHT};
@@ -58,6 +58,8 @@ const Wrapper = styled.button<Props>`
     color: ${colors.WHITE};
     border: 1px solid ${props => getPrimaryColor(props.variant)};
     transition: ${TRANSITION.HOVER};
+    justify-content: ${(props: Props) =>
+        props.textAlign === 'right' ? 'flex-end' : props.textAlign || 'center'};
 
     &:hover {
         background: ${props => getSecondaryColor(props.variant)};
@@ -129,6 +131,12 @@ const Wrapper = styled.button<Props>`
                 }
             }
         `}
+    ${props =>
+        props.fullWidth &&
+        css`
+            width: 100%;
+            vertical-align: middle;
+        `}
 
     ${props =>
         props.isWhite &&
@@ -188,9 +196,8 @@ const Wrapper = styled.button<Props>`
             }
         `}
 `;
-
+const TextWrapper = styled.div``;
 const IconWrapper = styled.div`
-    flex: 1;
     align-items: center;
     margin-right: 0.8rem;
     display: flex;
@@ -207,6 +214,8 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isLoading?: boolean;
     icon?: IconType;
     variant?: FeedbackType;
+    fullWidth?: boolean;
+    textAlign?: string;
 }
 
 const Button = ({
@@ -219,6 +228,8 @@ const Button = ({
     isTransparent = false,
     isInverse = false,
     isLoading = false,
+    fullWidth = false,
+    textAlign = 'center',
     icon,
     ...rest
 }: Props) => {
@@ -231,8 +242,10 @@ const Button = ({
             isTransparent={isTransparent}
             isInverse={isInverse}
             isLoading={isLoading}
+            fullWidth={fullWidth}
             variant={variant}
             icon={icon}
+            textAlign={textAlign}
             {...rest}
         >
             {isLoading && (
@@ -254,7 +267,7 @@ const Button = ({
                     />
                 </IconWrapper>
             )}
-            {children}
+            <TextWrapper>{children}</TextWrapper>
         </Wrapper>
     );
 };
