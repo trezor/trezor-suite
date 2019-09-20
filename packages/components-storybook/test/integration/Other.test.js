@@ -75,7 +75,8 @@ describe('Other', () => {
                 cy.getTestElement(testName)
                     .find('svg')
                     .should('exist')
-                    .should('be.visible');
+                    .should('be.visible')
+                    .wait(1000);
             }
 
             cy.getTestElement(testName)
