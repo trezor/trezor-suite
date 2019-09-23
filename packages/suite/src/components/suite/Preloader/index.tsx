@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
-import Router from '@suite-support/Router';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import { SUITE } from '@suite-actions/constants';
 import SuiteWrapper from '@suite-components/SuiteWrapper';
@@ -45,7 +44,6 @@ const Preloader: React.FunctionComponent<Props> = props => {
     if (isStatic)
         return (
             <StaticPageWrapper>
-                <Router />
                 <OnlineStatus />
                 {props.children}
             </StaticPageWrapper>
@@ -53,7 +51,6 @@ const Preloader: React.FunctionComponent<Props> = props => {
 
     return (
         <SuiteWrapper>
-            <Router />
             <OnlineStatus />
             {loaded && props.children}
         </SuiteWrapper>
