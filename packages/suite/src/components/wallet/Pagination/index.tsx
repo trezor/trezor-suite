@@ -34,6 +34,7 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
     // if totalPages is undefined show only start/prev/next buttons
     const showNext = totalPages ? currentPage < totalPages : !isOnLastPage;
     const showPrevious = currentPage > 1;
+    // array of int used for creating all page buttons
     const calculatedPages = useMemo(() => [...Array(totalPages)].map((_p, i) => i + 1), [
         totalPages,
     ]);
@@ -55,9 +56,14 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
                     </PageItem>
                 ))
             ) : (
-                <PageItem onClick={() => onPageSelected(currentPage)} isActive>
-                    {currentPage}
-                </PageItem>
+                <>
+                    {[...Array(currentPage - 1)].map((_p, i) => (
+                        <PageItem onClick={() => onPageSelected(i + 1)}>{i + 1}</PageItem>
+                    ))}
+                    <PageItem onClick={() => onPageSelected(currentPage)} isActive>
+                        {currentPage}
+                    </PageItem>
+                </>
             )}
             <Actions isActive={showNext}>
                 <PageItem onClick={() => onPageSelected(currentPage + 1)}>›</PageItem>
