@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import NetworkTypeBitcoin from './NetworkTypeBitcoin/Container';
-import NetworkTypeEthereum from './NetworkTypeEthereum/Container';
-import NetworkTypeXrp from './NetworkTypeXrp/Container';
+import NetworkTypeBitcoin from './components/NetworkTypeBitcoin/Container';
+import NetworkTypeEthereum from './components/NetworkTypeEthereum/Container';
+import NetworkTypeXrp from './components/NetworkTypeXrp/Container';
 
 import { Network } from '@wallet-types';
 

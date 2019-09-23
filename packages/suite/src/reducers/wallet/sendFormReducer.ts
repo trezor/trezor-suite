@@ -11,6 +11,7 @@ export interface State {
     fiatValue: null | string;
     localCurrency: { value: string; label: string };
     fee: null | { value: string; label: string };
+    customFee: null | string;
     isAdditionalFormVisible: boolean;
     errors: {
         address: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_VALID;
@@ -19,15 +20,17 @@ export interface State {
             | typeof VALIDATION_ERRORS.IS_EMPTY
             | typeof VALIDATION_ERRORS.NOT_NUMBER
             | typeof VALIDATION_ERRORS.NOT_ENOUGH;
+        customFee: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_NUMBER;
     };
-    xrp: {
+    networkTypeRipple: {
         destinationTag: null | string;
     };
-    eth: {
+    networkTypeEthereum: {
         gasLimit: null | string;
         gasPrice: null | string;
         data: null | string;
     };
+    networkTypeBitcoin: {};
 }
 
 export const initialState: State = {
@@ -35,17 +38,19 @@ export const initialState: State = {
     amount: null,
     fiatValue: null,
     fee: null,
+    customFee: null,
     localCurrency: { value: 'usd', label: 'USD' },
     isAdditionalFormVisible: false,
-    errors: { address: null, amount: null },
-    xrp: {
+    errors: { address: null, amount: null, customFee: null },
+    networkTypeRipple: {
         destinationTag: null,
     },
-    eth: {
+    networkTypeEthereum: {
         gasPrice: null,
         gasLimit: null,
         data: null,
     },
+    networkTypeBitcoin: {},
 };
 
 export default (state: State = initialState, action: Action): State => {
@@ -110,6 +115,24 @@ export default (state: State = initialState, action: Action): State => {
             case SEND.HANDLE_FEE_VALUE_CHANGE: {
                 const { fee } = action;
                 draft.fee = fee;
+                break;
+            }
+
+            // change select "Fee"
+            case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
+                const { customFee } = action;
+                draft.errors.customFee = null;
+                draft.customFee = customFee;
+
+                if (validator.isEmpty(customFee)) {
+                    draft.errors.customFee = VALIDATION_ERRORS.IS_EMPTY;
+                    return draft;
+                }
+
+                if (!validator.isNumeric(customFee)) {
+                    draft.errors.customFee = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
                 break;
             }
 

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
+import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { State as ReducerState } from '@wallet-reducers/sendFormReducer';
 import { FeeItem } from '@wallet-reducers/feesReducer';
 import { getFiatValue } from '@wallet-utils/accountUtils';
@@ -16,6 +17,7 @@ export type SendFormActions =
     | { type: typeof SEND.SET_MAX }
     | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: null | string }
     | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeItem }
+    | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: null | string }
     | {
           type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
           localCurrency: ReducerState['localCurrency'];
@@ -163,15 +165,28 @@ const setMax = () => (dispatch: Dispatch, getState: GetState) => {
 /*
     Change value in select "Fee"
  */
-const handleFeeValueChange = (fee: FeeItem) => (dispatch: Dispatch, getState: GetState) => {
+const handleFeeValueChange = (fee: { value: string; label: string }) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { send } = getState().wallet;
     if (!send) return null;
 
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
 
-    if (!send.isAdditionalFormVisible) {
+    if (!send.isAdditionalFormVisible && fee.value === CUSTOM_FEE) {
         dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
     }
+};
+
+/*
+    Change value in additional form - select "Fee"
+ */
+const handleCustomFeeValueChange = (customFee: ReducerState['customFee']) => (
+    dispatch: Dispatch,
+) => {
+    dispatch({ type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE, customFee });
+    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee: { label: CUSTOM_FEE, value: CUSTOM_FEE } });
 };
 
 /*
@@ -210,6 +225,7 @@ export {
     handleFiatInputChange,
     handleSelectCurrencyChange,
     handleFeeValueChange,
+    handleCustomFeeValueChange,
     toggleAdditionalFormVisibility,
     clear,
     send,

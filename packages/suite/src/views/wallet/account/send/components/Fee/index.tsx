@@ -1,13 +1,12 @@
 import React from 'react';
 import { colors, Select, P } from '@trezor/components';
 import styled from 'styled-components';
+import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import accountMessages from '@wallet-views/account/messages';
 import { FeeItem } from '@wallet-reducers/feesReducer';
 import { DispatchProps } from '../../Container';
 import { Fee, Account } from '@wallet-types';
-
-const CUSTOM_FEE = 'custom';
 
 const Wrapper = styled.div`
     display: flex;
