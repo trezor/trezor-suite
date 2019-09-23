@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '../../config/colors';
@@ -53,7 +53,7 @@ interface Props {
     className?: string;
 }
 
-const Link: FunctionComponent<Props> = props => (
+const Link = (props: Props) => (
     <A href={props.href} target={props.target || '_blank'} rel="noreferrer noopener" {...props}>
         {props.children}
     </A>
