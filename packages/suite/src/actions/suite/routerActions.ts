@@ -74,7 +74,7 @@ export const goto = (routeName: Route['name'], preserveParams: boolean = false) 
     }
 };
 
-export const back = async () => {
+export const back = () => {
     Router.back();
 };
 
@@ -84,7 +84,7 @@ export const back = async () => {
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
     const { initialRun } = getState().suite;
-    const unlocked = true; // dispatch(onBeforePopState());
+    const unlocked = dispatch(onBeforePopState());
     if (initialRun && unlocked) {
         await dispatch(goto('onboarding-index'));
     }
