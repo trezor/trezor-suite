@@ -61,14 +61,13 @@ export const getSelectedAccount = (
     device: AppState['suite']['device'],
     routerParams: AppState['router']['params'],
 ) => {
-    if (!device || !routerParams.symbol || !routerParams.accountId || !routerParams.accountType)
-        return null;
+    if (!device || !routerParams) return null;
 
     // imported account index has 'i' prefix
-    const isImported = /^i\d+$/i.test(routerParams.accountId);
-    const index: number = isImported
-        ? parseInt(routerParams.accountId.substr(1), 10)
-        : parseInt(routerParams.accountId, 10);
+    // const isImported = /^i\d+$/i.test(routerParams.accountIndex);
+    // const index: number = isImported
+    //     ? parseInt(routerParams.accountIndex.substr(1), 10)
+    //     : parseInt(routerParams.accountIndex, 10);
 
     // TODO: filter deviceState;
     // return accounts.find(
@@ -83,7 +82,7 @@ export const getSelectedAccount = (
     return (
         accounts.find(
             a =>
-                a.index === index &&
+                a.index === routerParams.accountIndex &&
                 a.symbol === routerParams.symbol &&
                 a.accountType === routerParams.accountType,
         ) || null

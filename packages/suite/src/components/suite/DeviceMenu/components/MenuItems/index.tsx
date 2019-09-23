@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { getRoute } from '@suite-utils/router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { goto } from '@suite-actions/routerActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { Switch, Icon, colors, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { setHideBalance } from '@wallet-actions/settingsActions';
@@ -53,8 +52,6 @@ const IconWrapper = styled.div`
     margin-right: 15px;
 `;
 
-// const Link = styled.a``;
-
 const SwitchWrapper = styled.div``;
 
 const mapStateToProps = (state: AppState) => ({
@@ -62,6 +59,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+    goto: bindActionCreators(routerActions.goto, dispatch),
     setHideBalance: bindActionCreators(setHideBalance, dispatch),
     acquireDevice: bindActionCreators(suiteActions.acquireDevice, dispatch),
     selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
@@ -78,6 +76,7 @@ type Props = {
 const MenuItems = ({
     device,
     instances,
+    goto,
     setHideBalance,
     settings,
     acquireDevice,
@@ -119,7 +118,7 @@ const MenuItems = ({
                     </Label>
                 </Item>
             )}
-            <Item onClick={() => goto(getRoute('suite-device-settings'))}>
+            <Item onClick={() => goto('suite-device-settings')}>
                 <IconWrapper>
                     <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
@@ -164,7 +163,7 @@ const MenuItems = ({
                 </SwitchWrapper>
             </Item>
             <Divider />
-            <Item onClick={() => goto(getRoute('wallet-settings'))}>
+            <Item onClick={() => goto('wallet-settings')}>
                 <IconWrapper>
                     <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>

@@ -131,9 +131,9 @@ interface Props {
 
 const Row = React.memo(({ account, hideBalance, selected }: Props) => (
     <StyledLink
-        href={getRoute('wallet-account', {
-            accountId: account.index,
+        href={getRoute('wallet-account-summary', {
             symbol: account.symbol,
+            accountIndex: account.index,
             accountType: account.accountType,
         })}
     >

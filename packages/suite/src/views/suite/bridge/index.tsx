@@ -5,10 +5,9 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
 import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/components';
-import { goto } from '@suite-actions/routerActions';
-import { getRoute } from '@suite/utils/suite/router';
+import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
-import { AppState } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
@@ -85,9 +84,15 @@ const LoaderWrapper = styled.div`
     justify-items: center;
 `;
 
-interface BridgeProps {
-    transport: AppState['suite']['transport'];
-}
+const mapStateToProps = (state: AppState) => ({
+    transport: state.suite.transport,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    goto: bindActionCreators(routerActions.goto, dispatch),
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 interface Installer {
     label: string;
@@ -96,7 +101,7 @@ interface Installer {
     preferred: boolean;
 }
 
-const InstallBridge = (props: BridgeProps) => {
+const InstallBridge = (props: Props) => {
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
     const onChange = (value: Installer) => {
@@ -195,7 +200,7 @@ const InstallBridge = (props: BridgeProps) => {
                     <P>
                         <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
                         <br />
-                        <GoBack onClick={() => goto(getRoute('wallet-index'))}>
+                        <GoBack onClick={() => props.goto('wallet-index')}>
                             <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
                         </GoBack>
                     </P>
@@ -205,13 +210,7 @@ const InstallBridge = (props: BridgeProps) => {
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    transport: state.suite.transport,
-});
-
 export default connect(
     mapStateToProps,
-    dispatch => ({
-        goto: bindActionCreators(goto, dispatch),
-    }),
+    mapDispatchToProps,
 )(InstallBridge);
