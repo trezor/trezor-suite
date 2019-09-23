@@ -170,6 +170,10 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     tooltipAction?: React.ReactNode;
     sideAddons?: React.ReactNode;
     isDisabled?: boolean;
+    autoComplete?: string;
+    autoCorrect?: string;
+    autoCapitalize?: string;
+    spellCheck?: boolean;
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
@@ -191,6 +195,10 @@ const Input = ({
     sideAddons,
     isDisabled,
     isSmallText,
+    autoComplete = 'off',
+    autoCorrect = 'off',
+    autoCapitalize = 'off',
+    spellCheck = false,
     isPartiallyHidden,
     wrapperProps,
     ...rest
@@ -212,6 +220,9 @@ const Input = ({
                     <StyledInput
                         type={type}
                         autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
                         height={height}
                         tooltipAction={tooltipAction}
                         hasIcon={!!icon || !!getStateIcon(state)}

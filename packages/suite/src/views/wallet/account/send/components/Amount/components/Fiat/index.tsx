@@ -53,10 +53,6 @@ const Fiat = (props: Props) => (
         <EqualsSign>=</EqualsSign>
         <LocalCurrencyInput
             state={props.state}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
             value={props.value || ''}
             onChange={e => props.sendFormActions.handleFiatInputChange(e.target.value)}
             sideAddons={

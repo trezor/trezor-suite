@@ -124,7 +124,6 @@ const WordsInput = (props: Props) => {
                     }}
                     autoFocus
                     isSearchable
-                    // withDropdownIndicator={false}
                     isClearable={false}
                     controlShouldRenderValue={false}
                     noOptionsMessage={({ inputValue }: { inputValue: string }) =>

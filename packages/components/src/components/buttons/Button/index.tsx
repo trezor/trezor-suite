@@ -222,6 +222,7 @@ const Button = ({
     children,
     className,
     additionalClassName,
+
     variant = 'success',
     isDisabled = false,
     isWhite = false,
