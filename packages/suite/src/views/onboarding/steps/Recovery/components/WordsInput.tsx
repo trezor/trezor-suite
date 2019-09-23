@@ -134,7 +134,6 @@ const WordsInput = (props: Props) => {
                         submit(item.value);
                     }}
                     placeholder={props.intl.formatMessage(l10nMessages.TR_CHECK_YOUR_DEVICE)}
-                    // @ts-ignore weird error from the lib
                     options={sortedBip39}
                     filterOption={createFilter({
                         ignoreCase: true,

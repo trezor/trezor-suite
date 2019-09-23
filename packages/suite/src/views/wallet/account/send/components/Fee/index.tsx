@@ -12,12 +12,12 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const FeeLabel = styled.span`
+const Label = styled.span`
     color: ${colors.TEXT_SECONDARY};
     padding-bottom: 10px;
 `;
 
-const FeeOptionWrapper = styled.div`
+const OptionWrapper = styled.div`
     display: flex;
     justify-content: space-between;
 `;
@@ -42,35 +42,27 @@ interface Props {
 }
 
 const getValue = (fees: Fee, symbol: Account['symbol']) => {
-    let value;
-    try {
-        // @ts-ignore // TODO FIX TYPE
-        value = fees[symbol];
-    } catch {
-        value = { label: 'High', value: '0.000012' };
-    }
-    return value;
+    return fees[symbol].length === 1 ? fees[symbol] : fees[symbol][0];
 };
 
 const FeeComponent = (props: Props) => (
     <Wrapper>
-        <FeeLabel>
+        <Label>
             <FormattedMessage {...accountMessages.TR_FEE} />
-        </FeeLabel>
+        </Label>
         <Select
             isSearchable={false}
             isClearable={false}
             value={getValue(props.fees, props.symbol)}
             onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
-            // @ts-ignore fix this
-            options={[{ label: 'High', value: '0.000012' }]}
+            options={props.fees[props.symbol]}
             formatOptionLabel={option => (
-                <FeeOptionWrapper>
+                <OptionWrapper>
                     <OptionLabel>{option.label}</OptionLabel>
                     <OptionValue>
                         {option.value} {props.symbol.toUpperCase()}
                     </OptionValue>
-                </FeeOptionWrapper>
+                </OptionWrapper>
             )}
         />
     </Wrapper>
