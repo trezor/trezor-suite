@@ -2,12 +2,12 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { P, Button, variables, colors } from '@trezor/components';
-import { Network, Account } from '@wallet-types';
-import { NETWORKS } from '@suite-config';
+import { Network, ExternalNetwork, Account } from '@wallet-types';
+import { NETWORKS } from '@wallet-config';
 import l10nMessages from '../messages';
 
 interface Props {
-    selectedNetwork?: Network;
+    selectedNetwork?: Network | ExternalNetwork;
     enabledNetworks: string[];
     accounts: Account[];
     onEnableAccount: (account: Account) => void;
@@ -95,7 +95,7 @@ const AccountSelect = ({
     onEnableAccount,
     onEnableNetwork,
 }: Props) => {
-    if (!selectedNetwork) return null;
+    if (!selectedNetwork || selectedNetwork.networkType === 'external') return null;
     const { symbol } = selectedNetwork;
     if (!enabledNetworks.includes(selectedNetwork.symbol)) {
         return (

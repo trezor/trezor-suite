@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { Animated, Easing } from 'react-native';
@@ -55,15 +54,6 @@ interface CertesianProps {
 class Loader extends React.Component<Props> {
     state = {
         progress: new Animated.Value(0),
-    };
-
-    static propTypes = {
-        text: PropTypes.string,
-        isWhiteText: PropTypes.bool,
-        isSmallText: PropTypes.bool,
-        transparentRoute: PropTypes.bool,
-        size: PropTypes.number,
-        strokeWidth: PropTypes.number,
     };
 
     componentDidMount() {

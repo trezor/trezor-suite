@@ -9,9 +9,9 @@ import Discovery from '@wallet-components/Discovery';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
 import { getRoute } from '@suite/utils/suite/router';
-import { NETWORKS, EXTERNAL_NETWORKS } from '@suite-config';
-import l10nMessages from './index.messages';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { AppState } from '@suite-types';
+import l10nMessages from './index.messages';
 
 const Row = styled.div`
     flex: 1;

@@ -10,6 +10,7 @@ import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY, ACCOUNT, SETTINGS } from '@wallet-actions/constants';
+import { ArrayElement } from '@suite/types/utils';
 import * as discoveryActions from '../discoveryActions';
 import {
     paramsError,
@@ -20,7 +21,6 @@ import {
 
 const { getSuiteDevice } = global.JestMocks;
 
-type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 type Fixture = ArrayElement<typeof fixtures>;
 type Bundle = { path: string; coin: string }[];
 

@@ -86,20 +86,14 @@ export default (state: State = initialState, action: Action): State => {
                 addressPath: action.addressPath,
             };
         // close modal
-        // case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
+        case UI.CLOSE_UI_WINDOW:
         case MODAL.CLOSE:
-        case SUITE.AUTH_DEVICE:
         case SUITE.FORGET_DEVICE:
         case SUITE.FORGET_DEVICE_INSTANCE:
         case SUITE.REMEMBER_DEVICE:
             return initialState;
 
         // other contexts
-        case MODAL.OPEN_EXTERNAL_WALLET:
-            return {
-                context: MODAL.CONTEXT_EXTERNAL_WALLET,
-                windowType: action.id,
-            };
         case MODAL.OPEN_SCAN_QR:
             return {
                 context: MODAL.CONTEXT_SCAN_QR,

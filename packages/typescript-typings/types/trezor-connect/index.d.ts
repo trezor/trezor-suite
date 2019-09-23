@@ -166,7 +166,7 @@ declare module 'trezor-connect' {
         bundle: T[];
     }
 
-    interface CommonParams {
+    export interface CommonParams {
         device?: {
             path: string;
             state?: string;

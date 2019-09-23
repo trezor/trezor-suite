@@ -16,18 +16,13 @@ import {
 } from '@wallet-reducers/selectedAccountReducer';
 
 import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { NETWORKS } from '@wallet-config';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
-import { NETWORKS } from '@suite-config';
 
 export type SelectedAccountActions =
-    | {
-          type: typeof ACCOUNT.DISPOSE;
-      }
-    | {
-          type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT;
-          payload: SelectedAccountState;
-      };
+    | { type: typeof ACCOUNT.DISPOSE }
+    | { type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT; payload: SelectedAccountState };
 
 export const dispose = (): Action => ({
     type: ACCOUNT.DISPOSE,

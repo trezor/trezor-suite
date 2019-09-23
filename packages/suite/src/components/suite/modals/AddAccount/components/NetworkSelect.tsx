@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select, CoinLogo } from '@trezor/components';
-import { Network } from '@wallet-types';
+import { Network, ExternalNetwork } from '@wallet-types';
 
-const buildNetworkOption = (network: Network) => ({
+const buildNetworkOption = (network: Network | ExternalNetwork) => ({
     value: network.symbol,
     label: network.name,
 });
@@ -35,9 +35,9 @@ const NetworkOption = ({ value, label }: Option) => (
 );
 
 interface Props {
-    selectedNetwork?: Network;
-    networks: Network[];
-    setSelectedNetwork: (n: string) => void;
+    selectedNetwork?: Network | ExternalNetwork;
+    networks: (Network | ExternalNetwork)[];
+    setSelectedNetwork: (n: Network['symbol'] | ExternalNetwork['symbol']) => void;
 }
 
 const NetworkSelect = ({ selectedNetwork, networks, setSelectedNetwork }: Props) => (

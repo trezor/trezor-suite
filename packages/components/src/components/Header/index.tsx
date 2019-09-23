@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { Icon } from '../Icon';
 import { SCREEN_SIZE } from '../../config/variables';
 import colors from '../../config/colors';
@@ -234,22 +233,6 @@ const Header = ({
             </LayoutWrapper>
         </Wrapper>
     );
-};
-
-Header.propTypes = {
-    sidebarEnabled: PropTypes.bool,
-    sidebarOpened: PropTypes.bool,
-    toggleSidebar: PropTypes.func,
-    rightAddon: PropTypes.node,
-    togglerOpenText: PropTypes.node,
-    togglerCloseText: PropTypes.node,
-    logoLinkComponent: PropTypes.node,
-    links: PropTypes.arrayOf(
-        PropTypes.shape({
-            href: PropTypes.string,
-            title: PropTypes.node,
-        })
-    ),
 };
 
 export { Header, Props as HeaderProps };

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import ReactSvg from 'react-svg';
 import styled from 'styled-components';
 import { LOGOS } from './logos';
@@ -47,10 +46,6 @@ const TrezorLogo = ({
             />
         </SvgWrapper>
     );
-};
-
-TrezorLogo.propTypes = {
-    type: PropTypes.oneOf(['horizontal', 'vertical', 'symbol']),
 };
 
 export { TrezorLogo, Props as TrezorLogoProps };

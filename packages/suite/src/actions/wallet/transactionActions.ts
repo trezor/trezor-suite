@@ -1,8 +1,7 @@
-import { TRANSACTION } from '@wallet-actions/constants/index';
-
-import { Dispatch } from '@suite-types/index';
-import { db } from '@suite/storage';
+import { TRANSACTION } from '@wallet-actions/constants';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { db } from '@suite/storage';
+import { Dispatch } from '@suite-types';
 
 export type TransactionAction =
     | { type: typeof TRANSACTION.ADD; transaction: WalletAccountTransaction }
