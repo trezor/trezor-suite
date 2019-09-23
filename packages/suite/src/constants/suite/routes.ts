@@ -39,7 +39,7 @@ export const routes = [
     {
         name: 'suite-device-firmware',
         pattern: '/firmware',
-        isStatic: false,
+        isStatic: true,
     },
     {
         name: 'suite-device-backup',

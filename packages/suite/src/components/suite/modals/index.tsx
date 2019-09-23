@@ -6,9 +6,12 @@ import FocusLock from 'react-focus-lock';
 import { UI } from 'trezor-connect';
 import { Modal as ModalComponent } from '@trezor/components';
 
-import * as ModalActions from '@suite-actions/modalActions';
+import * as modalActions from '@suite-actions/modalActions';
+import * as receiveActions from '@wallet-actions/receiveActions';
 import { MODAL, SUITE } from '@suite-actions/constants';
+import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
+import { RECEIVE } from '@suite/actions/wallet/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
@@ -19,24 +22,26 @@ import ConfirmAction from './confirm/Action';
 // import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
-// import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
+import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import ForgetDevice from './Forget';
 import RequestInstance from './RequestInstance';
 import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from './WalletType';
+import AddAccount from './AddAccount';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
     devices: state.devices,
+    wallet: state.wallet,
     // connect: state.connect,
-    // selectedAccount: state.selectedAccount,
     // localStorage: state.localStorage,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(ModalActions, dispatch),
+    modalActions: bindActionCreators(modalActions, dispatch),
+    receiveActions: bindActionCreators(receiveActions, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -82,16 +87,16 @@ const getDeviceContextModal = (props: Props) => {
             return <ConfirmSignTx device={device} sendForm={null} />;
         }
 
-        // case RECEIVE.REQUEST_UNVERIFIED:
-        //         return (
-        //             <ConfirmUnverifiedAddress
-        //                 device={modal.device}
-        //                 account={props.selectedAccount.account}
-        //                 onCancel={modalActions.onCancel}
-        //                 showAddress={props.receiveActions.showAddress}
-        //                 showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
-        //             />
-        //         );
+        case RECEIVE.REQUEST_UNVERIFIED:
+            return (
+                <ConfirmUnverifiedAddress
+                    device={device}
+                    addressPath={modal.addressPath}
+                    onCancel={modalActions.onCancel}
+                    showAddress={props.receiveActions.showAddress}
+                    showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
+                />
+            );
 
         case SUITE.REQUEST_REMEMBER_DEVICE:
             return (
@@ -122,6 +127,11 @@ const getDeviceContextModal = (props: Props) => {
                     onCreateInstance={modalActions.onCreateDeviceInstance}
                     onCancel={modalActions.onCancel}
                 />
+            );
+
+        case ACCOUNT.REQUEST_NEW_ACCOUNT:
+            return (
+                <AddAccount device={device as AcquiredDevice} onCancel={modalActions.onCancel} />
             );
 
         default:

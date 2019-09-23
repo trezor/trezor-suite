@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components/native';
-import PropTypes from 'prop-types';
 
 import { getPrimaryColor, getSecondaryColor, getNotificationBgColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
@@ -167,18 +166,6 @@ const Button = ({
             </Wrapper>
         </ButtonContainer>
     );
-};
-
-Button.propTypes = {
-    children: PropTypes.node.isRequired,
-    onClick: PropTypes.func,
-    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
-    isDisabled: PropTypes.bool,
-    isWhite: PropTypes.bool,
-    isTransparent: PropTypes.bool,
-    isInverse: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
 
 export { Button, Props as ButtonPorps };

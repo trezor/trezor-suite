@@ -11,7 +11,12 @@
 ## things to do in future
 
 ### Bridge in electron
-
+- package.json > "build": { "asar": false } required
 - Include bridge library in desktop only for a specific environment to reduce the size of a bundle.
 - How to get bridge version?
 - Test windows
+
+### Debugging Electron build
+
+- Mac: Run /path/to/app/TrezorSuite.app/Contents/MacOS/TrezorSuite --debug
+- Decompile: npx asar extract packages/suite-desktop/build-electron/mac/TrezorSuite.app/Contents/Resources/app.asar ./decompiled

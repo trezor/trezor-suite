@@ -2,12 +2,13 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import suiteMiddlewares from '@suite-middlewares/index';
-import walletMiddlewares from '@wallet-middlewares/index';
+import suiteMiddlewares from '@suite-middlewares';
+import walletMiddlewares from '@wallet-middlewares';
+import onboardingMiddlewares from '@onboarding-middlewares';
 
-import suiteReducers from '@suite-reducers/index';
-import walletReducers from '@wallet-reducers/index';
-import onboardingReducers from '@onboarding-reducers/index';
+import suiteReducers from '@suite-reducers';
+import walletReducers from '@wallet-reducers';
+import onboardingReducers from '@onboarding-reducers';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -17,7 +18,12 @@ const rootReducer = combineReducers({
 
 export type AppState = ReturnType<typeof rootReducer>;
 
-const middlewares = [thunkMiddleware, ...suiteMiddlewares, ...walletMiddlewares];
+const middlewares = [
+    thunkMiddleware,
+    ...suiteMiddlewares,
+    ...walletMiddlewares,
+    ...onboardingMiddlewares,
+];
 
 const enhancers: any[] = [];
 

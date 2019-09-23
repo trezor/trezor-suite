@@ -41,7 +41,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
                         <HologramWrapper>
-                            <Hologram model={model || actualVersion} />
+                            <Hologram model={model || actualVersion || 2} />
                         </HologramWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Alt

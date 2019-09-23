@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import React from 'react';
 
@@ -111,6 +110,7 @@ interface Props extends StyledTextareaProps {
     isDisabled?: boolean;
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;
+    maxRows?: number;
     wrapperProps?: Record<string, any>;
     state?: FeedbackType;
 }
@@ -147,26 +147,6 @@ const TextArea = ({
             {bottomText && <BottomText color={stateColor}>{bottomText}</BottomText>}
         </Wrapper>
     );
-};
-
-TextArea.propTypes = {
-    className: PropTypes.string,
-    onFocus: PropTypes.func,
-    onBlur: PropTypes.func,
-    onChange: PropTypes.func,
-    placeholder: PropTypes.string,
-    value: PropTypes.string,
-    readOnly: PropTypes.bool,
-    maxRows: PropTypes.number,
-    maxLength: PropTypes.number,
-    rows: PropTypes.number,
-    name: PropTypes.string,
-    isDisabled: PropTypes.bool,
-    topLabel: PropTypes.node,
-    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
-    autoSelect: PropTypes.bool,
-    bottomText: PropTypes.string,
-    tooltipAction: PropTypes.node,
 };
 
 export { TextArea, Props as TextareaProps };

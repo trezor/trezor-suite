@@ -57,7 +57,7 @@ const ForgetDevice: FunctionComponent<Props> = ({ device, onForgetDevice, onCanc
                 <Button onClick={() => onForgetDevice(device)}>
                     <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                 </Button>
-                <Button isWhite onClick={onCancel}>
+                <Button variant="white" onClick={onCancel}>
                     <FormattedMessage {...l10nMessages.TR_DONT_FORGET} />
                 </Button>
             </Row>

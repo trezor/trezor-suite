@@ -2,8 +2,8 @@ import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NotificationProps } from '@trezor/components';
 import { CallbackAction } from '@suite/reducers/suite/notificationReducer';
+import { RequiredKey } from '@suite/types/utils';
 import { NOTIFICATION } from './constants';
-import { RequiredKey } from '@suite-types';
 
 export interface NotificationAddPayload {
     variant: NonNullable<NotificationProps['variant']>;

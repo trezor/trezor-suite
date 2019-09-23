@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 
 import { H5, P, Button, Input, Checkbox, colors } from '@trezor/components';
@@ -64,13 +64,36 @@ const Passphrase: FunctionComponent<Props> = ({
     const [value, setValue] = useState<State['value']>('');
     const [valueAgain, setValueAgain] = useState<State['valueAgain']>('');
     const [showPassword, setShowPassword] = useState(false);
+    const [focusInput, setFocusInput] = useState(true);
     const type: State['type'] = showPassword ? 'text' : 'password';
     const passwordsMatch = shouldShowSingleInput || showPassword ? true : value === valueAgain;
     const enterPressed = useKeyPress('Enter');
+    const ref = createRef<HTMLInputElement>();
+
+    const handleShowPassword = () => {
+        if (showPassword) {
+            setValueAgain(value);
+        }
+        setShowPassword(!showPassword);
+    };
+
+    const handleSetValue = (value: string) => {
+        if (showPassword) {
+            setValueAgain(value);
+        }
+        setValue(value);
+    };
 
     if (enterPressed) {
         onEnterPassphrase(value);
     }
+
+    useEffect(() => {
+        if (ref && ref.current && !focusInput) {
+            ref.current.focus();
+            setFocusInput(false);
+        }
+    }, [ref, focusInput]);
 
     return (
         <Wrapper>
@@ -83,15 +106,16 @@ const Passphrase: FunctionComponent<Props> = ({
                 />
             </H5>
             <TopMessage size="small">
-                <FormattedMessage {...messages.PASSPHRASE_CASE_SENSITIVE} />
+                <FormattedMessage {...messages.TR_PASSPHRASE_CASE_SENSITIVE} />
             </TopMessage>
             <FormRow>
                 <Input
-                    onChange={event => setValue(event.target.value)}
+                    onChange={event => handleSetValue(event.target.value)}
                     placeholder=""
                     topLabel="Passphrase"
                     type={type}
                     value={value}
+                    innerRef={ref}
                 />
             </FormRow>
             {!shouldShowSingleInput && (
@@ -107,7 +131,7 @@ const Passphrase: FunctionComponent<Props> = ({
                 </FormRow>
             )}
             <FormRow>
-                <Checkbox onClick={() => setShowPassword(!showPassword)} isChecked={showPassword}>
+                <Checkbox onClick={() => handleShowPassword()} isChecked={showPassword}>
                     <FormattedMessage {...messages.TR_SHOW_PASSPHRASE} />
                 </Checkbox>
             </FormRow>
@@ -116,10 +140,10 @@ const Passphrase: FunctionComponent<Props> = ({
                     <FormattedMessage {...messages.TR_ENTER_PASSPHRASE} />
                 </Button>
                 <ErrorMessage size="small" show={!passwordsMatch}>
-                    <FormattedMessage {...messages.PASSPHRASE_DO_NOT_MATCH} />
+                    <FormattedMessage {...messages.TR_PASSPHRASE_DO_NOT_MATCH} />
                 </ErrorMessage>
                 <BottomMessage size="small">
-                    <FormattedMessage {...messages.PASSPHRASE_BLANK} />
+                    <FormattedMessage {...messages.TR_PASSPHRASE_BLANK} />
                 </BottomMessage>
             </Column>
         </Wrapper>

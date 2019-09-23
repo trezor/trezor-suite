@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
-import { Dispatch } from '@suite-types/index';
 import { SUITE } from '@suite-actions/constants';
+import { Dispatch } from '@suite-types';
 
 // TODO: it is the same code as for native. Couldn't we just somehow import it from suite-native?
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {

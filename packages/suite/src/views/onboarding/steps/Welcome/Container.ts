@@ -7,7 +7,7 @@ import { Dispatch } from '@suite-types';
 import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    suite: state.suite,
+    device: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

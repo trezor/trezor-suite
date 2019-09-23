@@ -1,13 +1,12 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import { Icon } from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
-import { FeedbackType, IconType } from '../../../support/types';
+import { ButtonVariant, IconType } from '../../../support/types';
 
 interface FluidSpinnerProps {
     size: number;
@@ -48,8 +47,8 @@ const Wrapper = styled.button<Props>`
     display: flex;
     position: relative;
     align-items: center;
-    justify-content: center;
     padding: 11px 24px;
+    text-align: center;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BASE};
     font-weight: ${FONT_WEIGHT.LIGHT};
@@ -59,6 +58,8 @@ const Wrapper = styled.button<Props>`
     color: ${colors.WHITE};
     border: 1px solid ${props => getPrimaryColor(props.variant)};
     transition: ${TRANSITION.HOVER};
+    justify-content: ${(props: Props) =>
+        props.align === 'right' ? 'flex-end' : props.align || 'center'};
 
     &:hover {
         background: ${props => getSecondaryColor(props.variant)};
@@ -130,11 +131,16 @@ const Wrapper = styled.button<Props>`
                 }
             }
         `}
+    ${props =>
+        props.fullWidth &&
+        css`
+            width: 100%;
+            vertical-align: middle;
+        `}
 
     ${props =>
-        props.isWhite &&
+        props.variant === 'white' &&
         css`
-            background: ${colors.WHITE};
             color: ${colors.TEXT_SECONDARY};
             border: 1px solid ${colors.DIVIDER};
 
@@ -189,9 +195,8 @@ const Wrapper = styled.button<Props>`
             }
         `}
 `;
-
+const TextWrapper = styled.div``;
 const IconWrapper = styled.div`
-    flex: 1;
     align-items: center;
     margin-right: 0.8rem;
     display: flex;
@@ -203,11 +208,12 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     additionalClassName?: string;
     isDisabled?: boolean;
     isInverse?: boolean;
-    isWhite?: boolean;
     isTransparent?: boolean;
     isLoading?: boolean;
     icon?: IconType;
-    variant?: FeedbackType;
+    variant?: ButtonVariant;
+    fullWidth?: boolean;
+    align?: string;
 }
 
 const Button = ({
@@ -216,10 +222,11 @@ const Button = ({
     additionalClassName,
     variant = 'success',
     isDisabled = false,
-    isWhite = false,
     isTransparent = false,
     isInverse = false,
     isLoading = false,
+    fullWidth = false,
+    align = 'center',
     icon,
     ...rest
 }: Props) => {
@@ -228,12 +235,13 @@ const Button = ({
         <Wrapper
             className={newClassName}
             isDisabled={isDisabled}
-            isWhite={isWhite}
             isTransparent={isTransparent}
             isInverse={isInverse}
             isLoading={isLoading}
+            fullWidth={fullWidth}
             variant={variant}
             icon={icon}
+            align={align}
             {...rest}
         >
             {isLoading && (
@@ -255,26 +263,9 @@ const Button = ({
                     />
                 </IconWrapper>
             )}
-            {children}
+            <TextWrapper>{children}</TextWrapper>
         </Wrapper>
     );
-};
-
-Button.propTypes = {
-    children: PropTypes.node.isRequired,
-    className: PropTypes.string,
-    additionalClassName: PropTypes.string,
-    onClick: PropTypes.func,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onFocus: PropTypes.func,
-    isDisabled: PropTypes.bool,
-    isWhite: PropTypes.bool,
-    isTransparent: PropTypes.bool,
-    isInverse: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
 };
 
 export { Button, Props as ButtonProps };

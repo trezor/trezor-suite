@@ -152,7 +152,10 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton onClick={this.props.signVerifyActions.clearSign} isWhite>
+                            <StyledButton
+                                onClick={this.props.signVerifyActions.clearSign}
+                                variant="white"
+                            >
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
@@ -205,7 +208,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton onClick={signVerifyActions.clearVerify} isWhite>
+                            <StyledButton onClick={signVerifyActions.clearVerify} variant="white">
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton

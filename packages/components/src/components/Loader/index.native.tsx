@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { Animated, Easing } from 'react-native';
@@ -176,15 +175,6 @@ const Loader: FunctionComponent<Props> = ({
             </SvgWrapper>
         </Wrapper>
     );
-};
-
-Loader.propTypes = {
-    text: PropTypes.string,
-    isWhiteText: PropTypes.bool,
-    isSmallText: PropTypes.bool,
-    transparentRoute: PropTypes.bool,
-    size: PropTypes.number,
-    strokeWidth: PropTypes.number,
 };
 
 export { Loader, Props as LoaderProps };

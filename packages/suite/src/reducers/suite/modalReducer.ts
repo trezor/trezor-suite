@@ -1,5 +1,6 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
+import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 
 export type State =
@@ -8,6 +9,7 @@ export type State =
           context: typeof MODAL.CONTEXT_DEVICE;
           device: TrezorDevice | Device;
           windowType?: string;
+          addressPath?: string;
       }
     | {
           context: typeof MODAL.CONTEXT_CONFIRMATION;
@@ -19,6 +21,9 @@ export type State =
       }
     | {
           context: typeof MODAL.CONTEXT_SCAN_QR;
+      }
+    | {
+          context: typeof MODAL.OVERLAY_ONLY;
       };
 
 const initialState: State = {
@@ -63,34 +68,40 @@ export default (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_CONFIRMATION,
                 windowType: action.payload.view,
             };
-        // TODO: case RECEIVE.REQUEST_UNVERIFIED:
         case SUITE.REQUEST_REMEMBER_DEVICE:
         case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
         case SUITE.REQUEST_PASSPHRASE_MODE:
+        case ACCOUNT.REQUEST_NEW_ACCOUNT:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload,
                 windowType: action.type,
             };
+        case RECEIVE.REQUEST_UNVERIFIED:
+            return {
+                context: MODAL.CONTEXT_DEVICE,
+                device: action.device,
+                windowType: action.type,
+                addressPath: action.addressPath,
+            };
         // close modal
-        // case UI.CLOSE_UI_WINDOW: // TODO: this brakes few things (remember when discovery is running)
+        case UI.CLOSE_UI_WINDOW:
         case MODAL.CLOSE:
-        case SUITE.AUTH_DEVICE:
         case SUITE.FORGET_DEVICE:
         case SUITE.FORGET_DEVICE_INSTANCE:
         case SUITE.REMEMBER_DEVICE:
             return initialState;
 
         // other contexts
-        case MODAL.OPEN_EXTERNAL_WALLET:
-            return {
-                context: MODAL.CONTEXT_EXTERNAL_WALLET,
-                windowType: action.id,
-            };
         case MODAL.OPEN_SCAN_QR:
             return {
                 context: MODAL.CONTEXT_SCAN_QR,
+            };
+
+        case MODAL.OVERLAY_ONLY:
+            return {
+                context: MODAL.OVERLAY_ONLY,
             };
 
         default:

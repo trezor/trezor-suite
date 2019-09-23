@@ -8,12 +8,17 @@ import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components'
 import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
+    const { device } = props;
+
+    // this step expects device
+    if (!device || !device.features) {
+        return null;
+    }
+
     const getModel = () => {
-        if (props.device.features.major_version === 1) {
-            return 1;
-        }
-        return 2;
+        return device.features.major_version;
     };
+
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
@@ -25,7 +30,7 @@ const ShamirStep = (props: Props) => {
                 <Text>
                     {getModel() === 1 && 'Just click the button and continue. What about TOS?'}
                     {getModel() === 2 &&
-                        'You might chose either standart backup type or shamir backups'}
+                        'You might chose either standard backup type or shamir backups'}
                     {/* <FormattedMessage {...l10nMessages.TR_SECURITY_SUBHEADING} /> */}
                 </Text>
 

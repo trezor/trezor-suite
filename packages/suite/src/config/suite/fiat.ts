@@ -1,17 +1,18 @@
 export default {
     tickers: [
-        {
-            symbol: 'eth',
-            url: 'https://api.coingecko.com/api/v3/coins/ethereum',
-        },
-        {
-            symbol: 'etc',
-            url: 'https://api.coingecko.com/api/v3/coins/ethereum-classic',
-        },
-        {
-            symbol: 'xrp',
-            url: 'https://api.coingecko.com/api/v3/coins/ripple',
-        },
+        { symbol: 'eth', url: 'https://api.coingecko.com/api/v3/coins/ethereum' },
+        { symbol: 'etc', url: 'https://api.coingecko.com/api/v3/coins/ethereum-classic' },
+        { symbol: 'xrp', url: 'https://api.coingecko.com/api/v3/coins/ripple' },
+        { symbol: 'btc', url: 'https://api.coingecko.com/api/v3/coins/bitcoin' },
+        { symbol: 'ltc', url: 'https://api.coingecko.com/api/v3/coins/litecoin' },
+        { symbol: 'bch', url: 'https://api.coingecko.com/api/v3/coins/bitcoin-cash' },
+        { symbol: 'btg', url: 'https://api.coingecko.com/api/v3/coins/bitcoin-gold' },
+        { symbol: 'dash', url: 'https://api.coingecko.com/api/v3/coins/dash' },
+        { symbol: 'dgb', url: 'https://api.coingecko.com/api/v3/coins/digibyte' },
+        { symbol: 'doge', url: 'https://api.coingecko.com/api/v3/coins/dogecoin' },
+        { symbol: 'vtc', url: 'https://api.coingecko.com/api/v3/coins/vertcoin' },
+        { symbol: 'nmc', url: 'https://api.coingecko.com/api/v3/coins/namecoin' },
+        { symbol: 'zec', url: 'https://api.coingecko.com/api/v3/coins/zcash' },
     ],
     currencies: [
         'usd',

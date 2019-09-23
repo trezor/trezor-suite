@@ -1,6 +1,5 @@
-import { LOCATION_CHANGE } from '@suite-actions/routerActions';
 // import { BLOCKCHAIN } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 // import * as WALLET from '@wallet-actions/';
 import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
 // import * as DISCOVERY from 'actions/constants/discovery';
@@ -17,18 +16,13 @@ import {
 } from '@wallet-reducers/selectedAccountReducer';
 
 import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { NETWORKS } from '@wallet-config';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
-import { NETWORKS } from '@suite-config';
 
 export type SelectedAccountActions =
-    | {
-          type: typeof ACCOUNT.DISPOSE;
-      }
-    | {
-          type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT;
-          payload: SelectedAccountState;
-      };
+    | { type: typeof ACCOUNT.DISPOSE }
+    | { type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT; payload: SelectedAccountState };
 
 export const dispose = (): Action => ({
     type: ACCOUNT.DISPOSE,
@@ -197,7 +191,7 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
 // list of all actions which has influence on "selectedAccount" reducer
 // other actions will be ignored
 const actions = [
-    LOCATION_CHANGE,
+    ROUTER.LOCATION_CHANGE,
     // ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
     SUITE.SELECT_DEVICE,
     SUITE.UPDATE_SELECTED_DEVICE,

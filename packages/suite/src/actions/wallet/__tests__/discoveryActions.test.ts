@@ -10,6 +10,7 @@ import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY, ACCOUNT, SETTINGS } from '@wallet-actions/constants';
+import { ArrayElement } from '@suite/types/utils';
 import * as discoveryActions from '../discoveryActions';
 import {
     paramsError,
@@ -20,7 +21,6 @@ import {
 
 const { getSuiteDevice } = global.JestMocks;
 
-type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 type Fixture = ArrayElement<typeof fixtures>;
 type Bundle = { path: string; coin: string }[];
 
@@ -308,6 +308,16 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state'));
         store.dispatch(discoveryActions.create('device-state'));
         expect(store.getState().wallet.discovery.length).toEqual(1);
+    });
+
+    it('Start discovery which does not exist', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch({
+            type: DISCOVERY.START,
+            payload: SUITE_DEVICE,
+        });
+        expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
     it('Update discovery which does not exist', async () => {

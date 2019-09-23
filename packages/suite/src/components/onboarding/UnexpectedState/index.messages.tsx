@@ -1,13 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT: {
-        id: 'TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT',
-        defaultMessage:
-            'Device you reconnected is different from the previous device. Connect the right one or refresh your internet browser and start again.',
-        description:
-            'Text that indicates that user reconnected different device than he was working with before',
-    },
     TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER: {
         id: 'TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER',
         defaultMessage: 'Connected device is in bootloader mode. Reconnect it to continue.',

@@ -9,7 +9,7 @@ import { getNewInstanceNumber } from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 import l10nMessages from './messages';
-import l10CommonnMessages from '../messages';
+import l10CommonMessages from '../messages';
 
 interface Props {
     device: AcquiredDevice;
@@ -135,8 +135,8 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                 <StyledButton disabled={isUsed} onClick={() => submit()}>
                     <FormattedMessage {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
                 </StyledButton>
-                <StyledButton isWhite onClick={onCancel}>
-                    <FormattedMessage {...l10CommonnMessages.TR_CANCEL} />
+                <StyledButton variant="white" onClick={onCancel}>
+                    <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
                 </StyledButton>
             </Column>
         </Wrapper>

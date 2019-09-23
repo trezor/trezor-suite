@@ -1,6 +1,3 @@
-// TODO: do we need this?
-// import 'whatwg-fetch';
-
 export const httpRequest = async (url: string, type: string = 'text'): Promise<any> => {
     const response: Response = await fetch(url, { credentials: 'same-origin' });
     if (response.ok) {
@@ -9,9 +6,9 @@ export const httpRequest = async (url: string, type: string = 'text'): Promise<a
             return JSON.parse(txt);
         }
         if (type === 'binary') {
-            await response.arrayBuffer();
+            return response.arrayBuffer();
         }
-        await response.text();
+        return response.text();
     }
     throw new Error(`${url} ${response.statusText}`);
 };

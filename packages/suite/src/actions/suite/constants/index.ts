@@ -6,5 +6,6 @@ import * as LOG from './logConstants';
 import * as DEVICE_SETTINGS from './deviceSettings';
 import * as FIRMWARE from './firmware';
 import * as NOTIFICATION from './notificationConstants';
+import * as ROUTER from './routerConstants';
 
-export { BLOCKCHAIN, STORAGE, SUITE, LOG, MODAL, DEVICE_SETTINGS, FIRMWARE, NOTIFICATION };
+export { BLOCKCHAIN, STORAGE, SUITE, LOG, MODAL, DEVICE_SETTINGS, FIRMWARE, NOTIFICATION, ROUTER };

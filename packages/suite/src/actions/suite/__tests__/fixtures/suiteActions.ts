@@ -291,15 +291,6 @@ const initialRun = [
 
 const selectDevice = [
     {
-        description: `with ui locked`,
-        state: {
-            suite: {
-                locks: [SUITE.LOCK_TYPE.UI],
-            },
-        },
-        device: SUITE_DEVICE,
-    },
-    {
         description: `with router locked`,
         state: {
             suite: {
@@ -371,6 +362,54 @@ const selectDevice = [
             }),
             router: {
                 app: 'onboarding',
+            },
+        },
+    },
+    {
+        description: `redirect to firmware update (trezor-connect Device)`,
+        state: {
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    firmware: 'required',
+                }),
+            ],
+        },
+        device: getConnectDevice({
+            path: '1',
+            firmware: 'required',
+        }),
+        result: {
+            payload: getSuiteDevice({
+                path: '1',
+                firmware: 'required',
+            }),
+            router: {
+                app: 'firmware',
+            },
+        },
+    },
+    {
+        description: `redirect to onboarding (@suite TrezorDevice)`,
+        state: {
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    firmware: 'required',
+                }),
+            ],
+        },
+        device: getSuiteDevice({
+            path: '1',
+            firmware: 'required',
+        }),
+        result: {
+            payload: getSuiteDevice({
+                path: '1',
+                firmware: 'required',
+            }),
+            router: {
+                app: 'firmware',
             },
         },
     },

@@ -1,4 +1,4 @@
-const { app, session, BrowserWindow, ipcMain } = require('electron');
+const { app, session, BrowserWindow, ipcMain, globalShortcut, protocol } = require('electron');
 const isDev = require('electron-is-dev');
 const prepareNext = require('electron-next');
 const path = require('path');
@@ -8,12 +8,18 @@ const { isBridgeRunning, runBridgeProcess } = require('./bridge');
 let mainWindow;
 
 const init = async () => {
-    const isBridgeProcessRunning = await isBridgeRunning();
-    if (!isBridgeProcessRunning) {
-        await runBridgeProcess();
+    try {
+        const isBridgeProcessRunning = await isBridgeRunning();
+        if (!isBridgeProcessRunning) {
+            await runBridgeProcess();
+        }
+    } catch (error) {
+        // do nothing
     }
 
-    await prepareNext(path.resolve(__dirname, '../'));
+    if (isDev) {
+        await prepareNext(path.resolve(__dirname, '../'));
+    }
 
     mainWindow = new BrowserWindow({
         width: 800,
@@ -26,11 +32,12 @@ const init = async () => {
         },
     });
 
+    const PROTOCOL = 'file'
     const src = isDev
         ? 'http://localhost:8000/'
         : url.format({
-              pathname: path.join(__dirname, '../build/index.html'),
-              protocol: 'file:',
+              pathname: 'index.html',
+              protocol: PROTOCOL,
               slashes: true,
           });
 
@@ -42,6 +49,20 @@ const init = async () => {
         session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
             details.requestHeaders.Origin = 'https://electron.trezor.io';
             callback({ cancel: false, requestHeaders: details.requestHeaders });
+        });
+
+        // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
+        session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
+            let url = request.url.substr(PROTOCOL.length + 1);
+            url = path.join(__dirname, '../build/', url);
+            callback({ path: url });
+        });
+
+        globalShortcut.register('f5', () => {
+            mainWindow.loadURL(src);
+        });
+        globalShortcut.register('CommandOrControl+R', () => {
+            mainWindow.loadURL(src);
         });
     }
 

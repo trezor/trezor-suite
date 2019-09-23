@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(settingsActions.setLocalCurrency, dispatch),
     setHideBalance: bindActionCreators(settingsActions.setHideBalance, dispatch),
-    handleCoinVisibility: bindActionCreators(settingsActions.handleCoinVisibility, dispatch),
+    changeCoinVisibility: bindActionCreators(settingsActions.changeCoinVisibility, dispatch),
     toggleGroupCoinsVisibility: bindActionCreators(
         settingsActions.toggleGroupCoinsVisibility,
         dispatch,

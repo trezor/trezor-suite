@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
 import { Animated, Easing } from 'react-native';
 import { Icon } from '../Icon';
 
@@ -88,11 +87,6 @@ const Prompt: FunctionComponent<Props> = ({ model, size = 32, children }) => {
             <ContentWrapper>{children}</ContentWrapper>
         </Wrapper>
     );
-};
-
-Prompt.propTypes = {
-    model: PropTypes.number.isRequired,
-    size: PropTypes.number,
 };
 
 export { Prompt, Props as PromptProps };

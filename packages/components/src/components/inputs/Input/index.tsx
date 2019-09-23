@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
 
 import {
     FONT_FAMILY,
@@ -163,13 +162,13 @@ interface InputProps {
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-    innerRef?: any;
+    innerRef?: React.RefObject<HTMLInputElement>;
     height?: number;
     icon?: IconType | React.ReactNode;
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;
-    sideAddons?: React.ReactNode[];
+    sideAddons?: React.ReactNode;
     isDisabled?: boolean;
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
@@ -230,35 +229,11 @@ const Input = ({
                         {tooltipAction}
                     </TooltipAction>
                 </InputIconWrapper>
-                {sideAddons && sideAddons.map(sideAddon => sideAddon)}
+                {sideAddons}
             </InputWrapper>
             {bottomText && <BottomText color={stateColor}>{bottomText}</BottomText>}
         </Wrapper>
     );
-};
-
-Input.propTypes = {
-    className: PropTypes.string,
-    innerRef: PropTypes.func,
-    placeholder: PropTypes.string,
-    type: PropTypes.string,
-    height: PropTypes.number,
-    autocorrect: PropTypes.string,
-    autocapitalize: PropTypes.string,
-    icon: PropTypes.node,
-    spellCheck: PropTypes.string,
-    value: PropTypes.string,
-    readOnly: PropTypes.bool,
-    onChange: PropTypes.func,
-    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
-    bottomText: PropTypes.node,
-    topLabel: PropTypes.node,
-    tooltipAction: PropTypes.node,
-    sideAddons: PropTypes.arrayOf(PropTypes.node),
-    isDisabled: PropTypes.bool,
-    name: PropTypes.string,
-    isSmallText: PropTypes.bool,
-    isPartiallyHidden: PropTypes.bool,
 };
 
 export { Input, Props as InputProps };

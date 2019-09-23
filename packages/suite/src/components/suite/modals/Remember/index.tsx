@@ -113,7 +113,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                         />
                     </ButtonContent>
                 </ButtonWithLoader>
-                <Button isWhite onClick={() => onRememberDevice(device)}>
+                <Button variant="white" onClick={() => onRememberDevice(device)}>
                     <FormattedMessage {...messages.TR_REMEMBER_DEVICE} />
                 </Button>
             </Column>
