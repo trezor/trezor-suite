@@ -106,9 +106,9 @@ const Dashboard = (props: Props) => {
                         ).map(network => (
                             <StyledLink
                                 key={`${network.name}-${network.symbol}`}
-                                href={getRoute('wallet-account', {
+                                href={getRoute('wallet-account-summary', {
                                     symbol: network.symbol,
-                                    accountId: '0',
+                                    accountIndex: 0,
                                     accountType: network.accountType || 'normal',
                                 })}
                             >
