@@ -10,7 +10,7 @@ export interface State {
     amount: null | string;
     fiatValue: null | string;
     localCurrency: { value: string; label: string };
-    fee: null | string;
+    fee: null | { value: string; label: string };
     isAdditionalFormVisible: boolean;
     errors: {
         address: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_VALID;
@@ -103,6 +103,13 @@ export default (state: State = initialState, action: Action): State => {
             case SEND.HANDLE_SELECT_CURRENCY_CHANGE: {
                 const { localCurrency } = action;
                 draft.localCurrency = localCurrency;
+                break;
+            }
+
+            // change select "Fee"
+            case SEND.HANDLE_FEE_VALUE_CHANGE: {
+                const { fee } = action;
+                draft.fee = fee;
                 break;
             }
 

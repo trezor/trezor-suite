@@ -76,7 +76,12 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 />
             </Row>
             <Row>
-                <Fee fees={fees} sendFormActions={sendFormActions} symbol={network.symbol} />
+                <Fee
+                    fees={fees}
+                    fee={send.fee}
+                    sendFormActions={sendFormActions}
+                    symbol={network.symbol}
+                />
             </Row>
             <Row isColumn={send.isAdditionalFormVisible}>
                 <ButtonToggleAdditional

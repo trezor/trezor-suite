@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { State as ReducerState } from '@wallet-reducers/sendFormReducer';
+import { FeeItem } from '@wallet-reducers/feesReducer';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -14,6 +15,7 @@ export type SendFormActions =
     | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; amount: string; availableBalance: string }
     | { type: typeof SEND.SET_MAX }
     | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: null | string }
+    | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeItem }
     | {
           type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
           localCurrency: ReducerState['localCurrency'];
@@ -161,8 +163,15 @@ const setMax = () => (dispatch: Dispatch, getState: GetState) => {
 /*
     Change value in select "Fee"
  */
-const handleFeeValueChange = (val: any) => () => {
-    console.log(val);
+const handleFeeValueChange = (fee: FeeItem) => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    if (!send) return null;
+
+    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
+
+    if (!send.isAdditionalFormVisible) {
+        dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
+    }
 };
 
 /*

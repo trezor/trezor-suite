@@ -39,6 +39,7 @@ const OptionLabel = styled(P)`
 
 interface Props {
     fees: Fee;
+    fee: null | FeeItem;
     symbol: Account['symbol'];
     sendFormActions: DispatchProps['sendFormActions'];
     intl: InjectedIntl;
@@ -68,7 +69,7 @@ const FeeComponent = (props: Props) => (
         <Select
             isSearchable={false}
             isClearable={false}
-            value={getValue(props.fees, props.symbol)}
+            value={props.fee || getValue(props.fees, props.symbol)}
             onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
             options={addCustom(props.fees[props.symbol])}
             formatOptionLabel={option => (
