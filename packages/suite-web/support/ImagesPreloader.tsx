@@ -8,15 +8,16 @@ const Wrapper = styled.div`
 const Img = styled.img``;
 
 class ImagesPreloader extends Component {
+    // @ts-ignore
     importAll(r) {
         return r.keys().map(r);
     }
 
     render() {
-        const images = this.importAll(require.context('../images', false, /\.(png|jpe?g)$/));
+        const images = this.importAll(require.context('../static/images', true, /\.(png|jpe?g)$/));
         return (
             <Wrapper>
-                {images.map(image => (
+                {images.map((image: string) => (
                     <Img key={image} src={image} />
                 ))}
             </Wrapper>
