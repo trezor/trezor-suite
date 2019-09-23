@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { colors } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -20,6 +20,7 @@ const PageItem = styled.div<{ isActive?: boolean }>`
 const Actions = styled.div<{ isActive: boolean }>`
     display: flex;
     visibility: ${props => (props.isActive ? 'auto' : 'hidden')};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface Props {
