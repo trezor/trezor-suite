@@ -1,9 +1,10 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 import { FONT_SIZE } from '../../config/variables';
 import { Icon } from '../Icon';
 import colors from '../../config/colors';
+import { useKeyPress } from '../../utils/hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -53,7 +54,9 @@ const Label = styled.div<IconWrapperProps>`
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
+    onClick: (
+        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null
+    ) => any;
     isChecked?: boolean;
 }
 
