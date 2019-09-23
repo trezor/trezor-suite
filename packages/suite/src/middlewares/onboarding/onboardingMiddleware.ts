@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch } from '@suite-types/index';
 import { SUITE } from '@suite-actions/constants';
 import { resetOnboarding, enableOnboardingReducer } from '@onboarding-actions/onboardingActions';
 import { lockRouter, initialRunCompleted } from '@suite-actions/suiteActions';
+import { AppState, Action, Dispatch } from '@suite-types';
 
 const onboardingMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,

@@ -5,14 +5,15 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { H5, Button } from '@trezor/components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
-import { handleCoinVisibility } from '@wallet-actions/settingsActions';
+import { changeCoinVisibility } from '@wallet-actions/settingsActions';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
-import { NETWORKS } from '@suite-config';
+import { Account, Network, ExternalNetwork } from '@wallet-types';
 import l10nMessages from './messages';
 import l10CommonMessages from '../messages';
 import NetworkSelect from './components/NetworkSelect';
 import AccountSelect from './components/AccountSelect';
+import ExternalWallet from './components/ExternalWallet';
 
 const Wrapper = styled.div`
     padding: 30px 48px;
@@ -32,7 +33,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     changeAccountVisibility: bindActionCreators(changeAccountVisibility, dispatch),
-    handleCoinVisibility: bindActionCreators(handleCoinVisibility, dispatch),
+    changeCoinVisibility: bindActionCreators(changeCoinVisibility, dispatch),
 });
 
 type Props = {
@@ -41,18 +42,21 @@ type Props = {
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-interface State {
-    selectedSymbol: string;
-}
+type NetworkUnion = (Network | ExternalNetwork)[];
 
 const AddAccount = (props: Props) => {
-    const networks = NETWORKS.filter(n => !n.accountType);
+    // Collect all Networks without "accountType" (normal) and join ExternalNetworks
+    const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden) as NetworkUnion;
+    const externalNetworks = EXTERNAL_NETWORKS.filter(n => !n.isHidden) as NetworkUnion;
+    const networks = internalNetworks.concat(externalNetworks);
+
+    // Collect accounts for selected device
     const accounts = props.accounts.filter(a => a.deviceState === props.device.state);
 
-    const [selectedSymbol, setSelectedNetwork] = useState<State['selectedSymbol']>(
-        networks[0].symbol,
-    );
-    const selectedNetwork = NETWORKS.find(n => n.symbol === selectedSymbol && !n.accountType);
+    // Use component state, default value is first network item (btc)
+    const [selectedSymbol, setSelectedNetwork] = useState(networks[0].symbol);
+    // Find selected network
+    const selectedNetwork = networks.find(n => n.symbol === selectedSymbol);
 
     return (
         <Wrapper>
@@ -77,9 +81,10 @@ const AddAccount = (props: Props) => {
                 }}
                 onEnableNetwork={(symbol: string) => {
                     props.onCancel();
-                    props.handleCoinVisibility(symbol, true, false);
+                    props.changeCoinVisibility(symbol, true, false);
                 }}
             />
+            <ExternalWallet selectedNetwork={selectedNetwork} onCancel={props.onCancel} />
             <StyledButton onClick={props.onCancel} isWhite>
                 <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
             </StyledButton>

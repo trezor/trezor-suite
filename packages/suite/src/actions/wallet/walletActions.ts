@@ -1,5 +1,5 @@
-import { Dispatch, GetState } from '@suite-types/index';
 import { WALLET } from './constants';
+import { Dispatch, GetState } from '@suite-types';
 
 export type WalletActions =
     | {

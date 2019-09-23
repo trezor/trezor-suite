@@ -8,17 +8,16 @@ import QrCode from '@wallet-components/ReceiveForm/components/QrCode';
 import AddressList from '@wallet-components/ReceiveForm/components/AddressList';
 import AddressItem from '@wallet-components/ReceiveForm/components/AddressItem';
 import EyeButton from '@wallet-components/ReceiveForm/components/EyeButton';
-
 import { selectText } from '@suite-utils/dom';
 import { parseBIP44Path } from '@wallet-utils/accountUtils';
-import SETTINGS from '@suite-config/settings';
 import { AccountAddresses } from 'trezor-connect';
 import { showAddress } from '@suite/actions/wallet/receiveActions';
 import { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 import { DeviceIcon } from '@suite-components';
-import l10nMessages from './messages';
+import { SETTINGS } from '@suite-config';
 import { AppState } from '@suite-types';
 import { Network } from '@wallet-types';
+import l10nMessages from './messages';
 
 const Wrapper = styled.div``;
 

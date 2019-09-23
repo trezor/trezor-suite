@@ -34,6 +34,11 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         return action;
     }
 
+    // do not close modals during discovery
+    if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
+        return action;
+    }
+
     // consider if discovery should be interrupted
     let interruptionIntent = action.type === SUITE.SELECT_DEVICE;
     if (action.type === ROUTER.LOCATION_CHANGE) {
