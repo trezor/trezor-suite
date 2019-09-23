@@ -1,8 +1,10 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
 import { P } from '@trezor/components';
 
-import { Prompts, Wrapper } from '@onboarding-components';
+import { ConnectPrompt } from '@suite-components/Prompts';
+import { Wrapper } from '@onboarding-components';
 
 import l10nMessages from './Reconnect.messages';
 
@@ -12,7 +14,7 @@ const Reconnect = ({ model }: { model: number }) => (
             <FormattedMessage {...l10nMessages.TR_RECONNECT_HEADER} />
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
-            <Prompts.ConnectPrompt model={model} loop />
+            <ConnectPrompt model={model} loop />
             <P>
                 <FormattedMessage {...l10nMessages.TR_RECONNECT_TEXT} />
             </P>

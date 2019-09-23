@@ -10,7 +10,7 @@ interface Props {
 }
 
 const ConnectPrompt = ({ model, height = 200, loop = false }: Props) => {
-    const path = `videos/onboarding/trezor-click-${model}.mp4`;
+    const path = `videos/suite/trezor-click-${model}.mp4`;
     return (
         <>
             {/* just a hack to switch loop from true to false without need to forward ref to the video */}

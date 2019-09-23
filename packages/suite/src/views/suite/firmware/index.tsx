@@ -3,16 +3,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 // import { FormattedMessage } from 'react-intl';
-
+import { FirmwareRelease } from 'trezor-connect';
 import { Button, P, H1, H4, H5, variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as firmwareActions from '@suite-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-// todo: now used in suite, refactor from onboarding
-import WalletNotifications from '@wallet-components/Notifications';
-import { Loaders } from '@onboarding-components';
 
-// todo: rework to common notifications
+import { ConnectPrompt } from '@suite-components/Prompts';
+import { Loaders } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';
 // import l10nMessages from './index.messages';
@@ -42,8 +40,9 @@ const Middle = styled.div`
 
 const Bottom = styled.div`
     display: flex;
-    flex-direction: column;
-    flex: 1;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
 `;
 
 // todo warnings checkboxes
@@ -51,9 +50,24 @@ const Bottom = styled.div`
 //     flex: 1;
 // `;
 
-const ChangeLog = styled.div`
+const ChangelogWrapper = styled.div`
     flex: 1;
 `;
+
+const ChangeLog = ({ firmwareRelease }: { firmwareRelease?: FirmwareRelease }) => {
+    if (!firmwareRelease) {
+        return null;
+    }
+    return (
+        <ChangelogWrapper>
+            <H4>Changelog</H4>
+            <H5>{firmwareRelease.version.join('.')}</H5>
+            {firmwareRelease.changelog.split('*').map((row: string) => (
+                <P key={row.substr(0, 8)}>{row}</P>
+            ))}
+        </ChangelogWrapper>
+    );
+};
 
 const TitleHeader = styled(H1)`
     display: flex;
@@ -72,6 +86,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
     firmwareUpdate: bindActionCreators(firmwareActions.firmwareUpdate, dispatch),
     lockRouter: bindActionCreators(suiteActions.lockRouter, dispatch),
+    exitApp: bindActionCreators(suiteActions.exitApp, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -79,57 +94,62 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 const FirmwareUpdate = (props: Props) => {
     const { device, firmware } = props;
 
-    const leave = () => {
-        props.lockRouter(false);
-        props.goto('suite-index');
-    };
-
-    if (!device || !device.features) {
-        return (
-            <Wrapper>
-                <Top>
-                    <TitleHeader>Firmware update</TitleHeader>
-                </Top>
-                <Middle>Connect your device to continue</Middle>
-                <Bottom>
-                    <Button onClick={() => leave()}>Go to wallet</Button>
-                </Bottom>
-            </Wrapper>
-        );
-    }
-
     const isInProgress = () => {
-        if (!firmware || !firmware.status) return null;
         return ['started', 'downloading', 'installing', 'restarting'].includes(firmware.status);
     };
 
-    const getStatus = () => {
-        if (!device || !device.connected) {
-            return 'no-device';
-        }
-        if (isInProgress()) {
-            return 'in-progress';
-        }
-        if (device.mode === 'bootloader') {
-            return 'in-bl';
-        }
-        if (device.firmware === 'valid') {
-            return 'up-to-date';
-        }
-        if (['outdated', 'required'].includes(device.firmware)) {
-            return 'update-available';
-        }
+    const hasDevice = () => {
+        return Boolean(device && device.features && device.connected);
     };
 
-    const getTitleForStatus = () => {
-        switch (getStatus()) {
-            case 'no-device':
-                return 'Reconnect device to continue';
-            case 'up-to-date':
-                return 'Device is up to date';
-            default:
-                return 'Firmware update';
+    const isInBootloader = () => {
+        return Boolean(device && device.features && device.mode === 'bootloader');
+    };
+
+    const hasNewestFirmware = () => {
+        return Boolean(device && device.features && device.firmware === 'valid');
+    };
+
+    const isUpdateAvailable = () => {
+        return device && device.features && ['outdated', 'required'].includes(device.firmware);
+    };
+
+    const getModel = () => {
+        return device && device.features && device.features.major_version;
+    };
+
+    const exitApp = () => {
+        // todo: maybe in middleware?
+        if (device && device.features && device.mode === 'initialize') {
+            return props.exitApp('onboarding-index');
         }
+        return props.exitApp('suite-index');
+    };
+
+    const getExitButtonText = () => {
+        if (device && device.features && device.mode === 'initialize') {
+            return 'Continue to setup';
+        }
+        return 'Go to wallet';
+    };
+
+    const getTitle = () => {
+        if (firmware.status === 'error') {
+            return 'Firmware update failed';
+        }
+        if (firmware.status === 'restarting') {
+            return 'Waiting for device to restart';
+        }
+        if (!hasDevice()) {
+            return 'Reconnect device to continue';
+        }
+        if (hasNewestFirmware()) {
+            return 'Device is up to date';
+        }
+        if (isUpdateAvailable() && !isInBootloader()) {
+            return 'Switch to bootloader';
+        }
+        return 'Firmware update';
     };
 
     // todo: handle bootloader mode
@@ -137,45 +157,37 @@ const FirmwareUpdate = (props: Props) => {
 
     return (
         <Wrapper>
-            {/* todo: use proper notifications, leaving it here as a starting point for next iteration */}
-            <WalletNotifications />
             <Top>
-                {getStatus()}
-                <TitleHeader>{getTitleForStatus()}</TitleHeader>
+                <TitleHeader>{getTitle()}</TitleHeader>
             </Top>
-
             <Middle>
-                {getStatus() === 'update-available' &&
-                    // checking device.firmwareRelase because of typescript. better way how to do it?
-                    device.firmwareRelease && (
-                        <ChangeLog>
-                            <H4>Changelog</H4>
-                            <H5>{device.firmwareRelease.version.join('.')}</H5>
-                            {device.firmwareRelease.changelog.split('*').map((row: string) => (
-                                <P key={row.substr(0, 8)}>{row}</P>
-                            ))}
-                        </ChangeLog>
-                    )}
-                {getStatus() === 'in-progress' && (
+                {!isInProgress() && (
+                    <>
+                        {hasDevice() &&
+                            !isInBootloader() &&
+                            !hasNewestFirmware() &&
+                            device &&
+                            device.features && (
+                                <ChangeLog firmwareRelease={device.firmwareRelease}></ChangeLog>
+                            )}
+                        <ConnectPrompt model={getModel() || 2} loop={!hasDevice()} />
+                    </>
+                )}
+                {isInProgress() && (
                     <div>
-                        {firmware.status}
-                        <Loaders.Dots />
+                        {firmware.status} <Loaders.Dots />
                     </div>
                 )}
             </Middle>
-
             <Bottom>
-                {getStatus() === 'up-to-date' && (
-                    <Button onClick={() => leave()}>Go to wallet</Button>
+                {!isInProgress() && (
+                    <>
+                        <Button onClick={() => exitApp()}>{getExitButtonText()}</Button>
+                        {isInBootloader() && hasDevice() && (
+                            <Button onClick={() => props.firmwareUpdate()}>Install</Button>
+                        )}
+                    </>
                 )}
-                {getStatus() === 'update-available' && (
-                    <P>Switch device to bootloader to continue</P>
-                )}
-                {getStatus() === 'in-bl' && (
-                    <Button onClick={() => props.firmwareUpdate()}>Install</Button>
-                )}
-                {/* button just for debugging */}
-                <Button onClick={() => leave()}>Go to wallet</Button>
             </Bottom>
         </Wrapper>
     );

@@ -5,7 +5,8 @@ import thunk from 'redux-thunk';
 
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import { OnboardingState } from '@suite/types/onboarding/onboarding';
-import * as onboardingActions from '../onboardingActions';
+import fixtures from './fixtures/onboardingActions';
+
 import { Action } from '@suite-types';
 
 export const getInitialState = (custom?: any): { onboarding: OnboardingState } => {
@@ -44,88 +45,14 @@ const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
 };
 
 describe('Onboarding Actions', () => {
-    it('goToNextStep', async () => {
-        const store = mockStore(getInitialState());
-
-        const stateBefore = store.getState().onboarding;
-        expect(stateBefore.activeStepId).toEqual('welcome');
-
-        await store.dispatch(onboardingActions.goToNextStep());
-
-        const stateAfter = store.getState().onboarding;
-        expect(stateAfter.activeStepId).toEqual('new-or-used');
-    });
-
-    it('goToPreviousStep', async () => {
-        const store = mockStore(
-            getInitialState({
-                activeStepId: 'new-or-used',
-            }),
-        );
-
-        const stateBefore = store.getState().onboarding;
-        expect(stateBefore.activeStepId).toEqual('new-or-used');
-
-        await store.dispatch(onboardingActions.goToPreviousStep());
-
-        const stateAfter = store.getState().onboarding;
-        expect(stateAfter.activeStepId).toEqual('welcome');
-    });
-
-    it('addPath: should add unique entry', async () => {
-        const store = mockStore(
-            getInitialState({
-                path: ['new'],
-            }),
-        );
-        await store.dispatch(onboardingActions.addPath('create'));
-        const stateAfter = store.getState().onboarding;
-        expect(stateAfter.path).toEqual(['new', 'create']);
-    });
-
-    it('addPath: should not add duplicit entry', async () => {
-        const store = mockStore(
-            getInitialState({
-                path: ['create'],
-            }),
-        );
-        await store.dispatch(onboardingActions.addPath('create'));
-        const stateAfter = store.getState().onboarding;
-        expect(stateAfter.path).toEqual(['create']);
-    });
-
-    it('removePath: one element', async () => {
-        const store = mockStore(
-            getInitialState({
-                path: ['create', 'new'],
-            }),
-        );
-        await store.dispatch(onboardingActions.removePath(['create']));
-        const stateAfter = store.getState().onboarding;
-        expect(stateAfter.path).toEqual(['new']);
-    });
-
-    it('removePath: multiple elements', async () => {
-        const store = mockStore(
-            getInitialState({
-                path: ['create', 'new', 'used'],
-            }),
-        );
-        await store.dispatch(onboardingActions.removePath(['create', 'new']));
-        const stateAfter = store.getState().onboarding;
-        expect(stateAfter.path).toEqual(['used']);
-    });
-
-    it('resetOnboarding: should set onboarding reducer to initial state', () => {
-        // set some data
-        const store = mockStore(
-            getInitialState({
-                path: ['create', 'new', 'used'],
-                activeStepId: 'recovery',
-            }),
-        );
-        store.dispatch(onboardingActions.resetOnboarding());
-        const stateAfter = store.getState().onboarding;
-        expect(stateAfter).toEqual(getInitialState({ reducerEnabled: false }).onboarding);
+    fixtures.forEach(f => {
+        it(f.description, () => {
+            const store = mockStore(getInitialState(f.initialState));
+            store.dispatch(f.action());
+            const stateAfter = store.getState().onboarding;
+            if (f.expect.toMatchObject) {
+                expect(stateAfter).toMatchObject(f.expect.toMatchObject);
+            }
+        });
     });
 });

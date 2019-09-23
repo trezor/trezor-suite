@@ -1,9 +1,8 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import * as STEP from '@onboarding-constants/steps';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-
+import CONFIG from '@onboarding-config';
 import l10nMessages from './index.messages';
 import { Props } from './Container';
 
@@ -19,7 +18,7 @@ const SecurityStep = (props: Props) => (
             <Wrapper.Controls>
                 <OnboardingButton.Alt
                     onClick={() => {
-                        props.goToNextStep(STEP.ID_FINAL_STEP);
+                        props.exitApp(CONFIG.APP.EXIT_APP_ROUTE);
                     }}
                 >
                     <FormattedMessage {...l10nMessages.TR_SKIP_SECURITY} />

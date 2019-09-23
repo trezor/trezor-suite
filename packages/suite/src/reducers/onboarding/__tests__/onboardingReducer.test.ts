@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-object-literal-type-assertion */
 
 import { UI, DEVICE } from 'trezor-connect';
-import onboardingReducer from '@onboarding-reducers/onboardingReducer';
+import onboardingReducer from '@onboarding-reducers/index';
 import * as STEP from '@onboarding-constants/steps';
 import { Action } from '@suite-types';
 

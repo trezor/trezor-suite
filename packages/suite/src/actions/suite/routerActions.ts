@@ -65,7 +65,9 @@ export const goto = (routeName: Route['name'], preserveParams: boolean = false) 
 ) => {
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
+
     const url = getRoute(routeName);
+
     if (preserveParams) {
         const { hash } = window.location;
         await Router.push(url + hash, getPrefixedURL(url) + hash);
@@ -79,7 +81,7 @@ export const back = () => {
 };
 
 /**
- * Called from `@suite-middlewares/suiteMiddleware`
+ * Called from `@suite-middlewares/redirectMiddleware`
  * Redirects to onboarding if `suite.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {

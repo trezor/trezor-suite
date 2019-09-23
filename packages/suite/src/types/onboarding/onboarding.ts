@@ -1,12 +1,3 @@
-import {
-    goToNextStep,
-    goToSubStep,
-    goToStep,
-    goToPreviousStep,
-    selectTrezorModel,
-    addPath,
-    removePath,
-} from '@suite/actions/onboarding/onboardingActions';
 import { Device } from 'trezor-connect';
 import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';
 
@@ -31,16 +22,6 @@ export interface OnboardingState {
         result: null | Record<string, any>;
     };
     uiInteraction: UiInteraction;
-}
-
-export interface OnboardingActions {
-    goToNextStep: typeof goToNextStep;
-    goToSubStep: typeof goToSubStep;
-    goToStep: typeof goToStep;
-    goToPreviousStep: typeof goToPreviousStep;
-    selectTrezorModel: typeof selectTrezorModel;
-    addPath: typeof addPath;
-    removePath: typeof removePath;
 }
 
 export const GO_TO_SUBSTEP = '@onboarding/go-to-substep';
