@@ -138,14 +138,8 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
         }
 
         if (result && result.success) {
-            const updatedAccount: Account = {
-                ...account,
-                ...result.payload,
-                path: account.path, // preserve account path (fetched account comes without it)
-                // immer.js (used in reducer) doesn't update fields that are set to undefined,
-                // so when a marker is undefined, we change it to null.
-                ...{ marker: result.payload.marker ? result.payload.marker : null },
-            };
+            const updatedAccount = accountActions.update(account, result.payload).payload;
+
             dispatch({
                 type: TRANSACTION.FETCH_SUCCESS,
                 account: updatedAccount,
