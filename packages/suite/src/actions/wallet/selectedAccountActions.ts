@@ -7,6 +7,7 @@ import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
 // import * as PENDING from 'actions/constants/pendingTx';
 
 import * as reducerUtils from '@wallet-utils/reducerUtils';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { getVersion } from '@suite-utils/device';
 import {
     initialState,
@@ -227,7 +228,7 @@ export const observe = (prevState: AppState, action: Action) => (
 
     // TODO: missing discovery process results in silent fail
     const network = reducerUtils.getSelectedNetwork(NETWORKS, params.symbol);
-    const discovery = reducerUtils.getDiscoveryProcess(state.wallet.discovery, state.suite.device);
+    const discovery = dispatch(discoveryActions.getDiscoveryForDevice()) || null;
     // const tokens = reducerUtils.getAccountTokens(state.tokens, account);
     // const pending = reducerUtils.getAccountPendingTx(state.pending, account);
 
