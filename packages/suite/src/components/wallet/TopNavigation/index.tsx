@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { goto } from '@suite-actions/routerActions';
-import { toInternalRoute } from '@suite-utils/router';
-import { AppState } from '@suite-types';
+import { Route } from '@suite-constants/routes';
+import * as routerActions from '@suite-actions/routerActions';
+import { stripPrefixedPathname } from '@suite-utils/router';
+import { AppState, Dispatch } from '@suite-types';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -71,32 +73,40 @@ const LinkContent = styled.div`
     padding-top: 4px;
 `;
 
+const mapStateToProps = (state: AppState) => ({
+    router: state.router,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    goto: bindActionCreators(routerActions.goto, dispatch),
+});
+
 interface NavigationItem {
     title: React.ReactNode;
-    route: string;
+    route: Route['name'];
     isHidden?: (symbol: string) => boolean;
 }
 
-interface Props {
+type Props = {
     items: NavigationItem[];
-    router: AppState['router'];
-}
+} & ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 const TopNavigation = (props: Props) => {
-    const { pathname, params } = props.router;
+    const { pathname, params, app } = props.router;
     const currentPath = pathname;
-    if (!params.symbol) return <>Invalid account</>;
+    if (app !== 'wallet' || !params) return <>Invalid account</>;
 
     return (
         <Wrapper>
             {props.items.map(item => {
                 // show item if isHidden() returns false or when isHidden func is not defined
-                if ((item.isHidden && !item.isHidden(params.symbol!)) || !item.isHidden) {
+                if ((item.isHidden && !item.isHidden(params.symbol)) || !item.isHidden) {
                     return (
                         <StyledNavLink
                             key={item.route}
-                            active={toInternalRoute(currentPath) === item.route}
-                            onClick={() => goto(item.route, true)}
+                            active={stripPrefixedPathname(currentPath) === item.route}
+                            onClick={() => props.goto(item.route, true)}
                         >
                             <LinkContent>{item.title}</LinkContent>
                         </StyledNavLink>
@@ -108,8 +118,7 @@ const TopNavigation = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    router: state.router,
-});
-
-export default connect(mapStateToProps)(TopNavigation);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(TopNavigation);

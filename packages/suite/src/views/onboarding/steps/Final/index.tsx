@@ -4,8 +4,6 @@ import { FormattedMessage } from 'react-intl';
 import { H1, H4, P, H6 } from '@trezor/components';
 
 import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL } from '@onboarding-constants/urls';
-import { goto } from '@suite-actions/routerActions';
-import { getRoute } from '@suite-utils/router';
 import { Wrapper, Option } from '@onboarding-components';
 
 import l10nMessages from './index.messages';
@@ -29,7 +27,8 @@ const OptionDesc = styled(P)`
 const WalletOption = () => (
     <Option
         onClick={() => {
-            goto(getRoute('wallet-index'));
+            // TODO: bind goto
+            // goto('wallet-index');
         }}
     >
         <OptionHeading>

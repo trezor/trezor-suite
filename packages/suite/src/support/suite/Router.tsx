@@ -29,7 +29,6 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const RouterComponent: FunctionComponent<Props> = (props: Props) => {
     useEffect(() => {
         const onHashChanged = () => {
-            console.log('onHashChanged');
             // TODO: check if the view is not locked by the device request
             const windowPath = window.location.pathname + window.location.hash;
             props.onLocationChange(windowPath);
@@ -37,9 +36,7 @@ const RouterComponent: FunctionComponent<Props> = (props: Props) => {
 
         // handle browser back button
         Router.beforePopState(() => {
-            console.log('beforePopState');
             const locked = props.onBeforePopState();
-            console.log('locked', locked);
             return typeof locked === 'boolean' ? locked : true;
         });
 
@@ -55,7 +52,7 @@ const RouterComponent: FunctionComponent<Props> = (props: Props) => {
             Router.events.off('routeChangeComplete', props.onLocationChange);
             Router.events.off('hashChangeComplete', props.onLocationChange);
         };
-    }, [props]);
+    });
 
     return null;
 };

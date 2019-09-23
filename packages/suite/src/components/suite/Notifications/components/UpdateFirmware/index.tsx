@@ -3,17 +3,17 @@ import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { getRoute } from '@suite-utils/router';
-import { goto } from '@suite-actions/routerActions';
 
 import l10nMessages from './index.messages';
-import { AppState } from '@suite-types';
+import { Props as BaseProps } from '../../index';
 
 interface Props extends InjectedIntlProps {
-    device: AppState['suite']['device'];
-    pathname: AppState['router']['pathname'];
+    device: BaseProps['suite']['device'];
+    pathname: string;
+    goto: BaseProps['goto'];
 }
 
-const UpdateFirmware = ({ device, pathname, intl }: Props) => {
+const UpdateFirmware = ({ device, pathname, intl, goto }: Props) => {
     if (!device || device.type !== 'acquired') return null;
     const outdated = ['outdated', 'required'].includes(device.firmware);
     if (!outdated) return null;
@@ -30,7 +30,7 @@ const UpdateFirmware = ({ device, pathname, intl }: Props) => {
             actions={[
                 {
                     label: intl.formatMessage(l10nCommonMessages.TR_SHOW_DETAILS),
-                    callback: () => goto(getRoute('suite-device-firmware')),
+                    callback: () => goto('suite-device-firmware'),
                 },
             ]}
         />

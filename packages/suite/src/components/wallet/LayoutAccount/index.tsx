@@ -2,7 +2,6 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import TopNavigation from '@wallet-components/TopNavigation';
 import Layout from '@wallet-components/Layout';
-import { getRoute } from '@suite/utils/suite/router';
 import { FLAGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import l10nMessages from './index.messages';
@@ -17,26 +16,26 @@ const LayoutAccount = (props: Props) => (
             <TopNavigation
                 items={[
                     {
-                        route: getRoute('wallet-account-summary'),
+                        route: 'wallet-account-summary',
                         title: <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />,
                     },
                     {
-                        route: getRoute('wallet-account-transactions'),
+                        route: 'wallet-account-transactions',
                         title: <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />,
                         isHidden: () => {
                             return !FLAGS.transactions;
                         },
                     },
                     {
-                        route: getRoute('wallet-account-receive'),
+                        route: 'wallet-account-receive',
                         title: <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />,
                     },
                     {
-                        route: getRoute('wallet-account-send'),
+                        route: 'wallet-account-send',
                         title: <FormattedMessage {...l10nMessages.TR_NAV_SEND} />,
                     },
                     {
-                        route: getRoute('wallet-account-sign-verify'),
+                        route: 'wallet-account-sign-verify',
                         title: <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />,
                         isHidden: (networkType: string) => {
                             const network = NETWORKS.find(c => c.symbol === networkType);

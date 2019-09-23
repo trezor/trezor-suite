@@ -10,9 +10,11 @@ const updateReducers = (message: SuiteStorageUpdateMessage) => async (
 ) => {
     if (message.store === 'txs') {
         // txs objectStore was updated, we'll load transactions from db to reducer
-        const { accountId } = getState().router.params;
+        const { app, params } = getState().router;
+        if (app !== 'wallet' || !params) return;
+        const { accountIndex } = params;
         const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
-            key: Number(accountId),
+            key: accountIndex,
         });
         // @ts-ignore
         dispatch(transactionActions.setTransactions(txs));
