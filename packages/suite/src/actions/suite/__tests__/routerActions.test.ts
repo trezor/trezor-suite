@@ -134,5 +134,4 @@ describe('Suite Actions', () => {
         store.dispatch(routerActions.onLocationChange('/'));
         expect(store.getActions().length).toEqual(0);
     });
-
 });
