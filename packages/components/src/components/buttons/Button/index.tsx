@@ -208,7 +208,6 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     additionalClassName?: string;
     isDisabled?: boolean;
     isInverse?: boolean;
-    isWhite?: boolean;
     isTransparent?: boolean;
     isLoading?: boolean;
     icon?: IconType;
@@ -223,7 +222,6 @@ const Button = ({
     additionalClassName,
     variant = 'success',
     isDisabled = false,
-    isWhite = false,
     isTransparent = false,
     isInverse = false,
     isLoading = false,
@@ -237,7 +235,6 @@ const Button = ({
         <Wrapper
             className={newClassName}
             isDisabled={isDisabled}
-            isWhite={isWhite}
             isTransparent={isTransparent}
             isInverse={isInverse}
             isLoading={isLoading}
