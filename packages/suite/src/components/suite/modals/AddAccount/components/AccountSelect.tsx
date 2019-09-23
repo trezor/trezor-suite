@@ -76,7 +76,7 @@ const AccountButton = (props: {
     return (
         <StyledButton
             icon="PLUS"
-            isWhite={enabled}
+            variant="white"
             isDisabled={!enabled}
             onClick={() => props.onEnableAccount(account)}
         >

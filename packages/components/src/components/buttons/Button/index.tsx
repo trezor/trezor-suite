@@ -6,7 +6,7 @@ import { Icon } from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
-import { FeedbackType, IconType } from '../../../support/types';
+import { ButtonVariant, IconType } from '../../../support/types';
 
 interface FluidSpinnerProps {
     size: number;
@@ -59,7 +59,7 @@ const Wrapper = styled.button<Props>`
     border: 1px solid ${props => getPrimaryColor(props.variant)};
     transition: ${TRANSITION.HOVER};
     justify-content: ${(props: Props) =>
-        props.textAlign === 'right' ? 'flex-end' : props.textAlign || 'center'};
+        props.align === 'right' ? 'flex-end' : props.align || 'center'};
 
     &:hover {
         background: ${props => getSecondaryColor(props.variant)};
@@ -139,9 +139,8 @@ const Wrapper = styled.button<Props>`
         `}
 
     ${props =>
-        props.isWhite &&
+        props.variant === 'white' &&
         css`
-            background: ${colors.WHITE};
             color: ${colors.TEXT_SECONDARY};
             border: 1px solid ${colors.DIVIDER};
 
@@ -209,13 +208,12 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     additionalClassName?: string;
     isDisabled?: boolean;
     isInverse?: boolean;
-    isWhite?: boolean;
     isTransparent?: boolean;
     isLoading?: boolean;
     icon?: IconType;
-    variant?: FeedbackType;
+    variant?: ButtonVariant;
     fullWidth?: boolean;
-    textAlign?: string;
+    align?: string;
 }
 
 const Button = ({
@@ -224,12 +222,11 @@ const Button = ({
     additionalClassName,
     variant = 'success',
     isDisabled = false,
-    isWhite = false,
     isTransparent = false,
     isInverse = false,
     isLoading = false,
     fullWidth = false,
-    textAlign = 'center',
+    align = 'center',
     icon,
     ...rest
 }: Props) => {
@@ -238,14 +235,13 @@ const Button = ({
         <Wrapper
             className={newClassName}
             isDisabled={isDisabled}
-            isWhite={isWhite}
             isTransparent={isTransparent}
             isInverse={isInverse}
             isLoading={isLoading}
             fullWidth={fullWidth}
             variant={variant}
             icon={icon}
-            textAlign={textAlign}
+            align={align}
             {...rest}
         >
             {isLoading && (

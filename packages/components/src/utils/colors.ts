@@ -1,7 +1,7 @@
 import colors from '../config/colors';
-import { FeedbackType } from '../support/types';
+import { FeedbackType, ButtonVariant } from '../support/types';
 
-const getPrimaryColor = (type?: FeedbackType) => {
+const getPrimaryColor = (type?: ButtonVariant) => {
     let color;
     switch (type) {
         case 'info':
@@ -16,6 +16,9 @@ const getPrimaryColor = (type?: FeedbackType) => {
         case 'success':
             color = colors.SUCCESS_PRIMARY;
             break;
+        case 'white':
+            color = colors.WHITE;
+            break;
         default:
             color = null;
     }
@@ -23,7 +26,7 @@ const getPrimaryColor = (type?: FeedbackType) => {
     return color;
 };
 
-const getSecondaryColor = (type?: FeedbackType) => {
+const getSecondaryColor = (type?: ButtonVariant) => {
     let color;
     switch (type) {
         case 'info':
@@ -37,6 +40,9 @@ const getSecondaryColor = (type?: FeedbackType) => {
             break;
         case 'success':
             color = colors.SUCCESS_SECONDARY;
+            break;
+        case 'white':
+            color = colors.WHITE;
             break;
         default:
             color = null;

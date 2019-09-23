@@ -39,11 +39,11 @@ storiesOf('Buttons', module).add(
                 <Button variant="error" data-test="button_basic_error">
                     Button
                 </Button>
+                <Button variant="white" data-test="button_basic_white">
+                    Button
+                </Button>
             </Row>
             <Row>
-                <Button data-test="button_basic_white" isWhite>
-                    White
-                </Button>
                 <Button data-test="button_basic_transparent" isTransparent>
                     Transparent
                 </Button>
@@ -66,11 +66,11 @@ storiesOf('Buttons', module).add(
                 <Button icon="PLUS" variant="error" data-test="button_icon_error">
                     Button
                 </Button>
+                <Button icon="PLUS" variant="white" data-test="button_icon_white">
+                    Button
+                </Button>
             </Row>
             <Row>
-                <Button icon="PLUS" isWhite data-test="button_icon_white">
-                    White
-                </Button>
                 <Button icon="PLUS" isTransparent data-test="button_icon_transparent">
                     Transparent
                 </Button>
@@ -93,11 +93,11 @@ storiesOf('Buttons', module).add(
                 <Button isLoading variant="error" data-test="button_loading_error">
                     Button
                 </Button>
+                <Button isLoading variant="white" data-test="button_loading_white">
+                    Button
+                </Button>
             </Row>
             <Row>
-                <Button isLoading isWhite data-test="button_loading_white">
-                    White
-                </Button>
                 <Button isLoading isTransparent data-test="button_loading_transparent">
                     Transparent
                 </Button>
@@ -120,11 +120,11 @@ storiesOf('Buttons', module).add(
                 <Button isInverse variant="error" data-test="button_inverse_error">
                     Button
                 </Button>
+                <Button isInverse variant="white" data-test="button_inverse_white">
+                    Button
+                </Button>
             </Row>
             <Row>
-                <Button isInverse isWhite data-test="button_inverse_white">
-                    White
-                </Button>
                 <Button isInverse isTransparent data-test="button_inverse_transparent">
                     Transparent
                 </Button>
@@ -157,11 +157,11 @@ storiesOf('Buttons', module).add(
                 <Button isInverse icon="PLUS" variant="error" data-test="button_inverse_icon_error">
                     Button
                 </Button>
+                <Button isInverse icon="PLUS" variant="white" data-test="button_inverse_icon_white">
+                    Button
+                </Button>
             </Row>
             <Row>
-                <Button isInverse icon="PLUS" isWhite data-test="button_inverse_icon_white">
-                    White
-                </Button>
                 <Button
                     isInverse
                     icon="PLUS"
@@ -204,11 +204,16 @@ storiesOf('Buttons', module).add(
                 >
                     Button
                 </Button>
+                <Button
+                    isInverse
+                    isLoading
+                    variant="white"
+                    data-test="button_inverse_loading_white"
+                >
+                    Button
+                </Button>
             </Row>
             <Row>
-                <Button isInverse isLoading isWhite data-test="button_inverse_loading_white">
-                    White
-                </Button>
                 <Button
                     isInverse
                     isLoading
@@ -249,6 +254,7 @@ storiesOf('Buttons', module)
                     info: 'info',
                     warning: 'warning',
                     error: 'error',
+                    white: 'white',
                 },
                 null
             );
@@ -262,13 +268,12 @@ storiesOf('Buttons', module)
 
             const icon = select('Icon', iconOptions, null);
             const isTransparent = boolean('Transparent', false);
-            const isWhite = boolean('White', false);
             const fullWidth = boolean('FullWidth', false);
 
-            let textAlign;
+            let align;
             if (fullWidth) {
-                textAlign = select(
-                    'textAlign',
+                align = select(
+                    'align',
                     {
                         Center: null,
                         Left: 'left',
@@ -283,12 +288,11 @@ storiesOf('Buttons', module)
                     {...(isDisabled ? { isDisabled } : {})}
                     {...(variant ? { variant } : {})}
                     {...(isTransparent ? { isTransparent } : {})}
-                    {...(isWhite ? { isWhite } : {})}
                     {...(isInverse ? { isInverse } : {})}
                     {...(icon ? { icon } : {})}
                     {...(isLoading ? { isLoading } : {})}
                     {...(fullWidth ? { fullWidth } : {})}
-                    {...(fullWidth && textAlign ? { textAlign } : {})}
+                    {...(fullWidth && align ? { align } : {})}
                 >
                     {buttonText}
                 </Button>

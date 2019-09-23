@@ -40,7 +40,7 @@ const isDisabled = (
 
 const SendAndClear = (props: Props) => (
     <Wrapper>
-        <Clear isWhite onClick={() => props.sendFormActions.clear()}>
+        <Clear variant="white" onClick={() => props.sendFormActions.clear()}>
             <FormattedMessage {...commonMessages.TR_CLEAR} />
         </Clear>
         <Send
