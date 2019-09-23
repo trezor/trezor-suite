@@ -1,5 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import colors from '../../config/colors';
 
@@ -13,7 +12,7 @@ interface StateProps {
     checked: boolean;
 }
 
-const Switch: FunctionComponent<Props> = ({ onChange, disabled, isSmall, ...rest }) => {
+const Switch = ({ onChange, disabled, isSmall, ...rest }: Props) => {
     const [checked, setChecked] = useState<StateProps['checked']>(false);
     const smallProps = isSmall
         ? {
@@ -38,12 +37,6 @@ const Switch: FunctionComponent<Props> = ({ onChange, disabled, isSmall, ...rest
             {...rest}
         />
     );
-};
-
-Switch.propTypes = {
-    onChange: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    isSmall: PropTypes.bool,
 };
 
 export { Switch, Props as SwitchProps };

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
 import { Animated, Easing } from 'react-native';
 import { Icon } from '../Icon';
@@ -47,7 +47,7 @@ interface Props {
     children?: React.ReactNode;
 }
 
-const Prompt: FunctionComponent<Props> = ({ model, size = 32, children }) => {
+const Prompt = ({ model, size = 32, children }: Props) => {
     const blinkAnim = new Animated.Value(0);
     const scale = blinkAnim.interpolate({
         inputRange: [0, 0.25, 0.5, 1],

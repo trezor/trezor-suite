@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { Switch as SwitchNative, SwitchProps } from 'react-native';
 import colors from '../../config/colors';
 
@@ -9,7 +9,7 @@ interface Props extends SwitchProps {
     checked: boolean;
 }
 
-const Switch: FunctionComponent<Props> = ({ onChange, disabled, isSmall, checked, ...rest }) => {
+const Switch = ({ onChange, disabled, isSmall, checked, ...rest }: Props) => {
     const smallProps = isSmall ? { transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] } : {};
 
     const handleChange = (checked: boolean) => {

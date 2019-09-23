@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
@@ -51,14 +51,14 @@ interface CertesianProps {
     y: number;
 }
 
-const Loader: FunctionComponent<Props> = ({
+const Loader = ({
     size = 100,
     text,
     isSmallText,
     isWhiteText = false,
     transparentRoute,
     strokeWidth = 2,
-}) => {
+}: Props) => {
     const progress = new Animated.Value(0);
     const halfSize = size / 2;
     const dRange = [];
