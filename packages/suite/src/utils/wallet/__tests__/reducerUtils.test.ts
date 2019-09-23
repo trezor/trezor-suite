@@ -1,4 +1,4 @@
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { State as TransactionsState } from '@wallet-reducers/transactionReducer';
 import { NETWORKS } from '@wallet-config';
 import * as reducerUtils from '../reducerUtils';
 import * as fixtures from './fixtures/reducerUtils';
@@ -8,10 +8,10 @@ import { Account } from '@wallet-types';
 describe('reducerUtils', () => {
     fixtures.getAccountTransactions.forEach(f => {
         it(`reducerUtils.getAccountTransactions${f.testName}`, () => {
-            // @ts-ignore
             expect(
                 reducerUtils.getAccountTransactions(
-                    f.transactions as WalletAccountTransaction[],
+                    // @ts-ignore TODO: Missing isAddress on TransactionTarget coming from connect/blockbook?
+                    f.transactions as TransactionsState['transactions'],
                     f.account as Account,
                 ),
             ).toEqual(f.result);
