@@ -58,7 +58,9 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
             ) : (
                 <>
                     {[...Array(currentPage - 1)].map((_p, i) => (
-                        <PageItem onClick={() => onPageSelected(i + 1)}>{i + 1}</PageItem>
+                        <PageItem key={i} onClick={() => onPageSelected(i + 1)}>
+                            {i + 1}
+                        </PageItem>
                     ))}
                     <PageItem onClick={() => onPageSelected(currentPage)} isActive>
                         {currentPage}

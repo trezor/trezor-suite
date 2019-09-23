@@ -36,7 +36,7 @@ const TransactionList = ({
         <Wrapper>
             <Transactions>
                 {slicedTransactions.map(tx => {
-                    return <TransactionItem key={tx.id} {...tx} />;
+                    return <TransactionItem key={tx.txid} {...tx} />;
                 })}
             </Transactions>
             <Pagination
