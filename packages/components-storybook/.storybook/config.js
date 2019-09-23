@@ -5,7 +5,8 @@ import Theme from './theme';
 
 addParameters({
     options: {
-        theme: Theme
+        theme: Theme,
+        panelPosition: 'right',
     }
 });
 addDecorator(withInfo);
