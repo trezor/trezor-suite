@@ -10,6 +10,7 @@ import { FormattedMessage } from 'react-intl';
 import TransactionList from '@suite/components/wallet/TransactionList';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import Content from '@suite/components/wallet/Content';
+import { SETTINGS } from '@suite/config/suite';
 import { AppState, Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
 
@@ -78,6 +79,7 @@ const Transactions = (props: Props) => {
                     currentPage={selectedPage}
                     totalPages={total}
                     onPageSelected={onPageSelected}
+                    perPage={SETTINGS.TXS_PER_PAGE}
                 />
             )}
         </LayoutAccount>

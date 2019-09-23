@@ -1,9 +1,10 @@
 import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
-import { TransactionAction } from '@wallet-actions/transactionActions';
 import { formatAmount } from '@wallet-utils/accountUtils';
+import { getAccountHash } from '@wallet-utils/reducerUtils';
 import { Account, Action } from '@wallet-types';
+import { SETTINGS } from '@suite-config';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
@@ -14,24 +15,15 @@ export interface WalletAccountTransaction extends AccountTransaction {
 }
 
 export interface State {
-    transactions: WalletAccountTransaction[];
+    transactions: { [key: string]: WalletAccountTransaction[] | undefined }; // object where a key is accountHash and a value is sparse array of fetched txs
     isLoading: boolean;
     error: string | null;
 }
 
 const initialState: State = {
-    transactions: [],
+    transactions: {},
     isLoading: false,
     error: null,
-};
-
-const update = (draft: State, action: TransactionAction) => {
-    // @ts-ignore TODO: figure out why it doesn't pick correct action
-    const tx = draft.transactions.find(tx => tx.txid === action.txid);
-    if (tx) {
-        // @ts-ignore TODO: figure out why it doesn't pick correct action
-        tx.timestamp = action.timestamp;
-    }
 };
 
 // const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
@@ -68,18 +60,33 @@ const enhanceTransaction = (
     };
 };
 
-const alreadyExists = (draft: State, transaction: WalletAccountTransaction) => {
-    // two txs may have same id if they belong to two different accounts
-    return draft.transactions.find(
-        t => t.txid === transaction.txid && t.descriptor === transaction.descriptor,
-    );
+const initializeAccount = (draft: State, accountHash: string) => {
+    // initialize an empty array at 'accountHash' index if not yet initialized
+    if (!draft.transactions[accountHash]) {
+        draft.transactions[accountHash] = [];
+    }
+};
+
+const alreadyExists = (
+    transactions: WalletAccountTransaction[],
+    transaction: WalletAccountTransaction,
+) => {
+    // first we need to make sure that tx is not undefined, then check if txid matches
+    return transactions.find(t => t && t.txid === transaction.txid);
 };
 
 const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
-    transactions.forEach(tx => {
+    const accountHash = getAccountHash(account.descriptor, account.symbol, account.deviceState);
+    initializeAccount(draft, accountHash);
+    const accountTxs = draft.transactions[accountHash];
+
+    transactions.forEach((tx, i) => {
         const enhancedTx = enhanceTransaction(tx, account, page);
-        if (!alreadyExists(draft, enhancedTx)) {
-            draft.transactions.push(enhancedTx);
+        // make sure tx doesn't already exist for a given account
+        if (accountTxs && !alreadyExists(accountTxs, enhancedTx)) {
+            // insert a tx object at correct index
+            const txIndex = ((page || 1) - 1) * SETTINGS.TXS_PER_PAGE + i;
+            accountTxs[txIndex] = enhancedTx;
         }
     });
 };
@@ -95,13 +102,10 @@ export default (state: State = initialState, action: Action): State => {
             //     add(draft, action.payload);
             //     break;
             case TRANSACTION.REMOVE:
-                draft.transactions.splice(
-                    draft.transactions.findIndex(tx => tx.txid === action.txId),
-                    1,
-                );
+                // TODO
                 break;
             case TRANSACTION.UPDATE:
-                update(draft, action);
+                // TODO
                 break;
             case TRANSACTION.FETCH_INIT:
                 draft.isLoading = true;

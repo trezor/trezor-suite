@@ -1,6 +1,6 @@
-import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
-import { AppState, TrezorDevice } from '@suite-types';
-import { Account, Network, Discovery } from '@wallet-types';
+import { State as TransactionsState } from '@suite/reducers/wallet/transactionReducer';
+import { AppState } from '@suite-types';
+import { Account, Network } from '@wallet-types';
 
 export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
@@ -95,22 +95,22 @@ export const getSelectedNetwork = (networks: Network[], symbol: string) => {
     return networks.find(c => c.symbol === symbol) || null;
 };
 
-export const getDiscoveryProcess = (
-    discoveries: Discovery[],
-    device?: TrezorDevice,
-): Discovery | null => {
-    if (!device || !device.features) return null;
-    return discoveries.find(d => d.deviceState === device.state) || null;
+/**
+ * Returns a string used as an index to separate txs for given account inside a transactions reducer
+ *
+ * @param {string} descriptor
+ * @param {string} symbol
+ * @param {string} deviceState
+ * @returns {string}
+ */
+export const getAccountHash = (descriptor: string, symbol: string, deviceState: string) => {
+    return `${descriptor}-${symbol}-${deviceState}`;
 };
 
 export const getAccountTransactions = (
-    transactions: WalletAccountTransaction[],
+    transactions: TransactionsState['transactions'],
     account: Account,
 ) => {
-    return transactions.filter(
-        t =>
-            t.descriptor === account.descriptor &&
-            t.symbol === account.symbol &&
-            t.deviceState === account.deviceState,
-    );
+    const accountHash = getAccountHash(account.descriptor, account.symbol, account.deviceState);
+    return transactions[accountHash] || [];
 };

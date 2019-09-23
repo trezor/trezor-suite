@@ -13,22 +13,25 @@ interface Props {
     transactions: WalletAccountTransaction[];
     currentPage: number;
     totalPages?: number;
+    perPage: number;
     onPageSelected: (page: number) => void;
 }
 
-const TransactionList = ({ transactions, currentPage, totalPages, onPageSelected }: Props) => {
-    const slicedTransactions = useMemo(() => transactions.filter(t => t.page === currentPage), [
+const TransactionList = ({
+    transactions,
+    currentPage,
+    totalPages,
+    onPageSelected,
+    perPage,
+}: Props) => {
+    const startIndex = (currentPage - 1) * perPage;
+    const stopIndex = startIndex + perPage;
+    const slicedTransactions = useMemo(() => transactions.slice(startIndex, stopIndex), [
         transactions,
-        currentPage,
+        startIndex,
+        stopIndex,
     ]);
-    // const startIndex = (currentPage - 1) * perPage;
-    // const stopIndex = startIndex + perPage;
-    // const slicedTransactions = useMemo(() => transactions.slice(startIndex, stopIndex), [
-    //     transactions,
-    //     startIndex,
-    //     stopIndex,
-    // ]);
-
+    
     return (
         <Wrapper>
             <Transactions>
