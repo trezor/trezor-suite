@@ -13,7 +13,6 @@ import {
 import { BlockchainActions } from '@suite-actions/blockchainActions';
 import { RouterActions } from '@suite-actions/routerActions';
 import { AppState } from '@suite/reducers/store';
-import { getApp } from '@suite-utils/router';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ModalActions } from '@suite-actions/modalActions';
@@ -98,5 +97,3 @@ export interface UnknownDevice {
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 export type Store = ReduxStore<AppState, Action>;
-
-export type AnyApp = ReturnType<typeof getApp>;

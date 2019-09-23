@@ -4,6 +4,7 @@
  */
 
 import Router from 'next/router';
+import { Route } from '@suite-constants/routes';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { getPrefixedURL, getRoute } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
@@ -17,6 +18,7 @@ export type RouterActions = LocationChange;
 
 /**
  * Dispatch initial url
+ * Called from `@suite-middlewares/suiteMiddleware`
  */
 export const init = () => (dispatch: Dispatch, getState: GetState) => {
     // check if location was not already changed by initialRedirection
@@ -30,11 +32,23 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
 };
 
 /**
+ * Handle Router.beforePopState action (back)
+ * Called from ./support/RouterHandler
+ * @param {string} url
+ */
+export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { locks } = getState().suite;
+    return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
+};
+
+/**
  * Handle changes of window.location and window.location.hash
  * Called from ./support/RouterHandler
  * @param {string} url
  */
 export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: GetState) => {
+    const unlocked = dispatch(onBeforePopState());
+    if (!unlocked) return;
     const { router } = getState();
     if (router.pathname === url) return null;
     // TODO: check if the view is not locked by the device request
@@ -45,36 +59,33 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
     });
 };
 
-/**
- * Handle Router.beforePopState action
- * Called from ./support/RouterHandler
- * @param {string} url
- */
-export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
-    const { locks } = getState().suite;
-    return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
-};
-
 // links inside of application
-export const goto = async (url: string, preserveParams: boolean = false) => {
+export const goto = (routeName: Route['name'], preserveParams: boolean = false) => async (
+    dispatch: Dispatch,
+) => {
+    const unlocked = dispatch(onBeforePopState());
+    if (!unlocked) return;
+    const url = getRoute(routeName);
     if (preserveParams) {
-        await Router.push(url + window.location.hash, getPrefixedURL(url) + window.location.hash);
+        const { hash } = window.location;
+        await Router.push(url + hash, getPrefixedURL(url) + hash);
     } else {
         await Router.push(url, getPrefixedURL(url));
     }
 };
 
 export const back = async () => {
-    await Router.back();
+    Router.back();
 };
 
 /**
  * Called from `@suite-middlewares/suiteMiddleware`
  * Redirects to onboarding if `suite.initialRun` is set to true
  */
-export const initialRedirection = () => async (_dispatch: Dispatch, getState: GetState) => {
-    const { initialRun, locks } = getState().suite;
-    if (initialRun && !locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
-        await goto(getRoute('onboarding-index'));
+export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { initialRun } = getState().suite;
+    const unlocked = true; // dispatch(onBeforePopState());
+    if (initialRun && unlocked) {
+        await dispatch(goto('onboarding-index'));
     }
 };

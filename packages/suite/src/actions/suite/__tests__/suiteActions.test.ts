@@ -56,7 +56,7 @@ type RouterState = ReturnType<typeof routerReducer>;
 export const getInitialState = (
     suite?: Partial<SuiteState>,
     devices?: DevicesState,
-    router?: Partial<RouterState>,
+    router?: RouterState,
 ) => {
     return {
         suite: {

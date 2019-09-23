@@ -1,89 +1,97 @@
-export interface Route {
-    name: string;
-    pattern: string;
-    isStatic?: boolean;
-    fields?: string[];
-}
+import { ArrayElement } from '@suite/types/utils';
 
-export const routes = [
+const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
+
+const routes = [
     {
         name: 'suite-index',
         pattern: '/',
-        isStatic: false,
+        app: 'wallet',
     },
     {
         name: 'suite-version',
         pattern: '/version',
+        app: 'notSpecified',
         isStatic: true,
     },
     {
         name: 'suite-bridge',
         pattern: '/bridge',
+        app: 'notSpecified',
         isStatic: true,
-    },
-    {
-        name: 'wallet-index',
-        pattern: '/wallet',
-        isStatic: false,
     },
     {
         name: 'onboarding-index',
         pattern: '/onboarding',
+        app: 'onboarding',
         isStatic: true,
     },
     {
         name: 'suite-device-settings',
         pattern: '/settings',
-        isStatic: false,
+        app: 'deviceManagement',
     },
     {
         name: 'suite-device-firmware',
         pattern: '/firmware',
+        app: 'firmware',
         isStatic: true,
     },
     {
         name: 'suite-device-backup',
         pattern: '/backup',
-        isStatic: false,
+        app: 'deviceManagement',
+    },
+    {
+        name: 'wallet-index',
+        pattern: '/wallet',
+        app: 'wallet',
     },
     {
         name: 'wallet-settings',
         pattern: '/wallet/settings',
-        isStatic: false,
-    },
-    {
-        name: 'wallet-account',
-        pattern: '/wallet/account',
-        isStatic: false,
+        app: 'wallet',
     },
     {
         name: 'wallet-import',
         pattern: '/wallet/import',
-        isStatic: false,
+        app: 'wallet',
     },
     {
         name: 'wallet-account-summary',
         pattern: '/wallet/account',
-        isStatic: false,
+        app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'wallet-account-transactions',
         pattern: '/wallet/account/transactions',
-        isStatic: false,
+        app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'wallet-account-send',
         pattern: '/wallet/account/send',
-        isStatic: false,
+        app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'wallet-account-receive',
         pattern: '/wallet/account/receive',
-        isStatic: false,
+        app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'wallet-account-sign-verify',
         pattern: '/wallet/account/sign-verify',
-        isStatic: false,
+        app: 'wallet',
+        params: walletParams,
     },
 ] as const;
+
+export type Route = {
+    isStatic?: boolean;
+    params?: typeof walletParams;
+} & ArrayElement<typeof routes>;
+
+export default [...routes] as Route[];
