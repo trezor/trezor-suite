@@ -218,7 +218,7 @@ export const observe = (prevState: AppState, action: Action) => (
 
     const { params } = state.router;
     // displayed route is not an account route
-    if (!params.accountId || !params.symbol) return false;
+    if (!params) return false;
     // get new values for selected account
     const account = reducerUtils.getSelectedAccount(
         state.wallet.accounts,

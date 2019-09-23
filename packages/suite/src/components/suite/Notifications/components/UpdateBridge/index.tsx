@@ -1,18 +1,17 @@
 import React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { Notification } from '@trezor/components';
-import { goto } from '@suite-actions/routerActions';
-import { getRoute } from '@suite-utils/router';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
-import { AppState } from '@suite-types';
+import { Props as BaseProps } from '../../index';
 
 interface Props {
-    transport: AppState['suite']['transport'];
+    transport: BaseProps['suite']['transport'];
+    goto: BaseProps['goto'];
 }
 
-const UpdateBridge = ({ transport, intl }: Props & InjectedIntlProps) => {
+const UpdateBridge = ({ transport, intl, goto }: Props & InjectedIntlProps) => {
     // @ts-ignore TODO
     if (transport && transport.outdated) {
         return (
@@ -26,7 +25,7 @@ const UpdateBridge = ({ transport, intl }: Props & InjectedIntlProps) => {
                 actions={[
                     {
                         label: intl.formatMessage(l10nCommonMessages.TR_SHOW_DETAILS),
-                        callback: () => goto(getRoute('suite-bridge')),
+                        callback: () => goto('suite-bridge'),
                     },
                 ]}
             />

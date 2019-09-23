@@ -2,12 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, P } from '@trezor/components';
-import { backupDevice } from '@suite-actions/backupActions';
-import { goto } from '@suite-actions/routerActions';
-import { getRoute } from '@suite-utils/router';
+import * as backupActions from '@suite-actions/backupActions';
+import * as routerActions from '@suite-actions/routerActions';
 import styled from 'styled-components';
-// import { InjectedIntlProps } from 'react-intl';
-import { AppState } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 
 // note this Wrapper is copypasta from 'firmware' page
 const Wrapper = styled.div`
@@ -19,13 +17,18 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
-interface BackupProps {
-    device: AppState['suite']['device'];
-    goto: typeof goto;
-    backupDevice: typeof backupDevice;
-}
+const mapStateToProps = (state: AppState) => ({
+    device: state.suite.device,
+});
 
-const Backup = (props: BackupProps) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    goto: bindActionCreators(routerActions.goto, dispatch),
+    backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+const Backup = (props: Props) => {
     const { device } = props;
     if (!device || !device.features) return null;
 
@@ -53,7 +56,7 @@ const Backup = (props: BackupProps) => {
                         Device is already backed up. You should have your recovery seed. If you dont
                         have it, you should do something about it now.
                     </P>
-                    <Button onClick={() => goto(getRoute('wallet-index'))}>Go to wallet</Button>
+                    <Button onClick={() => props.goto('wallet-index')}>Go to wallet</Button>
                 </>
             )}
             {getStatus() === 'needs-backup' && (
@@ -66,14 +69,7 @@ const Backup = (props: BackupProps) => {
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
-});
-
 export default connect(
     mapStateToProps,
-    dispatch => ({
-        backupDevice: bindActionCreators(backupDevice, dispatch),
-        goto: bindActionCreators(goto, dispatch),
-    }),
+    mapDispatchToProps,
 )(Backup);

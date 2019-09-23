@@ -11,10 +11,12 @@ import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import CypressExportStore from '@suite-support/CypressExportStore';
+import Router from '@suite-support/Router';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { isDev } from '@suite-utils/build';
 import { SENTRY } from '@suite-config';
 import { Store } from '@suite-types';
+import ImagesPreloader from '../support/ImagesPreloader';
 
 interface Props {
     store: Store;
@@ -39,6 +41,7 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
+                <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
                     <IntlProvider>
@@ -55,6 +58,7 @@ class TrezorSuiteApp extends App<Props> {
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
                             </Button>
+                            <Router />
                             <Preloader isStatic={isStaticRoute}>
                                 <Component {...pageProps} />
                             </Preloader>

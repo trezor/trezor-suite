@@ -164,7 +164,7 @@ class BlindMatrix extends React.Component<BlindMatrixProps> {
                         </Row>
                     </React.Fragment>
                 )}
-                <Backspace isWhite onClick={() => this.backspace()}>
+                <Backspace variant="white" onClick={() => this.backspace()}>
                     <Icon style={{ marginRight: '5px' }} icon="BACK" />
                     Backspace
                 </Backspace>

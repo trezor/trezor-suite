@@ -322,7 +322,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 <>
                     <ButtonsWrapper>
                         <AddFreshAddress
-                            isWhite
+                            variant="white"
                             onClick={() => {
                                 setFreshAddrCount(freshAddrCount + 1);
                             }}

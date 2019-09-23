@@ -29,7 +29,7 @@ const SetMax = (props: Props) => (
     <SetMaxButton
         key="icon"
         onClick={() => props.sendFormActions.setMax()}
-        isWhite={props.canSetMax}
+        variant={props.canSetMax ? 'white' : 'success'}
     >
         {props.canSetMax && <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />}
         {!props.canSetMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />}

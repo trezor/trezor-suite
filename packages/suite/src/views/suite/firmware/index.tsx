@@ -5,17 +5,16 @@ import styled from 'styled-components';
 // import { FormattedMessage } from 'react-intl';
 
 import { Button, P, H1, H4, H5, variables } from '@trezor/components';
-import { goto } from '@suite-actions/routerActions';
-import { getRoute } from '@suite/utils/suite/router';
-import { firmwareUpdate } from '@suite-actions/firmwareActions';
+import * as routerActions from '@suite-actions/routerActions';
+import * as firmwareActions from '@suite-actions/firmwareActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 // todo: now used in suite, refactor from onboarding
 import WalletNotifications from '@wallet-components/Notifications';
-import { lockRouter } from '@suite-actions/suiteActions';
 import { Loaders } from '@onboarding-components';
 
 // todo: rework to common notifications
 
-import { AppState } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 // import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
@@ -64,19 +63,25 @@ const TitleHeader = styled(H1)`
     flex-wrap: wrap;
 `;
 
-interface Props {
-    firmware: AppState['firmware'];
-    device: AppState['suite']['device'];
-    firmwareUpdate: typeof firmwareUpdate;
-    goto: typeof goto;
-}
+const mapStateToProps = (state: AppState) => ({
+    device: state.suite.device,
+    firmware: state.firmware,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    goto: bindActionCreators(routerActions.goto, dispatch),
+    firmwareUpdate: bindActionCreators(firmwareActions.firmwareUpdate, dispatch),
+    lockRouter: bindActionCreators(suiteActions.lockRouter, dispatch),
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const FirmwareUpdate = (props: Props) => {
     const { device, firmware } = props;
 
     const leave = () => {
-        lockRouter(false);
-        goto(getRoute('suite-index'));
+        props.lockRouter(false);
+        props.goto('suite-index');
     };
 
     if (!device || !device.features) {
@@ -176,15 +181,7 @@ const FirmwareUpdate = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
-    firmware: state.firmware,
-});
-
 export default connect(
     mapStateToProps,
-    dispatch => ({
-        goto: bindActionCreators(goto, dispatch),
-        firmwareUpdate: bindActionCreators(firmwareUpdate, dispatch),
-    }),
+    mapDispatchToProps,
 )(FirmwareUpdate);

@@ -113,7 +113,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
     return (
         <Wrapper>
             <Row>
-                <ActionButton isDisabled={uiLocked} isWhite onClick={back}>
+                <ActionButton isDisabled={uiLocked} variant="white" onClick={back}>
                     BACK
                 </ActionButton>
             </Row>
@@ -132,7 +132,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                 <ActionCol>
                     <ActionButton
                         isDisabled={uiLocked}
-                        isWhite
+                        variant="white"
                         onClick={() => applySettings({ label })}
                     >
                         change
@@ -151,7 +151,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                     {!features.pin_protection && (
                         <ActionButton
                             isDisabled={uiLocked}
-                            isWhite
+                            variant="white"
                             onClick={() => changePin({ device })}
                         >
                             enable
@@ -160,7 +160,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                     {features.pin_protection && (
                         <ActionButton
                             isDisabled={uiLocked}
-                            isWhite
+                            variant="white"
                             onClick={() => changePin({ remove: true, device })}
                         >
                             disable
@@ -180,7 +180,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                     {!features.passphrase_protection && (
                         <ActionButton
                             isDisabled={uiLocked}
-                            isWhite
+                            variant="white"
                             onClick={() => applySettings({ use_passphrase: true })}
                         >
                             enable
@@ -189,7 +189,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                     {features.passphrase_protection && (
                         <ActionButton
                             isDisabled={uiLocked}
-                            isWhite
+                            variant="white"
                             onClick={() => applySettings({ use_passphrase: false })}
                         >
                             disable
@@ -208,7 +208,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                             {DISPLAY_ROTATIONS.map(variant => (
                                 <OrientationButton
                                     key={variant.icon}
-                                    isWhite
+                                    variant="white"
                                     onClick={() =>
                                         applySettings({ display_rotation: variant.value })
                                     }
@@ -248,7 +248,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                 <ActionCol>
                     <ActionButton
                         isDisabled={uiLocked}
-                        isWhite
+                        variant="white"
                         onClick={() => wipeDevice({ device })}
                     >
                         Wipe

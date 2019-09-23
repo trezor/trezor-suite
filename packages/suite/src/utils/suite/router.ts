@@ -1,91 +1,102 @@
-import { routes } from '@suite-constants/routes';
-
-type AnyRouteName = typeof routes[number]['name'];
-
-const PARAMS = ['symbol', 'accountId', 'accountType'] as const;
-export type ParamsProps = { [k in typeof PARAMS[number]]?: string };
+import routes, { Route } from '@suite-constants/routes';
+import { NETWORKS } from '@wallet-config';
 
 // Prefix a url with assetPrefix (eg. name of the branch in CI)
-// Useful with NextJS's Router.push() that accepts `as` prop as second arg
+// Useful with next.js Router.push() that accepts `as` prop as second arg
 export const getPrefixedURL = (url: string) => {
-    const urlPrefix = process.env.assetPrefix || '';
-    return urlPrefix + url;
+    const { assetPrefix } = process.env;
+    if (assetPrefix && url.indexOf(assetPrefix) !== 0) return assetPrefix + url;
+    return url;
 };
 
-export const getApp = (url: string) => {
-    if (url === '/' || url.indexOf(getPrefixedURL('/wallet')) === 0) return 'wallet';
-    if (url.indexOf(getPrefixedURL('/onboarding')) === 0) return 'onboarding';
-    if (url.indexOf(getPrefixedURL('/firmware')) === 0) return 'firmware';
-    if (url.indexOf(getPrefixedURL('/settings')) === 0) return 'deviceManagement';
-
-    return 'unknown';
-};
-
-export const getParams = (url: string) => {
-    const params: ParamsProps = {};
-    const split = url.split('#');
-    if (!split[1]) return params;
-    const parts = split[1].substr(1, split[1].length).split('/');
-
-    PARAMS.forEach((key, index) => {
-        params[key] = parts[index];
-    });
-    return params;
-};
-
-export const getRoute = (name: AnyRouteName, params?: { [key: string]: string | number }) => {
-    const entry = routes.find(r => r.name === name);
-    if (!entry) {
-        throw new Error(`route "${name}" not found`);
+export const stripPrefixedURL = (url: string) => {
+    const { assetPrefix } = process.env;
+    if (typeof assetPrefix === 'string' && url.indexOf(assetPrefix) === 0) {
+        url = url.slice(assetPrefix.length);
     }
-    // attach params
-    if (params && params !== {}) {
-        let paramsString = '';
-        PARAMS.forEach(key => {
-            // eslint-disable-next-line no-prototype-builtins
-            if (params.hasOwnProperty(key)) {
-                paramsString = `${paramsString}/${params[key]}`;
-            }
-        });
-        return `${entry.pattern}#${paramsString}`;
-    }
-    return entry.pattern;
+    return url;
 };
 
 // Strips params delimited by a hashtag from the URL
-export const toInternalRoute = (route: string) => {
-    // chars before # belong to the first group, # and chars after to the optional second group
-    // eg. https://suite.corp.sldev.cz/wallet/account/#/eth/0 will be split to
-    // 'https://suite.corp.sldev.cz/wallet/account/' and '#/eth/0'
-    try {
-        // https://suite.corp.sldev.cz/suite-web/onboarding/improvements/onboarding/
-        // if there is an URL prefix remove it(eg. branch name on CI)
-        const urlPrefix = process.env.assetPrefix;
-        let strippedPrefix = route;
-        if (urlPrefix && route.indexOf(urlPrefix) === 0) {
-            strippedPrefix = strippedPrefix.slice(urlPrefix.length);
-        }
-        // split path and params
-        const tokens = strippedPrefix.match(/([^#]*)(#.*)?/);
-        const group1 = tokens ? tokens[1] : route;
-        return group1.replace(/\/+$/, ''); // strip trailing slash
-    } catch (error) {
-        console.error(error);
-        return route;
+export const stripPrefixedPathname = (url: string) => {
+    const [pathname] = stripPrefixedURL(url).split('#');
+    return pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
+};
+
+export const findRoute = (url: string) => {
+    const clean = stripPrefixedPathname(url);
+    return routes.find(r => r.pattern === clean);
+};
+
+export const findRouteByName = (name: Route['name']) => {
+    return routes.find(r => r.name === name);
+};
+
+export const getApp = (url: string) => {
+    const route = findRoute(url);
+    return route ? route.app : 'unknown';
+};
+
+const validateWalletParams = (url: string) => {
+    const [, hash] = stripPrefixedURL(url).split('#');
+    if (!hash) return;
+    const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
+    if (!symbol || !index) return;
+    const network = NETWORKS.find(
+        n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
+    );
+    if (!network) return;
+    const accountIndex = parseInt(index, 10);
+    if (Number.isNaN(accountIndex)) return;
+    return {
+        symbol: network.symbol,
+        accountIndex,
+        accountType: network.accountType || 'normal',
+    };
+};
+
+// Used in routerReducer
+export const getAppWithParams = (url: string) => {
+    const route = findRoute(url);
+    if (!route) return { app: 'unknown', route: undefined, params: undefined } as const;
+    if (route.app === 'wallet') {
+        return {
+            app: 'wallet',
+            params: validateWalletParams(url),
+            route,
+        } as const;
     }
+    return { app: route.app, route, params: undefined };
+};
+
+type RouteParams = ReturnType<typeof validateWalletParams> | { otherPar: boolean };
+
+export const getRoute = (name: Route['name'], params?: RouteParams) => {
+    const route = findRouteByName(name);
+    if (!route) return '/';
+    const order = route.params;
+    if (params && order) {
+        const paramsString = Object.entries(params)
+            // sort by order defined in routes
+            .sort((a, b) => {
+                const aIndex = order.findIndex(o => o === a[0]);
+                const bIndex = order.findIndex(o => o === b[0]);
+                return aIndex - bIndex;
+            })
+            .reduce((val, curr) => {
+                // exclude accountType="normal" (most of accounts are normal)
+                if (curr[0] === 'accountType' && curr[1] === 'normal') return val;
+                return `${val}/${curr[1]}`;
+            }, '');
+        return `${route.pattern}#${paramsString}`;
+    }
+    return route.pattern;
 };
 
 // Check if the URL/route points to an in-app page
-export const isInternalRoute = (route: string) => {
-    return !!routes.find(r => r.pattern === toInternalRoute(route));
-};
+export const isInternalRoute = (url: string) => !!findRoute(url);
 
-// Returns Route which pattern match given param
-export const getRouteFromPath = (pathname: string) => {
-    return routes.find(r => r.pattern === toInternalRoute(pathname));
-};
-
-export const isStatic = (route: AnyRouteName | string) => {
-    const routeFound = routes.find(r => r.pattern === route);
-    return routeFound ? !!routeFound.isStatic : true; // 404 page act as a static
+export const isStatic = (url: string) => {
+    const route = findRoute(url);
+    return route ? !!route.isStatic : true; // 404 page act as a static
 };

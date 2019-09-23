@@ -1,39 +1,61 @@
-import produce from 'immer';
+import { Route } from '@suite-constants/routes';
 import { ROUTER } from '@suite-actions/constants';
-import { ParamsProps, getApp, getParams } from '@suite-utils/router';
+import { getAppWithParams } from '@suite-utils/router';
 import { Action } from '@suite-types';
+import { Network } from '@wallet-types';
 
-interface State {
+interface WalletParams {
+    symbol: Network['symbol'];
+    accountIndex: number;
+    accountType: NonNullable<Network['accountType']>;
+}
+
+type AppState =
+    | {
+          app: 'wallet';
+          route: Route;
+          params: WalletParams | undefined;
+      }
+    | {
+          app: Exclude<Route['app'], 'wallet'>;
+          route: Route;
+          params: undefined;
+      }
+    | {
+          app: 'unknown';
+          route: undefined;
+          params: undefined;
+      };
+
+type State = {
     url: string;
     pathname: string;
     hash?: string;
-    params: ParamsProps;
-    app: ReturnType<typeof getApp>;
-}
+} & AppState;
 
 const initialState: State = {
     url: '/',
     pathname: '/',
-    params: {},
     app: 'unknown',
+    route: undefined,
+    params: undefined,
 };
 
-const onLocationChange = (draft: State, url: string) => {
+const onLocationChange = (url: string) => {
     const [pathname, hash] = url.split('#');
-    draft.url = url;
-    draft.pathname = pathname;
-    draft.hash = hash;
-    draft.params = getParams(url);
-    draft.app = getApp(url);
+    return {
+        url,
+        pathname,
+        hash,
+        ...getAppWithParams(url),
+    };
 };
 
 export default (state: State = initialState, action: Action): State => {
-    return produce(state, draft => {
-        switch (action.type) {
-            case ROUTER.LOCATION_CHANGE:
-                onLocationChange(draft, action.url);
-                break;
-            // no default
-        }
-    });
+    switch (action.type) {
+        case ROUTER.LOCATION_CHANGE:
+            return onLocationChange(action.url);
+        default:
+            return state;
+    }
 };
