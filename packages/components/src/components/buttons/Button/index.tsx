@@ -59,7 +59,7 @@ const Wrapper = styled.button<Props>`
     border: 1px solid ${props => getPrimaryColor(props.variant)};
     transition: ${TRANSITION.HOVER};
     justify-content: ${(props: Props) =>
-        props.textAlign === 'right' ? 'flex-end' : props.textAlign || 'center'};
+        props.align === 'right' ? 'flex-end' : props.align || 'center'};
 
     &:hover {
         background: ${props => getSecondaryColor(props.variant)};
@@ -213,7 +213,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: IconType;
     variant?: ButtonVariant;
     fullWidth?: boolean;
-    textAlign?: string;
+    align?: string;
 }
 
 const Button = ({
@@ -226,7 +226,7 @@ const Button = ({
     isInverse = false,
     isLoading = false,
     fullWidth = false,
-    textAlign = 'center',
+    align = 'center',
     icon,
     ...rest
 }: Props) => {
@@ -241,7 +241,7 @@ const Button = ({
             fullWidth={fullWidth}
             variant={variant}
             icon={icon}
-            textAlign={textAlign}
+            align={align}
             {...rest}
         >
             {isLoading && (

@@ -61,7 +61,7 @@ const RequestInstance: FunctionComponent<Props> = ({
                 <Button onClick={() => onCreateInstance(device)}>
                     <FormattedMessage {...l10nMessages.TR_CREATE_INSTANCE} />
                 </Button>
-                <Button isWhite onClick={onCancel}>
+                <Button variant="white" onClick={onCancel}>
                     <FormattedMessage {...l10nMessages.TR_CANCEL} />
                 </Button>
             </Row>

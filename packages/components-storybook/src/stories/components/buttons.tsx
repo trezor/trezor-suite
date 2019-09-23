@@ -270,10 +270,10 @@ storiesOf('Buttons', module)
             const isTransparent = boolean('Transparent', false);
             const fullWidth = boolean('FullWidth', false);
 
-            let textAlign;
+            let align;
             if (fullWidth) {
-                textAlign = select(
-                    'textAlign',
+                align = select(
+                    'align',
                     {
                         Center: null,
                         Left: 'left',
@@ -292,7 +292,7 @@ storiesOf('Buttons', module)
                     {...(icon ? { icon } : {})}
                     {...(isLoading ? { isLoading } : {})}
                     {...(fullWidth ? { fullWidth } : {})}
-                    {...(fullWidth && textAlign ? { textAlign } : {})}
+                    {...(fullWidth && align ? { align } : {})}
                 >
                     {buttonText}
                 </Button>

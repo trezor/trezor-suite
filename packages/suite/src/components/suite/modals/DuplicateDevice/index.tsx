@@ -135,7 +135,7 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                 <StyledButton disabled={isUsed} onClick={() => submit()}>
                     <FormattedMessage {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
                 </StyledButton>
-                <StyledButton isWhite onClick={onCancel}>
+                <StyledButton variant="white" onClick={onCancel}>
                     <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
                 </StyledButton>
             </Column>

@@ -85,7 +85,7 @@ const AddAccount = (props: Props) => {
                 }}
             />
             <ExternalWallet selectedNetwork={selectedNetwork} onCancel={props.onCancel} />
-            <StyledButton onClick={props.onCancel} isWhite>
+            <StyledButton onClick={props.onCancel} variant="white">
                 <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
             </StyledButton>
         </Wrapper>
