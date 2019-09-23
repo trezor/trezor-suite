@@ -75,7 +75,7 @@ const alreadyExists = (
     return transactions.find(t => t && t.txid === transaction.txid);
 };
 
-const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
+const add = (draft: State, transactions: AccountTransaction[], account: Account, page: number) => {
     const accountHash = getAccountHash(account.descriptor, account.symbol, account.deviceState);
     initializeAccount(draft, accountHash);
     const accountTxs = draft.transactions[accountHash];
@@ -85,7 +85,7 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
         // make sure tx doesn't already exist for a given account
         if (accountTxs && !alreadyExists(accountTxs, enhancedTx)) {
             // insert a tx object at correct index
-            const txIndex = ((page || 1) - 1) * SETTINGS.TXS_PER_PAGE + i;
+            const txIndex = (page - 1) * SETTINGS.TXS_PER_PAGE + i;
             accountTxs[txIndex] = enhancedTx;
         }
     });

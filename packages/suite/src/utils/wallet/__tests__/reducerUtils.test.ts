@@ -2,8 +2,9 @@ import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { NETWORKS } from '@wallet-config';
 import * as reducerUtils from '../reducerUtils';
 import * as fixtures from './fixtures/reducerUtils';
-import { Account, Discovery } from '@wallet-types';
+import { Account } from '@wallet-types';
 
+// TODO: write utils for generating txs, discoveries and remove 700+ lines of transactions fixtures
 describe('reducerUtils', () => {
     fixtures.getAccountTransactions.forEach(f => {
         it(`reducerUtils.getAccountTransactions${f.testName}`, () => {
@@ -13,14 +14,6 @@ describe('reducerUtils', () => {
                     f.transactions as WalletAccountTransaction[],
                     f.account as Account,
                 ),
-            ).toEqual(f.result);
-        });
-    });
-
-    fixtures.getDiscoveryProcess.forEach(f => {
-        it(`reducerUtils.getDiscoveryProcess${f.testName}`, () => {
-            expect(
-                reducerUtils.getDiscoveryProcess(f.discoveries as Discovery[], f.device),
             ).toEqual(f.result);
         });
     });
@@ -39,5 +32,11 @@ describe('reducerUtils', () => {
             // @ts-ignore
             expect(reducerUtils.observeChanges(f.prev, f.current, f.filter)).toEqual(f.result);
         });
+    });
+
+    it('reducerUtils.getAccountHash', () => {
+        expect(reducerUtils.getAccountHash('descriptor', 'symbol', 'deviceState')).toEqual(
+            'descriptor-symbol-deviceState',
+        );
     });
 });

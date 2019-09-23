@@ -17,7 +17,7 @@ export type TransactionAction =
           type: typeof TRANSACTION.FETCH_SUCCESS;
           transactions: AccountTransaction[];
           account: Account;
-          page?: number;
+          page: number;
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 // | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
@@ -92,7 +92,7 @@ const getTransactionsFromStorage = async (descriptor: string, offset?: number, c
     }
 };
 
-export const fetchTransactions = (account: Account, page?: number, perPage?: number) => async (
+export const fetchTransactions = (account: Account, page: number, perPage?: number) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -113,6 +113,7 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
         type: TRANSACTION.FETCH_INIT,
     });
 
+    // TODO: storing and fetching from the db
     storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
 
     const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
@@ -159,6 +160,7 @@ export const fetchTransactions = (account: Account, page?: number, perPage?: num
             type: TRANSACTION.FETCH_SUCCESS,
             transactions: storedTxs || [],
             account,
+            page,
         });
     }
 };
