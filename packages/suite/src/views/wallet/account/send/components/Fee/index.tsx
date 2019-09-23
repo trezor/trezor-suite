@@ -3,8 +3,11 @@ import { colors, Select, P } from '@trezor/components';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import accountMessages from '@wallet-views/account/messages';
+import { FeeItem } from '@wallet-reducers/feesReducer';
 import { DispatchProps } from '../../Container';
 import { Fee, Account } from '@wallet-types';
+
+const CUSTOM_FEE = 'custom';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,6 +48,18 @@ const getValue = (fees: Fee, symbol: Account['symbol']) => {
     return fees[symbol].length === 1 ? fees[symbol] : fees[symbol][0];
 };
 
+const capitalize = (s: string) => {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
+const addCustom = (option: FeeItem[]) => {
+    const result = option;
+    if (!result.find(i => i.value === CUSTOM_FEE)) {
+        result.push({ label: CUSTOM_FEE, value: CUSTOM_FEE });
+    }
+    return result;
+};
+
 const FeeComponent = (props: Props) => (
     <Wrapper>
         <Label>
@@ -55,13 +70,15 @@ const FeeComponent = (props: Props) => (
             isClearable={false}
             value={getValue(props.fees, props.symbol)}
             onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
-            options={props.fees[props.symbol]}
+            options={addCustom(props.fees[props.symbol])}
             formatOptionLabel={option => (
                 <OptionWrapper>
-                    <OptionLabel>{option.label}</OptionLabel>
-                    <OptionValue>
-                        {option.value} {props.symbol.toUpperCase()}
-                    </OptionValue>
+                    <OptionLabel>{capitalize(option.label)}</OptionLabel>
+                    {option.label !== CUSTOM_FEE && (
+                        <OptionValue>
+                            {option.value} {props.symbol.toUpperCase()}
+                        </OptionValue>
+                    )}
                 </OptionWrapper>
             )}
         />
