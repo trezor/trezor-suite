@@ -72,30 +72,31 @@ const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']
 ) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
-    if (!account || !fiat || !send || !send.amount) return null;
+    if (!account || !fiat || !send) return null;
 
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    if (!fiatNetwork) return null;
 
-    const rate = fiatNetwork.rates[localCurrency.value];
-    const fiatValueBigNumber = new BigNumber(send.amount).multipliedBy(new BigNumber(rate));
-    const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
-    const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
+    if (fiatNetwork && send.amount) {
+        const rate = fiatNetwork.rates[localCurrency.value];
+        const fiatValueBigNumber = new BigNumber(send.amount).multipliedBy(new BigNumber(rate));
+        const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
+        const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
+
+        dispatch({
+            type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+            fiatValue,
+        });
+
+        dispatch({
+            type: SEND.HANDLE_AMOUNT_CHANGE,
+            amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
+            availableBalance: account.availableBalance,
+        });
+    }
 
     dispatch({
         type: SEND.HANDLE_SELECT_CURRENCY_CHANGE,
         localCurrency,
-    });
-
-    dispatch({
-        type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-        fiatValue,
-    });
-
-    dispatch({
-        type: SEND.HANDLE_AMOUNT_CHANGE,
-        amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
-        availableBalance: account.availableBalance,
     });
 };
 
