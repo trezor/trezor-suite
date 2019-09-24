@@ -9,8 +9,13 @@ import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 export type TransactionAction =
-    | { type: typeof TRANSACTION.ADD; transactions: WalletAccountTransaction[] }
-    | { type: typeof TRANSACTION.REMOVE; txId: string }
+    | {
+          type: typeof TRANSACTION.ADD;
+          transactions: WalletAccountTransaction[];
+          account: Account;
+          page: number;
+      }
+    | { type: typeof TRANSACTION.REMOVE; account: Account }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {

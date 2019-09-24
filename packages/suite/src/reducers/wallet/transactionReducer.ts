@@ -98,11 +98,17 @@ export default (state: State = initialState, action: Action): State => {
                 // gather transactions from account.create action
                 add(draft, action.payload.history.transactions || [], action.payload, 1);
                 break;
-            // case TRANSACTION.ADD:
-            //     add(draft, action.payload);
-            //     break;
+            case TRANSACTION.ADD:
+                add(draft, action.transactions, action.account, action.page);
+                break;
             case TRANSACTION.REMOVE:
-                // TODO
+                delete draft.transactions[
+                    getAccountHash(
+                        action.account.descriptor,
+                        action.account.symbol,
+                        action.account.deviceState,
+                    )
+                ];
                 break;
             case TRANSACTION.UPDATE:
                 // TODO
