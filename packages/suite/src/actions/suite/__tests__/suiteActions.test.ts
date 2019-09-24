@@ -9,7 +9,9 @@ import { DEVICE } from 'trezor-connect';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
+import { SUITE } from '@suite-actions/constants';
 import * as suiteActions from '../suiteActions';
+import * as routerActions from '../routerActions';
 import { init } from '../trezorConnectActions';
 import fixtures from './fixtures/suiteActions';
 
@@ -113,23 +115,14 @@ describe('Suite Actions', () => {
 
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState({}, f.state.devices);
             const store = initStore(state);
-            require('next/router').default.push = (url: string) => {
-                store.dispatch({
-                    type: '@router/location-change',
-                    url,
-                });
-            };
             await store.dispatch(suiteActions.selectDevice(f.device));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
                 const action = store.getActions().pop();
                 expect(action.payload).toEqual(f.result.payload);
-                if (f.result.router) {
-                    expect(store.getState().router).toMatchObject(f.result.router);
-                }
             }
         });
     });
@@ -227,5 +220,23 @@ describe('Suite Actions', () => {
                 expect(action.type).toEqual(f.result);
             }
         });
+    });
+
+    it(`exitApp: it shuold remove LOCKTYPE.ROUTER form suite.locks`, async () => {
+        // mock router
+        require('next/router').default.push = () => {};
+        const goto = jest.spyOn(routerActions, 'goto');
+        const state = getInitialState({
+            locks: [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE],
+        });
+        const store = initStore(state);
+        await store.dispatch(suiteActions.exitApp('wallet-index'));
+
+        expect(store.getState()).toMatchObject({
+            suite: {
+                locks: [SUITE.LOCK_TYPE.DEVICE],
+            },
+        });
+        expect(goto).toHaveBeenNthCalledWith(1, 'wallet-index');
     });
 });

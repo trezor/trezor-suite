@@ -72,7 +72,7 @@ export const getInitialState = (override: any) => {
                     major_version: 2,
                 },
             },
-            locks: [3],
+            locks: [],
         },
         firmware: {
             reducerEnabled: true,
@@ -113,7 +113,6 @@ describe('Firmware Actions', () => {
             await store.dispatch(firmwareActions.firmwareUpdate());
 
             const result = store.getState();
-
             if (f.result) {
                 if (f.result.state) {
                     expect(result).toMatchObject(f.result.state);

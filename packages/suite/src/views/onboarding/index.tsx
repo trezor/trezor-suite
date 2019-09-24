@@ -44,7 +44,7 @@ import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import NameStep from '@onboarding-views/steps/Name/Container';
 import BookmarkStep from '@onboarding-views/steps/Bookmark/Container';
 import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
-import FinalStep from '@onboarding-views/steps/Final';
+import FinalStep from '@onboarding-views/steps/Final/Container';
 import { ProgressSteps, UnexpectedState, Preloader } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';

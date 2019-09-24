@@ -26,8 +26,6 @@ import SocialLogo from './Icons/SocialLogo';
 import Dots from './Loaders/Dots';
 import Donut from './Loaders/Donut';
 
-import ConnectPrompt from './Prompts/ConnectPrompt';
-
 const OnboardingIcon = {
     ConnectDevice,
     SocialLogo,
@@ -42,10 +40,6 @@ const OnboardingButton = {
 const Loaders = {
     Donut,
     Dots,
-};
-
-const Prompts = {
-    ConnectPrompt,
 };
 
 const Wrapper = {
@@ -68,7 +62,6 @@ export {
     PinMatrix,
     Preloader,
     ProgressSteps,
-    Prompts,
     Text,
     UnexpectedState,
     Wrapper,
