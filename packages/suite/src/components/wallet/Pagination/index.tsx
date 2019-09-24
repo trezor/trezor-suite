@@ -58,6 +58,7 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
             ) : (
                 <>
                     {[...Array(currentPage - 1)].map((_p, i) => (
+                        // eslint-disable-next-line react/no-array-index-key
                         <PageItem key={i} onClick={() => onPageSelected(i + 1)}>
                             {i + 1}
                         </PageItem>
