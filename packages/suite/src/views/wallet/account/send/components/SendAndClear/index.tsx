@@ -23,6 +23,9 @@ const Clear = styled(Button)``;
 
 interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
+    sendFormActionsBitcoin: DispatchProps['sendFormActionsBitcoin'];
+    sendFormActionsEthereum: DispatchProps['sendFormActionsEthereum'];
+    sendFormActionsRipple: DispatchProps['sendFormActionsRipple'];
     errors: ReducerState['errors'];
     amount: ReducerState['amount'];
     address: ReducerState['address'];
@@ -45,7 +48,20 @@ const SendAndClear = (props: Props) => (
         </Clear>
         <Send
             isDisabled={isDisabled(props.errors, props.address, props.amount)}
-            onClick={() => props.sendFormActions.send(props.networkType)}
+            onClick={() => {
+                switch (props.networkType) {
+                    case 'bitcoin':
+                        props.sendFormActionsBitcoin.send();
+                        break;
+                    case 'ethereum':
+                        props.sendFormActionsEthereum.send();
+                        break;
+                    case 'ripple':
+                        props.sendFormActionsRipple.send();
+                        break;
+                    // no default
+                }
+            }}
         >
             {isDisabled(props.errors, props.address, props.amount)
                 ? 'Send'

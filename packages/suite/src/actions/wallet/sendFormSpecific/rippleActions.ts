@@ -1,6 +1,5 @@
 import TrezorConnect from 'trezor-connect';
 import { SEND } from '@wallet-actions/constants';
-import { FormattedMessage } from 'react-intl';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
@@ -19,10 +18,10 @@ export const handleDestinationTagChange = (destinationTag: string) => (dispatch:
     });
 };
 
-// Fee must be in the range of 10 to 10,000 drops
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const FLAGS = 0x80000000;
     const { account } = getState().wallet.selectedAccount;
+    // Fee must be in the range of 10 to 10,000 drops
     const { customFee, fee, address, networkTypeRipple, amount } = getState().wallet.send;
     const { destinationTag } = networkTypeRipple;
     const selectedDevice = getState().suite.device;
@@ -46,14 +45,12 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    console.log(signedTransaction);
-
     if (!signedTransaction || !signedTransaction.success) {
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: 'aaaaa',
+                title: 'aaaaa', // TODO
                 message: signedTransaction.payload.error,
                 cancelable: true,
                 actions: [],
@@ -72,7 +69,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: 'bbbb',
+                title: 'bbbb', // TODO
                 message: push.payload.error,
                 cancelable: true,
                 actions: [],
