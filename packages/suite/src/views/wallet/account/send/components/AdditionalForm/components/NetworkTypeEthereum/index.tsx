@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-
 import { Input, Tooltip, Icon, colors, Link, TextArea } from '@trezor/components';
 import commonMessages from '@wallet-views/messages';
 import localMessages from './index.messages';
