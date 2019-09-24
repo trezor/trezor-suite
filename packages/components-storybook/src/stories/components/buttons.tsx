@@ -97,7 +97,7 @@ storiesOf('Buttons', module).add(
                 <Button isLoading variant="error" data-test="button_loading_error">
                     Button
                 </Button>
-                <Button variant="white" data-test="button_loading_white">
+                <Button isLoading variant="white" data-test="button_loading_white">
                     Button
                 </Button>
             </Row>
@@ -1294,7 +1294,6 @@ storiesOf('Buttons', module)
                     {...(variant ? { variant } : {})}
                     {...(isTransparent ? { isTransparent } : {})}
                     {...(isInverse ? { isInverse } : {})}
-                    // {...(isInverse && isLoading ? { isLoading } : {})}
                     {...(icon ? { icon } : {})}
                     {...(isLoading ? { isLoading } : {})}
                     {...(fullWidth ? { fullWidth } : {})}

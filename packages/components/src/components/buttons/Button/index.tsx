@@ -11,14 +11,12 @@ import { ButtonVariant, IconType } from '../../../support/types';
 interface FluidSpinnerProps {
     size: number;
     strokeWidth?: number;
-    color?: string;
 }
 
 const FluidSpinner = styled.div<FluidSpinnerProps>`
     /* https://loading.io/css/ */
     width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
     height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-    color: ${props => (props.color ? props.color : 'inherit')};
     div {
         position: absolute;
         box-sizing: border-box;
@@ -87,7 +85,6 @@ const Wrapper = styled.button<Props>`
     ${props =>
         props.isInverse &&
         !props.isDisabled &&
-        !props.isLoading &&
         css`
             background: transparent;
             color: ${getPrimaryColor(props.variant)};
@@ -229,7 +226,6 @@ const Button = ({
     fullWidth = false,
     align = 'center',
     icon,
-    color,
     ...rest
 }: Props) => {
     const newClassName = additionalClassName ? `${className} ${additionalClassName}` : className;
@@ -244,15 +240,11 @@ const Button = ({
             variant={variant}
             icon={icon}
             align={align}
-            color={color}
             {...rest}
         >
-            {isLoading && !icon && (
+            {isLoading && (
                 <IconWrapper>
-                    <FluidSpinner
-                        size={16}
-                        color={isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE}
-                    >
+                    <FluidSpinner size={16}>
                         <div />
                         <div />
                         <div />
