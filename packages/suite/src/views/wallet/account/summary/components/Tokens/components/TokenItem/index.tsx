@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
+// @ts-ignore there are no types for this lib
 import ColorHash from 'color-hash';
+// @ts-ignore there are no types for this lib
 import ScaleText from 'react-scale-text';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import l10nCommonMessages from '@wallet-views/messages';
