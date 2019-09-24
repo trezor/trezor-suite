@@ -1,5 +1,5 @@
 /* eslint-disable react/style-prop-object */
-import React, { PureComponent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
@@ -107,118 +107,104 @@ const TooltipWrapper = styled.div`
     align-items: center;
 `;
 
-class AccountBalance extends PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            isHidden: props.isHidden,
-            canAnimateHideBalanceIcon: props.isHidden,
-        };
+const AccountBalance = (props: Props) => {
+    const [isHidden, setIsHidden] = useState(props.isHidden);
+    const [canAnimateHideBalanceIcon, setCanAnimateHideBalanceIcon] = useState(isHidden);
+
+    useEffect(() => {
+        setIsHidden(props.isHidden);
+    }, [props.isHidden]);
+
+    const handleHideBalanceIconClick = () => {
+        setCanAnimateHideBalanceIcon(true);
+        setIsHidden(!isHidden);
+    };
+
+    const { network, localCurrency } = props;
+    const fiatRates = props.fiat.find(f => f.symbol === network.symbol);
+    let fiatRateValue = NaN;
+    let fiat = '';
+    if (fiatRates) {
+        fiatRateValue = fiatRates.rates[localCurrency];
+        fiat = toFiatCurrency(props.balance, localCurrency, fiatRates);
     }
 
-    componentDidUpdate(prevProps: Props) {
-        if (prevProps.isHidden !== this.props.isHidden) {
-            // eslint-disable-next-line react/no-did-update-set-state
-            this.setState({
-                isHidden: this.props.isHidden,
-            });
-        }
-    }
+    const NoRatesTooltip = (
+        <TooltipContainer>
+            <Tooltip
+                maxWidth={285}
+                placement="top"
+                content={<FormattedMessage {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
+            >
+                <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
+            </Tooltip>
+        </TooltipContainer>
+    );
 
-    handleHideBalanceIconClick() {
-        this.setState(previousState => ({
-            isHidden: !previousState.isHidden,
-            canAnimateHideBalanceIcon: true,
-        }));
-    }
-
-    render() {
-        const { network, localCurrency } = this.props;
-        const fiatRates = this.props.fiat.find(f => f.symbol === network.symbol);
-        let fiatRateValue = NaN;
-        let fiat = '';
-        if (fiatRates) {
-            fiatRateValue = fiatRates.rates[localCurrency];
-            fiat = toFiatCurrency(this.props.balance, localCurrency, fiatRates);
-        }
-
-        const NoRatesTooltip = (
-            <TooltipContainer>
-                <Tooltip
-                    maxWidth={285}
-                    placement="top"
-                    content={<FormattedMessage {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
-                >
-                    <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
-                </Tooltip>
-            </TooltipContainer>
-        );
-
-        return (
-            <Wrapper isHidden={this.state.isHidden}>
-                <HideBalanceIconWrapper onClick={() => this.handleHideBalanceIconClick()}>
-                    <Icon
-                        canAnimate={this.state.canAnimateHideBalanceIcon}
-                        isActive={this.state.isHidden}
-                        icon="ARROW_UP"
-                        color={colors.TEXT_SECONDARY}
-                        size={14}
-                    />
-                </HideBalanceIconWrapper>
-                {!this.state.isHidden && (
-                    <React.Fragment>
+    return (
+        <Wrapper isHidden={isHidden}>
+            <HideBalanceIconWrapper onClick={() => handleHideBalanceIconClick()}>
+                <Icon
+                    canAnimate={canAnimateHideBalanceIcon}
+                    isActive={isHidden}
+                    icon="ARROW_UP"
+                    color={colors.TEXT_SECONDARY}
+                    size={14}
+                />
+            </HideBalanceIconWrapper>
+            {!isHidden && (
+                <React.Fragment>
+                    <BalanceWrapper>
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_BALANCE} />
+                        </Label>
+                        <TooltipWrapper>
+                            <FiatValue>
+                                {fiatRates ? (
+                                    <FormattedNumber currency={localCurrency} value={fiat} />
+                                ) : (
+                                    'N/A'
+                                )}
+                            </FiatValue>
+                            {!fiatRates && NoRatesTooltip}
+                        </TooltipWrapper>
+                        <CoinBalance>
+                            {props.balance} {network.symbol}
+                        </CoinBalance>
+                    </BalanceWrapper>
+                    {props.xrpReserve !== '0' && (
                         <BalanceWrapper>
                             <Label>
-                                <FormattedMessage {...l10nMessages.TR_BALANCE} />
+                                <FormattedMessage {...l10nMessages.TR_RESERVE} />
                             </Label>
-                            <TooltipWrapper>
-                                <FiatValue>
-                                    {fiatRates ? (
-                                        <FormattedNumber currency={localCurrency} value={fiat} />
-                                    ) : (
-                                        'N/A'
-                                    )}
-                                </FiatValue>
-                                {!fiatRates && NoRatesTooltip}
-                            </TooltipWrapper>
-                            <CoinBalance>
-                                {this.props.balance} {network.symbol}
-                            </CoinBalance>
+                            <FiatValueRate>
+                                {props.xrpReserve} {network.symbol}
+                            </FiatValueRate>
                         </BalanceWrapper>
-                        {this.props.xrpReserve !== '0' && (
-                            <BalanceWrapper>
-                                <Label>
-                                    <FormattedMessage {...l10nMessages.TR_RESERVE} />
-                                </Label>
-                                <FiatValueRate>
-                                    {this.props.xrpReserve} {network.symbol}
-                                </FiatValueRate>
-                            </BalanceWrapper>
-                        )}
-                        <BalanceRateWrapper>
-                            <Label>
-                                <FormattedMessage {...l10nMessages.TR_RATE} />
-                            </Label>
-                            <TooltipWrapper>
-                                <FiatValueRate>
-                                    {fiatRates ? (
-                                        <FormattedNumber
-                                            currency={localCurrency}
-                                            value={fiatRateValue}
-                                        />
-                                    ) : (
-                                        'N/A'
-                                    )}
-                                </FiatValueRate>
-                                {!fiatRates && NoRatesTooltip}
-                            </TooltipWrapper>
-                            <CoinBalance>1 {network.symbol}</CoinBalance>
-                        </BalanceRateWrapper>
-                    </React.Fragment>
-                )}
-            </Wrapper>
-        );
-    }
-}
+                    )}
+                    <BalanceRateWrapper>
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_RATE} />
+                        </Label>
+                        <TooltipWrapper>
+                            <FiatValueRate>
+                                {fiatRates ? (
+                                    <FormattedNumber
+                                        currency={localCurrency}
+                                        value={fiatRateValue}
+                                    />
+                                ) : (
+                                    'N/A'
+                                )}
+                            </FiatValueRate>
+                            {!fiatRates && NoRatesTooltip}
+                        </TooltipWrapper>
+                        <CoinBalance>1 {network.symbol}</CoinBalance>
+                    </BalanceRateWrapper>
+                </React.Fragment>
+            )}
+        </Wrapper>
+    );
+};
 
 export default AccountBalance;
