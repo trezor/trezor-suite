@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
+import TokenIcon from '@wallet-views/account/summary/components/Tokens/components/TokenIcon';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,7 +36,11 @@ const Row = styled.div`
     display: flex;
     flex: 1;
     justify-content: space-between;
-    padding: 0px 4px;
+`;
+
+const AmountWrapper = styled.div`
+    display: flex;
+    justify-content: flex-end;
 `;
 
 const Col = styled.div`
@@ -102,7 +107,6 @@ const Symbol = styled.div`
 
 const Amount = styled.div<{ txType: string }>`
     display: flex;
-    flex-direction: column;
     text-align: right;
     color: ${props => (props.txType === 'sent' ? 'red' : 'green')};
 `;
@@ -115,6 +119,11 @@ const Addr = styled.div`
     text-overflow: ellipsis;
     margin-right: 10px;
 `;
+
+const StyledTokenIcon = styled(TokenIcon)`
+    align-self: center;
+`;
+
 // const Fee = styled.div`
 //     color: ${colors.TEXT_SECONDARY};
 // `;
@@ -162,22 +171,28 @@ const TransactionItem = React.memo(
                         {tokens &&
                             tokens.map(token => (
                                 <Token>
-                                    <Col>
-                                        <TokenName>
-                                            {token.name} ({token.symbol})
-                                        </TokenName>
-                                        <Label>
-                                            From: <TokenAddress>{token.from}</TokenAddress>
-                                        </Label>
-                                        <Label>
-                                            To: <TokenAddress>{token.to}</TokenAddress>
-                                        </Label>
-                                    </Col>
-                                    <Col>
+                                    <Row>
+                                        <StyledTokenIcon
+                                            address={token.address}
+                                            symbol={token.symbol}
+                                        />
+                                        <Col>
+                                            <TokenName>
+                                                {token.name} ({token.symbol})
+                                            </TokenName>
+                                            <Label>
+                                                From:&nbsp;<TokenAddress>{token.from}</TokenAddress>
+                                            </Label>
+                                            <Label>
+                                                To:&nbsp;<TokenAddress>{token.to}</TokenAddress>
+                                            </Label>
+                                        </Col>
+                                    </Row>
+                                    <AmountWrapper>
                                         <Amount txType={type}>
                                             {token.amount} {token.symbol}
                                         </Amount>
-                                    </Col>
+                                    </AmountWrapper>
                                 </Token>
                             ))}
                     </Targets>
