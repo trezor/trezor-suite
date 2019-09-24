@@ -1,9 +1,9 @@
 import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducers';
 import * as deviceUtils from '@suite-utils/device';
-import { goto } from '@suite-actions/routerActions';
 import { add as addNotification } from '@suite-actions/notificationActions';
-
+import * as routerActions from '@suite-actions/routerActions';
+import { Route } from '@suite-constants/routes';
 import { SUITE } from './constants';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
 
@@ -33,7 +33,7 @@ export type SuiteActions =
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
-    | { type: typeof SUITE.APP_CHANGE; payload: AppState['router']['app'] };
+    | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] };
 
 /**
  * @returns {Action|void}
@@ -151,22 +151,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    // 1. check if device is not locked by device request or application itself (for example onboarding process)
-    const { locks } = getState().suite;
-    // 2. check if device is acquired
-    if (device && device.features && !locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
-        // 3. device is not initialized, redirect to "onboarding"
-        if (device.mode === 'initialize') {
-            await dispatch(goto('onboarding-index'));
-        }
-        // 4. device firmware update required, redirect to "firmware update"
-        else if (device.firmware === 'required') {
-            await dispatch(goto('suite-device-firmware'));
-        }
-    }
-
     let payload: TrezorDevice | typeof undefined;
-    // 5. find possible instances
     if (device) {
         // "instanceLabel" is one of the field which distinguish Device from TrezorDevice
         const { instanceLabel } = device as TrezorDevice;
@@ -182,7 +167,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
         }
     }
 
-    // 5. select requested device
+    // 3. select requested device
     dispatch({
         type: SUITE.SELECT_DEVICE,
         payload,
@@ -385,4 +370,16 @@ export const authorizeDevice = () => async (
         }),
     );
     return false;
+};
+
+/**
+ * Wrapper utility action that dispatches:
+ * 1. routerLock(false)
+ * 2. goto(params)
+ *
+ * Useful for exiting apps that operate under locked router.
+ */
+export const exitApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
+    dispatch(lockRouter(false));
+    dispatch(routerActions.goto(routeName));
 };

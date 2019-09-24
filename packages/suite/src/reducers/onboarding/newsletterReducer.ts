@@ -1,7 +1,7 @@
 import produce from 'immer';
 
 import {
-    NewsletterReducer,
+    NewsletterState,
     NewsletterActionTypes,
     Checkbox,
     TOGGLE_CHECKBOX,
@@ -38,13 +38,12 @@ const initialState = {
             label: 'Tech & Dev corner',
         },
     ],
-    isFetching: false,
     isSuccess: false,
     isProgress: false,
     error: null,
 };
 
-const newsletter = (state: NewsletterReducer = initialState, action: NewsletterActionTypes) => {
+const newsletter = (state: NewsletterState = initialState, action: NewsletterActionTypes) => {
     return produce(state, draft => {
         switch (action.type) {
             case TOGGLE_CHECKBOX:
@@ -66,7 +65,6 @@ const newsletter = (state: NewsletterReducer = initialState, action: NewsletterA
                 draft.isProgress = true;
                 break;
             case FETCH_SUCCESS:
-                console.log('aaa');
                 draft.isSuccess = true;
                 draft.isProgress = false;
                 draft.error = null;

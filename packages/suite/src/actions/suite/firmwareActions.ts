@@ -5,27 +5,39 @@ import { lockUI } from '@suite-actions/suiteActions';
 
 //  TODO: should be reworked to deviceManagementActions
 
-// todo: refactor to suite
-// import * as notificationActions from '@wallet-actions/notificationActions';
-import { SET_UPDATE_STATUS } from '@suite-actions/constants/firmware';
+// import * as notificationActions from '@suite-actions/notificationActions';
+import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { AnyStatus } from '@suite-reducers/firmwareReducer';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState, Action } from '@suite-types';
+
+interface SetUpdateStatusAction {
+    type: typeof FIRMWARE.SET_UPDATE_STATUS;
+    payload: AnyStatus;
+}
+
+interface ResetReducer {
+    type: typeof FIRMWARE.RESET_REDUCER;
+}
+interface EnableReducer {
+    type: typeof FIRMWARE.ENABLE_REDUCER;
+    payload: boolean;
+}
+
+export type FirmwareUpdateActionTypes = SetUpdateStatusAction | ResetReducer | EnableReducer;
 
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
-    // todo remove error notification
-    // dispatch(notificationActions.add({
-    //     variant: "success",
-    //     title: 'hello',
-    // }))
-
-    const { device } = getState().suite;
-    if (!device || !device.connected || device.type !== 'acquired') {
+    const { device, locks } = getState().suite;
+    if (!device || !device.connected || !device.features) {
+        // todo: possibly dispatch error?
         return;
-        // todo: probably dispatch error notification?
     }
-    dispatch(lockUI(true));
-    dispatch({ type: SET_UPDATE_STATUS, payload: 'started' });
-    dispatch({ type: SET_UPDATE_STATUS, payload: 'downloading' });
+
+    if (!locks.includes(SUITE.LOCK_TYPE.UI)) {
+        dispatch(lockUI(true));
+    }
+
+    dispatch({ type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' });
+    dispatch({ type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' });
 
     const rollout = Rollout({
         releasesListsPaths: {
@@ -46,10 +58,9 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         return;
     }
 
-    dispatch({ type: SET_UPDATE_STATUS, payload: 'installing' });
+    dispatch({ type: FIRMWARE.SET_UPDATE_STATUS, payload: 'installing' });
 
-    // todo: when types in connect ready
-    const payload: any = {
+    const payload = {
         payload: fw,
         keepSession: false,
         skipFinalReload: true,
@@ -59,22 +70,31 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
     if (!updateResponse.success) {
         // todo dispatch error notification
-        dispatch({ type: SET_UPDATE_STATUS, payload: 'error' });
+        dispatch({ type: FIRMWARE.SET_UPDATE_STATUS, payload: 'error' });
+        // todo: what about notification? probably not needed
+        // dispatch(
+        //     notificationActions.add({
+        //         variant: 'error',
+        //         title: 'Firmware installation failed.',
+        //         tags: [NOTIFICATION.TAG.FIRMWARE],
+        //     }),
+        // );
+
         return dispatch(lockUI(false));
     }
 
-    dispatch({ type: SET_UPDATE_STATUS, payload: 'restarting' });
+    dispatch({ type: FIRMWARE.SET_UPDATE_STATUS, payload: 'restarting' });
 
     dispatch(lockUI(false));
 };
 
-export interface FirmwareUpdateActions {
-    updateFirmware: typeof firmwareUpdate;
-}
+export const resetReducer = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: FIRMWARE.RESET_REDUCER,
+    });
+};
 
-interface SetUpdateStatusAction {
-    type: typeof SET_UPDATE_STATUS;
-    payload: AnyStatus;
-}
-
-export type FirmwareUpdateActionTypes = SetUpdateStatusAction;
+export const enableReducer = (payload: boolean): Action => ({
+    type: FIRMWARE.ENABLE_REDUCER,
+    payload,
+});

@@ -33,6 +33,8 @@ const Notifications = (props: Props & InjectedIntlProps) => (
             goto={props.goto}
         />
         <NoBackup device={props.suite.device} pathname={props.router.pathname} goto={props.goto} />
+        {/* TODO: add Failed backup */}
+        {/* TODO: add Pin not set */}
     </React.Fragment>
 );
 

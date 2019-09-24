@@ -21,11 +21,8 @@ describe('notification reducer', () => {
             }),
         ).toMatchObject([
             {
-                actions: undefined,
-                cancelable: undefined,
                 devicePath: '1',
                 id: '1',
-                message: undefined,
                 title: 'foo',
                 variant: 'success',
             },

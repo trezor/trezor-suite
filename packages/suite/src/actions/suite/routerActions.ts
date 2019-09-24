@@ -65,7 +65,9 @@ export const goto = (routeName: Route['name'], preserveParams: boolean = false) 
 ) => {
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
+
     const url = getRoute(routeName);
+
     if (preserveParams) {
         const { hash } = window.location;
         await Router.push(url + hash, getPrefixedURL(url) + hash);

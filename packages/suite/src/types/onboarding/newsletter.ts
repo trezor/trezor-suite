@@ -5,7 +5,7 @@ import {
     setSkipped,
 } from '@suite/actions/onboarding/newsletterActions';
 
-export interface NewsletterReducer {
+export interface NewsletterState {
     email: string;
     skipped: boolean;
     checkboxes: Checkbox[];
