@@ -17,7 +17,7 @@ const FluidSpinner = styled.div<FluidSpinnerProps>`
     /* https://loading.io/css/ */
     width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
     height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-    
+
     div {
         position: absolute;
         box-sizing: border-box;
