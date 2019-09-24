@@ -16,7 +16,6 @@ import { FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
 
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
-import { WalletActions } from '@wallet-actions/walletActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
@@ -50,7 +49,6 @@ export type Action =
     | FiatRateActions
     | DiscoveryActions
     | AccountActions
-    | WalletActions
     | SelectedAccountActions;
 
 export interface BlockchainLinkTransaction {
