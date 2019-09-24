@@ -717,6 +717,18 @@ declare module 'trezor-connect' {
               }
           };
 
+    export interface BlockchainSubscribeParams {
+        accounts: {
+            descriptor: string;
+            addresses?: AccountAddresses;
+        }[];
+        coin: string;
+    }
+
+    export interface BlockchainSubscribeResponse {
+        subscribed: boolean;
+    }
+
     namespace TrezorConnect {
         /**
          * Initializes TrezorConnect.
@@ -864,9 +876,11 @@ declare module 'trezor-connect' {
 
         function renderWebUSBButton(): void;
 
-        function getDeviceState(params: CommonParams): ResponseMessage<DeviceStateResponse>;
+        function getDeviceState(params: CommonParams): Promise<ResponseMessage<DeviceStateResponse>>;
 
         function disableWebUSB(): void;
+
+        function blockchainSubscribe(params: BlockchainSubscribeParams): Promise<ResponseMessage<BlockchainSubscribeResponse>>;
     }
 
     export default TrezorConnect;

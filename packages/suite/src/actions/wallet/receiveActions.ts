@@ -4,7 +4,7 @@ import { NOTIFICATION, MODAL } from '@suite-actions/constants';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
-import { Action } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
 
 export type ReceiveActions =
     | { type: typeof RECEIVE.INIT; descriptor: string }
@@ -14,11 +14,11 @@ export type ReceiveActions =
     | { type: typeof RECEIVE.HIDE_ADDRESS; descriptor: string }
     | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS; descriptor: string };
 
-export const dispose = (): Action => ({
+export const dispose = (): WalletAction => ({
     type: RECEIVE.DISPOSE,
 });
 
-export const showUnverifiedAddress = (path: string): Action => {
+export const showUnverifiedAddress = (path: string): WalletAction => {
     return {
         type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
         descriptor: path,

@@ -3,7 +3,7 @@ import validator from 'validator';
 import { SEND } from '@wallet-actions/constants';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { isAddressValid } from '@wallet-utils/validation';
-import { Action } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
 
 export interface State {
     address: null | string;
@@ -48,7 +48,7 @@ export const initialState: State = {
     },
 };
 
-export default (state: State = initialState, action: Action): State => {
+export default (state: State = initialState, action: WalletAction): State => {
     return produce(state, draft => {
         switch (action.type) {
             // show additional form

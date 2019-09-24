@@ -11,6 +11,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = () => ({});
 
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps,

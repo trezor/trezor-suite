@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
-import { Action, Network } from '@wallet-types';
+import { WalletAction, Network } from '@wallet-types';
 
 export interface Account {
     deviceState: string;
@@ -78,7 +78,7 @@ const update = (draft: Account[], account: Account) => {
     }
 };
 
-export default (state: Account[] = initialState, action: Action): Account[] => {
+export default (state: Account[] = initialState, action: WalletAction): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:

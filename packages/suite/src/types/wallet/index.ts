@@ -13,7 +13,7 @@ import { Fiat as Fiat$ } from '@wallet-reducers/fiatRateReducer';
 import { Fee as Fee$ } from '@wallet-reducers/feesReducer';
 
 import { FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
-
+import { BlockchainActions } from '@wallet-actions/blockchainActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
@@ -39,7 +39,8 @@ interface BlockchainLinkToken {
     value: string;
 }
 
-export type Action =
+export type WalletAction =
+    | BlockchainActions
     | SettingsActions
     | ReceiveActions
     | SendFormActions
