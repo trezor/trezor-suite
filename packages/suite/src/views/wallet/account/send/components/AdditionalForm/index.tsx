@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import NetworkTypeBitcoin from './components/NetworkTypeBitcoin/Container';
 import NetworkTypeEthereum from './components/NetworkTypeEthereum/Container';
-import NetworkTypeXrp from './components/NetworkTypeXrp/Container';
+import NetworkTypeXrp from './components/NetworkTypeRipple/Container';
 
 import { Network } from '@wallet-types';
 

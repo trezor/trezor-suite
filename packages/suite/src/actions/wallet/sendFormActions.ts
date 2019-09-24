@@ -162,12 +162,12 @@ const setMax = () => (dispatch: Dispatch, getState: GetState) => {
 /*
     Change value in select "Fee"
  */
-const handleFeeValueChange = (fee: { value: string; label: string }) => (
+const handleFeeValueChange = (fee: ReducerState['fee']) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { send } = getState().wallet;
-    if (!send) return null;
+    if (!send || !fee) return null;
 
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
 

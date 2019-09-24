@@ -8,7 +8,7 @@ import messages from './index.messages';
 import { Props as ContainerProps } from '../../Container';
 
 interface Props {
-    errors: ContainerProps['send']['errors']['customFee'];
+    errors: ContainerProps['send']['networkTypeRipple']['errors']['destinationTag'];
     destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag'];
     sendFormActionsXrp: ContainerProps['sendFormActionsXrp'];
 }
@@ -40,8 +40,6 @@ const getState = (
 
 const getErrorMessage = (error: ContainerProps['send']['errors']['customFee']) => {
     switch (error) {
-        case VALIDATION_ERRORS.IS_EMPTY:
-            return <FormattedMessage {...messages.TR_DESTINATION_TAG_IS_NOT_SET} />;
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <FormattedMessage {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;
         default:

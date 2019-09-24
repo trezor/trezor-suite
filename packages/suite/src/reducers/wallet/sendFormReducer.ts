@@ -25,10 +25,7 @@ export interface State {
     networkTypeRipple: {
         destinationTag: null | string;
         errors: {
-            destinationTag:
-                | null
-                | typeof VALIDATION_ERRORS.IS_EMPTY
-                | typeof VALIDATION_ERRORS.NOT_NUMBER;
+            destinationTag: null | typeof VALIDATION_ERRORS.NOT_NUMBER;
         };
     };
     networkTypeEthereum: {
@@ -169,11 +166,6 @@ export default (state: State = initialState, action: Action): State => {
                 const { destinationTag } = action;
                 draft.networkTypeRipple.errors.destinationTag = null;
                 draft.networkTypeRipple.destinationTag = destinationTag;
-
-                if (validator.isEmpty(destinationTag)) {
-                    draft.networkTypeRipple.errors.destinationTag = VALIDATION_ERRORS.IS_EMPTY;
-                    return draft;
-                }
 
                 if (!validator.isNumeric(destinationTag)) {
                     draft.networkTypeRipple.errors.destinationTag = VALIDATION_ERRORS.NOT_NUMBER;
