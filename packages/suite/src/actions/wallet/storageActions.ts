@@ -4,7 +4,6 @@
 
 export const foo = {};
 
-
 // import * as transactionActions from '@wallet-actions/transactionActions';
 // import { db, SuiteStorageUpdateMessage } from '@suite/storage';
 // import SuiteDB from '@trezor/suite-storage';
