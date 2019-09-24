@@ -3,7 +3,7 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
 import { SendFormActions } from '@wallet-actions/sendFormActions';
-import { SendFormXrpActions } from '@wallet-actions/sendFormSpecific/xrpActions';
+import { SendFormRippleActions } from '@wallet-actions/sendFormSpecific/rippleActions';
 
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
@@ -44,7 +44,7 @@ export type Action =
     | SettingsActions
     | ReceiveActions
     | SendFormActions
-    | SendFormXrpActions
+    | SendFormRippleActions
     | SignVerifyActions
     | TransactionAction
     | FiatRateActions

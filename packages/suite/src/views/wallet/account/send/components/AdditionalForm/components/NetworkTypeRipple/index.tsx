@@ -30,7 +30,7 @@ const NetworkTypeXrp = (props: Props) => (
         </Row>
         <Row>
             <DestinationTag
-                sendFormActionsXrp={props.sendFormActionsXrp}
+                sendFormActionsRipple={props.sendFormActionsRipple}
                 destinationTag={props.send.networkTypeRipple.destinationTag}
                 errors={props.send.networkTypeRipple.errors.destinationTag}
             />

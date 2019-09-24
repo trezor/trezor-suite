@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 
-import * as sendFormActionsBitcoin from '@wallet-actions/sendFormSpecific/BitcoinActions';
+import * as sendFormActionsBitcoin from '@wallet-actions/sendFormSpecific/bitcoinActions';
 import * as sendFormActionsEthereum from '@wallet-actions/sendFormSpecific/ethereumActions';
 import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
 

@@ -10,7 +10,7 @@ import { Props as ContainerProps } from '../../Container';
 interface Props {
     errors: ContainerProps['send']['networkTypeRipple']['errors']['destinationTag'];
     destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag'];
-    sendFormActionsXrp: ContainerProps['sendFormActionsXrp'];
+    sendFormActionsRipple: ContainerProps['sendFormActionsRipple'];
 }
 
 const Label = styled.div`
@@ -66,7 +66,7 @@ const NetworkTypeXrp = (props: Props) => (
         }
         bottomText={getErrorMessage(props.errors)}
         value={props.destinationTag || ''}
-        onChange={e => props.sendFormActionsXrp.handleDestinationTagChange(e.target.value)}
+        onChange={e => props.sendFormActionsRipple.handleDestinationTagChange(e.target.value)}
     />
 );
 

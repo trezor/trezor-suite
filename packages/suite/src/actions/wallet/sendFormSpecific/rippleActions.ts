@@ -3,7 +3,7 @@ import { SEND } from '@wallet-actions/constants';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-export interface SendFormXrpActions {
+export interface SendFormRippleActions {
     type: typeof SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE;
     destinationTag: string;
 }

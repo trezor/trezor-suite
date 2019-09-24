@@ -69,6 +69,7 @@ const FeeComponent = (props: Props) => (
             isSearchable={false}
             isClearable={false}
             value={props.fee || getValue(props.fees, props.symbol)}
+            // @ts-ignore TODO fix type
             onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
             options={addCustom(props.fees[props.symbol])}
             formatOptionLabel={option => (
