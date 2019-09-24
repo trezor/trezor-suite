@@ -7,8 +7,6 @@ export interface SendFormXrpActions {
     destinationTag: string;
 }
 
-const FLAGS = 0x80000000;
-
 /*
     Change value in input "destination tag"
  */
@@ -19,28 +17,34 @@ const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispat
     });
 };
 
-const sendTransaction = () => async (getState: GetState) => {
+// Fee must be in the range of 10 to 10,000 drops
+const send = () => async (getState: GetState) => {
+    const FLAGS = 0x80000000;
     const { account } = getState().wallet.selectedAccount;
-    if (!account) return null;
+    const { customFee, fee, address, networkTypeRipple, amount } = getState().wallet.send;
+    const { destinationTag } = networkTypeRipple;
+    const selectedDevice = getState().suite.device;
+    if (!account || account.networkType !== 'ripple' || !selectedDevice || !destinationTag)
+        return null;
 
     // @ts-ignore
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
         device: {
-            path: selected.path,
-            instance: selected.instance,
-            state: selected.state,
+            path: selectedDevice.path,
+            instance: selectedDevice.instance,
+            state: selectedDevice.state,
         },
-        useEmptyPassphrase: selected.useEmptyPassphrase,
-        path: account.accountPath,
+        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        path: account.path,
         transaction: {
-            fee: currentState.selectedFeeLevel.fee, // Fee must be in the range of 10 to 10,000 drops
+            fee: customFee || fee,
             flags: FLAGS,
-            sequence: account.sequence,
-            payment,
+            sequence: account.misc.sequence,
+            payment: { address, destinationTg: parseInt(destinationTag, 10), amount },
         },
     });
 
     console.log(signedTransaction);
 };
 
-export { handleDestinationTagChange, sendTransaction };
+export { handleDestinationTagChange, send };

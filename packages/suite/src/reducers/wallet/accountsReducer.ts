@@ -3,13 +3,27 @@ import { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { Action, Network } from '@wallet-types';
 
-export interface Account {
+type AccountNetworkSpecific =
+    | {
+          networkType: 'bitcoin';
+          misc: undefined;
+      }
+    | {
+          networkType: 'ripple';
+          misc: { sequence: number; reserve: string };
+          marker: NonNullable<AccountInfo['marker']>;
+      }
+    | {
+          networkType: 'ethereum';
+          misc: { nonce: string };
+      };
+
+export type Account = {
     deviceState: string;
     index: number;
     path: string;
     descriptor: string;
     accountType: NonNullable<Network['accountType']>;
-    networkType: Network['networkType'];
     symbol: Network['symbol'];
     empty: boolean;
     visible: boolean;
@@ -20,9 +34,7 @@ export interface Account {
     addresses: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
-    misc: AccountInfo['misc'];
-    marker: AccountInfo['marker'];
-}
+} & AccountNetworkSpecific;
 
 const initialState: Account[] = [];
 
