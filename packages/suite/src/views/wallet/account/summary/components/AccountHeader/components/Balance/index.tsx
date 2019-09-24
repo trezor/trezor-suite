@@ -84,6 +84,7 @@ const BalanceRateWrapper = styled(BalanceWrapper)`
 const CoinBalance = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
+    text-transform: uppercase;
 `;
 
 const Label = styled.div`
