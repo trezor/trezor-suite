@@ -77,31 +77,29 @@ const initStore = (state: State) => {
 
 describe('redirectMiddleware', () => {
     describe('redirects on DEVICE.CONNECT event', () => {
+        let goto: any;
+        beforeEach(() => {
+            goto = jest.spyOn(routerActions, 'goto');
+        });
+        afterEach(() => {
+            goto.mockClear();
+        })
         it('DEVICE.CONNECT mode=initialize', () => {
             const store = initStore(getInitialState());
-            const goto = jest.spyOn(routerActions, 'goto');
             store.dispatch({
                 type: DEVICE.CONNECT,
                 payload: getSuiteDevice({ mode: 'initialize' }),
             });
-
             expect(goto).toHaveBeenNthCalledWith(1, 'onboarding-index');
-            goto.mockClear();
         });
 
         it('DEVICE.CONNECT firmware=required', () => {
             const store = initStore(getInitialState());
-            const goto = jest.spyOn(routerActions, 'goto');
-
             store.dispatch({
                 type: DEVICE.CONNECT,
                 payload: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
             });
-
             expect(goto).toHaveBeenNthCalledWith(1, 'suite-device-firmware');
-            goto.mockClear();
         });
     });
-
-    
 });

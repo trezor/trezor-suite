@@ -38,7 +38,7 @@ const handleSelectDevice = (draft: FirmwareUpdateState, device?: TrezorDevice) =
     const prevDevice = draft.device;
 
     // should not happen but who knows.
-    if (!device || device.type !== 'acquired' || device.mode === 'bootloader') {
+    if (!device || !device.features || device.mode === 'bootloader') {
         return;
     }
 

@@ -99,15 +99,15 @@ const FirmwareUpdate = (props: Props) => {
     };
 
     const hasDevice = () => {
-        return Boolean(device && device.features && device.connected);
+        return !!(device && device.features && device.connected);
     };
 
     const isInBootloader = () => {
-        return Boolean(device && device.features && device.mode === 'bootloader');
+        return !!(device && device.features && device.mode === 'bootloader');
     };
 
     const hasNewestFirmware = () => {
-        return Boolean(device && device.features && device.firmware === 'valid');
+        return !!(device && device.features && device.firmware === 'valid');
     };
 
     const isUpdateAvailable = () => {
