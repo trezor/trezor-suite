@@ -83,7 +83,7 @@ describe('redirectMiddleware', () => {
         });
         afterEach(() => {
             goto.mockClear();
-        })
+        });
         it('DEVICE.CONNECT mode=initialize', () => {
             const store = initStore(getInitialState());
             store.dispatch({

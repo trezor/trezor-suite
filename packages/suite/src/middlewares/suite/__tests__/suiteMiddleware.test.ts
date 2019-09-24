@@ -126,12 +126,14 @@ describe('suite middleware', () => {
 
             const store = initStore(getInitialState());
 
-            store.dispatch({ type: STORAGE.LOADED, payload: {
-                suite: {
-                    language: 'cs',
-                    initialRun: true,
+            store.dispatch({
+                type: STORAGE.LOADED,
+                payload: {
+                    suite: {
+                        language: 'cs',
+                        initialRun: true,
+                    },
                 },
-            }
             });
             expect(goto).toHaveBeenNthCalledWith(1, 'onboarding-index');
 
@@ -142,12 +144,14 @@ describe('suite middleware', () => {
             const goto = jest.spyOn(routerActions, 'goto');
 
             const store = initStore(getInitialState());
-            store.dispatch({ type: STORAGE.LOADED, payload: {
-                suite: {
-                    language: 'cs',
-                    initialRun: false,
+            store.dispatch({
+                type: STORAGE.LOADED,
+                payload: {
+                    suite: {
+                        language: 'cs',
+                        initialRun: false,
+                    },
                 },
-            }
             });
             expect(goto).toHaveBeenCalledTimes(0);
 
