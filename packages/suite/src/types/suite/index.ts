@@ -10,7 +10,6 @@ import {
     DeviceFirmwareStatus,
     FirmwareRelease,
 } from 'trezor-connect';
-import { BlockchainActions } from '@suite-actions/blockchainActions';
 import { RouterActions } from '@suite-actions/routerActions';
 import { AppState } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
@@ -23,7 +22,7 @@ import {
     MessageDescriptor as MessageDescriptor$,
     Messages as Messages$,
 } from '@suite-support/ConnectedIntlProvider';
-import { Action as WalletActions } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
 
 // this weird export is because of --isolatedModules and next.js 9
 export type MessageDescriptor = MessageDescriptor$;
@@ -37,13 +36,12 @@ export type AppState = AppState;
 export type Action =
     | TrezorConnectEvents
     | RouterActions
-    | BlockchainActions
     | StorageActions
     | SuiteActions
     | LogActions
     | ModalActions
     | NotificationActions
-    | WalletActions
+    | WalletAction
     | OnboardingActions;
 
 // export type Dispatch = ReduxDispatch<Action>;

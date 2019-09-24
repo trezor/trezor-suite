@@ -1,8 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
+import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -15,6 +16,14 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         prevState.router.route.name === 'wallet-account-send'
     ) {
         api.dispatch(sendFormActions.dispose());
+    }
+
+    if (
+        action.type === ACCOUNT.CREATE ||
+        action.type === ACCOUNT.UPDATE ||
+        action.type === ACCOUNT.REMOVE
+    ) {
+        api.dispatch(blockchainActions.subscribe());
     }
 
     // propagate action to reducers (await is necessary here)
