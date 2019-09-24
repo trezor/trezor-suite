@@ -3,7 +3,6 @@ import configureStore from 'redux-mock-store';
 import { Middleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { SUITE } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 
 import * as routerActions from '@suite-actions/routerActions';
@@ -113,26 +112,5 @@ describe('redirectMiddleware', () => {
         });
     });
 
-    describe('redirects on initial run', () => {
-        it('should redirect to onboarding after SUITE.READY action', () => {
-            const goto = jest.spyOn(routerActions, 'goto');
-
-            const store = initStore(getInitialState({ initialRun: true, locks: [] }));
-
-            store.dispatch({ type: SUITE.READY });
-            expect(goto).toHaveBeenNthCalledWith(1, 'onboarding-index');
-
-            goto.mockClear();
-        });
-
-        it('should NOT redirect to onboarding after SUITE.READY action', () => {
-            const goto = jest.spyOn(routerActions, 'goto');
-
-            const store = initStore(getInitialState({ initialRun: false, locks: [] }));
-            store.dispatch({ type: SUITE.READY });
-            expect(goto).toHaveBeenCalledTimes(0);
-
-            goto.mockClear();
-        });
-    });
+    
 });

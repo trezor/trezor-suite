@@ -3,7 +3,7 @@ import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { init as initBlockchain } from '@wallet-actions/blockchainActions';
-import { init as initRouter } from '@suite-actions/routerActions';
+import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { resolveRememberRequest } from '@suite-actions/modalActions';
 import { loadStorage } from '@suite-actions/storageActions';
@@ -30,9 +30,15 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(loadStorage());
             break;
         case STORAGE.LOADED:
-            // set language
-            await api.dispatch(fetchLocale(action.payload.suite.language));
-            // initialize trezor-connect
+            // right after storage is loaded, we might start:
+            // 1. fetching locales
+            // 2. redirecting user into onboarding (if needed), there is custom loader for waiting on connect
+            // both might be done in parallel
+            await Promise.all([
+                api.dispatch(fetchLocale(action.payload.suite.language)),
+                api.dispatch(routerActions.initialRedirection()),
+            ]);
+            // 3. init connect;
             api.dispatch(trezorConnectActions.init());
             break;
         case SUITE.CONNECT_INITIALIZED:
@@ -42,7 +48,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             break;
         case BLOCKCHAIN.READY:
             // dispatch initial location change
-            api.dispatch(initRouter());
+            api.dispatch(routerActions.init());
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
             break;

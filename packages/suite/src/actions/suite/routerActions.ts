@@ -81,7 +81,7 @@ export const back = () => {
 };
 
 /**
- * Called from `@suite-middlewares/redirectMiddleware`
+ * Called from `@suite-middlewares/suiteMiddleware`
  * Redirects to onboarding if `suite.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {

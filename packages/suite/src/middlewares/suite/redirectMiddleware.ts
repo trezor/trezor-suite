@@ -36,16 +36,9 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     }
 
     switch (action.type) {
-        case SUITE.READY:
-            await api.dispatch(routerActions.initialRedirection());
-            break;
         case SUITE.SELECT_DEVICE:
             await handleDeviceRedirect(api.dispatch, action.payload);
             break;
-        // ???
-        // case SUITE.APP_CHANGED:
-        //     await handleDeviceRedirect(api.dispatch, device);
-        //     break;
         default:
             break;
     }

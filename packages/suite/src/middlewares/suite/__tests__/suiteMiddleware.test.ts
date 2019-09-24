@@ -1,12 +1,13 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import { BLOCKCHAIN } from '@wallet-actions/constants';
+import { SUITE, ROUTER, STORAGE } from '@suite-actions/constants';
+// import { BLOCKCHAIN } from '@wallet-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
-import suiteReducer from '@suite/reducers/suite/suiteReducer';
-
+import suiteReducer from '@suite-reducers/suiteReducer';
+import * as routerActions from '@suite-actions/routerActions';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
+
 import { Action } from '@suite-types';
 
 jest.mock('@trezor/suite-storage', () => {
@@ -19,10 +20,19 @@ jest.mock('@trezor/suite-storage', () => {
 jest.mock('@suite-actions/storageActions', () => {
     return {
         __esModule: true,
-        loadStorage: () => {
-            return {
-                type: BLOCKCHAIN.READY,
-            };
+        // loadStorage: () => {
+        //     return {
+        //         type: BLOCKCHAIN.READY,
+        //     };
+        // },
+    };
+});
+
+jest.mock('next/router', () => {
+    return {
+        __esModule: true, // this property makes it work
+        default: {
+            push: () => {},
         },
     };
 });
@@ -111,6 +121,41 @@ describe('suite middleware', () => {
             expect(store.getActions()).toEqual([
                 { type: ROUTER.LOCATION_CHANGE, url: '/onboarding' },
             ]);
+        });
+    });
+
+    describe('redirects on initial run', () => {
+        it('should redirect to onboarding after STORAGE.LOADED action', () => {
+            const goto = jest.spyOn(routerActions, 'goto');
+
+            const store = initStore(getInitialState());
+
+            store.dispatch({ type: STORAGE.LOADED, payload: {
+                suite: {
+                    language: 'cs',
+                    initialRun: true,
+                },
+            }
+            });
+            expect(goto).toHaveBeenNthCalledWith(1, 'onboarding-index');
+
+            goto.mockClear();
+        });
+
+        it('should NOT redirect to onboarding after STORAGE.LOADED action', () => {
+            const goto = jest.spyOn(routerActions, 'goto');
+
+            const store = initStore(getInitialState());
+            store.dispatch({ type: STORAGE.LOADED, payload: {
+                suite: {
+                    language: 'cs',
+                    initialRun: false,
+                },
+            }
+            });
+            expect(goto).toHaveBeenCalledTimes(0);
+
+            goto.mockClear();
         });
     });
 });
