@@ -101,15 +101,10 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const offset = page && perPage ? (page - 1) * perPage : undefined;
-    const count = perPage || undefined;
-    let storedTxs = null;
-
     const { selectedAccount } = getState().wallet;
     // const totalTxs = selectedAccount.account!.history.total;
     const { transactions } = getState().wallet.transactions;
     const reducerTxs = getAccountTransactions(transactions, account);
-
     const txsForPage = reducerTxs.filter(t => t.page === page);
     // we already got txs for the page in reducer
     if (txsForPage.length > 0) return;
@@ -119,7 +114,9 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     });
 
     // TODO: storing and fetching from the db
-    storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
+    const offset = page && perPage ? (page - 1) * perPage : undefined;
+    const count = perPage || undefined;
+    const storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
 
     const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
     if (shouldFetchFromBackend) {
@@ -145,14 +142,12 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
 
         if (result && result.success) {
             const updatedAccount = accountActions.update(account, result.payload).payload;
-
             dispatch({
                 type: TRANSACTION.FETCH_SUCCESS,
                 account: updatedAccount,
                 transactions: result.payload.history.transactions || [],
                 page,
             });
-
             dispatch(accountActions.update(account, result.payload));
         } else {
             dispatch({
