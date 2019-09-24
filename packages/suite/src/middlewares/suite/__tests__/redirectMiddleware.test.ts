@@ -3,8 +3,6 @@ import configureStore from 'redux-mock-store';
 import { Middleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { BLOCKCHAIN } from '@wallet-actions/constants';
-
 import * as routerActions from '@suite-actions/routerActions';
 
 import routerReducer from '@suite-reducers/routerReducer';
@@ -27,14 +25,7 @@ jest.mock('next/router', () => {
 });
 
 jest.mock('@suite-actions/storageActions', () => {
-    return {
-        __esModule: true,
-        loadStorage: () => {
-            return {
-                type: BLOCKCHAIN.READY,
-            };
-        },
-    };
+    return { __esModule: true };
 });
 
 type SuiteState = ReturnType<typeof suiteReducer>;
