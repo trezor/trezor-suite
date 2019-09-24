@@ -8,11 +8,10 @@ import l10nCommonMessages from '@wallet-views/messages';
 import { AccountInfo } from 'trezor-connect';
 
 const TokenWrapper = styled.div`
-    padding: 14px 0;
+    padding: 8px 0;
     position: relative;
     display: flex;
     align-items: center;
-    border-top: 1px solid ${colors.DIVIDER};
 `;
 
 const TokenIcon = styled.div<{ textColor: string; backgroundColor: string }>`
