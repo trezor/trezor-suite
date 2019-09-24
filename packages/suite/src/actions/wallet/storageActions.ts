@@ -10,8 +10,6 @@ export const foo = {};
 // import { WALLET } from '@wallet-actions/constants';
 // import { Dispatch, GetState } from '@suite-types';
 
-
-
 // const updateReducers = (message: SuiteStorageUpdateMessage) => async (
 //     dispatch: Dispatch,
 //     getState: GetState,
