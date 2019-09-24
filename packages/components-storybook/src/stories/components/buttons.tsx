@@ -97,7 +97,7 @@ storiesOf('Buttons', module).add(
                 <Button isLoading variant="error" data-test="button_loading_error">
                     Button
                 </Button>
-                <Button isLoading variant="white" data-test="button_loading_white">
+                <Button variant="white" data-test="button_loading_white">
                     Button
                 </Button>
             </Row>
@@ -1248,6 +1248,7 @@ storiesOf('Buttons', module)
     .add(
         'Button',
         () => {
+            const isInverse = boolean('Inverse', false);
             const isDisabled = boolean('Disabled', false);
             const isLoading = boolean('Loading', false);
             const buttonText = text('Text', 'Button Text');
@@ -1274,11 +1275,6 @@ storiesOf('Buttons', module)
             const isTransparent = boolean('Transparent', false);
             const fullWidth = boolean('FullWidth', false);
 
-            let isInverse;
-            if (isInverse) {
-                isInverse = boolean('Inverse', false);
-            }
-            // musi mit moznost byt i null - nemuze byt boolean 
             let align;
             if (fullWidth) {
                 align = select(
@@ -1298,7 +1294,7 @@ storiesOf('Buttons', module)
                     {...(variant ? { variant } : {})}
                     {...(isTransparent ? { isTransparent } : {})}
                     {...(isInverse ? { isInverse } : {})}
-                    {...(isInverse && isLoading ? { isLoading } : {})}
+                    // {...(isInverse && isLoading ? { isLoading } : {})}
                     {...(icon ? { icon } : {})}
                     {...(isLoading ? { isLoading } : {})}
                     {...(fullWidth ? { fullWidth } : {})}
