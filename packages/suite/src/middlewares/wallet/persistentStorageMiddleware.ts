@@ -5,7 +5,7 @@ import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 import { db } from '@suite/storage';
 import { SUITE } from '@suite/actions/suite/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
-import { Action as WalletAction } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
 // import { ACCOUNT } from '@suite/actions/wallet/constants';
 // import { AccountInfo } from 'trezor-connect';
 

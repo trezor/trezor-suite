@@ -1,7 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { DEVICE } from 'trezor-connect';
-import { BLOCKCHAIN, SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
-import { init as initBlockchain } from '@suite-actions/blockchainActions';
+import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
+import { BLOCKCHAIN } from '@wallet-actions/constants';
+import { init as initBlockchain } from '@wallet-actions/blockchainActions';
 import { init as initRouter, initialRedirection } from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { resolveRememberRequest } from '@suite-actions/modalActions';
