@@ -1,5 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import { SEND } from '@wallet-actions/constants';
+import { FormattedMessage } from 'react-intl';
+import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
 export interface SendFormXrpActions {
@@ -10,7 +12,7 @@ export interface SendFormXrpActions {
 /*
     Change value in input "destination tag"
  */
-const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
+export const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
     dispatch({
         type: SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE,
         destinationTag,
@@ -18,7 +20,7 @@ const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispat
 };
 
 // Fee must be in the range of 10 to 10,000 drops
-const send = () => async (getState: GetState) => {
+export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const FLAGS = 0x80000000;
     const { account } = getState().wallet.selectedAccount;
     const { customFee, fee, address, networkTypeRipple, amount } = getState().wallet.send;
@@ -45,6 +47,36 @@ const send = () => async (getState: GetState) => {
     });
 
     console.log(signedTransaction);
-};
 
-export { handleDestinationTagChange, send };
+    if (!signedTransaction || !signedTransaction.success) {
+        dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                variant: 'error',
+                title: 'aaaaa',
+                message: signedTransaction.payload.error,
+                cancelable: true,
+                actions: [],
+            },
+        });
+        return;
+    }
+
+    const push = await TrezorConnect.pushTransaction({
+        tx: signedTransaction.payload.serializedTx,
+        coin: 'xrp',
+    });
+
+    if (!push.success) {
+        dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                variant: 'error',
+                title: 'bbbb',
+                message: push.payload.error,
+                cancelable: true,
+                actions: [],
+            },
+        });
+    }
+};

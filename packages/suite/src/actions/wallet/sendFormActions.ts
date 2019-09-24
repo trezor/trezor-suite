@@ -28,7 +28,10 @@ export type SendFormActions =
 /*
     Change value in input "Address"
  */
-const handleAddressChange = (address: string) => (dispatch: Dispatch, getState: GetState) => {
+export const handleAddressChange = (address: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { account } = getState().wallet.selectedAccount;
     if (!account) return null;
 
@@ -42,7 +45,7 @@ const handleAddressChange = (address: string) => (dispatch: Dispatch, getState: 
 /*
     Change value in input "Amount"
  */
-const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: GetState) => {
+export const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { send, fiat } = getState().wallet;
     if (!account || !send || !fiat) return null;
@@ -70,7 +73,7 @@ const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: Ge
 /*
     Change value in select "LocalCurrency"
  */
-const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']) => (
+export const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -107,7 +110,10 @@ const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']
 /*
     Change value in input "FiatInput"
  */
-const handleFiatInputChange = (fiatValue: string) => (dispatch: Dispatch, getState: GetState) => {
+export const handleFiatInputChange = (fiatValue: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
@@ -135,7 +141,7 @@ const handleFiatInputChange = (fiatValue: string) => (dispatch: Dispatch, getSta
 /*
     Click on "set max"
  */
-const setMax = () => (dispatch: Dispatch, getState: GetState) => {
+export const setMax = () => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
@@ -162,7 +168,7 @@ const setMax = () => (dispatch: Dispatch, getState: GetState) => {
 /*
     Change value in select "Fee"
  */
-const handleFeeValueChange = (fee: ReducerState['fee']) => (
+export const handleFeeValueChange = (fee: ReducerState['fee']) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -179,7 +185,7 @@ const handleFeeValueChange = (fee: ReducerState['fee']) => (
 /*
     Change value in additional form - select "Fee"
  */
-const handleCustomFeeValueChange = (customFee: string) => (dispatch: Dispatch) => {
+export const handleCustomFeeValueChange = (customFee: string) => (dispatch: Dispatch) => {
     dispatch({ type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE, customFee });
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee: { label: CUSTOM_FEE, value: CUSTOM_FEE } });
 };
@@ -187,41 +193,13 @@ const handleCustomFeeValueChange = (customFee: string) => (dispatch: Dispatch) =
 /*
     Click on button "Advanced settings"
  */
-const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
+export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
 };
 
 /*
     Clear to default state
 */
-const clear = () => (dispatch: Dispatch) => {
+export const clear = () => (dispatch: Dispatch) => {
     dispatch({ type: SEND.CLEAR });
-};
-
-/*
-    Click on button "Send"
-*/
-const send = (networkType: Account['networkType']) => () => {
-    switch (networkType) {
-        case 'bitcoin':
-            return console.log('validate and send bitcoin like transaction');
-        case 'ethereum':
-            return console.log('validate and send ethereum like transaction');
-        case 'ripple':
-            return console.log('validate and send ripple like transaction');
-        // no default
-    }
-};
-
-export {
-    handleAddressChange,
-    handleAmountChange,
-    setMax,
-    handleFiatInputChange,
-    handleSelectCurrencyChange,
-    handleFeeValueChange,
-    handleCustomFeeValueChange,
-    toggleAdditionalFormVisibility,
-    clear,
-    send,
 };
