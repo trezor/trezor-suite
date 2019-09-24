@@ -379,7 +379,7 @@ export const authorizeDevice = () => async (
  *
  * Useful for exiting apps that operate under locked router.
  */
-export const exitApp = (routeName: Route['name']) => async (dispatch: Dispatch) => {
-    await dispatch(lockRouter(false));
+export const exitApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
+    dispatch(lockRouter(false));
     dispatch(routerActions.goto(routeName));
 };
