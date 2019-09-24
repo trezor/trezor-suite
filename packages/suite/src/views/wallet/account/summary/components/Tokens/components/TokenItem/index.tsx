@@ -53,10 +53,6 @@ const TokenBalance = styled(TokenText)`
     text-align: right;
 `;
 
-// const RemoveTokenButton = styled(Button)`
-//     padding: 0 0 0 10px;
-// `;
-
 const TooltipIcon = styled(Icon)`
     cursor: pointer;
 `;
@@ -101,12 +97,6 @@ const TokenItem = ({ token, hideBalance }: Props) => {
                     </>
                 )}
             </TokenBalance>
-            {/* <RemoveTokenButton
-                    isTransparent
-                    onClick={() => this.props.removeToken(this.props.token)}
-                >
-                    <Icon icon={ICONS.CLOSE} size={12} />
-                </RemoveTokenButton> */}
         </TokenWrapper>
     );
 };
