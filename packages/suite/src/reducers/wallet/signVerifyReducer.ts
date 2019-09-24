@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { SIGN_VERIFY } from '@wallet-actions/constants';
-import { Action } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
 
 interface Error {
     inputName: string;
@@ -29,7 +29,7 @@ export const initialState: State = {
     errors: [],
 };
 
-export default (state: State = initialState, action: Action): State => {
+export default (state: State = initialState, action: WalletAction): State => {
     return produce(state, draft => {
         switch (action.type) {
             case SIGN_VERIFY.SIGN_SUCCESS:

@@ -3,7 +3,7 @@ import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { formatAmount } from '@wallet-utils/accountUtils';
-import { Account, Action } from '@wallet-types';
+import { Account, WalletAction } from '@wallet-types';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
@@ -52,7 +52,7 @@ const add = (draft: State, payload: Account) => {
     }
 };
 
-export default (state: State = initialState, action: Action): State => {
+export default (state: State = initialState, action: WalletAction): State => {
     return produce(state, draft => {
         switch (action.type) {
             case ACCOUNT.CREATE:
