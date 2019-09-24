@@ -9,26 +9,6 @@ const definedMessages = defineMessages({
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
     },
-    TR_INSERT_TOKEN_NAME: {
-        id: 'TR_INSERT_TOKEN_NAME',
-        defaultMessage: 'Insert token name, symbol or address to be able to send it.',
-    },
-    TR_TYPE_IN_A_TOKEN_NAME: {
-        id: 'TR_TYPE_IN_A_TOKEN_NAME',
-        defaultMessage: 'Type in a token name or a token address.',
-    },
-    TR_TOKEN_NOT_FOUND: {
-        id: 'TR_TOKEN_NOT_FOUND',
-        defaultMessage: 'Token not found',
-    },
-    TR_ALREADY_ADDED: {
-        id: 'TR_ALREADY_ADDED',
-        defaultMessage: 'Already added',
-    },
-    TR_HISTORY: {
-        id: 'TR_HISTORY',
-        defaultMessage: 'History',
-    },
 });
 
 export default definedMessages;
