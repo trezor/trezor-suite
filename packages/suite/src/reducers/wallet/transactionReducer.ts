@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
-import { formatAmount } from '@wallet-utils/accountUtils';
+import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getAccountHash } from '@wallet-utils/reducerUtils';
 import { Account, Action } from '@wallet-types';
 import { SETTINGS } from '@suite-config';
@@ -45,13 +45,19 @@ const enhanceTransaction = (
         deviceState: account.deviceState,
         symbol: account.symbol,
         ...tx,
-        amount: formatAmount(tx.amount, account.symbol),
-        fee: formatAmount(tx.fee, account.symbol),
+        tokens: tx.tokens.map(tok => {
+            return {
+                ...tok,
+                amount: formatAmount(tok.amount, tok.decimals),
+            };
+        }),
+        amount: formatNetworkAmount(tx.amount, account.symbol),
+        fee: formatNetworkAmount(tx.fee, account.symbol),
         targets: tx.targets.map(tr => {
             if (typeof tr.amount === 'string') {
                 return {
                     ...tr,
-                    amount: formatAmount(tr.amount, account.symbol),
+                    amount: formatNetworkAmount(tr.amount, account.symbol),
                 };
             }
             return tr;
