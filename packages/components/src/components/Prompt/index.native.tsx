@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
 import { Animated, Easing } from 'react-native';
 import { Icon } from '../Icon';
@@ -44,18 +44,21 @@ const Animation = styled(Animated.View)`
 interface Props {
     model: number;
     size?: number;
-    ratio?: number;
     children?: React.ReactNode;
 }
 
-class Prompt extends React.Component<Props> {
-    state = {
-        blinkAnim: new Animated.Value(0),
-    };
+const Prompt = ({ model, size = 32, children }: Props) => {
+    const blinkAnim = new Animated.Value(0);
+    const scale = blinkAnim.interpolate({
+        inputRange: [0, 0.25, 0.5, 1],
+        outputRange: [0, 0.75, 1.5, 4],
+    });
+    const opacity = blinkAnim.interpolate({
+        inputRange: [0, 0.25, 0.5, 1],
+        outputRange: [0, 0.2, 0.3, 0],
+    });
 
-    componentDidMount() {
-        const { blinkAnim } = this.state;
-
+    useEffect(() => {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(blinkAnim, {
@@ -65,40 +68,25 @@ class Prompt extends React.Component<Props> {
                 }),
             ])
         ).start();
-    }
+    });
 
-    render() {
-        const { size = 32, model, children } = this.props;
-        const { blinkAnim } = this.state;
-
-        const scale = blinkAnim.interpolate({
-            inputRange: [0, 0.25, 0.5, 1],
-            outputRange: [0, 0.75, 1.5, 4],
-        });
-
-        const opacity = blinkAnim.interpolate({
-            inputRange: [0, 0.25, 0.5, 1],
-            outputRange: [0, 0.2, 0.3, 0],
-        });
-
-        return (
-            <Wrapper>
-                <IconWrapper size={size}>
-                    <Animation
-                        style={{
-                            opacity,
-                            transform: [{ scaleX: scale }, { scaleY: scale }],
-                        }}
-                        size={size}
-                    >
-                        <Pulse size={size} />
-                    </Animation>
-                    <Icon icon={getDeviceIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
-                </IconWrapper>
-                <ContentWrapper>{children}</ContentWrapper>
-            </Wrapper>
-        );
-    }
-}
+    return (
+        <Wrapper>
+            <IconWrapper size={size}>
+                <Animation
+                    style={{
+                        opacity,
+                        transform: [{ scaleX: scale }, { scaleY: scale }],
+                    }}
+                    size={size}
+                >
+                    <Pulse size={size} />
+                </Animation>
+                <Icon icon={getDeviceIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
+            </IconWrapper>
+            <ContentWrapper>{children}</ContentWrapper>
+        </Wrapper>
+    );
+};
 
 export { Prompt, Props as PromptProps };

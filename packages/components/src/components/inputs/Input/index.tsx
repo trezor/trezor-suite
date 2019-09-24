@@ -174,7 +174,6 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
     type?: string; // TODO: type prop should be inherited from basic html input
-    propTypes?: any;
     state?: FeedbackType;
 }
 

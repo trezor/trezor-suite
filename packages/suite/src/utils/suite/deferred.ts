@@ -6,8 +6,8 @@ export interface Deferred<T> {
 }
 
 export const createDeferred = <T>(): Deferred<T> => {
-    let localResolve: (t: T) => void = (_t: T) => {};
-    let localReject: (e: Error) => void = (_e: Error) => {};
+    let localResolve: (t: T) => void = () => {};
+    let localReject: (e: Error) => void = () => {};
     // let id: string;
 
     const promise: Promise<T> = new Promise(async (resolve, reject) => {

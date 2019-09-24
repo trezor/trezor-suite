@@ -7,7 +7,6 @@ import discoveryReducer from './discoveryReducer';
 import accountsReducer from './accountsReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
-import statusReducer from './statusReducer';
 import sendFormReducer from './sendFormReducer';
 import feesReducer from './feesReducer';
 
@@ -20,7 +19,6 @@ const WalletReducers = combineReducers({
     accounts: accountsReducer,
     selectedAccount: selectedAccountReducer,
     receive: receiveReducer,
-    status: statusReducer,
     send: sendFormReducer,
     fees: feesReducer,
 });
