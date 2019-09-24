@@ -2,14 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { colors, variables } from '@trezor/components';
-import Link from '@suite/components/suite/Link';
 import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
 
 const Wrapper = styled.div`
     display: flex;
     border-bottom: 1px solid ${colors.INPUT_BORDER};
     /* background: #fafafa; */
-    padding: 8px 16px;
+    padding: 8px 0px;
     flex-direction: column;
     line-height: 1.5;
     /* & + & {
@@ -35,27 +34,60 @@ const TxHash = styled.div`
 const Row = styled.div`
     display: flex;
     flex: 1;
+    justify-content: space-between;
+    padding: 0px 4px;
 `;
 
 const Col = styled.div`
     display: flex;
     flex-direction: column;
+`;
+const ColBalance = styled(Col)`
     text-align: end;
 `;
 
 const Heading = styled(Row)`
     justify-content: space-between;
+    padding: 0px 0px;
 `;
 
 const Targets = styled.div`
     color: ${colors.TEXT_PRIMARY};
-    flex: 1;
     overflow: hidden;
 `;
 
 const Target = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const Token = styled.div`
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f2f2f2;
+    border-radius: 3px;
+    padding: 4px 8px;
+    background: #fafafa;
+`;
+
+const TokenName = styled.div`
+    color: ${colors.TEXT_SECONDARY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const TokenAddress = styled.div`
+    color: ${colors.TEXT_SECONDARY};
+    font-family: ${variables.FONT_FAMILY.MONOSPACE};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const Label = styled.div`
+    color: ${colors.TEXT_SECONDARY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    display: flex;
 `;
 
 const Balances = styled.div`
@@ -71,6 +103,7 @@ const Symbol = styled.div`
 const Amount = styled.div<{ txType: string }>`
     display: flex;
     flex-direction: column;
+    text-align: right;
     color: ${props => (props.txType === 'sent' ? 'red' : 'green')};
 `;
 
@@ -91,7 +124,7 @@ const Addr = styled.div`
 // `;
 
 const TransactionItem = React.memo(
-    ({ symbol, type, txid, blockTime, amount, targets }: WalletAccountTransaction) => {
+    ({ symbol, type, txid, blockTime, amount, targets, tokens }: WalletAccountTransaction) => {
         return (
             <Wrapper>
                 <Heading>
@@ -107,11 +140,7 @@ const TransactionItem = React.memo(
                             />
                         )}
                     </Timestamp>
-                    <TxHash>
-                        <Link isGray href={`https://www.blockchain.com/btc/tx/${txid}`}>
-                            {txid}
-                        </Link>
-                    </TxHash>
+                    <TxHash>{txid}</TxHash>
                 </Heading>
                 <Row>
                     <Targets>
@@ -130,8 +159,30 @@ const TransactionItem = React.memo(
                                         ))}
                                 </Target>
                             ))}
+                        {tokens &&
+                            tokens.map(token => (
+                                <Token>
+                                    <Col>
+                                        <TokenName>
+                                            {token.name} ({token.symbol})
+                                        </TokenName>
+                                        <Label>
+                                            From: <TokenAddress>{token.from}</TokenAddress>
+                                        </Label>
+                                        <Label>
+                                            To: <TokenAddress>{token.to}</TokenAddress>
+                                        </Label>
+                                    </Col>
+                                    <Col>
+                                        <Amount txType={type}>
+                                            {token.amount} {token.symbol}
+                                        </Amount>
+                                    </Col>
+                                </Token>
+                            ))}
                     </Targets>
-                    <Col>
+
+                    <ColBalance>
                         {/* <Fee>
                             <Red>-{fee}</Red>
                         </Fee> */}
@@ -147,7 +198,7 @@ const TransactionItem = React.memo(
                                 </>
                             )}
                         </Balances>
-                    </Col>
+                    </ColBalance>
                 </Row>
             </Wrapper>
         );
