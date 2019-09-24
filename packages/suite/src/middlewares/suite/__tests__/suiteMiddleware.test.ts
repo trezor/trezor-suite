@@ -17,14 +17,10 @@ jest.mock('@trezor/suite-storage', () => {
     };
 });
 
+// just return whatever to avoid imports touching database which is not available in tests
 jest.mock('@suite-actions/storageActions', () => {
     return {
         __esModule: true,
-        // loadStorage: () => {
-        //     return {
-        //         type: BLOCKCHAIN.READY,
-        //     };
-        // },
     };
 });
 

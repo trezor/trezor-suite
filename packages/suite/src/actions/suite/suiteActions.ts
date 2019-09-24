@@ -151,11 +151,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    // 1. check if device is not locked by device request or application itself (for example onboarding process)
-    const { locks } = getState().suite;
-    if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) return;
     let payload: TrezorDevice | typeof undefined;
-    // 2. find possible instances
     if (device) {
         // "instanceLabel" is one of the field which distinguish Device from TrezorDevice
         const { instanceLabel } = device as TrezorDevice;
