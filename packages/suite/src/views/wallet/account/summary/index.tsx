@@ -2,14 +2,8 @@ import React from 'react';
 import Content from '@wallet-components/Content';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import AccountHeader from './components/AccountHeader';
-import { AppState } from '@suite-types';
-
-interface Props {
-    wallet: AppState['wallet'];
-    suite: AppState['suite'];
-    router: AppState['router'];
-    fiat: AppState['wallet']['fiat'];
-}
+import Tokens from './components/Tokens';
+import { Props } from './Container';
 
 const AccountSummary = (props: Props) => {
     const { device } = props.suite;
@@ -32,6 +26,12 @@ const AccountSummary = (props: Props) => {
                 localCurrency={props.wallet.settings.localCurrency}
                 isHidden={props.wallet.settings.hideBalance}
             />
+            {account.networkType === 'ethereum' && (
+                <Tokens
+                    tokens={account.tokens || []}
+                    hideBalance={props.wallet.settings.hideBalance}
+                />
+            )}
         </LayoutAccount>
     );
 };
