@@ -9,10 +9,9 @@ import {
     NotificationClosePayload,
 } from '@suite-actions/notificationActions';
 
-import { ObjectValues } from '@suite/types/utils';
 import { Action as SuiteAction } from '@suite-types';
 
-type NotificationTag = ObjectValues<typeof NOTIFICATION.TAG>;
+// type NotificationTag = ObjectValues<typeof NOTIFICATION.TAG>;
 
 export interface CallbackAction {
     label: React.ReactNode;
@@ -27,7 +26,7 @@ export interface NotificationEntry {
     message?: React.ReactNode;
     cancelable?: boolean;
     actions?: CallbackAction[];
-    tags?: NotificationTag[];
+    // tags?: NotificationTag[];
 }
 
 export type State = NotificationEntry[];
