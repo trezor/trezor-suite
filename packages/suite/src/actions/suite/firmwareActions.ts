@@ -10,9 +10,25 @@ import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { AnyStatus } from '@suite-reducers/firmwareReducer';
 import { Dispatch, GetState, Action } from '@suite-types';
 
+interface SetUpdateStatusAction {
+    type: typeof FIRMWARE.SET_UPDATE_STATUS;
+    payload: AnyStatus;
+}
+
+interface ResetReducer {
+    type: typeof FIRMWARE.RESET_REDUCER;
+}
+interface EnableReducer {
+    type: typeof FIRMWARE.ENABLE_REDUCER;
+    payload: boolean;
+}
+
+export type FirmwareUpdateActionTypes = SetUpdateStatusAction | ResetReducer | EnableReducer;
+
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device, locks } = getState().suite;
-    if (!device || !device.connected || device.type !== 'acquired') {
+    if (!device || !device.connected || !device.features) {
+        // todo: possibly dispatch error?
         return;
     }
 
@@ -82,18 +98,3 @@ export const enableReducer = (payload: boolean): Action => ({
     type: FIRMWARE.ENABLE_REDUCER,
     payload,
 });
-
-interface SetUpdateStatusAction {
-    type: typeof FIRMWARE.SET_UPDATE_STATUS;
-    payload: AnyStatus;
-}
-
-interface ResetReducer {
-    type: typeof FIRMWARE.RESET_REDUCER;
-}
-interface EnableReducer {
-    type: typeof FIRMWARE.ENABLE_REDUCER;
-    payload: boolean;
-}
-
-export type FirmwareUpdateActionTypes = SetUpdateStatusAction | ResetReducer | EnableReducer;
