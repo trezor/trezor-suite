@@ -291,15 +291,6 @@ const initialRun = [
 
 const selectDevice = [
     {
-        description: `with router locked`,
-        state: {
-            suite: {
-                locks: [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE],
-            },
-        },
-        device: SUITE_DEVICE,
-    },
-    {
         description: `device undefined`,
         state: {},
         device: undefined,
@@ -315,6 +306,33 @@ const selectDevice = [
         device: SUITE_DEVICE,
         result: {
             payload: undefined,
+        },
+    },
+    {
+        description: `redirect to onboarding with router locked`,
+        state: {
+            suite: {
+                locks: [SUITE.LOCK_TYPE.ROUTER],
+            },
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    mode: 'initialize',
+                }),
+            ],
+        },
+        device: getConnectDevice({
+            path: '1',
+            mode: 'initialize',
+        }),
+        result: {
+            payload: getSuiteDevice({
+                path: '1',
+                mode: 'initialize',
+            }),
+            router: {
+                app: 'unknown',
+            },
         },
     },
     {

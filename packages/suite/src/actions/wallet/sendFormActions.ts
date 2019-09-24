@@ -21,6 +21,16 @@ export type SendFormActions =
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
     | { type: typeof SEND.CLEAR };
 
+/**
+ * Initialize current form, load values from session storage
+ */
+export const init = () => (_dispatch: Dispatch, _getState: GetState) => {};
+
+/**
+ * Dispose current form, save values to session storage
+ */
+export const dispose = () => (_dispatch: Dispatch, _getState: GetState) => {};
+
 /*
     Change value in input "Address"
  */
