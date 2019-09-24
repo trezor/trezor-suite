@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, Link, CoinLogo, H5, Tooltip, variables, colors } from '@trezor/components';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
+import { H5 } from '@trezor/components';
+import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 import TokenItem from './components/TokenItem';
 import { Account } from '@wallet-types';
@@ -11,19 +11,14 @@ const TokensHeadingWrapper = styled.div`
     padding: 20px 0;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    margin-right: 1px;
-`;
-
 const AddedTokensWrapper = styled.div``;
 
-interface Props extends InjectedIntlProps {
+interface Props {
     tokens: Exclude<Account['tokens'], undefined>;
     hideBalance: boolean;
 }
 
-const Tokens = ({ tokens, hideBalance, ...props }: Props) => {
+const Tokens = ({ tokens, hideBalance }: Props) => {
     return (
         <>
             <TokensHeadingWrapper>
@@ -40,4 +35,4 @@ const Tokens = ({ tokens, hideBalance, ...props }: Props) => {
     );
 };
 
-export default injectIntl(Tokens);
+export default Tokens;
