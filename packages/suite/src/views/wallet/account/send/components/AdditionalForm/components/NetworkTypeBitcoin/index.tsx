@@ -18,21 +18,16 @@ const Row = styled.div`
     }
 `;
 
-const NetworkTypeBitcoin = (props: Props) => {
-    const { send } = props;
-    if (!send) return null;
-
-    return (
-        <Wrapper>
-            <Row>
-                <CustomFee
-                    errors={props.send.errors.customFee}
-                    customFee={props.send.customFee}
-                    sendFormActions={props.sendFormActions}
-                />
-            </Row>
-        </Wrapper>
-    );
-};
+const NetworkTypeBitcoin = (props: Props) => (
+    <Wrapper>
+        <Row>
+            <CustomFee
+                errors={props.send.errors.customFee}
+                customFee={props.send.customFee}
+                sendFormActions={props.sendFormActions}
+            />
+        </Row>
+    </Wrapper>
+);
 
 export default NetworkTypeBitcoin;

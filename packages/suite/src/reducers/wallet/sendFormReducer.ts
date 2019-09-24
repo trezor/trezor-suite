@@ -24,6 +24,12 @@ export interface State {
     };
     networkTypeRipple: {
         destinationTag: null | string;
+        errors: {
+            destinationTag:
+                | null
+                | typeof VALIDATION_ERRORS.IS_EMPTY
+                | typeof VALIDATION_ERRORS.NOT_NUMBER;
+        };
     };
     networkTypeEthereum: {
         gasLimit: null | string;
@@ -44,6 +50,9 @@ export const initialState: State = {
     errors: { address: null, amount: null, customFee: null },
     networkTypeRipple: {
         destinationTag: null,
+        errors: {
+            destinationTag: null,
+        },
     },
     networkTypeEthereum: {
         gasPrice: null,
@@ -138,8 +147,7 @@ export default (state: State = initialState, action: Action): State => {
 
             // change input "Fiat"
             case SEND.HANDLE_FIAT_VALUE_CHANGE: {
-                const { fiatValue } = action;
-                draft.fiatValue = fiatValue;
+                draft.fiatValue = action.fiatValue;
                 break;
             }
 
@@ -154,6 +162,26 @@ export default (state: State = initialState, action: Action): State => {
                     ...initialState,
                     isAdditionalFormVisible: draft.isAdditionalFormVisible,
                 };
+            }
+
+            // change input in additional xrp form "Destination tag"
+            case SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE: {
+                const { destinationTag } = action;
+                draft.networkTypeRipple.errors.destinationTag = null;
+                draft.networkTypeRipple.destinationTag = destinationTag;
+
+                if (validator.isEmpty(destinationTag)) {
+                    draft.networkTypeRipple.errors.destinationTag = VALIDATION_ERRORS.IS_EMPTY;
+                    return draft;
+                }
+
+                if (!validator.isNumeric(destinationTag)) {
+                    draft.networkTypeRipple.errors.destinationTag = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+
+                draft.networkTypeRipple.destinationTag = destinationTag;
+                break;
             }
 
             // no default

@@ -15,9 +15,9 @@ export type SendFormActions =
       }
     | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; amount: string; availableBalance: string }
     | { type: typeof SEND.SET_MAX }
-    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: null | string }
+    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: string }
     | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeItem }
-    | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: null | string }
+    | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: string }
     | {
           type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
           localCurrency: ReducerState['localCurrency'];
@@ -107,10 +107,7 @@ const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']
 /*
     Change value in input "FiatInput"
  */
-const handleFiatInputChange = (fiatValue: null | string) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+const handleFiatInputChange = (fiatValue: string) => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
@@ -182,9 +179,7 @@ const handleFeeValueChange = (fee: { value: string; label: string }) => (
 /*
     Change value in additional form - select "Fee"
  */
-const handleCustomFeeValueChange = (customFee: ReducerState['customFee']) => (
-    dispatch: Dispatch,
-) => {
+const handleCustomFeeValueChange = (customFee: string) => (dispatch: Dispatch) => {
     dispatch({ type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE, customFee });
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee: { label: CUSTOM_FEE, value: CUSTOM_FEE } });
 };
