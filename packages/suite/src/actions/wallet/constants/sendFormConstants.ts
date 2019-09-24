@@ -6,6 +6,8 @@ export const SET_MAX = '@wallet_send_form/set_max';
 
 export const HANDLE_SELECT_CURRENCY_CHANGE = '@wallet_send_form/handle_local_currency_change';
 export const HANDLE_FIAT_VALUE_CHANGE = '@wallet_send_form/handle_fiat_value_change';
+export const HANDLE_FEE_VALUE_CHANGE = '@wallet_send_form/handle_fee_value_change';
+export const HANDLE_CUSTOM_FEE_VALUE_CHANGE = '@wallet_send_form/handle_custom_fee_value_change';
 
 export const CLEAR = '@wallet_send_form/clear';
 

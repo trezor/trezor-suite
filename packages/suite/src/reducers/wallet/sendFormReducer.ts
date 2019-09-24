@@ -10,7 +10,8 @@ export interface State {
     amount: null | string;
     fiatValue: null | string;
     localCurrency: { value: string; label: string };
-    fee: null | string;
+    fee: null | { value: string; label: string };
+    customFee: null | string;
     isAdditionalFormVisible: boolean;
     errors: {
         address: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_VALID;
@@ -19,15 +20,20 @@ export interface State {
             | typeof VALIDATION_ERRORS.IS_EMPTY
             | typeof VALIDATION_ERRORS.NOT_NUMBER
             | typeof VALIDATION_ERRORS.NOT_ENOUGH;
+        customFee: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_NUMBER;
     };
-    xrp: {
+    networkTypeRipple: {
         destinationTag: null | string;
+        errors: {
+            destinationTag: null | typeof VALIDATION_ERRORS.NOT_NUMBER;
+        };
     };
-    eth: {
+    networkTypeEthereum: {
         gasLimit: null | string;
         gasPrice: null | string;
         data: null | string;
     };
+    networkTypeBitcoin: {};
 }
 
 export const initialState: State = {
@@ -35,17 +41,22 @@ export const initialState: State = {
     amount: null,
     fiatValue: null,
     fee: null,
+    customFee: null,
     localCurrency: { value: 'usd', label: 'USD' },
     isAdditionalFormVisible: false,
-    errors: { address: null, amount: null },
-    xrp: {
+    errors: { address: null, amount: null, customFee: null },
+    networkTypeRipple: {
         destinationTag: null,
+        errors: {
+            destinationTag: null,
+        },
     },
-    eth: {
+    networkTypeEthereum: {
         gasPrice: null,
         gasLimit: null,
         data: null,
     },
+    networkTypeBitcoin: {},
 };
 
 export default (state: State = initialState, action: WalletAction): State => {
@@ -106,10 +117,34 @@ export default (state: State = initialState, action: WalletAction): State => {
                 break;
             }
 
+            // change select "Fee"
+            case SEND.HANDLE_FEE_VALUE_CHANGE: {
+                const { fee } = action;
+                draft.fee = fee;
+                break;
+            }
+
+            // change select "Fee"
+            case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
+                const { customFee } = action;
+                draft.errors.customFee = null;
+                draft.customFee = customFee;
+
+                if (validator.isEmpty(customFee)) {
+                    draft.errors.customFee = VALIDATION_ERRORS.IS_EMPTY;
+                    return draft;
+                }
+
+                if (!validator.isNumeric(customFee)) {
+                    draft.errors.customFee = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+                break;
+            }
+
             // change input "Fiat"
             case SEND.HANDLE_FIAT_VALUE_CHANGE: {
-                const { fiatValue } = action;
-                draft.fiatValue = fiatValue;
+                draft.fiatValue = action.fiatValue;
                 break;
             }
 
@@ -124,6 +159,21 @@ export default (state: State = initialState, action: WalletAction): State => {
                     ...initialState,
                     isAdditionalFormVisible: draft.isAdditionalFormVisible,
                 };
+            }
+
+            // change input in additional xrp form "Destination tag"
+            case SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE: {
+                const { destinationTag } = action;
+                draft.networkTypeRipple.errors.destinationTag = null;
+                draft.networkTypeRipple.destinationTag = destinationTag;
+
+                if (!validator.isNumeric(destinationTag)) {
+                    draft.networkTypeRipple.errors.destinationTag = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+
+                draft.networkTypeRipple.destinationTag = destinationTag;
+                break;
             }
 
             // no default

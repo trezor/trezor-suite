@@ -35,7 +35,16 @@ const StyledTitle = styled(Title)`
 `;
 
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
-    const { device, sendFormActions, send, fees, fiat } = props;
+    const {
+        device,
+        sendFormActions,
+        send,
+        fees,
+        fiat,
+        sendFormActionsBitcoin,
+        sendFormActionsEthereum,
+        sendFormActionsRipple,
+    } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
@@ -76,7 +85,12 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 />
             </Row>
             <Row>
-                <Fee fees={fees} sendFormActions={sendFormActions} symbol={network.symbol} />
+                <Fee
+                    fees={fees}
+                    fee={send.fee}
+                    sendFormActions={sendFormActions}
+                    symbol={network.symbol}
+                />
             </Row>
             <Row isColumn={send.isAdditionalFormVisible}>
                 <ButtonToggleAdditional
@@ -93,6 +107,9 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     errors={send.errors}
                     symbol={network.symbol}
                     sendFormActions={sendFormActions}
+                    sendFormActionsBitcoin={sendFormActionsBitcoin}
+                    sendFormActionsEthereum={sendFormActionsEthereum}
+                    sendFormActionsRipple={sendFormActionsRipple}
                 />
             </Row>
         </Layout>
