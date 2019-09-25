@@ -332,9 +332,6 @@ declare module 'trezor-connect' {
     }
     export interface FirmwareUpdateParams extends CommonParams {
         payload: ArrayBuffer;
-        hash?: string;
-        offset?: number;
-        length?: number;  
     }
 
     export interface BackupDeviceParams extends CommonParams {}
@@ -648,6 +645,7 @@ declare module 'trezor-connect' {
 
         export const BUNDLE_PROGRESS = 'ui-bundle_progress';
         export const ADDRESS_VALIDATION = 'ui-address_validation';
+        export const FIRMWARE_PROGRESS = 'ui-firmware_progress';
     }
 
     export namespace IFRAME {
@@ -728,7 +726,13 @@ declare module 'trezor-connect' {
                       supported: boolean;
                   }
               };
-          };
+          }
+        | {
+            type: typeof UI.FIRMWARE_PROGRESS;
+            payload: {
+                progress: number;
+            };
+        };
 
     export type UIResponse = 
         | {

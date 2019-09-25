@@ -4,7 +4,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
-import { mergeObj } from '@suite-utils/mergeObj';
+import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@suite/types/utils';
 import * as firmwareActions from '../firmwareActions';
 import fixtures from './fixtures/firmwareActions';
@@ -62,8 +62,17 @@ jest.mock('trezor-connect', () => {
     };
 });
 
-export const getInitialState = (override: any) => {
-    const defaults = {
+type SuiteState = ReturnType<typeof suiteReducer>;
+type FirmwareState = ReturnType<typeof firmwareReducer>;
+interface InitialState {
+    suite?: Partial<SuiteState>;
+    firmware?: Partial<FirmwareState>;
+}
+
+export const getInitialState = (override: InitialState): any => {
+    const suite = override ? override.suite : undefined;
+    const firmware = override ? override.firmware : undefined;
+    return {
         suite: {
             device: {
                 connected: true,
@@ -73,16 +82,13 @@ export const getInitialState = (override: any) => {
                 },
             },
             locks: [],
+            ...suite,
         },
         firmware: {
             reducerEnabled: true,
-            status: null,
+            ...firmware,
         },
     };
-    if (override) {
-        return mergeObj(defaults, override);
-    }
-    return defaults;
 };
 
 const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
@@ -92,8 +98,10 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
     // just update state on every action manually
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { firmware } = store.getState();
+        const { firmware, suite } = store.getState();
         store.getState().firmware = firmwareReducer(firmware, action);
+        store.getState().suite = suiteReducer(suite, action);
+
         // add action back to stack
         store.getActions().push(action);
     });
@@ -108,6 +116,7 @@ describe('Firmware Actions', () => {
 
             const state = getInitialState(f.initialState);
             const store = mockStore(state);
+
             store.subscribe(() => updateStore(store));
 
             await store.dispatch(firmwareActions.firmwareUpdate());

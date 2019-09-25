@@ -5,7 +5,7 @@ import { SUITE, FIRMWARE } from '@suite-actions/constants';
 
 import firmwareReducer from '@suite-reducers/firmwareReducer';
 import routerReducer from '@suite-reducers/routerReducer';
-
+import suiteReducer from '@suite-reducers/suiteReducer';
 import firmwareMiddleware from '@suite-middlewares/firmwareMiddleware';
 
 const middlewares = [firmwareMiddleware];
@@ -16,6 +16,7 @@ type RouterState = ReturnType<typeof routerReducer>;
 export const getInitialState = (
     router?: Partial<RouterState>,
     firmware?: Partial<FirmwareState>,
+    suite?: Partial<SuiteState>,
 ) => {
     return {
         firmware: {
@@ -25,6 +26,10 @@ export const getInitialState = (
         router: {
             ...routerReducer(undefined, { type: 'foo' } as any),
             ...router,
+        },
+        suite: {
+            ...suiteReducer(undefined, { type: 'foo' } as any),
+            ...suite,
         },
     };
 };
@@ -37,8 +42,10 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { firmware } = store.getState();
+        const { firmware, suite } = store.getState();
         store.getState().firmware = firmwareReducer(firmware, action);
+        store.getState().suite = suiteReducer(suite, action);
+
         store.getActions().push(action);
     });
     return store;

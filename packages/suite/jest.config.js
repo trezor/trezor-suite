@@ -4,7 +4,7 @@ module.exports = {
         'ts-jest': {
             tsConfig: 'tsconfig.json',
             // to speed up prototyping, this is how to disable ts in tests
-            // diagnostics: false,
+            diagnostics: false,
         },
     },
     setupFiles: ['<rootDir>/src/support/tests/setupJest.ts'],

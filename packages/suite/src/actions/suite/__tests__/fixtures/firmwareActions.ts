@@ -40,7 +40,7 @@ const fixtures = [
             },
         },
         result: {
-            state: { firmware: { status: null } },
+            state: { firmware: { status: 'error' } },
         },
     },
     {

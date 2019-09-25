@@ -10,6 +10,8 @@ import * as firmwareActions from '@suite-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 
 import { ConnectPrompt } from '@suite-components/Prompts';
+
+// todo move to suite components;
 import { Loaders } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';
@@ -22,6 +24,7 @@ const Wrapper = styled.div`
     justify-content: center;
     padding: 60px 24px 30px 24px;
     flex: 1;
+    width: 100%;
 `;
 
 const Top = styled.div`
@@ -36,6 +39,7 @@ const Top = styled.div`
 const Middle = styled.div`
     display: flex;
     flex: 1;
+    text-align: center;
 `;
 
 const Bottom = styled.div`
@@ -52,11 +56,33 @@ const Bottom = styled.div`
 
 const ChangelogWrapper = styled.div`
     flex: 1;
+    padding: 17px 20px 0 20px;
 `;
 
-const ChangeLog = ({ firmwareRelease }: { firmwareRelease?: FirmwareRelease }) => {
+const ChangeLog = ({
+    firmwareRelease,
+    isLatest,
+    currentVersion,
+}: {
+    firmwareRelease?: FirmwareRelease;
+    isLatest?: boolean;
+    currentVersion?: string;
+}) => {
+    if (isLatest) {
+        return (
+            <ChangelogWrapper>
+                <H4>{currentVersion}</H4>
+                <P>Latest firmware already installed</P>
+            </ChangelogWrapper>
+        );
+    }
     if (!firmwareRelease) {
-        return null;
+        return (
+            <ChangelogWrapper>
+                <H4>Changelog</H4>
+                <P>Connect your device to see changelog</P>
+            </ChangelogWrapper>
+        );
     }
     return (
         <ChangelogWrapper>
@@ -95,7 +121,17 @@ const FirmwareUpdate = (props: Props) => {
     const { device, firmware } = props;
 
     const isInProgress = () => {
-        return ['started', 'downloading', 'installing', 'restarting'].includes(firmware.status);
+        return [
+            'started',
+            'downloading',
+            'waiting-for-confirmation',
+            'installing',
+            'restarting',
+        ].includes(firmware.status);
+    };
+
+    const isInFinishedState = () => {
+        return ['error', 'done'].includes(firmware.status);
     };
 
     const hasDevice = () => {
@@ -118,8 +154,25 @@ const FirmwareUpdate = (props: Props) => {
         return device && device.features && device.features.major_version;
     };
 
+    const getFwVersion = () => {
+        return (
+            device &&
+            device.features &&
+            `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`
+        );
+    };
+
+    const getModelForPrompt = () => {
+        return (
+            getModel() ||
+            (firmware.device &&
+                firmware.device.features &&
+                firmware.device.features.major_version) ||
+            2
+        );
+    };
+
     const exitApp = () => {
-        // todo: maybe in middleware?
         if (device && device.features && device.mode === 'initialize') {
             return props.exitApp('onboarding-index');
         }
@@ -140,9 +193,9 @@ const FirmwareUpdate = (props: Props) => {
         if (firmware.status === 'restarting') {
             return 'Waiting for device to restart';
         }
-        if (!hasDevice()) {
-            return 'Reconnect device to continue';
-        }
+        // if (!hasDevice()) {
+        //     return 'Reconnect device to continue';
+        // }
         if (hasNewestFirmware()) {
             return 'Device is up to date';
         }
@@ -150,6 +203,23 @@ const FirmwareUpdate = (props: Props) => {
             return 'Switch to bootloader';
         }
         return 'Firmware update';
+    };
+
+    const isInstallButtonDisabled = () => {
+        return !hasDevice() || !isInBootloader();
+    };
+
+    const getFirmwareRelease = () => {
+        // currently selected device has latest firmware
+        if (device && device.features && device.firmware === 'valid') {
+            return;
+        }
+        if (device && device.features && device.firmwareRelease) {
+            return device.firmwareRelease;
+        }
+        if (firmware.device && firmware.device.features && firmware.device.firmwareRelease) {
+            return firmware.device.firmwareRelease;
+        }
     };
 
     // todo: handle bootloader mode
@@ -161,31 +231,64 @@ const FirmwareUpdate = (props: Props) => {
                 <TitleHeader>{getTitle()}</TitleHeader>
             </Top>
             <Middle>
-                {!isInProgress() && (
+                <ConnectPrompt model={getModelForPrompt()} loop={!hasDevice()} />
+
+                {firmware.status === 'initial' && (
                     <>
-                        {hasDevice() &&
-                            !isInBootloader() &&
-                            !hasNewestFirmware() &&
-                            device &&
-                            device.features && (
-                                <ChangeLog firmwareRelease={device.firmwareRelease}></ChangeLog>
-                            )}
-                        <ConnectPrompt model={getModel() || 2} loop={!hasDevice()} />
+                        <ChangeLog
+                            isLatest={hasNewestFirmware()}
+                            firmwareRelease={getFirmwareRelease()}
+                            currentVersion={getFwVersion()}
+                        ></ChangeLog>
                     </>
                 )}
-                {isInProgress() && (
+                {(isInProgress() || isInFinishedState()) && (
                     <div>
-                        {firmware.status} <Loaders.Dots />
+                        <Loaders.Donut
+                            progress={firmware.installingProgress}
+                            isSuccess={firmware.status === 'done'}
+                            isError={firmware.status === 'error'}
+                        />
+                        {!isInFinishedState() && (
+                            <P>
+                                {firmware.status}
+                                <Loaders.Dots />
+                            </P>
+                        )}
+                        {firmware.error && <P>{firmware.error}</P>}
                     </div>
                 )}
             </Middle>
             <Bottom>
-                {!isInProgress() && (
+                {firmware.status === 'initial' && (
+                    <>
+                        <Button isInverse onClick={() => exitApp()}>
+                            {getExitButtonText()}
+                        </Button>
+                        <Button
+                            onClick={() => props.firmwareUpdate()}
+                            isDisabled={isInstallButtonDisabled()}
+                        >
+                            Install
+                        </Button>
+                    </>
+                )}
+                {firmware.status === 'done' && (
                     <>
                         <Button onClick={() => exitApp()}>{getExitButtonText()}</Button>
-                        {isInBootloader() && hasDevice() && (
-                            <Button onClick={() => props.firmwareUpdate()}>Install</Button>
-                        )}
+                    </>
+                )}
+                {firmware.status === 'error' && (
+                    <>
+                        <Button isInverse onClick={() => exitApp()}>
+                            {getExitButtonText()}
+                        </Button>
+                        <Button
+                            onClick={() => props.firmwareUpdate()}
+                            isDisabled={isInstallButtonDisabled()}
+                        >
+                            Retry
+                        </Button>
                     </>
                 )}
             </Bottom>
