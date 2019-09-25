@@ -163,7 +163,7 @@ export default (state: State = initialState, action: WalletAction): State => {
             }
 
             // change input in additional xrp form "Destination tag"
-            case SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE: {
+            case SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE: {
                 const { destinationTag } = action;
                 draft.networkTypeRipple.destinationTag.error = null;
                 draft.networkTypeRipple.destinationTag.value = destinationTag;
