@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { InjectedIntl } from 'react-intl';
 import { CoinLogo, Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
@@ -27,11 +27,17 @@ const Row = styled.div`
 `;
 
 const SlimRow = styled.div`
+    display: flex;
     justify-content: flex-end;
     min-height: 10px;
     align-items: flex-end;
-    display: ${(props: { isOnlyOne: boolean }) => (props.isOnlyOne ? 'none' : 'flex')};
     cursor: pointer;
+
+    ${(props: { isOnlyOne: boolean }) =>
+        props.isOnlyOne &&
+        css`
+            display: none;
+        `}
 `;
 
 const OutputWrapper = styled.div`
