@@ -1,6 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Link } from '../Link';
+import { Icon } from '../Icon';
 import colors from '../../config/colors';
 
 const ModalContainer = styled.div`
@@ -26,13 +28,28 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
+const StyledLink = styled(Link)`
+    position: absolute;
+    right: 15px;
+    top: 15px;
+`;
+
 interface Props {
     children: React.ReactNode;
+    cancelable?: boolean;
+    onCancel?: () => void;
 }
 
-const Modal = ({ children }: Props) => (
+const Modal = ({ children, cancelable, onCancel }: Props) => (
     <ModalContainer>
-        <ModalWindow>{children}</ModalWindow>
+        <ModalWindow>
+            {children}
+            {cancelable && (
+                <StyledLink onClick={onCancel}>
+                    <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
+                </StyledLink>
+            )}
+        </ModalWindow>
     </ModalContainer>
 );
 
