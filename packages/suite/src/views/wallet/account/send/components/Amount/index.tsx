@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
-import { Output } from '@wallet-reducers/sendFormReducer';
+import { Output } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
@@ -116,17 +116,12 @@ const Amount = (props: Props) => (
                 <>
                     <SetMax
                         key="set-max"
-                        outputId={props.outputId}
                         sendFormActions={props.sendFormActions}
                         canSetMax={props.canSetMax}
                     />
                     {hasRates(props.fiat, props.localCurrency, props.symbol) && (
                         <>
-                            <CurrencySelect
-                                outputId={props.outputId}
-                                key="currency-select"
-                                symbol={props.symbol}
-                            />
+                            <CurrencySelect key="currency-select" symbol={props.symbol} />
                             <FiatComponent
                                 outputId={props.outputId}
                                 key="fiat-input"

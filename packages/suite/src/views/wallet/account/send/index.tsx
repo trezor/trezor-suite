@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Button } from '@trezor/components';
 import { InjectedIntl } from 'react-intl';
 import { CoinLogo } from '@trezor/components';
 
@@ -90,7 +91,6 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     </Row>
                 </>
             ))}
-
             <Row>
                 <Fee
                     fees={fees}

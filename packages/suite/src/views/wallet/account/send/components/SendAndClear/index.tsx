@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import commonMessages from '@wallet-views/messages';
+import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 import { Account } from '@wallet-types';
 
@@ -11,11 +12,14 @@ const Wrapper = styled.div`
     flex: 1;
 
     justify-content: flex-end;
+
+    & button {
+        margin-left: 10px;
+    }
 `;
 
 const Send = styled(Button)`
     min-width: 200px;
-    margin-left: 10px;
 `;
 
 const Clear = styled(Button)``;
@@ -39,6 +43,12 @@ const SendAndClear = (props: Props) => (
         <Clear variant="white" onClick={() => props.sendFormActions.clear()}>
             <FormattedMessage {...commonMessages.TR_CLEAR} />
         </Clear>
+        {props.networkType === 'bitcoin' && (
+            <Button variant="white">
+                {' '}
+                <FormattedMessage {...messages.TR_ADD_RECIPIENT} />
+            </Button>
+        )}
         <Send
             isDisabled={false}
             onClick={() => {
@@ -56,7 +66,7 @@ const SendAndClear = (props: Props) => (
                 }
             }}
         >
-            {isDisabled() ? 'Send' : `Send ${props.amount || ''} ${props.symbol.toUpperCase()}`}
+            {isDisabled() ? 'Send' : `Send x ${props.symbol.toUpperCase()}`}
         </Send>
     </Wrapper>
 );
