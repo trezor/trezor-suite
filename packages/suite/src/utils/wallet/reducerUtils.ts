@@ -85,7 +85,8 @@ export const getSelectedAccount = (
             a =>
                 a.index === routerParams.accountIndex &&
                 a.symbol === routerParams.symbol &&
-                a.accountType === routerParams.accountType,
+                a.accountType === routerParams.accountType &&
+                a.deviceState === device.state,
         ) || null
     );
 };
