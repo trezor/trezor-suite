@@ -11,6 +11,7 @@ import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
+
 import { GetState, Dispatch, Action } from '@suite-types';
 
 const goToStep = (stepId: AnyStepId) => (dispatch: Dispatch) => {
@@ -77,8 +78,6 @@ const goToPreviousStep = () => (dispatch: Dispatch, getState: GetState) => {
     dispatch(goToStep(prevStep.id));
 };
 
-// TODO: probaaably not needed
-
 /**
  * Set onboarding reducer to initial state.
  */
@@ -87,8 +86,6 @@ const resetOnboarding = () => (dispatch: Dispatch) => {
         type: RESET_ONBOARDING,
     });
 };
-
-// TODO: probaaably not needed
 
 /**
  * Make onboarding reducer listen to actions.

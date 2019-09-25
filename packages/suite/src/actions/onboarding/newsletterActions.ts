@@ -48,7 +48,7 @@ const submitEmail = () => async (dispatch: Dispatch, getState: GetState) => {
             throw new Error(response.statusText);
         }
     } catch (error) {
-        dispatch({ type: FETCH_ERROR, error });
+        dispatch({ type: FETCH_ERROR, error: error.message });
     }
 };
 

@@ -68,7 +68,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         device &&
         device.features &&
         !device.state &&
-        (action.type === SUITE.SELECT_DEVICE || action.type === SUITE.APP_CHANGE)
+        (action.type === SUITE.SELECT_DEVICE || action.type === SUITE.APP_CHANGED)
     ) {
         authorizationIntent = true;
     }
@@ -101,7 +101,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     // 4. start or restart discovery
     if (
         becomesConnected ||
-        action.type === SUITE.APP_CHANGE ||
+        action.type === SUITE.APP_CHANGED ||
         action.type === SUITE.SELECT_DEVICE ||
         action.type === SUITE.AUTH_DEVICE ||
         action.type === SETTINGS.CHANGE_NETWORKS ||

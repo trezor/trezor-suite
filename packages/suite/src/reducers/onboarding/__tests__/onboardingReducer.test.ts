@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-object-literal-type-assertion */
 
 import { UI, DEVICE } from 'trezor-connect';
-import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import * as STEP from '@onboarding-constants/steps';
+import onboardingReducer from '@onboarding-reducers';
 import { Action } from '@suite-types';
 
 const { getConnectDevice, getDeviceFeatures } = global.JestMocks;

@@ -1,19 +1,10 @@
-import * as React from 'react';
-import { FormattedMessage } from 'react-intl';
-import { NotificationProps } from '@trezor/components';
-import { CallbackAction } from '@suite/reducers/suite/notificationReducer';
+// import { FormattedMessage } from 'react-intl';
+// import { NotificationProps } from '@trezor/components';
 import { RequiredKey } from '@suite/types/utils';
+import { NotificationEntry } from '@suite/reducers/suite/notificationReducer';
 import { NOTIFICATION } from './constants';
 
-export interface NotificationAddPayload {
-    variant: NonNullable<NotificationProps['variant']>;
-    id?: string;
-    devicePath?: string;
-    title: React.ReactNode | FormattedMessage.MessageDescriptor;
-    message?: React.ReactNode;
-    cancelable: boolean;
-    actions?: CallbackAction[];
-}
+export type NotificationAddPayload = Omit<NotificationEntry, 'key'>;
 
 interface CloseProps {
     key?: string;

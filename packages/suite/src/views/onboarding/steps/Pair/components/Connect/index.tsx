@@ -1,6 +1,8 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Prompts, Loaders, Text } from '@onboarding-components';
+import { ConnectPrompt } from '@suite-components/Prompts';
+import { Loaders, Text } from '@onboarding-components';
+
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
@@ -12,7 +14,7 @@ interface StepProps {
 const ConnectStep = ({ model, deviceIsConnected }: StepProps) => {
     return (
         <>
-            <Prompts.ConnectPrompt model={model || 2} height={180} loop={!deviceIsConnected} />
+            <ConnectPrompt model={model || 2} height={180} loop={!deviceIsConnected} />
             {!deviceIsConnected && (
                 <Text>
                     <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}

@@ -20,7 +20,7 @@ const CoinSelect = (props: Props) => (
         value={{
             value: props.symbol,
             label: props.symbol.toUpperCase(),
-        }} // TODO select ethereum tokens and other tokens
+        }}
         isDisabled
         options={null}
     />

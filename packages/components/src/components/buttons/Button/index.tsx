@@ -220,6 +220,7 @@ const Button = ({
     children,
     className,
     additionalClassName,
+
     variant = 'success',
     isDisabled = false,
     isTransparent = false,

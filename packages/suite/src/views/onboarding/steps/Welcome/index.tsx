@@ -4,6 +4,7 @@ import { variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import * as STEP from '@onboarding-constants/steps';
+import CONFIG from '@onboarding-config';
 import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
 import l10nMessages from './index.messages';
@@ -44,8 +45,8 @@ const WelcomeStep = (props: Props) => {
                     <Option
                         data-test="button-path-create"
                         onClick={() => {
-                            props.onboardingActions.addPath(STEP.PATH_CREATE);
-                            props.onboardingActions.goToNextStep();
+                            props.addPath(STEP.PATH_CREATE);
+                            props.goToNextStep();
                         }}
                     >
                         <Base>Create new Wallet</Base>
@@ -55,8 +56,8 @@ const WelcomeStep = (props: Props) => {
                     <Option
                         data-test="button-path-recovery"
                         onClick={() => {
-                            props.onboardingActions.addPath(STEP.PATH_RECOVERY);
-                            props.onboardingActions.goToNextStep();
+                            props.addPath(STEP.PATH_RECOVERY);
+                            props.goToNextStep();
                         }}
                     >
                         <Base>Restore existing wallet</Base>
@@ -70,7 +71,7 @@ const WelcomeStep = (props: Props) => {
                 {shouldDisplayLeaveButton() && (
                     <OnboardingButton.Back
                         data-test="button-use-wallet"
-                        onClick={() => props.goto('wallet-index')}
+                        onClick={() => props.exitApp(CONFIG.APP.EXIT_APP_ROUTE)}
                     >
                         <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
                     </OnboardingButton.Back>

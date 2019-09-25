@@ -115,16 +115,16 @@ const Amount = (props: Props) => (
                         canSetMax={props.canSetMax}
                     />
                     {hasRates(props.fiat, props.localCurrency, props.symbol) && (
-                        <CurrencySelect key="currency-select" symbol={props.symbol} />
-                    )}
-                    {hasRates(props.fiat, props.localCurrency, props.symbol) && (
-                        <FiatComponent
-                            key="fiat-input"
-                            state={props.error ? 'error' : undefined}
-                            sendFormActions={props.sendFormActions}
-                            value={props.fiatValue}
-                            localCurrency={props.localCurrency}
-                        />
+                        <>
+                            <CurrencySelect key="currency-select" symbol={props.symbol} />
+                            <FiatComponent
+                                key="fiat-input"
+                                state={props.error ? 'error' : undefined}
+                                sendFormActions={props.sendFormActions}
+                                value={props.fiatValue}
+                                localCurrency={props.localCurrency}
+                            />
+                        </>
                     )}
                 </>
             }
