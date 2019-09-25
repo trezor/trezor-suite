@@ -12,10 +12,6 @@ type Option = ReturnType<typeof buildNetworkOption>;
 
 const StyledSelect = styled(Select)`
     min-width: 77px;
-
-    > div > div > div {
-        overflow: visible;
-    }
 `;
 
 const OptionWrapper = styled.div`
