@@ -11,7 +11,7 @@
         "strict": true,
         "esModuleInterop": true,
         "declaration": true,
-        "declarationMap": false,
+        "declarationMap": true,
         "noImplicitThis": true,
         "noImplicitAny": true,
         "strictNullChecks": true,

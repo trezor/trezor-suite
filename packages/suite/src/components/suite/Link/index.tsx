@@ -12,6 +12,12 @@ interface Props extends LinkProps {
     children: React.ReactNode;
 }
 
+const RefLinkComponent = React.forwardRef((props: Props, _ref: any) => (
+    <TLink {...props} href={props.href as string}>
+        {props.children}
+    </TLink>
+));
+
 const Link = ({ children, href, className, target = '_self', ...rest }: Props) => {
     /*  
         if href prop refers to internal url puts assetPrefix in front and
@@ -24,13 +30,22 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
     };
 
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
-    const RefLinkComponent = React.forwardRef((props: typeof linkProps, _ref: any) => (
-        <TLink target={target} {...props} className={className}>
-            {children}
-        </TLink>
-    ));
 
-    return (
+    const StyledLink = (
+        <RefLinkComponent
+            href={href as string}
+            target={target}
+            className={className}
+            {...linkProps}
+        >
+            {children}
+        </RefLinkComponent>
+    );
+
+    // Next.js Link component should be only used for internal navigation
+    // for non-internal href we just return our styled <A>
+    // https://github.com/zeit/next.js/blob/master/errors/invalid-href-passed.md
+    return isInternalLink ? (
         <NextLink
             href={href}
             prefetch={prefetch}
@@ -40,8 +55,10 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
             passHref
             {...overrideAsProp}
         >
-            <RefLinkComponent {...linkProps} />
+            {StyledLink}
         </NextLink>
+    ) : (
+        StyledLink
     );
 };
 

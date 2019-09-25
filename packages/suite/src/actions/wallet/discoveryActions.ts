@@ -7,6 +7,7 @@ import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { create as createAccount } from '@wallet-actions/accountActions';
 import { DISCOVERY } from './constants';
+import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -31,6 +32,7 @@ export interface DiscoveryItem {
     path: string;
     coin: Account['symbol'];
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
+    pageSize?: number;
     // wallet
     index: number;
     accountType: Account['accountType'];
@@ -181,6 +183,7 @@ const getBundle = (discovery: Discovery) => (_d: Dispatch, getState: GetState): 
                 coin: configNetwork.symbol,
                 details: 'txs',
                 index,
+                pageSize: SETTINGS.TXS_PER_PAGE,
                 accountType,
                 networkType: configNetwork.networkType,
             });

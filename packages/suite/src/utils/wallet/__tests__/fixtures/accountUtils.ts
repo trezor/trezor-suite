@@ -77,7 +77,7 @@ export const parseBIP44Path = [
     },
 ];
 
-export const formatAmount = [
+export const formatNetworkAmount = [
     {
         amount: '1',
         symbol: 'btc',

@@ -1,5 +1,6 @@
-import { AppState, TrezorDevice } from '@suite-types';
-import { Account, Network, Discovery } from '@wallet-types';
+import { State as TransactionsState } from '@suite/reducers/wallet/transactionReducer';
+import { AppState } from '@suite-types';
+import { Account, Network } from '@wallet-types';
 
 export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
@@ -63,28 +64,20 @@ export const getSelectedAccount = (
 ) => {
     if (!device || !routerParams) return null;
 
+    // TODO: imported accounts
     // imported account index has 'i' prefix
     // const isImported = /^i\d+$/i.test(routerParams.accountIndex);
     // const index: number = isImported
     //     ? parseInt(routerParams.accountIndex.substr(1), 10)
     //     : parseInt(routerParams.accountIndex, 10);
 
-    // TODO: filter deviceState;
-    // return accounts.find(
-    //     a =>
-    //         a.imported === isImported &&
-    //         (a.deviceState === device.state ||
-    //             (a.imported && a.deviceID === (device.features || {}).device_id)) &&
-    //         a.index === index &&
-    //         a.network === routerParams.coin
-    // ) || null;
-
     return (
         accounts.find(
             a =>
                 a.index === routerParams.accountIndex &&
                 a.symbol === routerParams.symbol &&
-                a.accountType === routerParams.accountType,
+                a.accountType === routerParams.accountType &&
+                a.deviceState === device.state,
         ) || null
     );
 };
@@ -93,10 +86,22 @@ export const getSelectedNetwork = (networks: Network[], symbol: string) => {
     return networks.find(c => c.symbol === symbol) || null;
 };
 
-export const getDiscoveryProcess = (
-    discoveries: Discovery[],
-    device?: TrezorDevice,
-): Discovery | null => {
-    if (!device || !device.features) return null;
-    return discoveries.find(d => d.deviceState === device.state) || null;
+/**
+ * Returns a string used as an index to separate txs for given account inside a transactions reducer
+ *
+ * @param {string} descriptor
+ * @param {string} symbol
+ * @param {string} deviceState
+ * @returns {string}
+ */
+export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) => {
+    return `${descriptor}-${symbol}-${deviceState}`;
+};
+
+export const getAccountTransactions = (
+    transactions: TransactionsState['transactions'],
+    account: Account,
+) => {
+    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    return transactions[accountHash] || [];
 };
