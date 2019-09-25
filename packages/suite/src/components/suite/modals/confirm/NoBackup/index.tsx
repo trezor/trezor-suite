@@ -1,11 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-import { H5, P, Icon, Button, Link, colors } from '@trezor/components';
+import { H5, P, Icon, Button, colors } from '@trezor/components';
 import l10nCommonMessages from '../../messages';
-
-import { TrezorDevice } from '@suite-types';
 
 const Wrapper = styled.div`
     max-width: 370px;
@@ -31,10 +29,10 @@ const Row = styled.div`
 
 interface Props {
     onReceiveConfirmation: (confirmed: boolean) => void;
-    device: TrezorDevice;
+    onCreateBackup: () => void;
 }
 
-const ConfirmNoBackup: FunctionComponent<Props> = ({ device, onReceiveConfirmation }) => (
+const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
     <Wrapper>
         <H5>
             <FormattedMessage {...l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />
@@ -44,11 +42,14 @@ const ConfirmNoBackup: FunctionComponent<Props> = ({ device, onReceiveConfirmati
             <FormattedMessage {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
         </StyledP>
         <Row>
-            <Link href={`/?backup#${device.path}`} target="_self">
-                <BackupButton onClick={() => onReceiveConfirmation(false)}>
-                    <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
-                </BackupButton>
-            </Link>
+            <BackupButton
+                onClick={() => {
+                    onReceiveConfirmation(false);
+                    onCreateBackup();
+                }}
+            >
+                <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
+            </BackupButton>
             <Button isInverse variant="warning" onClick={() => onReceiveConfirmation(true)}>
                 <FormattedMessage {...l10nCommonMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK} />
             </Button>
