@@ -54,7 +54,7 @@ const definedMessages = defineMessages({
     },
     TR_COMPLETE_ACTION_ON_DEVICE: {
         id: 'TR_COMPLETE_ACTION_ON_DEVICE',
-        defaultMessage: 'Complete the action on "{device.label}" device',
+        defaultMessage: 'Complete the action on "{deviceLabel}" device',
     },
 });
 

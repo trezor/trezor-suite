@@ -20,7 +20,8 @@ const OptionWrapper = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-    min-width: 40px;
+    padding-left: 8px;
+    padding-right: 6px;
     display: flex;
     align-items: center;
 `;

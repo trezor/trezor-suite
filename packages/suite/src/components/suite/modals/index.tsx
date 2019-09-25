@@ -175,11 +175,7 @@ const Modal = (props: Props) => {
             break;
     }
 
-    return (
-        <ModalComponent>
-            <FocusLock>{component}</FocusLock>
-        </ModalComponent>
-    );
+    return <ModalComponent>{component && <FocusLock>{component}</FocusLock>}</ModalComponent>;
 };
 
 export default connect(

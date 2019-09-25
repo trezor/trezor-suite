@@ -44,7 +44,7 @@ const EnableNetwork = (props: {
                 values={{ networkName: props.selectedNetwork.name }}
             />
         </P>
-        <StyledButton onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
+        <StyledButton fullWidth onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
             <FormattedMessage
                 {...l10nMessages.TR_ENABLE_NETWORK_BUTTON}
                 values={{ networkName: props.selectedNetwork.name }}
@@ -76,6 +76,8 @@ const AccountButton = (props: {
     return (
         <StyledButton
             icon="PLUS"
+            fullWidth
+            align="left"
             variant="white"
             isDisabled={!enabled}
             onClick={() => props.onEnableAccount(account)}
