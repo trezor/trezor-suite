@@ -22,6 +22,9 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
             cursor: 'pointer',
             borderColor: colors.DIVIDER,
         },
+        ' > div': {
+            overflow: 'visible',
+        },
     }),
     indicatorSeparator: () => ({
         display: 'none',
