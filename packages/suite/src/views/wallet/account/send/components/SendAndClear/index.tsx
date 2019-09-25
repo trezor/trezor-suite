@@ -44,8 +44,7 @@ const SendAndClear = (props: Props) => (
             <FormattedMessage {...commonMessages.TR_CLEAR} />
         </Clear>
         {props.networkType === 'bitcoin' && (
-            <Button variant="white">
-                {' '}
+            <Button variant="white" onClick={() => props.sendFormActionsBitcoin.addRecipient()}>
                 <FormattedMessage {...messages.TR_ADD_RECIPIENT} />
             </Button>
         )}

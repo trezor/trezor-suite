@@ -140,6 +140,13 @@ export default (state: State = initialState, action: WalletAction): State => {
                 return state;
             }
 
+            // click button "Add recipient"
+            case SEND.BTC_ADD_RECIPIENT: {
+                const { newOutput } = action;
+                draft.outputs.push(newOutput);
+                break;
+            }
+
             // click button "Clear"
             case SEND.CLEAR: {
                 return {

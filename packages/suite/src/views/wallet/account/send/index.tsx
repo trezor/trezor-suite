@@ -1,8 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import styled, { css } from 'styled-components';
 import { InjectedIntl } from 'react-intl';
-import { CoinLogo } from '@trezor/components';
+import { CoinLogo, colors } from '@trezor/components';
+import { Output } from '@wallet-types/sendForm';
 
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { StateProps, DispatchProps } from './Container';
@@ -24,6 +24,17 @@ const Row = styled.div`
     &:last-child {
         padding: 0;
     }
+`;
+
+const OutputWrapper = styled.div`
+    padding: 30px 0;
+    border-bottom: 1px solid ${colors.DIVIDER};
+
+    ${(props: { isOnlyOne: boolean }) =>
+        !props.isOnlyOne &&
+        css`
+            border-bottom: 0;
+        `}
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
@@ -66,8 +77,8 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 Send {getTitleForNetwork(network.symbol, props.intl)}
                 {accountType ? ` (${accountType})` : ''}
             </StyledTitle>
-            {send.outputs.map(output => (
-                <>
+            {send.outputs.map((output: Output) => (
+                <OutputWrapper isOnlyOne={send.outputs.length === 1} key={output.id}>
                     <Row>
                         <Address
                             outputId={output.id}
@@ -89,7 +100,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                             sendFormActions={sendFormActions}
                         />
                     </Row>
-                </>
+                </OutputWrapper>
             ))}
             <Row>
                 <Fee

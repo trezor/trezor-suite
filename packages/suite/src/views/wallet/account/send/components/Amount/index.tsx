@@ -37,7 +37,7 @@ interface Props {
     outputId: number;
     fiatValue: Output['fiatValue']['value'];
     fiat: Fiat[];
-    amount: Output['amount']['error'];
+    amount: Output['amount']['value'];
     symbol: Account['symbol'];
     canSetMax: boolean;
     localCurrency: Output['localCurrency']['value'];

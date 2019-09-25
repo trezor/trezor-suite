@@ -1,9 +1,53 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { CUSTOM_FEE, FIRST_OUTPUT_ID, DEFAULT_LOCAL_CURRENCY } from '@wallet-constants/sendForm';
-import { State, Output } from '@wallet-types/sendForm';
+import { CUSTOM_FEE } from '@wallet-constants/sendForm';
+import { FeeItem } from '@wallet-reducers/feesReducer';
+import { Output } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
+import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
+
+export type SendFormActions =
+    | {
+          type: typeof SEND.HANDLE_ADDRESS_CHANGE;
+          outputId: number;
+          address: string;
+          symbol: Account['symbol'];
+      }
+    | {
+          type: typeof SEND.HANDLE_AMOUNT_CHANGE;
+          outputId: number;
+          amount: string;
+          availableBalance: string;
+      }
+    | {
+          type: typeof SEND.SET_MAX;
+          outputId: number;
+      }
+    | {
+          type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
+          outputId: number;
+          fiatValue: string;
+      }
+    | {
+          type: typeof SEND.HANDLE_FEE_VALUE_CHANGE;
+          fee: FeeItem;
+      }
+    | {
+          type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE;
+          customFee: string;
+      }
+    | {
+          type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
+          outputId: number;
+          localCurrency: Output['localCurrency']['value'];
+      }
+    | {
+          type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY;
+      }
+    | {
+          type: typeof SEND.CLEAR;
+      };
 
 /**
  * Initialize current form, load values from session storage
@@ -14,22 +58,6 @@ export const init = () => (_dispatch: Dispatch, _getState: GetState) => {};
  * Dispose current form, save values to session storage
  */
 export const dispose = () => (_dispatch: Dispatch, _getState: GetState) => {};
-
-/**
- * Create new output (address, amount, fiatValue, localCurrency)
- */
-export const createOutput = (outputs: State['outputs']) => {
-    const lastOutput = outputs.find((output: Output) => output.id) || { id: FIRST_OUTPUT_ID };
-    const lastOutputId = lastOutput.id;
-
-    outputs.push({
-        id: lastOutputId + 1,
-        address: { value: null, error: null },
-        amount: { value: null, error: null },
-        fiatValue: { value: null },
-        localCurrency: { value: DEFAULT_LOCAL_CURRENCY },
-    });
-};
 
 /*
     Change value in input "Address"
