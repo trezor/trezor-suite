@@ -233,104 +233,209 @@ storiesOf('Buttons', module).add(
 
             <H1>Basic - full width </H1>
             <Div>
-                <Button fullWidth variant="success" data-test="button_basic_success">
+                <Button fullWidth variant="success" data-test="button_basic_success_full_width">
                     Button
                 </Button>
-                <Button fullWidth variant="info" data-test="button_basic_info">
+                <Button fullWidth variant="info" data-test="button_basic_info_full_width">
                     Button
                 </Button>
-                <Button fullWidth variant="warning" data-test="button_basic_warning">
+                <Button fullWidth variant="warning" data-test="button_basic_warning_full_width">
                     Button
                 </Button>
-                <Button fullWidth variant="error" data-test="button_basic_error">
+                <Button fullWidth variant="error" data-test="button_basic_error_full_width">
                     Button
                 </Button>
-                <Button fullWidth variant="white" data-test="button_basic_white">
+                <Button fullWidth variant="white" data-test="button_basic_white_full_width">
                     Button
                 </Button>
                 <br />
-                <Button isTransparent fullWidth data-test="button_basic_transparent">
+                <Button isTransparent fullWidth data-test="button_basic_transparent_full_width">
                     Transparent
                 </Button>
-                <Button isDisabled fullWidth data-test="button_basic_disabled">
+                <Button isDisabled fullWidth data-test="button_basic_disabled_full_width">
                     Disabled
                 </Button>
             </Div>
 
             <H5>with an icon</H5>
             <Div>
-                <Button fullWidth icon="PLUS" variant="success" data-test="button_icon_success">
+                <Button
+                    fullWidth
+                    icon="PLUS"
+                    variant="success"
+                    data-test="button_icon_success_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth icon="PLUS" variant="info" data-test="button_icon_info">
+                <Button
+                    fullWidth
+                    icon="PLUS"
+                    variant="info"
+                    data-test="button_icon_info_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth icon="PLUS" variant="warning" data-test="button_icon_warning">
+                <Button
+                    fullWidth
+                    icon="PLUS"
+                    variant="warning"
+                    data-test="button_icon_warning_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth icon="PLUS" variant="error" data-test="button_icon_error">
+                <Button
+                    fullWidth
+                    icon="PLUS"
+                    variant="error"
+                    data-test="button_icon_error_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth icon="PLUS" variant="white" data-test="button_icon_white">
+                <Button
+                    fullWidth
+                    icon="PLUS"
+                    variant="white"
+                    data-test="button_icon_white_full_width"
+                >
                     Button
                 </Button>
                 <br />
-                <Button fullWidth icon="PLUS" isTransparent data-test="button_icon_transparent">
+                <Button
+                    fullWidth
+                    icon="PLUS"
+                    isTransparent
+                    data-test="button_icon_transparent_full_width"
+                >
                     Transparent
                 </Button>
-                <Button fullWidth icon="PLUS" isDisabled data-test="button_icon_disabled">
+                <Button
+                    fullWidth
+                    icon="PLUS"
+                    isDisabled
+                    data-test="button_icon_disabled_full_width"
+                >
                     Disabled
                 </Button>
             </Div>
 
             <H5>with loading </H5>
             <Div>
-                <Button fullWidth isLoading variant="success" data-test="button_loading_success">
+                <Button
+                    fullWidth
+                    isLoading
+                    variant="success"
+                    data-test="button_loading_success_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isLoading variant="info" data-test="button_loading_info">
+                <Button
+                    fullWidth
+                    isLoading
+                    variant="info"
+                    data-test="button_loading_info_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isLoading variant="warning" data-test="button_loading_warning">
+                <Button
+                    fullWidth
+                    isLoading
+                    variant="warning"
+                    data-test="button_loading_warning_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isLoading variant="error" data-test="button_loading_error">
+                <Button
+                    fullWidth
+                    isLoading
+                    variant="error"
+                    data-test="button_loading_error_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isLoading variant="white" data-test="button_loading_white">
+                <Button
+                    fullWidth
+                    isLoading
+                    variant="white"
+                    data-test="button_loading_white_full_width"
+                >
                     Button
                 </Button>
                 <br />
-                <Button fullWidth isLoading isTransparent data-test="button_loading_transparent">
+                <Button
+                    fullWidth
+                    isLoading
+                    isTransparent
+                    data-test="button_loading_transparent_full_width"
+                >
                     Transparent
                 </Button>
-                <Button fullWidth isLoading isDisabled data-test="button_loading_disabled">
+                <Button
+                    fullWidth
+                    isLoading
+                    isDisabled
+                    data-test="button_loading_disabled_full_width"
+                >
                     Disabled
                 </Button>
             </Div>
 
             <H1>Inverse - full width </H1>
             <Div>
-                <Button fullWidth isInverse variant="success" data-test="button_inverse_success">
+                <Button
+                    fullWidth
+                    isInverse
+                    variant="success"
+                    data-test="button_inverse_success_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isInverse variant="info" data-test="button_inverse_info">
+                <Button
+                    fullWidth
+                    isInverse
+                    variant="info"
+                    data-test="button_inverse_info_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isInverse variant="warning" data-test="button_inverse_warning">
+                <Button
+                    fullWidth
+                    isInverse
+                    variant="warning"
+                    data-test="button_inverse_warning_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isInverse variant="error" data-test="button_inverse_error">
+                <Button
+                    fullWidth
+                    isInverse
+                    variant="error"
+                    data-test="button_inverse_error_full_width"
+                >
                     Button
                 </Button>
-                <Button fullWidth isInverse variant="white" data-test="button_inverse_white">
+                <Button
+                    fullWidth
+                    isInverse
+                    variant="white"
+                    data-test="button_inverse_white_full_width"
+                >
                     Button
                 </Button>
                 <br />
-                <Button fullWidth isInverse isTransparent data-test="button_inverse_transparent">
+                <Button
+                    fullWidth
+                    isInverse
+                    isTransparent
+                    data-test="button_inverse_transparent_full_width"
+                >
                     Transparent
                 </Button>
-                <Button fullWidth isInverse isDisabled data-test="button_inverse_disabled">
+                <Button
+                    fullWidth
+                    isInverse
+                    isDisabled
+                    data-test="button_inverse_disabled_full_width"
+                >
                     Disabled
                 </Button>
             </Div>
@@ -342,7 +447,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="success"
-                    data-test="button_inverse_icon_success"
+                    data-test="button_inverse_icon_success_full_width"
                 >
                     Button
                 </Button>
@@ -351,7 +456,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="info"
-                    data-test="button_inverse_icon_info"
+                    data-test="button_inverse_icon_info_full_width"
                 >
                     Button
                 </Button>
@@ -360,7 +465,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="warning"
-                    data-test="button_inverse_icon_warning"
+                    data-test="button_inverse_icon_warning_full_width"
                 >
                     Button
                 </Button>
@@ -369,7 +474,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="error"
-                    data-test="button_inverse_icon_error"
+                    data-test="button_inverse_icon_error_full_width"
                 >
                     Button
                 </Button>
@@ -378,7 +483,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="white"
-                    data-test="button_inverse_icon_white"
+                    data-test="button_inverse_icon_white_full_width"
                 >
                     Button
                 </Button>
@@ -388,7 +493,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     isTransparent
-                    data-test="button_inverse_icon_transparent"
+                    data-test="button_inverse_icon_transparent_full_width"
                 >
                     Transparent
                 </Button>
@@ -397,7 +502,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     isDisabled
-                    data-test="button_inverse_icon_disabled"
+                    data-test="button_inverse_icon_transparent_full_width"
                 >
                     Disabled
                 </Button>
@@ -410,7 +515,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="success"
-                    data-test="button_inverse_loading_success"
+                    data-test="button_inverse_loading_success_full_width"
                 >
                     Button
                 </Button>
@@ -419,7 +524,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="info"
-                    data-test="button_inverse_loading_info"
+                    data-test="button_inverse_loading_info_full_width"
                 >
                     Button
                 </Button>
@@ -428,7 +533,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="warning"
-                    data-test="button_inverse_loading_warning"
+                    data-test="button_inverse_loading_warning_full_width"
                 >
                     Button
                 </Button>
@@ -437,7 +542,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="error"
-                    data-test="button_inverse_loading_error"
+                    data-test="button_inverse_loading_error_full_width"
                 >
                     Button
                 </Button>
@@ -446,7 +551,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="white"
-                    data-test="button_inverse_loading_white"
+                    data-test="button_inverse_loading_white_full_width"
                 >
                     Button
                 </Button>
@@ -456,7 +561,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     isTransparent
-                    data-test="button_inverse_loading_transparent"
+                    data-test="button_inverse_loading_transparent_full_width"
                 >
                     Transparent
                 </Button>
@@ -465,7 +570,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     isDisabled
-                    data-test="button_inverse_loading_disabled"
+                    data-test="button_inverse_loading_disabled_full_width"
                 >
                     Disabled
                 </Button>
@@ -473,26 +578,61 @@ storiesOf('Buttons', module).add(
 
             <H1>Basic - right aligned fullwith </H1>
             <Div>
-                <Button fullWidth variant="success" data-test="button_basic_success" align="right">
+                <Button
+                    fullWidth
+                    variant="success"
+                    data-test="button_basic_success_full_width_right"
+                    align="right"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="info" data-test="button_basic_info" align="right">
+                <Button
+                    fullWidth
+                    variant="info"
+                    data-test="button_basic_info_full_width_right"
+                    align="right"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="warning" data-test="button_basic_warning" align="right">
+                <Button
+                    fullWidth
+                    variant="warning"
+                    data-test="button_basic_warning_full_width_right"
+                    align="right"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="error" data-test="button_basic_error" align="right">
+                <Button
+                    fullWidth
+                    variant="error"
+                    data-test="button_basic_error_full_width_right"
+                    align="right"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="white" data-test="button_basic_white" align="right">
+                <Button
+                    fullWidth
+                    variant="white"
+                    data-test="button_basic_white_full_width_right"
+                    align="right"
+                >
                     Button
                 </Button>
                 <br />
-                <Button isTransparent fullWidth data-test="button_basic_transparent" align="right">
+                <Button
+                    isTransparent
+                    fullWidth
+                    data-test="button_basic_transparent_full_width_right"
+                    align="right"
+                >
                     Transparent
                 </Button>
-                <Button isDisabled fullWidth data-test="button_basic_disabled" align="right">
+                <Button
+                    isDisabled
+                    fullWidth
+                    data-test="button_basic_disabled_full_width_right"
+                    align="right"
+                >
                     Disabled
                 </Button>
             </Div>
@@ -503,7 +643,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="success"
-                    data-test="button_icon_success"
+                    data-test="button_icon_success_full_width_right"
                     align="right"
                 >
                     Button
@@ -512,7 +652,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="info"
-                    data-test="button_icon_info"
+                    data-test="button_icon_info_full_width_right"
                     align="right"
                 >
                     Button
@@ -521,7 +661,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="warning"
-                    data-test="button_icon_warning"
+                    data-test="button_icon_warning_full_width_right"
                     align="right"
                 >
                     Button
@@ -530,7 +670,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="error"
-                    data-test="button_icon_error"
+                    data-test="button_icon_error_full_width_right"
                     align="right"
                 >
                     Button
@@ -539,7 +679,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="white"
-                    data-test="button_icon_white"
+                    data-test="button_icon_white_full_width_right"
                     align="right"
                 >
                     Button
@@ -549,7 +689,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isTransparent
-                    data-test="button_icon_transparent"
+                    data-test="button_icon_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -558,7 +698,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isDisabled
-                    data-test="button_icon_disabled"
+                    data-test="button_icon_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -571,7 +711,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="success"
-                    data-test="button_loading_success"
+                    data-test="button_loading_success_full_width_right"
                     align="right"
                 >
                     Button
@@ -580,7 +720,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="info"
-                    data-test="button_loading_info"
+                    data-test="button_loading_info_full_width_right"
                     align="right"
                 >
                     Button
@@ -589,7 +729,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="warning"
-                    data-test="button_loading_warning"
+                    data-test="button_loading_warning_full_width_right"
                     align="right"
                 >
                     Button
@@ -598,7 +738,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="error"
-                    data-test="button_loading_error"
+                    data-test="button_loading_error_full_width_right"
                     align="right"
                 >
                     Button
@@ -607,7 +747,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="white"
-                    data-test="button_loading_white"
+                    data-test="button_loading_white_full_width_right"
                     align="right"
                 >
                     Button
@@ -617,7 +757,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isTransparent
-                    data-test="button_loading_transparent"
+                    data-test="button_loading_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -626,7 +766,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isDisabled
-                    data-test="button_loading_disabled"
+                    data-test="button_loading_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -639,7 +779,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="success"
-                    data-test="button_inverse_success"
+                    data-test="button_inverse_success_full_width_right"
                     align="right"
                 >
                     Button
@@ -648,7 +788,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="info"
-                    data-test="button_inverse_info"
+                    data-test="button_inverse_info_full_width_right"
                     align="right"
                 >
                     Button
@@ -657,7 +797,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="warning"
-                    data-test="button_inverse_warning"
+                    data-test="button_inverse_warning_full_width_right"
                     align="right"
                 >
                     Button
@@ -666,7 +806,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="error"
-                    data-test="button_inverse_error"
+                    data-test="button_inverse_error_full_width_right"
                     align="right"
                 >
                     Button
@@ -675,7 +815,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="white"
-                    data-test="button_inverse_white"
+                    data-test="button_inverse_white_full_width_right"
                     align="right"
                 >
                     Button
@@ -685,7 +825,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     isTransparent
-                    data-test="button_inverse_transparent"
+                    data-test="button_inverse_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -694,7 +834,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     isDisabled
-                    data-test="button_inverse_disabled"
+                    data-test="button_inverse_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -708,7 +848,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="success"
-                    data-test="button_inverse_icon_success"
+                    data-test="button_inverse_icon_success_full_width_right"
                     align="right"
                 >
                     Button
@@ -718,7 +858,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="info"
-                    data-test="button_inverse_icon_info"
+                    data-test="button_inverse_icon_info_full_width_right"
                     align="right"
                 >
                     Button
@@ -728,7 +868,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="warning"
-                    data-test="button_inverse_icon_warning"
+                    data-test="button_inverse_icon_warning_full_width_right"
                     align="right"
                 >
                     Button
@@ -738,7 +878,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="error"
-                    data-test="button_inverse_icon_error"
+                    data-test="button_inverse_icon_error_full_width_right"
                     align="right"
                 >
                     Button
@@ -748,7 +888,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="white"
-                    data-test="button_inverse_icon_white"
+                    data-test="button_inverse_icon_white_full_width_right"
                     align="right"
                 >
                     Button
@@ -759,7 +899,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     isTransparent
-                    data-test="button_inverse_icon_transparent"
+                    data-test="button_inverse_icon_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -769,7 +909,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     isDisabled
-                    data-test="button_inverse_icon_disabled"
+                    data-test="button_inverse_icon_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -783,7 +923,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="success"
-                    data-test="button_inverse_loading_success"
+                    data-test="button_inverse_loading_success_full_width_right"
                     align="right"
                 >
                     Button
@@ -793,7 +933,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="info"
-                    data-test="button_inverse_loading_info"
+                    data-test="button_inverse_loading_info_full_width_right"
                     align="right"
                 >
                     Button
@@ -803,7 +943,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="warning"
-                    data-test="button_inverse_loading_warning"
+                    data-test="button_inverse_loading_warning_full_width_right"
                     align="right"
                 >
                     Button
@@ -813,7 +953,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="error"
-                    data-test="button_inverse_loading_error"
+                    data-test="button_inverse_loading_error_full_width_right"
                     align="right"
                 >
                     Button
@@ -823,7 +963,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="white"
-                    data-test="button_inverse_loading_white"
+                    data-test="button_inverse_loading_white_full_width_right"
                     align="right"
                 >
                     Button
@@ -834,7 +974,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     isTransparent
-                    data-test="button_inverse_loading_transparent"
+                    data-test="button_inverse_loading_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -844,7 +984,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     isDisabled
-                    data-test="button_inverse_loading_disabled"
+                    data-test="button_inverse_loading_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -853,26 +993,61 @@ storiesOf('Buttons', module).add(
 
             <H5>Basic - full width aligned left</H5>
             <Div>
-                <Button fullWidth variant="success" data-test="button_basic_success" align="left">
+                <Button
+                    fullWidth
+                    variant="success"
+                    data-test="button_basic_success_full_width_left"
+                    align="left"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="info" data-test="button_basic_info" align="left">
+                <Button
+                    fullWidth
+                    variant="info"
+                    data-test="button_basic_info_full_width_left"
+                    align="left"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="warning" data-test="button_basic_warning" align="left">
+                <Button
+                    fullWidth
+                    variant="warning"
+                    data-test="button_basic_warning_full_width_left"
+                    align="left"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="error" data-test="button_basic_error" align="left">
+                <Button
+                    fullWidth
+                    variant="error"
+                    data-test="button_basic_error_full_width_left"
+                    align="left"
+                >
                     Button
                 </Button>
-                <Button fullWidth variant="white" data-test="button_basic_white" align="left">
+                <Button
+                    fullWidth
+                    variant="white"
+                    data-test="button_basic_white_full_width_left"
+                    align="left"
+                >
                     Button
                 </Button>
                 <br />
-                <Button isTransparent fullWidth data-test="button_basic_transparent" align="left">
+                <Button
+                    isTransparent
+                    fullWidth
+                    data-test="button_basic_transparent_full_width_left"
+                    align="left"
+                >
                     Transparent
                 </Button>
-                <Button isDisabled fullWidth data-test="button_basic_disabled" align="left">
+                <Button
+                    isDisabled
+                    fullWidth
+                    data-test="button_basic_disabled_full_width_left"
+                    align="left"
+                >
                     Disabled
                 </Button>
             </Div>
@@ -883,7 +1058,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="success"
-                    data-test="button_icon_success"
+                    data-test="button_icon_success_full_width_left"
                     align="left"
                 >
                     Button
@@ -892,7 +1067,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="info"
-                    data-test="button_icon_info"
+                    data-test="button_icon_info_full_width_left"
                     align="left"
                 >
                     Button
@@ -901,7 +1076,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="warning"
-                    data-test="button_icon_warning"
+                    data-test="button_icon_warning_full_width_left"
                     align="left"
                 >
                     Button
@@ -910,7 +1085,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="error"
-                    data-test="button_icon_error"
+                    data-test="button_icon_error_full_width_left"
                     align="left"
                 >
                     Button
@@ -919,7 +1094,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     variant="white"
-                    data-test="button_icon_white"
+                    data-test="button_icon_white_full_width_left"
                     align="left"
                 >
                     Button
@@ -929,7 +1104,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isTransparent
-                    data-test="button_icon_transparent"
+                    data-test="button_icon_transparent_full_width_left"
                     align="left"
                 >
                     Transparent
@@ -938,7 +1113,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isDisabled
-                    data-test="button_icon_disabled"
+                    data-test="button_icon_disabled_full_width_left"
                     align="left"
                 >
                     Disabled
@@ -951,7 +1126,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="success"
-                    data-test="button_loading_success"
+                    data-test="button_loading_success_full_width_left"
                     align="left"
                 >
                     Button
@@ -960,7 +1135,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="info"
-                    data-test="button_loading_info"
+                    data-test="button_loading_info_full_width_left"
                     align="left"
                 >
                     Button
@@ -969,7 +1144,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="warning"
-                    data-test="button_loading_warning"
+                    data-test="button_loading_warning_full_width_left"
                     align="left"
                 >
                     Button
@@ -978,7 +1153,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="error"
-                    data-test="button_loading_error"
+                    data-test="button_loading_error_full_width_left"
                     align="left"
                 >
                     Button
@@ -987,7 +1162,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     variant="white"
-                    data-test="button_loading_white"
+                    data-test="button_loading_white_full_width_left"
                     align="left"
                 >
                     Button
@@ -997,7 +1172,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isTransparent
-                    data-test="button_loading_transparent"
+                    data-test="button_loading_transparent_full_width_left"
                     align="left"
                 >
                     Transparent
@@ -1006,7 +1181,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isDisabled
-                    data-test="button_loading_disabled"
+                    data-test="button_loading_disabled_full_width_left"
                     align="left"
                 >
                     Disabled
@@ -1019,7 +1194,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="success"
-                    data-test="button_inverse_success"
+                    data-test="button_inverse_success_full_width_left"
                     align="left"
                 >
                     Button
@@ -1028,7 +1203,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="info"
-                    data-test="button_inverse_info"
+                    data-test="button_inverse_info_full_width_left"
                     align="left"
                 >
                     Button
@@ -1037,7 +1212,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="warning"
-                    data-test="button_inverse_warning"
+                    data-test="button_inverse_warning_full_width_left"
                     align="left"
                 >
                     Button
@@ -1046,7 +1221,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="error"
-                    data-test="button_inverse_error"
+                    data-test="button_inverse_error_full_width_left"
                     align="left"
                 >
                     Button
@@ -1055,7 +1230,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     variant="white"
-                    data-test="button_inverse_white"
+                    data-test="button_inverse_white_full_width_left"
                     align="left"
                 >
                     Button
@@ -1065,7 +1240,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     isTransparent
-                    data-test="button_inverse_transparent"
+                    data-test="button_inverse_transparent_full_width_left"
                     align="left"
                 >
                     Transparent
@@ -1074,7 +1249,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isInverse
                     isDisabled
-                    data-test="button_inverse_disabled"
+                    data-test="button_inverse_disabled_full_width_left"
                     align="left"
                 >
                     Disabled
@@ -1088,7 +1263,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="success"
-                    data-test="button_inverse_icon_success"
+                    data-test="button_inverse_icon_success_full_width_left"
                     align="left"
                 >
                     Button
@@ -1098,7 +1273,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="info"
-                    data-test="button_inverse_icon_info"
+                    data-test="button_inverse_icon_info_full_width_left"
                     align="left"
                 >
                     Button
@@ -1108,7 +1283,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="warning"
-                    data-test="button_inverse_icon_warning"
+                    data-test="button_inverse_icon_warning_full_width_left"
                     align="left"
                 >
                     Button
@@ -1118,7 +1293,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="error"
-                    data-test="button_inverse_icon_error"
+                    data-test="button_inverse_icon_error_full_width_left"
                     align="left"
                 >
                     Button
@@ -1128,7 +1303,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     variant="white"
-                    data-test="button_inverse_icon_white"
+                    data-test="button_inverse_icon_white_full_width_left"
                     align="left"
                 >
                     Button
@@ -1139,7 +1314,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     isTransparent
-                    data-test="button_inverse_icon_transparent"
+                    data-test="button_inverse_icon_transparent_full_width_left"
                     align="left"
                 >
                     Transparent
@@ -1149,7 +1324,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     isDisabled
-                    data-test="button_inverse_icon_disabled"
+                    data-test="button_inverse_icon_disabled_full_width_left"
                     align="left"
                 >
                     Disabled
@@ -1163,7 +1338,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="success"
-                    data-test="button_inverse_loading_success"
+                    data-test="button_inverse_loading_success_full_width_left"
                     align="left"
                 >
                     Button
@@ -1173,7 +1348,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="info"
-                    data-test="button_inverse_loading_info"
+                    data-test="button_inverse_loading_info_full_width_left"
                     align="left"
                 >
                     Button
@@ -1183,7 +1358,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="warning"
-                    data-test="button_inverse_loading_warning"
+                    data-test="button_inverse_loading_warning_full_width_left"
                     align="left"
                 >
                     Button
@@ -1193,7 +1368,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="error"
-                    data-test="button_inverse_loading_error"
+                    data-test="button_inverse_loading_error_full_width_left"
                     align="left"
                 >
                     Button
@@ -1203,7 +1378,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     variant="white"
-                    data-test="button_inverse_loading_white"
+                    data-test="button_inverse_loading_white_full_width_left"
                     align="left"
                 >
                     Button
@@ -1214,7 +1389,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     isTransparent
-                    data-test="button_inverse_loading_transparent"
+                    data-test="button_inverse_loading_transparent_full_width_left"
                     align="left"
                 >
                     Transparent
@@ -1224,7 +1399,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     isLoading
                     isDisabled
-                    data-test="button_inverse_loading_disabled"
+                    data-test="button_inverse_loading_disabled_full_width_left"
                     align="left"
                 >
                     Disabled
