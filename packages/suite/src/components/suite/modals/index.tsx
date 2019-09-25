@@ -8,6 +8,7 @@ import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
@@ -42,6 +43,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     modalActions: bindActionCreators(modalActions, dispatch),
     receiveActions: bindActionCreators(receiveActions, dispatch),
+    goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -140,16 +142,16 @@ const getDeviceContextModal = (props: Props) => {
 };
 
 const getConfirmationModal = (props: Props) => {
-    const { modal, device, modalActions } = props;
+    const { modal, modalActions, goto } = props;
 
-    if (modal.context !== MODAL.CONTEXT_CONFIRMATION || !device) return null;
+    if (modal.context !== MODAL.CONTEXT_CONFIRMATION) return null;
 
     switch (modal.windowType) {
         case 'no-backup':
             return (
                 <ConfirmNoBackup
-                    device={device}
                     onReceiveConfirmation={modalActions.onReceiveConfirmation}
+                    onCreateBackup={() => goto('suite-device-backup')}
                 />
             );
         default:

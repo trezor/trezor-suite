@@ -77,6 +77,8 @@ const AddAccount = (props: Props) => {
                 onEnableAccount={(account: Account) => {
                     props.onCancel();
                     props.changeAccountVisibility(account);
+                    const url = `${account.symbol}/${account.index}/${account.accountType}`;
+                    console.log('onEnableAccount', url);
                 }}
                 onEnableNetwork={(symbol: string) => {
                     props.onCancel();
