@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { Route } from '@suite-constants/routes';
 import * as routerActions from '@suite-actions/routerActions';
-import { stripPrefixedPathname } from '@suite-utils/router';
+import { findRoute } from '@suite-utils/router';
 import { AppState, Dispatch } from '@suite-types';
 
 const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
@@ -94,7 +94,7 @@ type Props = {
 
 const TopNavigation = (props: Props) => {
     const { pathname, params, app } = props.router;
-    const currentPath = pathname;
+    const currentRoute = findRoute(pathname);
     if (app !== 'wallet' || !params) return <>Invalid account</>;
 
     return (
@@ -105,7 +105,7 @@ const TopNavigation = (props: Props) => {
                     return (
                         <StyledNavLink
                             key={item.route}
-                            active={stripPrefixedPathname(currentPath) === item.route}
+                            active={currentRoute ? currentRoute.name === item.route : false}
                             onClick={() => props.goto(item.route, true)}
                         >
                             <LinkContent>{item.title}</LinkContent>
