@@ -10,14 +10,22 @@ import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import ReceiveForm from '@wallet-components/ReceiveForm';
 import l10nMessages from '@wallet-components/ReceiveForm/messages';
 
-interface Props {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    device: AppState['suite']['device'];
-    modal: AppState['modal'];
-    receive: AppState['wallet']['receive'];
+const mapStateToProps = (state: AppState) => ({
+    selectedAccount: state.wallet.selectedAccount,
+    device: state.suite.device,
+    receive: state.wallet.receive,
+    modal: state.modal,
+    locks: state.suite.locks,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
+});
+
+type Props = {
     intl: InjectedIntl;
-    showAddress: typeof receiveActions.showAddress;
-}
+} & ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 const AccountReceive = (props: Props) => {
     const { device, intl } = props;
@@ -74,17 +82,6 @@ const AccountReceive = (props: Props) => {
         </LayoutAccount>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
-    device: state.suite.device,
-    receive: state.wallet.receive,
-    modal: state.modal,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
-});
 
 export default injectIntl(
     connect(

@@ -23,7 +23,6 @@ const Wrapper = styled.div`
 
 const StyledButton = styled(Button)`
     margin: 4px 0px;
-    width: 100%;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -85,7 +84,7 @@ const AddAccount = (props: Props) => {
                 }}
             />
             <ExternalWallet selectedNetwork={selectedNetwork} onCancel={props.onCancel} />
-            <StyledButton onClick={props.onCancel} variant="white">
+            <StyledButton fullWidth onClick={props.onCancel} variant="white">
                 <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
             </StyledButton>
         </Wrapper>
