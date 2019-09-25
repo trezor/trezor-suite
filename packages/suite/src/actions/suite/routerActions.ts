@@ -6,7 +6,7 @@
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { getPrefixedURL, getRoute } from '@suite-utils/router';
+import { getPrefixedURL, getRoute, RouteParams } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 interface LocationChange {
@@ -60,13 +60,13 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 };
 
 // links inside of application
-export const goto = (routeName: Route['name'], preserveParams: boolean = false) => async (
+export const goto = (routeName: Route['name'], params?: RouteParams, preserveParams: boolean = false) => async (
     dispatch: Dispatch,
 ) => {
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
 
-    const url = getRoute(routeName);
+    const url = getRoute(routeName, params);
 
     if (preserveParams) {
         const { hash } = window.location;
