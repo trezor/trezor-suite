@@ -14,7 +14,6 @@ const Wrapper = styled.div`
 
 const StyledButton = styled(Button)`
     margin-top: 10px;
-    width: 100%;
 `;
 
 const Img = styled.img`
@@ -58,7 +57,7 @@ const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
             </P>
 
             <Link href={url}>
-                <StyledButton onClick={onCancel}>
+                <StyledButton fullWidth onClick={onCancel}>
                     <FormattedMessage {...l10nMessages.TR_GO_TO_EXTERNAL_WALLET} />
                 </StyledButton>
             </Link>
