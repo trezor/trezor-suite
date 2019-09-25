@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { useKeyPress } from '../../utils/hooks';
 
 import { Link } from '../Link';
 import { Icon } from '../Icon';
@@ -40,17 +41,25 @@ interface Props {
     onCancel?: () => void;
 }
 
-const Modal = ({ children, cancelable, onCancel }: Props) => (
-    <ModalContainer>
-        <ModalWindow>
-            {children}
-            {cancelable && (
-                <StyledLink onClick={onCancel}>
-                    <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
-                </StyledLink>
-            )}
-        </ModalWindow>
-    </ModalContainer>
-);
+const Modal = ({ children, cancelable, onCancel }: Props) => {
+    const escPressed = useKeyPress('Escape');
+
+    if (cancelable && onCancel && escPressed) {
+        onCancel();
+    }
+
+    return (
+        <ModalContainer>
+            <ModalWindow>
+                {children}
+                {cancelable && (
+                    <StyledLink onClick={onCancel}>
+                        <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
+                    </StyledLink>
+                )}
+            </ModalWindow>
+        </ModalContainer>
+    );
+};
 
 export { Modal, Props as ModalProps };
