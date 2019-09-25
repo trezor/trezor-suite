@@ -106,7 +106,7 @@ const TopNavigation = (props: Props) => {
                         <StyledNavLink
                             key={item.route}
                             active={currentRoute ? currentRoute.name === item.route : false}
-                            onClick={() => props.goto(item.route, true)}
+                            onClick={() => props.goto(item.route, undefined, true)}
                         >
                             <LinkContent>{item.title}</LinkContent>
                         </StyledNavLink>

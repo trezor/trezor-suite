@@ -111,7 +111,7 @@ describe('Suite Actions', () => {
             });
             // @ts-ignore
             window.location.hash = f.hash;
-            store.dispatch(routerActions.goto(f.url as any, f.preserveHash));
+            store.dispatch(routerActions.goto(f.url as any, undefined, f.preserveHash));
             if (f.result) {
                 const action = store.getActions().pop();
                 expect(action.url).toEqual(f.result);
