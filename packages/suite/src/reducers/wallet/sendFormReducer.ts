@@ -23,8 +23,7 @@ export const initialState: State = {
         },
     ],
     fee: null,
-    // @ts-ignore TODO default custom fee
-    customFee: { value: { value: null, error: null }, error: null },
+    customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
     networkTypeRipple: {
         destinationTag: {

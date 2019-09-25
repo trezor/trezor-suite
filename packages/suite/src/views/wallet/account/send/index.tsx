@@ -27,14 +27,7 @@ const Row = styled.div`
 `;
 
 const OutputWrapper = styled.div`
-    padding: 30px 0;
-    border-bottom: 1px solid ${colors.DIVIDER};
-
-    ${(props: { isOnlyOne: boolean }) =>
-        props.isOnlyOne &&
-        css`
-            border: 0;
-        `}
+    padding: 0 0 30px 0;
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
