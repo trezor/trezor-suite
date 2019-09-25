@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, ButtonPin, H1, H5, variables } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
-import { infoOptions } from '../../support/info';
+import { infoOptions } from '../../../support/info';
 
 const Wrapper = styled.div`
     padding: 1.6rem;
