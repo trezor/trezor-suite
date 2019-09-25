@@ -11,9 +11,9 @@ describe('accountUtils', () => {
         });
     });
 
-    fixtures.formatAmount.forEach(f => {
-        it('accountUtils.formatAmount', () => {
-            expect(accountUtils.formatAmount(f.amount, f.symbol)).toEqual(f.result);
+    fixtures.formatNetworkAmount.forEach(f => {
+        it('accountUtils.formatNetworkAmount', () => {
+            expect(accountUtils.formatNetworkAmount(f.amount, f.symbol)).toEqual(f.result);
         });
     });
 

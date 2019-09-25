@@ -1,114 +1,100 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-
-import { Text } from 'react-native';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import { Button, Loader } from '@trezor/components';
+import { Loader, colors } from '@trezor/components';
 import styled from 'styled-components';
+import Title from '@wallet-components/Title';
+import { FormattedMessage } from 'react-intl';
+import TransactionList from '@suite/components/wallet/TransactionList';
+import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
+import Content from '@suite/components/wallet/Content';
+import { SETTINGS } from '@suite/config/suite';
 import { AppState, Dispatch } from '@suite-types';
+import l10nMessages from './index.messages';
 
-const TxWrapper = styled.div`
+const LoaderWrapper = styled.div`
     display: flex;
-    border-bottom: 1px solid #ccc;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+`;
+const LoaderText = styled.div`
+    color: ${colors.TEXT_SECONDARY};
+    text-align: center;
 `;
 
-interface Props {
-    suite: AppState['suite'];
-    router: AppState['router'];
-    wallet: AppState['wallet'];
-    add: typeof transactionActions.add;
-    remove: typeof transactionActions.remove;
-    update: typeof transactionActions.update;
-    getFromStorage: typeof transactionActions.getFromStorage;
-}
+const NoTransactions = styled.div`
+    color: ${colors.TEXT_SECONDARY};
+    text-align: center;
+`;
 
 const Transactions = (props: Props) => {
-    const { app, params } = props.router;
-    if (app !== 'wallet' || !params) return null;
-    const { accountIndex } = params;
-    // todo: commented out for typescript
-    // const { pathname, params } = props.router;
-    // const baseUrl = `${pathname}#/${params.coin}/`;
+    const { selectedAccount, transactions } = props.wallet;
+    const [selectedPage, setSelectedPage] = useState(1);
+    if (!selectedAccount.account) {
+        const { loader, exceptionPage } = selectedAccount;
+        return (
+            <LayoutAccount>
+                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
+            </LayoutAccount>
+        );
+    }
+
+    const accountTransactions = getAccountTransactions(
+        transactions.transactions,
+        selectedAccount.account,
+    );
+    const { size = undefined, total = undefined } = selectedAccount.account.page || {};
+
+    const onPageSelected = (page: number) => {
+        setSelectedPage(page);
+        props.fetchTransactions(selectedAccount.account!, page, size);
+    };
+
     return (
         <LayoutAccount>
-            <Text>
-                {params.symbol} Account {accountIndex} Transactions
-            </Text>
-            <Loader />
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(accountIndex, 10, 10);
-                }}
-            >
-                Get from storage (offset 10, limit 10)
-            </Button>
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(accountIndex, 10);
-                }}
-            >
-                Get from storage (offset 10, limit undefined)
-            </Button>
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(accountIndex, undefined, 10);
-                }}
-            >
-                Get from storage (offset undefined, limit 10)
-            </Button>
-            <Button
-                variant="info"
-                onClick={() => {
-                    props.getFromStorage(accountIndex);
-                }}
-            >
-                Get from storage for acc 0
-            </Button>
-
-            {props.wallet.transactions.map(tx => {
-                return (
-                    <TxWrapper key={tx.id}>
-                        {JSON.stringify(tx)}
-                        <Button
-                            onClick={() => {
-                                props.remove(tx.txid);
-                            }}
-                            variant="error"
-                        >
-                            X
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                props.update(tx.txid);
-                            }}
-                            variant="error"
-                        >
-                            update
-                        </Button>
-                    </TxWrapper>
-                );
-            })}
+            <Title>
+                <FormattedMessage {...l10nMessages.TR_TRANSACTIONS} />
+            </Title>
+            {transactions.isLoading && (
+                <LoaderWrapper>
+                    <Loader size={40} />
+                    <LoaderText>
+                        <FormattedMessage {...l10nMessages.TR_LOADING_TRANSACTIONS} />
+                    </LoaderText>
+                </LoaderWrapper>
+            )}
+            {accountTransactions.length === 0 && !transactions.isLoading && (
+                <LoaderWrapper>
+                    <NoTransactions>
+                        <FormattedMessage {...l10nMessages.TR_NO_TRANSACTIONS} />
+                    </NoTransactions>
+                </LoaderWrapper>
+            )}
+            {accountTransactions.length > 0 && (
+                <TransactionList
+                    transactions={accountTransactions}
+                    currentPage={selectedPage}
+                    totalPages={total}
+                    onPageSelected={onPageSelected}
+                    perPage={SETTINGS.TXS_PER_PAGE}
+                />
+            )}
         </LayoutAccount>
     );
 };
 
 const mapStateToProps = (state: AppState) => ({
-    suite: state.suite,
-    router: state.router,
     wallet: state.wallet,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    add: bindActionCreators(transactionActions.add, dispatch),
-    remove: bindActionCreators(transactionActions.remove, dispatch),
-    update: bindActionCreators(transactionActions.update, dispatch),
-    getFromStorage: bindActionCreators(transactionActions.getFromStorage, dispatch),
+    fetchTransactions: bindActionCreators(transactionActions.fetchTransactions, dispatch),
 });
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 export default connect(
     mapStateToProps,
