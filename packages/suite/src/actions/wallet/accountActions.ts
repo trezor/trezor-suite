@@ -62,8 +62,20 @@ export const create = (
         tokens: accountInfo.tokens,
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
+        page: accountInfo.page,
         history: accountInfo.history,
         ...getAccountSpecific(accountInfo, discoveryItem),
+    },
+});
+
+export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
+    type: ACCOUNT.UPDATE,
+    // TODO
+    // @ts-ignore
+    payload: {
+        ...account,
+        ...accountInfo,
+        path: account.path,
     },
 });
 

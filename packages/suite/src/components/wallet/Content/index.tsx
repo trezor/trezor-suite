@@ -20,10 +20,7 @@ const Wrapper = styled.div`
 
 const Loading = styled.div`
     display: flex;
-    flex: 1;
-    align-items: center;
     justify-content: center;
-    flex-direction: column;
 `;
 
 const LoaderWrapper = styled.div`
