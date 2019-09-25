@@ -26,7 +26,7 @@ const Div = styled.div`
 const { ICONS } = variables;
 
 storiesOf('Buttons', module).add(
-    'All',
+    'Inverse',
     () => (
         <Wrapper>
             <H1>Inverse </H1>

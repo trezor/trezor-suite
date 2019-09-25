@@ -1421,7 +1421,7 @@ storiesOf('Buttons', module).add(
 
 storiesOf('Buttons', module)
     .add(
-        'Button',
+        'All',
         () => {
             const isInverse = boolean('Inverse', false);
             const isDisabled = boolean('Disabled', false);

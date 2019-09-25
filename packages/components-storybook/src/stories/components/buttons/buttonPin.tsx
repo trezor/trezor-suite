@@ -3,7 +3,7 @@ import { ButtonPin } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import { infoOptions } from '../../../support/info';
 
-storiesOf('Buttons', module).add('Button Pin', () => <ButtonPin onClick={() => {}} />, {
+storiesOf('Buttons', module).add('Pin Button', () => <ButtonPin onClick={() => {}} />, {
     info: {
         ...infoOptions,
         text: `

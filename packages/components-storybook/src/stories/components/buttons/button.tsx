@@ -26,7 +26,7 @@ const Div = styled.div`
 const { ICONS } = variables;
 
 storiesOf('Buttons', module).add(
-    'All',
+    'Button',
     () => (
         <Wrapper>
             <H1>Basic </H1>
