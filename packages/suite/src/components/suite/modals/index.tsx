@@ -177,7 +177,15 @@ const Modal = (props: Props) => {
             break;
     }
 
-    return <ModalComponent>{component && <FocusLock>{component}</FocusLock>}</ModalComponent>;
+    return (
+        <ModalComponent
+            // if modal has onCancel action set cancelable to true and pass the onCancel action
+            cancelable={component && component.props.onCancel}
+            onCancel={component ? component.props.onCancel : undefined}
+        >
+            {component && <FocusLock>{component}</FocusLock>}
+        </ModalComponent>
+    );
 };
 
 export default connect(
