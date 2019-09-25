@@ -146,6 +146,14 @@ export default (state: State = initialState, action: WalletAction): State => {
                 break;
             }
 
+            // click button "Add recipient"
+            case SEND.BTC_REMOVE_RECIPIENT: {
+                const { outputId } = action;
+                const removed = draft.outputs.filter(output => output.id !== outputId);
+                draft.outputs = removed;
+                break;
+            }
+
             // click button "Clear"
             case SEND.CLEAR: {
                 return {
