@@ -41,6 +41,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     switch (action.type) {
         case DISCOVERY.UPDATE:
+        case DISCOVERY.COMPLETE:
         case SUITE.SELECT_DEVICE:
         case SUITE.UPDATE_SELECTED_DEVICE:
         case ROUTER.LOCATION_CHANGE:
