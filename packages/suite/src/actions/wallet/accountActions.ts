@@ -62,23 +62,22 @@ export const create = (
         tokens: accountInfo.tokens,
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
+        page: accountInfo.page,
         history: accountInfo.history,
         ...getAccountSpecific(accountInfo, discoveryItem),
     },
 });
 
-export const update = (account: Account, accountInfo: AccountInfo) =>
-    ({
-        type: ACCOUNT.UPDATE,
-        payload: {
-            ...account,
-            ...accountInfo,
-            path: account.path, // preserve account path (fetched account comes without it)
-            // immer.js (used in reducer) doesn't update fields that are set to undefined,
-            // so when a marker is undefined, we change it to null.
-            ...{ marker: accountInfo.marker ? accountInfo.marker : null },
-        },
-    } as const);
+export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
+    type: ACCOUNT.UPDATE,
+    // TODO
+    // @ts-ignore
+    payload: {
+        ...account,
+        ...accountInfo,
+        path: account.path,
+    },
+});
 
 export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) => {
     const { enabledNetworks } = getState().wallet.settings;

@@ -120,7 +120,7 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
 
     const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
     if (shouldFetchFromBackend) {
-        const marker = selectedAccount.account!.marker || undefined;
+        const { marker } = selectedAccount.account!;
         const result = await TrezorConnect.getAccountInfo({
             coin: selectedAccount.account!.symbol,
             descriptor: account.descriptor,
@@ -133,6 +133,8 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
         if (result && result.success) {
             const updatedAccount = accountActions.update(account, result.payload).payload;
             dispatch({
+                // TODO
+                // @ts-ignore
                 type: TRANSACTION.FETCH_SUCCESS,
                 account: updatedAccount,
                 transactions: result.payload.history.transactions || [],

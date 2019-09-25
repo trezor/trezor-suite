@@ -7,15 +7,20 @@ type AccountNetworkSpecific =
     | {
           networkType: 'bitcoin';
           misc: undefined;
+          marker: undefined;
+          page: AccountInfo['page'];
       }
     | {
           networkType: 'ripple';
           misc: { sequence: number; reserve: string };
-          marker: AccountInfo['marker'] | null;
+          page: undefined;
+          marker: AccountInfo['marker'];
       }
     | {
           networkType: 'ethereum';
           misc: { nonce: string };
+          marker: undefined;
+          page: AccountInfo['page'];
       };
 
 export type Account = {
@@ -82,6 +87,11 @@ const update = (draft: Account[], account: Account) => {
 
     if (accountIndex !== -1) {
         draft[accountIndex] = { ...account };
+
+        if (!account.marker) {
+            // immer.js doesn't update fields that are set to undefined, so instead we delete the field
+            delete draft[accountIndex].marker;
+        }
     } else {
         console.warn(
             `Tried to update account that does not exist: ${account.descriptor} (symbol: ${account.symbol})`,

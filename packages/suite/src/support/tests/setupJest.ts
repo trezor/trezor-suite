@@ -9,7 +9,7 @@ import { Account } from '@wallet-types';
  * @param {Partial<Features>} [feat]
  * @returns {Features}
  */
-const getWalletAccount = (account?: Partial<Account>): Account => ({
+const getWalletAccount = (account?: Partial<Account>) => ({
     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
     index: 1,
     path: "m/44'/60'/0'/0/1",
