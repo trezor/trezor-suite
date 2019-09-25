@@ -1,9 +1,4 @@
-import TrezorConnect, {
-    getAccountInfo,
-    ResponseMessage,
-    AccountInfo,
-    AccountTransaction,
-} from 'trezor-connect';
+import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { SETTINGS } from '@suite/config/suite';
