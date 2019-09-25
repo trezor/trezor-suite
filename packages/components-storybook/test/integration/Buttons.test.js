@@ -1,7 +1,6 @@
 describe('Buttons', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
-        cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
     });
 
     [
@@ -26,20 +25,6 @@ describe('Buttons', () => {
         'button_loading_white',
         'button_loading_transparent',
         'button_loading_disabled',
-        'button_inverse_success',
-        'button_inverse_info',
-        'button_inverse_warning',
-        'button_inverse_error',
-        'button_inverse_white',
-        'button_inverse_transparent',
-        'button_inverse_disabled',
-        'button_inverse_icon_success',
-        'button_inverse_icon_info',
-        'button_inverse_icon_warning',
-        'button_inverse_icon_error',
-        'button_inverse_icon_white',
-        'button_inverse_icon_transparent',
-        'button_inverse_icon_disabled',
         'button_basic_success_full_width',
         'button_basic_info_full_width',
         'button_basic_warning_full_width',
@@ -61,27 +46,6 @@ describe('Buttons', () => {
         'button_loading_white_full_width',
         'button_loading_transparent_full_width',
         'button_loading_disabled_full_width',
-        'button_inverse_success_full_width',
-        'button_inverse_info_full_width',
-        'button_inverse_warning_full_width',
-        'button_inverse_error_full_width',
-        'button_inverse_white_full_width',
-        'button_inverse_transparent_full_width',
-        'button_inverse_disabled_full_width',
-        'button_inverse_icon_success_full_width',
-        'button_inverse_icon_info_full_width',
-        'button_inverse_icon_warning_full_width',
-        'button_inverse_icon_error_full_width',
-        'button_inverse_icon_white_full_width',
-        'button_inverse_icon_transparent_full_width',
-        'button_inverse_icon_disabled_full_width',
-        'button_inverse_loading_success_full_width',
-        'button_inverse_loading_info_full_width',
-        'button_inverse_loading_warning_full_width',
-        'button_inverse_loading_error_full_width',
-        'button_inverse_loading_white_full_width',
-        'button_inverse_loading_transparent_full_width',
-        'button_inverse_loading_disabled_full_width',
         'button_basic_success_full_width_right',
         'button_basic_info_full_width_right',
         'button_basic_warning_full_width_right',
@@ -103,27 +67,6 @@ describe('Buttons', () => {
         'button_loading_white_full_width_right',
         'button_loading_transparent_full_width_right',
         'button_loading_disabled_full_width_right',
-        'button_inverse_success_full_width_right',
-        'button_inverse_info_full_width_right',
-        'button_inverse_warning_full_width_right',
-        'button_inverse_error_full_width_right',
-        'button_inverse_white_full_width_right',
-        'button_inverse_transparent_full_width_right',
-        'button_inverse_disabled_full_width_right',
-        'button_inverse_icon_success_full_width_right',
-        'button_inverse_icon_info_full_width_right',
-        'button_inverse_icon_warning_full_width_right',
-        'button_inverse_icon_error_full_width_right',
-        'button_inverse_icon_white_full_width_right',
-        'button_inverse_icon_transparent_full_width_right',
-        'button_inverse_icon_disabled_full_width_right',
-        'button_inverse_loading_success_full_width_right',
-        'button_inverse_loading_info_full_width_right',
-        'button_inverse_loading_warning_full_width_right',
-        'button_inverse_loading_error_full_width_right',
-        'button_inverse_loading_white_full_width_right',
-        'button_inverse_loading_transparent_full_width_right',
-        'button_inverse_loading_disabled_full_width_right',
         'button_basic_success_full_width_left',
         'button_basic_info_full_width_left',
         'button_basic_warning_full_width_left',
@@ -145,6 +88,84 @@ describe('Buttons', () => {
         'button_loading_white_full_width_left',
         'button_loading_transparent_full_width_left',
         'button_loading_disabled_full_width_left',
+    ].forEach(testName => {
+        it(`${testName}`, () => {
+            cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
+            if (testName.match(/icon/)) {
+                cy.getTestElement(testName)
+                    .find('.loading')
+                    .each(el => {
+                        cy.get(el).should('not.exist');
+                    });
+
+                cy.getTestElement(testName)
+                    .find('svg')
+                    .should('be.visible');
+            }
+
+            cy.getTestElement(testName)
+                .should('be.visible')
+                .matchImageSnapshot();
+        });
+    });
+
+    [
+        'button_inverse_success',
+        'button_inverse_info',
+        'button_inverse_warning',
+        'button_inverse_error',
+        'button_inverse_white',
+        'button_inverse_transparent',
+        'button_inverse_disabled',
+        'button_inverse_icon_success',
+        'button_inverse_icon_info',
+        'button_inverse_icon_warning',
+        'button_inverse_icon_error',
+        'button_inverse_icon_white',
+        'button_inverse_icon_transparent',
+        'button_inverse_icon_disabled',
+        'button_inverse_success_full_width',
+        'button_inverse_info_full_width',
+        'button_inverse_warning_full_width',
+        'button_inverse_error_full_width',
+        'button_inverse_white_full_width',
+        'button_inverse_transparent_full_width',
+        'button_inverse_disabled_full_width',
+        'button_inverse_icon_success_full_width',
+        'button_inverse_icon_info_full_width',
+        'button_inverse_icon_warning_full_width',
+        'button_inverse_icon_error_full_width',
+        'button_inverse_icon_white_full_width',
+        'button_inverse_icon_transparent_full_width',
+        'button_inverse_icon_disabled_full_width',
+        'button_inverse_loading_success_full_width',
+        'button_inverse_loading_info_full_width',
+        'button_inverse_loading_warning_full_width',
+        'button_inverse_loading_error_full_width',
+        'button_inverse_loading_white_full_width',
+        'button_inverse_loading_transparent_full_width',
+        'button_inverse_loading_disabled_full_width',
+        'button_inverse_success_full_width_right',
+        'button_inverse_info_full_width_right',
+        'button_inverse_warning_full_width_right',
+        'button_inverse_error_full_width_right',
+        'button_inverse_white_full_width_right',
+        'button_inverse_transparent_full_width_right',
+        'button_inverse_disabled_full_width_right',
+        'button_inverse_icon_success_full_width_right',
+        'button_inverse_icon_info_full_width_right',
+        'button_inverse_icon_warning_full_width_right',
+        'button_inverse_icon_error_full_width_right',
+        'button_inverse_icon_white_full_width_right',
+        'button_inverse_icon_transparent_full_width_right',
+        'button_inverse_icon_disabled_full_width_right',
+        'button_inverse_loading_success_full_width_right',
+        'button_inverse_loading_info_full_width_right',
+        'button_inverse_loading_warning_full_width_right',
+        'button_inverse_loading_error_full_width_right',
+        'button_inverse_loading_white_full_width_right',
+        'button_inverse_loading_transparent_full_width_right',
+        'button_inverse_loading_disabled_full_width_right',
         'button_inverse_success_full_width_left',
         'button_inverse_info_full_width_left',
         'button_inverse_warning_full_width_left',
@@ -168,6 +189,7 @@ describe('Buttons', () => {
         'button_inverse_loading_disabled_full_width_left',
     ].forEach(testName => {
         it(`${testName}`, () => {
+            cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=Inverse&full=0');
             if (testName.match(/icon/)) {
                 cy.getTestElement(testName)
                     .find('.loading')
