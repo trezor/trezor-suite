@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Select, Input } from '@trezor/components';
-import { State } from '@wallet-reducers/sendFormReducer';
+import { Output } from '@wallet-types/sendForm';
 import { DispatchProps } from '../../../../Container';
 import { FIAT } from '@suite-config';
 
@@ -42,8 +42,9 @@ const EqualsSign = styled.div`
 `;
 
 interface Props {
-    value: State['fiatValue'];
-    localCurrency: State['localCurrency'];
+    outputId: number;
+    value: Output['fiatValue']['value'];
+    localCurrency: Output['localCurrency']['value'];
     state: 'error' | undefined;
     sendFormActions: DispatchProps['sendFormActions'];
 }
@@ -54,14 +55,16 @@ const Fiat = (props: Props) => (
         <LocalCurrencyInput
             state={props.state}
             value={props.value || ''}
-            onChange={e => props.sendFormActions.handleFiatInputChange(e.target.value)}
+            onChange={e =>
+                props.sendFormActions.handleFiatInputChange(props.outputId, e.target.value)
+            }
             sideAddons={
                 <LocalCurrencySelect
                     key="local-currency"
                     isSearchable
                     isClearable={false}
-                    onChange={(option: State['localCurrency']) =>
-                        props.sendFormActions.handleSelectCurrencyChange(option)
+                    onChange={(option: Output['localCurrency']['value']) =>
+                        props.sendFormActions.handleSelectCurrencyChange(props.outputId, option)
                     }
                     value={props.localCurrency}
                     options={FIAT.currencies.map((currency: string) =>

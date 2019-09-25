@@ -2,7 +2,7 @@ import { SettingsActions } from '@wallet-actions/settingsActions';
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
-import { SendFormActions } from '@wallet-actions/sendFormActions';
+import { Actions as SendFormActions } from '@wallet-types/sendForm';
 import { SendFormRippleActions } from '@wallet-actions/sendFormSpecific/rippleActions';
 
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';

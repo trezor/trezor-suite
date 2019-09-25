@@ -2,28 +2,8 @@ import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { CUSTOM_FEE, FIRST_OUTPUT_ID, DEFAULT_LOCAL_CURRENCY } from '@wallet-constants/sendForm';
 import { State, Output } from '@wallet-types/sendForm';
-import { FeeItem } from '@wallet-reducers/feesReducer';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Dispatch, GetState } from '@suite-types';
-import { Account } from '@wallet-types';
-
-export type SendFormActions =
-    | {
-          type: typeof SEND.HANDLE_ADDRESS_CHANGE;
-          address: string;
-          symbol: Account['symbol'];
-      }
-    | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; amount: string; availableBalance: string }
-    | { type: typeof SEND.SET_MAX }
-    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; fiatValue: string }
-    | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeItem }
-    | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: string }
-    | {
-          type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
-          localCurrency: Output['localCurrency']['value'];
-      }
-    | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
-    | { type: typeof SEND.CLEAR };
 
 /**
  * Initialize current form, load values from session storage
@@ -51,16 +31,10 @@ export const createOutput = (outputs: State['outputs']) => {
     });
 };
 
-/**
- * Get output by id
- */
-const getOutput = (id: number, outputs: State['outputs']) =>
-    outputs.find(outputItem => outputItem.id === id);
-
 /*
     Change value in input "Address"
  */
-export const handleAddressChange = (address: string) => (
+export const handleAddressChange = (outputId: number, address: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -69,6 +43,7 @@ export const handleAddressChange = (address: string) => (
 
     dispatch({
         type: SEND.HANDLE_ADDRESS_CHANGE,
+        outputId,
         address,
         symbol: account.symbol,
     });
@@ -77,7 +52,10 @@ export const handleAddressChange = (address: string) => (
 /*
     Change value in input "Amount"
  */
-export const handleAmountChange = (amount: string) => (dispatch: Dispatch, getState: GetState) => {
+export const handleAmountChange = (outputId: number, amount: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { account } = getState().wallet.selectedAccount;
     const { send, fiat } = getState().wallet;
     if (!account || !send || !fiat) return null;
@@ -90,6 +68,7 @@ export const handleAmountChange = (amount: string) => (dispatch: Dispatch, getSt
         if (rate) {
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+                outputId,
                 fiatValue,
             });
         }
@@ -97,6 +76,7 @@ export const handleAmountChange = (amount: string) => (dispatch: Dispatch, getSt
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
+        outputId,
         amount,
         availableBalance: account.availableBalance,
     });
@@ -105,10 +85,10 @@ export const handleAmountChange = (amount: string) => (dispatch: Dispatch, getSt
 /*
     Change value in select "LocalCurrency"
  */
-export const handleSelectCurrencyChange = (localCurrency: ReducerState['localCurrency']) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const handleSelectCurrencyChange = (
+    outputId: number,
+    localCurrency: Output['localCurrency'],
+) => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
     if (!account || !fiat || !send) return null;
@@ -123,11 +103,13 @@ export const handleSelectCurrencyChange = (localCurrency: ReducerState['localCur
 
         dispatch({
             type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+            outputId,
             fiatValue,
         });
 
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
+            outputId,
             amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
             availableBalance: account.availableBalance,
         });
@@ -135,6 +117,7 @@ export const handleSelectCurrencyChange = (localCurrency: ReducerState['localCur
 
     dispatch({
         type: SEND.HANDLE_SELECT_CURRENCY_CHANGE,
+        outputId,
         localCurrency,
     });
 };
@@ -142,7 +125,7 @@ export const handleSelectCurrencyChange = (localCurrency: ReducerState['localCur
 /*
     Change value in input "FiatInput"
  */
-export const handleFiatInputChange = (fiatValue: string) => (
+export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -160,11 +143,13 @@ export const handleFiatInputChange = (fiatValue: string) => (
 
     dispatch({
         type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+        outputId,
         fiatValue,
     });
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
+        outputId,
         amount,
         availableBalance: account.availableBalance,
     });

@@ -65,25 +65,32 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 Send {getTitleForNetwork(network.symbol, props.intl)}
                 {accountType ? ` (${accountType})` : ''}
             </StyledTitle>
-            <Row>
-                <Address
-                    address={send.address}
-                    error={send.errors.address}
-                    sendFormActions={sendFormActions}
-                />
-            </Row>
-            <Row>
-                <Amount
-                    amount={send.amount}
-                    canSetMax={(send.amount || 0) >= account.availableBalance}
-                    symbol={account.symbol}
-                    error={send.errors.amount}
-                    fiatValue={send.fiatValue}
-                    fiat={fiat}
-                    localCurrency={send.localCurrency}
-                    sendFormActions={sendFormActions}
-                />
-            </Row>
+            {send.outputs.map(output => (
+                <>
+                    <Row>
+                        <Address
+                            outputId={output.id}
+                            address={output.address.value}
+                            error={output.address.error}
+                            sendFormActions={sendFormActions}
+                        />
+                    </Row>
+                    <Row>
+                        <Amount
+                            outputId={output.id}
+                            amount={output.amount.value}
+                            canSetMax={(output.amount.value || 0) >= account.availableBalance}
+                            symbol={account.symbol}
+                            error={output.amount.error}
+                            fiatValue={output.fiatValue.value}
+                            fiat={fiat}
+                            localCurrency={output.localCurrency.value}
+                            sendFormActions={sendFormActions}
+                        />
+                    </Row>
+                </>
+            ))}
+
             <Row>
                 <Fee
                     fees={fees}
@@ -101,10 +108,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     <AdditionalForm networkType={network.networkType} />
                 )}
                 <SendAndClear
-                    amount={send.amount}
-                    address={send.address}
                     networkType={account.networkType}
-                    errors={send.errors}
                     symbol={network.symbol}
                     sendFormActions={sendFormActions}
                     sendFormActionsBitcoin={sendFormActionsBitcoin}

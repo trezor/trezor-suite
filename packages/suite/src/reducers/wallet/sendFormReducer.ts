@@ -1,7 +1,8 @@
 import produce from 'immer';
 import validator from 'validator';
 import { SEND } from '@wallet-actions/constants';
-import { State } from '@wallet-types/sendForm';
+import { getOutput } from '@wallet-utils/sendFormUtils';
+import { State, Output } from '@wallet-types/sendForm';
 import {
     VALIDATION_ERRORS,
     FIRST_OUTPUT_ID,
@@ -13,6 +14,7 @@ import { WalletAction } from '@wallet-types';
 export const initialState: State = {
     outputs: [
         {
+            // fill first output by default
             id: FIRST_OUTPUT_ID,
             address: { value: null, error: null },
             amount: { value: null, error: null },
@@ -49,17 +51,18 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change input "Address"
             case SEND.HANDLE_ADDRESS_CHANGE: {
-                const { address, symbol, output } = action;
-                draft.output.address.error = null;
-                draft.output.address.value = address;
+                const { outputId, address, symbol } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.address.error = null;
+                output.address.value = address;
 
                 if (validator.isEmpty(address)) {
-                    draft.output.address.error = VALIDATION_ERRORS.IS_EMPTY;
+                    output.address.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
                 if (!isAddressValid(action.address, symbol)) {
-                    draft.output.address.error = VALIDATION_ERRORS.NOT_VALID;
+                    output.address.error = VALIDATION_ERRORS.NOT_VALID;
                     return draft;
                 }
                 break;
@@ -67,22 +70,24 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { amount, availableBalance, output } = action;
-                draft.output.amount.error = null;
-                draft.output.amount.value = amount;
+                const { outputId, amount, availableBalance } = action;
+                const output = getOutput(draft.outputs, outputId);
+
+                output.amount.error = null;
+                output.amount.value = amount;
 
                 if (validator.isEmpty(amount)) {
-                    draft.output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
+                    output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
                 if (!validator.isNumeric(amount)) {
-                    draft.output.amount.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    output.amount.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
 
                 if (availableBalance < amount || availableBalance === '0') {
-                    draft.output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
+                    output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
 
@@ -91,8 +96,9 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change select "Currency"
             case SEND.HANDLE_SELECT_CURRENCY_CHANGE: {
-                const { localCurrency, output } = action;
-                draft.output.localCurrency.value = localCurrency;
+                const { outputId, localCurrency } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.localCurrency.value = localCurrency;
                 break;
             }
 
@@ -106,16 +112,16 @@ export default (state: State = initialState, action: WalletAction): State => {
             // change select "Fee"
             case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
                 const { customFee } = action;
-                draft.output.customFee.error = null;
-                draft.output.customFee.value = customFee;
+                draft.customFee.error = null;
+                draft.customFee.value = customFee;
 
                 if (validator.isEmpty(customFee)) {
-                    draft.output.customFee.error = VALIDATION_ERRORS.IS_EMPTY;
+                    draft.customFee.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
                 if (!validator.isNumeric(customFee)) {
-                    draft.output.customFee.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    draft.customFee.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
                 break;
@@ -123,8 +129,9 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change input "Fiat"
             case SEND.HANDLE_FIAT_VALUE_CHANGE: {
-                const { output, fiatValue } = action;
-                draft.output.fiatValue.value = fiatValue;
+                const { outputId, fiatValue } = action;
+                const output = getOutput(draft.outputs, outputId) as Output;
+                output.fiatValue.value = fiatValue;
                 break;
             }
 
