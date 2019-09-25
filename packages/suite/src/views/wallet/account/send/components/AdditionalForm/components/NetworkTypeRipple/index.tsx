@@ -24,15 +24,15 @@ const NetworkTypeXrp = (props: Props) => (
         <Row>
             <CustomFee
                 sendFormActions={props.sendFormActions}
-                customFee={props.send.customFee}
-                errors={props.send.errors.customFee}
+                customFee={props.send.customFee.value}
+                errors={props.send.customFee.error}
             />
         </Row>
         <Row>
             <DestinationTag
                 sendFormActionsRipple={props.sendFormActionsRipple}
-                destinationTag={props.send.networkTypeRipple.destinationTag}
-                errors={props.send.networkTypeRipple.errors.destinationTag}
+                destinationTag={props.send.networkTypeRipple.destinationTag.value}
+                errors={props.send.networkTypeRipple.destinationTag.error}
             />
         </Row>
     </Wrapper>

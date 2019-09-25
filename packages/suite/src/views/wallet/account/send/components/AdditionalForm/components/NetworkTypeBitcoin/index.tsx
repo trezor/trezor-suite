@@ -22,8 +22,8 @@ const NetworkTypeBitcoin = (props: Props) => (
     <Wrapper>
         <Row>
             <CustomFee
-                errors={props.send.errors.customFee}
-                customFee={props.send.customFee}
+                errors={props.send.customFee.error}
+                customFee={props.send.customFee.value}
                 sendFormActions={props.sendFormActions}
             />
         </Row>

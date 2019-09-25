@@ -116,8 +116,8 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     Change value in select "LocalCurrency"
  */
 export const handleSelectCurrencyChange = (
-    outputId: number,
     localCurrency: Output['localCurrency'],
+    outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;

@@ -116,6 +116,7 @@ const Amount = (props: Props) => (
                 <>
                     <SetMax
                         key="set-max"
+                        outputId={props.outputId}
                         sendFormActions={props.sendFormActions}
                         canSetMax={props.canSetMax}
                     />

@@ -27,15 +27,15 @@ export const initialState: State = {
     customFee: { value: { value: null, error: null }, error: null },
     isAdditionalFormVisible: false,
     networkTypeRipple: {
-        destinationTag: null,
-        errors: {
-            destinationTag: null,
+        destinationTag: {
+            value: null,
+            error: null,
         },
     },
     networkTypeEthereum: {
-        gasPrice: null,
-        gasLimit: null,
-        data: null,
+        gasPrice: { value: null, error: null },
+        gasLimit: { value: null, error: null },
+        data: { value: null, error: null },
     },
     networkTypeBitcoin: {},
 };
@@ -158,15 +158,13 @@ export default (state: State = initialState, action: WalletAction): State => {
             // change input in additional xrp form "Destination tag"
             case SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE: {
                 const { destinationTag } = action;
-                draft.networkTypeRipple.errors.destinationTag = null;
-                draft.networkTypeRipple.destinationTag = destinationTag;
+                draft.networkTypeRipple.destinationTag.error = null;
+                draft.networkTypeRipple.destinationTag.value = destinationTag;
 
                 if (!validator.isNumeric(destinationTag)) {
-                    draft.networkTypeRipple.errors.destinationTag = VALIDATION_ERRORS.NOT_NUMBER;
+                    draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
-
-                draft.networkTypeRipple.destinationTag = destinationTag;
                 break;
             }
 

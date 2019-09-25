@@ -29,15 +29,24 @@ export interface State {
     };
     isAdditionalFormVisible: boolean;
     networkTypeRipple: {
-        destinationTag: null | string;
-        errors: {
-            destinationTag: null | typeof VALIDATION_ERRORS.NOT_NUMBER;
+        destinationTag: {
+            value: null | string;
+            error: null | typeof VALIDATION_ERRORS.NOT_NUMBER;
         };
     };
     networkTypeEthereum: {
-        gasLimit: null | string;
-        gasPrice: null | string;
-        data: null | string;
+        gasLimit: {
+            value: null | string;
+            error: null;
+        };
+        gasPrice: {
+            value: null | string;
+            error: null;
+        };
+        data: {
+            value: null | string;
+            error: null;
+        };
     };
     networkTypeBitcoin: {};
 }
