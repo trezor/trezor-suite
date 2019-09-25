@@ -502,7 +502,7 @@ storiesOf('Buttons', module).add(
                     isInverse
                     icon="PLUS"
                     isDisabled
-                    data-test="button_inverse_icon_transparent_full_width"
+                    data-test="button_inverse_icon_disabled_full_width"
                 >
                     Disabled
                 </Button>
