@@ -1,7 +1,7 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { InjectedIntl } from 'react-intl';
-import { CoinLogo, colors } from '@trezor/components';
+import { CoinLogo } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
 
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
@@ -71,7 +71,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                 {accountType ? ` (${accountType})` : ''}
             </StyledTitle>
             {send.outputs.map((output: Output) => (
-                <OutputWrapper isOnlyOne={send.outputs.length === 1} key={output.id}>
+                <OutputWrapper key={output.id}>
                     <Row>
                         <Address
                             outputId={output.id}
