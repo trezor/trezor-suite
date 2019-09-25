@@ -44,6 +44,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         case SUITE.SELECT_DEVICE:
         case SUITE.UPDATE_SELECTED_DEVICE:
         case ROUTER.LOCATION_CHANGE:
+        case ACCOUNT.UPDATE:
             // update discovery in selectedAccount
             api.dispatch(selectedAccountActions.observe(prevState, action));
             break;

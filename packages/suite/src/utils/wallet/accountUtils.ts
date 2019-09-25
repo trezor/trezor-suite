@@ -86,10 +86,14 @@ export const getTypeForNetwork = (accountType: Account['accountType'], intl: Inj
     }
 };
 
-export const formatAmount = (amount: string, symbol: string) => {
+export const formatAmount = (amount: string, decimals: number) => {
+    return new BigNumber(amount).div(10 ** decimals).toString(10);
+};
+
+export const formatNetworkAmount = (amount: string, symbol: string) => {
     const network = NETWORKS.find(n => n.symbol === symbol);
     if (!network) return amount;
-    return new BigNumber(amount).div(10 ** network.decimals).toString(10);
+    return formatAmount(amount, network.decimals);
 };
 
 export const sortByCoin = (accounts: Account[]) => {

@@ -1,40 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-// @ts-ignore there are no types for this lib
-import ColorHash from 'color-hash';
-// @ts-ignore there are no types for this lib
-import ScaleText from 'react-scale-text';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import l10nCommonMessages from '@wallet-views/messages';
 import { AccountInfo } from 'trezor-connect';
+import TokenIcon from '../TokenIcon';
 
 const TokenWrapper = styled.div`
     padding: 8px 0;
     position: relative;
     display: flex;
     align-items: center;
-`;
-
-const TokenIcon = styled.div<{ textColor: string; backgroundColor: string }>`
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    margin-right: 10px;
-    line-height: 30px;
-    text-transform: uppercase;
-    user-select: none;
-    text-align: center;
-    padding: 6px;
-    color: ${props => props.textColor};
-    border-color: ${props => props.backgroundColor};
-    background: ${props => props.backgroundColor};
-`;
-
-const P = styled.p`
-    line-height: 24px;
-    padding: 0px;
-    color: inherit;
 `;
 
 const TokenText = styled.div`
@@ -63,20 +39,9 @@ interface Props {
 }
 
 const TokenItem = ({ token, hideBalance }: Props) => {
-    const bgColor = new ColorHash({ lightness: 0.9 });
-    const textColor = new ColorHash({ lightness: 0.3, saturation: 1 });
-
     return (
         <TokenWrapper>
-            <TokenIcon
-                textColor={textColor.hex(token.address)}
-                backgroundColor={bgColor.hex(token.address)}
-            >
-                <ScaleText widthOnly>
-                    <P>{token.symbol}</P>
-                </ScaleText>
-            </TokenIcon>
-
+            <TokenIcon address={token.address} symbol={token.symbol} />
             <TokenName>{token.name}</TokenName>
             <TokenBalance>
                 {hideBalance ? (

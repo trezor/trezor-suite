@@ -251,7 +251,7 @@ class CommonDB<TDBStructure> {
                 let counter = 0;
                 if (cursor) {
                     // move cursor in position
-                    if (filters.offset) await cursor.advance(filters.offset);
+                    if (filters.offset) cursor = await cursor.advance(filters.offset);
                     while (cursor && (!filters.count || counter < filters.count)) {
                         // iterate unless cursor returns null or we have enough items (count param)
                         items.push(cursor.value);
