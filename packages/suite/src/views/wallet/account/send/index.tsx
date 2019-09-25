@@ -31,13 +31,16 @@ const SlimRow = styled.div`
     justify-content: flex-end;
     min-height: 10px;
     align-items: flex-end;
-    cursor: pointer;
 
     ${(props: { isOnlyOne: boolean }) =>
         props.isOnlyOne &&
         css`
             display: none;
         `}
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
 `;
 
 const OutputWrapper = styled.div`
@@ -87,7 +90,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     <SlimRow isOnlyOne={send.outputs.length === 1}>
-                        <Icon
+                        <StyledIcon
                             onClick={() => props.sendFormActionsBitcoin.removeRecipient(output.id)}
                             size={10}
                             color={colors.TEXT_SECONDARY}
