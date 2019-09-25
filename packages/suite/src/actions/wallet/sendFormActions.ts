@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { CUSTOM_FEE } from '@wallet-constants/sendForm';
+import { getOutput } from '@wallet-utils/sendFormUtils';
 import { FeeItem } from '@wallet-reducers/feesReducer';
 import { Output } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
@@ -88,10 +89,11 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const { send, fiat } = getState().wallet;
     if (!account || !send || !fiat) return null;
 
+    const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork) {
-        const rate = fiatNetwork.rates[send.localCurrency.value].toString();
+        const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
         const fiatValue = getFiatValue(amount, rate);
         if (rate) {
             dispatch({
@@ -121,11 +123,14 @@ export const handleSelectCurrencyChange = (
     const { fiat, send } = getState().wallet;
     if (!account || !fiat || !send) return null;
 
+    const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
-    if (fiatNetwork && send.amount) {
-        const rate = fiatNetwork.rates[localCurrency.value];
-        const fiatValueBigNumber = new BigNumber(send.amount).multipliedBy(new BigNumber(rate));
+    if (fiatNetwork && output.amount.value) {
+        const rate = fiatNetwork.rates[localCurrency.value.value];
+        const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
+            new BigNumber(rate),
+        );
         const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
         const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
 
@@ -146,7 +151,7 @@ export const handleSelectCurrencyChange = (
     dispatch({
         type: SEND.HANDLE_SELECT_CURRENCY_CHANGE,
         outputId,
-        localCurrency,
+        localCurrency: localCurrency.value,
     });
 };
 
@@ -162,10 +167,11 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     if (!account || !fiat || !send) return null;
 
+    const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     if (!fiatNetwork) return null;
 
-    const rate = fiatNetwork.rates[send.localCurrency.value];
+    const rate = fiatNetwork.rates[output.localCurrency.value.value];
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
     const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(20);
 
@@ -186,25 +192,28 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 /*
     Click on "set max"
  */
-export const setMax = () => (dispatch: Dispatch, getState: GetState) => {
+export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
     if (!account || !fiat || !send) return null;
+    const output = getOutput(send.outputs, outputId);
 
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     if (!fiatNetwork) return null;
 
-    const rate = fiatNetwork.rates[send.localCurrency.value].toString();
+    const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
     const fiatValue = getFiatValue(account.availableBalance, rate);
 
     dispatch({
         type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+        outputId,
         fiatValue,
     });
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
+        outputId,
         amount: account.availableBalance,
         availableBalance: account.availableBalance,
     });
@@ -213,10 +222,7 @@ export const setMax = () => (dispatch: Dispatch, getState: GetState) => {
 /*
     Change value in select "Fee"
  */
-export const handleFeeValueChange = (fee: ReducerState['fee']) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const handleFeeValueChange = (fee: any) => (dispatch: Dispatch, getState: GetState) => {
     const { send } = getState().wallet;
     if (!send || !fee) return null;
 

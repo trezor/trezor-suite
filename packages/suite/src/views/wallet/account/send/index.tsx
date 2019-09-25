@@ -31,9 +31,9 @@ const OutputWrapper = styled.div`
     border-bottom: 1px solid ${colors.DIVIDER};
 
     ${(props: { isOnlyOne: boolean }) =>
-        !props.isOnlyOne &&
+        props.isOnlyOne &&
         css`
-            border-bottom: 0;
+            border: 0;
         `}
 `;
 
