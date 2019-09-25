@@ -64,21 +64,12 @@ export const getSelectedAccount = (
 ) => {
     if (!device || !routerParams) return null;
 
+    // TODO: imported accounts
     // imported account index has 'i' prefix
     // const isImported = /^i\d+$/i.test(routerParams.accountIndex);
     // const index: number = isImported
     //     ? parseInt(routerParams.accountIndex.substr(1), 10)
     //     : parseInt(routerParams.accountIndex, 10);
-
-    // TODO: filter deviceState;
-    // return accounts.find(
-    //     a =>
-    //         a.imported === isImported &&
-    //         (a.deviceState === device.state ||
-    //             (a.imported && a.deviceID === (device.features || {}).device_id)) &&
-    //         a.index === index &&
-    //         a.network === routerParams.coin
-    // ) || null;
 
     return (
         accounts.find(
