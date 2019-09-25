@@ -2,7 +2,7 @@ import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getAccountHash } from '@wallet-utils/reducerUtils';
+import { getAccountKey } from '@wallet-utils/reducerUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
 
@@ -15,7 +15,7 @@ export interface WalletAccountTransaction extends AccountTransaction {
 }
 
 export interface State {
-    transactions: { [key: string]: WalletAccountTransaction[] | undefined }; // object where a key is accountHash and a value is sparse array of fetched txs
+    transactions: { [key: string]: WalletAccountTransaction[] }; // object where a key is accountHash and a value is sparse array of fetched txs
     isLoading: boolean;
     error: string | null;
 }
@@ -82,7 +82,7 @@ const alreadyExists = (
 };
 
 const add = (draft: State, transactions: AccountTransaction[], account: Account, page: number) => {
-    const accountHash = getAccountHash(account.descriptor, account.symbol, account.deviceState);
+    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     initializeAccount(draft, accountHash);
     const accountTxs = draft.transactions[accountHash];
 
@@ -109,7 +109,7 @@ export default (state: State = initialState, action: WalletAction): State => {
                 break;
             case TRANSACTION.REMOVE:
                 delete draft.transactions[
-                    getAccountHash(
+                    getAccountKey(
                         action.account.descriptor,
                         action.account.symbol,
                         action.account.deviceState,

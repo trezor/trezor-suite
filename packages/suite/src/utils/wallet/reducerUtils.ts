@@ -102,7 +102,7 @@ export const getSelectedNetwork = (networks: Network[], symbol: string) => {
  * @param {string} deviceState
  * @returns {string}
  */
-export const getAccountHash = (descriptor: string, symbol: string, deviceState: string) => {
+export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) => {
     return `${descriptor}-${symbol}-${deviceState}`;
 };
 
@@ -110,6 +110,6 @@ export const getAccountTransactions = (
     transactions: TransactionsState['transactions'],
     account: Account,
 ) => {
-    const accountHash = getAccountHash(account.descriptor, account.symbol, account.deviceState);
+    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     return transactions[accountHash] || [];
 };

@@ -35,7 +35,7 @@ describe('reducerUtils', () => {
     });
 
     it('reducerUtils.getAccountHash', () => {
-        expect(reducerUtils.getAccountHash('descriptor', 'symbol', 'deviceState')).toEqual(
+        expect(reducerUtils.getAccountKey('descriptor', 'symbol', 'deviceState')).toEqual(
             'descriptor-symbol-deviceState',
         );
     });

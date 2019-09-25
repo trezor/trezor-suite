@@ -160,6 +160,7 @@ const TransactionItem = React.memo(
                         )}
                         {targets &&
                             targets.map((target, i) => (
+                                // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
                                 // eslint-disable-next-line react/no-array-index-key
                                 <Target key={i}>
                                     {target.addresses &&

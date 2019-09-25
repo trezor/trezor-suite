@@ -58,6 +58,9 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
             ) : (
                 <>
                     {[...Array(currentPage - 1)].map((_p, i) => (
+                        // this is fine, read "exception from the rule"
+                        // the list is never reordered/filtered, items have no ids, list/items do not change
+                        // https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318
                         // eslint-disable-next-line react/no-array-index-key
                         <PageItem key={i} onClick={() => onPageSelected(i + 1)}>
                             {i + 1}

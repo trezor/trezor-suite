@@ -228,6 +228,7 @@ export const observe = (prevState: AppState, action: Action) => (
 
     // TODO: missing discovery process results in silent fail
     const network = reducerUtils.getSelectedNetwork(NETWORKS, params.symbol);
+    // TODO: fix types, right now discovery can't be undefined so in this case fallback to null
     const discovery = dispatch(discoveryActions.getDiscoveryForDevice()) || null;
     // const tokens = reducerUtils.getAccountTokens(state.tokens, account);
     // const pending = reducerUtils.getAccountPendingTx(state.pending, account);

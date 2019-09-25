@@ -1,4 +1,9 @@
-import TrezorConnect, { ResponseMessage, AccountInfo, AccountTransaction } from 'trezor-connect';
+import TrezorConnect, {
+    getAccountInfo,
+    ResponseMessage,
+    AccountInfo,
+    AccountTransaction,
+} from 'trezor-connect';
 import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { SETTINGS } from '@suite/config/suite';
@@ -120,25 +125,15 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
 
     const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
     if (shouldFetchFromBackend) {
-        let result: ResponseMessage<AccountInfo> | null = null;
-
-        if (account.networkType === 'ripple') {
-            const marker = selectedAccount.account!.marker || undefined;
-            result = await TrezorConnect.getAccountInfo({
-                coin: selectedAccount.account!.symbol,
-                descriptor: account.descriptor,
-                details: 'txs',
-                marker,
-            });
-        } else {
-            result = await TrezorConnect.getAccountInfo({
-                coin: selectedAccount.account!.symbol,
-                descriptor: account.descriptor,
-                details: 'txs',
-                page,
-                pageSize: SETTINGS.TXS_PER_PAGE,
-            });
-        }
+        const marker = selectedAccount.account!.marker || undefined;
+        const result = await TrezorConnect.getAccountInfo({
+            coin: selectedAccount.account!.symbol,
+            descriptor: account.descriptor,
+            details: 'txs',
+            page, // useful for every network except ripple
+            pageSize: SETTINGS.TXS_PER_PAGE,
+            ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+        });
 
         if (result && result.success) {
             const updatedAccount = accountActions.update(account, result.payload).payload;
