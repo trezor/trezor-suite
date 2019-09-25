@@ -22,13 +22,14 @@ const StyledIcon = styled(Icon)`
 
 interface Props {
     canSetMax: boolean;
+    outputId: number;
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
 const SetMax = (props: Props) => (
     <SetMaxButton
         key="icon"
-        onClick={() => props.sendFormActions.setMax()}
+        onClick={() => props.sendFormActions.setMax(props.outputId)}
         variant={props.canSetMax ? 'white' : 'success'}
     >
         {props.canSetMax && <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />}

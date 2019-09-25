@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
-import { State } from '@wallet-reducers/sendFormReducer';
+import { Output } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
@@ -34,17 +34,18 @@ const Label = styled.span`
 
 interface Props {
     intl: InjectedIntl;
-    fiatValue: State['fiatValue'];
+    outputId: number;
+    fiatValue: Output['fiatValue']['value'];
     fiat: Fiat[];
-    amount: State['amount'];
+    amount: Output['amount']['value'];
     symbol: Account['symbol'];
     canSetMax: boolean;
-    localCurrency: State['localCurrency'];
-    error: State['errors']['amount'];
+    localCurrency: Output['localCurrency']['value'];
+    error: Output['amount']['error'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getErrorMessage = (error: State['errors']['amount']) => {
+const getErrorMessage = (error: Output['amount']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_SET} />;
@@ -57,7 +58,7 @@ const getErrorMessage = (error: State['errors']['amount']) => {
     }
 };
 
-const getState = (error: State['errors']['amount'], amount: State['address']) => {
+const getState = (error: Output['amount']['error'], amount: Output['amount']['value']) => {
     if (error) {
         return 'error';
     }
@@ -66,7 +67,11 @@ const getState = (error: State['errors']['amount'], amount: State['address']) =>
     }
 };
 
-const hasRates = (fiat: any, localCurrency: State['localCurrency'], symbol: Account['symbol']) => {
+const hasRates = (
+    fiat: any,
+    localCurrency: Output['localCurrency']['value'],
+    symbol: Account['symbol'],
+) => {
     const fiatNetwork = fiat.find((item: any) => item.symbol === symbol);
 
     if (fiatNetwork) {
@@ -105,12 +110,13 @@ const Amount = (props: Props) => (
                 </LabelWrapper>
             }
             value={props.amount || ''}
-            onChange={e => props.sendFormActions.handleAmountChange(e.target.value)}
+            onChange={e => props.sendFormActions.handleAmountChange(props.outputId, e.target.value)}
             bottomText={getErrorMessage(props.error)}
             sideAddons={
                 <>
                     <SetMax
                         key="set-max"
+                        outputId={props.outputId}
                         sendFormActions={props.sendFormActions}
                         canSetMax={props.canSetMax}
                     />
@@ -118,6 +124,7 @@ const Amount = (props: Props) => (
                         <>
                             <CurrencySelect key="currency-select" symbol={props.symbol} />
                             <FiatComponent
+                                outputId={props.outputId}
                                 key="fiat-input"
                                 state={props.error ? 'error' : undefined}
                                 sendFormActions={props.sendFormActions}

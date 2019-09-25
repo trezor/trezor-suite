@@ -1,60 +1,40 @@
 import produce from 'immer';
 import validator from 'validator';
 import { SEND } from '@wallet-actions/constants';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { getOutput } from '@wallet-utils/sendFormUtils';
+import { State, Output } from '@wallet-types/sendForm';
+import {
+    VALIDATION_ERRORS,
+    FIRST_OUTPUT_ID,
+    DEFAULT_LOCAL_CURRENCY,
+} from '@wallet-constants/sendForm';
 import { isAddressValid } from '@wallet-utils/validation';
 import { WalletAction } from '@wallet-types';
 
-export interface State {
-    address: null | string;
-    amount: null | string;
-    fiatValue: null | string;
-    localCurrency: { value: string; label: string };
-    fee: null | { value: string; label: string };
-    customFee: null | string;
-    isAdditionalFormVisible: boolean;
-    errors: {
-        address: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_VALID;
-        amount:
-            | null
-            | typeof VALIDATION_ERRORS.IS_EMPTY
-            | typeof VALIDATION_ERRORS.NOT_NUMBER
-            | typeof VALIDATION_ERRORS.NOT_ENOUGH;
-        customFee: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_NUMBER;
-    };
-    networkTypeRipple: {
-        destinationTag: null | string;
-        errors: {
-            destinationTag: null | typeof VALIDATION_ERRORS.NOT_NUMBER;
-        };
-    };
-    networkTypeEthereum: {
-        gasLimit: null | string;
-        gasPrice: null | string;
-        data: null | string;
-    };
-    networkTypeBitcoin: {};
-}
-
 export const initialState: State = {
-    address: null,
-    amount: null,
-    fiatValue: null,
+    outputs: [
+        {
+            // fill first output by default
+            id: FIRST_OUTPUT_ID,
+            address: { value: null, error: null },
+            amount: { value: null, error: null },
+            fiatValue: { value: null },
+            localCurrency: { value: DEFAULT_LOCAL_CURRENCY },
+        },
+    ],
     fee: null,
-    customFee: null,
-    localCurrency: { value: 'usd', label: 'USD' },
+    customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
-    errors: { address: null, amount: null, customFee: null },
     networkTypeRipple: {
-        destinationTag: null,
-        errors: {
-            destinationTag: null,
+        destinationTag: {
+            value: null,
+            error: null,
         },
     },
     networkTypeEthereum: {
-        gasPrice: null,
-        gasLimit: null,
-        data: null,
+        gasPrice: { value: null, error: null },
+        gasLimit: { value: null, error: null },
+        data: { value: null, error: null },
     },
     networkTypeBitcoin: {},
 };
@@ -70,17 +50,18 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change input "Address"
             case SEND.HANDLE_ADDRESS_CHANGE: {
-                const { address, symbol } = action;
-                draft.errors.address = null;
-                draft.address = address;
+                const { outputId, address, symbol } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.address.error = null;
+                output.address.value = address;
 
                 if (validator.isEmpty(address)) {
-                    draft.errors.address = VALIDATION_ERRORS.IS_EMPTY;
+                    output.address.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
                 if (!isAddressValid(action.address, symbol)) {
-                    draft.errors.address = VALIDATION_ERRORS.NOT_VALID;
+                    output.address.error = VALIDATION_ERRORS.NOT_VALID;
                     return draft;
                 }
                 break;
@@ -88,22 +69,24 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { amount, availableBalance } = action;
-                draft.errors.amount = null;
-                draft.amount = amount;
+                const { outputId, amount, availableBalance } = action;
+                const output = getOutput(draft.outputs, outputId);
+
+                output.amount.error = null;
+                output.amount.value = amount;
 
                 if (validator.isEmpty(amount)) {
-                    draft.errors.amount = VALIDATION_ERRORS.IS_EMPTY;
+                    output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
                 if (!validator.isNumeric(amount)) {
-                    draft.errors.amount = VALIDATION_ERRORS.NOT_NUMBER;
+                    output.amount.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
 
                 if (availableBalance < amount || availableBalance === '0') {
-                    draft.errors.amount = VALIDATION_ERRORS.NOT_ENOUGH;
+                    output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
 
@@ -112,8 +95,9 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change select "Currency"
             case SEND.HANDLE_SELECT_CURRENCY_CHANGE: {
-                const { localCurrency } = action;
-                draft.localCurrency = localCurrency;
+                const { outputId, localCurrency } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.localCurrency.value = localCurrency;
                 break;
             }
 
@@ -127,16 +111,16 @@ export default (state: State = initialState, action: WalletAction): State => {
             // change select "Fee"
             case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
                 const { customFee } = action;
-                draft.errors.customFee = null;
-                draft.customFee = customFee;
+                draft.customFee.error = null;
+                draft.customFee.value = customFee;
 
                 if (validator.isEmpty(customFee)) {
-                    draft.errors.customFee = VALIDATION_ERRORS.IS_EMPTY;
+                    draft.customFee.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
 
                 if (!validator.isNumeric(customFee)) {
-                    draft.errors.customFee = VALIDATION_ERRORS.NOT_NUMBER;
+                    draft.customFee.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
                 break;
@@ -144,13 +128,22 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // change input "Fiat"
             case SEND.HANDLE_FIAT_VALUE_CHANGE: {
-                draft.fiatValue = action.fiatValue;
+                const { outputId, fiatValue } = action;
+                const output = getOutput(draft.outputs, outputId) as Output;
+                output.fiatValue.value = fiatValue;
                 break;
             }
 
             // click button "SetMax"
             case SEND.SET_MAX: {
                 return state;
+            }
+
+            // click button "Add recipient"
+            case SEND.BTC_ADD_RECIPIENT: {
+                const { newOutput } = action;
+                draft.outputs.push(newOutput);
+                break;
             }
 
             // click button "Clear"
@@ -164,15 +157,13 @@ export default (state: State = initialState, action: WalletAction): State => {
             // change input in additional xrp form "Destination tag"
             case SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE: {
                 const { destinationTag } = action;
-                draft.networkTypeRipple.errors.destinationTag = null;
-                draft.networkTypeRipple.destinationTag = destinationTag;
+                draft.networkTypeRipple.destinationTag.error = null;
+                draft.networkTypeRipple.destinationTag.value = destinationTag;
 
                 if (!validator.isNumeric(destinationTag)) {
-                    draft.networkTypeRipple.errors.destinationTag = VALIDATION_ERRORS.NOT_NUMBER;
+                    draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
-
-                draft.networkTypeRipple.destinationTag = destinationTag;
                 break;
             }
 

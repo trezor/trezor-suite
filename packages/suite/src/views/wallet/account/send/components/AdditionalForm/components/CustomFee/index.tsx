@@ -14,14 +14,14 @@ const Label = styled.div`
 `;
 
 interface Props {
-    errors: ContainerProps['send']['errors']['customFee'];
-    customFee: ContainerProps['send']['customFee'];
+    errors: ContainerProps['send']['customFee']['error'];
+    customFee: ContainerProps['send']['customFee']['value'];
     sendFormActions: ContainerProps['sendFormActions'];
 }
 
 const getState = (
-    error: ContainerProps['send']['errors']['customFee'],
-    customFee: ContainerProps['send']['customFee'],
+    error: ContainerProps['send']['customFee']['error'],
+    customFee: ContainerProps['send']['customFee']['value'],
 ) => {
     if (error) {
         return 'error';
@@ -31,7 +31,7 @@ const getState = (
     }
 };
 
-const getErrorMessage = (error: ContainerProps['send']['errors']['customFee']) => {
+const getErrorMessage = (error: ContainerProps['send']['customFee']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_CUSTOM_FEE_IS_NOT_SET} />;
