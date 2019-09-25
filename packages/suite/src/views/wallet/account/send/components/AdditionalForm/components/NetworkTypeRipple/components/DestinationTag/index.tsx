@@ -8,8 +8,8 @@ import messages from './index.messages';
 import { Props as ContainerProps } from '../../Container';
 
 interface Props {
-    errors: ContainerProps['send']['networkTypeRipple']['errors']['destinationTag'];
-    destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag'];
+    errors: ContainerProps['send']['networkTypeRipple']['destinationTag']['error'];
+    destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag']['value'];
     sendFormActionsRipple: ContainerProps['sendFormActionsRipple'];
 }
 
@@ -27,8 +27,8 @@ const StyledIcon = styled(Icon)`
 `;
 
 const getState = (
-    error: ContainerProps['send']['networkTypeRipple']['errors']['destinationTag'],
-    destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag'],
+    error: ContainerProps['send']['networkTypeRipple']['destinationTag']['error'],
+    destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag']['value'],
 ) => {
     if (error) {
         return 'error';
@@ -38,7 +38,9 @@ const getState = (
     }
 };
 
-const getErrorMessage = (error: ContainerProps['send']['errors']['customFee']) => {
+const getErrorMessage = (
+    error: ContainerProps['send']['networkTypeRipple']['destinationTag']['error'],
+) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <FormattedMessage {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;

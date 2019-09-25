@@ -5,7 +5,7 @@ import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import commonMessages from '@wallet-views/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
-import { State } from '@wallet-reducers/sendFormReducer';
+import { Output } from '@wallet-types/sendForm';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 
@@ -19,12 +19,13 @@ const QrButton = styled(Button)`
 
 interface Props {
     intl: InjectedIntl;
-    error: State['errors']['address'];
-    address: State['address'];
+    outputId: number;
+    error: Output['address']['error'];
+    address: Output['address']['value'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getErrorMessage = (error: State['errors']['address']) => {
+const getErrorMessage = (error: Output['address']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_SET} />;
@@ -35,7 +36,7 @@ const getErrorMessage = (error: State['errors']['address']) => {
     }
 };
 
-const getState = (error: State['errors']['address'], address: State['address']) => {
+const getState = (error: Output['address']['error'], address: Output['address']['value']) => {
     if (error) {
         return 'error';
     }
@@ -54,7 +55,7 @@ const Address = (props: Props) => (
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
         bottomText={getErrorMessage(props.error)}
         value={props.address || ''}
-        onChange={e => props.sendFormActions.handleAddressChange(e.target.value)}
+        onChange={e => props.sendFormActions.handleAddressChange(props.outputId, e.target.value)}
         sideAddons={
             <QrButton key="qrButton" variant="white" onClick={() => console.log('qr button click')}>
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />

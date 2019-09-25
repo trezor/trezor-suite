@@ -6,3 +6,5 @@ export const VALIDATION_ERRORS = {
 } as const;
 
 export const CUSTOM_FEE = 'custom' as const;
+export const FIRST_OUTPUT_ID = 0;
+export const DEFAULT_LOCAL_CURRENCY = { value: 'usd', label: 'USD' };
