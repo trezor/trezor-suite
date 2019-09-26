@@ -4,8 +4,8 @@ import { DEFAULT_LOCAL_CURRENCY } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
 export type SendFormBitcoinActions =
-    | { type: typeof SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE; destinationTag: string }
-    | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output };
+    | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
+    | { type: typeof SEND.BTC_REMOVE_RECIPIENT; outputId: number };
 
 /**
  *    Creates new output (address, amount, fiatValue, localCurrency)
@@ -31,6 +31,13 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         type: SEND.BTC_ADD_RECIPIENT,
         newOutput,
     });
+};
+
+/**
+ *    Removes added output (address, amount, fiatValue, localCurrency)
+ */
+export const removeRecipient = (outputId: number) => (dispatch: Dispatch) => {
+    dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
 };
 
 export const send = () => async () => {
