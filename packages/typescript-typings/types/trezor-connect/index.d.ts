@@ -276,6 +276,21 @@ declare module 'trezor-connect' {
         push?: boolean;
     }
 
+    export interface PrecomposeTransactionParams extends CommonParams {
+        outputs: Output[];
+        account: {
+            path: string;
+            addresses: AccountAddresses;
+            utxo: AccountUtxo[];
+        }
+        // feeLevels: FeeLevel[];
+        coin: string;
+    }
+
+    export interface PrecomposedTransaction {
+        foo: string;
+    }
+
     export interface Transaction {
         signatures: string[]; // signer signatures
         serializedTx: string; // serialized transaction
@@ -437,8 +452,16 @@ declare module 'trezor-connect' {
         type: 'opreturn';
         dataHex: string;
     }
+    export interface NoAddressOutput {
+        type: 'noaddress';
+        amount: string;
+    }
 
-    export type Output = RegularOutput | InternalOutput | SendMaxOutput | OpReturnOutput;
+    export interface NoAddressSendMaxOutput {
+        type: 'send-max-noaddress';
+    }
+
+    export type Output = RegularOutput | InternalOutput | SendMaxOutput | OpReturnOutput | NoAddressOutput | NoAddressSendMaxOutput;
 
     export interface BinOutput {
         amount: number;
@@ -729,6 +752,36 @@ declare module 'trezor-connect' {
         subscribed: boolean;
     }
 
+    interface BlockchainEstimateFeeParams {
+        coin: string;
+        defaultLevels?: boolean;
+        request?: {
+            blocks?: number[];
+            specific?: {
+                conservative?: boolean;
+                data?: string;
+                from?: string;
+                to?: string;
+                txsize?: number;
+            };
+        }
+    }
+
+    export interface FeeLevel {
+        label: 'high' | 'normal' | 'economy' | 'low' | 'custom';
+        feePerUnit: string;
+        blocks: number;
+        feeLimit?: string; // eth gas limit
+        feePerTx?: string; // fee for BlockchainEstimateFeeParams.request.specific
+    }
+
+    interface BlockchainEstimateFeeResponse {
+        blockTime: number;
+        minFee: number;
+        maxFee: number;
+        levels: FeeLevel[];
+    }
+
     namespace TrezorConnect {
         /**
          * Initializes TrezorConnect.
@@ -813,9 +866,14 @@ declare module 'trezor-connect' {
          * returned in hexadecimal format. Change output is added automatically, if
          * needed.
          */
+        
+
         function composeTransaction(
             params: ComposeTransactionParams,
         ): Promise<ResponseMessage<Transaction>>;
+        function composeTransaction(
+            params: PrecomposeTransactionParams
+        ): Promise<ResponseMessage<PrecomposedTransaction>>;
 
         /**
          * Asks device to sign given inputs and outputs of pre-composed transaction.
@@ -881,6 +939,8 @@ declare module 'trezor-connect' {
         function disableWebUSB(): void;
 
         function blockchainSubscribe(params: BlockchainSubscribeParams): Promise<ResponseMessage<BlockchainSubscribeResponse>>;
+
+        function blockchainEstimateFee(params: BlockchainEstimateFeeParams): Promise<ResponseMessage<BlockchainEstimateFeeResponse>>;
     }
 
     export default TrezorConnect;
