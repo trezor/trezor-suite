@@ -254,7 +254,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isTransparent
-                    data-test="button_icon_transparent_full_width"
+                    data-test="button_basic_icon_transparent_full_width"
                 >
                     Transparent
                 </Button>
@@ -262,7 +262,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isDisabled
-                    data-test="button_icon_disabled_full_width"
+                    data-test="button_basic_icon_disabled_full_width"
                 >
                     Disabled
                 </Button>
@@ -291,7 +291,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isTransparent
-                    data-test="button_loading_transparent_full_width"
+                    data-test="button_basic_loading_transparent_full_width"
                 >
                     Transparent
                 </Button>
@@ -299,7 +299,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isDisabled
-                    data-test="button_loading_disabled_full_width"
+                    data-test="button_basic_loading_disabled_full_width"
                 >
                     Disabled
                 </Button>
@@ -344,7 +344,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_inverse_full_width_icon">
+                <SnapshotWrapperDiv data-test="button_inverse_icon_full_width">
                     <Button fullWidth isInverse icon="PLUS" variant="success">
                         Button
                     </Button>
@@ -383,7 +383,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_inverse_full_width_loading">
+                <SnapshotWrapperDiv data-test="button_inverse_loading_full_width">
                     <Button fullWidth isInverse isLoading variant="success">
                         Button
                     </Button>
@@ -459,7 +459,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_basic_full_width_right_icon">
+                <SnapshotWrapperDiv data-test="button_basic_icon_full_width_right">
                     <Button fullWidth icon="PLUS" variant="success" align="right">
                         Button
                     </Button>
@@ -480,7 +480,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isTransparent
-                    data-test="button_icon_transparent_full_width_right"
+                    data-test="button_basic_icon_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -489,7 +489,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isDisabled
-                    data-test="button_icon_disabled_full_width_right"
+                    data-test="button_basic_icon_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -498,7 +498,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_basic_full_width_right_loading">
+                <SnapshotWrapperDiv data-test="button_basic_loading_full_width_right">
                     <Button fullWidth isLoading variant="success" align="right">
                         Button
                     </Button>
@@ -519,7 +519,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isTransparent
-                    data-test="button_loading_transparent_full_width_right"
+                    data-test="button_basic_loading_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -528,7 +528,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isDisabled
-                    data-test="button_loading_disabled_full_width_right"
+                    data-test="button_basic_loading_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -576,7 +576,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon </H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_inverse_full_width_right_icon">
+                <SnapshotWrapperDiv data-test="button_inverse_icon_full_width_right">
                     <Button fullWidth isInverse icon="PLUS" variant="success" align="right">
                         Button
                     </Button>
@@ -617,7 +617,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_inverse_full_width_right_loading">
+                <SnapshotWrapperDiv data-test="button_inverse_loading_full_width_right">
                     <Button fullWidth isInverse isLoading variant="success" align="right">
                         Button
                     </Button>
@@ -695,7 +695,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_basic_full_width_left_icon">
+                <SnapshotWrapperDiv data-test="button_basic_icon_full_width_left">
                     <Button fullWidth icon="PLUS" variant="success" align="left">
                         Button
                     </Button>
@@ -734,7 +734,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_basic_full_width_left_loading">
+                <SnapshotWrapperDiv data-test="button_basic_loading_full_width_left">
                     <Button fullWidth isLoading variant="success" align="left">
                         Button
                     </Button>
@@ -812,7 +812,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon </H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_inverse_full_width_left_icon">
+                <SnapshotWrapperDiv data-test="button_inverse_icon_full_width_left">
                     <Button fullWidth isInverse icon="PLUS" variant="success" align="left">
                         Button
                     </Button>
