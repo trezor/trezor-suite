@@ -50,7 +50,6 @@ export const loadFeeInfo = () => async (dispatch: Dispatch, _getState: GetState)
 };
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-
     // await dispatch(loadFeeInfo());
 
     const { accounts } = getState().wallet;
