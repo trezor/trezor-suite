@@ -154,7 +154,7 @@ storiesOf('Buttons', module).add(
                     </Button>
                 </SnapshotWrapperDiv>
             </Div>
-            
+
             <H1>Inverse - right aligned full width </H1>
             <Div>
                 <SnapshotWrapperDiv data-test="button_inverse_full_width_right">
