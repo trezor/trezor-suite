@@ -11,8 +11,8 @@ describe('Buttons', () => {
         'button_basic_icon_transparent',
         'button_basic_icon_disabled',
         'button_basic_loading',
-        'button_loading_transparent',
-        'button_loading_disabled',
+        'button_basic_loading_transparent',
+        'button_basic_loading_disabled',
 
         'button_basic_full_width',
         'button_basic_transparent_full_width',
