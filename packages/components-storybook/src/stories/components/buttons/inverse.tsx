@@ -49,14 +49,6 @@ storiesOf('Buttons', module).add(
                     </Button>
                 </SnapshotWrapper>
             </Row>
-            <Row>
-                <Button isInverse isTransparent data-test="button_inverse_transparent">
-                    Transparent
-                </Button>
-                <Button isInverse isDisabled data-test="button_inverse_disabled">
-                    Disabled
-                </Button>
-            </Row>
 
             <H5>with an icon </H5>
             <Row>
@@ -77,19 +69,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapper>
-            </Row>
-            <Row>
-                <Button
-                    isInverse
-                    icon="PLUS"
-                    isTransparent
-                    data-test="button_inverse_icon_transparent"
-                >
-                    Transparent
-                </Button>
-                <Button isInverse icon="PLUS" isDisabled data-test="button_inverse_icon_disabled">
-                    Disabled
-                </Button>
             </Row>
 
             <H5>with loading </H5>
@@ -112,19 +91,6 @@ storiesOf('Buttons', module).add(
                     </Button>
                 </SnapshotWrapper>
             </Row>
-            <Row>
-                <Button
-                    isInverse
-                    isLoading
-                    isTransparent
-                    data-test="button_inverse_loading_transparent"
-                >
-                    Transparent
-                </Button>
-                <Button isInverse isLoading isDisabled data-test="button_inverse_loading_disabled">
-                    Disabled
-                </Button>
-            </Row>
 
             <H1>Inverse - full width </H1>
             <Div>
@@ -145,22 +111,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    isTransparent
-                    data-test="button_inverse_transparent_full_width"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isDisabled
-                    data-test="button_inverse_disabled_full_width"
-                >
-                    Disabled
-                </Button>
             </Div>
 
             <H5>with an icon</H5>
@@ -182,24 +132,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    isTransparent
-                    data-test="button_inverse_icon_transparent_full_width"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    isDisabled
-                    data-test="button_inverse_icon_disabled_full_width"
-                >
-                    Disabled
-                </Button>
             </Div>
 
             <H5>with loading </H5>
@@ -221,25 +153,8 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    isTransparent
-                    data-test="button_inverse_loading_transparent_full_width"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    isDisabled
-                    data-test="button_inverse_loading_disabled_full_width"
-                >
-                    Disabled
-                </Button>
             </Div>
+            
             <H1>Inverse - right aligned full width </H1>
             <Div>
                 <SnapshotWrapperDiv data-test="button_inverse_full_width_right">
@@ -259,24 +174,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    isTransparent
-                    data-test="button_inverse_transparent_full_width_right"
-                    align="right"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isDisabled
-                    data-test="button_inverse_disabled_full_width_right"
-                    align="right"
-                >
-                    Disabled
-                </Button>
             </Div>
 
             <H5>with an icon </H5>
@@ -298,26 +195,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    isTransparent
-                    data-test="button_inverse_icon_transparent_full_width_right"
-                    align="right"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    isDisabled
-                    data-test="button_inverse_icon_disabled_full_width_right"
-                    align="right"
-                >
-                    Disabled
-                </Button>
             </Div>
 
             <H5>with loading </H5>
@@ -339,27 +216,8 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    isTransparent
-                    data-test="button_inverse_loading_transparent_full_width_right"
-                    align="right"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    isDisabled
-                    data-test="button_inverse_loading_disabled_full_width_right"
-                    align="right"
-                >
-                    Disabled
-                </Button>
             </Div>
+
             <H1>Inverse - full width aligned left</H1>
             <Div>
                 <SnapshotWrapperDiv data-test="button_inverse_full_width_left">
@@ -379,24 +237,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    isTransparent
-                    data-test="button_inverse_transparent_full_width_left"
-                    align="left"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isDisabled
-                    data-test="button_inverse_disabled_full_width_left"
-                    align="left"
-                >
-                    Disabled
-                </Button>
             </Div>
 
             <H5>with an icon </H5>
@@ -418,26 +258,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    isTransparent
-                    data-test="button_inverse_icon_transparent_full_width_left"
-                    align="left"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    isDisabled
-                    data-test="button_inverse_icon_disabled_full_width_left"
-                    align="left"
-                >
-                    Disabled
-                </Button>
             </Div>
 
             <H5>with loading </H5>
@@ -459,26 +279,6 @@ storiesOf('Buttons', module).add(
                         Button
                     </Button>
                 </SnapshotWrapperDiv>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    isTransparent
-                    data-test="button_inverse_loading_transparent_full_width_left"
-                    align="left"
-                >
-                    Transparent
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    isDisabled
-                    data-test="button_inverse_loading_disabled_full_width_left"
-                    align="left"
-                >
-                    Disabled
-                </Button>
             </Div>
         </Wrapper>
     ),
