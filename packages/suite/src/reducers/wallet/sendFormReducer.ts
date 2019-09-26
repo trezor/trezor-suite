@@ -2,7 +2,7 @@ import produce from 'immer';
 import validator from 'validator';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
-import { State, Output } from '@wallet-types/sendForm';
+import { State, InitialState, Output } from '@wallet-types/sendForm';
 import {
     VALIDATION_ERRORS,
     FIRST_OUTPUT_ID,
@@ -11,7 +11,7 @@ import {
 import { isAddressValid } from '@wallet-utils/validation';
 import { WalletAction } from '@wallet-types';
 
-export const initialState: State = {
+const initialState = (loaded: InitialState): State => ({
     outputs: [
         {
             // fill first output by default
@@ -22,7 +22,6 @@ export const initialState: State = {
             localCurrency: { value: DEFAULT_LOCAL_CURRENCY },
         },
     ],
-    fee: null,
     customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
     networkTypeRipple: {
@@ -37,9 +36,13 @@ export const initialState: State = {
         data: { value: null, error: null },
     },
     networkTypeBitcoin: {},
-};
+    ...loaded,
+});
 
-export default (state: State = initialState, action: WalletAction): State => {
+export default (state: State | null = null, action: WalletAction): State | null => {
+    if (action.type === SEND.INIT) return initialState(action.payload);
+    if (!state || action.type === SEND.DISPOSE) return null;
+
     return produce(state, draft => {
         switch (action.type) {
             // show additional form
@@ -102,17 +105,16 @@ export default (state: State = initialState, action: WalletAction): State => {
             }
 
             // change select "Fee"
-            case SEND.HANDLE_FEE_VALUE_CHANGE: {
-                const { fee } = action;
-                draft.fee = fee;
+            case SEND.HANDLE_FEE_VALUE_CHANGE:
+                draft.selectedFee = action.fee;
                 break;
-            }
 
             // change select "Fee"
             case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
                 const { customFee } = action;
                 draft.customFee.error = null;
                 draft.customFee.value = customFee;
+                if (customFee === null) return draft;
 
                 if (validator.isEmpty(customFee)) {
                     draft.customFee.error = VALIDATION_ERRORS.IS_EMPTY;
@@ -156,10 +158,13 @@ export default (state: State = initialState, action: WalletAction): State => {
 
             // click button "Clear"
             case SEND.CLEAR: {
-                return {
-                    ...initialState,
+                return initialState({
+                    feeInfo: draft.feeInfo,
+                    selectedFee:
+                        draft.feeInfo.levels.find(f => f.label === 'normal') ||
+                        draft.feeInfo.levels[0],
                     isAdditionalFormVisible: draft.isAdditionalFormVisible,
-                };
+                });
             }
 
             // change input in additional xrp form "Destination tag"

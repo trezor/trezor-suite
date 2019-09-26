@@ -2,11 +2,11 @@ import React from 'react';
 import { colors, Select, P } from '@trezor/components';
 import styled from 'styled-components';
 import { CUSTOM_FEE } from '@wallet-constants/sendForm';
+import { FeeLevel } from '@wallet-types/sendForm';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import accountMessages from '@wallet-views/account/messages';
-import { FeeItem } from '@wallet-reducers/feesReducer';
 import { DispatchProps } from '../../Container';
-import { Fee, Account } from '@wallet-types';
+import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,28 +36,18 @@ const OptionLabel = styled(P)`
     word-break: break-all;
 `;
 
+const StyledSelect = styled(Select)``;
+
 interface Props {
-    fees: Fee;
-    fee: null | FeeItem;
+    feeLevels: FeeLevel[];
+    selectedFee: FeeLevel;
     symbol: Account['symbol'];
-    sendFormActions: DispatchProps['sendFormActions'];
+    onChange: DispatchProps['sendFormActions']['handleFeeValueChange'];
     intl: InjectedIntl;
 }
 
-const getValue = (fees: Fee, symbol: Account['symbol']) => {
-    return fees[symbol].length === 1 ? fees[symbol] : fees[symbol][0];
-};
-
 const capitalize = (s: string) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
-};
-
-const addCustom = (option: FeeItem[]) => {
-    const result = option;
-    if (!result.find(i => i.value === CUSTOM_FEE)) {
-        result.push({ label: CUSTOM_FEE, value: CUSTOM_FEE });
-    }
-    return result;
 };
 
 const FeeComponent = (props: Props) => (
@@ -65,19 +55,19 @@ const FeeComponent = (props: Props) => (
         <Label>
             <FormattedMessage {...accountMessages.TR_FEE} />
         </Label>
-        <Select
+        <StyledSelect
             isSearchable={false}
             isClearable={false}
-            value={props.fee || getValue(props.fees, props.symbol)}
-            // @ts-ignore TODO fix type
-            onChange={feeValue => props.sendFormActions.handleFeeValueChange(feeValue)}
-            options={addCustom(props.fees[props.symbol])}
-            formatOptionLabel={option => (
+            value={props.selectedFee}
+            onChange={props.onChange}
+            options={props.feeLevels}
+            formatOptionLabel={(option: FeeLevel) => (
                 <OptionWrapper>
                     <OptionLabel>{capitalize(option.label)}</OptionLabel>
                     {option.label !== CUSTOM_FEE && (
                         <OptionValue>
-                            {option.value} {props.symbol.toUpperCase()}
+                            {/* {option.feePerUnit} {props.symbol.toUpperCase()} */}
+                            {option.feePerUnit} sat/B
                         </OptionValue>
                     )}
                 </OptionWrapper>

@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { Input } from '@trezor/components';
 import sendMessages from '@wallet-views/account/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { State } from '@wallet-types/sendForm';
 import messages from '../../index.messages';
 import { Props as ContainerProps } from '../../../../Container';
 
@@ -14,15 +15,12 @@ const Label = styled.div`
 `;
 
 interface Props {
-    errors: ContainerProps['send']['customFee']['error'];
-    customFee: ContainerProps['send']['customFee']['value'];
+    errors: State['customFee']['error'];
+    customFee: State['customFee']['value'];
     sendFormActions: ContainerProps['sendFormActions'];
 }
 
-const getState = (
-    error: ContainerProps['send']['customFee']['error'],
-    customFee: ContainerProps['send']['customFee']['value'],
-) => {
+const getState = (error: Props['errors'], customFee: Props['customFee']) => {
     if (error) {
         return 'error';
     }
@@ -31,7 +29,7 @@ const getState = (
     }
 };
 
-const getErrorMessage = (error: ContainerProps['send']['customFee']['error']) => {
+const getErrorMessage = (error: Props['errors']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_CUSTOM_FEE_IS_NOT_SET} />;

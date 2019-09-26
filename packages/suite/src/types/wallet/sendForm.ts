@@ -1,4 +1,17 @@
+import { FeeLevel as FeeLevelBase } from 'trezor-connect';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+
+export interface FeeLevel extends FeeLevelBase {
+    value: string;
+}
+export interface FeeInfo {
+    blockHeight: number; // when fee info was updated; 0 = never
+    blockTime: number; // how often block is mined
+    minFee: number;
+    maxFee: number;
+    feeLimit?: number; // eth gas limit
+    levels: FeeLevel[]; // fee levels are predefined in trezor-connect > trezor-firmware/common
+}
 
 export interface Output {
     id: number;
@@ -22,7 +35,8 @@ export interface Output {
 
 export interface State {
     outputs: Output[];
-    fee: null | { value: string; label: string };
+    feeInfo: FeeInfo;
+    selectedFee: FeeLevel;
     customFee: {
         value: null | string;
         error: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_NUMBER;
@@ -50,3 +64,8 @@ export interface State {
     };
     networkTypeBitcoin: {};
 }
+
+export type InitialState = {
+    feeInfo: FeeInfo;
+    selectedFee: FeeLevel;
+} & Partial<State>;
