@@ -4,7 +4,7 @@ import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
 export interface SendFormRippleActions {
-    type: typeof SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE;
+    type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE;
     destinationTag: string;
 }
 
@@ -13,7 +13,7 @@ export interface SendFormRippleActions {
  */
 export const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
     dispatch({
-        type: SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE,
+        type: SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE,
         destinationTag,
     });
 };

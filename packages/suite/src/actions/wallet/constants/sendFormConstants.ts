@@ -13,7 +13,10 @@ export const CLEAR = '@wallet_send_form/clear';
 
 // btc specific
 export const BTC_ADD_RECIPIENT = '@wallet_send_form/btc-add-recipient';
+export const BTC_REMOVE_RECIPIENT = '@wallet_send_form/btc-remove-recipient';
+
+// ethereum specific
 
 // xrp specific
-export const HANDLE_XRP_DESTINATION_TAG_CHANGE =
+export const XRP_HANDLE_DESTINATION_TAG_CHANGE =
     '@wallet_send_form/xrp_handle-destination-tag-change';
