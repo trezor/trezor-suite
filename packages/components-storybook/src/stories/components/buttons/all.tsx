@@ -70,10 +70,10 @@ storiesOf('Buttons', module).add(
                 </SnapshotWrapper>
             </Row>
             <Row>
-                <Button icon="PLUS" isTransparent data-test="button_icon_transparent">
+                <Button icon="PLUS" isTransparent data-test="button_basic_icon_transparent">
                     Transparent
                 </Button>
-                <Button icon="PLUS" isDisabled data-test="button_icon_disabled">
+                <Button icon="PLUS" isDisabled data-test="button_basic_icon_disabled">
                     Disabled
                 </Button>
             </Row>
@@ -99,10 +99,10 @@ storiesOf('Buttons', module).add(
                 </SnapshotWrapper>
             </Row>
             <Row>
-                <Button isLoading isTransparent data-test="button_loading_transparent">
+                <Button isLoading isTransparent data-test="button_basic_loading_transparent">
                     Transparent
                 </Button>
-                <Button isLoading isDisabled data-test="button_loading_disabled">
+                <Button isLoading isDisabled data-test="button_basic_loading_disabled">
                     Disabled
                 </Button>
             </Row>
@@ -716,7 +716,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isTransparent
-                    data-test="button_icon_transparent_full_width_left"
+                    data-test="button_basic_icon_transparent_full_width_left"
                     align="left"
                 >
                     Transparent
@@ -725,7 +725,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isDisabled
-                    data-test="button_icon_disabled_full_width_left"
+                    data-test="button_basic_icon_disabled_full_width_left"
                     align="left"
                 >
                     Disabled
@@ -755,7 +755,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isTransparent
-                    data-test="button_loading_transparent_full_width_left"
+                    data-test="button_basic_loading_transparent_full_width_left"
                     align="left"
                 >
                     Transparent
@@ -764,7 +764,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isDisabled
-                    data-test="button_loading_disabled_full_width_left"
+                    data-test="button_basic_loading_disabled_full_width_left"
                     align="left"
                 >
                     Disabled
