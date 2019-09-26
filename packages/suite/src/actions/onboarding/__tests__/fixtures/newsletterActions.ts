@@ -3,7 +3,7 @@ import * as newsletterActions from '@onboarding-actions/newsletterActions';
 export const fixtures = [
     {
         description: 'Set email field',
-        actions: [newsletterActions.setEmail('email@bcash.lol')],
+        actions: [() => newsletterActions.setEmail('email@bcash.lol')],
         result: [
             {
                 email: 'email@bcash.lol',
@@ -12,7 +12,7 @@ export const fixtures = [
     },
     {
         description: 'Set skipped field',
-        actions: [newsletterActions.setSkipped()],
+        actions: [() => newsletterActions.setSkipped()],
         result: [
             {
                 skipped: true,
@@ -21,7 +21,7 @@ export const fixtures = [
     },
     {
         description: 'Toggle checkbox field',
-        actions: [newsletterActions.toggleCheckbox('Security updates')],
+        actions: [() => newsletterActions.toggleCheckbox('Security updates')],
         result: [
             {
                 checkboxes: [
