@@ -20,5 +20,5 @@ export const BTC_REMOVE_RECIPIENT = '@wallet_send_form/btc-remove-recipient';
 // ethereum specific
 
 // xrp specific
-export const HANDLE_XRP_DESTINATION_TAG_CHANGE =
+export const XRP_HANDLE_DESTINATION_TAG_CHANGE =
     '@wallet-send-form/xrp-handle-destination-tag-change';
