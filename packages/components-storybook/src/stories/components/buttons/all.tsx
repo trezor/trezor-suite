@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, ButtonPin, H1, H5, variables } from '@trezor/components';
+import { Button, ButtonPin, H1, H5 } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
-import { text, boolean, select } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -23,7 +21,10 @@ const Div = styled.div`
     margin: 0.5rem 0 2rem;
 `;
 
-const { ICONS } = variables;
+const SnapshotWrapper = styled.div`
+    display: inline-block;
+`;
+const SnapshotWrapperDiv = styled.div``;
 
 storiesOf('Buttons', module).add(
     'All',
@@ -31,21 +32,13 @@ storiesOf('Buttons', module).add(
         <Wrapper>
             <H1>Basic </H1>
             <Row>
-                <Button variant="success" data-test="button_basic_success">
-                    Button
-                </Button>
-                <Button variant="info" data-test="button_basic_info">
-                    Button
-                </Button>
-                <Button variant="warning" data-test="button_basic_warning">
-                    Button
-                </Button>
-                <Button variant="error" data-test="button_basic_error">
-                    Button
-                </Button>
-                <Button variant="white" data-test="button_basic_white">
-                    Button
-                </Button>
+                <SnapshotWrapper data-test="button_basic">
+                    <Button variant="success">Button</Button>
+                    <Button variant="info">Button</Button>
+                    <Button variant="warning">Button</Button>
+                    <Button variant="error">Button</Button>
+                    <Button variant="white">Button</Button>
+                </SnapshotWrapper>
             </Row>
             <Row>
                 <Button data-test="button_basic_transparent" isTransparent>
@@ -58,21 +51,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Row>
-                <Button icon="PLUS" variant="success" data-test="button_icon_success">
-                    Button
-                </Button>
-                <Button icon="PLUS" variant="info" data-test="button_icon_info">
-                    Button
-                </Button>
-                <Button icon="PLUS" variant="warning" data-test="button_icon_warning">
-                    Button
-                </Button>
-                <Button icon="PLUS" variant="error" data-test="button_icon_error">
-                    Button
-                </Button>
-                <Button icon="PLUS" variant="white" data-test="button_icon_white">
-                    Button
-                </Button>
+                <SnapshotWrapper data-test="button_basic_icon">
+                    <Button icon="PLUS" variant="success">
+                        Button
+                    </Button>
+                    <Button icon="PLUS" variant="info">
+                        Button
+                    </Button>
+                    <Button icon="PLUS" variant="warning">
+                        Button
+                    </Button>
+                    <Button icon="PLUS" variant="error">
+                        Button
+                    </Button>
+                    <Button icon="PLUS" variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapper>
             </Row>
             <Row>
                 <Button icon="PLUS" isTransparent data-test="button_icon_transparent">
@@ -85,21 +80,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Row>
-                <Button isLoading variant="success" data-test="button_loading_success">
-                    Button
-                </Button>
-                <Button isLoading variant="info" data-test="button_loading_info">
-                    Button
-                </Button>
-                <Button isLoading variant="warning" data-test="button_loading_warning">
-                    Button
-                </Button>
-                <Button isLoading variant="error" data-test="button_loading_error">
-                    Button
-                </Button>
-                <Button isLoading variant="white" data-test="button_loading_white">
-                    Button
-                </Button>
+                <SnapshotWrapper data-test="button_basic_loading">
+                    <Button isLoading variant="success">
+                        Button
+                    </Button>
+                    <Button isLoading variant="info">
+                        Button
+                    </Button>
+                    <Button isLoading variant="warning">
+                        Button
+                    </Button>
+                    <Button isLoading variant="error">
+                        Button
+                    </Button>
+                    <Button isLoading variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapper>
             </Row>
             <Row>
                 <Button isLoading isTransparent data-test="button_loading_transparent">
@@ -112,21 +109,23 @@ storiesOf('Buttons', module).add(
 
             <H1>Inverse </H1>
             <Row>
-                <Button isInverse variant="success" data-test="button_inverse_success">
-                    Button
-                </Button>
-                <Button isInverse variant="info" data-test="button_inverse_info">
-                    Button
-                </Button>
-                <Button isInverse variant="warning" data-test="button_inverse_warning">
-                    Button
-                </Button>
-                <Button isInverse variant="error" data-test="button_inverse_error">
-                    Button
-                </Button>
-                <Button isInverse variant="white" data-test="button_inverse_white">
-                    Button
-                </Button>
+                <SnapshotWrapper data-test="button_inverse">
+                    <Button isInverse variant="success">
+                        Button
+                    </Button>
+                    <Button isInverse variant="info">
+                        Button
+                    </Button>
+                    <Button isInverse variant="warning">
+                        Button
+                    </Button>
+                    <Button isInverse variant="error">
+                        Button
+                    </Button>
+                    <Button isInverse variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapper>
             </Row>
             <Row>
                 <Button isInverse isTransparent data-test="button_inverse_transparent">
@@ -139,31 +138,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon </H5>
             <Row>
-                <Button
-                    isInverse
-                    icon="PLUS"
-                    variant="success"
-                    data-test="button_inverse_icon_success"
-                >
-                    Button
-                </Button>
-                <Button isInverse icon="PLUS" variant="info" data-test="button_inverse_icon_info">
-                    Button
-                </Button>
-                <Button
-                    isInverse
-                    icon="PLUS"
-                    variant="warning"
-                    data-test="button_inverse_icon_warning"
-                >
-                    Button
-                </Button>
-                <Button isInverse icon="PLUS" variant="error" data-test="button_inverse_icon_error">
-                    Button
-                </Button>
-                <Button isInverse icon="PLUS" variant="white" data-test="button_inverse_icon_white">
-                    Button
-                </Button>
+                <SnapshotWrapper data-test="button_inverse_icon">
+                    <Button isInverse icon="PLUS" variant="success">
+                        Button
+                    </Button>
+                    <Button isInverse icon="PLUS" variant="info">
+                        Button
+                    </Button>
+                    <Button isInverse icon="PLUS" variant="warning">
+                        Button
+                    </Button>
+                    <Button isInverse icon="PLUS" variant="error">
+                        Button
+                    </Button>
+                    <Button isInverse icon="PLUS" variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapper>
             </Row>
             <Row>
                 <Button
@@ -181,41 +172,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Row>
-                <Button
-                    isInverse
-                    isLoading
-                    variant="success"
-                    data-test="button_inverse_loading_success"
-                >
-                    Button
-                </Button>
-                <Button isInverse isLoading variant="info" data-test="button_inverse_loading_info">
-                    Button
-                </Button>
-                <Button
-                    isInverse
-                    isLoading
-                    variant="warning"
-                    data-test="button_inverse_loading_warning"
-                >
-                    Button
-                </Button>
-                <Button
-                    isInverse
-                    isLoading
-                    variant="error"
-                    data-test="button_inverse_loading_error"
-                >
-                    Button
-                </Button>
-                <Button
-                    isInverse
-                    isLoading
-                    variant="white"
-                    data-test="button_inverse_loading_white"
-                >
-                    Button
-                </Button>
+                <SnapshotWrapper data-test="button_inverse_loading">
+                    <Button isInverse isLoading variant="success">
+                        Button
+                    </Button>
+                    <Button isInverse isLoading variant="info">
+                        Button
+                    </Button>
+                    <Button isInverse isLoading variant="warning">
+                        Button
+                    </Button>
+                    <Button isInverse isLoading variant="error">
+                        Button
+                    </Button>
+                    <Button isInverse isLoading variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapper>
             </Row>
             <Row>
                 <Button
@@ -233,22 +206,23 @@ storiesOf('Buttons', module).add(
 
             <H1>Basic - full width </H1>
             <Div>
-                <Button fullWidth variant="success" data-test="button_basic_success_full_width">
-                    Button
-                </Button>
-                <Button fullWidth variant="info" data-test="button_basic_info_full_width">
-                    Button
-                </Button>
-                <Button fullWidth variant="warning" data-test="button_basic_warning_full_width">
-                    Button
-                </Button>
-                <Button fullWidth variant="error" data-test="button_basic_error_full_width">
-                    Button
-                </Button>
-                <Button fullWidth variant="white" data-test="button_basic_white_full_width">
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_full_width">
+                    <Button fullWidth variant="success">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="info">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="warning">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="error">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button isTransparent fullWidth data-test="button_basic_transparent_full_width">
                     Transparent
                 </Button>
@@ -259,52 +233,28 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Div>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="success"
-                    data-test="button_icon_success_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="info"
-                    data-test="button_icon_info_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="warning"
-                    data-test="button_icon_warning_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="error"
-                    data-test="button_icon_error_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="white"
-                    data-test="button_icon_white_full_width"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_full_width_icon">
+                    <Button fullWidth icon="PLUS" variant="success">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="info">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="warning">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="error">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     icon="PLUS"
                     isTransparent
-                    data-test="button_icon_transparent_full_width"
+                    data-test="button_basic_icon_transparent_full_width"
                 >
                     Transparent
                 </Button>
@@ -312,7 +262,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isDisabled
-                    data-test="button_icon_disabled_full_width"
+                    data-test="button_basic_icon_disabled_full_width"
                 >
                     Disabled
                 </Button>
@@ -320,52 +270,28 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="success"
-                    data-test="button_loading_success_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="info"
-                    data-test="button_loading_info_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="warning"
-                    data-test="button_loading_warning_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="error"
-                    data-test="button_loading_error_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="white"
-                    data-test="button_loading_white_full_width"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_full_width_loading">
+                    <Button fullWidth isLoading variant="success">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="info">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="warning">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="error">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isLoading
                     isTransparent
-                    data-test="button_loading_transparent_full_width"
+                    data-test="button_basic_loading_transparent_full_width"
                 >
                     Transparent
                 </Button>
@@ -373,7 +299,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isDisabled
-                    data-test="button_loading_disabled_full_width"
+                    data-test="button_basic_loading_disabled_full_width"
                 >
                     Disabled
                 </Button>
@@ -381,47 +307,23 @@ storiesOf('Buttons', module).add(
 
             <H1>Inverse - full width </H1>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="success"
-                    data-test="button_inverse_success_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="info"
-                    data-test="button_inverse_info_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="warning"
-                    data-test="button_inverse_warning_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="error"
-                    data-test="button_inverse_error_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="white"
-                    data-test="button_inverse_white_full_width"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_full_width">
+                    <Button fullWidth isInverse variant="success">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="info">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="warning">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="error">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -442,52 +344,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="success"
-                    data-test="button_inverse_icon_success_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="info"
-                    data-test="button_inverse_icon_info_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="warning"
-                    data-test="button_inverse_icon_warning_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="error"
-                    data-test="button_inverse_icon_error_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="white"
-                    data-test="button_inverse_icon_white_full_width"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_icon_full_width">
+                    <Button fullWidth isInverse icon="PLUS" variant="success">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="info">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="warning">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="error">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -510,52 +383,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="success"
-                    data-test="button_inverse_loading_success_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="info"
-                    data-test="button_inverse_loading_info_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="warning"
-                    data-test="button_inverse_loading_warning_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="error"
-                    data-test="button_inverse_loading_error_full_width"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="white"
-                    data-test="button_inverse_loading_white_full_width"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_loading_full_width">
+                    <Button fullWidth isInverse isLoading variant="success">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="info">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="warning">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="error">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="white">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -576,49 +420,25 @@ storiesOf('Buttons', module).add(
                 </Button>
             </Div>
 
-            <H1>Basic - right aligned fullwith </H1>
+            <H1>Basic - right aligned full with </H1>
             <Div>
-                <Button
-                    fullWidth
-                    variant="success"
-                    data-test="button_basic_success_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="info"
-                    data-test="button_basic_info_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="warning"
-                    data-test="button_basic_warning_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="error"
-                    data-test="button_basic_error_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="white"
-                    data-test="button_basic_white_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_full_width_right">
+                    <Button fullWidth variant="success" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="info" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="warning" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="error" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="white" align="right">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     isTransparent
                     fullWidth
@@ -639,57 +459,28 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Div>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="success"
-                    data-test="button_icon_success_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="info"
-                    data-test="button_icon_info_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="warning"
-                    data-test="button_icon_warning_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="error"
-                    data-test="button_icon_error_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="white"
-                    data-test="button_icon_white_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_icon_full_width_right">
+                    <Button fullWidth icon="PLUS" variant="success" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="info" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="warning" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="error" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="white" align="right">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     icon="PLUS"
                     isTransparent
-                    data-test="button_icon_transparent_full_width_right"
+                    data-test="button_basic_icon_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -698,7 +489,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     icon="PLUS"
                     isDisabled
-                    data-test="button_icon_disabled_full_width_right"
+                    data-test="button_basic_icon_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -707,57 +498,28 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="success"
-                    data-test="button_loading_success_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="info"
-                    data-test="button_loading_info_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="warning"
-                    data-test="button_loading_warning_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="error"
-                    data-test="button_loading_error_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="white"
-                    data-test="button_loading_white_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_loading_full_width_right">
+                    <Button fullWidth isLoading variant="success" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="info" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="warning" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="error" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="white" align="right">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isLoading
                     isTransparent
-                    data-test="button_loading_transparent_full_width_right"
+                    data-test="button_basic_loading_transparent_full_width_right"
                     align="right"
                 >
                     Transparent
@@ -766,7 +528,7 @@ storiesOf('Buttons', module).add(
                     fullWidth
                     isLoading
                     isDisabled
-                    data-test="button_loading_disabled_full_width_right"
+                    data-test="button_basic_loading_disabled_full_width_right"
                     align="right"
                 >
                     Disabled
@@ -775,52 +537,23 @@ storiesOf('Buttons', module).add(
 
             <H1>Inverse - right aligned full width </H1>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="success"
-                    data-test="button_inverse_success_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="info"
-                    data-test="button_inverse_info_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="warning"
-                    data-test="button_inverse_warning_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="error"
-                    data-test="button_inverse_error_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="white"
-                    data-test="button_inverse_white_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_full_width_right">
+                    <Button fullWidth isInverse variant="success" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="info" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="warning" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="error" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="white" align="right">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -843,57 +576,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="success"
-                    data-test="button_inverse_icon_success_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="info"
-                    data-test="button_inverse_icon_info_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="warning"
-                    data-test="button_inverse_icon_warning_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="error"
-                    data-test="button_inverse_icon_error_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="white"
-                    data-test="button_inverse_icon_white_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_icon_full_width_right">
+                    <Button fullWidth isInverse icon="PLUS" variant="success" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="info" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="warning" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="error" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="white" align="right">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -918,57 +617,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="success"
-                    data-test="button_inverse_loading_success_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="info"
-                    data-test="button_inverse_loading_info_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="warning"
-                    data-test="button_inverse_loading_warning_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="error"
-                    data-test="button_inverse_loading_error_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="white"
-                    data-test="button_inverse_loading_white_full_width_right"
-                    align="right"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_loading_full_width_right">
+                    <Button fullWidth isInverse isLoading variant="success" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="info" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="warning" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="error" align="right">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="white" align="right">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -993,47 +658,23 @@ storiesOf('Buttons', module).add(
 
             <H5>Basic - full width aligned left</H5>
             <Div>
-                <Button
-                    fullWidth
-                    variant="success"
-                    data-test="button_basic_success_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="info"
-                    data-test="button_basic_info_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="warning"
-                    data-test="button_basic_warning_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="error"
-                    data-test="button_basic_error_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    variant="white"
-                    data-test="button_basic_white_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_full_width_left">
+                    <Button fullWidth variant="success" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="info" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="warning" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="error" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth variant="white" align="left">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     isTransparent
                     fullWidth
@@ -1054,52 +695,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon</H5>
             <Div>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="success"
-                    data-test="button_icon_success_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="info"
-                    data-test="button_icon_info_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="warning"
-                    data-test="button_icon_warning_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="error"
-                    data-test="button_icon_error_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    icon="PLUS"
-                    variant="white"
-                    data-test="button_icon_white_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_icon_full_width_left">
+                    <Button fullWidth icon="PLUS" variant="success" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="info" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="warning" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="error" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth icon="PLUS" variant="white" align="left">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     icon="PLUS"
@@ -1122,52 +734,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="success"
-                    data-test="button_loading_success_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="info"
-                    data-test="button_loading_info_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="warning"
-                    data-test="button_loading_warning_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="error"
-                    data-test="button_loading_error_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isLoading
-                    variant="white"
-                    data-test="button_loading_white_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_basic_loading_full_width_left">
+                    <Button fullWidth isLoading variant="success" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="info" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="warning" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="error" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isLoading variant="white" align="left">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isLoading
@@ -1190,52 +773,23 @@ storiesOf('Buttons', module).add(
 
             <H1>Inverse - full width aligned left</H1>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="success"
-                    data-test="button_inverse_success_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="info"
-                    data-test="button_inverse_info_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="warning"
-                    data-test="button_inverse_warning_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="error"
-                    data-test="button_inverse_error_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    variant="white"
-                    data-test="button_inverse_white_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_full_width_left">
+                    <Button fullWidth isInverse variant="success" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="info" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="warning" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="error" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse variant="white" align="left">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -1258,57 +812,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with an icon </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="success"
-                    data-test="button_inverse_icon_success_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="info"
-                    data-test="button_inverse_icon_info_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="warning"
-                    data-test="button_inverse_icon_warning_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="error"
-                    data-test="button_inverse_icon_error_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    icon="PLUS"
-                    variant="white"
-                    data-test="button_inverse_icon_white_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_icon_full_width_left">
+                    <Button fullWidth isInverse icon="PLUS" variant="success" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="info" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="warning" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="error" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse icon="PLUS" variant="white" align="left">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -1333,57 +853,23 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="success"
-                    data-test="button_inverse_loading_success_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="info"
-                    data-test="button_inverse_loading_info_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="warning"
-                    data-test="button_inverse_loading_warning_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="error"
-                    data-test="button_inverse_loading_error_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <Button
-                    fullWidth
-                    isInverse
-                    isLoading
-                    variant="white"
-                    data-test="button_inverse_loading_white_full_width_left"
-                    align="left"
-                >
-                    Button
-                </Button>
-                <br />
+                <SnapshotWrapperDiv data-test="button_inverse_full_width_left_loading">
+                    <Button fullWidth isInverse isLoading variant="success" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="info" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="warning" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="error" align="left">
+                        Button
+                    </Button>
+                    <Button fullWidth isInverse isLoading variant="white" align="left">
+                        Button
+                    </Button>
+                </SnapshotWrapperDiv>
                 <Button
                     fullWidth
                     isInverse
@@ -1418,84 +904,3 @@ storiesOf('Buttons', module).add(
         },
     }
 );
-
-storiesOf('Buttons', module)
-    .add(
-        'All',
-        () => {
-            const isInverse = boolean('Inverse', false);
-            const isDisabled = boolean('Disabled', false);
-            const isLoading = boolean('Loading', false);
-            const buttonText = text('Text', 'Button Text');
-            const variant: any = select(
-                'Variant',
-                {
-                    Default: null,
-                    info: 'info',
-                    warning: 'warning',
-                    error: 'error',
-                    white: 'white',
-                },
-                null
-            );
-            const iconOptions: any = {
-                None: null,
-            };
-
-            ICONS.forEach((icon: string) => {
-                iconOptions[icon] = icon;
-            });
-
-            const icon = select('Icon', iconOptions, null);
-            const isTransparent = boolean('Transparent', false);
-            const fullWidth = boolean('FullWidth', false);
-
-            let align;
-            if (fullWidth) {
-                align = select(
-                    'align',
-                    {
-                        Center: null,
-                        Left: 'left',
-                        Right: 'right',
-                    },
-                    null
-                );
-            }
-
-            return (
-                <Button
-                    {...(isDisabled ? { isDisabled } : {})}
-                    {...(variant ? { variant } : {})}
-                    {...(isTransparent ? { isTransparent } : {})}
-                    {...(isInverse ? { isInverse } : {})}
-                    {...(icon ? { icon } : {})}
-                    {...(isLoading ? { isLoading } : {})}
-                    {...(fullWidth ? { fullWidth } : {})}
-                    {...(fullWidth && align ? { align } : {})}
-                >
-                    {buttonText}
-                </Button>
-            );
-        },
-        {
-            info: {
-                ...infoOptions,
-                text: `
-            ~~~js
-            import { Button } from 'trezor-ui-components';
-            ~~~
-            `,
-            },
-        }
-    )
-    .add('Button Pin', () => <ButtonPin onClick={() => {}} />, {
-        info: {
-            ...infoOptions,
-            text: `
-            ~~~js
-            import { ButtonPin } from 'trezor-ui-components';
-            ~~~
-            `,
-        },
-    });
