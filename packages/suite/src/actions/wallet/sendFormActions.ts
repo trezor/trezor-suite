@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
 import { getAccountKey } from '@wallet-utils/reducerUtils';
-import { Output, InitialState, FeeLevel, FeeInfo } from '@wallet-types/sendForm';
+import { Output, InitialState, FeeLevel, FeeInfo, State } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -52,7 +52,7 @@ export type SendFormActions =
     | {
           type: typeof SEND.CLEAR;
       }
-    | { type: typeof SEND.INIT; payload: InitialState }
+    | { type: typeof SEND.INIT; payload: InitialState; cachedState: null | State }
     | { type: typeof SEND.DISPOSE };
 
 /**
@@ -60,12 +60,11 @@ export type SendFormActions =
  */
 export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
-    if (router.app !== 'wallet' || !router.params) return;
+    const { account } = getState().wallet.selectedAccount;
+    const { sendCache } = getState().wallet;
+    if (router.app !== 'wallet' || !router.params || !account || !sendCache) return;
+
     const feeInfo = getState().wallet.fees[router.params.symbol];
-    // if (!feeInfo.blockHeight) {
-
-    // }
-
     const levels: FeeLevel[] = feeInfo.levels.concat({
         label: 'custom',
         feePerUnit: '0',
@@ -73,10 +72,14 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         blocks: 0,
     });
 
-    // TODO: load stored draft
+    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const cachedItem = sendCache.cache.find(item => item.id === accountKey) || null;
+    const cachedState = cachedItem ? cachedItem.sendFormState : null;
+
     // TODO: default output fiat currency from settings
     dispatch({
         type: SEND.INIT,
+        cachedState,
         payload: {
             feeInfo: {
                 ...feeInfo,

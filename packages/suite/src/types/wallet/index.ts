@@ -3,7 +3,7 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
 import { SendFormActions } from '@wallet-actions/sendFormActions';
-import { SendFormCacheActions } from '@wallet-actions/SendFormCacheActions';
+import { SendFormCacheActions } from '@wallet-actions/sendFormCacheActions';
 import { SendFormBitcoinActions } from '@wallet-actions/sendFormSpecific/bitcoinActions';
 import { SendFormRippleActions } from '@wallet-actions/sendFormSpecific/rippleActions';
 
