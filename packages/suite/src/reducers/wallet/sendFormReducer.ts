@@ -146,6 +146,14 @@ export default (state: State = initialState, action: WalletAction): State => {
                 break;
             }
 
+            // click button "Add recipient"
+            case SEND.BTC_REMOVE_RECIPIENT: {
+                const { outputId } = action;
+                const removed = draft.outputs.filter(output => output.id !== outputId);
+                draft.outputs = removed;
+                break;
+            }
+
             // click button "Clear"
             case SEND.CLEAR: {
                 return {
@@ -155,7 +163,7 @@ export default (state: State = initialState, action: WalletAction): State => {
             }
 
             // change input in additional xrp form "Destination tag"
-            case SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE: {
+            case SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE: {
                 const { destinationTag } = action;
                 draft.networkTypeRipple.destinationTag.error = null;
                 draft.networkTypeRipple.destinationTag.value = destinationTag;

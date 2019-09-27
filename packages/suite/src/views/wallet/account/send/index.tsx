@@ -1,7 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { InjectedIntl } from 'react-intl';
-import { CoinLogo } from '@trezor/components';
+import { CoinLogo, Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
 
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
@@ -24,6 +24,23 @@ const Row = styled.div`
     &:last-child {
         padding: 0;
     }
+`;
+
+const SlimRow = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    min-height: 10px;
+    align-items: flex-end;
+
+    ${(props: { isOnlyOne: boolean }) =>
+        props.isOnlyOne &&
+        css`
+            display: none;
+        `}
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
 `;
 
 const OutputWrapper = styled.div`
@@ -72,6 +89,14 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             </StyledTitle>
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
+                    <SlimRow isOnlyOne={send.outputs.length === 1}>
+                        <StyledIcon
+                            onClick={() => props.sendFormActionsBitcoin.removeRecipient(output.id)}
+                            size={10}
+                            color={colors.TEXT_SECONDARY}
+                            icon="CLOSE"
+                        />
+                    </SlimRow>
                     <Row>
                         <Address
                             outputId={output.id}

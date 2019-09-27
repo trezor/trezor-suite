@@ -59,7 +59,7 @@ describe('Newsletter Actions', () => {
             const state = getInitialState();
             const store = initStore(state);
             f.actions.forEach((action: any, i: number) => {
-                store.dispatch(action);
+                store.dispatch(action());
                 expect(store.getState().onboarding.newsletter).toMatchObject(f.result[i]);
             });
         });
