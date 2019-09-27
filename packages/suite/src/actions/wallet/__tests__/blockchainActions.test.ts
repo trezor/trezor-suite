@@ -2,6 +2,23 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import accountsReducer from '@wallet-reducers/accountsReducer';
 import * as blockchainActions from '../blockchainActions';
+import { BLOCKCHAIN } from '../constants';
+
+jest.mock('trezor-connect', () => {
+    let fixture: any;
+    return {
+        __esModule: true, // this property makes it work
+        default: {
+            blockchainEstimateFee: () =>
+                fixture || {
+                    success: false,
+                },
+        },
+        setTestFixtures: (f: any) => {
+            fixture = f;
+        },
+    };
+});
 
 type AccountsState = ReturnType<typeof accountsReducer>;
 interface InitialState {
@@ -33,10 +50,11 @@ const initStore = (state: State) => {
 };
 
 describe('Blockchain Actions', () => {
-    it('init', () => {
+    it('init', async () => {
         const state = getInitialState({});
         const store = initStore(state);
-        store.dispatch(blockchainActions.init());
-        expect(store.getActions().length).toEqual(1);
+        await store.dispatch(blockchainActions.init());
+        const action = store.getActions().pop();
+        expect(action.type).toEqual(BLOCKCHAIN.READY);
     });
 });

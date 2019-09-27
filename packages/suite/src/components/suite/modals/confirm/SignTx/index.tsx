@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
@@ -56,7 +56,11 @@ interface Props {
 
 const ConfirmSignTx = ({ device }: Props) => {
     // const { amount, address, selectedFeeLevel } = sendForm;
+    const amount = '';
+    const address = '';
+    const selectedFeeLevel = { label: '', value: '' };
     const majorVersion = device.features ? device.features.major_version : 2;
+    const currency = '';
     // const currency: string =
     //     typeof sendForm.currency === 'string' ? sendForm.currency : sendForm.networkSymbol;
 
@@ -73,7 +77,7 @@ const ConfirmSignTx = ({ device }: Props) => {
                     <FormattedMessage {...l10nMessages.TR_DETAILS_ARE_SHOWN_ON} />
                 </P>
             </Header>
-            {/* <Content>
+            <Content>
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
                 </Label>
@@ -87,7 +91,7 @@ const ConfirmSignTx = ({ device }: Props) => {
                 </Label>
                 <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
                 <StyledP>{selectedFeeLevel.label}</StyledP>
-            </Content> */}
+            </Content>
         </Wrapper>
     );
 };
