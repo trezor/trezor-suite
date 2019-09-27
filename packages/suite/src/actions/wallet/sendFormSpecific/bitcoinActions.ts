@@ -46,23 +46,31 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch) => {
 
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
+    const selectedDevice = getState().suite.device;
     const account = selectedAccount.account as Account;
-    if (!send || !send.networkTypeBitcoin.transactionInfo) return;
+    if (!send || !send.networkTypeBitcoin.transactionInfo || !selectedDevice) return;
 
     const { transactionInfo } = send.networkTypeBitcoin;
     if (!transactionInfo || transactionInfo.type !== 'final') return;
     const { transaction } = transactionInfo;
 
     const resp = await TrezorConnect.signTransaction({
+        device: {
+            path: selectedDevice.path,
+            instance: selectedDevice.instance,
+            state: selectedDevice.state,
+        },
+        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
         outputs: transaction.outputs,
         inputs: transaction.inputs,
         coin: account.symbol,
         push: true,
     });
 
+    console.log('resp', resp);
+
     if (resp.success) {
         dispatch({ type: SEND.CLEAR });
-
         dispatch(
             notificationActions.add({
                 variant: 'success',
