@@ -73,7 +73,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     });
 
     const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    const cachedItem = sendCache.cache.find(item => item.id === accountKey) || null;
+    const cachedItem = sendCache.cache.find(item => item.id === accountKey);
     const cachedState = cachedItem ? cachedItem.sendFormState : null;
 
     // TODO: default output fiat currency from settings
