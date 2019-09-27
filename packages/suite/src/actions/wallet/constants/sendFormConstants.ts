@@ -15,7 +15,8 @@ export const CLEAR = '@wallet-send-form/clear';
 
 // btc specific
 export const BTC_ADD_RECIPIENT = '@wallet-send-form/btc-add-recipient';
-export const BTC_REMOVE_RECIPIENT = '@wallet_send_form/btc-remove-recipient';
+export const BTC_REMOVE_RECIPIENT = '@wallet-send-form/btc-remove-recipient';
+export const BTC_PRECOMPOSED_TX = '@wallet-send-form/btc-precomposed-tx';
 
 // ethereum specific
 

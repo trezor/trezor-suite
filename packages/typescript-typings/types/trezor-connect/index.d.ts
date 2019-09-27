@@ -283,12 +283,33 @@ declare module 'trezor-connect' {
             addresses: AccountAddresses;
             utxo: AccountUtxo[];
         }
-        // feeLevels: FeeLevel[];
+        feeLevels: {
+            feePerUnit: string,
+        }[];
         coin: string;
     }
 
-    export interface PrecomposedTransaction {
-        foo: string;
+    export type PrecomposedTransaction = {
+        type: 'error',
+        error: string,
+    } | {
+        type: 'nonfinal',
+        max: string,
+        totalSpent: string, // all the outputs, no fee, no change
+        fee: string,
+        feePerByte: string,
+        bytes: number,
+    } | {
+        type: 'final',
+        max: string,
+        totalSpent: string, // all the outputs, no fee, no change
+        fee: string,
+        feePerByte: string,
+        bytes: number,
+        transaction: {
+            inputs: TransactionInput[],
+            outputs: TransactionOutput[],
+        },
     }
 
     export interface Transaction {
@@ -394,7 +415,7 @@ declare module 'trezor-connect' {
     export interface SignedTransaction {
         signatures: string[];
         serializedTx: string;
-        txId?: string;
+        txid?: string;
     }
 
     export interface Settings {
@@ -754,7 +775,6 @@ declare module 'trezor-connect' {
 
     interface BlockchainEstimateFeeParams {
         coin: string;
-        defaultLevels?: boolean;
         request?: {
             blocks?: number[];
             specific?: {
@@ -764,6 +784,7 @@ declare module 'trezor-connect' {
                 to?: string;
                 txsize?: number;
             };
+            feeLevels?: 'preloaded' | 'smart';
         }
     }
 
@@ -786,7 +807,7 @@ declare module 'trezor-connect' {
         /**
          * Initializes TrezorConnect.
          */
-        function init(settings: Settings): void;
+        function init(settings: Settings): Promise<void>;
 
         /**
          * Retrieves BIP32 extended public derived by given BIP32 path.
@@ -873,7 +894,7 @@ declare module 'trezor-connect' {
         ): Promise<ResponseMessage<Transaction>>;
         function composeTransaction(
             params: PrecomposeTransactionParams
-        ): Promise<ResponseMessage<PrecomposedTransaction>>;
+        ): Promise<ResponseMessage<PrecomposedTransaction[]>>;
 
         /**
          * Asks device to sign given inputs and outputs of pre-composed transaction.

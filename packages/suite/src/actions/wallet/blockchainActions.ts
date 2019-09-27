@@ -24,8 +24,10 @@ export const loadFeeInfo = () => async (dispatch: Dispatch, _getState: GetState)
     const networks = NETWORKS.filter(n => !n.isHidden && !n.accountType);
     const promises = networks.map(network => {
         return TrezorConnect.blockchainEstimateFee({
-            defaultLevels: true,
             coin: network.symbol,
+            request: {
+                feeLevels: 'preloaded',
+            },
         });
     });
     const levels = await Promise.all(promises);
@@ -50,7 +52,7 @@ export const loadFeeInfo = () => async (dispatch: Dispatch, _getState: GetState)
 };
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    // await dispatch(loadFeeInfo());
+    await dispatch(loadFeeInfo());
 
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {

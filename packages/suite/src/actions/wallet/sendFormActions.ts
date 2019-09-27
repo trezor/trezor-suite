@@ -55,7 +55,13 @@ export type SendFormActions =
  * Initialize current form, load values from session storage
  */
 export const init = () => (dispatch: Dispatch, getState: GetState) => {
-    const feeInfo = getState().wallet.fees.btc;
+    const { router } = getState();
+    if (router.app !== 'wallet' || !router.params) return;
+    const feeInfo = getState().wallet.fees[router.params.symbol];
+    // if (!feeInfo.blockHeight) {
+
+    // }
+
     const levels: FeeLevel[] = feeInfo.levels.concat({
         label: 'custom',
         feePerUnit: '0',

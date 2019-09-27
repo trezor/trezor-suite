@@ -1,4 +1,7 @@
-import { FeeLevel as FeeLevelBase } from 'trezor-connect';
+import {
+    FeeLevel as FeeLevelBase,
+    PrecomposedTransaction as PrecomposedBitcoinTransaction,
+} from 'trezor-connect';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
 export interface FeeLevel extends FeeLevelBase {
@@ -62,7 +65,9 @@ export interface State {
             error: null;
         };
     };
-    networkTypeBitcoin: {};
+    networkTypeBitcoin: {
+        transactionInfo: PrecomposedBitcoinTransaction | null;
+    };
 }
 
 export type InitialState = {

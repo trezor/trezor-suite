@@ -54,11 +54,11 @@ interface Props {
     sendForm: any;
 }
 
-const ConfirmSignTx: FunctionComponent<Props> = ({ device, sendForm }) => {
-    const { amount, address, selectedFeeLevel } = sendForm;
+const ConfirmSignTx = ({ device }: Props) => {
+    // const { amount, address, selectedFeeLevel } = sendForm;
     const majorVersion = device.features ? device.features.major_version : 2;
-    const currency: string =
-        typeof sendForm.currency === 'string' ? sendForm.currency : sendForm.networkSymbol;
+    // const currency: string =
+    //     typeof sendForm.currency === 'string' ? sendForm.currency : sendForm.networkSymbol;
 
     return (
         <Wrapper>
@@ -73,7 +73,7 @@ const ConfirmSignTx: FunctionComponent<Props> = ({ device, sendForm }) => {
                     <FormattedMessage {...l10nMessages.TR_DETAILS_ARE_SHOWN_ON} />
                 </P>
             </Header>
-            <Content>
+            {/* <Content>
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
                 </Label>
@@ -87,7 +87,7 @@ const ConfirmSignTx: FunctionComponent<Props> = ({ device, sendForm }) => {
                 </Label>
                 <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
                 <StyledP>{selectedFeeLevel.label}</StyledP>
-            </Content>
+            </Content> */}
         </Wrapper>
     );
 };

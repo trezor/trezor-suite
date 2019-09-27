@@ -35,7 +35,9 @@ const initialState = (loaded: InitialState): State => ({
         gasLimit: { value: null, error: null },
         data: { value: null, error: null },
     },
-    networkTypeBitcoin: {},
+    networkTypeBitcoin: {
+        transactionInfo: null,
+    },
     ...loaded,
 });
 
@@ -179,6 +181,10 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 }
                 break;
             }
+
+            case SEND.BTC_PRECOMPOSED_TX:
+                draft.networkTypeBitcoin.transactionInfo = action.payload;
+                break;
 
             // no default
         }
