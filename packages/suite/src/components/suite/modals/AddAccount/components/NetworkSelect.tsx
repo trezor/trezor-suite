@@ -17,6 +17,7 @@ const StyledSelect = styled(Select)`
 const OptionWrapper = styled.div`
     display: flex;
     align-items: center;
+    height: 30px;
 `;
 
 const LogoWrapper = styled.div`

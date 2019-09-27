@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { H5, Button } from '@trezor/components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@wallet-actions/settingsActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import { Account, Network, ExternalNetwork } from '@wallet-types';
@@ -33,6 +34,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     changeAccountVisibility: bindActionCreators(changeAccountVisibility, dispatch),
     changeCoinVisibility: bindActionCreators(changeCoinVisibility, dispatch),
+    goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
 type Props = {
@@ -77,6 +79,11 @@ const AddAccount = (props: Props) => {
                 onEnableAccount={(account: Account) => {
                     props.onCancel();
                     props.changeAccountVisibility(account);
+                    props.goto('wallet-account-summary', {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    });
                 }}
                 onEnableNetwork={(symbol: string) => {
                     props.onCancel();

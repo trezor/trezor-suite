@@ -3,14 +3,13 @@ import produce from 'immer';
 import {
     NewsletterState,
     NewsletterActionTypes,
-    Checkbox,
     TOGGLE_CHECKBOX,
     SET_EMAIL,
     SET_SKIPPED,
     FETCH_START,
     FETCH_ERROR,
     FETCH_SUCCESS,
-} from '@suite/types/onboarding/newsletter';
+} from '@onboarding-types/newsletter';
 
 const initialState = {
     email: '',
@@ -47,7 +46,7 @@ const newsletter = (state: NewsletterState = initialState, action: NewsletterAct
     return produce(state, draft => {
         switch (action.type) {
             case TOGGLE_CHECKBOX:
-                draft.checkboxes = state.checkboxes.map((checkbox: Checkbox) => {
+                draft.checkboxes = draft.checkboxes.map(checkbox => {
                     const toggled = checkbox;
                     if (checkbox.label === action.checkbox) {
                         toggled.value = !checkbox.value;

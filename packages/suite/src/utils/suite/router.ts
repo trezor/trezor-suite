@@ -69,7 +69,7 @@ export const getAppWithParams = (url: string) => {
     return { app: route.app, route, params: undefined };
 };
 
-type RouteParams = ReturnType<typeof validateWalletParams> | { otherPar: boolean };
+export type RouteParams = ReturnType<typeof validateWalletParams> | { otherPar: boolean };
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);
