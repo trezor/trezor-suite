@@ -67,8 +67,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         push: true,
     });
 
-    console.log('resp', resp);
-
     if (resp.success) {
         dispatch({ type: SEND.CLEAR });
         dispatch(
