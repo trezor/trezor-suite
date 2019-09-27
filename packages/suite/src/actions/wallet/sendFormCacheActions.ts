@@ -7,7 +7,7 @@ export type SendFormCacheActions =
     | { type: typeof SEND_CACHE.REMOVE; id: string }
     | { type: typeof SEND_CACHE.CLEAR };
 
-export const add = (id: string, sendFormState: SendFormState) => (dispatch: Dispatch) => {
+export const cache = (id: string, sendFormState: SendFormState) => (dispatch: Dispatch) => {
     dispatch({ type: SEND_CACHE.ADD, id, sendFormState });
 };
 

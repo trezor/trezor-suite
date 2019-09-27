@@ -21,7 +21,13 @@ export default (state: State = initialState, action: WalletAction): State => {
         switch (action.type) {
             case SEND_CACHE.ADD: {
                 const { sendFormState, id } = action;
-                draft.cache.push({ id, sendFormState });
+                const cacheItem = draft.cache.find(cacheItem => cacheItem.id === id);
+
+                if (cacheItem) {
+                    cacheItem.sendFormState = sendFormState;
+                } else {
+                    draft.cache.push({ id, sendFormState });
+                }
                 break;
             }
 

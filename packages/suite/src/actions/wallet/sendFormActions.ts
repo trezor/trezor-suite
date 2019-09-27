@@ -1,11 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
+import { getAccountKey } from '@wallet-utils/reducerUtils';
 import { Output, InitialState, FeeLevel, FeeInfo } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
+import * as sendFormCacheActions from './sendFormCacheActions';
 
 export type SendFormActions =
     | {
@@ -120,7 +122,8 @@ export const handleAddressChange = (outputId: number, address: string) => (
     getState: GetState,
 ) => {
     const { account } = getState().wallet.selectedAccount;
-    if (!account) return null;
+    const { send } = getState().wallet;
+    if (!account || !send) return null;
 
     dispatch({
         type: SEND.HANDLE_ADDRESS_CHANGE,
@@ -130,6 +133,14 @@ export const handleAddressChange = (outputId: number, address: string) => (
     });
 
     dispatch(compose());
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
@@ -166,6 +177,14 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     });
 
     dispatch(compose());
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
@@ -211,6 +230,14 @@ export const handleSelectCurrencyChange = (
     });
 
     dispatch(compose());
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
@@ -247,6 +274,14 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     });
 
     dispatch(compose());
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
@@ -279,6 +314,14 @@ export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetSt
     });
 
     dispatch(compose());
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
@@ -286,7 +329,8 @@ export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetSt
  */
 export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
     const { send } = getState().wallet;
-    if (!send) return;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return;
     if (send.selectedFee.label === fee.label) return;
 
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
@@ -311,6 +355,14 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     }
 
     dispatch(compose());
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
@@ -321,7 +373,8 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     getState: GetState,
 ) => {
     const { send } = getState().wallet;
-    if (!send) return;
+    const { account } = getState().wallet.selectedAccount;
+    if (!account || !send) return null;
     const fee = send.feeInfo.levels[send.feeInfo.levels.length - 1];
 
     dispatch({
@@ -341,18 +394,50 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     });
 
     dispatch(compose());
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
     Click on button "Advanced settings"
  */
-export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
+export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return;
+
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /*
     Clear to default state
 */
-export const clear = () => (dispatch: Dispatch) => {
+export const clear = () => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return;
+
     dispatch({ type: SEND.CLEAR });
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
