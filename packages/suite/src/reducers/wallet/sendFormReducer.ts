@@ -126,31 +126,6 @@ export default (state: State = initialState, action: WalletAction): State => {
                 break;
             }
 
-            // change select "Fee"
-            case SEND.HANDLE_FEE_VALUE_CHANGE: {
-                const { fee } = action;
-                draft.fee = fee;
-                break;
-            }
-
-            // change select "Fee"
-            case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
-                const { customFee } = action;
-                draft.errors.customFee = null;
-                draft.customFee = customFee;
-
-                if (validator.isEmpty(customFee)) {
-                    draft.errors.customFee = VALIDATION_ERRORS.IS_EMPTY;
-                    return draft;
-                }
-
-                if (!validator.isNumeric(customFee)) {
-                    draft.errors.customFee = VALIDATION_ERRORS.NOT_NUMBER;
-                    return draft;
-                }
-                break;
-            }
-
             // change input "Fiat"
             case SEND.HANDLE_FIAT_VALUE_CHANGE: {
                 const { outputId, fiatValue } = action;
