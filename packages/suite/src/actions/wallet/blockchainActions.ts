@@ -178,7 +178,7 @@ export const onBlockMined = (block: BlockchainBlock) => async (
                 dispatch(accountActions.update(account, response.payload));
                 // add new txs
                 dispatch(
-                    transactionActions.add(response.payload.history.transactions || [], account),
+                    transactionActions.add(response.payload.history.transactions || [], account, 1),
                 );
             }
         } else {
