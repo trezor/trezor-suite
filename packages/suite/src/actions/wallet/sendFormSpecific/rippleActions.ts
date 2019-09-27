@@ -16,6 +16,7 @@ export const handleDestinationTagChange = (destinationTag: string) => (dispatch:
         type: SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE,
         destinationTag,
     });
+    // todo add cache
 };
 
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {

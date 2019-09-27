@@ -2,9 +2,11 @@ import TrezorConnect, { PrecomposedTransaction } from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { Output } from '@wallet-types/sendForm';
 import { SEND } from '@wallet-actions/constants';
+import { getAccountKey } from '@wallet-utils/reducerUtils';
 import { DEFAULT_LOCAL_CURRENCY } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
+import * as sendFormCacheActions from '../sendFormCacheActions';
 
 export type SendFormBitcoinActions =
     | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
@@ -16,7 +18,8 @@ export type SendFormBitcoinActions =
  */
 export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
     const { send } = getState().wallet;
-    if (!send) return null;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return null;
 
     const { outputs } = send;
     const outputsCount = outputs.length;
@@ -35,13 +38,33 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         type: SEND.BTC_ADD_RECIPIENT,
         newOutput,
     });
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 /**
  *    Removes added output (address, amount, fiatValue, localCurrency)
  */
-export const removeRecipient = (outputId: number) => (dispatch: Dispatch) => {
+export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return null;
+
     dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
+
+    // save to cache
+    dispatch(
+        sendFormCacheActions.cache(
+            getAccountKey(account.descriptor, account.symbol, account.deviceState),
+            send,
+        ),
+    );
 };
 
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
