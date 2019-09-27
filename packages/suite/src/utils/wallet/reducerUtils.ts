@@ -94,7 +94,7 @@ export const getSelectedNetwork = (networks: Network[], symbol: string) => {
  * @param {string} deviceState
  * @returns {string}
  */
-export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) => {
+export const getAccountKey = (descriptor: string, symbol: string, deviceState: string): string => {
     return `${descriptor}-${symbol}-${deviceState}`;
 };
 

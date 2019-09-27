@@ -3,6 +3,7 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
 import { SendFormActions } from '@wallet-actions/sendFormActions';
+import { SendFormCacheActions } from '@wallet-actions/SendFormCacheActions';
 import { SendFormBitcoinActions } from '@wallet-actions/sendFormSpecific/bitcoinActions';
 import { SendFormRippleActions } from '@wallet-actions/sendFormSpecific/rippleActions';
 
@@ -43,6 +44,7 @@ export type WalletAction =
     | SettingsActions
     | ReceiveActions
     | SendFormActions
+    | SendFormCacheActions
     | SendFormBitcoinActions
     | SendFormRippleActions
     | SignVerifyActions
