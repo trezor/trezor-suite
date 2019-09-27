@@ -3,6 +3,7 @@ export const VALIDATION_ERRORS = {
     NOT_ENOUGH: 'not-enough',
     NOT_VALID: 'not-valid',
     NOT_NUMBER: 'not-number',
+    NOT_IN_RANGE: 'not-in-range',
 } as const;
 
 export const CUSTOM_FEE = 'custom' as const;

@@ -25,6 +25,8 @@ const NetworkTypeXrp = ({ send, sendFormActions, sendFormActionsRipple }: Props)
         <Wrapper>
             <Row>
                 <CustomFee
+                    maxFee={send.feeInfo.maxFee}
+                    minFee={send.feeInfo.minFee}
                     sendFormActions={sendFormActions}
                     customFee={send.customFee.value}
                     errors={send.customFee.error}
