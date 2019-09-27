@@ -243,7 +243,7 @@ const getAccountInfo = async (
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
-        if (error.data.error === 'actNotFound') {
+        if (error.data && error.data.error === 'actNotFound') {
             common.response({
                 id: data.id,
                 type: RESPONSES.GET_ACCOUNT_INFO,
@@ -345,7 +345,7 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
         }
         const payload =
             data.payload && Array.isArray(data.payload.blocks)
-                ? data.payload.blocks.map(l => ({ feePerUnit: drops }))
+                ? data.payload.blocks.map(() => ({ feePerUnit: drops }))
                 : [{ feePerUnit: drops }];
         common.response({
             id: data.id,

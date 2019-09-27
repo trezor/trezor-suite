@@ -181,9 +181,9 @@ export default [
                                 vout: [
                                     {
                                         addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
+                                        value: '1',
                                     },
                                 ],
-                                value: '1',
                             },
                         ],
                         page: 1,
@@ -246,8 +246,8 @@ export default [
                     data: {
                         address:
                             'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
-                        balance: '1',
-                        unconfirmedBalance: '-1',
+                        balance: '100',
+                        unconfirmedBalance: '-60', // output.value + fee
                         txs: 2,
                         tokens: [
                             {
@@ -268,9 +268,10 @@ export default [
                                 vout: [
                                     {
                                         addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                                        value: '50',
                                     },
                                 ],
-                                value: '1',
+                                fees: '10',
                             },
                         ],
                         page: 1,
@@ -284,18 +285,20 @@ export default [
             descriptor:
                 'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
             empty: false,
-            balance: '1',
-            availableBalance: '0',
+            balance: '100',
+            availableBalance: '40',
             history: {
                 total: 2,
                 transactions: [
                     {
                         type: 'sent',
-                        amount: '1',
+                        amount: '60',
+                        fee: '10',
                         rbf: true,
                         targets: [
                             {
                                 addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                                amount: '50',
                             },
                         ],
                         tokens: [],
