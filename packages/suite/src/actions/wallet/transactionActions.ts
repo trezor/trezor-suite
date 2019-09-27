@@ -109,7 +109,11 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     // const totalTxs = selectedAccount.account!.history.total;
     const { transactions } = getState().wallet.transactions;
     const reducerTxs = getAccountTransactions(transactions, account);
-    const txsForPage = reducerTxs.filter(t => t.page === page);
+
+    const startIndex = (page - 1) * (perPage || SETTINGS.TXS_PER_PAGE);
+    const stopIndex = startIndex + (perPage || SETTINGS.TXS_PER_PAGE);
+    const txsForPage = reducerTxs.slice(startIndex, stopIndex);
+
     // we already got txs for the page in reducer
     if (txsForPage.length > 0) return;
 

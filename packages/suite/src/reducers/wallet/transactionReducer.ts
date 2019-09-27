@@ -35,12 +35,20 @@ const initialState: State = {
 //     return b.blockHeight - a.blockHeight;
 // };
 
-const enhanceTransaction = (tx: AccountTransaction, account: Account): WalletAccountTransaction => {
+export const enhanceTransaction = (
+    tx: AccountTransaction,
+    account: Account,
+): WalletAccountTransaction => {
     return {
         descriptor: account.descriptor,
         deviceState: account.deviceState,
         symbol: account.symbol,
         ...tx,
+        // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
+        blockTime:
+            account.networkType === 'ripple' && tx.blockTime
+                ? tx.blockTime + 946684800
+                : tx.blockTime,
         tokens: tx.tokens.map(tok => {
             return {
                 ...tok,
@@ -89,13 +97,11 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
         if (!existingTx) {
             // add a new transaction
             if (page) {
-                console.log('inserting at page', enhancedTx.txid);
                 // insert a tx object at correct index
                 const txIndex = (page - 1) * SETTINGS.TXS_PER_PAGE + i;
                 accountTxs[txIndex] = enhancedTx;
             } else {
                 // no page arg, insert the tx at the beginning of the array
-                console.log('inserting at start', enhancedTx.txid);
                 accountTxs.unshift(enhancedTx);
             }
         } else {
@@ -103,7 +109,6 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
             const existingTxIndex = accountTxs.findIndex(t => t && t.txid === existingTx.txid);
             // eslint-disable-next-line no-lonely-if
             if (!existingTx.blockTime && enhancedTx.blockTime) {
-                console.log('replacing index', existingTxIndex, 'txid', existingTx.txid);
                 // pending tx got confirmed (blockTime changed from undefined to a number)
                 accountTxs[existingTxIndex] = { ...enhancedTx };
             }
