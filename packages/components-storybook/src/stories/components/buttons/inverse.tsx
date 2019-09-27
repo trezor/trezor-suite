@@ -262,7 +262,7 @@ storiesOf('Buttons', module).add(
 
             <H5>with loading </H5>
             <Div>
-                <SnapshotWrapperDiv data-test="button_inverse_full_width_left_loading">
+                <SnapshotWrapperDiv data-test="button_inverse_loading_full_width_left">
                     <Button fullWidth isInverse isLoading variant="success" align="left">
                         Button
                     </Button>
