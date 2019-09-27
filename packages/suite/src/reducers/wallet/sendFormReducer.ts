@@ -1,5 +1,6 @@
 import produce from 'immer';
 import validator from 'validator';
+import Bignumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
 import { State, InitialState, Output } from '@wallet-types/sendForm';
@@ -113,10 +114,15 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change select "Fee"
             case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
-                const { customFee } = action;
+                const { customFee, maxFee, minFee } = action;
+
                 draft.customFee.error = null;
                 draft.customFee.value = customFee;
                 if (customFee === null) return draft;
+
+                const customFeeBig = new Bignumber(customFee);
+                const maxFeeBig = new Bignumber(maxFee);
+                const minFeeBig = new Bignumber(minFee);
 
                 if (validator.isEmpty(customFee)) {
                     draft.customFee.error = VALIDATION_ERRORS.IS_EMPTY;
@@ -127,6 +133,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     draft.customFee.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
+
+                if (customFeeBig.isGreaterThan(maxFeeBig) || customFeeBig.isLessThan(minFeeBig)) {
+                    draft.customFee.error = VALIDATION_ERRORS.NOT_IN_RANGE;
+                    return draft;
+                }
+
                 break;
             }
 

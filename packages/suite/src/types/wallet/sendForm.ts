@@ -42,7 +42,11 @@ export interface State {
     selectedFee: FeeLevel;
     customFee: {
         value: null | string;
-        error: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_NUMBER;
+        error:
+            | null
+            | typeof VALIDATION_ERRORS.IS_EMPTY
+            | typeof VALIDATION_ERRORS.NOT_NUMBER
+            | typeof VALIDATION_ERRORS.NOT_IN_RANGE;
     };
     isAdditionalFormVisible: boolean;
     networkTypeRipple: {
