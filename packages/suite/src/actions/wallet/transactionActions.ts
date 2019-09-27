@@ -11,9 +11,9 @@ import { Dispatch, GetState } from '@suite-types';
 export type TransactionAction =
     | {
           type: typeof TRANSACTION.ADD;
-          transactions: WalletAccountTransaction[];
+          transactions: AccountTransaction[];
           account: Account;
-          page: number;
+          page?: number;
       }
     | { type: typeof TRANSACTION.REMOVE; account: Account }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
@@ -54,23 +54,27 @@ export type TransactionAction =
 //     }
 // };
 
-// export const add = (transactions: WalletAccountTransaction) => async (
-//     dispatch: Dispatch,
-// ): Promise<void> => {
-//     dispatch({
-//         type: TRANSACTION.ADD,
-//         transactions,
-//     });
-// };
-
-// export const remove = (txId: string) => async (dispatch: Dispatch) => {
-//         db.removeItem('txs', 'txId', txId).then(() => {
-//         dispatch({
-//             type: TRANSACTION.REMOVE,
-//             txId,
-//         });
-//     });
-// };
+export const add = (transactions: AccountTransaction[], account: Account, page?: number) => async (
+    dispatch: Dispatch,
+) => {
+    dispatch({
+        type: TRANSACTION.ADD,
+        transactions,
+        account,
+        page,
+    });
+};
+/**
+ * Remove all transactions for a given account
+ *
+ * @param {Account} account
+ */
+export const remove = (account: Account) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: TRANSACTION.REMOVE,
+        account,
+    });
+};
 
 // export const update = (txId: string) => async (dispatch: Dispatch) => {
 //     const updatedTimestamp = Date.now();
@@ -140,6 +144,7 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
                 transactions: result.payload.history.transactions || [],
                 page,
             });
+            // updates the marker/page object for the account
             dispatch(accountActions.update(account, result.payload));
         } else {
             dispatch({

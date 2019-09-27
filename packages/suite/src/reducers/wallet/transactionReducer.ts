@@ -35,11 +35,7 @@ const initialState: State = {
 //     return b.blockHeight - a.blockHeight;
 // };
 
-const enhanceTransaction = (
-    tx: AccountTransaction,
-    account: Account,
-    page?: number,
-): WalletAccountTransaction => {
+const enhanceTransaction = (tx: AccountTransaction, account: Account): WalletAccountTransaction => {
     return {
         descriptor: account.descriptor,
         deviceState: account.deviceState,
@@ -62,7 +58,6 @@ const enhanceTransaction = (
             }
             return tr;
         }),
-        page,
     };
 };
 
@@ -81,18 +76,37 @@ const alreadyExists = (
     return transactions.find(t => t && t.txid === transaction.txid);
 };
 
-const add = (draft: State, transactions: AccountTransaction[], account: Account, page: number) => {
+const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
     const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     initializeAccount(draft, accountHash);
     const accountTxs = draft.transactions[accountHash];
+    if (!accountTxs) return;
 
     transactions.forEach((tx, i) => {
-        const enhancedTx = enhanceTransaction(tx, account, page);
-        // make sure tx doesn't already exist for a given account
-        if (accountTxs && !alreadyExists(accountTxs, enhancedTx)) {
-            // insert a tx object at correct index
-            const txIndex = (page - 1) * SETTINGS.TXS_PER_PAGE + i;
-            accountTxs[txIndex] = enhancedTx;
+        const enhancedTx = enhanceTransaction(tx, account);
+        const existingTx = alreadyExists(accountTxs, enhancedTx);
+
+        if (!existingTx) {
+            // add a new transaction
+            if (page) {
+                console.log('inserting at page', enhancedTx.txid);
+                // insert a tx object at correct index
+                const txIndex = (page - 1) * SETTINGS.TXS_PER_PAGE + i;
+                accountTxs[txIndex] = enhancedTx;
+            } else {
+                // no page arg, insert the tx at the beginning of the array
+                console.log('inserting at start', enhancedTx.txid);
+                accountTxs.unshift(enhancedTx);
+            }
+        } else {
+            // update the transaction if conditions are met
+            const existingTxIndex = accountTxs.findIndex(t => t && t.txid === existingTx.txid);
+            // eslint-disable-next-line no-lonely-if
+            if (!existingTx.blockTime && enhancedTx.blockTime) {
+                console.log('replacing index', existingTxIndex, 'txid', existingTx.txid);
+                // pending tx got confirmed (blockTime changed from undefined to a number)
+                accountTxs[existingTxIndex] = { ...enhancedTx };
+            }
         }
     });
 };
