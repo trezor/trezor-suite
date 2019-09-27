@@ -166,7 +166,11 @@ export const transformTransaction = (
         if (tokens.length === 0 && Array.isArray(tx.vout)) {
             // filter account receive and change addresses from output
             targets = tx.vout.filter(o => incoming.indexOf(o) < 0 && internal.indexOf(o) < 0);
-            // TODO: recalc amout
+            amount = targets.reduce((prev, vout) => {
+                if (typeof vout.value !== 'string') return prev;
+                const bn = new BigNumber(prev).plus(vout.value);
+                return bn.toString();
+            }, tx.fees);
         }
     }
 

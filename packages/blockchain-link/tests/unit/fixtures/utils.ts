@@ -246,62 +246,200 @@ export default {
     ],
     transformTransaction: [
         {
-            description: 'By addresses: recv from 1 input',
+            description: 'BTC: recv from one input to unused address',
             descriptor: 'xpub',
             addresses: {
                 used: [],
-                unused: ['tb1qy2f6mkfa3aaecqz2s2xr0utf6edza7qz4h37y6'],
+                unused: ['A'],
                 change: [],
             },
             tx: {
-                txid: 'f457a1b85f84dcdaadc06f5dffb1436034bf6fa69a271a08d005f0a65aea7693',
-                version: 2,
-                lockTime: 1579452,
                 vin: [
                     {
-                        txid: '11ef5ff03460960838c5faec4092a4ce3cfeb244b4f93b27f326f5034c781bb1',
-                        vout: 1,
-                        sequence: 4294967294,
-                        n: 0,
-                        addresses: ['2MuRKDinRJme86hTQyBVF7VTaVvFrBQ4CU4'],
-                        value: '8027638941',
-                        hex: '160014d18c05f5e98f94634b9185efa9bac8cafbb16dff',
+                        addresses: ['B'],
+                        value: '100',
                     },
                 ],
                 vout: [
                     {
-                        value: '8019673322',
-                        n: 0,
-                        hex: '0014530a4b59dbf9b49ad545b0414d1c65c8dc69efc0',
-                        addresses: ['tb1q2v9ykkwmlx6f4429kpq568r9erwxnm7qvdv4er'],
+                        value: '50',
+                        addresses: ['B-change'],
                     },
                     {
-                        value: '7949050',
-                        n: 1,
-                        hex: '00142293add93d8f7b9c004a828c37f169d65a2ef802',
-                        addresses: ['tb1qy2f6mkfa3aaecqz2s2xr0utf6edza7qz4h37y6'],
+                        addresses: ['A'],
+                        value: '40',
                     },
                 ],
-                blockHash: '00000000481215b5d655ad3550a90ea135f87d70bc68f50cf91f91cd68d055b3',
-                blockHeight: 1579542,
-                confirmations: 8,
-                blockTime: 1569343388,
-                value: '8027622372',
-                valueIn: '8027638941',
-                fees: '16569',
-                hex:
-                    '02000000000101b11b784c03f526f3273bf9b444b2fe3ccea49240ecfac53808966034f05fef110100000017160014d18c05f5e98f94634b9185efa9bac8cafbb16dfffeffffff02ea8002de01000000160014530a4b59dbf9b49ad545b0414d1c65c8dc69efc0fa4a7900000000001600142293add93d8f7b9c004a828c37f169d65a2ef80202473044022050f700b43d2d979eb08f55db286694ed18eb87e21518f27b175ffbc1b49b370d022065a0c9842f162f1fd1543c0df0d0d091b5c8a2fb09db98816d64f437dd513e87012102a5e23fa7f73a82ceaa4de764933a8107da7b0c2f6d3f72b53acba2aa952a79f6bc191800',
+                value: '90',
+                valueIn: '100',
+                fees: '10',
             },
             parsed: {
                 type: 'recv',
-                blockHash: '00000000481215b5d655ad3550a90ea135f87d70bc68f50cf91f91cd68d055b3',
-                blockHeight: 1579542,
-                blockTime: 1569343388,
-                txid: 'f457a1b85f84dcdaadc06f5dffb1436034bf6fa69a271a08d005f0a65aea7693',
-                amount: '8027622372',
+                amount: '40',
                 targets: [
                     {
-                        addresses: ['2MuRKDinRJme86hTQyBVF7VTaVvFrBQ4CU4'],
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: recv from one input to used address',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['A'],
+                unused: [],
+                change: [],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['B'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['B-change'],
+                    },
+                    {
+                        addresses: ['A'],
+                        value: '40',
+                    },
+                ],
+                value: '90',
+                valueIn: '100',
+                fees: '10',
+            },
+            parsed: {
+                type: 'recv',
+                amount: '40',
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: recv from one input to change address',
+            descriptor: 'xpub',
+            addresses: {
+                used: [],
+                unused: [],
+                change: ['A'],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['B'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['B-change'],
+                    },
+                    {
+                        addresses: ['A'],
+                        value: '40',
+                    },
+                ],
+                value: '90',
+                valueIn: '100',
+                fees: '10',
+            },
+            parsed: {
+                type: 'recv',
+                amount: '40',
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: sent to one address with change',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['A'],
+                unused: [],
+                change: ['A-change'],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['A'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['A-change'],
+                    },
+                    {
+                        addresses: ['B'],
+                        value: '40',
+                    },
+                ],
+                value: '90',
+                valueIn: '100',
+                fees: '10',
+            },
+            parsed: {
+                type: 'sent',
+                amount: '50', // B.value + fee
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: sent to multiple addresses with change',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['A'],
+                unused: ['A2'],
+                change: ['A-change'],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['A'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['A-change'],
+                    },
+                    {
+                        addresses: ['A2'],
+                        value: '20',
+                    },
+                    {
+                        addresses: ['B'],
+                        value: '20',
+                    },
+                ],
+                value: '90',
+                valueIn: '100',
+                fees: '10',
+            },
+            parsed: {
+                type: 'sent',
+                amount: '30', // B.value + fee
+                targets: [
+                    {
+                        addresses: ['B'],
                     },
                 ],
             },
