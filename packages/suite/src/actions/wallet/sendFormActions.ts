@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
 import { getAccountKey } from '@wallet-utils/reducerUtils';
-import { Output, InitialState, FeeLevel, FeeInfo, State } from '@wallet-types/sendForm';
+import { Output, InitialState, FeeLevel, FeeInfo } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -52,7 +52,7 @@ export type SendFormActions =
     | {
           type: typeof SEND.CLEAR;
       }
-    | { type: typeof SEND.INIT; payload: InitialState; cachedState: null | State }
+    | { type: typeof SEND.INIT; payload: InitialState }
     | { type: typeof SEND.DISPOSE };
 
 /**
@@ -62,7 +62,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { account } = getState().wallet.selectedAccount;
     const { sendCache } = getState().wallet;
-    if (router.app !== 'wallet' || !router.params || !account || !sendCache) return;
+    if (router.app !== 'wallet' || !router.params || !account) return;
 
     const feeInfo = getState().wallet.fees[router.params.symbol];
     const levels: FeeLevel[] = feeInfo.levels.concat({
@@ -76,6 +76,8 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const cachedItem = sendCache.cache.find(item => item.id === accountKey);
     const cachedState = cachedItem ? cachedItem.sendFormState : null;
 
+    console.log('cachedState', cachedState);
+
     // TODO: default output fiat currency from settings
     dispatch({
         type: SEND.INIT,
@@ -86,6 +88,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
                 levels,
             },
             selectedFee: levels.find(l => l.label === 'normal') || levels[0],
+            ...sendCache,
         },
     });
 };
