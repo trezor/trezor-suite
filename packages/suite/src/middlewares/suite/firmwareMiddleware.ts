@@ -37,7 +37,7 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
 
     switch (action.type) {
         case DEVICE.DISCONNECT:
-            // if current status is error, reset to initial status on device reconnect
+            // if current status is error, reset to initial status on device disconnect
             if (status === 'error' || status === 'done') {
                 api.dispatch(firmwareActions.resetReducer());
             }

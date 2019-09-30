@@ -7,9 +7,16 @@ import firmwareReducer from '@suite-reducers/firmwareReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@suite/types/utils';
 import * as firmwareActions from '../firmwareActions';
-import fixtures from './fixtures/firmwareActions';
+import { firmwareUpdate, reducerActions } from './fixtures/firmwareActions';
 
-type Fixture = ArrayElement<typeof fixtures>;
+type Fixture = ArrayElement<typeof firmwareUpdate>;
+
+type SuiteState = ReturnType<typeof suiteReducer>;
+type FirmwareState = ReturnType<typeof firmwareReducer>;
+interface InitialState {
+    suite?: Partial<SuiteState>;
+    firmware?: Partial<FirmwareState>;
+}
 
 jest.mock('@trezor/rollout', () => {
     let fixture: Fixture;
@@ -55,22 +62,20 @@ jest.mock('trezor-connect', () => {
             getFeatures: () => {},
             firmwareUpdate,
         },
-        DEVICE: {},
+        DEVICE: {
+            DISCONNECT: 'device-disconnect',
+        },
         TRANSPORT: {},
         IFRAME: {},
-        UI: {},
+        UI: {
+            REQUEST_BUTTON: 'ui-button',
+            FIRMWARE_PROGRESS: 'ui-firmware-progress',
+        },
         setTestFixtures: (f: Fixture) => {
             fixture = f;
         },
     };
 });
-
-type SuiteState = ReturnType<typeof suiteReducer>;
-type FirmwareState = ReturnType<typeof firmwareReducer>;
-interface InitialState {
-    suite?: Partial<SuiteState>;
-    firmware?: Partial<FirmwareState>;
-}
 
 export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
@@ -111,32 +116,50 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
 };
 
 describe('Firmware Actions', () => {
-    fixtures.forEach(f => {
-        it(f.description, async () => {
-            // set fixtures
-            require('trezor-connect').setTestFixtures(f);
-            require('@trezor/rollout').setTestFixtures(f);
+    describe('firmwareUpdate', () => {
+        firmwareUpdate.forEach(f => {
+            it(f.description, async () => {
+                // set fixtures
+                require('trezor-connect').setTestFixtures(f);
+                require('@trezor/rollout').setTestFixtures(f);
 
-            const state = getInitialState(f.initialState);
-            const store = mockStore(state);
+                const state = getInitialState(f.initialState);
+                const store = mockStore(state);
 
-            store.subscribe(() => updateStore(store));
+                store.subscribe(() => updateStore(store));
 
-            await store.dispatch(firmwareActions.firmwareUpdate());
+                await store.dispatch(firmwareActions.firmwareUpdate());
 
-            const result = store.getState();
+                const result = store.getState();
 
-            if (f.result) {
-                if (f.result.state) {
-                    expect(result).toMatchObject(f.result.state);
+                if (f.result) {
+                    if (f.result.state) {
+                        expect(result).toMatchObject(f.result.state);
+                    }
+                    if (f.result.actions) {
+                        f.result.actions.forEach((action, index) => {
+                            expect(store.getActions()[index].type).toEqual(action.type);
+                            expect(store.getActions()[index].payload).toEqual(action.payload);
+                        });
+                    }
                 }
-                if (f.result.actions) {
-                    f.result.actions.forEach((action, index) => {
-                        expect(store.getActions()[index].type).toEqual(action.type);
-                        expect(store.getActions()[index].payload).toEqual(action.payload);
-                    });
+            });
+        });
+    });
+
+    describe('reducer actions', () => {
+        reducerActions.forEach(f => {
+            it(f.description, async () => {
+                const state = getInitialState(f.initialState);
+                const store = mockStore(state);
+                store.subscribe(() => updateStore(store));
+                store.dispatch(f.action);
+                if (f.result) {
+                    if (f.result.state) {
+                        expect(store.getState()).toMatchObject(f.result.state);
+                    }
                 }
-            }
+            });
         });
     });
 });

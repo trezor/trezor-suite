@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 import { SUITE, FIRMWARE } from '@suite-actions/constants';
+import { DEVICE, UI } from 'trezor-connect';
 
 const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
 
-const fixtures = [
+const testDevice = getSuiteDevice();
+
+export const firmwareUpdate = [
     {
         description: 'Success',
         mocks: {
@@ -126,4 +129,49 @@ const fixtures = [
     },
 ];
 
-export default fixtures;
+// various cases to test reducer through actions
+export const reducerActions = [
+    {
+        description: 'DEVICE.DISCONNECT',
+        initialState: {},
+        action: {
+            type: DEVICE.DISCONNECT,
+            payload: testDevice,
+        },
+        result: {
+            state: {
+                firmware: { device: testDevice },
+            },
+        },
+    },
+    {
+        description: 'UI.REQUEST_BUTTON, code=ButtonRequest_FirmwareUpdate',
+        initialState: {},
+        action: {
+            type: UI.REQUEST_BUTTON,
+            payload: {
+                code: 'ButtonRequest_FirmwareUpdate',
+            },
+        },
+        result: {
+            state: {
+                firmware: { status: 'waiting-for-confirmation' },
+            },
+        },
+    },
+    {
+        description: 'UI.FIRMWARE_PROGRESS',
+        initialState: {},
+        action: {
+            type: UI.FIRMWARE_PROGRESS,
+            payload: {
+                progress: 50,
+            },
+        },
+        result: {
+            state: {
+                firmware: { status: 'installing', installingProgress: 50 },
+            },
+        },
+    },
+];
