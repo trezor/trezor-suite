@@ -1,15 +1,17 @@
 import React from 'react';
+import { State as SendFormState } from '@wallet-types/sendForm';
 import styled from 'styled-components';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
+import { Account } from '@wallet-types';
 
 import l10nMessages from './messages';
 
 const { LINE_HEIGHT, FONT_SIZE, FONT_WEIGHT } = variables;
 
 const Wrapper = styled.div`
-    max-width: 390px;
+    max-width: 450px;
 `;
 
 const Header = styled.div`
@@ -51,18 +53,15 @@ const FeeLevelName = styled(StyledP)`
 
 interface Props {
     device: TrezorDevice;
-    sendForm: any;
+    account: Account;
+    sendForm: SendFormState | null;
 }
 
-const ConfirmSignTx = ({ device }: Props) => {
-    // const { amount, address, selectedFeeLevel } = sendForm;
-    const amount = '';
-    const address = '';
-    const selectedFeeLevel = { label: '', value: '' };
+const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
+    if (!sendForm) return null;
+    const { outputs } = sendForm;
+    const selectedFeeLevel = sendForm.selectedFee;
     const majorVersion = device.features ? device.features.major_version : 2;
-    const currency = '';
-    // const currency: string =
-    //     typeof sendForm.currency === 'string' ? sendForm.currency : sendForm.networkSymbol;
 
     return (
         <Wrapper>
@@ -81,16 +80,20 @@ const ConfirmSignTx = ({ device }: Props) => {
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
                 </Label>
-                <StyledP>{`${amount} ${currency}`}</StyledP>
-                <Label>
-                    <FormattedMessage {...l10nMessages.TR_TO_LABEL} />
-                </Label>
-                <Address>{address}</Address>
-                <Label>
-                    <FormattedMessage {...l10nMessages.TR_FEE_LABEL} />
-                </Label>
-                <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
-                <StyledP>{selectedFeeLevel.label}</StyledP>
+                {outputs.map(output => (
+                    <>
+                        <StyledP>{`${output.amount.value || '0'} ${account.symbol}`}</StyledP>
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_TO_LABEL} />
+                        </Label>
+                        <Address>{output.address.value}</Address>
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_FEE_LABEL} />
+                        </Label>
+                        <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
+                        <StyledP>{selectedFeeLevel.label}</StyledP>
+                    </>
+                ))}
             </Content>
         </Wrapper>
     );

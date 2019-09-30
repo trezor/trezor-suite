@@ -1,6 +1,7 @@
 import TrezorConnect, { PrecomposedTransaction } from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { Output } from '@wallet-types/sendForm';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { SEND } from '@wallet-actions/constants';
 import { DEFAULT_LOCAL_CURRENCY } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
@@ -60,6 +61,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!send || !send.networkTypeBitcoin.transactionInfo || !selectedDevice) return;
 
     const { transactionInfo } = send.networkTypeBitcoin;
+
     if (!transactionInfo || transactionInfo.type !== 'final') return;
     const { transaction } = transactionInfo;
 
@@ -103,25 +105,21 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     // TODO: validate if form has errors
 
     const { outputs } = send;
+
     const composedOutputs = outputs.map(o => {
+        const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
+
         if (o.address.value) {
             return {
                 address: o.address.value,
-                amount: o.amount.value || '0',
+                amount,
             } as const;
         }
         return {
             type: 'noaddress',
-            amount: o.amount.value || '0',
+            amount,
         } as const;
     });
-
-    // const composedOutputs = [
-    //     // { amount: '1', type: 'noaddress' },
-    //     // { amount: '1', type: 'sendmax-noaddress' },
-    //     { amount: '100000', address: 'tb1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt96jk9x' },
-    //     { amount: '200000', address: 'tb1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt96jk9x' },
-    // ];
 
     const resp = await TrezorConnect.composeTransaction({
         account: {
