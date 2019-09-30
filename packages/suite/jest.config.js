@@ -50,16 +50,17 @@ module.exports = {
     ],
     coverageThreshold: {
         global: {
-            statements: 64.41,
-            branches: 65.08,
-            functions: 63.51,
-            lines: 65.2,
+            statements: 66.33,
+            branches: 65.49,
+            functions: 66.61,
+            lines: 66.82,
         },
     },
     modulePathIgnorePatterns: [
         'node_modules',
         '<rootDir>/src/utils/suite/hooks',
         '<rootDir>/src/utils/suite/dom',
+        '<rootDir>/src/utils/wallet/promiseUtils',
     ],
     testMatch: ['**/*.test.(ts|js)'],
     transform: {
