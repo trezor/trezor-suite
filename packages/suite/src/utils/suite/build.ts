@@ -3,4 +3,5 @@
 
 export const isDev = (): boolean =>
     process.env.BUILD === 'development' || process.env.NODE_ENV === 'development';
+
 export const isBeta = (): boolean => process.env.BUILD === 'beta';
