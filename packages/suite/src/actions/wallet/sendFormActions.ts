@@ -76,19 +76,16 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const cachedItem = sendCache.cache.find(item => item.id === accountKey);
     const cachedState = cachedItem ? cachedItem.sendFormState : null;
 
-    console.log('cachedState', cachedState);
-
     // TODO: default output fiat currency from settings
     dispatch({
         type: SEND.INIT,
-        cachedState,
         payload: {
             feeInfo: {
                 ...feeInfo,
                 levels,
             },
             selectedFee: levels.find(l => l.label === 'normal') || levels[0],
-            ...sendCache,
+            ...cachedState,
         },
     });
 };
