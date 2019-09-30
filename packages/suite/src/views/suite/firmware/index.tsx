@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 // import { FormattedMessage } from 'react-intl';
 import { FirmwareRelease } from 'trezor-connect';
-import { Button, P, H1, H4, H5, variables } from '@trezor/components';
+import { Button, Checkbox, Tooltip, P, H1, H4, H5, variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as firmwareActions from '@suite-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -33,7 +33,6 @@ const Top = styled.div`
     max-width: 500px;
     text-align: center;
     flex: 1;
-    padding-top: 30px;
 `;
 
 const Middle = styled.div`
@@ -42,22 +41,84 @@ const Middle = styled.div`
     text-align: center;
 `;
 
+const MiddleLeft = styled.div`
+    display: none;
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        display: flex;
+        flex: 1;
+    }
+`;
+
+const MiddleRight = styled.div`
+    flex: 1;
+`;
+
 const Bottom = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     width: 100%;
+    & > * {
+        align-self: flex-start;
+    }
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        justify-content: space-around;
+    }
 `;
 
-// todo warnings checkboxes
-// const Checkboxes = styled.div`
-//     flex: 1;
-// `;
+const Checkboxes = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: 10px;
+    & > * {
+        padding: 5px 0 5px 0;
+    }
+`;
 
 const ChangelogWrapper = styled.div`
-    flex: 1;
-    padding: 17px 20px 0 20px;
+    /* padding: 17px 20px 0 20px; */
+    text-align: left;
 `;
+
+// todo: consider sharing between firmware and onboarding
+interface ButtonProps {
+    onClick: () => void;
+    isConnected: boolean;
+    isInBootloader: boolean;
+    userUnderstands: boolean;
+    children: React.ReactNode;
+}
+
+const InstallButton = ({
+    isConnected,
+    isInBootloader,
+    userUnderstands,
+    onClick,
+    ...props
+}: ButtonProps) => {
+    let content = '';
+    if (!isConnected) {
+        content = 'Connect device to continue';
+    } else if (!isInBootloader) {
+        content = 'Go to bootloader';
+    } else if (!userUnderstands) {
+        content = 'Make sure you have either correct seed or your device is empty';
+    }
+
+    const isDisabled = !isConnected || !isInBootloader || !userUnderstands;
+    return (
+        <Tooltip
+            trigger={!isDisabled ? 'manual' : 'mouseenter focus'}
+            placement="bottom"
+            content={content}
+        >
+            <Button isDisabled={isDisabled} onClick={() => onClick()}>
+                {props.children}
+            </Button>
+        </Tooltip>
+    );
+};
 
 const ChangeLog = ({
     firmwareRelease,
@@ -119,6 +180,12 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const FirmwareUpdate = (props: Props) => {
     const { device, firmware } = props;
+
+    // todo:
+    // this belongs to reducer, but until we have proper UX design, I am just mocking it here,
+    // with local state. Dont want rewrite reducers/actions/types/tests and everything later.
+    const [hasEmptyDevice, setHasEmptyDevice] = useState(false);
+    const [hasSeedByHand, setHasSeedByHand] = useState(false);
 
     const isInProgress = () => {
         return [
@@ -193,9 +260,6 @@ const FirmwareUpdate = (props: Props) => {
         if (firmware.status === 'restarting') {
             return 'Waiting for device to restart';
         }
-        // if (!hasDevice()) {
-        //     return 'Reconnect device to continue';
-        // }
         if (hasNewestFirmware()) {
             return 'Device is up to date';
         }
@@ -205,8 +269,8 @@ const FirmwareUpdate = (props: Props) => {
         return 'Firmware update';
     };
 
-    const isInstallButtonDisabled = () => {
-        return !hasDevice() || !isInBootloader();
+    const userUnderstandsWarning = () => {
+        return hasSeedByHand || hasEmptyDevice;
     };
 
     const getFirmwareRelease = () => {
@@ -229,50 +293,72 @@ const FirmwareUpdate = (props: Props) => {
         <Wrapper>
             <Top>
                 <TitleHeader>{getTitle()}</TitleHeader>
+                {!isInBootloader() && <P>Reconnect in bootloader mode to update firmware</P>}
             </Top>
             <Middle>
-                <ConnectPrompt model={getModelForPrompt()} loop={!hasDevice()} />
-
-                {firmware.status === 'initial' && (
-                    <>
+                <MiddleLeft>
+                    <ConnectPrompt model={getModelForPrompt()} loop={!hasDevice()} />
+                </MiddleLeft>
+                <MiddleRight>
+                    {firmware.status === 'initial' && (
                         <ChangeLog
                             isLatest={hasNewestFirmware()}
                             firmwareRelease={getFirmwareRelease()}
                             currentVersion={getFwVersion()}
                         ></ChangeLog>
-                    </>
-                )}
-                {(isInProgress() || isInFinishedState()) && (
-                    <div>
-                        <Loaders.Donut
-                            progress={firmware.installingProgress}
-                            isSuccess={firmware.status === 'done'}
-                            isError={firmware.status === 'error'}
-                        />
-                        {!isInFinishedState() && (
-                            <P>
-                                {firmware.status}
-                                <Loaders.Dots />
-                            </P>
-                        )}
-                        {/* todo: firmware.error.error ? */}
-                        {/* {firmware.error && <P>{firmware.error}</P>} */}
-                        {firmware.error && <P>Error</P>}
-                    </div>
-                )}
+                    )}
+                    {(isInProgress() || isInFinishedState()) && (
+                        <div>
+                            <Loaders.Donut
+                                progress={firmware.installingProgress}
+                                isSuccess={firmware.status === 'done'}
+                                isError={firmware.status === 'error'}
+                            />
+                            {!isInFinishedState() && (
+                                <P>
+                                    {firmware.status}
+                                    <Loaders.Dots />
+                                </P>
+                            )}
+                            {/* todo: firmware.error.error ? */}
+                            {/* {firmware.error && <P>{firmware.error}</P>} */}
+                            {firmware.error && <P>Error</P>}
+                        </div>
+                    )}
+                    {firmware.status === 'initial' && hasDevice() && !hasNewestFirmware() && (
+                        <Checkboxes>
+                            <Checkbox
+                                isChecked={hasSeedByHand}
+                                onClick={() => setHasSeedByHand(!hasSeedByHand)}
+                            >
+                                <P>I have my seed</P>
+                            </Checkbox>
+                            <Checkbox
+                                isChecked={hasEmptyDevice}
+                                onClick={() => setHasEmptyDevice(!hasEmptyDevice)}
+                            >
+                                <P>My Trezor is empty</P>
+                            </Checkbox>
+                        </Checkboxes>
+                    )}
+                </MiddleRight>
             </Middle>
+
             <Bottom>
                 {firmware.status === 'initial' && (
                     <>
                         <Button isInverse onClick={() => exitApp()}>
                             {getExitButtonText()}
                         </Button>
-                        <Button
+                        <InstallButton
+                            isConnected={hasDevice()}
+                            isInBootloader={isInBootloader()}
+                            userUnderstands={userUnderstandsWarning()}
                             onClick={() => props.firmwareUpdate()}
-                            isDisabled={isInstallButtonDisabled()}
                         >
-                            Install
-                        </Button>
+                            {/* <FormattedMessage {...l10nMessages.TR_INSTALL} /> */}
+                            {!isInBootloader() && hasNewestFirmware() ? 'Reinstall' : 'Install'}
+                        </InstallButton>
                     </>
                 )}
                 {firmware.status === 'done' && (
@@ -285,12 +371,14 @@ const FirmwareUpdate = (props: Props) => {
                         <Button isInverse onClick={() => exitApp()}>
                             {getExitButtonText()}
                         </Button>
-                        <Button
+                        <InstallButton
+                            isConnected={hasDevice()}
+                            isInBootloader={isInBootloader()}
+                            userUnderstands={userUnderstandsWarning()}
                             onClick={() => props.firmwareUpdate()}
-                            isDisabled={isInstallButtonDisabled()}
                         >
                             Retry
-                        </Button>
+                        </InstallButton>
                     </>
                 )}
             </Bottom>
