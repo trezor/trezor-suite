@@ -77,10 +77,8 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     };
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
-    console.log('updateResponse', updateResponse);
 
     if (!updateResponse.success) {
-        console.warn('updateResponse.payload.error', updateResponse.payload.error);
         dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
 
         return dispatch(lockUI(false));

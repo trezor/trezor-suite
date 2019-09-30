@@ -24,7 +24,7 @@ export type AnyStatus =
 
 export interface FirmwareUpdateState {
     reducerEnabled: boolean;
-    status?: AnyStatus;
+    status: AnyStatus;
     device?: Device;
     installingProgress?: number;
     error?: string;

@@ -56,6 +56,9 @@ jest.mock('trezor-connect', () => {
             firmwareUpdate,
         },
         DEVICE: {},
+        TRANSPORT: {},
+        IFRAME: {},
+        UI: {},
         setTestFixtures: (f: Fixture) => {
             fixture = f;
         },
@@ -69,7 +72,7 @@ interface InitialState {
     firmware?: Partial<FirmwareState>;
 }
 
-export const getInitialState = (override: InitialState): any => {
+export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
     const firmware = override ? override.firmware : undefined;
     return {
@@ -122,6 +125,7 @@ describe('Firmware Actions', () => {
             await store.dispatch(firmwareActions.firmwareUpdate());
 
             const result = store.getState();
+
             if (f.result) {
                 if (f.result.state) {
                     expect(result).toMatchObject(f.result.state);

@@ -24,7 +24,6 @@ const TrezorConnectService = store => next => action => {
         inited = true;
 
         const customSrc = getQueryVariable('src');
-        console.log('customSrc', customSrc);
         if (customSrc) {
             window.__TREZOR_CONNECT_SRC = customSrc;
         } else {
