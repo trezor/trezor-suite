@@ -56,7 +56,11 @@ module.exports = {
             lines: 65.2,
         },
     },
-    modulePathIgnorePatterns: ['node_modules', '<rootDir>/src/utils/suite/hooks'],
+    modulePathIgnorePatterns: [
+        'node_modules',
+        '<rootDir>/src/utils/suite/hooks',
+        '<rootDir>/src/utils/suite/dom',
+    ],
     testMatch: ['**/*.test.(ts|js)'],
     transform: {
         '^.+\\.(ts)$': 'ts-jest',
