@@ -10,7 +10,8 @@ import deviceReducer from '@suite-reducers/deviceReducer';
 import suiteReducer from '@suite/reducers/suite/suiteReducer';
 import modalReducer from '@suite/reducers/suite/modalReducer';
 
-import suiteMiddlewares from '@suite-middlewares';
+import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
+import redirectMiddleware from '@suite-middlewares/redirectMiddleware';
 import { Action } from '@suite-types';
 
 const { getSuiteDevice } = global.JestMocks;
@@ -57,7 +58,7 @@ export const getInitialState = (
 };
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares: Middleware<any, any>[] = [thunk, ...suiteMiddlewares];
+const middlewares: Middleware<any, any>[] = [thunk, redirectMiddleware, suiteMiddleware];
 
 const initStore = (state: State) => {
     const mockStore = configureStore<State, Action>(middlewares);

@@ -255,7 +255,9 @@ const FirmwareUpdate = (props: Props) => {
                                 <Loaders.Dots />
                             </P>
                         )}
-                        {firmware.error && <P>{firmware.error}</P>}
+                        {/* todo: firmware.error.error ? */}
+                        {/* {firmware.error && <P>{firmware.error}</P>} */}
+                        {firmware.error && <P>Error</P>}
                     </div>
                 )}
             </Middle>

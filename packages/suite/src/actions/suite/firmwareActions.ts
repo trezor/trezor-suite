@@ -5,7 +5,6 @@ import { lockUI } from '@suite-actions/suiteActions';
 
 //  TODO: should be reworked to deviceManagementActions
 
-// import * as notificationActions from '@suite-actions/notificationActions';
 import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { AnyStatus } from '@suite-reducers/firmwareReducer';
 import { Dispatch, GetState, Action } from '@suite-types';
@@ -68,7 +67,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         dispatch({ type: FIRMWARE.SET_ERROR, payload: 'failed to download firmware' });
         return;
     }
-
     const payload = {
         payload: fw,
         keepSession: false,

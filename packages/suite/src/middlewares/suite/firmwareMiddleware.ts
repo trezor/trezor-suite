@@ -2,6 +2,7 @@ import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@suite-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
+import { DEVICE } from 'trezor-connect';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -30,6 +31,18 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         if (!enabledApps.includes(action.payload) && enabledApps.includes(prevApp)) {
             api.dispatch(firmwareActions.resetReducer());
         }
+    }
+
+    const { status } = api.getState().firmware;
+
+    switch (action.type) {
+        case DEVICE.DISCONNECT:
+            // if current status is error, reset to initial status on device reconnect
+            if (status === 'error' || status === 'done') {
+                api.dispatch(firmwareActions.resetReducer());
+            }
+            break;
+        default:
     }
 
     return action;

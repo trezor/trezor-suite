@@ -47,14 +47,6 @@ const handleSelectDevice = (draft: FirmwareUpdateState, device?: TrezorDevice) =
         return;
     }
 
-    // if current status is error, reset to initial status on device reconnect
-    if (draft.status === 'error' || draft.status === 'done') {
-        draft.status = 'initial';
-        draft.error = undefined;
-        draft.installingProgress = undefined;
-        draft.device = undefined;
-    }
-
     if (draft.status === 'restarting') {
         // remain inactive until we have prev device disconnected in bootloader
         if (!prevDevice || !prevDevice.features || prevDevice.mode !== 'bootloader') {
@@ -100,10 +92,10 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 }
                 break;
             case UI.FIRMWARE_PROGRESS:
-                if (!Number.isNaN(action.payload.progress)) {
-                    draft.installingProgress = action.payload.progress;
-                    draft.status = 'installing';
-                }
+                // if (!Number.isNaN(action.payload.progress)) {
+                draft.installingProgress = action.payload.progress;
+                draft.status = 'installing';
+                // }
                 break;
             case FIRMWARE.ENABLE_REDUCER:
                 draft.reducerEnabled = action.payload;
