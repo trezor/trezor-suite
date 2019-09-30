@@ -58,7 +58,6 @@ module.exports = {
     },
     modulePathIgnorePatterns: [
         'node_modules',
-        '<rootDir>/src/utils/suite/hooks',
         '<rootDir>/src/utils/suite/dom',
         '<rootDir>/src/utils/wallet/promiseUtils',
     ],

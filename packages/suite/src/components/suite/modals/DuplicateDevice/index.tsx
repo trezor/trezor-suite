@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { H5, P, Button, Input, colors, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
-import { useKeyPress } from '@suite-utils/hooks';
+import { useKeyPress } from '@suite-utils/dom';
 import { getNewInstanceNumber } from '@suite-utils/device';
 
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
