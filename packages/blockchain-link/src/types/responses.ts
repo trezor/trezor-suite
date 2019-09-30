@@ -1,3 +1,5 @@
+import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
+import { Transaction as BlockbookTransaction } from './blockbook';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
 import { AccountInfo, Transaction } from './common';
@@ -61,7 +63,15 @@ export interface GetAccountUtxo {
 
 export interface GetTransaction {
     type: typeof RESPONSES.GET_TRANSACTION;
-    payload: any;
+    payload:
+        | {
+              type: 'ripple';
+              tx: RippleTransaction;
+          }
+        | {
+              type: 'blockbook';
+              tx: BlockbookTransaction;
+          };
 }
 
 export interface EstimateFee {

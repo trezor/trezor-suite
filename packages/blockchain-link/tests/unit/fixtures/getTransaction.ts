@@ -60,7 +60,10 @@ export default {
                     },
                 },
             ],
-            response: blockbookTx,
+            response: {
+                type: 'blockbook',
+                tx: blockbookTx,
+            },
         },
         {
             description: 'Not found',
@@ -103,7 +106,10 @@ export default {
                     },
                 },
             ],
-            response: xrpTx,
+            response: {
+                type: 'ripple',
+                tx: xrpTx,
+            },
         },
         {
             description: 'Not found',
