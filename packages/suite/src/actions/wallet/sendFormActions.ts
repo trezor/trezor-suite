@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { getOutput } from '@wallet-utils/sendFormUtils';
-import { FeeItem } from '@wallet-reducers/feesReducer';
-import { Output } from '@wallet-types/sendForm';
+import { getAccountKey } from '@wallet-utils/reducerUtils';
+import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
+import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
+import * as sendFormCacheActions from './sendFormCacheActions';
 
 export type SendFormActions =
     | {
@@ -32,11 +33,11 @@ export type SendFormActions =
       }
     | {
           type: typeof SEND.HANDLE_FEE_VALUE_CHANGE;
-          fee: FeeItem;
+          fee: FeeLevel;
       }
     | {
           type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE;
-          customFee: string;
+          customFee: string | null;
       }
     | {
           type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
@@ -48,17 +49,74 @@ export type SendFormActions =
       }
     | {
           type: typeof SEND.CLEAR;
-      };
+      }
+    | { type: typeof SEND.INIT; payload: InitialState }
+    | { type: typeof SEND.DISPOSE };
 
 /**
  * Initialize current form, load values from session storage
  */
-export const init = () => (_dispatch: Dispatch, _getState: GetState) => {};
+export const init = () => (dispatch: Dispatch, getState: GetState) => {
+    const { router } = getState();
+    const { account } = getState().wallet.selectedAccount;
+    const { sendCache } = getState().wallet;
+    if (router.app !== 'wallet' || !router.params) return;
+
+    let cachedState = null;
+    const feeInfo = getState().wallet.fees[router.params.symbol];
+    const levels: FeeLevel[] = feeInfo.levels.concat({
+        label: 'custom',
+        feePerUnit: '0',
+        value: '0',
+        blocks: 0,
+    });
+
+    if (account) {
+        const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+        const cachedItem = sendCache.cache.find(item => item.id === accountKey);
+        cachedState = cachedItem ? cachedItem.sendFormState : null;
+    }
+
+    // TODO: default output fiat currency from settings
+    dispatch({
+        type: SEND.INIT,
+        payload: {
+            feeInfo: {
+                ...feeInfo,
+                levels,
+            },
+            selectedFee: levels.find(l => l.label === 'normal') || levels[0],
+            ...cachedState,
+        },
+    });
+};
 
 /**
  * Dispose current form, save values to session storage
  */
-export const dispose = () => (_dispatch: Dispatch, _getState: GetState) => {};
+export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
+    dispatch({
+        type: SEND.DISPOSE,
+    });
+};
+
+export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+    // const { outputs } = getState().wallet.send;
+    // outputs.filter(output => {
+    //     const hasErrors = Object.values(errors).filter(val => typeof val === 'string');
+    // });
+    // const hasErrors = Object.values(errors).filter(val => typeof val === 'string');
+    // console.log('HAS EERROR', hasErrors);
+    // if (hasErrors.length > 0) return;
+    const account = getState().wallet.selectedAccount.account as Account;
+    if (account.networkType === 'bitcoin') {
+        return dispatch(bitcoinActions.compose());
+    }
+    // if (account.networkType === 'ethereum') {
+    //     console.log('PRECOMPOSE ETH');
+    // }
+    return true;
+};
 
 /*
     Change value in input "Address"
@@ -68,7 +126,8 @@ export const handleAddressChange = (outputId: number, address: string) => (
     getState: GetState,
 ) => {
     const { account } = getState().wallet.selectedAccount;
-    if (!account) return null;
+    const { send } = getState().wallet;
+    if (!account || !send) return null;
 
     dispatch({
         type: SEND.HANDLE_ADDRESS_CHANGE,
@@ -76,6 +135,9 @@ export const handleAddressChange = (outputId: number, address: string) => (
         address,
         symbol: account.symbol,
     });
+
+    dispatch(compose());
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -110,6 +172,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         amount,
         availableBalance: account.availableBalance,
     });
+
+    dispatch(compose());
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -153,6 +218,9 @@ export const handleSelectCurrencyChange = (
         outputId,
         localCurrency: localCurrency.value,
     });
+
+    dispatch(compose());
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -187,6 +255,9 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         amount,
         availableBalance: account.availableBalance,
     });
+
+    dispatch(compose());
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -217,40 +288,91 @@ export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetSt
         amount: account.availableBalance,
         availableBalance: account.availableBalance,
     });
+
+    dispatch(compose());
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
     Change value in select "Fee"
  */
-export const handleFeeValueChange = (fee: any) => (dispatch: Dispatch, getState: GetState) => {
+export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
     const { send } = getState().wallet;
-    if (!send || !fee) return null;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return;
+    if (send.selectedFee.label === fee.label) return;
 
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
 
-    if (!send.isAdditionalFormVisible && fee.value === CUSTOM_FEE) {
-        dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
+    if (fee.label === 'custom') {
+        dispatch({
+            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
+            customFee: send.selectedFee.feePerUnit,
+        });
+        if (!send.isAdditionalFormVisible) {
+            dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
+        }
+    } else {
+        dispatch({
+            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
+            customFee: null,
+        });
     }
+
+    dispatch(compose());
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
     Change value in additional form - select "Fee"
  */
-export const handleCustomFeeValueChange = (customFee: string) => (dispatch: Dispatch) => {
-    dispatch({ type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE, customFee });
-    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee: { label: CUSTOM_FEE, value: CUSTOM_FEE } });
+export const handleCustomFeeValueChange = (customFee: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!account || !send) return null;
+    const fee = send.feeInfo.levels[send.feeInfo.levels.length - 1];
+
+    dispatch({
+        type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
+        customFee,
+    });
+
+    dispatch({
+        type: SEND.HANDLE_FEE_VALUE_CHANGE,
+        fee: {
+            ...fee,
+            feePerUnit: customFee,
+            value: customFee,
+        },
+    });
+
+    dispatch(compose());
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
     Click on button "Advanced settings"
  */
-export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch) => {
+export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return;
+
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
     Clear to default state
 */
-export const clear = () => (dispatch: Dispatch) => {
+export const clear = () => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return;
+
     dispatch({ type: SEND.CLEAR });
+    dispatch(sendFormCacheActions.cache());
 };

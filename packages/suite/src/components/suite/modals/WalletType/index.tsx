@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { H5, P, Link, Icon, Button, Tooltip, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
-import { useKeyPress } from '@suite-utils/hooks';
+import { useKeyPress } from '@suite-utils/dom';
 
 import l10nCommonMessages from '../messages';
 import l10nMessages from './messages';

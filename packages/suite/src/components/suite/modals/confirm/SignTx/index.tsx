@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
@@ -54,11 +54,15 @@ interface Props {
     sendForm: any;
 }
 
-const ConfirmSignTx: FunctionComponent<Props> = ({ device, sendForm }) => {
-    const { amount, address, selectedFeeLevel } = sendForm;
+const ConfirmSignTx = ({ device }: Props) => {
+    // const { amount, address, selectedFeeLevel } = sendForm;
+    const amount = '';
+    const address = '';
+    const selectedFeeLevel = { label: '', value: '' };
     const majorVersion = device.features ? device.features.major_version : 2;
-    const currency: string =
-        typeof sendForm.currency === 'string' ? sendForm.currency : sendForm.networkSymbol;
+    const currency = '';
+    // const currency: string =
+    //     typeof sendForm.currency === 'string' ? sendForm.currency : sendForm.networkSymbol;
 
     return (
         <Wrapper>

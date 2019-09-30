@@ -1,114 +1,49 @@
 import produce from 'immer';
+import { FeeInfo } from '@wallet-types/sendForm';
+import { BLOCKCHAIN } from '@wallet-actions/constants';
+import { NETWORKS } from '@wallet-config';
+import { Network, WalletAction } from '@wallet-types';
 
-export interface FeeItem {
-    value: string;
-    label: string;
-}
-
-export interface Fee {
-    btc: FeeItem[];
-    xrp: FeeItem[];
-    eth: FeeItem[];
-    ltc: FeeItem[];
-    etc: FeeItem[];
-    trop: FeeItem[];
-    test: FeeItem[];
-    bch: FeeItem[];
-    btg: FeeItem[];
-    dash: FeeItem[];
-    txrp: FeeItem[];
-    dgb: FeeItem[];
-    doge: FeeItem[];
-    nmc: FeeItem[];
-    vtc: FeeItem[];
-    zec: FeeItem[];
-}
-
-export const initialState: Fee = {
-    btc: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    xrp: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    txrp: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    eth: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    ltc: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    test: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    trop: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    etc: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    bch: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    btg: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    dash: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    dgb: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    doge: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    nmc: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    vtc: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
-    zec: [
-        { label: 'high', value: '0.0001995' },
-        { label: 'normal', value: '0.000315' },
-        { label: 'low', value: '0.001575' },
-    ],
+// type Symbol = Network['symbol'] | 'erc20';
+export type State = {
+    [key in Network['symbol']]: FeeInfo;
 };
 
-export default (state: Fee = initialState) => {
-    return produce(state, _draft => {
+const initialStatePredefined: Partial<State> = {
+    // erc20: {
+    //     blockHeight: 0,
+    //     blockTime: 10,
+    //     minFee: 1,
+    //     maxFee: 100,
+    //     levels: [{ label: 'normal', feePerUnit: '1', blocks: 0 }],
+    // },
+};
+
+// fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
+export const initialState = NETWORKS.reduce(
+    (state, network) => {
+        if (network.accountType) return state;
+        state[network.symbol] = {
+            blockHeight: 0,
+            blockTime: 10,
+            minFee: 1,
+            maxFee: 100,
+            levels: [{ label: 'normal', feePerUnit: '1', blocks: 0, value: '1' }],
+        };
         return state;
+    },
+    initialStatePredefined as State,
+);
+
+export default (state: State = initialState, action: WalletAction) => {
+    return produce(state, draft => {
+        switch (action.type) {
+            case BLOCKCHAIN.UPDATE_FEE:
+                return {
+                    ...draft,
+                    ...action.payload,
+                };
+            // no default
+        }
     });
 };
