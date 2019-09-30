@@ -114,7 +114,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change select "Fee"
             case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
-                const { customFee, maxFee, minFee } = action;
+                const { customFee } = action;
 
                 draft.customFee.error = null;
                 draft.customFee.value = customFee;
@@ -123,8 +123,8 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 if (customFee === null) return draft;
 
                 const customFeeBig = new Bignumber(customFee);
-                const maxFeeBig = new Bignumber(maxFee);
-                const minFeeBig = new Bignumber(minFee);
+                const maxFeeBig = new Bignumber(draft.feeInfo.maxFee);
+                const minFeeBig = new Bignumber(draft.feeInfo.minFee);
 
                 if (validator.isEmpty(customFee)) {
                     draft.customFee.error = VALIDATION_ERRORS.IS_EMPTY;

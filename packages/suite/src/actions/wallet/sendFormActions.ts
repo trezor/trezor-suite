@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
 import { getAccountKey } from '@wallet-utils/reducerUtils';
-import { Output, InitialState, FeeLevel, FeeInfo } from '@wallet-types/sendForm';
+import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -37,8 +37,6 @@ export type SendFormActions =
       }
     | {
           type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE;
-          minFee: FeeInfo['minFee'];
-          maxFee: FeeInfo['maxFee'];
           customFee: string | null;
       }
     | {
@@ -306,8 +304,6 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     if (fee.label === 'custom') {
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-            maxFee: send.feeInfo.maxFee,
-            minFee: send.feeInfo.minFee,
             customFee: send.selectedFee.feePerUnit,
         });
         if (!send.isAdditionalFormVisible) {
@@ -316,8 +312,6 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     } else {
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-            maxFee: send.feeInfo.maxFee,
-            minFee: send.feeInfo.minFee,
             customFee: null,
         });
     }
@@ -341,8 +335,6 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     dispatch({
         type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
         customFee,
-        maxFee: send.feeInfo.maxFee,
-        minFee: send.feeInfo.minFee,
     });
 
     dispatch({
