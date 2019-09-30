@@ -1,9 +1,12 @@
 // @ts-ignore for now
+
+// TODO: use validation from connect and remove this file
+
 import addressValidator from 'wallet-address-validator';
 import { Account } from '@wallet-types';
 
 const isTestnet = (symbol: Account['symbol']): boolean => {
-    const testnets = ['txrp', 'test', 'trop'];
+    const testnets = ['test'];
     return testnets.includes(symbol);
 };
 
