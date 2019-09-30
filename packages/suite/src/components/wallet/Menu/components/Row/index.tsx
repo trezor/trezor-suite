@@ -155,7 +155,8 @@ const Row = React.memo(({ account, hideBalance, selected }: Props) => (
                 <Right>
                     <Balance>
                         <BalanceValue>
-                            {formatNetworkAmount(account.balance, account.symbol)} {account.symbol}
+                            {formatNetworkAmount(account.availableBalance, account.symbol)}{' '}
+                            {account.symbol}
                         </BalanceValue>
                     </Balance>
                     {account.history.total !== -1 && (

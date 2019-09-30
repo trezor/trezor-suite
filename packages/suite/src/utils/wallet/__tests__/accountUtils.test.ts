@@ -53,5 +53,6 @@ describe('accountUtils', () => {
         expect(accountUtils.formatNetworkAmount('1', 'btc')).toEqual('0.00000001');
         expect(accountUtils.formatNetworkAmount('1', 'xrp')).toEqual('0.000001');
         expect(accountUtils.formatNetworkAmount('1', 'eth')).toEqual('0.000000000000000001');
+        expect(accountUtils.formatNetworkAmount('aaa', 'eth')).toEqual('-1');
     });
 });

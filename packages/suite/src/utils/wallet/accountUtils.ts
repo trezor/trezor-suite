@@ -94,7 +94,7 @@ export const formatAmount = (amount: string, decimals: number) => {
         }
         return bAmount.div(10 ** decimals).toString(10);
     } catch (error) {
-        return '0';
+        return '-1';
     }
 };
 
