@@ -18,6 +18,10 @@ const StyledButton = styled(Button)`
     margin: 4px 0px;
 `;
 
+const StyledP = styled(P)`
+    margin: 20px 0;
+`;
+
 const AccountNameWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -38,12 +42,12 @@ const EnableNetwork = (props: {
     onEnableNetwork: Props['onEnableNetwork'];
 }) => (
     <>
-        <P>
+        <StyledP>
             <FormattedMessage
                 {...l10nMessages.TR_ENABLE_NETWORK}
                 values={{ networkName: props.selectedNetwork.name }}
             />
-        </P>
+        </StyledP>
         <StyledButton fullWidth onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
             <FormattedMessage
                 {...l10nMessages.TR_ENABLE_NETWORK_BUTTON}

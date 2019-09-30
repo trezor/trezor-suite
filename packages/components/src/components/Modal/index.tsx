@@ -31,8 +31,14 @@ const ModalWindow = styled.div`
 
 const StyledLink = styled(Link)`
     position: absolute;
-    right: 15px;
-    top: 15px;
+    right: 0;
+    top: 0;
+    opacity: 0.5;
+    padding: 20px;
+
+    :hover {
+        opacity: 1;
+    }
 `;
 
 interface Props {
@@ -54,7 +60,7 @@ const Modal = ({ children, cancelable, onCancel }: Props) => {
                 {children}
                 {cancelable && (
                     <StyledLink onClick={onCancel}>
-                        <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
+                        <Icon size={14} color={colors.TEXT_SECONDARY} icon="CLOSE" />
                     </StyledLink>
                 )}
             </ModalWindow>
