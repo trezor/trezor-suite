@@ -256,12 +256,19 @@ export default [
                                 name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
                                 transfers: 2,
                             },
+                            {
+                                type: 'XPUBAddress',
+                                path: "m/44'/0'/100'/1/1",
+                                name: '1RXiBGixLSBRAAXtZMsCx75EuFqqJnmXZ',
+                                transfers: 1,
+                            },
                         ],
                         transactions: [
                             {
                                 vin: [
                                     {
                                         addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
+                                        value: '100',
                                         sequence: 4294967293, // RBF
                                     },
                                 ],
@@ -269,6 +276,10 @@ export default [
                                     {
                                         addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
                                         value: '50',
+                                    },
+                                    {
+                                        addresses: ['1RXiBGixLSBRAAXtZMsCx75EuFqqJnmXZ'],
+                                        value: '40',
                                     },
                                 ],
                                 fees: '10',
@@ -311,6 +322,11 @@ export default [
                         path: "m/44'/0'/100'/1/0",
                         address: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
                         transfers: 2,
+                    },
+                    {
+                        path: "m/44'/0'/100'/1/1",
+                        address: '1RXiBGixLSBRAAXtZMsCx75EuFqqJnmXZ',
+                        transfers: 1,
                     },
                 ],
                 used: [],

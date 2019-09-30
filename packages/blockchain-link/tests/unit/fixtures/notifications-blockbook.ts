@@ -104,6 +104,7 @@ const notifyAddresses = [
             descriptor: 'A',
             tx: {
                 ...tx,
+                amount: '0',
                 type: 'sent',
                 targets: [{ addresses: ['B'] }],
             },
@@ -167,7 +168,11 @@ const notifyAddresses = [
             accounts: [
                 {
                     descriptor: 'xpub',
-                    addresses: { used: [{ address: 'B' }], unused: [], change: [] },
+                    addresses: {
+                        used: [{ address: 'B' }],
+                        unused: [],
+                        change: [{ address: 'B-change' }],
+                    },
                 },
             ],
         },
@@ -175,8 +180,11 @@ const notifyAddresses = [
             data: {
                 address: 'B',
                 tx: {
-                    vin: [{ addresses: ['B'] }],
-                    vout: [{ addresses: ['A'] }],
+                    vin: [{ addresses: ['B'], value: '100' }],
+                    vout: [
+                        { addresses: ['A'], value: '40' },
+                        { addresses: ['B-change'], value: '40' },
+                    ],
                 },
             },
         },
@@ -184,8 +192,9 @@ const notifyAddresses = [
             descriptor: 'xpub',
             tx: {
                 ...tx,
+                amount: '60',
                 type: 'sent',
-                targets: [{ addresses: ['A'] }],
+                targets: [{ addresses: ['A'], amount: '40' }],
             },
         },
     },
@@ -241,6 +250,7 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'sent',
+                amount: '0',
                 targets: [{ addresses: ['0x1'] }],
             },
         },

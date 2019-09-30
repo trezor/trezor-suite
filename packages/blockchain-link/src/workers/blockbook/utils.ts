@@ -150,6 +150,7 @@ export const transformTransaction = (
     } else if (outgoing.length === 0 && (incoming.length > 0 || tokens.length > 0)) {
         // none of the input is mine but and output or token transfer is mine
         type = 'recv';
+        amount = '0';
         if (incoming.length > 0) {
             if (Array.isArray(tx.vin)) {
                 targets = tx.vin;
@@ -159,18 +160,32 @@ export const transformTransaction = (
                 if (typeof vout.value !== 'string') return prev;
                 const bn = new BigNumber(prev).plus(vout.value);
                 return bn.toString();
-            }, '0');
+            }, amount);
         }
     } else {
         type = 'sent';
+        // regular targets
         if (tokens.length === 0 && Array.isArray(tx.vout)) {
             // filter account receive and change addresses from output
             targets = tx.vout.filter(o => incoming.indexOf(o) < 0 && internal.indexOf(o) < 0);
-            amount = targets.reduce((prev, vout) => {
-                if (typeof vout.value !== 'string') return prev;
-                const bn = new BigNumber(prev).plus(vout.value);
+        }
+        // ethereum specific transaction
+        if (tx.ethereumSpecific) {
+            amount = tokens.length > 0 || tx.ethereumSpecific.status === 0 ? tx.fees : tx.value;
+        } else if (Array.isArray(tx.vout)) {
+            // bitcoin-like transaction
+            // sum all my inputs
+            const myInputsSum = outgoing.reduce((prev, vin) => {
+                if (typeof vin.value !== 'string') return prev;
+                const bn = new BigNumber(prev).plus(vin.value);
                 return bn.toString();
-            }, tx.fees);
+            }, '0');
+            // reduce sum by my outputs values
+            amount = incoming.reduce((prev, vout) => {
+                if (typeof vout.value !== 'string') return prev;
+                const bn = new BigNumber(prev).minus(vout.value);
+                return bn.toString();
+            }, myInputsSum);
         }
     }
 

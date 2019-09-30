@@ -516,26 +516,27 @@ export default {
             },
         },
         {
-            description: 'ETH: sent to 1 outputs',
+            description: 'ETH: sent',
             descriptor: 'A',
             tx: {
                 vin: [
                     {
                         addresses: ['A'],
-                        value: '100',
                     },
                 ],
                 vout: [
                     {
                         addresses: ['B'],
-                        value: '40',
                     },
                 ],
+                ethereumSpecific: {
+                    status: 1,
+                },
                 ...FEES,
             },
             parsed: {
                 type: 'sent',
-                amount: '50', // B.value + fee
+                amount: '90',
                 targets: [
                     {
                         addresses: ['B'],
