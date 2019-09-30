@@ -15,21 +15,22 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'xrp';
         case 'trop':
             return 'eth';
-        default:
-            return symbol;
+        // no default
     }
 };
 
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
     let networkType = 'prod';
-    let symbolWithoutTestnets = symbol;
+    let symbolWithoutTestnets = null;
 
     if (isTestnet(symbol)) {
         networkType = 'testnet';
         symbolWithoutTestnets = getCoinFromTestnet(symbol);
     }
 
-    switch (symbolWithoutTestnets) {
+    const updatedSymbol = symbolWithoutTestnets || symbol;
+
+    switch (updatedSymbol) {
         case 'btc':
         case 'bch':
         case 'btg':
@@ -43,11 +44,7 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
         case 'zec':
         case 'eth':
         case 'etc':
-            return addressValidator.validate(
-                address,
-                symbolWithoutTestnets.toUpperCase(),
-                networkType,
-            );
+            return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
         // no default
     }
 };
