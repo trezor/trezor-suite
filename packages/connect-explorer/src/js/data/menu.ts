@@ -422,10 +422,6 @@ export default [
                 url: '/method/changePin',
             },
             {
-                name: 'Firmware erase',
-                url: '/method/firmwareErase',
-            },
-            {
                 name: 'Firmware update',
                 url: '/method/firmwareUpdate',
             },
