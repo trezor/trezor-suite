@@ -60,8 +60,9 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { account } = getState().wallet.selectedAccount;
     const { sendCache } = getState().wallet;
-    if (router.app !== 'wallet' || !router.params || !account) return;
+    if (router.app !== 'wallet' || !router.params) return;
 
+    let cachedState = null;
     const feeInfo = getState().wallet.fees[router.params.symbol];
     const levels: FeeLevel[] = feeInfo.levels.concat({
         label: 'custom',
@@ -70,9 +71,11 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         blocks: 0,
     });
 
-    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    const cachedItem = sendCache.cache.find(item => item.id === accountKey);
-    const cachedState = cachedItem ? cachedItem.sendFormState : null;
+    if (account) {
+        const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+        const cachedItem = sendCache.cache.find(item => item.id === accountKey);
+        cachedState = cachedItem ? cachedItem.sendFormState : null;
+    }
 
     // TODO: default output fiat currency from settings
     dispatch({
