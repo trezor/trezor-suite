@@ -10,8 +10,8 @@
         "dev": "webpack-dev-server --config ./webpack/dev.babel.js --mode development",
         "dev:local": "cross-env LOCAL=true webpack-dev-server --progress --colors --config ./webpack/local.babel.js --mode development --bail",
         "build": "rm -rf build && webpack --config ./webpack/prod.babel.js --progress",
-        "test:integration": "cypress run",
-        "test:integration:local": "cypress open --config baseUrl=http://localhost:8082"
+        "ci:test:snapshots": "cypress run",
+        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots"
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
