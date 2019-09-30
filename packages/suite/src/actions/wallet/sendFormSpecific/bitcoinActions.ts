@@ -2,7 +2,6 @@ import TrezorConnect, { PrecomposedTransaction } from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { Output } from '@wallet-types/sendForm';
 import { SEND } from '@wallet-actions/constants';
-import { getAccountKey } from '@wallet-utils/reducerUtils';
 import { DEFAULT_LOCAL_CURRENCY } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -39,13 +38,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         newOutput,
     });
 
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /**
@@ -57,14 +50,7 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getSta
     if (!send || !account) return null;
 
     dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {

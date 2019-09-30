@@ -136,14 +136,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
     });
 
     dispatch(compose());
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -180,14 +173,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     });
 
     dispatch(compose());
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -233,14 +219,7 @@ export const handleSelectCurrencyChange = (
     });
 
     dispatch(compose());
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -277,14 +256,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     });
 
     dispatch(compose());
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -317,14 +289,7 @@ export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetSt
     });
 
     dispatch(compose());
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -358,14 +323,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     }
 
     dispatch(compose());
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -397,14 +355,7 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     });
 
     dispatch(compose());
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -416,14 +367,7 @@ export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getStat
     if (!send || !account) return;
 
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
@@ -435,12 +379,5 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
     if (!send || !account) return;
 
     dispatch({ type: SEND.CLEAR });
-
-    // save to cache
-    dispatch(
-        sendFormCacheActions.cache(
-            getAccountKey(account.descriptor, account.symbol, account.deviceState),
-            send,
-        ),
-    );
+    dispatch(sendFormCacheActions.cache());
 };
