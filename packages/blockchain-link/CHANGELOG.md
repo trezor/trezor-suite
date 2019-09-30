@@ -1,3 +1,7 @@
+# 1.0.1
+#### changes
+- Fixed amount calculation in blockbook Transactions
+
 # 1.0.0-rc3
 #### changes
 - Added possibility to export workers as a main thread module (using webpack build)
