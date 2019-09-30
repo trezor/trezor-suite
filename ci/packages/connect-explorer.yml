@@ -84,23 +84,22 @@ connect-explorer test integration:
         expire_in: 2 days
         when: always
         paths:
-            - connect-explorer/test/snapshots
-            - connect-explorer/test/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/connect-explorer/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/connect-explorer/test/screenshots
     dependencies:
         - install and build
 
-components-storybook make snapshot references:
-  image: cypress/base:10
-  stage: integration testing
-  when: manual
-  script:
-    - npx cypress install
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer ci:test:snapshots:references
-  artifacts:
-    expire_in: 5 days
-    when: always
-    paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/connect-explorer/test/snapshots/
-    
-  dependencies:
-    - install and build
+connect-explorer make snapshot references:
+    image: cypress/base:10
+    stage: integration testing
+    when: manual
+    script:
+        - npx cypress install
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME} yarn workspace @trezor/connect-explorer ci:test:snapshots:references
+    artifacts:
+        expire_in: 5 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/connect-explorer/test/snapshots/
+    dependencies:
+        - install and build
