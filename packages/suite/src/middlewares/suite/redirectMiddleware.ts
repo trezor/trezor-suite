@@ -11,9 +11,12 @@ const handleDeviceRedirect = async (dispatch: Dispatch, device?: TrezorDevice) =
         return;
     }
 
-    // 1. device is not initialized, or does not have firmware (freshly unpacked). redirect to "onboarding"
-    // todo: add || device.firmware === 'none'
+    // 1. device is not initialized, redirect to onboarding
     if (device.mode === 'initialize') {
+        await dispatch(routerActions.goto('onboarding-index'));
+    }
+    // firmware none (model T) or unknown (model One) indicates freshly unpacked device
+    if (device.firmware === 'none' || device.firmware === 'unknown') {
         await dispatch(routerActions.goto('onboarding-index'));
     }
     // 2. device firmware update required, redirect to "firmware update"
