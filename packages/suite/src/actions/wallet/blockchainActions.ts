@@ -218,8 +218,9 @@ export const onNotification = (payload: BlockchainNotification) => async (
     const symbol = payload.coin.shortcut.toLowerCase();
     const account = getState().wallet.accounts.find(
         a =>
-            a.symbol === symbol &&
-            a.descriptor.toLowerCase() === notification.descriptor.toLowerCase(), // TODO: lowercase only in case of eth
+            a.symbol === symbol && a.networkType === 'ethereum'
+                ? a.descriptor.toLowerCase() === notification.descriptor.toLowerCase()
+                : a.descriptor === notification.descriptor, // blockbook returns lowercase eth address
     );
     if (!account) return;
 
