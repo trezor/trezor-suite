@@ -75,7 +75,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount, availableBalance } = action;
+                const { outputId, amount } = action;
                 const output = getOutput(draft.outputs, outputId);
 
                 output.amount.error = null;
@@ -88,11 +88,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 if (!validator.isNumeric(amount)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_NUMBER;
-                    return draft;
-                }
-
-                if (availableBalance < amount || availableBalance === '0') {
-                    output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
 

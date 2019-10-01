@@ -20,7 +20,6 @@ export type SendFormActions =
           type: typeof SEND.HANDLE_AMOUNT_CHANGE;
           outputId: number;
           amount: string;
-          availableBalance: string;
       }
     | {
           type: typeof SEND.SET_MAX;
@@ -169,7 +168,6 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount,
-        availableBalance: account.availableBalance,
     });
 
     dispatch(compose());
@@ -208,7 +206,6 @@ export const handleSelectCurrencyChange = (
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
             amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
-            availableBalance: account.availableBalance,
         });
     }
 
@@ -252,7 +249,6 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount,
-        availableBalance: account.availableBalance,
     });
 
     dispatch(compose());
@@ -285,7 +281,6 @@ export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetSt
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount: account.availableBalance,
-        availableBalance: account.availableBalance,
     });
 
     dispatch(compose());
