@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { WalletAction, Network } from '@wallet-types';
 
 type AccountNetworkSpecific =
@@ -35,6 +36,7 @@ export type Account = {
     imported?: boolean;
     balance: string;
     availableBalance: string;
+    formattedBalance: string;
     tokens: AccountInfo['tokens'];
     addresses: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
@@ -43,13 +45,22 @@ export type Account = {
 
 const initialState: Account[] = [];
 
+const getFormatedAccount = (account: Account) => {
+    return {
+        ...account,
+        formattedBalance: formatNetworkAmount(account.availableBalance, account.symbol),
+    };
+};
+
 const create = (draft: Account[], account: Account) => {
     // TODO: check if account already exist, for example 2 device instances with same passphrase
     // remove "transactions" field, they are stored in "transactionReducer"
     if (account.history) {
         delete account.history.transactions;
     }
-    draft.push(account);
+    draft.push({
+        ...getFormatedAccount(account),
+    });
 };
 
 const changeVisibility = (draft: Account[], account: Account) => {
@@ -86,7 +97,7 @@ const update = (draft: Account[], account: Account) => {
     );
 
     if (accountIndex !== -1) {
-        draft[accountIndex] = { ...account };
+        draft[accountIndex] = { ...getFormatedAccount(account) };
 
         if (!account.marker) {
             // immer.js doesn't update fields that are set to undefined, so instead we delete the field

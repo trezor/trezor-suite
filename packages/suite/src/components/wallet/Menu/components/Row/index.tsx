@@ -1,7 +1,6 @@
 import React from 'react';
 import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getRoute } from '@suite-utils/router';
 import { Link } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
@@ -155,8 +154,7 @@ const Row = React.memo(({ account, hideBalance, selected }: Props) => (
                 <Right>
                     <Balance>
                         <BalanceValue>
-                            {formatNetworkAmount(account.availableBalance, account.symbol)}{' '}
-                            {account.symbol}
+                            {account.formattedBalance} {account.symbol}
                         </BalanceValue>
                     </Balance>
                     {account.history.total !== -1 && (
