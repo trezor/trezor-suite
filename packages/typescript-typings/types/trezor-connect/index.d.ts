@@ -543,6 +543,10 @@ declare module 'trezor-connect' {
               payload: string;
           };
     export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
+    export namespace BLOCKCHAIN {
+        export const NOTIFICATION = 'blockchain-notification';
+        export const BLOCK = 'blockchain-block';
+    }
 
     export const UI_EVENT = 'UI_EVENT';
     export namespace UI {
@@ -728,6 +732,48 @@ declare module 'trezor-connect' {
     export interface BlockchainSubscribeResponse {
         subscribed: boolean;
     }
+
+    export interface BlockchainBlock {
+        blockHash: string;
+        blockHeight: number;
+        coin: BlockchainCoin;
+    }
+    
+    export interface BlockchainNotification {
+        notification: {
+            descriptor: string;
+            tx: AccountTransaction;
+        };
+        coin: BlockchainCoin;
+    }
+    
+    export interface BlockchainCoin {
+        type: 'misc';
+        blockchainLink: {
+            type: 'ripple' | 'blockbook';
+            url: string[];
+        };
+        blocktime: number | null;
+        curve: string;
+        defaultFees: { Normal: number; }; 
+        minFee: 1;
+        maxFee: 1;
+        label: string;
+        name: string;
+        shortcut: string;
+        slip44: number;
+        support: {
+            connect: boolean;
+            trezor1: boolean;
+            trezor2: string;
+            webwallet: boolean;
+        };
+        decimals: number;
+        chain?: string; // eth
+        chainId?: 3; // eth
+        rskip60?: number; // eth
+    }
+    
 
     namespace TrezorConnect {
         /**

@@ -1,4 +1,9 @@
-import TrezorConnect, { AccountInfo } from 'trezor-connect';
+import TrezorConnect, {
+    AccountInfo,
+    BlockchainBlock,
+    BlockchainNotification,
+    BLOCKCHAIN as CONNECT_BLOCKCHAIN,
+} from 'trezor-connect';
 import {
     getSelectedNetwork,
     getAccountDevice,
@@ -12,7 +17,7 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { enhanceTransaction } from '@suite/reducers/wallet/transactionReducer';
 import { Dispatch, GetState } from '@suite-types';
-import { Account, BlockchainBlock, BlockchainNotification } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { BLOCKCHAIN } from './constants';
 import { goto } from '../suite/routerActions';
 
@@ -26,11 +31,11 @@ export type BlockchainActions =
           type: typeof BLOCKCHAIN.READY;
       }
     | {
-          type: typeof BLOCKCHAIN.BLOCK;
+          type: typeof CONNECT_BLOCKCHAIN.BLOCK;
           payload: BlockchainBlock;
       }
     | {
-          type: typeof BLOCKCHAIN.NOTIFICATION;
+          type: typeof CONNECT_BLOCKCHAIN.NOTIFICATION;
           payload: BlockchainNotification;
       }
     | {
@@ -101,8 +106,7 @@ const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => (
         accountInfo.history.total + (accountInfo.history.unconfirmed || 0) !==
         account.history.total + (account.history.unconfirmed || 0);
 
-    // different sequence or balance (not availableBalance)
-    // idea is that availableBalance depends on pending txs which are handled in separate case (in onBlockMined))
+    // different sequence or balance
     const changedRippleSpecific =
         account.networkType === 'ripple'
             ? accountInfo.misc!.sequence !== account.misc.sequence ||
@@ -117,18 +121,27 @@ const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => (
         getState().wallet.transactions.transactions,
         account,
     )[0];
+    // .filter(t => !!t.blockTime)
+    // [0]; // exclude pending txs
     const changedLastTx = (lastPayloadTx || {}).txid !== (lastReducerTx || {}).txid;
 
     if (changedTxCount || changedLastTx || changedRippleSpecific) {
+        console.log(changedTxCount, changedLastTx, changedRippleSpecific);
         console.log('isAccountOutdated');
-        console.log(account);
-        console.log(accountInfo);
+        console.log('account', account);
+        console.log('accountINfo', accountInfo);
         console.log('changedTxCount', changedTxCount);
         console.log('changedRippleSpecific', changedRippleSpecific);
         console.log('changedLastTx', changedLastTx);
-        console.log(lastReducerTx, lastPayloadTx);
+        console.log('lastReducerTx', lastReducerTx);
+        console.log('lastPayloadTx', lastPayloadTx);
     }
-    return changedTxCount || changedLastTx || changedRippleSpecific;
+
+    // ripple doesn't provide total txs count, rely on balance/sequence
+    if (account.networkType === 'ripple') {
+        return changedRippleSpecific;
+    }
+    return changedTxCount;
 };
 
 export const onBlockMined = (block: BlockchainBlock) => async (
@@ -153,6 +166,7 @@ export const onBlockMined = (block: BlockchainBlock) => async (
     if (networkAccounts.length === 0) return;
 
     networkAccounts.forEach(async account => {
+        console.log('acc:', account.symbol, account.index);
         const response = await TrezorConnect.getAccountInfo({
             coin: symbol,
             descriptor: account.descriptor,
@@ -166,17 +180,21 @@ export const onBlockMined = (block: BlockchainBlock) => async (
 
         if (response.success) {
             const outdated = dispatch(isAccountOutdated(account, response.payload));
-            const unconfirmedTxs = account.history.unconfirmed;
+            const unconfirmedTxs = account.history.unconfirmed; // not working for ripple, 0 for all ripple accounts?
+            // console.log('account', account);
+            console.log('outdated', outdated);
+            console.log('unconfirmedTxs', unconfirmedTxs);
             if (outdated) {
                 // delete already stored txs for the account
                 dispatch(transactionActions.remove(account));
             }
 
             if (outdated || unconfirmedTxs) {
-                // runs also in case of account is up to date, just with pending txs
+                console.log('on block acc update triggered');
+                // runs also in case of up-to-date account with pending txs
                 // update the account (balance, txs count, etc)
                 dispatch(accountActions.update(account, response.payload));
-                // add new txs
+                // add new txs/update existing ones if necessary
                 dispatch(
                     transactionActions.add(response.payload.history.transactions || [], account, 1),
                 );
@@ -194,14 +212,13 @@ export const onNotification = (payload: BlockchainNotification) => async (
 ): Promise<void> => {
     // ripple gets 2 notification for the same tx (one without blockTime then update with blockTime)
     // btc/eth/... don't get the 2nd notification, we will add missing info to confirmed txs on blockchain.block
-    if (payload.notification.tx.blockTime) {
-        // not pending
-        console.log('skipping not pending tx');
-        return;
-    }
+    // if (payload.notification.tx.blockTime) {
+    //     // not pending
+    //     console.log('skipping not pending tx');
+    //     return;
+    // }
     const { notification } = payload;
     const symbol = payload.coin.shortcut.toLowerCase();
-    // notification.descriptor is all lowercase at least in case of eth ropsten
     const account = getState().wallet.accounts.find(
         a =>
             a.symbol === symbol &&
@@ -214,6 +231,8 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     const enhancedTx = enhanceTransaction(notification.tx, account);
     const accountDevice = getAccountDevice(getState().devices, account);
+    console.log('blockTime', enhancedTx.blockTime);
+    console.log('blockHeight', enhancedTx.blockHeight);
     if (!accountDevice) return;
     if (accountDevice) {
         // dispatch the notification about the transaction
@@ -246,9 +265,11 @@ export const onNotification = (payload: BlockchainNotification) => async (
     }
 
     // fetch account info and update the account (new balance, txs count,...)
-    // TODO: it seems that balance, txs count is not changed till txs is confirmed, so the account update below is useless
+    // TODO: RIPPLE: it seems that balance, txs count is not changed till txs is confirmed
+    // (maybe even some time AFTER it is confirmed?), so the account update below is useless
     // more so it causes an issue, because we already added tx to the reducer, count of all account txs is greater than one returned in accountInfo
-    // that triggers removing all txs belonging to the acc in onBlockMined
+    // we also have outdated balance/sequence
+    // all of that trigger removing all txs belonging to the acc in onBlockMined
     const response = await TrezorConnect.getAccountInfo({
         coin: symbol,
         descriptor: account.descriptor,
@@ -257,5 +278,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
     });
 
     if (!response.success) return;
+    console.log('accInfo after notification', response.payload);
+    // TODO: BITCOIN: Notification returns blockTime 0, getAccountInfo has valid timestamp. should we update tx?
     dispatch(accountActions.update(account, response.payload));
 };
