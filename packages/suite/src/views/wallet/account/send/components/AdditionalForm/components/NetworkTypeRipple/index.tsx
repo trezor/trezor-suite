@@ -19,23 +19,28 @@ const Row = styled.div`
     }
 `;
 
-const NetworkTypeXrp = (props: Props) => (
-    <Wrapper>
-        <Row>
-            <CustomFee
-                sendFormActions={props.sendFormActions}
-                customFee={props.send.customFee.value}
-                errors={props.send.customFee.error}
-            />
-        </Row>
-        <Row>
-            <DestinationTag
-                sendFormActionsRipple={props.sendFormActionsRipple}
-                destinationTag={props.send.networkTypeRipple.destinationTag.value}
-                errors={props.send.networkTypeRipple.destinationTag.error}
-            />
-        </Row>
-    </Wrapper>
-);
+const NetworkTypeXrp = ({ send, sendFormActions, sendFormActionsRipple }: Props) => {
+    if (!send) return null;
+    return (
+        <Wrapper>
+            <Row>
+                <CustomFee
+                    maxFee={send.feeInfo.maxFee}
+                    minFee={send.feeInfo.minFee}
+                    sendFormActions={sendFormActions}
+                    customFee={send.customFee.value}
+                    errors={send.customFee.error}
+                />
+            </Row>
+            <Row>
+                <DestinationTag
+                    sendFormActionsRipple={sendFormActionsRipple}
+                    destinationTag={send.networkTypeRipple.destinationTag.value}
+                    errors={send.networkTypeRipple.destinationTag.error}
+                />
+            </Row>
+        </Wrapper>
+    );
+};
 
 export default NetworkTypeXrp;

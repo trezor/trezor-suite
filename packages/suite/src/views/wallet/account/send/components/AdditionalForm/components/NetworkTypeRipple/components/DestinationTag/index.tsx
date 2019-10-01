@@ -4,12 +4,13 @@ import { FormattedMessage } from 'react-intl';
 import { Input, Tooltip, Icon, colors } from '@trezor/components';
 import commonMessages from '@wallet-views/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { State } from '@wallet-types/sendForm';
 import messages from './index.messages';
 import { Props as ContainerProps } from '../../Container';
 
 interface Props {
-    errors: ContainerProps['send']['networkTypeRipple']['destinationTag']['error'];
-    destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag']['value'];
+    errors: State['networkTypeRipple']['destinationTag']['error'];
+    destinationTag: State['networkTypeRipple']['destinationTag']['value'];
     sendFormActionsRipple: ContainerProps['sendFormActionsRipple'];
 }
 
@@ -26,10 +27,7 @@ const StyledIcon = styled(Icon)`
     height: 100%;
 `;
 
-const getState = (
-    error: ContainerProps['send']['networkTypeRipple']['destinationTag']['error'],
-    destinationTag: ContainerProps['send']['networkTypeRipple']['destinationTag']['value'],
-) => {
+const getState = (error: Props['errors'], destinationTag: Props['destinationTag']) => {
     if (error) {
         return 'error';
     }
@@ -38,9 +36,7 @@ const getState = (
     }
 };
 
-const getErrorMessage = (
-    error: ContainerProps['send']['networkTypeRipple']['destinationTag']['error'],
-) => {
+const getErrorMessage = (error: Props['errors']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <FormattedMessage {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;

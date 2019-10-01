@@ -35,7 +35,7 @@ const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
     devices: state.devices,
-    wallet: state.wallet,
+    send: state.wallet.send,
     // connect: state.connect,
     // localStorage: state.localStorage,
 });
@@ -50,7 +50,7 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
-    const { modal, device, modalActions } = props;
+    const { modal, device, send, modalActions } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
@@ -86,7 +86,7 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_ConfirmOutput':
             return <ConfirmAction device={device} />;
         case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} sendForm={null} />;
+            return <ConfirmSignTx device={device} sendForm={send} />;
         }
 
         case RECEIVE.REQUEST_UNVERIFIED:

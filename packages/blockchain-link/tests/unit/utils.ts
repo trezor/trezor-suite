@@ -28,20 +28,12 @@ describe('blockbook/utils', () => {
     });
 
     describe('transformTransaction', () => {
+        // fixtures.transformTransaction = fixtures.transformTransaction.slice(3, 6);
         fixtures.transformTransaction.forEach(f => {
             it(f.description, () => {
                 // @ts-ignore incorrect params
                 const tx = transformTransaction(f.descriptor, f.addresses, f.tx);
-                expect(tx).toEqual({
-                    txid: undefined,
-                    blockTime: undefined,
-                    blockHeight: undefined,
-                    blockHash: undefined,
-                    amount: undefined,
-                    fee: undefined,
-                    tokens: [],
-                    ...f.parsed,
-                });
+                expect(tx).toMatchObject(f.parsed);
             });
         });
     });
