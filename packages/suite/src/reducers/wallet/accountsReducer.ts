@@ -14,8 +14,8 @@ type AccountNetworkSpecific =
     | {
           networkType: 'ripple';
           misc: { sequence: number; reserve: string };
-          page: undefined;
           marker: AccountInfo['marker'];
+          page: undefined;
       }
     | {
           networkType: 'ethereum';
