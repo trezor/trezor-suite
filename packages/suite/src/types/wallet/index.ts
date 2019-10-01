@@ -21,7 +21,6 @@ import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
 import { ArrayElement } from '../utils';
-import { AccountTransaction } from 'trezor-connect';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type ExternalNetwork = ArrayElement<typeof EXTERNAL_NETWORKS>;
