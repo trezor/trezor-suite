@@ -34,10 +34,12 @@ class TrezorSuiteApp extends App<Props> {
             <ErrorBoundary>
                 <ReduxProvider store={store}>
                     <IntlProvider>
-                        <Router />
-                        <Preloader isStatic={isStaticRoute}>
-                            <Component {...pageProps} />
-                        </Preloader>
+                        <>
+                            <Router />
+                            <Preloader isStatic={isStaticRoute}>
+                                <Component {...pageProps} />
+                            </Preloader>
+                        </>
                     </IntlProvider>
                 </ReduxProvider>
             </ErrorBoundary>

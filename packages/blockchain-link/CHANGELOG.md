@@ -1,3 +1,7 @@
+# 1.0.2
+#### changes
+- Fixed getTransaction response
+
 # 1.0.1
 #### changes
 - Fixed amount calculation in blockbook Transactions
