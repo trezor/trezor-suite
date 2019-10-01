@@ -147,7 +147,7 @@ declare module 'trezor-connect' {
 
     interface Error {
         success: false;
-        payload: { error: string; code?: string };
+        payload: { error: string; code?: string | number };
     }
 
     interface Success<T> {
@@ -872,6 +872,12 @@ declare module 'trezor-connect' {
          */
         function getAddress(params: GetAddressParams): Promise<ResponseMessage<Address>>;
         function getAddress(params: Bundle<GetAddressParams>): Promise<ResponseMessage<Address[]>>;
+
+        function ethereumGetAddress(params: GetAddressParams): Promise<ResponseMessage<Address>>;
+        function ethereumGetAddress(params: Bundle<GetAddressParams>): Promise<ResponseMessage<Address[]>>;
+
+        function rippleGetAddress(params: GetAddressParams): Promise<ResponseMessage<Address>>;
+        function rippleGetAddress(params: Bundle<GetAddressParams>): Promise<ResponseMessage<Address[]>>;
 
         /**
          * Gets an info of specified account.
