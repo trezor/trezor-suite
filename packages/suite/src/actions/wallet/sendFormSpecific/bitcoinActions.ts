@@ -2,8 +2,8 @@ import TrezorConnect, { PrecomposedTransaction } from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { Output } from '@wallet-types/sendForm';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { SEND } from '@wallet-actions/constants';
-import { DEFAULT_LOCAL_CURRENCY } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormCacheActions from '../sendFormCacheActions';
@@ -17,21 +17,22 @@ export type SendFormBitcoinActions =
  *    Creates new output (address, amount, fiatValue, localCurrency)
  */
 export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
+    const { send, settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
+    if (!send || !account || !settings) return null;
 
     const { outputs } = send;
     const outputsCount = outputs.length;
     const lastOutput = outputs[outputsCount - 1];
     const lastOutputId = lastOutput.id;
+    const localCurrency = getLocalCurrency(settings.localCurrency);
 
     const newOutput = {
         id: lastOutputId + 1,
         address: { value: null, error: null },
         amount: { value: null, error: null },
         fiatValue: { value: null },
-        localCurrency: { value: DEFAULT_LOCAL_CURRENCY }, // TODO add from settings
+        localCurrency: { value: localCurrency }, // TODO add from settings
     };
 
     dispatch({
@@ -102,6 +103,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     const account = selectedAccount.account as Account;
     if (!send || !account.addresses || !account.utxo) return;
+
     // TODO: validate if form has errors
 
     const { outputs } = send;
@@ -134,14 +136,6 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (resp.success) {
         const tx = resp.payload[0];
-        // if (tx.type === 'final') {
-        //     console.log('CALING CONNECT resp', resp);
-        // } else if (tx.type === 'nonfinal') {
-        //     console.log('CALING CONNECT resp', resp);
-        // } else if (tx.type === 'error') {
-        //     console.log('CALING CONNECT resp', resp);
-        // }
-
         dispatch({
             type: SEND.BTC_PRECOMPOSED_TX,
             payload: tx,

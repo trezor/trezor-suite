@@ -90,6 +90,7 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                         <Label>
                             <FormattedMessage {...l10nMessages.TR_FEE_LABEL} />
                         </Label>
+                        {/* TODO fee */}
                         <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
                         <StyledP>{selectedFeeLevel.label}</StyledP>
                     </>
