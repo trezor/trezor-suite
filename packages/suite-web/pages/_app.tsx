@@ -14,6 +14,8 @@ import CypressExportStore from '@suite-support/CypressExportStore';
 import Router from '@suite-support/Router';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { isDev } from '@suite-utils/build';
+import { matchesUA } from 'browserslist-useragent';
+import BrowserNotSupported from '../support/BrowserNotSupported';
 import { SENTRY } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
@@ -38,6 +40,10 @@ class TrezorSuiteApp extends App<Props> {
     render() {
         const { Component, pageProps, store, router } = this.props;
         const isStaticRoute = isStatic(router.pathname);
+
+        if (!matchesUA(navigator.userAgent)) {
+            return <BrowserNotSupported />;
+        }
 
         return (
             <ErrorBoundary>
