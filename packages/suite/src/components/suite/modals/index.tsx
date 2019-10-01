@@ -83,7 +83,8 @@ const getDeviceContextModal = (props: Props) => {
 
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
-        case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call
+        case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
+        case 'ButtonRequest_ConfirmWord': // dispatch on BackupDevice call for model One
         case 'ButtonRequest_ConfirmOutput':
             // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
             return <ConfirmAction device={device} />;
