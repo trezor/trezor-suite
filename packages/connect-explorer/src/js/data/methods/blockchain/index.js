@@ -6,6 +6,7 @@ const docs = 'methods/blockchainSubscribe.md';
 const select = [
     { value: 'xrp', label: 'Ripple' },
     { value: 'txrp', label: 'Ripple Testnet' },
+    { value: 'test', label: 'Bitcoin Testnet' },
 ];
 
 // const json = `[
@@ -78,6 +79,25 @@ export default [
                 type: 'select',
                 value: 'xrp',
                 data: select,
+            },
+        ]
+    },
+    {
+        url: '/method/blockchainGetTransactions',
+        name: 'blockchainGetTransactions',
+        docs,
+        submitButton: 'Get transactions',
+        fields: [
+            {
+                name: 'coin',
+                type: 'select',
+                value: 'test',
+                data: select,
+            },
+            {
+                name: 'txs',
+                type: 'json',
+                value: `['f457a1b85f84dcdaadc06f5dffb1436034bf6fa69a271a08d005f0a65aea7693']`,
             },
         ]
     },

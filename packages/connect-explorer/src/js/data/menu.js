@@ -605,6 +605,10 @@ export default [
                 url: '/method/blockchainEstimateFee',
             },
             {
+                name: 'Get Transactions',
+                url: '/method/blockchainGetTransactions',
+            },
+            {
                 name: 'Disconnect',
                 url: '/method/blockchainDisconnect',
             },
