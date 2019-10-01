@@ -25,6 +25,7 @@ describe('reducerUtils', () => {
         } else {
             expect(res).toBeNull();
         }
+        expect(reducerUtils.getSelectedNetwork(NETWORKS, 'doesntexist')).toBeNull();
     });
 
     fixtures.observeChanges.forEach(f => {
@@ -106,5 +107,80 @@ describe('reducerUtils', () => {
                 index: 1,
             }),
         );
+
+        expect(
+            reducerUtils.getSelectedAccount(
+                [
+                    global.JestMocks.getWalletAccount({
+                        descriptor:
+                            'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                        symbol: 'btc',
+                        index: 0,
+                    }),
+                    global.JestMocks.getWalletAccount({
+                        symbol: 'btc',
+                        descriptor: '123',
+                        accountType: 'normal',
+                        index: 1,
+                    }),
+                ],
+                global.JestMocks.getSuiteDevice({
+                    state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                }),
+                undefined,
+            ),
+        ).toBeNull();
+
+        expect(
+            reducerUtils.getSelectedAccount(
+                [
+                    global.JestMocks.getWalletAccount({
+                        descriptor:
+                            'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                        symbol: 'btc',
+                        index: 0,
+                    }),
+                    global.JestMocks.getWalletAccount({
+                        symbol: 'btc',
+                        descriptor: '123',
+                        accountType: 'normal',
+                        index: 1,
+                    }),
+                ],
+                undefined,
+                {
+                    symbol: 'btc',
+                    accountIndex: 1,
+                    accountType: 'normal',
+                },
+            ),
+        ).toBeNull();
+
+        expect(
+            reducerUtils.getSelectedAccount(
+                [
+                    global.JestMocks.getWalletAccount({
+                        descriptor:
+                            'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                        symbol: 'btc',
+                        index: 0,
+                    }),
+                    global.JestMocks.getWalletAccount({
+                        symbol: 'btc',
+                        descriptor: '123',
+                        accountType: 'normal',
+                        index: 1,
+                    }),
+                ],
+                global.JestMocks.getSuiteDevice({
+                    state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                }),
+                {
+                    symbol: 'btc',
+                    accountIndex: 3,
+                    accountType: 'normal',
+                },
+            ),
+        ).toBeNull();
     });
 });

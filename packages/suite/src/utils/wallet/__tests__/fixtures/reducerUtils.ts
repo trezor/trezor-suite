@@ -432,6 +432,29 @@ export const observeChanges = [
         },
         result: true,
     },
+    {
+        testName: 'reducerUtils.observeChanges changed key length',
+        prev: {
+            a: 1,
+            b: 2,
+        },
+        current: {
+            a: 1,
+            b: 2,
+            c: ['a', 'b', 'c'],
+        },
+        result: true,
+    },
+    {
+        testName: 'reducerUtils.observeChanges different data type',
+        prev: {
+            a: 1,
+            b: 2,
+            c: ['a', 'b', 'd'],
+        },
+        current: 'suddenly string',
+        result: true,
+    },
 ];
 
 export const enhanceTransaction = [
