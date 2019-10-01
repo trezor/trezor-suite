@@ -77,7 +77,6 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         cachedState = cachedItem ? cachedItem.sendFormState : null;
     }
 
-    // TODO: default output fiat currency from settings
     dispatch({
         type: SEND.INIT,
         payload: {
