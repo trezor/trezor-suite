@@ -4,12 +4,15 @@ import TrezorConnect, {
     BlockchainNotification,
     BLOCKCHAIN as CONNECT_BLOCKCHAIN,
 } from 'trezor-connect';
-import { getSelectedNetwork, getAccountDevice } from '@suite/utils/wallet/reducerUtils';
+import {
+    getSelectedNetwork,
+    getAccountDevice,
+    enhanceTransaction,
+} from '@wallet-utils/reducerUtils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { enhanceTransaction } from '@suite/reducers/wallet/transactionReducer';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';

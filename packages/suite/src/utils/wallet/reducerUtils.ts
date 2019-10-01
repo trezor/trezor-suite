@@ -1,6 +1,11 @@
-import { State as TransactionsState } from '@suite/reducers/wallet/transactionReducer';
+import {
+    State as TransactionsState,
+    WalletAccountTransaction,
+} from '@wallet-reducers/transactionReducer';
+import { AccountTransaction } from 'trezor-connect';
 import { AppState } from '@suite-types';
 import { Account, Network } from '@wallet-types';
+import { formatAmount, formatNetworkAmount } from './accountUtils';
 
 export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
@@ -109,4 +114,45 @@ export const getAccountTransactions = (
 ) => {
     const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     return transactions[accountHash] || [];
+};
+
+/**
+ * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
+ *
+ * @param {AccountTransaction} tx
+ * @param {Account} account
+ * @returns {WalletAccountTransaction}
+ */
+export const enhanceTransaction = (
+    tx: AccountTransaction,
+    account: Account,
+): WalletAccountTransaction => {
+    return {
+        descriptor: account.descriptor,
+        deviceState: account.deviceState,
+        symbol: account.symbol,
+        ...tx,
+        // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
+        blockTime:
+            account.networkType === 'ripple' && tx.blockTime
+                ? tx.blockTime + 946684800
+                : tx.blockTime,
+        tokens: tx.tokens.map(tok => {
+            return {
+                ...tok,
+                amount: formatAmount(tok.amount, tok.decimals),
+            };
+        }),
+        amount: formatNetworkAmount(tx.amount, account.symbol),
+        fee: formatNetworkAmount(tx.fee, account.symbol),
+        targets: tx.targets.map(tr => {
+            if (typeof tr.amount === 'string') {
+                return {
+                    ...tr,
+                    amount: formatNetworkAmount(tr.amount, account.symbol),
+                };
+            }
+            return tr;
+        }),
+    };
 };

@@ -1,8 +1,7 @@
 import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
-import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getAccountKey } from '@wallet-utils/reducerUtils';
+import { getAccountKey, enhanceTransaction } from '@wallet-utils/reducerUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
 
@@ -34,40 +33,6 @@ const initialState: State = {
 //     if (!b.blockHeight) return 1;
 //     return b.blockHeight - a.blockHeight;
 // };
-
-export const enhanceTransaction = (
-    tx: AccountTransaction,
-    account: Account,
-): WalletAccountTransaction => {
-    return {
-        descriptor: account.descriptor,
-        deviceState: account.deviceState,
-        symbol: account.symbol,
-        ...tx,
-        // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
-        blockTime:
-            account.networkType === 'ripple' && tx.blockTime
-                ? tx.blockTime + 946684800
-                : tx.blockTime,
-        tokens: tx.tokens.map(tok => {
-            return {
-                ...tok,
-                amount: formatAmount(tok.amount, tok.decimals),
-            };
-        }),
-        amount: formatNetworkAmount(tx.amount, account.symbol),
-        fee: formatNetworkAmount(tx.fee, account.symbol),
-        targets: tx.targets.map(tr => {
-            if (typeof tr.amount === 'string') {
-                return {
-                    ...tr,
-                    amount: formatNetworkAmount(tr.amount, account.symbol),
-                };
-            }
-            return tr;
-        }),
-    };
-};
 
 const initializeAccount = (draft: State, accountHash: string) => {
     // initialize an empty array at 'accountHash' index if not yet initialized

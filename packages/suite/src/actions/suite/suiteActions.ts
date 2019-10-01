@@ -1,5 +1,5 @@
 import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
-import * as reducersUtils from '@suite-utils/reducers';
+import * as reducerUtils from '@wallet-utils/reducerUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -257,7 +257,7 @@ export const observeSelectedDevice = (action: Action) => (
     if (!selectedDevice) return false;
     const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
     if (!deviceFromReducer) return true;
-    const changed = reducersUtils.observeChanges(selectedDevice, deviceFromReducer);
+    const changed = reducerUtils.observeChanges(selectedDevice, deviceFromReducer);
     if (changed) {
         dispatch({
             type: SUITE.UPDATE_SELECTED_DEVICE,
