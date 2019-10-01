@@ -16,12 +16,14 @@
     "dependencies": {
         "@sentry/browser": "^5.4.0",
         "@trezor/suite": "^1.0.0",
+        "browserslist-useragent": "^3.0.2",
         "next": "^9.0.5",
         "next-redux-wrapper": "^3.0.0-alpha.2"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
         "@cypress/webpack-preprocessor": "^4.1.0",
+        "@types/browserslist-useragent": "^3.0.0",
         "@types/next": "^8.0.6",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
