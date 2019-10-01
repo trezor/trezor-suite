@@ -21,9 +21,6 @@ export type State =
       }
     | {
           context: typeof MODAL.CONTEXT_SCAN_QR;
-      }
-    | {
-          context: typeof MODAL.OVERLAY_ONLY;
       };
 
 const initialState: State = {
@@ -97,11 +94,6 @@ export default (state: State = initialState, action: Action): State => {
         case MODAL.OPEN_SCAN_QR:
             return {
                 context: MODAL.CONTEXT_SCAN_QR,
-            };
-
-        case MODAL.OVERLAY_ONLY:
-            return {
-                context: MODAL.OVERLAY_ONLY,
             };
 
         default:
