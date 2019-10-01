@@ -55,6 +55,57 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getSta
     dispatch(sendFormCacheActions.cache());
 };
 
+export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { send, selectedAccount } = getState().wallet;
+    const account = selectedAccount.account as Account;
+    if (!send || !account.addresses || !account.utxo) return;
+
+    const { outputs } = send;
+
+    const composedOutputs = outputs.map(o => {
+        const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
+
+        if (o.address.value) {
+            return {
+                address: o.address.value,
+                amount,
+            } as const;
+        }
+
+        return {
+            type: 'noaddress',
+            amount,
+        } as const;
+    });
+
+    const resp = await TrezorConnect.composeTransaction({
+        account: {
+            path: account.path,
+            addresses: account.addresses,
+            utxo: account.utxo,
+        },
+        feeLevels: [send.selectedFee],
+        outputs: composedOutputs,
+        coin: account.symbol,
+    });
+
+    if (resp.success) {
+        const tx = resp.payload[0];
+        dispatch({
+            type: SEND.BTC_PRECOMPOSED_TX,
+            payload: tx,
+        });
+    } else {
+        dispatch({
+            type: SEND.BTC_PRECOMPOSED_TX,
+            payload: {
+                type: 'error',
+                error: resp.payload.error,
+            },
+        });
+    }
+};
+
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     const selectedDevice = getState().suite.device;
@@ -96,57 +147,5 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
                 cancelable: true,
             }),
         );
-    }
-};
-
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    const account = selectedAccount.account as Account;
-    if (!send || !account.addresses || !account.utxo) return;
-
-    // TODO: validate if form has errors
-
-    const { outputs } = send;
-
-    const composedOutputs = outputs.map(o => {
-        const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
-
-        if (o.address.value) {
-            return {
-                address: o.address.value,
-                amount,
-            } as const;
-        }
-        return {
-            type: 'noaddress',
-            amount,
-        } as const;
-    });
-
-    const resp = await TrezorConnect.composeTransaction({
-        account: {
-            path: account.path,
-            addresses: account.addresses,
-            utxo: account.utxo,
-        },
-        feeLevels: [send.selectedFee],
-        outputs: composedOutputs,
-        coin: account.symbol,
-    });
-
-    if (resp.success) {
-        const tx = resp.payload[0];
-        dispatch({
-            type: SEND.BTC_PRECOMPOSED_TX,
-            payload: tx,
-        });
-    } else {
-        dispatch({
-            type: SEND.BTC_PRECOMPOSED_TX,
-            payload: {
-                type: 'error',
-                error: resp.payload.error,
-            },
-        });
     }
 };

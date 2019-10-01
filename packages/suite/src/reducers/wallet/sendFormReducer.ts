@@ -198,7 +198,15 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             case SEND.BTC_PRECOMPOSED_TX:
                 draft.networkTypeBitcoin.transactionInfo = action.payload;
-                break;
+
+                if (
+                    action.payload.type === 'error' &&
+                    action.payload.error === 'NOT-ENOUGH-FUNDS'
+                ) {
+                    draft.outputs.map(
+                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
+                    );
+                }
 
             // no default
         }
