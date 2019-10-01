@@ -102,11 +102,9 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
                 accountTxs[txIndex] = enhancedTx;
             } else {
                 // no page arg, insert the tx at the beginning of the array
-                console.log('on top: ', enhancedTx.txid);
                 accountTxs.unshift(enhancedTx);
             }
         } else {
-            console.log('existing');
             // update the transaction if conditions are met
             const existingTxIndex = accountTxs.findIndex(t => t && t.txid === existingTx.txid);
             // eslint-disable-next-line no-lonely-if
