@@ -135,6 +135,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (resp.success) {
         const tx = resp.payload[0];
+
         dispatch({
             type: SEND.BTC_PRECOMPOSED_TX,
             payload: tx,
@@ -147,5 +148,9 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
                 error: resp.payload.error,
             },
         });
+    }
+
+    if (resp.success) {
+        return resp.payload[0];
     }
 };

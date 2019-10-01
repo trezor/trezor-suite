@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getAccountKey } from '@wallet-utils/reducerUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
@@ -89,15 +90,6 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-/**
- * Dispose current form, save values to session storage
- */
-export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
-    dispatch({
-        type: SEND.DISPOSE,
-    });
-};
-
 export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     // const { outputs } = getState().wallet.send;
     // outputs.filter(output => {
@@ -114,6 +106,15 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     //     console.log('PRECOMPOSE ETH');
     // }
     return true;
+};
+
+/**
+ * Dispose current form, save values to session storage
+ */
+export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
+    dispatch({
+        type: SEND.DISPOSE,
+    });
 };
 
 /*
@@ -258,33 +259,41 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 /*
     Click on "set max"
  */
-export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetState) => {
+export const setMax = (outputId: number) => async (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
     if (!account || !fiat || !send) return null;
+
+    const composedTransaction = await dispatch(compose());
     const output = getOutput(send.outputs, outputId);
-
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    if (!fiatNetwork) return null;
 
-    const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
-    const fiatValue = getFiatValue(account.availableBalance, rate);
+    if (fiatNetwork) {
+        const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
+        const fiatValue = getFiatValue(account.availableBalance, rate);
+        dispatch({
+            type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+            outputId,
+            fiatValue,
+        });
+    }
 
-    dispatch({
-        type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-        outputId,
-        fiatValue,
-    });
+    if (composedTransaction) {
+        const feeBig = new BigNumber(composedTransaction.fee);
+        const availableBalanceBig = new BigNumber(account.availableBalance);
 
-    dispatch({
-        type: SEND.HANDLE_AMOUNT_CHANGE,
-        outputId,
-        amount: account.availableBalance,
-    });
+        dispatch({
+            type: SEND.HANDLE_AMOUNT_CHANGE,
+            outputId,
+            amount: formatNetworkAmount(
+                availableBalanceBig.minus(feeBig).toFixed(10),
+                account.symbol,
+            ),
+        });
 
-    dispatch(compose());
-    dispatch(sendFormCacheActions.cache());
+        dispatch(sendFormCacheActions.cache());
+    }
 };
 
 /*
