@@ -2,6 +2,7 @@ import React from 'react';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import styled from 'styled-components';
 import { P, Prompt, colors, variables } from '@trezor/components';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -51,14 +52,16 @@ const FeeLevelName = styled(StyledP)`
     padding-bottom: 0px;
 `;
 
+const OutputWrapper = styled.div``;
+
 interface Props {
     device: TrezorDevice;
-    account: Account;
+    account: Account | null;
     sendForm: SendFormState | null;
 }
 
 const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
-    if (!sendForm) return null;
+    if (!account || !sendForm || !sendForm.networkTypeBitcoin.transactionInfo) return null;
     const { outputs } = sendForm;
     const selectedFeeLevel = sendForm.selectedFee;
     const majorVersion = device.features ? device.features.major_version : 2;
@@ -81,7 +84,7 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                     <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
                 </Label>
                 {outputs.map(output => (
-                    <>
+                    <OutputWrapper key={output.id}>
                         <StyledP>{`${output.amount.value || '0'} ${account.symbol}`}</StyledP>
                         <Label>
                             <FormattedMessage {...l10nMessages.TR_TO_LABEL} />
@@ -90,10 +93,16 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                         <Label>
                             <FormattedMessage {...l10nMessages.TR_FEE_LABEL} />
                         </Label>
-                        {/* TODO fee */}
-                        <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
+                        {/* TODO add more coins */}
+                        <FeeLevelName>
+                            {formatNetworkAmount(
+                                // @ts-ignore
+                                sendForm.networkTypeBitcoin.transactionInfo.fee,
+                                account.symbol,
+                            )}
+                        </FeeLevelName>
                         <StyledP>{selectedFeeLevel.label}</StyledP>
-                    </>
+                    </OutputWrapper>
                 ))}
             </Content>
         </Wrapper>
