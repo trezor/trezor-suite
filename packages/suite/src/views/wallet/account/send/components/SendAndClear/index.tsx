@@ -49,6 +49,7 @@ const isDisabled = (
 ) => {
     let isDisabled = false;
 
+    // TODO handle all coins
     if (networkType === 'bitcoin') {
         if (
             !send.networkTypeBitcoin.transactionInfo ||
