@@ -404,4 +404,32 @@ export const observeChanges = [
         filter: { c: ['c1'] },
         result: false,
     },
+    {
+        testName: 'reducerUtils.observeChanges array no change',
+        prev: [1],
+        current: [1],
+        filter: undefined,
+        result: false,
+    },
+    {
+        testName: 'reducerUtils.observeChanges array with changed length',
+        prev: [],
+        current: [1],
+        filter: undefined,
+        result: true,
+    },
+    {
+        testName: 'reducerUtils.observeChanges array with changed value',
+        prev: [0],
+        current: [1],
+        filter: undefined,
+        result: true,
+    },
+    {
+        testName: 'reducerUtils.observeChanges different types',
+        prev: 1,
+        current: [1],
+        filter: undefined,
+        result: true,
+    },
 ];

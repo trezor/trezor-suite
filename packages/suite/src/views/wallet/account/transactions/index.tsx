@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
-import * as transactionActions from '@wallet-actions/transactionActions';
-import { Loader, colors } from '@trezor/components';
-import styled from 'styled-components';
-import Title from '@wallet-components/Title';
 import { FormattedMessage } from 'react-intl';
-import TransactionList from '@suite/components/wallet/TransactionList';
-import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
-import Content from '@suite/components/wallet/Content';
-import { SETTINGS } from '@suite/config/suite';
+import styled from 'styled-components';
+import { Loader, colors } from '@trezor/components';
+import * as transactionActions from '@wallet-actions/transactionActions';
+import LayoutAccount from '@wallet-components/LayoutAccount';
+import Title from '@wallet-components/Title';
+import Content from '@wallet-components/Content';
+import TransactionList from '@wallet-components/TransactionList';
+import { getAccountTransactions } from '@suite-utils/reducerUtils';
+import { SETTINGS } from '@suite-config';
 import { AppState, Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
 
