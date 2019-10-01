@@ -10,8 +10,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://btc1.trezor.io/tx/',
+            account: 'https://btc1.trezor.io/xpub/',
         },
     },
     {
@@ -23,8 +23,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://btc1.trezor.io/tx/',
+            account: 'https://btc1.trezor.io/xpub/',
         },
     },
     {
@@ -36,8 +36,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://btc1.trezor.io/tx/',
+            account: 'https://btc1.trezor.io/xpub/',
         },
     },
     // Litecoin
@@ -49,8 +49,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://ltc1.trezor.io/tx/',
+            account: 'https://ltc1.trezor.io/xpub/',
         },
     },
     {
@@ -62,8 +62,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://ltc1.trezor.io/tx/',
+            account: 'https://ltc1.trezor.io/xpub/',
         },
     },
     // Bitcoin testnet
@@ -76,8 +76,8 @@ const networks = [
         decimals: 8,
         testnet: true,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://tbtc1.trezor.io/tx/',
+            account: 'https://tbtc1.trezor.io/xpub/',
         },
     },
     {
@@ -90,8 +90,8 @@ const networks = [
         decimals: 8,
         testnet: true,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://tbtc1.trezor.io/tx/',
+            account: 'https://tbtc1.trezor.io/xpub/',
         },
     },
     {
@@ -104,8 +104,8 @@ const networks = [
         decimals: 8,
         testnet: true,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://tbtc1.trezor.io/tx/',
+            account: 'https://tbtc1.trezor.io/xpub/',
         },
     },
     // Ethereum
@@ -117,8 +117,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 18,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://eth1.trezor.io/tx/',
+            account: 'https://eth1.trezor.io/address/',
         },
     },
     {
@@ -129,8 +129,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 18,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://etc1.trezor.io/tx/',
+            account: 'https://etc1.trezor.io/address/',
         },
     },
     {
@@ -142,8 +142,8 @@ const networks = [
         decimals: 18,
         testnet: true,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://ropsten1.trezor.io/tx/',
+            account: 'https://ropsten1.trezor.io/address/',
         },
     },
     // Ripple
@@ -154,8 +154,8 @@ const networks = [
         bip44: "m/44'/144'/i'/0/0",
         decimals: 6,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://xrpscan.com/tx/',
+            account: 'https://xrpscan.com/account/',
         },
     },
     {
@@ -166,8 +166,8 @@ const networks = [
         decimals: 6,
         testnet: true,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://test.bithomp.com/explorer/',
+            account: 'https://test.bithomp.com/explorer/',
         },
     },
     {
@@ -177,8 +177,8 @@ const networks = [
         bip44: "m/44'/145'/i'",
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://bch1.trezor.io/tx/',
+            account: 'https://bch1.trezor.io/xpub/',
         },
     },
     {
@@ -189,8 +189,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://btg1.trezor.io/tx/',
+            account: 'https://btg1.trezor.io/xpub/',
         },
     },
     {
@@ -202,8 +202,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://btg1.trezor.io/tx/',
+            account: 'https://btg1.trezor.io/xpub/',
         },
     },
     {
@@ -214,8 +214,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://dash1.trezor.io/tx/',
+            account: 'https://dash1.trezor.io/xpub/',
         },
     },
     {
@@ -226,8 +226,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://dgb1.trezor.io/tx/',
+            account: 'https://dgb1.trezor.io/xpub/',
         },
     },
     {
@@ -239,8 +239,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://dgb1.trezor.io/tx/',
+            account: 'https://dgb1.trezor.io/xpub/',
         },
     },
     {
@@ -251,8 +251,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://doge1.trezor.io/tx/',
+            account: 'https://doge1.trezor.io/xpub/',
         },
     },
     {
@@ -263,8 +263,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://nmc1.trezor.io/tx/',
+            account: 'https://nmc1.trezor.io/xpub/',
         },
     },
     {
@@ -275,8 +275,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://vtc1.trezor.io/tx/',
+            account: 'https://vtc1.trezor.io/xpub/',
         },
     },
     {
@@ -288,8 +288,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://vtc1.trezor.io/tx/',
+            account: 'https://vtc1.trezor.io/xpub/',
         },
     },
     {
@@ -300,8 +300,8 @@ const networks = [
         hasSignVerify: true,
         decimals: 8,
         explorer: {
-            tx: 'https://example.com',
-            address: 'https://example.com/address/',
+            tx: 'https://zec1.trezor.io/tx/',
+            account: 'https://zec1.trezor.io/xpub/',
         },
     },
 ] as const;
