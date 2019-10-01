@@ -1,4 +1,4 @@
-describe.skip('Connect device', () => {
+describe('Connect device', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
