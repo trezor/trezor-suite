@@ -19376,10 +19376,10 @@ traverse@0.6.6:
   resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.6.tgz#cbdf560fd7b9af632502fed40f918c157ea97137"
   integrity sha1-y99WD9e5r2MlAv7UD5GMFX6pcTc=
 
-trezor-connect@8.0.3-extended:
-  version "8.0.3-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.0.3-extended.tgz#129433d66fb94fd26782aa4c9ca0ff51252542e5"
-  integrity sha512-U0nLvLfdALNZ1gyP96WPT2FNVJrd7MuhGewAnJHtXDE6Dp8Xjlb01UAwyPE+yeo6iHkVzFHEIyaR2hHgYxxKEQ==
+trezor-connect@8.0.6-extended:
+  version "8.0.6-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.0.6-extended.tgz#e882edb24562f857f69129eeeae3c323276a98fd"
+  integrity sha512-Ap8k9DGaLPNdTr2pWIDdsrzq9/Z1iZ0Z8/eApLLvy8myqnYPoH/hrzVcKfNI2q8pDItam/KniNULOiysP4nGfQ==
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@trezor/blockchain-link" "1.0.0-rc1"
