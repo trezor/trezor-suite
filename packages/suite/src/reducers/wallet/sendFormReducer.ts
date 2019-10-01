@@ -198,6 +198,15 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             case SEND.BTC_PRECOMPOSED_TX:
                 draft.networkTypeBitcoin.transactionInfo = action.payload;
+                draft.outputs.forEach(output => {
+                    if (!output.address.value) {
+                        output.address.error = VALIDATION_ERRORS.IS_EMPTY;
+                    }
+
+                    if (!output.amount.value || output.amount.value === '0') {
+                        output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
+                    }
+                });
 
                 if (
                     action.payload.type === 'error' &&
