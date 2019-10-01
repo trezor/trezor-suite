@@ -64,7 +64,6 @@ const Fiat = (props: Props) => (
                     isSearchable
                     isClearable={false}
                     onChange={(option: Output['localCurrency']['value']) =>
-                        // @ts-ignore fix this
                         props.sendFormActions.handleSelectCurrencyChange(option, props.outputId)
                     }
                     value={props.localCurrency}

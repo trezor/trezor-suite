@@ -181,7 +181,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     Change value in select "LocalCurrency"
  */
 export const handleSelectCurrencyChange = (
-    localCurrency: Output['localCurrency'],
+    localCurrency: Output['localCurrency']['value'],
     outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
@@ -192,7 +192,7 @@ export const handleSelectCurrencyChange = (
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && output.amount.value) {
-        const rate = fiatNetwork.rates[localCurrency.value.value];
+        const rate = fiatNetwork.rates[localCurrency.value];
         const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
             new BigNumber(rate),
         );
@@ -216,7 +216,7 @@ export const handleSelectCurrencyChange = (
     dispatch({
         type: SEND.HANDLE_SELECT_CURRENCY_CHANGE,
         outputId,
-        localCurrency: localCurrency.value,
+        localCurrency,
     });
 
     dispatch(compose());
