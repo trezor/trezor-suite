@@ -66,8 +66,15 @@ const AccountButton = (props: {
     const account = props.accounts[props.accounts.length - 1];
     let enabled = true;
     let description = account.path;
+    let index = account.index + 1;
     if (props.accounts.length > 1) {
         // prev account is empty, do not add another
+        enabled = false;
+        description = 'Previous account is empty';
+    }
+    if (account.index === 0 && account.empty && account.accountType === 'normal') {
+        // current (first normal) account is empty, do not add another
+        index++;
         enabled = false;
         description = 'Previous account is empty';
     }
@@ -76,7 +83,7 @@ const AccountButton = (props: {
         description = 'Account index is greater than 10';
     }
     const prefix = props.network.accountType ? `${props.network.accountType} ` : '';
-    const label = `${prefix}Account #${account.index + 1}`;
+    const label = `${prefix}Account #${index}`;
     return (
         <StyledButton
             icon="PLUS"
