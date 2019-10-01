@@ -7,7 +7,6 @@ import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormCacheActions from '../sendFormCacheActions';
-import * as sendFormActions from '../sendFormActions';
 
 export type SendFormBitcoinActions =
     | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
@@ -57,8 +56,6 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getSta
 };
 
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
-    dispatch(sendFormActions.compose());
-
     const { send, selectedAccount } = getState().wallet;
     const selectedDevice = getState().suite.device;
     const account = selectedAccount.account as Account;

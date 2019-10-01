@@ -41,8 +41,22 @@ interface Props {
     symbol: Account['symbol'];
 }
 
-const isDisabled = (send: SendFormState, suite: AppState['suite'], device: TrezorDevice) => {
+const isDisabled = (
+    send: SendFormState,
+    suite: AppState['suite'],
+    device: TrezorDevice,
+    networkType: Account['networkType'],
+) => {
     let isDisabled = false;
+
+    if (networkType === 'bitcoin') {
+        if (
+            !send.networkTypeBitcoin.transactionInfo ||
+            send.networkTypeBitcoin.transactionInfo.type !== 'final'
+        ) {
+            isDisabled = true;
+        }
+    }
 
     // form errors
     send.outputs.forEach(output => {
@@ -98,7 +112,7 @@ const SendAndClear = (props: Props) => (
             </Button>
         )}
         <Send
-            isDisabled={isDisabled(props.send, props.suite, props.device)}
+            isDisabled={isDisabled(props.send, props.suite, props.device, props.networkType)}
             onClick={() => {
                 switch (props.networkType) {
                     case 'bitcoin':
