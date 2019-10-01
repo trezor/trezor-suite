@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Link, Button, P, H5, colors } from '@trezor/components';
-import { useKeyPress } from '@suite-utils/hooks';
+import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 
 import l10nCommonMessages from '../../messages';

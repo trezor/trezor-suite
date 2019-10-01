@@ -5,13 +5,14 @@ import TrezorConnect, {
     BLOCKCHAIN as CONNECT_BLOCKCHAIN,
 } from 'trezor-connect';
 import { getSelectedNetwork, getAccountDevice } from '@suite/utils/wallet/reducerUtils';
-import { NETWORKS } from '@suite/config/wallet';
-import { SETTINGS } from '@suite/config/suite';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { enhanceTransaction } from '@suite/reducers/wallet/transactionReducer';
+import { State as FeeState } from '@wallet-reducers/feesReducer';
+import { SETTINGS } from '@suite-config';
+import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { BLOCKCHAIN } from './constants';
@@ -36,9 +37,44 @@ export type BlockchainActions =
       }
     | {
           type: typeof BLOCKCHAIN.UPDATE_FEE;
+          payload: Partial<FeeState>;
       };
 
+export const loadFeeInfo = () => async (dispatch: Dispatch, _getState: GetState) => {
+    // Fetch default fee levels
+    const networks = NETWORKS.filter(n => !n.isHidden && !n.accountType);
+    const promises = networks.map(network => {
+        return TrezorConnect.blockchainEstimateFee({
+            coin: network.symbol,
+            request: {
+                feeLevels: 'preloaded',
+            },
+        });
+    });
+    const levels = await Promise.all(promises);
+
+    const partial: Partial<FeeState> = {};
+    networks.forEach((network, index) => {
+        const result = levels[index];
+        if (result.success) {
+            const { payload } = result;
+            partial[network.symbol] = {
+                blockHeight: 0,
+                ...payload,
+                levels: payload.levels.map(l => ({ ...l, value: l.feePerUnit })),
+            };
+        }
+    });
+
+    dispatch({
+        type: BLOCKCHAIN.UPDATE_FEE,
+        payload: partial,
+    });
+};
+
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+    await dispatch(loadFeeInfo());
+
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {
         // continue suite initialization

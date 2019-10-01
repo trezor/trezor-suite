@@ -1,27 +1,22 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import { Button, H5, Link, P } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Button, H5, Link, P, CoinLogo } from '@trezor/components';
 import { Network, ExternalNetwork } from '@wallet-types';
 import l10nMessages from './messages';
 
 const Wrapper = styled.div`
     width: 100%;
     max-width: 620px;
-    padding: 10px 0px;
+    padding: 10px 0 0;
 `;
 
 const StyledButton = styled(Button)`
     margin-top: 10px;
 `;
 
-const Img = styled.img`
-    display: block;
-    max-width: 100px;
-    margin: 0 auto;
-    height: auto;
-    padding-bottom: 20px;
+const StyledCoinLogo = styled(CoinLogo)`
+    margin-bottom: 10px;
 `;
 
 const getHeader = (symbol: ExternalNetwork['symbol']) => {
@@ -48,7 +43,7 @@ const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
     const { symbol, url } = selectedNetwork;
     return (
         <Wrapper>
-            <Img src={resolveStaticPath(`images/wallet/external-wallets/${symbol}.png`)} />
+            <StyledCoinLogo size={64} symbol={symbol} />
             <H5>
                 <FormattedMessage {...getHeader(symbol)} />
             </H5>

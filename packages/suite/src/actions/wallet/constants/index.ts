@@ -8,6 +8,7 @@ import * as TOKEN from './token';
 import * as TRANSACTION from './transactionConstants';
 import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
+import * as SEND_CACHE from './sendFormCacheConstants';
 
 export {
     BLOCKCHAIN,
@@ -20,4 +21,5 @@ export {
     DISCOVERY,
     WALLET,
     SEND,
+    SEND_CACHE,
 };

@@ -4,7 +4,7 @@ import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
 export interface SendFormRippleActions {
-    type: typeof SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE;
+    type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE;
     destinationTag: string;
 }
 
@@ -13,16 +13,19 @@ export interface SendFormRippleActions {
  */
 export const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
     dispatch({
-        type: SEND.HANDLE_XRP_DESTINATION_TAG_CHANGE,
+        type: SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE,
         destinationTag,
     });
+    // todo add cache
 };
 
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { send, selectedAccount } = getState().wallet;
+    if (!send) return;
     const FLAGS = 0x80000000;
-    const { account } = getState().wallet.selectedAccount;
+    const { account } = selectedAccount;
     // Fee must be in the range of 10 to 10,000 drops
-    const { customFee, fee, outputs, networkTypeRipple } = getState().wallet.send;
+    const { selectedFee, outputs, networkTypeRipple } = send;
     const { destinationTag } = networkTypeRipple;
     const selectedDevice = getState().suite.device;
     if (!account || account.networkType !== 'ripple' || !selectedDevice || !destinationTag)
@@ -38,7 +41,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
         path: account.path,
         transaction: {
-            fee: customFee || fee,
+            fee: selectedFee.feePerUnit,
             flags: FLAGS,
             sequence: account.misc.sequence,
             payment: {

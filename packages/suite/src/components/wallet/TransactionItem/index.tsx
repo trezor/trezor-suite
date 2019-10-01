@@ -108,7 +108,7 @@ const Symbol = styled.div`
 const Amount = styled.div<{ txType: string }>`
     display: flex;
     text-align: right;
-    color: ${props => (props.txType === 'sent' ? 'red' : 'green')};
+    color: ${props => (props.txType === 'recv' ? 'green' : 'red')};
 `;
 
 const Addr = styled.div`
@@ -201,6 +201,8 @@ const TransactionItem = React.memo(
                                     </Row>
                                     <AmountWrapper>
                                         <Amount txType={type}>
+                                            {type === 'recv' && '+'}
+                                            {type !== 'recv' && '-'}
                                             {token.amount} {token.symbol}
                                         </Amount>
                                     </AmountWrapper>
@@ -217,7 +219,7 @@ const TransactionItem = React.memo(
                                 <>
                                     <Amount txType={type}>
                                         {type === 'recv' && '+'}
-                                        {type === 'sent' && '-'}
+                                        {type !== 'recv' && '-'}
                                         {amount}&nbsp;
                                     </Amount>
                                     <Symbol>{symbol.toUpperCase()}</Symbol>

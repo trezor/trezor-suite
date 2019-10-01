@@ -1,6 +1,6 @@
 ## How to build & push image to GitLab registry
 
-`docker login` (your gitlab credentials)
+`docker login registry.gitlab.com/satoshilabs/trezor-suite`
 
 `docker build -t registry.gitlab.com/satoshilabs/trezor/trezor-suite/base .`
 

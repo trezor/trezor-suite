@@ -1,19 +1,25 @@
-export const SET_ADDITIONAL_FORM_VISIBILITY = '@wallet_send_form/set_additional_form_visibility';
+export const INIT = '@wallet-send-form/init';
+export const DISPOSE = '@wallet-send-form/dispose';
+export const SET_ADDITIONAL_FORM_VISIBILITY = '@wallet-send-form/set-additional-form-visibility';
 
-export const HANDLE_ADDRESS_CHANGE = '@wallet_send_form/handle_address_change';
-export const HANDLE_AMOUNT_CHANGE = '@wallet_send_form/handle_amount_change';
-export const SET_MAX = '@wallet_send_form/set_max';
+export const HANDLE_ADDRESS_CHANGE = '@wallet-send-form/handle-address-change';
+export const HANDLE_AMOUNT_CHANGE = '@wallet-send-form/handle-amount-change';
+export const SET_MAX = '@wallet-send-form/set-max';
 
-export const HANDLE_SELECT_CURRENCY_CHANGE = '@wallet_send_form/handle_local_currency_change';
-export const HANDLE_FIAT_VALUE_CHANGE = '@wallet_send_form/handle_fiat_value_change';
-export const HANDLE_FEE_VALUE_CHANGE = '@wallet_send_form/handle_fee_value_change';
-export const HANDLE_CUSTOM_FEE_VALUE_CHANGE = '@wallet_send_form/handle_custom_fee_value_change';
+export const HANDLE_SELECT_CURRENCY_CHANGE = '@wallet-send-form/handle-local-currency-change';
+export const HANDLE_FIAT_VALUE_CHANGE = '@wallet-send-form/handle-fiat-value-change';
+export const HANDLE_FEE_VALUE_CHANGE = '@wallet-send-form/handle-fee-value-change';
+export const HANDLE_CUSTOM_FEE_VALUE_CHANGE = '@wallet-send-form/handle-custom-fee-value-change';
 
-export const CLEAR = '@wallet_send_form/clear';
+export const CLEAR = '@wallet-send-form/clear';
 
 // btc specific
-export const BTC_ADD_RECIPIENT = '@wallet_send_form/btc-add-recipient';
+export const BTC_ADD_RECIPIENT = '@wallet-send-form/btc-add-recipient';
+export const BTC_REMOVE_RECIPIENT = '@wallet-send-form/btc-remove-recipient';
+export const BTC_PRECOMPOSED_TX = '@wallet-send-form/btc-precomposed-tx';
+
+// ethereum specific
 
 // xrp specific
-export const HANDLE_XRP_DESTINATION_TAG_CHANGE =
-    '@wallet_send_form/xrp_handle-destination-tag-change';
+export const XRP_HANDLE_DESTINATION_TAG_CHANGE =
+    '@wallet-send-form/xrp-handle-destination-tag-change';
