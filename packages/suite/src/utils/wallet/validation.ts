@@ -6,7 +6,7 @@ import addressValidator from 'wallet-address-validator';
 import { Account } from '@wallet-types';
 
 const isTestnet = (symbol: Account['symbol']): boolean => {
-    const testnets = ['test'];
+    const testnets = ['test', 'txrp', 'trop'];
     return testnets.includes(symbol);
 };
 

@@ -90,6 +90,7 @@ const WrapperInside = styled.div<WrapperInsideProps>`
     background-color: ${colors.white};
     border-radius: ${BORDER_RADIUS}px;
     z-index: 0;
+    max-width: 700px; /* neat boxed view */
     max-height: ${({ isGlobalInteraction }) =>
         isGlobalInteraction
             ? `calc(100vh - ${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT} - ${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT})`
