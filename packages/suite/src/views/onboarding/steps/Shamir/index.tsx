@@ -1,9 +1,9 @@
 import React from 'react';
 // import { FormattedMessage } from 'react-intl';
-
+import { Link } from '@trezor/components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
-
+import { URLS } from '@onboarding-constants'
 // import l10nMessages from './index.messages';
 import { Props } from './Container';
 
@@ -28,7 +28,13 @@ const ShamirStep = (props: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 <Text>
-                    {getModel() === 1 && 'Just click the button and continue. What about TOS?'}
+                    {getModel() === 1 && (
+                        <Text>
+                            You are one step from creating your wallet. By clicking the button below you agree with
+                            {' '}
+                            <Link href={URLS.TOS_URL}>TOS</Link>
+                        </Text>
+                    )}
                     {getModel() === 2 &&
                         'You might chose either standard backup type or shamir backups'}
                     {/* <FormattedMessage {...l10nMessages.TR_SECURITY_SUBHEADING} /> */}
@@ -55,7 +61,7 @@ const ShamirStep = (props: Props) => {
                                 )
                             }
                         >
-                            <Text>Shamir backup (experimental)</Text>
+                            <Text>Shamir backup</Text>
                         </Option>
                     </Wrapper.Options>
                 )}
