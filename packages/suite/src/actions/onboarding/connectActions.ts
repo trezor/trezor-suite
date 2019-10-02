@@ -25,7 +25,11 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
 
     if (!device) {
         // this should never happen
-        throw new Error('no device connected');
+        dispatch({
+            type: DEVICE_CALL_ERROR,
+            error: 'no device connected',
+            name,
+        });
     }
 
     const callParams = {
@@ -88,16 +92,11 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
 const uiResponseCall = (name: string, params: any) => async () => {
     let fn;
     switch (name) {
-        // @ts-ignore
         case UI.RECEIVE_PIN:
-            // @ts-ignore
             fn = () => TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: params.pin });
             break;
-        // @ts-ignore
         case UI.RECEIVE_WORD:
-            fn = () =>
-                // @ts-ignore
-                TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: params.word });
+            fn = () => TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: params.word });
             break;
         default:
             // todo: handle error properly

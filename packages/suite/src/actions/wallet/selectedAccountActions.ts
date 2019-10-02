@@ -6,7 +6,7 @@ import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
 // import * as TOKEN from 'actions/constants/token';
 // import * as PENDING from 'actions/constants/pendingTx';
 
-import * as reducerUtils from '@wallet-utils/reducerUtils';
+import * as reducerUtils from '@suite-utils/reducerUtils';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { getVersion } from '@suite-utils/device';
 import {

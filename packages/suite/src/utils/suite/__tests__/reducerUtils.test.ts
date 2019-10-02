@@ -18,6 +18,11 @@ describe('reducerUtils', () => {
         });
     });
 
+    it('reducerUtils.getSelectedAccount', () => {
+        const res = reducerUtils.getSelectedAccount([], undefined, undefined);
+        expect(res).toBeNull();
+    });
+
     it('reducerUtils.getSelectedNetwork', () => {
         const res = reducerUtils.getSelectedNetwork(NETWORKS, 'btc');
         if (res) {

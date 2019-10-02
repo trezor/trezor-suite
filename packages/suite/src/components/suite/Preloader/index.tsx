@@ -8,13 +8,13 @@ import StaticPageWrapper from '@suite-components/StaticPageWrapper';
 import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
 
-interface Props {
-    loading: AppState['suite']['loading'];
-    loaded: AppState['suite']['loaded'];
-    error: AppState['suite']['error'];
-    dispatch: Dispatch;
-    isStatic: boolean;
-}
+const mapStateToProps = (state: AppState) => ({
+    loading: state.suite.loading,
+    loaded: state.suite.loaded,
+    error: state.suite.error,
+});
+
+type Props = ReturnType<typeof mapStateToProps> & { dispatch: Dispatch; isStatic: boolean };
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -56,11 +56,5 @@ const Preloader: React.FunctionComponent<Props> = props => {
         </SuiteWrapper>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    loading: state.suite.loading,
-    loaded: state.suite.loaded,
-    error: state.suite.error,
-});
 
 export default connect(mapStateToProps)(Preloader);
