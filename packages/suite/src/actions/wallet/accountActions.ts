@@ -1,10 +1,11 @@
-import { AccountInfo } from 'trezor-connect';
+import TrezorConnect, { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { SETTINGS } from '@suite-config';
 
 export type AccountActions =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
@@ -112,3 +113,19 @@ export const changeAccountVisibility = (payload: Account) => ({
     type: ACCOUNT.CHANGE_VISIBILITY,
     payload,
 });
+
+export const fetchAndUpdateAccount = (account: Account) => async (
+    dispatch: Dispatch,
+    _getState: GetState,
+) => {
+    const response = await TrezorConnect.getAccountInfo({
+        coin: account.symbol,
+        descriptor: account.descriptor,
+        details: 'txs',
+        pageSize: SETTINGS.TXS_PER_PAGE,
+    });
+
+    if (response.success) {
+        dispatch(update(account, response.payload));
+    }
+};

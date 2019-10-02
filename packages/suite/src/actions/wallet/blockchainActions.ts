@@ -261,8 +261,8 @@ export const onNotification = (payload: BlockchainNotification) => async (
     const accountDevice = getAccountDevice(getState().devices, account);
 
     if (!accountDevice) return;
-    if (accountDevice) {
-        // dispatch the notification about the transaction
+    if (accountDevice && enhancedTx.type !== 'sent') {
+        // dispatch the notification only if tx.type is receive/self
         dispatch(
             notificationActions.add({
                 id: enhancedTx.txid,
@@ -296,14 +296,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // count of all account txs is greater than one returned in accountInfo.
     // We also have outdated balance/sequence. All of that trigger removing all txs belonging to the acc in onBlockMined,
     // (if block come before 2nd notification)
-    const response = await TrezorConnect.getAccountInfo({
-        coin: symbol,
-        descriptor: account.descriptor,
-        details: 'txs',
-        pageSize: SETTINGS.TXS_PER_PAGE,
-    });
 
-    if (!response.success) return;
     // TODO: BITCOIN: Notification returns blockTime 0, getAccountInfo has valid timestamp. should we update tx?
-    dispatch(accountActions.update(account, response.payload));
+    dispatch(accountActions.fetchAndUpdateAccount(account));
 };

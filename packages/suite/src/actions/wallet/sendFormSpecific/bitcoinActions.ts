@@ -4,6 +4,7 @@ import { Output } from '@wallet-types/sendForm';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { SEND } from '@wallet-actions/constants';
+import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormCacheActions from '../sendFormCacheActions';
@@ -88,6 +89,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
                 cancelable: true,
             }),
         );
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
         dispatch(
             notificationActions.add({

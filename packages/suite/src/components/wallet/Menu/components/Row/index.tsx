@@ -161,7 +161,9 @@ const Row = React.memo(({ account, hideBalance, selected }: Props) => (
                     {account.history.total !== -1 && (
                         <Transactions>
                             <Label>transactions</Label>
-                            <TransactionsValue>{account.history.total}</TransactionsValue>
+                            <TransactionsValue>
+                                {account.history.total + (account.history.unconfirmed || 0)}
+                            </TransactionsValue>
                         </Transactions>
                     )}
                 </Right>
