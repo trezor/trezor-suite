@@ -54,7 +54,7 @@ const Transactions = (props: Props) => {
     };
 
     return (
-        <LayoutAccount>
+        <LayoutAccount isTransaction>
             <Title>
                 <FormattedMessage {...l10nMessages.TR_TRANSACTIONS} />
             </Title>
