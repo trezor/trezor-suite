@@ -42,11 +42,6 @@ const Row = styled.div`
     align-items: center;
 `;
 
-const AmountWrapper = styled.div`
-    display: flex;
-    justify-content: flex-end;
-`;
-
 const Col = styled.div`
     display: flex;
     flex-direction: column;
@@ -139,7 +134,6 @@ const TransactionItem = React.memo(
     ({
         symbol,
         type,
-        txid,
         blockTime,
         blockHeight,
         amount,
