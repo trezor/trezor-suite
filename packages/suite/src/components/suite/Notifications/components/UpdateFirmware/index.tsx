@@ -22,7 +22,7 @@ const UpdateFirmware = ({ device, pathname, intl, goto }: Props) => {
     // dont want to show this notification
     if (device.mode === 'bootloader') return null;
 
-    const outdated = ['outdated', 'required'].includes(device.firmware);
+    const outdated = ['outdated'].includes(device.firmware);
     if (!outdated) return null;
 
     return (
