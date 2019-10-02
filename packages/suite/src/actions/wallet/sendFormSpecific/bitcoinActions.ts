@@ -111,12 +111,6 @@ export const compose = (setMax: boolean = false) => async (
 
     // TODO refactor this
     const composedOutputs = outputs.map(o => {
-        if (setMax) {
-            return {
-                type: 'send-max-noaddress',
-            } as const;
-        }
-
         const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
 
         if (o.address.value) {
@@ -130,6 +124,12 @@ export const compose = (setMax: boolean = false) => async (
             return {
                 address: o.address.value,
                 amount,
+            } as const;
+        }
+
+        if (setMax) {
+            return {
+                type: 'send-max-noaddress',
             } as const;
         }
 
