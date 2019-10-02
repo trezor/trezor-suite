@@ -1,18 +1,18 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@suite-actions/firmwareActions';
-import * as suiteActions from '@suite-actions/suiteActions';
+// import * as suiteActions from '@suite-actions/suiteActions';
 import { DEVICE } from 'trezor-connect';
 import { AppState, Action, Dispatch } from '@suite-types';
 
-const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
+const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
-): Promise<Action> => {
+): Action => {
     // pass action
-    await next(action);
+    next(action);
 
     const prevApp = api.getState().router.app;
-    const { locks } = api.getState().suite;
+    // const { locks } = api.getState().suite;
 
     const enabledApps = ['firmware', 'onboarding'];
     if (action.type === SUITE.APP_CHANGED) {
@@ -21,9 +21,11 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         if (enabledApps.includes(action.payload)) {
             api.dispatch(firmwareActions.enableReducer(true));
 
-            if (!locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
-                api.dispatch(suiteActions.lockRouter(true));
-            }
+            // locking here is tricky, what happens - concurrent locking with onboarding. This needs some 
+            // refactoring, I dont like it.
+            // if (!locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
+            //     api.dispatch(suiteActions.lockRouter(true));
+            // }
         }
 
         // here middleware detects that firmware 'app' is disposed, do following:

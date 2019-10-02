@@ -62,7 +62,7 @@ describe('firmware middleware', () => {
             expect(result).toEqual([
                 { type: SUITE.APP_CHANGED, payload: 'firmware' },
                 { type: FIRMWARE.ENABLE_REDUCER, payload: true },
-                { type: SUITE.LOCK_ROUTER, payload: true },
+                // { type: SUITE.LOCK_ROUTER, payload: true },
             ]);
         });
 

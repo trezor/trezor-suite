@@ -4,11 +4,11 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
-const onboardingMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
+const onboardingMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
-): Promise<Action> => {
+): Action => {
     // pass action
-    await next(action);
+    next(action);
 
     const prevApp = api.getState().router.app;
     const { locks } = api.getState().suite;
