@@ -75,7 +75,6 @@ const OutputWrapper = styled.div`
 
 const Row = styled.div`
     display: flex;
-    padding-top: 2px;
     justify-content: ${(props: { centered?: boolean }) =>
         props.centered ? 'center' : 'flex-start'};
 `;
