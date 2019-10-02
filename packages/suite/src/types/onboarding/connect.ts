@@ -16,24 +16,6 @@ import {
     submitWord,
 } from '@suite/actions/onboarding/connectActions';
 
-export interface UiInteraction {
-    name: undefined | string;
-    counter: number;
-}
-
-export type PrevDeviceId = string | null;
-
-export interface ConnectReducer {
-    device: any; // todo: remove any
-    deviceCall: {
-        name: null | string; // todo: better, make type AnyDeviceCall
-        isProgress: boolean;
-        error: null | string;
-        result: null | Record<string, any>;
-    };
-    uiInteraction: UiInteraction;
-}
-
 export interface ConnectActions {
     // calls to connect
     resetCall: typeof resetCall;

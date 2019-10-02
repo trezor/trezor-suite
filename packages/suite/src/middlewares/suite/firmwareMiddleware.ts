@@ -9,7 +9,6 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     action: Action,
 ): Action => {
     const prevApp = api.getState().router.app;
-    const { locks } = api.getState().suite;
 
     // pass action
     next(action);
@@ -20,10 +19,10 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         //  1. make reducer to accept actions (enableReducer) and apply changes
         if (enabledApps.includes(action.payload)) {
             api.dispatch(firmwareActions.enableReducer(true));
+        }
 
-            if (!locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
-                api.dispatch(suiteActions.lockRouter(true));
-            }
+        if (action.payload === 'firmware') {
+            api.dispatch(suiteActions.lockRouter(true));
         }
 
         // here middleware detects that firmware 'app' is disposed, do following:

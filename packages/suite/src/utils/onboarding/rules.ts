@@ -7,17 +7,17 @@ import {
     DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
 } from '@onboarding-constants/steps';
 import { AnyPath } from '@onboarding-types/steps';
+import { TrezorDevice, AppState } from '@suite-types';
 
-type Device = any; // todo: finish when connect types ready.
-
-export const isNotConnected = ({ device }: { device?: Device }) => !device;
+export const isNotConnected = ({ device }: { device?: TrezorDevice }) => !device;
 
 export const isNotSameDevice = ({
     device,
     prevDevice,
 }: {
-    device?: Device;
-    prevDevice: Device;
+    device?: TrezorDevice;
+    // todo: typescript
+    prevDevice: any;
 }) => {
     const prevDeviceId = prevDevice && prevDevice.features && prevDevice.features.device_id;
     // if no device was connected before, assume it is same device
@@ -31,32 +31,36 @@ export const isNotSameDevice = ({
     return deviceId !== prevDeviceId;
 };
 
-export const isNotUsedHere = ({ device }: { device?: Device }) => {
+export const isNotUsedHere = ({ device }: { device?: TrezorDevice }) => {
     if (!device) {
         return null;
     }
     return device.type === 'unacquired';
 };
 
-export const isInBootloader = ({ device }: { device?: Device }) => {
+export const isInBootloader = ({ device }: { device?: TrezorDevice }) => {
     if (!device || !device.features) {
         return null;
     }
     return device.features.bootloader_mode === true;
 };
 
-export const isRequestingPin = ({ device }: { device?: Device }) => {
-    if (!device) {
+export const isRequestingPin = ({
+    uiInteraction,
+}: {
+    uiInteraction?: AppState['onboarding']['uiInteraction'];
+}) => {
+    if (!uiInteraction) {
         return null;
     }
-    return !!device.isRequestingPin;
+    return uiInteraction.name === 'ui-request_pin';
 };
 
-export const isNotNewDevice = ({ device, path }: { device?: Device; path?: AnyPath[] }) => {
+export const isNotNewDevice = ({ device, path }: { device?: TrezorDevice; path?: AnyPath[] }) => {
     if (!device || !path || !path.includes('new')) {
         return null;
     }
-    return device.features.firmware_present !== false;
+    return device && device.features && device.features.firmware_present !== false;
 };
 
 export const getFnForRule = (rule: string) => {

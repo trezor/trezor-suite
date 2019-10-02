@@ -36,6 +36,10 @@ const Instruction = styled.div`
     align-items: center;
 `;
 
+const PromptWrapper = styled.div`
+    margin-top: auto;
+`;
+
 const BackupStep = (props: Props) => {
     const { device, deviceCall, uiInteraction, activeSubStep } = props;
 
@@ -51,7 +55,7 @@ const BackupStep = (props: Props) => {
 
     const getStatus = () => {
         if (
-            (deviceCall!.name === BACKUP_DEVICE && deviceCall.error) ||
+            (deviceCall.name === BACKUP_DEVICE && deviceCall.error) ||
             device.features.no_backup === true ||
             device.features.initialized === false
         ) {
@@ -60,7 +64,11 @@ const BackupStep = (props: Props) => {
         if (device && device.features.needs_backup === false) {
             return 'success';
         }
-        if (device && device.features.needs_backup === true && uiInteraction.counter > 0) {
+        if (
+            device &&
+            device.features.needs_backup === true &&
+            typeof uiInteraction.counter === 'number'
+        ) {
             return 'started';
         }
         if (activeSubStep === 'recovery-card-front' || activeSubStep === 'recovery-card-back') {
@@ -83,15 +91,19 @@ const BackupStep = (props: Props) => {
                     device &&
                     device.features &&
                     device.features.major_version === 1 &&
-                    uiInteraction.counter <= 24 &&
+                    typeof uiInteraction.counter === 'number' &&
+                    uiInteraction.counter < 24 &&
                     'Write down seed words from your device'}
-                {getStatus() === 'started' && uiInteraction.counter > 24 && 'Check seed words'}
+                {getStatus() === 'started' &&
+                    typeof uiInteraction.counter === 'number' &&
+                    uiInteraction.counter >= 24 &&
+                    'Check seed words'}
                 {getStatus() === 'recovery-card-front' && 'Get your recovery card'}
                 {getStatus() === 'recovery-card-back' && 'Get your recovery card'}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getStatus() === 'initial' && (
-                    <React.Fragment>
+                    <>
                         <P>
                             <FormattedMessage
                                 {...l10nMessages.TR_BACKUP_SUBHEADING_1}
@@ -181,17 +193,17 @@ const BackupStep = (props: Props) => {
                                 </Button>
                             )}
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'recovery-card-front' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             This is your recovery card. You should find two of them in the package.
                             In few moments, this piece of paper will become more important than your
                             device.
                         </Text>
-                        <SeedCard flipOnMouseOver />
+                        <SeedCard flipOnMouseOver counter={uiInteraction.counter} />
                         <Wrapper.Controls>
                             <Button
                                 // onClick={() =>  setState({ showWords: true })}
@@ -202,19 +214,16 @@ const BackupStep = (props: Props) => {
                                 Flip it
                             </Button>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'recovery-card-back' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             Device will show you a secret sequence of words. You should write them
                             down here.
                         </Text>
-                        <SeedCard
-                            showBack
-                            wordsNumber={device!.features!.major_version === 2 ? 12 : 24}
-                        />
+                        <SeedCard showBack counter={uiInteraction.counter} />
                         <Wrapper.Controls>
                             <Button
                                 onClick={() => {
@@ -224,44 +233,35 @@ const BackupStep = (props: Props) => {
                                 <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
                             </Button>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'started' && device.features.major_version === 1 && (
-                    <React.Fragment>
-                        <SeedCard
-                            showBack
-                            wordsNumber={24}
-                            words={Array.from(
-                                Array(uiInteraction.counter < 24 ? uiInteraction.counter - 1 : 24),
-                            ).map(() => '*****')}
-                            checkingWordNumber={
-                                uiInteraction.counter - 24 > 0 ? uiInteraction.counter - 24 : null
-                            }
-                            writingWordNumber={
-                                uiInteraction.counter <= 24 ? uiInteraction.counter : null
-                            }
-                        />
-                        <div style={{ marginTop: '100px' }}>
-                            <Prompt model={device!.features.major_version} size={32}>
-                                {uiInteraction.counter > 24 && (
-                                    <Text>
-                                        Check the {uiInteraction.counter - 24}. word on your device
-                                    </Text>
-                                )}
-                                {uiInteraction.counter <= 24 && (
-                                    <Text>
-                                        Write down the {uiInteraction.counter}. word from your
-                                        device
-                                    </Text>
-                                )}
+                    <>
+                        <SeedCard showBack counter={uiInteraction.counter} />
+                        <PromptWrapper>
+                            <Prompt model={device.features.major_version} size={32}>
+                                {typeof uiInteraction.counter === 'number' &&
+                                    uiInteraction.counter >= 24 && (
+                                        <Text>
+                                            Check the {uiInteraction.counter - 23}. word on your
+                                            device
+                                        </Text>
+                                    )}
+                                {typeof uiInteraction.counter === 'number' &&
+                                    uiInteraction.counter < 24 && (
+                                        <Text>
+                                            Write down the {uiInteraction.counter + 1}. word from
+                                            your device
+                                        </Text>
+                                    )}
                             </Prompt>
-                        </div>
-                    </React.Fragment>
+                        </PromptWrapper>
+                    </>
                 )}
 
                 {getStatus() === 'failed' && (
-                    <React.Fragment>
+                    <>
                         <H4>
                             <FormattedMessage
                                 {...l10nMessages.TR_DEVICE_DISCONNECTED_DURING_ACTION}
@@ -300,11 +300,11 @@ const BackupStep = (props: Props) => {
                                 <FormattedMessage {...l10nCommonMessages.TR_CONNECT_YOUR_DEVICE} />
                             </Text>
                         )}
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'success' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_TEXT} />
                         </Text>
@@ -314,7 +314,7 @@ const BackupStep = (props: Props) => {
                                 <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_BUTTON} />
                             </Button>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
             </Wrapper.StepBody>
         </Wrapper.Step>

@@ -63,7 +63,6 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
 
 const FirmwareStep = ({
     device,
-    prevDevice,
     firmwareUpdate,
     // path,
     onboardingActions,
@@ -139,26 +138,25 @@ const FirmwareStep = ({
         if (
             status === 'restarting' &&
             !device &&
-            prevDevice &&
-            prevDevice.features &&
-            prevDevice.features.major_version === 1
+            firmwareUpdate.device &&
+            firmwareUpdate.device.features &&
+            firmwareUpdate.device.features.major_version === 1
         ) {
             return intl.formatMessage(l10nMessages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
         if (
             status === 'restarting' &&
             device &&
-            prevDevice &&
-            prevDevice.features &&
-            prevDevice.features.major_version === 1
+            device.features &&
+            device.features.major_version === 1
         ) {
             return intl.formatMessage(l10nMessages.TR_DISCONNECT_YOUR_DEVICE);
         }
         if (
             status === 'restarting' &&
-            prevDevice &&
-            prevDevice.features &&
-            prevDevice.features.major_version === 2
+            device &&
+            device.features &&
+            device.features.major_version === 2
         ) {
             return intl.formatMessage(l10nMessages.TR_WAIT_FOR_REBOOT);
         }
