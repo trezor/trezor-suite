@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Link, colors, variables } from '@trezor/components';
-import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -130,20 +130,16 @@ const Addr = styled.div`
 //     color: red;
 // `;
 
+type Props = {
+    explorerUrl: string;
+} & WalletAccountTransaction;
+
 const TransactionItem = React.memo(
-    ({
-        symbol,
-        type,
-        blockTime,
-        blockHeight,
-        amount,
-        targets,
-        tokens,
-    }: WalletAccountTransaction) => {
+    ({ explorerUrl, symbol, type, blockTime, blockHeight, amount, targets, tokens }: Props) => {
         return (
             <Wrapper>
                 <Row>
-                    <Timestamp>
+                    <Timestamp href={explorerUrl}>
                         {blockTime && (
                             <FormattedDate
                                 value={new Date(blockTime * 1000)}
