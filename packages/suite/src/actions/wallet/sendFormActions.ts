@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 import { getAccountKey } from '@wallet-utils/reducerUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
-import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
@@ -94,21 +93,10 @@ export const compose = (setMax: boolean = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    // const { outputs } = getState().wallet.send;
-    // outputs.filter(output => {
-    //     const hasErrors = Object.values(errors).filter(val => typeof val === 'string');
-    // });
-    // const hasErrors = Object.values(errors).filter(val => typeof val === 'string');
-    // console.log('HAS EERROR', hasErrors);
-    // if (hasErrors.length > 0) return;
     const account = getState().wallet.selectedAccount.account as Account;
     if (account.networkType === 'bitcoin') {
         return dispatch(bitcoinActions.compose(setMax));
     }
-    // if (account.networkType === 'ethereum') {
-    //     console.log('PRECOMPOSE ETH');
-    // }
-    return true;
 };
 
 /**
