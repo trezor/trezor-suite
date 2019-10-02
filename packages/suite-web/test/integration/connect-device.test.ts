@@ -7,7 +7,7 @@ describe('Connect device', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    it(`on first page load, user should be redirected to onboarding page, then he clicks 'use wallet now' and connects device`, () => {
+    it.skip(`on first page load, user should be redirected to onboarding page, then he clicks 'use wallet now' and connects device`, () => {
         cy.dispatchDeviceConnect().then(dispatch => {
             cy.visit('/')
                 .get('html')

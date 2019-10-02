@@ -64,12 +64,13 @@ suite-web delete review:
         - install and build
 
 suite-web test integration:
+    # try next cypress/browsers:node11.13.0-chrome73
     image: cypress/browsers:node10.2.1-chrome74
     stage: integration testing
     script:
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
-        - DEBUG=cypress:* CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser chrome
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser chrome
     artifacts:
         expire_in: 2 days
         when: always
