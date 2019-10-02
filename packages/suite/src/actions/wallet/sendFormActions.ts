@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
+import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 import { getAccountKey } from '@suite-utils/reducerUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
-import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
@@ -16,40 +16,19 @@ export type SendFormActions =
           address: string;
           symbol: Account['symbol'];
       }
-    | {
-          type: typeof SEND.HANDLE_AMOUNT_CHANGE;
-          outputId: number;
-          amount: string;
-          availableBalance: string;
-      }
-    | {
-          type: typeof SEND.SET_MAX;
-          outputId: number;
-      }
-    | {
-          type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
-          outputId: number;
-          fiatValue: string;
-      }
-    | {
-          type: typeof SEND.HANDLE_FEE_VALUE_CHANGE;
-          fee: FeeLevel;
-      }
-    | {
-          type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE;
-          customFee: string | null;
-      }
+    | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; outputId: number; amount: string }
+    | { type: typeof SEND.SET_MAX; outputId: number }
+    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; outputId: number; fiatValue: string }
+    | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeLevel }
+    | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: string | null }
     | {
           type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
           outputId: number;
           localCurrency: Output['localCurrency']['value'];
       }
-    | {
-          type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY;
-      }
-    | {
-          type: typeof SEND.CLEAR;
-      }
+    | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
+    | { type: typeof SEND.CLEAR }
+    | { type: typeof SEND.BTC_DELETE_TRANSACTION_INFO }
     | { type: typeof SEND.INIT; payload: InitialState }
     | { type: typeof SEND.DISPOSE };
 
@@ -90,6 +69,17 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
+export const compose = (setMax: boolean = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const account = getState().wallet.selectedAccount.account as Account;
+    if (account.networkType === 'bitcoin') {
+        dispatch({ type: SEND.BTC_DELETE_TRANSACTION_INFO });
+        return dispatch(bitcoinActions.compose(setMax));
+    }
+};
+
 /**
  * Dispose current form, save values to session storage
  */
@@ -97,24 +87,6 @@ export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
     dispatch({
         type: SEND.DISPOSE,
     });
-};
-
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
-    // const { outputs } = getState().wallet.send;
-    // outputs.filter(output => {
-    //     const hasErrors = Object.values(errors).filter(val => typeof val === 'string');
-    // });
-    // const hasErrors = Object.values(errors).filter(val => typeof val === 'string');
-    // console.log('HAS EERROR', hasErrors);
-    // if (hasErrors.length > 0) return;
-    const account = getState().wallet.selectedAccount.account as Account;
-    if (account.networkType === 'bitcoin') {
-        return dispatch(bitcoinActions.compose());
-    }
-    // if (account.networkType === 'ethereum') {
-    //     console.log('PRECOMPOSE ETH');
-    // }
-    return true;
 };
 
 /*
@@ -169,7 +141,6 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount,
-        availableBalance: account.availableBalance,
     });
 
     dispatch(compose());
@@ -208,7 +179,6 @@ export const handleSelectCurrencyChange = (
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
             amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
-            availableBalance: account.availableBalance,
         });
     }
 
@@ -252,7 +222,6 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount,
-        availableBalance: account.availableBalance,
     });
 
     dispatch(compose());
@@ -262,34 +231,40 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 /*
     Click on "set max"
  */
-export const setMax = (outputId: number) => (dispatch: Dispatch, getState: GetState) => {
+export const setMax = (outputId: number) => async (dispatch: Dispatch, getState: GetState) => {
     const { account } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
     if (!account || !fiat || !send) return null;
+
+    const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
-
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    if (!fiatNetwork) return null;
 
-    const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
-    const fiatValue = getFiatValue(account.availableBalance, rate);
+    if (fiatNetwork) {
+        const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
+        const fiatValue = getFiatValue(account.availableBalance, rate);
+        dispatch({
+            type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+            outputId,
+            fiatValue,
+        });
+    }
 
-    dispatch({
-        type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-        outputId,
-        fiatValue,
-    });
+    if (composedTransaction && composedTransaction.type !== 'error') {
+        const availableBalanceBig = new BigNumber(account.availableBalance);
 
-    dispatch({
-        type: SEND.HANDLE_AMOUNT_CHANGE,
-        outputId,
-        amount: account.availableBalance,
-        availableBalance: account.availableBalance,
-    });
+        dispatch({
+            type: SEND.HANDLE_AMOUNT_CHANGE,
+            outputId,
+            amount: formatNetworkAmount(
+                availableBalanceBig.minus(composedTransaction.fee).toString(),
+                account.symbol,
+            ),
+        });
 
-    dispatch(compose());
-    dispatch(sendFormCacheActions.cache());
+        dispatch(sendFormCacheActions.cache());
+    }
 };
 
 /*

@@ -33,7 +33,7 @@ export const getAccountTransactions = [
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 fee: '0.00002929',
-                page: 1,
+
                 symbol: 'btc',
                 targets: [
                     { addresses: ['36JkLACrdxARqXXffZk91V9W6SJvghKaVK'], amount: '0.00006497' },
@@ -51,7 +51,7 @@ export const getAccountTransactions = [
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 fee: '0.00000166',
-                page: 1,
+
                 symbol: 'btc',
                 targets: [
                     { addresses: ['3Bvy87TmQhhSBqfiCBh8w5yPx6usiDM8SY'], amount: '0.00319488' },
@@ -90,7 +90,6 @@ export const getAccountTransactions = [
                     },
                 ],
                 tokens: [],
-                page: 1,
             },
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
@@ -111,7 +110,6 @@ export const getAccountTransactions = [
                     },
                 ],
                 tokens: [],
-                page: 1,
             },
         ],
     },
@@ -146,7 +144,6 @@ export const getAccountTransactions = [
                     gasUsed: 21000,
                     gasPrice: '21000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -174,7 +171,6 @@ export const getAccountTransactions = [
                     gasUsed: 21000,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -207,7 +203,6 @@ export const getAccountTransactions = [
                     gasUsed: 36784,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -231,7 +226,6 @@ export const getAccountTransactions = [
                     gasUsed: 21000,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -264,7 +258,6 @@ export const getAccountTransactions = [
                     gasUsed: 51784,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
         ],
     },
@@ -473,5 +466,159 @@ export const observeChanges = [
         current: 1,
         filter: undefined,
         result: false,
+    },
+];
+
+export const enhanceTransaction = [
+    {
+        tx: {
+            amount: 123,
+            blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
+            blockHeight: 590093,
+            blockTime: 1565797979,
+            fee: '0.00002929',
+            targets: [],
+            tokens: [
+                {
+                    address: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+                    amount: '10',
+                    decimals: 18,
+                    from: '0x75e68d3b6acd23e79e395fa627ae5cae605c03d3',
+                    name: 'Decentraland MANA',
+                    symbol: 'MANA',
+                    to: '0x73d0385f4d8e00c5e6504c6030f47bf6212736a8',
+                    type: 'recv',
+                },
+            ],
+            txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+            type: 'sent',
+        },
+        account: global.JestMocks.getWalletAccount({
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            symbol: 'btc',
+            networkType: 'bitcoin',
+        }),
+        result: {
+            amount: '0.00000123',
+            blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
+            blockHeight: 590093,
+            blockTime: 1565797979,
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            fee: '0.0000000000002929',
+            symbol: 'btc',
+            targets: [],
+            tokens: [
+                {
+                    address: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+                    amount: '0.00000000000000001',
+                    decimals: 18,
+                    from: '0x75e68d3b6acd23e79e395fa627ae5cae605c03d3',
+                    name: 'Decentraland MANA',
+                    symbol: 'MANA',
+                    to: '0x73d0385f4d8e00c5e6504c6030f47bf6212736a8',
+                    type: 'recv',
+                },
+            ],
+            txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+            type: 'sent',
+        },
+    },
+    {
+        tx: {
+            amount: '0.00006497',
+            blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
+            blockHeight: 590093,
+            blockTime: 1565797979,
+            fee: '0.00002929',
+            targets: [
+                {
+                    addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
+                    isAddress: true,
+                    amount: '1234',
+                },
+            ],
+            tokens: [],
+            txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+            type: 'sent',
+        },
+        account: global.JestMocks.getWalletAccount({
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            symbol: 'btc',
+            networkType: 'bitcoin',
+        }),
+        result: {
+            amount: '0.0000000000006497',
+            blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
+            blockHeight: 590093,
+            blockTime: 1565797979,
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            fee: '0.0000000000002929',
+            symbol: 'btc',
+            targets: [
+                {
+                    addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
+                    isAddress: true,
+                    amount: '0.00001234',
+                },
+            ],
+            tokens: [],
+            txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+            type: 'sent',
+        },
+    },
+    {
+        tx: {
+            amount: '0.00006497',
+            blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
+            blockHeight: 590093,
+            blockTime: 1565797979,
+            fee: '0.00002929',
+            targets: [
+                {
+                    addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
+                    isAddress: true,
+                    amount: 1234,
+                },
+            ],
+            tokens: [],
+            txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+            type: 'sent',
+        },
+        account: global.JestMocks.getWalletAccount({
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            symbol: 'btc',
+            networkType: 'bitcoin',
+        }),
+        result: {
+            amount: '0.0000000000006497',
+            blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
+            blockHeight: 590093,
+            blockTime: 1565797979,
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            fee: '0.0000000000002929',
+            symbol: 'btc',
+            targets: [
+                {
+                    addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
+                    isAddress: true,
+                    amount: 1234,
+                },
+            ],
+            tokens: [],
+            txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+            type: 'sent',
+        },
     },
 ];

@@ -136,7 +136,16 @@ const Addr = styled.div`
 // `;
 
 const TransactionItem = React.memo(
-    ({ symbol, type, blockTime, amount, targets, tokens }: WalletAccountTransaction) => {
+    ({
+        symbol,
+        type,
+        txid,
+        blockTime,
+        blockHeight,
+        amount,
+        targets,
+        tokens,
+    }: WalletAccountTransaction) => {
         return (
             <Wrapper>
                 <Row>
@@ -155,6 +164,7 @@ const TransactionItem = React.memo(
                                 <Addr>(sent to self)</Addr>
                             </Target>
                         )}
+                        {!blockHeight && <Target>(pending)</Target>}
                         {targets &&
                             targets.map((target, i) => (
                                 // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change

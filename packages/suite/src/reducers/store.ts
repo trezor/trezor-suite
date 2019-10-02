@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
+import * as buildUtils from '@suite-utils/build';
 import suiteMiddlewares from '@suite-middlewares';
 import walletMiddlewares from '@wallet-middlewares';
 import onboardingMiddlewares from '@onboarding-middlewares';
@@ -26,31 +27,33 @@ const middlewares = [
 ];
 
 const enhancers: any[] = [];
+if (buildUtils.isDev()) {
+    const excludeLogger = (_getState: any, action: any): boolean => {
+        // '@@router/LOCATION_CHANGE'
+        const excluded = ['LOG_TO_EXCLUDE', 'log__add', undefined];
+        const pass = excluded.filter(act => action.type === act);
+        return pass.length === 0;
+    };
 
-const excludeLogger = (_getState: any, action: any): boolean => {
-    // '@@router/LOCATION_CHANGE'
-    const excluded = ['LOG_TO_EXCLUDE', 'log__add', undefined];
-    const pass = excluded.filter(act => action.type === act);
-    return pass.length === 0;
-};
+    const logger = createLogger({
+        level: 'info',
+        predicate: excludeLogger,
+        collapsed: true,
+    });
+    middlewares.push(logger);
 
-const logger = createLogger({
-    level: 'info',
-    predicate: excludeLogger,
-    collapsed: true,
-});
-
-/* eslint-disable no-underscore-dangle */
-if (
-    typeof window !== 'undefined' &&
-    typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function'
-) {
-    enhancers.push((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
+    /* eslint-disable no-underscore-dangle */
+    if (
+        typeof window !== 'undefined' &&
+        typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function'
+    ) {
+        enhancers.push((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
+    }
+    /* eslint-enable no-underscore-dangle */
 }
-/* eslint-enable no-underscore-dangle */
 
 const composedEnhancers = compose(
-    applyMiddleware(logger, ...middlewares),
+    applyMiddleware(...middlewares),
     ...enhancers,
 );
 

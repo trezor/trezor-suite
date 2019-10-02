@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';

@@ -10,20 +10,6 @@ import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
 import { Action } from '@suite-types';
 
-jest.mock('@trezor/suite-storage', () => {
-    return {
-        __esModule: true, // this property makes it work
-        default: () => {},
-    };
-});
-
-// just return whatever to avoid imports touching database which is not available in tests
-jest.mock('@suite-actions/storageActions', () => {
-    return {
-        __esModule: true,
-    };
-});
-
 jest.mock('next/router', () => {
     return {
         __esModule: true, // this property makes it work
