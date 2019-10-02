@@ -8,7 +8,7 @@ import {
     getSelectedNetwork,
     getAccountDevice,
     enhanceTransaction,
-} from '@wallet-utils/reducerUtils';
+} from '@suite-utils/reducerUtils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as transactionActions from '@wallet-actions/transactionActions';

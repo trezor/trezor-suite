@@ -2,10 +2,10 @@ import {
     State as TransactionsState,
     WalletAccountTransaction,
 } from '@wallet-reducers/transactionReducer';
+import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { AccountTransaction } from 'trezor-connect';
 import { AppState } from '@suite-types';
 import { Account, Network } from '@wallet-types';
-import { formatAmount, formatNetworkAmount } from './accountUtils';
 
 export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
