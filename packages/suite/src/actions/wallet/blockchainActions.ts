@@ -297,20 +297,6 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // We also have outdated balance/sequence. All of that trigger removing all txs belonging to the acc in onBlockMined,
     // (if block come before 2nd notification)
 
-    // in case of sending a tx between the accounts, we should receive 2 blockchain notifications,
-    // one for each account (type sent and receive), that will trigger the update for these accounts.
-    // It may happen that 'sent' notification doesn't arrive, so as a temp fix we will update all accounts
-    const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    networkAccounts.forEach(async account => {
-        const response = await TrezorConnect.getAccountInfo({
-            coin: symbol,
-            descriptor: account.descriptor,
-            details: 'txs',
-            pageSize: SETTINGS.TXS_PER_PAGE,
-        });
-
-        if (!response.success) return;
-        // TODO: BITCOIN: Notification returns blockTime 0, getAccountInfo has valid timestamp. should we update tx?
-        dispatch(accountActions.update(account, response.payload));
-    });
+    // TODO: BITCOIN: Notification returns blockTime 0, getAccountInfo has valid timestamp. should we update tx?
+    dispatch(accountActions.fetchAndUpdateAccount(account))
 };

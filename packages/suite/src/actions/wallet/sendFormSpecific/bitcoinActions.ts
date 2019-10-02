@@ -7,6 +7,7 @@ import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormCacheActions from '../sendFormCacheActions';
+import * as accountActions from '@wallet-actions/accountActions';
 
 export type SendFormBitcoinActions =
     | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
@@ -88,6 +89,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
                 cancelable: true,
             }),
         );
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
         dispatch(
             notificationActions.add({
