@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import { Icon } from '../../Icon';
-import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
+import { getPrimaryColorBtn, getSecondaryColorBtn } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
-import { FeedbackType, IconType } from '../../../support/types';
+import { ButtonVariant, IconType } from '../../../support/types';
 
 interface FluidSpinnerProps {
     size: number;
@@ -56,13 +56,13 @@ const Wrapper = styled.button<Props>`
     font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;
     outline: none;
-    background: ${props => getPrimaryColor(props.variant)};
+    background: ${props => getPrimaryColorBtn(props.variant)};
     color: ${colors.WHITE};
-    border: 1px solid ${props => getPrimaryColor(props.variant)};
+    border: 1px solid ${props => getPrimaryColorBtn(props.variant)};
     transition: ${TRANSITION.HOVER};
 
     &:hover {
-        background: ${props => getSecondaryColor(props.variant)};
+        background: ${props => getSecondaryColorBtn(props.variant)};
     }
 
     &:focus {
@@ -70,7 +70,7 @@ const Wrapper = styled.button<Props>`
     }
 
     &:active {
-        background: ${props => getSecondaryColor(props.variant)};
+        background: ${props => getSecondaryColorBtn(props.variant)};
     }
 
     ${props =>
@@ -89,11 +89,11 @@ const Wrapper = styled.button<Props>`
         !props.isLoading &&
         css`
             background: transparent;
-            color: ${getPrimaryColor(props.variant)};
-            border: 1px solid ${getPrimaryColor(props.variant)};
+            color: ${getPrimaryColorBtn(props.variant)};
+            border: 1px solid ${getPrimaryColorBtn(props.variant)};
             &:hover,
             &:active {
-                background: ${getPrimaryColor(props.variant)};
+                background: ${getPrimaryColorBtn(props.variant)};
                 color: ${colors.WHITE};
 
                 &:before,
@@ -109,7 +109,7 @@ const Wrapper = styled.button<Props>`
             }
 
             &:active {
-                background: ${getPrimaryColor(props.variant)};
+                background: ${getPrimaryColorBtn(props.variant)};
             }
         `}
 
@@ -142,7 +142,7 @@ const Wrapper = styled.button<Props>`
             vertical-align: middle;
         `}
     ${props =>
-        props.isWhite &&
+        props.variant === 'white' &&
         css`
             background: ${colors.WHITE};
             color: ${colors.TEXT_SECONDARY};
@@ -217,8 +217,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isTransparent?: boolean;
     isLoading?: boolean;
     icon?: IconType;
-    variant?: FeedbackType;
-    fullWidth?: boolean;
+    variant?: ButtonVariant;
 }
 
 const Button = ({
@@ -266,7 +265,9 @@ const Button = ({
                     <Icon
                         icon={icon}
                         size={14}
-                        color={isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE}
+                        color={
+                            isInverse ? getPrimaryColorBtn(variant) || colors.WHITE : colors.WHITE
+                        }
                     />
                     {children}
                 </IconWrapper>
@@ -293,7 +294,7 @@ Button.propTypes = {
     fullWidth: PropTypes.bool,
     isLoading: PropTypes.bool,
     icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
+    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error', 'white']),
 };
 
 export { Button, Props as ButtonProps };
