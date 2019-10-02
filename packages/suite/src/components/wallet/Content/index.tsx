@@ -7,11 +7,16 @@ import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 import l10nMessages from './index.messages';
 
-const Wrapper = styled.div`
+interface WrapperProps {
+    isTransaction?: boolean;
+}
+
+const Wrapper = styled.div<WrapperProps>`
     display: flex;
     flex: 1;
     flex-direction: column;
     padding: 40px 35px 40px 35px;
+    background: ${props => (props.isTransaction ? colors.LANDING : 'none')};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 20px 35px;
@@ -67,10 +72,18 @@ interface Props {
     isLoading?: boolean;
     exceptionPage?: ExceptionPage;
     loader?: LoaderInterface | null;
+    isTransaction?: WrapperProps['isTransaction'];
 }
 
-const Content = ({ className, children, isLoading = false, loader, exceptionPage }: Props) => (
-    <Wrapper className={className}>
+const Content = ({
+    className,
+    children,
+    isLoading = false,
+    loader,
+    exceptionPage,
+    isTransaction,
+}: Props) => (
+    <Wrapper className={className} isTransaction={isTransaction}>
         {!isLoading && children}
         {isLoading && exceptionPage && getExceptionPage(exceptionPage)}
         {isLoading && loader && (

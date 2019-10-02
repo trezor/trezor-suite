@@ -1,46 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { colors, variables } from '@trezor/components';
+import { Link, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
-import TokenIcon from '@wallet-views/account/summary/components/Tokens/components/TokenIcon';
 
 const Wrapper = styled.div`
     display: flex;
-    border-bottom: 1px solid ${colors.INPUT_BORDER};
-    /* background: #fafafa; */
-    padding: 8px 0px;
+    background: ${colors.WHITE};
+    padding: 10px 35px;
     flex-direction: column;
     line-height: 1.5;
-    /* & + & {
-        margin-top: 16px;
-    } */
+    margin: 0 -35px;
+
+    + h5 {
+        border-top: 1px solid ${colors.INPUT_BORDER};
+        padding-top: 20px;
+        margin: 0 -35px;
+        padding-left: 35px;
+        padding-right: 35px;
+    }
 `;
 
-const Timestamp = styled.div`
+const Timestamp = styled(Link)`
     color: ${colors.TEXT_SECONDARY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    flex: 1;
-`;
+    width: 70px;
+    text-decoration: none;
+    font-size: 0.8em;
+    opacity: 0.5;
+    cursor: pointer;
 
-const TxHash = styled.div`
-    /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
-    color: ${colors.TEXT_SECONDARY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    flex: 1 1 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    &:hover {
+        opacity: 1;
+    }
 `;
 
 const Row = styled.div`
     display: flex;
     flex: 1;
     justify-content: space-between;
-`;
-
-const AmountWrapper = styled.div`
-    display: flex;
-    justify-content: flex-end;
+    align-items: center;
 `;
 
 const Col = styled.div`
@@ -51,14 +50,10 @@ const ColBalance = styled(Col)`
     text-align: end;
 `;
 
-const Heading = styled(Row)`
-    justify-content: space-between;
-    padding: 0px 0px;
-`;
-
 const Targets = styled.div`
     color: ${colors.TEXT_PRIMARY};
     overflow: hidden;
+    flex: 1;
 `;
 
 const Target = styled.div`
@@ -99,6 +94,7 @@ const Balances = styled.div`
     display: flex;
     flex-direction: row;
     color: ${colors.TEXT_PRIMARY};
+    margin-left: 1rem;
 `;
 
 const Symbol = styled.div`
@@ -111,17 +107,19 @@ const Amount = styled.div<{ txType: string }>`
     color: ${props => (props.txType === 'recv' ? 'green' : 'red')};
 `;
 
+const TokenAmount = styled(Token)<{ txType: string }>`
+    display: inline;
+    color: ${props => (props.txType === 'recv' ? 'green' : 'red')};
+    border: none;
+`;
+
 const Addr = styled.div`
     color: ${colors.TEXT_PRIMARY};
     font-family: ${variables.FONT_FAMILY.MONOSPACE};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.BASE};
     overflow: hidden;
     text-overflow: ellipsis;
     margin-right: 10px;
-`;
-
-const StyledTokenIcon = styled(TokenIcon)`
-    align-self: center;
 `;
 
 // const Fee = styled.div`
@@ -136,7 +134,6 @@ const TransactionItem = React.memo(
     ({
         symbol,
         type,
-        txid,
         blockTime,
         blockHeight,
         amount,
@@ -145,22 +142,16 @@ const TransactionItem = React.memo(
     }: WalletAccountTransaction) => {
         return (
             <Wrapper>
-                <Heading>
+                <Row>
                     <Timestamp>
                         {blockTime && (
                             <FormattedDate
                                 value={new Date(blockTime * 1000)}
-                                day="numeric"
-                                month="long"
-                                year="numeric"
                                 hour="numeric"
                                 minute="numeric"
                             />
                         )}
                     </Timestamp>
-                    <TxHash>{txid}</TxHash>
-                </Heading>
-                <Row>
                     <Targets>
                         {type === 'self' && (
                             <Target>
@@ -183,13 +174,14 @@ const TransactionItem = React.memo(
                             tokens.map(token => (
                                 <Token>
                                     <Row>
-                                        <StyledTokenIcon
-                                            address={token.address}
-                                            symbol={token.symbol}
-                                        />
                                         <Col>
                                             <TokenName>
                                                 {token.name} ({token.symbol})
+                                                <TokenAmount txType={type}>
+                                                    {type === 'recv' && '+'}
+                                                    {type !== 'recv' && '-'}
+                                                    {token.amount} {token.symbol}
+                                                </TokenAmount>
                                             </TokenName>
                                             <Label>
                                                 From:&nbsp;<TokenAddress>{token.from}</TokenAddress>
@@ -199,34 +191,21 @@ const TransactionItem = React.memo(
                                             </Label>
                                         </Col>
                                     </Row>
-                                    <AmountWrapper>
-                                        <Amount txType={type}>
-                                            {type === 'recv' && '+'}
-                                            {type !== 'recv' && '-'}
-                                            {token.amount} {token.symbol}
-                                        </Amount>
-                                    </AmountWrapper>
                                 </Token>
                             ))}
                     </Targets>
-
-                    <ColBalance>
-                        {/* <Fee>
-                            <Red>-{fee}</Red>
-                        </Fee> */}
-                        <Balances>
-                            {amount !== '0' && (
-                                <>
-                                    <Amount txType={type}>
-                                        {type === 'recv' && '+'}
-                                        {type !== 'recv' && '-'}
-                                        {amount}&nbsp;
-                                    </Amount>
-                                    <Symbol>{symbol.toUpperCase()}</Symbol>
-                                </>
-                            )}
-                        </Balances>
-                    </ColBalance>
+                    {amount !== '0' && (
+                        <ColBalance>
+                            <Balances>
+                                <Amount txType={type}>
+                                    {type === 'recv' && '+'}
+                                    {type !== 'recv' && '-'}
+                                    {amount}&nbsp;
+                                </Amount>
+                                <Symbol>{symbol.toUpperCase()}</Symbol>
+                            </Balances>
+                        </ColBalance>
+                    )}
                 </Row>
             </Wrapper>
         );
