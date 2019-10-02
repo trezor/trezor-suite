@@ -33,7 +33,7 @@ export const getAccountTransactions = [
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 fee: '0.00002929',
-                page: 1,
+
                 symbol: 'btc',
                 targets: [
                     { addresses: ['36JkLACrdxARqXXffZk91V9W6SJvghKaVK'], amount: '0.00006497' },
@@ -51,7 +51,7 @@ export const getAccountTransactions = [
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 fee: '0.00000166',
-                page: 1,
+
                 symbol: 'btc',
                 targets: [
                     { addresses: ['3Bvy87TmQhhSBqfiCBh8w5yPx6usiDM8SY'], amount: '0.00319488' },
@@ -90,7 +90,6 @@ export const getAccountTransactions = [
                     },
                 ],
                 tokens: [],
-                page: 1,
             },
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
@@ -111,7 +110,6 @@ export const getAccountTransactions = [
                     },
                 ],
                 tokens: [],
-                page: 1,
             },
         ],
     },
@@ -146,7 +144,6 @@ export const getAccountTransactions = [
                     gasUsed: 21000,
                     gasPrice: '21000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -174,7 +171,6 @@ export const getAccountTransactions = [
                     gasUsed: 21000,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -207,7 +203,6 @@ export const getAccountTransactions = [
                     gasUsed: 36784,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -231,7 +226,6 @@ export const getAccountTransactions = [
                     gasUsed: 21000,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -264,7 +258,6 @@ export const getAccountTransactions = [
                     gasUsed: 51784,
                     gasPrice: '20000000000',
                 },
-                page: 1,
             },
         ],
     },

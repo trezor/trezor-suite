@@ -19,7 +19,6 @@ export default {
                 },
             ],
             tokens: [],
-            page: 1,
         },
         {
             descriptor:
@@ -40,7 +39,6 @@ export default {
                 },
             ],
             tokens: [],
-            page: 1,
         },
     ],
     'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H-txrp-7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f': [
@@ -63,7 +61,6 @@ export default {
                 },
             ],
             tokens: [],
-            page: 1,
         },
         {
             descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
@@ -84,7 +81,6 @@ export default {
                 },
             ],
             tokens: [],
-            page: 1,
         },
     ],
     '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15-eth-7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f': [
@@ -113,7 +109,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '21000000000',
             },
-            page: 1,
         },
         {
             descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -141,7 +136,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '20000000000',
             },
-            page: 1,
         },
         {
             descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -174,7 +168,6 @@ export default {
                 gasUsed: 36784,
                 gasPrice: '20000000000',
             },
-            page: 1,
         },
         {
             descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -201,7 +194,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '20000000000',
             },
-            page: 1,
         },
         {
             descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
@@ -234,7 +226,6 @@ export default {
                 gasUsed: 51784,
                 gasPrice: '20000000000',
             },
-            page: 1,
         },
     ],
     '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B-eth-7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f': [
@@ -264,7 +255,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '5500000000',
             },
-            page: 1,
         },
         {
             descriptor: '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B',
@@ -291,7 +281,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '16500000000',
             },
-            page: 1,
         },
     ],
     '0xba98D6a5ac827632E3457De7512d211e4ff7e8bD-eth-7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f': [
@@ -321,7 +310,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '3000000000',
             },
-            page: 1,
         },
         {
             descriptor: '0xba98D6a5ac827632E3457De7512d211e4ff7e8bD',
@@ -348,7 +336,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '3900000000',
             },
-            page: 1,
         },
         {
             descriptor: '0xba98D6a5ac827632E3457De7512d211e4ff7e8bD',
@@ -376,7 +363,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '10000000000',
             },
-            page: 1,
         },
         {
             descriptor: '0xba98D6a5ac827632E3457De7512d211e4ff7e8bD',
@@ -403,7 +389,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '5500000000',
             },
-            page: 1,
         },
     ],
     '0x1f815D67006163E502b8eD4947C91ad0A62De24e-eth-7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f': [
@@ -433,7 +418,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '3000000000',
             },
-            page: 1,
         },
         {
             descriptor: '0x1f815D67006163E502b8eD4947C91ad0A62De24e',
@@ -460,7 +444,6 @@ export default {
                 gasUsed: 21000,
                 gasPrice: '3000000000',
             },
-            page: 1,
         },
     ],
 };

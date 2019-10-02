@@ -3,7 +3,7 @@ import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { SETTINGS } from '@suite/config/suite';
 import { TRANSACTION } from '@wallet-actions/constants';
-import { db } from '@suite/storage';
+// import { db } from '@suite/storage';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
@@ -86,19 +86,19 @@ export const remove = (account: Account) => async (dispatch: Dispatch) => {
 //     });
 // };
 
-const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
-    try {
-        const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
-            key: descriptor,
-            offset,
-            count,
-        });
-        return txs;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
-};
+// const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
+//     try {
+//         const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
+//             key: descriptor,
+//             offset,
+//             count,
+//         });
+//         return txs;
+//     } catch (error) {
+//         console.log(error);
+//         return null;
+//     }
+// };
 
 export const fetchTransactions = (account: Account, page: number, perPage?: number) => async (
     dispatch: Dispatch,
@@ -121,11 +121,12 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     });
 
     // TODO: storing and fetching from the db
-    const offset = page && perPage ? (page - 1) * perPage : undefined;
-    const count = perPage || undefined;
-    const storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
+    // const offset = page && perPage ? (page - 1) * perPage : undefined;
+    // const count = perPage || undefined;
+    // const storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
 
-    const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
+    // const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
+    const shouldFetchFromBackend = true;
     if (shouldFetchFromBackend) {
         const { marker } = selectedAccount.account!;
         const result = await TrezorConnect.getAccountInfo({
@@ -155,12 +156,12 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
                 error: result ? result.payload.error : 'unknown error',
             });
         }
-    } else {
-        dispatch({
-            type: TRANSACTION.FETCH_SUCCESS,
-            transactions: storedTxs || [],
-            account,
-            page,
-        });
-    }
+    } // else {
+    //     dispatch({
+    //         type: TRANSACTION.FETCH_SUCCESS,
+    //         transactions: storedTxs || [],
+    //         account,
+    //         page,
+    //     });
+    // }
 };
