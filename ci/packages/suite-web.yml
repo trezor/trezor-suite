@@ -64,6 +64,7 @@ suite-web delete review:
         - install and build
 
 suite-web test integration:
+    image: cypress/browsers:node10.2.1-chrome74
     stage: integration testing
     script:
         - npx cypress install
