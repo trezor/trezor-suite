@@ -398,57 +398,75 @@ export const observeChanges = [
         result: false,
     },
     {
-        testName: 'reducerUtils.observeChanges different array length',
-        prev: {
-            a: 1,
-            b: 2,
-            c: ['a', 'b'],
-        },
-        current: {
-            a: 1,
-            b: 2,
-            c: ['a', 'b', 'c'],
-        },
-        result: true,
-    },
-    {
-        testName: 'reducerUtils.observeChanges same array length',
-        prev: {
-            a: 1,
-            b: 2,
-            c: ['a', 'b', 'd'],
-        },
-        current: {
-            a: 1,
-            b: 2,
-            c: ['a', 'b', 'c'],
-        },
-        result: true,
-    },
-    {
-        testName: 'reducerUtils.observeChanges changed key length',
-        prev: {
-            a: 1,
-            b: 2,
-        },
-        current: {
-            a: 1,
-            b: 2,
-            c: ['a', 'b', 'c'],
-        },
-        result: true,
-    },
-    {
-        testName: 'reducerUtils.observeChanges different data type',
-        prev: {
-            a: 1,
-            b: 2,
-            c: ['a', 'b', 'd'],
-        },
-        current: 'suddenly string',
-        result: true,
-    },
-];
+testName: 'reducerUtils.observeChanges array no change',
+prev: [1],
+current: [1],
+filter: undefined,
+result: false,
+},
+{
+testName: 'reducerUtils.observeChanges array with changed length',
+prev: [],
+current: [1],
+filter: undefined,
+result: true,
+},
+{
+testName: 'reducerUtils.observeChanges array with changed value',
+prev: [0],
+current: [1],
+filter: undefined,
+result: true,
+},
+{
+testName: 'reducerUtils.observeChanges different types',
+prev: 1,
+current: [1],
+filter: undefined,
+result: true,
+},
+{
+testName: 'reducerUtils.observeChanges object keys different lengths',
+prev: { key1: 1 },
+current: { key1: 1, key2: 2 },
+filter: undefined,
+result: true,
+},
+{
+testName: 'reducerUtils.observeChanges object keys same lengths but different keys',
+prev: { key1: 1 },
+current: { key2: 2 },
+filter: undefined,
+result: true,
+},
+{
+testName: 'reducerUtils.observeChanges different strings',
+prev: 'a',
+current: 'b',
+filter: undefined,
+result: true,
+},
+{
+testName: 'reducerUtils.observeChanges same strings',
+prev: 'a',
+current: 'a',
+filter: undefined,
+result: false,
+},
+{
+testName: 'reducerUtils.observeChanges different numbers',
+prev: 1,
+current: 2,
+filter: undefined,
+result: true,
+},
+{
+testName: 'reducerUtils.observeChanges same numbers',
+prev: 1,
+current: 1,
+filter: undefined,
+result: false,     
+}];
 
 export const enhanceTransaction = [
     {
@@ -601,5 +619,6 @@ export const enhanceTransaction = [
             txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
             type: 'sent',
         },
+        
     },
 ];

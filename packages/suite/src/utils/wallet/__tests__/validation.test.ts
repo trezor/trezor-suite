@@ -15,8 +15,12 @@ describe('validation', () => {
         // eth
         expect(isAddressValid('0x32Be343B94f860124dC4fEe278FDCBD38C102D88', 'eth')).toEqual(true);
         expect(isAddressValid('0x32Be343B94f860124dC4fEe278FDCBD38C102D880', 'eth')).toEqual(false);
+        expect(isAddressValid('0x32Be343B94f860124dC4fEe278FDCBD38C102D880', 'trop')).toEqual(
+            false,
+        );
         // xrp
         expect(isAddressValid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV', 'xrp')).toEqual(true);
+        expect(isAddressValid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV', 'txrp')).toEqual(true);
         expect(isAddressValid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV0', 'xrp')).toEqual(false);
         // txrp
         expect(isAddressValid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV', 'txrp')).toEqual(true);

@@ -276,7 +276,7 @@
 		"min_bootloader_version": [1, 0, 0],
 		"url": "data/firmware/1/trezor-1.2.1.bin",
 		"fingerprint": "0f8685ee46632162b549eb22b99a1e4e013d6796ae536ea6acb877a491f564f6",
-		"changelog": "* Added stack overflow protection\n* Added compatibility with TREZOR Bridge",
+		"changelog": "* Added stack overflow protection\n* Added compatibility with Trezor Bridge",
 		"notes": "http://satoshilabs.com/old/news/2014-08-01-trezor-firmware-1-2-1-released/"
 	},
 	{

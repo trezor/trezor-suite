@@ -50,10 +50,10 @@ module.exports = {
     ],
     coverageThreshold: {
         global: {
-            statements: 66.08,
-            branches: 65.16,
-            functions: 66.57,
-            lines: 66.57,
+            statements: 66.3,
+            branches: 65.31,
+            functions: 66.78,
+            lines: 66.87,
         },
     },
     modulePathIgnorePatterns: [

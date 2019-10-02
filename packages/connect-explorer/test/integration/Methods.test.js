@@ -1,5 +1,19 @@
 import sections from '../../src/js/data/menu';
 
+const testMethodContent = (cy, section) => {
+    const url = `/#${section.url}`;
+    it(`${section.name} url: ${url}`, () => {
+        cy.visit(url)
+            .get('html')
+            // .get('.method-content')
+            .should('be.visible')
+            .should('contain', section.name)
+            .matchImageSnapshot({
+                blackout: ['.infinity-menu-container'],
+            });
+    });
+};
+
 describe('Methods', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).visit('/');
@@ -8,31 +22,14 @@ describe('Methods', () => {
     sections.forEach(section => {
         describe(section.name, () => {
             section.children.forEach(child => {
-                // lazy do create recursive, just tinkering around now, dont judge code very much.
                 if (child.children) {
                     describe(child.name, () => {
                         child.children.forEach(grandChild => {
-                            const url = `/#${grandChild.url}`;
-                            it(`${grandChild.name} url:${url}`, () => {
-                                cy.visit(url)
-                                    .get('html')
-                                    .should('be.visible')
-                                    .should('contain', grandChild.name)
-                                    // .getTestElement('method-submit-button')
-                                    // .click();
-                                    .matchImageSnapshot();
-                            });
+                            testMethodContent(cy, grandChild);
                         });
                     });
                 } else {
-                    const url = `/#${child.url}`;
-                    it(`${child.name} url: ${url}`, () => {
-                        cy.visit(url)
-                            .get('html')
-                            .should('be.visible')
-                            .should('contain', child.name)
-                            .matchImageSnapshot();
-                    });
+                    testMethodContent(cy, child);
                 }
             });
         });

@@ -15,11 +15,15 @@ interface Props extends InjectedIntlProps {
 
 const UpdateFirmware = ({ device, pathname, intl, goto }: Props) => {
     if (!device || device.type !== 'acquired') return null;
-    const outdated = ['outdated', 'required'].includes(device.firmware);
-    if (!outdated) return null;
-
     // don't show notification when user is on firmware update page
     if (pathname === getRoute('suite-device-firmware')) return null;
+
+    // in bootloader, we dont see firmware version (not true from model T), but still, we probably
+    // dont want to show this notification
+    if (device.mode === 'bootloader') return null;
+
+    const outdated = ['outdated', 'required'].includes(device.firmware);
+    if (!outdated) return null;
 
     return (
         <Notification

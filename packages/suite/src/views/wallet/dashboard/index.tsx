@@ -5,7 +5,6 @@ import Content from '@wallet-components/Content';
 import { H4, P, CoinLogo } from '@trezor/components';
 import Link from '@suite-components/Link';
 import Layout from '@wallet-components/Layout';
-import Discovery from '@wallet-components/Discovery';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
 import { getRoute } from '@suite/utils/suite/router';
@@ -77,7 +76,6 @@ const Dashboard = (props: Props) => {
         <Layout>
             <Content>
                 <Row data-test="Dashboard__page__content">
-                    <Discovery />
                     <StyledH4>
                         {isEmpty() && (
                             <FormattedMessage
