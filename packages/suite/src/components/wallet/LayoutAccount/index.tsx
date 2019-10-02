@@ -46,7 +46,7 @@ const LayoutAccount = (props: Props) => (
             />
         }
     >
-        {props.children}layout from acc
+        {props.children}
     </WalletLayout>
 );
 
