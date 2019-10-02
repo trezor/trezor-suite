@@ -1,23 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
+import { AccountAddresses } from 'trezor-connect';
 import { H6, variables, Button, colors, Icon, Link } from '@trezor/components';
 
 import Title from '@wallet-components/Title';
-import QrCode from '@wallet-components/ReceiveForm/components/QrCode';
-import AddressList from '@wallet-components/ReceiveForm/components/AddressList';
-import AddressItem from '@wallet-components/ReceiveForm/components/AddressItem';
-import EyeButton from '@wallet-components/ReceiveForm/components/EyeButton';
 import { selectText } from '@suite-utils/dom';
-import { parseBIP44Path } from '@wallet-utils/accountUtils';
-import { AccountAddresses } from 'trezor-connect';
-import { showAddress } from '@suite/actions/wallet/receiveActions';
+import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { showAddress } from '@wallet-actions/receiveActions';
 import { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 import { DeviceIcon } from '@suite-components';
 import { SETTINGS } from '@suite-config';
 import { AppState } from '@suite-types';
 import { Network } from '@wallet-types';
 import l10nMessages from './messages';
+import QrCode from '../QrCode';
+import AddressList from '../AddressList';
+import AddressItem from '../AddressItem';
+import EyeButton from '../EyeButton';
 
 const Wrapper = styled.div``;
 
@@ -120,6 +120,7 @@ interface Props {
     className?: string;
     // makes all props in selectedAccount required, so the account we need is not optional anymore
     // also excludes null;
+    buttonsDisabled: boolean;
     account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
     isAddressPartiallyHidden: (descriptor: string) => boolean;
     getAddressReceiveInfo: (descriptor: string) => ReceiveInfo | null;
@@ -194,9 +195,11 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 {...l10nMessages.TR_TOTAL_RECEIVED}
                                 values={{
                                     amount: (
-                                        // TODO: add to utils?
                                         <TextGreen>
-                                            {Number(addr.received) / 100000000}{' '}
+                                            {formatNetworkAmount(
+                                                addr.received || '0',
+                                                props.account.symbol,
+                                            )}{' '}
                                             {props.account.symbol}
                                         </TextGreen>
                                     ),
@@ -207,6 +210,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     tooltipActions={tooltipAction}
                     actions={addr => (
                         <EyeButton
+                            isDisabled={props.buttonsDisabled}
                             device={props.device}
                             isAddressUnverified={isAddressUnverified(addr.path)}
                             onClick={() => {
@@ -292,6 +296,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         !isAddressUnverified(firstFreshAddress.path) &&
                         !isAddressVerifying(firstFreshAddress.path) && ( // !account.imported
                                 <ShowAddressButton
+                                    isDisabled={props.buttonsDisabled}
                                     onClick={() => {
                                         props.showAddress(firstFreshAddress.path);
                                     }}
@@ -350,7 +355,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 !isAddressVerifying(addr.path) && ( // !account.imported
                                         <ShowAddressButton
                                             onClick={() => props.showAddress(addr.path)}
-                                            // isDisabled={device.connected && !discovery.completed}
+                                            isDisabled={props.buttonsDisabled}
                                             icon="EYE"
                                         >
                                             <FormattedMessage
@@ -362,6 +367,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                     !isAddressVerifying(addr.path) && (
                                         <EyeButton
                                             device={props.device}
+                                            isDisabled={props.buttonsDisabled}
                                             isAddressUnverified={isAddressUnverified(addr.path)}
                                             onClick={() => props.showAddress(addr.path)}
                                         />

@@ -1,14 +1,16 @@
 import React from 'react';
-import LayoutAccount from '@wallet-components/LayoutAccount';
-import { AppState, Dispatch } from '@suite/types/suite';
 import { connect } from 'react-redux';
-import Content from '@wallet-components/Content';
-import * as receiveActions from '@wallet-actions/receiveActions';
 import { bindActionCreators } from 'redux';
 import { FormattedMessage, injectIntl, InjectedIntl } from 'react-intl';
+
+import LayoutAccount from '@wallet-components/LayoutAccount';
+import Content from '@wallet-components/Content';
+import * as receiveActions from '@wallet-actions/receiveActions';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
-import ReceiveForm from '@wallet-components/ReceiveForm';
-import l10nMessages from '@wallet-components/ReceiveForm/messages';
+import { SUITE } from '@suite-actions/constants';
+import { AppState, Dispatch } from '@suite-types';
+import ReceiveForm from './components/ReceiveForm';
+import l10nMessages from './components/ReceiveForm/messages';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -61,9 +63,12 @@ const AccountReceive = (props: Props) => {
         return null;
     };
 
+    const buttonsDisabled = props.locks.includes(SUITE.LOCK_TYPE.DEVICE) || props.locks.includes(SUITE.LOCK_TYPE.UI);
+
     return (
         <LayoutAccount>
             <ReceiveForm
+                buttonsDisabled={buttonsDisabled}
                 account={account}
                 device={device}
                 showAddress={props.showAddress}

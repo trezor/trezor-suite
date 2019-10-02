@@ -19,6 +19,12 @@ interface Props extends ButtonProps {
 }
 
 const EyeButton = (props: Props) => {
+    let color: string;
+    if (props.isDisabled) {
+        color = colors.GRAY_LIGHT;
+    } else {
+        color = props.isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY;
+    }
     return (
         <Wrapper isTransparent {...props}>
             <Tooltip
@@ -34,7 +40,7 @@ const EyeButton = (props: Props) => {
                 <Icon
                     size={16}
                     icon={props.isAddressUnverified ? 'EYE_CROSSED' : 'EYE'}
-                    color={props.isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
+                    color={color}
                 />
             </Tooltip>
         </Wrapper>
