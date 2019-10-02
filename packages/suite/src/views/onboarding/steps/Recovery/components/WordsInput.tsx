@@ -61,7 +61,7 @@ const WordsInput = (props: Props) => {
     const submit = useCallback(
         (directWord?: string) => {
             if (directWord) {
-                onSubmit(word);
+                onSubmit(directWord);
             } else if (checkWord(word)) {
                 onSubmit(word);
             }
