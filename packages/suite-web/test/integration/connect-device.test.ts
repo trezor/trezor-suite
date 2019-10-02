@@ -80,5 +80,9 @@ describe('Connect device', () => {
             })
             .getTestElement('button-continue')
             .click()
+            .get('html')
+            .should('contain', 'Seed type')
+            // .getTestElement('button-standard-backup')
+            // .click()
     });
 });
