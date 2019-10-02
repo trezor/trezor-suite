@@ -5,11 +5,7 @@ import * as routerActions from '@suite-actions/routerActions';
 
 import { AppState, Action, Dispatch, TrezorDevice } from '@suite-types';
 
-const handleDeviceRedirect = async (
-    dispatch: Dispatch,
-    router: AppState['router'],
-    device?: TrezorDevice,
-) => {
+const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
     if (!device || !device.features) {
         return;
@@ -28,8 +24,8 @@ const handleDeviceRedirect = async (
         await dispatch(routerActions.goto('suite-device-firmware'));
     }
 
-    // reset wallet params
-    if (router.app === 'wallet' && router.params) {
+    // reset wallet params if switching from one device to another
+    if (state.suite.device && state.router.app === 'wallet' && state.router.params) {
         await dispatch(routerActions.goto('wallet-index'));
     }
 };
@@ -49,7 +45,7 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
 
     switch (action.type) {
         case SUITE.SELECT_DEVICE:
-            await handleDeviceRedirect(api.dispatch, api.getState().router, action.payload);
+            await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
             break;
         default:
             break;

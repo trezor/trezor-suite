@@ -4,6 +4,7 @@ import { Middleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import * as routerActions from '@suite-actions/routerActions';
+import { SUITE } from '@suite-actions/constants';
 
 import routerReducer from '@suite-reducers/routerReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
@@ -103,19 +104,33 @@ describe('redirectMiddleware', () => {
             expect(goto).toHaveBeenNthCalledWith(1, 'suite-device-firmware');
         });
 
-        it('DEVICE.CONNECT reset wallet params', () => {
+        it('SUITE.SELECT_DEVICE reset wallet params', () => {
             const store = initStore(
-                getInitialState(undefined, undefined, {
-                    app: 'wallet',
-                    params: {
-                        symbol: 'btc',
-                        accountIndex: 2,
-                        accountType: 'normal',
+                getInitialState(
+                    {
+                        device: getSuiteDevice(
+                            {
+                                path: '2',
+                            },
+                            {
+                                // eslint-disable-next-line @typescript-eslint/camelcase
+                                device_id: 'previous-device',
+                            },
+                        ),
                     },
-                }),
+                    undefined,
+                    {
+                        app: 'wallet',
+                        params: {
+                            symbol: 'btc',
+                            accountIndex: 2,
+                            accountType: 'normal',
+                        },
+                    },
+                ),
             );
             store.dispatch({
-                type: DEVICE.CONNECT,
+                type: SUITE.SELECT_DEVICE,
                 payload: getSuiteDevice(),
             });
             expect(goto).toHaveBeenNthCalledWith(1, 'wallet-index');
