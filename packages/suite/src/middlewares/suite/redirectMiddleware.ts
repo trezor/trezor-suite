@@ -5,13 +5,17 @@ import * as routerActions from '@suite-actions/routerActions';
 
 import { AppState, Action, Dispatch, TrezorDevice } from '@suite-types';
 
-const handleDeviceRedirect = async (dispatch: Dispatch, device?: TrezorDevice) => {
+const handleDeviceRedirect = async (
+    dispatch: Dispatch,
+    router: AppState['router'],
+    device?: TrezorDevice,
+) => {
     // no device, no redirect
     if (!device || !device.features) {
         return;
     }
 
-    // 1. device is not initialized, redirect to onboarding
+    // device is not initialized, redirect to onboarding
     if (device.mode === 'initialize') {
         await dispatch(routerActions.goto('onboarding-index'));
     }
@@ -19,9 +23,14 @@ const handleDeviceRedirect = async (dispatch: Dispatch, device?: TrezorDevice) =
     if (device.firmware === 'none' || device.firmware === 'unknown') {
         await dispatch(routerActions.goto('onboarding-index'));
     }
-    // 2. device firmware update required, redirect to "firmware update"
+    // device firmware update required, redirect to "firmware update"
     else if (device.firmware === 'required') {
         await dispatch(routerActions.goto('suite-device-firmware'));
+    }
+
+    // reset wallet params
+    if (router.app === 'wallet' && router.params) {
+        await dispatch(routerActions.goto('wallet-index'));
     }
 };
 /**
@@ -40,7 +49,7 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
 
     switch (action.type) {
         case SUITE.SELECT_DEVICE:
-            await handleDeviceRedirect(api.dispatch, action.payload);
+            await handleDeviceRedirect(api.dispatch, api.getState().router, action.payload);
             break;
         default:
             break;
