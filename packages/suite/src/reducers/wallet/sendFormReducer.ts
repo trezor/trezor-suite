@@ -75,7 +75,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount, availableBalance } = action;
+                const { outputId, amount } = action;
                 const output = getOutput(draft.outputs, outputId);
 
                 output.amount.error = null;
@@ -88,11 +88,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 if (!validator.isNumeric(amount)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_NUMBER;
-                    return draft;
-                }
-
-                if (availableBalance < amount || availableBalance === '0') {
-                    output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
 
@@ -196,9 +191,23 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 break;
             }
 
-            case SEND.BTC_PRECOMPOSED_TX:
+            case SEND.BTC_PRECOMPOSED_TX: {
                 draft.networkTypeBitcoin.transactionInfo = action.payload;
+
+                if (
+                    action.payload.type === 'error' &&
+                    action.payload.error === 'NOT-ENOUGH-FUNDS'
+                ) {
+                    draft.outputs.map(
+                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
+                    );
+                }
                 break;
+            }
+
+            case SEND.BTC_DELETE_TRANSACTION_INFO: {
+                draft.networkTypeBitcoin.transactionInfo = null;
+            }
 
             // no default
         }

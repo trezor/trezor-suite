@@ -10,6 +10,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     action: Action,
 ): Action => {
     const prevState = api.getState();
+
     if (
         action.type === ROUTER.LOCATION_CHANGE &&
         prevState.router.route &&
