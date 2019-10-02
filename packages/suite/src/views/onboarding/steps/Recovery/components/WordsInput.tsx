@@ -43,7 +43,7 @@ const SelectWrapper = styled.div`
 
 interface Props extends InjectedIntlProps {
     wordsCount: number;
-    counter: number;
+    counter?: number;
     onSubmit: (word: string) => void;
 }
 
@@ -146,7 +146,7 @@ const WordsInput = (props: Props) => {
                     }}
                 />
             </SelectWrapper>
-            {counter >= 1 && (
+            {typeof counter !== 'undefined' && counter >= 1 && (
                 <P size="small">
                     <FormattedMessage
                         {...l10nMessages.TR_MORE_WORDS_TO_ENTER}

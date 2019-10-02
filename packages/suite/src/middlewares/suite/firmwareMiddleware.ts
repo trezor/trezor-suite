@@ -14,7 +14,6 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     const prevApp = api.getState().router.app;
     const { locks } = api.getState().suite;
 
-
     const enabledApps = ['firmware', 'onboarding'];
     if (action.type === SUITE.APP_CHANGED) {
         // here middleware detects that firmware 'app' is loaded, do following:

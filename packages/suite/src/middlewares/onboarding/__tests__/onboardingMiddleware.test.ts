@@ -92,7 +92,7 @@ describe('onboardingMiddleware', () => {
                     },
                 }),
             );
-            store.dispatch({ type: SUITE.APP_CHANGED, payload: 'onboarding' });
+            await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'onboarding' });
             const result = store.getActions();
             expect(result).toEqual([
                 { type: SUITE.APP_CHANGED, payload: 'onboarding' },
@@ -117,7 +117,7 @@ describe('onboardingMiddleware', () => {
                     },
                 }),
             );
-            store.dispatch({ type: SUITE.APP_CHANGED, payload: 'wallet' });
+            await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'wallet' });
             const result = store.getActions();
             expect(result).toEqual([
                 { type: SUITE.APP_CHANGED, payload: 'wallet' },

@@ -6,11 +6,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as STEP from '@suite/constants/onboarding/steps';
-import { ConnectReducer } from '@suite/types/onboarding/connect';
 import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
 import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
 import { PinMatrix, Text, Wrapper, OnboardingButton } from '@onboarding-components';
-import { Dispatch } from '@suite-types';
+import { Dispatch, AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 import Reconnect from './components/Reconnect';
 import IsSameDevice from './components/IsSameDevice';
@@ -33,31 +32,34 @@ const IsNotInBootloader = () => (
 
 interface IsDeviceRequestingPinProps {
     submitNewPin: typeof submitNewPin;
-    uiInteraction: ConnectReducer['uiInteraction'];
+    uiInteraction: AppState['onboarding']['uiInteraction'];
 }
 
-const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequestingPinProps) => (
-    <>
-        <H2>
-            {uiInteraction.counter === 1 && (
-                <FormattedMessage {...l10nMessages.TR_ENTER_PIN_HEADING} />
-            )}
-            {uiInteraction.counter > 1 && 'Incorrect PIN entered'}
-        </H2>
-        <Text>
-            {uiInteraction.counter === 1 && (
-                <FormattedMessage {...l10nMessages.TR_ENTER_PIN_TEXT} />
-            )}
-            {uiInteraction.counter > 1 &&
-                'You entered wrong PIN. To make sure, that your device can not be accessed by unauthorized person, it will get wiped after 16 incorrect entries.'}
-        </Text>
-        <PinMatrix
-            onPinSubmit={pin => {
-                submitNewPin({ pin });
-            }}
-        />
-    </>
-);
+const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequestingPinProps) => {
+    if (!uiInteraction.counter) return null;
+    return (
+        <>
+            <H2>
+                {uiInteraction.counter === 1 && (
+                    <FormattedMessage {...l10nMessages.TR_ENTER_PIN_HEADING} />
+                )}
+                {uiInteraction.counter > 1 && 'Incorrect PIN entered'}
+            </H2>
+            <Text>
+                {uiInteraction.counter === 1 && (
+                    <FormattedMessage {...l10nMessages.TR_ENTER_PIN_TEXT} />
+                )}
+                {uiInteraction.counter > 1 &&
+                    'You entered wrong PIN. To make sure, that your device can not be accessed by unauthorized person, it will get wiped after 16 incorrect entries.'}
+            </Text>
+            <PinMatrix
+                onPinSubmit={pin => {
+                    submitNewPin({ pin });
+                }}
+            />
+        </>
+    );
+};
 
 interface DeviceIsUsedHereProps {
     actionCta: typeof getFeatures;
@@ -84,7 +86,7 @@ interface UnexpectedStateProps {
     prevModel: number;
     getFeatures: typeof getFeatures;
     submitNewPin: typeof submitNewPin;
-    uiInteraction: ConnectReducer['uiInteraction'];
+    uiInteraction: AppState['onboarding']['uiInteraction'];
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -99,6 +101,9 @@ const UnexpectedState = ({
     getFeatures,
     uiInteraction,
 }: UnexpectedStateProps) => {
+    if (!uiInteraction.counter) {
+        return null;
+    }
     switch (caseType) {
         case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
             return (

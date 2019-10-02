@@ -51,7 +51,7 @@ const BackupStep = (props: Props) => {
 
     const getStatus = () => {
         if (
-            (deviceCall!.name === BACKUP_DEVICE && deviceCall.error) ||
+            (deviceCall.name === BACKUP_DEVICE && deviceCall.error) ||
             device.features.no_backup === true ||
             device.features.initialized === false
         ) {
@@ -60,7 +60,11 @@ const BackupStep = (props: Props) => {
         if (device && device.features.needs_backup === false) {
             return 'success';
         }
-        if (device && device.features.needs_backup === true && uiInteraction.counter > 0) {
+        if (
+            device &&
+            device.features.needs_backup === true &&
+            typeof uiInteraction.counter !== 'undefined'
+        ) {
             return 'started';
         }
         if (activeSubStep === 'recovery-card-front' || activeSubStep === 'recovery-card-back') {
@@ -83,9 +87,13 @@ const BackupStep = (props: Props) => {
                     device &&
                     device.features &&
                     device.features.major_version === 1 &&
-                    uiInteraction.counter <= 24 &&
+                    typeof uiInteraction.counter !== 'undefined' &&
+                    uiInteraction.counter < 24 &&
                     'Write down seed words from your device'}
-                {getStatus() === 'started' && uiInteraction.counter > 24 && 'Check seed words'}
+                {getStatus() === 'started' &&
+                    typeof uiInteraction.counter !== 'undefined' &&
+                    uiInteraction.counter >= 24 &&
+                    'Check seed words'}
                 {getStatus() === 'recovery-card-front' && 'Get your recovery card'}
                 {getStatus() === 'recovery-card-back' && 'Get your recovery card'}
             </Wrapper.StepHeading>
@@ -191,7 +199,7 @@ const BackupStep = (props: Props) => {
                             In few moments, this piece of paper will become more important than your
                             device.
                         </Text>
-                        <SeedCard flipOnMouseOver />
+                        <SeedCard flipOnMouseOver counter={uiInteraction.counter} />
                         <Wrapper.Controls>
                             <Button
                                 // onClick={() =>  setState({ showWords: true })}
@@ -211,10 +219,7 @@ const BackupStep = (props: Props) => {
                             Device will show you a secret sequence of words. You should write them
                             down here.
                         </Text>
-                        <SeedCard
-                            showBack
-                            wordsNumber={device!.features!.major_version === 2 ? 12 : 24}
-                        />
+                        <SeedCard showBack counter={uiInteraction.counter} />
                         <Wrapper.Controls>
                             <Button
                                 onClick={() => {
@@ -229,32 +234,21 @@ const BackupStep = (props: Props) => {
 
                 {getStatus() === 'started' && device.features.major_version === 1 && (
                     <React.Fragment>
-                        <SeedCard
-                            showBack
-                            wordsNumber={24}
-                            words={Array.from(
-                                Array(uiInteraction.counter < 24 ? uiInteraction.counter - 1 : 24),
-                            ).map(() => '*****')}
-                            checkingWordNumber={
-                                uiInteraction.counter - 24 > 0 ? uiInteraction.counter - 24 : null
-                            }
-                            writingWordNumber={
-                                uiInteraction.counter <= 24 ? uiInteraction.counter : null
-                            }
-                        />
+                        <SeedCard showBack counter={uiInteraction.counter} />
                         <div style={{ marginTop: '100px' }}>
-                            <Prompt model={device!.features.major_version} size={32}>
-                                {uiInteraction.counter > 24 && (
+                            <Prompt model={device.features.major_version} size={32}>
+                                {uiInteraction.counter && uiInteraction.counter >= 24 && (
                                     <Text>
-                                        Check the {uiInteraction.counter - 24}. word on your device
+                                        Check the {uiInteraction.counter - 23}. word on your device
                                     </Text>
                                 )}
-                                {uiInteraction.counter <= 24 && (
-                                    <Text>
-                                        Write down the {uiInteraction.counter}. word from your
-                                        device
-                                    </Text>
-                                )}
+                                {typeof uiInteraction.counter !== 'undefined' &&
+                                    uiInteraction.counter < 24 && (
+                                        <Text>
+                                            Write down the {uiInteraction.counter + 1}. word from
+                                            your device
+                                        </Text>
+                                    )}
                             </Prompt>
                         </div>
                     </React.Fragment>

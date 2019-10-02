@@ -63,7 +63,6 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
 
 const FirmwareStep = ({
     device,
-    prevDevice,
     firmwareUpdate,
     // path,
     onboardingActions,
