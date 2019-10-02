@@ -89,7 +89,7 @@ const Passphrase: FunctionComponent<Props> = ({
     }
 
     useEffect(() => {
-        if (ref && ref.current && !focusInput) {
+        if (ref && ref.current && focusInput) {
             ref.current.focus();
             setFocusInput(false);
         }

@@ -20,6 +20,5 @@ export default [
     ...backupDevice,
     ...changePin,
     ...recoverDevice,
-    ...firmwareErase,
     ...firmwareUpdate,
 ];

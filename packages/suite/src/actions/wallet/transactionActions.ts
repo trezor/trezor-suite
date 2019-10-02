@@ -1,19 +1,19 @@
 import TrezorConnect, { AccountTransaction } from 'trezor-connect';
-import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
+import { getAccountTransactions } from '@suite-utils/reducerUtils';
 import * as accountActions from '@wallet-actions/accountActions';
-import { SETTINGS } from '@suite/config/suite';
 import { TRANSACTION } from '@wallet-actions/constants';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import { db } from '@suite/storage';
+// import { db } from '@suite/storage';
+// import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 export type TransactionAction =
     | {
           type: typeof TRANSACTION.ADD;
-          transactions: WalletAccountTransaction[];
+          transactions: AccountTransaction[];
           account: Account;
-          page: number;
+          page?: number;
       }
     | { type: typeof TRANSACTION.REMOVE; account: Account }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
@@ -54,23 +54,27 @@ export type TransactionAction =
 //     }
 // };
 
-// export const add = (transactions: WalletAccountTransaction) => async (
-//     dispatch: Dispatch,
-// ): Promise<void> => {
-//     dispatch({
-//         type: TRANSACTION.ADD,
-//         transactions,
-//     });
-// };
-
-// export const remove = (txId: string) => async (dispatch: Dispatch) => {
-//         db.removeItem('txs', 'txId', txId).then(() => {
-//         dispatch({
-//             type: TRANSACTION.REMOVE,
-//             txId,
-//         });
-//     });
-// };
+export const add = (transactions: AccountTransaction[], account: Account, page?: number) => async (
+    dispatch: Dispatch,
+) => {
+    dispatch({
+        type: TRANSACTION.ADD,
+        transactions,
+        account,
+        page,
+    });
+};
+/**
+ * Remove all transactions for a given account
+ *
+ * @param {Account} account
+ */
+export const remove = (account: Account) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: TRANSACTION.REMOVE,
+        account,
+    });
+};
 
 // export const update = (txId: string) => async (dispatch: Dispatch) => {
 //     const updatedTimestamp = Date.now();
@@ -83,19 +87,19 @@ export type TransactionAction =
 //     });
 // };
 
-const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
-    try {
-        const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
-            key: descriptor,
-            offset,
-            count,
-        });
-        return txs;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
-};
+// const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
+//     try {
+//         const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
+//             key: descriptor,
+//             offset,
+//             count,
+//         });
+//         return txs;
+//     } catch (error) {
+//         console.log(error);
+//         return null;
+//     }
+// };
 
 export const fetchTransactions = (account: Account, page: number, perPage?: number) => async (
     dispatch: Dispatch,
@@ -105,7 +109,11 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     // const totalTxs = selectedAccount.account!.history.total;
     const { transactions } = getState().wallet.transactions;
     const reducerTxs = getAccountTransactions(transactions, account);
-    const txsForPage = reducerTxs.filter(t => t.page === page);
+
+    const startIndex = (page - 1) * (perPage || SETTINGS.TXS_PER_PAGE);
+    const stopIndex = startIndex + (perPage || SETTINGS.TXS_PER_PAGE);
+    const txsForPage = reducerTxs.slice(startIndex, stopIndex);
+
     // we already got txs for the page in reducer
     if (txsForPage.length > 0) return;
 
@@ -114,11 +122,12 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     });
 
     // TODO: storing and fetching from the db
-    const offset = page && perPage ? (page - 1) * perPage : undefined;
-    const count = perPage || undefined;
-    const storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
+    // const offset = page && perPage ? (page - 1) * perPage : undefined;
+    // const count = perPage || undefined;
+    // const storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
 
-    const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
+    // const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
+    const shouldFetchFromBackend = true;
     if (shouldFetchFromBackend) {
         const { marker } = selectedAccount.account!;
         const result = await TrezorConnect.getAccountInfo({
@@ -140,6 +149,7 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
                 transactions: result.payload.history.transactions || [],
                 page,
             });
+            // updates the marker/page object for the account
             dispatch(accountActions.update(account, result.payload));
         } else {
             dispatch({
@@ -147,12 +157,12 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
                 error: result ? result.payload.error : 'unknown error',
             });
         }
-    } else {
-        dispatch({
-            type: TRANSACTION.FETCH_SUCCESS,
-            transactions: storedTxs || [],
-            account,
-            page,
-        });
-    }
+    } // else {
+    //     dispatch({
+    //         type: TRANSACTION.FETCH_SUCCESS,
+    //         transactions: storedTxs || [],
+    //         account,
+    //         page,
+    //     });
+    // }
 };

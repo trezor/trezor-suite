@@ -5,7 +5,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-const StaticPageWrapper: React.FunctionComponent<Props> = props => {
+const StaticPageWrapper = (props: Props) => {
     return (
         <Layout fullscreenMode disableNotifications disableModals>
             {props.children}

@@ -231,18 +231,6 @@ export default [
         },
     },
     {
-        description: 'MODAL.OVERLAY_ONLY',
-        initialState,
-        actions: [
-            {
-                type: MODAL.OVERLAY_ONLY,
-            },
-        ],
-        result: {
-            context: MODAL.OVERLAY_ONLY,
-        },
-    },
-    {
         description: 'SUITE.REQUEST_PASSPHRASE_MODE',
         initialState,
         actions: [

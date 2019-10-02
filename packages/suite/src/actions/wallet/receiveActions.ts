@@ -1,6 +1,6 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { UI } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
-import { NOTIFICATION, MODAL } from '@suite-actions/constants';
+import { NOTIFICATION } from '@suite-actions/constants';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
 import l10nCommonMessages from '@wallet-views/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
@@ -44,17 +44,6 @@ export const showAddress = (path: string) => async (
         return;
     }
 
-    // mark address that is being verified
-    dispatch({
-        type: RECEIVE.INIT,
-        descriptor: path,
-    });
-
-    // overlay
-    dispatch({
-        type: MODAL.OVERLAY_ONLY,
-    });
-
     const params = {
         device: {
             path: selectedDevice.path,
@@ -65,21 +54,36 @@ export const showAddress = (path: string) => async (
         useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
     };
 
-    let response;
+    const buttonRequestHandler = () => {
+        // mark address that is being verified
+        dispatch({
+            type: RECEIVE.INIT,
+            descriptor: path,
+        });
+    };
+
+    let fn;
     switch (network.networkType) {
         case 'ethereum':
-            // @ts-ignore
-            response = await TrezorConnect.ethereumGetAddress(params);
+            fn = TrezorConnect.ethereumGetAddress;
             break;
         case 'ripple':
-            // @ts-ignore
-            response = await TrezorConnect.rippleGetAddress(params);
+            fn = TrezorConnect.rippleGetAddress;
             break;
         case 'bitcoin':
-            response = await TrezorConnect.getAddress(params);
+            fn = TrezorConnect.getAddress;
             break;
-        // no default
+        default:
+            fn = () => ({
+                success: false,
+                payload: { error: 'Method for getAddress not defined', code: undefined },
+            });
+            break;
     }
+
+    TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
+    const response = await fn(params);
+    TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
     if (response.success) {
         dispatch({
@@ -93,7 +97,6 @@ export const showAddress = (path: string) => async (
         });
 
         // special case: device no-backup permissions not granted
-        // $FlowIssue: remove this after trezor-connect@7.0.0 release
         if (response.payload.code === 403) return;
 
         dispatch({
@@ -114,7 +117,4 @@ export const showAddress = (path: string) => async (
             },
         });
     }
-    dispatch({
-        type: MODAL.CLOSE,
-    });
 };

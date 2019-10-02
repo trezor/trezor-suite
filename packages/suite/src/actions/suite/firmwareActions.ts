@@ -5,7 +5,6 @@ import { lockUI } from '@suite-actions/suiteActions';
 
 //  TODO: should be reworked to deviceManagementActions
 
-// import * as notificationActions from '@suite-actions/notificationActions';
 import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { AnyStatus } from '@suite-reducers/firmwareReducer';
 import { Dispatch, GetState, Action } from '@suite-types';
@@ -23,12 +22,23 @@ interface EnableReducer {
     payload: boolean;
 }
 
-export type FirmwareUpdateActionTypes = SetUpdateStatusAction | ResetReducer | EnableReducer;
+interface SetError {
+    type: typeof FIRMWARE.SET_ERROR;
+    payload: string | undefined;
+}
+
+export type FirmwareUpdateActionTypes =
+    | SetUpdateStatusAction
+    | ResetReducer
+    | EnableReducer
+    | SetError;
 
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device, locks } = getState().suite;
+    dispatch({ type: FIRMWARE.SET_ERROR, payload: undefined });
+
     if (!device || !device.connected || !device.features) {
-        // todo: possibly dispatch error?
+        dispatch({ type: FIRMWARE.SET_ERROR, payload: 'no device connected' });
         return;
     }
 
@@ -54,31 +64,20 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             throw new Error('no firmware found');
         }
     } catch (error) {
-        // todo dispatch error notification
+        dispatch({ type: FIRMWARE.SET_ERROR, payload: 'failed to download firmware' });
         return;
     }
-
-    dispatch({ type: FIRMWARE.SET_UPDATE_STATUS, payload: 'installing' });
-
     const payload = {
         payload: fw,
         keepSession: false,
         skipFinalReload: true,
         device,
-        length: fw.byteLength, // todo: this should be inferred by connect auto magically probably
     };
+
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
+
     if (!updateResponse.success) {
-        // todo dispatch error notification
-        dispatch({ type: FIRMWARE.SET_UPDATE_STATUS, payload: 'error' });
-        // todo: what about notification? probably not needed
-        // dispatch(
-        //     notificationActions.add({
-        //         variant: 'error',
-        //         title: 'Firmware installation failed.',
-        //         tags: [NOTIFICATION.TAG.FIRMWARE],
-        //     }),
-        // );
+        dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
 
         return dispatch(lockUI(false));
     }

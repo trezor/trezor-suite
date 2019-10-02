@@ -1,8 +1,7 @@
 import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
-import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getAccountKey } from '@wallet-utils/reducerUtils';
+import { getAccountKey, enhanceTransaction } from '@suite-utils/reducerUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
 
@@ -35,37 +34,6 @@ const initialState: State = {
 //     return b.blockHeight - a.blockHeight;
 // };
 
-const enhanceTransaction = (
-    tx: AccountTransaction,
-    account: Account,
-    page?: number,
-): WalletAccountTransaction => {
-    return {
-        descriptor: account.descriptor,
-        deviceState: account.deviceState,
-        symbol: account.symbol,
-        ...tx,
-        tokens: tx.tokens.map(tok => {
-            return {
-                ...tok,
-                amount: formatAmount(tok.amount, tok.decimals),
-            };
-        }),
-        amount: formatNetworkAmount(tx.amount, account.symbol),
-        fee: formatNetworkAmount(tx.fee, account.symbol),
-        targets: tx.targets.map(tr => {
-            if (typeof tr.amount === 'string') {
-                return {
-                    ...tr,
-                    amount: formatNetworkAmount(tr.amount, account.symbol),
-                };
-            }
-            return tr;
-        }),
-        page,
-    };
-};
-
 const initializeAccount = (draft: State, accountHash: string) => {
     // initialize an empty array at 'accountHash' index if not yet initialized
     if (!draft.transactions[accountHash]) {
@@ -81,18 +49,37 @@ const alreadyExists = (
     return transactions.find(t => t && t.txid === transaction.txid);
 };
 
-const add = (draft: State, transactions: AccountTransaction[], account: Account, page: number) => {
+const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
     const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     initializeAccount(draft, accountHash);
     const accountTxs = draft.transactions[accountHash];
+    if (!accountTxs) return;
 
     transactions.forEach((tx, i) => {
-        const enhancedTx = enhanceTransaction(tx, account, page);
-        // make sure tx doesn't already exist for a given account
-        if (accountTxs && !alreadyExists(accountTxs, enhancedTx)) {
-            // insert a tx object at correct index
-            const txIndex = (page - 1) * SETTINGS.TXS_PER_PAGE + i;
-            accountTxs[txIndex] = enhancedTx;
+        const enhancedTx = enhanceTransaction(tx, account);
+        const existingTx = alreadyExists(accountTxs, enhancedTx);
+
+        if (!existingTx) {
+            // add a new transaction
+            if (page) {
+                // insert a tx object at correct index
+                const txIndex = (page - 1) * SETTINGS.TXS_PER_PAGE + i;
+                accountTxs[txIndex] = enhancedTx;
+            } else {
+                // no page arg, insert the tx at the beginning of the array
+                accountTxs.unshift(enhancedTx);
+            }
+        } else {
+            // update the transaction if conditions are met
+            const existingTxIndex = accountTxs.findIndex(t => t && t.txid === existingTx.txid);
+            // eslint-disable-next-line no-lonely-if
+            if (
+                (!existingTx.blockHeight && enhancedTx.blockHeight) ||
+                (!existingTx.blockTime && enhancedTx.blockTime)
+            ) {
+                // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
+                accountTxs[existingTxIndex] = { ...enhancedTx };
+            }
         }
     });
 };

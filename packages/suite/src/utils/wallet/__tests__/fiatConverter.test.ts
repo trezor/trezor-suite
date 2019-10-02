@@ -28,6 +28,11 @@ describe('fiatConverter utils: toFiatCurrency', () => {
     it('non-numeric amount to fiat currency', () => {
         expect(utils.toFiatCurrency('12133.3131.3141.4', 'czk', ratesETH)).toBe('');
     });
+
+    it('to existing fiat missing network rates', () => {
+        // @ts-ignore
+        expect(utils.toFiatCurrency('1', 'czk', null)).toBe('');
+    });
 });
 
 describe('fiatConverter utils: fromFiatCurrency', () => {
@@ -79,5 +84,10 @@ describe('fiatConverter utils: fromFiatCurrency', () => {
         expect(utils.fromFiatCurrency('117,13118845579191', 'eur', ratesETH, decimals)).toBe(
             '1.000000000000000000',
         );
+    });
+
+    it('missing fiat rates', () => {
+        // @ts-ignore
+        expect(utils.fromFiatCurrency('1', 'usd', undefined, decimals)).toBe('');
     });
 });

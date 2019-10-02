@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon } from '@trezor/components';
+import { Icon, P } from '@trezor/components';
 
 import colors from '@suite/config/onboarding/colors';
 
@@ -15,98 +15,85 @@ const DonutContent = styled.div`
 `;
 
 interface DonutProps {
-    progress: number;
-    radius: number;
-    stroke: number;
+    progress?: number;
+    radius?: number;
+    stroke?: number;
     isError?: boolean;
     isSuccess?: boolean;
 }
 
-interface DonutState {
-    isMounted: boolean;
-}
+const Donut = (props: DonutProps) => {
+    const { radius = 60, stroke = 20, progress = 0, isError = false, isSuccess = false } = props;
+    const circumference = (radius: number) => radius * 2 * Math.PI;
+    const normalizeRadius = () => radius - stroke;
 
-class Donut extends React.Component<DonutProps, DonutState> {
-    isMounted: boolean = false;
+    const getVisualProgress = (percent: number) =>
+        circumference(normalizeRadius()) - (percent / 100) * circumference(normalizeRadius());
 
-    componentDidMount() {
-        this.isMounted = true;
-    }
+    const style = {
+        transition: 'stroke-dasharray 2.5s, stroke-dashoffset 2.5s',
+        transform: 'rotate(-90deg)',
+        transformOrigin: '50% 50%',
+        strokeDashoffset: `${getVisualProgress(progress)}`,
+        strokeDasharray: `${circumference(normalizeRadius())}  ${circumference(normalizeRadius())}`,
+    };
 
-    componentWillUnmount() {
-        this.isMounted = false;
-    }
+    const getProgressColor = () => {
+        if (isError) {
+            return colors.error;
+        }
+        return colors.brandPrimary;
+    };
 
-    progress = (percent: number) =>
-        this.circumference(this.normalizeRadius()) -
-        (percent / 100) * this.circumference(this.normalizeRadius());
+    const getBaseColor = () => {
+        if (isError) {
+            return colors.error;
+        }
+        if (isSuccess) {
+            return colors.brandPrimary;
+        }
+        return colors.grayLight;
+    };
 
-    circumference = (radius: number) => radius * 2 * Math.PI;
-
-    normalizeRadius = () => this.props.radius - this.props.stroke;
-
-    render() {
-        const style = {
-            transition: 'stroke-dashoffset 0.05s',
-            transform: 'rotate(-90deg)',
-            transformOrigin: '50% 50%',
-            strokeDashoffset: `${this.progress(this.props.progress)}`,
-            strokeDasharray: `${this.circumference(this.normalizeRadius())}  ${this.circumference(
-                this.normalizeRadius(),
-            )}`,
-        };
-        return (
-            <DonutWrapper>
-                <svg
-                    height={this.props.radius * 2}
-                    width={this.props.radius * 2}
-                    style={{ position: 'absolute', zIndex: 1 }}
-                >
-                    <circle
-                        style={{
-                            ...style,
-                        }}
-                        stroke={this.props.isError ? colors.error : colors.brandPrimary}
-                        strokeWidth={this.props.stroke}
-                        fill="transparent"
-                        r={this.props.radius - this.props.stroke}
-                        cx={this.props.radius}
-                        cy={this.props.radius}
-                    />
-                </svg>
-                <svg
-                    height={this.props.radius * 2}
-                    width={this.props.radius * 2}
-                    style={{ position: 'relative' }}
-                >
-                    <circle
-                        style={{
-                            ...style,
-                            strokeDashoffset: `${this.progress(100)}`,
-                            strokeDasharray: `${this.circumference(
-                                this.normalizeRadius(),
-                            )}  ${this.circumference(this.normalizeRadius())}`,
-                        }}
-                        stroke={this.props.isError ? colors.error : colors.grayLight}
-                        strokeWidth={this.props.stroke}
-                        fill="transparent"
-                        r={this.props.radius - this.props.stroke}
-                        cx={this.props.radius}
-                        cy={this.props.radius}
-                    />
-                </svg>
-                {this.props.progress > 0 && (
-                    <DonutContent>
-                        {this.props.isSuccess && <Icon icon="SUCCESS" color={colors.white} />}
-                        {this.props.isError && <Icon icon="ERROR" color={colors.error} />}
-                        {!this.props.isError && !this.props.isSuccess && (
-                            <div>{this.props.progress} %</div>
-                        )}
-                    </DonutContent>
-                )}
-            </DonutWrapper>
-        );
-    }
-}
+    return (
+        <DonutWrapper>
+            <svg height={radius * 2} width={radius * 2} style={{ position: 'absolute', zIndex: 1 }}>
+                <circle
+                    style={{
+                        ...style,
+                    }}
+                    stroke={getProgressColor()}
+                    strokeWidth={stroke}
+                    fill="transparent"
+                    r={radius - stroke}
+                    cx={radius}
+                    cy={radius}
+                />
+            </svg>
+            <svg height={radius * 2} width={radius * 2} style={{ position: 'relative' }}>
+                <circle
+                    style={{
+                        ...style,
+                        strokeDashoffset: `${getVisualProgress(100)}`,
+                        strokeDasharray: `${circumference(normalizeRadius())}  ${circumference(
+                            normalizeRadius(),
+                        )}`,
+                    }}
+                    stroke={getBaseColor()}
+                    strokeWidth={stroke}
+                    fill="transparent"
+                    r={radius - stroke}
+                    cx={radius}
+                    cy={radius}
+                />
+            </svg>
+            <DonutContent>
+                {isSuccess && <Icon icon="SUCCESS" size={stroke} color={colors.brandPrimary} />}
+                {isError && <Icon icon="ERROR" size={stroke} color={colors.error} />}
+                {!isError && !isSuccess && progress > 0 && <P>{progress} %</P>}
+            </DonutContent>
+        </DonutWrapper>
+    );
+};
 
 export default Donut;
