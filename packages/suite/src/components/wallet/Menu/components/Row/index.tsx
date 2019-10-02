@@ -51,6 +51,7 @@ const AccountIndex = styled.div`
 const BalanceValue = styled.div`
     text-transform: uppercase;
     font-size: ${variables.FONT_SIZE.BIG};
+    text-align: right;
 `;
 
 const Left = styled.div`
