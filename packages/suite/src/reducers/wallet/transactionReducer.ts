@@ -2,7 +2,7 @@ import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getAccountKey } from '@wallet-utils/reducerUtils';
+import { getAccountKey } from '@suite-utils/reducerUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
 

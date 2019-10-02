@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
-import { getAccountKey } from '@wallet-utils/reducerUtils';
+import { getAccountKey } from '@suite-utils/reducerUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { getFiatValue } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
