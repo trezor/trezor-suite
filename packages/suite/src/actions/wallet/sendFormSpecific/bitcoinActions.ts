@@ -67,6 +67,11 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!transactionInfo || transactionInfo.type !== 'final') return;
     const { transaction } = transactionInfo;
 
+    const inputs = transaction.inputs.map(vin => ({
+        ...vin,
+        sequence: 0xffffffff - 2, // RBF
+    }));
+
     const resp = await TrezorConnect.signTransaction({
         device: {
             path: selectedDevice.path,
@@ -75,7 +80,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         },
         useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
         outputs: transaction.outputs,
-        inputs: transaction.inputs,
+        inputs,
         coin: account.symbol,
         push: true,
     });
