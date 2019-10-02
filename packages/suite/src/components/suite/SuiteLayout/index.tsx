@@ -66,7 +66,7 @@ interface Props {
     disableModals?: boolean;
 }
 
-const Layout = (props: Props & InjectedIntlProps) => (
+const SuiteLayout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
         <CommonHeader
             sidebarOpened={props.suite.showSidebar}
@@ -131,5 +131,5 @@ export default injectIntl(
             fetchLocale: bindActionCreators(fetchLocale, dispatch),
             toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
         }),
-    )(Layout),
+    )(SuiteLayout),
 );

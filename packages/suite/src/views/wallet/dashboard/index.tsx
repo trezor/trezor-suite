@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Content from '@wallet-components/Content';
 import { H4, P, CoinLogo } from '@trezor/components';
 import Link from '@suite-components/Link';
-import Layout from '@wallet-components/Layout';
+import WalletLayout from '@wallet-components/WalletLayout';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@wallet-views/messages';
 import { getRoute } from '@suite/utils/suite/router';
@@ -73,7 +73,7 @@ const Dashboard = (props: Props) => {
     };
 
     return (
-        <Layout>
+        <WalletLayout>
             <Content>
                 <Row data-test="Dashboard__page__content">
                     <StyledH4>
@@ -116,7 +116,7 @@ const Dashboard = (props: Props) => {
                     </Coins>
                 </Row>
             </Content>
-        </Layout>
+        </WalletLayout>
     );
 };
 
