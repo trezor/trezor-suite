@@ -24,7 +24,7 @@ export type Props = {
     ReturnType<typeof mapDispatchToProps>;
 
 const Notifications = (props: Props & InjectedIntlProps) => (
-    <React.Fragment>
+    <>
         <OnlineStatus isOnline={props.suite.online} />
         <UpdateBridge transport={props.suite.transport} goto={props.goto} />
         <UpdateFirmware
@@ -35,7 +35,7 @@ const Notifications = (props: Props & InjectedIntlProps) => (
         <NoBackup device={props.suite.device} pathname={props.router.pathname} goto={props.goto} />
         {/* TODO: add Failed backup */}
         {/* TODO: add Pin not set */}
-    </React.Fragment>
+    </>
 );
 
 export default injectIntl(
