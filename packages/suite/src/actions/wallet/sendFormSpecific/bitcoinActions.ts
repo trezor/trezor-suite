@@ -109,6 +109,7 @@ export const compose = (setMax: boolean = false) => async (
 
     const { outputs } = send;
 
+    // TODO refactor this
     const composedOutputs = outputs.map(o => {
         if (setMax) {
             return {

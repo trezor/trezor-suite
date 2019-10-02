@@ -191,7 +191,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 break;
             }
 
-            case SEND.BTC_PRECOMPOSED_TX:
+            case SEND.BTC_PRECOMPOSED_TX: {
                 draft.networkTypeBitcoin.transactionInfo = action.payload;
 
                 if (
@@ -202,6 +202,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
                         output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
                     );
                 }
+                break;
+            }
+
+            case SEND.BTC_DELETE_TRANSACTION_INFO: {
+                draft.networkTypeBitcoin.transactionInfo = null;
+            }
 
             // no default
         }

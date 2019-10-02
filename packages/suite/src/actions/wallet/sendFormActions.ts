@@ -16,39 +16,19 @@ export type SendFormActions =
           address: string;
           symbol: Account['symbol'];
       }
-    | {
-          type: typeof SEND.HANDLE_AMOUNT_CHANGE;
-          outputId: number;
-          amount: string;
-      }
-    | {
-          type: typeof SEND.SET_MAX;
-          outputId: number;
-      }
-    | {
-          type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
-          outputId: number;
-          fiatValue: string;
-      }
-    | {
-          type: typeof SEND.HANDLE_FEE_VALUE_CHANGE;
-          fee: FeeLevel;
-      }
-    | {
-          type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE;
-          customFee: string | null;
-      }
+    | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; outputId: number; amount: string }
+    | { type: typeof SEND.SET_MAX; outputId: number }
+    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; outputId: number; fiatValue: string }
+    | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeLevel }
+    | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: string | null }
     | {
           type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
           outputId: number;
           localCurrency: Output['localCurrency']['value'];
       }
-    | {
-          type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY;
-      }
-    | {
-          type: typeof SEND.CLEAR;
-      }
+    | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
+    | { type: typeof SEND.CLEAR }
+    | { type: typeof SEND.BTC_DELETE_TRANSACTION_INFO }
     | { type: typeof SEND.INIT; payload: InitialState }
     | { type: typeof SEND.DISPOSE };
 
@@ -95,6 +75,7 @@ export const compose = (setMax: boolean = false) => async (
 ) => {
     const account = getState().wallet.selectedAccount.account as Account;
     if (account.networkType === 'bitcoin') {
+        dispatch({ type: SEND.BTC_DELETE_TRANSACTION_INFO });
         return dispatch(bitcoinActions.compose(setMax));
     }
 };
@@ -271,14 +252,13 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     }
 
     if (composedTransaction && composedTransaction.type !== 'error') {
-        const feeBig = new BigNumber(composedTransaction.fee);
         const availableBalanceBig = new BigNumber(account.availableBalance);
 
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
             amount: formatNetworkAmount(
-                availableBalanceBig.minus(feeBig).toString(),
+                availableBalanceBig.minus(composedTransaction.fee).toString(),
                 account.symbol,
             ),
         });
