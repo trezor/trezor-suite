@@ -1,6 +1,7 @@
 import { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
@@ -42,7 +43,7 @@ const getAccountSpecific = (accountInfo: AccountInfo, networkType: Network['netw
         misc: undefined,
         marker: undefined,
         page: accountInfo.page,
-    } as const;
+    };
 };
 
 export const create = (
@@ -62,6 +63,7 @@ export const create = (
         visible: !accountInfo.empty,
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
+        formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),
         tokens: accountInfo.tokens,
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
@@ -72,11 +74,11 @@ export const create = (
 
 export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
     type: ACCOUNT.UPDATE,
-    // TODO
     payload: {
         ...account,
         ...accountInfo,
         path: account.path,
+        formattedBalance: formatNetworkAmount(accountInfo.availableBalance, account.symbol),
         ...getAccountSpecific(accountInfo, account.networkType),
     },
 });
