@@ -51,15 +51,15 @@ const AddAccount = (props: Props) => {
 
     // Use component state, default value is currently selected network or first network item on the list (btc)
     const { params } = props.router;
-    let selectedNetwork;
+    let preselectedNetwork;
     if (props.router.app === 'wallet' && params) {
-        selectedNetwork = networks.find(n => n.symbol === params.symbol);
+        preselectedNetwork = networks.find(n => n.symbol === params.symbol);
     }
-    if (!selectedNetwork) {
-        // eslint-disable-next-line prefer-destructuring
-        selectedNetwork = networks[0];
-    }
-    const [, setSelectedNetwork] = useState(selectedNetwork.symbol);
+    const [selectedSymbol, setSelectedNetwork] = useState(
+        preselectedNetwork ? preselectedNetwork.symbol : networks[0].symbol,
+    );
+    // Find selected network (from component state value)
+    const selectedNetwork = networks.find(n => n.symbol === selectedSymbol);
 
     return (
         <Wrapper>
