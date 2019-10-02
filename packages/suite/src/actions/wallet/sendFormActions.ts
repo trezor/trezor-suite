@@ -90,7 +90,10 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+export const compose = (setMax: boolean = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     // const { outputs } = getState().wallet.send;
     // outputs.filter(output => {
     //     const hasErrors = Object.values(errors).filter(val => typeof val === 'string');
@@ -100,7 +103,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     // if (hasErrors.length > 0) return;
     const account = getState().wallet.selectedAccount.account as Account;
     if (account.networkType === 'bitcoin') {
-        return dispatch(bitcoinActions.compose());
+        return dispatch(bitcoinActions.compose(setMax));
     }
     // if (account.networkType === 'ethereum') {
     //     console.log('PRECOMPOSE ETH');
@@ -265,7 +268,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
 
     if (!account || !fiat || !send) return null;
 
-    const composedTransaction = await dispatch(compose());
+    const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
@@ -279,7 +282,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         });
     }
 
-    if (composedTransaction) {
+    if (composedTransaction && composedTransaction.type !== 'error') {
         const feeBig = new BigNumber(composedTransaction.fee);
         const availableBalanceBig = new BigNumber(account.availableBalance);
 
@@ -287,7 +290,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
             amount: formatNetworkAmount(
-                availableBalanceBig.minus(feeBig).toFixed(10),
+                availableBalanceBig.minus(feeBig).toString(),
                 account.symbol,
             ),
         });

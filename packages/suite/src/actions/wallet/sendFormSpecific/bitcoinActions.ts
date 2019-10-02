@@ -99,7 +99,10 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+export const compose = (setMax: boolean = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { send, selectedAccount } = getState().wallet;
     const account = selectedAccount.account as Account;
     if (!send || !account.addresses || !account.utxo) return;
@@ -107,9 +110,22 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { outputs } = send;
 
     const composedOutputs = outputs.map(o => {
+        if (setMax) {
+            return {
+                type: 'send-max-noaddress',
+            } as const;
+        }
+
         const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
 
         if (o.address.value) {
+            if (setMax) {
+                return {
+                    address: o.address.value,
+                    type: 'send-max',
+                } as const;
+            }
+
             return {
                 address: o.address.value,
                 amount,
