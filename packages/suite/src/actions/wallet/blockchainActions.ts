@@ -298,5 +298,5 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // (if block come before 2nd notification)
 
     // TODO: BITCOIN: Notification returns blockTime 0, getAccountInfo has valid timestamp. should we update tx?
-    dispatch(accountActions.fetchAndUpdateAccount(account))
+    dispatch(accountActions.fetchAndUpdateAccount(account));
 };

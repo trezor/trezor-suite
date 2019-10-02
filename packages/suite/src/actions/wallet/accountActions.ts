@@ -47,19 +47,6 @@ const getAccountSpecific = (accountInfo: AccountInfo, networkType: Network['netw
     };
 };
 
-export const fetchAndUpdateAccount = (account: Account) => async (dispatch: Dispatch, _getState: GetState) => {
-    const response = await TrezorConnect.getAccountInfo({
-        coin: account.symbol,
-        descriptor: account.descriptor,
-        details: 'txs',
-        pageSize: SETTINGS.TXS_PER_PAGE,
-    });
-
-    if (response.success) {
-        dispatch(update(account, response.payload));
-    }
-}
-
 export const create = (
     deviceState: string,
     discoveryItem: DiscoveryItem,
@@ -126,3 +113,19 @@ export const changeAccountVisibility = (payload: Account) => ({
     type: ACCOUNT.CHANGE_VISIBILITY,
     payload,
 });
+
+export const fetchAndUpdateAccount = (account: Account) => async (
+    dispatch: Dispatch,
+    _getState: GetState,
+) => {
+    const response = await TrezorConnect.getAccountInfo({
+        coin: account.symbol,
+        descriptor: account.descriptor,
+        details: 'txs',
+        pageSize: SETTINGS.TXS_PER_PAGE,
+    });
+
+    if (response.success) {
+        dispatch(update(account, response.payload));
+    }
+};
