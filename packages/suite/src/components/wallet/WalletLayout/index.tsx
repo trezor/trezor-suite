@@ -47,7 +47,7 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
     }
 `;
 
-const Layout = (props: Props) => {
+const WalletLayout = (props: Props) => {
     return (
         <Wrapper>
             <ProgressBar />
@@ -61,4 +61,4 @@ const Layout = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps)(Layout);
+export default connect(mapStateToProps)(WalletLayout);
