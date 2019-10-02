@@ -127,6 +127,7 @@ interface Props {
     networkType: Network['networkType'];
     device: Exclude<AppState['suite']['device'], undefined>;
     title: React.ReactNode;
+    showButtonDisabled: boolean;
 }
 
 const ReceiveForm = ({ className, ...props }: Props) => {
@@ -207,6 +208,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     tooltipActions={tooltipAction}
                     actions={addr => (
                         <EyeButton
+                            isDisabled={props.showButtonDisabled}
                             device={props.device}
                             isAddressUnverified={isAddressUnverified(addr.path)}
                             onClick={() => {
@@ -292,10 +294,10 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         !isAddressUnverified(firstFreshAddress.path) &&
                         !isAddressVerifying(firstFreshAddress.path) && ( // !account.imported
                                 <ShowAddressButton
+                                    isDisabled={props.showButtonDisabled}
                                     onClick={() => {
                                         props.showAddress(firstFreshAddress.path);
                                     }}
-                                    // isDisabled={device.connected && !discovery.completed}
                                     icon="EYE"
                                 >
                                     <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
@@ -305,6 +307,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                             isAddressUnverified(firstFreshAddress.path)) &&
                             !isAddressVerifying(firstFreshAddress.path) && (
                                 <EyeButton
+                                    isDisabled={props.showButtonDisabled}
                                     device={props.device}
                                     isAddressUnverified={isAddressUnverified(
                                         firstFreshAddress.path,
@@ -349,8 +352,8 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 !isAddressUnverified(addr.path) &&
                                 !isAddressVerifying(addr.path) && ( // !account.imported
                                         <ShowAddressButton
+                                            isDisabled={props.showButtonDisabled}
                                             onClick={() => props.showAddress(addr.path)}
-                                            // isDisabled={device.connected && !discovery.completed}
                                             icon="EYE"
                                         >
                                             <FormattedMessage
@@ -361,6 +364,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 {(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) &&
                                     !isAddressVerifying(addr.path) && (
                                         <EyeButton
+                                            isDisabled={props.showButtonDisabled}
                                             device={props.device}
                                             isAddressUnverified={isAddressUnverified(addr.path)}
                                             onClick={() => props.showAddress(addr.path)}

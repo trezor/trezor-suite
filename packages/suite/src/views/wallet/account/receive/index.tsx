@@ -9,6 +9,7 @@ import { FormattedMessage, injectIntl, InjectedIntl } from 'react-intl';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import ReceiveForm from '@wallet-components/ReceiveForm';
 import l10nMessages from '@wallet-components/ReceiveForm/messages';
+import { SUITE } from '@suite-actions/constants';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -70,6 +71,7 @@ const AccountReceive = (props: Props) => {
                 isAddressPartiallyHidden={isAddressPartiallyHidden}
                 getAddressReceiveInfo={getAddressReceiveInfo}
                 networkType={network.networkType}
+                showButtonDisabled={props.locks.includes(SUITE.LOCK_TYPE.DEVICE)}
                 title={
                     <FormattedMessage
                         {...l10nMessages.TR_RECEIVE_NETWORK}
