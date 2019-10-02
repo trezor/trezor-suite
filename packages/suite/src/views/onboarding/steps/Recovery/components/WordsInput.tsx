@@ -146,7 +146,7 @@ const WordsInput = (props: Props) => {
                     }}
                 />
             </SelectWrapper>
-            {typeof counter !== 'undefined' && counter >= 1 && (
+            {typeof counter === 'number' && counter >= 1 && (
                 <P size="small">
                     <FormattedMessage
                         {...l10nMessages.TR_MORE_WORDS_TO_ENTER}
