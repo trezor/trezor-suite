@@ -589,6 +589,15 @@ declare module 'trezor-connect' {
         export const BLOCK = 'blockchain-block';
     }
 
+    export type BlockchainEvent =
+    {
+        type: typeof BLOCKCHAIN.BLOCK;
+        payload: BlockchainBlock;
+    } | {
+        type: typeof BLOCKCHAIN.NOTIFICATION;
+        payload: BlockchainNotification;
+    };
+
     export const UI_EVENT = 'UI_EVENT';
     export namespace UI {
         export const TRANSPORT = 'ui-no_transport';

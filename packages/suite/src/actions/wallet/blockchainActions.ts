@@ -2,7 +2,6 @@ import TrezorConnect, {
     AccountInfo,
     BlockchainBlock,
     BlockchainNotification,
-    BLOCKCHAIN as CONNECT_BLOCKCHAIN,
 } from 'trezor-connect';
 import {
     getSelectedNetwork,
@@ -29,14 +28,6 @@ import { goto } from '../suite/routerActions';
 export type BlockchainActions =
     | {
           type: typeof BLOCKCHAIN.READY;
-      }
-    | {
-          type: typeof CONNECT_BLOCKCHAIN.BLOCK;
-          payload: BlockchainBlock;
-      }
-    | {
-          type: typeof CONNECT_BLOCKCHAIN.NOTIFICATION;
-          payload: BlockchainNotification;
       }
     | {
           type: typeof BLOCKCHAIN.UPDATE_FEE;
