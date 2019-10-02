@@ -7,7 +7,7 @@ import { Loader } from '@trezor/components';
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import AcquireDevice from '@suite-components/AcquireDevice';
-import Layout from '@suite-components/Layout';
+import SuiteLayout from '@suite-components/SuiteLayout';
 import Bridge from '@suite-views/bridge';
 import { AppState } from '@suite-types';
 
@@ -30,11 +30,11 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.transport) {
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
         return (
-            <Layout isLanding>
+            <SuiteLayout isLanding>
                 <LoaderWrapper>
                     <Loader text="Loading" size={100} strokeWidth={1} />
                 </LoaderWrapper>
-            </Layout>
+            </SuiteLayout>
         );
     }
 
@@ -42,16 +42,16 @@ const Index: FunctionComponent<Props> = props => {
     // TODO: redirect to bridge page
     if (!suite.transport.type) {
         return (
-            <Layout isLanding>
+            <SuiteLayout isLanding>
                 <Bridge />
-            </Layout>
+            </SuiteLayout>
         );
     }
 
     // no available device
     if (!suite.device) {
         return (
-            <Layout isLanding>
+            <SuiteLayout isLanding>
                 <ConnectDevice
                     showWebUsb={isWebUSB(suite.transport)}
                     // showDisconnect={shouldShowDisconnectDevice}
@@ -59,27 +59,27 @@ const Index: FunctionComponent<Props> = props => {
                     deviceLabel=""
                     showDisconnect={false}
                 />
-            </Layout>
+            </SuiteLayout>
         );
     }
 
     if (suite.device.type === 'unacquired') {
         return (
-            <Layout showSuiteHeader>
+            <SuiteLayout showSuiteHeader>
                 <AcquireDevice />
-            </Layout>
+            </SuiteLayout>
         );
     }
 
     if (suite.device.type === 'unreadable') {
         return (
-            <Layout showSuiteHeader>
+            <SuiteLayout showSuiteHeader>
                 <AcquireDevice />
-            </Layout>
+            </SuiteLayout>
         );
     }
 
-    return <Layout showSuiteHeader>{props.children}</Layout>;
+    return <SuiteLayout showSuiteHeader>{props.children}</SuiteLayout>;
 };
 
 const mapStateToProps = (state: AppState) => ({

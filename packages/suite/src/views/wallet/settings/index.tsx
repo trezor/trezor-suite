@@ -4,7 +4,7 @@ import { FormattedMessage, InjectedIntlProps } from 'react-intl';
 import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
 import Link from '@suite-components/Link';
 import l10nCommonMessages from '@suite-views/index.messages';
-import Layout from '@wallet-components/Layout';
+import WalletLayout from '@wallet-components/WalletLayout';
 import { getRoute } from '@suite/utils/suite/router';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
@@ -69,7 +69,7 @@ const buildCurrencyOption = (currency: string) => {
 };
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
-    <Layout>
+    <WalletLayout>
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
@@ -128,7 +128,7 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
                 </Link>
             </Buttons>
         </Actions>
-    </Layout>
+    </WalletLayout>
 );
 
 export default WalletSettings;
