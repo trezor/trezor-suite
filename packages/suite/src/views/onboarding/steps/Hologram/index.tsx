@@ -25,7 +25,7 @@ const HologramWrapper = styled.div`
 `;
 
 const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props) => {
-    const actualVersion =
+    const actualModel =
         device && device.features && device.features.major_version
             ? device.features.major_version
             : null;
@@ -41,7 +41,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                             <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
                         <HologramWrapper>
-                            <Hologram model={model || actualVersion || 2} />
+                            <Hologram model={model || actualModel || 2} />
                         </HologramWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
@@ -108,11 +108,14 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                 )}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                <Wrapper.Controls>
-                    <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
-                        Back to Trezor model selection
-                    </OnboardingButton.Back>
-                </Wrapper.Controls>
+                {/* model selection is skipped if device is already connected, so do not show back button either */}
+                {!actualModel && (
+                    <Wrapper.Controls>
+                        <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
+                            Back to Trezor model selection
+                        </OnboardingButton.Back>
+                    </Wrapper.Controls>
+                )}
             </Wrapper.StepFooter>
         </Wrapper.Step>
     );
