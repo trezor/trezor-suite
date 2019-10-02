@@ -2,11 +2,11 @@
 import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
-import Pagination from '@wallet-components/Pagination';
-import TransactionItem from '@suite/components/wallet/TransactionItem';
-import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
-import { SETTINGS } from '@suite/config/suite';
 import { H5, colors, variables } from '@trezor/components';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { SETTINGS } from '@suite-config';
+import TransactionItem from '../TransactionItem';
+import Pagination from '../Pagination';
 
 const Wrapper = styled.div``;
 
@@ -19,6 +19,7 @@ const StyledH5 = styled(H5)`
 `;
 
 interface Props {
+    explorerUrl?: string;
     transactions: WalletAccountTransaction[];
     currentPage: number;
     totalPages?: number;
@@ -27,6 +28,7 @@ interface Props {
 }
 
 const TransactionList = ({
+    explorerUrl,
     transactions,
     currentPage,
     totalPages,
@@ -60,7 +62,7 @@ const TransactionList = ({
                 {Object.keys(transactionsByDate).map(date => {
                     const d = date.split('/');
                     return (
-                        <>
+                        <React.Fragment key={date}>
                             <StyledH5>
                                 <FormattedDate
                                     value={Date.UTC(
@@ -74,9 +76,12 @@ const TransactionList = ({
                                 />
                             </StyledH5>
                             {transactionsByDate[date].map(tx => {
-                                return <TransactionItem key={tx.txid} {...tx} />;
+                                const txUrl = `${explorerUrl}${tx.txid}`;
+                                return (
+                                    <TransactionItem key={tx.txid} {...tx} explorerUrl={txUrl} />
+                                );
                             })}
-                        </>
+                        </React.Fragment>
                     );
                 })}
             </Transactions>
