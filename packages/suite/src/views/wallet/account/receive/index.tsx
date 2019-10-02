@@ -63,12 +63,13 @@ const AccountReceive = (props: Props) => {
         return null;
     };
 
-    const buttonsDisabled = props.locks.includes(SUITE.LOCK_TYPE.DEVICE) || props.locks.includes(SUITE.LOCK_TYPE.UI);
+    const showButtonDisabled =
+        props.locks.includes(SUITE.LOCK_TYPE.DEVICE) || props.locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
         <LayoutAccount>
             <ReceiveForm
-                buttonsDisabled={buttonsDisabled}
+                showButtonDisabled={showButtonDisabled}
                 account={account}
                 device={device}
                 showAddress={props.showAddress}

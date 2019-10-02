@@ -120,7 +120,7 @@ interface Props {
     className?: string;
     // makes all props in selectedAccount required, so the account we need is not optional anymore
     // also excludes null;
-    buttonsDisabled: boolean;
+    showButtonDisabled: boolean;
     account: Exclude<Required<AppState['wallet']['selectedAccount']>['account'], null>;
     isAddressPartiallyHidden: (descriptor: string) => boolean;
     getAddressReceiveInfo: (descriptor: string) => ReceiveInfo | null;
@@ -210,7 +210,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     tooltipActions={tooltipAction}
                     actions={addr => (
                         <EyeButton
-                            isDisabled={props.buttonsDisabled}
+                            isDisabled={props.showButtonDisabled}
                             device={props.device}
                             isAddressUnverified={isAddressUnverified(addr.path)}
                             onClick={() => {
@@ -296,7 +296,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         !isAddressUnverified(firstFreshAddress.path) &&
                         !isAddressVerifying(firstFreshAddress.path) && ( // !account.imported
                                 <ShowAddressButton
-                                    isDisabled={props.buttonsDisabled}
+                                    isDisabled={props.showButtonDisabled}
                                     onClick={() => {
                                         props.showAddress(firstFreshAddress.path);
                                     }}
@@ -310,6 +310,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                             isAddressUnverified(firstFreshAddress.path)) &&
                             !isAddressVerifying(firstFreshAddress.path) && (
                                 <EyeButton
+                                    isDisabled={props.showButtonDisabled}
                                     device={props.device}
                                     isAddressUnverified={isAddressUnverified(
                                         firstFreshAddress.path,
@@ -354,8 +355,8 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 !isAddressUnverified(addr.path) &&
                                 !isAddressVerifying(addr.path) && ( // !account.imported
                                         <ShowAddressButton
+                                            isDisabled={props.showButtonDisabled}
                                             onClick={() => props.showAddress(addr.path)}
-                                            isDisabled={props.buttonsDisabled}
                                             icon="EYE"
                                         >
                                             <FormattedMessage
@@ -366,8 +367,8 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                 {(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) &&
                                     !isAddressVerifying(addr.path) && (
                                         <EyeButton
+                                            isDisabled={props.showButtonDisabled}
                                             device={props.device}
-                                            isDisabled={props.buttonsDisabled}
                                             isAddressUnverified={isAddressUnverified(addr.path)}
                                             onClick={() => props.showAddress(addr.path)}
                                         />
