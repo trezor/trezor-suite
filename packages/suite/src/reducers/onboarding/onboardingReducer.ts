@@ -89,7 +89,7 @@ const setInteraction = (
         currentInteraction.name === newInteraction
     ) {
         const nextCounter =
-            typeof currentInteraction.counter !== 'undefined' ? currentInteraction.counter + 1 : 0;
+            typeof currentInteraction.counter === 'number' ? currentInteraction.counter + 1 : 0;
         return {
             name: newInteraction,
             counter: nextCounter,
@@ -132,10 +132,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);
-                draft.uiInteraction = {
-                    name: undefined,
-                    counter: undefined,
-                };
+                draft.uiInteraction = initialState.uiInteraction;
                 break;
             case DEVICE_CALL_RESET:
                 draft.deviceCall = {
@@ -144,10 +141,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                     error: null,
                     result: null,
                 };
-                draft.uiInteraction = {
-                    name: undefined,
-                    counter: undefined,
-                };
+                draft.uiInteraction = initialState.uiInteraction;
                 break;
             case DEVICE_CALL_START:
                 draft.deviceCall = {
@@ -163,10 +157,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                     error: null,
                     result: action.result,
                 };
-                draft.uiInteraction = {
-                    name: undefined,
-                    counter: undefined,
-                };
+                draft.uiInteraction = initialState.uiInteraction;
                 break;
             case DEVICE_CALL_ERROR:
                 draft.deviceCall = {

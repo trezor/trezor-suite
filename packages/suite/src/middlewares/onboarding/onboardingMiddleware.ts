@@ -7,11 +7,9 @@ import { AppState, Action, Dispatch } from '@suite-types';
 const onboardingMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
+    const prevApp = api.getState().router.app;
     // pass action
     next(action);
-
-    const prevApp = api.getState().router.app;
-    const { locks } = api.getState().suite;
 
     if (action.type === SUITE.APP_CHANGED) {
         // here middleware detects that onboarding app is loaded, do following:
@@ -19,9 +17,7 @@ const onboardingMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: 
         //  2. lock router if not locked yet (disable browser navigation)
         if (action.payload === 'onboarding') {
             api.dispatch(onboardingActions.enableOnboardingReducer(true));
-            if (!locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
-                api.dispatch(suiteActions.lockRouter(true));
-            }
+            api.dispatch(suiteActions.lockRouter(true));
         }
 
         // here middleware detects that onboarding app is disposed, do following:

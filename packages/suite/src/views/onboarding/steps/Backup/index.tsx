@@ -36,6 +36,10 @@ const Instruction = styled.div`
     align-items: center;
 `;
 
+const PromptWrapper = styled.div`
+    margin-top: auto;
+`;
+
 const BackupStep = (props: Props) => {
     const { device, deviceCall, uiInteraction, activeSubStep } = props;
 
@@ -63,7 +67,7 @@ const BackupStep = (props: Props) => {
         if (
             device &&
             device.features.needs_backup === true &&
-            typeof uiInteraction.counter !== 'undefined'
+            typeof uiInteraction.counter === 'number'
         ) {
             return 'started';
         }
@@ -87,11 +91,11 @@ const BackupStep = (props: Props) => {
                     device &&
                     device.features &&
                     device.features.major_version === 1 &&
-                    typeof uiInteraction.counter !== 'undefined' &&
+                    typeof uiInteraction.counter === 'number' &&
                     uiInteraction.counter < 24 &&
                     'Write down seed words from your device'}
                 {getStatus() === 'started' &&
-                    typeof uiInteraction.counter !== 'undefined' &&
+                    typeof uiInteraction.counter === 'number' &&
                     uiInteraction.counter >= 24 &&
                     'Check seed words'}
                 {getStatus() === 'recovery-card-front' && 'Get your recovery card'}
@@ -99,7 +103,7 @@ const BackupStep = (props: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getStatus() === 'initial' && (
-                    <React.Fragment>
+                    <>
                         <P>
                             <FormattedMessage
                                 {...l10nMessages.TR_BACKUP_SUBHEADING_1}
@@ -189,11 +193,11 @@ const BackupStep = (props: Props) => {
                                 </Button>
                             )}
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'recovery-card-front' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             This is your recovery card. You should find two of them in the package.
                             In few moments, this piece of paper will become more important than your
@@ -210,11 +214,11 @@ const BackupStep = (props: Props) => {
                                 Flip it
                             </Button>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'recovery-card-back' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             Device will show you a secret sequence of words. You should write them
                             down here.
@@ -229,20 +233,22 @@ const BackupStep = (props: Props) => {
                                 <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
                             </Button>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'started' && device.features.major_version === 1 && (
-                    <React.Fragment>
+                    <>
                         <SeedCard showBack counter={uiInteraction.counter} />
-                        <div style={{ marginTop: '100px' }}>
+                        <PromptWrapper>
                             <Prompt model={device.features.major_version} size={32}>
-                                {uiInteraction.counter && uiInteraction.counter >= 24 && (
-                                    <Text>
-                                        Check the {uiInteraction.counter - 23}. word on your device
-                                    </Text>
-                                )}
-                                {typeof uiInteraction.counter !== 'undefined' &&
+                                {typeof uiInteraction.counter === 'number' &&
+                                    uiInteraction.counter >= 24 && (
+                                        <Text>
+                                            Check the {uiInteraction.counter - 23}. word on your
+                                            device
+                                        </Text>
+                                    )}
+                                {typeof uiInteraction.counter === 'number' &&
                                     uiInteraction.counter < 24 && (
                                         <Text>
                                             Write down the {uiInteraction.counter + 1}. word from
@@ -250,12 +256,12 @@ const BackupStep = (props: Props) => {
                                         </Text>
                                     )}
                             </Prompt>
-                        </div>
-                    </React.Fragment>
+                        </PromptWrapper>
+                    </>
                 )}
 
                 {getStatus() === 'failed' && (
-                    <React.Fragment>
+                    <>
                         <H4>
                             <FormattedMessage
                                 {...l10nMessages.TR_DEVICE_DISCONNECTED_DURING_ACTION}
@@ -294,11 +300,11 @@ const BackupStep = (props: Props) => {
                                 <FormattedMessage {...l10nCommonMessages.TR_CONNECT_YOUR_DEVICE} />
                             </Text>
                         )}
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'success' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_TEXT} />
                         </Text>
@@ -308,7 +314,7 @@ const BackupStep = (props: Props) => {
                                 <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_BUTTON} />
                             </Button>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
             </Wrapper.StepBody>
         </Wrapper.Step>

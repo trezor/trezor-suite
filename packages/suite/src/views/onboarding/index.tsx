@@ -210,7 +210,7 @@ const Onboarding = (props: Props) => {
     };
 
     const getError = () => {
-        const { device, prevDevice, activeStepId, path } = props;
+        const { device, prevDevice, activeStepId, path, uiInteraction } = props;
         const activeStep = getStep(activeStepId);
         if (!activeStep.disallowedDeviceStates) {
             return null;
@@ -218,7 +218,7 @@ const Onboarding = (props: Props) => {
 
         return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
             const fn = getFnForRule(state);
-            return fn({ device, prevDevice, path });
+            return fn({ device, prevDevice, path, uiInteraction });
         });
     };
 

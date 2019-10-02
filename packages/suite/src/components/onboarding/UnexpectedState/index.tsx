@@ -36,17 +36,17 @@ interface IsDeviceRequestingPinProps {
 }
 
 const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequestingPinProps) => {
-    if (!uiInteraction.counter) return null;
+    if (typeof uiInteraction.counter !== 'number') return null;
     return (
         <>
             <H2>
-                {uiInteraction.counter === 1 && (
+                {uiInteraction.counter === 0 && (
                     <FormattedMessage {...l10nMessages.TR_ENTER_PIN_HEADING} />
                 )}
                 {uiInteraction.counter > 1 && 'Incorrect PIN entered'}
             </H2>
             <Text>
-                {uiInteraction.counter === 1 && (
+                {uiInteraction.counter === 0 && (
                     <FormattedMessage {...l10nMessages.TR_ENTER_PIN_TEXT} />
                 )}
                 {uiInteraction.counter > 1 &&
@@ -101,9 +101,6 @@ const UnexpectedState = ({
     getFeatures,
     uiInteraction,
 }: UnexpectedStateProps) => {
-    if (!uiInteraction.counter) {
-        return null;
-    }
     switch (caseType) {
         case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
             return (
