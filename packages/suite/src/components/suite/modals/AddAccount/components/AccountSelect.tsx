@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import { P, Button, variables, colors } from '@trezor/components';
+import { Button, variables, colors } from '@trezor/components';
 import { Network, ExternalNetwork, Account } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 import l10nMessages from '../messages';
@@ -18,9 +18,10 @@ const StyledButton = styled(Button)`
     margin: 4px 0px;
 `;
 
-const StyledP = styled(P)`
-    margin: 20px 0;
-`;
+// keeping it here in case we want to add some texts
+// const StyledP = styled(P)`
+//     margin: 20px 0;
+// `;
 
 const AccountNameWrapper = styled.div`
     display: flex;
@@ -42,12 +43,6 @@ const EnableNetwork = (props: {
     onEnableNetwork: Props['onEnableNetwork'];
 }) => (
     <>
-        <StyledP>
-            <FormattedMessage
-                {...l10nMessages.TR_ENABLE_NETWORK}
-                values={{ networkName: props.selectedNetwork.name }}
-            />
-        </StyledP>
         <StyledButton fullWidth onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
             <FormattedMessage
                 {...l10nMessages.TR_ENABLE_NETWORK_BUTTON}
