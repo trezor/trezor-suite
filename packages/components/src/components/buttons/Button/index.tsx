@@ -131,16 +131,6 @@ const Wrapper = styled.button<Props>`
                 }
             }
         `}
-    /* ${props =>
-        props.justText
-        } */
-    ${props =>
-        props.fullWidth &&
-        css`
-            /* display: block; */
-            width: 100%;
-            vertical-align: middle;
-        `}
     ${props =>
         props.variant === 'white' &&
         css`
@@ -230,8 +220,6 @@ const Button = ({
     isTransparent = false,
     isInverse = false,
     isLoading = false,
-    fullWidth = false,
-    // justText = true,
     icon,
     ...rest
 }: Props) => {
@@ -244,7 +232,6 @@ const Button = ({
             isTransparent={isTransparent}
             isInverse={isInverse}
             isLoading={isLoading}
-            fullWidth={fullWidth}
             variant={variant}
             icon={icon}
             {...rest}

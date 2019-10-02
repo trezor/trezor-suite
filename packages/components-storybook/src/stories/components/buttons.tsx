@@ -269,11 +269,6 @@ storiesOf('Buttons', module)
             const icon = select('Icon', iconOptions, null);
 
             const isTransparent = boolean('Transparent', false);
-<<<<<<< HEAD
-            const isWhite = boolean('White', false);
-            const fullWidth = boolean('FullWidth', false);
-=======
->>>>>>> Move white version of btn to dropdown
 
             return (
                 <Button
@@ -283,7 +278,6 @@ storiesOf('Buttons', module)
                     {...(isInverse ? { isInverse } : {})}
                     {...(icon ? { icon } : {})}
                     {...(isLoading ? { isLoading } : {})}
-                    {...(fullWidth ? { fullWidth } : {})}
                 >
                     {buttonText}
                 </Button>
