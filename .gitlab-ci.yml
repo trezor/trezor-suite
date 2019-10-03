@@ -46,6 +46,7 @@ install and build:
             - packages/suite-storage/node_modules
 
 include:
+    - ci/environment.yaml
     - ci/packages/components.yml
     - ci/packages/components-storybook.yml
     - ci/packages/suite.yml
