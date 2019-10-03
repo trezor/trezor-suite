@@ -287,7 +287,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     const descriptor = payload.address;
     const addresses = transformAddresses(payload.tokens);
     const tokens = transformTokenInfo(payload.tokens);
-    const empty = payload.txs === 0;
+    const empty = payload.txs === 0 && payload.unconfirmedTxs === 0;
     const unconfirmed = new BigNumber(payload.unconfirmedBalance);
     // reduce or increase availableBalance
     const availableBalance =

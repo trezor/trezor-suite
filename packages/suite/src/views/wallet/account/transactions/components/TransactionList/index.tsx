@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
-import { H5, colors, variables } from '@trezor/components';
+import { H5, P, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { SETTINGS } from '@suite-config';
 import TransactionItem from '../TransactionItem';
@@ -16,6 +16,12 @@ const StyledH5 = styled(H5)`
     font-size: 1em;
     color: ${colors.TEXT_SECONDARY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding-top: 20px;
+    margin: 0 -35px;
+    padding-left: 35px;
+    padding-right: 35px;
+    background: ${colors.LANDING};
+    border-top: 1px solid ${colors.INPUT_BORDER};
 `;
 
 interface Props {
@@ -41,8 +47,11 @@ const TransactionList = ({
         const r: { [key: string]: WalletAccountTransaction[] } = {};
         transactions.forEach(item => {
             if (item.blockTime) {
-                const d = new Date(item.blockTime * 1000);
-                const date = d.toLocaleDateString();
+                let date = 'pending';
+                if (item.blockTime > 0) {
+                    const d = new Date(item.blockTime * 1000);
+                    date = d.toLocaleDateString();
+                }
                 if (!r[date]) {
                     r[date] = [];
                 }
@@ -60,27 +69,34 @@ const TransactionList = ({
         <Wrapper>
             <Transactions>
                 {Object.keys(transactionsByDate).map(date => {
-                    const d = date.split('/');
-                    return (
-                        <React.Fragment key={date}>
-                            <StyledH5>
-                                <FormattedDate
-                                    value={Date.UTC(
-                                        parseInt(d[2]),
-                                        parseInt(d[1]) - 1,
-                                        parseInt(d[0]),
-                                    )}
-                                    day="numeric"
-                                    month="long"
-                                    year="numeric"
-                                />
-                            </StyledH5>
-                            {transactionsByDate[date].map(tx => {
+                    let currentDate = 0;
+                    const TransactionItems = (
+                        <>
+                            {transactionsByDate[date].map((tx: WalletAccountTransaction) => {
                                 const txUrl = `${explorerUrl}${tx.txid}`;
+                                if (tx.blockTime) {
+                                    currentDate = tx.blockTime;
+                                }
                                 return (
                                     <TransactionItem key={tx.txid} {...tx} explorerUrl={txUrl} />
                                 );
                             })}
+                        </>
+                    );
+                    return (
+                        <React.Fragment key={date}>
+                            <StyledH5>
+                                {currentDate > 0 && (
+                                    <FormattedDate
+                                        value={new Date(currentDate * 1000)}
+                                        day="numeric"
+                                        month="long"
+                                        year="numeric"
+                                    />
+                                )}
+                                {currentDate === 0 && <P>(pending)</P>}
+                            </StyledH5>
+                            {TransactionItems}
                         </React.Fragment>
                     );
                 })}
