@@ -16,8 +16,7 @@ describe('Connect device', () => {
             .invoke('dispatch', {
                 type: DEVICE.CONNECT,
                 payload: getConnectDevice(),
-                }),
-            }))
+            })
             .getTestElement('button-use-wallet')
             .click()
             // todo: add snapshots in distance future when everything is stable

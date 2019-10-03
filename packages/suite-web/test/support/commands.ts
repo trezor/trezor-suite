@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { DEVICE } from 'trezor-connect';
 import { Store } from '@suite-types';
-import { getConnectDevice } from '../../../suite/src/support/tests/setupJest';
+// import { getConnectDevice } from '../../../suite/src/support/tests/setupJest';
+// import { DEVICE } from 'trezor-connect';
 
 const command = require('cypress-image-snapshot/command');
 

@@ -8,8 +8,8 @@ describe('Onboarding', () => {
     });
 
     // todo: not finished yet, now I can control everything that happens in the app
-    // through dispatching mocked actions, but I want to interact as close 
-    // to UI as possible, so I will need to mock trezor-connect that 
+    // through dispatching mocked actions, but I want to interact as close
+    // to UI as possible, so I will need to mock trezor-connect that
     // is invoked on user clicks
     it(`create new wallet happy path`, () => {
         cy.visit('/')
@@ -68,7 +68,7 @@ describe('Onboarding', () => {
             .getTestElement('button-continue')
             .click()
             .get('html')
-            .should('contain', 'Seep type')
+            .should('contain', 'Seed type');
             // todo: mock connect to make this work.
             // .getTestElement('button-standard-backup')
             // .click()
