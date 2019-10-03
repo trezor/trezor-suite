@@ -18,10 +18,9 @@ const Wrapper = styled.div``;
 
 const LoadingWrapper = styled.div`
     display: flex;
-    padding-top: 10px;
-    justify-content: flex-start;
+    padding: 15px;
+    justify-content: center;
     align-items: center;
-    padding-left: 20px;
 `;
 
 const LoadingText = styled.div`
