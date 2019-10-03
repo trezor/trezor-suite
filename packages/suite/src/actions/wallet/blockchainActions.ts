@@ -305,11 +305,6 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
     networkAccounts.forEach(async account => {
-        const accountInfo = await dispatch(accountActions.fetchAndUpdateAccount(account));
-        if (accountInfo.success) {
-            dispatch(
-                transactionActions.add(accountInfo.payload.history.transactions || [], account),
-            );
-        }
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     });
 };
