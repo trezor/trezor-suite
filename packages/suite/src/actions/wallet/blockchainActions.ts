@@ -260,8 +260,9 @@ export const onNotification = (payload: BlockchainNotification) => async (
     const enhancedTx = enhanceTransaction(notification.tx, account);
     const accountDevice = getAccountDevice(getState().devices, account);
 
-    if (!accountDevice) return;
-    if (accountDevice && enhancedTx.type !== 'sent') {
+    if (!accountDevice) {
+        console.warn('device not found');
+    } else if (accountDevice && enhancedTx.type !== 'sent') {
         // dispatch the notification only if tx.type is receive/self
         dispatch(
             notificationActions.add({
@@ -288,7 +289,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
             }),
         );
     } else {
-        console.warn('device not found');
+        console.log('skipping notification for sent tx');
     }
 
     // fetch account info and update the account (txs count,...)
@@ -298,5 +299,24 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // (if block come before 2nd notification)
 
     // TODO: BITCOIN: Notification returns blockTime 0, getAccountInfo has valid timestamp. should we update tx?
-    dispatch(accountActions.fetchAndUpdateAccount(account));
+
+    // dispatch(accountActions.fetchAndUpdateAccount(account));
+
+    // TODO:
+    // update all accounts just to be sure?
+    // 1: case where 'sent' blockchain notification doesn't arrive is partially handled by updating the account right after successful tx send
+    // there still might be an issue if, after sending the tx, blockbook returns stale data (?, needs more testing)
+
+    const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
+    networkAccounts.forEach(async account => {
+        const response = await TrezorConnect.getAccountInfo({
+            coin: symbol,
+            descriptor: account.descriptor,
+            details: 'txs',
+            pageSize: SETTINGS.TXS_PER_PAGE,
+        });
+
+        if (!response.success) return;
+        dispatch(accountActions.update(account, response.payload));
+    });
 };
