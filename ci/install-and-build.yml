@@ -1,0 +1,27 @@
+install and build:
+    stage: setup environment
+    script:
+        - yarn install
+        - npx lerna run build:lib
+    artifacts:
+        expire_in: 3 hours
+        when: always
+        paths:
+            # libs
+            - ci/packages/components/lib
+            - ci/packages/blockchain-link/lib
+            - ci/packages/rollout/lib
+            - ci/packages/suite-storage/lib
+            
+            # node_modules
+            - node_modules
+            - packages/blockchain-link/node_modules
+            - packages/components/node_modules
+            - packages/components-storybook/node_modules
+            - packages/connect-explorer/node_modules
+            - packages/rollout/node_modules
+            - packages/suite/node_modules
+            - packages/suite-web/node_modules
+            - packages/suite-desktop/node_modules
+            - packages/suite-native/node_modules
+            - packages/suite-storage/node_modules

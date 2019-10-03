@@ -1,5 +1,5 @@
 build & push image:
-    stage: install and build
+    stage: setup environment
     image: docker
     when: manual
     variables:
