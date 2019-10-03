@@ -2,6 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Button, variables, colors } from '@trezor/components';
+// import { getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { Network, ExternalNetwork, Account } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 import l10nMessages from '../messages';
@@ -11,7 +12,7 @@ interface Props {
     enabledNetworks: string[];
     accounts: Account[];
     onEnableAccount: (account: Account) => void;
-    onEnableNetwork: (symbol: string) => void;
+    onEnableNetwork: (symbol: Network['symbol']) => void;
 }
 
 const StyledButton = styled(Button)`
@@ -77,6 +78,7 @@ const AccountButton = (props: {
         enabled = false;
         description = 'Account index is greater than 10';
     }
+    // const accountType = getTypeForNetwork(props.network.accountType, props.intl);
     const prefix = props.network.accountType ? `${props.network.accountType} ` : '';
     const label = `${prefix}Account #${index}`;
     return (
