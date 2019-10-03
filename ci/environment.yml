@@ -10,6 +10,6 @@ build & push image:
         - echo $CONTAINER_NAME
         - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     script:
-        - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ci/docker/base
+        - docker build --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ci/docker/base
         - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
         - docker push $CONTAINER_NAME:latest
