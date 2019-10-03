@@ -1,13 +1,15 @@
 build & push image:
     stage: setup environment
     when: manual
+    before_script:
+        - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+    variables:
+        CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/base"
     image: docker
     services:
         - docker:dind
-    variables:
-        CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/base"
     script:
-        - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-        - docker build --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest docker/base
+        - docker pull $CONTAINER_NAME:latest || true
+        - docker build --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./ci/docker/base
         - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
         - docker push $CONTAINER_NAME:latest
