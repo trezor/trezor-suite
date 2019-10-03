@@ -8,7 +8,6 @@ import l10nMessages from './index.messages';
 
 interface Props {
     children: React.ReactNode;
-    isTransaction?: boolean;
 }
 
 const LayoutAccount = (props: Props) => (
@@ -46,7 +45,6 @@ const LayoutAccount = (props: Props) => (
                 ]}
             />
         }
-        {...(props.isTransaction ? { isTransaction: true } : {})}
     >
         {props.children}
     </WalletLayout>

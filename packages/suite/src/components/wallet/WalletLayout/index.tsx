@@ -19,7 +19,6 @@ const mapStateToProps = (state: AppState) => ({
 type Props = {
     topNavigationComponent?: React.ReactNode;
     children?: React.ReactNode;
-    isTransaction?: boolean;
 } & ReturnType<typeof mapStateToProps>;
 
 const Wrapper = styled.div`
@@ -55,7 +54,7 @@ const WalletLayout = (props: Props) => {
             <ContentWrapper preventBgScroll={props.suite.showSidebar}>
                 {props.topNavigationComponent}
                 <WalletNotifications />
-                <Content isTransaction={props.isTransaction}>{props.children}</Content>
+                <Content>{props.children}</Content>
             </ContentWrapper>
         </Wrapper>
     );
