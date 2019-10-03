@@ -60,8 +60,11 @@ export const create = (
         descriptor: accountInfo.descriptor,
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
-        empty: accountInfo.empty,
-        visible: !accountInfo.empty,
+        // empty: accountInfo.empty,
+        empty: accountInfo.empty && !accountInfo.history.unconfirmed, // TODO remove this after trezor-connect 8.0.7 release
+        visible:
+            !accountInfo.empty ||
+            (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
         formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),
@@ -79,6 +82,7 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         ...account,
         ...accountInfo,
         path: account.path,
+        empty: accountInfo.empty && !accountInfo.history.unconfirmed, // TODO remove this after trezor-connect 8.0.7 release
         formattedBalance: formatNetworkAmount(accountInfo.availableBalance, account.symbol),
         ...getAccountSpecific(accountInfo, account.networkType),
     },

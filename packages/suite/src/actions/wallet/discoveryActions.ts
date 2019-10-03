@@ -87,7 +87,7 @@ const calculateProgress = (discovery: Discovery) => (
         if (discovery.networks.includes(a.symbol)) {
             loaded++;
             const indexBeyondLimit = a.index + 1 >= LIMIT;
-            if (a.empty) {
+            if (a.empty && !a.visible) {
                 total -= indexBeyondLimit ? 0 : LIMIT - a.index - 1;
             } else if (indexBeyondLimit) {
                 // index is beyond limit, increment total value since next account will be loaded

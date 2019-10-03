@@ -87,9 +87,14 @@ const AddAccount = (props: Props) => {
                         accountType: account.accountType,
                     });
                 }}
-                onEnableNetwork={(symbol: string) => {
+                onEnableNetwork={(symbol: Network['symbol']) => {
                     props.onCancel();
                     props.changeCoinVisibility(symbol, true, false);
+                    props.goto('wallet-account-summary', {
+                        symbol,
+                        accountIndex: 0,
+                        accountType: 'normal',
+                    });
                 }}
             />
             <ExternalWallet selectedNetwork={selectedNetwork} onCancel={props.onCancel} />
