@@ -3,10 +3,11 @@ build & push image:
     image: docker
     when: manual
     variables:
-        CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/base"   
+        CONTAINER_NAME: $CI_REGISTRY/satoshilabs/trezor/trezor-suite/base
     services:
         - docker:dind
     before_script:
+        - echo $CONTAINER_NAME
         - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     script:
         - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ci/docker/base
