@@ -1,5 +1,5 @@
 build & push image:
-    stage: environment setup
+    stage: install and build
     image: docker
     when: manual
     variables:
@@ -10,6 +10,6 @@ build & push image:
         - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     script:
         - docker pull $CONTAINER_NAME:latest || true
-        - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./docker/trezor-suite-base
+        - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./ci/docker/base
         - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
         - docker push $CONTAINER_NAME:latest

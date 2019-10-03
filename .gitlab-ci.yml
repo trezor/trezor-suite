@@ -9,8 +9,7 @@ variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 stages:
-    - environment setup
-    - install and build libraries
+    - install and build
     - lint and prettier
     - typescript type check
     - unit testing
