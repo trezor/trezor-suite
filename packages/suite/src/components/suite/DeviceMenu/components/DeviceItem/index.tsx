@@ -12,7 +12,7 @@ const Wrapper = styled.div<WrapperProps>`
     z-index: 10;
     display: flex;
     align-items: center;
-    padding: 0px 25px;
+    padding: 0px 20px;
     background: ${props => (props.disabled ? colors.GRAY_LIGHT : 'transparent')};
     background: ${props => (props.isSelected ? colors.WHITE : 'transparent')};
     cursor: pointer;
@@ -83,7 +83,7 @@ const Dot = styled.div`
     z-index: 10;
     background: ${props => props.color};
     top: -4px;
-    right: -2px;
+    right: 1px;
     width: 10px;
     height: 10px;
 `;
