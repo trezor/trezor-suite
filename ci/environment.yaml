@@ -1,5 +1,5 @@
 environment:
-    stage: environment
+    stage: environment setup
     image: docker
     when: manual
     variables:
