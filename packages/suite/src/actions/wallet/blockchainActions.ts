@@ -259,37 +259,33 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     const enhancedTx = enhanceTransaction(notification.tx, account);
     const accountDevice = getAccountDevice(getState().devices, account);
-    const notificationExist = getState().notifications.find(n => n.id === enhancedTx.txid);
 
-    // don't dispatch sent notifications
-    if (accountDevice && enhancedTx.type !== 'sent') {
-        // prevent dispatching multiple self notifications for the same txid
-        if (!(notificationExist && notification.tx.type === 'self')) {
-            dispatch(
-                notificationActions.add({
-                    id: enhancedTx.txid,
-                    variant: 'info',
-                    title: `Transaction ${enhancedTx.type}`,
-                    cancelable: true,
-                    message: `txid: ${enhancedTx.txid}`,
-                    actions: [
-                        {
-                            label: 'See the transaction detail',
-                            callback: () => {
-                                dispatch(suiteActions.selectDevice(accountDevice));
-                                dispatch(
-                                    goto('wallet-account-transactions', {
-                                        symbol: account.symbol,
-                                        accountIndex: account.index,
-                                        accountType: account.accountType,
-                                    }),
-                                );
-                            },
+    // don't dispatch sent and self notifications
+    if (accountDevice && enhancedTx.type !== 'sent' && enhancedTx.type !== 'self') {
+        dispatch(
+            notificationActions.add({
+                id: enhancedTx.txid,
+                variant: 'info',
+                title: `Transaction ${enhancedTx.type}`,
+                cancelable: true,
+                message: `txid: ${enhancedTx.txid}`,
+                actions: [
+                    {
+                        label: 'See the transaction detail',
+                        callback: () => {
+                            dispatch(suiteActions.selectDevice(accountDevice));
+                            dispatch(
+                                goto('wallet-account-transactions', {
+                                    symbol: account.symbol,
+                                    accountIndex: account.index,
+                                    accountType: account.accountType,
+                                }),
+                            );
                         },
-                    ],
-                }),
-            );
-        }
+                    },
+                ],
+            }),
+        );
     }
 
     // fetch account info and update the account (txs count,...)
