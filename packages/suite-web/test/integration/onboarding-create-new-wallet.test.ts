@@ -69,8 +69,8 @@ describe('Onboarding', () => {
             .click()
             .get('html')
             .should('contain', 'Seed type');
-            // todo: mock connect to make this work.
-            // .getTestElement('button-standard-backup')
-            // .click()
+        // todo: mock connect to make this work.
+        // .getTestElement('button-standard-backup')
+        // .click()
     });
 });
