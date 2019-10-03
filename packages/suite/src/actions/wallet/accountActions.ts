@@ -61,7 +61,9 @@ export const create = (
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
         empty: accountInfo.empty,
-        visible: !accountInfo.empty,
+        visible:
+            !accountInfo.empty ||
+            (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
         formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),

@@ -78,11 +78,9 @@ const Menu = ({
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state));
     // always show first "normal" account even if they are empty
     const normalAccounts = list.filter(
-        a => a.accountType === 'normal' && (a.index === 0 || !a.empty || (a.empty && a.visible)),
+        a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
     );
-    const legacyAccounts = list.filter(
-        a => a.accountType !== 'normal' && (!a.empty || (a.empty && a.visible)),
-    );
+    const legacyAccounts = list.filter(a => a.accountType !== 'normal' && (!a.empty || a.visible));
 
     const isSelected = (account: Account) => {
         if (selectedAccount.account && selectedAccount.account === account) {
