@@ -64,7 +64,11 @@ suite-web delete review:
         - install and build
 
 suite-web test integration:
-    # try next cypress/browsers:node11.13.0-chrome73
+    # for some reason unknown to me cypress test crash often with "downasaurus" for suite web. 
+    # it might have something to do with that tests are running in docker in CI https://github.com/cypress-io/cypress/issues/349
+    # or there might possibly be a bug in certain version of electron used internally by cypress
+    # finally made it work using this https://github.com/cypress-io/cypress/issues/350#issuecomment-503231128
+    # tests are now running in chrome instead of electron
     image: cypress/browsers:node10.2.1-chrome74
     stage: integration testing
     script:

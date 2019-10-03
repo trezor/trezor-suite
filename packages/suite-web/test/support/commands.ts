@@ -12,7 +12,6 @@ declare global {
         interface Chainable {
             getTestElement: typeof getTestElement;
             resetDb: typeof resetDb;
-            dispatchDeviceConnect: typeof dispatchDeviceConnect;
             // todo: better types
             matchImageSnapshot: (options?: any) => Chainable<any>;
         }
@@ -21,7 +20,6 @@ declare global {
 
 declare global {
     interface Window {
-        // todo: hmm how to share store declaration with CypressExportStore.tsx?
         store: Store;
     }
 }
@@ -51,13 +49,5 @@ export const getTestElement = (selector: string) => {
     return cy.get(`[data-test="${selector}"]`);
 };
 
-export const dispatchDeviceConnect = () => {
-    return cy.wrap({
-        type: DEVICE.CONNECT,
-        payload: getConnectDevice(),
-    });
-};
-
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
-Cypress.Commands.add('dispatchDeviceConnect', dispatchDeviceConnect);
