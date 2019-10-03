@@ -12,7 +12,7 @@ const Wrapper = styled.div<WrapperProps>`
     z-index: 10;
     display: flex;
     align-items: center;
-    padding: 0px 25px;
+    padding: 0px 15px;
     background: ${props => (props.disabled ? colors.GRAY_LIGHT : 'transparent')};
     background: ${props => (props.isSelected ? colors.WHITE : 'transparent')};
     cursor: pointer;

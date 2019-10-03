@@ -25,7 +25,7 @@ const Wrapper = styled.div<{ selected: boolean }>`
     ${props =>
         props.selected &&
         css`
-            padding-left: 13px;
+            padding-left: 12px;
             border-left: 3px solid ${colors.GREEN_PRIMARY};
             background-color: ${colors.WHITE};
             &:hover {
