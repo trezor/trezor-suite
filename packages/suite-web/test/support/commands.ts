@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { DEVICE } from 'trezor-connect';
 import { Store } from '@suite-types';
-import { getConnectDevice } from '../../../suite/src/support/tests/setupJest';
+// import { getConnectDevice } from '../../../suite/src/support/tests/setupJest';
+// import { DEVICE } from 'trezor-connect';
 
 const command = require('cypress-image-snapshot/command');
 
@@ -12,7 +12,6 @@ declare global {
         interface Chainable {
             getTestElement: typeof getTestElement;
             resetDb: typeof resetDb;
-            dispatchDeviceConnect: typeof dispatchDeviceConnect;
             // todo: better types
             matchImageSnapshot: (options?: any) => Chainable<any>;
         }
@@ -21,7 +20,6 @@ declare global {
 
 declare global {
     interface Window {
-        // todo: hmm how to share store declaration with CypressExportStore.tsx?
         store: Store;
     }
 }
@@ -51,18 +49,5 @@ export const getTestElement = (selector: string) => {
     return cy.get(`[data-test="${selector}"]`);
 };
 
-/**
- * Just like cy.get() but will return element specified with 'data-test=' attribute.
- *
- * @example cy.getTestElement('my-fancy-attr-name')
- */
-export const dispatchDeviceConnect = () => {
-    return cy.wrap({
-        type: DEVICE.CONNECT,
-        payload: getConnectDevice(),
-    });
-};
-
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
-Cypress.Commands.add('dispatchDeviceConnect', dispatchDeviceConnect);

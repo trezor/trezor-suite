@@ -40,6 +40,7 @@ const ShamirStep = (props: Props) => {
                 {getModel() === 2 && (
                     <Wrapper.Options>
                         <Option
+                            data-test="button-standard-backup"
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
                                     () => props.resetDevice({ backupType: 0 }),
@@ -51,6 +52,7 @@ const ShamirStep = (props: Props) => {
                         </Option>
 
                         <Option
+                            data-test="button-shamir-backup"
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
                                     () => props.resetDevice({ backupType: 1 }),
