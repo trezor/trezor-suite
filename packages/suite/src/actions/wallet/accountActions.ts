@@ -128,4 +128,5 @@ export const fetchAndUpdateAccount = (account: Account) => async (
     if (response.success) {
         dispatch(update(account, response.payload));
     }
+    return response;
 };

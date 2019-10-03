@@ -260,9 +260,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
     const enhancedTx = enhanceTransaction(notification.tx, account);
     const accountDevice = getAccountDevice(getState().devices, account);
 
-    if (!accountDevice) {
-        console.warn('device not found');
-    } else if (accountDevice && enhancedTx.type !== 'sent') {
+    if (accountDevice && enhancedTx.type !== 'sent') {
         // dispatch the notification only if tx.type is receive/self
         dispatch(
             notificationActions.add({
@@ -288,8 +286,6 @@ export const onNotification = (payload: BlockchainNotification) => async (
                 ],
             }),
         );
-    } else {
-        console.log('skipping notification for sent tx');
     }
 
     // fetch account info and update the account (txs count,...)
@@ -309,6 +305,11 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
     networkAccounts.forEach(async account => {
-        dispatch(accountActions.fetchAndUpdateAccount(account));
+        const accountInfo = await dispatch(accountActions.fetchAndUpdateAccount(account));
+        if (accountInfo.success) {
+            dispatch(
+                transactionActions.add(accountInfo.payload.history.transactions || [], account),
+            );
+        }
     });
 };
