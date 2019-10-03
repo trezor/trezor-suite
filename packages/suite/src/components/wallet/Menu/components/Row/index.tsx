@@ -7,7 +7,7 @@ import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    padding: 0 15px;
+    padding: 0 25px;
     display: flex;
     height: 55px;
     cursor: pointer;
@@ -25,7 +25,7 @@ const Wrapper = styled.div<{ selected: boolean }>`
     ${props =>
         props.selected &&
         css`
-            padding-left: 12px;
+            padding-left: 22px;
             border-left: 3px solid ${colors.GREEN_PRIMARY};
             background-color: ${colors.WHITE};
             &:hover {

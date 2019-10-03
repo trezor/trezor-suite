@@ -22,7 +22,7 @@ const RowAddAccountWrapper = styled.div<Props>`
     display: flex;
     align-items: center;
     color: ${colors.TEXT_SECONDARY};
-    padding: 16px 15px;
+    padding: 16px 25px;
     transition: color 0.3s;
     &:hover {
         cursor: ${props => (props.disabled ? 'default' : 'pointer')};
