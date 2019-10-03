@@ -26,29 +26,29 @@ const StyledCoinLogo = styled(CoinLogo)`
 interface Props {
     account: Account;
     network: Network;
-    prefix?: string;
-    suffix?: string;
+    message?: ReactIntl.FormattedMessage;
 }
 
-const AccountName = ({ account, network, prefix, suffix }: Props) => {
+const AccountName = ({ account, network, message }: Props) => {
     return (
         <Wrapper>
             <StyledCoinLogo size={24} symbol={account.symbol} />
             <AccountTitle>
-                {prefix && <>prefix</>}
-                <FormattedMessage
-                    {...l10nMessages.TR_RECEIVE_NETWORK}
-                    values={{
-                        network: getTitleForNetwork(account.symbol, intl),
-                    }}
-                />
+                {message && (
+                    <FormattedMessage
+                        {...message}
+                        values={{
+                            network: getTitleForNetwork(network.symbol, intl),
+                        }}
+                    />
+                )}
+                {!message && <>{getTitleForNetwork(account.symbol, intl)}</>}
                 <FormattedMessage
                     {...(account.imported
                         ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
                         : l10nCommonMessages.TR_ACCOUNT_HASH)}
                     values={{ number: String(account.index + 1) }}
                 />
-                {suffix && <>suffix</>}
             </AccountTitle>
         </Wrapper>
     );
