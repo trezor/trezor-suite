@@ -309,14 +309,6 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
     networkAccounts.forEach(async account => {
-        const response = await TrezorConnect.getAccountInfo({
-            coin: symbol,
-            descriptor: account.descriptor,
-            details: 'txs',
-            pageSize: SETTINGS.TXS_PER_PAGE,
-        });
-
-        if (!response.success) return;
-        dispatch(accountActions.update(account, response.payload));
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     });
 };
