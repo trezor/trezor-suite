@@ -11,14 +11,6 @@ const Wrapper = styled.div`
     flex-direction: column;
     line-height: 1.5;
     margin: 0 -35px;
-
-    + h5 {
-        border-top: 1px solid ${colors.INPUT_BORDER};
-        padding-top: 20px;
-        margin: 0 -35px;
-        padding-left: 35px;
-        padding-right: 35px;
-    }
 `;
 
 const Timestamp = styled(Link)`
@@ -121,14 +113,6 @@ const Addr = styled.div`
     text-overflow: ellipsis;
     margin-right: 10px;
 `;
-
-// const Fee = styled.div`
-//     color: ${colors.TEXT_SECONDARY};
-// `;
-
-// const Red = styled.span`
-//     color: red;
-// `;
 
 type Props = {
     explorerUrl: string;
