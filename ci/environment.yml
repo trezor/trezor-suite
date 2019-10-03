@@ -1,4 +1,4 @@
-environment:
+build & push image:
     stage: environment setup
     image: docker
     when: manual
