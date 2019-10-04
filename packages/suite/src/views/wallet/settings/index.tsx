@@ -2,11 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, InjectedIntlProps } from 'react-intl';
 import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
-import Link from '@suite-components/Link';
 import l10nCommonMessages from '@suite-views/index.messages';
 import WalletLayout from '@wallet-components/WalletLayout';
 import { getRoute } from '@suite-utils/router';
-import { back } from '@suite-actions/routerActions';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import Coins from './components/Coins';
@@ -82,7 +80,7 @@ const buildCurrencyOption = (currency: string) => {
 const WalletSettings = (props: Props & InjectedIntlProps) => (
     <WalletLayout>
         <CloseWrapper>
-            <Button onClick={back} isTransparent>
+            <Button onClick={() => props.goto('wallet-index')} isTransparent>
                 <Icon icon="CLOSE" size={14} />
             </Button>
         </CloseWrapper>
@@ -137,11 +135,9 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
                 <FormattedMessage {...l10nMessages.TR_THE_CHANGES_ARE_SAVED} />
             </Info>
             <Buttons>
-                <Link href={getRoute('wallet-index')}>
-                    <Button>
-                        <FormattedMessage {...l10nCommonMessages.TR_CLOSE} />
-                    </Button>
-                </Link>
+                <Button onClick={() => props.goto('wallet-index')}>
+                    <FormattedMessage {...l10nCommonMessages.TR_CLOSE} />
+                </Button>
             </Buttons>
         </Actions>
     </WalletLayout>

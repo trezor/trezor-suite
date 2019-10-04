@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { back } from '@suite-actions/routerActions';
 import { SUITE } from '@suite-actions/constants';
 import { Input, Switch, Button, P, Icon } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
@@ -20,7 +19,6 @@ const Layout = styled.div`
     max-width: 1170px;
     flex-direction: column;
     align-items: center;
-    padding: 50px 35px 40px 35px;
 `;
 
 const Wrapper = styled.div`
@@ -29,6 +27,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     width: 100%;
     max-width: 500px;
+    padding: 50px 35px 40px 35px;
 `;
 
 const Row = styled.div`
@@ -95,7 +94,7 @@ const CloseWrapper = styled.div`
     }
 `;
 
-const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props) => {
+const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }: Props) => {
     // todo: need to solve typescript here.
 
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -135,7 +134,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
             <WalletNotifications />
             <Wrapper>
                 <CloseWrapper>
-                    <Button onClick={back} isTransparent>
+                    <Button onClick={() => goto('wallet-index')} isTransparent>
                         <Icon icon="CLOSE" size={14} />
                     </Button>
                 </CloseWrapper>

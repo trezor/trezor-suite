@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
-
+import { goto } from '@suite-actions/routerActions';
 import * as settingsActions from '@wallet-actions/settingsActions';
 // import * as LocalStorageActions from 'actions/LocalStorageActions';
 import { AppState, Dispatch } from '@suite-types';
@@ -21,6 +21,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         settingsActions.toggleGroupCoinsVisibility,
         dispatch,
     ),
+    goto: bindActionCreators(goto, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
