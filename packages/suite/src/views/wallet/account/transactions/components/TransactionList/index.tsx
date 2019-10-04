@@ -70,7 +70,7 @@ const TransactionList = ({
                     const parts = date.split('-');
                     const d = new Date(Number(parts[0]), Number(parts[1]), Number(parts[2]));
                     return (
-                        <>
+                        <React.Fragment key={date}>
                             <StyledH5>
                                 {date === 'pending' ? (
                                     <P>Pending</P>
@@ -90,7 +90,7 @@ const TransactionList = ({
                                     explorerUrl={`${explorerUrl}${tx.txid}`}
                                 />
                             ))}
-                        </>
+                        </React.Fragment>
                     );
                 })}
             </Transactions>
