@@ -46,17 +46,15 @@ const TransactionList = ({
     const splitTransactionsByDate = (transactions: WalletAccountTransaction[]) => {
         const r: { [key: string]: WalletAccountTransaction[] } = {};
         transactions.forEach(item => {
-            if (item.blockTime) {
-                let date = 'pending';
-                if (item.blockTime > 0) {
-                    const d = new Date(item.blockTime * 1000);
-                    date = d.toLocaleDateString();
-                }
-                if (!r[date]) {
-                    r[date] = [];
-                }
-                r[date].push(item);
+            let key = 'pending';
+            if (item.blockHeight && (item.blockTime || 0) > 0) {
+                const d = new Date((item.blockTime || 0) * 1000);
+                key = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`;
             }
+            if (!r[key]) {
+                r[key] = [];
+            }
+            r[key].push(item);
         });
         return r;
     };
@@ -69,35 +67,30 @@ const TransactionList = ({
         <Wrapper>
             <Transactions>
                 {Object.keys(transactionsByDate).map(date => {
-                    let currentDate = 0;
-                    const TransactionItems = (
-                        <>
-                            {transactionsByDate[date].map((tx: WalletAccountTransaction) => {
-                                const txUrl = `${explorerUrl}${tx.txid}`;
-                                if (tx.blockTime) {
-                                    currentDate = tx.blockTime;
-                                }
-                                return (
-                                    <TransactionItem key={tx.txid} {...tx} explorerUrl={txUrl} />
-                                );
-                            })}
-                        </>
-                    );
+                    const parts = date.split('-');
+                    const d = new Date(Number(parts[0]), Number(parts[1]), Number(parts[2]));
                     return (
-                        <React.Fragment key={date}>
+                        <>
                             <StyledH5>
-                                {currentDate > 0 && (
+                                {date === 'pending' ? (
+                                    <P>Pending</P>
+                                ) : (
                                     <FormattedDate
-                                        value={new Date(currentDate * 1000)}
+                                        value={d}
                                         day="numeric"
                                         month="long"
                                         year="numeric"
                                     />
                                 )}
-                                {currentDate === 0 && <P>(pending)</P>}
                             </StyledH5>
-                            {TransactionItems}
-                        </React.Fragment>
+                            {transactionsByDate[date].map((tx: WalletAccountTransaction) => (
+                                <TransactionItem
+                                    key={tx.txid}
+                                    {...tx}
+                                    explorerUrl={`${explorerUrl}${tx.txid}`}
+                                />
+                            ))}
+                        </>
                     );
                 })}
             </Transactions>
