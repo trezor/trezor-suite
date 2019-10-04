@@ -1,37 +1,62 @@
 import TrezorConnect, { ApplySettingsParams, ChangePinParams, CommonParams } from 'trezor-connect';
+import { add as addNotification } from '@suite-actions/notificationActions';
 import { Dispatch, GetState } from '@suite-types';
 
 //  TODO: should be reworked to deviceManagementActions
 
 export const applySettings = (params: ApplySettingsParams) => async (
-    _dispatch: Dispatch,
+    dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { device } = getState().suite;
-    await TrezorConnect.applySettings({
+    const result = await TrezorConnect.applySettings({
         device,
         ...params,
     });
+
+    dispatch(
+        addNotification({
+            variant: result.success ? 'success' : 'error',
+            title: result.success ? result.payload.message : result.payload.error,
+            cancelable: true,
+        }),
+    );
 };
 
 export const changePin = (params: ChangePinParams) => async (
-    _dispatch: Dispatch,
+    dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { device } = getState().suite;
-    await TrezorConnect.changePin({
+    const result = await TrezorConnect.changePin({
         device,
         ...params,
     });
+
+    dispatch(
+        addNotification({
+            variant: result.success ? 'success' : 'error',
+            title: result.success ? result.payload.message : result.payload.error,
+            cancelable: true,
+        }),
+    );
 };
 
 export const wipeDevice = (params: CommonParams) => async (
-    _dispatch: Dispatch,
+    dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { device } = getState().suite;
-    await TrezorConnect.wipeDevice({
+    const result = await TrezorConnect.wipeDevice({
         device,
         ...params,
     });
+
+    dispatch(
+        addNotification({
+            variant: result.success ? 'success' : 'error',
+            title: result.success ? result.payload.message : result.payload.error,
+            cancelable: true,
+        }),
+    );
 };

@@ -40,6 +40,7 @@ const init = async () => {
             preload: path.join(__dirname, 'preload.js'),
         },
     });
+    mainWindow.removeMenu();
 
     // open external links in default browser
     const handleExternalLink = (event, url) => {

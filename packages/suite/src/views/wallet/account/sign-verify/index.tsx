@@ -123,7 +123,7 @@ class SignVerify extends Component<Props> {
                             <Input
                                 topLabel={intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
                                 name="signAddress"
-                                value="aaaaa"
+                                value=""
                                 // value={account.descriptor}
                                 type="text"
                                 readOnly
