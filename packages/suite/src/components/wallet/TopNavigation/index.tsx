@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     overflow-y: hidden;
     overflow-x: auto;
     padding: 0px 30px 0 35px;
-    height: 70px;
+    height: 55px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
     background: ${colors.WHITE};
     position: relative;
@@ -70,7 +70,6 @@ const LinkContent = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 4px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
