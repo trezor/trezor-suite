@@ -4,7 +4,6 @@ import { FormattedMessage, InjectedIntlProps } from 'react-intl';
 import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import WalletLayout from '@wallet-components/WalletLayout';
-import { getRoute } from '@suite-utils/router';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import Coins from './components/Coins';
