@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 // import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H4, P, CoinLogo, colors, variables } from '@trezor/components';
+import { H4, CoinLogo, colors, variables } from '@trezor/components';
 import WalletLayout from '@wallet-components/WalletLayout';
 // import l10nCommonMessages from '@wallet-views/messages';
 import { sortByCoin } from '@wallet-utils/accountUtils';
