@@ -5,7 +5,8 @@ import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezo
 import Link from '@suite-components/Link';
 import l10nCommonMessages from '@suite-views/index.messages';
 import WalletLayout from '@wallet-components/WalletLayout';
-import { getRoute } from '@suite/utils/suite/router';
+import { getRoute } from '@suite-utils/router';
+import { back } from '@suite-actions/routerActions';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import Coins from './components/Coins';
@@ -61,6 +62,16 @@ const TooltipIcon = styled(Icon)`
     cursor: pointer;
 `;
 
+const CloseWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    button {
+        position: absolute;
+        right: -24px;
+        top: -30px;
+    }
+`;
+
 const buildCurrencyOption = (currency: string) => {
     return {
         value: currency,
@@ -70,6 +81,11 @@ const buildCurrencyOption = (currency: string) => {
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
     <WalletLayout>
+        <CloseWrapper>
+            <Button onClick={back} isTransparent>
+                <Icon icon="CLOSE" size={14} />
+            </Button>
+        </CloseWrapper>
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
