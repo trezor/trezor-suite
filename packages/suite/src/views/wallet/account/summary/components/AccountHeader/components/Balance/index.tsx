@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FormattedNumber } from '@suite/components/suite';
 import { Network, Fiat } from '@wallet-types';
 import l10nMessages from './index.messages';
@@ -71,6 +72,7 @@ const FiatValueRate = styled.div`
     display: flex;
     align-items: center;
     color: ${colors.TEXT_PRIMARY};
+    text-transform: uppercase;
 `;
 
 const BalanceWrapper = styled.div`
@@ -172,13 +174,13 @@ const AccountBalance = (props: Props) => {
                             {props.balance} {network.symbol}
                         </CoinBalance>
                     </BalanceWrapper>
-                    {props.xrpReserve !== '0' && (
+                    {props.xrpReserve && props.xrpReserve !== '0' && (
                         <BalanceWrapper>
                             <Label>
                                 <FormattedMessage {...l10nMessages.TR_RESERVE} />
                             </Label>
                             <FiatValueRate>
-                                {props.xrpReserve} {network.symbol}
+                                {formatNetworkAmount(props.xrpReserve, 'xrp')} {network.symbol}
                             </FiatValueRate>
                         </BalanceWrapper>
                     )}
