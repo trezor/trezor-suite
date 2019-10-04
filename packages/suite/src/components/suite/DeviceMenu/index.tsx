@@ -60,10 +60,10 @@ const DeviceIconWrapper = styled.div`
     margin: 0 3px;
 `;
 
-// const WalletIconWrapper = styled.div`
-//     padding-bottom: 1px;
-//     margin: 0 3px;
-// `;
+const WalletIconWrapper = styled.div`
+    padding-top: 1px;
+    margin: 0 3px;
+`;
 
 const Counter = styled.div`
     display: flex;
@@ -175,7 +175,8 @@ const DeviceMenu = ({
     const otherDevices = deviceUtils.getOtherDevices(selectedDevice, devices);
     const otherInstances: AcquiredDevice[][] = [];
     otherDevices.forEach(d => otherInstances.push(deviceUtils.getDeviceInstances(d, devices)));
-    const multipleDevices = otherDevices.length > 1;
+    const multipleDevices = otherDevices.length > 0;
+    const showWalletType = !!selectedDevice.instance;
 
     return (
         <Wrapper
@@ -195,38 +196,23 @@ const DeviceMenu = ({
                 isSelected
                 icon={
                     <React.Fragment>
-                        {/* {showWalletType && (
-                            <Tooltip
-                                content={
-                                    <WalletTooltipMsg
-                                        walletType={walletType}
-                                        isDeviceReady={isDeviceReady}
-                                    />
-                                }
-                                maxWidth={200}
-                                placement="bottom"
-                                delay={500}
-                            >
-                                <WalletIconWrapper>
-                                    <WalletTypeIcon
-                                        onClick={e => {
-                                            if (selectedDevice && isDeviceReady) {
-                                                this.props.duplicateDevice(selectedDevice);
-                                                e.stopPropagation();
-                                            }
-                                        }}
-                                        hoverColor={
-                                            isDeviceReady
-                                                ? colors.TEXT_PRIMARY
-                                                : colors.TEXT_SECONDARY
-                                        }
-                                        type={walletType}
-                                        size={16}
-                                        color={colors.TEXT_SECONDARY}
-                                    />
-                                </WalletIconWrapper>
-                            </Tooltip>
-                        )} */}
+                        {showWalletType && (
+                            // <Tooltip
+                            //     content={
+                            //         <WalletTooltipMsg
+                            //             walletType={walletType}
+                            //             isDeviceReady={isDeviceReady}
+                            //         />
+                            //     }
+                            //     maxWidth={200}
+                            //     placement="bottom"
+                            //     delay={500}
+                            // >
+                            <WalletIconWrapper>
+                                <Icon icon="WALLET_HIDDEN" size={16} />
+                            </WalletIconWrapper>
+                            // </Tooltip>
+                        )}
                         {multipleDevices && (
                             <Tooltip
                                 content={
