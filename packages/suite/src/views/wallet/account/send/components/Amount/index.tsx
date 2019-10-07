@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
-import { Output } from '@wallet-types/sendForm';
+import { Output, State } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
@@ -34,7 +34,7 @@ const Label = styled.span`
 
 interface Props {
     intl: InjectedIntl;
-    outputId: number;
+    outputId: Output['id'];
     fiatValue: Output['fiatValue']['value'];
     fiat: Fiat[];
     amount: Output['amount']['value'];
@@ -45,7 +45,7 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getErrorMessage = (error: Output['amount']['error']) => {
+const getMessage = (error: Output['amount']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_SET} />;
@@ -111,7 +111,7 @@ const Amount = (props: Props) => (
             }
             value={props.amount || ''}
             onChange={e => props.sendFormActions.handleAmountChange(props.outputId, e.target.value)}
-            bottomText={getErrorMessage(props.error)}
+            bottomText={getMessage(props.error)}
             sideAddons={
                 <>
                     <SetMax

@@ -3,6 +3,7 @@ export const DISPOSE = '@wallet-send-form/dispose';
 export const SET_ADDITIONAL_FORM_VISIBILITY = '@wallet-send-form/set-additional-form-visibility';
 
 export const HANDLE_ADDRESS_CHANGE = '@wallet-send-form/handle-address-change';
+export const COMPOSE_PROGRESS = '@wallet-send-form/compose-progress';
 export const HANDLE_AMOUNT_CHANGE = '@wallet-send-form/handle-amount-change';
 export const SET_MAX = '@wallet-send-form/set-max';
 

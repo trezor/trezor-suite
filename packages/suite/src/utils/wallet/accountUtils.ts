@@ -86,6 +86,37 @@ export const getTypeForNetwork = (accountType: Account['accountType'], intl: Inj
     }
 };
 
+export const stripNetworkAmount = (amount: string, decimals: number) => {
+    return new BigNumber(amount).toFixed(decimals, 1);
+};
+
+export const getDecimalCount = (number: string) => {
+    try {
+        const parts = number.split('.');
+        if (parts.length === 1) {
+            return '0';
+        }
+        if (parts.length === 2) {
+            return parts[1].length;
+        }
+    } catch (err) {
+        return number;
+    }
+};
+
+export const getNetworkAmount = (amount: string, symbol: Account['symbol']) => {
+    const network = NETWORKS.find(n => n.symbol === symbol);
+    if (!network) return null;
+
+    const decimals = getDecimalCount(amount);
+
+    if (decimals && decimals > network.decimals) {
+        return stripNetworkAmount(amount, network.decimals);
+    }
+
+    return amount;
+};
+
 export const formatAmount = (amount: string, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);

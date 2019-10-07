@@ -138,6 +138,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     <AdditionalForm networkType={network.networkType} />
                 )}
                 <SendAndClear
+                    isComposing={send.isComposing}
                     send={send}
                     suite={suite}
                     device={device}

@@ -23,6 +23,7 @@ const initialState = (loaded: InitialState): State => ({
             localCurrency: { value: DEFAULT_LOCAL_CURRENCY },
         },
     ],
+    isComposing: false,
     customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
     networkTypeRipple: {
@@ -81,7 +82,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 output.amount.error = null;
                 output.amount.value = amount;
 
-                if (validator.isEmpty(amount)) {
+                if (validator.isEmpty(amount) || amount.match(/^0+$/)) {
                     output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
@@ -202,6 +203,11 @@ export default (state: State | null = null, action: WalletAction): State | null 
                         output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
                     );
                 }
+                break;
+            }
+
+            case SEND.COMPOSE_PROGRESS: {
+                draft.isComposing = action.isComposing;
                 break;
             }
 

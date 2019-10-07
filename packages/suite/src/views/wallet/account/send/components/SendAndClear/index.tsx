@@ -35,6 +35,7 @@ interface Props {
     sendFormActionsEthereum: DispatchProps['sendFormActionsEthereum'];
     sendFormActionsRipple: DispatchProps['sendFormActionsRipple'];
     networkType: Account['networkType'];
+    isComposing: SendFormState['isComposing'];
     send: SendFormState;
     suite: AppState['suite'];
     device: TrezorDevice;
@@ -113,7 +114,11 @@ const SendAndClear = (props: Props) => (
             </Button>
         )}
         <Send
-            isDisabled={isDisabled(props.send, props.suite, props.device, props.networkType)}
+            isLoading={props.isComposing}
+            isDisabled={
+                props.isComposing ||
+                isDisabled(props.send, props.suite, props.device, props.networkType)
+            }
             onClick={() => {
                 switch (props.networkType) {
                     case 'bitcoin':

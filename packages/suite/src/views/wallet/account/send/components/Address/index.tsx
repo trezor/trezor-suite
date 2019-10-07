@@ -19,13 +19,13 @@ const QrButton = styled(Button)`
 
 interface Props {
     intl: InjectedIntl;
-    outputId: number;
+    outputId: Output['id'];
     error: Output['address']['error'];
     address: Output['address']['value'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getErrorMessage = (error: Output['address']['error']) => {
+const getMessage = (error: Output['address']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_SET} />;
@@ -53,7 +53,7 @@ const Address = (props: Props) => (
         spellCheck={false}
         autoCapitalize="off"
         topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
-        bottomText={getErrorMessage(props.error)}
+        bottomText={getMessage(props.error)}
         value={props.address || ''}
         onChange={e => props.sendFormActions.handleAddressChange(props.outputId, e.target.value)}
         sideAddons={
