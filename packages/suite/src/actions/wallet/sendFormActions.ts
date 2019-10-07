@@ -1,7 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
-import { formatNetworkAmount, getFiatValue, getNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    formatNetworkAmount,
+    getFiatValue,
+    getNetworkAmount,
+} from '@wallet-utils/accountUtils';
 import { getAccountKey } from '@suite-utils/reducerUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
@@ -144,7 +148,6 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         outputId,
         amount: getNetworkAmount(amount, account.symbol),
     });
-
     dispatch(compose());
     dispatch(sendFormCacheActions.cache());
 };
@@ -180,7 +183,7 @@ export const handleSelectCurrencyChange = (
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
-            amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
+            amount: getNetworkAmount(amountBigNumber.toString(), account.symbol),
         });
     }
 
@@ -223,7 +226,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
-        amount,
+        amount: getNetworkAmount(amount, account.symbol),
     });
 
     dispatch(compose());

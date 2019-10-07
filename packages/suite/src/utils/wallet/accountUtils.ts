@@ -1,6 +1,7 @@
 import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
 import BigNumber from 'bignumber.js';
+import validator from 'validator';
 import { Account } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 
@@ -93,20 +94,27 @@ export const stripNetworkAmount = (amount: string, decimals: number) => {
 export const getDecimalCount = (number: string) => {
     try {
         const parts = number.split('.');
+
         if (parts.length === 1) {
             return '0';
         }
+
         if (parts.length === 2) {
-            return parts[1].length;
+            if (validator.isNumeric(parts[1])) {
+                return parts[1].length;
+            }
+            return '0';
         }
     } catch (err) {
-        return number;
+        return '0';
     }
+
+    return '0';
 };
 
 export const getNetworkAmount = (amount: string, symbol: Account['symbol']) => {
     const network = NETWORKS.find(n => n.symbol === symbol);
-    if (!network) return null;
+    if (!network) return amount;
 
     const decimals = getDecimalCount(amount);
 

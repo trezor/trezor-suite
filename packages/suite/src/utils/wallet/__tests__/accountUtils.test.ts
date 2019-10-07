@@ -56,4 +56,16 @@ describe('accountUtils', () => {
         expect(accountUtils.networkAmountToSatoshi('0.000000000000000001', 'eth')).toEqual('1');
         expect(accountUtils.networkAmountToSatoshi('aaa', 'eth')).toEqual('-1');
     });
+
+    it('get amount for network', () => {
+        expect(accountUtils.getNetworkAmount('0.000001', 'btc')).toEqual('0.000001');
+        expect(accountUtils.getNetworkAmount('0.111111111111111111111111111111', 'btc')).toEqual(
+            '0.11111111',
+        );
+        expect(accountUtils.getNetworkAmount('0.1', 'btc')).toEqual('0.1');
+        expect(accountUtils.getNetworkAmount('0.111111111111111111111111111111', 'eth')).toEqual(
+            '0.111111111111111111',
+        );
+        expect(accountUtils.getNetworkAmount('0.0000000000001', 'eth')).toEqual('0.0000000000001');
+    });
 });
