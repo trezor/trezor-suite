@@ -1,13 +1,13 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { InjectedIntl } from 'react-intl';
-import { CoinLogo, Icon, colors } from '@trezor/components';
+import { Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
 import AccountName from '@wallet-components/AccountName';
 
 import { MessageDescriptor } from '@suite/types/suite';
 import { StateProps, DispatchProps } from './Container';
-import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
+import { Content, LayoutAccount as Layout } from '@wallet-components';
 import l10nMessages from './components/messages';
 import {
     Address,
