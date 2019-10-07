@@ -3,10 +3,12 @@ import styled, { css } from 'styled-components';
 import { InjectedIntl } from 'react-intl';
 import { CoinLogo, Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
+import AccountName from '@wallet-components/AccountName';
 
-import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
+import { MessageDescriptor } from '@suite/types/suite';
 import { StateProps, DispatchProps } from './Container';
 import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
+import l10nMessages from './components/messages';
 import {
     Address,
     Amount,
@@ -47,15 +49,6 @@ const OutputWrapper = styled.div`
     padding: 0 0 30px 0;
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-right: 10px;
-`;
-
-const StyledTitle = styled(Title)`
-    display: flex;
-    align-items: center;
-`;
-
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     const {
         device,
@@ -79,15 +72,12 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
         );
     }
 
-    const accountType = getTypeForNetwork(account.accountType, props.intl);
-
     return (
         <Layout>
-            <StyledTitle>
-                <StyledCoinLogo size={24} symbol={account.symbol} />
-                Send {getTitleForNetwork(network.symbol, props.intl)}
-                {accountType ? ` (${accountType})` : ''}
-            </StyledTitle>
+            <AccountName
+                account={account}
+                message={l10nMessages.TR_SEND_NETWORK as MessageDescriptor}
+            />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     <SlimRow isOnlyOne={send.outputs.length === 1}>

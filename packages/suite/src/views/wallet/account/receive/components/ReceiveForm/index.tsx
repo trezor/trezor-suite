@@ -4,7 +4,6 @@ import { FormattedMessage } from 'react-intl';
 import { AccountAddresses } from 'trezor-connect';
 import { H6, variables, Button, colors, Icon, Link } from '@trezor/components';
 
-import Title from '@wallet-components/Title';
 import { selectText } from '@suite-utils/dom';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { showAddress } from '@wallet-actions/receiveActions';
@@ -179,7 +178,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
 
     return (
         <Wrapper key={props.account.descriptor}>
-            <Title>{props.title}</Title>
+            {props.title}
 
             {/* TODO: remove ugly check for addresses and keep typescript happy */}
             {props.networkType === 'bitcoin' && addresses && (
