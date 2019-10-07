@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const definedMessages = defineMessages({
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
-        defaultMessage: 'Transactions',
+        defaultMessage: '{network} Transactions',
     },
     TR_LOADING_TRANSACTIONS: {
         id: 'TR_LOADING_TRANSACTIONS',

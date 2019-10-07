@@ -126,11 +126,11 @@ const definedMessages = defineMessages({
     },
     TR_NETWORK_TYPE_LEGACY: {
         id: 'TR_NETWORK_TYPE_LEGACY',
-        defaultMessage: 'legacy',
+        defaultMessage: 'Legacy',
     },
     TR_NETWORK_TYPE_SEGWIT: {
         id: 'TR_NETWORK_TYPE_SEGWIT',
-        defaultMessage: 'segwit',
+        defaultMessage: 'Segwit',
     },
 });
 
