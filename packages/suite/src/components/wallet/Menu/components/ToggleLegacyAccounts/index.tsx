@@ -5,7 +5,7 @@ import { colors, Icon } from '@trezor/components';
 import l10nMessages from '../../index.messages';
 
 const Wrapper = styled.div`
-    padding: 0px 25px 0px 15px;
+    padding: 0px 15px;
     margin: 8px 0px;
     display: flex;
     cursor: pointer;

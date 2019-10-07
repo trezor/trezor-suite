@@ -96,6 +96,7 @@ const PairDeviceStep = (props: Props) => {
                                         </Text>
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
+                                                data-test="button-continue"
                                                 onClick={() =>
                                                     props.onboardingActions.goToNextStep()
                                                 }

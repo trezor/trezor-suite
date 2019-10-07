@@ -12,7 +12,7 @@ const Wrapper = styled.div<WrapperProps>`
     z-index: 10;
     display: flex;
     align-items: center;
-    padding: 0px 25px;
+    padding: 0px 20px;
     background: ${props => (props.disabled ? colors.GRAY_LIGHT : 'transparent')};
     background: ${props => (props.isSelected ? colors.WHITE : 'transparent')};
     cursor: pointer;
@@ -38,7 +38,6 @@ const Wrapper = styled.div<WrapperProps>`
 
 const LabelWrapper = styled.div`
     flex: 1 1 auto;
-    padding-left: 18px;
     overflow: hidden;
 `;
 
@@ -69,6 +68,12 @@ const IconWrapper = styled.div`
 
 const ImageWrapper = styled.div`
     position: relative;
+    width: 25px;
+    align-items: center;
+`;
+const LogoWrapper = styled.div`
+    min-width: 40px;
+    text-align: center;
 `;
 
 const Dot = styled.div`
@@ -78,7 +83,7 @@ const Dot = styled.div`
     z-index: 10;
     background: ${props => props.color};
     top: -4px;
-    right: -3px;
+    right: 1px;
     width: 10px;
     height: 10px;
 `;
@@ -116,13 +121,15 @@ const DeviceItem = ({
             className={className}
             {...rest}
         >
-            <ImageWrapper>
-                <Dot color={getStatusColor(status)} />
-                <TrezorImage
-                    height={28}
-                    model={(device.features && device.features.major_version) || 1}
-                />
-            </ImageWrapper>
+            <LogoWrapper>
+                <ImageWrapper>
+                    <Dot color={getStatusColor(status)} />
+                    <TrezorImage
+                        height={28}
+                        model={(device.features && device.features.major_version) || 1}
+                    />
+                </ImageWrapper>
+            </LogoWrapper>
             <LabelWrapper>
                 <Name>{device.instanceLabel}</Name>
                 <Status title={getStatusName(status, intl)}>{getStatusName(status, intl)}</Status>

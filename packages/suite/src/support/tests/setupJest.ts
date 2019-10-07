@@ -37,7 +37,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
  * @param {Partial<Features>} [feat]
  * @returns {Features}
  */
-const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
+export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     device_id: 'device-id',
     flags: 0,
     initialized: true,
