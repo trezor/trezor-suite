@@ -9,6 +9,8 @@ import { Output } from '@wallet-types/sendForm';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 
+const TopLabel = styled.div``;
+
 const QrButton = styled(Button)`
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
@@ -52,7 +54,7 @@ const Address = (props: Props) => (
         autoCorrect="off"
         spellCheck={false}
         autoCapitalize="off"
-        topLabel={props.intl.formatMessage(commonMessages.TR_ADDRESS)}
+        topLabel={<TopLabel>{props.intl.formatMessage(commonMessages.TR_ADDRESS)}</TopLabel>}
         bottomText={getMessage(props.error)}
         value={props.address || ''}
         onChange={e => props.sendFormActions.handleAddressChange(props.outputId, e.target.value)}
