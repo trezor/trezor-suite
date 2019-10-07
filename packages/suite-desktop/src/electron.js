@@ -1,4 +1,13 @@
-const { app, session, BrowserWindow, ipcMain, globalShortcut, protocol } = require('electron');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const {
+    app,
+    session,
+    BrowserWindow,
+    ipcMain,
+    globalShortcut,
+    protocol,
+    shell,
+} = require('electron');
 const isDev = require('electron-is-dev');
 const prepareNext = require('electron-next');
 const path = require('path');
@@ -31,8 +40,21 @@ const init = async () => {
             preload: path.join(__dirname, 'preload.js'),
         },
     });
+    mainWindow.removeMenu();
 
-    const PROTOCOL = 'file'
+    // open external links in default browser
+    const handleExternalLink = (event, url) => {
+        // TODO? url.startsWith('http:') || url.startsWith('https:');
+        if (url !== mainWindow.webContents.getURL()) {
+            event.preventDefault();
+            shell.openExternal(url);
+        }
+    };
+
+    mainWindow.webContents.on('will-navigate', handleExternalLink);
+    mainWindow.webContents.on('new-window', handleExternalLink);
+
+    const PROTOCOL = 'file';
     const src = isDev
         ? 'http://localhost:8000/'
         : url.format({
@@ -89,7 +111,7 @@ app.on('activate', () => {
 });
 
 app.on('browser-window-focus', (event, win) => {
-    if (!win.isDevToolsOpened()) {
+    if (isDev && !win.isDevToolsOpened()) {
         win.openDevTools();
     }
 });

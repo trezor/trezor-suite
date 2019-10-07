@@ -9,4 +9,11 @@ const cypressTypeScriptPreprocessor = require('./ts-preprocessor');
 module.exports = on => {
     addMatchImageSnapshotPlugin(on);
     on('file:preprocessor', cypressTypeScriptPreprocessor);
+    on('before:browser:launch', (browser = {}, args) => {
+        if (browser.name === 'chrome') {
+            args.push('--disable-dev-shm-usage');
+            return args;
+        }
+        return args;
+    });
 };

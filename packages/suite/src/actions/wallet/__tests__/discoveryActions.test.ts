@@ -111,6 +111,7 @@ jest.mock('trezor-connect', () => {
                     response: {
                         descriptor: param.path,
                         empty: isEmpty,
+                        history: {},
                     },
                     error: null,
                 });

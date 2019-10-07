@@ -36,10 +36,22 @@ describe('eth utils', () => {
         expect(utils.strip('2540be3ff')).toBe('02540be3ff');
     });
 
+    it('isHex', () => {
+        expect(utils.isHex('0x2540be3ff')).toBe(true);
+        expect(utils.isHex('0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e6')).toBe(true);
+        expect(utils.isHex('89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e6')).toBe(true);
+        expect(utils.isHex('bla')).toBe(false);
+    });
+
     it('validate address', () => {
         // TODO: add more tests
         expect(utils.validateAddress('')).toBe('Address is not set');
+        expect(utils.validateAddress('0x73d0385F4d8E00C5e6504C6030F47BF6212736A8')).toBeNull();
+
         expect(utils.validateAddress('aaa')).toBe('Address is not valid');
+        expect(utils.validateAddress('0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e6')).toBe(
+            'Address is not a valid checksum',
+        );
         expect(utils.validateAddress('BB9bc244D798123fDe783fCc1C72d3Bb8C189413')).toBe(
             'Address is not valid',
         );

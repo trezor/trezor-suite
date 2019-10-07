@@ -9,9 +9,10 @@ import { Account } from '@wallet-types';
  * @param {Partial<Features>} [feat]
  * @returns {Features}
  */
-const getWalletAccount = (account?: Partial<Account>) => ({
+// @ts-ignore
+const getWalletAccount = (account?: Partial<Account>): Account => ({
     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-    index: 1,
+    index: 0,
     path: "m/44'/60'/0'/0/1",
     descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
     accountType: 'normal',
@@ -36,7 +37,7 @@ const getWalletAccount = (account?: Partial<Account>) => ({
  * @param {Partial<Features>} [feat]
  * @returns {Features}
  */
-const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
+export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     device_id: 'device-id',
     flags: 0,
     initialized: true,

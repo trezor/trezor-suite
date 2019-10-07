@@ -17,6 +17,7 @@ jest.mock('trezor-connect', () => {
         setTestFixtures: (f: any) => {
             fixture = f;
         },
+        DEVICE: {},
     };
 });
 

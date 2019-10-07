@@ -74,6 +74,15 @@ const RecoveryStepModelOne = (props: Props) => {
         if (deviceCall.result && deviceCall.name === RECOVER_DEVICE) {
             return 'success';
         }
+        if (
+            deviceCall.error &&
+            // todo: typescript
+            // @ts-ignore
+            !(deviceCall.error.code && deviceCall.error.code !== 'Failure_ActionCancelled') &&
+            deviceCall.name === RECOVER_DEVICE
+        ) {
+            return 'error';
+        }
         if (uiInteraction.name === WORD_REQUEST_PLAIN) {
             return 'recovering';
         }
@@ -82,15 +91,6 @@ const RecoveryStepModelOne = (props: Props) => {
             uiInteraction.name === WORD_REQUEST_MATRIX9
         ) {
             return 'recovering-advanced';
-        }
-        if (
-            deviceCall.error &&
-            // todo: typescript
-            // @ts-ignore
-            (deviceCall.error.code && deviceCall.error.code !== 'Failure_ActionCancelled') &&
-            deviceCall.name === RECOVER_DEVICE
-        ) {
-            return 'error';
         }
         return status;
     };

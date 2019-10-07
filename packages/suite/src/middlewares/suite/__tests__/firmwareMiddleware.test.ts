@@ -56,7 +56,7 @@ describe('firmware middleware', () => {
     describe('SUITE.APP_CHANGED', () => {
         it('payload=firwmare (into firmware)', async () => {
             const store = initStore(getInitialState());
-            store.dispatch({ type: SUITE.APP_CHANGED, payload: 'firmware' });
+            await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'firmware' });
 
             const result = store.getActions();
             expect(result).toEqual([
@@ -68,7 +68,7 @@ describe('firmware middleware', () => {
 
         it('from firmware', async () => {
             const store = initStore(getInitialState({ app: 'firmware' }));
-            store.dispatch({ type: SUITE.APP_CHANGED, payload: 'wallet' });
+            await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'wallet' });
 
             const result = store.getActions();
 

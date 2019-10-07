@@ -155,60 +155,70 @@ const Back = styled.div`
 
 interface Props {
     showBack?: boolean;
-    words?: string[];
     wordsNumber?: number;
-    checkingWordNumber?: number | null;
-    writingWordNumber?: number | null;
     flipOnMouseOver?: boolean;
+    counter?: number;
 }
 
 const SeedCard = ({
     showBack = false,
-    words = [],
     wordsNumber = 24,
-    checkingWordNumber = null,
-    writingWordNumber = null,
     flipOnMouseOver = false,
-}: Props) => (
-    <Card>
-        <CardInner showBack={showBack} flipOnMouseOver={flipOnMouseOver}>
-            <CardFront>
-                <FrontLeft>
-                    <TrezorLogoVertical />
-                </FrontLeft>
-                <FrontRight>
-                    <FrontHeader>
-                        YOUR PERSONAL <br /> RECOVERY CARD
-                    </FrontHeader>
-                    <DeviceLabel>DEVICE LABEL</DeviceLabel>
-                    <DoNotDisclose>
-                        <Icon style={{ marginBottom: '8px' }} icon="EYE_CROSSED" size={18} />
-                        DO NOT DISCLOSE THE SEED <br /> TO ANYBODY
-                    </DoNotDisclose>
-                </FrontRight>
-            </CardFront>
-            <CardBack>
-                <Back>
-                    {Array.from(Array(wordsNumber)).map((item, index) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <Line key={`${item}-${index}`} wordsNumber={wordsNumber}>
-                            <LineNumber>{index + 1}</LineNumber>
-                            <LineBox isChecking={index + 1 === checkingWordNumber}>
-                                <LineWord>{words[index]}</LineWord>
-                                {(index + 1 === writingWordNumber ||
-                                    index + 1 === checkingWordNumber) && (
-                                    <Pencil
-                                        animate={index + 1 === writingWordNumber}
-                                        style={{ marginBottom: '24px' }}
-                                    />
-                                )}
-                            </LineBox>
-                        </Line>
-                    ))}
-                </Back>
-            </CardBack>
-        </CardInner>
-    </Card>
-);
+    counter,
+}: Props) => {
+    let internalCounter;
+    if (typeof counter === 'undefined') {
+        internalCounter = 0;
+    } else {
+        // counter starts from 0 but for visual purpose I need it to start from 1;
+        internalCounter = counter + 1;
+    }
+    const words = Array.from(Array(Math.min(internalCounter, wordsNumber))).map(() => '*****');
 
+    const checkingWordNumber =
+        internalCounter >= wordsNumber ? internalCounter - wordsNumber : null;
+    const writingWordNumber = internalCounter <= wordsNumber ? internalCounter : null;
+
+    return (
+        <Card>
+            <CardInner showBack={showBack} flipOnMouseOver={flipOnMouseOver}>
+                <CardFront>
+                    <FrontLeft>
+                        <TrezorLogoVertical />
+                    </FrontLeft>
+                    <FrontRight>
+                        <FrontHeader>
+                            YOUR PERSONAL <br /> RECOVERY CARD
+                        </FrontHeader>
+                        <DeviceLabel>DEVICE LABEL</DeviceLabel>
+                        <DoNotDisclose>
+                            <Icon style={{ marginBottom: '8px' }} icon="EYE_CROSSED" size={18} />
+                            DO NOT DISCLOSE THE SEED <br /> TO ANYBODY
+                        </DoNotDisclose>
+                    </FrontRight>
+                </CardFront>
+                <CardBack>
+                    <Back>
+                        {Array.from(Array(wordsNumber)).map((item, index) => (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <Line key={`${item}-${index}`} wordsNumber={wordsNumber}>
+                                <LineNumber>{index + 1}</LineNumber>
+                                <LineBox isChecking={index + 1 === checkingWordNumber}>
+                                    <LineWord>{words[index]}</LineWord>
+                                    {(index + 1 === writingWordNumber ||
+                                        index + 1 === checkingWordNumber) && (
+                                        <Pencil
+                                            animate={index + 1 === writingWordNumber}
+                                            style={{ marginBottom: '24px' }}
+                                        />
+                                    )}
+                                </LineBox>
+                            </Line>
+                        ))}
+                    </Back>
+                </CardBack>
+            </CardInner>
+        </Card>
+    );
+};
 export { SeedCard };

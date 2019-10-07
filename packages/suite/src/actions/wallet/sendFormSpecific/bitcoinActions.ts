@@ -4,6 +4,7 @@ import { Output } from '@wallet-types/sendForm';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { SEND } from '@wallet-actions/constants';
+import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormCacheActions from '../sendFormCacheActions';
@@ -66,6 +67,11 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!transactionInfo || transactionInfo.type !== 'final') return;
     const { transaction } = transactionInfo;
 
+    const inputs = transaction.inputs.map(vin => ({
+        ...vin,
+        sequence: 0xffffffff - 2, // RBF
+    }));
+
     const resp = await TrezorConnect.signTransaction({
         device: {
             path: selectedDevice.path,
@@ -74,7 +80,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         },
         useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
         outputs: transaction.outputs,
-        inputs: transaction.inputs,
+        inputs,
         coin: account.symbol,
         push: true,
     });
@@ -88,6 +94,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
                 cancelable: true,
             }),
         );
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
         dispatch(
             notificationActions.add({
@@ -99,24 +106,40 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+export const compose = (setMax: boolean = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { send, selectedAccount } = getState().wallet;
     const account = selectedAccount.account as Account;
     if (!send || !account.addresses || !account.utxo) return;
 
-    // TODO: validate if form has errors
-
     const { outputs } = send;
 
+    // TODO refactor this
     const composedOutputs = outputs.map(o => {
         const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
 
         if (o.address.value) {
+            if (setMax) {
+                return {
+                    address: o.address.value,
+                    type: 'send-max',
+                } as const;
+            }
+
             return {
                 address: o.address.value,
                 amount,
             } as const;
         }
+
+        if (setMax) {
+            return {
+                type: 'send-max-noaddress',
+            } as const;
+        }
+
         return {
             type: 'noaddress',
             amount,
@@ -136,6 +159,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (resp.success) {
         const tx = resp.payload[0];
+
         dispatch({
             type: SEND.BTC_PRECOMPOSED_TX,
             payload: tx,
@@ -148,5 +172,9 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
                 error: resp.payload.error,
             },
         });
+    }
+
+    if (resp.success) {
+        return resp.payload[0];
     }
 };

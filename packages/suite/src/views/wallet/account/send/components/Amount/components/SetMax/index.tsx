@@ -29,11 +29,13 @@ interface Props {
 const SetMax = (props: Props) => (
     <SetMaxButton
         key="icon"
-        onClick={() => props.sendFormActions.setMax(props.outputId)}
-        variant={props.canSetMax ? 'white' : 'success'}
+        onClick={() => {
+            props.sendFormActions.setMax(props.outputId);
+        }}
+        variant="white"
     >
-        {props.canSetMax && <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />}
-        {!props.canSetMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />}
+        <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />
+        {/* {!props.canSetMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />} */}
         <FormattedMessage {...messages.TR_SET_MAX} />
     </SetMaxButton>
 );

@@ -1,10 +1,11 @@
-import { AccountInfo } from 'trezor-connect';
+import TrezorConnect, { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { SETTINGS } from '@suite-config';
 
 export type AccountActions =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
@@ -59,8 +60,11 @@ export const create = (
         descriptor: accountInfo.descriptor,
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
-        empty: accountInfo.empty,
-        visible: !accountInfo.empty,
+        // empty: accountInfo.empty,
+        empty: accountInfo.empty && !accountInfo.history.unconfirmed, // TODO remove this after trezor-connect 8.0.7 release
+        visible:
+            !accountInfo.empty ||
+            (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
         formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),
@@ -78,6 +82,7 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         ...account,
         ...accountInfo,
         path: account.path,
+        empty: accountInfo.empty && !accountInfo.history.unconfirmed, // TODO remove this after trezor-connect 8.0.7 release
         formattedBalance: formatNetworkAmount(accountInfo.availableBalance, account.symbol),
         ...getAccountSpecific(accountInfo, account.networkType),
     },
@@ -112,3 +117,19 @@ export const changeAccountVisibility = (payload: Account) => ({
     type: ACCOUNT.CHANGE_VISIBILITY,
     payload,
 });
+
+export const fetchAndUpdateAccount = (account: Account) => async (
+    dispatch: Dispatch,
+    _getState: GetState,
+) => {
+    const response = await TrezorConnect.getAccountInfo({
+        coin: account.symbol,
+        descriptor: account.descriptor,
+        details: 'txs',
+        pageSize: SETTINGS.TXS_PER_PAGE,
+    });
+
+    if (response.success) {
+        dispatch(update(account, response.payload));
+    }
+};
