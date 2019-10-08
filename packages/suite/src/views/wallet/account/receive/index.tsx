@@ -66,6 +66,11 @@ const AccountReceive = (props: Props) => {
     const showButtonDisabled =
         props.locks.includes(SUITE.LOCK_TYPE.DEVICE) || props.locks.includes(SUITE.LOCK_TYPE.UI);
 
+    const accountNameMessage =
+        account && account.networkType === 'ethereum'
+            ? l10nMessages.TR_RECEIVE_NETWORK_AND_TOKENS
+            : l10nMessages.TR_RECEIVE_NETWORK;
+
     return (
         <LayoutAccount>
             <ReceiveForm
@@ -79,7 +84,7 @@ const AccountReceive = (props: Props) => {
                 title={
                     <AccountName
                         account={account}
-                        message={l10nMessages.TR_RECEIVE_NETWORK as MessageDescriptor}
+                        message={accountNameMessage as MessageDescriptor}
                     />
                 }
             />

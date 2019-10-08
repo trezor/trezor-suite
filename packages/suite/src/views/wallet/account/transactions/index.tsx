@@ -54,12 +54,16 @@ const Transactions = (props: Props) => {
         setSelectedPage(page);
         props.fetchTransactions(selectedAccount.account!, page, size);
     };
+    const accountNameMessage =
+        selectedAccount.account && selectedAccount.account.networkType === 'ethereum'
+            ? l10nMessages.TR_TRANSACTIONS_AND_TOKENS
+            : l10nMessages.TR_TRANSACTIONS;
 
     return (
         <LayoutAccount>
             <AccountName
                 account={selectedAccount.account}
-                message={l10nMessages.TR_TRANSACTIONS as MessageDescriptor}
+                message={accountNameMessage as MessageDescriptor}
             />
             {transactions.isLoading && (
                 <LoaderWrapper>
