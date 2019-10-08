@@ -62,7 +62,7 @@ const definedMessages = defineMessages({
     },
     TR_NETWORK_ETHEREUM: {
         id: 'TR_NETWORK_ETHEREUM',
-        defaultMessage: 'Ethereum and tokens',
+        defaultMessage: 'Ethereum',
     },
     TR_NETWORK_ETHEREUM_TESTNET: {
         id: 'TR_NETWORK_ETHEREUM_TESTNET',
@@ -70,7 +70,7 @@ const definedMessages = defineMessages({
     },
     TR_NETWORK_ETHEREUM_CLASSIC: {
         id: 'TR_NETWORK_ETHEREUM_CLASSIC',
-        defaultMessage: 'Ethereum Classic and tokens',
+        defaultMessage: 'Ethereum Classic',
     },
     TR_NETWORK_XRP: {
         id: 'TR_NETWORK_XRP',

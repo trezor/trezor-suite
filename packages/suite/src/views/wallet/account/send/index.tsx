@@ -62,6 +62,10 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
         sendFormActionsRipple,
     } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
+    const accountNameMessage =
+        account && account.networkType === 'ethereum'
+            ? l10nMessages.TR_SEND_NETWORK_AND_TOKENS
+            : l10nMessages.TR_SEND_NETWORK;
 
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
@@ -74,10 +78,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
 
     return (
         <Layout>
-            <AccountName
-                account={account}
-                message={l10nMessages.TR_SEND_NETWORK as MessageDescriptor}
-            />
+            <AccountName account={account} message={accountNameMessage as MessageDescriptor} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     <SlimRow isOnlyOne={send.outputs.length === 1}>
