@@ -65,7 +65,6 @@ const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) =
                 };
             }
             break;
-        default:
         // no default
     }
 
