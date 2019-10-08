@@ -152,7 +152,11 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
         common.response({
             id: data.id,
             type: RESPONSES.GET_INFO,
-            payload: utils.transformServerInfo(info),
+            payload: {
+                // @ts-ignore: accessing private var _url
+                url: api.connection._url,
+                ...utils.transformServerInfo(info),
+            },
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error: utils.transformError(error) });

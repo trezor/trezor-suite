@@ -22,6 +22,7 @@ export interface Error {
 export interface GetInfo {
     type: typeof RESPONSES.GET_INFO;
     payload: {
+        url: string;
         name: string;
         shortcut: string;
         testnet: boolean;
@@ -29,9 +30,6 @@ export interface GetInfo {
         decimals: number;
         blockHeight: number;
         blockHash: string;
-        misc?: {
-            reserve?: string;
-        };
     };
 }
 
