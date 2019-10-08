@@ -65,7 +65,7 @@ export const getInitialState = (custom?: any) => {
             reducerEnabled: true,
             ...onboarding,
             recovery: {
-                ...recoveryReducer(undefined, {type: 'foo'} as any),
+                ...recoveryReducer(undefined, { type: 'foo' } as any),
             },
         },
         suite: {
