@@ -60,7 +60,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
                 : 'https://connect.trezor.io/8/';
-        // : 'https://localhost:8088/';
+        // 'https://localhost:8088/';
+        // 'https://connect.corp.sldev.cz/feature/precompose-tx/';
 
         await TrezorConnect.init({
             connectSrc,
@@ -80,7 +81,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,
-            error: error.message,
+            error,
         });
     }
 };

@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { SUITE, ROUTER } from '@suite-actions/constants';
+import { SUITE, ROUTER, MODAL } from '@suite-actions/constants';
 import { SETTINGS, ACCOUNT } from '@wallet-actions/constants';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -30,9 +30,15 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         return action;
     }
 
-    // do not close modals during discovery
+    // do not close "device instance" modal during discovery
     if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
-        return action;
+        const { modal } = prevState;
+        if (
+            modal.context === MODAL.CONTEXT_DEVICE &&
+            modal.windowType === SUITE.REQUEST_DEVICE_INSTANCE
+        ) {
+            return action;
+        }
     }
 
     // consider if discovery should be interrupted

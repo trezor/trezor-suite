@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { H5, P, Button, Input, Checkbox, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
-import { useKeyPress } from '@suite-utils/hooks';
+import { useKeyPress } from '@suite-utils/dom';
 
 import modalsMessages from '../messages';
 import messages from './messages';
@@ -89,7 +89,7 @@ const Passphrase: FunctionComponent<Props> = ({
     }
 
     useEffect(() => {
-        if (ref && ref.current && !focusInput) {
+        if (ref && ref.current && focusInput) {
             ref.current.focus();
             setFocusInput(false);
         }

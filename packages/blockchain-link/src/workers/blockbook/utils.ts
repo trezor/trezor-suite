@@ -124,37 +124,68 @@ export const transformTransaction = (
         ? addresses.change.concat(addresses.used, addresses.unused)
         : [descriptor];
 
-    const inLength = Array.isArray(tx.vin) ? tx.vin.length : 0;
-    const outLength = Array.isArray(tx.vout) ? tx.vout.length : 0;
+    const vinLength = Array.isArray(tx.vin) ? tx.vin.length : 0;
+    const voutLength = Array.isArray(tx.vout) ? tx.vout.length : 0;
     const outgoing = filterTargets(myAddresses, tx.vin);
     const incoming = filterTargets(myAddresses, tx.vout);
     const internal = addresses ? filterTargets(addresses.change, tx.vout) : [];
     const tokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
     let type: Transaction['type'];
     let targets: VinVout[] = [];
+    let amount = tx.value;
 
     // && !hasJoinsplits (from hd-wallet)
     if (outgoing.length === 0 && incoming.length === 0 && tokens.length === 0) {
         type = 'unknown';
     } else if (
-        inLength > 0 &&
-        outLength > 0 &&
-        outgoing.length === inLength &&
-        incoming.length === outLength
+        vinLength > 0 &&
+        voutLength > 0 &&
+        outgoing.length === vinLength &&
+        incoming.length === voutLength
     ) {
         // all inputs and outputs are mine
         type = 'self';
+        // recalculate amount, amount spent is just a fee
+        amount = tx.fees;
     } else if (outgoing.length === 0 && (incoming.length > 0 || tokens.length > 0)) {
         // none of the input is mine but and output or token transfer is mine
         type = 'recv';
-        if (incoming.length > 0 && Array.isArray(tx.vin)) {
-            targets = tx.vin;
+        amount = '0';
+        if (incoming.length > 0) {
+            if (Array.isArray(tx.vin)) {
+                targets = tx.vin;
+            }
+            // recalculate amount, sum all incoming vout
+            amount = incoming.reduce((prev, vout) => {
+                if (typeof vout.value !== 'string') return prev;
+                const bn = new BigNumber(prev).plus(vout.value);
+                return bn.toString();
+            }, amount);
         }
     } else {
         type = 'sent';
+        // regular targets
         if (tokens.length === 0 && Array.isArray(tx.vout)) {
             // filter account receive and change addresses from output
             targets = tx.vout.filter(o => incoming.indexOf(o) < 0 && internal.indexOf(o) < 0);
+        }
+        // ethereum specific transaction
+        if (tx.ethereumSpecific) {
+            amount = tokens.length > 0 || tx.ethereumSpecific.status === 0 ? tx.fees : tx.value;
+        } else if (Array.isArray(tx.vout)) {
+            // bitcoin-like transaction
+            // sum all my inputs
+            const myInputsSum = outgoing.reduce((prev, vin) => {
+                if (typeof vin.value !== 'string') return prev;
+                const bn = new BigNumber(prev).plus(vin.value);
+                return bn.toString();
+            }, '0');
+            // reduce sum by my outputs values
+            amount = incoming.reduce((prev, vout) => {
+                if (typeof vout.value !== 'string') return prev;
+                const bn = new BigNumber(prev).minus(vout.value);
+                return bn.toString();
+            }, myInputsSum);
         }
     }
 
@@ -175,7 +206,7 @@ export const transformTransaction = (
         blockHeight: tx.blockHeight,
         blockHash: tx.blockHash,
 
-        amount: tx.value,
+        amount,
         fee: tx.fees,
 
         targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t)),
@@ -256,7 +287,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     const descriptor = payload.address;
     const addresses = transformAddresses(payload.tokens);
     const tokens = transformTokenInfo(payload.tokens);
-    const empty = payload.txs === 0;
+    const empty = payload.txs === 0 && payload.unconfirmedTxs === 0;
     const unconfirmed = new BigNumber(payload.unconfirmedBalance);
     // reduce or increase availableBalance
     const availableBalance =

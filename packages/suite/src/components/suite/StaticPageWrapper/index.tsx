@@ -1,15 +1,15 @@
 import React from 'react';
-import Layout from '@suite-components/Layout';
+import SuiteLayout from '@suite-components/SuiteLayout';
 
 interface Props {
     children: React.ReactNode;
 }
 
-const StaticPageWrapper: React.FunctionComponent<Props> = props => {
+const StaticPageWrapper = (props: Props) => {
     return (
-        <Layout fullscreenMode disableNotifications disableModals>
+        <SuiteLayout fullscreenMode disableNotifications disableModals>
             {props.children}
-        </Layout>
+        </SuiteLayout>
     );
 };
 

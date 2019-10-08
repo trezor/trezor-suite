@@ -1,33 +1,41 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-const fixtures = [
+import { SUITE, FIRMWARE } from '@suite-actions/constants';
+import { DEVICE, UI } from 'trezor-connect';
+
+const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
+
+const testDevice = getSuiteDevice();
+
+export const firmwareUpdate = [
     {
         description: 'Success',
         mocks: {
             rollout: {
                 success: new ArrayBuffer(512),
+                error: false,
             },
             connect: {
                 success: true,
             },
         },
-        // this is how to override default state, nested merge and override works like a charm using lodash
         initialState: {
             suite: {
-                device: {
-                    features: { major_version: 2 },
-                },
+                device: getSuiteDevice({
+                    connected: true,
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
             },
         },
         result: {
             actions: [
-                // todo: notification
-                { type: '@suite/lock-ui', payload: true },
-                { type: '@suite/set-update-status', payload: 'started' },
-                { type: '@suite/set-update-status', payload: 'downloading' },
-                { type: '@suite/set-update-status', payload: 'installing' },
-                { type: '@suite/set-update-status', payload: 'restarting' },
-                { type: '@suite/lock-ui', payload: false },
+                { type: FIRMWARE.SET_ERROR, payload: undefined },
+                { type: SUITE.LOCK_UI, payload: true },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
+                // todo: waiting-for-confirmation and installing is not tested
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'restarting' },
+                { type: SUITE.LOCK_UI, payload: false },
             ],
             state: { firmware: { status: 'restarting' } },
         },
@@ -36,11 +44,32 @@ const fixtures = [
         description: 'Fails for missing device',
         initialState: {
             suite: {
-                device: null,
+                device: undefined,
             },
         },
         result: {
-            state: { firmware: { status: null } },
+            state: { firmware: { status: 'error' } },
+        },
+    },
+    {
+        description: 'If UI is already locked, should not dispatch lock action',
+        initialState: {
+            suite: {
+                locks: [SUITE.LOCK_TYPE.UI],
+            },
+        },
+        mocks: {
+            rollout: {
+                error: 'foo',
+            },
+        },
+        result: {
+            actions: [
+                { type: FIRMWARE.SET_ERROR, payload: undefined },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
+                { type: FIRMWARE.SET_ERROR, payload: 'failed to download firmware' },
+            ],
         },
     },
     {
@@ -51,7 +80,7 @@ const fixtures = [
             },
         },
         result: {
-            state: { firmware: { status: 'downloading' } },
+            state: { firmware: { status: 'error' } },
         },
     },
     {
@@ -62,9 +91,87 @@ const fixtures = [
             },
         },
         result: {
-            state: { firmware: { status: 'downloading' } },
+            state: { firmware: { status: 'error' } },
+        },
+    },
+    {
+        description: 'FirmwareUpdate call to connect fails',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    connected: true,
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            rollout: {
+                success: new ArrayBuffer(512),
+                error: false,
+            },
+            connect: {
+                success: false,
+                payload: {
+                    error: 'foo',
+                },
+            },
+        },
+        result: {
+            actions: [
+                { type: FIRMWARE.SET_ERROR, payload: undefined },
+                { type: SUITE.LOCK_UI, payload: true },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
+                { type: FIRMWARE.SET_ERROR, payload: 'foo' },
+                { type: SUITE.LOCK_UI, payload: false },
+            ],
         },
     },
 ];
 
-export default fixtures;
+// various cases to test reducer through actions
+export const reducerActions = [
+    {
+        description: 'DEVICE.DISCONNECT',
+        initialState: {},
+        action: {
+            type: DEVICE.DISCONNECT,
+            payload: testDevice,
+        },
+        result: {
+            state: {
+                firmware: { device: testDevice },
+            },
+        },
+    },
+    {
+        description: 'UI.REQUEST_BUTTON, code=ButtonRequest_FirmwareUpdate',
+        initialState: {},
+        action: {
+            type: UI.REQUEST_BUTTON,
+            payload: {
+                code: 'ButtonRequest_FirmwareUpdate',
+            },
+        },
+        result: {
+            state: {
+                firmware: { status: 'waiting-for-confirmation' },
+            },
+        },
+    },
+    {
+        description: 'UI.FIRMWARE_PROGRESS',
+        initialState: {},
+        action: {
+            type: UI.FIRMWARE_PROGRESS,
+            payload: {
+                progress: 50,
+            },
+        },
+        result: {
+            state: {
+                firmware: { status: 'installing', installingProgress: 50 },
+            },
+        },
+    },
+];

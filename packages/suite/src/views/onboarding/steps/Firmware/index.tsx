@@ -9,9 +9,6 @@ import { Text, OnboardingIcon, Loaders, OnboardingButton, Wrapper } from '@onboa
 import l10nMessages from './index.messages';
 import { Props } from './Container';
 
-const DONUT_STROKE = 20;
-const DONUT_RADIUS = 60;
-
 interface ButtonProps {
     onClick: () => void;
     isConnected: boolean;
@@ -55,6 +52,7 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
             content={content}
         >
             <OnboardingButton.Cta
+                data-test="button-continue"
                 isDisabled={!isConnected || isInBootloader}
                 onClick={() => onClick()}
             >
@@ -66,7 +64,6 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
 
 const FirmwareStep = ({
     device,
-    prevDevice,
     firmwareUpdate,
     // path,
     onboardingActions,
@@ -80,28 +77,15 @@ const FirmwareStep = ({
     // TODO: add custom handling of is not same device logic
 
     useEffect(() => {
-        if (!device || !device.features) {
-            return;
+        if (firmwareUpdate.status === 'waiting-for-confirmation') {
+            setMaxProgress(1);
         }
-        if (
-            firmwareUpdate.status === 'error' ||
-            firmwareUpdate.status === 'restarting' ||
-            device.firmware === 'valid'
-        ) {
-            setProgress(100);
-        }
-    }, [firmwareUpdate.status, device]);
-
-    useEffect(() => {
         if (firmwareUpdate.status === 'downloading') {
-            setMaxProgress(10);
+            setMaxProgress(15);
         }
         if (firmwareUpdate.status === 'installing') {
             setMaxProgress(100);
         }
-        // if (firmwareUpdate.status === 'restarting') {
-        //     setMaxProgress(100);
-        // }
     }, [firmwareUpdate]);
 
     useEffect(() => {
@@ -111,7 +95,14 @@ const FirmwareStep = ({
 
         let interval: number;
 
-        const runOn = ['started', 'installing', 'downloading', 'restarting'];
+        const runOn = [
+            'started',
+            'waiting-for-confirmation',
+            'installing',
+            'downloading',
+            'restarting',
+        ];
+
         if (firmwareUpdate.status && runOn.includes(firmwareUpdate.status)) {
             interval = setInterval(
                 () => {
@@ -119,9 +110,14 @@ const FirmwareStep = ({
                         setProgress(progress + 1);
                     }
                 },
-                device.features.major_version === 1 ? 170 : 561,
+                device.features.major_version === 1 ? 170 : 420,
             );
+            if (firmwareUpdate.status === 'done') {
+                clearInterval(interval);
+                return setProgress(100);
+            }
         }
+
         return () => {
             clearInterval(interval);
         };
@@ -143,30 +139,32 @@ const FirmwareStep = ({
         if (
             status === 'restarting' &&
             !device &&
-            prevDevice &&
-            prevDevice.features &&
-            prevDevice.features.major_version === 1
+            firmwareUpdate.device &&
+            firmwareUpdate.device.features &&
+            firmwareUpdate.device.features.major_version === 1
         ) {
             return intl.formatMessage(l10nMessages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
         if (
             status === 'restarting' &&
             device &&
-            prevDevice &&
-            prevDevice.features &&
-            prevDevice.features.major_version === 1
+            device.features &&
+            device.features.major_version === 1
         ) {
             return intl.formatMessage(l10nMessages.TR_DISCONNECT_YOUR_DEVICE);
         }
         if (
             status === 'restarting' &&
-            prevDevice &&
-            prevDevice.features &&
-            prevDevice.features.major_version === 2
+            device &&
+            device.features &&
+            device.features.major_version === 2
         ) {
             return intl.formatMessage(l10nMessages.TR_WAIT_FOR_REBOOT);
         }
-        if (status === 'done') {
+        if (status === 'waiting-for-confirmation') {
+            return 'waiting for confirmation';
+        }
+        if (status === 'done' || status === 'error') {
             return null;
         }
         return intl.formatMessage(l10nMessages.TR_INSTALLING);
@@ -186,7 +184,15 @@ const FirmwareStep = ({
         const status = getUpdateStatus();
         return (
             typeof status === 'string' &&
-            ['downloading', 'installing', 'restarting'].includes(status)
+            [
+                'started',
+                'waiting-for-confirmation',
+                'downloading',
+                'installing',
+                'restarting',
+                'error',
+                'done',
+            ].includes(status)
         );
     };
 
@@ -203,11 +209,8 @@ const FirmwareStep = ({
                 <FormattedMessage {...l10nMessages.TR_FIRMWARE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
-                {/* <div> updatestatus: {getUpdateStatus()}</div>
-                <div> getFirmwareStatus: {getFirmwareStatus()}</div> */}
-
                 {/*  text section */}
-                {!getUpdateStatus() && (
+                {getUpdateStatus() === 'initial' && (
                     <>
                         {getFirmwareStatus() === 'none' && (
                             <>
@@ -265,12 +268,10 @@ const FirmwareStep = ({
 
                 {shouldDisplayDonut() && (
                     <>
-                        {/* todo move radius and stroke to defaults of Donut  */}
                         <Loaders.Donut
                             progress={progress}
-                            radius={DONUT_RADIUS}
-                            stroke={DONUT_STROKE}
-                            isSuccess={getFirmwareStatus() === 'valid'}
+                            isSuccess={getUpdateStatus() === 'done'}
+                            isError={getUpdateStatus() === 'error'}
                         />
                         <P>
                             {getMessageForStatus() && (
@@ -294,7 +295,7 @@ const FirmwareStep = ({
 
                 {/* buttons section */}
                 <Wrapper.Controls>
-                    {!getUpdateStatus() && (
+                    {getUpdateStatus() === 'initial' && (
                         <>
                             {(getFirmwareStatus() === 'none' ||
                                 getFirmwareStatus() === 'unknown') && (

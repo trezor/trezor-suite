@@ -35,7 +35,7 @@ const Tokens = ({ tokens, hideBalance }: Props) => {
             <AddedTokensWrapper>
                 {tokens.length === 0 && <NoTokens>No tokens</NoTokens>}
                 {tokens.map(token => (
-                    <TokenItem key={token.symbol} token={token} hideBalance={hideBalance} />
+                    <TokenItem key={token.address} token={token} hideBalance={hideBalance} />
                 ))}
             </AddedTokensWrapper>
         </>

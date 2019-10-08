@@ -1,9 +1,11 @@
-import { AccountInfo } from 'trezor-connect';
+import TrezorConnect, { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
-import { Account } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { SETTINGS } from '@suite-config';
 
 export type AccountActions =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
@@ -12,32 +14,37 @@ export type AccountActions =
     | { type: typeof ACCOUNT.CHANGE_VISIBILITY; payload: Account }
     | { type: typeof ACCOUNT.UPDATE; payload: Account };
 
-const getAccountSpecific = (accountInfo: AccountInfo, discoveryItem: DiscoveryItem) => {
-    if (accountInfo.misc && discoveryItem.networkType === 'ripple') {
+const getAccountSpecific = (accountInfo: AccountInfo, networkType: Network['networkType']) => {
+    const { misc } = accountInfo;
+    if (networkType === 'ripple') {
         return {
+            networkType,
             misc: {
-                sequence: accountInfo.misc.sequence,
-                reserve: accountInfo.misc.reserve,
+                sequence: misc && misc.sequence ? misc.sequence : 0,
+                reserve: misc && misc.reserve ? misc.reserve : '0',
             },
             marker: accountInfo.marker,
-        } as const;
+            page: undefined,
+        };
     }
 
-    if (accountInfo.misc && discoveryItem.networkType === 'ethereum') {
+    if (networkType === 'ethereum') {
         return {
+            networkType,
             misc: {
-                nonce: accountInfo.misc.nonce,
+                nonce: misc && misc.nonce ? misc.nonce : '0',
             },
             marker: undefined,
-        } as const;
+            page: accountInfo.page,
+        };
     }
 
-    if (!accountInfo.misc && discoveryItem.networkType === 'bitcoin') {
-        return {
-            misc: undefined,
-            marker: undefined,
-        } as const;
-    }
+    return {
+        networkType,
+        misc: undefined,
+        marker: undefined,
+        page: accountInfo.page,
+    };
 };
 
 export const create = (
@@ -46,36 +53,38 @@ export const create = (
     accountInfo: AccountInfo,
 ): AccountActions => ({
     type: ACCOUNT.CREATE,
-    // @ts-ignore
     payload: {
         deviceState,
         index: discoveryItem.index,
         path: discoveryItem.path,
         descriptor: accountInfo.descriptor,
         accountType: discoveryItem.accountType,
-        networkType: discoveryItem.networkType,
         symbol: discoveryItem.coin,
-        empty: accountInfo.empty,
-        visible: !accountInfo.empty,
+        // empty: accountInfo.empty,
+        empty: accountInfo.empty && !accountInfo.history.unconfirmed, // TODO remove this after trezor-connect 8.0.7 release
+        visible:
+            !accountInfo.empty ||
+            (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
+        formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),
         tokens: accountInfo.tokens,
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
-        page: accountInfo.page,
         history: accountInfo.history,
-        ...getAccountSpecific(accountInfo, discoveryItem),
+        ...getAccountSpecific(accountInfo, discoveryItem.networkType),
     },
 });
 
 export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
     type: ACCOUNT.UPDATE,
-    // TODO
-    // @ts-ignore
     payload: {
         ...account,
         ...accountInfo,
         path: account.path,
+        empty: accountInfo.empty && !accountInfo.history.unconfirmed, // TODO remove this after trezor-connect 8.0.7 release
+        formattedBalance: formatNetworkAmount(accountInfo.availableBalance, account.symbol),
+        ...getAccountSpecific(accountInfo, account.networkType),
     },
 });
 
@@ -108,3 +117,19 @@ export const changeAccountVisibility = (payload: Account) => ({
     type: ACCOUNT.CHANGE_VISIBILITY,
     payload,
 });
+
+export const fetchAndUpdateAccount = (account: Account) => async (
+    dispatch: Dispatch,
+    _getState: GetState,
+) => {
+    const response = await TrezorConnect.getAccountInfo({
+        coin: account.symbol,
+        descriptor: account.descriptor,
+        details: 'txs',
+        pageSize: SETTINGS.TXS_PER_PAGE,
+    });
+
+    if (response.success) {
+        dispatch(update(account, response.payload));
+    }
+};

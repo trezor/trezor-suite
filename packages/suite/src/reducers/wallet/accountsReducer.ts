@@ -13,8 +13,8 @@ type AccountNetworkSpecific =
     | {
           networkType: 'ripple';
           misc: { sequence: number; reserve: string };
-          page: undefined;
           marker: AccountInfo['marker'];
+          page: undefined;
       }
     | {
           networkType: 'ethereum';
@@ -35,6 +35,7 @@ export type Account = {
     imported?: boolean;
     balance: string;
     availableBalance: string;
+    formattedBalance: string;
     tokens: AccountInfo['tokens'];
     addresses: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
@@ -86,7 +87,7 @@ const update = (draft: Account[], account: Account) => {
     );
 
     if (accountIndex !== -1) {
-        draft[accountIndex] = { ...account };
+        draft[accountIndex] = account;
 
         if (!account.marker) {
             // immer.js doesn't update fields that are set to undefined, so instead we delete the field

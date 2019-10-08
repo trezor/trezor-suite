@@ -55,6 +55,7 @@ const IconWrapper = styled.div`
 const SwitchWrapper = styled.div``;
 
 const mapStateToProps = (state: AppState) => ({
+    app: state.router.app,
     settings: state.wallet.settings,
 });
 
@@ -74,6 +75,7 @@ type Props = {
     ReturnType<typeof mapDispatchToProps>;
 
 const MenuItems = ({
+    app,
     device,
     instances,
     goto,
@@ -87,7 +89,11 @@ const MenuItems = ({
     // const showDeviceMenu = device && device.mode === 'normal';
 
     const showClone =
-        device && device.features.passphrase_protection && device.connected && device.available;
+        app === 'wallet' &&
+        device &&
+        device.features.passphrase_protection &&
+        device.connected &&
+        device.available;
 
     const showRenewSession = device && device.status !== 'available';
 

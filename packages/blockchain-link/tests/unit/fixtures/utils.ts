@@ -29,6 +29,12 @@ const tokenTransfers = [
     { ...tIn, from: 'X', to: 'X' },
 ];
 
+const FEES = {
+    value: '90',
+    valueIn: '100',
+    fees: '10',
+};
+
 export default {
     filterTargets: [
         {
@@ -246,7 +252,271 @@ export default {
     ],
     transformTransaction: [
         {
-            description: 'sent to 1 outputs (no change)',
+            description: 'BTC: recv from one input to unused address',
+            descriptor: 'xpub',
+            addresses: {
+                used: [],
+                unused: ['A'],
+                change: [],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['B'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['B-change'],
+                    },
+                    {
+                        addresses: ['A'],
+                        value: '40',
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'recv',
+                amount: '40',
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: recv from one input to used address',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['A'],
+                unused: [],
+                change: [],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['B'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['B-change'],
+                    },
+                    {
+                        addresses: ['A'],
+                        value: '40',
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'recv',
+                amount: '40',
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: recv from one input to change address',
+            descriptor: 'xpub',
+            addresses: {
+                used: [],
+                unused: [],
+                change: ['A'],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['B'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['B-change'],
+                    },
+                    {
+                        addresses: ['A'],
+                        value: '40',
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'recv',
+                amount: '40',
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: sent to one address with change',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['A'],
+                unused: [],
+                change: ['A-change'],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['A'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['A-change'],
+                    },
+                    {
+                        addresses: ['B'],
+                        value: '40',
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'sent',
+                amount: '50', // B.value + fee
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: sent to multiple addresses with change',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['A'],
+                unused: ['A2'],
+                change: ['A-change'],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['A'],
+                        value: '100',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '50',
+                        addresses: ['A-change'],
+                    },
+                    {
+                        addresses: ['A2'],
+                        value: '20',
+                    },
+                    {
+                        addresses: ['B'],
+                        value: '20',
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'sent',
+                amount: '30', // B.value + fee
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: sent to myself (1 input, 1 change output)',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['utxo'],
+                unused: [],
+                change: ['change'],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['utxo'],
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['change'],
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'self',
+                amount: '10', // only fee
+                targets: [],
+            },
+        },
+        {
+            description: 'BTC: recv from 2 inputs',
+            descriptor: 'xpub',
+            addresses: {
+                used: [],
+                unused: ['A'],
+                change: [],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['utxo1', 'utxo2'],
+                        value: '50',
+                    },
+                    {
+                        addresses: ['utxo3'],
+                        value: '50',
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['A'],
+                        value: '60',
+                    },
+                    {
+                        addresses: ['utxo1-change'],
+                        value: '15',
+                    },
+                    {
+                        addresses: ['utxo3-change'],
+                        value: '15',
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'recv',
+                amount: '60',
+                targets: [
+                    {
+                        addresses: ['utxo1', 'utxo2'],
+                    },
+                    {
+                        addresses: ['utxo3'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'ETH: sent',
             descriptor: 'A',
             tx: {
                 vin: [
@@ -259,9 +529,14 @@ export default {
                         addresses: ['B'],
                     },
                 ],
+                ethereumSpecific: {
+                    status: 1,
+                },
+                ...FEES,
             },
             parsed: {
                 type: 'sent',
+                amount: '90',
                 targets: [
                     {
                         addresses: ['B'],
@@ -269,63 +544,7 @@ export default {
                 ],
             },
         },
-        {
-            description: 'sent to 2 outputs (one external, one change)',
-            descriptor: 'A',
-            addresses: {
-                used: ['utxo'],
-                unused: [],
-                change: ['change'],
-            },
-            tx: {
-                vin: [
-                    {
-                        addresses: ['utxo'],
-                    },
-                ],
-                vout: [
-                    {
-                        addresses: ['B'],
-                    },
-                    {
-                        addresses: ['change'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'sent',
-                targets: [
-                    {
-                        addresses: ['B'],
-                    },
-                ],
-            },
-        },
-        {
-            description: 'sent to myself (1 input, 1 change output)',
-            descriptor: 'A',
-            addresses: {
-                used: ['utxo'],
-                unused: [],
-                change: ['change'],
-            },
-            tx: {
-                vin: [
-                    {
-                        addresses: ['utxo'],
-                    },
-                ],
-                vout: [
-                    {
-                        addresses: ['change'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'self',
-                targets: [],
-            },
-        },
+
         {
             description: 'sent OP_RETURN with change',
             descriptor: 'A',
@@ -380,60 +599,6 @@ export default {
             parsed: {
                 type: 'sent',
                 targets: [],
-            },
-        },
-        {
-            description: 'recv from 1 input',
-            descriptor: 'A',
-            tx: {
-                vin: [
-                    {
-                        addresses: ['utxo'],
-                    },
-                ],
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
-                targets: [
-                    {
-                        addresses: ['utxo'],
-                    },
-                ],
-            },
-        },
-        {
-            description: 'recv from 2 inputs',
-            descriptor: 'A',
-            tx: {
-                vin: [
-                    {
-                        addresses: ['utxo1', 'utxo2'],
-                    },
-                    {
-                        addresses: ['utxo3'],
-                    },
-                ],
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
-                targets: [
-                    {
-                        addresses: ['utxo1', 'utxo2'],
-                    },
-                    {
-                        addresses: ['utxo3'],
-                    },
-                ],
             },
         },
         {

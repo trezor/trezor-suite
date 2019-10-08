@@ -10,7 +10,8 @@
         "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
         "build:app": "next build && next export -o build",
         "build": "run-s copy-files build:app",
-        "test:integration": "cypress run"
+        "test:integration": "cypress run",
+        "test:integration:local": "cypress run --config baseUrl=http://localhost:3000"
     },
     "dependencies": {
         "@sentry/browser": "^5.4.0",

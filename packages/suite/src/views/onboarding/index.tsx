@@ -90,6 +90,7 @@ const WrapperInside = styled.div<WrapperInsideProps>`
     background-color: ${colors.white};
     border-radius: ${BORDER_RADIUS}px;
     z-index: 0;
+    max-width: 700px; /* neat boxed view */
     max-height: ${({ isGlobalInteraction }) =>
         isGlobalInteraction
             ? `calc(100vh - ${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT} - ${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT})`
@@ -209,7 +210,7 @@ const Onboarding = (props: Props) => {
     };
 
     const getError = () => {
-        const { device, prevDevice, activeStepId, path } = props;
+        const { device, prevDevice, activeStepId, path, uiInteraction } = props;
         const activeStep = getStep(activeStepId);
         if (!activeStep.disallowedDeviceStates) {
             return null;
@@ -217,7 +218,7 @@ const Onboarding = (props: Props) => {
 
         return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
             const fn = getFnForRule(state);
-            return fn({ device, prevDevice, path });
+            return fn({ device, prevDevice, path, uiInteraction });
         });
     };
 

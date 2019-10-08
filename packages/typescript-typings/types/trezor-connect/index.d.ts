@@ -147,7 +147,7 @@ declare module 'trezor-connect' {
 
     interface Error {
         success: false;
-        payload: { error: string; code?: string };
+        payload: { error: string; code?: string | number };
     }
 
     interface Success<T> {
@@ -232,6 +232,7 @@ declare module 'trezor-connect' {
         passphraseProtection?: boolean;
         skipBackup?: boolean;
         noBackup?: boolean;
+        backupType?: 0 | 1;
     }
 
     export interface ApplySettingsParams extends CommonParams {
@@ -276,6 +277,42 @@ declare module 'trezor-connect' {
         push?: boolean;
     }
 
+    export interface PrecomposeTransactionParams extends CommonParams {
+        outputs: Output[];
+        account: {
+            path: string;
+            addresses: AccountAddresses;
+            utxo: AccountUtxo[];
+        }
+        feeLevels: {
+            feePerUnit: string,
+        }[];
+        coin: string;
+    }
+
+    export type PrecomposedTransaction = {
+        type: 'error',
+        error: string,
+    } | {
+        type: 'nonfinal',
+        max: string,
+        totalSpent: string, // all the outputs, no fee, no change
+        fee: string,
+        feePerByte: string,
+        bytes: number,
+    } | {
+        type: 'final',
+        max: string,
+        totalSpent: string, // all the outputs, no fee, no change
+        fee: string,
+        feePerByte: string,
+        bytes: number,
+        transaction: {
+            inputs: TransactionInput[],
+            outputs: TransactionOutput[],
+        },
+    }
+
     export interface Transaction {
         signatures: string[]; // signer signatures
         serializedTx: string; // serialized transaction
@@ -296,9 +333,6 @@ declare module 'trezor-connect' {
     }
     export interface FirmwareUpdateParams extends CommonParams {
         payload: ArrayBuffer;
-        hash?: string;
-        offset?: number;
-        length?: number;  
     }
 
     export interface BackupDeviceParams extends CommonParams {}
@@ -379,7 +413,7 @@ declare module 'trezor-connect' {
     export interface SignedTransaction {
         signatures: string[];
         serializedTx: string;
-        txId?: string;
+        txid?: string;
     }
 
     export interface Settings {
@@ -437,8 +471,16 @@ declare module 'trezor-connect' {
         type: 'opreturn';
         dataHex: string;
     }
+    export interface NoAddressOutput {
+        type: 'noaddress';
+        amount: string;
+    }
 
-    export type Output = RegularOutput | InternalOutput | SendMaxOutput | OpReturnOutput;
+    export interface NoAddressSendMaxOutput {
+        type: 'send-max-noaddress';
+    }
+
+    export type Output = RegularOutput | InternalOutput | SendMaxOutput | OpReturnOutput | NoAddressOutput | NoAddressSendMaxOutput;
 
     export interface BinOutput {
         amount: number;
@@ -543,6 +585,19 @@ declare module 'trezor-connect' {
               payload: string;
           };
     export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
+    export namespace BLOCKCHAIN {
+        export const NOTIFICATION = 'blockchain-notification';
+        export const BLOCK = 'blockchain-block';
+    }
+
+    export type BlockchainEvent =
+    {
+        type: typeof BLOCKCHAIN.BLOCK;
+        payload: BlockchainBlock;
+    } | {
+        type: typeof BLOCKCHAIN.NOTIFICATION;
+        payload: BlockchainNotification;
+    };
 
     export const UI_EVENT = 'UI_EVENT';
     export namespace UI {
@@ -604,6 +659,7 @@ declare module 'trezor-connect' {
 
         export const BUNDLE_PROGRESS = 'ui-bundle_progress';
         export const ADDRESS_VALIDATION = 'ui-address_validation';
+        export const FIRMWARE_PROGRESS = 'ui-firmware_progress';
     }
 
     export namespace IFRAME {
@@ -684,7 +740,13 @@ declare module 'trezor-connect' {
                       supported: boolean;
                   }
               };
-          };
+          }
+        | {
+            type: typeof UI.FIRMWARE_PROGRESS;
+            payload: {
+                progress: number;
+            };
+        };
 
     export type UIResponse = 
         | {
@@ -729,11 +791,82 @@ declare module 'trezor-connect' {
         subscribed: boolean;
     }
 
+    export interface BlockchainBlock {
+        blockHash: string;
+        blockHeight: number;
+        coin: BlockchainCoin;
+    }
+    
+    export interface BlockchainNotification {
+        notification: {
+            descriptor: string;
+            tx: AccountTransaction;
+        };
+        coin: BlockchainCoin;
+    }
+    
+    export interface BlockchainCoin {
+        type: 'misc';
+        blockchainLink: {
+            type: 'ripple' | 'blockbook';
+            url: string[];
+        };
+        blocktime: number | null;
+        curve: string;
+        defaultFees: { Normal: number; }; 
+        minFee: 1;
+        maxFee: 1;
+        label: string;
+        name: string;
+        shortcut: string;
+        slip44: number;
+        support: {
+            connect: boolean;
+            trezor1: boolean;
+            trezor2: string;
+            webwallet: boolean;
+        };
+        decimals: number;
+        chain?: string; // eth
+        chainId?: 3; // eth
+        rskip60?: number; // eth
+    }
+    
+    interface BlockchainEstimateFeeParams {
+        coin: string;
+        request?: {
+            blocks?: number[];
+            specific?: {
+                conservative?: boolean;
+                data?: string;
+                from?: string;
+                to?: string;
+                txsize?: number;
+            };
+            feeLevels?: 'preloaded' | 'smart';
+        }
+    }
+
+    export interface FeeLevel {
+        label: 'high' | 'normal' | 'economy' | 'low' | 'custom';
+        feePerUnit: string;
+        blocks: number;
+        feeLimit?: string; // eth gas limit
+        feePerTx?: string; // fee for BlockchainEstimateFeeParams.request.specific
+    }
+
+    interface BlockchainEstimateFeeResponse {
+        blockTime: number;
+        minFee: number;
+        maxFee: number;
+        levels: FeeLevel[];
+    }
+
     namespace TrezorConnect {
         /**
          * Initializes TrezorConnect.
          */
-        function init(settings: Settings): void;
+        function init(settings: Settings): Promise<void>;
 
         /**
          * Retrieves BIP32 extended public derived by given BIP32 path.
@@ -795,6 +928,12 @@ declare module 'trezor-connect' {
         function getAddress(params: GetAddressParams): Promise<ResponseMessage<Address>>;
         function getAddress(params: Bundle<GetAddressParams>): Promise<ResponseMessage<Address[]>>;
 
+        function ethereumGetAddress(params: GetAddressParams): Promise<ResponseMessage<Address>>;
+        function ethereumGetAddress(params: Bundle<GetAddressParams>): Promise<ResponseMessage<Address[]>>;
+
+        function rippleGetAddress(params: GetAddressParams): Promise<ResponseMessage<Address>>;
+        function rippleGetAddress(params: Bundle<GetAddressParams>): Promise<ResponseMessage<Address[]>>;
+
         /**
          * Gets an info of specified account.
          */
@@ -813,9 +952,14 @@ declare module 'trezor-connect' {
          * returned in hexadecimal format. Change output is added automatically, if
          * needed.
          */
+        
+
         function composeTransaction(
             params: ComposeTransactionParams,
         ): Promise<ResponseMessage<Transaction>>;
+        function composeTransaction(
+            params: PrecomposeTransactionParams
+        ): Promise<ResponseMessage<PrecomposedTransaction[]>>;
 
         /**
          * Asks device to sign given inputs and outputs of pre-composed transaction.
@@ -881,6 +1025,8 @@ declare module 'trezor-connect' {
         function disableWebUSB(): void;
 
         function blockchainSubscribe(params: BlockchainSubscribeParams): Promise<ResponseMessage<BlockchainSubscribeResponse>>;
+
+        function blockchainEstimateFee(params: BlockchainEstimateFeeParams): Promise<ResponseMessage<BlockchainEstimateFeeResponse>>;
     }
 
     export default TrezorConnect;

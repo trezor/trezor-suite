@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import TopNavigation from '@wallet-components/TopNavigation';
-import Layout from '@wallet-components/Layout';
+import WalletLayout from '@wallet-components/WalletLayout';
 import { FLAGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import l10nMessages from './index.messages';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const LayoutAccount = (props: Props) => (
-    <Layout
+    <WalletLayout
         topNavigationComponent={
             <TopNavigation
                 items={[
@@ -47,7 +47,7 @@ const LayoutAccount = (props: Props) => (
         }
     >
         {props.children}
-    </Layout>
+    </WalletLayout>
 );
 
 export default LayoutAccount;

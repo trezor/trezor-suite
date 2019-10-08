@@ -1,10 +1,10 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { DEVICE } from 'trezor-connect';
+import TrezorConnect, { DEVICE, BLOCKCHAIN as CONNECT_BLOCKCHAIN } from 'trezor-connect';
 import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
-import { init as initBlockchain } from '@wallet-actions/blockchainActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
+import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { resolveRememberRequest } from '@suite-actions/modalActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
@@ -43,7 +43,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             break;
         case SUITE.CONNECT_INITIALIZED:
             // trezor-connect init successfully
-            api.dispatch(initBlockchain());
+            api.dispatch(blockchainActions.init());
             if (process.env.SUITE_TYPE === 'web') TrezorConnect.renderWebUSBButton();
             break;
         case BLOCKCHAIN.READY:
@@ -51,6 +51,12 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(routerActions.init());
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
+            break;
+        case CONNECT_BLOCKCHAIN.BLOCK:
+            api.dispatch(blockchainActions.onBlockMined(action.payload));
+            break;
+        case CONNECT_BLOCKCHAIN.NOTIFICATION:
+            api.dispatch(blockchainActions.onNotification(action.payload));
             break;
 
         case DEVICE.CONNECT:

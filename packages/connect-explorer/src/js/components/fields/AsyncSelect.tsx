@@ -12,6 +12,9 @@ const AsyncSelect = (props: Props) => {
     const { field } = props;
 
     useEffect(() => {
+        if (field.data && field.data.length) {
+            return;
+        }
         const fetchWrapper = async () => {
             const data = await field.fetchData();
             props.onDataChange(field, data);

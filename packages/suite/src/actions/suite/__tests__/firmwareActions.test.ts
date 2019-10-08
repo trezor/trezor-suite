@@ -4,12 +4,19 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
-import { mergeObj } from '@suite-utils/mergeObj';
+import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@suite/types/utils';
 import * as firmwareActions from '../firmwareActions';
-import fixtures from './fixtures/firmwareActions';
+import { firmwareUpdate, reducerActions } from './fixtures/firmwareActions';
 
-type Fixture = ArrayElement<typeof fixtures>;
+type Fixture = ArrayElement<typeof firmwareUpdate>;
+
+type SuiteState = ReturnType<typeof suiteReducer>;
+type FirmwareState = ReturnType<typeof firmwareReducer>;
+interface InitialState {
+    suite?: Partial<SuiteState>;
+    firmware?: Partial<FirmwareState>;
+}
 
 jest.mock('@trezor/rollout', () => {
     let fixture: Fixture;
@@ -55,15 +62,25 @@ jest.mock('trezor-connect', () => {
             getFeatures: () => {},
             firmwareUpdate,
         },
-        DEVICE: {},
+        DEVICE: {
+            DISCONNECT: 'device-disconnect',
+        },
+        TRANSPORT: {},
+        IFRAME: {},
+        UI: {
+            REQUEST_BUTTON: 'ui-button',
+            FIRMWARE_PROGRESS: 'ui-firmware-progress',
+        },
         setTestFixtures: (f: Fixture) => {
             fixture = f;
         },
     };
 });
 
-export const getInitialState = (override: any) => {
-    const defaults = {
+export const getInitialState = (override?: InitialState): any => {
+    const suite = override ? override.suite : undefined;
+    const firmware = override ? override.firmware : undefined;
+    return {
         suite: {
             device: {
                 connected: true,
@@ -73,16 +90,13 @@ export const getInitialState = (override: any) => {
                 },
             },
             locks: [],
+            ...suite,
         },
         firmware: {
             reducerEnabled: true,
-            status: null,
+            ...firmware,
         },
     };
-    if (override) {
-        return mergeObj(defaults, override);
-    }
-    return defaults;
 };
 
 const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
@@ -92,38 +106,60 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
     // just update state on every action manually
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { firmware } = store.getState();
+        const { firmware, suite } = store.getState();
         store.getState().firmware = firmwareReducer(firmware, action);
+        store.getState().suite = suiteReducer(suite, action);
+
         // add action back to stack
         store.getActions().push(action);
     });
 };
 
 describe('Firmware Actions', () => {
-    fixtures.forEach(f => {
-        it(f.description, async () => {
-            // set fixtures
-            require('trezor-connect').setTestFixtures(f);
-            require('@trezor/rollout').setTestFixtures(f);
+    describe('firmwareUpdate', () => {
+        firmwareUpdate.forEach(f => {
+            it(f.description, async () => {
+                // set fixtures
+                require('trezor-connect').setTestFixtures(f);
+                require('@trezor/rollout').setTestFixtures(f);
 
-            const state = getInitialState(f.initialState);
-            const store = mockStore(state);
-            store.subscribe(() => updateStore(store));
+                const state = getInitialState(f.initialState);
+                const store = mockStore(state);
 
-            await store.dispatch(firmwareActions.firmwareUpdate());
+                store.subscribe(() => updateStore(store));
 
-            const result = store.getState();
-            if (f.result) {
-                if (f.result.state) {
-                    expect(result).toMatchObject(f.result.state);
+                await store.dispatch(firmwareActions.firmwareUpdate());
+
+                const result = store.getState();
+
+                if (f.result) {
+                    if (f.result.state) {
+                        expect(result).toMatchObject(f.result.state);
+                    }
+                    if (f.result.actions) {
+                        f.result.actions.forEach((action, index) => {
+                            expect(store.getActions()[index].type).toEqual(action.type);
+                            expect(store.getActions()[index].payload).toEqual(action.payload);
+                        });
+                    }
                 }
-                if (f.result.actions) {
-                    f.result.actions.forEach((action, index) => {
-                        expect(store.getActions()[index].type).toEqual(action.type);
-                        expect(store.getActions()[index].payload).toEqual(action.payload);
-                    });
+            });
+        });
+    });
+
+    describe('reducer actions', () => {
+        reducerActions.forEach(f => {
+            it(f.description, async () => {
+                const state = getInitialState(f.initialState);
+                const store = mockStore(state);
+                store.subscribe(() => updateStore(store));
+                store.dispatch(f.action);
+                if (f.result) {
+                    if (f.result.state) {
+                        expect(store.getState()).toMatchObject(f.result.state);
+                    }
                 }
-            }
+            });
         });
     });
 });

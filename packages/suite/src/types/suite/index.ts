@@ -9,6 +9,7 @@ import {
     DeviceMode,
     DeviceFirmwareStatus,
     FirmwareRelease,
+    BlockchainEvent,
 } from 'trezor-connect';
 import { RouterActions } from '@suite-actions/routerActions';
 import { AppState } from '@suite/reducers/store';
@@ -28,7 +29,11 @@ import { WalletAction } from '@wallet-types';
 export type MessageDescriptor = MessageDescriptor$;
 export type Messages = Messages$;
 
-type TrezorConnectEvents = Omit<TransportEvent, 'event'> | UiEvent | Omit<DeviceEvent, 'event'>;
+type TrezorConnectEvents =
+    | Omit<TransportEvent, 'event'>
+    | UiEvent
+    | Omit<DeviceEvent, 'event'>
+    | BlockchainEvent;
 
 export type AppState = AppState;
 

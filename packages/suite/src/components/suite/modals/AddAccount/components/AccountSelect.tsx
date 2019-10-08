@@ -1,7 +1,8 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import { P, Button, variables, colors } from '@trezor/components';
+import { Button, variables, colors } from '@trezor/components';
+// import { getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { Network, ExternalNetwork, Account } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 import l10nMessages from '../messages';
@@ -11,12 +12,17 @@ interface Props {
     enabledNetworks: string[];
     accounts: Account[];
     onEnableAccount: (account: Account) => void;
-    onEnableNetwork: (symbol: string) => void;
+    onEnableNetwork: (symbol: Network['symbol']) => void;
 }
 
 const StyledButton = styled(Button)`
     margin: 4px 0px;
 `;
+
+// keeping it here in case we want to add some texts
+// const StyledP = styled(P)`
+//     margin: 20px 0;
+// `;
 
 const AccountNameWrapper = styled.div`
     display: flex;
@@ -38,12 +44,6 @@ const EnableNetwork = (props: {
     onEnableNetwork: Props['onEnableNetwork'];
 }) => (
     <>
-        <P>
-            <FormattedMessage
-                {...l10nMessages.TR_ENABLE_NETWORK}
-                values={{ networkName: props.selectedNetwork.name }}
-            />
-        </P>
         <StyledButton fullWidth onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
             <FormattedMessage
                 {...l10nMessages.TR_ENABLE_NETWORK_BUTTON}
@@ -62,8 +62,15 @@ const AccountButton = (props: {
     const account = props.accounts[props.accounts.length - 1];
     let enabled = true;
     let description = account.path;
+    let index = account.index + 1;
     if (props.accounts.length > 1) {
         // prev account is empty, do not add another
+        enabled = false;
+        description = 'Previous account is empty';
+    }
+    if (account.index === 0 && account.empty && account.accountType === 'normal') {
+        // current (first normal) account is empty, do not add another
+        index++;
         enabled = false;
         description = 'Previous account is empty';
     }
@@ -71,8 +78,9 @@ const AccountButton = (props: {
         enabled = false;
         description = 'Account index is greater than 10';
     }
+    // const accountType = getTypeForNetwork(props.network.accountType, props.intl);
     const prefix = props.network.accountType ? `${props.network.accountType} ` : '';
-    const label = `${prefix}Account #${account.index + 1}`;
+    const label = `${prefix}Account #${index}`;
     return (
         <StyledButton
             icon="PLUS"

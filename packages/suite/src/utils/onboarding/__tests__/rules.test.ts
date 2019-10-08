@@ -19,7 +19,7 @@ import {
     getFnForRule,
 } from '../rules';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
 
 describe('rules', () => {
     describe('isNotConneted', () => {
@@ -32,10 +32,15 @@ describe('rules', () => {
     });
 
     describe('isNotSameDevice', () => {
-        const deviceWithDeviceId = { features: { device_id: '1' } };
-        const deviceWithDeviceId2 = { features: { device_id: '2' } };
-
-        const deviceWithoutDeviceId: any = { features: { device_id: null } };
+        const deviceWithDeviceId = getSuiteDevice({
+            features: getDeviceFeatures({ device_id: '1' }),
+        });
+        const deviceWithDeviceId2 = getSuiteDevice({
+            features: getDeviceFeatures({ device_id: '2' }),
+        });
+        const deviceWithoutDeviceId = getSuiteDevice({
+            features: getDeviceFeatures({ device_id: null }),
+        });
 
         it('should return false for prevDeviceId === null (no device was there before, so consider it "same" device)', () => {
             expect(
@@ -61,19 +66,31 @@ describe('rules', () => {
 
     describe('isInBootloader', () => {
         it('should return true for device.features.bootloader_mode === true', () => {
-            expect(isInBootloader({ device: { features: { bootloader_mode: true } } })).toEqual(
-                true,
-            );
+            expect(
+                isInBootloader({
+                    device: getSuiteDevice({
+                        features: getDeviceFeatures({ bootloader_mode: true }),
+                    }),
+                }),
+            ).toEqual(true);
         });
         it('should return false for device.features.bootloader_mode === false', () => {
-            expect(isInBootloader({ device: { features: { bootloader_mode: false } } })).toEqual(
-                false,
-            );
+            expect(
+                isInBootloader({
+                    device: getSuiteDevice({
+                        features: getDeviceFeatures({ bootloader_mode: false }),
+                    }),
+                }),
+            ).toEqual(false);
         });
         it('should return false for device.features.bootloader_mode === null', () => {
-            expect(isInBootloader({ device: { features: { bootloader_mode: null } } })).toEqual(
-                false,
-            );
+            expect(
+                isInBootloader({
+                    device: getSuiteDevice({
+                        features: getDeviceFeatures({ bootloader_mode: null }),
+                    }),
+                }),
+            ).toEqual(false);
         });
         it('cant tell without device', () => {
             expect(isInBootloader({})).toEqual(null);
@@ -84,7 +101,7 @@ describe('rules', () => {
         it('should return true', () => {
             expect(
                 isRequestingPin({
-                    device: { isRequestingPin: 1 },
+                    uiInteraction: { name: 'ui-request_pin', counter: 0 },
                 }),
             ).toEqual(true);
         });
@@ -97,7 +114,9 @@ describe('rules', () => {
         it('should return false', () => {
             expect(
                 isNotNewDevice({
-                    device: { features: { firmware_present: false } },
+                    device: getSuiteDevice({
+                        features: getDeviceFeatures({ firmware_present: false }),
+                    }),
                     path: ['new'],
                 }),
             ).toEqual(false);
@@ -112,7 +131,7 @@ describe('rules', () => {
         it('should return false', () => {
             expect(
                 isNotUsedHere({
-                    device: { status: 'available', connected: true },
+                    device: getSuiteDevice({ status: 'available', connected: true }),
                 }),
             ).toEqual(false);
         });

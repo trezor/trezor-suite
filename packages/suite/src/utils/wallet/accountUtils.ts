@@ -87,10 +87,32 @@ export const getTypeForNetwork = (accountType: Account['accountType'], intl: Inj
 };
 
 export const formatAmount = (amount: string, decimals: number) => {
-    return new BigNumber(amount).div(10 ** decimals).toString(10);
+    try {
+        const bAmount = new BigNumber(amount);
+        if (bAmount.isNaN()) {
+            throw new Error('Amount is not a number');
+        }
+        return bAmount.div(10 ** decimals).toString(10);
+    } catch (error) {
+        return '-1';
+    }
 };
 
-export const formatNetworkAmount = (amount: string, symbol: string) => {
+export const networkAmountToSatoshi = (amount: string, symbol: Account['symbol']) => {
+    const network = NETWORKS.find(n => n.symbol === symbol);
+    if (!network) return amount;
+    try {
+        const bAmount = new BigNumber(amount);
+        if (bAmount.isNaN()) {
+            throw new Error('Amount is not a number');
+        }
+        return bAmount.times(10 ** network.decimals).toString(10);
+    } catch (error) {
+        return '-1';
+    }
+};
+
+export const formatNetworkAmount = (amount: string, symbol: Account['symbol']) => {
     const network = NETWORKS.find(n => n.symbol === symbol);
     if (!network) return amount;
     return formatAmount(amount, network.decimals);

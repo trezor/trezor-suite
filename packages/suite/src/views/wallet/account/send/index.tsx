@@ -59,6 +59,7 @@ const StyledTitle = styled(Title)`
 const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     const {
         device,
+        suite,
         sendFormActions,
         send,
         fees,
@@ -122,9 +123,9 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             ))}
             <Row>
                 <Fee
-                    fees={fees}
-                    fee={send.fee}
-                    sendFormActions={sendFormActions}
+                    feeLevels={send.feeInfo.levels}
+                    selectedFee={send.selectedFee}
+                    onChange={sendFormActions.handleFeeValueChange}
                     symbol={network.symbol}
                 />
             </Row>
@@ -137,6 +138,9 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     <AdditionalForm networkType={network.networkType} />
                 )}
                 <SendAndClear
+                    send={send}
+                    suite={suite}
+                    device={device}
                     networkType={account.networkType}
                     symbol={network.symbol}
                     sendFormActions={sendFormActions}

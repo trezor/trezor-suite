@@ -11,7 +11,7 @@ const buildNetworkOption = (network: Network | ExternalNetwork) => ({
 type Option = ReturnType<typeof buildNetworkOption>;
 
 const StyledSelect = styled(Select)`
-    min-width: 77px;
+    margin: 0 0 10px 0;
 `;
 
 const OptionWrapper = styled.div`

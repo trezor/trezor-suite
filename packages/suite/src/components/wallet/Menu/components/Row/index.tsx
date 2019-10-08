@@ -7,7 +7,7 @@ import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    padding: 0 15px;
+    padding: 0 20px;
     display: flex;
     height: 55px;
     cursor: pointer;
@@ -25,7 +25,7 @@ const Wrapper = styled.div<{ selected: boolean }>`
     ${props =>
         props.selected &&
         css`
-            padding-left: 13px;
+            padding-left: 17px;
             border-left: 3px solid ${colors.GREEN_PRIMARY};
             background-color: ${colors.WHITE};
             &:hover {
@@ -51,6 +51,7 @@ const AccountIndex = styled.div`
 const BalanceValue = styled.div`
     text-transform: uppercase;
     font-size: ${variables.FONT_SIZE.BIG};
+    text-align: right;
 `;
 
 const Left = styled.div`
@@ -154,13 +155,15 @@ const Row = React.memo(({ account, hideBalance, selected }: Props) => (
                 <Right>
                     <Balance>
                         <BalanceValue>
-                            {account.balance} {account.symbol}
+                            {account.formattedBalance} {account.symbol}
                         </BalanceValue>
                     </Balance>
                     {account.history.total !== -1 && (
                         <Transactions>
                             <Label>transactions</Label>
-                            <TransactionsValue>{account.history.total}</TransactionsValue>
+                            <TransactionsValue>
+                                {account.history.total + (account.history.unconfirmed || 0)}
+                            </TransactionsValue>
                         </Transactions>
                     )}
                 </Right>

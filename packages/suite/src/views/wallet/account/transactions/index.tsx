@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import LayoutAccount from '@wallet-components/LayoutAccount';
 import { bindActionCreators } from 'redux';
-import * as transactionActions from '@wallet-actions/transactionActions';
-import { Loader, colors } from '@trezor/components';
-import styled from 'styled-components';
-import Title from '@wallet-components/Title';
 import { FormattedMessage } from 'react-intl';
-import TransactionList from '@suite/components/wallet/TransactionList';
-import { getAccountTransactions } from '@suite/utils/wallet/reducerUtils';
-import Content from '@suite/components/wallet/Content';
-import { SETTINGS } from '@suite/config/suite';
+import styled from 'styled-components';
+import { Loader, colors } from '@trezor/components';
+import * as transactionActions from '@wallet-actions/transactionActions';
+import LayoutAccount from '@wallet-components/LayoutAccount';
+import Title from '@wallet-components/Title';
+import Content from '@wallet-components/Content';
+import { getAccountTransactions } from '@suite-utils/reducerUtils';
+import { SETTINGS } from '@suite-config';
 import { AppState, Dispatch } from '@suite-types';
+import TransactionList from './components/TransactionList';
 import l10nMessages from './index.messages';
 
 const LoaderWrapper = styled.div`
@@ -31,7 +31,7 @@ const NoTransactions = styled.div`
 `;
 
 const Transactions = (props: Props) => {
-    const { selectedAccount, transactions } = props.wallet;
+    const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
     if (!selectedAccount.account) {
         const { loader, exceptionPage } = selectedAccount;
@@ -41,6 +41,8 @@ const Transactions = (props: Props) => {
             </LayoutAccount>
         );
     }
+
+    const explorerUrl = selectedAccount.network ? selectedAccount.network.explorer.tx : undefined;
 
     const accountTransactions = getAccountTransactions(
         transactions.transactions,
@@ -75,6 +77,7 @@ const Transactions = (props: Props) => {
             )}
             {accountTransactions.length > 0 && (
                 <TransactionList
+                    explorerUrl={explorerUrl}
                     transactions={accountTransactions}
                     currentPage={selectedPage}
                     totalPages={total}
@@ -87,7 +90,8 @@ const Transactions = (props: Props) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-    wallet: state.wallet,
+    selectedAccount: state.wallet.selectedAccount,
+    transactions: state.wallet.transactions,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

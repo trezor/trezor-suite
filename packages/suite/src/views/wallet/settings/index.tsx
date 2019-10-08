@@ -2,10 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, InjectedIntlProps } from 'react-intl';
 import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
-import Link from '@suite-components/Link';
 import l10nCommonMessages from '@suite-views/index.messages';
-import Layout from '@wallet-components/Layout';
-import { getRoute } from '@suite/utils/suite/router';
+import WalletLayout from '@wallet-components/WalletLayout';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import Coins from './components/Coins';
@@ -61,6 +59,16 @@ const TooltipIcon = styled(Icon)`
     cursor: pointer;
 `;
 
+const CloseWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    button {
+        position: absolute;
+        right: -24px;
+        top: -30px;
+    }
+`;
+
 const buildCurrencyOption = (currency: string) => {
     return {
         value: currency,
@@ -69,7 +77,12 @@ const buildCurrencyOption = (currency: string) => {
 };
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
-    <Layout>
+    <WalletLayout>
+        <CloseWrapper>
+            <Button onClick={() => props.goto('wallet-index')} isTransparent>
+                <Icon icon="CLOSE" size={14} />
+            </Button>
+        </CloseWrapper>
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
@@ -121,14 +134,12 @@ const WalletSettings = (props: Props & InjectedIntlProps) => (
                 <FormattedMessage {...l10nMessages.TR_THE_CHANGES_ARE_SAVED} />
             </Info>
             <Buttons>
-                <Link href={getRoute('wallet-index')}>
-                    <Button>
-                        <FormattedMessage {...l10nCommonMessages.TR_CLOSE} />
-                    </Button>
-                </Link>
+                <Button onClick={() => props.goto('wallet-index')}>
+                    <FormattedMessage {...l10nCommonMessages.TR_CLOSE} />
+                </Button>
             </Buttons>
         </Actions>
-    </Layout>
+    </WalletLayout>
 );
 
 export default WalletSettings;

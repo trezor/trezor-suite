@@ -11,12 +11,6 @@ describe('accountUtils', () => {
         });
     });
 
-    fixtures.formatNetworkAmount.forEach(f => {
-        it('accountUtils.formatNetworkAmount', () => {
-            expect(accountUtils.formatNetworkAmount(f.amount, f.symbol)).toEqual(f.result);
-        });
-    });
-
     fixtures.sortByCoin.forEach(f => {
         it('accountUtils.sortByCoin', () => {
             expect(accountUtils.sortByCoin(f.accounts as Account[])).toEqual(f.result);
@@ -47,5 +41,19 @@ describe('accountUtils', () => {
         expect(accountUtils.getFiatValue('1', '10')).toEqual('10.00');
         expect(accountUtils.getFiatValue('1', '10', 5)).toEqual('10.00000');
         expect(accountUtils.getFiatValue('s', '10')).toEqual('');
+    });
+
+    it('format network amount', () => {
+        expect(accountUtils.formatNetworkAmount('1', 'btc')).toEqual('0.00000001');
+        expect(accountUtils.formatNetworkAmount('1', 'xrp')).toEqual('0.000001');
+        expect(accountUtils.formatNetworkAmount('1', 'eth')).toEqual('0.000000000000000001');
+        expect(accountUtils.formatNetworkAmount('aaa', 'eth')).toEqual('-1');
+    });
+
+    it('format amount to satoshi', () => {
+        expect(accountUtils.networkAmountToSatoshi('0.00000001', 'btc')).toEqual('1');
+        expect(accountUtils.networkAmountToSatoshi('0.000001', 'xrp')).toEqual('1');
+        expect(accountUtils.networkAmountToSatoshi('0.000000000000000001', 'eth')).toEqual('1');
+        expect(accountUtils.networkAmountToSatoshi('aaa', 'eth')).toEqual('-1');
     });
 });

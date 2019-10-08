@@ -3,7 +3,7 @@ import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';
 
 export interface UiInteraction {
     name: undefined | string;
-    counter: number;
+    counter: undefined | number;
 }
 
 type DeviceCallError = { code: string } | string;

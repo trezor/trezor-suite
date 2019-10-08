@@ -4,13 +4,15 @@ import { Middleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import * as routerActions from '@suite-actions/routerActions';
+import { SUITE } from '@suite-actions/constants';
 
 import routerReducer from '@suite-reducers/routerReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import suiteReducer from '@suite/reducers/suite/suiteReducer';
 import modalReducer from '@suite/reducers/suite/modalReducer';
 
-import suiteMiddlewares from '@suite-middlewares';
+import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
+import redirectMiddleware from '@suite-middlewares/redirectMiddleware';
 import { Action } from '@suite-types';
 
 const { getSuiteDevice } = global.JestMocks;
@@ -36,7 +38,7 @@ type ModalState = ReturnType<typeof modalReducer>;
 export const getInitialState = (
     suite?: Partial<SuiteState>,
     devices?: DevicesState,
-    router?: Exclude<RouterState, 'app|url|pathname'>,
+    router?: Partial<RouterState>,
     modal?: Partial<ModalState>,
 ) => {
     return {
@@ -57,7 +59,7 @@ export const getInitialState = (
 };
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares: Middleware<any, any>[] = [thunk, ...suiteMiddlewares];
+const middlewares: Middleware<any, any>[] = [thunk, redirectMiddleware, suiteMiddleware];
 
 const initStore = (state: State) => {
     const mockStore = configureStore<State, Action>(middlewares);
@@ -66,7 +68,7 @@ const initStore = (state: State) => {
         const action = store.getActions().pop();
         const { suite, router, devices } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router, action);
+        store.getState().router = routerReducer(router as RouterState, action);
         store.getState().devices = deviceReducer(devices, action);
 
         // add action back to stack
@@ -100,6 +102,38 @@ describe('redirectMiddleware', () => {
                 payload: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
             });
             expect(goto).toHaveBeenNthCalledWith(1, 'suite-device-firmware');
+        });
+
+        it('SUITE.SELECT_DEVICE reset wallet params', () => {
+            const store = initStore(
+                getInitialState(
+                    {
+                        device: getSuiteDevice(
+                            {
+                                path: '2',
+                            },
+                            {
+                                // eslint-disable-next-line @typescript-eslint/camelcase
+                                device_id: 'previous-device',
+                            },
+                        ),
+                    },
+                    undefined,
+                    {
+                        app: 'wallet',
+                        params: {
+                            symbol: 'btc',
+                            accountIndex: 2,
+                            accountType: 'normal',
+                        },
+                    },
+                ),
+            );
+            store.dispatch({
+                type: SUITE.SELECT_DEVICE,
+                payload: getSuiteDevice(),
+            });
+            expect(goto).toHaveBeenNthCalledWith(1, 'wallet-index');
         });
     });
 });

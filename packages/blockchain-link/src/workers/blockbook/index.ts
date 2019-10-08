@@ -143,11 +143,14 @@ const getTransaction = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const info = await socket.getTransaction(payload);
+        const tx = await socket.getTransaction(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_TRANSACTION,
-            payload: info,
+            payload: {
+                type: 'blockbook',
+                tx,
+            },
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
