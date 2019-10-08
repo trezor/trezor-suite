@@ -6,6 +6,7 @@ import * as backupActions from '@suite-actions/backupActions';
 import * as routerActions from '@suite-actions/routerActions';
 import styled from 'styled-components';
 import { AppState, Dispatch } from '@suite-types';
+import { SuiteLayout } from '@suite-components';
 
 // note this Wrapper is copypasta from 'firmware' page
 const Wrapper = styled.div`
@@ -43,29 +44,31 @@ const Backup = (props: Props) => {
     };
 
     return (
-        <Wrapper>
-            {getStatus() === 'backup-failed' && (
-                <P>
-                    Backup procedure failed. For security reasons, device will show its seed only
-                    once. You need to wipe device and start over.
-                </P>
-            )}
-            {getStatus() === 'backup-finished' && (
-                <>
+        <SuiteLayout showSuiteHeader>
+            <Wrapper>
+                {getStatus() === 'backup-failed' && (
                     <P>
-                        Device is already backed up. You should have your recovery seed. If you dont
-                        have it, you should do something about it now.
+                        Backup procedure failed. For security reasons, device will show its seed
+                        only once. You need to wipe device and start over.
                     </P>
-                    <Button onClick={() => props.goto('wallet-index')}>Go to wallet</Button>
-                </>
-            )}
-            {getStatus() === 'needs-backup' && (
-                <>
-                    <P>Create backup. Follow instructions on your device</P>
-                    <Button onClick={() => props.backupDevice({ device })}>Start</Button>
-                </>
-            )}
-        </Wrapper>
+                )}
+                {getStatus() === 'backup-finished' && (
+                    <>
+                        <P>
+                            Device is already backed up. You should have your recovery seed. If you
+                            dont have it, you should do something about it now.
+                        </P>
+                        <Button onClick={() => props.goto('wallet-index')}>Go to wallet</Button>
+                    </>
+                )}
+                {getStatus() === 'needs-backup' && (
+                    <>
+                        <P>Create backup. Follow instructions on your device</P>
+                        <Button onClick={() => props.backupDevice({ device })}>Start</Button>
+                    </>
+                )}
+            </Wrapper>
+        </SuiteLayout>
     );
 };
 
