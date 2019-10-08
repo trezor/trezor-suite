@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { CoinLogo, variables } from '@trezor/components';
+import { CoinLogo, variables, colors } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { MessageDescriptor } from '@suite/types/suite';
 import Title from '@wallet-components/Title';
@@ -22,11 +22,13 @@ const StyledCoinLogo = styled(CoinLogo)`
 const Label = styled.span`
     font-size: ${variables.FONT_SIZE.BASE};
     font-weight: ${variables.FONT_WEIGHT.NORMAL};
+    text-transform: uppercase;
+    color: ${colors.TEXT_SECONDARY};
     margin-left: 5px;
 `;
 
 const LabelAddon = styled.span`
-    margin-right: 3px;
+    margin-right: 2px;
 `;
 
 interface Props {
