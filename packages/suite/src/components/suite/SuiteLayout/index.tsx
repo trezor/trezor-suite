@@ -71,7 +71,6 @@ interface Props {
 
 const SuiteLayout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
-        {console.log(props.isLanding, props.disableSidebar)}
         <CommonHeader
             sidebarOpened={props.suite.showSidebar}
             toggleSidebar={props.toggleSidebar}
