@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
-
+import TrezorConnect from 'trezor-connect';
 import { Store } from '@suite-types';
+
 // import { getConnectDevice } from '../../../suite/src/support/tests/setupJest';
 // import { DEVICE } from 'trezor-connect';
 
@@ -21,6 +22,7 @@ declare global {
 declare global {
     interface Window {
         store: Store;
+        TrezorConnect: typeof TrezorConnect;
     }
 }
 
