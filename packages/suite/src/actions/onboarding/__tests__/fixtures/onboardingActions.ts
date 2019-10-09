@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import * as STEP from '@onboarding-constants/steps';
+
+const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
+const connectSuccessRepsonse = { success: true };
 
 export default [
     {
@@ -115,12 +119,12 @@ export default [
     },
 ] as const;
 
-export const deviceCalls = [
+export const deviceCallsGeneral = [
     {
         description: 'deviceCall: test error and isProgress',
         initialState: {},
         mocks: {
-            applySettings: {
+            connectResponse: {
                 success: false,
                 payload: {
                     error: 'error',
@@ -149,9 +153,7 @@ export const deviceCalls = [
         description: 'deviceCall: test success and isProgress',
         initialState: {},
         mocks: {
-            applySettings: {
-                success: true,
-            },
+            connectResponse: connectSuccessRepsonse,
         },
         action: () => connectActions.applySettings({ label: 'foo' }),
         expect: {
@@ -170,5 +172,150 @@ export const deviceCalls = [
                 },
             },
         },
+    },
+];
+
+// this part of test is here more or less to get higher coverage. currently no assertions are
+// done as they are in general part. Id say adding assertions here brings little benefit and reduces maintainability.
+export const deviceCallsSpecific = [
+    {
+        description: 'resetDevice - t2',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.resetDevice(),
+    },
+    {
+        description: 'resetDevice - t1',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 1 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.resetDevice(),
+    },
+    {
+        description: 'backupDevice',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.backupDevice(),
+    },
+    {
+        description: 'applySettings',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.applySettings({ label: 'foo' }),
+    },
+    {
+        description: 'applyFlags',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.applyFlags({ flags: 1 }),
+    },
+    {
+        description: 'changePin',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.changePin(),
+    },
+    {
+        description: 'recoverDevice t2',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.recoveryDevice(),
+    },
+    {
+        description: 'recoverDevice - t1',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 1 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.recoveryDevice(),
+    },
+    {
+        description: 'wipeDevice',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.wipeDevice(),
+    },
+    {
+        description: 'getFeatures',
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    features: getDeviceFeatures({ major_version: 2 }),
+                }),
+            },
+        },
+        mocks: {
+            connectResponse: connectSuccessRepsonse,
+        },
+        action: () => connectActions.getFeatures(),
     },
 ];

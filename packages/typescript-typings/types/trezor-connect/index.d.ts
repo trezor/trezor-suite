@@ -232,6 +232,7 @@ declare module 'trezor-connect' {
         passphraseProtection?: boolean;
         skipBackup?: boolean;
         noBackup?: boolean;
+        backupType?: 0 | 1;
     }
 
     export interface ApplySettingsParams extends CommonParams {
