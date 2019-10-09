@@ -87,11 +87,6 @@ export const getSelectedAccount = (
     );
 };
 
-export const getAccountDevice = (devices: AppState['devices'], account: Account) => {
-    const device = devices.find(d => d.state === account.deviceState);
-    return device;
-};
-
 export const getSelectedNetwork = (networks: Network[], symbol: string) => {
     return networks.find(c => c.symbol === symbol) || null;
 };

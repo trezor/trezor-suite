@@ -68,4 +68,29 @@ describe('accountUtils', () => {
         );
         expect(accountUtils.getNetworkAmount('0.0000000000001', 'eth')).toEqual('0.0000000000001');
     });
+
+    it('getAccountDevice', () => {
+        expect(
+            accountUtils.getAccountDevice(
+                [
+                    global.JestMocks.getSuiteDevice({
+                        state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                    }),
+                    global.JestMocks.getSuiteDevice({
+                        state: '20f91883604899768ba21ffd38d0f5f35b07f14e65355f342e4442547c0ce45e',
+                    }),
+                ],
+                global.JestMocks.getWalletAccount({
+                    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                    descriptor:
+                        'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                    symbol: 'btc',
+                }),
+            ),
+        ).toEqual(
+            global.JestMocks.getSuiteDevice({
+                state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            }),
+        );
+    });
 });

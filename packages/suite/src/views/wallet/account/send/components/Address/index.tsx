@@ -1,12 +1,14 @@
 import React from 'react';
 import { Input, Button, Icon, colors } from '@trezor/components';
-import styled from 'styled-components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
-import commonMessages from '@wallet-views/messages';
+import styled from 'styled-components';
+import { isAddressInMyAccount, getAccountDevice } from '@wallet-utils/accountUtils';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-
 import { Output } from '@wallet-types/sendForm';
+import commonMessages from '@wallet-views/messages';
 import messages from './index.messages';
+import { AppState } from '@suite-types';
+import { Account, Network } from '@wallet-types';
 import { DispatchProps } from '../../Container';
 
 const TopLabel = styled.div``;
@@ -23,11 +25,30 @@ interface Props {
     intl: InjectedIntl;
     outputId: Output['id'];
     error: Output['address']['error'];
+    networkType: Network['networkType'];
+    devices: AppState['devices'];
+    accounts: Account[];
     address: Output['address']['value'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getMessage = (error: Output['address']['error']) => {
+const getMessage = (
+    error: Output['address']['error'],
+    networkType: Network['networkType'],
+    address: string | null,
+    accounts: Account[],
+    devices: AppState['devices'],
+) => {
+    if (address) {
+        const myAccount = isAddressInMyAccount(networkType, address, accounts);
+        if (myAccount) {
+            const device = getAccountDevice(devices, myAccount);
+            if (device) {
+                return `${device.label} Account #${myAccount.index}`;
+            }
+        }
+    }
+
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_SET} />;
@@ -55,7 +76,13 @@ const Address = (props: Props) => (
         spellCheck={false}
         autoCapitalize="off"
         topLabel={<TopLabel>{props.intl.formatMessage(commonMessages.TR_ADDRESS)}</TopLabel>}
-        bottomText={getMessage(props.error)}
+        bottomText={getMessage(
+            props.error,
+            props.networkType,
+            props.address,
+            props.accounts,
+            props.devices,
+        )}
         value={props.address || ''}
         onChange={e => props.sendFormActions.handleAddressChange(props.outputId, e.target.value)}
         sideAddons={

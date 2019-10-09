@@ -1,8 +1,10 @@
 import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
+import { AppState } from '@suite-types';
 import BigNumber from 'bignumber.js';
+import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
 import validator from 'validator';
-import { Account } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 
 export const parseBIP44Path = (path: string) => {
@@ -77,11 +79,11 @@ export const getTitleForNetwork = (symbol: Account['symbol'], intl: InjectedIntl
 
 export const getTypeForNetwork = (accountType: Account['accountType'], intl: InjectedIntl) => {
     switch (accountType) {
-        case 'normal':
+        case ACCOUNT_TYPE.NORMAL:
             return null;
-        case 'segwit':
+        case ACCOUNT_TYPE.SEGWIT:
             return intl.formatMessage(l10nMessages.TR_NETWORK_TYPE_SEGWIT);
-        case 'legacy':
+        case ACCOUNT_TYPE.LEGACY:
             return intl.formatMessage(l10nMessages.TR_NETWORK_TYPE_LEGACY);
         // no default
     }
@@ -160,14 +162,43 @@ export const formatNetworkAmount = (amount: string, symbol: Account['symbol']) =
 export const sortByCoin = (accounts: Account[]) => {
     return accounts.sort((a, b) => {
         const aIndex = NETWORKS.findIndex(n => {
-            const accountType = n.accountType || 'normal';
+            const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
             return accountType === a.accountType && n.symbol === a.symbol;
         });
         const bIndex = NETWORKS.findIndex(n => {
-            const accountType = n.accountType || 'normal';
+            const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
             return accountType === b.accountType && n.symbol === b.symbol;
         });
         if (aIndex === bIndex) return a.index - b.index;
         return aIndex - bIndex;
     });
+};
+
+export const isAddressInMyAccount = (
+    networkType: Network['networkType'],
+    address: string,
+    accounts: Account[],
+) => {
+    const filteredAccounts = accounts.filter(account => account.networkType === networkType);
+
+    switch (networkType) {
+        case NETWORK_TYPE.BITCOIN: {
+            return false;
+        }
+
+        case NETWORK_TYPE.RIPPLE:
+        case NETWORK_TYPE.ETHEREUM: {
+            const foundAccount = filteredAccounts.find(account => account.descriptor === address);
+            if (foundAccount) {
+                return foundAccount;
+            }
+            return false;
+        }
+        // no default
+    }
+};
+
+export const getAccountDevice = (devices: AppState['devices'], account: Account) => {
+    const device = devices.find(d => d.state === account.deviceState);
+    return device;
 };
