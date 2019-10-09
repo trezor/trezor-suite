@@ -13,7 +13,7 @@ import l10nMessages from './index.messages';
 import DeviceInstances from '../DeviceInstances';
 import Item from '../MenuItem';
 
-import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
+import { AcquiredDevice, Dispatch } from '@suite-types';
 
 const Wrapper = styled.div`
     background: ${colors.WHITE};
@@ -95,6 +95,6 @@ const MenuItems = ({
 };
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps,
 )(MenuItems);

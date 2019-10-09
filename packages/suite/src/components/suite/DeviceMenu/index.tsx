@@ -16,7 +16,7 @@ import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 const { SLIDE_DOWN } = animations;
 
-const Wrapper = styled.div<Omit<WrapperProps | 'additionalDeviceMenuItems'>>`
+const Wrapper = styled.div<Omit<WrapperProps, 'additionalDeviceMenuItems'>>`
     position: relative;
     display: flex;
     min-height: 70px;
