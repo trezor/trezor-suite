@@ -105,6 +105,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                             accounts={accounts}
                             devices={devices}
                             networkType={account.networkType}
+                            accountType={account.accountType}
                             outputId={output.id}
                             address={output.address.value}
                             error={output.address.error}

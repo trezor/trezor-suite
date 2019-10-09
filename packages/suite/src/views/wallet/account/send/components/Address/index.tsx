@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Button, Icon, colors } from '@trezor/components';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import { isAddressInMyAccount, getAccountDevice } from '@wallet-utils/accountUtils';
+import { isAddressInAccount, getAccountDevice } from '@wallet-utils/accountUtils';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output } from '@wallet-types/sendForm';
 import commonMessages from '@wallet-views/messages';
@@ -26,6 +26,7 @@ interface Props {
     outputId: Output['id'];
     error: Output['address']['error'];
     networkType: Network['networkType'];
+    accountType: Network['accountType'];
     devices: AppState['devices'];
     accounts: Account[];
     address: Output['address']['value'];
@@ -35,16 +36,17 @@ interface Props {
 const getMessage = (
     error: Output['address']['error'],
     networkType: Network['networkType'],
+    accountType: Network['accountType'],
     address: string | null,
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
     if (address) {
-        const myAccount = isAddressInMyAccount(networkType, address, accounts);
-        if (myAccount) {
-            const device = getAccountDevice(devices, myAccount);
+        const account = isAddressInAccount(networkType, accountType, address, accounts);
+        if (account) {
+            const device = getAccountDevice(devices, account);
             if (device) {
-                return `${device.label} Account #${myAccount.index}`;
+                return `${device.label} Account #${account.index + 1}`;
             }
         }
     }
@@ -79,6 +81,7 @@ const Address = (props: Props) => (
         bottomText={getMessage(
             props.error,
             props.networkType,
+            props.accountType,
             props.address,
             props.accounts,
             props.devices,

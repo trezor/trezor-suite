@@ -1,10 +1,10 @@
 import l10nMessages from '@wallet-views/account/messages';
 import { InjectedIntl } from 'react-intl';
-import { AppState } from '@suite-types';
 import BigNumber from 'bignumber.js';
 import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
 import validator from 'validator';
 import { Account, Network } from '@wallet-types';
+import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 
 export const parseBIP44Path = (path: string) => {
@@ -174,16 +174,34 @@ export const sortByCoin = (accounts: Account[]) => {
     });
 };
 
-export const isAddressInMyAccount = (
+export const isAddressInAccount = (
     networkType: Network['networkType'],
+    accountType: Network['accountType'],
     address: string,
     accounts: Account[],
 ) => {
-    const filteredAccounts = accounts.filter(account => account.networkType === networkType);
+    const filteredAccounts = accounts.filter(
+        account => account.networkType === networkType && account.accountType === accountType,
+    );
 
     switch (networkType) {
         case NETWORK_TYPE.BITCOIN: {
-            return false;
+            return filteredAccounts.find(account => {
+                const { addresses } = account;
+                if (addresses) {
+                    const foundAccountUnused = addresses.unused.find(
+                        item => item.address === address,
+                    );
+                    if (foundAccountUnused) {
+                        return account;
+                    }
+                    const foundAccountUsed = addresses.used.find(item => item.address === address);
+                    if (foundAccountUsed) {
+                        return account;
+                    }
+                }
+                return false;
+            });
         }
 
         case NETWORK_TYPE.RIPPLE:
