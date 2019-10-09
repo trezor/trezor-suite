@@ -8,7 +8,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateOnlineStatus: bindActionCreators(updateOnlineStatus, dispatch),
 });
 
-type Props = ReturnType<typeof mapDispatchToProps> ;
+type Props = ReturnType<typeof mapDispatchToProps>;
 
 /**
  * Navigator online/offline handler used in suite-web and suite-desktop apps
