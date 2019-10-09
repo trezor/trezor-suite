@@ -7,7 +7,7 @@ interface Props {
 
 const StaticPageWrapper = (props: Props) => {
     return (
-        <SuiteLayout fullscreenMode disableNotifications disableModals>
+        <SuiteLayout fullscreenMode disableNotifications disableModals disableSidebar>
             {props.children}
         </SuiteLayout>
     );
