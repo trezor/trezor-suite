@@ -5,7 +5,7 @@ import { DEVICE } from 'trezor-connect';
 // import * as connectActions from '@onboarding-actions/connectActions';
 
 // declaration for support files is not present in babel.config (and probably shouldnt be)
-import { getConnectDevice, getDeviceFeatures } from '../../../suite/src/support/tests/setupJest';
+import { getConnectDevice, getDeviceFeatures } from '../../../../suite/src/support/tests/setupJest';
 
 describe('Onboarding happy paths', () => {
     beforeEach(() => {
@@ -19,7 +19,6 @@ describe('Onboarding happy paths', () => {
             .should('exist')
             .then(TrezorConnect => {
                 cy.stub(TrezorConnect, 'resetDevice', () => {
-                    console.warn('sthubbed shit');
                     return Promise.resolve({ success: true });
                 });
                 cy.get('html')

@@ -13,8 +13,7 @@ const webpackOptions = {
     module: {
         rules: [
             {
-                // test: /\.ts$/,
-                test: /\.ts(x?)$/,
+                test: /\.ts$/,
                 exclude: [/node_modules/],
                 use: [
                     {
@@ -24,7 +23,7 @@ const webpackOptions = {
                     {
                         loader: 'ts-loader',
                         options: {
-                            configFile: '../tsconfig.json',
+                            configFile: 'packages/suite-web/test/tsconfig.json',
                         },
                     },
                 ],
