@@ -10,8 +10,7 @@ import { bindActionCreators } from 'redux';
 import { AppState, Dispatch } from '@suite-types';
 
 interface OwnProps {
-    // TODO
-    children: any;
+    children: React.ReactNode;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -64,7 +63,7 @@ const Index = (props: Props) => {
         return <AcquireDevice />;
     }
 
-    return props.children;
+    return <>{props.children}</>;
 };
 
 export default connect(

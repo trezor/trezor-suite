@@ -1,4 +1,4 @@
-import { useEffect, FunctionComponent } from 'react';
+import { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateOnlineStatus } from '@suite-actions/suiteActions';
@@ -8,14 +8,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateOnlineStatus: bindActionCreators(updateOnlineStatus, dispatch),
 });
 
-type Props = ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapDispatchToProps> ;
 
 /**
  * Navigator online/offline handler used in suite-web and suite-desktop apps
  * Handle changes of state and dispatch Action with current state to the reducer
  * @param {Props} props
  */
-const OnlineStatus: FunctionComponent<Props> = (props: Props) => {
+const OnlineStatus = (props: Props) => {
     useEffect(() => {
         const statusHandler = () => {
             props.updateOnlineStatus(navigator.onLine);

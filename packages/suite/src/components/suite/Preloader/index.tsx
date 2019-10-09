@@ -14,7 +14,11 @@ const mapStateToProps = (state: AppState) => ({
     error: state.suite.error,
 });
 
-type Props = ReturnType<typeof mapStateToProps> & { dispatch: Dispatch; isStatic: boolean };
+type Props = ReturnType<typeof mapStateToProps> & {
+    children: React.ReactNode;
+    dispatch: Dispatch;
+    isStatic: boolean;
+};
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -24,7 +28,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const Preloader: React.FunctionComponent<Props> = props => {
+const Preloader = (props: Props) => {
     const { loading, loaded, error, dispatch, isStatic } = props;
     useEffect(() => {
         if (!loading && !loaded && !error) {

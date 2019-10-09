@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
@@ -16,7 +16,7 @@ interface Props extends InjectedIntlProps {
     acquireDevice: typeof acquireDevice;
 }
 
-const Acquire: FunctionComponent<Props> = props => {
+const Acquire = (props: Props) => {
     const { device, locks } = props;
     if (!device) return null;
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
