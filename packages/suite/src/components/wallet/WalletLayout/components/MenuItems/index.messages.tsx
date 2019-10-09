@@ -5,7 +5,6 @@ const definedMessages = defineMessages({
         id: 'TR_ADD_HIDDEN_WALLET',
         defaultMessage: 'Add hidden wallet',
     },
- 
 });
 
 export default definedMessages;
