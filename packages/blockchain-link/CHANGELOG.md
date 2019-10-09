@@ -1,5 +1,6 @@
 # 1.0.3
 #### changes
+- Add currently connected url to 'getInfo' response
 - Fixed getAccountInfo 'blockbook' type: empty = (transactions === 0 && unconfirmedTransactions === 0)
 
 # 1.0.2
