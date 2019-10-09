@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, {
+    UI,
+    ApplyFlagsParams,
+    ApplySettingsParams,
+    ResetDeviceParams,
+} from 'trezor-connect';
 
 import {
     DEVICE_CALL_START,
@@ -11,17 +16,84 @@ import { AnyStepId } from '@suite/types/onboarding/steps';
 import * as CALLS from '@suite/actions/onboarding/constants/calls';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
 
+import { ObjectValues } from '@suite/types/utils';
 import { goToNextStep } from './onboardingActions';
-import { GetState, Dispatch } from '@suite-types';
+import { GetState, Dispatch, AppState } from '@suite-types';
 
-const call = (name: string, params?: any) => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
+const DEFAULT_PASSPHRASE_PROTECTION = true;
+const DEFAULT_SKIP_BACKUP = true;
+const DEFAULT_STRENGTH_T1 = 256;
+const DEFAULT_STRENGTH_T2 = 128;
+
+const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) => {
+    const { device } = state.suite;
+    const { recovery } = state.onboarding;
+    if (!device || !device.features) {
+        // ts thing, should not happen
+        throw new Error('no device');
+    }
+    let params;
+    switch (call) {
+        case CALLS.RESET_DEVICE:
+            if (device.features.major_version === 1) {
+                params = {
+                    strength: DEFAULT_STRENGTH_T1,
+                    label: DEFAULT_LABEL,
+                    skipBackup: DEFAULT_SKIP_BACKUP,
+                    passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
+                };
+            } else {
+                params = {
+                    strength: DEFAULT_STRENGTH_T2,
+                    label: DEFAULT_LABEL,
+                    skipBackup: DEFAULT_SKIP_BACKUP,
+                    passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
+                };
+            }
+
+            break;
+        case CALLS.RECOVER_DEVICE:
+            if (device.features.major_version === 1) {
+                params = {
+                    passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+                    type: recovery.advancedRecovery ? 1 : 0,
+                    word_count: recovery.wordsCount,
+                };
+            } else {
+                params = {
+                    passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+                };
+            }
+            break;
+        // no default
+    }
+
+    return {
+        ...params,
+        useEmptyPassphrase: true,
+        device,
+    };
+};
+
+const call = async (
+    dispatch: Dispatch,
+    state: AppState,
+    name: ObjectValues<typeof CALLS>,
+    params?: any,
+) => {
+    const modifiedParams = {
+        ...applyDefaultParams(state, name),
+        ...params,
+    };
     dispatch({ type: DEVICE_CALL_RESET });
 
+    // todo: maybe UI lock? hmm but...
     dispatch({
         type: DEVICE_CALL_START,
         name,
     });
+
+    const { device } = state.suite;
 
     if (!device) {
         // this should never happen
@@ -32,42 +104,31 @@ const call = (name: string, params?: any) => async (dispatch: Dispatch, getState
         });
     }
 
-    const callParams = {
-        useEmptyPassphrase: true,
-        device,
-        ...params,
-    };
-
     let fn;
     switch (name) {
-        case CALLS.FIRMWARE_UPDATE:
-            fn = () => TrezorConnect.firmwareUpdate(callParams);
-            break;
         case CALLS.RESET_DEVICE:
-            fn = () => TrezorConnect.resetDevice(callParams);
+            fn = () => TrezorConnect.resetDevice(modifiedParams);
             break;
         case CALLS.BACKUP_DEVICE:
-            fn = () => TrezorConnect.backupDevice(callParams);
+            fn = () => TrezorConnect.backupDevice(modifiedParams);
             break;
         case CALLS.APPLY_SETTINGS:
-            fn = () => TrezorConnect.applySettings(callParams);
+            fn = () => TrezorConnect.applySettings(modifiedParams);
             break;
         case CALLS.APPLY_FLAGS:
-            // @ts-ignore
-            fn = () => TrezorConnect.applyFlags(callParams);
+            fn = () => TrezorConnect.applyFlags(modifiedParams);
             break;
         case CALLS.GET_FEATURES:
-            fn = () => TrezorConnect.getFeatures(callParams);
+            fn = () => TrezorConnect.getFeatures(modifiedParams);
             break;
         case CALLS.CHANGE_PIN:
-            fn = () => TrezorConnect.changePin(callParams);
+            fn = () => TrezorConnect.changePin(modifiedParams);
             break;
         case CALLS.RECOVER_DEVICE:
-            // @ts-ignore
-            fn = () => TrezorConnect.recoveryDevice(callParams);
+            fn = () => TrezorConnect.recoveryDevice(modifiedParams);
             break;
         case CALLS.WIPE_DEVICE:
-            fn = () => TrezorConnect.wipeDevice(callParams);
+            fn = () => TrezorConnect.wipeDevice(modifiedParams);
             break;
         default:
             throw new Error(`call ${name} does not exist`);
@@ -105,68 +166,34 @@ const uiResponseCall = (name: string, params: any) => async () => {
     await fn();
 };
 
-const getFeatures = () => (dispatch: Dispatch) => dispatch(call(CALLS.GET_FEATURES));
+const getFeatures = () => (dispatch: Dispatch, getState: GetState) =>
+    call(dispatch, getState(), CALLS.GET_FEATURES);
 
-const firmwareUpdate = (params: any) => (dispatch: Dispatch) =>
-    dispatch(call(CALLS.FIRMWARE_UPDATE, params));
+const resetDevice = (params?: ResetDeviceParams) => (dispatch: Dispatch, getState: GetState) =>
+    call(dispatch, getState(), CALLS.RESET_DEVICE, params);
 
-const resetDevice = (params?: any) => (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-    if (device!.features!.major_version === 1) {
-        return dispatch(
-            call(CALLS.RESET_DEVICE, {
-                ...params,
-                label: DEFAULT_LABEL,
-                skipBackup: true,
-                passhpraseProtection: true,
-            }),
-        );
-    }
-    return dispatch(
-        call(CALLS.RESET_DEVICE, {
-            ...params,
-            strength: 128,
-            label: DEFAULT_LABEL,
-            skipBackup: true,
-            passhpraseProtection: true,
-        }),
-    );
-};
+const backupDevice = () => (dispatch: Dispatch, getState: GetState) =>
+    call(dispatch, getState(), CALLS.BACKUP_DEVICE);
 
-const backupDevice = () => (dispatch: Dispatch) => dispatch(call(CALLS.BACKUP_DEVICE));
+const applySettings = (params: ApplySettingsParams) => (dispatch: Dispatch, getState: GetState) =>
+    call(dispatch, getState(), CALLS.APPLY_SETTINGS, params);
 
-const applySettings = (params: any) => (dispatch: Dispatch) =>
-    dispatch(call(CALLS.APPLY_SETTINGS, params));
+const applyFlags = (params: ApplyFlagsParams) => (dispatch: Dispatch, getState: GetState) =>
+    call(dispatch, getState(), CALLS.APPLY_FLAGS, params);
 
-const applyFlags = (params: any) => (dispatch: Dispatch) =>
-    dispatch(call(CALLS.APPLY_FLAGS, params));
-
-const changePin = () => (dispatch: Dispatch) => dispatch(call(CALLS.CHANGE_PIN));
+const changePin = () => (dispatch: Dispatch, getState: GetState) =>
+    call(dispatch, getState(), CALLS.CHANGE_PIN);
 
 const recoveryDevice = () => (dispatch: Dispatch, getState: GetState) => {
-    let defaults;
-    const { device } = getState().suite;
-    const { recovery } = getState().onboarding;
-    if (device!.features!.major_version === 2) {
-        defaults = {
-            passphrase_protection: true,
-        };
-    } else {
-        defaults = {
-            passphrase_protection: true,
-            type: recovery.advancedRecovery ? 1 : 0,
-            word_count: recovery.wordsCount,
-        };
-    }
-
-    return dispatch(call(CALLS.RECOVER_DEVICE, { ...defaults }));
+    return call(dispatch, getState(), CALLS.RECOVER_DEVICE);
 };
-const wipeDevice = () => (dispatch: Dispatch) => dispatch(call(CALLS.WIPE_DEVICE));
+const wipeDevice = () => (dispatch: Dispatch, getState: GetState) =>
+    call(dispatch, getState(), CALLS.WIPE_DEVICE);
+
 const submitNewPin = (params: any) => (dispatch: Dispatch) =>
-    // @ts-ignore
     dispatch(uiResponseCall(UI.RECEIVE_PIN, params));
+
 const submitWord = (params: any) => (dispatch: Dispatch) =>
-    // @ts-ignore
     dispatch(uiResponseCall(UI.RECEIVE_WORD, params));
 
 const callActionAndGoToNextStep = (
@@ -192,7 +219,6 @@ export {
     // calls to connect
     resetCall,
     getFeatures,
-    firmwareUpdate,
     resetDevice,
     backupDevice,
     applySettings,

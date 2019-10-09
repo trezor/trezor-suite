@@ -149,10 +149,15 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     try {
         const api = await connect();
         const info = await api.getServerInfo();
+        // @ts-ignore: accessing private var _url
+        const url = api.connection._url; // eslint-disable-line no-underscore-dangle
         common.response({
             id: data.id,
             type: RESPONSES.GET_INFO,
-            payload: utils.transformServerInfo(info),
+            payload: {
+                url,
+                ...utils.transformServerInfo(info),
+            },
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error: utils.transformError(error) });
