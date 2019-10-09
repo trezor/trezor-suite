@@ -1,5 +1,4 @@
 export const INIT = '@wallet-send-form/init';
-export const DISPOSE = '@wallet-send-form/dispose';
 export const SET_ADDITIONAL_FORM_VISIBILITY = '@wallet-send-form/set-additional-form-visibility';
 
 export const HANDLE_ADDRESS_CHANGE = '@wallet-send-form/handle-address-change';

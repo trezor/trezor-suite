@@ -30,8 +30,7 @@ export type SendFormActions =
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
     | { type: typeof SEND.CLEAR }
     | { type: typeof SEND.BTC_DELETE_TRANSACTION_INFO }
-    | { type: typeof SEND.INIT; payload: InitialState }
-    | { type: typeof SEND.DISPOSE };
+    | { type: typeof SEND.INIT; payload: InitialState };
 
 /**
  * Initialize current form, load values from session storage
@@ -80,15 +79,6 @@ export const compose = (setMax: boolean = false) => async (
         dispatch({ type: SEND.BTC_DELETE_TRANSACTION_INFO });
         return dispatch(bitcoinActions.compose(setMax));
     }
-};
-
-/**
- * Dispose current form, save values to session storage
- */
-export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
-    dispatch({
-        type: SEND.DISPOSE,
-    });
 };
 
 /*
