@@ -195,7 +195,11 @@ const Wrapper = styled.button<Props>`
             }
         `}
 `;
-const TextWrapper = styled.div``;
+
+const TextWrapper = styled.div`
+    display: flex;
+`;
+
 const IconWrapper = styled.div`
     align-items: center;
     margin-right: 0.8rem;
