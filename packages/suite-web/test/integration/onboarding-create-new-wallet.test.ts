@@ -78,7 +78,7 @@ describe('Onboarding', () => {
             // mocked trezor-connect or @onboarding-actions/connectActions module. To be able to mock
             // such module, I need to setup entire typescript to understand our custom import paths.
             // currently, we have paths specified in babel config, typescript has different syntax
-            // IT WOULD BE BEST to figure out, how to make next-config work with cypress tests 
+            // IT WOULD BE BEST to figure out, how to make next-config work with cypress tests
             // .getTestElement('button-standard-backup')
             // .click();
 
