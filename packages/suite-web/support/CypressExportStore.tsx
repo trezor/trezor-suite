@@ -1,21 +1,11 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-
 import { useEffect } from 'react';
+
 import { Store } from '@suite-types';
 
 interface Props {
     store?: Store;
 }
-declare global {
-    interface Window {
-        store: Store;
-        // todo: Cypress property is added by test runner automatically. I just need it to decide
-        // if store should be exposed on window object.
-        Cypress: any;
-    }
-}
-
-// todo: expose TrezorConnect on window to make its interface adjustable for tests;
 
 /**
  * Utility for running tests in Cypress.
