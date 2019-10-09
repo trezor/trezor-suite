@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
-
-import { Loader } from '@trezor/components';
 
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
+import Loading from '@suite-components/landing/Loading';
 import AcquireDevice from '@suite-components/AcquireDevice';
-import SuiteLayout from '@suite-components/SuiteLayout';
 import { bindActionCreators } from 'redux';
 import { AppState, Dispatch } from '@suite-types';
 
 interface OwnProps {
-    children: React.ReactNode;
+    // TODO
+    children: any;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -27,35 +25,22 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const LoaderWrapper = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-`;
-
 const Index = (props: Props) => {
+    const { suite } = props;
     const { transport } = props.suite;
+    const redirectToBridge = transport && !transport.type;
+
     useEffect(() => {
         // no available transport, redirect to bridge page
-        if (transport && !transport.type) {
+        if (redirectToBridge) {
             props.goto('suite-bridge');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [transport]);
+    }, [redirectToBridge]);
 
-    const { suite } = props;
-
-    if (!suite.transport) {
+    if (!suite.transport || redirectToBridge) {
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-        // TODO: this should be separate component
-        return (
-            <SuiteLayout isLanding>
-                <LoaderWrapper>
-                    <Loader text="Loading" size={100} strokeWidth={1} />
-                </LoaderWrapper>
-            </SuiteLayout>
-        );
+        return <Loading />;
     }
 
     // no available device
