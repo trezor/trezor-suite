@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const wp = require('@cypress/webpack-preprocessor');
+const babel = require('../../babel.config');
+
+// hackinsh smackish way how to make it work, I didnt want to touch app config at all
+const babelOptions = babel({ cache: () => {} });
 
 const webpackOptions = {
     resolve: {
@@ -9,9 +13,14 @@ const webpackOptions = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                // test: /\.ts$/,
+                test: /\.ts(x?)$/,
                 exclude: [/node_modules/],
                 use: [
+                    {
+                        loader: 'babel-loader',
+                        options: babelOptions,
+                    },
                     {
                         loader: 'ts-loader',
                         options: {

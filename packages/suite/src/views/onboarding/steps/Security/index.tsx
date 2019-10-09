@@ -17,6 +17,7 @@ const SecurityStep = (props: Props) => (
             </Text>
             <Wrapper.Controls>
                 <OnboardingButton.Alt
+                    data-test="button-exit-app"
                     onClick={() => {
                         props.exitApp(CONFIG.APP.EXIT_APP_ROUTE);
                     }}
