@@ -11,6 +11,7 @@ import StaticPageWrapper from './StaticPageWrapper';
 import Header from './Header';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
+import SettingsLayout from './SettingsLayout';
 
 export {
     AcquireDevice,
@@ -26,4 +27,5 @@ export {
     Header,
     FormattedNumber,
     SuiteLayout,
+    SettingsLayout,
 };

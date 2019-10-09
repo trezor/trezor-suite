@@ -3,32 +3,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
 import { Input, Switch, Button, P, Icon } from '@trezor/components';
-import WalletNotifications from '@wallet-components/Notifications';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
-import { SuiteLayout } from '@suite-components';
+import { SettingsLayout } from '@suite-components';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 
 import { Props } from './Container';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
-
-const Layout = styled.div`
-    display: flex;
-    width: 100%;
-    max-width: 1170px;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px;
-    padding: 50px 35px 40px 35px;
-`;
 
 const Row = styled.div`
     display: flex;
@@ -63,13 +45,12 @@ const ActionButton = styled(Button)`
 
 const OrientationButton = styled(Button)`
     margin-left: 3px;
-    padding: 2px 8px;
+    padding: 6px 12px;
 `;
 
 const BackgroundGallery = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
     padding-bottom: 24px;
 `;
 
@@ -130,145 +111,135 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     ] as const;
 
     return (
-        // TODO: maybe later move to separate SettingsLayout (idea is there will be layout component for each app)
-        <SuiteLayout showSuiteHeader disableSidebar>
-            <Layout>
-                <WalletNotifications />
-                <Wrapper>
-                    <CloseWrapper>
-                        <Button onClick={() => goto('wallet-index')} isTransparent>
-                            <Icon icon="CLOSE" size={14} />
-                        </Button>
-                    </CloseWrapper>
+        <SettingsLayout>
+            <CloseWrapper>
+                <Button onClick={() => goto('wallet-index')} isTransparent>
+                    <Icon icon="CLOSE" size={14} />
+                </Button>
+            </CloseWrapper>
+            <Row>
+                <LabelCol>
+                    <Label>Label</Label>
+                </LabelCol>
+                <ActionCol>
+                    <ValueCol>
+                        <Input
+                            value={label}
+                            onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                setLabel(event.currentTarget.value)
+                            }
+                        />
+                    </ValueCol>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        variant="white"
+                        onClick={() => applySettings({ label })}
+                    >
+                        Change label
+                    </ActionButton>
+                </ActionCol>
+            </Row>
+
+            <Row>
+                <LabelCol>
+                    <Label>Pin protection</Label>
+                </LabelCol>
+                <ActionCol>
+                    <Switch
+                        isSmall
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onChange={checked => {
+                            changePin({ remove: !checked });
+                        }}
+                        checked={features.pin_protection}
+                    />
+                </ActionCol>
+            </Row>
+
+            <Row>
+                <LabelCol>
+                    <Label>Passphrase protection</Label>
+                </LabelCol>
+                <ActionCol>
+                    <Switch
+                        isSmall
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onChange={checked => {
+                            applySettings({ use_passphrase: checked });
+                        }}
+                        checked={features.passphrase_protection}
+                    />
+                </ActionCol>
+            </Row>
+
+            {device.features.major_version === 2 && (
+                <>
                     <Row>
                         <LabelCol>
-                            <Label>Label</Label>
-                        </LabelCol>
-                        <ValueCol>
-                            <Input
-                                value={label}
-                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                                    setLabel(event.currentTarget.value)
-                                }
-                            />
-                        </ValueCol>
-                        <ActionCol>
-                            <ActionButton
-                                isDisabled={uiLocked}
-                                variant="white"
-                                onClick={() => applySettings({ label })}
-                            >
-                                Change label
-                            </ActionButton>
-                        </ActionCol>
-                    </Row>
-
-                    <Row>
-                        <LabelCol>
-                            <Label>Pin protection</Label>
+                            <Label>Display rotation</Label>
                         </LabelCol>
                         <ActionCol>
-                            <Switch
-                                isSmall
-                                checkedIcon={false}
-                                uncheckedIcon={false}
-                                onChange={checked => {
-                                    changePin({ remove: !checked });
-                                }}
-                                checked={features.pin_protection}
-                            />
-                        </ActionCol>
-                    </Row>
-
-                    <Row>
-                        <LabelCol>
-                            <Label>Passphrase protection</Label>
-                        </LabelCol>
-                        <ActionCol>
-                            <Switch
-                                isSmall
-                                checkedIcon={false}
-                                uncheckedIcon={false}
-                                onChange={checked => {
-                                    applySettings({ use_passphrase: checked });
-                                }}
-                                checked={features.passphrase_protection}
-                            />
-                        </ActionCol>
-                    </Row>
-
-                    {device.features.major_version === 2 && (
-                        <>
-                            <Row>
-                                <LabelCol>
-                                    <Label>Display rotation</Label>
-                                </LabelCol>
-                                <ActionCol>
-                                    {DISPLAY_ROTATIONS.map(variant => (
-                                        <OrientationButton
-                                            key={variant.icon}
-                                            variant="white"
-                                            onClick={() =>
-                                                applySettings({ display_rotation: variant.value })
-                                            }
-                                        >
-                                            <Icon icon={variant.icon} />
-                                        </OrientationButton>
-                                    ))}
-                                </ActionCol>
-                            </Row>
-                        </>
-                    )}
-                    <BackgroundGallery>
-                        {device.features.major_version === 1 &&
-                            homescreensT1.map(image => (
-                                <BackgroundImageT1
-                                    key={image}
-                                    id={image}
-                                    onClick={() => setHomescreen(image)}
-                                    src={resolveStaticPath(
-                                        `images/suite/homescreens/t1/${image}.png`,
-                                    )}
-                                />
+                            {DISPLAY_ROTATIONS.map(variant => (
+                                <OrientationButton
+                                    key={variant.icon}
+                                    variant="white"
+                                    onClick={() =>
+                                        applySettings({ display_rotation: variant.value })
+                                    }
+                                >
+                                    <Icon size={14} icon={variant.icon} />
+                                </OrientationButton>
                             ))}
-
-                        {device.features.major_version === 2 &&
-                            homescreensT2.map(image => (
-                                <BackgroundImageT2
-                                    key={image}
-                                    id={image}
-                                    onClick={() => setHomescreen(image)}
-                                    src={resolveStaticPath(
-                                        `images/suite/homescreens/t2/${image}.png`,
-                                    )}
-                                />
-                            ))}
-                    </BackgroundGallery>
-                    <Row>
-                        <ActionCol>
-                            <ActionButton
-                                isDisabled={uiLocked}
-                                variant="error"
-                                onClick={() => wipeDevice({ device })}
-                            >
-                                Wipe device
-                            </ActionButton>
                         </ActionCol>
                     </Row>
+                </>
+            )}
+            <BackgroundGallery>
+                {device.features.major_version === 1 &&
+                    homescreensT1.map(image => (
+                        <BackgroundImageT1
+                            key={image}
+                            id={image}
+                            onClick={() => setHomescreen(image)}
+                            src={resolveStaticPath(`images/suite/homescreens/t1/${image}.png`)}
+                        />
+                    ))}
 
-                    {/* 
+                {device.features.major_version === 2 &&
+                    homescreensT2.map(image => (
+                        <BackgroundImageT2
+                            key={image}
+                            id={image}
+                            onClick={() => setHomescreen(image)}
+                            src={resolveStaticPath(`images/suite/homescreens/t2/${image}.png`)}
+                        />
+                    ))}
+            </BackgroundGallery>
+            <Row>
+                <ActionCol>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        variant="error"
+                        onClick={() => wipeDevice({ device })}
+                    >
+                        Wipe device
+                    </ActionButton>
+                </ActionCol>
+            </Row>
+
+            {/* 
                     TODO for both:
                     { name: 'homescreen', type: 'string' }, custom load
                 */}
 
-                    {/* 
+            {/* 
                     TODO for T2
                     { name: 'passphrase_source', type: 'number' }, is not in features, so probably skip for now
                     ?{ name: 'auto_lock_delay_ms', type: 'number' }, is not implemented, skip for now.
                 */}
-                </Wrapper>
-            </Layout>
-        </SuiteLayout>
+        </SettingsLayout>
     );
 };
 
