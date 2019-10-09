@@ -30,10 +30,6 @@ const IconWrapper = styled.div`
     margin-right: 15px;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    app: state.router.app,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
     acquireDevice: bindActionCreators(suiteActions.acquireDevice, dispatch),
@@ -45,11 +41,9 @@ type Props = {
     device: AcquiredDevice;
     instances: AcquiredDevice[];
     additionalDeviceMenuItems: React.ReactNode;
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+} & ReturnType<typeof mapDispatchToProps>;
 
 const MenuItems = ({
-    app,
     device,
     instances,
     goto,

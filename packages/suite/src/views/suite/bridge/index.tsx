@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-import SuiteLayout from '@suite-components/SuiteLayout';
 import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
@@ -134,82 +133,80 @@ const InstallBridge = (props: Props) => {
     const target = selectedTarget || data.target;
 
     return (
-        <>
-            <Wrapper>
-                <Top>
-                    <TitleHeader>
-                        Trezor Bridge<Version>{data && data.currentVersion}</Version>
-                    </TitleHeader>
-                    <P>
-                        <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
-                    </P>
+        <Wrapper>
+            <Top>
+                <TitleHeader>
+                    Trezor Bridge<Version>{data && data.currentVersion}</Version>
+                </TitleHeader>
+                <P>
+                    <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
+                </P>
 
-                    {!props.transport ? (
-                        <LoaderWrapper>
-                            <CenteredLoader size={50} strokeWidth={2} />
-                            <P>Gathering information, please wait...</P>
-                        </LoaderWrapper>
-                    ) : (
-                        <Download>
-                            <SelectWrapper
-                                isSearchable={false}
-                                isClearable={false}
-                                value={target}
-                                onChange={(v: Installer) => onChange(v)}
-                                options={installers}
-                            />
+                {!props.transport ? (
+                    <LoaderWrapper>
+                        <CenteredLoader size={50} strokeWidth={2} />
+                        <P>Gathering information, please wait...</P>
+                    </LoaderWrapper>
+                ) : (
+                    <Download>
+                        <SelectWrapper
+                            isSearchable={false}
+                            isClearable={false}
+                            value={target}
+                            onChange={(v: Installer) => onChange(v)}
+                            options={installers}
+                        />
 
-                            <Link href={`${data.uri}${target.value}`}>
-                                <DownloadBridgeButton icon="DOWNLOAD">
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
-                                        values={{ version: data.latestVersion }}
-                                    />
-                                </DownloadBridgeButton>
-                            </Link>
-                        </Download>
+                        <Link href={`${data.uri}${target.value}`}>
+                            <DownloadBridgeButton icon="DOWNLOAD">
+                                <FormattedMessage
+                                    {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                    values={{ version: data.latestVersion }}
+                                />
+                            </DownloadBridgeButton>
+                        </Link>
+                    </Download>
+                )}
+
+                <P size="small">
+                    <LearnMoreText>
+                        <FormattedMessage
+                            {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
+                            values={{
+                                TR_CHANGELOG: (
+                                    <Link
+                                        href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
+                                        isGreen
+                                    >
+                                        <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
+                                    </Link>
+                                ),
+                            }}
+                        />
+                    </LearnMoreText>
+                </P>
+
+                <P>
+                    {target && data && target.signature && (
+                        <Link href={data.uri + target.signature} isGreen>
+                            <FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
+                        </Link>
                     )}
+                </P>
+            </Top>
 
-                    <P size="small">
-                        <LearnMoreText>
-                            <FormattedMessage
-                                {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
-                                values={{
-                                    TR_CHANGELOG: (
-                                        <Link
-                                            href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                                            isGreen
-                                        >
-                                            <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
-                                        </Link>
-                                    ),
-                                }}
-                            />
-                        </LearnMoreText>
-                    </P>
-
+            <Bottom>
+                {props.transport && props.transport.type && (
                     <P>
-                        {target && data && target.signature && (
-                            <Link href={data.uri + target.signature} isGreen>
-                                <FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
-                            </Link>
-                        )}
+                        <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
+                        <br />
+                        <GoBack onClick={() => props.goto('wallet-index')}>
+                            <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
+                        </GoBack>
                     </P>
-                </Top>
-
-                <Bottom>
-                    {props.transport && props.transport.type && (
-                        <P>
-                            <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
-                            <br />
-                            <GoBack onClick={() => props.goto('wallet-index')}>
-                                <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
-                            </GoBack>
-                        </P>
-                    )}
-                </Bottom>
-            </Wrapper>
-        </>
+                )}
+            </Bottom>
+        </Wrapper>
     );
 };
 
