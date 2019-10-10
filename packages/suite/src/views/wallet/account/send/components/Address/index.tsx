@@ -26,7 +26,6 @@ interface Props {
     outputId: Output['id'];
     error: Output['address']['error'];
     networkType: Network['networkType'];
-    accountType: Network['accountType'];
     devices: AppState['devices'];
     accounts: Account[];
     address: Output['address']['value'];
@@ -36,13 +35,12 @@ interface Props {
 const getMessage = (
     error: Output['address']['error'],
     networkType: Network['networkType'],
-    accountType: Network['accountType'],
     address: string | null,
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
     if (address) {
-        const account = isAddressInAccount(networkType, accountType, address, accounts);
+        const account = isAddressInAccount(networkType, address, accounts);
         if (account) {
             const device = getAccountDevice(devices, account);
             if (device) {
@@ -81,7 +79,6 @@ const Address = (props: Props) => (
         bottomText={getMessage(
             props.error,
             props.networkType,
-            props.accountType,
             props.address,
             props.accounts,
             props.devices,

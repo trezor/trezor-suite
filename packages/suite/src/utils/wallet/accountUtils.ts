@@ -176,13 +176,10 @@ export const sortByCoin = (accounts: Account[]) => {
 
 export const isAddressInAccount = (
     networkType: Network['networkType'],
-    accountType: Network['accountType'],
     address: string,
     accounts: Account[],
 ) => {
-    const filteredAccounts = accounts.filter(
-        account => account.networkType === networkType && account.accountType === accountType,
-    );
+    const filteredAccounts = accounts.filter(account => account.networkType === networkType);
 
     switch (networkType) {
         case NETWORK_TYPE.BITCOIN: {
