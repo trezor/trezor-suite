@@ -103,12 +103,12 @@ export const showAddress = (path: string) => async (
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR.defaultMessage, // TODO intl support for Notification without the need to pass FormattedMessage
+                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR,
                 message: response.payload.error,
                 cancelable: true,
                 actions: [
                     {
-                        label: l10nCommonMessages.TR_TRY_AGAIN.defaultMessage,
+                        label: l10nCommonMessages.TR_TRY_AGAIN,
                         callback: () => {
                             dispatch(showAddress(path));
                         },

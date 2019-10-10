@@ -12,6 +12,7 @@ import Header from './Header';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
 import SettingsLayout from './SettingsLayout';
+import Notification from './Notification';
 
 export {
     AcquireDevice,
@@ -28,4 +29,5 @@ export {
     FormattedNumber,
     SuiteLayout,
     SettingsLayout,
+    Notification,
 };
