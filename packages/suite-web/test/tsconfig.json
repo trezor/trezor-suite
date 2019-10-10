@@ -4,7 +4,7 @@
     "noEmit": false,
     "isolatedModules": false,
     "types": ["trezor-connect", "cypress"],
-    "allowJs": true
+    "allowJs": true,
   },
   "include": [
     "**/*.ts"
