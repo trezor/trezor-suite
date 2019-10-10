@@ -7,6 +7,7 @@ import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
 // import * as PENDING from 'actions/constants/pendingTx';
 
 import * as reducerUtils from '@suite-utils/reducerUtils';
+import { getSelectedAccount, getSelectedNetwork } from '@wallet-utils/accountUtils';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { getVersion } from '@suite-utils/device';
 import {
@@ -220,14 +221,14 @@ export const observe = (prevState: AppState, action: Action) => (
     // displayed route is not an account route
     if (!params) return false;
     // get new values for selected account
-    const account = reducerUtils.getSelectedAccount(
+    const account = getSelectedAccount(
         state.wallet.accounts,
         state.suite.device,
         state.router.params,
     );
 
     // TODO: missing discovery process results in silent fail
-    const network = reducerUtils.getSelectedNetwork(NETWORKS, params.symbol);
+    const network = getSelectedNetwork(NETWORKS, params.symbol);
     // TODO: fix types, right now discovery can't be undefined so in this case fallback to null
     const discovery = dispatch(discoveryActions.getDiscoveryForDevice()) || null;
     // const tokens = reducerUtils.getAccountTokens(state.tokens, account);

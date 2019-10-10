@@ -1,5 +1,5 @@
 import TrezorConnect, { AccountTransaction } from 'trezor-connect';
-import { getAccountTransactions } from '@suite-utils/reducerUtils';
+import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
 // import { db } from '@suite/storage';

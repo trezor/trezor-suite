@@ -3,7 +3,7 @@ import TrezorConnect, {
     BlockchainBlock,
     BlockchainNotification,
 } from 'trezor-connect';
-import { getSelectedNetwork, enhanceTransaction } from '@suite-utils/reducerUtils';
+import { getSelectedNetwork, enhanceTransaction } from '@wallet-utils/accountUtils';
 import { getAccountDevice } from '@wallet-utils/accountUtils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as accountActions from '@wallet-actions/accountActions';
