@@ -8,6 +8,9 @@ const withImages = require('next-images');
 
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const webpack = require('webpack');
+const ObsoleteWebpackPlugin = require('obsolete-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const packageJson = require('./package.json');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -37,7 +40,21 @@ module.exports = withBundleAnalyzer(
                             ),
                         }),
                     );
-                    config.node = { fs: 'empty' };
+                    config.plugins.push(new HtmlWebpackPlugin());
+                    config.plugins.push(
+                        new ObsoleteWebpackPlugin({
+                            name: 'obsolete',
+                            template: '<h1 id="unsupported">Unsupported Browser</h1>',
+                            browsers: ['Firefox >= 54'],
+                            promptOnUnknownBrowser: true,
+                            promptOnNonTargetBrowser: true,
+                        }),
+                    );
+                    config.plugins.push(
+                        new ScriptExtHtmlWebpackPlugin({
+                            async: 'obsolete',
+                        }),
+                    );
                     return config;
                 },
             }),
