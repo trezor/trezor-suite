@@ -56,7 +56,7 @@ const Preloader = (props: Props) => {
     return (
         <SuiteWrapper>
             <OnlineStatus />
-            {loaded && props.children}
+            {props.children}
         </SuiteWrapper>
     );
 };
