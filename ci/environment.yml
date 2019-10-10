@@ -5,7 +5,6 @@ build & push image:
         - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     variables:
         DOCKER_TLS_CERTDIR: ''
-        DOCKER_HOST: tcp://localhost:2375
         CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/base"
     image: docker
     services:
