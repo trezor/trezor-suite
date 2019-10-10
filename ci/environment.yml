@@ -10,6 +10,7 @@ build & push image:
     services:
         - docker:dind
     script:
+        - env
         - docker pull $CONTAINER_NAME:latest || true
         - docker build --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./ci/docker/base
         - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
