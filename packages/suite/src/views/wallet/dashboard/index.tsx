@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 // import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H4, CoinLogo, colors, variables } from '@trezor/components';
+import { H4, CoinLogo, colors, variables, Loader } from '@trezor/components';
 import WalletLayout from '@wallet-components/WalletLayout';
 // import l10nCommonMessages from '@wallet-views/messages';
 import { sortByCoin } from '@wallet-utils/accountUtils';
@@ -116,12 +116,13 @@ const NetworkGroup = ({ accounts, network }: NetworkGroup) => {
 
 const Dashboard = (props: Props) => {
     const discovery = props.getDiscoveryForDevice();
-    if (!discovery) return null; // TODO: show loading...
-    const accounts = sortByCoin(
-        props.accounts.filter(
-            a => a.deviceState === discovery.deviceState && (!a.empty || a.visible),
-        ),
-    );
+    const accounts = discovery
+        ? sortByCoin(
+              props.accounts.filter(
+                  a => a.deviceState === discovery.deviceState && (!a.empty || a.visible),
+              ),
+          )
+        : [];
     const group: { [key: string]: Account[] } = {};
     accounts.forEach(a => {
         if (!group[a.symbol]) {
@@ -135,6 +136,7 @@ const Dashboard = (props: Props) => {
             <Content data-test="Dashboard__page__content">
                 <H4>Dashboard</H4>
                 <CardsWrapper>
+                    {!discovery && <Loader size={32} />}
                     {Object.keys(group).map(symbol => {
                         const network = NETWORKS.find(
                             n => n.symbol === symbol && !n.accountType,

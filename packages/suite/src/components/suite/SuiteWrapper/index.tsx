@@ -26,7 +26,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const Index = (props: Props) => {
     const { suite } = props;
-    const { transport } = props.suite;
+    const { transport, loaded } = props.suite;
     const redirectToBridge = transport && !transport.type;
 
     useEffect(() => {
@@ -37,8 +37,10 @@ const Index = (props: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [redirectToBridge]);
 
-    if (!suite.transport || redirectToBridge) {
-        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
+    if (!loaded || !suite.transport || redirectToBridge) {
+        // still loading or
+        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while) or
+        // waiting for redirect to bridge page
         return <Loading />;
     }
 
