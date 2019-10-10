@@ -124,7 +124,7 @@ const TransactionItem = React.memo(
             <Wrapper>
                 <Row>
                     <Timestamp href={explorerUrl}>
-                        {blockTime && (
+                        {blockHeight !== 0 && blockTime && blockTime > 0 && (
                             <FormattedDate
                                 value={new Date(blockTime * 1000)}
                                 hour="numeric"
@@ -138,7 +138,6 @@ const TransactionItem = React.memo(
                                 <Addr>(sent to self)</Addr>
                             </Target>
                         )}
-                        {!blockHeight && <Target>(pending)</Target>}
                         {targets &&
                             targets.map((target, i) => (
                                 // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change

@@ -183,7 +183,6 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case RESET_ONBOARDING:
                 return initialState;
-            default:
             //  no default
         }
     });

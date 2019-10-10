@@ -5,40 +5,18 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { Switch, Icon, colors, variables } from '@trezor/components';
+import { Icon, colors } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
-import { setHideBalance } from '@wallet-actions/settingsActions';
 
 import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
 import DeviceInstances from '../DeviceInstances';
+import Item from '../MenuItem';
 
-import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
-
-const { FONT_SIZE } = variables;
+import { AcquiredDevice, Dispatch } from '@suite-types';
 
 const Wrapper = styled.div`
     background: ${colors.WHITE};
-`;
-
-const Item = styled.div`
-    padding: 12px 24px;
-    display: flex;
-    height: 38px;
-    align-items: center;
-    font-size: ${FONT_SIZE.BASE};
-    cursor: pointer;
-    color: ${colors.TEXT_SECONDARY};
-
-    &:hover {
-        background: ${colors.GRAY_LIGHT};
-    }
-`;
-
-const Divider = styled.div`
-    width: 100%;
-    height: 1px;
-    background: ${colors.DIVIDER};
 `;
 
 const Label = styled.div`
@@ -52,48 +30,29 @@ const IconWrapper = styled.div`
     margin-right: 15px;
 `;
 
-const SwitchWrapper = styled.div``;
-
-const mapStateToProps = (state: AppState) => ({
-    app: state.router.app,
-    settings: state.wallet.settings,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
-    setHideBalance: bindActionCreators(setHideBalance, dispatch),
     acquireDevice: bindActionCreators(suiteActions.acquireDevice, dispatch),
     selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
     requestForgetDevice: bindActionCreators(suiteActions.requestForgetDevice, dispatch),
-    requestDeviceInstance: bindActionCreators(suiteActions.requestDeviceInstance, dispatch),
 });
 
 type Props = {
     device: AcquiredDevice;
     instances: AcquiredDevice[];
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+    additionalDeviceMenuItems: React.ReactNode;
+} & ReturnType<typeof mapDispatchToProps>;
 
 const MenuItems = ({
-    app,
     device,
     instances,
     goto,
-    setHideBalance,
-    settings,
     acquireDevice,
     selectDevice,
     requestForgetDevice,
-    requestDeviceInstance,
+    additionalDeviceMenuItems,
 }: Props) => {
     // const showDeviceMenu = device && device.mode === 'normal';
-
-    const showClone =
-        app === 'wallet' &&
-        device &&
-        device.features.passphrase_protection &&
-        device.connected &&
-        device.available;
 
     const showRenewSession = device && device.status !== 'available';
 
@@ -104,16 +63,6 @@ const MenuItems = ({
                 selectDevice={selectDevice}
                 requestForgetDevice={requestForgetDevice}
             />
-            {showClone && (
-                <Item onClick={() => requestDeviceInstance(device)}>
-                    <IconWrapper>
-                        <Icon icon="WALLET_HIDDEN" size={14} color={colors.TEXT_SECONDARY} />
-                    </IconWrapper>
-                    <Label>
-                        <FormattedMessage {...l10nMessages.TR_ADD_HIDDEN_WALLET} />
-                    </Label>
-                </Item>
-            )}
             {showRenewSession && (
                 <Item onClick={acquireDevice}>
                     <IconWrapper>
@@ -124,6 +73,7 @@ const MenuItems = ({
                     </Label>
                 </Item>
             )}
+            {additionalDeviceMenuItems}
             <Item onClick={() => goto('suite-device-settings')}>
                 <IconWrapper>
                     <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
@@ -140,48 +90,11 @@ const MenuItems = ({
                     <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                 </Label>
             </Item>
-            <Divider />
-            <Item>
-                <IconWrapper>
-                    <Icon icon="EYE_CROSSED" size={14} color={colors.TEXT_SECONDARY} />
-                </IconWrapper>
-                <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
-                </Label>
-                <SwitchWrapper
-                    onClick={event => {
-                        // prevents closing the device menu when toggling the switch
-                        event.stopPropagation();
-                        event.preventDefault();
-                    }}
-                >
-                    <Switch
-                        width={36}
-                        height={18}
-                        handleDiameter={14}
-                        checkedIcon={false}
-                        uncheckedIcon={false}
-                        onChange={checked => {
-                            setHideBalance(checked);
-                        }}
-                        checked={settings.hideBalance}
-                    />
-                </SwitchWrapper>
-            </Item>
-            <Divider />
-            <Item onClick={() => goto('wallet-settings')}>
-                <IconWrapper>
-                    <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
-                </IconWrapper>
-                <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
-                </Label>
-            </Item>
         </Wrapper>
     );
 };
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps,
 )(MenuItems);

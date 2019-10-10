@@ -19,10 +19,17 @@ const Wrapper = styled.div`
 
 const Left = styled.div``;
 
-const Header = ({ ...props }) => (
+interface Props {
+    additionalDeviceMenuItems: React.ReactNode;
+}
+
+const Header = ({ additionalDeviceMenuItems, ...props }: Props) => (
     <Wrapper {...props}>
         <Left>
-            <DeviceMenu data-test="@suite/device_selection" />
+            <DeviceMenu
+                additionalDeviceMenuItems={additionalDeviceMenuItems}
+                data-test="@suite/device_selection"
+            />
         </Left>
     </Wrapper>
 );

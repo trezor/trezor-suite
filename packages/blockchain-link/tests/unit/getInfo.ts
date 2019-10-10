@@ -31,7 +31,10 @@ workers.forEach(instance => {
                 server.setFixtures(f.serverFixtures);
                 try {
                     const response = await blockchain.getInfo();
-                    expect(response).toEqual(f.response);
+                    expect(response).toEqual({
+                        ...f.response,
+                        url: `ws://localhost:${server.options.port}`,
+                    });
                 } catch (error) {
                     expect(error.message).toEqual(f.error);
                 }

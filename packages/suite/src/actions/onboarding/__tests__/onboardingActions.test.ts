@@ -6,7 +6,8 @@ import thunk from 'redux-thunk';
 
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
-import fixtures, { deviceCalls as deviceCallsFixtures } from './fixtures/onboardingActions';
+import recoveryReducer from '@onboarding-reducers/recoveryReducer';
+import fixtures, { deviceCallsSpecific, deviceCallsGeneral } from './fixtures/onboardingActions';
 
 import { Action } from '@suite-types';
 
@@ -24,13 +25,19 @@ const { getSuiteDevice } = global.JestMocks;
 // }
 
 jest.mock('trezor-connect', () => {
-    let applySettings: any;
+    let connectResponse: any;
 
     return {
         __esModule: true, // this property makes it work
         default: {
-            getFeatures: () => {},
-            applySettings: () => Promise.resolve(applySettings),
+            getFeatures: () => Promise.resolve(connectResponse),
+            applySettings: () => Promise.resolve(connectResponse),
+            applyFlags: () => Promise.resolve(connectResponse),
+            backupDevice: () => Promise.resolve(connectResponse),
+            resetDevice: () => Promise.resolve(connectResponse),
+            changePin: () => Promise.resolve(connectResponse),
+            recoveryDevice: () => Promise.resolve(connectResponse),
+            wipeDevice: () => Promise.resolve(connectResponse),
         },
         DEVICE: {
             DISCONNECT: 'device-disconnect',
@@ -42,9 +49,9 @@ jest.mock('trezor-connect', () => {
             FIRMWARE_PROGRESS: 'ui-firmware-progress',
         },
         setTestFixtures: (f: any) => {
-            if (!f || !f.mocks) return;
+            if (!f || !f.mocks || !f.mocks.connectResponse) return;
             const { mocks } = f;
-            applySettings = mocks.applySettings;
+            connectResponse = mocks.connectResponse;
         },
     };
 });
@@ -57,6 +64,9 @@ export const getInitialState = (custom?: any) => {
             ...onboardingReducer(undefined, {} as Action),
             reducerEnabled: true,
             ...onboarding,
+            recovery: {
+                ...recoveryReducer(undefined, { type: 'foo' } as any),
+            },
         },
         suite: {
             ...suiteReducer(undefined, {} as Action),
@@ -104,20 +114,38 @@ describe('Onboarding Actions', () => {
     });
 });
 
-describe('Onboarding Actions - deviceCalls', () => {
-    deviceCallsFixtures.forEach(f => {
+describe('Onboarding Actions - deviceCalls - general', () => {
+    deviceCallsGeneral.forEach(f => {
         it(f.description, async () => {
             const store = mockStore(getInitialState(f.initialState));
             require('trezor-connect').setTestFixtures(f);
 
             const promise = store.dispatch(f.action());
-            if (f.expect.stateBeforeResolve) {
+            if (f.expect && f.expect.stateBeforeResolve) {
                 expect(store.getState().onboarding).toMatchObject(f.expect.stateBeforeResolve);
             }
             await promise;
-            if (f.expect.stateAfterResolve) {
+            if (f.expect && f.expect.stateAfterResolve) {
                 expect(store.getState().onboarding).toMatchObject(f.expect.stateAfterResolve);
             }
+        });
+    });
+});
+
+describe('Onboarding Actions - deviceCalls - specific calls', () => {
+    deviceCallsSpecific.forEach(f => {
+        it(f.description, async () => {
+            const store = mockStore(getInitialState(f.initialState));
+            require('trezor-connect').setTestFixtures(f);
+
+            const promise = store.dispatch(f.action());
+            // if (f.expect && f.expect.stateBeforeResolve) {
+            //     expect(store.getState().onboarding).toMatchObject(f.expect.stateBeforeResolve);
+            // }
+            await promise;
+            // if (f.expect && f.expect.stateAfterResolve) {
+            //     expect(store.getState().onboarding).toMatchObject(f.expect.stateAfterResolve);
+            // }
         });
     });
 });

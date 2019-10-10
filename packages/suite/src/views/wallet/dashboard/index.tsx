@@ -1,37 +1,39 @@
 import React from 'react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
-import Content from '@wallet-components/Content';
-import { H4, P, CoinLogo } from '@trezor/components';
-import Link from '@suite-components/Link';
-import WalletLayout from '@wallet-components/WalletLayout';
-import { FormattedMessage } from 'react-intl';
-import l10nCommonMessages from '@wallet-views/messages';
-import { getRoute } from '@suite/utils/suite/router';
-import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
-import { AppState } from '@suite-types';
-import l10nMessages from './index.messages';
+import BigNumber from 'bignumber.js';
+// import { bindActionCreators } from 'redux';
+// import { FormattedMessage } from 'react-intl';
+import styled from 'styled-components';
 
-const Row = styled.div`
+import { H4, CoinLogo, colors, variables, Loader } from '@trezor/components';
+import WalletLayout from '@wallet-components/WalletLayout';
+// import l10nCommonMessages from '@wallet-views/messages';
+import { sortByCoin } from '@wallet-utils/accountUtils';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { NETWORKS } from '@wallet-config';
+import { AppState, Dispatch } from '@suite-types';
+import { Network, Account } from '@wallet-types';
+// import l10nMessages from './index.messages';
+
+const Content = styled.div`
     flex: 1;
     display: flex;
-    padding: 50px 0;
-
     flex-direction: column;
-    align-items: center;
 `;
 
-const StyledP = styled(P)`
-    && {
-        padding: 0 0 15px 0;
-        text-align: center;
-    }
-`;
-
-const Coins = styled.div`
+const CardsWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
-    max-width: 400px;
+    justify-content: space-evenly;
+`;
+
+const Card = styled.div`
+    border: 1px solid ${colors.GRAY_LIGHT};
+    flex: 1;
+    border-radius: 4px;
+    padding: 10px;
+    min-width: 180px;
+    margin: 4px;
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
@@ -44,84 +46,112 @@ const StyledCoinLogo = styled(CoinLogo)`
     }
 `;
 
-const StyledH4 = styled(H4)`
-    text-align: center;
+const Header = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 `;
 
-const StyledLink = styled(Link)`
-    margin: 5px;
-
-    &:last-child {
-        margin-right: 0;
-    }
+const Details = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.TEXT_SECONDARY};
+    padding-top: 4px;
+    padding-left: 38px;
 `;
 
-interface Props {
-    settings: AppState['wallet']['settings'];
+const DetailItem = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+
+const Name = styled.div`
+    padding-left: 12px;
+    font-size: ${variables.FONT_SIZE.BIG};
+    color: ${colors.TEXT_PRIMARY};
+`;
+
+const mapStateToProps = (state: AppState) => ({
+    accounts: state.wallet.accounts,
+    discovery: state.wallet.discovery,
+    settings: state.wallet.settings,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
+    // getDiscoveryForDevice: bindActionCreators(discoveryActions.getDiscoveryForDevice, dispatch),
+});
+
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+interface NetworkGroup {
+    accounts: Account[];
+    network: Network;
 }
 
-const Dashboard = (props: Props) => {
-    const isEmpty = () => {
-        const numberOfVisibleNetworks = NETWORKS.filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => props.settings.enabledNetworks.includes(item.symbol));
-        const { enabledExternalNetworks } = props.settings;
-        const numberOfVisibleNetworksExternal = EXTERNAL_NETWORKS.filter(
-            n => !n.isHidden && enabledExternalNetworks.includes(n.symbol),
-        );
+const NetworkGroup = ({ accounts, network }: NetworkGroup) => {
+    const totalBalance = accounts.reduce((prev, a) => {
+        const bn = new BigNumber(prev).plus(a.formattedBalance);
+        return bn.toString();
+    }, '0');
+    const totalTransactions = accounts.reduce((prev, a) => {
+        const bn = new BigNumber(prev).plus(a.history.total);
+        return bn.toString();
+    }, '0');
+    return (
+        <Card>
+            <Header>
+                <StyledCoinLogo symbol={network.symbol} size={26} />
+                <Name>{network.name}</Name>
+            </Header>
+            <Details>
+                <DetailItem>Accounts used: {accounts.length}</DetailItem>
+                <DetailItem>
+                    Total balance: {totalBalance} {network.symbol.toUpperCase()}
+                </DetailItem>
+                <DetailItem>Total transactions: {totalTransactions}</DetailItem>
+            </Details>
+        </Card>
+    );
+};
 
-        return numberOfVisibleNetworks.length <= 0 && numberOfVisibleNetworksExternal.length <= 0;
-    };
+const Dashboard = (props: Props) => {
+    const discovery = props.getDiscoveryForDevice();
+    const accounts = discovery
+        ? sortByCoin(
+              props.accounts.filter(
+                  a => a.deviceState === discovery.deviceState && (!a.empty || a.visible),
+              ),
+          )
+        : [];
+    const group: { [key: string]: Account[] } = {};
+    accounts.forEach(a => {
+        if (!group[a.symbol]) {
+            group[a.symbol] = [];
+        }
+        group[a.symbol].push(a);
+    });
 
     return (
         <WalletLayout>
-            <Content>
-                <Row data-test="Dashboard__page__content">
-                    <StyledH4>
-                        {isEmpty() && (
-                            <FormattedMessage
-                                {...l10nMessages.TR_PLEASE_SELECT_YOUR_EMPTY}
-                                values={{
-                                    TR_SELECT_COINS_LINK: (
-                                        <Link href={getRoute('wallet-settings')}>
-                                            <FormattedMessage
-                                                {...l10nCommonMessages.TR_SELECT_COINS_LINK}
-                                            />
-                                        </Link>
-                                    ),
-                                }}
-                            />
-                        )}
-                        {!isEmpty() && <FormattedMessage {...l10nMessages.TR_PLEASE_SELECT_YOUR} />}
-                    </StyledH4>
-                    <StyledP>
-                        <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
-                    </StyledP>
-                    <Coins>
-                        {NETWORKS.filter(
-                            item =>
-                                !item.isHidden &&
-                                props.settings.enabledNetworks.includes(item.symbol),
-                        ).map(network => (
-                            <StyledLink
-                                key={`${network.name}-${network.symbol}`}
-                                href={getRoute('wallet-account-summary', {
-                                    symbol: network.symbol,
-                                    accountIndex: 0,
-                                    accountType: network.accountType || 'normal',
-                                })}
-                            >
-                                <StyledCoinLogo symbol={network.symbol} size={27} />
-                            </StyledLink>
-                        ))}
-                    </Coins>
-                </Row>
+            <Content data-test="Dashboard__page__content">
+                <H4>Dashboard</H4>
+                <CardsWrapper>
+                    {!discovery && <Loader size={32} />}
+                    {Object.keys(group).map(symbol => {
+                        const network = NETWORKS.find(
+                            n => n.symbol === symbol && !n.accountType,
+                        ) as Network;
+                        return (
+                            <NetworkGroup key={symbol} network={network} accounts={group[symbol]} />
+                        );
+                    })}
+                </CardsWrapper>
             </Content>
         </WalletLayout>
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    settings: state.wallet.settings,
-});
-
-export default connect(mapStateToProps)(Dashboard);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Dashboard);

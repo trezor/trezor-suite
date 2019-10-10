@@ -1,32 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { back } from '@suite-actions/routerActions';
 import { SUITE } from '@suite-actions/constants';
-import { Input, Button, P, Icon } from '@trezor/components';
+import { Input, Switch, Button, P, Icon } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
-
+import { SettingsLayout } from '@suite-components';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 
 import { Props } from './Container';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding-top: 30px;
-    width: 100%;
-    max-width: 500px;
-`;
-
 const Row = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 10px;
+    padding-bottom: 24px;
     justify-content: space-between;
 `;
 
@@ -55,13 +45,13 @@ const ActionButton = styled(Button)`
 
 const OrientationButton = styled(Button)`
     margin-left: 3px;
-    padding: 2px 8px;
+    padding: 6px 12px;
 `;
 
 const BackgroundGallery = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    padding-bottom: 24px;
 `;
 
 const BackgroundImageT2 = styled.img`
@@ -75,7 +65,17 @@ const BackgroundImageT1 = styled.img`
     margin: 5px;
 `;
 
-const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props) => {
+const CloseWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    button {
+        position: absolute;
+        right: -22px;
+        top: -44px;
+    }
+`;
+
+const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }: Props) => {
     // todo: need to solve typescript here.
 
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -111,31 +111,31 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
     ] as const;
 
     return (
-        <Wrapper>
-            <Row>
-                <ActionButton isDisabled={uiLocked} variant="white" onClick={back}>
-                    BACK
-                </ActionButton>
-            </Row>
+        <SettingsLayout>
+            <CloseWrapper>
+                <Button onClick={() => goto('wallet-index')} isTransparent>
+                    <Icon icon="CLOSE" size={14} />
+                </Button>
+            </CloseWrapper>
             <Row>
                 <LabelCol>
                     <Label>Label</Label>
                 </LabelCol>
-                <ValueCol>
-                    <Input
-                        value={label}
-                        onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                            setLabel(event.currentTarget.value)
-                        }
-                    />
-                </ValueCol>
                 <ActionCol>
+                    <ValueCol>
+                        <Input
+                            value={label}
+                            onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                setLabel(event.currentTarget.value)
+                            }
+                        />
+                    </ValueCol>
                     <ActionButton
                         isDisabled={uiLocked}
                         variant="white"
                         onClick={() => applySettings({ label })}
                     >
-                        change
+                        Change label
                     </ActionButton>
                 </ActionCol>
             </Row>
@@ -144,28 +144,16 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                 <LabelCol>
                     <Label>Pin protection</Label>
                 </LabelCol>
-                <ValueCol>
-                    <P>{features.pin_protection ? 'enabled' : 'disabled'}</P>
-                </ValueCol>
                 <ActionCol>
-                    {!features.pin_protection && (
-                        <ActionButton
-                            isDisabled={uiLocked}
-                            variant="white"
-                            onClick={() => changePin({ device })}
-                        >
-                            enable
-                        </ActionButton>
-                    )}
-                    {features.pin_protection && (
-                        <ActionButton
-                            isDisabled={uiLocked}
-                            variant="white"
-                            onClick={() => changePin({ remove: true, device })}
-                        >
-                            disable
-                        </ActionButton>
-                    )}
+                    <Switch
+                        isSmall
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onChange={checked => {
+                            changePin({ remove: !checked });
+                        }}
+                        checked={features.pin_protection}
+                    />
                 </ActionCol>
             </Row>
 
@@ -173,28 +161,16 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                 <LabelCol>
                     <Label>Passphrase protection</Label>
                 </LabelCol>
-                <ValueCol>
-                    <P>{features.passphrase_protection ? 'enabled' : 'disabled'}</P>
-                </ValueCol>
                 <ActionCol>
-                    {!features.passphrase_protection && (
-                        <ActionButton
-                            isDisabled={uiLocked}
-                            variant="white"
-                            onClick={() => applySettings({ use_passphrase: true })}
-                        >
-                            enable
-                        </ActionButton>
-                    )}
-                    {features.passphrase_protection && (
-                        <ActionButton
-                            isDisabled={uiLocked}
-                            variant="white"
-                            onClick={() => applySettings({ use_passphrase: false })}
-                        >
-                            disable
-                        </ActionButton>
-                    )}
+                    <Switch
+                        isSmall
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onChange={checked => {
+                            applySettings({ use_passphrase: checked });
+                        }}
+                        checked={features.passphrase_protection}
+                    />
                 </ActionCol>
             </Row>
 
@@ -213,7 +189,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                                         applySettings({ display_rotation: variant.value })
                                     }
                                 >
-                                    <Icon icon={variant.icon} />
+                                    <Icon size={14} icon={variant.icon} />
                                 </OrientationButton>
                             ))}
                         </ActionCol>
@@ -242,31 +218,28 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice }: Props
                     ))}
             </BackgroundGallery>
             <Row>
-                <LabelCol>
-                    <Label>Wipe</Label>
-                </LabelCol>
                 <ActionCol>
                     <ActionButton
                         isDisabled={uiLocked}
-                        variant="white"
+                        variant="error"
                         onClick={() => wipeDevice({ device })}
                     >
-                        Wipe
+                        Wipe device
                     </ActionButton>
                 </ActionCol>
             </Row>
 
             {/* 
-                TODO for both:
-                { name: 'homescreen', type: 'string' }, custom load
-            */}
+                    TODO for both:
+                    { name: 'homescreen', type: 'string' }, custom load
+                */}
 
             {/* 
-                TODO for T2
-                { name: 'passphrase_source', type: 'number' }, is not in features, so probably skip for now
-                ?{ name: 'auto_lock_delay_ms', type: 'number' }, is not implemented, skip for now.
-            */}
-        </Wrapper>
+                    TODO for T2
+                    { name: 'passphrase_source', type: 'number' }, is not in features, so probably skip for now
+                    ?{ name: 'auto_lock_delay_ms', type: 'number' }, is not implemented, skip for now.
+                */}
+        </SettingsLayout>
     );
 };
 
