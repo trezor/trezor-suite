@@ -27,7 +27,6 @@ const getFormattedMessage = (message: React.ReactNode | FormattedMessage.Message
 const NotificationWithIntl = (props: Props) => {
     return (
         <Notification
-            className={props.className}
             {...props}
             title={getFormattedMessage(props.title)}
             message={getFormattedMessage(props.message)}
