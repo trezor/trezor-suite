@@ -42,7 +42,17 @@ module.exports = api => {
     ];
 
     return {
-        presets: ['next/babel'],
+        presets: [
+            [
+                'next/babel',
+                {
+                    'preset-env': {
+                        useBuiltIns: 'entry',
+                        corejs: '3.0.0',
+                    },
+                },
+            ],
+        ],
         plugins,
     };
 };
