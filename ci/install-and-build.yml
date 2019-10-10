@@ -8,10 +8,10 @@ install and build:
         when: always
         paths:
             # libs
-            - ci/packages/components/lib
-            - ci/packages/blockchain-link/lib
-            - ci/packages/rollout/lib
-            - ci/packages/suite-storage/lib
+            - packages/components/lib
+            - packages/blockchain-link/lib
+            - packages/rollout/lib
+            - packages/suite-storage/lib
             
             # node_modules
             - node_modules
