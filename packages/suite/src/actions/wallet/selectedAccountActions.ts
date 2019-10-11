@@ -17,6 +17,9 @@ import {
 } from '@wallet-reducers/selectedAccountReducer';
 
 import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import l10nNotificationMessages from '@wallet-components/Notifications/components/Account/index.messages';
+import l10nLoaderMessages from '@wallet-components/Content/index.messages';
+import l10nFwUnsupportedMessages from '@wallet-components/Content/components/FirmwareUnsupported/index.messages';
 import { NETWORKS } from '@wallet-config';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
@@ -53,8 +56,14 @@ const getExceptionPage = (
     if (discovery.fwNotSupported) {
         return {
             type: 'fwNotSupported',
-            title: `${network.name} is not supported with Trezor ${getVersion(device)}`,
-            message: 'Find more information on Trezor Wiki.',
+            title: {
+                ...l10nFwUnsupportedMessages.TR_NETWORK_IS_NOT_SUPPORTED_BY_TREZOR,
+                values: {
+                    networkName: network.name,
+                    deviceVersion: getVersion(device),
+                },
+            },
+            message: l10nFwUnsupportedMessages.TR_FIND_MORE_INFORMATION_ON_TREZOR_WIKI,
             symbol: network.symbol,
         };
     }
@@ -73,7 +82,7 @@ const getAccountLoader = (
     if (!device || !device.state) {
         return {
             type: 'progress',
-            title: 'Loading device...',
+            title: l10nLoaderMessages.TR_LOADING_DEVICE_DOT_DOT_DOT,
         };
     }
 
@@ -81,7 +90,7 @@ const getAccountLoader = (
     if (!network) {
         return {
             type: 'progress',
-            title: 'Loading account',
+            title: l10nLoaderMessages.TR_LOADING_ACCOUNT,
         };
     }
 
@@ -95,23 +104,29 @@ const getAccountLoader = (
             if (device.available) {
                 return {
                     type: 'progress',
-                    title: 'Authenticating device...',
+                    title: l10nLoaderMessages.TR_AUTHENTICATING_DEVICE,
                 };
             }
             // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
             // this is related to device instance in url, it's not used for now (device clones are disabled)
             return {
                 type: 'info',
-                title: `Device ${device.instanceLabel || device.label} is unavailable`,
-                message: 'Change passphrase settings to use this device',
+                title: {
+                    ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                    values: { deviceLabel: device.instanceLabel || device.label },
+                },
+                message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
             };
         }
 
         // case 3: device is disconnected
         return {
             type: 'info',
-            title: `Device ${device.instanceLabel} is disconnected`,
-            message: 'Connect device to load accounts',
+            title: {
+                ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_DISCONNECTED,
+                values: { deviceLabel: device.instanceLabel },
+            },
+            message: l10nLoaderMessages.TR_CONNECT_DEVICE_TO_LOAD_ACCOUNT,
         };
     }
 
@@ -119,14 +134,14 @@ const getAccountLoader = (
         // case 4: account not found and discovery is completed
         return {
             type: 'info',
-            title: 'Account does not exist',
+            title: l10nLoaderMessages.TR_ACCOUNT_DOES_NOT_EXIST,
         };
     }
 
     // case default: account information isn't loaded yet
     return {
         type: 'progress',
-        title: 'Loading account',
+        title: l10nLoaderMessages.TR_LOADING_ACCOUNT,
     };
 };
 
@@ -158,7 +173,7 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
         return {
             type: 'info',
             variant: 'info',
-            title: 'Loading other accounts...',
+            title: l10nNotificationMessages.TR_LOADING_OTHER_ACCOUNTS,
             shouldRender: true,
         };
     }
@@ -168,7 +183,10 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
         return {
             type: 'info',
             variant: 'info',
-            title: `Device ${device.instanceLabel} is disconnected`,
+            title: {
+                ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_DISCONNECTED,
+                values: { deviceLabel: device.instanceLabel },
+            },
             shouldRender: true,
         };
     }
@@ -179,8 +197,11 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
         return {
             type: 'info',
             variant: 'info',
-            title: `Device ${device.instanceLabel} is unavailable`,
-            message: 'Change passphrase settings to use this device',
+            title: {
+                ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                values: { deviceLabel: device.instanceLabel },
+            },
+            message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
             shouldRender: true,
         };
     }
