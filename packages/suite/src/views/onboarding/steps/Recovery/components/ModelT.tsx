@@ -17,8 +17,9 @@ import l10nRecoveryMessages from '../index.messages';
 import { Dispatch, AppState } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
-    // device: state.suite.device,
+    uiInteraction: state.onboarding.uiInteraction,
     deviceCall: state.onboarding.deviceCall,
+    device: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -37,18 +38,26 @@ type Props = ReturnType<typeof mapStateToProps> &
     InjectedIntlProps;
 
 const RecoveryStepModelT = (props: Props) => {
-    const { deviceCall, connectActions } = props;
+    const { deviceCall, device, uiInteraction, connectActions } = props;
 
     const getStatus = () => {
+        // todo: legacy, older firmwares dont respond with ButtonRequest_Success
+        // this could be deleted if we forbid user to continue without updating fw to the latest
         if (deviceCall.result && deviceCall.name === RECOVER_DEVICE) {
+            return 'success';
+        }
+        if (uiInteraction.name === 'ButtonRequest_Success') {
             return 'success';
         }
         if (
             deviceCall.error &&
-            // todo: typescript
-            // @ts-ignore
-            deviceCall.error.code !== 'Failure_ActionCancelled' &&
-            deviceCall.name === RECOVER_DEVICE
+            deviceCall.error !== 'Cancelled' &&
+            deviceCall.name === RECOVER_DEVICE &&
+            // on model T, recovery is persistent. when devices reaches recovery_mode, disconnecting
+            // does not mean failure.
+            device &&
+            device.features &&
+            device.features.recovery_mode !== true
         ) {
             return 'error';
         }
@@ -97,8 +106,7 @@ const RecoveryStepModelT = (props: Props) => {
                         <Text>
                             <FormattedMessage
                                 {...l10nRecoveryMessages.TR_RECOVERY_ERROR}
-                                // @ts-ignore
-                                values={{ error: deviceCall.error.code }}
+                                values={{ error: deviceCall.error || '' }}
                             />
                         </Text>
                         <OnboardingButton.Cta
