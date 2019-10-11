@@ -5,7 +5,7 @@ import { Notification, NotificationProps } from '@trezor/components';
 // Add MessageDescriptor type to values entry
 interface ExtendedMessageDescriptor extends FormattedMessage.MessageDescriptor {
     values?: {
-        [key: string]: React.ReactNode | FormattedMessage.MessageDescriptor;
+        [key: string]: React.ReactElement | FormattedMessage.MessageDescriptor;
     };
 }
 
@@ -23,7 +23,7 @@ interface Props extends NotificationProps {
 const getFormattedMessage = (message: React.ReactNode | ExtendedMessageDescriptor) => {
     // assume message type is ExtendedMessageDescriptor
     if (typeof message === 'object' && message !== null) {
-        const values: Required<ExtendedMessageDescriptor>['values'] = {};
+        const values: FormattedMessage.Props['values'] = {};
         if ('values' in message && message.values) {
             // Message with variables passed via 'values' prop.
             // Value entry can also contain a MessageDescriptor.
@@ -39,15 +39,11 @@ const getFormattedMessage = (message: React.ReactNode | ExtendedMessageDescripto
         return (
             <FormattedMessage
                 {...(message as ExtendedMessageDescriptor)}
-                values={
-                    Object.keys(values).length === 0
-                        ? undefined
-                        : (values as FormattedMessage.Props['values'])
-                }
+                values={Object.keys(values).length === 0 ? undefined : values}
             />
         );
     }
-    return message;
+    return <>{message}</>;
 };
 
 /**
