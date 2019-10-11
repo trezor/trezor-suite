@@ -20,15 +20,15 @@ interface Props extends NotificationProps {
     actions?: CTAShape[];
 }
 
-function isMessageDescriptor(
+const isMessageDescriptor = (
     message: React.ReactNode | ExtendedMessageDescriptor,
-): message is ExtendedMessageDescriptor {
+): message is ExtendedMessageDescriptor => {
     return (
         typeof message === 'object' &&
         message !== null &&
         (message as ExtendedMessageDescriptor).defaultMessage !== undefined
     );
-}
+};
 
 const getFormattedMessage = (message: React.ReactNode | ExtendedMessageDescriptor) => {
     if (isMessageDescriptor(message)) {
