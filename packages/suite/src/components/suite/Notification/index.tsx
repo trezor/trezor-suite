@@ -30,14 +30,14 @@ const NotificationWithIntl = (props: Props) => {
             {...props}
             title={getFormattedMessage(props.title)}
             message={getFormattedMessage(props.message)}
-            {...(props.actions
-                ? {
-                      actions: props.actions.map(a => ({
+            actions={
+                props.actions
+                    ? props.actions.map(a => ({
                           ...a,
                           label: getFormattedMessage(a.label),
-                      })),
-                  }
-                : {})}
+                      }))
+                    : undefined
+            }
         />
     );
 };
