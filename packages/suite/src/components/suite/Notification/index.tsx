@@ -20,11 +20,21 @@ interface Props extends NotificationProps {
     actions?: CTAShape[];
 }
 
+function isMessageDescriptor(
+    message: React.ReactNode | ExtendedMessageDescriptor,
+): message is ExtendedMessageDescriptor {
+    return (
+        typeof message === 'object' &&
+        message !== null &&
+        (message as ExtendedMessageDescriptor).defaultMessage !== undefined
+    );
+}
+
 const getFormattedMessage = (message: React.ReactNode | ExtendedMessageDescriptor) => {
     // assume message type is ExtendedMessageDescriptor
-    if (typeof message === 'object' && message !== null && 'defaultMessage' in message) {
+    if (isMessageDescriptor(message)) {
         const values: FormattedMessage.Props['values'] = {};
-        if ('values' in message && message.values) {
+        if (message.values) {
             // Message with variables passed via 'values' prop.
             // Value entry can also contain a MessageDescriptor.
             // Copy values and extract necessary messages to a new 'values' object
