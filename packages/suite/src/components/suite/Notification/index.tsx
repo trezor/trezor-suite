@@ -22,23 +22,21 @@ interface Props extends NotificationProps {
 
 const getFormattedMessage = (message: React.ReactNode | ExtendedMessageDescriptor) => {
     // assume message type is ExtendedMessageDescriptor
-    if (typeof message === 'object' && message !== null) {
+    if (typeof message === 'object' && message !== null && 'defaultMessage' in message) {
         const values: FormattedMessage.Props['values'] = {};
         if ('values' in message && message.values) {
             // Message with variables passed via 'values' prop.
             // Value entry can also contain a MessageDescriptor.
             // Copy values and extract necessary messages to a new 'values' object
             Object.keys(message.values).forEach(key => {
-                values[key] = getFormattedMessage(
-                    (message as ExtendedMessageDescriptor).values![key],
-                );
+                values[key] = getFormattedMessage(message.values![key]);
             });
         }
 
         // pass undefined to a 'values' prop in case of an empty values object
         return (
             <FormattedMessage
-                {...(message as ExtendedMessageDescriptor)}
+                {...message}
                 values={Object.keys(values).length === 0 ? undefined : values}
             />
         );
