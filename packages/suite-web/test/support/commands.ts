@@ -1,20 +1,32 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import TrezorConnect from 'trezor-connect';
-import { Store } from '@suite-types';
+import TrezorConnect, { DEVICE, Device, Features } from 'trezor-connect';
+import { Store, AppState } from '@suite-types';
 
 // import { getConnectDevice } from '../../../suite/src/support/tests/setupJest';
 // import { DEVICE } from 'trezor-connect';
+import { getConnectDevice, getDeviceFeatures } from '../../../suite/src/support/tests/setupJest';
 
 const command = require('cypress-image-snapshot/command');
 
 declare global {
     namespace Cypress {
-        interface Chainable {
+        interface Chainable<Subject> {
             getTestElement: typeof getTestElement;
             resetDb: typeof resetDb;
             // todo: better types
             matchImageSnapshot: (options?: any) => Chainable<any>;
+            connectDevice: (
+                device?: Partial<Device>,
+                features?: Partial<Features>,
+            ) => Chainable<any>;
+            changeDevice: (
+                path: string,
+                device?: Partial<Device>,
+                features?: Partial<Features>,
+            ) => Chainable<any>;
+            setState: (state: Partial<AppState>) => undefined;
+            onboardingShouldLoad: () => Chainable<Subject>;
         }
     }
 }
@@ -36,7 +48,7 @@ command.addMatchImageSnapshotCommand({
  *
  * @example cy.resetDb()
  */
-export const resetDb = () => {
+const resetDb = () => {
     indexedDB.deleteDatabase('trezor-suite');
     // todo: not sure if this is the correct way to make command chainable, probably not, will investigate
     return cy;
@@ -47,9 +59,70 @@ export const resetDb = () => {
  *
  * @example cy.getTestElement('my-fancy-attr-name')
  */
-export const getTestElement = (selector: string) => {
+const getTestElement = (selector: string) => {
     return cy.get(`[data-test="${selector}"]`);
+};
+
+/**
+ * Set application state.
+ * @param state
+ */
+const setState = (state: Partial<AppState>) => {
+    cy.window()
+        .its('store')
+        .should('exist');
+    return cy.window().then(window => {
+        window.store.getState().onboarding = {
+            ...window.store.getState().onboarding,
+            ...state.onboarding,
+        };
+    });
+};
+
+/**
+ * Helper method to dispatch DEVICE.CONNECT action.
+ *
+ * @param device
+ * @param features
+ */
+const connectDevice = (device?: Partial<Device>, features?: Partial<Features>) => {
+    return cy
+        .window()
+        .its('store')
+        .invoke('dispatch', {
+            type: DEVICE.CONNECT,
+            payload: getConnectDevice(device, getDeviceFeatures(features)),
+        });
+};
+
+/**
+ * Helper method to dispatch DEVICE.CHANGED action.
+ *
+ * @param path
+ * @param device
+ * @param features
+ */
+const changeDevice = (path: string, device?: Partial<Device>, features?: Partial<Features>) => {
+    cy.window()
+        .its('store')
+        .invoke('dispatch', {
+            type: DEVICE.CHANGED,
+            payload: getConnectDevice({ ...device, path }, getDeviceFeatures(features)),
+        });
+    return cy;
+};
+
+/**
+ * Use this method to ensure that app is in the first step of onboarding and
+ * ready to interact with
+ */
+const onboardingShouldLoad = () => {
+    return cy.get('html').should('contain', 'Welcome to Trezor');
 };
 
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
+Cypress.Commands.add('connectDevice', connectDevice);
+Cypress.Commands.add('changeDevice', changeDevice);
+Cypress.Commands.add('setState', setState);
+Cypress.Commands.add('onboardingShouldLoad', onboardingShouldLoad);
