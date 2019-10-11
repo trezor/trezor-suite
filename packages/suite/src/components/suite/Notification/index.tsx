@@ -5,9 +5,7 @@ import { Notification, NotificationProps } from '@trezor/components';
 // Add MessageDescriptor type to values entry
 interface ExtendedMessageDescriptor extends FormattedMessage.MessageDescriptor {
     values?: {
-        [key: string]:
-            | React.ReactNode // Original values type
-            | FormattedMessage.MessageDescriptor;
+        [key: string]: React.ReactNode | FormattedMessage.MessageDescriptor;
     };
 }
 
