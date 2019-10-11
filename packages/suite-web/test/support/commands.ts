@@ -63,6 +63,10 @@ const getTestElement = (selector: string) => {
     return cy.get(`[data-test="${selector}"]`);
 };
 
+/**
+ * Set application state.
+ * @param state
+ */
 const setState = (state: Partial<AppState>) => {
     cy.window()
         .its('store')
@@ -75,6 +79,12 @@ const setState = (state: Partial<AppState>) => {
     });
 };
 
+/**
+ * Helper method to dispatch DEVICE.CONNECT action.
+ *
+ * @param device
+ * @param features
+ */
 const connectDevice = (device?: Partial<Device>, features?: Partial<Features>) => {
     return cy
         .window()
@@ -85,8 +95,14 @@ const connectDevice = (device?: Partial<Device>, features?: Partial<Features>) =
         });
 };
 
+/**
+ * Helper method to dispatch DEVICE.CHANGED action.
+ *
+ * @param path
+ * @param device
+ * @param features
+ */
 const changeDevice = (path: string, device?: Partial<Device>, features?: Partial<Features>) => {
-    console.warn('change device', JSON.stringify(device));
     cy.window()
         .its('store')
         .invoke('dispatch', {
@@ -96,6 +112,10 @@ const changeDevice = (path: string, device?: Partial<Device>, features?: Partial
     return cy;
 };
 
+/**
+ * Use this method to ensure that app is in the first step of onboarding and
+ * ready to interact with
+ */
 const onboardingShouldLoad = () => {
     return cy.get('html').should('contain', 'Welcome to Trezor');
 };
