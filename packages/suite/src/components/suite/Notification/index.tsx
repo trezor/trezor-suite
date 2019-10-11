@@ -31,7 +31,6 @@ function isMessageDescriptor(
 }
 
 const getFormattedMessage = (message: React.ReactNode | ExtendedMessageDescriptor) => {
-    // assume message type is ExtendedMessageDescriptor
     if (isMessageDescriptor(message)) {
         const values: FormattedMessage.Props['values'] = {};
         if (message.values) {
