@@ -12,6 +12,7 @@ describe('transaction utils', () => {
                 global.JestMocks.getWalletTransaction({ blockTime: 1565792379 }),
                 global.JestMocks.getWalletTransaction({ blockTime: 1570147200 }),
                 global.JestMocks.getWalletTransaction({ blockTime: 1570127200 }),
+                global.JestMocks.getWalletTransaction({ blockTime: 0 }),
             ]),
         ).toEqual({
             '2019-8-14': [
@@ -20,6 +21,7 @@ describe('transaction utils', () => {
             ],
             '2019-10-4': [global.JestMocks.getWalletTransaction({ blockTime: 1570147200 })],
             '2019-10-3': [global.JestMocks.getWalletTransaction({ blockTime: 1570127200 })],
+            pending: [global.JestMocks.getWalletTransaction({ blockTime: 0 })],
         });
     });
 });
