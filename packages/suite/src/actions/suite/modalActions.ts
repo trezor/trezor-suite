@@ -1,8 +1,6 @@
 import TrezorConnect, { UI, Device } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { Action, Dispatch, GetState, TrezorDevice, AcquiredDevice } from '@suite-types';
 
 export type ModalActions =
