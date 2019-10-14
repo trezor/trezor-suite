@@ -4,6 +4,7 @@ import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import { H5, P, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { groupTransactionsByDate, parseKey } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import TransactionItem from '../TransactionItem';
 import Pagination from '../Pagination';
@@ -43,61 +44,47 @@ const TransactionList = ({
 }: Props) => {
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
-    const splitTransactionsByDate = (transactions: WalletAccountTransaction[]) => {
-        const r: { [key: string]: WalletAccountTransaction[] } = {};
-        transactions.forEach(item => {
-            let key = 'pending';
-            if (item.blockHeight && (item.blockTime || 0) > 0) {
-                const d = new Date((item.blockTime || 0) * 1000);
-                key = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`;
-            }
-            if (!r[key]) {
-                r[key] = [];
-            }
-            r[key].push(item);
-        });
-        return r;
-    };
-    const [transactionsByDate, transactionsCount] = useMemo(() => {
-        const t = transactions.slice(startIndex, stopIndex);
-        return [splitTransactionsByDate(t), t.length];
-    }, [transactions, startIndex, stopIndex]);
+
+    const slicedTransactions = useMemo(() => transactions.slice(startIndex, stopIndex), [
+        transactions,
+        startIndex,
+        stopIndex,
+    ]);
+    const transactionsByDate = useMemo(() => groupTransactionsByDate(slicedTransactions), [
+        slicedTransactions,
+    ]);
 
     return (
         <Wrapper>
             <Transactions>
-                {Object.keys(transactionsByDate).map(date => {
-                    const parts = date.split('-');
-                    const d = new Date(Number(parts[0]), Number(parts[1]), Number(parts[2]));
-                    return (
-                        <React.Fragment key={date}>
-                            <StyledH5>
-                                {date === 'pending' ? (
-                                    <P>Pending</P>
-                                ) : (
-                                    <FormattedDate
-                                        value={d}
-                                        day="numeric"
-                                        month="long"
-                                        year="numeric"
-                                    />
-                                )}
-                            </StyledH5>
-                            {transactionsByDate[date].map((tx: WalletAccountTransaction) => (
-                                <TransactionItem
-                                    key={tx.txid}
-                                    {...tx}
-                                    explorerUrl={`${explorerUrl}${tx.txid}`}
+                {Object.keys(transactionsByDate).map(dateKey => (
+                    <React.Fragment key={dateKey}>
+                        <StyledH5>
+                            {dateKey === 'pending' ? (
+                                <P>Pending</P>
+                            ) : (
+                                <FormattedDate
+                                    value={parseKey(dateKey)}
+                                    day="numeric"
+                                    month="long"
+                                    year="numeric"
                                 />
-                            ))}
-                        </React.Fragment>
-                    );
-                })}
+                            )}
+                        </StyledH5>
+                        {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
+                            <TransactionItem
+                                key={tx.txid}
+                                {...tx}
+                                explorerUrl={`${explorerUrl}${tx.txid}`}
+                            />
+                        ))}
+                    </React.Fragment>
+                ))}
             </Transactions>
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                isOnLastPage={transactionsCount < SETTINGS.TXS_PER_PAGE}
+                isOnLastPage={slicedTransactions.length < SETTINGS.TXS_PER_PAGE}
                 onPageSelected={onPageSelected}
             />
         </Wrapper>
