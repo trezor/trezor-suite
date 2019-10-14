@@ -12,6 +12,7 @@ export const HANDLE_FEE_VALUE_CHANGE = '@wallet-send-form/handle-fee-value-chang
 export const HANDLE_CUSTOM_FEE_VALUE_CHANGE = '@wallet-send-form/handle-custom-fee-value-change';
 
 export const CLEAR = '@wallet-send-form/clear';
+export const DISPOSE = '@wallet-send-form/dispose';
 
 // btc specific
 export const BTC_ADD_RECIPIENT = '@wallet-send-form/btc-add-recipient';

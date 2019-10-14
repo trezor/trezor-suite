@@ -12,6 +12,14 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     const prevState = api.getState();
 
     if (
+        action.type === ROUTER.LOCATION_CHANGE &&
+        prevState.router.route &&
+        prevState.router.route.name === 'wallet-account-send'
+    ) {
+        api.dispatch(sendFormActions.init());
+    }
+
+    if (
         action.type === ACCOUNT.CREATE ||
         action.type === ACCOUNT.UPDATE ||
         action.type === ACCOUNT.REMOVE

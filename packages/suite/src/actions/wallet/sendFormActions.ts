@@ -34,7 +34,8 @@ export type SendFormActions =
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
     | { type: typeof SEND.CLEAR }
     | { type: typeof SEND.BTC_DELETE_TRANSACTION_INFO }
-    | { type: typeof SEND.INIT; payload: InitialState };
+    | { type: typeof SEND.INIT; payload: InitialState }
+    | { type: typeof SEND.DISPOSE };
 
 /**
  * Initialize current form, load values from session storage
@@ -344,4 +345,10 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
 
     dispatch({ type: SEND.CLEAR });
     dispatch(sendFormCacheActions.cache());
+};
+
+export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
+    dispatch({
+        type: SEND.DISPOSE,
+    });
 };
