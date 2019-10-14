@@ -46,7 +46,7 @@ const connect = (draft: State, info: BlockchainInfo) => {
         };
         delete draft[network.symbol].error;
     }
-}
+};
 
 const error = (draft: State, symbol: string, error: string) => {
     const symbolLC = symbol.toLowerCase();
@@ -59,7 +59,7 @@ const error = (draft: State, symbol: string, error: string) => {
         };
         delete draft[network.symbol].url;
     }
-}
+};
 
 const update = (draft: State, block: BlockchainBlock) => {
     const symbol = block.coin.shortcut.toLowerCase();
@@ -71,13 +71,16 @@ const update = (draft: State, block: BlockchainBlock) => {
             blockHeight: block.blockHeight,
         };
     }
-}
+};
 
 export default (state: State = initialState, action: BlockchainEvent) => {
     return produce(state, draft => {
         switch (action.type) {
             case BLOCKCHAIN.CONNECT:
-                connect(draft, action.payload);
+                connect(
+                    draft,
+                    action.payload,
+                );
                 break;
             case BLOCKCHAIN.ERROR:
                 error(draft, action.payload.coin.shortcut, action.payload.error);

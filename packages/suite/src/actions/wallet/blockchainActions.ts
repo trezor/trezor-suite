@@ -88,7 +88,7 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             blockHeight: blockchainInfo.blockHeight,
             ...payload,
             levels: payload.levels.map(l => ({ ...l, value: l.feePerUnit })),
-        }
+        };
         dispatch({
             type: BLOCKCHAIN.UPDATE_FEE,
             payload: partial,
