@@ -4,7 +4,7 @@ import transactionReducer, {
     WalletAccountTransaction,
 } from '@suite/reducers/wallet/transactionReducer';
 import { AccountTransaction } from 'trezor-connect';
-import { getAccountKey, getAccountTransactions } from '@suite-utils/reducerUtils';
+import { getAccountKey, getAccountTransactions } from '@wallet-utils/accountUtils';
 import * as transactionActions from '../transactionActions';
 import { Account } from '@wallet-types';
 

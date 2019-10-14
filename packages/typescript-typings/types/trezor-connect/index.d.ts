@@ -389,6 +389,7 @@ declare module 'trezor-connect' {
         revision: string;
         unfinished_backup: boolean;
         vendor: string;
+        recovery_mode?: boolean;
     }
 
     export type Device =

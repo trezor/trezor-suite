@@ -60,6 +60,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     const {
         device,
         suite,
+        devices,
         sendFormActions,
         send,
         fees,
@@ -67,6 +68,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
         sendFormActionsBitcoin,
         sendFormActionsEthereum,
         sendFormActionsRipple,
+        accounts,
     } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
@@ -100,6 +102,9 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     </SlimRow>
                     <Row>
                         <Address
+                            accounts={accounts}
+                            devices={devices}
+                            networkType={account.networkType}
                             outputId={output.id}
                             address={output.address.value}
                             error={output.address.error}
@@ -139,6 +144,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     <AdditionalForm networkType={network.networkType} />
                 )}
                 <SendAndClear
+                    isComposing={send.isComposing}
                     send={send}
                     suite={suite}
                     device={device}

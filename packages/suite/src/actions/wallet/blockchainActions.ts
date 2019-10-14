@@ -5,9 +5,9 @@ import TrezorConnect, {
 } from 'trezor-connect';
 import {
     getSelectedNetwork,
-    getAccountDevice,
     enhanceTransaction,
-} from '@suite-utils/reducerUtils';
+    getAccountDevice,
+} from '@wallet-utils/accountUtils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
