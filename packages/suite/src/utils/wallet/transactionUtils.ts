@@ -12,8 +12,8 @@ export const groupTransactionsByDate = (
     const r: { [key: string]: WalletAccountTransaction[] } = {};
     transactions.forEach(item => {
         let key = 'pending';
-        if (item.blockHeight && (item.blockTime || 0) > 0) {
-            const d = new Date((item.blockTime || 0) * 1000);
+        if (item.blockHeight && item.blockTime && item.blockTime !== 0) {
+            const d = new Date(item.blockTime * 1000);
             // YYYY-MM-DD format
             key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
         }
