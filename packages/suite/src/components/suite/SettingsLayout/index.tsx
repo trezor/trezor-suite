@@ -11,9 +11,11 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
     width: 100%;
     max-width: 800px;
-    padding: 50px 35px 40px 35px;
+    padding: 30px 35px 40px 35px;
 `;
 
 const Layout = styled.div`
