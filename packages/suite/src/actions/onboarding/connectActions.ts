@@ -28,8 +28,10 @@ const DEFAULT_STRENGTH_T2 = 128;
 const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) => {
     const { device } = state.suite;
     const { recovery } = state.onboarding;
+    if (call === CALLS.GET_FEATURES) {
+        return {};
+    }
     if (!device || !device.features) {
-        // ts thing, should not happen
         throw new Error('no device');
     }
     let params;
