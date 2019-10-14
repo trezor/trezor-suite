@@ -213,7 +213,6 @@ const InstallBridge = (props: Props) => {
                     props.device.type !== 'unreadable' && (
                         <P>
                             <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
-                            <br />
                             <GoBack onClick={() => props.goto('wallet-index')}>
                                 <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
                             </GoBack>
