@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     margin: 0 auto;
     width: 100%;
     max-width: 800px;
-    padding: 30px 35px 40px 35px;
+    padding: 20px 35px 40px 35px;
 `;
 
 const Layout = styled.div`

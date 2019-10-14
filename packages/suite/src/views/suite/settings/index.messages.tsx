@@ -11,9 +11,23 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_DEVICE_LABEL',
         defaultMessage: 'Device Label',
     },
+    // LABEL
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
         id: 'TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL',
-        defaultMessage: 'Edit label',
+        defaultMessage: 'Edit Label',
+    },
+    // HOMESCREEN
+    TR_DEVICE_SETTINGS_HOMESCREEN_TITLE: {
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_TITLE',
+        defaultMessage: 'Homescreen background',
+    },
+    TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE: {
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE',
+        defaultMessage: 'Upload image',
+    },
+    TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY: {
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY',
+        defaultMessage: 'Select from gallery',
     },
     // PIN
     TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE: {
@@ -39,6 +53,11 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC',
         defaultMessage:
             'If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.',
+    },
+    // DISPLAY ROTATION
+    TR_DEVICE_SETTINGS_DISPLAY_ROTATION: {
+        id: 'TR_DEVICE_SETTINGS_DISPLAY_ROTATION',
+        defaultMessage: 'Display rotation',
     },
 });
 

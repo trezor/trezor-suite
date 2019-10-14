@@ -16,8 +16,9 @@ type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 const Row = styled.div`
     display: flex;
     flex-direction: ${(props: { isColumn?: boolean }) => (props.isColumn ? 'column' : 'row')};
-    justify-content: space-between;
-    margin: 15px 0 0 0;
+    justify-content: ${(props: { isColumn?: boolean }) =>
+        props.isColumn ? 'default' : 'space-between'};
+    margin: 20px 0 0 0;
     min-height: 45px;
 `;
 
@@ -29,7 +30,7 @@ const Title = styled(H2)`
 `;
 
 const StyledInput = styled(Input)`
-    max-width: 100px;
+    padding-right: 20px;
 `;
 
 const LabelCol = styled.div`
@@ -39,13 +40,13 @@ const LabelCol = styled.div`
 
 const ActionColumn = styled.div`
     display: flex;
-    flex: 1;
     align-items: center;
     justify-content: flex-end;
 `;
 
 const Label = styled(H3)`
     display: flex;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 0;
     padding: 0;
     align-items: center;
@@ -56,37 +57,43 @@ const Text = styled(P)`
 `;
 
 const ActionButton = styled(Button)`
-    min-width: 150px;
+    min-width: 170px;
+`;
+
+const ActionButtonColumn = styled(ActionButton)`
+    margin-bottom: 5px;
 `;
 
 const OrientationButton = styled(Button)`
     margin-left: 3px;
-    padding: 6px 12px;
 `;
 
 const BackgroundGallery = styled.div`
     display: flex;
     flex-wrap: wrap;
-    padding-bottom: 24px;
+    max-width: 200px;
 `;
 
 const BackgroundImageT2 = styled.img`
     border-radius: 50%;
     margin: 5px;
-    width: 72px;
-    height: 72px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
 `;
 
 const BackgroundImageT1 = styled.img`
     margin: 5px;
+    cursor: pointer;
 `;
 
 const CloseButton = styled(Button)`
     padding: 0;
     margin: 0;
+    cursor: pointer;
 `;
 
-const tr = messageId => <FormattedMessage {...messages[messageId]} />;
+const tr = (messageId: keyof typeof messages) => <FormattedMessage {...messages[messageId]} />;
 
 const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }: Props) => {
     // todo: need to solve typescript here.
@@ -130,6 +137,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     <Icon icon="CLOSE" size={14} />
                 </CloseButton>
             </Row>
+
             <Row>
                 <Label>{tr('TR_DEVICE_SETTINGS_DEVICE_LABEL')}</Label>
                 <ActionColumn>
@@ -144,6 +152,45 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     </ActionButton>
                 </ActionColumn>
             </Row>
+
+            <Row>
+                <Row isColumn>
+                    <Label>{tr('TR_DEVICE_SETTINGS_HOMESCREEN_TITLE')}</Label>
+                    <Text>PNG or JPG, 144 x 144 pixels</Text>
+                </Row>
+                <BackgroundGallery>
+                    {device.features.major_version === 1 &&
+                        homescreensT1.map(image => (
+                            <BackgroundImageT1
+                                key={image}
+                                id={image}
+                                onClick={() => setHomescreen(image)}
+                                src={resolveStaticPath(`images/suite/homescreens/t1/${image}.png`)}
+                            />
+                        ))}
+
+                    {device.features.major_version === 2 &&
+                        homescreensT2.map(image => (
+                            <BackgroundImageT2
+                                key={image}
+                                id={image}
+                                onClick={() => setHomescreen(image)}
+                                src={resolveStaticPath(`images/suite/homescreens/t2/${image}.png`)}
+                            />
+                        ))}
+                </BackgroundGallery>
+                <ActionColumn>
+                    <Row isColumn>
+                        <ActionButtonColumn isDisabled onClick={() => applySettings({ label })}>
+                            {tr('TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE')}
+                        </ActionButtonColumn>
+                        <ActionButton isDisabled onClick={() => applySettings({ label })}>
+                            {tr('TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY')}
+                        </ActionButton>
+                    </Row>
+                </ActionColumn>
+            </Row>
+
             <Row>
                 <Label>{tr('TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE')}</Label>
                 <ActionColumn>
@@ -158,6 +205,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </ActionColumn>
             </Row>
             <Text>{tr('TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC')}</Text>
+
             <Row>
                 <Label>{tr('TR_DEVICE_SETTINGS_PASSPHRASE_TITLE')}</Label>
                 <ActionColumn>
@@ -174,10 +222,11 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
             </Row>
             <Text>{tr('TR_DEVICE_SETTINGS_PASSPHRASE_DESC')}</Text>
             <Text>{tr('TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE')}</Text>
+
             {device.features.major_version === 2 && (
                 <Row>
                     <LabelCol>
-                        <Label>Display rotation</Label>
+                        <Label>{tr('TR_DEVICE_SETTINGS_DISPLAY_ROTATION')}</Label>
                     </LabelCol>
                     <ActionColumn>
                         {DISPLAY_ROTATIONS.map(variant => (
@@ -195,37 +244,15 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     </ActionColumn>
                 </Row>
             )}
-            <BackgroundGallery>
-                {device.features.major_version === 1 &&
-                    homescreensT1.map(image => (
-                        <BackgroundImageT1
-                            key={image}
-                            id={image}
-                            onClick={() => setHomescreen(image)}
-                            src={resolveStaticPath(`images/suite/homescreens/t1/${image}.png`)}
-                        />
-                    ))}
-
-                {device.features.major_version === 2 &&
-                    homescreensT2.map(image => (
-                        <BackgroundImageT2
-                            key={image}
-                            id={image}
-                            onClick={() => setHomescreen(image)}
-                            src={resolveStaticPath(`images/suite/homescreens/t2/${image}.png`)}
-                        />
-                    ))}
-            </BackgroundGallery>
             <Row>
-                <ActionColumn>
-                    <ActionButton
-                        isDisabled={uiLocked}
-                        variant="error"
-                        onClick={() => wipeDevice({ device })}
-                    >
-                        Wipe device
-                    </ActionButton>
-                </ActionColumn>
+                <Label />
+                <ActionButton
+                    isDisabled={uiLocked}
+                    variant="error"
+                    onClick={() => wipeDevice({ device })}
+                >
+                    Wipe device
+                </ActionButton>
             </Row>
             {/* TODO for both: { name: 'homescreen', type: 'string' }, custom load */}
 
