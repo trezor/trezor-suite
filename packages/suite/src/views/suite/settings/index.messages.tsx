@@ -21,6 +21,10 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_TITLE',
         defaultMessage: 'Homescreen background',
     },
+    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS: {
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS',
+        defaultMessage: 'PNG or JPG, 144 x 144 pixels',
+    },
     TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE: {
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE',
         defaultMessage: 'Upload image',
@@ -58,6 +62,11 @@ const definedMessages = defineMessages({
     TR_DEVICE_SETTINGS_DISPLAY_ROTATION: {
         id: 'TR_DEVICE_SETTINGS_DISPLAY_ROTATION',
         defaultMessage: 'Display rotation',
+    },
+    // BUTTONS
+    TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE: {
+        id: 'TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE',
+        defaultMessage: 'Wipe device',
     },
 });
 

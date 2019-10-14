@@ -156,7 +156,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
             <Row>
                 <Row isColumn>
                     <Label>{tr('TR_DEVICE_SETTINGS_HOMESCREEN_TITLE')}</Label>
-                    <Text>PNG or JPG, 144 x 144 pixels</Text>
+                    <Text>{tr('TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS')}</Text>
                 </Row>
                 <BackgroundGallery>
                     {device.features.major_version === 1 &&
@@ -251,7 +251,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     variant="error"
                     onClick={() => wipeDevice({ device })}
                 >
-                    Wipe device
+                    {tr('TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE')}
                 </ActionButton>
             </Row>
             {/* TODO for both: { name: 'homescreen', type: 'string' }, custom load */}
