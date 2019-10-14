@@ -116,11 +116,12 @@ export const compose = (setMax: boolean = false) => async (
 
     const { outputs } = send;
 
-    // TODO refactor this
     const composedOutputs = outputs.map(o => {
         const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
 
+        // address is set
         if (o.address.value) {
+            // set max without address
             if (setMax) {
                 return {
                     address: o.address.value,
@@ -134,12 +135,14 @@ export const compose = (setMax: boolean = false) => async (
             } as const;
         }
 
+        // set max with address only
         if (setMax) {
             return {
                 type: 'send-max-noaddress',
             } as const;
         }
 
+        // set amount without address
         return {
             type: 'noaddress',
             amount,
@@ -156,6 +159,8 @@ export const compose = (setMax: boolean = false) => async (
         outputs: composedOutputs,
         coin: account.symbol,
     });
+
+    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
 
     if (resp.success) {
         const tx = resp.payload[0];

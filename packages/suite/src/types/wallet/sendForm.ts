@@ -38,6 +38,7 @@ export interface Output {
 
 export interface State {
     outputs: Output[];
+    isComposing: boolean;
     feeInfo: FeeInfo;
     selectedFee: FeeLevel;
     customFee: {

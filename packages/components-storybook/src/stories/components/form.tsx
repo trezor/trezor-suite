@@ -161,6 +161,17 @@ storiesOf('Form', module).add(
                 />
             </Row>
 
+            <H5>with loading</H5>
+            <Row>
+                <StyledInput
+                    type="text"
+                    isLoading
+                    value="Sample text"
+                    onChange={() => {}}
+                    wrapperProps={{ 'data-test': 'input_value_loading' }}
+                />
+            </Row>
+
             <H5>with label and bottomText </H5>
             <Row>
                 <StyledInput

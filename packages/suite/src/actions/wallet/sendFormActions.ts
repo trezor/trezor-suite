@@ -1,8 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput } from '@wallet-utils/sendFormUtils';
-import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
-import { getAccountKey } from '@suite-utils/reducerUtils';
+import {
+    formatNetworkAmount,
+    getFiatValue,
+    getNetworkAmount,
+    getAccountKey,
+} from '@wallet-utils/accountUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -18,6 +22,7 @@ export type SendFormActions =
       }
     | { type: typeof SEND.HANDLE_AMOUNT_CHANGE; outputId: number; amount: string }
     | { type: typeof SEND.SET_MAX; outputId: number }
+    | { type: typeof SEND.COMPOSE_PROGRESS; isComposing: boolean }
     | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; outputId: number; fiatValue: string }
     | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeLevel }
     | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: string | null }
@@ -73,20 +78,12 @@ export const compose = (setMax: boolean = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
     const account = getState().wallet.selectedAccount.account as Account;
     if (account.networkType === 'bitcoin') {
         dispatch({ type: SEND.BTC_DELETE_TRANSACTION_INFO });
         return dispatch(bitcoinActions.compose(setMax));
     }
-};
-
-/**
- * Dispose current form, save values to session storage
- */
-export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
-    dispatch({
-        type: SEND.DISPOSE,
-    });
 };
 
 /*
@@ -140,9 +137,8 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
-        amount,
+        amount: getNetworkAmount(amount, account.symbol),
     });
-
     dispatch(compose());
     dispatch(sendFormCacheActions.cache());
 };
@@ -178,7 +174,7 @@ export const handleSelectCurrencyChange = (
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
-            amount: amountBigNumber.isZero() ? '0' : amountBigNumber.toFixed(20),
+            amount: getNetworkAmount(amountBigNumber.toString(), account.symbol),
         });
     }
 
@@ -221,7 +217,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
-        amount,
+        amount: getNetworkAmount(amount, account.symbol),
     });
 
     dispatch(compose());
@@ -349,4 +345,10 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
 
     dispatch({ type: SEND.CLEAR });
     dispatch(sendFormCacheActions.cache());
+};
+
+export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
+    dispatch({
+        type: SEND.DISPOSE,
+    });
 };

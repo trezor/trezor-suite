@@ -1,6 +1,6 @@
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { SEND_CACHE } from '@wallet-actions/constants';
-import { getAccountKey } from '@suite-utils/reducerUtils';
+import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Dispatch, GetState } from '@suite-types';
 
 export type SendFormCacheActions =

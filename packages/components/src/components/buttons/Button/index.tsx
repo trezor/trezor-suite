@@ -5,43 +5,8 @@ import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import { Icon } from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
-import { SPIN } from '../../../config/animations';
+import FluidSpinner from '../../FluidSpinner';
 import { ButtonVariant, IconType } from '../../../support/types';
-
-interface FluidSpinnerProps {
-    size: number;
-    strokeWidth?: number;
-}
-
-const FluidSpinner = styled.div<FluidSpinnerProps>`
-    /* https://loading.io/css/ */
-    width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-    height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-
-    div {
-        position: absolute;
-        box-sizing: border-box;
-        width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-        height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-        border: ${props => (props.strokeWidth ? `${props.strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
-        border-radius: 50%;
-        animation: ${SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #fff transparent transparent transparent;
-        border-top-color: ${props => (props.color ? props.color : 'inherit')};
-    }
-
-    div:nth-child(1) {
-        animation-delay: -0.45s;
-    }
-
-    div:nth-child(2) {
-        animation-delay: -0.3s;
-    }
-
-    div:nth-child(3) {
-        animation-delay: -0.15s;
-    }
-`;
 
 const Wrapper = styled.button<Props>`
     display: flex;
@@ -251,12 +216,7 @@ const Button = ({
         >
             {isLoading && (
                 <IconWrapper>
-                    <FluidSpinner size={16}>
-                        <div />
-                        <div />
-                        <div />
-                        <div />
-                    </FluidSpinner>
+                    <FluidSpinner size={16} />
                 </IconWrapper>
             )}
             {!isLoading && icon && (

@@ -8,7 +8,7 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import Title from '@wallet-components/Title';
 import Content from '@wallet-components/Content';
-import { getAccountTransactions } from '@suite-utils/reducerUtils';
+import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import { AppState, Dispatch } from '@suite-types';
 import TransactionList from './components/TransactionList';
