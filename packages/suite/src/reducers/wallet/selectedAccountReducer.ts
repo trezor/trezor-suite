@@ -10,12 +10,6 @@ export interface Loader {
     message?: string | ExtendedMessageDescriptor;
 }
 
-export interface Notification {
-    variant: NotificationProps['variant'];
-    title: NotificationProps['title'];
-    message?: NotificationProps['message'];
-}
-
 export interface ExceptionPage {
     type?: string;
     title?: string | ExtendedMessageDescriptor;
@@ -23,7 +17,7 @@ export interface ExceptionPage {
     symbol: string;
 }
 
-interface AccountNotification extends Notification {
+interface AccountNotification extends NotificationProps {
     type: 'info' | 'backend';
 }
 export interface State {
