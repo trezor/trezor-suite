@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IntlProvider, addLocaleData } from 'react-intl';
+import { IntlProvider, addLocaleData, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 
 import en from 'react-intl/locale-data/en';
@@ -20,18 +20,15 @@ import uk from 'react-intl/locale-data/uk';
 import zh from 'react-intl/locale-data/zh';
 import { AppState } from '@suite-types';
 
-export interface MessageDescriptor {
-    // A unique, stable identifier for the message
-    id: string;
-    // The default message (probably in English)
-    defaultMessage: string;
-    // Context for the translator about how it's used in the UI
-    description?: string;
-    values?: { [key: string]: any };
+// Add MessageDescriptor type to values entry
+export interface ExtendedMessageDescriptor extends FormattedMessage.MessageDescriptor {
+    values?: {
+        [key: string]: string | React.ReactElement | FormattedMessage.MessageDescriptor;
+    };
 }
 
 export interface Messages {
-    [key: string]: MessageDescriptor;
+    [key: string]: FormattedMessage.MessageDescriptor;
 }
 
 addLocaleData([

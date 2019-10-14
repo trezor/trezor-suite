@@ -19,15 +19,11 @@ import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import OnboardingActions from '@onboarding-types/actions';
-import {
-    MessageDescriptor as MessageDescriptor$,
-    Messages as Messages$,
-} from '@suite-support/ConnectedIntlProvider';
+import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 
 // this weird export is because of --isolatedModules and next.js 9
-export type MessageDescriptor = MessageDescriptor$;
-export type Messages = Messages$;
+export type ExtendedMessageDescriptor = ExtendedMessageDescriptor$;
 
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>

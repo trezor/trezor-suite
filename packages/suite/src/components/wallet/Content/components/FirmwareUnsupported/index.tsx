@@ -4,12 +4,14 @@ import styled from 'styled-components';
 import { CoinLogo, H4, P, Button, Link, colors } from '@trezor/components';
 
 import { FormattedMessage } from 'react-intl';
+import IntlMessageExtractor from '@suite/components/suite/IntlMessageExtractor';
+import { ExtendedMessageDescriptor } from '@suite/types/suite';
 import l10nMessages from './index.messages';
 
 interface Props {
     symbol?: string | null;
-    title?: string;
-    message?: string;
+    title?: string | ExtendedMessageDescriptor;
+    message?: string | ExtendedMessageDescriptor;
 }
 
 const getInfoUrl = (symbol?: Props['symbol']) => {
@@ -62,7 +64,6 @@ const Message = styled(P)`
 `;
 
 const FirmwareUnsupported = (props: Props) => (
-    // TODO: localization
     <Wrapper>
         <Row>
             {props.symbol && (
@@ -70,8 +71,12 @@ const FirmwareUnsupported = (props: Props) => (
                     <StyledCoinLogo symbol={props.symbol} />
                 </CoinLogoWrapper>
             )}
-            <H4>{props.title}</H4>
-            <Message>{props.message}</Message>
+            <H4>
+                <IntlMessageExtractor>{props.title}</IntlMessageExtractor>
+            </H4>
+            <Message>
+                <IntlMessageExtractor>{props.message}</IntlMessageExtractor>
+            </Message>
             <Link href={getInfoUrl(props.symbol)}>
                 <Button>
                     <FormattedMessage {...l10nMessages.TR_FIND_OUT_MORE_INFO} />

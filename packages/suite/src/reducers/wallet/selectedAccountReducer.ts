@@ -1,28 +1,23 @@
 import produce from 'immer';
 import { ACCOUNT } from '@wallet-actions/constants';
-import { Action } from '@suite-types';
+import { Props as NotificationProps } from '@suite-components/Notification';
+import { Action, ExtendedMessageDescriptor } from '@suite-types';
 import { Network, Account, Discovery } from '@wallet-types';
 
 export interface Loader {
     type: string;
-    title: string;
-    message?: string;
-}
-
-export interface Notification {
-    variant: 'info' | 'success' | 'warning' | 'error';
-    title: string;
-    message?: string;
+    title: string | ExtendedMessageDescriptor;
+    message?: string | ExtendedMessageDescriptor;
 }
 
 export interface ExceptionPage {
     type?: string;
-    title?: string;
-    message?: string;
+    title?: string | ExtendedMessageDescriptor;
+    message?: string | ExtendedMessageDescriptor;
     symbol: string;
 }
 
-interface AccountNotification extends Notification {
+interface AccountNotification extends NotificationProps {
     type: 'info' | 'backend';
 }
 export interface State {
