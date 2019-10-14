@@ -168,7 +168,7 @@ storiesOf('Form', module).add(
                     isLoading
                     value="Sample text"
                     onChange={() => {}}
-                    wrapperProps={{ 'data-test': 'input_value' }}
+                    wrapperProps={{ 'data-test': 'input_value_loading' }}
                 />
             </Row>
 
