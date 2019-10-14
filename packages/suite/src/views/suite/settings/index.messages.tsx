@@ -11,7 +11,6 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_DEVICE_LABEL',
         defaultMessage: 'Device Label',
     },
-    // LABEL
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
         id: 'TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL',
         defaultMessage: 'Edit Label',
