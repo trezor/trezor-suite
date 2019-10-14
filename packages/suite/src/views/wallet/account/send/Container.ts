@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as modalActions from '@suite-actions/modalActions';
 
 import * as sendFormActionsBitcoin from '@wallet-actions/sendFormSpecific/bitcoinActions';
 import * as sendFormActionsEthereum from '@wallet-actions/sendFormSpecific/ethereumActions';
@@ -20,6 +21,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+    openQrModal: bindActionCreators(modalActions.openQrModal, dispatch),
     sendFormActions: bindActionCreators(sendFormActions, dispatch),
     sendFormActionsBitcoin: bindActionCreators(sendFormActionsBitcoin, dispatch),
     sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
