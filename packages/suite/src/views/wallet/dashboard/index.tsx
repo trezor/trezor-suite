@@ -109,7 +109,9 @@ const NetworkGroup = ({ accounts, network }: NetworkGroup) => {
                 <DetailItem>
                     Total balance: {totalBalance} {network.symbol.toUpperCase()}
                 </DetailItem>
-                {network.networkType !== 'ripple' && (<DetailItem>Total transactions: {totalTransactions}</DetailItem>)}
+                {network.networkType !== 'ripple' && (
+                    <DetailItem>Total transactions: {totalTransactions}</DetailItem>
+                )}
             </Details>
         </Card>
     );
@@ -154,13 +156,16 @@ const Dashboard = (props: Props) => {
                         );
                     })}
                 </CardsWrapper>
-                {!isLoading && (<StyledButton
-                    onClick={() => props.goto('wallet-settings')}
-                    icon="PLUS"
-                    align="left"
-                    variant="white">
-                    Add more coins
-                </StyledButton>)}
+                {!isLoading && (
+                    <StyledButton
+                        onClick={() => props.goto('wallet-settings')}
+                        icon="PLUS"
+                        align="left"
+                        variant="white"
+                    >
+                        Add more coins
+                    </StyledButton>
+                )}
             </Content>
         </WalletLayout>
     );
