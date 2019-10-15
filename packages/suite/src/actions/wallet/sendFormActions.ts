@@ -9,6 +9,7 @@ import {
 } from '@wallet-utils/accountUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
+import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
@@ -33,9 +34,13 @@ export type SendFormActions =
           localCurrency: Output['localCurrency']['value'];
       }
     | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
-    | { type: typeof SEND.CLEAR }
+    | { type: typeof SEND.CLEAR; localCurrency: Output['localCurrency']['value'] }
     | { type: typeof SEND.BTC_DELETE_TRANSACTION_INFO }
-    | { type: typeof SEND.INIT; payload: InitialState }
+    | {
+          type: typeof SEND.INIT;
+          payload: InitialState;
+          localCurrency: Output['localCurrency']['value'];
+      }
     | { type: typeof SEND.DISPOSE };
 
 /**
@@ -43,6 +48,7 @@ export type SendFormActions =
  */
 export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
+    const { settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
     const { sendCache } = getState().wallet;
     if (router.app !== 'wallet' || !router.params) return;
@@ -62,6 +68,8 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         cachedState = cachedItem ? cachedItem.sendFormState : null;
     }
 
+    const localCurrency = getLocalCurrency(settings.localCurrency);
+
     dispatch({
         type: SEND.INIT,
         payload: {
@@ -72,6 +80,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
             selectedFee: levels.find(l => l.label === 'normal') || levels[0],
             ...cachedState,
         },
+        localCurrency,
     });
 };
 
@@ -340,11 +349,13 @@ export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getStat
     Clear to default state
 */
 export const clear = () => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
+    const { send, settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
     if (!send || !account) return;
 
-    dispatch({ type: SEND.CLEAR });
+    const localCurrency = getLocalCurrency(settings.localCurrency);
+
+    dispatch({ type: SEND.CLEAR, localCurrency });
     dispatch(sendFormCacheActions.cache());
 };
 

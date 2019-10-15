@@ -33,7 +33,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         address: { value: null, error: null },
         amount: { value: null, error: null },
         fiatValue: { value: null },
-        localCurrency: { value: localCurrency }, // TODO add from settings
+        localCurrency: { value: localCurrency },
     };
 
     dispatch({
