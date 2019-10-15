@@ -6930,7 +6930,7 @@ copy-to-clipboard@^3.0.8:
   dependencies:
     toggle-selection "^1.0.6"
 
-copy-webpack-plugin@^5.0.0:
+copy-webpack-plugin@^5.0.0, copy-webpack-plugin@^5.0.4:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-5.0.4.tgz#c78126f604e24f194c6ec2f43a64e232b5d43655"
   integrity sha512-YBuYGpSzoCHSSDGyHy6VJ7SHojKp6WHT4D7ItcQFNAYx2hrwkMe56e97xfVR0/ovDuMTrMffXUiltvQljtAGeg==
@@ -17896,6 +17896,14 @@ shallowequal@1.1.0, shallowequal@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
   integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
+
+sharedworker-loader@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/sharedworker-loader/-/sharedworker-loader-2.1.1.tgz#0bebdb9660f580e685326dac66ae79d76f01f215"
+  integrity sha512-KhRLscJ4hW+uRuoAdnhDlv/AXu0ONl/fSxwntmW2zZr6VLMzaetkHp8RdycEavfKBkZ3R7aYVcxmt+Zqo8npdQ==
+  dependencies:
+    loader-utils "^1.0.0"
+    schema-utils "^0.4.0"
 
 shebang-command@^1.2.0:
   version "1.2.0"
