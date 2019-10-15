@@ -4,15 +4,14 @@ import Bignumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
 import { State, InitialState, Output } from '@wallet-types/sendForm';
-import {
-    VALIDATION_ERRORS,
-    FIRST_OUTPUT_ID,
-    DEFAULT_LOCAL_CURRENCY,
-} from '@wallet-constants/sendForm';
+import { VALIDATION_ERRORS, FIRST_OUTPUT_ID } from '@wallet-constants/sendForm';
 import { isAddressValid } from '@wallet-utils/validation';
 import { WalletAction } from '@wallet-types';
 
-const initialState = (loaded: InitialState): State => ({
+const initialState = (
+    loaded: InitialState,
+    localCurrency: Output['localCurrency']['value'],
+): State => ({
     outputs: [
         {
             // fill first output by default
@@ -20,7 +19,7 @@ const initialState = (loaded: InitialState): State => ({
             address: { value: null, error: null },
             amount: { value: null, error: null },
             fiatValue: { value: null },
-            localCurrency: { value: DEFAULT_LOCAL_CURRENCY },
+            localCurrency: { value: localCurrency },
         },
     ],
     isComposing: false,
@@ -44,7 +43,7 @@ const initialState = (loaded: InitialState): State => ({
 });
 
 export default (state: State | null = null, action: WalletAction): State | null => {
-    if (action.type === SEND.INIT) return initialState(action.payload);
+    if (action.type === SEND.INIT) return initialState(action.payload, action.localCurrency);
     if (!state || action.type === SEND.DISPOSE) return null;
 
     return produce(state, draft => {
@@ -181,13 +180,16 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // click button "Clear"
             case SEND.CLEAR: {
-                return initialState({
-                    feeInfo: draft.feeInfo,
-                    selectedFee:
-                        draft.feeInfo.levels.find(f => f.label === 'normal') ||
-                        draft.feeInfo.levels[0],
-                    isAdditionalFormVisible: draft.isAdditionalFormVisible,
-                });
+                return initialState(
+                    {
+                        feeInfo: draft.feeInfo,
+                        selectedFee:
+                            draft.feeInfo.levels.find(f => f.label === 'normal') ||
+                            draft.feeInfo.levels[0],
+                        isAdditionalFormVisible: draft.isAdditionalFormVisible,
+                    },
+                    action.localCurrency,
+                );
             }
 
             // change input in additional xrp form "Destination tag"

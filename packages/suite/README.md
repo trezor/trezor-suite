@@ -2,4 +2,4 @@
 
 Web + next.js + redux
 
-[Documentation](./docs/README.MD)
+[Documentation](./docs/README.md)
