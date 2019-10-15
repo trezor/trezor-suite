@@ -4,6 +4,7 @@ import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormU
 import { formatNetworkAmount, getFiatValue, getAccountKey } from '@wallet-utils/accountUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
+import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
@@ -217,13 +218,15 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     if (!account || !fiat || !send) return null;
 
+    const network = NETWORKS.find(n => n.symbol === account.symbol);
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    if (!fiatNetwork) return null;
+
+    if (!fiatNetwork || !network || !network.decimals) return null;
 
     const rate = fiatNetwork.rates[output.localCurrency.value.value];
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
-    const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(20);
+    const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(network.decimals);
 
     dispatch({
         type: SEND.HANDLE_FIAT_VALUE_CHANGE,
@@ -282,13 +285,21 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             symbol: account.symbol,
             availableBalance: account.availableBalance,
         });
-
-        dispatch(sendFormCacheActions.cache());
+    } else {
+        dispatch({
+            type: SEND.HANDLE_AMOUNT_CHANGE,
+            outputId,
+            amount: '0',
+            symbol: account.symbol,
+            availableBalance: account.availableBalance,
+        });
     }
 
     if (shouldComposeBy('amount', send.outputs)) {
         dispatch(compose());
     }
+
+    dispatch(sendFormCacheActions.cache());
 };
 
 /*
