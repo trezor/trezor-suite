@@ -32,7 +32,7 @@ const init = async () => {
 
     mainWindow = new BrowserWindow({
         width: 980,
-        height: 660,
+        height: 680,
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
