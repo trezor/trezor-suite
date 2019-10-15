@@ -30,6 +30,7 @@ interface Props {
     accounts: Account[];
     address: Output['address']['value'];
     sendFormActions: DispatchProps['sendFormActions'];
+    openQrModal: DispatchProps['openQrModal'];
 }
 
 const getMessage = (
@@ -86,7 +87,11 @@ const Address = (props: Props) => (
         value={props.address || ''}
         onChange={e => props.sendFormActions.handleAddressChange(props.outputId, e.target.value)}
         sideAddons={
-            <QrButton key="qrButton" variant="white" onClick={() => console.log('qr button click')}>
+            <QrButton
+                key="qrButton"
+                variant="white"
+                onClick={() => props.openQrModal(props.outputId)}
+            >
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />
             </QrButton>
         }

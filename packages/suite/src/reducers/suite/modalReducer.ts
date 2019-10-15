@@ -21,6 +21,7 @@ export type State =
       }
     | {
           context: typeof MODAL.CONTEXT_SCAN_QR;
+          outputId: number;
       };
 
 const initialState: State = {
@@ -94,6 +95,7 @@ export default (state: State = initialState, action: Action): State => {
         case MODAL.OPEN_SCAN_QR:
             return {
                 context: MODAL.CONTEXT_SCAN_QR,
+                outputId: action.outputId,
             };
 
         default:

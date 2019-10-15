@@ -8,6 +8,7 @@ import {
     getAccountKey,
 } from '@wallet-utils/accountUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
+import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
@@ -351,4 +352,13 @@ export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
     dispatch({
         type: SEND.DISPOSE,
     });
+};
+
+/*
+    Fill the address/amount inputs with data from QR code
+*/
+export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: Dispatch) => {
+    const { address = '', amount } = parsedUri;
+    dispatch(handleAddressChange(outputId, address));
+    if (amount) dispatch(handleAmountChange(outputId, amount));
 };

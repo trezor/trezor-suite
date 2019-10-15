@@ -109,6 +109,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                             address={output.address.value}
                             error={output.address.error}
                             sendFormActions={sendFormActions}
+                            openQrModal={props.openQrModal}
                         />
                     </Row>
                     <Row>

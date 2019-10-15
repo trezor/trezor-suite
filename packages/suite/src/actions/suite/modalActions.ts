@@ -9,6 +9,7 @@ export type ModalActions =
       }
     | {
           type: typeof MODAL.OPEN_SCAN_QR;
+          outputId: number;
       };
 
 export const onCancel = (): Action => ({
@@ -172,26 +173,9 @@ export const onWalletTypeRequest = (hidden: boolean) => (
     dispatch(onCancel());
 };
 
-export const openQrModal = () => (dispatch: Dispatch): void => {
+export const openQrModal = (outputId: number) => (dispatch: Dispatch): void => {
     dispatch({
         type: MODAL.OPEN_SCAN_QR,
+        outputId,
     });
 };
-
-/*
-export const onQrScan = (parsedUri: parsedURI, networkType: string) => (dispatch: Dispatch) => {
-    const { address = '', amount } = parsedUri;
-    switch (networkType) {
-        case 'ethereum':
-            // dispatch(sendEthereumFormActions.onAddressChange(address));
-            // if (amount) dispatch(sendEthereumFormActions.onAmountChange(amount));
-            break;
-        case 'ripple':
-            // dispatch(sendRippleFormActions.onAddressChange(address));
-            // if (amount) dispatch(sendRippleFormActions.onAmountChange(amount));
-            break;
-        default:
-            break;
-    }
-};
-*/
