@@ -80,6 +80,7 @@ const Menu = ({
         a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
     );
     const legacyAccounts = list.filter(a => a.accountType !== 'normal' && (!a.empty || a.visible));
+    const legacyHasBalance = legacyAccounts.find(a => a.availableBalance !== '0');
 
     const isSelected = (account: Account) => {
         if (selectedAccount.account && selectedAccount.account === account) {
@@ -88,7 +89,8 @@ const Menu = ({
         return false;
     };
 
-    let legacyVisible = discoveryIsRunning || legacyVisibleState;
+    let legacyVisible =
+        legacyAccounts.length < 5 || discoveryIsRunning || !!legacyHasBalance || legacyVisibleState;
     if (!legacyVisible) {
         const legacyAccountIsSelected = legacyAccounts.find(a => isSelected(a));
         legacyVisible = !!legacyAccountIsSelected;
