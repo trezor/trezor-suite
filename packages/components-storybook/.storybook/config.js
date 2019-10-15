@@ -17,7 +17,6 @@ function loadStories() {
     require('../src/stories/components/buttons/all');
     require('../src/stories/components/buttons/button.tsx');
     require('../src/stories/components/buttons/buttonPin.tsx');
-    require('../src/stories/components/buttons/inverse.tsx');
     require('../src/stories/components/form.tsx');
     require('../src/stories/components/notifications.tsx');
     require('../src/stories/components/modal.tsx');

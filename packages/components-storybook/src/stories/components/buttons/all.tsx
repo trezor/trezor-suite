@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const Div = styled.div`
-    margin: 10px 0;
+    margin: 0 0 3.2rem;
 `;
 
 const SnapshotWrapper = styled.div<ButtonWrapperProps>`
@@ -33,21 +33,32 @@ storiesOf('Buttons', module).add(
     'All',
     () => {
         const buttonTypes = [
+            // basic
             'button_basic',
             'button_basic_icon',
             'button_basic_loading',
-
             'button_full_width',
             'button_full_width_right',
             'button_full_width_left',
-
             'button_full_width_icon',
             'button_full_width_icon_right',
             'button_full_width_icon_left',
-
             'button_full_width_loading',
             'button_full_width_loading_right',
             'button_full_width_loading_left',
+            // inverse
+            'button_inverse',
+            'button_inverse_icon',
+            'button_inverse_loading',
+            'button_inverse_full_width',
+            'button_inverse_icon_full_width',
+            'button_inverse_loading_full_width',
+            'button_inverse_full_width_right',
+            'button_inverse_icon_full_width_right',
+            'button_inverse_loading_full_width_right',
+            'button_inverse_full_width_left',
+            'button_inverse_icon_full_width_left',
+            'button_inverse_loading_full_width_left',
         ];
         const buttonStates = ['transparent', 'disabled'];
         const buttonVariants = [
@@ -66,6 +77,7 @@ storiesOf('Buttons', module).add(
                     const isFullWidth = !!type.match(/full_width/);
                     const alignLeft = !!type.match(/left/);
                     const alignRight = !!type.match(/right/);
+                    const isInverse = !!type.match(/inverse/);
                     const icon = 'PLUS';
                     const title =
                         type.charAt(0).toUpperCase() +
@@ -88,6 +100,7 @@ storiesOf('Buttons', module).add(
                                                 {...(isFullWidth ? { fullWidth: true } : {})}
                                                 {...(alignLeft ? { align: 'left' } : {})}
                                                 {...(alignRight ? { align: 'right' } : {})}
+                                                {...(isInverse ? { isInverse } : {})}
                                             >
                                                 Button
                                             </Button>
@@ -97,25 +110,27 @@ storiesOf('Buttons', module).add(
                             </SnapshotWrapper>
                             {buttonStates.map(state => {
                                 return (
-                                    <SnapshotWrapper
-                                        data-test={`${type}_${state}`}
-                                        fullWidth={isFullWidth}
-                                    >
-                                        <ButtonWrapper fullWidth={isFullWidth}>
-                                            <Button
-                                                {...(state === 'transparent'
-                                                    ? { isTransparent: true }
-                                                    : { isDisabled: true })}
-                                                {...(hasIcon ? { icon } : {})}
-                                                {...(isLoading ? { isLoading } : {})}
-                                                {...(isFullWidth ? { fullWidth: true } : {})}
-                                                {...(alignLeft ? { align: 'left' } : {})}
-                                                {...(alignRight ? { align: 'right' } : {})}
-                                            >
-                                                Button
-                                            </Button>
-                                        </ButtonWrapper>
-                                    </SnapshotWrapper>
+                                    !isInverse && (
+                                        <SnapshotWrapper
+                                            data-test={`${type}_${state}`}
+                                            fullWidth={isFullWidth}
+                                        >
+                                            <ButtonWrapper fullWidth={isFullWidth}>
+                                                <Button
+                                                    {...(state === 'transparent'
+                                                        ? { isTransparent: true }
+                                                        : { isDisabled: true })}
+                                                    {...(hasIcon ? { icon } : {})}
+                                                    {...(isLoading ? { isLoading } : {})}
+                                                    {...(isFullWidth ? { fullWidth: true } : {})}
+                                                    {...(alignLeft ? { align: 'left' } : {})}
+                                                    {...(alignRight ? { align: 'right' } : {})}
+                                                >
+                                                    Button
+                                                </Button>
+                                            </ButtonWrapper>
+                                        </SnapshotWrapper>
+                                    )
                                 );
                             })}
                         </Div>
