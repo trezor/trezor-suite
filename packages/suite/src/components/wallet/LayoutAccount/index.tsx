@@ -8,10 +8,12 @@ import l10nMessages from './index.messages';
 
 interface Props {
     children: React.ReactNode;
+    title: string;
 }
 
 const LayoutAccount = (props: Props) => (
     <WalletLayout
+        title={props.title}
         topNavigationComponent={
             <TopNavigation
                 items={[

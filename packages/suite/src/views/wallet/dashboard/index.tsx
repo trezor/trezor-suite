@@ -132,7 +132,7 @@ const Dashboard = (props: Props) => {
     });
 
     return (
-        <WalletLayout>
+        <WalletLayout title="Dashboard">
             <Content data-test="Dashboard__page__content">
                 <H4>Dashboard</H4>
                 <CardsWrapper>

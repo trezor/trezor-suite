@@ -20,6 +20,7 @@ const mapStateToProps = (state: AppState) => ({
 
 type Props = {
     topNavigationComponent?: React.ReactNode;
+    title: string;
     children?: React.ReactNode;
 } & ReturnType<typeof mapStateToProps>;
 
@@ -54,6 +55,7 @@ const WalletLayout = (props: Props) => {
             showSuiteHeader
             footer={<Footer />}
             additionalDeviceMenuItems={<WalletMenuItems />}
+            title={props.title}
         >
             <Wrapper>
                 <ProgressBar />
