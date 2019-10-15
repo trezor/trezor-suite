@@ -8,6 +8,7 @@ import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormCacheActions from '../sendFormCacheActions';
+import * as sendFormActions from '../sendFormActions';
 
 export type SendFormBitcoinActions =
     | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
@@ -33,7 +34,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         address: { value: null, error: null },
         amount: { value: null, error: null },
         fiatValue: { value: null },
-        localCurrency: { value: localCurrency }, // TODO add from settings
+        localCurrency: { value: localCurrency },
     };
 
     dispatch({
@@ -86,7 +87,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (resp.success) {
-        dispatch({ type: SEND.CLEAR });
+        dispatch(sendFormActions.clear());
         dispatch(
             notificationActions.add({
                 variant: 'success',
