@@ -66,48 +66,6 @@ const networks = [
             account: 'https://ltc1.trezor.io/xpub/',
         },
     },
-    // Bitcoin testnet
-    {
-        name: 'Bitcoin Testnet',
-        networkType: 'bitcoin',
-        symbol: 'test',
-        bip44: "m/84'/1'/i'",
-        hasSignVerify: true,
-        decimals: 8,
-        testnet: true,
-        explorer: {
-            tx: 'https://tbtc1.trezor.io/tx/',
-            account: 'https://tbtc1.trezor.io/xpub/',
-        },
-    },
-    {
-        name: 'Bitcoin Testnet (segwit)',
-        networkType: 'bitcoin',
-        accountType: 'segwit',
-        symbol: 'test',
-        bip44: "m/49'/1'/i'",
-        hasSignVerify: true,
-        decimals: 8,
-        testnet: true,
-        explorer: {
-            tx: 'https://tbtc1.trezor.io/tx/',
-            account: 'https://tbtc1.trezor.io/xpub/',
-        },
-    },
-    {
-        name: 'Bitcoin Testnet (legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'test',
-        bip44: "m/44'/1'/i'",
-        hasSignVerify: true,
-        decimals: 8,
-        testnet: true,
-        explorer: {
-            tx: 'https://tbtc1.trezor.io/tx/',
-            account: 'https://tbtc1.trezor.io/xpub/',
-        },
-    },
     // Ethereum
     {
         name: 'Ethereum',
@@ -133,19 +91,6 @@ const networks = [
             account: 'https://etc1.trezor.io/address/',
         },
     },
-    {
-        name: 'Ethereum Ropsten',
-        networkType: 'ethereum',
-        symbol: 'trop',
-        bip44: "m/44'/60'/0'/0/i",
-        hasSignVerify: true,
-        decimals: 18,
-        testnet: true,
-        explorer: {
-            tx: 'https://ropsten1.trezor.io/tx/',
-            account: 'https://ropsten1.trezor.io/address/',
-        },
-    },
     // Ripple
     {
         name: 'XRP',
@@ -156,18 +101,6 @@ const networks = [
         explorer: {
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
-        },
-    },
-    {
-        name: 'XRP Testnet',
-        networkType: 'ripple',
-        symbol: 'txrp',
-        bip44: "m/44'/144'/i'/0/0",
-        decimals: 6,
-        testnet: true,
-        explorer: {
-            tx: 'https://test.bithomp.com/explorer/',
-            account: 'https://test.bithomp.com/explorer/',
         },
     },
     {
@@ -302,6 +235,73 @@ const networks = [
         explorer: {
             tx: 'https://zec1.trezor.io/tx/',
             account: 'https://zec1.trezor.io/xpub/',
+        },
+    },
+    // Bitcoin testnet
+    {
+        name: 'Bitcoin Testnet',
+        networkType: 'bitcoin',
+        symbol: 'test',
+        bip44: "m/84'/1'/i'",
+        hasSignVerify: true,
+        decimals: 8,
+        testnet: true,
+        explorer: {
+            tx: 'https://tbtc1.trezor.io/tx/',
+            account: 'https://tbtc1.trezor.io/xpub/',
+        },
+    },
+    {
+        name: 'Bitcoin Testnet (segwit)',
+        networkType: 'bitcoin',
+        accountType: 'segwit',
+        symbol: 'test',
+        bip44: "m/49'/1'/i'",
+        hasSignVerify: true,
+        decimals: 8,
+        testnet: true,
+        explorer: {
+            tx: 'https://tbtc1.trezor.io/tx/',
+            account: 'https://tbtc1.trezor.io/xpub/',
+        },
+    },
+    {
+        name: 'Bitcoin Testnet (legacy)',
+        networkType: 'bitcoin',
+        accountType: 'legacy',
+        symbol: 'test',
+        bip44: "m/44'/1'/i'",
+        hasSignVerify: true,
+        decimals: 8,
+        testnet: true,
+        explorer: {
+            tx: 'https://tbtc1.trezor.io/tx/',
+            account: 'https://tbtc1.trezor.io/xpub/',
+        },
+    },
+    {
+        name: 'Ethereum Ropsten',
+        networkType: 'ethereum',
+        symbol: 'trop',
+        bip44: "m/44'/60'/0'/0/i",
+        hasSignVerify: true,
+        decimals: 18,
+        testnet: true,
+        explorer: {
+            tx: 'https://ropsten1.trezor.io/tx/',
+            account: 'https://ropsten1.trezor.io/address/',
+        },
+    },
+    {
+        name: 'XRP Testnet',
+        networkType: 'ripple',
+        symbol: 'txrp',
+        bip44: "m/44'/144'/i'/0/0",
+        decimals: 6,
+        testnet: true,
+        explorer: {
+            tx: 'https://test.bithomp.com/explorer/',
+            account: 'https://test.bithomp.com/explorer/',
         },
     },
 ] as const;
