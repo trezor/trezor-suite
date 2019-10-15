@@ -75,7 +75,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount, symbol, availableBalance } = action;
+                const { outputId, amount, decimals, availableBalance } = action;
                 const output = getOutput(draft.outputs, outputId);
                 const amountBig = new Bignumber(amount);
 
@@ -97,7 +97,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
-                if (!hasDecimals(amount, symbol)) {
+                if (!hasDecimals(amount, decimals)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS;
                     return draft;
                 }

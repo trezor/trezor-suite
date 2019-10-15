@@ -21,7 +21,7 @@ export type SendFormActions =
           type: typeof SEND.HANDLE_AMOUNT_CHANGE;
           outputId: number;
           amount: string;
-          symbol: Account['symbol'];
+          decimals: number;
           availableBalance: Account['availableBalance'];
       }
     | { type: typeof SEND.SET_MAX; outputId: number }
@@ -129,13 +129,13 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account } = getState().wallet.selectedAccount;
+    const { account, network } = getState().wallet.selectedAccount;
     const { send, fiat } = getState().wallet;
-    if (!account || !send || !fiat) return null;
+    if (!account || !send || !fiat || !network) return null;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    const isValidAmount = hasDecimals(amount, account.symbol);
+    const isValidAmount = hasDecimals(amount, network.decimals);
 
     if (fiatNetwork && isValidAmount) {
         const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
@@ -153,7 +153,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount,
-        symbol: account.symbol,
+        decimals: network.decimals,
         availableBalance: account.formattedBalance,
     });
 
@@ -171,9 +171,9 @@ export const handleSelectCurrencyChange = (
     localCurrency: Output['localCurrency']['value'],
     outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
-    const { account } = getState().wallet.selectedAccount;
+    const { account, network } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
-    if (!account || !fiat || !send) return null;
+    if (!account || !fiat || !send || !network) return null;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
@@ -196,7 +196,7 @@ export const handleSelectCurrencyChange = (
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
             amount: amountBigNumber.toString(),
-            symbol: account.symbol,
+            decimals: network.decimals,
             availableBalance: account.formattedBalance,
         });
     }
@@ -244,7 +244,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount,
-        symbol: account.symbol,
+        decimals: network.decimals,
         availableBalance: account.formattedBalance,
     });
 
@@ -259,10 +259,10 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     Click on "set max"
  */
 export const setMax = (outputId: number) => async (dispatch: Dispatch, getState: GetState) => {
-    const { account } = getState().wallet.selectedAccount;
+    const { account, network } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
 
-    if (!account || !fiat || !send) return null;
+    if (!account || !fiat || !send || !network) return null;
 
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
@@ -288,7 +288,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
                 availableBalanceBig.minus(composedTransaction.fee).toString(),
                 account.symbol,
             ),
-            symbol: account.symbol,
+            decimals: network.decimals,
             availableBalance: account.availableBalance,
         });
     } else {
@@ -296,7 +296,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
             amount: '0',
-            symbol: account.symbol,
+            decimals: network.decimals,
             availableBalance: account.availableBalance,
         });
     }
