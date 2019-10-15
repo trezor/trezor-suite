@@ -16,24 +16,24 @@ export const hasDecimals = (value: string, symbol: Account['symbol']) => {
     return DECIMALS_REGEX.test(value);
 };
 
-export const shouldComposeByAddress = (outputs: Output[]) => {
+export const shouldComposeBy = (name: 'address' | 'amount', outputs: Output[]) => {
     let shouldCompose = true;
-    const addresses = [];
+    const results = [];
 
-    // check if there is at least one address
+    // check if there is at least one filled
     outputs.forEach(output => {
-        if (output.address.value) {
-            addresses.push(output.address.value);
+        if (output.amount.value) {
+            results.push(output[name].value);
         }
     });
 
-    if (addresses.length === 0) {
+    if (results.length === 0) {
         shouldCompose = false;
     }
 
-    // one of the addresses is not valid
+    // one of the inputs is not valid
     outputs.forEach(output => {
-        if (output.address.error) {
+        if (output[name].error) {
             shouldCompose = false;
         }
     });

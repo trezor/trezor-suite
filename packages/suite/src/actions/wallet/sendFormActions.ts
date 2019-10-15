@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { getOutput, hasDecimals, shouldComposeByAddress } from '@wallet-utils/sendFormUtils';
+import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
 import { formatNetworkAmount, getFiatValue, getAccountKey } from '@wallet-utils/accountUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
@@ -21,6 +21,7 @@ export type SendFormActions =
           outputId: number;
           amount: string;
           symbol: Account['symbol'];
+          availableBalance: Account['availableBalance'];
       }
     | { type: typeof SEND.SET_MAX; outputId: number }
     | { type: typeof SEND.COMPOSE_PROGRESS; isComposing: boolean }
@@ -105,7 +106,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
         symbol: account.symbol,
     });
 
-    if (shouldComposeByAddress(send.outputs)) {
+    if (shouldComposeBy('address', send.outputs)) {
         dispatch(compose());
     }
 
@@ -144,9 +145,13 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         outputId,
         amount,
         symbol: account.symbol,
+        availableBalance: account.formattedBalance,
     });
 
-    dispatch(compose());
+    if (shouldComposeBy('amount', send.outputs)) {
+        dispatch(compose());
+    }
+
     dispatch(sendFormCacheActions.cache());
 };
 
@@ -183,6 +188,7 @@ export const handleSelectCurrencyChange = (
             outputId,
             amount: amountBigNumber.toString(),
             symbol: account.symbol,
+            availableBalance: account.formattedBalance,
         });
     }
 
@@ -192,7 +198,10 @@ export const handleSelectCurrencyChange = (
         localCurrency,
     });
 
-    dispatch(compose());
+    if (shouldComposeBy('amount', send.outputs)) {
+        dispatch(compose());
+    }
+
     dispatch(sendFormCacheActions.cache());
 };
 
@@ -227,9 +236,13 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         outputId,
         amount,
         symbol: account.symbol,
+        availableBalance: account.formattedBalance,
     });
 
-    dispatch(compose());
+    if (shouldComposeBy('amount', send.outputs)) {
+        dispatch(compose());
+    }
+
     dispatch(sendFormCacheActions.cache());
 };
 
@@ -267,9 +280,14 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
                 account.symbol,
             ),
             symbol: account.symbol,
+            availableBalance: account.availableBalance,
         });
 
         dispatch(sendFormCacheActions.cache());
+    }
+
+    if (shouldComposeBy('amount', send.outputs)) {
+        dispatch(compose());
     }
 };
 
@@ -369,5 +387,7 @@ export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
 export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: Dispatch) => {
     const { address = '', amount } = parsedUri;
     dispatch(handleAddressChange(outputId, address));
-    if (amount) dispatch(handleAmountChange(outputId, amount));
+    if (amount) {
+        dispatch(handleAmountChange(outputId, amount));
+    }
 };

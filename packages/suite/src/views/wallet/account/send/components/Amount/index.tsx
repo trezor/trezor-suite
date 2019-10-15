@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NETWORKS } from '@wallet-config';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import { Output } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
@@ -45,7 +46,7 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getMessage = (error: Output['amount']['error']) => {
+const getMessage = (error: Output['amount']['error'], symbol: Account['symbol']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_SET} />;
@@ -53,8 +54,19 @@ const getMessage = (error: Output['amount']['error']) => {
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
         case VALIDATION_ERRORS.NOT_ENOUGH:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
-        case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
-            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS} />;
+        case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS: {
+            const network = NETWORKS.find(n => n.symbol === symbol);
+            if (network) {
+                const { decimals } = network;
+                return (
+                    <FormattedMessage
+                        {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS}
+                        values={{ decimals }}
+                    />
+                );
+            }
+            break;
+        }
         default:
             return null;
     }
@@ -113,7 +125,7 @@ const Amount = (props: Props) => (
             }
             value={props.amount || ''}
             onChange={e => props.sendFormActions.handleAmountChange(props.outputId, e.target.value)}
-            bottomText={getMessage(props.error)}
+            bottomText={getMessage(props.error, props.symbol)}
             sideAddons={
                 <>
                     <SetMax

@@ -76,14 +76,20 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount, symbol } = action;
+                const { outputId, amount, symbol, availableBalance } = action;
                 const output = getOutput(draft.outputs, outputId);
+                const amountBig = new Bignumber(amount);
 
                 output.amount.error = null;
                 output.amount.value = amount;
 
                 if (validator.isEmpty(amount) || amount.match(/^0+$/)) {
                     output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
+                    return draft;
+                }
+
+                if (amountBig.isGreaterThan(availableBalance)) {
+                    output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
 

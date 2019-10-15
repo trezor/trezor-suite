@@ -24,7 +24,7 @@ const definedMessages = defineMessages({
     },
     TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
         id: 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
-        defaultMessage: 'Maximum XXX decimals allowed',
+        defaultMessage: 'Maximum {decimals} decimals allowed',
     },
 });
 
