@@ -169,13 +169,16 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // click button "Clear"
             case SEND.CLEAR: {
-                return initialState({
-                    feeInfo: draft.feeInfo,
-                    selectedFee:
-                        draft.feeInfo.levels.find(f => f.label === 'normal') ||
-                        draft.feeInfo.levels[0],
-                    isAdditionalFormVisible: draft.isAdditionalFormVisible,
-                });
+                return initialState(
+                    {
+                        feeInfo: draft.feeInfo,
+                        selectedFee:
+                            draft.feeInfo.levels.find(f => f.label === 'normal') ||
+                            draft.feeInfo.levels[0],
+                        isAdditionalFormVisible: draft.isAdditionalFormVisible,
+                    },
+                    action.localCurrency,
+                );
             }
 
             // change input in additional xrp form "Destination tag"
