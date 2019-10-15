@@ -157,7 +157,10 @@ export const getInitialState = () => ({
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
-        settings: walletSettingsReducer(undefined, { type: 'foo' } as any),
+        settings: walletSettingsReducer(undefined, {
+            type: SETTINGS.CHANGE_NETWORKS,
+            payload: ['btc', 'test'],
+        }),
     },
 });
 
