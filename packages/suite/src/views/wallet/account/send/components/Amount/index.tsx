@@ -53,6 +53,8 @@ const getMessage = (error: Output['amount']['error']) => {
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
         case VALIDATION_ERRORS.NOT_ENOUGH:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
+        case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
+            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS} />;
         default:
             return null;
     }

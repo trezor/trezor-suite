@@ -4,6 +4,7 @@ export const VALIDATION_ERRORS = {
     NOT_VALID: 'not-valid',
     NOT_NUMBER: 'not-number',
     NOT_IN_RANGE: 'not-in-range',
+    NOT_IN_RANGE_DECIMALS: 'not-in-range-decimals',
 } as const;
 
 export const CUSTOM_FEE = 'custom' as const;

@@ -2,7 +2,7 @@ import produce from 'immer';
 import validator from 'validator';
 import Bignumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { getOutput } from '@wallet-utils/sendFormUtils';
+import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
 import { State, InitialState, Output } from '@wallet-types/sendForm';
 import {
     VALIDATION_ERRORS,
@@ -76,7 +76,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount } = action;
+                const { outputId, amount, symbol } = action;
                 const output = getOutput(draft.outputs, outputId);
 
                 output.amount.error = null;
@@ -89,6 +89,11 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 if (!validator.isNumeric(amount)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+
+                if (!hasDecimals(amount, symbol)) {
+                    output.amount.error = VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS;
                     return draft;
                 }
 
