@@ -27,7 +27,7 @@ const Layout = styled.div`
 
 const SettingsLayout = (props: Props) => {
     return (
-        <SuiteLayout showSuiteHeader disableSidebar>
+        <SuiteLayout showSuiteHeader disableSidebar title="Settings | Trezor Suite">
             <Layout>
                 <WalletNotifications />
                 <Wrapper>{props.children}</Wrapper>

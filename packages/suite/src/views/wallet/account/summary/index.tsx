@@ -11,14 +11,14 @@ const AccountSummary = (props: Props) => {
     if (!device || !account || !network || !shouldRender) {
         const { loader, exceptionPage } = props.wallet.selectedAccount;
         return (
-            <LayoutAccount>
+            <LayoutAccount title="Summary | Trezor Suite">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
             </LayoutAccount>
         );
     }
 
     return (
-        <LayoutAccount>
+        <LayoutAccount title="Summary | Trezor Suite">
             <AccountHeader
                 account={account}
                 network={network}

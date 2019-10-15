@@ -36,7 +36,7 @@ const AccountReceive = (props: Props) => {
     if (!device || !account || !discovery || !network || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
-            <LayoutAccount>
+            <LayoutAccount title="Receive | Trezor Suite">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
             </LayoutAccount>
         );
@@ -67,7 +67,7 @@ const AccountReceive = (props: Props) => {
         props.locks.includes(SUITE.LOCK_TYPE.DEVICE) || props.locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
-        <LayoutAccount>
+        <LayoutAccount title="Receive | Trezor Suite">
             <ReceiveForm
                 showButtonDisabled={showButtonDisabled}
                 account={account}

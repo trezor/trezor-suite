@@ -6,7 +6,7 @@ import { Output } from '@wallet-types/sendForm';
 
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { StateProps, DispatchProps } from './Container';
-import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
+import { Content, Title, LayoutAccount } from '@wallet-components';
 import {
     Address,
     Amount,
@@ -75,16 +75,16 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
-            <Layout>
+            <LayoutAccount title="Send | Trezor Suite">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </Layout>
+            </LayoutAccount>
         );
     }
 
     const accountType = getTypeForNetwork(account.accountType, props.intl);
 
     return (
-        <Layout>
+        <LayoutAccount title="Send | Trezor Suite">
             <StyledTitle>
                 <StyledCoinLogo size={24} symbol={account.symbol} />
                 Send {getTitleForNetwork(network.symbol, props.intl)}
@@ -155,7 +155,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     sendFormActionsRipple={sendFormActionsRipple}
                 />
             </Row>
-        </Layout>
+        </LayoutAccount>
     );
 };
 

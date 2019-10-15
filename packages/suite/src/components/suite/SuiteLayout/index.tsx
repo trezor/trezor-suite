@@ -12,6 +12,7 @@ import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/componen
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
 import NoSSR from '@suite/support/suite/NoSSR';
+import Head from 'next/head';
 import { URLS } from '@suite-constants';
 
 import l10nMessages from './index.messages';
@@ -61,6 +62,7 @@ interface Props {
     isLanding?: boolean;
     showSuiteHeader?: boolean;
     fullscreenMode?: boolean;
+    title?: string;
     children: React.ReactNode;
     footer?: React.ReactNode;
     additionalDeviceMenuItems?: React.ReactNode;
@@ -71,6 +73,9 @@ interface Props {
 
 const SuiteLayout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
+        <Head>
+            <title>{props.title || 'Trezor Suite'}</title>
+        </Head>
         <CommonHeader
             sidebarOpened={props.suite.showSidebar}
             toggleSidebar={props.toggleSidebar}

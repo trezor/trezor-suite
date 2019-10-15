@@ -36,7 +36,7 @@ const Transactions = (props: Props) => {
     if (!selectedAccount.account) {
         const { loader, exceptionPage } = selectedAccount;
         return (
-            <LayoutAccount>
+            <LayoutAccount title="Transactions | Trezor Suite">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
             </LayoutAccount>
         );
@@ -56,7 +56,7 @@ const Transactions = (props: Props) => {
     };
 
     return (
-        <LayoutAccount>
+        <LayoutAccount title="Transactions | Trezor Suite">
             <Title>
                 <FormattedMessage {...l10nMessages.TR_TRANSACTIONS} />
             </Title>
