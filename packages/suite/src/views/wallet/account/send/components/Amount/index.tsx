@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NETWORKS } from '@wallet-config';
 import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import { Output } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-
+import { NETWORKS } from '@wallet-config';
 import FiatComponent from './components/Fiat';
 import CurrencySelect from './components/CurrencySelect';
 import SetMax from './components/SetMax';
