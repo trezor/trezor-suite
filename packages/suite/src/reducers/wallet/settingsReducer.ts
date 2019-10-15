@@ -14,7 +14,7 @@ export interface State {
 export const initialState: State = {
     localCurrency: 'usd',
     hideBalance: false,
-    enabledNetworks: ['btc', 'test'],
+    enabledNetworks: ['btc'],
     enabledExternalNetworks: EXTERNAL_NETWORKS.filter(n => !n.isHidden).map(n => n.symbol),
 };
 
