@@ -22,7 +22,7 @@ export const shouldComposeBy = (name: 'address' | 'amount', outputs: Output[]) =
 
     // check if there is at least one filled
     outputs.forEach(output => {
-        if (output.amount.value) {
+        if (output[name].value) {
             results.push(output[name].value);
         }
     });

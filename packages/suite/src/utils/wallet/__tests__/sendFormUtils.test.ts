@@ -1,34 +1,24 @@
-import { getOutput, hasDecimals } from '../sendFormUtils';
+import { OUTPUTS } from './fixtures/sendFormFixtures';
+import { getOutput, hasDecimals, shouldComposeBy } from '../sendFormUtils';
 
 describe('sendForm utils', () => {
     it('get output', () => {
-        const outputs = [
-            {
-                id: 1,
-                address: { value: null, error: null },
-                amount: { value: null, error: null },
-                fiatValue: { value: null },
-                localCurrency: { value: { value: 'value', label: 'label' } },
-            },
-            {
-                id: 2,
-                address: { value: null, error: null },
-                amount: { value: null, error: null },
-                fiatValue: { value: null },
-                localCurrency: { value: { value: 'value', label: 'label' } },
-            },
-            {
-                id: 3,
-                address: { value: null, error: null },
-                amount: { value: null, error: null },
-                fiatValue: { value: null },
-                localCurrency: { value: { value: 'value', label: 'label' } },
-            },
-        ];
+        expect(getOutput(OUTPUTS.BASIC, 1)).toBe(OUTPUTS.BASIC[0]);
+        expect(getOutput(OUTPUTS.BASIC, 2)).toBe(OUTPUTS.BASIC[1]);
+        expect(getOutput(OUTPUTS.BASIC, 3)).toBe(OUTPUTS.BASIC[2]);
+    });
 
-        expect(getOutput(outputs, 1)).toBe(outputs[0]);
-        expect(getOutput(outputs, 2)).toBe(outputs[1]);
-        expect(getOutput(outputs, 3)).toBe(outputs[2]);
+    it('should compose', () => {
+        const COMPOSE = true;
+        const SHOULD_NOT_COMPOSE = false;
+
+        expect(shouldComposeBy('address', OUTPUTS.NO_ERROR_ADDRESS)).toBe(COMPOSE);
+        expect(shouldComposeBy('address', OUTPUTS.ADDRESS_EMPTY)).toBe(SHOULD_NOT_COMPOSE);
+        expect(shouldComposeBy('address', OUTPUTS.ADDRESS_ERROR)).toBe(SHOULD_NOT_COMPOSE);
+
+        expect(shouldComposeBy('amount', OUTPUTS.NO_ERROR_AMOUNT)).toBe(COMPOSE);
+        expect(shouldComposeBy('amount', OUTPUTS.AMOUNT_ERROR)).toBe(SHOULD_NOT_COMPOSE);
+        expect(shouldComposeBy('amount', OUTPUTS.AMOUNT_EMPTY)).toBe(SHOULD_NOT_COMPOSE);
     });
 
     it('hasDecimals', () => {
