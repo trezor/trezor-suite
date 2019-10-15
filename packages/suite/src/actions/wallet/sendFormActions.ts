@@ -231,7 +231,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
-    if (!fiatNetwork || !network || !network.decimals) return null;
+    if (!fiatNetwork || !network) return null;
 
     const rate = fiatNetwork.rates[output.localCurrency.value.value];
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
