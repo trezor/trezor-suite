@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
@@ -135,6 +136,9 @@ const InstallBridge = (props: Props) => {
 
     return (
         <Wrapper>
+            <Head>
+                <title>Download Bridge | Trezor Suite</title>
+            </Head>
             <Top>
                 <TitleHeader>
                     Trezor Bridge
