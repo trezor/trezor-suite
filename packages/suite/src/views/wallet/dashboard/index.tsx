@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import BigNumber from 'bignumber.js';
-// import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux';
 // import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H4, CoinLogo, colors, variables, Loader } from '@trezor/components';
+import { H4, CoinLogo, colors, variables, Loader, Button } from '@trezor/components';
 import WalletLayout from '@wallet-components/WalletLayout';
 // import l10nCommonMessages from '@wallet-views/messages';
 import { sortByCoin } from '@wallet-utils/accountUtils';
+import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { NETWORKS } from '@wallet-config';
 import { AppState, Dispatch } from '@suite-types';
@@ -78,7 +79,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
-    // getDiscoveryForDevice: bindActionCreators(discoveryActions.getDiscoveryForDevice, dispatch),
+    goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -108,11 +109,16 @@ const NetworkGroup = ({ accounts, network }: NetworkGroup) => {
                 <DetailItem>
                     Total balance: {totalBalance} {network.symbol.toUpperCase()}
                 </DetailItem>
-                <DetailItem>Total transactions: {totalTransactions}</DetailItem>
+                {network.networkType !== 'ripple' && (<DetailItem>Total transactions: {totalTransactions}</DetailItem>)}
             </Details>
         </Card>
     );
 };
+
+const StyledButton = styled(Button)`
+    margin: 16px 4px 0px 4px;
+    border: 1px solid ${colors.GRAY_LIGHT};
+`;
 
 const Dashboard = (props: Props) => {
     const discovery = props.getDiscoveryForDevice();
@@ -131,12 +137,14 @@ const Dashboard = (props: Props) => {
         group[a.symbol].push(a);
     });
 
+    const isLoading = !discovery || accounts.length < 1;
+
     return (
         <WalletLayout title="Dashboard">
             <Content data-test="Dashboard__page__content">
                 <H4>Dashboard</H4>
                 <CardsWrapper>
-                    {!discovery && <Loader size={32} />}
+                    {isLoading && <Loader size={32} />}
                     {Object.keys(group).map(symbol => {
                         const network = NETWORKS.find(
                             n => n.symbol === symbol && !n.accountType,
@@ -146,6 +154,13 @@ const Dashboard = (props: Props) => {
                         );
                     })}
                 </CardsWrapper>
+                {!isLoading && (<StyledButton
+                    onClick={() => props.goto('wallet-settings')}
+                    icon="PLUS"
+                    align="left"
+                    variant="white">
+                    Add more coins
+                </StyledButton>)}
             </Content>
         </WalletLayout>
     );
