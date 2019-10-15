@@ -52,7 +52,11 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
             break;
+        case CONNECT_BLOCKCHAIN.CONNECT:
+            api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));
+            break;
         case CONNECT_BLOCKCHAIN.BLOCK:
+            api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));
             api.dispatch(blockchainActions.onBlockMined(action.payload));
             break;
         case CONNECT_BLOCKCHAIN.NOTIFICATION:
