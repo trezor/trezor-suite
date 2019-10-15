@@ -5,7 +5,6 @@ import { formatNetworkAmount, getFiatValue, getAccountKey } from '@wallet-utils/
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
-import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
@@ -222,12 +221,10 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account } = getState().wallet.selectedAccount;
+    const { account, network } = getState().wallet.selectedAccount;
     const { fiat, send } = getState().wallet;
+    if (!account || !fiat || !send || !network) return null;
 
-    if (!account || !fiat || !send) return null;
-
-    const network = NETWORKS.find(n => n.symbol === account.symbol);
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
