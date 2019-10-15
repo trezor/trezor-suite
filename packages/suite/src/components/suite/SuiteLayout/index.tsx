@@ -74,7 +74,7 @@ interface Props {
 const SuiteLayout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
         <Head>
-            <title>{props.title || 'Trezor Suite'}</title>
+            <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
         </Head>
         <CommonHeader
             sidebarOpened={props.suite.showSidebar}

@@ -75,7 +75,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
-            <LayoutAccount title="Send | Trezor Suite">
+            <LayoutAccount title="Send">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
             </LayoutAccount>
         );
@@ -84,7 +84,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     const accountType = getTypeForNetwork(account.accountType, props.intl);
 
     return (
-        <LayoutAccount title="Send | Trezor Suite">
+        <LayoutAccount title="Send">
             <StyledTitle>
                 <StyledCoinLogo size={24} symbol={account.symbol} />
                 Send {getTitleForNetwork(network.symbol, props.intl)}

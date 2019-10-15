@@ -4,6 +4,7 @@ import WalletNotifications from '@wallet-components/Notifications';
 import { SuiteLayout } from '@suite-components';
 
 interface Props {
+    title: string;
     children?: React.ReactNode;
 }
 
@@ -27,7 +28,7 @@ const Layout = styled.div`
 
 const SettingsLayout = (props: Props) => {
     return (
-        <SuiteLayout showSuiteHeader disableSidebar title="Settings | Trezor Suite">
+        <SuiteLayout showSuiteHeader disableSidebar title={props.title}>
             <Layout>
                 <WalletNotifications />
                 <Wrapper>{props.children}</Wrapper>

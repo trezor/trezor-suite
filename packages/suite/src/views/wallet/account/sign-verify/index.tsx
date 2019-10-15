@@ -113,7 +113,7 @@ class SignVerify extends Component<Props> {
 
         const verifyAddressError = this.getError('verifyAddress');
         return (
-            <LayoutAccount title="SIgn & Verify | Trezor Suite">
+            <LayoutAccount title="SIgn & Verify">
                 <Wrapper>
                     <Sign>
                         <Title>

@@ -130,7 +130,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     ] as const;
 
     return (
-        <SettingsLayout>
+        <SettingsLayout title="Settings">
             <Row>
                 <Title>{tr('TR_DEVICE_SETTINGS_TITLE')}</Title>
                 <CloseButton onClick={() => goto('wallet-index')} isTransparent>
