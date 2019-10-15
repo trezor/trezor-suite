@@ -76,10 +76,11 @@ const GoBack = styled(Link)`
 
 const CenteredLoader = styled(Loader)`
     margin: 0 auto;
+    margin-bottom: 10px;
 `;
 
 const LoaderWrapper = styled.div`
-    margin: 24px;
+    margin: 15px 0 25px 0;
     align-items: center;
     justify-items: center;
 `;
@@ -136,16 +137,23 @@ const InstallBridge = (props: Props) => {
         <Wrapper>
             <Top>
                 <TitleHeader>
-                    Trezor Bridge<Version>{data && data.currentVersion}</Version>
+                    Trezor Bridge
+                    {!props.transport && (
+                        <Version>
+                            <FormattedMessage {...l10nMessages.TR_VERSION_IS_LOADING} />
+                        </Version>
+                    )}
+                    {props.transport && <Version>{data && data.currentVersion}</Version>}
                 </TitleHeader>
                 <P>
                     <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
                 </P>
-
                 {!props.transport ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
-                        <P>Gathering information, please wait...</P>
+                        <P>
+                            <FormattedMessage {...l10nMessages.TR_GATHERING_INFO} />
+                        </P>
                     </LoaderWrapper>
                 ) : (
                     <Download>
