@@ -15,3 +15,28 @@ export const hasDecimals = (value: string, symbol: Account['symbol']) => {
     );
     return DECIMALS_REGEX.test(value);
 };
+
+export const shouldComposeByAddress = (outputs: Output[]) => {
+    let shouldCompose = true;
+    const addresses = [];
+
+    // check if there is at least one address
+    outputs.forEach(output => {
+        if (output.address.value) {
+            addresses.push(output.address.value);
+        }
+    });
+
+    if (addresses.length === 0) {
+        shouldCompose = false;
+    }
+
+    // one of the addresses is not valid
+    outputs.forEach(output => {
+        if (output.address.error) {
+            shouldCompose = false;
+        }
+    });
+
+    return shouldCompose;
+};

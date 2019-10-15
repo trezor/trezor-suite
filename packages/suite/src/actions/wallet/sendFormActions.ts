@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
+import { getOutput, hasDecimals, shouldComposeByAddress } from '@wallet-utils/sendFormUtils';
 import { formatNetworkAmount, getFiatValue, getAccountKey } from '@wallet-utils/accountUtils';
 import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
@@ -105,7 +105,10 @@ export const handleAddressChange = (outputId: number, address: string) => (
         symbol: account.symbol,
     });
 
-    dispatch(compose());
+    if (shouldComposeByAddress(send.outputs)) {
+        dispatch(compose());
+    }
+
     dispatch(sendFormCacheActions.cache());
 };
 
