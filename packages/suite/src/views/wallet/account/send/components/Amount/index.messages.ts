@@ -22,6 +22,10 @@ const definedMessages = defineMessages({
         id: 'TR_AMOUNT_IS_NOT_ENOUGH',
         defaultMessage: 'Not enough funds',
     },
+    TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
+        id: 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
+        defaultMessage: 'Maximum {decimals} decimals allowed',
+    },
 });
 
 export default definedMessages;

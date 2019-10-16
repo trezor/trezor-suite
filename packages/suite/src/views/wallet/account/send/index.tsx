@@ -121,6 +121,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                             error={output.amount.error}
                             fiatValue={output.fiatValue.value}
                             fiat={fiat}
+                            decimals={network.decimals}
                             localCurrency={output.localCurrency.value}
                             sendFormActions={sendFormActions}
                         />
