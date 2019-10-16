@@ -33,7 +33,6 @@ const Toggle = ({ onToggle, isOpen }: Props) => {
             }}
         >
             <FormattedMessage {...l10nMessages.TR_LEGACY_ACCOUNTS} />
-            {console.log('isActive', isOpen)}
             <Icon
                 canAnimate={touched || isOpen}
                 isActive={isOpen}
