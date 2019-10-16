@@ -1,13 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const {
-    app,
-    session,
-    BrowserWindow,
-    ipcMain,
-    globalShortcut,
-    protocol,
-    shell,
-} = require('electron');
+const { app, session, BrowserWindow, ipcMain, protocol, shell } = require('electron');
 const isDev = require('electron-is-dev');
 const prepareNext = require('electron-next');
 const path = require('path');
@@ -80,12 +72,19 @@ const init = async () => {
             callback({ path: url });
         });
 
-        globalShortcut.register('f5', () => {
-            mainWindow.loadURL(src);
-        });
-        globalShortcut.register('CommandOrControl+R', () => {
-            mainWindow.loadURL(src);
-        });
+        // TODO: For more complex shortcuts we should just use mousetrap
+        // https://electronjs.org/docs/tutorial/keyboard-shortcuts#shortcuts-within-a-browserwindow
+        mainWindow.addEventListener(
+            'keyup',
+            e => {
+                console.log('triggered');
+                if (e.keyCode === 82 || e.keyCode === 116) {
+                    // cmd + r or f5
+                    mainWindow.loadURL(src);
+                }
+            },
+            true,
+        );
     }
 
     mainWindow.loadURL(src);
