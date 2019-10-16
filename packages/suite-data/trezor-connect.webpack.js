@@ -6,7 +6,6 @@ const RemovePlugin = require('remove-files-webpack-plugin');
 
 const path = require('path');
 
-// mozna upravit cestu
 const SRC = 'node_modules/trezor-connect';
 const DATA_SRC = `${SRC}/data`;
 
@@ -16,7 +15,7 @@ const HTML_SRC = path.resolve(__dirname, 'iframe.html');
 const DIST = path.resolve(__dirname, 'files/connect');
 
 module.exports = {
-    mode: 'none',
+    mode: 'production',
     entry: {
         iframe: `./node_modules/trezor-connect/lib/iframe/iframe.js`,
     },
@@ -29,22 +28,9 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                exclude: [
-                    /node_modules/,
-                    // path.resolve(__dirname, '../../node_modules/trezor-link/lib/lowlevel/sharedConnectionWorker')
-                ],
+                exclude: /node_modules/,
                 use: ['babel-loader'],
             },
-            // {
-            //     type: 'javascript/auto',
-            //     test: /\.json/,
-            //     exclude: /node_modules/,
-            //     loader: 'file-loader',
-            //     query: {
-            //         outputPath: './data',
-            //         name: '[name].[hash].[ext]',
-            //     },
-            // },
         ],
     },
     resolve: {
@@ -66,7 +52,6 @@ module.exports = {
         ]),
         // ignore Node.js lib from trezor-link
         new webpack.IgnorePlugin(/\/iconv-loader$/),
-        new webpack.IgnorePlugin(/\trezor-link\/lib\/lowlevel\/sharedConnectionWorker/),
         new HtmlWebpackPlugin({
             chunks: ['iframe'],
             filename: 'iframe.html',
@@ -79,8 +64,6 @@ module.exports = {
                     {
                         folder: `${DIST}/workers`,
                         method: (filePath) => {
-                            console.warn('filepath ================', filePath);
-                            console.warn(filePath.includes('shared-connection-worker'))
                             return filePath.includes('shared-connection-worker.');
                         }
                     } 
