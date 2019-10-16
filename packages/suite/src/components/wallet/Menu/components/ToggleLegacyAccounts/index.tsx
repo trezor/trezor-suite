@@ -34,7 +34,7 @@ const Toggle = ({ onToggle, isOpen }: Props) => {
         >
             <FormattedMessage {...l10nMessages.TR_LEGACY_ACCOUNTS} />
             <Icon
-                canAnimate={touched || isOpen}
+                canAnimate={touched}
                 isActive={isOpen}
                 size={12}
                 color={colors.TEXT_SECONDARY}
