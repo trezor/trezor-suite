@@ -24,7 +24,7 @@ export default [
                 name: 'path',
                 label: 'Bip44 path',
                 type: 'input',
-                value: `m/44'/134'/0'/0/0`,
+                value: `m/44'/134'/0'`,
             },
             {
                 name: 'transaction',
