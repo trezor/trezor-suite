@@ -9,7 +9,7 @@ interface Props extends LinkProps {
     isGreen?: boolean;
     hasNoStyle?: boolean;
     target?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 const RefLinkComponent = React.forwardRef((props: Props, _ref: any) => (
