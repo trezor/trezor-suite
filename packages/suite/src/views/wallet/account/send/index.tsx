@@ -5,7 +5,6 @@ import { Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
 import AccountName from '@wallet-components/AccountName';
 
-import { MessageDescriptor } from '@suite/types/suite';
 import { StateProps, DispatchProps } from './Container';
 import { Content, LayoutAccount as Layout } from '@wallet-components';
 import l10nMessages from './components/messages';
@@ -80,7 +79,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
 
     return (
         <Layout title="Send">
-            <AccountName account={account} message={accountNameMessage as MessageDescriptor} />
+            <AccountName account={account} message={accountNameMessage} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     <SlimRow isOnlyOne={send.outputs.length === 1}>

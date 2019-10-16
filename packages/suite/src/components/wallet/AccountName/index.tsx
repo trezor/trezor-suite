@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { CoinLogo, variables, colors } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
-import { MessageDescriptor } from '@suite/types/suite';
+import { ExtendedMessageDescriptor } from '@suite/types/suite';
 import Title from '@wallet-components/Title';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
@@ -33,7 +33,7 @@ const LabelAddon = styled.span`
 
 interface Props {
     account: Account;
-    message?: MessageDescriptor;
+    message?: ExtendedMessageDescriptor;
 }
 
 const AccountName = ({ account, message }: Props) => {

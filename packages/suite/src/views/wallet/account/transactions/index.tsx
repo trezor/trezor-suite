@@ -10,7 +10,7 @@ import AccountName from '@wallet-components/AccountName';
 import Content from '@wallet-components/Content';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
-import { AppState, Dispatch, MessageDescriptor } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 import TransactionList from './components/TransactionList';
 import l10nMessages from './index.messages';
 
@@ -62,10 +62,7 @@ const Transactions = (props: Props) => {
 
     return (
         <LayoutAccount title="Transactions">
-            <AccountName 
-                account={selectedAccount.account}
-                message={accountNameMessage as MessageDescriptor}
-            />
+            <AccountName account={selectedAccount.account} message={accountNameMessage} />
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />

@@ -8,7 +8,7 @@ import LayoutAccount from '@wallet-components/LayoutAccount';
 import Content from '@wallet-components/Content';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { SUITE } from '@suite-actions/constants';
-import { AppState, Dispatch, MessageDescriptor } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 import ReceiveForm from './components/ReceiveForm';
 import l10nMessages from './components/ReceiveForm/messages';
 
@@ -81,12 +81,7 @@ const AccountReceive = (props: Props) => {
                 isAddressPartiallyHidden={isAddressPartiallyHidden}
                 getAddressReceiveInfo={getAddressReceiveInfo}
                 networkType={network.networkType}
-                title={
-                    <AccountName
-                        account={account}
-                        message={accountNameMessage as MessageDescriptor}
-                    />
-                }
+                title={<AccountName account={account} message={accountNameMessage} />}
             />
         </LayoutAccount>
     );
