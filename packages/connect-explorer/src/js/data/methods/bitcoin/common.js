@@ -12,6 +12,7 @@ export const select = [
     { value: 'nmc', label: 'Namecoin', affectedValue: `m/44'/7'/0'` },
     { value: 'vtc', label: 'Vertcoin', affectedValue: `m/49'/28'/0'` },
     { value: 'cpc', label: 'Capricoin', affectedValue: `m/44'/289'/0'` },
+    { value: 'kmd', label: 'Komodo', affectedValue: `m/44'/289'/0'` },
 ];
 
 export const xpubs = [
