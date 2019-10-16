@@ -1,19 +1,25 @@
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
-const DIST = path.resolve(__dirname, '../suite-data/files/connect');
-const DATA_SRC = 'node_modules/trezor-connect/data';
+// mozna upravit cestu
 const SRC = 'node_modules/trezor-connect';
+const DATA_SRC = `${SRC}/data`;
+
+// iframe is not in npm, so we have its template in suite-data
+const HTML_SRC = path.resolve(__dirname, 'iframe.html');
+
+const DIST = path.resolve(__dirname, 'files/connect');
 
 module.exports = {
-    mode: 'production',
+    mode: 'none',
     entry: {
         iframe: `./node_modules/trezor-connect/lib/iframe/iframe.js`,
     },
     output: {
-        filename: 'js/[name].js',
+        filename: 'js/[name].[hash].js',
         path: DIST,
         publicPath: './',
     },
@@ -24,16 +30,16 @@ module.exports = {
                 exclude: /node_modules/,
                 use: ['babel-loader'],
             },
-            {
-                type: 'javascript/auto',
-                test: /\.json/,
-                exclude: /node_modules/,
-                loader: 'file-loader',
-                query: {
-                    outputPath: './data',
-                    name: '[name].[hash].[ext]',
-                },
-            },
+            // {
+            //     type: 'javascript/auto',
+            //     test: /\.json/,
+            //     exclude: /node_modules/,
+            //     loader: 'file-loader',
+            //     query: {
+            //         outputPath: './data',
+            //         name: '[name].[hash].[ext]',
+            //     },
+            // },
         ],
     },
     resolve: {
@@ -51,13 +57,16 @@ module.exports = {
             '../env/browser/networkUtils',
         ),
         new CopyWebpackPlugin([
-            { from: `${DATA_SRC}/messages`, to: `${DIST}/data/messages` }, // only messages, coins, firmware releases
-            { from: `${DATA_SRC}/firmware`, to: `${DIST}/data/firmware` },
-            { from: `${DATA_SRC}/coins.json`, to: `${DIST}/data` },
-            { from: `${DATA_SRC}/config.json`, to: `${DIST}/data` },
+            { from: DATA_SRC, to: `${DIST}/data` }, // only messages, coins, firmware releases
         ]),
         // ignore Node.js lib from trezor-link
         new webpack.IgnorePlugin(/\/iconv-loader$/),
+        new HtmlWebpackPlugin({
+            chunks: ['iframe'],
+            filename: 'iframe.html',
+            template: HTML_SRC,
+            inject: false,
+        }),
     ],
 
     // @trezor/utxo-lib NOTE:
