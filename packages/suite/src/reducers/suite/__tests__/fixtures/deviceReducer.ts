@@ -163,11 +163,17 @@ const connect = [
         ],
     },
     {
-        description: 'Connect device with different "passphrase_protection"',
+        description:
+            'Connect device with different "passphrase_protection" (create new missing instance)',
         initialState: [
-            getSuiteDevice(undefined, {
-                passphrase_protection: true,
-            }),
+            getSuiteDevice(
+                {
+                    instance: 1,
+                },
+                {
+                    passphrase_protection: true,
+                },
+            ),
         ],
         actions: [
             {
@@ -180,17 +186,18 @@ const connect = [
         result: [
             {
                 type: 'acquired',
-                path: '',
+                path: '1',
                 connected: true,
                 available: false,
+                instance: 1,
                 features: {
-                    passphrase_protection: true,
+                    passphrase_protection: false,
                 },
             },
             {
                 type: 'acquired',
                 path: '1',
-                instance: 1,
+                instance: undefined,
                 connected: true,
                 available: true,
                 features: {

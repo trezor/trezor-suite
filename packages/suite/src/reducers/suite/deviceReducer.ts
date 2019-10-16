@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { Device, DEVICE } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
-import { getNewInstanceNumber, findInstanceIndex } from '@suite-utils/device';
+import { findInstanceIndex } from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice, Action } from '@suite-types';
 
 type State = TrezorDevice[];
@@ -90,24 +90,18 @@ const connectDevice = (draft: State, device: Device) => {
 
     // update affected devices
     if (affectedDevices.length > 0) {
-        // change availability according to "passphrase_protection" field
-        let hasDifferentPassphraseSettings = false;
-        let hasInstancesWithPassphraseSettings = false;
         const changedDevices = affectedDevices.map(d => {
-            if (d.features.passphrase_protection === features.passphrase_protection) {
-                hasInstancesWithPassphraseSettings = true;
-                return merge(d, { ...device, connected: true, available: true });
+            // change availability according to "passphrase_protection" field
+            if (d.instance && !features.passphrase_protection) {
+                return merge(d, { ...device, connected: true, available: false });
             }
-            hasDifferentPassphraseSettings = true;
-            return merge(d, { ...d, connected: true, available: false });
+            return merge(d, { ...device, connected: true, available: true });
         });
 
-        // connected device with current "passphrase_protection" does not exists
+        // affected device with current "passphrase_protection" does not exists
+        // basically it means that "base" device, the one without "instance" (useEmptyPassphrase) field was forgotten
         // automatically create new instance
-        if (hasDifferentPassphraseSettings && !hasInstancesWithPassphraseSettings) {
-            const instance = getNewInstanceNumber(affectedDevices, affectedDevices[0]);
-            newDevice.instance = instance;
-            newDevice.instanceLabel = `${device.label} (${instance})`;
+        if (!changedDevices.find(d => d.available)) {
             changedDevices.push(newDevice);
         }
         // fill draft with affectedDevices values
@@ -134,13 +128,12 @@ const changeDevice = (
     if (!device.features) return;
 
     const { features } = device;
-    // find devices with the same "device_id" and "passphrase_protection"
+    // find devices with the same "device_id"
     const affectedDevices = draft.filter(
         d =>
             d.features &&
             d.connected &&
-            ((d.features.device_id === features.device_id &&
-                d.features.passphrase_protection === features.passphrase_protection) ||
+            (d.features.device_id === features.device_id ||
                 (d.path.length > 0 && d.path === device.path)),
     ) as AcquiredDevice[];
 
@@ -152,7 +145,13 @@ const changeDevice = (
 
     if (affectedDevices.length > 0) {
         // merge incoming device with State
-        const changedDevices = affectedDevices.map(d => merge(d, { ...device, ...extended }));
+        const changedDevices = affectedDevices.map(d => {
+            // change availability according to "passphrase_protection" field
+            if (d.instance && !features.passphrase_protection) {
+                return merge(d, { ...device, ...extended, available: false });
+            }
+            return merge(d, { ...device, ...extended, available: true });
+        });
         // fill draft with affectedDevices values
         changedDevices.forEach(d => draft.push(d));
     }
