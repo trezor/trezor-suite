@@ -1,3 +1,3 @@
-# @trezor/suite-desktop
+# @trezor/suite-web
 
 Build target for web environment.
