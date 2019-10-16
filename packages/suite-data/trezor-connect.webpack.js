@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const RemovePlugin = require('remove-files-webpack-plugin');
+
 const path = require('path');
 
 // mozna upravit cestu
@@ -27,7 +29,10 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
+                exclude: [
+                    /node_modules/,
+                    // path.resolve(__dirname, '../../node_modules/trezor-link/lib/lowlevel/sharedConnectionWorker')
+                ],
                 use: ['babel-loader'],
             },
             // {
@@ -61,12 +66,27 @@ module.exports = {
         ]),
         // ignore Node.js lib from trezor-link
         new webpack.IgnorePlugin(/\/iconv-loader$/),
+        new webpack.IgnorePlugin(/\trezor-link\/lib\/lowlevel\/sharedConnectionWorker/),
         new HtmlWebpackPlugin({
             chunks: ['iframe'],
             filename: 'iframe.html',
             template: HTML_SRC,
             inject: false,
         }),
+        new RemovePlugin({
+            after: {
+                test: [
+                    {
+                        folder: `${DIST}/workers`,
+                        method: (filePath) => {
+                            console.warn('filepath ================', filePath);
+                            console.warn(filePath.includes('shared-connection-worker'))
+                            return filePath.includes('shared-connection-worker.');
+                        }
+                    } 
+                ]
+            }
+        })
     ],
 
     // @trezor/utxo-lib NOTE:
