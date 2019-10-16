@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Button, H1, ButtonProps } from '@trezor/components';
+import { Button, ButtonPin, H1, ButtonProps } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -136,6 +136,10 @@ storiesOf('Buttons', module).add(
                         </Div>
                     );
                 })}
+                <Div>
+                    <H1>Button Pin</H1>
+                    <ButtonPin onClick={() => {}} data-test="button-pin" />
+                </Div>
             </Wrapper>
         );
     },

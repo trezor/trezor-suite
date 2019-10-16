@@ -74,4 +74,11 @@ describe('Buttons', () => {
                 .matchImageSnapshot();
         });
     });
+
+    it(`Button pin`, () => {
+        cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
+        cy.getTestElement('button-pin')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
 });
