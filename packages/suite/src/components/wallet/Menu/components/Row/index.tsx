@@ -2,8 +2,10 @@ import React from 'react';
 import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
+import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
+import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from '@suite-views/index.messages';
 import { Link } from '@suite-components';
-import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 
 const Wrapper = styled.div<{ selected: boolean }>`
@@ -101,6 +103,10 @@ const TransactionsValue = styled.div`
     align-items: center;
 `;
 
+const LabelAddon = styled.span`
+    padding-right: 2px;
+`;
+
 // todo make no style link component
 const StyledLink = styled(Link)`
     display: flex;
@@ -117,59 +123,68 @@ const StyledLink = styled(Link)`
     }
 `;
 
-const getCoinName = (symbol: string, accountType: string) => {
-    const result = NETWORKS.filter(
-        network => network.symbol === symbol && (network.accountType || 'normal') === accountType,
-    );
-    return result[0].name;
-};
-
 interface Props {
     account: Account;
     hideBalance: boolean;
     selected: boolean;
 }
 
-const Row = React.memo(({ account, hideBalance, selected }: Props) => (
-    <StyledLink
-        href={getRoute('wallet-account-summary', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-        })}
-    >
-        <Wrapper selected={selected}>
-            <Left>
-                <LogoWrapper>
-                    <CoinLogo size={25} symbol={account.symbol} />
-                </LogoWrapper>
-                <Name>
-                    <CoinName>{getCoinName(account.symbol, account.accountType)}</CoinName>
-                    <AccountIndex>
-                        <Label>account</Label>
-                        {`#${account.index + 1}`}
-                    </AccountIndex>
-                </Name>
-            </Left>
-            {!hideBalance && (
-                <Right>
-                    <Balance>
-                        <BalanceValue>
-                            {account.formattedBalance} {account.symbol}
-                        </BalanceValue>
-                    </Balance>
-                    {account.history.total !== -1 && (
-                        <Transactions>
-                            <Label>transactions</Label>
-                            <TransactionsValue>
-                                {account.history.total + (account.history.unconfirmed || 0)}
-                            </TransactionsValue>
-                        </Transactions>
-                    )}
-                </Right>
-            )}
-        </Wrapper>
-    </StyledLink>
-));
+const Row = React.memo(({ account, hideBalance, selected }: Props) => {
+    const accountType = getTypeForNetwork(account.accountType);
+    return (
+        <StyledLink
+            href={getRoute('wallet-account-summary', {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            })}
+        >
+            <Wrapper selected={selected}>
+                <Left>
+                    <LogoWrapper>
+                        <CoinLogo size={25} symbol={account.symbol} />
+                    </LogoWrapper>
+                    <Name>
+                        <CoinName>
+                            <FormattedMessage {...getTitleForNetwork(account.symbol)} />
+                        </CoinName>
+                        <AccountIndex>
+                            <Label>
+                                {accountType && (
+                                    <LabelAddon>
+                                        <FormattedMessage {...accountType} />
+                                    </LabelAddon>
+                                )}
+                                <FormattedMessage
+                                    {...(account.imported
+                                        ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
+                                        : l10nCommonMessages.TR_ACCOUNT_HASH)}
+                                    values={{ number: String(account.index + 1) }}
+                                />
+                            </Label>
+                        </AccountIndex>
+                    </Name>
+                </Left>
+                {!hideBalance && (
+                    <Right>
+                        <Balance>
+                            <BalanceValue>
+                                {account.formattedBalance} {account.symbol}
+                            </BalanceValue>
+                        </Balance>
+                        {account.history.total !== -1 && (
+                            <Transactions>
+                                <Label>transactions</Label>
+                                <TransactionsValue>
+                                    {account.history.total + (account.history.unconfirmed || 0)}
+                                </TransactionsValue>
+                            </Transactions>
+                        )}
+                    </Right>
+                )}
+            </Wrapper>
+        </StyledLink>
+    );
+});
 
 export default Row;

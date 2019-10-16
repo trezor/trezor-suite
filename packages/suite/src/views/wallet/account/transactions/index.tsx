@@ -6,11 +6,11 @@ import styled from 'styled-components';
 import { Loader, colors } from '@trezor/components';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import LayoutAccount from '@wallet-components/LayoutAccount';
-import Title from '@wallet-components/Title';
+import AccountName from '@wallet-components/AccountName';
 import Content from '@wallet-components/Content';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
-import { AppState, Dispatch } from '@suite-types';
+import { AppState, Dispatch, MessageDescriptor } from '@suite-types';
 import TransactionList from './components/TransactionList';
 import l10nMessages from './index.messages';
 
@@ -55,11 +55,17 @@ const Transactions = (props: Props) => {
         props.fetchTransactions(selectedAccount.account!, page, size);
     };
 
+    const accountNameMessage =
+        selectedAccount.account && selectedAccount.account.networkType === 'ethereum'
+            ? l10nMessages.TR_TRANSACTIONS_AND_TOKENS
+            : l10nMessages.TR_TRANSACTIONS;
+
     return (
         <LayoutAccount title="Transactions">
-            <Title>
-                <FormattedMessage {...l10nMessages.TR_TRANSACTIONS} />
-            </Title>
+            <AccountName 
+                account={selectedAccount.account}
+                message={accountNameMessage as MessageDescriptor}
+            />
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />

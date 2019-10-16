@@ -3,8 +3,6 @@ import * as fixtures from './fixtures/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 
-const { intlMock } = global.JestMocks;
-
 describe('account utils', () => {
     fixtures.parseBIP44Path.forEach(f => {
         it('accountUtils.parseBIP44Path', () => {
@@ -21,9 +19,8 @@ describe('account utils', () => {
     describe('get title for network', () => {
         fixtures.accountTitleFixture.forEach((fixture: any) => {
             it(fixture.symbol, () => {
-                // @ts-ignore: InjectedIntl mock
-                const title = accountUtils.getTitleForNetwork(fixture.symbol, intlMock);
-                expect(title).toBe(fixture.title);
+                const title = accountUtils.getTitleForNetwork(fixture.symbol);
+                expect(title.defaultMessage).toBe(fixture.title);
             });
         });
     });
@@ -31,9 +28,8 @@ describe('account utils', () => {
     describe('get type for network', () => {
         fixtures.accountTypeFixture.forEach((fixture: any) => {
             it(fixture.networkType, () => {
-                // @ts-ignore: InjectedIntl mock
-                const title = accountUtils.getTypeForNetwork(fixture.networkType, intlMock);
-                expect(title).toBe(fixture.title);
+                const title = accountUtils.getTypeForNetwork(fixture.networkType);
+                expect(title ? title.defaultMessage : null).toBe(fixture.title);
             });
         });
     });
