@@ -1,4 +1,4 @@
-import { useEffect, FunctionComponent } from 'react';
+import { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateOnlineStatus } from '@suite-actions/suiteActions';
@@ -15,7 +15,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
  * Handle changes of state and dispatch Action with current state to the reducer
  * @param {Props} props
  */
-const OnlineStatus: FunctionComponent<Props> = (props: Props) => {
+const OnlineStatus = (props: Props) => {
     useEffect(() => {
         const statusHandler = () => {
             props.updateOnlineStatus(navigator.onLine);

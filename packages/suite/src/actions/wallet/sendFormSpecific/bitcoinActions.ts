@@ -8,6 +8,7 @@ import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormCacheActions from '../sendFormCacheActions';
+import * as sendFormActions from '../sendFormActions';
 
 export type SendFormBitcoinActions =
     | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
@@ -33,7 +34,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         address: { value: null, error: null },
         amount: { value: null, error: null },
         fiatValue: { value: null },
-        localCurrency: { value: localCurrency }, // TODO add from settings
+        localCurrency: { value: localCurrency },
     };
 
     dispatch({
@@ -86,7 +87,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (resp.success) {
-        dispatch({ type: SEND.CLEAR });
+        dispatch(sendFormActions.clear());
         dispatch(
             notificationActions.add({
                 variant: 'success',
@@ -116,11 +117,12 @@ export const compose = (setMax: boolean = false) => async (
 
     const { outputs } = send;
 
-    // TODO refactor this
     const composedOutputs = outputs.map(o => {
         const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
 
+        // address is set
         if (o.address.value) {
+            // set max without address
             if (setMax) {
                 return {
                     address: o.address.value,
@@ -134,12 +136,14 @@ export const compose = (setMax: boolean = false) => async (
             } as const;
         }
 
+        // set max with address only
         if (setMax) {
             return {
                 type: 'send-max-noaddress',
             } as const;
         }
 
+        // set amount without address
         return {
             type: 'noaddress',
             amount,
@@ -156,6 +160,8 @@ export const compose = (setMax: boolean = false) => async (
         outputs: composedOutputs,
         coin: account.symbol,
     });
+
+    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
 
     if (resp.success) {
         const tx = resp.payload[0];

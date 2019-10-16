@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { colors, Notification, Icon, utils } from '@trezor/components';
+import { colors, Icon, utils } from '@trezor/components';
+
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import { close } from '@suite-actions/notificationActions';
+import Notification from '@suite-components/Notification';
 
 const { getPrimaryColor } = utils.colors;
 const { getStateIcon } = utils.icons;

@@ -6,7 +6,7 @@ import { Output } from '@wallet-types/sendForm';
 
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { StateProps, DispatchProps } from './Container';
-import { Content, Title, LayoutAccount as Layout } from '@wallet-components';
+import { Content, Title, LayoutAccount } from '@wallet-components';
 import {
     Address,
     Amount,
@@ -60,6 +60,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     const {
         device,
         suite,
+        devices,
         sendFormActions,
         send,
         fees,
@@ -67,22 +68,23 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
         sendFormActionsBitcoin,
         sendFormActionsEthereum,
         sendFormActionsRipple,
+        accounts,
     } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
-            <Layout>
+            <LayoutAccount title="Send">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </Layout>
+            </LayoutAccount>
         );
     }
 
     const accountType = getTypeForNetwork(account.accountType, props.intl);
 
     return (
-        <Layout>
+        <LayoutAccount title="Send">
             <StyledTitle>
                 <StyledCoinLogo size={24} symbol={account.symbol} />
                 Send {getTitleForNetwork(network.symbol, props.intl)}
@@ -100,10 +102,14 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     </SlimRow>
                     <Row>
                         <Address
+                            accounts={accounts}
+                            devices={devices}
+                            networkType={account.networkType}
                             outputId={output.id}
                             address={output.address.value}
                             error={output.address.error}
                             sendFormActions={sendFormActions}
+                            openQrModal={props.openQrModal}
                         />
                     </Row>
                     <Row>
@@ -138,6 +144,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     <AdditionalForm networkType={network.networkType} />
                 )}
                 <SendAndClear
+                    isComposing={send.isComposing}
                     send={send}
                     suite={suite}
                     device={device}
@@ -149,7 +156,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     sendFormActionsRipple={sendFormActionsRipple}
                 />
             </Row>
-        </Layout>
+        </LayoutAccount>
     );
 };
 

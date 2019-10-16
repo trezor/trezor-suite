@@ -5,9 +5,13 @@ const definedMessages = defineMessages({
         id: 'TR_FIND_OUT_MORE_INFO',
         defaultMessage: 'Find out more info',
     },
-    TR_MODEL_DOES_NOT_SUPPORT_COIN: {
-        id: 'TR_MODEL_DOES_NOT_SUPPORT_COIN',
-        defaultMessage: 'The coin {coin} is not supported by your Trezor model.',
+    TR_NETWORK_IS_NOT_SUPPORTED_BY_TREZOR: {
+        id: 'TR_NETWORK_IS_NOT_SUPPORTED_BY_TREZOR',
+        defaultMessage: '{networkName} is not supported by Trezor {deviceVersion}',
+    },
+    TR_FIND_MORE_INFORMATION_ON_TREZOR_WIKI: {
+        id: 'TR_FIND_MORE_INFORMATION_ON_TREZOR_WIKI',
+        defaultMessage: 'Find more information on Trezor Wiki.',
     },
 });
 

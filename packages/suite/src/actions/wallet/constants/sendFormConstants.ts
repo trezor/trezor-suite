@@ -1,8 +1,8 @@
 export const INIT = '@wallet-send-form/init';
-export const DISPOSE = '@wallet-send-form/dispose';
 export const SET_ADDITIONAL_FORM_VISIBILITY = '@wallet-send-form/set-additional-form-visibility';
 
 export const HANDLE_ADDRESS_CHANGE = '@wallet-send-form/handle-address-change';
+export const COMPOSE_PROGRESS = '@wallet-send-form/compose-progress';
 export const HANDLE_AMOUNT_CHANGE = '@wallet-send-form/handle-amount-change';
 export const SET_MAX = '@wallet-send-form/set-max';
 
@@ -12,6 +12,7 @@ export const HANDLE_FEE_VALUE_CHANGE = '@wallet-send-form/handle-fee-value-chang
 export const HANDLE_CUSTOM_FEE_VALUE_CHANGE = '@wallet-send-form/handle-custom-fee-value-change';
 
 export const CLEAR = '@wallet-send-form/clear';
+export const DISPOSE = '@wallet-send-form/dispose';
 
 // btc specific
 export const BTC_ADD_RECIPIENT = '@wallet-send-form/btc-add-recipient';

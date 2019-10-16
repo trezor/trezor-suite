@@ -7,6 +7,7 @@ import { UI } from 'trezor-connect';
 import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL, SUITE } from '@suite-actions/constants';
@@ -30,6 +31,7 @@ import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from './WalletType';
 import AddAccount from './AddAccount';
+import QrScanner from './Qr';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -40,6 +42,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+    sendFormActions: bindActionCreators(sendFormActions, dispatch),
     modalActions: bindActionCreators(modalActions, dispatch),
     receiveActions: bindActionCreators(receiveActions, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
@@ -162,6 +165,20 @@ const getConfirmationModal = (props: Props) => {
     }
 };
 
+const getQrModal = (props: Props) => {
+    const { modalActions, sendFormActions, modal } = props;
+    if (modal.context !== MODAL.CONTEXT_SCAN_QR) return null;
+
+    return (
+        <QrScanner
+            onCancel={modalActions.onCancel}
+            onScan={parsedUri => {
+                sendFormActions.onQrScan(parsedUri, modal.outputId);
+            }}
+        />
+    );
+};
+
 // modal container component
 const Modal = (props: Props) => {
     const { modal } = props;
@@ -175,6 +192,9 @@ const Modal = (props: Props) => {
             break;
         case MODAL.CONTEXT_CONFIRMATION:
             component = getConfirmationModal(props);
+            break;
+        case MODAL.CONTEXT_SCAN_QR:
+            component = getQrModal(props);
             break;
         default:
             break;

@@ -41,7 +41,7 @@ const ErrorMessage = styled.span`
 
 // TODO fix types
 interface Props {
-    onScan: (data: ParsedURI) => any;
+    onScan: (data: ParsedURI) => void;
     onError?: (error: any) => any;
     onCancel?: () => void;
 }

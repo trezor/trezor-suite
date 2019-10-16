@@ -10,6 +10,7 @@ import receiveReducer from './receiveReducer';
 import sendFormReducer from './sendFormReducer';
 import sendFormReducerCache from './sendFormReducerCache';
 import feesReducer from './feesReducer';
+import blockchainReducer from './blockchainReducer';
 
 const WalletReducers = combineReducers({
     signVerify: signVerifyReducer,
@@ -23,6 +24,7 @@ const WalletReducers = combineReducers({
     send: sendFormReducer,
     sendCache: sendFormReducerCache,
     fees: feesReducer,
+    blockchain: blockchainReducer,
 });
 
 export default WalletReducers;

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import FluidSpinner from '../../FluidSpinner';
 
 import {
     FONT_FAMILY,
@@ -59,7 +60,6 @@ const StyledInput = styled.input<InputProps>`
         `}
 
     border: 1px solid ${props => props.border};
-
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
 
@@ -167,6 +167,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     icon?: IconType | React.ReactNode;
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
+    isLoading?: boolean;
     tooltipAction?: React.ReactNode;
     sideAddons?: React.ReactNode;
     isDisabled?: boolean;
@@ -181,6 +182,13 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     state?: FeedbackType;
 }
 
+const SpinnerWrapper = styled.div`
+    position: absolute;
+    left: auto;
+    top: 12px;
+    right: 15px;
+`;
+
 const Input = ({
     className,
     innerRef,
@@ -192,6 +200,7 @@ const Input = ({
     topLabel,
     tooltipAction,
     sideAddons,
+    isLoading,
     isDisabled,
     isSmallText,
     autoComplete = 'off',
@@ -212,6 +221,11 @@ const Input = ({
                 <InputIconWrapper>
                     {stateIcon && stateColor && (
                         <StyledIcon icon={stateIcon} color={stateColor} size={16} />
+                    )}
+                    {isLoading && (
+                        <SpinnerWrapper>
+                            <FluidSpinner size={16} />
+                        </SpinnerWrapper>
                     )}
                     <Overlay isPartiallyHidden={isPartiallyHidden} />
                     {/* TODO: this icon should be most likely removed */}

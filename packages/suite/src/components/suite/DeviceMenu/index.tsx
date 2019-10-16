@@ -16,7 +16,7 @@ import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 const { SLIDE_DOWN } = animations;
 
-const Wrapper = styled.div<WrapperProps>`
+const Wrapper = styled.div<Omit<WrapperProps, 'additionalDeviceMenuItems'>>`
     position: relative;
     display: flex;
     min-height: 70px;
@@ -101,6 +101,7 @@ type Props = {
     disabled?: boolean;
     isOpen: boolean;
     isSelected?: boolean;
+    additionalDeviceMenuItems: React.ReactNode;
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
@@ -126,6 +127,7 @@ const DeviceMenu = ({
     toggleDeviceMenu,
     transport,
     isOpen = false,
+    additionalDeviceMenuItems,
     ...rest
 }: Props) => {
     const [isAnimated, setIsAnimated] = useState(false);
@@ -263,6 +265,7 @@ const DeviceMenu = ({
                 <Menu ref={deviceMenuRef}>
                     {selectedDeviceAccessible && (
                         <MenuItems
+                            additionalDeviceMenuItems={additionalDeviceMenuItems}
                             device={selectedDevice as AcquiredDevice}
                             instances={selectedInstances}
                         />

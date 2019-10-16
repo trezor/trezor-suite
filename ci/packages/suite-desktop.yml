@@ -14,7 +14,6 @@ suite-desktop type check:
 
 suite-desktop build:
     stage: build
-    when: manual
     script:
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:linux

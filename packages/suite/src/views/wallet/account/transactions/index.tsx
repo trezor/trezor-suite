@@ -8,7 +8,7 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import Title from '@wallet-components/Title';
 import Content from '@wallet-components/Content';
-import { getAccountTransactions } from '@suite-utils/reducerUtils';
+import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import { AppState, Dispatch } from '@suite-types';
 import TransactionList from './components/TransactionList';
@@ -36,7 +36,7 @@ const Transactions = (props: Props) => {
     if (!selectedAccount.account) {
         const { loader, exceptionPage } = selectedAccount;
         return (
-            <LayoutAccount>
+            <LayoutAccount title="Transactions">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
             </LayoutAccount>
         );
@@ -56,7 +56,7 @@ const Transactions = (props: Props) => {
     };
 
     return (
-        <LayoutAccount>
+        <LayoutAccount title="Transactions">
             <Title>
                 <FormattedMessage {...l10nMessages.TR_TRANSACTIONS} />
             </Title>

@@ -14,9 +14,18 @@ import CypressExportStore from '@suite-support/CypressExportStore';
 import Router from '@suite-support/Router';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { isDev } from '@suite-utils/build';
+import TrezorConnect from 'trezor-connect';
 import { SENTRY } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
+
+declare global {
+    interface Window {
+        store: Store;
+        Cypress: any;
+        TrezorConnect: typeof TrezorConnect;
+    }
+}
 
 interface Props {
     store: Store;
@@ -32,6 +41,10 @@ class TrezorSuiteApp extends App<Props> {
     componentDidMount() {
         if (!window.Cypress && !isDev()) {
             Sentry.init({ dsn: SENTRY });
+        }
+        if (window.Cypress) {
+            // exposing ref to TrezorConnect allows us to mock its methods in cypress tests
+            window.TrezorConnect = TrezorConnect;
         }
     }
 
@@ -62,7 +75,6 @@ class TrezorSuiteApp extends App<Props> {
                             <Preloader isStatic={isStaticRoute}>
                                 <Component {...pageProps} />
                             </Preloader>
-                            <CypressExportStore store={store} />
                         </>
                     </IntlProvider>
                 </ReduxProvider>

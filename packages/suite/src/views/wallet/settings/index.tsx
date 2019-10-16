@@ -77,7 +77,7 @@ const buildCurrencyOption = (currency: string) => {
 };
 
 const WalletSettings = (props: Props & InjectedIntlProps) => (
-    <WalletLayout>
+    <WalletLayout title="Settings">
         <CloseWrapper>
             <Button onClick={() => props.goto('wallet-index')} isTransparent>
                 <Icon icon="CLOSE" size={14} />

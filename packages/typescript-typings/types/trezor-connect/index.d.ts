@@ -389,6 +389,7 @@ declare module 'trezor-connect' {
         revision: string;
         unfinished_backup: boolean;
         vendor: string;
+        recovery_mode?: boolean;
     }
 
     export type Device =
@@ -586,12 +587,23 @@ declare module 'trezor-connect' {
           };
     export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
     export namespace BLOCKCHAIN {
+        export const CONNECT = 'blockchain-connect';
+        export const ERROR = 'blockchain-error';
         export const NOTIFICATION = 'blockchain-notification';
         export const BLOCK = 'blockchain-block';
     }
 
     export type BlockchainEvent =
     {
+        type: typeof BLOCKCHAIN.CONNECT;
+        payload: BlockchainInfo;
+    } | {
+        type: typeof BLOCKCHAIN.ERROR;
+        payload: {
+            coin: BlockchainCoin;
+            error: string;
+        };
+    } | {
         type: typeof BLOCKCHAIN.BLOCK;
         payload: BlockchainBlock;
     } | {
@@ -789,6 +801,21 @@ declare module 'trezor-connect' {
 
     export interface BlockchainSubscribeResponse {
         subscribed: boolean;
+    }
+
+    export interface BlockchainInfo {
+        coin: BlockchainCoin;
+        url: string;
+        blockHash: string;
+        blockHeight: number;
+        decimals: number;
+        name: string;
+        shortcut: string;
+        testnet: boolean;
+        version: string;
+        misc?: {
+            reserve?: string,
+        },
     }
 
     export interface BlockchainBlock {

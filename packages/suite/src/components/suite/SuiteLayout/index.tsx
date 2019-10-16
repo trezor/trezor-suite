@@ -12,12 +12,13 @@ import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/componen
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
 import NoSSR from '@suite/support/suite/NoSSR';
+import Head from 'next/head';
 import { URLS } from '@suite-constants';
 
 import l10nMessages from './index.messages';
 import { LANGUAGES } from '@suite-config';
 import { AppState } from '@suite-types';
-import { Header, Footer, Log } from '@suite-components';
+import { Header, Log } from '@suite-components';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
@@ -61,19 +62,26 @@ interface Props {
     isLanding?: boolean;
     showSuiteHeader?: boolean;
     fullscreenMode?: boolean;
+    title?: string;
     children: React.ReactNode;
+    footer?: React.ReactNode;
+    additionalDeviceMenuItems?: React.ReactNode;
     disableNotifications?: boolean;
     disableModals?: boolean;
+    disableSidebar?: boolean;
 }
 
 const SuiteLayout = (props: Props & InjectedIntlProps) => (
     <PageWrapper isLanding={props.isLanding}>
+        <Head>
+            <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
+        </Head>
         <CommonHeader
             sidebarOpened={props.suite.showSidebar}
             toggleSidebar={props.toggleSidebar}
             togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}
             togglerCloseText={<FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />}
-            sidebarEnabled={!props.isLanding}
+            sidebarEnabled={props.disableSidebar ? false : !props.isLanding}
             rightAddon={
                 <NoSSR>
                     <LanguagePicker
@@ -110,12 +118,14 @@ const SuiteLayout = (props: Props & InjectedIntlProps) => (
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
                     <Log />
-                    {props.showSuiteHeader && <Header />}
+                    {props.showSuiteHeader && (
+                        <Header additionalDeviceMenuItems={props.additionalDeviceMenuItems} />
+                    )}
                     {props.children}
                 </>
             </AppWrapper>
         </ErrorBoundary>
-        {!props.fullscreenMode && <Footer isLanding={props.isLanding} />}
+        {!props.fullscreenMode ? props.footer : null}
     </PageWrapper>
 );
 

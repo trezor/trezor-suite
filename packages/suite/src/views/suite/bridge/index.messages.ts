@@ -10,6 +10,14 @@ const definedMessages = defineMessages({
         id: 'TR_DOWNLOAD_LATEST_BRIDGE',
         defaultMessage: 'Download latest Bridge {version}',
     },
+    TR_VERSION_IS_LOADING: {
+        id: 'TR_VERSION_IS_LOADING',
+        defaultMessage: 'Version is loading',
+    },
+    TR_GATHERING_INFO: {
+        id: 'TR_GATHERING_INFO',
+        defaultMessage: 'Gathering information, please wait...',
+    },
     TR_LEARN_MORE_ABOUT_LATEST_VERSION: {
         id: 'TR_LEARN_MORE_ABOUT_LATEST_VERSION',
         defaultMessage: 'Learn more about latest version in {TR_CHANGELOG}.',

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
-import { Notification } from '@trezor/components';
-import { AppState } from '@suite/types/suite';
+import { Notification } from '@suite-components';
+import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 // TODO
 interface Props extends InjectedIntlProps {

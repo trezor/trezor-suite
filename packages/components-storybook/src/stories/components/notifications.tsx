@@ -1,8 +1,7 @@
 import React from 'react';
-
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
-import { H1, H5, Notification } from '@trezor/components';
+import { H2, Notification } from '@trezor/components';
 import styled from 'styled-components';
 import { infoOptions } from '../../support/info';
 
@@ -24,186 +23,82 @@ const Row = styled.div`
 
 Wrapper.displayName = 'Wrapper';
 
-const notMessage = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam sapien elit.';
+const message = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam sapien elit.';
+const notificationTypes = ['info', 'success', 'warning', 'error', undefined] as const;
+const variant: any = select(
+    'Variant',
+    {
+        Success: 'success',
+        Warning: 'warning',
+        Info: 'info',
+        Error: 'error',
+    },
+    'success'
+);
 
 storiesOf('Notifications', module).add(
     'All',
     () => (
         <Wrapper>
-            <H1>Basic</H1>
+            <H2>Basic</H2>
             <Row>
-                <StyledNotification
-                    variant="info"
-                    title="Notification title"
-                    message={notMessage}
-                    data-test="notification_basic_info"
-                />
-                <StyledNotification
-                    variant="success"
-                    title="Notification title"
-                    message={notMessage}
-                    data-test="notification_basic_success"
-                />
-                <StyledNotification
-                    variant="warning"
-                    title="Notification title"
-                    message={notMessage}
-                    data-test="notification_basic_warning"
-                />
-                <StyledNotification
-                    variant="error"
-                    title="Notification title"
-                    message={notMessage}
-                    data-test="notification_basic_error"
-                />
+                {notificationTypes.map(type => (
+                    <StyledNotification
+                        variant={type}
+                        title="Notification title"
+                        message={message}
+                        data-test={`notification_basic_${type}`}
+                    />
+                ))}
             </Row>
-            <Row />
-
-            <H5>cancellable </H5>
+            <H2>Cancellable</H2>
             <Row>
-                <StyledNotification
-                    variant="info"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    data-test="notification_cancelable_info"
-                />
-                <StyledNotification
-                    variant="success"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    data-test="notification_cancelable_success"
-                />
-                <StyledNotification
-                    variant="warning"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    data-test="notification_cancelable_warning"
-                />
-                <StyledNotification
-                    variant="error"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    data-test="notification_cancelable_error"
-                />
+                {notificationTypes.map(type => (
+                    <StyledNotification
+                        variant={type}
+                        title="Notification title"
+                        message={message}
+                        cancelable
+                        data-test={`notification_cancelable_${type}`}
+                    />
+                ))}
             </Row>
-            <H5>with an action button</H5>
+            <H2>With an action button</H2>
             <Row>
-                <StyledNotification
-                    variant="info"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_info"
-                />
-                <StyledNotification
-                    variant="success"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_success"
-                />
-                <StyledNotification
-                    variant="warning"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_warning"
-                />
-                <StyledNotification
-                    variant="error"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_error"
-                />
+                {notificationTypes.map(type => (
+                    <StyledNotification
+                        variant={type}
+                        title="Notification title"
+                        message={message}
+                        cancelable
+                        actions={[
+                            {
+                                label: 'Call To Action',
+                                callback: () => {},
+                            },
+                        ]}
+                        data-test={`notification_cancelable_action_${type}`}
+                    />
+                ))}
             </Row>
-
-            <H5>with an action in progress</H5>
+            <H2>With an action in progress</H2>
             <Row>
-                <StyledNotification
-                    variant="info"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    isActionInProgress
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_loading_info"
-                />
-                <StyledNotification
-                    variant="success"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    isActionInProgress
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_loading_success"
-                />
-                <StyledNotification
-                    variant="warning"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    isActionInProgress
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_loading_warning"
-                />
-                <StyledNotification
-                    variant="error"
-                    title="Notification title"
-                    message={notMessage}
-                    cancelable
-                    isActionInProgress
-                    actions={[
-                        {
-                            label: 'Call To Action',
-                            callback: () => {},
-                        },
-                    ]}
-                    data-test="notification_cancelable_action_loading_error"
-                />
+                {notificationTypes.map(type => (
+                    <StyledNotification
+                        variant={type}
+                        title="Notification title"
+                        message={message}
+                        cancelable
+                        isActionInProgress
+                        actions={[
+                            {
+                                label: 'Call To Action',
+                                callback: () => {},
+                            },
+                        ]}
+                        data-test={`notification_cancelable_action_loading_${type}`}
+                    />
+                ))}
             </Row>
         </Wrapper>
     ),
@@ -218,26 +113,14 @@ storiesOf('Notifications', module)
     .add(
         'Notification',
         () => {
-            const variant: any = select(
-                'Variant',
-                {
-                    Success: 'success',
-                    Warning: 'warning',
-                    Info: 'info',
-                    Error: 'error',
-                },
-                'success'
+            return (
+                <Notification
+                    cancelable={boolean('Cancelable', false)}
+                    variant={variant}
+                    title={text('Title', 'Notification title')}
+                    message={text('Text', 'Text of the notification.')}
+                />
             );
-            const title = text('Title', 'Notification title');
-            const message = text('Text', 'Text of the notification.');
-            const cancelable = boolean('Cancelable', false);
-
-            if (cancelable) {
-                return (
-                    <Notification variant={variant} title={title} message={message} cancelable />
-                );
-            }
-            return <Notification variant={variant} title={title} message={message} />;
         },
         {
             info: {
@@ -253,17 +136,6 @@ storiesOf('Notifications', module)
     .add(
         'Notification with CTA',
         () => {
-            const variant: any = select(
-                'Variant',
-                {
-                    Success: 'success',
-                    Warning: 'warning',
-                    Info: 'info',
-                    Error: 'error',
-                },
-                'success'
-            );
-
             return (
                 <Notification
                     variant={variant}

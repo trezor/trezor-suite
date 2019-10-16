@@ -20,3 +20,10 @@
 
 - Mac: Run /path/to/app/TrezorSuite.app/Contents/MacOS/TrezorSuite --debug
 - Decompile: npx asar extract packages/suite-desktop/build-electron/mac/TrezorSuite.app/Contents/Resources/app.asar ./decompiled
+
+### Remove IndexedDB from desktop
+Linux
+rm -rf /home/<user>/.config/@trezor/suite-desktop/IndexedDB
+
+Mac
+rm -rf /Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB

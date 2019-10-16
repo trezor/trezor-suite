@@ -130,6 +130,10 @@ const definedMessages = defineMessages({
         id: 'TR_SELECT_COINS_LINK',
         defaultMessage: 'Select coins',
     },
+    TR_COMPOSE_PROGRESS: {
+        id: 'TR_COMPOSE_PROGRESS',
+        defaultMessage: 'Loading',
+    },
 });
 
 export default definedMessages;
