@@ -29,7 +29,7 @@ const Toggle = ({ onToggle, isOpen }: Props) => {
         <Wrapper
             onClick={() => {
                 onToggle();
-                // setTouched(true);
+                setTouched(true);
             }}
         >
             <FormattedMessage {...l10nMessages.TR_LEGACY_ACCOUNTS} />
