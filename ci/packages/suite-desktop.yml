@@ -17,9 +17,12 @@ suite-desktop build:
     script:
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:linux
+        - sed -i "s/unstable-head/$CI_JOB_ID/g" trezor-suite.nix
     artifacts:
         expire_in: 1 day
         paths:
             - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
+            - default.nix
+            - trezor-suite.nix
     dependencies:
         - install and build
