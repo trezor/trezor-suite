@@ -21,7 +21,7 @@ const Version = () => (
         <Line />
         <H6>LAST COMMIT HASH</H6>
         <Link
-            isGray
+            variant="gray"
             href={`https://github.com/trezor/trezor-suite/commits/${process.env.COMMITHASH}`}
         >
             <H5>{process.env.COMMITHASH}</H5>

@@ -77,7 +77,7 @@ const FirmwareUnsupported = (props: Props) => (
             <Message>
                 <IntlMessageExtractor>{props.message}</IntlMessageExtractor>
             </Message>
-            <Link href={getInfoUrl(props.symbol)}>
+            <Link href={getInfoUrl(props.symbol)} variant="nostyle">
                 <Button>
                     <FormattedMessage {...l10nMessages.TR_FIND_OUT_MORE_INFO} />
                 </Button>

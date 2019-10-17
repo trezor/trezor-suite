@@ -181,13 +181,13 @@ const NewsleterStep = (props: Props) => {
                             </Text>
                         )}
                         <SocialWrapper>
-                            <Link href={BLOG_URL}>
+                            <Link href={BLOG_URL} variant="nostyle">
                                 <OnboardingIcon.SocialLogo name="medium" sizeMultiplier={2} />
                             </Link>
-                            <Link href={SOCIAL_FACEBOOK_URL}>
+                            <Link href={SOCIAL_FACEBOOK_URL} variant="nostyle">
                                 <OnboardingIcon.SocialLogo name="facebook" sizeMultiplier={2} />
                             </Link>
-                            <Link href={SOCIAL_TWITTER_URL}>
+                            <Link href={SOCIAL_TWITTER_URL} variant="nostyle">
                                 <OnboardingIcon.SocialLogo name="twitter" sizeMultiplier={2} />
                             </Link>
                         </SocialWrapper>

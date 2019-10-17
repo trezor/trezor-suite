@@ -79,7 +79,7 @@ const SuiteLayout = (props: Props & InjectedIntlProps) => (
             <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
         </Head>
         <CommonHeader
-            logoLinkComponent={<Link href={getRoute('wallet-index')} />}
+            logoLinkComponent={<Link href={getRoute('wallet-index')} variant="nostyle" />}
             sidebarOpened={props.suite.showSidebar}
             toggleSidebar={props.toggleSidebar}
             togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}

@@ -51,7 +51,7 @@ const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
                 <FormattedMessage {...l10nMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL} />
             </P>
 
-            <Link href={url}>
+            <Link href={url} variant="nostyle">
                 <StyledButton fullWidth onClick={onCancel}>
                     <FormattedMessage {...l10nMessages.TR_GO_TO_EXTERNAL_WALLET} />
                 </StyledButton>

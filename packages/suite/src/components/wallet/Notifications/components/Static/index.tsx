@@ -48,7 +48,7 @@ export default (props: Props) => {
                                 values={{
                                     minBalance: bigReserve.toString(),
                                     TR_LEARN_MORE: (
-                                        <Link isGreen href="https://wiki.trezor.io/Ripple_(XRP)">
+                                        <Link href="https://wiki.trezor.io/Ripple_(XRP)">
                                             <FormattedMessage
                                                 {...l10nCommonMessages.TR_LEARN_MORE}
                                             />

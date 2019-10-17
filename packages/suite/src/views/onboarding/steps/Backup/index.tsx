@@ -109,7 +109,7 @@ const BackupStep = (props: Props) => {
                                 {...l10nMessages.TR_BACKUP_SUBHEADING_1}
                                 values={{
                                     TR_SEED_MANUAL_LINK: (
-                                        <Link href={SEED_MANUAL_URL}>
+                                        <Link href={SEED_MANUAL_URL} variant="nostyle">
                                             <FormattedMessage
                                                 {...l10nMessages.TR_SEED_MANUAL_LINK}
                                             />

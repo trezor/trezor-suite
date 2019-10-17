@@ -6,19 +6,9 @@ import colors from '../../config/colors';
 const A = styled.a<Props>`
     text-decoration: none;
     cursor: pointer;
+
     ${props =>
-        props.isGray &&
-        css`
-            color: ${colors.TEXT_SECONDARY};
-            &:visited,
-            &:active,
-            &:hover {
-                text-decoration: underline;
-                color: ${colors.TEXT_SECONDARY};
-            }
-        `}
-    ${props =>
-        props.isGreen &&
+        !props.variant &&
         css`
             color: ${colors.GREEN_PRIMARY};
             &:visited,
@@ -28,8 +18,21 @@ const A = styled.a<Props>`
                 color: ${colors.GREEN_PRIMARY};
             }
         `}
+
     ${props =>
-        props.hasNoStyle &&
+        props.variant === 'gray' &&
+        css`
+            color: ${colors.TEXT_SECONDARY};
+            &:visited,
+            &:active,
+            &:hover {
+                text-decoration: underline;
+                color: ${colors.TEXT_SECONDARY};
+            }
+        `}
+
+    ${props =>
+        props.variant === 'nostyle' &&
         css`
             color: inherit;
             &:visited,
@@ -42,9 +45,7 @@ const A = styled.a<Props>`
 `;
 
 interface Props {
-    isGray?: boolean;
-    isGreen?: boolean;
-    hasNoStyle?: boolean;
+    variant?: 'gray' | 'nostyle';
     href?: string;
     to?: any;
     target?: string;

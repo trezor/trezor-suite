@@ -68,17 +68,17 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 {...l10nMessages.TR_DID_YOU_PURCHASE}
                                 values={{
                                     TR_PACKAGING_LINK: (
-                                        <Link href={TREZOR_PACKAGING_URL}>
+                                        <Link href={TREZOR_PACKAGING_URL} variant="nostyle">
                                             <FormattedMessage {...l10nMessages.TR_PACKAGING_LINK} />
                                         </Link>
                                     ),
                                     TR_RESELLERS_LINK: (
-                                        <Link href={TREZOR_RESELLERS_URL}>
+                                        <Link href={TREZOR_RESELLERS_URL} variant="nostyle">
                                             <FormattedMessage {...l10nMessages.TR_RESELLERS_LINK} />
                                         </Link>
                                     ),
                                     TR_CONTACT_OUR_SUPPORT_LINK: (
-                                        <Link href={SUPPORT_URL}>
+                                        <Link href={SUPPORT_URL} variant="nostyle">
                                             <FormattedMessage
                                                 {...l10nMessages.TR_CONTACT_OUR_SUPPORT_LINK}
                                             />
@@ -95,7 +95,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 Back
                             </OnboardingButton.Alt>
 
-                            <Link href={SUPPORT_URL} target="_self">
+                            <Link href={SUPPORT_URL} target="_self" variant="nostyle">
                                 <OnboardingButton.Cta
                                     data-test="button-contact-support"
                                     style={{ width: '100%' }}
