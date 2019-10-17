@@ -120,3 +120,11 @@ app.on('browser-window-focus', (event, win) => {
 ipcMain.on('message', (event, message) => {
     event.sender.send('message', message);
 });
+
+ipcMain.on('start-bridge', async () => {
+    try {
+        await runBridgeProcess();
+    } catch (error) {
+        // TODO: return error message to suite?
+    }
+});
