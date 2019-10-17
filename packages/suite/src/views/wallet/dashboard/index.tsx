@@ -17,6 +17,7 @@ const Content = styled.div`
 `;
 
 const CardsWrapper = styled.div`
+    margin-top: 10px;
     display: grid;
     grid-gap: 10px;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -42,6 +43,13 @@ const IconWrapper = styled.div`
     padding-right: 5px;
 `;
 
+const LoadingContent = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
+
 const Dashboard = (props: Props) => {
     const discovery = props.getDiscoveryForDevice();
     const accounts = discovery
@@ -63,32 +71,42 @@ const Dashboard = (props: Props) => {
 
     return (
         <WalletLayout title="Dashboard">
-            <Content data-test="Dashboard__page__content">
-                <H4>Dashboard</H4>
-                <CardsWrapper>
-                    {isLoading && <Loader size={32} />}
-                    {Object.keys(group).map(symbol => {
-                        const network = NETWORKS.find(
-                            n => n.symbol === symbol && !n.accountType,
-                        ) as Network;
-                        return (
-                            <NetworkGroup key={symbol} network={network} accounts={group[symbol]} />
-                        );
-                    })}
-                    {!isLoading && (
-                        <AddMoreCoins
-                            onClick={() => {
-                                props.goto('wallet-settings');
-                            }}
-                        >
-                            <IconWrapper>
-                                <Icon icon="PLUS" size={10} color={colors.TEXT_SECONDARY} />
-                            </IconWrapper>
-                            <FormattedMessage {...messages.TR_ADD_MORE_COINS} />
-                        </AddMoreCoins>
-                    )}
-                </CardsWrapper>
-            </Content>
+            {isLoading && (
+                <LoadingContent>
+                    <Loader size={30} />
+                </LoadingContent>
+            )}
+            {!isLoading && (
+                <Content data-test="Dashboard__page__content">
+                    <H4>Dashboard</H4>
+                    <CardsWrapper>
+                        {Object.keys(group).map(symbol => {
+                            const network = NETWORKS.find(
+                                n => n.symbol === symbol && !n.accountType,
+                            ) as Network;
+                            return (
+                                <NetworkGroup
+                                    key={symbol}
+                                    network={network}
+                                    accounts={group[symbol]}
+                                />
+                            );
+                        })}
+                        {!isLoading && (
+                            <AddMoreCoins
+                                onClick={() => {
+                                    props.goto('wallet-settings');
+                                }}
+                            >
+                                <IconWrapper>
+                                    <Icon icon="PLUS" size={10} color={colors.TEXT_SECONDARY} />
+                                </IconWrapper>
+                                <FormattedMessage {...messages.TR_ADD_MORE_COINS} />
+                            </AddMoreCoins>
+                        )}
+                    </CardsWrapper>
+                </Content>
+            )}
         </WalletLayout>
     );
 };
