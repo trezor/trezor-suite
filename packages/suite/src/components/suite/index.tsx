@@ -13,6 +13,7 @@ import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
 import SettingsLayout from './SettingsLayout';
 import Notification from './Notification';
+import PinInput from './PinInput';
 
 export {
     AcquireDevice,
@@ -30,4 +31,5 @@ export {
     SuiteLayout,
     SettingsLayout,
     Notification,
+    PinInput,
 };
