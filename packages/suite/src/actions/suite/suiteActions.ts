@@ -26,6 +26,7 @@ export type SuiteActions =
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
+    | { type: typeof SUITE.REQUEST_DISCONNECT_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
     | { type: typeof SUITE.TOGGLE_DEVICE_MENU; payload: boolean }
     | { type: typeof SUITE.TOGGLE_SIDEBAR }
