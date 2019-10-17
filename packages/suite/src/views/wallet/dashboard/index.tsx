@@ -92,18 +92,16 @@ const Dashboard = (props: Props) => {
                                 />
                             );
                         })}
-                        {!isLoading && (
-                            <AddMoreCoins
-                                onClick={() => {
-                                    props.goto('wallet-settings');
-                                }}
-                            >
-                                <IconWrapper>
-                                    <Icon icon="PLUS" size={10} color={colors.TEXT_SECONDARY} />
-                                </IconWrapper>
-                                <FormattedMessage {...messages.TR_ADD_MORE_COINS} />
-                            </AddMoreCoins>
-                        )}
+                        <AddMoreCoins
+                            onClick={() => {
+                                props.goto('wallet-settings');
+                            }}
+                        >
+                            <IconWrapper>
+                                <Icon icon="PLUS" size={10} color={colors.TEXT_SECONDARY} />
+                            </IconWrapper>
+                            <FormattedMessage {...messages.TR_ADD_MORE_COINS} />
+                        </AddMoreCoins>
                     </CardsWrapper>
                 </Content>
             )}
