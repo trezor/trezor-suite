@@ -16,6 +16,12 @@ const { isBridgeRunning, runBridgeProcess } = require('./bridge');
 
 let mainWindow;
 
+const registerSuiteProtocolSchema = () => {
+    const SUITE_PROTOCOL_SCHEMA = 'trezorsuite';
+    app.removeAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
+    app.setAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
+};
+
 const init = async () => {
     try {
         const isBridgeProcessRunning = await isBridgeRunning();

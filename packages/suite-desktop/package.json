@@ -34,6 +34,12 @@
             "src/*.js",
             "package.json"
         ],
+        "protocols": {
+            "name": "trezorsuite-protocol",
+            "schemes": [
+              "trezorsuite"
+            ]
+          },
         "dmg": {
             "contents": [
                 {
