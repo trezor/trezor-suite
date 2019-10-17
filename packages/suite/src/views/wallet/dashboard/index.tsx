@@ -17,22 +17,20 @@ const Content = styled.div`
 `;
 
 const CardsWrapper = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 `;
 
 const AddMoreCoins = styled.div`
     display: flex;
     border: 1px solid ${colors.GRAY_LIGHT};
     border-radius: 4px;
-    width: 180px;
     height: 110px;
     color: ${colors.TEXT_SECONDARY};
     justify-content: center;
     align-items: center;
     padding: 10px;
-    margin: 4px;
     cursor: pointer;
 
     &:hover {

@@ -7,9 +7,6 @@ import { Network, Account } from '@wallet-types';
 const Card = styled.div`
     border: 1px solid ${colors.GRAY_LIGHT};
     border-radius: 4px;
-    min-width: 180px;
-    margin: 5px;
-    height: 110px;
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
