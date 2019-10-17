@@ -86,7 +86,7 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
     return (
         <Wrapper>
             {device.state && (
-                <StyledLink onClick={onCancel}>
+                <StyledLink onClick={onCancel} variant="nostyle">
                     <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
                 </StyledLink>
             )}

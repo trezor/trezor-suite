@@ -105,13 +105,13 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <Wrapper isLanding={isLanding}>
             <Content>
                 <Left>
-                    <StyledLink href="http://satoshilabs.com">SatoshiLabs</StyledLink>
-                    <StyledLink href="https://trezor.io/tos">
+                    <StyledLink href="http://satoshilabs.com" variant="nostyle">
+                        SatoshiLabs
+                    </StyledLink>
+                    <StyledLink href="https://trezor.io/tos" variant="nostyle">
                         <FormattedMessage {...l10nMessages.TR_TERMS} />
                     </StyledLink>
-                    <StyledLink onClick={toggle} isGreen>
-                        {opened ? 'Hide Log' : 'Show Log'}
-                    </StyledLink>
+                    <StyledLink onClick={toggle}>{opened ? 'Hide Log' : 'Show Log'}</StyledLink>
                     <RatesLeft>{exchangeRates}</RatesLeft>
                 </Left>
                 {!isLanding && (

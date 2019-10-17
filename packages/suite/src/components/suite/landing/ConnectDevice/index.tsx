@@ -188,9 +188,7 @@ class ConnectDevice extends PureComponent<Props> {
                                         {...l10nMessages.TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING}
                                         values={{
                                             link: (
-                                                <StyledLink to="/bridge" isGreen>
-                                                    Trezor Bridge
-                                                </StyledLink>
+                                                <StyledLink to="/bridge">Trezor Bridge</StyledLink>
                                             ),
                                         }}
                                     />
@@ -203,7 +201,7 @@ class ConnectDevice extends PureComponent<Props> {
                                     {...l10nMessages.TR_DONT_HAVE_A_TREZOR}
                                     values={{
                                         getOne: (
-                                            <StyledLink href="https://trezor.io/" isGreen>
+                                            <StyledLink href="https://trezor.io/">
                                                 <FormattedMessage {...l10nMessages.TR_GET_ONE} />
                                             </StyledLink>
                                         ),
