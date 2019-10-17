@@ -138,7 +138,7 @@ storiesOf('Buttons', module).add(
                 })}
                 <Div>
                     <H1>Button Pin</H1>
-                    <ButtonPin onClick={() => {}} data-test="button-pin" />
+                    <ButtonPin onClick={() => {}} data-test="button_pin" />
                 </Div>
             </Wrapper>
         );

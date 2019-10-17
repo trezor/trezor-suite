@@ -59,14 +59,10 @@ describe('Buttons', () => {
             cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
             if (testName.match(/icon/)) {
                 cy.getTestElement(testName)
-                    .find('.loading')
-                    .each(el => {
-                        cy.get(el).should('not.exist');
-                    });
-
-                cy.getTestElement(testName)
                     .find('svg')
-                    .should('be.visible');
+                    .each(el => {
+                        cy.get(el).should('be.visible');
+                    });
             }
 
             cy.getTestElement(testName)
@@ -77,7 +73,7 @@ describe('Buttons', () => {
 
     it(`Button pin`, () => {
         cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
-        cy.getTestElement('button-pin')
+        cy.getTestElement('button_pin')
             .should('be.visible')
             .matchImageSnapshot();
     });
