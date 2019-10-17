@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { H4, P, Button, Checkbox, Icon, Link, Prompt } from '@trezor/components';
+import { H4, P, Button, Checkbox, Link, Prompt } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import colors from '@suite/config/onboarding/colors';
@@ -9,7 +9,8 @@ import { BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import l10nCommonMessages from '@suite-support/Messages';
 
 import { Wrapper, Text } from '@onboarding-components';
-import { SeedCard } from './components/SeedCard';
+import SeedCard from './components/SeedCard';
+import Instructions from './components/Instructions';
 import { Props } from './Container';
 import l10nMessages from './index.messages';
 
@@ -19,21 +20,6 @@ const Panel = styled.div`
     padding: 15px;
     margin-top: 10px;
     margin-bottom: 10px;
-`;
-
-const Icons = styled.div`
-    display: flex;
-    flex-direction: row;
-    width: 90%;
-    justify-content: space-around;
-    margin-top: 10px;
-    margin-bottom: 10px;
-`;
-
-const Instruction = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 `;
 
 const PromptWrapper = styled.div`
@@ -53,28 +39,27 @@ const BackupStep = (props: Props) => {
         return null;
     }
 
+    const { features } = device;
+    const model = features.major_version;
+
     const getStatus = () => {
         if (
             (deviceCall.name === BACKUP_DEVICE && deviceCall.error) ||
-            device.features.no_backup === true ||
-            device.features.initialized === false
+            features.no_backup === true ||
+            features.initialized === false
         ) {
             return 'failed';
         }
-        if (device && device.features.needs_backup === false) {
+        if (features.needs_backup === false) {
             return 'success';
         }
-        if (
-            device &&
-            device.features.needs_backup === true &&
-            typeof uiInteraction.counter === 'number'
-        ) {
+        if (features.needs_backup === true && typeof uiInteraction.counter === 'number') {
             return 'started';
         }
         if (activeSubStep === 'recovery-card-front' || activeSubStep === 'recovery-card-back') {
             return activeSubStep;
         }
-        if (device && device.features.needs_backup && !deviceCall.isProgress) {
+        if (features.needs_backup && !deviceCall.isProgress) {
             return 'initial';
         }
         return null;
@@ -88,9 +73,7 @@ const BackupStep = (props: Props) => {
                 {getStatus() === 'success' && 'Backup finished'}
                 {getStatus() === 'failed' && 'Backup failed'}
                 {getStatus() === 'started' &&
-                    device &&
-                    device.features &&
-                    device.features.major_version === 1 &&
+                    model === 1 &&
                     typeof uiInteraction.counter === 'number' &&
                     uiInteraction.counter < 24 &&
                     'Write down seed words from your device'}
@@ -123,34 +106,7 @@ const BackupStep = (props: Props) => {
                         </P>
 
                         {/* todo: refactor icons to components */}
-                        <Icons>
-                            <Instruction>
-                                <Icon size={80} icon="CLOUD_CROSSED" />
-                                <Text>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_DO_NOT_UPLOAD_INSTRUCTION}
-                                    />
-                                </Text>
-                            </Instruction>
-
-                            <Instruction>
-                                <Icon size={80} icon="DOWNLOAD_CROSSED" />
-                                <Text>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION}
-                                    />
-                                </Text>
-                            </Instruction>
-
-                            <Instruction>
-                                <Icon size={80} icon="PHOTO_CROSSED" />
-                                <Text>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_DO_NOT_TAKE_PHOTO_INSTRUCTION}
-                                    />
-                                </Text>
-                            </Instruction>
-                        </Icons>
+                        <Instructions />
 
                         <Panel>
                             <P>
@@ -173,7 +129,7 @@ const BackupStep = (props: Props) => {
                         </Wrapper.Checkbox>
 
                         <Wrapper.Controls>
-                            {device.features.major_version === 1 && (
+                            {model === 1 && (
                                 <Button
                                     onClick={() => {
                                         props.onboardingActions.goToSubStep('recovery-card-front');
@@ -184,7 +140,7 @@ const BackupStep = (props: Props) => {
                                 </Button>
                             )}
 
-                            {device.features.major_version === 2 && (
+                            {model === 2 && (
                                 <Button
                                     onClick={() => props.connectActions.backupDevice()}
                                     isDisabled={!device || !userUnderstands}
@@ -236,11 +192,11 @@ const BackupStep = (props: Props) => {
                     </>
                 )}
 
-                {getStatus() === 'started' && device.features.major_version === 1 && (
+                {getStatus() === 'started' && model === 1 && (
                     <>
                         <SeedCard showBack counter={uiInteraction.counter} />
                         <PromptWrapper>
-                            <Prompt model={device.features.major_version} size={32}>
+                            <Prompt model={model} size={32}>
                                 {typeof uiInteraction.counter === 'number' &&
                                     uiInteraction.counter >= 24 && (
                                         <Text>
@@ -273,7 +229,7 @@ const BackupStep = (props: Props) => {
                             />
                         </P>
                         <Wrapper.Controls>
-                            {device!.features!.initialized === true && (
+                            {features.initialized === true && (
                                 <Button
                                     onClick={() => {
                                         props.connectActions.wipeDevice();
@@ -284,7 +240,7 @@ const BackupStep = (props: Props) => {
                                 </Button>
                             )}
 
-                            {device!.features!.initialized === false && (
+                            {features.initialized === false && (
                                 <Button
                                     onClick={() => {
                                         props.connectActions.resetDevice();
@@ -295,7 +251,7 @@ const BackupStep = (props: Props) => {
                                 </Button>
                             )}
                         </Wrapper.Controls>
-                        {(!device || !device.connected) && (
+                        {!device.connected && (
                             <Text>
                                 <FormattedMessage {...l10nCommonMessages.TR_CONNECT_YOUR_DEVICE} />
                             </Text>
