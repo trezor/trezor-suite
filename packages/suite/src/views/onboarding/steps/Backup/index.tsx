@@ -14,7 +14,7 @@ import Instructions from './components/Instructions';
 import { Props } from './Container';
 import l10nMessages from './index.messages';
 
-const Panel = styled.div`
+const Panel = styled(P)`
     background-color: ${colors.grayLight};
     color: ${colors.grayDark};
     padding: 15px;
@@ -105,15 +105,12 @@ const BackupStep = (props: Props) => {
                             <FormattedMessage {...l10nMessages.TR_BACKUP_SUBHEADING_2} />
                         </P>
 
-                        {/* todo: refactor icons to components */}
                         <Instructions />
 
                         <Panel>
-                            <P>
-                                <FormattedMessage
-                                    {...l10nMessages.TR_SATOSHILABS_CANNOT_BE_HELD_RESPONSIBLE}
-                                />
-                            </P>
+                            <FormattedMessage
+                                {...l10nMessages.TR_SATOSHILABS_CANNOT_BE_HELD_RESPONSIBLE}
+                            />
                         </Panel>
                         <Wrapper.Checkbox>
                             <Checkbox
@@ -162,7 +159,6 @@ const BackupStep = (props: Props) => {
                         <SeedCard flipOnMouseOver counter={uiInteraction.counter} />
                         <Wrapper.Controls>
                             <Button
-                                // onClick={() =>  setState({ showWords: true })}
                                 onClick={() => {
                                     props.onboardingActions.goToSubStep('recovery-card-back');
                                 }}
@@ -231,8 +227,10 @@ const BackupStep = (props: Props) => {
                         <Wrapper.Controls>
                             {features.initialized === true && (
                                 <Button
-                                    onClick={() => {
-                                        props.connectActions.wipeDevice();
+                                    onClick={async () => {
+                                        await props.connectActions.wipeDevice();
+                                        await props.connectActions.getFeatures();
+                                        props.connectActions.resetDevice();
                                     }}
                                     isDisabled={!device || !device.connected}
                                 >
