@@ -82,7 +82,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 output.amount.error = null;
                 output.amount.value = amount;
 
-                if (validator.isEmpty(amount) || amount.match(/^0+$/)) {
+                if (validator.isEmpty(amount) || amount.match(/^0+$/) || amountBig.isEqualTo(0)) {
                     output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
                     return draft;
                 }
