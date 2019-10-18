@@ -103,7 +103,7 @@ storiesOf('Examples', module)
                         <Button onClick={() => {}}>Enter PIN</Button>
                         <P size="small">
                             Not sure how PIN works?{' '}
-                            <Link isGreen href="https://wiki.trezor.io/User_manual:Entering_PIN">
+                            <Link href="https://wiki.trezor.io/User_manual:Entering_PIN">
                                 Learn more
                             </Link>
                         </P>
