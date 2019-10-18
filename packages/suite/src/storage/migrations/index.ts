@@ -17,6 +17,8 @@ export const migrate = async <TDBType>(
     // TODO: make separate file for each iterative migration
     if (oldVersion < 2) {
         // upgrade to version 2
+        // @ts-ignore TODO: fix
+        db.createObjectStore('sendForm');
     }
     if (oldVersion < 3) {
         // upgrade to version 3

@@ -47,11 +47,10 @@ export type SendFormActions =
 /**
  * Initialize current form, load values from session storage
  */
-export const init = () => (dispatch: Dispatch, getState: GetState) => {
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
-    const { sendCache } = getState().wallet;
     if (router.app !== 'wallet' || !router.params) return;
 
     let cachedState = null;
@@ -65,8 +64,8 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
 
     if (account) {
         const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-        const cachedItem = sendCache.cache.find(item => item.id === accountKey);
-        cachedState = cachedItem ? cachedItem.sendFormState : null;
+        const cachedItem = await db.getItemByPK('sendForm', accountKey);
+        cachedState = cachedItem;
     }
 
     const localCurrency = getLocalCurrency(settings.localCurrency);
@@ -92,15 +91,7 @@ export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
 
     const id = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     const sendFormState = send;
-
-    const item = db.getItemByPK('sendForm', id);
-
-    if (item) {
-        await db.removeItemByPK('sendForm', id);
-        db.addItem('sendForm', sendFormState, id);
-    } else {
-        db.addItem('sendForm', sendFormState, id);
-    }
+    db.addItem('sendForm', sendFormState, id);
 };
 
 export const compose = (setMax: boolean = false) => async (
