@@ -68,8 +68,9 @@ export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, async (
         db.createObjectStore('devices', { keyPath: 'id', autoIncrement: true });
 
         // object store for send form
-        db.createObjectStore('sendForm', { keyPath: 'id' });
+        db.createObjectStore('sendForm');
     } else {
+        // migrate functions
         migrate(db, oldVersion, newVersion, transaction);
     }
 });
