@@ -6,7 +6,7 @@ import { Output } from '@wallet-types/sendForm';
 import AccountName from '@wallet-components/AccountName';
 
 import { StateProps, DispatchProps } from './Container';
-import { Content, LayoutAccount as Layout } from '@wallet-components';
+import { Content, LayoutAccount } from '@wallet-components';
 import l10nMessages from './components/messages';
 import {
     Address,
@@ -71,14 +71,14 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
-            <Layout title="Send">
+            <LayoutAccount title="Send">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </Layout>
+            </LayoutAccount>
         );
     }
 
     return (
-        <Layout title="Send">
+        <LayoutAccount title="Send">
             <AccountName account={account} message={accountNameMessage} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
@@ -146,7 +146,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                     sendFormActionsRipple={sendFormActionsRipple}
                 />
             </Row>
-        </Layout>
+        </LayoutAccount>
     );
 };
 

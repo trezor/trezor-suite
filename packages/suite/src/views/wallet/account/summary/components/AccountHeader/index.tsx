@@ -13,7 +13,7 @@ const AccountHeading = styled.div`
     padding-bottom: 35px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
 `;
 
 const StyledLink = styled(Link)`

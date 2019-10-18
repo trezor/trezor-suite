@@ -34,6 +34,7 @@ const AccountNameWrapper = styled.div`
 const AccountName = styled.div`
     font-size: ${variables.FONT_SIZE.BIG};
     color: ${colors.TEXT_PRIMARY};
+    text-transform: uppercase;
 `;
 
 const AccountDescription = styled.div`
@@ -84,9 +85,7 @@ const AccountButton = (props: {
         description = 'Account index is greater than 10';
     }
 
-    const accountType = props.network.accountType
-        ? getTypeForNetwork(props.network.accountType)
-        : null;
+    const accountType = getTypeForNetwork(props.network.accountType || 'normal');
 
     return (
         <StyledButton

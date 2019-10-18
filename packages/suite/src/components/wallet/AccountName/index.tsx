@@ -52,11 +52,11 @@ const AccountName = ({ account, message }: Props) => {
                 )}
                 {!message && <FormattedMessage {...getTitleForNetwork(account.symbol)} />}
                 <Label>
-                    {accountType ? (
+                    {accountType && (
                         <LabelAddon>
                             <FormattedMessage {...accountType} />
                         </LabelAddon>
-                    ) : null}
+                    )}
                     <FormattedMessage
                         {...(account.imported
                             ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
