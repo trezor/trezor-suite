@@ -126,3 +126,8 @@ app.on('browser-window-focus', (event, win) => {
 ipcMain.on('message', (event, message) => {
     event.sender.send('message', message);
 });
+
+app.on('open-url', (event, data) => {
+    // TODO: this will be useful when opening bitcoin URIs
+    // data are in format 'SUITE_PROTOCOL_SCHEMA://<path>' when opening custom protocol url
+});
