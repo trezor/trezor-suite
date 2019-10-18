@@ -8,7 +8,7 @@ import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
-import * as sendFormCacheActions from './sendFormCacheActions';
+import { db } from '@suite/storage';
 
 export type SendFormActions =
     | {
@@ -85,6 +85,24 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
+export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
+    const { account } = getState().wallet.selectedAccount;
+    const { send } = getState().wallet;
+    if (!account || !send) return null;
+
+    const id = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const sendFormState = send;
+
+    const item = db.getItemByPK('sendForm', id);
+
+    if (item) {
+        await db.removeItemByPK('sendForm', id);
+        db.addItem('sendForm', sendFormState, id);
+    } else {
+        db.addItem('sendForm', sendFormState, id);
+    }
+};
+
 export const compose = (setMax: boolean = false) => async (
     dispatch: Dispatch,
     getState: GetState,
@@ -121,7 +139,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -166,7 +184,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -216,7 +234,7 @@ export const handleSelectCurrencyChange = (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -257,7 +275,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -310,7 +328,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -341,7 +359,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     }
 
     dispatch(compose());
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -371,7 +389,7 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     });
 
     dispatch(compose());
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -383,7 +401,7 @@ export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getStat
     if (!send || !account) return;
 
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -397,7 +415,7 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({ type: SEND.CLEAR, localCurrency });
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {

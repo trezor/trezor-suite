@@ -23,7 +23,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     sendForm: {
         key: string;
-        value: { id: string; state: SendFormState };
+        value: SendFormState;
     };
     suiteSettings: {
         key: string;
