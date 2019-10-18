@@ -8,6 +8,8 @@ import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
+import * as ethereumActions from './sendFormSpecific/ethereumActions';
+import * as rippleActions from './sendFormSpecific/rippleActions';
 import * as sendFormCacheActions from './sendFormCacheActions';
 
 export type SendFormActions =
@@ -91,9 +93,19 @@ export const compose = (setMax: boolean = false) => async (
 ) => {
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
     const account = getState().wallet.selectedAccount.account as Account;
-    if (account.networkType === 'bitcoin') {
-        dispatch({ type: SEND.BTC_DELETE_TRANSACTION_INFO });
-        return dispatch(bitcoinActions.compose(setMax));
+
+    switch (account.networkType) {
+        case 'bitcoin': {
+            dispatch({ type: SEND.BTC_DELETE_TRANSACTION_INFO });
+            return dispatch(bitcoinActions.compose(setMax));
+        }
+        case 'ripple': {
+            return dispatch(rippleActions.compose());
+        }
+        case 'ethereum': {
+            return dispatch(ethereumActions.compose());
+        }
+        // no default
     }
 };
 

@@ -9,6 +9,14 @@ export interface SendFormRippleActions {
 }
 
 /*
+    Compose transaction
+ */
+export const compose = () => async (dispatch: Dispatch) => {
+    console.log('compose ripple');
+    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
+};
+
+/*
     Change value in input "destination tag"
  */
 export const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
@@ -16,9 +24,11 @@ export const handleDestinationTagChange = (destinationTag: string) => (dispatch:
         type: SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE,
         destinationTag,
     });
-    // todo add cache
 };
 
+/*
+    Send transaction
+ */
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     if (!send) return;
