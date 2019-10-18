@@ -172,7 +172,7 @@ class CommonDB<TDBStructure> {
         return item;
     };
 
-    getItembyIndex = async <
+    getItemByIndex = async <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
@@ -210,7 +210,23 @@ class CommonDB<TDBStructure> {
         }
     };
 
-    removeItem = async <
+    removeItemByPK = async <
+        TStoreName extends StoreNames<TDBStructure>,
+        TKey extends StoreKey<TDBStructure, TStoreName>
+    >(
+        store: TStoreName,
+        key: TKey
+    ) => {
+        const db = await this.getDB();
+        const tx = db.transaction(store, 'readwrite');
+        const res = await tx.store.delete(key);
+        // TODO: needs to differentiate between PKs, Index keys...
+        // if (res) {
+        //     this.notify(store, [key]);
+        // }
+    };
+
+    removeItemByIndex = async <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
