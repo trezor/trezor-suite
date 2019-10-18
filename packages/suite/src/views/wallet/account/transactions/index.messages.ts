@@ -7,7 +7,7 @@ const definedMessages = defineMessages({
     },
     TR_TRANSACTIONS_AND_TOKENS: {
         id: 'TR_TRANSACTIONS_AND_TOKENS',
-        defaultMessage: '{network} Transactions and tokens',
+        defaultMessage: '{network} and tokens transactions',
     },
     TR_LOADING_TRANSACTIONS: {
         id: 'TR_LOADING_TRANSACTIONS',
