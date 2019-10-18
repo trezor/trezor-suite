@@ -105,8 +105,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
     getState: GetState,
 ) => {
     const { account } = getState().wallet.selectedAccount;
-    const { send } = getState().wallet;
-    if (!account || !send) return null;
+    if (!account) return null;
 
     dispatch({
         type: SEND.HANDLE_ADDRESS_CHANGE,
@@ -114,6 +113,9 @@ export const handleAddressChange = (outputId: number, address: string) => (
         address,
         symbol: account.symbol,
     });
+
+    const { send } = getState().wallet;
+    if (!send) return null;
 
     if (shouldComposeBy('address', send.outputs)) {
         dispatch(compose());
@@ -157,7 +159,10 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         availableBalance: account.formattedBalance,
     });
 
-    if (shouldComposeBy('amount', send.outputs)) {
+    const freshSendState = getState().wallet.send;
+    if (!freshSendState) return null;
+
+    if (shouldComposeBy('amount', freshSendState.outputs)) {
         dispatch(compose());
     }
 
