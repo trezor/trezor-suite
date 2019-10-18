@@ -2,6 +2,7 @@ import produce from 'immer';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { SEND_CACHE } from '@wallet-actions/constants';
 import { WalletAction } from '@wallet-types';
+import { db } from '@suite/storage';
 
 interface CacheItem {
     id: string;
@@ -21,24 +22,14 @@ export default (state: State = initialState, action: WalletAction): State => {
         switch (action.type) {
             case SEND_CACHE.ADD: {
                 const { sendFormState, id } = action;
-                const cacheItem = draft.cache.find(cacheItem => cacheItem.id === id);
 
-                if (cacheItem) {
-                    cacheItem.sendFormState = sendFormState;
+                const item = db.getItemByPK('sendForm', id);
+
+                if (item) {
+                    db.addItem('sendForm', { id, state: sendFormState });
                 } else {
-                    draft.cache.push({ id, sendFormState });
+                    db.addItem('sendForm', { id, state: sendFormState });
                 }
-                break;
-            }
-
-            case SEND_CACHE.REMOVE: {
-                const { id } = action;
-                draft.cache.filter(item => item.id === id);
-                break;
-            }
-
-            case SEND_CACHE.CLEAR: {
-                draft.cache = [];
                 break;
             }
             // no default

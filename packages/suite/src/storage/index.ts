@@ -3,8 +3,11 @@ import { DBSchema } from 'idb';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
+import { State as SendFormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
 import { migrate } from './migrations';
+
+const VERSION = 2;
 
 export interface SuiteDBSchema extends DBSchema {
     txs: {
@@ -17,6 +20,10 @@ export interface SuiteDBSchema extends DBSchema {
             type: WalletAccountTransaction['type'];
             'accountId-blockTime': [number, number];
         };
+    };
+    sendForm: {
+        key: string;
+        value: { id: string; state: SendFormState };
     };
     suiteSettings: {
         key: string;
@@ -34,7 +41,7 @@ export interface SuiteDBSchema extends DBSchema {
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
 
-export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', 1, async (
+export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, async (
     db,
     oldVersion,
     newVersion,
@@ -53,11 +60,15 @@ export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', 1, async (
         txsStore.createIndex('accountId-blockTime', ['accountId', 'blockTime'], {
             unique: false,
         });
+
         // object store for settings
         db.createObjectStore('suiteSettings');
         db.createObjectStore('walletSettings');
 
         db.createObjectStore('devices', { keyPath: 'id', autoIncrement: true });
+
+        // object store for send form
+        db.createObjectStore('sendForm', { keyPath: 'id' });
     } else {
         migrate(db, oldVersion, newVersion, transaction);
     }
