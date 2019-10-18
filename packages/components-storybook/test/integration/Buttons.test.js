@@ -1,62 +1,80 @@
 describe('Buttons', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
-        cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
     });
 
     [
-        'button_basic_success',
-        'button_basic_info',
-        'button_basic_warning',
-        'button_basic_error',
-        'button_basic_white',
+        // basic
+        'button_basic',
         'button_basic_transparent',
         'button_basic_disabled',
-        'button_icon_success',
-        'button_icon_info',
-        'button_icon_warning',
-        'button_icon_error',
-        'button_icon_white',
-        'button_icon_transparent',
-        'button_icon_disabled',
-        'button_loading_success',
-        'button_loading_info',
-        'button_loading_warning',
-        'button_loading_error',
-        'button_loading_white',
-        'button_loading_transparent',
-        'button_loading_disabled',
-        'button_inverse_success',
-        'button_inverse_info',
-        'button_inverse_warning',
-        'button_inverse_error',
-        'button_inverse_white',
-        'button_inverse_transparent',
-        'button_inverse_disabled',
-        'button_inverse_icon_success',
-        'button_inverse_icon_info',
-        'button_inverse_icon_warning',
-        'button_inverse_icon_error',
-        'button_inverse_icon_white',
-        'button_inverse_icon_transparent',
-        'button_inverse_icon_disabled',
+        'button_basic_icon',
+        'button_basic_icon_transparent',
+        'button_basic_icon_disabled',
+        'button_basic_loading',
+        'button_basic_loading_transparent',
+        'button_basic_loading_disabled',
+        'button_full_width',
+        'button_full_width_transparent',
+        'button_full_width_disabled',
+        'button_full_width_right',
+        'button_full_width_right_transparent',
+        'button_full_width_right_disabled',
+        'button_full_width_left',
+        'button_full_width_left_transparent',
+        'button_full_width_left_disabled',
+        'button_full_width_icon',
+        'button_full_width_icon_transparent',
+        'button_full_width_icon_disabled',
+        'button_full_width_icon_right',
+        'button_full_width_icon_right_transparent',
+        'button_full_width_icon_right_disabled',
+        'button_full_width_icon_left',
+        'button_full_width_icon_left_transparent',
+        'button_full_width_icon_left_disabled',
+        'button_full_width_loading',
+        'button_full_width_loading_transparent',
+        'button_full_width_loading_disabled',
+        'button_full_width_loading_right',
+        'button_full_width_loading_right_transparent',
+        'button_full_width_loading_right_disabled',
+        'button_full_width_loading_left',
+        'button_full_width_loading_left_transparent',
+        'button_full_width_loading_left_disabled',
+        // inverse
+        'button_inverse',
+        'button_inverse_icon',
+        'button_inverse_loading',
+        'button_inverse_full_width',
+        'button_inverse_icon_full_width',
+        'button_inverse_loading_full_width',
+        'button_inverse_full_width_right',
+        'button_inverse_icon_full_width_right',
+        'button_inverse_loading_full_width_right',
+        'button_inverse_full_width_left',
+        'button_inverse_icon_full_width_left',
+        'button_inverse_loading_full_width_left',
     ].forEach(testName => {
         it(`${testName}`, () => {
+            cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
             if (testName.match(/icon/)) {
                 cy.getTestElement(testName)
-                    .find('.loading')
-                    .each(el => {
-                        cy.get(el).should('not.exist');
-                    });
-
-                cy.getTestElement(testName)
                     .find('svg')
-                    .should('be.visible');
+                    .each(el => {
+                        cy.get(el).should('be.visible');
+                    });
             }
 
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();
         });
+    });
+
+    it(`Button pin`, () => {
+        cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
+        cy.getTestElement('button_pin')
+            .should('be.visible')
+            .matchImageSnapshot();
     });
 });

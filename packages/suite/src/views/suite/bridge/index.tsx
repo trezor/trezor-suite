@@ -133,6 +133,7 @@ const InstallBridge = (props: Props) => {
     };
 
     const target = selectedTarget || data.target;
+    const isLoading = !props.transport || process.env.SUITE_TYPE === 'desktop';
 
     return (
         <Wrapper>
@@ -142,7 +143,7 @@ const InstallBridge = (props: Props) => {
             <Top>
                 <TitleHeader>
                     Trezor Bridge
-                    {!props.transport && (
+                    {isLoading && (
                         <Version>
                             <FormattedMessage {...l10nMessages.TR_VERSION_IS_LOADING} />
                         </Version>
@@ -152,7 +153,7 @@ const InstallBridge = (props: Props) => {
                 <P>
                     <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
                 </P>
-                {!props.transport ? (
+                {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
                         <P>

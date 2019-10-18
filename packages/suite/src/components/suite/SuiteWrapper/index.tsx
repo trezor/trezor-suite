@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import * as routerActions from '@suite-actions/routerActions';
 
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
+import SuiteLayout from '@suite-components/SuiteLayout';
+import Bridge from '@suite-views/bridge';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import { bindActionCreators } from 'redux';
 import { AppState, Dispatch } from '@suite-types';
@@ -27,21 +29,20 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const Index = (props: Props) => {
     const { suite } = props;
     const { transport, loaded } = props.suite;
-    const redirectToBridge = transport && !transport.type;
 
-    useEffect(() => {
-        // no available transport, redirect to bridge page
-        if (redirectToBridge) {
-            props.goto('suite-bridge');
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [redirectToBridge]);
-
-    if (!loaded || !suite.transport || redirectToBridge) {
+    if (!loaded || !transport) {
         // still loading or
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while) or
         // waiting for redirect to bridge page
         return <Loading />;
+    }
+
+    if (!transport.type) {
+        return (
+            <SuiteLayout>
+                <Bridge />
+            </SuiteLayout>
+        );
     }
 
     // no available device

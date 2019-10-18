@@ -16,6 +16,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'You will gain access to receiving & sending selected coin',
         description: 'Content of the dashboard component if coin was not selected',
     },
+    TR_ADD_MORE_COINS: {
+        id: 'TR_ADD_MORE_COINS',
+        defaultMessage: 'Add more coins',
+    },
 });
 
 export default definedMessages;

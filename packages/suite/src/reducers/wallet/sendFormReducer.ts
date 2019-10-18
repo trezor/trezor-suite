@@ -2,7 +2,7 @@ import produce from 'immer';
 import validator from 'validator';
 import Bignumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { getOutput } from '@wallet-utils/sendFormUtils';
+import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
 import { State, InitialState, Output } from '@wallet-types/sendForm';
 import { VALIDATION_ERRORS, FIRST_OUTPUT_ID } from '@wallet-constants/sendForm';
 import { isAddressValid } from '@wallet-utils/validation';
@@ -75,19 +75,30 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount } = action;
+                const { outputId, amount, decimals, availableBalance } = action;
                 const output = getOutput(draft.outputs, outputId);
+                const amountBig = new Bignumber(amount);
 
                 output.amount.error = null;
                 output.amount.value = amount;
 
-                if (validator.isEmpty(amount) || amount.match(/^0+$/)) {
+                if (validator.isEmpty(amount) || amountBig.isEqualTo(0)) {
                     output.amount.error = VALIDATION_ERRORS.IS_EMPTY;
+                    return draft;
+                }
+
+                if (amountBig.isGreaterThan(availableBalance)) {
+                    output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
 
                 if (!validator.isNumeric(amount)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+
+                if (!hasDecimals(amount, decimals)) {
+                    output.amount.error = VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS;
                     return draft;
                 }
 
