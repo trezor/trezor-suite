@@ -64,12 +64,7 @@ const FeeComponent = (props: Props) => (
             formatOptionLabel={(option: FeeLevel) => (
                 <OptionWrapper>
                     <OptionLabel>{capitalize(option.label)}</OptionLabel>
-                    {option.label !== CUSTOM_FEE && (
-                        <OptionValue>
-                            {/* {option.feePerUnit} {props.symbol.toUpperCase()} */}
-                            {option.feePerUnit} sat/B
-                        </OptionValue>
-                    )}
+                    {option.label !== CUSTOM_FEE && <OptionValue>{option.value} sat/B</OptionValue>}
                 </OptionWrapper>
             )}
         />

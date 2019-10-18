@@ -317,17 +317,18 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     if (!send || !account) return;
     if (send.selectedFee.label === fee.label) return;
 
-    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
-
     if (fee.label === 'custom') {
+        // show additional form
+        if (!send.isAdditionalFormVisible) {
+            dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
+        }
+
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: send.selectedFee.feePerUnit,
         });
-        if (!send.isAdditionalFormVisible) {
-            dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-        }
     } else {
+        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: null,
