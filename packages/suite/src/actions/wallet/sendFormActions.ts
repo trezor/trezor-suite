@@ -273,9 +273,19 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
-    if (fiatNetwork) {
+    if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
         const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
-        const fiatValue = getFiatValue(account.availableBalance, rate);
+        const fiatValue = getFiatValue(
+            formatNetworkAmount(composedTransaction.max, account.symbol),
+            rate,
+        );
+        if (rate) {
+            dispatch({
+                type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+                outputId,
+                fiatValue,
+            });
+        }
         dispatch({
             type: SEND.HANDLE_FIAT_VALUE_CHANGE,
             outputId,
