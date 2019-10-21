@@ -6,6 +6,7 @@ import {
     REMOVE_PATH,
     RESET_ONBOARDING,
     ENABLE_ONBOARDING_REDUCER,
+    SET_BACKUP_TYPE,
 } from '@suite/types/onboarding/onboarding';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
@@ -104,6 +105,11 @@ const retryBackup = () => async (dispatch: Dispatch) => {
     await dispatch(connectActions.backupDevice());
 };
 
+const setBackupType = (payload: number): Action => ({
+    type: SET_BACKUP_TYPE,
+    payload,
+});
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -115,4 +121,5 @@ export {
     removePath,
     resetOnboarding,
     retryBackup,
+    setBackupType,
 };

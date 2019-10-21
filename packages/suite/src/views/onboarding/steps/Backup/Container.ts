@@ -28,7 +28,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     resetDevice: bindActionCreators(connectActions.resetDevice, dispatch),
     resetCall: bindActionCreators(connectActions.resetCall, dispatch),
     backupDevice: bindActionCreators(connectActions.backupDevice, dispatch),
-    getFeatures: bindActionCreators(connectActions.getFeatures, dispatch),
     retryBackup: bindActionCreators(onboardingActions.retryBackup, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });

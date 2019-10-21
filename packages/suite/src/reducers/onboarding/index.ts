@@ -23,6 +23,7 @@ export default function onboardingApp(state: OnboardingAppState | undefined, act
         deviceCall: onboardingState.deviceCall,
         uiInteraction: onboardingState.uiInteraction,
         path: onboardingState.path,
+        backupType: onboardingState.backupType,
         recovery: recovery(onboardingState.recovery, action as RecoveryActionTypes),
         newsletter: newsletter(onboardingState.newsletter, action as NewsletterActionTypes),
     };
