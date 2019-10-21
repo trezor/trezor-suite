@@ -23,7 +23,7 @@ interface Props {
  */
 const Intl = ({ children }: Props) => {
     if (isMessageDescriptor(children)) {
-        const values: FormattedMessage.Props['values'] = {};
+        const values: any = {};
         if (children.values) {
             // Message with variables passed via 'values' prop.
             // Value entry can also contain a MessageDescriptor.
