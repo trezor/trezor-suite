@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { Select, Link } from '@trezor/components';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { goToSubStep, goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import l10nCommonMessages from '@suite-support/Messages';
@@ -46,8 +46,8 @@ interface Props {
     };
 }
 
-class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState> {
-    constructor(props: Props & InjectedIntlProps) {
+class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeState> {
+    constructor(props: Props & WrappedComponentProps) {
         super(props);
         const installers = this.getInstallers();
         this.state = {

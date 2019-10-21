@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, CSSProperties } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { createFilter } from 'react-select';
-import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Select, P } from '@trezor/components';
 
@@ -41,7 +41,7 @@ const SelectWrapper = styled.div`
     margin-top: 10px;
 `;
 
-interface Props extends InjectedIntlProps {
+interface Props extends WrappedComponentProps {
     wordsCount: number;
     counter?: number;
     onSubmit: (word: string) => void;

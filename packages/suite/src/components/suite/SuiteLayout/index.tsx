@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import Modals from '@suite-components/modals';
@@ -73,7 +73,7 @@ interface Props {
     disableSidebar?: boolean;
 }
 
-const SuiteLayout = (props: Props & InjectedIntlProps) => (
+const SuiteLayout = (props: Props & WrappedComponentProps) => (
     <PageWrapper isLanding={props.isLanding}>
         <Head>
             <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
