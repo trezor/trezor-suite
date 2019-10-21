@@ -1,24 +1,47 @@
+/* eslint-disable global-require */
 import * as React from 'react';
-import { IntlProvider, addLocaleData, FormattedMessage } from 'react-intl';
+import { IntlProvider, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-
-import en from 'react-intl/locale-data/en';
-import cs from 'react-intl/locale-data/cs';
-import bn from 'react-intl/locale-data/bn';
-import de from 'react-intl/locale-data/de';
-import el from 'react-intl/locale-data/el';
-import es from 'react-intl/locale-data/es';
-import fr from 'react-intl/locale-data/fr';
-import id from 'react-intl/locale-data/id';
-import it from 'react-intl/locale-data/it';
-import ja from 'react-intl/locale-data/ja';
-import nl from 'react-intl/locale-data/nl';
-import pl from 'react-intl/locale-data/pl';
-import pt from 'react-intl/locale-data/pt';
-import ru from 'react-intl/locale-data/ru';
-import uk from 'react-intl/locale-data/uk';
-import zh from 'react-intl/locale-data/zh';
 import { AppState } from '@suite-types';
+
+// polyfill for Intl.PluralRules (e.g IE11 & Safari 12-)
+if (!Intl.PluralRules) {
+    require('@formatjs/intl-pluralrules/polyfill');
+    require('@formatjs/intl-pluralrules/dist/locale-data/zh');
+    require('@formatjs/intl-pluralrules/dist/locale-data/uk');
+    require('@formatjs/intl-pluralrules/dist/locale-data/ru');
+    require('@formatjs/intl-pluralrules/dist/locale-data/pt');
+    require('@formatjs/intl-pluralrules/dist/locale-data/nl');
+    require('@formatjs/intl-pluralrules/dist/locale-data/ja');
+    require('@formatjs/intl-pluralrules/dist/locale-data/it');
+    require('@formatjs/intl-pluralrules/dist/locale-data/id');
+    require('@formatjs/intl-pluralrules/dist/locale-data/fr');
+    require('@formatjs/intl-pluralrules/dist/locale-data/es');
+    require('@formatjs/intl-pluralrules/dist/locale-data/el');
+    require('@formatjs/intl-pluralrules/dist/locale-data/de');
+    require('@formatjs/intl-pluralrules/dist/locale-data/bn');
+    require('@formatjs/intl-pluralrules/dist/locale-data/cs');
+    require('@formatjs/intl-pluralrules/polyfill-locales');
+}
+
+// polyfill for Intl.RelativeTimeFormat (e.g IE11, Edge, Safari 13-)
+// TODO: TS types are missing Intl.RelativeTimeFormat
+// if (!Intl.RelativeTimeFormat) {
+require('@formatjs/intl-relativetimeformat/polyfill');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/zh');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/uk');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/ru');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/pt');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/nl');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/ja');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/it');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/id');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/fr');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/es');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/el');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/de');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/bn');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/cs');
 
 // Add MessageDescriptor type to values entry
 export interface ExtendedMessageDescriptor extends FormattedMessage.MessageDescriptor {
@@ -30,25 +53,6 @@ export interface ExtendedMessageDescriptor extends FormattedMessage.MessageDescr
 export interface Messages {
     [key: string]: FormattedMessage.MessageDescriptor;
 }
-
-addLocaleData([
-    ...en,
-    ...cs,
-    ...bn,
-    ...de,
-    ...el,
-    ...es,
-    ...fr,
-    ...id,
-    ...it,
-    ...ja,
-    ...nl,
-    ...pl,
-    ...pt,
-    ...ru,
-    ...uk,
-    ...zh,
-]);
 
 const mapStateToProps = (state: AppState) => ({
     locale: state.suite.language,
