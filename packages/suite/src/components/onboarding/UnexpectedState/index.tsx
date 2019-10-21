@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { P, H2 } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/IntlMessageExtractor';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -26,7 +26,7 @@ const UnexpectedStateCommon = ({ children }: { children: ReactNode }) => (
 
 const IsNotInBootloader = () => (
     <P>
-        <FormattedMessage {...l10nMessages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER} />
+        <Translation>{l10nMessages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER}</Translation>
     </P>
 );
 
@@ -41,13 +41,13 @@ const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequesti
         <>
             <H2>
                 {uiInteraction.counter === 0 && (
-                    <FormattedMessage {...l10nMessages.TR_ENTER_PIN_HEADING} />
+                    <Translation> {l10nMessages.TR_ENTER_PIN_HEADING} ></Translation>
                 )}
                 {uiInteraction.counter > 1 && 'Incorrect PIN entered'}
             </H2>
             <Text>
                 {uiInteraction.counter === 0 && (
-                    <FormattedMessage {...l10nMessages.TR_ENTER_PIN_TEXT} />
+                    <Translation>{l10nMessages.TR_ENTER_PIN_TEXT}</Translation>
                 )}
                 {uiInteraction.counter > 1 &&
                     'You entered wrong PIN. To make sure, that your device can not be accessed by unauthorized person, it will get wiped after 16 incorrect entries.'}
@@ -68,14 +68,14 @@ interface DeviceIsUsedHereProps {
 const DeviceIsUsedHere = ({ actionCta }: DeviceIsUsedHereProps) => (
     <>
         <H2>
-            <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING} />
+            <Translation>{l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING}</Translation>
         </H2>
         <P>
-            <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT} />
+            <Translation>{l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT}</Translation>
         </P>
         <Wrapper.Controls>
             <OnboardingButton.Cta onClick={actionCta}>
-                <FormattedMessage {...l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
+                <Translation>{l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON}</Translation>
             </OnboardingButton.Cta>
         </Wrapper.Controls>
     </>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/IntlMessageExtractor';
 
 import { resetOnboarding } from '@suite/actions/onboarding/onboardingActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
@@ -19,7 +19,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const IsSameDevice = ({ actionAlt }: Props) => (
     <>
         <Text>
-            <FormattedMessage {...l10nMessages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT} />
+            <Translation>{l10nMessages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT}></Translation>
         </Text>
         <Text>--- or ---</Text>
         <Wrapper.Controls>

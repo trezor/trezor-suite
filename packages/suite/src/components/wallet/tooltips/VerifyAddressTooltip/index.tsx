@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/IntlMessageExtractor';
 import l10nMessages from './messages';
 
 const Wrapper = styled.div``;
@@ -17,18 +17,18 @@ const VerifyAddressTooltip = ({ isConnected, isAvailable, addressUnverified }: P
         {addressUnverified && (
             <Content>
                 {isConnected && isAvailable ? (
-                    <FormattedMessage {...l10nMessages.TR_UNVERIFIED_ADDRESS_COMMA_SHOW} />
+                    <Translation>{l10nMessages.TR_UNVERIFIED_ADDRESS_COMMA_SHOW}</Translation>
                 ) : (
-                    <FormattedMessage {...l10nMessages.TR_UNVERIFIED_ADDRESS_COMMA_CONNECT} />
+                    <Translation>{l10nMessages.TR_UNVERIFIED_ADDRESS_COMMA_CONNECT}</Translation>
                 )}
             </Content>
         )}
         {!addressUnverified && (
             <Content>
                 {isConnected ? (
-                    <FormattedMessage {...l10nMessages.TR_SHOW_ON_TREZOR} />
+                    <Translation>{l10nMessages.TR_SHOW_ON_TREZOR}</Translation>
                 ) : (
-                    <FormattedMessage {...l10nMessages.TR_CONNECT_YOUR_TREZOR_TO_CHECK} />
+                    <Translation>{l10nMessages.TR_CONNECT_YOUR_TREZOR_TO_CHECK}</Translation>
                 )}
             </Content>
         )}

@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/IntlMessageExtractor';
 
 import { Link, Input, Checkbox, P } from '@trezor/components';
 
@@ -109,13 +109,13 @@ const NewsleterStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <FormattedMessage {...l10nMessages.TR_NEWSLETTER_HEADING} />
+                <Translation>{l10nMessages.TR_NEWSLETTER_HEADING}</Translation>
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {status === 'initial' && (
                     <React.Fragment>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_NEWSLETTER_SUBHEADING} />
+                            <Translation>{l10nMessages.TR_NEWSLETTER_SUBHEADING}</Translation>
                         </Text>
                         <InputWrapper>
                             <Input
@@ -153,7 +153,7 @@ const NewsleterStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             <OnboardingButton.Alt onClick={() => skipEmail()}>
-                                <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
+                                <Translation>{l10nCommonMessages.TR_SKIP}</Translation>
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 isDisabled={
@@ -162,7 +162,7 @@ const NewsleterStep = (props: Props) => {
                                 }
                                 onClick={submitEmail}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_SUBMIT} />
+                                <Translation>{l10nCommonMessages.TR_SUBMIT}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </React.Fragment>
@@ -172,12 +172,12 @@ const NewsleterStep = (props: Props) => {
                     <React.Fragment>
                         {!newsletter.skipped && (
                             <Text>
-                                <FormattedMessage {...l10nMessages.TR_THANK_YOU_FOR_EMAIL} />
+                                <Translation>{l10nMessages.TR_THANK_YOU_FOR_EMAIL}</Translation>
                             </Text>
                         )}
                         {newsletter.skipped && (
                             <Text>
-                                <FormattedMessage {...l10nMessages.TR_EMAIL_SKIPPED} />
+                                <Translation>{l10nMessages.TR_EMAIL_SKIPPED}</Translation>
                             </Text>
                         )}
                         <SocialWrapper>
@@ -193,7 +193,7 @@ const NewsleterStep = (props: Props) => {
                         </SocialWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta onClick={() => goToNextStep()}>
-                                <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation>{l10nCommonMessages.TR_CONTINUE}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </React.Fragment>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/IntlMessageExtractor';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -69,7 +69,7 @@ const MenuItems = ({
                         <DeviceIcon device={device} size={14} color={colors.TEXT_SECONDARY} />
                     </IconWrapper>
                     <Label>
-                        <FormattedMessage {...l10nMessages.TR_RENEW_SESSION} />
+                        <Translation>{l10nMessages.TR_RENEW_SESSION} </Translation>
                     </Label>
                 </Item>
             )}
@@ -79,7 +79,7 @@ const MenuItems = ({
                     <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_DEVICE_SETTINGS} />
+                    <Translation>{l10nCommonMessages.TR_DEVICE_SETTINGS} </Translation>
                 </Label>
             </Item>
             <Item onClick={() => requestForgetDevice(device)}>
@@ -87,7 +87,7 @@ const MenuItems = ({
                     <Icon icon="EJECT" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
+                    <Translation>{l10nCommonMessages.TR_FORGET_DEVICE}</Translation>
                 </Label>
             </Item>
         </Wrapper>
