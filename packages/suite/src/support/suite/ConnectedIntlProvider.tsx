@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import * as React from 'react';
-import { IntlProvider, FormattedMessage } from 'react-intl';
+import { IntlProvider, MessageDescriptor } from 'react-intl';
 import { connect } from 'react-redux';
 import { AppState } from '@suite-types';
 
@@ -19,7 +19,8 @@ if (!Intl.PluralRules) {
     require('@formatjs/intl-pluralrules/dist/locale-data/es');
     require('@formatjs/intl-pluralrules/dist/locale-data/el');
     require('@formatjs/intl-pluralrules/dist/locale-data/de');
-    require('@formatjs/intl-pluralrules/dist/locale-data/bn');
+    // TODO: bn is missing
+    // require('@formatjs/intl-pluralrules/dist/locale-data/bn');
     require('@formatjs/intl-pluralrules/dist/locale-data/cs');
     require('@formatjs/intl-pluralrules/polyfill-locales');
 }
@@ -40,18 +41,18 @@ require('@formatjs/intl-relativetimeformat/dist/locale-data/fr');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/es');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/el');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/de');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/bn');
+// require('@formatjs/intl-relativetimeformat/dist/locale-data/bn');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/cs');
 
 // Add MessageDescriptor type to values entry
-export interface ExtendedMessageDescriptor extends FormattedMessage.MessageDescriptor {
+export interface ExtendedMessageDescriptor extends MessageDescriptor {
     values?: {
-        [key: string]: string | React.ReactElement | FormattedMessage.MessageDescriptor;
+        [key: string]: string | React.ReactElement | MessageDescriptor;
     };
 }
 
 export interface Messages {
-    [key: string]: FormattedMessage.MessageDescriptor;
+    [key: string]: MessageDescriptor;
 }
 
 const mapStateToProps = (state: AppState) => ({
