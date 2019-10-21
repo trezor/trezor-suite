@@ -8,7 +8,11 @@ const withImages = require('next-images');
 
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ObsoleteWebpackPlugin = require('obsolete-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const packageJson = require('./package.json');
+const WebpackModuleNomodulePlugin = require('webpack-module-nomodule-plugin');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -36,6 +40,15 @@ module.exports = withBundleAnalyzer(
                                 gitRevisionPlugin.commithash(),
                             ),
                         }),
+                        new HtmlWebpackPlugin(),
+                        new ObsoleteWebpackPlugin({
+                            name: 'obsolete',
+                        }),
+                        new ScriptExtHtmlWebpackPlugin({
+                            async: 'obsolete',
+                        }),
+                        new WebpackModuleNomodulePlugin('legacy'),
+                        new WebpackModuleNomodulePlugin('modern'),
                     );
                     return config;
                 },
