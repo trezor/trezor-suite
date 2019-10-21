@@ -44,4 +44,4 @@ const IntlMessageExtractor = ({ children }: Props) => {
     return <>{children}</>;
 };
 
-export default IntlMessageExtractor;
+export { IntlMessageExtractor as Translation };

@@ -4,8 +4,8 @@ import { SUITE } from '@suite-actions/constants';
 import { Input, Switch, Button, P, Icon, H2, H3, variables } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
-import { FormattedMessage } from 'react-intl';
 import { SettingsLayout } from '@suite-components';
+import { Translation } from '@suite-components/IntlMessageExtractor';
 import messages from './index.messages';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 
@@ -107,8 +107,6 @@ const CloseButton = styled(Button)`
     cursor: pointer;
 `;
 
-const tr = (messageId: keyof typeof messages) => <FormattedMessage {...messages[messageId]} />;
-
 const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }: Props) => {
     // todo: need to solve typescript here.
 
@@ -146,14 +144,18 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     return (
         <SettingsLayout title="Settings">
             <Row>
-                <Title>{tr('TR_DEVICE_SETTINGS_TITLE')}</Title>
+                <Title>
+                    <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
+                </Title>
                 <CloseButton onClick={() => goto('wallet-index')} isTransparent>
                     <Icon icon="CLOSE" size={14} />
                 </CloseButton>
             </Row>
 
             <Row>
-                <Label>{tr('TR_DEVICE_SETTINGS_DEVICE_LABEL')}</Label>
+                <Label>
+                    <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_LABEL}</Translation>
+                </Label>
                 <ActionColumn>
                     <StyledInput
                         value={label}
@@ -162,15 +164,21 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                         }
                     />
                     <ActionButton isDisabled={uiLocked} onClick={() => applySettings({ label })}>
-                        {tr('TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL')}
+                        <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}</Translation>
                     </ActionButton>
                 </ActionColumn>
             </Row>
 
             <Row>
                 <Row isColumn marginTop="0">
-                    <Label>{tr('TR_DEVICE_SETTINGS_HOMESCREEN_TITLE')}</Label>
-                    <Text>{tr('TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS')}</Text>
+                    <Label>
+                        <Translation>{messages.TR_DEVICE_SETTINGS_HOMESCREEN_TITLE}</Translation>
+                    </Label>
+                    <Text>
+                        <Translation>
+                            {messages.TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS}
+                        </Translation>
+                    </Text>
                 </Row>
 
                 {device.features.major_version === 1 && (
@@ -200,17 +208,23 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 <ActionColumn>
                     <Row isColumn>
                         <ActionButtonColumn isDisabled onClick={() => applySettings({ label })}>
-                            {tr('TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE')}
+                            <Translation>
+                                {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
+                            </Translation>
                         </ActionButtonColumn>
                         <ActionButton isDisabled onClick={() => applySettings({ label })}>
-                            {tr('TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY')}
+                            <Translation>
+                                {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
+                            </Translation>
                         </ActionButton>
                     </Row>
                 </ActionColumn>
             </Row>
 
             <Row>
-                <Label>{tr('TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE')}</Label>
+                <Label>
+                    <Translation>{messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}</Translation>
+                </Label>
                 <ActionColumn>
                     <Switch
                         checkedIcon={false}
@@ -222,10 +236,14 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     />
                 </ActionColumn>
             </Row>
-            <Text>{tr('TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC')}</Text>
+            <Text>
+                <Translation>{messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC}</Translation>
+            </Text>
 
             <Row>
-                <Label>{tr('TR_DEVICE_SETTINGS_PASSPHRASE_TITLE')}</Label>
+                <Label>
+                    <Translation>{messages.TR_DEVICE_SETTINGS_PASSPHRASE_TITLE}</Translation>
+                </Label>
                 <ActionColumn>
                     <Switch
                         checkedIcon={false}
@@ -238,13 +256,21 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     />
                 </ActionColumn>
             </Row>
-            <Text>{tr('TR_DEVICE_SETTINGS_PASSPHRASE_DESC')}</Text>
-            <Text>{tr('TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE')}</Text>
+            <Text>
+                <Translation>{messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC}</Translation>
+            </Text>
+            <Text>
+                <Translation>{messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE}</Translation>
+            </Text>
 
             {device.features.major_version === 2 && (
                 <Row>
                     <LabelCol>
-                        <Label>{tr('TR_DEVICE_SETTINGS_DISPLAY_ROTATION')}</Label>
+                        <Label>
+                            <Translation>
+                                {messages.TR_DEVICE_SETTINGS_DISPLAY_ROTATION}
+                            </Translation>
+                        </Label>
                     </LabelCol>
                     <ActionColumn>
                         {DISPLAY_ROTATIONS.map(variant => (
@@ -269,7 +295,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     variant="error"
                     onClick={() => wipeDevice({ device })}
                 >
-                    {tr('TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE')}
+                    <Translation>{messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}</Translation>
                 </ActionButton>
             </Row>
             {/* TODO for both: { name: 'homescreen', type: 'string' }, custom load */}
