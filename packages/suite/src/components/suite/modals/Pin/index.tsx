@@ -43,7 +43,7 @@ const Pin = ({ device, onEnterPin }: Props) => {
             <PinInput onPinSubmit={onEnterPin} />
             <BottomMessage size="small">
                 <FormattedMessage {...messages.TR_HOW_PIN_WORKS} />{' '}
-                <Link href={URLS.PIN_MANUAL_URL} isGreen>
+                <Link href={URLS.PIN_MANUAL_URL}>
                     <FormattedMessage {...modalsMessages.TR_LEARN_MORE} />
                 </Link>
             </BottomMessage>

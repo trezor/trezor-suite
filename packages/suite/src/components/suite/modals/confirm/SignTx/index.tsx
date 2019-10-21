@@ -1,6 +1,7 @@
 import React from 'react';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import styled from 'styled-components';
+import { formatDuration } from '@suite-utils/date';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FormattedMessage } from 'react-intl';
@@ -56,8 +57,23 @@ const Symbol = styled.div`
     font-size: ${FONT_SIZE.BIG};
 `;
 
-const FeeLevelName = styled.div`
-    padding: 20px 0;
+const Section = styled.div`
+    padding: 10px 0;
+    border-bottom: 1px solid ${colors.DIVIDER};
+
+    &:last-child {
+        border-bottom: 0;
+    }
+`;
+
+const Heading = styled.div`
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    font-size: ${FONT_SIZE.BIG};
+    color: ${colors.TEXT_SECONDARY};
 `;
 
 const Value = styled.div`
@@ -68,15 +84,13 @@ const Value = styled.div`
 
 const OutputWrapper = styled.div`
     display: flex;
-    padding: 15px 48px;
     flex-direction: column;
-    border-bottom: 1px solid ${colors.DIVIDER};
 `;
 
 const Row = styled.div`
     display: flex;
-    justify-content: ${(props: { centered?: boolean }) =>
-        props.centered ? 'center' : 'flex-start'};
+    padding: 0 48px;
+    justify-content: center;
 `;
 
 interface Props {
@@ -104,28 +118,30 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                 </P>
             </Header>
             <Content>
-                <Label>
-                    <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
-                </Label>
-                {outputs.map(output => (
-                    <OutputWrapper key={output.id}>
-                        <Row>
-                            <Value>{`${output.amount.value || '0'} `}</Value>
-                            <Symbol>{account.symbol}</Symbol>
-                        </Row>
-                        <Row>
-                            <Label>
-                                <FormattedMessage {...l10nMessages.TR_TO_LABEL} />
-                            </Label>
-                            <Address>{output.address.value}</Address>
-                        </Row>
-                    </OutputWrapper>
-                ))}
-                <FeeLevelName>
-                    <Label>
+                <Section>
+                    <Heading>
+                        <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
+                    </Heading>
+                    {outputs.map(output => (
+                        <OutputWrapper key={output.id}>
+                            <Row>
+                                <Value>{`${output.amount.value || '0'} `}</Value>
+                                <Symbol>{account.symbol}</Symbol>
+                            </Row>
+                            <Row>
+                                <Label>
+                                    <FormattedMessage {...l10nMessages.TR_TO_LABEL} />
+                                </Label>
+                                <Address>{output.address.value}</Address>
+                            </Row>
+                        </OutputWrapper>
+                    ))}
+                </Section>
+                <Section>
+                    <Heading>
                         <FormattedMessage {...l10nMessages.TR_FEE_LABEL} />
-                    </Label>
-                    <Row centered>
+                    </Heading>
+                    <Row>
                         <Value>
                             {sendForm.networkTypeBitcoin.transactionInfo.type !== 'error' &&
                                 formatNetworkAmount(
@@ -135,7 +151,21 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                         </Value>
                         <Symbol>{account.symbol}</Symbol>
                     </Row>
-                </FeeLevelName>
+                </Section>
+                {account.networkType === 'bitcoin' && (
+                    <Section>
+                        <Heading>
+                            <FormattedMessage {...l10nMessages.TR_ESTIMATED_TIME} />
+                        </Heading>
+                        <Row>
+                            <Value>
+                                {formatDuration(
+                                    sendForm.feeInfo.blockTime * sendForm.selectedFee.blocks * 60,
+                                )}
+                            </Value>
+                        </Row>
+                    </Section>
+                )}
             </Content>
         </Wrapper>
     );

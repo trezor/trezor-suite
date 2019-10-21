@@ -144,7 +144,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                     </Content>
                     <Content>
                         <Row>
-                            <Link href={`/?backup#${device.path}`}>
+                            <Link href={`/?backup#${device.path}`} variant="nostyle">
                                 <BackupButton>
                                     <FormattedMessage
                                         {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES}

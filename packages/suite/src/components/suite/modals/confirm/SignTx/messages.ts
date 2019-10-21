@@ -24,6 +24,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Fee',
         description: 'Label above the fee used for transaction',
     },
+    TR_ESTIMATED_TIME: {
+        id: 'TR_ESTIMATED_TIME',
+        defaultMessage: 'Estimated time',
+    },
 });
 
 export default definedMessages;

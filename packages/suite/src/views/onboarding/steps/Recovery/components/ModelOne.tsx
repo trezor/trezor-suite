@@ -175,7 +175,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 {...l10nMessages.TR_RECOVERY_TYPES_DESCRIPTION}
                                 values={{
                                     TR_LEARN_MORE_LINK: (
-                                        <Link href={RECOVERY_MODEL_ONE_URL}>
+                                        <Link href={RECOVERY_MODEL_ONE_URL} variant="nostyle">
                                             <FormattedMessage
                                                 {...l10nCommonMessages.TR_LEARN_MORE_LINK}
                                             />

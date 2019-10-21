@@ -5,7 +5,7 @@
 - minor TS types fixes
 - CoinLogo: removed `width` and `height` props and replaced with `size` prop
 - Button prop `prop.isWhite` changed to `prop.variant` == 'white'
-
+- Link: removed props `isGray`, `isGreen`, `hasNoStyle` and replaced with `variant?: 'gray' | 'nostyle'` (default is green)
 
 ## [1.0.0-beta.20]
 ### Fixed

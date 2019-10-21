@@ -1,25 +1,25 @@
-import BigNumber from 'bignumber.js';
-import { SEND } from '@wallet-actions/constants';
-import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
-import { formatNetworkAmount, getFiatValue, getAccountKey } from '@wallet-utils/accountUtils';
-import { Output, FeeLevel } from '@wallet-types/sendForm';
-import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import { getLocalCurrency } from '@wallet-utils/settingsUtils';
-import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
+import { db } from '@suite/storage';
+import { SEND } from '@wallet-actions/constants';
+import { Account } from '@wallet-types';
+import { FeeLevel, Output } from '@wallet-types/sendForm';
+import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
+import { ParsedURI } from '@wallet-utils/cryptoUriParser';
+import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
+import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import BigNumber from 'bignumber.js';
+
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
 import * as ethereumActions from './sendFormSpecific/ethereumActions';
 import * as rippleActions from './sendFormSpecific/rippleActions';
-import * as sendFormCacheActions from './sendFormCacheActions';
 
 /**
  * Initialize current form, load values from session storage
  */
-export const init = () => (dispatch: Dispatch, getState: GetState) => {
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
-    const { sendCache } = getState().wallet;
     if (router.app !== 'wallet' || !router.params) return;
 
     let cachedState = null;
@@ -33,8 +33,8 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
 
     if (account) {
         const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-        const cachedItem = sendCache.cache.find(item => item.id === accountKey);
-        cachedState = cachedItem ? cachedItem.sendFormState : null;
+        const cachedItem = await db.getItemByPK('sendForm', accountKey);
+        cachedState = cachedItem;
     }
 
     const localCurrency = getLocalCurrency(settings.localCurrency);
@@ -51,6 +51,16 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         },
         localCurrency,
     });
+};
+
+export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
+    const { account } = getState().wallet.selectedAccount;
+    const { send } = getState().wallet;
+    if (!account || !send) return null;
+
+    const id = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const sendFormState = send;
+    db.addItem('sendForm', sendFormState, id);
 };
 
 export const compose = (setMax: boolean = false) => async (
@@ -101,7 +111,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -146,7 +156,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -196,7 +206,7 @@ export const handleSelectCurrencyChange = (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -237,7 +247,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -253,9 +263,19 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
-    if (fiatNetwork) {
+    if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
         const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
-        const fiatValue = getFiatValue(account.availableBalance, rate);
+        const fiatValue = getFiatValue(
+            formatNetworkAmount(composedTransaction.max, account.symbol),
+            rate,
+        );
+        if (rate) {
+            dispatch({
+                type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+                outputId,
+                fiatValue,
+            });
+        }
         dispatch({
             type: SEND.HANDLE_FIAT_VALUE_CHANGE,
             outputId,
@@ -290,7 +310,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         dispatch(compose());
     }
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -321,7 +341,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     }
 
     dispatch(compose());
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -351,7 +371,7 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     });
 
     dispatch(compose());
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -363,7 +383,7 @@ export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getStat
     if (!send || !account) return;
 
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 /*
@@ -377,7 +397,7 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({ type: SEND.CLEAR, localCurrency });
-    dispatch(sendFormCacheActions.cache());
+    dispatch(cache());
 };
 
 export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {

@@ -1,20 +1,30 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const {
-    app,
-    session,
-    BrowserWindow,
-    ipcMain,
-    globalShortcut,
-    protocol,
-    shell,
-} = require('electron');
+const { app, session, BrowserWindow, ipcMain, protocol, shell } = require('electron');
 const isDev = require('electron-is-dev');
 const prepareNext = require('electron-next');
 const path = require('path');
 const url = require('url');
+const electronLocalshortcut = require('electron-localshortcut');
 const { isBridgeRunning, runBridgeProcess } = require('./bridge');
 
 let mainWindow;
+
+const registerShortcuts = window => {
+    // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
+    // https://github.com/electron/electron/issues/8491#issuecomment-274790124
+    // https://github.com/electron/electron/issues/1334#issuecomment-310920998
+    electronLocalshortcut.register(window, 'F5', () => {
+        window.loadURL(src);
+    });
+
+    electronLocalshortcut.register(window, 'CommandOrControl+R', () => {
+        window.loadURL(src);
+    });
+
+    electronLocalshortcut.register(window, 'CommandOrControl+Alt+I', () => {
+        window.webContents.openDevTools();
+    });
+};
 
 const init = async () => {
     try {
@@ -80,12 +90,7 @@ const init = async () => {
             callback({ path: url });
         });
 
-        globalShortcut.register('f5', () => {
-            mainWindow.loadURL(src);
-        });
-        globalShortcut.register('CommandOrControl+R', () => {
-            mainWindow.loadURL(src);
-        });
+        registerShortcuts(mainWindow);
     }
 
     mainWindow.loadURL(src);
@@ -99,6 +104,15 @@ app.on('window-all-closed', () => {
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit();
+    }
+});
+
+app.on('will-quit', () => {
+    // try to unregister shortcuts
+    try {
+        electronLocalshortcut.unregisterAll(mainWindow);
+    } catch (error) {
+        // do nothing
     }
 });
 

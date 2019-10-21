@@ -170,7 +170,7 @@ const InstallBridge = (props: Props) => {
                             options={installers}
                         />
 
-                        <Link href={`${data.uri}${target.value}`}>
+                        <Link href={`${data.uri}${target.value}`} variant="nostyle">
                             <DownloadBridgeButton icon="DOWNLOAD">
                                 <FormattedMessage
                                     {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
@@ -187,10 +187,7 @@ const InstallBridge = (props: Props) => {
                             {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
                             values={{
                                 TR_CHANGELOG: (
-                                    <Link
-                                        href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                                        isGreen
-                                    >
+                                    <Link href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md">
                                         <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
                                     </Link>
                                 ),
@@ -201,7 +198,7 @@ const InstallBridge = (props: Props) => {
 
                 <P>
                     {target && data && target.signature && (
-                        <Link href={data.uri + target.signature} isGreen>
+                        <Link href={data.uri + target.signature}>
                             <FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
                         </Link>
                     )}

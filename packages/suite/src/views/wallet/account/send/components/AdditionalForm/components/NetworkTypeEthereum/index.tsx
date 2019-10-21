@@ -100,7 +100,7 @@ const NetworkTypeEthereum = () => (
                         </LabelLeft>
                         {true && (
                             <Right>
-                                <StyledLink onClick={() => {}} isGreen>
+                                <StyledLink onClick={() => {}}>
                                     <FormattedMessage {...localMessages.TR_SET_DEFAULT} />
                                 </StyledLink>
                             </Right>
