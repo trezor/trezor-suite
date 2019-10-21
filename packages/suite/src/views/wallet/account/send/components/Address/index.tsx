@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, Button, Icon, colors } from '@trezor/components';
-import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { isAddressInAccount, getAccountDevice } from '@wallet-utils/accountUtils';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
@@ -21,8 +21,7 @@ const QrButton = styled(Button)`
     padding: 0 10px;
 `;
 
-interface Props {
-    intl: InjectedIntl;
+interface Props extends WrappedComponentProps {
     outputId: Output['id'];
     error: Output['address']['error'];
     networkType: Network['networkType'];
