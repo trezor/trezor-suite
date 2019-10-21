@@ -24,7 +24,7 @@ const Card = styled.div`
 `;
 
 const ContactSupportLink = (
-    <Link href={SUPPORT_URL}>
+    <Link href={SUPPORT_URL} variant="nostyle">
         <FormattedMessage {...l10nMessages.TR_CONTACT_TREZOR_SUPPORT_LINK} />
     </Link>
 );
@@ -43,7 +43,9 @@ const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
             <H6>Troubleshooting guide</H6>
             <Text>
                 Check out our interactive{' '}
-                <Link href={TROUBLESHOOTER_URL}>troubleshooting guide</Link>
+                <Link href={TROUBLESHOOTER_URL} variant="nostyle">
+                    troubleshooting guide
+                </Link>
                 {/* <FormattedMessage {...l10nMessages.TR_REFRESH_INSTRUCTION} /> */}
             </Text>
         </Card>
@@ -61,7 +63,9 @@ const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
                 <H6>Try Trezor bridge</H6>
                 <Text>
                     You may install{' '}
-                    <Link onClick={() => TrezorConnect.disableWebUSB()}>Trezor Bridge</Link> which
+                    <Link onClick={() => TrezorConnect.disableWebUSB()} variant="nostyle">
+                        Trezor Bridge
+                    </Link>{' '}
                     is a special communication daemon running in background on your computer
                 </Text>
             </Card>
