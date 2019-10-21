@@ -1,12 +1,13 @@
+import { SEND } from '@wallet-actions/constants';
+import { NETWORK_TYPE } from '@wallet-constants/account';
+import { FIRST_OUTPUT_ID, U_INT_32, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { WalletAction } from '@wallet-types';
+import { InitialState, Output, State } from '@wallet-types/sendForm';
+import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
+import { isAddressValid } from '@wallet-utils/validation';
+import Bignumber from 'bignumber.js';
 import produce from 'immer';
 import validator from 'validator';
-import Bignumber from 'bignumber.js';
-import { SEND } from '@wallet-actions/constants';
-import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
-import { State, InitialState, Output } from '@wallet-types/sendForm';
-import { VALIDATION_ERRORS, FIRST_OUTPUT_ID } from '@wallet-constants/sendForm';
-import { isAddressValid } from '@wallet-utils/validation';
-import { WalletAction } from '@wallet-types';
 
 const initialState = (
     loaded: InitialState,
@@ -26,12 +27,14 @@ const initialState = (
     customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
     networkTypeRipple: {
+        transactionInfo: null,
         destinationTag: {
             value: null,
             error: null,
         },
     },
     networkTypeEthereum: {
+        transactionInfo: null,
         gasPrice: { value: null, error: null },
         gasLimit: { value: null, error: null },
         data: { value: null, error: null },
@@ -170,7 +173,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 break;
             }
 
-            // click button "Add recipient"
+            // click button "Remove recipient"
             case SEND.BTC_REMOVE_RECIPIENT: {
                 const { outputId } = action;
                 const removed = draft.outputs.filter(output => output.id !== outputId);
@@ -202,6 +205,11 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
+
+                if (parseInt(destinationTag, 10) > U_INT_32) {
+                    draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_VALID;
+                }
+
                 break;
             }
 
@@ -224,8 +232,20 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 break;
             }
 
-            case SEND.BTC_DELETE_TRANSACTION_INFO: {
-                draft.networkTypeBitcoin.transactionInfo = null;
+            case SEND.DELETE_TRANSACTION_INFO: {
+                const { networkType } = action;
+                switch (networkType) {
+                    case NETWORK_TYPE.BITCOIN:
+                        draft.networkTypeBitcoin.transactionInfo = null;
+                        break;
+                    case NETWORK_TYPE.ETHEREUM:
+                        draft.networkTypeEthereum.transactionInfo = null;
+                        break;
+                    case NETWORK_TYPE.RIPPLE:
+                        draft.networkTypeRipple.transactionInfo = null;
+                        break;
+                    // no default
+                }
             }
 
             // no default

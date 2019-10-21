@@ -13,12 +13,12 @@ export const HANDLE_CUSTOM_FEE_VALUE_CHANGE = '@wallet-send-form/handle-custom-f
 
 export const CLEAR = '@wallet-send-form/clear';
 export const DISPOSE = '@wallet-send-form/dispose';
+export const DELETE_TRANSACTION_INFO = '@wallet-send-form/btc-delete-tx-info';
 
 // btc specific
 export const BTC_ADD_RECIPIENT = '@wallet-send-form/btc-add-recipient';
 export const BTC_REMOVE_RECIPIENT = '@wallet-send-form/btc-remove-recipient';
 export const BTC_PRECOMPOSED_TX = '@wallet-send-form/btc-precomposed-tx';
-export const BTC_DELETE_TRANSACTION_INFO = '@wallet-send-form/btc-delete-tx-info';
 
 // ethereum specific
 
