@@ -1,5 +1,5 @@
 import React from 'react';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Notification } from '@trezor/components';
 
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -11,7 +11,7 @@ interface Props {
     goto: BaseProps['goto'];
 }
 
-const UpdateBridge = ({ transport, intl, goto }: Props & InjectedIntlProps) => {
+const UpdateBridge = ({ transport, intl, goto }: Props & WrappedComponentProps) => {
     // @ts-ignore TODO
     if (transport && transport.outdated) {
         return (
