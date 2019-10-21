@@ -1,10 +1,9 @@
 import React from 'react';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import styled from 'styled-components';
+import { formatDuration } from '@suite-utils/date';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-// @ts-ignore
-import FormattedDuration from 'react-intl-formatted-duration';
 import { FormattedMessage } from 'react-intl';
 import { TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -160,13 +159,9 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                         </Heading>
                         <Row>
                             <Value>
-                                <FormattedDuration
-                                    seconds={
-                                        sendForm.feeInfo.blockTime *
-                                        sendForm.selectedFee.blocks *
-                                        60
-                                    }
-                                />
+                                {formatDuration(
+                                    sendForm.feeInfo.blockTime * sendForm.selectedFee.blocks * 60,
+                                )}
                             </Value>
                         </Row>
                     </Section>

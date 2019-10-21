@@ -7396,6 +7396,11 @@ date-fns@^1.27.2:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
 
+date-fns@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.5.1.tgz#6bd76f01d3a438e9c481d4c18512ddac37585b4c"
+  integrity sha512-ZBrQmuaqH9YqIejbgu8f09ki7wdD2JxWsRTZ/+HnnLNmkI56ty0evnWzKY+ihLT0xX5VdUX0vDNZCxJJGKX2+Q==
+
 date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
@@ -10844,11 +10849,6 @@ intl-relativeformat@^3.1.0:
   integrity sha512-+fH2Kg4c9ZUvFFjmT+uiiXlZL2/ZNv691jfA8Z0m4vy+JSWgD237tHh3fZ5X7BgLJOS6QO2kC8t7140mI8ILcw==
   dependencies:
     intl-messageformat "^3.1.4"
-
-intl-unofficial-duration-unit-format@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/intl-unofficial-duration-unit-format/-/intl-unofficial-duration-unit-format-1.1.0.tgz#2856ba6661f51b5f854ae081cd461237ccda1b79"
-  integrity sha512-xAwjaUZql3cSx+oYjKUve+lqu6vh6sGQ9X4OIWPA0uxedvBFpH+deHgcUYdafXliTHgSV6G6nXIgM/SLozXr5g==
 
 invariant@2.2.4, invariant@^2.1.1, invariant@^2.2.2, invariant@^2.2.3, invariant@^2.2.4:
   version "2.2.4"
@@ -16216,13 +16216,6 @@ react-inspector@^3.0.2:
     babel-runtime "^6.26.0"
     is-dom "^1.0.9"
     prop-types "^15.6.1"
-
-react-intl-formatted-duration@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/react-intl-formatted-duration/-/react-intl-formatted-duration-3.1.0.tgz#82c6cdabd58686d1ea2dff2958e6b24a5e1de364"
-  integrity sha512-sOim1afR8Rmb82DQgXitxxQJlZ6WKW1ZSzg4/ajr/dv2s5e3pF9ulo1vn2LzfG4EGQrzwhQoNG5r5XAxKC4e7A==
-  dependencies:
-    intl-unofficial-duration-unit-format "1.1.0"
 
 react-intl@3.0.0-beta-6:
   version "3.0.0-beta-6"
