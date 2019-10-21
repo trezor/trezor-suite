@@ -10,6 +10,7 @@ import {
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
+import * as connectActions from '@onboarding-actions/connectActions';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 
 import { GetState, Dispatch, Action } from '@suite-types';
@@ -97,6 +98,12 @@ const enableOnboardingReducer = (payload: boolean): Action => ({
     payload,
 });
 
+const retryBackup = () => async (dispatch: Dispatch) => {
+    await dispatch(connectActions.wipeDevice());
+    await dispatch(connectActions.resetDevice());
+    await dispatch(connectActions.backupDevice());
+};
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -107,4 +114,5 @@ export {
     addPath,
     removePath,
     resetOnboarding,
+    retryBackup,
 };

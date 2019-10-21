@@ -256,8 +256,10 @@ export const observeSelectedDevice = (action: Action) => (
 
     const selectedDevice = getState().suite.device;
     if (!selectedDevice) return false;
+
     const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
     if (!deviceFromReducer) return true;
+
     const changed = reducersUtils.observeChanges(selectedDevice, deviceFromReducer);
     if (changed) {
         dispatch({

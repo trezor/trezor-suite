@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { Icon } from '@trezor/components';
-import { Text } from '@onboarding-components';
+import { Icon, P } from '@trezor/components';
 import l10nMessages from './Instructions.messages';
 
 const Wrapper = styled.div`
@@ -20,29 +19,33 @@ const Instruction = styled.div`
     align-items: center;
 `;
 
-const Instructions = () => (
-    <Wrapper>
-        <Instruction>
-            <Icon size={80} icon="CLOUD_CROSSED" />
-            <Text>
-                <FormattedMessage {...l10nMessages.TR_DO_NOT_UPLOAD_INSTRUCTION} />
-            </Text>
-        </Instruction>
-
-        <Instruction>
-            <Icon size={80} icon="DOWNLOAD_CROSSED" />
-            <Text>
-                <FormattedMessage {...l10nMessages.TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION} />
-            </Text>
-        </Instruction>
-
-        <Instruction>
-            <Icon size={80} icon="PHOTO_CROSSED" />
-            <Text>
-                <FormattedMessage {...l10nMessages.TR_DO_NOT_TAKE_PHOTO_INSTRUCTION} />
-            </Text>
-        </Instruction>
-    </Wrapper>
-);
+const Instructions = () => {
+    const list = [
+        {
+            icon: 'CLOUD_CROSSED',
+            message: l10nMessages.TR_DO_NOT_UPLOAD_INSTRUCTION,
+        },
+        {
+            icon: 'DOWNLOAD_CROSSED',
+            message: l10nMessages.TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION,
+        },
+        {
+            icon: 'PHOTO_CROSSED',
+            message: l10nMessages.TR_DO_NOT_TAKE_PHOTO_INSTRUCTION,
+        },
+    ] as const;
+    return (
+        <Wrapper>
+            {list.map(i => (
+                <Instruction key={i.icon}>
+                    <Icon size={80} icon={i.icon} />
+                    <P size="small">
+                        <FormattedMessage {...i.message} />
+                    </P>
+                </Instruction>
+            ))}
+        </Wrapper>
+    );
+};
 
 export default Instructions;

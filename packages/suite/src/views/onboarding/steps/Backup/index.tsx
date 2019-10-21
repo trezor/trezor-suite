@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { H4, P, Button, Checkbox, Link, Prompt } from '@trezor/components';
+import { P, Checkbox, Link, Prompt } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import colors from '@suite/config/onboarding/colors';
 import { SEED_MANUAL_URL } from '@suite/constants/onboarding/urls';
 import { BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import l10nCommonMessages from '@suite-support/Messages';
-
-import { Wrapper, Text } from '@onboarding-components';
+import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import SeedCard from './components/SeedCard';
 import Instructions from './components/Instructions';
 import { Props } from './Container';
@@ -23,17 +22,13 @@ const Panel = styled(P)`
 `;
 
 const PromptWrapper = styled.div`
-    margin-top: auto;
+    margin-top: 30px;
 `;
 
 const BackupStep = (props: Props) => {
     const { device, deviceCall, uiInteraction, activeSubStep } = props;
 
     const [userUnderstands, setUserUnderstands] = useState(false);
-
-    useEffect(() => {
-        props.connectActions.resetCall();
-    }, [props.connectActions]);
 
     if (!device || !device.features) {
         return null;
@@ -43,20 +38,23 @@ const BackupStep = (props: Props) => {
     const model = features.major_version;
 
     const getStatus = () => {
-        if (
-            (deviceCall.name === BACKUP_DEVICE && deviceCall.error) ||
-            features.no_backup === true ||
-            features.initialized === false
-        ) {
+        if (features.initialized === false || features.unfinished_backup) {
             return 'failed';
         }
-        if (features.needs_backup === false) {
+        if (features.needs_backup === false && !deviceCall.isProgress) {
             return 'success';
         }
-        if (features.needs_backup === true && typeof uiInteraction.counter === 'number') {
+        if (
+            features.needs_backup &&
+            typeof uiInteraction.counter === 'number' &&
+            deviceCall.name === BACKUP_DEVICE
+        ) {
             return 'started';
         }
-        if (activeSubStep === 'recovery-card-front' || activeSubStep === 'recovery-card-back') {
+        if (
+            activeSubStep && ['recovery-card-front', 'recovery-card-back'].includes(activeSubStep) &&
+            !deviceCall.isProgress
+        ) {
             return activeSubStep;
         }
         if (features.needs_backup && !deviceCall.isProgress) {
@@ -127,23 +125,23 @@ const BackupStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             {model === 1 && (
-                                <Button
+                                <OnboardingButton.Cta
                                     onClick={() => {
-                                        props.onboardingActions.goToSubStep('recovery-card-front');
+                                        props.goToSubStep('recovery-card-front');
                                     }}
                                     isDisabled={!device || !userUnderstands}
                                 >
                                     Continue
-                                </Button>
+                                </OnboardingButton.Cta>
                             )}
 
                             {model === 2 && (
-                                <Button
-                                    onClick={() => props.connectActions.backupDevice()}
+                                <OnboardingButton.Cta
+                                    onClick={() => props.backupDevice()}
                                     isDisabled={!device || !userUnderstands}
                                 >
                                     <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
-                                </Button>
+                                </OnboardingButton.Cta>
                             )}
                         </Wrapper.Controls>
                     </>
@@ -158,13 +156,13 @@ const BackupStep = (props: Props) => {
                         </Text>
                         <SeedCard flipOnMouseOver counter={uiInteraction.counter} />
                         <Wrapper.Controls>
-                            <Button
+                            <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.onboardingActions.goToSubStep('recovery-card-back');
+                                    props.goToSubStep('recovery-card-back');
                                 }}
                             >
                                 Flip it
-                            </Button>
+                            </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
                 )}
@@ -177,13 +175,13 @@ const BackupStep = (props: Props) => {
                         </Text>
                         <SeedCard showBack counter={uiInteraction.counter} />
                         <Wrapper.Controls>
-                            <Button
+                            <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.connectActions.backupDevice();
+                                    props.backupDevice();
                                 }}
                             >
                                 <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
-                            </Button>
+                            </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
                 )}
@@ -214,46 +212,39 @@ const BackupStep = (props: Props) => {
 
                 {getStatus() === 'failed' && (
                     <>
-                        <H4>
-                            <FormattedMessage
-                                {...l10nMessages.TR_DEVICE_DISCONNECTED_DURING_ACTION}
-                            />
-                        </H4>
                         <P>
                             <FormattedMessage
                                 {...l10nMessages.TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION}
                             />
                         </P>
-                        <Wrapper.Controls>
-                            {features.initialized === true && (
-                                <Button
-                                    onClick={async () => {
-                                        await props.connectActions.wipeDevice();
-                                        await props.connectActions.getFeatures();
-                                        props.connectActions.resetDevice();
-                                    }}
-                                    isDisabled={!device || !device.connected}
-                                >
-                                    <FormattedMessage {...l10nCommonMessages.TR_WIPE_DEVICE} />
-                                </Button>
-                            )}
 
-                            {features.initialized === false && (
-                                <Button
-                                    onClick={() => {
-                                        props.connectActions.resetDevice();
-                                    }}
-                                    isDisabled={!device || !device.connected}
-                                >
-                                    <FormattedMessage {...l10nCommonMessages.TR_RESET_DEVICE} />
-                                </Button>
+                        <P>Once you click retry, device will ask you to confirm these steps:</P>
+                        <P>1. wipe device</P>
+                        <P>2. create new wallet</P>
+                        <P>3. start backup again</P>
+
+                        <Wrapper.Controls>
+                            {!deviceCall.isProgress && (
+                                <>
+                                    <OnboardingButton.Cta
+                                        onClick={() => {
+                                            props.retryBackup();
+                                        }}
+                                        isDisabled={!device || !device.connected}
+                                    >
+                                        <FormattedMessage {...l10nCommonMessages.TR_RETRY} />
+                                    </OnboardingButton.Cta>
+                                    <OnboardingButton.Alt
+                                        onClick={() => {
+                                            props.goto('wallet-index');
+                                        }}
+                                        isDisabled={!device || !device.connected}
+                                    >
+                                        Go to wallet
+                                    </OnboardingButton.Alt>
+                                </>
                             )}
                         </Wrapper.Controls>
-                        {!device.connected && (
-                            <Text>
-                                <FormattedMessage {...l10nCommonMessages.TR_CONNECT_YOUR_DEVICE} />
-                            </Text>
-                        )}
                     </>
                 )}
 
@@ -264,9 +255,9 @@ const BackupStep = (props: Props) => {
                         </Text>
 
                         <Wrapper.Controls>
-                            <Button onClick={() => props.onboardingActions.goToNextStep()}>
+                            <OnboardingButton.Cta onClick={() => props.goToNextStep()}>
                                 <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_BUTTON} />
-                            </Button>
+                            </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
                 )}

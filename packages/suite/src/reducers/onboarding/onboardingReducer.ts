@@ -11,6 +11,7 @@ import {
     RESET_ONBOARDING,
     ENABLE_ONBOARDING_REDUCER,
 } from '@onboarding-types/onboarding';
+import * as SUITE from '@suite-actions/constants/suiteConstants';
 import { AnyPath } from '@onboarding-types/steps';
 import * as STEP from '@suite/constants/onboarding/steps';
 import steps from '@onboarding-config/steps';
@@ -20,6 +21,8 @@ import {
     DEVICE_CALL_SUCCESS,
     DEVICE_CALL_ERROR,
 } from '@suite/types/onboarding/connect';
+import * as CALLS from '@suite/actions/onboarding/constants/calls';
+
 import { Action } from '@suite-types';
 
 const initialState: OnboardingState = {
@@ -55,7 +58,6 @@ const setPrevDevice = (state: OnboardingState, device: Device) => {
     ) {
         return null;
     }
-
     // ts.
     if (!device.features) {
         return null;
@@ -67,6 +69,13 @@ const setPrevDevice = (state: OnboardingState, device: Device) => {
         return state.prevDevice;
     }
     return device;
+};
+
+const updatePrevDevice = (draft: OnboardingState, device: Device) => {
+    // wipeDevice call changes id
+    if (draft.deviceCall.name === CALLS.WIPE_DEVICE && !draft.deviceCall.error) {
+        draft.prevDevice = device;
+    }
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
@@ -180,6 +189,9 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case UI.REQUEST_PIN:
                 draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
+                break;
+            case SUITE.UPDATE_SELECTED_DEVICE:
+                updatePrevDevice(draft, action.payload);
                 break;
             case RESET_ONBOARDING:
                 return initialState;
