@@ -4,7 +4,7 @@ import { Input, TextArea, Button, colors, variables } from '@trezor/components';
 import Title from '@wallet-components/Title';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
-import { FormattedMessage, InjectedIntl } from 'react-intl';
+import { FormattedMessage, WrappedComponentProps } from 'react-intl';
 
 import l10nCommonMessages from '@wallet-views/messages';
 import l10nMessages from './index.messages';
@@ -60,8 +60,7 @@ const Verify = styled(Column)`
     }
 `;
 
-interface Props {
-    intl: InjectedIntl;
+interface Props extends WrappedComponentProps {
     signVerify: StateProps['signVerify'];
     signVerifyActions: DispatchProps['signVerifyActions'];
 }
