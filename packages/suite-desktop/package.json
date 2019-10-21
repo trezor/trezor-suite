@@ -35,8 +35,7 @@
             "package.json"
         ],
         "dmg": {
-            "contents": [
-                {
+            "contents": [{
                     "x": 410,
                     "y": 150,
                     "type": "link",
@@ -74,7 +73,6 @@
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
-        "@types/react-native": "^0.57.41",
         "@types/react-redux": "^7.0.8",
         "electron": "^6.0.9",
         "electron-builder": "^21.2.0",
