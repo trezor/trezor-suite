@@ -6,7 +6,6 @@ import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FormattedMessage } from 'react-intl';
 import commonMessages from '@wallet-views/messages';
-import { getStatus } from '@suite-utils/device';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 import { AppState, TrezorDevice } from '@suite-types';
@@ -76,8 +75,8 @@ const isDisabled = (
         isDisabled = true;
     }
 
-    // device disconnected
-    if (getStatus(device) === 'disconnected') {
+    // device disconnected and not available
+    if (!device.connected || !device.available) {
         isDisabled = true;
     }
 

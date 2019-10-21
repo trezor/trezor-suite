@@ -84,7 +84,7 @@ class BookmarkStep extends React.Component<Props, StepState> {
                             {...l10nMessages.TR_BOOKMARK_SUBHEADING}
                             values={{
                                 TR_PHISHING_ATTACKS: (
-                                    <Link isGreen href={PHISHING_URL}>
+                                    <Link href={PHISHING_URL}>
                                         <FormattedMessage {...l10nMessages.TR_PHISHING_ATTACKS} />
                                     </Link>
                                 ),

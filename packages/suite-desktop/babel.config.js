@@ -30,6 +30,7 @@ module.exports = api => {
                         '^@(.+)-types': '../../packages/suite/src/types/\\1/index',
                         '^@(.+)-middlewares/(.+)': '../../packages/suite/src/middlewares/\\1/\\2',
                         '^@(.+)-middlewares': '../../packages/suite/src/middlewares/\\1/index',
+                        '^@desktop/(.+)': './src/\\1', // relative to this project
                     },
                 },
             ],

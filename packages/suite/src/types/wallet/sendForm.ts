@@ -28,7 +28,8 @@ export interface Output {
             | null
             | typeof VALIDATION_ERRORS.IS_EMPTY
             | typeof VALIDATION_ERRORS.NOT_NUMBER
-            | typeof VALIDATION_ERRORS.NOT_ENOUGH;
+            | typeof VALIDATION_ERRORS.NOT_ENOUGH
+            | typeof VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS;
     };
     fiatValue: { value: null | string };
     localCurrency: {

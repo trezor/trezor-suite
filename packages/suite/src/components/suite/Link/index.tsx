@@ -5,11 +5,9 @@ import { getPrefixedURL, isInternalRoute } from '@suite-utils/router';
 
 interface Props extends LinkProps {
     className?: string;
-    isGray?: boolean;
-    isGreen?: boolean;
-    hasNoStyle?: boolean;
+    variant?: 'gray' | 'nostyle';
     target?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 const RefLinkComponent = React.forwardRef((props: Props, _ref: any) => (

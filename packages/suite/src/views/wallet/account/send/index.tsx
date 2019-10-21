@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { InjectedIntl } from 'react-intl';
 import { Icon, colors } from '@trezor/components';
@@ -62,6 +62,12 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
         sendFormActionsRipple,
         accounts,
     } = props;
+
+    useEffect(() => {
+        sendFormActions.init();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.selectedAccount]);
+
     const { account, network, discovery, shouldRender } = props.selectedAccount;
     const accountNameMessage =
         account && account.networkType === 'ethereum'
@@ -111,6 +117,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
                             error={output.amount.error}
                             fiatValue={output.fiatValue.value}
                             fiat={fiat}
+                            decimals={network.decimals}
                             localCurrency={output.localCurrency.value}
                             sendFormActions={sendFormActions}
                         />

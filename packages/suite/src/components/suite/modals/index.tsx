@@ -32,6 +32,7 @@ import RememberDevice from './Remember';
 import WalletType from './WalletType';
 import AddAccount from './AddAccount';
 import QrScanner from './Qr';
+import Disconnect from './Disconnect';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -136,6 +137,8 @@ const getDeviceContextModal = (props: Props) => {
                     onCancel={modalActions.onCancel}
                 />
             );
+        case SUITE.REQUEST_DISCONNECT_DEVICE:
+            return <Disconnect device={device} />;
 
         case ACCOUNT.REQUEST_NEW_ACCOUNT:
             return (

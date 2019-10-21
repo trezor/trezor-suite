@@ -240,7 +240,7 @@ const DeviceMenu = ({
                         delay={500}
                     >
                         <WalletTypeIconWrapper>
-                            <Link to={getPattern('wallet-settings')}>
+                            <Link to={getPattern('wallet-settings')} variant="nostyle">
                                 <Icon
                                     size={16}
                                     color={colors.TEXT_SECONDARY}

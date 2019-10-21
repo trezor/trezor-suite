@@ -4,6 +4,7 @@ import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
+import { observeChanges } from '@suite-utils/reducerUtils';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -27,17 +28,16 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         api.dispatch(blockchainActions.subscribe());
     }
 
-    // propagate action to reducers (await is necessary here)
+    // propagate action to reducers
     next(action);
 
     const nextState = api.getState();
 
     if (
         action.type === ROUTER.LOCATION_CHANGE &&
-        nextState.router.route &&
-        nextState.router.route.name === 'wallet-account-send'
+        observeChanges(prevState.router.params, nextState.router.params)
     ) {
-        api.dispatch(sendFormActions.init());
+        api.dispatch(selectedAccountActions.dispose());
     }
 
     switch (action.type) {
@@ -53,16 +53,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
         default:
             break;
-    }
-
-    // TODO: copy all logic from old WalletService middleware
-    const currentState = api.getState();
-    if (
-        action.type === ROUTER.LOCATION_CHANGE &&
-        currentState.router.params &&
-        prevState.router.params !== currentState.router.params
-    ) {
-        api.dispatch(selectedAccountActions.dispose());
     }
 
     return action;

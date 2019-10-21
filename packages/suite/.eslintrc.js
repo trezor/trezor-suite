@@ -52,6 +52,7 @@ module.exports = {
         // Temp fix for import.
         // https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
         'import/named': 'off',
+        'import/order': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.
         'func-style': ['error', 'declaration', {
             allowArrowFunctions: true

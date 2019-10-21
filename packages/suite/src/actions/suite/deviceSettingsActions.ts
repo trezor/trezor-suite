@@ -1,5 +1,6 @@
 import TrezorConnect, { ApplySettingsParams, ChangePinParams, CommonParams } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
+import { SUITE } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
 //  TODO: should be reworked to deviceManagementActions
@@ -59,4 +60,11 @@ export const wipeDevice = (params: CommonParams) => async (
             cancelable: true,
         }),
     );
+
+    if (result.success && device && device.features) {
+        dispatch({
+            type: SUITE.REQUEST_DISCONNECT_DEVICE,
+            payload: device,
+        });
+    }
 };

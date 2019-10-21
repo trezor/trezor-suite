@@ -16,6 +16,7 @@ export const FORGET_DEVICE = '@suite/forget-device';
 export const FORGET_DEVICE_INSTANCE = '@suite/forget-device-instance';
 export const REQUEST_REMEMBER_DEVICE = '@suite/request-remember-device';
 export const REMEMBER_DEVICE = '@suite/remember-device';
+export const REQUEST_DISCONNECT_DEVICE = '@suite/request-disconnect-device';
 export const SET_LANGUAGE = '@suite/set-language';
 export const TOGGLE_DEVICE_MENU = '@suite/toggle-device-menu';
 export const TOGGLE_SIDEBAR = '@suite/toggle-sidebar';

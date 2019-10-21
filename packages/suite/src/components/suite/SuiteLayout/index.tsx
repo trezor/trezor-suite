@@ -11,8 +11,10 @@ import { Header as CommonHeader, LanguagePicker, colors } from '@trezor/componen
 
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
+import Link from '@suite-components/Link';
 import NoSSR from '@suite/support/suite/NoSSR';
 import Head from 'next/head';
+import { getRoute } from '@suite-utils/router';
 import { URLS } from '@suite-constants';
 
 import l10nMessages from './index.messages';
@@ -77,6 +79,7 @@ const SuiteLayout = (props: Props & InjectedIntlProps) => (
             <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
         </Head>
         <CommonHeader
+            logoLinkComponent={<Link href={getRoute('wallet-index')} variant="nostyle" />}
             sidebarOpened={props.suite.showSidebar}
             toggleSidebar={props.toggleSidebar}
             togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}

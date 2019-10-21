@@ -5,7 +5,7 @@
     "repository": "https://github.com/trezor/trezor-suite.git",
     "license": "SEE LICENSE IN LICENSE.md",
     "engines": {
-        "node": "=10.x.x"
+        "node": "12.x"
     },
     "workspaces": {
         "packages": [
@@ -21,6 +21,7 @@
         "bootstrap": "lerna bootstrap",
         "postinstall": "lerna bootstrap",
         "build:libs": "lerna run build:lib",
+        "build:connect": "rimraf packages/suite-data/files/connect && yarn webpack --config packages/suite-data/trezor-connect.webpack.js",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
         "deps:update": "rimraf 'yarn.lock' 'node_modules' '*/**/node_modules' && yarn",
         "suite:dev": "yarn workspace @trezor/suite-web dev",

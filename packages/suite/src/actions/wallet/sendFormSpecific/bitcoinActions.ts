@@ -4,10 +4,10 @@ import { Output } from '@wallet-types/sendForm';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { SEND } from '@wallet-actions/constants';
+import { INPUT_SEQUENCE } from '@wallet-constants/sendForm';
 import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-import * as sendFormCacheActions from '../sendFormCacheActions';
 import * as sendFormActions from '../sendFormActions';
 
 export type SendFormBitcoinActions =
@@ -42,7 +42,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         newOutput,
     });
 
-    dispatch(sendFormCacheActions.cache());
+    dispatch(sendFormActions.cache());
 };
 
 /**
@@ -54,7 +54,7 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getSta
     if (!send || !account) return null;
 
     dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
-    dispatch(sendFormCacheActions.cache());
+    dispatch(sendFormActions.cache());
 };
 
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -70,7 +70,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const inputs = transaction.inputs.map(vin => ({
         ...vin,
-        sequence: 0xffffffff - 2, // RBF
+        sequence: INPUT_SEQUENCE, // RBF
     }));
 
     const resp = await TrezorConnect.signTransaction({

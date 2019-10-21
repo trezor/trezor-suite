@@ -70,6 +70,7 @@ export default (state: State = initialState, action: Action): State => {
         case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
         case SUITE.REQUEST_PASSPHRASE_MODE:
+        case SUITE.REQUEST_DISCONNECT_DEVICE:
         case ACCOUNT.REQUEST_NEW_ACCOUNT:
             return {
                 context: MODAL.CONTEXT_DEVICE,

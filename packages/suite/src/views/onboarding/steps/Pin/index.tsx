@@ -112,7 +112,7 @@ const SetPinStep = (props: Props) => {
 
                 {getStatus() === 'first' && (
                     <NewPinWrapper>
-                        {/* <Link onClick={() =>  setState({ instructionsFocused: true })}>
+                        {/* <Link onClick={() =>  setState({ instructionsFocused: true })} variant="nostyle">
                                 Click to see how pin works.
                             </Link> */}
 
@@ -127,6 +127,7 @@ const SetPinStep = (props: Props) => {
                                             onClick={() =>
                                                  setState({ instructionsFocused: false })
                                             }
+                                            variant="nostyle"
                                         >
                                             Ok, I get it.
                                         </Link>
@@ -178,7 +179,7 @@ const SetPinStep = (props: Props) => {
                                 {...l10nMessages.TR_PIN_ERROR_TROUBLESHOOT}
                                 values={{
                                     TR_DOCUMENTATION: (
-                                        <Link href={URLS.PIN_MANUAL_URL}>
+                                        <Link href={URLS.PIN_MANUAL_URL} variant="nostyle">
                                             <FormattedMessage {...l10nMessages.TR_DOCUMENTATION} />
                                         </Link>
                                     ),

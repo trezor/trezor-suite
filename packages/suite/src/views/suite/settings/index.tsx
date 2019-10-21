@@ -13,12 +13,16 @@ import { Props } from './Container';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
-const Row = styled.div`
+interface RowProps {
+    isColumn?: boolean;
+    marginTop?: string;
+}
+
+const Row = styled.div<RowProps>`
     display: flex;
-    flex-direction: ${(props: { isColumn?: boolean }) => (props.isColumn ? 'column' : 'row')};
-    justify-content: ${(props: { isColumn?: boolean }) =>
-        props.isColumn ? 'default' : 'space-between'};
-    margin: 20px 0 0 0;
+    flex-direction: ${props => (props.isColumn ? 'column' : 'row')};
+    justify-content: ${props => (props.isColumn ? 'default' : 'space-between')};
+    margin: ${props => (props.marginTop ? `${props.marginTop}px 0 0 0` : '20px 0 0 0')};
     min-height: 45px;
 `;
 
@@ -68,10 +72,18 @@ const OrientationButton = styled(Button)`
     margin-left: 3px;
 `;
 
-const BackgroundGallery = styled.div`
+const BackgroundGalleryT2 = styled.div`
     display: flex;
     flex-wrap: wrap;
     max-width: 200px;
+    margin-right: 10px;
+`;
+
+const BackgroundGalleryT1 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 490px;
+    margin-right: 10px;
 `;
 
 const BackgroundImageT2 = styled.img`
@@ -85,6 +97,8 @@ const BackgroundImageT2 = styled.img`
 const BackgroundImageT1 = styled.img`
     margin: 5px;
     cursor: pointer;
+    width: 64px;
+    height: 32px;
 `;
 
 const CloseButton = styled(Button)`
@@ -154,13 +168,14 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
             </Row>
 
             <Row>
-                <Row isColumn>
+                <Row isColumn marginTop="0">
                     <Label>{tr('TR_DEVICE_SETTINGS_HOMESCREEN_TITLE')}</Label>
                     <Text>{tr('TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS')}</Text>
                 </Row>
-                <BackgroundGallery>
-                    {device.features.major_version === 1 &&
-                        homescreensT1.map(image => (
+
+                {device.features.major_version === 1 && (
+                    <BackgroundGalleryT1>
+                        {homescreensT1.map(image => (
                             <BackgroundImageT1
                                 key={image}
                                 id={image}
@@ -168,9 +183,11 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                                 src={resolveStaticPath(`images/suite/homescreens/t1/${image}.png`)}
                             />
                         ))}
-
-                    {device.features.major_version === 2 &&
-                        homescreensT2.map(image => (
+                    </BackgroundGalleryT1>
+                )}
+                {device.features.major_version === 2 && (
+                    <BackgroundGalleryT2>
+                        {homescreensT2.map(image => (
                             <BackgroundImageT2
                                 key={image}
                                 id={image}
@@ -178,7 +195,8 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                                 src={resolveStaticPath(`images/suite/homescreens/t2/${image}.png`)}
                             />
                         ))}
-                </BackgroundGallery>
+                    </BackgroundGalleryT2>
+                )}
                 <ActionColumn>
                     <Row isColumn>
                         <ActionButtonColumn isDisabled onClick={() => applySettings({ label })}>

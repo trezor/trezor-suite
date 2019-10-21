@@ -4,14 +4,13 @@ import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
 import { Output } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-
 import FiatComponent from './components/Fiat';
 import CurrencySelect from './components/CurrencySelect';
 import SetMax from './components/SetMax';
 
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
-import { Account, Fiat } from '@wallet-types';
+import { Account, Fiat, Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -40,12 +39,13 @@ interface Props {
     amount: Output['amount']['value'];
     symbol: Account['symbol'];
     canSetMax: boolean;
+    decimals: Network['decimals'];
     localCurrency: Output['localCurrency']['value'];
     error: Output['amount']['error'];
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const getMessage = (error: Output['amount']['error']) => {
+const getMessage = (error: Output['amount']['error'], decimals: Network['decimals']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_SET} />;
@@ -53,6 +53,13 @@ const getMessage = (error: Output['amount']['error']) => {
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
         case VALIDATION_ERRORS.NOT_ENOUGH:
             return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
+        case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
+            return (
+                <FormattedMessage
+                    {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS}
+                    values={{ decimals }}
+                />
+            );
         default:
             return null;
     }
@@ -111,7 +118,7 @@ const Amount = (props: Props) => (
             }
             value={props.amount || ''}
             onChange={e => props.sendFormActions.handleAmountChange(props.outputId, e.target.value)}
-            bottomText={getMessage(props.error)}
+            bottomText={getMessage(props.error, props.decimals)}
             sideAddons={
                 <>
                     <SetMax

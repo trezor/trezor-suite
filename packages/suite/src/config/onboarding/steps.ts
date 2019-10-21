@@ -132,4 +132,9 @@ const steps: Step[] = [
     },
 ];
 
-export default steps;
+export default (steps => {
+    if (process.env.SUITE_TYPE === 'desktop') {
+        return steps.filter(s => s.id !== STEP.ID_BOOKMARK_STEP);
+    }
+    return steps;
+})(steps);

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { storiesOf } from '@storybook/react';
-import { text, select, radios, number, boolean } from '@storybook/addon-knobs';
+import { text, select, number } from '@storybook/addon-knobs';
 import { Tooltip, P, Link, H1, H2, H3, H4, H5, H6 } from '@trezor/components';
 import { infoOptions } from '../../support/info';
 
@@ -60,22 +60,14 @@ storiesOf('Typography', module).add(
                 <H5>small</H5>
                 <Row>
                     <P size="small" data-test="paragraph_small">
-                        This is a SMALL paragraph with{' '}
-                        <Link href="/test" isGreen>
-                            link
-                        </Link>
-                        .{pContent}
+                        This is a SMALL paragraph with <Link href="/test">link</Link>.{pContent}
                     </P>
                 </Row>
 
                 <H5>medium</H5>
                 <Row>
                     <P size="medium" data-test="paragraph_medium">
-                        This is a MEDIUM paragraph with{' '}
-                        <Link href="/test" isGreen>
-                            link
-                        </Link>
-                        .{pContent}
+                        This is a MEDIUM paragraph with <Link href="/test">link</Link>.{pContent}
                     </P>
                 </Row>
 
@@ -83,7 +75,7 @@ storiesOf('Typography', module).add(
                     <H5>large</H5>
                     <P size="large" data-test="paragraph_large">
                         This is a LARGE paragraph with{' '}
-                        <Link href="/test" isGray>
+                        <Link href="/test" variant="gray">
                             {' '}
                             gray link
                         </Link>
@@ -94,11 +86,7 @@ storiesOf('Typography', module).add(
                 <Row>
                     <H5>xlarge</H5>
                     <P size="xlarge" data-test="paragraph_xlarge">
-                        This is a XLARGE paragraph with{' '}
-                        <Link href="/test" isGreen>
-                            link
-                        </Link>
-                        .{pContent}
+                        This is a XLARGE paragraph with <Link href="/test">link</Link>.{pContent}
                     </P>
                 </Row>
 
@@ -219,17 +207,15 @@ storiesOf('Typography', module)
     .add(
         'Link',
         () => {
-            const isGreen = true;
-            const isGray = true;
-            const color = radios(
-                'Color',
+            const variant = select(
+                'Variant',
                 {
-                    Green: 'green',
+                    'Default (green)': null,
                     Gray: 'gray',
+                    'No style': 'nostyle',
                 },
-                'green'
-            );
-            const hasNoStyle = boolean('No Style', false);
+                null
+            ) as 'gray' | 'nostyle';
             const target = select(
                 'Target',
                 {
@@ -245,12 +231,7 @@ storiesOf('Typography', module)
             const linkText = text('Text', 'This is a link.');
 
             return (
-                <Link
-                    href={href}
-                    {...(target ? { target } : {})}
-                    {...(color === 'green' ? { isGreen } : { isGray })}
-                    {...(hasNoStyle ? { hasNoStyle } : {})}
-                >
+                <Link href={href} {...(target ? { target } : {})} {...(variant ? { variant } : {})}>
                     {linkText}
                 </Link>
             );
