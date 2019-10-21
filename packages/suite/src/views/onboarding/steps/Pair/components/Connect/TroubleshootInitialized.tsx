@@ -94,7 +94,7 @@ const TroubleshootInitialized = (props: Props) => {
                         <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
                             <FormattedMessage {...l10nCommonMessages.TR_BACK} />
                         </OnboardingButton.Alt>
-                        <Link href={SUPPORT_URL}>
+                        <Link href={SUPPORT_URL} variant="nostyle">
                             <OnboardingButton.Cta style={{ width: '100%' }}>
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
                             </OnboardingButton.Cta>

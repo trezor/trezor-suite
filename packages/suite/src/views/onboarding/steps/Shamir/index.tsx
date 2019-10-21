@@ -30,7 +30,10 @@ const ShamirStep = (props: Props) => {
                 {getModel() === 1 && (
                     <Text>
                         You are one step from creating your wallet. By clicking the button below you
-                        agree with <Link href={URLS.TOS_URL}>TOS</Link>
+                        agree with{' '}
+                        <Link href={URLS.TOS_URL} variant="nostyle">
+                            TOS
+                        </Link>
                     </Text>
                 )}
                 {getModel() === 2 && (
