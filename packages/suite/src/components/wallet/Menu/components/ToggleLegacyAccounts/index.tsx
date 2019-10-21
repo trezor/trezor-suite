@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { colors, Icon } from '@trezor/components';
@@ -23,17 +23,25 @@ interface Props {
     isOpen: boolean;
 }
 
-const Toggle = ({ onToggle, isOpen }: Props) => (
-    <Wrapper onClick={onToggle}>
-        <FormattedMessage {...l10nMessages.TR_LEGACY_ACCOUNTS} />
-        <Icon
-            canAnimate
-            isActive={isOpen}
-            size={12}
-            color={colors.TEXT_SECONDARY}
-            icon="ARROW_DOWN"
-        />
-    </Wrapper>
-);
+const Toggle = ({ onToggle, isOpen }: Props) => {
+    const [touched, setTouched] = useState(false);
+    return (
+        <Wrapper
+            onClick={() => {
+                onToggle();
+                setTouched(true);
+            }}
+        >
+            <FormattedMessage {...l10nMessages.TR_LEGACY_ACCOUNTS} />
+            <Icon
+                canAnimate={touched}
+                isActive={isOpen}
+                size={12}
+                color={colors.TEXT_SECONDARY}
+                icon="ARROW_DOWN"
+            />
+        </Wrapper>
+    );
+};
 
 export default Toggle;
