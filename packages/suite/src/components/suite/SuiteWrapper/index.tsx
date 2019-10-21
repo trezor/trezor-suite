@@ -30,12 +30,10 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const Index = (props: Props) => {
     const { suite, goto } = props;
     const { transport, loaded, device } = props.suite;
-    const redirectToBridge = transport && !transport.type;
 
     if (!loaded || !transport) {
         // still loading or
-        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while) or
-        // waiting for redirect to bridge page
+        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while).
         return <Loading />;
     }
 
