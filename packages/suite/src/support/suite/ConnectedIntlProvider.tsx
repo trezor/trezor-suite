@@ -19,10 +19,8 @@ if (!Intl.PluralRules) {
     require('@formatjs/intl-pluralrules/dist/locale-data/es');
     require('@formatjs/intl-pluralrules/dist/locale-data/el');
     require('@formatjs/intl-pluralrules/dist/locale-data/de');
-    // TODO: bn is missing
-    // require('@formatjs/intl-pluralrules/dist/locale-data/bn');
+    require('@formatjs/intl-pluralrules/dist/locale-data/bn');
     require('@formatjs/intl-pluralrules/dist/locale-data/cs');
-    require('@formatjs/intl-pluralrules/polyfill-locales');
 }
 
 // polyfill for Intl.RelativeTimeFormat (e.g IE11, Edge, Safari 13-)
@@ -41,7 +39,7 @@ require('@formatjs/intl-relativetimeformat/dist/locale-data/fr');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/es');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/el');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/de');
-// require('@formatjs/intl-relativetimeformat/dist/locale-data/bn');
+require('@formatjs/intl-relativetimeformat/dist/locale-data/bn');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/cs');
 
 // Add MessageDescriptor type to values entry
