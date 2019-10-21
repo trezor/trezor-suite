@@ -10,6 +10,7 @@ import {
     REMOVE_PATH,
     RESET_ONBOARDING,
     ENABLE_ONBOARDING_REDUCER,
+    SET_BACKUP_TYPE,
 } from '@onboarding-types/onboarding';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 import { AnyPath } from '@onboarding-types/steps';
@@ -46,6 +47,9 @@ const initialState: OnboardingState = {
         name: undefined,
         counter: undefined,
     },
+    // shamir or standard. we need to have this field in reducer for the case
+    // when backup fails and user wants to retry it.
+    backupType: 0,
 };
 
 const setPrevDevice = (state: OnboardingState, device: Device) => {
@@ -138,6 +142,9 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case REMOVE_PATH:
                 draft.path = removePath(action.payload, state);
+                break;
+            case SET_BACKUP_TYPE:
+                draft.backupType = action.payload;
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);

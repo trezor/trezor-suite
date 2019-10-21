@@ -52,7 +52,8 @@ const BackupStep = (props: Props) => {
             return 'started';
         }
         if (
-            activeSubStep && ['recovery-card-front', 'recovery-card-back'].includes(activeSubStep) &&
+            activeSubStep &&
+            ['recovery-card-front', 'recovery-card-back'].includes(activeSubStep) &&
             !deviceCall.isProgress
         ) {
             return activeSubStep;

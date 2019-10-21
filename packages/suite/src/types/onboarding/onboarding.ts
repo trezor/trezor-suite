@@ -20,6 +20,7 @@ export interface OnboardingState {
         result: null | Record<string, any>;
     };
     uiInteraction: UiInteraction;
+    backupType: number;
 }
 
 export const GO_TO_SUBSTEP = '@onboarding/go-to-substep';
@@ -30,6 +31,7 @@ export const ADD_PATH = '@onboarding/add-path';
 export const REMOVE_PATH = '@onboarding/remove-path';
 export const RESET_ONBOARDING = '@onboarding/reset-onboarding';
 export const ENABLE_ONBOARDING_REDUCER = '@onboarding/enable-onboarding-reducer';
+export const SET_BACKUP_TYPE = '@onboarding/set-backup-type';
 
 interface SetStepActiveAction {
     type: typeof SET_STEP_ACTIVE;
@@ -69,6 +71,11 @@ interface EnableOnboardingReducer {
     payload: boolean;
 }
 
+interface SetBackupType {
+    type: typeof SET_BACKUP_TYPE;
+    payload: number;
+}
+
 export type OnboardingActionTypes =
     | SetStepActiveAction
     | SetStepResolvedAction
@@ -76,5 +83,6 @@ export type OnboardingActionTypes =
     | SelectTrezorModelAction
     | AddPath
     | RemovePath
+    | SetBackupType
     | ResetOnboarding
     | EnableOnboardingReducer;
