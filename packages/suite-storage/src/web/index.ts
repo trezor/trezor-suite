@@ -144,15 +144,21 @@ class CommonDB<TDBStructure> {
         return p;
     };
 
-    addItems = async (store: StoreNames<TDBStructure>, items: any[]) => {
+    addItems = async (store: StoreNames<TDBStructure>, items: any[], upsert: boolean) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
 
-        const keys: string[] = [];
+        const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
         items.forEach(item => {
-            tx.store.add(item).then(result => {
-                keys.push(result as string); // TODO: it seems that name of an object store could be string or number
-            });
+            if (upsert) {
+                tx.store.put(item).then(result => {
+                    keys.push(result);
+                });
+            } else {
+                tx.store.add(item).then(result => {
+                    keys.push(result);
+                });
+            }
         });
         this.notify(store, keys);
         await tx.done;
