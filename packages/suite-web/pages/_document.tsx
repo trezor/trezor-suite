@@ -4,6 +4,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import React from 'react';
 import { AppRegistry } from 'react-native';
 import globalStyles from '@suite-support/styles/global';
+import UnsupportedBrowser from './unsupported';
 
 interface Props {
     styleTags: any;
@@ -30,6 +31,10 @@ export default class MyDocument extends Document<Props> {
             <html lang="en" style={{ height: '100%' }}>
                 <Head>
                     <meta charSet="utf-8" />
+                    <script
+                        type="text/javascript"
+                        src={resolveStaticPath('js/browserDetection.js')}
+                    ></script>
                     <link
                         media="all"
                         rel="stylesheet"
@@ -39,6 +44,7 @@ export default class MyDocument extends Document<Props> {
                     {this.props.styleTags}
                 </Head>
                 <body style={{ height: '100%' }}>
+                    <UnsupportedBrowser />
                     <Main />
                     <NextScript />
                 </body>
