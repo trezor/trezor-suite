@@ -238,10 +238,12 @@ class CommonDB<TDBStructure> {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
         const txIdIndex = tx.store.index(indexName);
-        const p = await txIdIndex.openCursor(IDBKeyRange.only(key));
-        if (p) {
-            p.delete();
-            this.notify(store, p.value ? [p.value] : []);
+        let cursor = await txIdIndex.openCursor(IDBKeyRange.only(key));
+        while (cursor) {
+            cursor.delete();
+            this.notify(store, cursor.value ? [cursor.value] : []);
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
         }
     };
 
