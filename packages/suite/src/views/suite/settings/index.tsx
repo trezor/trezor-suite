@@ -5,7 +5,7 @@ import { Input, Switch, Button, P, Icon, H2, H3, variables } from '@trezor/compo
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { SettingsLayout } from '@suite-components';
-import { Translation } from '@suite-components/IntlMessageExtractor';
+import { Translation } from '@suite-components/Intl';
 import messages from './index.messages';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 

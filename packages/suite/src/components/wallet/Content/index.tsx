@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { P, H4, Loader, colors, variables } from '@trezor/components';
 import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
-import { Translation } from '@suite-components/IntlMessageExtractor';
+import { Translation } from '@suite-components/Intl';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 import l10nMessages from './index.messages';

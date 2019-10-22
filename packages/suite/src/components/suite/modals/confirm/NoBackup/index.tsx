@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/IntlMessageExtractor';
+import { Translation } from '@suite-components/Intl';
 
 import { H5, P, Icon, Button, colors } from '@trezor/components';
 import l10nCommonMessages from '../../messages';

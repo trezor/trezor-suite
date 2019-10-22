@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/IntlMessageExtractor';
+import { Translation } from '@suite-components/Intl';
 import l10nMessages from './messages';
 
 const Wrapper = styled.div``;

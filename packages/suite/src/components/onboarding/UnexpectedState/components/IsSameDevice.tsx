@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Translation } from '@suite-components/IntlMessageExtractor';
+import { Translation } from '@suite-components/Intl';
 
 import { resetOnboarding } from '@suite/actions/onboarding/onboardingActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Translation } from '@suite-components/IntlMessageExtractor';
+import { Translation } from '@suite-components/Intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';

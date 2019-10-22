@@ -1,7 +1,7 @@
 import React from 'react';
 import { Notification, NotificationProps } from '@trezor/components';
 import { ExtendedMessageDescriptor } from '@suite-types';
-import { Translation } from '../IntlMessageExtractor';
+import { Translation } from '../Intl';
 
 // add additional type 'MessageDescriptor' to label to CTA object
 type CTAShape = Required<NotificationProps>['actions'][number] & {

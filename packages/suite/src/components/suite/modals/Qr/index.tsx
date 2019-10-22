@@ -1,4 +1,4 @@
-import { Translation } from '@suite-components/IntlMessageExtractor';
+import { Translation } from '@suite-components/Intl';
 import { ParsedURI, parseUri } from '@suite-utils/parseUri';
 import { colors, H5, P } from '@trezor/components';
 import dynamic from 'next/dynamic';

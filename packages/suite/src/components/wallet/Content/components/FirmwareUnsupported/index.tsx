@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { CoinLogo, H4, P, Button, Link, colors } from '@trezor/components';
 
 import { FormattedMessage } from 'react-intl';
-import { Translation } from '@suite/components/suite/IntlMessageExtractor';
+import { Translation } from '@suite/components/suite/Intl';
 import { ExtendedMessageDescriptor } from '@suite/types/suite';
 import l10nMessages from './index.messages';
 
