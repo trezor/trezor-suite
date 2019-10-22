@@ -31,13 +31,9 @@
         "cypress": "^3.4.1",
         "cypress-image-snapshot": "^3.1.1",
         "git-revision-webpack-plugin": "^3.0.3",
-        "html-webpack-plugin": "^3.2.0",
         "next-images": "^1.1.1",
         "next-plugin-custom-babel-config": "^1.0.0",
         "next-transpile-modules": "^2.0.0",
-        "obsolete-webpack-plugin": "^0.5.6",
-        "script-ext-html-webpack-plugin": "^2.1.4",
-        "ts-loader": "^6.0.4",
-        "webpack-module-nomodule-plugin": "^0.1.0"
+        "ts-loader": "^6.0.4"
     }
 }
