@@ -7,7 +7,6 @@ import { NewsletterActionTypes } from '@onboarding-types/newsletter';
 import { Action } from '@suite-types';
 
 interface OnboardingAppState extends ReturnType<typeof onboarding> {
-    // connect?: ReturnType<typeof connect>;
     recovery?: ReturnType<typeof recovery>;
     newsletter?: ReturnType<typeof newsletter>;
 }
