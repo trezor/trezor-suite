@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 // import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
-import { db } from '@suite/storage';
+import * as storageActions from '@suite-actions/storageActions';
 import { SUITE } from '@suite/actions/suite/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
@@ -58,32 +58,25 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
         */
 
+        case SUITE.REMEMBER_DEVICE:
+            api.dispatch(storageActions.rememberDevice(action.payload));
+            break;
+
+        case SUITE.FORGET_DEVICE:
+            api.dispatch(storageActions.forgetDevice(action.payload));
+            break;
+
         case WALLET_SETTINGS.CHANGE_NETWORKS:
         case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
-            db.addItem(
-                'walletSettings',
-                {
-                    ...api.getState().wallet.settings,
-                },
-                'wallet',
-            );
+            api.dispatch(storageActions.saveWalletSettings());
             break;
 
         case SUITE.SET_LANGUAGE:
-        case SUITE.INITIAL_RUN_COMPLETED: {
-            const { suite } = api.getState();
-            db.addItem(
-                'suiteSettings',
-                {
-                    language: suite.language,
-                    initialRun: suite.initialRun,
-                },
-                'suite',
-            );
+        case SUITE.INITIAL_RUN_COMPLETED:
+            api.dispatch(storageActions.saveSuiteSettings());
             break;
-        }
         default:
             break;
     }

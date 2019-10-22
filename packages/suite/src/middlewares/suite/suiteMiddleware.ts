@@ -29,7 +29,11 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             // load storage
             api.dispatch(loadStorage());
             break;
-        case STORAGE.LOADED:
+        case STORAGE.LOADED: {
+            if (!api.getState().suite.device && action.payload.devices[0]) {
+                console.log('selecting device from storage', action.payload.devices);
+                api.dispatch(suiteActions.selectDevice(action.payload.devices[0]));
+            }
             // right after storage is loaded, we might start:
             // 1. fetching locales
             // 2. redirecting user into onboarding (if needed), there is custom loader for waiting on connect
@@ -41,6 +45,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             // 3. init connect;
             api.dispatch(trezorConnectActions.init());
             break;
+        }
         case SUITE.CONNECT_INITIALIZED:
             // trezor-connect init successfully
             api.dispatch(blockchainActions.init());

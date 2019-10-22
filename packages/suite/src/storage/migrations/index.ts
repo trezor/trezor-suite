@@ -4,7 +4,7 @@
 export const migrate = async <TDBType>(
     // 'db' is declared but its value is never read
     // @ts-ignore
-    db: TDBType,
+    db: any,
     oldVersion: number,
     newVersion: number | null,
     // @ts-ignore
@@ -22,6 +22,19 @@ export const migrate = async <TDBType>(
     }
     if (oldVersion < 3) {
         // upgrade to version 3
+        // @ts-ignore TODO: fix
+        db.deleteObjectStore('devices');
+        // @ts-ignore TODO: fix
+        db.createObjectStore('devices');
+        // object store for accounts
+
+        const accountsStore = db.createObjectStore('accounts', {
+            keyPath: ['descriptor', 'symbol', 'deviceState'],
+        });
+        accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+
+        // object store for discovery
+        db.createObjectStore('discovery', { keyPath: 'deviceState' });
     }
 
     // EXAMPLE
