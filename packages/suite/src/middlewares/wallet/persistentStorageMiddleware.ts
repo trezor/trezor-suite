@@ -3,9 +3,11 @@ import { MiddlewareAPI } from 'redux';
 import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import * as storageActions from '@suite-actions/storageActions';
-import { SUITE } from '@suite/actions/suite/constants';
+import * as accountUtils from '@wallet-utils/accountUtils';
+import { SUITE } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
+import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 // import { ACCOUNT } from '@suite/actions/wallet/constants';
 // import { AccountInfo } from 'trezor-connect';
 
@@ -61,6 +63,28 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SUITE.REMEMBER_DEVICE:
             api.dispatch(storageActions.rememberDevice(action.payload));
             break;
+
+        case ACCOUNT.CREATE:
+        case ACCOUNT.UPDATE: {
+            // TODO: explore better way to update accounts only
+            const device = accountUtils.getAccountDevice(api.getState().devices, action.payload);
+            if (device && device.features && device.remember) {
+                api.dispatch(storageActions.rememberDevice(device));
+            }
+            break;
+        }
+
+        case DISCOVERY.UPDATE:
+        case DISCOVERY.INTERRUPT:
+        case DISCOVERY.STOP:
+        case DISCOVERY.COMPLETE: {
+            // TODO: explore better way to update discovery only
+            const device = api.getState().devices.find(d => d.state === action.payload.deviceState);
+            if (device && device.features && device.remember) {
+                api.dispatch(storageActions.rememberDevice(device));
+            }
+            break;
+        }
 
         case SUITE.FORGET_DEVICE:
             api.dispatch(storageActions.forgetDevice(action.payload));

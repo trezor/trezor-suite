@@ -19,8 +19,8 @@ export const rememberDevice = (device: TrezorDevice) => async (
     const serializableDiscovery = discovery.map(d => ({ ...d, running: undefined }));
     await Promise.all([
         db.addItem('devices', { ...device, remember: true }, device.state),
-        db.addItems('accounts', accounts),
-        db.addItems('discovery', serializableDiscovery),
+        db.addItems('accounts', accounts, true),
+        db.addItems('discovery', serializableDiscovery, true),
     ]);
 };
 
