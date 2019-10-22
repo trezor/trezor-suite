@@ -60,7 +60,7 @@ const UnsupportedBrowser = () => (
         </DownloadWrapper>
         <UpdateWrapper id="update-chrome">
             <H1>Your browser is outdated</H1>
-            <P>Please update your browser to the newest version.</P>
+            <P>Please update your browser to the latest version.</P>
             <Link
                 href="https://support.google.com/chrome/answer/95414?co=GENIE.Platform%3DDesktop&hl=en"
                 target="_blank"
@@ -70,7 +70,7 @@ const UnsupportedBrowser = () => (
         </UpdateWrapper>
         <UpdateWrapper id="update-firefox">
             <H1>Your browser is outdated</H1>
-            <P>Please update your browser to the newest version.</P>
+            <P>Please update your browser to the latest version.</P>
             <Link
                 href="https://support.mozilla.org/en-US/kb/update-firefox-latest-release"
                 target="_blank"
