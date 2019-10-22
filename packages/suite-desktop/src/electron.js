@@ -8,6 +8,14 @@ const electronLocalshortcut = require('electron-localshortcut');
 const { isBridgeRunning, runBridgeProcess } = require('./bridge');
 
 let mainWindow;
+const PROTOCOL = 'file';
+const src = isDev
+    ? 'http://localhost:8000/'
+    : url.format({
+          pathname: 'index.html',
+          protocol: PROTOCOL,
+          slashes: true,
+      });
 
 const registerShortcuts = window => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
@@ -63,15 +71,6 @@ const init = async () => {
 
     mainWindow.webContents.on('will-navigate', handleExternalLink);
     mainWindow.webContents.on('new-window', handleExternalLink);
-
-    const PROTOCOL = 'file';
-    const src = isDev
-        ? 'http://localhost:8000/'
-        : url.format({
-              pathname: 'index.html',
-              protocol: PROTOCOL,
-              slashes: true,
-          });
 
     if (!isDev) {
         const filter = {
