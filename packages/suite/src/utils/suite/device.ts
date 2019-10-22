@@ -198,11 +198,12 @@ export const getSelectedDevice = (
         if ((!d.features || d.mode === 'bootloader') && d.path === path) {
             return true;
         }
-        if (
-            d.instance === instance &&
-            ((d.features && d.features.device_id === features.device_id) ||
-                (d.path.length > 0 && d.path === device.path))
-        ) {
+        if (d.instance === instance && d.features && d.features.device_id === features.device_id) {
+            return true;
+        }
+
+        // special case we need to use after wipe device (which changes device_id)
+        if (d.instance === instance && d.path.length > 0 && d.path === device.path) {
             return true;
         }
 
