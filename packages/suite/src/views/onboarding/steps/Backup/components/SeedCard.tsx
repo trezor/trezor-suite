@@ -221,4 +221,5 @@ const SeedCard = ({
         </Card>
     );
 };
-export { SeedCard };
+
+export default SeedCard;

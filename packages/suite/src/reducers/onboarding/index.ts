@@ -7,7 +7,6 @@ import { NewsletterActionTypes } from '@onboarding-types/newsletter';
 import { Action } from '@suite-types';
 
 interface OnboardingAppState extends ReturnType<typeof onboarding> {
-    // connect?: ReturnType<typeof connect>;
     recovery?: ReturnType<typeof recovery>;
     newsletter?: ReturnType<typeof newsletter>;
 }
@@ -23,6 +22,7 @@ export default function onboardingApp(state: OnboardingAppState | undefined, act
         deviceCall: onboardingState.deviceCall,
         uiInteraction: onboardingState.uiInteraction,
         path: onboardingState.path,
+        backupType: onboardingState.backupType,
         recovery: recovery(onboardingState.recovery, action as RecoveryActionTypes),
         newsletter: newsletter(onboardingState.newsletter, action as NewsletterActionTypes),
     };

@@ -1,4 +1,3 @@
-// import { FormattedMessage } from 'react-intl';
 // import { NotificationProps } from '@trezor/components';
 import { RequiredKey } from '@suite/types/utils';
 import { NotificationEntry } from '@suite/reducers/suite/notificationReducer';
