@@ -15,7 +15,7 @@ export const rememberDevice = (device: TrezorDevice) => async (
     if (!device || !device.features || !device.state) return;
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
     const discovery = getState().wallet.discovery.filter(d => d.deviceState === device.state);
-    // strip promise function from discovery object
+    // trim promise function from discovery object
     const serializableDiscovery = discovery.map(d => ({ ...d, running: undefined }));
     await Promise.all([
         db.addItem('devices', { ...device, remember: true }, device.state),

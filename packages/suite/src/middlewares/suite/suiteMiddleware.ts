@@ -30,6 +30,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(loadStorage());
             break;
         case STORAGE.LOADED: {
+            // select first device from storage
             if (!api.getState().suite.device && action.payload.devices[0]) {
                 console.log('selecting device from storage', action.payload.devices);
                 api.dispatch(suiteActions.selectDevice(action.payload.devices[0]));
