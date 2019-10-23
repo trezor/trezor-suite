@@ -91,10 +91,7 @@ const Preloader: React.SFC<Props> = props => {
                         />
                     </Logo>
 
-                    <H1>
-                        Welcome to Trezor
-                        {/* <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} /> */}
-                    </H1>
+                    <H1>Welcome to Trezor</H1>
 
                     <Loader>
                         Loading

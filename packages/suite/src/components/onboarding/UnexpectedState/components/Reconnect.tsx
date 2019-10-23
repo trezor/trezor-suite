@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Intl';
 
 import { P } from '@trezor/components';
 
@@ -11,22 +11,22 @@ import l10nMessages from './Reconnect.messages';
 const Reconnect = ({ model }: { model: number }) => (
     <Wrapper.Step>
         <Wrapper.StepHeading>
-            <FormattedMessage {...l10nMessages.TR_RECONNECT_HEADER} />
+            <Translation>{l10nMessages.TR_RECONNECT_HEADER}</Translation>
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
             <ConnectPrompt model={model} loop />
             <P>
-                <FormattedMessage {...l10nMessages.TR_RECONNECT_TEXT} />
+                <Translation>{l10nMessages.TR_RECONNECT_TEXT}</Translation>
             </P>
             <P>---</P>
             <P>
-                <FormattedMessage {...l10nMessages.TR_RECONNECT_TROUBLESHOOT_CONNECTION} />
+                <Translation>{l10nMessages.TR_RECONNECT_TROUBLESHOOT_CONNECTION}</Translation>
             </P>
             <P>
-                <FormattedMessage {...l10nMessages.TR_RECONNECT_TROUBLESHOOT_CABEL} />
+                <Translation>{l10nMessages.TR_RECONNECT_TROUBLESHOOT_CABEL}</Translation>
             </P>
             <P>
-                <FormattedMessage {...l10nMessages.TR_RECONNECT_TROUBLESHOOT_BRIDGE} />
+                <Translation> {l10nMessages.TR_RECONNECT_TROUBLESHOOT_BRIDGE}</Translation>
             </P>
         </Wrapper.StepBody>
     </Wrapper.Step>
