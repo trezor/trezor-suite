@@ -44,24 +44,26 @@ const ShamirStep = (props: Props) => {
                     <Wrapper.Options>
                         <Option
                             data-test="button-standard-backup"
-                            onClick={() =>
+                            onClick={() => {
+                                props.setBackupType(0);
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice({ backupType: 0 }),
+                                    () => props.resetDevice(),
                                     STEP.ID_SECURITY_STEP,
-                                )
-                            }
+                                );
+                            }}
                         >
                             <Text>Standard backup</Text>
                         </Option>
 
                         <Option
                             data-test="button-shamir-backup"
-                            onClick={() =>
+                            onClick={() => {
+                                props.setBackupType(1);
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice({ backupType: 1 }),
+                                    () => props.resetDevice(),
                                     STEP.ID_SECURITY_STEP,
-                                )
-                            }
+                                );
+                            }}
                         >
                             <Text>Shamir backup</Text>
                         </Option>

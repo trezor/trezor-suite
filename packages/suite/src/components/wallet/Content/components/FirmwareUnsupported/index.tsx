@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { CoinLogo, H4, P, Button, Link, colors } from '@trezor/components';
 
 import { FormattedMessage } from 'react-intl';
-import IntlMessageExtractor from '@suite/components/suite/IntlMessageExtractor';
+import { Translation } from '@suite/components/suite/Intl';
 import { ExtendedMessageDescriptor } from '@suite/types/suite';
 import l10nMessages from './index.messages';
 
@@ -72,10 +72,10 @@ const FirmwareUnsupported = (props: Props) => (
                 </CoinLogoWrapper>
             )}
             <H4>
-                <IntlMessageExtractor>{props.title}</IntlMessageExtractor>
+                <Translation>{props.title}</Translation>
             </H4>
             <Message>
-                <IntlMessageExtractor>{props.message}</IntlMessageExtractor>
+                <Translation>{props.message}</Translation>
             </Message>
             <Link href={getInfoUrl(props.symbol)} variant="nostyle">
                 <Button>

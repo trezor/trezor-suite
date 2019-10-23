@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-// import { FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
-// import l10nCommonMessages from '@suite-support/Messages';
+import l10nCommonMessages from '@suite-support/Messages';
 import WebusbButton from '@suite-components/WebusbButton';
 import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import Bridge from './components/Bridge/Container';
@@ -11,7 +11,7 @@ import TroubleshootSearchingTooLong from './components/Connect/TroubleshootTooLo
 import TroubleshootBootloader from './components/Connect/TroubleshootBootloader';
 import TroubleshootInitialized from './components/Connect/TroubleshootInitialized';
 
-// import l10nMessages from '../Bridge/index.messages';
+import l10nMessages from './index.messages';
 import { Props } from './Container';
 
 const WebusbButtonWrapper = styled.div`
@@ -91,8 +91,9 @@ const PairDeviceStep = (props: Props) => {
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
-                                            Device found and paired! Great success.
-                                            {/* <FormattedMessage {...l10nMessages.TR_FOUND_OK_DEVICE} /> */}
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_FOUND_OK_DEVICE}
+                                            />
                                         </Text>
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
@@ -101,8 +102,9 @@ const PairDeviceStep = (props: Props) => {
                                                     props.onboardingActions.goToNextStep()
                                                 }
                                             >
-                                                {/* <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} /> */}
-                                                Continue
+                                                <FormattedMessage
+                                                    {...l10nCommonMessages.TR_CONTINUE}
+                                                />
                                             </OnboardingButton.Cta>
                                         </Wrapper.Controls>
                                     </>

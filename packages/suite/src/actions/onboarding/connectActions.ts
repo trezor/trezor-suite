@@ -27,7 +27,7 @@ const DEFAULT_STRENGTH_T2 = 128;
 
 const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) => {
     const { device } = state.suite;
-    const { recovery } = state.onboarding;
+    const { recovery, backupType } = state.onboarding;
     if (call === CALLS.GET_FEATURES) {
         return {};
     }
@@ -43,6 +43,7 @@ const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) =
                     label: DEFAULT_LABEL,
                     skipBackup: DEFAULT_SKIP_BACKUP,
                     passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
+                    backupType: 0,
                 };
             } else {
                 params = {
@@ -50,9 +51,9 @@ const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) =
                     label: DEFAULT_LABEL,
                     skipBackup: DEFAULT_SKIP_BACKUP,
                     passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
+                    backupType,
                 };
             }
-
             break;
         case CALLS.RECOVER_DEVICE:
             if (device.features.major_version === 1) {

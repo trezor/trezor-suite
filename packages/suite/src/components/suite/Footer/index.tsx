@@ -2,8 +2,9 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link, colors, variables } from '@trezor/components';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import { Translation } from '@suite-components/Intl';
 
 import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';
@@ -109,7 +110,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
                         SatoshiLabs
                     </StyledLink>
                     <StyledLink href="https://trezor.io/tos" variant="nostyle">
-                        <FormattedMessage {...l10nMessages.TR_TERMS} />
+                        <Translation>{l10nMessages.TR_TERMS}</Translation>
                     </StyledLink>
                     <StyledLink onClick={toggle}>{opened ? 'Hide Log' : 'Show Log'}</StyledLink>
                     <RatesLeft>{exchangeRates}</RatesLeft>

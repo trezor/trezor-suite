@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Intl';
 import TopNavigation from '@wallet-components/TopNavigation';
 import WalletLayout from '@wallet-components/WalletLayout';
 import { FLAGS } from '@suite-config';
@@ -19,26 +19,26 @@ const LayoutAccount = (props: Props) => (
                 items={[
                     {
                         route: 'wallet-account-summary',
-                        title: <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />,
+                        title: <Translation>{l10nMessages.TR_NAV_SUMMARY}</Translation>,
                     },
                     {
                         route: 'wallet-account-transactions',
-                        title: <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />,
+                        title: <Translation>{l10nMessages.TR_NAV_TRANSACTIONS}</Translation>,
                         isHidden: () => {
                             return !FLAGS.transactions;
                         },
                     },
                     {
                         route: 'wallet-account-receive',
-                        title: <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />,
+                        title: <Translation>{l10nMessages.TR_NAV_RECEIVE}</Translation>,
                     },
                     {
                         route: 'wallet-account-send',
-                        title: <FormattedMessage {...l10nMessages.TR_NAV_SEND} />,
+                        title: <Translation>{l10nMessages.TR_NAV_SEND}</Translation>,
                     },
                     {
                         route: 'wallet-account-sign-verify',
-                        title: <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />,
+                        title: <Translation>{l10nMessages.TR_NAV_SIGN_AND_VERIFY}</Translation>,
                         isHidden: (networkType: string) => {
                             const network = NETWORKS.find(c => c.symbol === networkType);
                             return network ? !network.hasSignVerify : false;
