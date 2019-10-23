@@ -85,7 +85,9 @@ const ShamirStep = (props: Props) => {
                 )}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                <OnboardingButton.Back onClick={props.goToPreviousStep}>Back</OnboardingButton.Back>
+                <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>
+                    Back
+                </OnboardingButton.Back>
             </Wrapper.StepFooter>
         </Wrapper.Step>
     );
