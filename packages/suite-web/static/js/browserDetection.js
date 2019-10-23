@@ -22,12 +22,12 @@ window.onload = function() {
     ];
     var parser = new UAParser();
     var result = parser.getResult();
-    var isSupported = supportedBrowsers.find(function(browser) {
+    var isSupported = supportedBrowsers.filter(function(browser) {
         return browser.name === result.browser.name;
-    });
-    var updateRequired = supportedBrowsers.find(function(browser) {
+    })[0];
+    var updateRequired = supportedBrowsers.filter(function(browser) {
         return browser.name === result.browser.name && browser.version > parseInt(result.browser.major);
-    });
+    })[0];
 
     if (isSupported) {
         if (updateRequired) {
