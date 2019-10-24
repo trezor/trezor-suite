@@ -29,9 +29,7 @@ export const rememberDevice = (device: TrezorDevice) => async (
         db.addItems('discovery', serializableDiscovery, true),
         db.addItems('txs', transactions, true),
     ]).catch(error => {
-        if (error && error.name === 'ConstraintError') {
-            console.log('Tx with such id already exists');
-        } else if (error) {
+        if (error) {
             console.error('errorName', error.name);
             console.error('errorMessage', error.message);
         } else {
