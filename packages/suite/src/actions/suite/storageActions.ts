@@ -14,17 +14,18 @@ export const rememberDevice = (device: TrezorDevice) => async (
     getState: GetState,
 ) => {
     if (!device || !device.features || !device.state) return;
-    const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
-    const discovery = getState().wallet.discovery.filter(d => d.deviceState === device.state);
+    const { wallet } = getState();
+    const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
+    const discovery = wallet.discovery.filter(d => d.deviceState === device.state);
     // trim promise function from discovery object
     const serializableDiscovery = discovery.map(d => ({ ...d, running: undefined }));
-    const allTxs = getState().wallet.transactions.transactions;
+    const allTxs = wallet.transactions.transactions;
     const transactions = accounts
         .map(a => allTxs[getAccountKey(a.descriptor, a.symbol, a.deviceState)] || [])
         .flat();
 
     await Promise.all([
-        db.addItem('devices', { ...device, remember: true }, device.state),
+        db.addItem('devices', { ...device, remember: true, connected: false }, device.state),
         db.addItems('accounts', accounts, true),
         db.addItems('discovery', serializableDiscovery, true),
         db.addItems('txs', transactions, true),
