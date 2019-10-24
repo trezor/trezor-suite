@@ -166,67 +166,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 return state;
             }
 
-            // click button "Add recipient"
-            case SEND.BTC_ADD_RECIPIENT: {
-                const { newOutput } = action;
-                draft.outputs.push(newOutput);
-                break;
-            }
-
-            // click button "Remove recipient"
-            case SEND.BTC_REMOVE_RECIPIENT: {
-                const { outputId } = action;
-                const removed = draft.outputs.filter(output => output.id !== outputId);
-                draft.outputs = removed;
-                break;
-            }
-
-            // click button "Clear"
-            case SEND.CLEAR: {
-                return initialState(
-                    {
-                        feeInfo: draft.feeInfo,
-                        selectedFee:
-                            draft.feeInfo.levels.find(f => f.label === 'normal') ||
-                            draft.feeInfo.levels[0],
-                        isAdditionalFormVisible: draft.isAdditionalFormVisible,
-                    },
-                    action.localCurrency,
-                );
-            }
-
-            // change input in additional xrp form "Destination tag"
-            case SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE: {
-                const { destinationTag } = action;
-                draft.networkTypeRipple.destinationTag.error = null;
-                draft.networkTypeRipple.destinationTag.value = destinationTag;
-
-                if (!validator.isNumeric(destinationTag)) {
-                    draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_NUMBER;
-                    return draft;
-                }
-
-                if (parseInt(destinationTag, 10) > U_INT_32) {
-                    draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_VALID;
-                }
-
-                break;
-            }
-
-            case SEND.BTC_PRECOMPOSED_TX: {
-                draft.networkTypeBitcoin.transactionInfo = action.payload;
-
-                if (
-                    action.payload.type === 'error' &&
-                    action.payload.error === 'NOT-ENOUGH-FUNDS'
-                ) {
-                    draft.outputs.map(
-                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
-                    );
-                }
-                break;
-            }
-
             case SEND.COMPOSE_PROGRESS: {
                 draft.isComposing = action.isComposing;
                 break;
@@ -247,6 +186,92 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     // no default
                 }
             }
+
+            // click button "Clear"
+            case SEND.CLEAR: {
+                return initialState(
+                    {
+                        feeInfo: draft.feeInfo,
+                        selectedFee:
+                            draft.feeInfo.levels.find(f => f.label === 'normal') ||
+                            draft.feeInfo.levels[0],
+                        isAdditionalFormVisible: draft.isAdditionalFormVisible,
+                    },
+                    action.localCurrency,
+                );
+            }
+
+            /* 
+                BTC specific
+            */
+
+            // click button "Add recipient"
+            case SEND.BTC_ADD_RECIPIENT: {
+                const { newOutput } = action;
+                draft.outputs.push(newOutput);
+                break;
+            }
+
+            // click button "Remove recipient"
+            case SEND.BTC_REMOVE_RECIPIENT: {
+                const { outputId } = action;
+                const removed = draft.outputs.filter(output => output.id !== outputId);
+                draft.outputs = removed;
+                break;
+            }
+
+            case SEND.BTC_PRECOMPOSED_TX: {
+                draft.networkTypeBitcoin.transactionInfo = action.payload;
+
+                if (
+                    action.payload.type === 'error' &&
+                    action.payload.error === 'NOT-ENOUGH-FUNDS'
+                ) {
+                    draft.outputs.map(
+                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
+                    );
+                }
+                break;
+            }
+
+            /* 
+                XRP specific
+            */
+
+            case SEND.XRP_PRECOMPOSED_TX: {
+                draft.networkTypeRipple.transactionInfo = action.payload;
+
+                if (
+                    action.payload.type === 'error' &&
+                    action.payload.error === 'NOT-ENOUGH-FUNDS'
+                ) {
+                    draft.outputs.map(
+                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
+                    );
+                }
+                break;
+            }
+
+            case SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE: {
+                const { destinationTag } = action;
+                draft.networkTypeRipple.destinationTag.error = null;
+                draft.networkTypeRipple.destinationTag.value = destinationTag;
+
+                if (!validator.isNumeric(destinationTag)) {
+                    draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+
+                if (parseInt(destinationTag, 10) > U_INT_32) {
+                    draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_VALID;
+                }
+
+                break;
+            }
+
+            /* 
+                ETH specific
+            */
 
             // no default
         }

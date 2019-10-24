@@ -1,18 +1,55 @@
 import TrezorConnect from 'trezor-connect';
+import { calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
 import { SEND } from '@wallet-actions/constants';
+import Bignumber from 'bignumber.js';
+import { PrecomposedTransactionXrp } from '@wallet-types/sendForm';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-export interface SendFormRippleActions {
-    type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE;
-    destinationTag: string;
-}
+export type SendFormRippleActions =
+    | {
+          type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE;
+          destinationTag: string;
+      }
+    | {
+          type: typeof SEND.XRP_PRECOMPOSED_TX;
+          payload: PrecomposedTransactionXrp;
+      };
 
 /*
     Compose transaction
  */
-export const compose = () => async (dispatch: Dispatch) => {
-    console.log('compose ripple');
+export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+    let payload;
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return null;
+
+    const output = getOutput(send.outputs, 0);
+    const amount = output.amount.value;
+    const availableBalance = account.formattedBalance;
+    const feeBig = new Bignumber(send.selectedFee.value);
+    const fee = feeBig.multipliedBy(send.selectedFee.blocks);
+    const totalSpent = calculateTotal(amount || '0', fee.toFixed());
+    const totalSpentBig = new Bignumber(totalSpent);
+
+    if (totalSpentBig.isGreaterThan(availableBalance)) {
+        dispatch({
+            type: SEND.XRP_PRECOMPOSED_TX,
+            payload: {
+                type: 'error',
+                error: 'NOT-ENOUGH-FUNDS',
+            },
+        });
+    } else {
+        dispatch({
+            type: SEND.XRP_PRECOMPOSED_TX,
+            payload: {
+                totalSpent,
+                fee,
+            },
+        });
+    }
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
 };
 
@@ -56,7 +93,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
             sequence: account.misc.sequence,
             payment: {
                 address: outputs[0].address.value,
-                destinationTg: parseInt(destinationTag.value || '0', 10),
+                destinationTag: parseInt(destinationTag.value || '0', 10),
                 amount: outputs[0].amount.value,
             },
         },
@@ -67,7 +104,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: 'aaaaa', // TODO
+                title: 'Sign tx error', // TODO
                 message: signedTransaction.payload.error,
                 cancelable: true,
                 actions: [],

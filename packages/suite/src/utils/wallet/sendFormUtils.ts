@@ -44,7 +44,6 @@ export const calculateTotal = (amount: string, fee: string): string => {
         }
         return bAmount.plus(fee).toFixed();
     } catch (error) {
-        // TODO: empty input throws this error.
         return '0';
     }
 };
@@ -56,7 +55,6 @@ export const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
-        console.error(error);
         return '0';
     }
 };
