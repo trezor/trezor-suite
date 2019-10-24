@@ -25,12 +25,6 @@ export type TransactionAction =
           page: number;
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
-// | { type: typeof TRANSACTION.FROM_STORAGE; transactions: WalletAccountTransaction[] };
-
-// export const setTransactions = (transactions: WalletAccountTransaction[]) => ({
-//     type: TRANSACTION.FROM_STORAGE,
-//     transactions,
-// });
 
 // export const add = (transaction: WalletAccountTransaction) => async (
 //     dispatch: Dispatch,
@@ -87,20 +81,6 @@ export const remove = (account: Account) => async (dispatch: Dispatch) => {
 //     });
 // };
 
-// const getTransactionsFromStorage = async (descriptor: string, offset?: number, count?: number) => {
-//     try {
-//         const txs = await db.getItemsExtended('txs', 'accountId-blockTime', {
-//             key: descriptor,
-//             offset,
-//             count,
-//         });
-//         return txs;
-//     } catch (error) {
-//         console.log(error);
-//         return null;
-//     }
-// };
-
 export const fetchTransactions = (account: Account, page: number, perPage?: number) => async (
     dispatch: Dispatch,
     getState: GetState,
@@ -121,48 +101,32 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
         type: TRANSACTION.FETCH_INIT,
     });
 
-    // TODO: storing and fetching from the db
-    // const offset = page && perPage ? (page - 1) * perPage : undefined;
-    // const count = perPage || undefined;
-    // const storedTxs = await getTransactionsFromStorage(account.descriptor, offset, count);
+    const { marker } = selectedAccount.account!;
+    const result = await TrezorConnect.getAccountInfo({
+        coin: selectedAccount.account!.symbol,
+        descriptor: account.descriptor,
+        details: 'txs',
+        page, // useful for every network except ripple
+        pageSize: SETTINGS.TXS_PER_PAGE,
+        ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+    });
 
-    // const shouldFetchFromBackend = storedTxs === null || storedTxs.length === 0;
-    const shouldFetchFromBackend = true;
-    if (shouldFetchFromBackend) {
-        const { marker } = selectedAccount.account!;
-        const result = await TrezorConnect.getAccountInfo({
-            coin: selectedAccount.account!.symbol,
-            descriptor: account.descriptor,
-            details: 'txs',
-            page, // useful for every network except ripple
-            pageSize: SETTINGS.TXS_PER_PAGE,
-            ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+    if (result && result.success) {
+        const updatedAccount = accountActions.update(account, result.payload).payload;
+        dispatch({
+            // TODO
+            // @ts-ignore
+            type: TRANSACTION.FETCH_SUCCESS,
+            account: updatedAccount,
+            transactions: result.payload.history.transactions || [],
+            page,
         });
-
-        if (result && result.success) {
-            const updatedAccount = accountActions.update(account, result.payload).payload;
-            dispatch({
-                // TODO
-                // @ts-ignore
-                type: TRANSACTION.FETCH_SUCCESS,
-                account: updatedAccount,
-                transactions: result.payload.history.transactions || [],
-                page,
-            });
-            // updates the marker/page object for the account
-            dispatch(accountActions.update(account, result.payload));
-        } else {
-            dispatch({
-                type: TRANSACTION.FETCH_ERROR,
-                error: result ? result.payload.error : 'unknown error',
-            });
-        }
-    } // else {
-    //     dispatch({
-    //         type: TRANSACTION.FETCH_SUCCESS,
-    //         transactions: storedTxs || [],
-    //         account,
-    //         page,
-    //     });
-    // }
+        // updates the marker/page object for the account
+        dispatch(accountActions.update(account, result.payload));
+    } else {
+        dispatch({
+            type: TRANSACTION.FETCH_ERROR,
+            error: result ? result.payload.error : 'unknown error',
+        });
+    }
 };

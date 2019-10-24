@@ -4,6 +4,8 @@ import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { getAccountKey, enhanceTransaction } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
+import { Action } from '@suite-types';
+import { STORAGE } from '@suite-actions/constants';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
@@ -84,9 +86,11 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
     });
 };
 
-export default (state: State = initialState, action: WalletAction): State => {
+export default (state: State = initialState, action: Action | WalletAction): State => {
     return produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.wallet.transactions;
             case ACCOUNT.CREATE:
                 // gather transactions from account.create action
                 add(draft, action.payload.history.transactions || [], action.payload, 1);

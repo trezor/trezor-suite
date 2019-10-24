@@ -1,4 +1,4 @@
-import SuiteDB, { StorageUpdateMessage } from '@trezor/suite-storage';
+import SuiteDB, { StorageUpdateMessage, OnUpgradeProps } from '@trezor/suite-storage';
 import { DBSchema } from 'idb';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
@@ -8,18 +8,16 @@ import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery } from '@wallet-types';
 import { migrate } from './migrations';
 
-const VERSION = 3;
+const VERSION = 4;
 
 export interface SuiteDBSchema extends DBSchema {
     txs: {
         key: string;
         value: WalletAccountTransaction;
         indexes: {
-            txId: WalletAccountTransaction['txid'];
-            accountId: string; // custom field
-            blockTime: number; // blockTime can be undefined?
-            type: WalletAccountTransaction['type'];
-            'accountId-blockTime': [number, number];
+            txid: WalletAccountTransaction['txid'];
+            deviceState: string;
+            blockTime: number; // TODO: blockTime can be undefined
         };
     };
     sendForm: {
@@ -53,25 +51,45 @@ export interface SuiteDBSchema extends DBSchema {
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
 
-export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, async (
-    db,
-    oldVersion,
-    newVersion,
-    transaction,
-    // transaction: IDBPTransaction<MyDBV1, "transactions"[]>,
+/**
+ *  If the object stores don't already exist then creates them.
+ *  Otherwise runs a migration function that transform the data to new scheme version if necessary
+ *
+ * @param {OnUpgradeProps<SuiteDBSchema>['db']} db
+ * @param {OnUpgradeProps<SuiteDBSchema>['oldVersion']} oldVersion
+ * @param {OnUpgradeProps<SuiteDBSchema>['newVersion']} newVersion
+ * @param {OnUpgradeProps<SuiteDBSchema>['transaction']} transaction
+ */
+const onUpgrade = async (
+    db: OnUpgradeProps<SuiteDBSchema>['db'],
+    oldVersion: OnUpgradeProps<SuiteDBSchema>['oldVersion'],
+    newVersion: OnUpgradeProps<SuiteDBSchema>['newVersion'],
+    transaction: OnUpgradeProps<SuiteDBSchema>['transaction'],
 ) => {
     const shouldInitDB = oldVersion === 0;
-    if (shouldInitDB) {
+    // if (shouldInitDB) {
+    // TODO: remove before RELEASE, instead of doing proper migration just delete all object stores and recreate them
+    if (oldVersion < VERSION) {
+        try {
+            db.deleteObjectStore('accounts');
+            db.deleteObjectStore('devices');
+            db.deleteObjectStore('discovery');
+            db.deleteObjectStore('sendForm');
+            db.deleteObjectStore('suiteSettings');
+            db.deleteObjectStore('txs');
+            db.deleteObjectStore('walletSettings');
+        } catch (err) {
+            // do nothing;
+        }
+
         // init db
         // object store for wallet transactions
-        const txsStore = db.createObjectStore('txs', { keyPath: 'id', autoIncrement: true });
-        txsStore.createIndex('txId', 'txid', { unique: true });
-        txsStore.createIndex('type', 'type', { unique: false }); // sent/recv
-        txsStore.createIndex('blockTime', 'blockTime', { unique: false });
-        txsStore.createIndex('accountId', 'accountId', { unique: false });
-        txsStore.createIndex('accountId-blockTime', ['accountId', 'blockTime'], {
-            unique: false,
+        const txsStore = db.createObjectStore('txs', {
+            keyPath: ['deviceState', 'descriptor', 'txid', 'type'],
         });
+        txsStore.createIndex('txid', 'txid', { unique: false });
+        txsStore.createIndex('blockTime', 'blockTime', { unique: false });
+        txsStore.createIndex('deviceState', 'deviceState', { unique: false });
 
         // object store for settings
         db.createObjectStore('suiteSettings');
@@ -94,4 +112,6 @@ export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, async (
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);
     }
-});
+};
+
+export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade);

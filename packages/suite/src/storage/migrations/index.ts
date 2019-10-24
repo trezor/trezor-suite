@@ -1,43 +1,34 @@
-// import { MyDBV1 } from '../types';
-// import { STORE_TXS } from '../types';
+import { OnUpgradeProps } from '@trezor/suite-storage';
 
 export const migrate = async <TDBType>(
     // 'db' is declared but its value is never read
     // @ts-ignore
-    db: any,
-    oldVersion: number,
-    newVersion: number | null,
-    // @ts-ignore
-    // 'transaction' is declared but its value is never read
-    transaction: any,
-    // transaction: IDBPTransaction<MyDBV1, "transactions"[]>,
+    db: OnUpgradeProps<SuiteDBSchema>['db'],
+    oldVersion: OnUpgradeProps<TDBType>['oldVersion'],
+    newVersion: OnUpgradeProps<TDBType>['newVersion'],
+    transaction: OnUpgradeProps<TDBType>['transaction'],
 ) => {
     console.log(`Migrating database from version ${oldVersion} to ${newVersion}`);
 
     // TODO: make separate file for each iterative migration
-    if (oldVersion < 2) {
-        // upgrade to version 2
-        // @ts-ignore TODO: fix
-        db.createObjectStore('sendForm');
-    }
-    if (oldVersion < 3) {
-        // upgrade to version 3
-        // @ts-ignore TODO: fix
-        db.deleteObjectStore('devices');
-        // @ts-ignore TODO: fix
-        db.createObjectStore('devices');
-        // object store for accounts
 
-        const accountsStore = db.createObjectStore('accounts', {
-            keyPath: ['descriptor', 'symbol', 'deviceState'],
-        });
-        accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+    // EXAMPLES
 
-        // object store for discovery
-        db.createObjectStore('discovery', { keyPath: 'deviceState' });
-    }
+    // if (oldVersion < 3) {
+    //     // upgrade to version 3
+    //     db.deleteObjectStore('devices');
+    //     db.createObjectStore('devices');
 
-    // EXAMPLE
+    //     // object store for accounts
+    //     const accountsStore = db.createObjectStore('accounts', {
+    //         keyPath: ['descriptor', 'symbol', 'deviceState'],
+    //     });
+    //     accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+
+    //     // object store for discovery
+    //     db.createObjectStore('discovery', { keyPath: 'deviceState' });
+    // }
+
     // if (oldVersion < 9) {
     //     // added timestamp field
     //     let cursor = await transaction.store.openCursor();
