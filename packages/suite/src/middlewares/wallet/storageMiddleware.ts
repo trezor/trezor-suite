@@ -7,7 +7,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
-import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
+import { ACCOUNT, DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
 // import { ACCOUNT } from '@suite/actions/wallet/constants';
 // import { AccountInfo } from 'trezor-connect';
 
@@ -20,46 +20,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
     next(action);
 
     switch (action.type) {
-        // case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-        //     if (
-        //         action.payload.account &&
-        //         prevState.wallet.selectedAccount.account !== action.payload.account
-        //     ) {
-        //         api.dispatch(
-        //             transactionActions.fetchTransactions(action.payload.account.descriptor, 1, 25),
-        //         );
-        //     }
-        //     break;
-
-        /*
-        TODO: only if device is remembered
-        case ACCOUNT.CREATE: {
-            // const account: AccountInfo = action.payload;
-            // const { transactions } = account.history;
-            // if (transactions) {
-            //     transactions.forEach(async tx => {
-            //         try {
-            //             await db.addItem('txs', {
-            //                 ...tx,
-            //                 accountId: account.descriptor,
-            //             });
-            //         } catch (error) {
-            //             if (error && error.name === 'ConstraintError') {
-            //                 console.log('Tx with such id already exists');
-            //             } else if (error) {
-            //                 console.error(error.name);
-            //                 console.error(error.message);
-            //             } else {
-            //                 console.error(error);
-            //             }
-            //         }
-            //     });
-            // }
-
-            break;
-        }
-        */
-
         case SUITE.REMEMBER_DEVICE:
             api.dispatch(storageActions.rememberDevice(action.payload));
             break;
@@ -68,6 +28,16 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case ACCOUNT.UPDATE: {
             // TODO: explore better way to update accounts only
             const device = accountUtils.getAccountDevice(api.getState().devices, action.payload);
+            if (device && device.features && device.remember) {
+                api.dispatch(storageActions.rememberDevice(device));
+            }
+            break;
+        }
+
+        case TRANSACTION.ADD:
+        case TRANSACTION.FETCH_SUCCESS: {
+            // TODO: explore better way to update accounts only
+            const device = accountUtils.getAccountDevice(api.getState().devices, action.account);
             if (device && device.features && device.remember) {
                 api.dispatch(storageActions.rememberDevice(device));
             }
