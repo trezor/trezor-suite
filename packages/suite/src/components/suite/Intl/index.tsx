@@ -16,6 +16,8 @@ interface Props {
     children: React.ReactNode | ExtendedMessageDescriptor;
 }
 
+type PrimitiveType = string | number | boolean | Date | null | undefined;
+
 /**
  * Util component that helps with rendering react-intl messages.
  * If children prop is an object, it assumes that it is ExtendedMessageDescriptor
@@ -23,7 +25,7 @@ interface Props {
  */
 const Intl = ({ children }: Props) => {
     if (isMessageDescriptor(children)) {
-        const values: any = {};
+        const values: Record<string, PrimitiveType | React.ReactNode> = {};
         if (children.values) {
             // Message with variables passed via 'values' prop.
             // Value entry can also contain a MessageDescriptor.
