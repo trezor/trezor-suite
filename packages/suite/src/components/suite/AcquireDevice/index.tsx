@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState) => ({
 
 type Props = ReturnType<typeof mapStateToProps> & {
     acquireDevice: typeof acquireDevice;
-} & InjectedIntlProps;
+} & WrappedComponentProps;
 
 const Acquire = (props: Props) => {
     const { device, locks } = props;
