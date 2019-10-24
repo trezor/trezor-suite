@@ -46,10 +46,10 @@ declare module 'trezor-connect' {
     interface TokenInfo {
         type: string; // token type: ERC20...
         address: string; // token address
-        balance: string; // token balance
-        name: string; // token name
-        symbol: string; // token symbol
-        decimals: number; //
+        balance?: string; // token balance
+        name?: string; // token name
+        symbol?: string; // token symbol
+        decimals: number; // token decimals or 0
         // transfers: number, // total transactions?
     }
 
