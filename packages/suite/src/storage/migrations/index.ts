@@ -1,7 +1,7 @@
 import { OnUpgradeProps } from '@trezor/suite-storage';
 
 export const migrate = async <TDBType>(
-    _db: OnUpgradeProps<SuiteDBSchema>['db'],
+    _db: OnUpgradeProps<TDBType>['db'],
     oldVersion: OnUpgradeProps<TDBType>['oldVersion'],
     newVersion: OnUpgradeProps<TDBType>['newVersion'],
     _transaction: OnUpgradeProps<TDBType>['transaction'],
