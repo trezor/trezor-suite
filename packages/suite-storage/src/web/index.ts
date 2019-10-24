@@ -7,10 +7,18 @@ import {
     IndexNames,
     IndexKey,
     StoreValue,
+    IDBPTransaction,
 } from 'idb';
 import { StorageUpdateMessage, StorageMessageEvent } from './types';
 
 // const VERSION = 1;
+
+export interface OnUpgradeProps<TDBStructure> {
+    db: IDBPDatabase<TDBStructure>;
+    oldVersion: number;
+    newVersion: number | null;
+    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>;
+}
 
 class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
@@ -19,21 +27,21 @@ class CommonDB<TDBStructure> {
     db!: IDBPDatabase<TDBStructure> | null;
     broadcastChannel!: BroadcastChannel;
     onUpgrade!: (
-        db: IDBPDatabase<TDBStructure>,
-        oldVersion: number,
-        newVersion: number | null,
-        transaction: any
-    ) => void;
+        db: OnUpgradeProps<TDBStructure>['db'],
+        oldVersion: OnUpgradeProps<TDBStructure>['oldVersion'],
+        newVersion: OnUpgradeProps<TDBStructure>['newVersion'],
+        transaction: OnUpgradeProps<TDBStructure>['transaction']
+    ) => Promise<void>;
 
     constructor(
         dbName: string,
         version: number,
         onUpgrade: (
-            db: IDBPDatabase<TDBStructure>,
-            oldVersion: number,
-            newVersion: number | null,
-            transaction: any
-        ) => void
+            db: OnUpgradeProps<TDBStructure>['db'],
+            oldVersion: OnUpgradeProps<TDBStructure>['oldVersion'],
+            newVersion: OnUpgradeProps<TDBStructure>['newVersion'],
+            transaction: OnUpgradeProps<TDBStructure>['transaction']
+        ) => Promise<void>
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
@@ -144,24 +152,36 @@ class CommonDB<TDBStructure> {
         return p;
     };
 
-    addItems = async (store: StoreNames<TDBStructure>, items: any[], upsert: boolean) => {
+    addItems = async <
+        TStoreName extends StoreNames<TDBStructure>,
+        TItem extends StoreValue<TDBStructure, TStoreName>
+    >(
+        store: TStoreName,
+        items: TItem[],
+        upsert?: boolean
+    ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
 
         const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
-        items.forEach(item => {
-            if (upsert) {
-                tx.store.put(item).then(result => {
-                    keys.push(result);
-                });
-            } else {
-                tx.store.add(item).then(result => {
-                    keys.push(result);
-                });
-            }
+        const promises = Promise.all(
+            items
+                .map(item => {
+                    if (upsert) {
+                        return tx.store.put(item).then(result => {
+                            keys.push(result);
+                        });
+                    }
+                    return tx.store.add(item).then(result => {
+                        keys.push(result);
+                    });
+                })
+                .concat(tx.done)
+        ).then(_ => {
+            this.notify(store, keys);
         });
-        this.notify(store, keys);
-        await tx.done;
+
+        return promises;
     };
 
     // TODO: It would be awesome if return type could be something like Promise<StoreValue<TDBStructure, store>>

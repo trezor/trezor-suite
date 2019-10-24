@@ -1,5 +1,20 @@
-import { StoreNames, StoreValue, StoreKey, IndexNames, IndexKey, IDBPDatabase } from 'idb';
+import {
+    StoreNames,
+    StoreValue,
+    StoreKey,
+    IndexNames,
+    IndexKey,
+    IDBPDatabase,
+    IDBPTransaction,
+} from 'idb';
 import { StorageUpdateMessage, StorageMessageEvent } from './types';
+
+export interface OnUpgradeProps<TDBStructure> {
+    db: IDBPDatabase<TDBStructure>;
+    oldVersion: number;
+    newVersion: number | null;
+    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>;
+}
 
 class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
@@ -8,21 +23,21 @@ class CommonDB<TDBStructure> {
     db!: IDBPDatabase<TDBStructure>;
     broadcastChannel!: any;
     onUpgrade!: (
-        db: IDBPDatabase<TDBStructure>,
-        oldVersion: number,
-        newVersion: number | null,
-        transaction: any
-    ) => void;
+        db: OnUpgradeProps<TDBStructure>['db'],
+        oldVersion: OnUpgradeProps<TDBStructure>['oldVersion'],
+        newVersion: OnUpgradeProps<TDBStructure>['newVersion'],
+        transaction: OnUpgradeProps<TDBStructure>['transaction']
+    ) => Promise<void>;
 
     constructor(
         dbName: string,
         version: number,
         onUpgrade: (
-            db: IDBPDatabase<TDBStructure>,
-            oldVersion: number,
-            newVersion: number | null,
-            transaction: any
-        ) => void
+            db: OnUpgradeProps<TDBStructure>['db'],
+            oldVersion: OnUpgradeProps<TDBStructure>['oldVersion'],
+            newVersion: OnUpgradeProps<TDBStructure>['newVersion'],
+            transaction: OnUpgradeProps<TDBStructure>['transaction']
+        ) => Promise<void>
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
@@ -105,7 +120,14 @@ class CommonDB<TDBStructure> {
         return p;
     };
 
-    addItems = async (store: StoreNames<TDBStructure>, items: any[], upsert: boolean) => {
+    addItems = async <
+        TStoreName extends StoreNames<TDBStructure>,
+        TItem extends StoreValue<TDBStructure, TStoreName>
+    >(
+        store: TStoreName,
+        items: TItem[],
+        upsert?: boolean
+    ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
 
