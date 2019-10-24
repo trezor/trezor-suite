@@ -4,7 +4,11 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import React from 'react';
 import { AppRegistry } from 'react-native';
 import globalStyles from '@suite-support/styles/global';
-import UnsupportedBrowser from './unsupported';
+
+// This component is used to render the static inline HTML
+// which is used in ./static/js/browserDetection.js to render
+// it in unsupported browsers
+// import UnsupportedBrowser from './unsupported';
 
 interface Props {
     styleTags: any;
@@ -44,7 +48,10 @@ export default class MyDocument extends Document<Props> {
                     {this.props.styleTags}
                 </Head>
                 <body style={{ height: '100%' }}>
-                    <UnsupportedBrowser />
+                    {/* This component is used to render the static inline HTML
+                    which is used in ./static/js/browserDetection.js to render
+                    it in unsupported browsers */}
+                    {/* <UnsupportedBrowser /> */}
                     <Main />
                     <NextScript />
                 </body>
