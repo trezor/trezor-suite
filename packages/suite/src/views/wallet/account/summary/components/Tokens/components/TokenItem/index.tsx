@@ -59,7 +59,7 @@ const TokenItem = ({ token, hideBalance }: Props) => {
                     </Tooltip>
                 ) : (
                     <>
-                        {formatAmount(token.balance, token.decimals)} {token.symbol}
+                        {formatAmount(token.balance || '0', token.decimals)} {token.symbol}
                     </>
                 )}
             </TokenBalance>
