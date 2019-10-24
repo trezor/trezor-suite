@@ -1,12 +1,10 @@
 import { OnUpgradeProps } from '@trezor/suite-storage';
 
 export const migrate = async <TDBType>(
-    // 'db' is declared but its value is never read
-    // @ts-ignore
-    db: OnUpgradeProps<SuiteDBSchema>['db'],
+    _db: OnUpgradeProps<SuiteDBSchema>['db'],
     oldVersion: OnUpgradeProps<TDBType>['oldVersion'],
     newVersion: OnUpgradeProps<TDBType>['newVersion'],
-    transaction: OnUpgradeProps<TDBType>['transaction'],
+    _transaction: OnUpgradeProps<TDBType>['transaction'],
 ) => {
     console.log(`Migrating database from version ${oldVersion} to ${newVersion}`);
 

@@ -66,9 +66,10 @@ const onUpgrade = async (
     newVersion: OnUpgradeProps<SuiteDBSchema>['newVersion'],
     transaction: OnUpgradeProps<SuiteDBSchema>['transaction'],
 ) => {
-    const shouldInitDB = oldVersion === 0;
+    // TODO: uncomment before RELEASE,
+    // instead of doing proper migration just delete all object stores and recreate them
+    // const shouldInitDB = oldVersion === 0;
     // if (shouldInitDB) {
-    // TODO: remove before RELEASE, instead of doing proper migration just delete all object stores and recreate them
     if (oldVersion < VERSION) {
         try {
             db.deleteObjectStore('accounts');
