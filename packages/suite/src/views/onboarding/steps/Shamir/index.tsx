@@ -30,7 +30,10 @@ const ShamirStep = (props: Props) => {
                 {getModel() === 1 && (
                     <Text>
                         You are one step from creating your wallet. By clicking the button below you
-                        agree with <Link href={URLS.TOS_URL}>TOS</Link>
+                        agree with{' '}
+                        <Link href={URLS.TOS_URL} variant="nostyle">
+                            TOS
+                        </Link>
                     </Text>
                 )}
                 {getModel() === 2 && (
@@ -41,24 +44,26 @@ const ShamirStep = (props: Props) => {
                     <Wrapper.Options>
                         <Option
                             data-test="button-standard-backup"
-                            onClick={() =>
+                            onClick={() => {
+                                props.setBackupType(0);
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice({ backupType: 0 }),
+                                    () => props.resetDevice(),
                                     STEP.ID_SECURITY_STEP,
-                                )
-                            }
+                                );
+                            }}
                         >
                             <Text>Standard backup</Text>
                         </Option>
 
                         <Option
                             data-test="button-shamir-backup"
-                            onClick={() =>
+                            onClick={() => {
+                                props.setBackupType(1);
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice({ backupType: 1 }),
+                                    () => props.resetDevice(),
                                     STEP.ID_SECURITY_STEP,
-                                )
-                            }
+                                );
+                            }}
                         >
                             <Text>Shamir backup</Text>
                         </Option>

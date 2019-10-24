@@ -35,14 +35,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     if (
         action.type === ROUTER.LOCATION_CHANGE &&
-        nextState.router.route &&
-        nextState.router.route.name === 'wallet-account-send'
-    ) {
-        api.dispatch(sendFormActions.init());
-    }
-
-    if (
-        action.type === ROUTER.LOCATION_CHANGE &&
         observeChanges(prevState.router.params, nextState.router.params)
     ) {
         api.dispatch(selectedAccountActions.dispose());

@@ -64,7 +64,7 @@ const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }:
                         />
                     </AccountTitle>
                 </AccountName>
-                <StyledLink href={explorerLink} isGray>
+                <StyledLink href={explorerLink} variant="gray">
                     <FormattedMessage {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
                 </StyledLink>
             </AccountHeading>

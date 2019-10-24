@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { TRANSPORT, IFRAME } from 'trezor-connect';
-import { SUITE, STORAGE } from '@suite-actions/constants';
+import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { ObjectValues } from '@suite/types/utils';
 import { Action, TrezorDevice } from '@suite-types';
@@ -118,6 +118,11 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                     bridge: action.payload.bridge,
                 };
                 break;
+
+            case ROUTER.LOCATION_CHANGE:
+                draft.showSidebar = false;
+                break;
+
             case SUITE.TOGGLE_SIDEBAR:
                 draft.showSidebar = !draft.showSidebar;
                 break;

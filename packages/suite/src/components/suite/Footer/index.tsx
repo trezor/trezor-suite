@@ -2,8 +2,9 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link, colors, variables } from '@trezor/components';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import { Translation } from '@suite-components/Intl';
 
 import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';
@@ -94,7 +95,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
             {...l10nMessages.TR_EXCHANGE_RATES_BY}
             values={{
                 service: (
-                    <Link href="https://www.coingecko.com" isGreen>
+                    <Link href="https://www.coingecko.com" variant="nostyle">
                         Coingecko
                     </Link>
                 ),
@@ -105,15 +106,13 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <Wrapper isLanding={isLanding}>
             <Content>
                 <Left>
-                    <StyledLink href="http://satoshilabs.com" isGreen>
+                    <StyledLink href="http://satoshilabs.com" variant="nostyle">
                         SatoshiLabs
                     </StyledLink>
-                    <StyledLink href="https://trezor.io/tos" isGreen>
-                        <FormattedMessage {...l10nMessages.TR_TERMS} />
+                    <StyledLink href="https://trezor.io/tos" variant="nostyle">
+                        <Translation>{l10nMessages.TR_TERMS}</Translation>
                     </StyledLink>
-                    <StyledLink onClick={toggle} isGreen>
-                        {opened ? 'Hide Log' : 'Show Log'}
-                    </StyledLink>
+                    <StyledLink onClick={toggle}>{opened ? 'Hide Log' : 'Show Log'}</StyledLink>
                     <RatesLeft>{exchangeRates}</RatesLeft>
                 </Left>
                 {!isLanding && (
@@ -123,10 +122,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
                                 {...l10nMessages.TR_WE_THANK_OUR_TRANSLATORS}
                                 values={{
                                     TR_CONTRIBUTION: (
-                                        <Link
-                                            href="https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation"
-                                            isGreen
-                                        >
+                                        <Link href="https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation">
                                             <FormattedMessage {...l10nMessages.TR_CONTRIBUTION} />
                                         </Link>
                                     ),

@@ -21,7 +21,7 @@ interface Props {
  * If children prop is an object, it assumes that it is ExtendedMessageDescriptor
  * and renders FormattedMessage instead of originally passed prop.
  */
-const IntlMessageExtractor = ({ children }: Props) => {
+const Intl = ({ children }: Props) => {
     if (isMessageDescriptor(children)) {
         const values: any = {};
         if (children.values) {
@@ -29,7 +29,7 @@ const IntlMessageExtractor = ({ children }: Props) => {
             // Value entry can also contain a MessageDescriptor.
             // Copy values and extract necessary messages to a new 'values' object
             Object.keys(children.values).forEach(key => {
-                values[key] = <IntlMessageExtractor>{children.values![key]}</IntlMessageExtractor>;
+                values[key] = <Intl>{children.values![key]}</Intl>;
             });
         }
 
@@ -44,4 +44,4 @@ const IntlMessageExtractor = ({ children }: Props) => {
     return <>{children}</>;
 };
 
-export default IntlMessageExtractor;
+export { Intl as Translation };

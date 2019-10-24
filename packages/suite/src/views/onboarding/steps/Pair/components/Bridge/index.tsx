@@ -115,7 +115,7 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                             onChange={(v: Installer) => this.onChange(v)}
                             options={installers}
                         />
-                        <Link href={`${uri}${target.value}`}>
+                        <Link href={`${uri}${target.value}`} variant="nostyle">
                             <OnboardingButton.Cta onClick={() => this.download()}>
                                 <FormattedMessage {...l10nMessages.TR_DOWNLOAD} />
                             </OnboardingButton.Cta>
@@ -131,7 +131,7 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                         </Text>
                         {target.signature && (
                             <Text>
-                                <Link href={uri + target.signature} isGreen>
+                                <Link href={uri + target.signature}>
                                     <FormattedMessage
                                         {...l10nCommonBridgeMessages.TR_CHECK_PGP_SIGNATURE}
                                     />

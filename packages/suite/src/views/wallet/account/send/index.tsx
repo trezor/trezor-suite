@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { WrappedComponentProps } from 'react-intl';
 import { CoinLogo, Icon, colors } from '@trezor/components';
@@ -70,6 +70,12 @@ const Send = (props: WrappedComponentProps & StateProps & DispatchProps) => {
         sendFormActionsRipple,
         accounts,
     } = props;
+
+    useEffect(() => {
+        sendFormActions.init();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.selectedAccount]);
+
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {

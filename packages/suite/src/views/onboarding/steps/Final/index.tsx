@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Intl';
 import { H1, H4 } from '@trezor/components';
 
 // import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL } from '@onboarding-constants/urls';
@@ -11,11 +11,11 @@ import { Props } from './Container';
 const FinalStep = ({ exitApp }: Props) => (
     <Wrapper.Step>
         <H1>
-            <FormattedMessage {...l10nMessages.TR_FINAL_HEADING} />
+            <Translation>{l10nMessages.TR_FINAL_HEADING}</Translation>
         </H1>
 
         <H4>
-            <FormattedMessage {...l10nMessages.TR_FINAL_SUBHEADING} />
+            <Translation>{l10nMessages.TR_FINAL_SUBHEADING}</Translation>
         </H4>
 
         <Wrapper.Controls>

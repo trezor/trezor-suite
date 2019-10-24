@@ -49,7 +49,7 @@ const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...
         <ContentWrapper>
             <Content maxWidth={maxWidth}>{content}</Content>
             {ctaLink && (
-                <StyledLink isGray href={ctaLink}>
+                <StyledLink variant="gray" href={ctaLink}>
                     <CTAWrapper>{ctaText}</CTAWrapper>
                 </StyledLink>
             )}

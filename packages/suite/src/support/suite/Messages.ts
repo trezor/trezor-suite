@@ -42,8 +42,8 @@ const definedMessages = defineMessages({
         description: 'Button text',
     },
     TR_WIPE_DEVICE: {
-        id: 'TR_WIPE_DEVICE',
-        defaultMessage: 'Wipe device',
+        id: 'TR_RETRY_BACKUP',
+        defaultMessage: 'Retry backup',
         description: 'Button',
     },
     TR_RESET_DEVICE: {
