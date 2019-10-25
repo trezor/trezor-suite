@@ -9,6 +9,7 @@ const mapStateToProps = (state: AppState) => ({
     accounts: state.wallet.accounts,
     discovery: state.wallet.discovery,
     settings: state.wallet.settings,
+    device: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

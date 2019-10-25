@@ -52,11 +52,10 @@ const LoadingContent = styled.div`
 
 const Dashboard = (props: Props) => {
     const discovery = props.getDiscoveryForDevice();
-    const accounts = discovery
+    const { device } = props;
+    const accounts = device
         ? sortByCoin(
-              props.accounts.filter(
-                  a => a.deviceState === discovery.deviceState && (!a.empty || a.visible),
-              ),
+              props.accounts.filter(a => a.deviceState === device.state && (!a.empty || a.visible)),
           )
         : [];
     const group: { [key: string]: Account[] } = {};
@@ -71,14 +70,14 @@ const Dashboard = (props: Props) => {
 
     return (
         <WalletLayout title="Dashboard">
-            {isLoading && (
-                <LoadingContent>
-                    <Loader size={30} />
-                </LoadingContent>
-            )}
-            {!isLoading && (
-                <Content data-test="Dashboard__page__content">
-                    <H4>Dashboard</H4>
+            <Content data-test="Dashboard__page__content">
+                <H4>Dashboard</H4>
+                {isLoading && (
+                    <LoadingContent>
+                        <Loader size={30} />
+                    </LoadingContent>
+                )}
+                {!isLoading && (
                     <CardsWrapper>
                         {Object.keys(group).map(symbol => {
                             const network = NETWORKS.find(
@@ -103,8 +102,8 @@ const Dashboard = (props: Props) => {
                             <FormattedMessage {...messages.TR_ADD_MORE_COINS} />
                         </AddMoreCoins>
                     </CardsWrapper>
-                </Content>
-            )}
+                )}
+            </Content>
         </WalletLayout>
     );
 };
