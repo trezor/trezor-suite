@@ -1,3 +1,4 @@
+import TrezorConnect from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
@@ -27,6 +28,13 @@ const onboardingMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: 
             api.dispatch(onboardingActions.resetOnboarding());
             api.dispatch(suiteActions.initialRunCompleted());
         }
+    }
+
+    // consider turning of webusb in moment user selects he is using a new device and it is model One.
+    const { path, selectedModel } = api.getState().onboarding;
+    const { transport } = api.getState().suite;
+    if (path.includes('new') && selectedModel === 1 && transport && transport.type === 'webusb') {
+        TrezorConnect.disableWebUSB();
     }
 
     return action;
