@@ -4,11 +4,24 @@ import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 import { getAccountKey } from '@suite/utils/wallet/accountUtils';
+import { State as SendFormState } from '@wallet-types/sendForm';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };
+
+export const saveSendForm = async (saveSendFormState: SendFormState, accountKey: string) => {
+    return db.addItem('sendForm', saveSendFormState, accountKey);
+};
+
+export const loadSendForm = async (accountKey: string) => {
+    return db.getItemByPK('sendForm', accountKey);
+};
+
+export const removeSendForm = async (accountKey: string) => {
+    return db.removeItemByPK('sendForm', accountKey);
+};
 
 export const rememberDevice = (device: TrezorDevice) => async (
     _dispatch: Dispatch,

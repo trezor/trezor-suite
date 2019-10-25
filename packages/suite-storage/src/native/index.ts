@@ -209,6 +209,7 @@ class CommonDB<TDBStructure> {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
         const res = await tx.store.delete(key);
+        return res;
         // TODO: needs to differentiate between PKs, Index keys...
         // if (res) {
         //     this.notify(store, [key]);

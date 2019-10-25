@@ -8,7 +8,7 @@ import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
-import { db } from '@suite/storage';
+import * as storageActions from '@suite-actions/storageActions';
 
 export type SendFormActions =
     | {
@@ -64,7 +64,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (account) {
         const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-        const cachedItem = await db.getItemByPK('sendForm', accountKey);
+        const cachedItem = await storageActions.loadSendForm(accountKey);
         cachedState = cachedItem;
     }
 
@@ -91,7 +91,7 @@ export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
 
     const id = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     const sendFormState = send;
-    db.addItem('sendForm', sendFormState, id);
+    storageActions.saveSendForm(sendFormState, id);
 };
 
 export const compose = (setMax: boolean = false) => async (
@@ -416,6 +416,10 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({ type: SEND.CLEAR, localCurrency });
+    // remove sendForm from the DB here or in storageMiddleware on SEND.CLEAR?
+    storageActions.removeSendForm(
+        getAccountKey(account.descriptor, account.symbol, account.deviceState),
+    );
     dispatch(cache());
 };
 
