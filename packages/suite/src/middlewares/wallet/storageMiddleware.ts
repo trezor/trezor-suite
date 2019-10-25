@@ -44,6 +44,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
         }
 
+        case TRANSACTION.REMOVE:
+            storageActions.removeAccountTransactions(action.account);
+            break;
+
         case DISCOVERY.UPDATE:
         case DISCOVERY.INTERRUPT:
         case DISCOVERY.STOP:

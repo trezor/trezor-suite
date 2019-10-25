@@ -2,6 +2,7 @@ import { db } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
+import { Account } from '@wallet-types';
 import { getAccountKey } from '@suite/utils/wallet/accountUtils';
 
 export type StorageActions =
@@ -37,6 +38,14 @@ export const rememberDevice = (device: TrezorDevice) => async (
             console.error('error', error);
         }
     });
+};
+
+export const removeAccountTransactions = async (account: Account) => {
+    await db.removeItemByIndex('txs', 'accountKey', [
+        account.descriptor,
+        account.symbol,
+        account.deviceState,
+    ]);
 };
 
 export const forgetDevice = (device: TrezorDevice) => async (

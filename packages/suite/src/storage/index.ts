@@ -8,13 +8,14 @@ import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery } from '@wallet-types';
 import { migrate } from './migrations';
 
-const VERSION = 4;
+const VERSION = 5;
 
 export interface SuiteDBSchema extends DBSchema {
     txs: {
         key: string;
         value: WalletAccountTransaction;
         indexes: {
+            accountKey: string[]; // descriptor, symbol, deviceState
             txid: WalletAccountTransaction['txid'];
             deviceState: string;
             blockTime: number; // TODO: blockTime can be undefined
@@ -91,6 +92,9 @@ const onUpgrade = async (
         txsStore.createIndex('txid', 'txid', { unique: false });
         txsStore.createIndex('blockTime', 'blockTime', { unique: false });
         txsStore.createIndex('deviceState', 'deviceState', { unique: false });
+        txsStore.createIndex('accountKey', ['descriptor', 'symbol', 'deviceState'], {
+            unique: false,
+        });
 
         // object store for settings
         db.createObjectStore('suiteSettings');
