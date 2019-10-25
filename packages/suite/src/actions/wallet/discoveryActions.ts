@@ -404,8 +404,14 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 addNotification({
                     variant: 'error',
                     title: 'Reading accounts error',
-                    // message: (<>{result.payload.error}</>),
+                    message: result.payload.error,
                     cancelable: true,
+                    actions: [
+                        {
+                            label: 'Retry',
+                            callback: () => dispatch(start()),
+                        },
+                    ],
                 }),
             );
         }
