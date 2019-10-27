@@ -264,6 +264,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 if (parseInt(destinationTag, 10) > U_INT_32) {
                     draft.networkTypeRipple.destinationTag.error = VALIDATION_ERRORS.NOT_VALID;
+                    return draft;
                 }
 
                 break;

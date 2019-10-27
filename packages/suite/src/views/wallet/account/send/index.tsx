@@ -136,6 +136,7 @@ const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
             ))}
             <Row>
                 <Fee
+                    networkType={account.networkType}
                     feeLevels={send.feeInfo.levels}
                     selectedFee={send.selectedFee}
                     onChange={sendFormActions.handleFeeValueChange}
