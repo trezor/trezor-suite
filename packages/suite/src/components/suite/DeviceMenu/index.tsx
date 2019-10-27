@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
@@ -218,7 +218,7 @@ const DeviceMenu = ({
                         {multipleDevices && (
                             <Tooltip
                                 content={
-                                    <FormattedMessage {...l10nMessages.TR_NUMBER_OF_DEVICES} />
+                                    <Translation>{l10nMessages.TR_NUMBER_OF_DEVICES}</Translation>
                                 }
                                 maxWidth={200}
                                 placement="bottom"

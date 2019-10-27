@@ -2,10 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { PinInput } from '@suite-components';
 
-// import { FormattedMessage } from 'react-intl';
-
-// import l10nMessages from './index.messages';
-
 const Wrapper = styled.div`
     max-width: 240px;
     margin-left: auto;
