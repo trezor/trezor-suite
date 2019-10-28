@@ -7,7 +7,7 @@ import { Output } from '@wallet-types/sendForm';
 import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
 import commonMessages from '@wallet-views/messages';
 import React from 'react';
-import { InjectedIntl, injectIntl } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 
 import { DispatchProps } from '../../Container';
@@ -23,8 +23,7 @@ const QrButton = styled(Button)`
     padding: 0 10px;
 `;
 
-interface Props {
-    intl: InjectedIntl;
+interface Props extends WrappedComponentProps {
     outputId: Output['id'];
     error: Output['address']['error'];
     networkType: Network['networkType'];

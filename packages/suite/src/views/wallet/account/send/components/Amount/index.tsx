@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Output } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
@@ -31,8 +31,7 @@ const Label = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-interface Props {
-    intl: InjectedIntl;
+interface Props extends WrappedComponentProps {
     outputId: Output['id'];
     fiatValue: Output['fiatValue']['value'];
     fiat: Fiat[];

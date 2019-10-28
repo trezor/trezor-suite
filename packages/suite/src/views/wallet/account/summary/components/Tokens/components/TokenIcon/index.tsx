@@ -27,22 +27,20 @@ const P = styled.p`
 `;
 
 interface Props {
-    symbol: string;
+    symbol?: string;
     address: string;
 }
 
-const TokenIcon = ({ symbol, address, ...props }: Props) => {
+const TokenIcon = ({ symbol, address }: Props) => {
     const bgColor = new ColorHash({ lightness: 0.9 });
     const textColor = new ColorHash({ lightness: 0.3, saturation: 1 });
     return (
-        <Wrapper
-            textColor={textColor.hex(address)}
-            backgroundColor={bgColor.hex(address)}
-            {...props}
-        >
-            <ScaleText widthOnly>
-                <P>{symbol}</P>
-            </ScaleText>
+        <Wrapper textColor={textColor.hex(address)} backgroundColor={bgColor.hex(address)}>
+            {symbol && (
+                <ScaleText widthOnly>
+                    <P>{symbol}</P>
+                </ScaleText>
+            )}
         </Wrapper>
     );
 };

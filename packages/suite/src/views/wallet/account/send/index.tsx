@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { InjectedIntl } from 'react-intl';
+import { WrappedComponentProps } from 'react-intl';
 import { CoinLogo, Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
 
@@ -56,7 +56,7 @@ const StyledTitle = styled(Title)`
     align-items: center;
 `;
 
-const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
+const Send = (props: WrappedComponentProps & StateProps & DispatchProps) => {
     const {
         device,
         suite,

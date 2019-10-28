@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FeeLevel } from '@wallet-types/sendForm';
-import { injectIntl, InjectedIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import accountMessages from '@wallet-views/account/messages';
 import { DispatchProps } from '../../Container';
 import { Account } from '@wallet-types';
@@ -39,13 +39,12 @@ const OptionLabel = styled(P)`
 
 const StyledSelect = styled(Select)``;
 
-interface Props {
+interface Props extends WrappedComponentProps {
     feeLevels: FeeLevel[];
     selectedFee: FeeLevel;
     symbol: Account['symbol'];
     networkType: Account['networkType'];
     onChange: DispatchProps['sendFormActions']['handleFeeValueChange'];
-    intl: InjectedIntl;
 }
 
 const capitalize = (s: string) => {

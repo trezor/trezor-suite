@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import * as connectActions from '@suite/actions/onboarding/connectActions';
@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &
-    InjectedIntlProps;
+    WrappedComponentProps;
 
 export default injectIntl(
     connect(

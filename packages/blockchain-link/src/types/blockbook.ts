@@ -41,10 +41,10 @@ export interface XPUBAddress {
 
 export interface ERC20 {
     type: 'ERC20';
-    name: string;
-    symbol: string;
+    name?: string;
+    symbol?: string;
     contract: string;
-    balance: string;
+    balance?: string;
     decimals?: number;
 }
 

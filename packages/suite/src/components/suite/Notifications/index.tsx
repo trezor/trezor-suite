@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
 import OnlineStatus from './components/OnlineStatus';
@@ -23,7 +23,7 @@ export type Props = {
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-const Notifications = (props: Props & InjectedIntlProps) => (
+const Notifications = (props: Props & WrappedComponentProps) => (
     <>
         <OnlineStatus isOnline={props.suite.online} />
         <UpdateBridge transport={props.suite.transport} goto={props.goto} />

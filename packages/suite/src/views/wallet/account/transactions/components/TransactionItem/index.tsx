@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Link, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { ArrayElement } from '@suite/types/utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -118,6 +119,45 @@ type Props = {
     explorerUrl: string;
 } & WalletAccountTransaction;
 
+const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
+    if (transfer.type === 'self') {
+        return (
+            <Token>
+                <Row>
+                    <Col>
+                        <TokenName>
+                            {transfer.name} ({transfer.symbol})
+                        </TokenName>
+                        <Label>(sent to self)</Label>
+                    </Col>
+                </Row>
+            </Token>
+        );
+    }
+    return (
+        <Token>
+            <Row>
+                <Col>
+                    <TokenName>
+                        {transfer.name} ({transfer.symbol})
+                        <TokenAmount txType={transfer.type}>
+                            {transfer.type === 'recv' && '+'}
+                            {transfer.type !== 'recv' && '-'}
+                            {transfer.amount} {transfer.symbol}
+                        </TokenAmount>
+                    </TokenName>
+                    <Label>
+                        From:&nbsp;<TokenAddress>{transfer.from}</TokenAddress>
+                    </Label>
+                    <Label>
+                        To:&nbsp;<TokenAddress>{transfer.to}</TokenAddress>
+                    </Label>
+                </Col>
+            </Row>
+        </Token>
+    );
+};
+
 const TransactionItem = React.memo(
     ({ explorerUrl, symbol, type, blockTime, blockHeight, amount, targets, tokens }: Props) => {
         return (
@@ -150,28 +190,7 @@ const TransactionItem = React.memo(
                                 </Target>
                             ))}
                         {tokens &&
-                            tokens.map(token => (
-                                <Token>
-                                    <Row>
-                                        <Col>
-                                            <TokenName>
-                                                {token.name} ({token.symbol})
-                                                <TokenAmount txType={type}>
-                                                    {type === 'recv' && '+'}
-                                                    {type !== 'recv' && '-'}
-                                                    {token.amount} {token.symbol}
-                                                </TokenAmount>
-                                            </TokenName>
-                                            <Label>
-                                                From:&nbsp;<TokenAddress>{token.from}</TokenAddress>
-                                            </Label>
-                                            <Label>
-                                                To:&nbsp;<TokenAddress>{token.to}</TokenAddress>
-                                            </Label>
-                                        </Col>
-                                    </Row>
-                                </Token>
-                            ))}
+                            tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
                     </Targets>
                     {amount !== '0' && (
                         <ColBalance>
