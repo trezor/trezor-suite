@@ -49,10 +49,11 @@ export const calculateTotal = (amount: string, fee: string): string => {
     }
 };
 
-export const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
+export const calculateMax = (balance: string, fee: string): string => {
     try {
+        const balanceBig = new BigNumber(balance);
         // TODO - minus pendings
-        const max = balance.minus(fee);
+        const max = balanceBig.minus(fee);
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {

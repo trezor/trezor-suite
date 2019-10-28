@@ -10,7 +10,7 @@ export type PrecomposedTransactionXrp =
       }
     | {
           type: 'final';
-          //   max: string;
+          max: string;
           totalSpent: string;
           fee: string;
           //   feePerByte: string;

@@ -1,5 +1,5 @@
 import TrezorConnect from 'trezor-connect';
-import { calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
+import { calculateTotal, getOutput, calculateMax } from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { SEND } from '@wallet-actions/constants';
 import Bignumber from 'bignumber.js';
@@ -18,7 +18,7 @@ export type SendFormRippleActions =
       };
 
 /*
-    Compose transaction
+    Compose xrp transaction
  */
 export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send } = getState().wallet;
@@ -32,10 +32,13 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     ).toString();
     const { availableBalance } = account;
     const feeInSatoshi = send.selectedFee.value;
+    let tx;
     const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi || '0', feeInSatoshi));
+
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
+        max: calculateMax(availableBalance, feeInSatoshi),
     };
 
     if (!output.address) {
@@ -46,27 +49,29 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
                 ...payloadData,
             },
         });
+        tx = { type: 'nonfinal', ...payloadData };
+    } else if (totalSpentBig.isGreaterThan(availableBalance)) {
+        dispatch({
+            type: SEND.XRP_PRECOMPOSED_TX,
+            payload: {
+                type: 'error',
+                error: 'NOT-ENOUGH-FUNDS',
+            },
+        });
+        tx = { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
     } else {
-        if (totalSpentBig.isGreaterThan(availableBalance)) {
-            dispatch({
-                type: SEND.XRP_PRECOMPOSED_TX,
-                payload: {
-                    type: 'error',
-                    error: 'NOT-ENOUGH-FUNDS',
-                },
-            });
-        } else {
-            dispatch({
-                type: SEND.XRP_PRECOMPOSED_TX,
-                payload: {
-                    type: 'final',
-                    ...payloadData,
-                },
-            });
-        }
+        dispatch({
+            type: SEND.XRP_PRECOMPOSED_TX,
+            payload: {
+                type: 'final',
+                ...payloadData,
+            },
+        });
+        tx = { type: 'final', ...payloadData };
     }
 
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
+    return tx;
 };
 
 /*

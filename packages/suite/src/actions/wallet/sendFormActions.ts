@@ -88,7 +88,6 @@ const applyChange = (composeBy?: 'address' | 'amount') => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    console.log('aaaa');
     const { send } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
     if (!send || !account) return null;
@@ -286,6 +285,8 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             fiatValue,
         });
     }
+
+    console.log('composedTransaction', composedTransaction);
 
     if (composedTransaction && composedTransaction.type !== 'error') {
         const availableBalanceBig = new BigNumber(account.availableBalance);
