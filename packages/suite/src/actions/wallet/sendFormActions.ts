@@ -286,8 +286,6 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         });
     }
 
-    console.log('composedTransaction', composedTransaction);
-
     if (composedTransaction && composedTransaction.type !== 'error') {
         const availableBalanceBig = new BigNumber(account.availableBalance);
 

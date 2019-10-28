@@ -4,6 +4,7 @@ import {
     FeeLevel as FeeLevelBase,
     PrecomposedTransaction as PrecomposedBitcoinTransaction,
 } from 'trezor-connect';
+import { PrecomposedTransactionXrp } from './transactions';
 
 export interface FeeLevel extends FeeLevelBase {
     value: string;
@@ -32,24 +33,16 @@ interface CustomFee {
         | typeof VALIDATION_ERRORS.NOT_IN_RANGE;
 }
 
-interface PrecomposedRippleTransaction {
-    type: 'final' | 'error';
-}
-
 interface NetworkTypeRipple {
-    transactionInfo: PrecomposedRippleTransaction | null;
+    transactionInfo: PrecomposedTransactionXrp | null;
     destinationTag: {
         value: null | string;
         error: null | typeof VALIDATION_ERRORS.NOT_NUMBER | typeof VALIDATION_ERRORS.NOT_VALID;
     };
 }
 
-interface PrecomposedEthereumTransaction {
-    type: 'final' | 'error';
-}
-
 interface NetworkTypeEthereum {
-    transactionInfo: PrecomposedEthereumTransaction | null;
+    transactionInfo: any | null;
     gasLimit: {
         value: null | string;
         error: null;

@@ -5,6 +5,7 @@ export type PrecomposedTransactionXrp =
       }
     | {
           type: 'nonfinal';
+          max: string;
           totalSpent: string;
           fee: string;
       }
