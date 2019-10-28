@@ -4,6 +4,11 @@ export type PrecomposedTransactionXrp =
           error: string;
       }
     | {
+          type: 'nonfinal';
+          totalSpent: string;
+          fee: string;
+      }
+    | {
           type: 'final';
           //   max: string;
           totalSpent: string;

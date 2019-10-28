@@ -4,6 +4,7 @@ import { SUITE } from '@suite-actions/constants';
 import { Button } from '@trezor/components';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { FormattedMessage } from 'react-intl';
 import commonMessages from '@wallet-views/messages';
 import messages from './index.messages';
@@ -49,14 +50,11 @@ const isDisabled = (
 ) => {
     let isDisabled = false;
 
-    // TODO handle all coins
-    if (networkType === 'bitcoin') {
-        if (
-            !send.networkTypeBitcoin.transactionInfo ||
-            send.networkTypeBitcoin.transactionInfo.type !== 'final'
-        ) {
-            isDisabled = true;
-        }
+    const transactionInfo = getTransactionInfo(networkType, send);
+
+    // compose error or progress
+    if (!transactionInfo || transactionInfo.type !== 'final') {
+        isDisabled = true;
     }
 
     // form errors
@@ -66,6 +64,7 @@ const isDisabled = (
         }
     });
 
+    // error in advanced form
     if (send.customFee.error) {
         isDisabled = true;
     }
@@ -89,9 +88,11 @@ const isDisabled = (
 };
 
 const getSendText = (
-    transactionInfo: SendFormState['networkTypeBitcoin']['transactionInfo'],
+    send: SendFormState,
+    networkType: Account['networkType'],
     symbol: Account['symbol'],
 ) => {
+    const transactionInfo = getTransactionInfo(networkType, send);
     if (transactionInfo && transactionInfo.type === 'final') {
         return `Send ${formatNetworkAmount(
             transactionInfo.totalSpent,
@@ -133,7 +134,7 @@ const SendAndClear = (props: Props) => (
                 }
             }}
         >
-            {getSendText(props.send.networkTypeBitcoin.transactionInfo, props.symbol)}
+            {getSendText(props.send, props.networkType, props.symbol)}
         </Send>
     </Wrapper>
 );

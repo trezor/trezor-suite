@@ -78,7 +78,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     output.address.error = VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF;
                     return draft;
                 }
-
                 break;
             }
 
@@ -119,13 +118,13 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 const { outputId, localCurrency } = action;
                 const output = getOutput(draft.outputs, outputId);
                 output.localCurrency.value = localCurrency;
-                break;
+                return draft;
             }
 
             // change select "Fee"
             case SEND.HANDLE_FEE_VALUE_CHANGE:
                 draft.selectedFee = action.fee;
-                break;
+                return draft;
 
             // change select "Fee"
             case SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE: {
@@ -164,7 +163,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 const { outputId, fiatValue } = action;
                 const output = getOutput(draft.outputs, outputId) as Output;
                 output.fiatValue.value = fiatValue;
-                break;
+                return draft;
             }
 
             // click button "SetMax"
@@ -174,7 +173,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             case SEND.COMPOSE_PROGRESS: {
                 draft.isComposing = action.isComposing;
-                break;
+                return draft;
             }
 
             case SEND.DELETE_TRANSACTION_INFO: {
@@ -182,15 +181,16 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 switch (networkType) {
                     case NETWORK_TYPE.BITCOIN:
                         draft.networkTypeBitcoin.transactionInfo = null;
-                        break;
+                        return draft;
                     case NETWORK_TYPE.ETHEREUM:
                         draft.networkTypeEthereum.transactionInfo = null;
-                        break;
+                        return draft;
                     case NETWORK_TYPE.RIPPLE:
                         draft.networkTypeRipple.transactionInfo = null;
-                        break;
+                        return draft;
                     // no default
                 }
+                break;
             }
 
             // click button "Clear"
@@ -215,7 +215,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
             case SEND.BTC_ADD_RECIPIENT: {
                 const { newOutput } = action;
                 draft.outputs.push(newOutput);
-                break;
+                return draft;
             }
 
             // click button "Remove recipient"
@@ -223,7 +223,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 const { outputId } = action;
                 const removed = draft.outputs.filter(output => output.id !== outputId);
                 draft.outputs = removed;
-                break;
+                return draft;
             }
 
             case SEND.BTC_PRECOMPOSED_TX: {
@@ -237,7 +237,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                         output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
                     );
                 }
-                break;
+                return draft;
             }
 
             /* 
@@ -255,7 +255,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                         output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
                     );
                 }
-                break;
+                return draft;
             }
 
             case SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE: {
@@ -273,7 +273,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
-                break;
+                return draft;
             }
 
             /* 

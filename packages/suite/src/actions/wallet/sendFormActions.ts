@@ -68,10 +68,7 @@ export const compose = (setMax: boolean = false) => async (
     getState: GetState,
 ) => {
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
-
     const account = getState().wallet.selectedAccount.account as Account;
-
-    dispatch({ type: SEND.DELETE_TRANSACTION_INFO, networkType: account.networkType });
 
     switch (account.networkType) {
         case 'bitcoin': {
@@ -85,6 +82,33 @@ export const compose = (setMax: boolean = false) => async (
         }
         // no default
     }
+};
+
+const applyChange = (composeBy?: 'address' | 'amount') => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    console.log('aaaa');
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return null;
+
+    dispatch({
+        type: SEND.DELETE_TRANSACTION_INFO,
+        networkType: account.networkType,
+    });
+
+    if (!composeBy) {
+        dispatch(compose());
+    }
+
+    if (composeBy) {
+        if (shouldComposeBy(composeBy, send.outputs)) {
+            dispatch(compose());
+        }
+    }
+
+    dispatch(cache());
 };
 
 /*
@@ -106,14 +130,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
         currentAccountAddress: account.descriptor,
     });
 
-    const { send } = getState().wallet;
-    if (!send) return null;
-
-    if (shouldComposeBy('address', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('address'));
 };
 
 /*
@@ -151,14 +168,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         availableBalance: account.formattedBalance,
     });
 
-    const freshSendState = getState().wallet.send;
-    if (!freshSendState) return null;
-
-    if (shouldComposeBy('amount', freshSendState.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -204,11 +214,7 @@ export const handleSelectCurrencyChange = (
         localCurrency,
     });
 
-    if (shouldComposeBy('amount', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -245,11 +251,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         availableBalance: account.formattedBalance,
     });
 
-    if (shouldComposeBy('amount', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -308,11 +310,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         });
     }
 
-    if (shouldComposeBy('amount', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -342,8 +340,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    dispatch(compose());
-    dispatch(cache());
+    applyChange();
 };
 
 /*
@@ -372,8 +369,7 @@ export const handleCustomFeeValueChange = (customFee: string) => (
         },
     });
 
-    dispatch(compose());
-    dispatch(cache());
+    applyChange();
 };
 
 /*

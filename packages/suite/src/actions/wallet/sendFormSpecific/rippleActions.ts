@@ -1,5 +1,6 @@
 import TrezorConnect from 'trezor-connect';
 import { calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { SEND } from '@wallet-actions/constants';
 import Bignumber from 'bignumber.js';
 import { PrecomposedTransactionXrp } from '@wallet-types/sendForm';
@@ -20,36 +21,51 @@ export type SendFormRippleActions =
     Compose transaction
  */
 export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
-    let payload;
     const { send } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
     if (!send || !account) return null;
 
     const output = getOutput(send.outputs, 0);
-    const amount = output.amount.value;
-    const availableBalance = account.formattedBalance;
-    const feeBig = new Bignumber(send.selectedFee.value);
-    const fee = feeBig.multipliedBy(send.selectedFee.blocks);
-    const totalSpent = calculateTotal(amount || '0', fee.toFixed());
-    const totalSpentBig = new Bignumber(totalSpent);
+    const amountInSatoshi = networkAmountToSatoshi(
+        output.amount.value || '0',
+        account.symbol,
+    ).toString();
+    const { availableBalance } = account;
+    const feeInSatoshi = send.selectedFee.value;
+    const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi || '0', feeInSatoshi));
+    const payloadData = {
+        totalSpent: totalSpentBig.toString(),
+        fee: feeInSatoshi,
+    };
 
-    if (totalSpentBig.isGreaterThan(availableBalance)) {
+    if (!output.address) {
         dispatch({
             type: SEND.XRP_PRECOMPOSED_TX,
             payload: {
-                type: 'error',
-                error: 'NOT-ENOUGH-FUNDS',
+                type: 'nonfinal',
+                ...payloadData,
             },
         });
     } else {
-        dispatch({
-            type: SEND.XRP_PRECOMPOSED_TX,
-            payload: {
-                totalSpent,
-                fee,
-            },
-        });
+        if (totalSpentBig.isGreaterThan(availableBalance)) {
+            dispatch({
+                type: SEND.XRP_PRECOMPOSED_TX,
+                payload: {
+                    type: 'error',
+                    error: 'NOT-ENOUGH-FUNDS',
+                },
+            });
+        } else {
+            dispatch({
+                type: SEND.XRP_PRECOMPOSED_TX,
+                payload: {
+                    type: 'final',
+                    ...payloadData,
+                },
+            });
+        }
     }
+
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
 };
 

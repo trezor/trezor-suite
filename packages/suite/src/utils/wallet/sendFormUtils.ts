@@ -1,4 +1,5 @@
-import { Output } from '@wallet-types/sendForm';
+import { Output, State } from '@wallet-types/sendForm';
+import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 
 export const getOutput = (outputs: Output[], id: number) =>
@@ -42,7 +43,7 @@ export const calculateTotal = (amount: string, fee: string): string => {
         if (bAmount.isNaN()) {
             console.error('Amount is not a number');
         }
-        return bAmount.plus(fee).toFixed();
+        return bAmount.plus(fee).toString();
     } catch (error) {
         return '0';
     }
@@ -56,5 +57,20 @@ export const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
         return max.toFixed();
     } catch (error) {
         return '0';
+    }
+};
+
+export const getTransactionInfo = (networkType: Account['networkType'], send: State) => {
+    switch (networkType) {
+        case 'bitcoin': {
+            return send.networkTypeBitcoin.transactionInfo;
+        }
+        case 'ethereum': {
+            return send.networkTypeEthereum.transactionInfo;
+        }
+        case 'ripple': {
+            return send.networkTypeRipple.transactionInfo;
+        }
+        // no default
     }
 };

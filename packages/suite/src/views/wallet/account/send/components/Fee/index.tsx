@@ -59,9 +59,8 @@ const getValue = (
 ) => {
     if (networkType === 'bitcoin') {
         return `${value} sat/B`;
-    } else {
-        return `${formatNetworkAmount(value, symbol)} ${symbol.toUpperCase()}`;
     }
+    return `${formatNetworkAmount(value, symbol)} ${symbol.toUpperCase()}`;
 };
 
 const FeeComponent = (props: Props) => (
