@@ -13,6 +13,8 @@ interface AddressChange {
     outputId: number;
     address: string;
     symbol: Account['symbol'];
+    networkType: Account['networkType'];
+    currentAccountAddress: string;
 }
 
 interface AmountChange {

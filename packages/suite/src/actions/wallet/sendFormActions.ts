@@ -102,6 +102,8 @@ export const handleAddressChange = (outputId: number, address: string) => (
         outputId,
         address,
         symbol: account.symbol,
+        networkType: account.networkType,
+        currentAccountAddress: account.descriptor,
     });
 
     const { send } = getState().wallet;

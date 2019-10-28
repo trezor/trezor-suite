@@ -12,7 +12,11 @@ interface Amount {
 
 interface Address {
     value: null | string;
-    error: null | typeof VALIDATION_ERRORS.IS_EMPTY | typeof VALIDATION_ERRORS.NOT_VALID;
+    error:
+        | null
+        | typeof VALIDATION_ERRORS.IS_EMPTY
+        | typeof VALIDATION_ERRORS.NOT_VALID
+        | typeof VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF;
 }
 
 interface FiatValue {

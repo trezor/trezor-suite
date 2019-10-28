@@ -59,7 +59,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Address"
             case SEND.HANDLE_ADDRESS_CHANGE: {
-                const { outputId, address, symbol } = action;
+                const { outputId, address, symbol, currentAccountAddress, networkType } = action;
                 const output = getOutput(draft.outputs, outputId);
                 output.address.error = null;
                 output.address.value = address;
@@ -73,6 +73,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     output.address.error = VALIDATION_ERRORS.NOT_VALID;
                     return draft;
                 }
+
+                if (networkType === 'ripple' && currentAccountAddress === address) {
+                    output.address.error = VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF;
+                    return draft;
+                }
+
                 break;
             }
 
