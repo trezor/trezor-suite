@@ -93,7 +93,7 @@ const getSendText = (
     symbol: Account['symbol'],
 ) => {
     const transactionInfo = getTransactionInfo(networkType, send);
-    if (transactionInfo && transactionInfo.type === 'final') {
+    if (transactionInfo && transactionInfo.type !== 'error') {
         return `Send ${formatNetworkAmount(
             transactionInfo.totalSpent,
             symbol,

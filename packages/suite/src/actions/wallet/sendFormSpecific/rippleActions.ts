@@ -41,7 +41,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
         max: calculateMax(availableBalance, feeInSatoshi),
     };
 
-    if (!output.address) {
+    if (!output.address.value) {
         dispatch({
             type: SEND.XRP_PRECOMPOSED_TX,
             payload: {
