@@ -46,7 +46,11 @@ const DeviceInstances = ({ instances, selectDevice, requestForgetDevice }: Props
     return (
         <>
             {instances.map(device => (
-                <Item key={device.instance || 'base'} onClick={() => selectDevice(device)}>
+                <Item
+                    key={device.instance || 'base'}
+                    onClick={() => selectDevice(device)}
+                    data-test="@suite/device-instance"
+                >
                     <IconWrapper>
                         <Icon
                             icon={device.instance ? 'WALLET_HIDDEN' : 'WALLET_STANDARD'}

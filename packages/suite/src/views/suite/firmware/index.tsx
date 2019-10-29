@@ -290,7 +290,7 @@ const FirmwareUpdate = (props: Props) => {
     // todo: handle unacquired
 
     return (
-        <Wrapper>
+        <Wrapper data-test="firmware-static-page">
             <Top>
                 <TitleHeader>{getTitle()}</TitleHeader>
                 {!isInBootloader() && <P>Reconnect in bootloader mode to update firmware</P>}

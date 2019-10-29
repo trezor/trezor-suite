@@ -11,12 +11,24 @@ const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?
         return;
     }
 
+    const { devices } = state;
+
+    // more then one device is connected, user might be working with previously connected device.
+    // redirect is not desirable here
+    if (devices.length > 1) {
+        return;
+    }
+
     // device is not initialized, redirect to onboarding
     if (device.mode === 'initialize') {
         await dispatch(routerActions.goto('onboarding-index'));
     }
     // firmware none (model T) or unknown (model One) indicates freshly unpacked device
-    if (device.firmware === 'none' || device.firmware === 'unknown') {
+    if (
+        device.mode === 'bootloader' &&
+        device.features &&
+        device.features.firmware_present === false
+    ) {
         await dispatch(routerActions.goto('onboarding-index'));
     }
     // device firmware update required, redirect to "firmware update"
