@@ -3,12 +3,15 @@
 module.exports = function (source, map, foo, bar) {
     this.cacheable();
     // prevent handshake
-    var clean = source.replace('common.handshake', '// common.handshake');
+    var clean = source.replace('"use strict"', '').replace('common.handshake', '// common.handshake');
 
     return `
 // BlockchainLinkWorker: pack worker file into function
 function initModule(postFn) {
+    // create references for global methods used in worker
     var onmessage;
+    var postMessage = function() {};
+    // worker content
     ${clean}
     // use BlockchainLinkWorker callback
     common.post = postFn;

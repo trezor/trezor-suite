@@ -56,8 +56,8 @@
         },
         "linux": {
             "icon": "build/static/images/suite/icons/64x64.png",
-            "executableName": "TrezorSuite",
-            "artifactName": "TrezorSuite.${ext}"
+            "artifactName": "${productName}-${version}.${ext}",
+            "target": "AppImage"
         }
     },
     "dependencies": {

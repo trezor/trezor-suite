@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, InjectedIntl } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import AccountName from '@wallet-components/AccountName';
 import LayoutAccount from '@wallet-components/LayoutAccount';
@@ -24,9 +24,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
 });
 
-type Props = {
-    intl: InjectedIntl;
-} & ReturnType<typeof mapStateToProps> &
+type Props = WrappedComponentProps &
+    ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
 const AccountReceive = (props: Props) => {

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { InjectedIntl } from 'react-intl';
 import { Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
 import AccountName from '@wallet-components/AccountName';
@@ -48,7 +47,7 @@ const OutputWrapper = styled.div`
     padding: 0 0 30px 0;
 `;
 
-const Send = (props: { intl: InjectedIntl } & StateProps & DispatchProps) => {
+const Send = (props: StateProps & DispatchProps) => {
     const {
         device,
         suite,

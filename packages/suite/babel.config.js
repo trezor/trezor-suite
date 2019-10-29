@@ -1,6 +1,6 @@
 module.exports = api => {
     // used only for react-intl messages extraction via the babel plugin
-    const plugins = [];
+    const plugins = ['@babel/plugin-syntax-dynamic-import'];
 
     if (api.env('translations')) {
         plugins.push([
