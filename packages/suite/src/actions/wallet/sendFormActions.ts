@@ -339,7 +339,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    applyChange();
+    dispatch(applyChange());
 };
 
 /*
@@ -368,7 +368,7 @@ export const handleCustomFeeValueChange = (customFee: string) => (
         },
     });
 
-    applyChange();
+    dispatch(applyChange());
 };
 
 /*
