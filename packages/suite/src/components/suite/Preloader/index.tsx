@@ -45,13 +45,14 @@ const Preloader = (props: Props) => {
         );
     }
 
-    if (isStatic)
+    if (isStatic) {
         return (
             <StaticPageWrapper>
                 <OnlineStatus />
                 {props.children}
             </StaticPageWrapper>
         );
+    }
 
     return (
         <SuiteWrapper>

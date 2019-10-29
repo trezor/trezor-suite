@@ -57,7 +57,7 @@ const WalletLayout = (props: Props) => {
             additionalDeviceMenuItems={<WalletMenuItems />}
             title={props.title}
         >
-            <Wrapper>
+            <Wrapper data-test="@wallet/layout">
                 <ProgressBar />
                 <Sidebar isOpen={props.suite.showSidebar} />
                 <ContentWrapper preventBgScroll={props.suite.showSidebar}>

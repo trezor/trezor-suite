@@ -196,6 +196,7 @@ const DeviceMenu = ({
                 isHoverable={false}
                 disabled={disabled}
                 isSelected
+                data-test="@suite/device-item-selected"
                 icon={
                     <React.Fragment>
                         {showWalletType && (

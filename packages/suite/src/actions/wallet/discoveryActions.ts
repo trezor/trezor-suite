@@ -115,7 +115,6 @@ const handleProgress = (event: ProgressEvent, deviceState: string, item: Discove
     if (!discovery || discovery.status > STATUS.RUNNING) return;
     // 2. account network is no longer part of discovery (network disabled in wallet settings)
     if (!discovery.networks.includes(item.coin)) return;
-
     // process event
     const { response, error } = event;
     let { failed } = discovery;
@@ -169,7 +168,6 @@ const getBundle = (discovery: Discovery) => (_d: Dispatch, getState: GetState): 
 
         // check if requested coin already have an empty account
         const hasEmptyAccount = prevAccounts.find(a => a.empty && !a.visible);
-
         // check if requested coin not failed before
         const failed = discovery.failed.find(
             account =>
@@ -189,7 +187,6 @@ const getBundle = (discovery: Discovery) => (_d: Dispatch, getState: GetState): 
             });
         }
     });
-
     return bundle;
 };
 
@@ -326,6 +323,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         skipFinalReload: true,
         useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
     });
+
     TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 
     // process response
