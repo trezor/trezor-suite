@@ -45,7 +45,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
                 ...payloadData,
             },
         });
-        tx = { type: 'nonfinal', ...payloadData };
+        tx = { type: 'nonfinal', ...payloadData } as const;
     } else if (totalSpentBig.isGreaterThan(availableBalance)) {
         dispatch({
             type: SEND.XRP_PRECOMPOSED_TX,
@@ -54,7 +54,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
                 error: 'NOT-ENOUGH-FUNDS',
             },
         });
-        tx = { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
+        tx = { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
     } else {
         dispatch({
             type: SEND.XRP_PRECOMPOSED_TX,
@@ -63,7 +63,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
                 ...payloadData,
             },
         });
-        tx = { type: 'final', ...payloadData };
+        tx = { type: 'final', ...payloadData } as const;
     }
 
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });

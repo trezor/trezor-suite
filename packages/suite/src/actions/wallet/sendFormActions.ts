@@ -2,7 +2,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { db } from '@suite/storage';
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
-import { FeeLevel, Output, PrecomposedTransactionXrp } from '@wallet-types/sendForm';
+import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
