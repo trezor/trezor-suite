@@ -156,5 +156,18 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
                 actions: [],
             },
         });
+    } else {
+        const { txid } = push.payload;
+
+        dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                variant: 'success',
+                title: 'success',
+                message: txid,
+                cancelable: true,
+                actions: [],
+            },
+        });
     }
 };
