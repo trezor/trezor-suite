@@ -38,6 +38,7 @@ export interface Output {
 }
 
 export interface State {
+    deviceState: string;
     outputs: Output[];
     isComposing: boolean;
     feeInfo: FeeInfo;

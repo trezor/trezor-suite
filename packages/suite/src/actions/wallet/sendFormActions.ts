@@ -51,7 +51,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
-    if (router.app !== 'wallet' || !router.params) return;
+    if (router.app !== 'wallet' || !router.params || !account) return;
 
     let cachedState = null;
     const feeInfo = getState().wallet.fees[router.params.symbol];
@@ -62,17 +62,16 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         blocks: 0,
     });
 
-    if (account) {
-        const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-        const cachedItem = await storageActions.loadSendForm(accountKey);
-        cachedState = cachedItem;
-    }
+    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const cachedItem = await storageActions.loadSendForm(accountKey);
+    cachedState = cachedItem;
 
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({
         type: SEND.INIT,
         payload: {
+            deviceState: account.deviceState,
             feeInfo: {
                 ...feeInfo,
                 levels,

@@ -71,6 +71,7 @@ export const forgetDevice = (device: TrezorDevice) => async (
         db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByPK('discovery', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),
+        db.removeItemByIndex('sendForm', 'deviceState', device.state),
     ]);
 };
 

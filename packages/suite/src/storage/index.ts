@@ -24,6 +24,9 @@ export interface SuiteDBSchema extends DBSchema {
     sendForm: {
         key: string;
         value: SendFormState;
+        indexes: {
+            deviceState: string;
+        };
     };
     suiteSettings: {
         key: string;
@@ -112,7 +115,8 @@ const onUpgrade = async (
         db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         // object store for send form
-        db.createObjectStore('sendForm');
+        const sendFormStore = db.createObjectStore('sendForm');
+        sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);
