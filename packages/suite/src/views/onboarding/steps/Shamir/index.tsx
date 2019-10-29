@@ -43,7 +43,7 @@ const ShamirStep = (props: Props) => {
                 {getModel() === 2 && (
                     <Wrapper.Options>
                         <Option
-                            data-test="button-standard-backup"
+                            data-test="@onboarding/button-standard-backup"
                             onClick={() => {
                                 props.setBackupType(0);
                                 props.callActionAndGoToNextStep(
