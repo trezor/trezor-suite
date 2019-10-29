@@ -4,7 +4,7 @@ import { Output } from '@wallet-types/sendForm';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { SEND } from '@wallet-actions/constants';
-import { INPUT_SEQUENCE } from '@wallet-constants/sendForm';
+import { BITCOIN_INPUT_SEQUENCE } from '@wallet-constants/sendForm';
 import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -155,7 +155,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const inputs = transaction.inputs.map(vin => ({
         ...vin,
-        sequence: INPUT_SEQUENCE, // RBF
+        sequence: BITCOIN_INPUT_SEQUENCE, // RBF
     }));
 
     const resp = await TrezorConnect.signTransaction({

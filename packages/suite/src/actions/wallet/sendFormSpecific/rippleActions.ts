@@ -1,6 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import { calculateTotal, getOutput, calculateMax } from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { SEND } from '@wallet-actions/constants';
 import Bignumber from 'bignumber.js';
 import { PrecomposedTransactionXrp } from '@wallet-types/sendForm';
@@ -8,14 +9,8 @@ import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
 export type SendFormRippleActions =
-    | {
-          type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE;
-          destinationTag: string;
-      }
-    | {
-          type: typeof SEND.XRP_PRECOMPOSED_TX;
-          payload: PrecomposedTransactionXrp;
-      };
+    | { type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE; destinationTag: string }
+    | { type: typeof SEND.XRP_PRECOMPOSED_TX; payload: PrecomposedTransactionXrp };
 
 /*
     Compose xrp transaction
@@ -84,13 +79,18 @@ export const handleDestinationTagChange = (destinationTag: string) => (dispatch:
     });
 };
 
+interface Payment {
+    destination: string | null;
+    destinationTag?: number | null;
+    amount: string | null;
+}
+
 /*
     Send transaction
  */
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     if (!send) return;
-    const FLAGS = 0x80000000;
     const { account } = selectedAccount;
     // Fee must be in the range of 10 to 10,000 drops
     const { selectedFee, outputs, networkTypeRipple } = send;
@@ -98,6 +98,15 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
     if (!account || account.networkType !== 'ripple' || !selectedDevice || !destinationTag)
         return null;
+
+    const payment: Payment = {
+        destination: outputs[0].address.value,
+        amount: networkAmountToSatoshi(outputs[0].amount.value || '0', account.symbol),
+    };
+
+    if (destinationTag.value) {
+        payment.destinationTag = parseInt(destinationTag.value || '0', 10);
+    }
 
     // @ts-ignore
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
@@ -110,13 +119,9 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         path: account.path,
         transaction: {
             fee: selectedFee.feePerUnit,
-            flags: FLAGS,
+            flags: XRP_FLAG,
             sequence: account.misc.sequence,
-            payment: {
-                address: outputs[0].address.value,
-                destinationTag: parseInt(destinationTag.value || '0', 10),
-                amount: outputs[0].amount.value,
-            },
+            payment,
         },
     });
 
