@@ -2,7 +2,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { db } from '@suite/storage';
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
-import { FeeLevel, Output } from '@wallet-types/sendForm';
+import { FeeLevel, Output, PrecomposedTransactionXrp } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
@@ -10,7 +10,7 @@ import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
 
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
-import * as ethereumActions from './sendFormSpecific/ethereumActions';
+// import * as ethereumActions from './sendFormSpecific/ethereumActions';
 import * as rippleActions from './sendFormSpecific/rippleActions';
 
 /**
@@ -77,9 +77,9 @@ export const compose = (setMax: boolean = false) => async (
         case 'ripple': {
             return dispatch(rippleActions.compose());
         }
-        case 'ethereum': {
-            return dispatch(ethereumActions.compose());
-        }
+        // case 'ethereum': {
+        //     return dispatch(ethereumActions.compose());
+        // }
         // no default
     }
 };
@@ -289,13 +289,17 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     if (composedTransaction && composedTransaction.type !== 'error') {
         const availableBalanceBig = new BigNumber(account.availableBalance);
 
+        const amount = formatNetworkAmount(
+            availableBalanceBig.minus(composedTransaction.fee).toString(),
+            account.symbol,
+        );
+
+        const amountBig = new BigNumber(amount);
+
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
-            amount: formatNetworkAmount(
-                availableBalanceBig.minus(composedTransaction.fee).toString(),
-                account.symbol,
-            ),
+            amount: amountBig.isLessThan(0) ? '0' : amountBig.toString(),
             decimals: network.decimals,
             availableBalance: account.availableBalance,
         });

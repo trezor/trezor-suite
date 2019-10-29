@@ -30,10 +30,11 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     let tx;
     const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi || '0', feeInSatoshi));
 
+    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi));
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
-        max: calculateMax(availableBalance, feeInSatoshi),
+        max: max.isLessThan('0') ? '0' : max.toString(),
     };
 
     if (!output.address.value) {
