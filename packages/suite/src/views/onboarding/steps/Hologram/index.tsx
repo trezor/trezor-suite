@@ -45,7 +45,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         </HologramWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
-                                data-test="button-hologram-different"
+                                data-test="@onboarding/button-hologram-different"
                                 onClick={() => onboardingActions.goToSubStep('hologram-different')}
                             >
                                 <FormattedMessage
@@ -53,7 +53,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
-                                data-test="button-continue"
+                                data-test="@onboarding/button-continue"
                                 onClick={() => onboardingActions.goToNextStep()}
                             >
                                 <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK} />

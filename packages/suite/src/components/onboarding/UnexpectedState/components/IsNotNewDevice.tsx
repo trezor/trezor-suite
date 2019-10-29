@@ -31,7 +31,10 @@ const IsNotNewDevice = ({ actionAlt }: Props) => (
                     <Translation>{l10nCommonMessages.TR_CONTACT_SUPPORT}</Translation>
                 </OnboardingButton.Cta>
             </Link>
-            <OnboardingButton.Alt onClick={() => actionAlt([STEP.PATH_NEW])}>
+            <OnboardingButton.Alt
+                onClick={() => actionAlt([STEP.PATH_NEW])}
+                data-test="@onboarding/unexpected-state/use-it-anyway-button"
+            >
                 Use it anyway
             </OnboardingButton.Alt>
         </Wrapper.Controls>

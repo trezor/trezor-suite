@@ -52,7 +52,7 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
             content={content}
         >
             <OnboardingButton.Cta
-                data-test="button-continue"
+                data-test="@onboarding/button-continue"
                 isDisabled={!isConnected || isInBootloader}
                 onClick={() => onClick()}
             >
