@@ -1,6 +1,6 @@
 /* eslint-disable radix */
 import React, { useMemo } from 'react';
-import { FormattedDate } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { H5, P, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
@@ -8,6 +8,7 @@ import { groupTransactionsByDate, parseKey } from '@wallet-utils/transactionUtil
 import { SETTINGS } from '@suite-config';
 import TransactionItem from '../TransactionItem';
 import Pagination from '../Pagination';
+import l10nMessages from '../../index.messages';
 
 const Wrapper = styled.div``;
 
@@ -61,7 +62,9 @@ const TransactionList = ({
                     <React.Fragment key={dateKey}>
                         <StyledH5>
                             {dateKey === 'pending' ? (
-                                <P>Pending</P>
+                                <P>
+                                    <FormattedMessage {...l10nMessages.TR_PENDING} />
+                                </P>
                             ) : (
                                 <FormattedDate
                                     value={parseKey(dateKey)}

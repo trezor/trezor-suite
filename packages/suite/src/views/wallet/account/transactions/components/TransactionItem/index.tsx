@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 import { Link, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { ArrayElement } from '@suite/types/utils';
+import l10nMessages from '../../index.messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -128,7 +129,9 @@ const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
                         <TokenName>
                             {transfer.name} ({transfer.symbol})
                         </TokenName>
-                        <Label>(sent to self)</Label>
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_SENT_TO_SELF} />
+                        </Label>
                     </Col>
                 </Row>
             </Token>
@@ -178,12 +181,16 @@ const TransactionItem = React.memo(
                     <Targets>
                         {type === 'self' && (
                             <Target>
-                                <Addr>(sent to self)</Addr>
+                                <Addr>
+                                    <FormattedMessage {...l10nMessages.TR_SENT_TO_SELF} />
+                                </Addr>
                             </Target>
                         )}
                         {isUnknown && (
                             <Target>
-                                <Addr>(Unknown transaction)</Addr>
+                                <Addr>
+                                    <FormattedMessage {...l10nMessages.TR_UNKNOWN_TRANSACTION} />
+                                </Addr>
                             </Target>
                         )}
                         {targets &&
