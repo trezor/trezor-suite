@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Notification } from '@suite-components';
 import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 // TODO
-interface Props extends InjectedIntlProps {
+interface Props extends WrappedComponentProps {
     blockchain: any;
     selectedAccount: AppState['wallet']['selectedAccount'];
 }

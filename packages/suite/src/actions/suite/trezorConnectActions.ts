@@ -81,7 +81,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,
-            error,
+            error: error.message,
         });
     }
 };

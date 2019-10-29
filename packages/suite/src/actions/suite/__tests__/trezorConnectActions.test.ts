@@ -92,7 +92,7 @@ describe('TrezorConnect Actions', () => {
         const action = store.getActions().pop();
         expect(action).toEqual({
             type: SUITE.ERROR,
-            error: new Error('Iframe error'),
+            error: 'Iframe error',
         });
     });
 

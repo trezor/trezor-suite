@@ -1,6 +1,6 @@
 import React from 'react';
 // import styled from 'styled-components';
-import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &
-    InjectedIntlProps;
+    WrappedComponentProps;
 
 const RecoveryStepModelT = (props: Props) => {
     const { deviceCall, device, uiInteraction, connectActions } = props;

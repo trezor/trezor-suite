@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { P, Link } from '@trezor/components';
@@ -49,7 +49,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &
-    InjectedIntlProps;
+    WrappedComponentProps;
 
 type Status = null | 'select-advanced-recovery';
 

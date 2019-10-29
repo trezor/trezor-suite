@@ -61,6 +61,10 @@ module.exports = {
         '<rootDir>/src/utils/suite/dom',
         '<rootDir>/src/utils/wallet/promiseUtils',
     ],
+    transformIgnorePatterns: [
+        '/node_modules/',
+        '/node_modules/(?!intl-messageformat|intl-messageformat-parser).+\\.js$',
+    ],
     testMatch: ['**/*.test.(ts|js)'],
     transform: {
         '^.+\\.(ts)$': 'ts-jest',

@@ -4,7 +4,7 @@ import {
 } from '@wallet-reducers/transactionReducer';
 import { AccountTransaction } from 'trezor-connect';
 import l10nMessages from '@wallet-views/account/messages';
-import { InjectedIntl } from 'react-intl';
+import { WrappedComponentProps } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network } from '@wallet-types';
@@ -34,7 +34,10 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
     return fiatValue;
 };
 
-export const getTitleForNetwork = (symbol: Account['symbol'], intl: InjectedIntl) => {
+export const getTitleForNetwork = (
+    symbol: Account['symbol'],
+    intl: WrappedComponentProps['intl'],
+) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
             return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN);
@@ -81,7 +84,10 @@ export const getTitleForNetwork = (symbol: Account['symbol'], intl: InjectedIntl
     }
 };
 
-export const getTypeForNetwork = (accountType: Account['accountType'], intl: InjectedIntl) => {
+export const getTypeForNetwork = (
+    accountType: Account['accountType'],
+    intl: WrappedComponentProps['intl'],
+) => {
     switch (accountType) {
         case ACCOUNT_TYPE.NORMAL:
             return null;

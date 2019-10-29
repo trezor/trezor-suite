@@ -10,7 +10,9 @@ import {
     REMOVE_PATH,
     RESET_ONBOARDING,
     ENABLE_ONBOARDING_REDUCER,
+    SET_BACKUP_TYPE,
 } from '@onboarding-types/onboarding';
+import * as SUITE from '@suite-actions/constants/suiteConstants';
 import { AnyPath } from '@onboarding-types/steps';
 import * as STEP from '@suite/constants/onboarding/steps';
 import steps from '@onboarding-config/steps';
@@ -20,6 +22,8 @@ import {
     DEVICE_CALL_SUCCESS,
     DEVICE_CALL_ERROR,
 } from '@suite/types/onboarding/connect';
+import * as CALLS from '@suite/actions/onboarding/constants/calls';
+
 import { Action } from '@suite-types';
 
 const initialState: OnboardingState = {
@@ -43,6 +47,9 @@ const initialState: OnboardingState = {
         name: undefined,
         counter: undefined,
     },
+    // shamir or standard. we need to have this field in reducer for the case
+    // when backup fails and user wants to retry it.
+    backupType: 0,
 };
 
 const setPrevDevice = (state: OnboardingState, device: Device) => {
@@ -55,7 +62,6 @@ const setPrevDevice = (state: OnboardingState, device: Device) => {
     ) {
         return null;
     }
-
     // ts.
     if (!device.features) {
         return null;
@@ -67,6 +73,13 @@ const setPrevDevice = (state: OnboardingState, device: Device) => {
         return state.prevDevice;
     }
     return device;
+};
+
+const updatePrevDevice = (draft: OnboardingState, device: Device) => {
+    // wipeDevice call changes id
+    if (draft.deviceCall.name === CALLS.WIPE_DEVICE && !draft.deviceCall.error) {
+        draft.prevDevice = device;
+    }
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
@@ -130,6 +143,9 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
             case REMOVE_PATH:
                 draft.path = removePath(action.payload, state);
                 break;
+            case SET_BACKUP_TYPE:
+                draft.backupType = action.payload;
+                break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);
                 draft.uiInteraction = initialState.uiInteraction;
@@ -180,6 +196,9 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case UI.REQUEST_PIN:
                 draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
+                break;
+            case SUITE.UPDATE_SELECTED_DEVICE:
+                updatePrevDevice(draft, action.payload);
                 break;
             case RESET_ONBOARDING:
                 return initialState;

@@ -319,6 +319,12 @@ const getSelectedDevice = [
         ],
         result: undefined,
     },
+    {
+        description: `identical device, but with different device_id because of preceding device-wipe call`,
+        device: getSuiteDevice({ path: '1' }, { device_id: '2' }),
+        state: [getSuiteDevice({ path: '1' }, { device_id: '3' })],
+        result: getSuiteDevice({ path: '1' }, { device_id: '3' }),
+    },
 ];
 
 const sortByTimestamp = {

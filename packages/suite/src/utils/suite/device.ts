@@ -1,5 +1,5 @@
 import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
-import { InjectedIntl } from 'react-intl';
+import { WrappedComponentProps } from 'react-intl';
 import l10nMessages from '@suite-components/DeviceMenu/index.messages';
 import { TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
 
@@ -46,7 +46,10 @@ export const getStatus = (device: TrezorDevice): string => {
     return 'unknown';
 };
 
-export const getStatusName = (deviceStatus: string, intl: InjectedIntl): string => {
+export const getStatusName = (
+    deviceStatus: string,
+    intl: WrappedComponentProps['intl'],
+): string => {
     switch (deviceStatus) {
         case 'connected':
             return intl.formatMessage(l10nMessages.TR_CONNECTED);
@@ -100,6 +103,7 @@ export const getStatusColor = (deviceStatus: string): string => {
     }
 };
 
+// todo: not sure if this belongs to device utils, maybe something like suiteUtils
 export const isWebUSB = (transport?: Transport) =>
     !!(transport && transport.type && transport.type === 'webusb');
 
@@ -198,9 +202,15 @@ export const getSelectedDevice = (
         if ((!d.features || d.mode === 'bootloader') && d.path === path) {
             return true;
         }
-        if (d.features && d.features.device_id === features.device_id && d.instance === instance) {
+        if (d.instance === instance && d.features && d.features.device_id === features.device_id) {
             return true;
         }
+
+        // special case we need to use after wipe device (which changes device_id)
+        if (d.instance === instance && d.path.length > 0 && d.path === device.path) {
+            return true;
+        }
+
         return false;
     });
 };

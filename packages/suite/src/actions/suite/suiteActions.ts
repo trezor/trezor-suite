@@ -256,8 +256,10 @@ export const observeSelectedDevice = (action: Action) => (
 
     const selectedDevice = getState().suite.device;
     if (!selectedDevice) return false;
+
     const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
     if (!deviceFromReducer) return true;
+
     const changed = reducersUtils.observeChanges(selectedDevice, deviceFromReducer);
     if (changed) {
         dispatch({
@@ -351,6 +353,7 @@ export const authorizeDevice = () => async (
             instance: device.instance,
             state: device.state,
         },
+        keepSession: true,
         useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
@@ -366,8 +369,15 @@ export const authorizeDevice = () => async (
     dispatch(
         addNotification({
             variant: 'error',
-            title: `authorizeDevice error ${response.payload.error}`,
+            title: 'Authorize device error',
+            message: response.payload.error,
             cancelable: true,
+            actions: [
+                {
+                    label: 'Retry',
+                    callback: () => dispatch(authorizeDevice()),
+                },
+            ],
         }),
     );
     return false;
