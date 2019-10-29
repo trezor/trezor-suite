@@ -141,7 +141,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const push = await TrezorConnect.pushTransaction({
         tx: signedTransaction.payload.serializedTx,
-        coin: 'xrp',
+        coin: account.symbol,
     });
 
     if (!push.success) {
@@ -149,7 +149,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: 'bbbb', // TODO
+                title: 'Error', // TODO
                 message: push.payload.error,
                 cancelable: true,
                 actions: [],
