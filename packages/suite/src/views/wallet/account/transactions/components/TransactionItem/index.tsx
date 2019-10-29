@@ -160,6 +160,9 @@ const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
 
 const TransactionItem = React.memo(
     ({ explorerUrl, symbol, type, blockTime, blockHeight, amount, targets, tokens }: Props) => {
+        // blockbook cannot parse some txs
+        // eg. tx with eth smart contract that creates a new token has no valid target
+        const isUnknown = type === 'sent' && targets.length === 1 && targets[0].addresses === null;
         return (
             <Wrapper>
                 <Row>
@@ -176,6 +179,11 @@ const TransactionItem = React.memo(
                         {type === 'self' && (
                             <Target>
                                 <Addr>(sent to self)</Addr>
+                            </Target>
+                        )}
+                        {isUnknown && (
+                            <Target>
+                                <Addr>(Unknown transaction)</Addr>
                             </Target>
                         )}
                         {targets &&
