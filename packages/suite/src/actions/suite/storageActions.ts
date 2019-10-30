@@ -38,19 +38,34 @@ export const rememberDevice = (device: TrezorDevice) => async (
         .map(a => allTxs[getAccountKey(a.descriptor, a.symbol, a.deviceState)] || [])
         .flat();
 
-    await Promise.all([
-        db.addItem('devices', { ...device, remember: true, connected: false }, device.state),
-        db.addItems('accounts', accounts, true),
-        db.addItems('discovery', serializableDiscovery, true),
-        db.addItems('txs', transactions, true),
-    ]).catch(error => {
+    // TODO: Jest get stuck on Promise.all
+
+    // await Promise.all([
+    //     db.addItem('devices', { ...device, remember: true, connected: false }, device.state),
+    //     db.addItems('accounts', accounts, true),
+    //     db.addItems('discovery', serializableDiscovery, true),
+    //     db.addItems('txs', transactions, true),
+    // ]).catch(error => {
+    //     if (error) {
+    //         console.error('errorName', error.name);
+    //         console.error('errorMessage', error.message);
+    //     } else {
+    //         console.error('error', error);
+    //     }
+    // });
+    try {
+        await db.addItem('devices', { ...device, remember: true, connected: false }, device.state);
+        await db.addItems('accounts', accounts, true);
+        await db.addItems('discovery', serializableDiscovery, true);
+        await db.addItems('txs', transactions, true);
+    } catch (error) {
         if (error) {
             console.error('errorName', error.name);
             console.error('errorMessage', error.message);
         } else {
             console.error('error', error);
         }
-    });
+    }
 };
 
 export const removeAccountTransactions = async (account: Account) => {
@@ -75,8 +90,8 @@ export const forgetDevice = (device: TrezorDevice) => async (
     ]);
 };
 
-export const saveWalletSettings = () => (_dispatch: Dispatch, getState: GetState) => {
-    db.addItem(
+export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
+    await db.addItem(
         'walletSettings',
         {
             ...getState().wallet.settings,
@@ -98,25 +113,25 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
 };
 
 export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) => {
-    SuiteDB.isDBAvailable(async (isAvailable: boolean) => {
-        let suite: Partial<AppState['suite']> | typeof undefined;
-        let devices: AppState['devices'] = [];
-        let walletSettings: AppState['wallet']['settings'] | typeof undefined;
-        let accounts: AppState['wallet']['accounts'] = [];
-        let discovery: AppState['wallet']['discovery'] = [];
-        let txs: AppState['wallet']['transactions']['transactions'][string] = [];
-        if (!isAvailable) {
-            // TODO: Display error for the user (eg. redirect to unsupported browser page)
-            console.warn('IndexedDB not supported');
-        } else {
-            //  load state from database
-            suite = await db.getItemByPK('suiteSettings', 'suite');
-            devices = await db.getItemsExtended('devices');
-            accounts = await db.getItemsExtended('accounts');
-            discovery = await db.getItemsExtended('discovery');
-            walletSettings = await db.getItemByPK('walletSettings', 'wallet');
-            txs = await db.getItemsExtended('txs');
-        }
+    const isDBAvailable = await SuiteDB.isDBAvailable();
+
+    if (!isDBAvailable) {
+        console.warn('IndexedDB not supported');
+        const initialState = getState();
+        dispatch({
+            type: STORAGE.LOADED,
+            payload: {
+                ...initialState,
+            },
+        });
+    } else {
+        //  load state from database
+        const suite = await db.getItemByPK('suiteSettings', 'suite');
+        const devices = await db.getItemsExtended('devices');
+        const accounts = await db.getItemsExtended('accounts');
+        const discovery = await db.getItemsExtended('discovery');
+        const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
+        const txs = await db.getItemsExtended('txs');
 
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
         txs.forEach(tx => {
@@ -124,7 +139,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
             if (!mappedTxs[k]) {
                 mappedTxs[k] = [];
             }
-            mappedTxs[getAccountKey(tx.descriptor, tx.symbol, tx.deviceState)].push(tx);
+            mappedTxs[k].push(tx);
         });
 
         const initialState = getState();
@@ -152,5 +167,5 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                 },
             },
         });
-    });
+    }
 };
