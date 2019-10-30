@@ -46,6 +46,7 @@ const AccountNotifications = (props: Props) => {
             variant={notification.variant}
             title={notification.title}
             message={notification.message}
+            actions={notification.actions}
         />
     );
 };

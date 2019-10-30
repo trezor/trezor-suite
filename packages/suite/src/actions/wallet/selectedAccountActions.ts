@@ -25,6 +25,7 @@ import l10nMessages from '@suite-views/index.messages';
 import { NETWORKS } from '@wallet-config';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
+import { goto } from '@suite-actions/routerActions';
 
 export type SelectedAccountActions =
     | { type: typeof ACCOUNT.DISPOSE }
@@ -118,7 +119,6 @@ const getAccountLoader = (
                     values: { deviceLabel: device.instanceLabel || device.label },
                 },
                 message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
-                actions: [{ label: l10nMessages.TR_DEVICE_SETTINGS, callback: () => {} }],
             };
         }
 
@@ -149,7 +149,11 @@ const getAccountLoader = (
 };
 
 // display notification above the component, with or without component body
-const getAccountNotification = (state: AppState, selectedAccount: SelectedAccountState) => {
+const getAccountNotification = (
+    state: AppState,
+    selectedAccount: SelectedAccountState,
+    dispatch: Dispatch,
+) => {
     const { device } = state.suite;
     const { account, network, discovery } = selectedAccount;
     if (!device || !network) return null;
@@ -196,15 +200,23 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
 
     // case 4: account does exists and device is unavailable (created with different passphrase settings) account cannot be accessed
     // this is related to device instance in url, it's not used for now (device clones are disabled)
-    if (!device.available) {
+    if (device && !device.available) {
         return {
             type: 'info',
             variant: 'info',
             title: {
                 ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
-                values: { deviceLabel: device.instanceLabel },
+                values: { deviceLabel: device.instanceLabel || device.label },
             },
             message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
+            actions: [
+                {
+                    label: l10nMessages.TR_DEVICE_SETTINGS,
+                    callback: () => {
+                        dispatch(goto('suite-device-settings'));
+                    },
+                },
+            ],
             shouldRender: true,
         };
     }
@@ -271,7 +283,7 @@ export const observe = (prevState: AppState, action: Action) => (
     // get "selectedAccount" status from newState
     const exceptionPage = getExceptionPage(state, newState);
     const loader = getAccountLoader(state, newState);
-    const notification = getAccountNotification(state, newState);
+    const notification = getAccountNotification(state, newState, dispatch);
 
     if (exceptionPage) {
         newState.exceptionPage = exceptionPage;
