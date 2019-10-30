@@ -52,9 +52,7 @@
             "target": "tar.gz",
             "icon": "build/static/images/suite/icons/64x64.png"
         },
-        "win": {
-            // "icon": "build/static/images/suite/icons/64x64.ico"
-        },
+        "win": {},
         "linux": {
             "icon": "build/static/images/suite/icons/64x64.png",
             "executableName": "TrezorSuite",
