@@ -21,6 +21,7 @@ import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import l10nNotificationMessages from '@wallet-components/Notifications/components/Account/index.messages';
 import l10nLoaderMessages from '@wallet-components/Content/index.messages';
 import l10nFwUnsupportedMessages from '@wallet-components/Content/components/FirmwareUnsupported/index.messages';
+import l10nMessages from '@suite-views/index.messages';
 import { NETWORKS } from '@wallet-config';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
@@ -117,6 +118,7 @@ const getAccountLoader = (
                     values: { deviceLabel: device.instanceLabel || device.label },
                 },
                 message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
+                actions: [{ label: l10nMessages.TR_DEVICE_SETTINGS, callback: () => {} }],
             };
         }
 
