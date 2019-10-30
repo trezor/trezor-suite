@@ -44,6 +44,7 @@ suite-desktop build linux:
         - install and build
 
 suite-desktop build windows:
+    image: electronuserland/builder:wine
     stage: build desktop apps
     when: manual
     script:
