@@ -22,7 +22,7 @@ suite-desktop build mac:
     artifacts:
         expire_in: 1 day
         paths:
-            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron/mac/TrezorSuite
+            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
     dependencies:
         - install and build
 
@@ -37,7 +37,7 @@ suite-desktop build linux:
     artifacts:
         expire_in: 1 day
         paths:
-            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron/linux
+            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
             - default.nix
             - trezor-suite.nix
     dependencies:
@@ -53,8 +53,6 @@ suite-desktop build windows:
     artifacts:
         expire_in: 1 day
         paths:
-            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron/win
-            - default.nix
-            - trezor-suite.nix
+            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
     dependencies:
         - install and build
