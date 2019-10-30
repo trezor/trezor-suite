@@ -247,7 +247,6 @@ const init = (instances: any[]) => {
 init(CONFIG);
 
 CONFIG.forEach(i => {
-    // @ts-ignore
     const worker: any = i.blockchain.worker.indexOf('ripple') >= 0 ? RippleWorker : BlockbookWorker;
     const b = new BlockchainLink({
         ...i.blockchain,
