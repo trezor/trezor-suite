@@ -53,7 +53,7 @@
             "icon": "build/static/images/suite/icons/64x64.png"
         },
         "win": {
-            "icon": "build/static/images/suite/icons/64x64.ico"
+            // "icon": "build/static/images/suite/icons/64x64.ico"
         },
         "linux": {
             "icon": "build/static/images/suite/icons/64x64.png",
