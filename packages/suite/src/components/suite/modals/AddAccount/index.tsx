@@ -32,19 +32,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
+type NetworkSymbol = Network['symbol'] | ExternalNetwork['symbol'];
+
 type Props = {
     device: TrezorDevice;
     onCancel: () => void;
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-type NetworkUnion = (Network | ExternalNetwork)[];
-
 const AddAccount = (props: Props) => {
-    // Collect all Networks without "accountType" (normal) and join ExternalNetworks
-    const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden) as NetworkUnion;
-    const externalNetworks = EXTERNAL_NETWORKS.filter(n => !n.isHidden) as NetworkUnion;
-    const networks = internalNetworks.concat(externalNetworks);
+    // Collect all Networks without "accountType" (normal)
+    const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden);
+    const externalNetworks = EXTERNAL_NETWORKS.filter(n => !n.isHidden);
 
     // Collect accounts for selected device
     const accounts = props.accounts.filter(a => a.deviceState === props.device.state);
@@ -53,13 +52,15 @@ const AddAccount = (props: Props) => {
     const { params } = props.router;
     let preselectedNetwork;
     if (props.router.app === 'wallet' && params) {
-        preselectedNetwork = networks.find(n => n.symbol === params.symbol);
+        preselectedNetwork = internalNetworks.find(n => n.symbol === params.symbol);
     }
-    const [selectedSymbol, setSelectedNetwork] = useState(
-        preselectedNetwork ? preselectedNetwork.symbol : networks[0].symbol,
+    const [selectedSymbol, setSelectedNetwork] = useState<NetworkSymbol>(
+        preselectedNetwork ? preselectedNetwork.symbol : internalNetworks[0].symbol,
     );
     // Find selected network (from component state value)
-    const selectedNetwork = networks.find(n => n.symbol === selectedSymbol);
+    const selectedNetwork = [...internalNetworks, ...externalNetworks].find(
+        n => n.symbol === selectedSymbol,
+    );
 
     return (
         <Wrapper>
@@ -71,7 +72,8 @@ const AddAccount = (props: Props) => {
             </H4>
             <NetworkSelect
                 selectedNetwork={selectedNetwork}
-                networks={networks}
+                networks={internalNetworks}
+                externalNetworks={externalNetworks}
                 setSelectedNetwork={setSelectedNetwork}
             />
             <AccountSelect
@@ -89,7 +91,7 @@ const AddAccount = (props: Props) => {
                 }}
                 onEnableNetwork={(symbol: Network['symbol']) => {
                     props.onCancel();
-                    props.changeCoinVisibility(symbol, true, false);
+                    props.changeCoinVisibility(symbol, true);
                     props.goto('wallet-account-summary', {
                         symbol,
                         accountIndex: 0,
