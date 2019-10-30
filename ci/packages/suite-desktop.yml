@@ -15,8 +15,9 @@ suite-desktop type check:
 suite-desktop build:
     stage: build
     script:
+        - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
-        - yarn workspace @trezor/suite-desktop build:linux
+        # - yarn workspace @trezor/suite-desktop build:linux
         - yarn workspace @trezor/suite-desktop build:mac
         - sed -i "s/unstable-head/$CI_JOB_ID/g" trezor-suite.nix
     artifacts:
