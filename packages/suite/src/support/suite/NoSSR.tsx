@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 interface Props {
-    children: React.ReactNode;
-    fallbackComponent?: React.ReactNode;
+    children: React.ReactElement;
+    fallbackComponent?: React.ReactElement | null;
 }
 
 const NoSSR = ({ children, fallbackComponent = null }: Props) => {

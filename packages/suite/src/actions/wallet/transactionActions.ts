@@ -113,9 +113,9 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
 
     if (result && result.success) {
         const updatedAccount = accountActions.update(account, result.payload).payload;
+        // TODO
+        // @ts-ignore
         dispatch({
-            // TODO
-            // @ts-ignore
             type: TRANSACTION.FETCH_SUCCESS,
             account: updatedAccount,
             transactions: result.payload.history.transactions || [],
