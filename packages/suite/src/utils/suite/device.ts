@@ -259,14 +259,22 @@ export const getOtherDevices = (
     // 3. outdated firmware
     // 5. timestamp
     return devices.sort((a, b) => {
+        if (!b.features && !a.features) return 0;
         if (!b.features && a.features) return 1;
         if (!b.features || !a.features) return -1;
-        if (a.mode !== 'normal') return -1;
+
+        if (a.mode !== 'normal' && b.mode !== 'normal') return 0;
         if (b.mode !== 'normal') return 1;
+        if (a.mode !== 'normal') return -1;
+
+        if (a.firmware !== 'valid' && b.firmware !== 'valid') return 0;
+        if (b.firmware !== 'valid') return 1;
         if (a.firmware !== 'valid') return -1;
-        if (b.features && b.firmware !== 'valid') return 1;
-        if (!a.ts && !b.ts) return -1;
-        return a.ts > b.ts ? -1 : 1;
+
+        if (!b.ts && !a.ts) return 0;
+        if (!b.ts && a.ts) return -1;
+        if (!b.ts || !a.ts) return 1;
+        return b.ts - a.ts;
     });
 };
 
