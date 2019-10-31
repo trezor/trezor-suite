@@ -279,7 +279,9 @@ const RecoveryStepModelOne = (props: Props) => {
 
             <Wrapper.StepFooter>
                 {getStatus() == null && (
-                    <OnboardingButton.Back onClick={props.onboardingActions.goToPreviousStep}>
+                    <OnboardingButton.Back
+                        onClick={() => props.onboardingActions.goToPreviousStep()}
+                    >
                         Back
                     </OnboardingButton.Back>
                 )}

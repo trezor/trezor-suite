@@ -13,6 +13,7 @@ import { Dispatch, AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 import Reconnect from './components/Reconnect';
 import IsSameDevice from './components/IsSameDevice';
+import IsNotNewDevice from './components/IsNotNewDevice';
 
 const CommonWrapper = styled.div`
     margin: auto 30px auto 30px;
@@ -133,6 +134,12 @@ const UnexpectedState = ({
             return (
                 <UnexpectedStateCommon>
                     <DeviceIsUsedHere actionCta={getFeatures} />
+                </UnexpectedStateCommon>
+            );
+        case STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
+            return (
+                <UnexpectedStateCommon>
+                    <IsNotNewDevice />
                 </UnexpectedStateCommon>
             );
         default:

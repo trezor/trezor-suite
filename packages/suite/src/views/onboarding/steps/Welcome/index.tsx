@@ -43,7 +43,7 @@ const WelcomeStep = (props: Props) => {
 
                 <Wrapper.Options>
                     <Option
-                        data-test="button-path-create"
+                        data-test="@onboarding/button-path-create"
                         onClick={() => {
                             props.addPath(STEP.PATH_CREATE);
                             props.goToNextStep();

@@ -9,7 +9,7 @@ import {
     SUPPORT_URL,
 } from '@onboarding-constants/urls';
 import l10nCommonMessages from '@suite-support/Messages';
-
+import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import Hologram from './components/Hologram';
@@ -45,7 +45,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         </HologramWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
-                                data-test="button-hologram-different"
+                                data-test="@onboarding/button-hologram-different"
                                 onClick={() => onboardingActions.goToSubStep('hologram-different')}
                             >
                                 <FormattedMessage
@@ -53,7 +53,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
-                                data-test="button-continue"
+                                data-test="@onboarding/button-continue"
                                 onClick={() => onboardingActions.goToNextStep()}
                             >
                                 <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK} />
@@ -108,14 +108,17 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                 )}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                {/* model selection is skipped if device is already connected, so do not show back button either */}
-                {!actualModel && (
-                    <Wrapper.Controls>
-                        <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
-                            Back to Trezor model selection
-                        </OnboardingButton.Back>
-                    </Wrapper.Controls>
-                )}
+                <Wrapper.Controls>
+                    <OnboardingButton.Back
+                        onClick={() =>
+                            onboardingActions.goToPreviousStep(
+                                actualModel ? STEP.ID_NEW_OR_USED : STEP.ID_SELECT_DEVICE_STEP,
+                            )
+                        }
+                    >
+                        <FormattedMessage {...l10nCommonMessages.TR_BACK} />
+                    </OnboardingButton.Back>
+                </Wrapper.Controls>
             </Wrapper.StepFooter>
         </Wrapper.Step>
     );

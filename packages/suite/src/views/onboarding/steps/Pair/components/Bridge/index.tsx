@@ -11,6 +11,8 @@ import { Loaders, Text, OnboardingButton, Wrapper } from '@onboarding-components
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
+const PageWrapper = styled.div``;
+
 const SelectWrapper = styled(Select)`
     margin-right: 10px;
     width: 180px;
@@ -89,7 +91,8 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
         const status = this.getStatus();
 
         return (
-            <>
+            // this wrapper is just to be able to have data-test attribute
+            <PageWrapper data-test="@onboarding/bridge">
                 <Text size="small">
                     {status === 'installed' && (
                         <FormattedMessage
@@ -124,7 +127,7 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                 )}
 
                 {status === 'downloading' && (
-                    <React.Fragment>
+                    <>
                         <Text>1.</Text>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_WAIT_FOR_FILE_TO_DOWNLOAD} />
@@ -149,11 +152,11 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                             <FormattedMessage {...l10nMessages.TR_DETECTING_BRIDGE} />
                             <Loaders.Dots maxCount={3} />
                         </Text>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {status === 'installed' && (
-                    <React.Fragment>
+                    <>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => this.props.onboardingActions.goToNextStep()}
@@ -161,9 +164,9 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
-            </>
+            </PageWrapper>
         );
     }
 }

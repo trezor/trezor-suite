@@ -64,7 +64,7 @@ const PairDeviceStep = (props: Props) => {
     const actualModel = device && device.features && device.features.major_version;
 
     return (
-        <Wrapper.Step>
+        <Wrapper.Step data-test="@onboarding/pair-device-step">
             <Wrapper.StepHeading>Pair device</Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {!showTroubleshoot && !hasNoTransport() && (
@@ -97,7 +97,7 @@ const PairDeviceStep = (props: Props) => {
                                         </Text>
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
-                                                data-test="button-continue"
+                                                data-test="@onboarding/button-continue"
                                                 onClick={() =>
                                                     props.onboardingActions.goToNextStep()
                                                 }

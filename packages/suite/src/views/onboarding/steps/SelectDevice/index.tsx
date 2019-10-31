@@ -17,7 +17,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
             <Wrapper.StepBody>
                 <Wrapper.Options>
                     <Option
-                        data-test="option-model-one-path"
+                        data-test="@onboarding/option-model-one-path"
                         onClick={() => {
                             onboardingActions.selectTrezorModel(1);
                             onboardingActions.goToNextStep();
@@ -29,7 +29,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                         </H6>
                     </Option>
                     <Option
-                        data-test="option-model-t-path"
+                        data-test="@onboarding/option-model-t-path"
                         onClick={() => {
                             onboardingActions.selectTrezorModel(2);
                             onboardingActions.goToNextStep();
