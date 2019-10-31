@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, InjectedIntlProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { Notification } from '@trezor/components';
 import { acquireDevice } from '@suite-actions/suiteActions';
@@ -10,11 +10,14 @@ import SuiteLayout from '@suite-components/SuiteLayout';
 import { AppState } from '@suite-types';
 import l10nMessages from './index.messages';
 
-interface Props extends InjectedIntlProps {
-    device: AppState['suite']['device'];
-    locks: AppState['suite']['locks'];
+const mapStateToProps = (state: AppState) => ({
+    device: state.suite.device,
+    locks: state.suite.locks,
+});
+
+type Props = ReturnType<typeof mapStateToProps> & {
     acquireDevice: typeof acquireDevice;
-}
+} & WrappedComponentProps;
 
 const Acquire = (props: Props) => {
     const { device, locks } = props;
@@ -38,11 +41,6 @@ const Acquire = (props: Props) => {
         </SuiteLayout>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
-    locks: state.suite.locks,
-});
 
 export default injectIntl(
     connect(

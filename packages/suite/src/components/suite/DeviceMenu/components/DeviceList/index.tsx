@@ -26,6 +26,7 @@ const DeviceList = ({ devices, instances, selectDevice, requestForgetDevice }: P
                     onClick={() => {
                         selectDevice(device);
                     }}
+                    data-test={`@suite/device-item-${index}`}
                     icon={
                         <>
                             <IconClick

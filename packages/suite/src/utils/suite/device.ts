@@ -1,5 +1,5 @@
 import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
-import { InjectedIntl } from 'react-intl';
+import { WrappedComponentProps } from 'react-intl';
 import l10nMessages from '@suite-components/DeviceMenu/index.messages';
 import { TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
 
@@ -46,7 +46,10 @@ export const getStatus = (device: TrezorDevice): string => {
     return 'unknown';
 };
 
-export const getStatusName = (deviceStatus: string, intl: InjectedIntl): string => {
+export const getStatusName = (
+    deviceStatus: string,
+    intl: WrappedComponentProps['intl'],
+): string => {
     switch (deviceStatus) {
         case 'connected':
             return intl.formatMessage(l10nMessages.TR_CONNECTED);
@@ -100,6 +103,7 @@ export const getStatusColor = (deviceStatus: string): string => {
     }
 };
 
+// todo: not sure if this belongs to device utils, maybe something like suiteUtils
 export const isWebUSB = (transport?: Transport) =>
     !!(transport && transport.type && transport.type === 'webusb');
 

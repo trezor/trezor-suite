@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { Select, Link } from '@trezor/components';
-import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { goToSubStep, goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
 import l10nCommonMessages from '@suite-support/Messages';
@@ -10,6 +10,8 @@ import l10nCommonBridgeMessages from '@suite-views/bridge/index.messages';
 import { Loaders, Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
+
+const PageWrapper = styled.div``;
 
 const SelectWrapper = styled(Select)`
     margin-right: 10px;
@@ -46,8 +48,8 @@ interface Props {
     };
 }
 
-class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState> {
-    constructor(props: Props & InjectedIntlProps) {
+class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeState> {
+    constructor(props: Props & WrappedComponentProps) {
         super(props);
         const installers = this.getInstallers();
         this.state = {
@@ -89,7 +91,8 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
         const status = this.getStatus();
 
         return (
-            <>
+            // this wrapper is just to be able to have data-test attribute
+            <PageWrapper data-test="@onboarding/bridge">
                 <Text size="small">
                     {status === 'installed' && (
                         <FormattedMessage
@@ -124,7 +127,7 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                 )}
 
                 {status === 'downloading' && (
-                    <React.Fragment>
+                    <>
                         <Text>1.</Text>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_WAIT_FOR_FILE_TO_DOWNLOAD} />
@@ -149,11 +152,11 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                             <FormattedMessage {...l10nMessages.TR_DETECTING_BRIDGE} />
                             <Loaders.Dots maxCount={3} />
                         </Text>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {status === 'installed' && (
-                    <React.Fragment>
+                    <>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => this.props.onboardingActions.goToNextStep()}
@@ -161,9 +164,9 @@ class InstallBridge extends PureComponent<Props & InjectedIntlProps, BridgeState
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
-            </>
+            </PageWrapper>
         );
     }
 }

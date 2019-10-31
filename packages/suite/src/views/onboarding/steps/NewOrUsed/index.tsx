@@ -30,7 +30,7 @@ const NewOrUsedStep = (props: Props) => {
                         <H6>I have a new device</H6>
                         <Text>Sealed package that you just bought or received</Text>
                         <OnboardingButton.Cta
-                            data-test="button-new-path"
+                            data-test="@onboarding/button-new-path"
                             onClick={() => {
                                 handleNewDeviceOnClick();
                             }}
@@ -43,7 +43,7 @@ const NewOrUsedStep = (props: Props) => {
                         <H6>I have a used device</H6>
                         <Text>Unpacked device that has been already used before</Text>
                         <OnboardingButton.Alt
-                            data-test="button-used-path"
+                            data-test="@onboarding/button-used-path"
                             onClick={() => {
                                 props.onboardingActions.addPath(STEP.PATH_USED);
                                 props.onboardingActions.goToNextStep();

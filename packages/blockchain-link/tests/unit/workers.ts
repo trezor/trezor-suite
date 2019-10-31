@@ -1,5 +1,5 @@
 // @ts-ignore tiny-worker types
-import * as TinyWorker from 'tiny-worker';
+import TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
 declare global {

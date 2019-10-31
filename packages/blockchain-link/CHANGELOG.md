@@ -1,3 +1,8 @@
+# 1.0.4
+#### changes
+- Update dependencies (ripple-lib@1.4.0)
+- Update types for ERC20 tokens
+
 # 1.0.3
 #### changes
 - Add currently connected url to 'getInfo' response

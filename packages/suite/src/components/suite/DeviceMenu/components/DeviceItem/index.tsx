@@ -1,5 +1,5 @@
 import React from 'react';
-import { injectIntl, InjectedIntl } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled, { css } from 'styled-components';
 import { TrezorImage, colors, variables } from '@trezor/components';
 import { getStatusColor, getStatusName, getStatus } from '@suite-utils/device';
@@ -87,7 +87,7 @@ const Dot = styled.div`
     width: 10px;
     height: 10px;
 `;
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface Props extends React.HTMLAttributes<HTMLDivElement>, WrappedComponentProps {
     isAccessible?: boolean;
     device: TrezorDevice;
     icon?: React.ReactNode;
@@ -95,7 +95,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     disabled?: boolean;
     isSelected?: boolean;
     className?: string;
-    intl: InjectedIntl;
 }
 
 type WrapperProps = Pick<Props, 'isSelected' | 'isHoverable' | 'disabled' | 'className'>;

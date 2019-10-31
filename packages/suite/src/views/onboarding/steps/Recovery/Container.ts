@@ -12,5 +12,5 @@ export type Props = ReturnType<typeof mapStateToProps>;
 
 export default connect(
     mapStateToProps,
-    null,
+    () => {},
 )(Step);

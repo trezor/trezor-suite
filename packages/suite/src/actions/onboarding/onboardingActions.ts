@@ -59,7 +59,10 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
     dispatch(goToStep(nextStep.id));
 };
 
-const goToPreviousStep = () => (dispatch: Dispatch, getState: GetState) => {
+const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
+    if (stepId) {
+        return dispatch(goToStep(stepId));
+    }
     const { activeStepId, path } = getState().onboarding;
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const prevStep = findPrevStep(activeStepId, stepsInPath);

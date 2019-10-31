@@ -88,6 +88,7 @@ const LoaderWrapper = styled.div`
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
+    device: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -206,15 +207,17 @@ const InstallBridge = (props: Props) => {
             </Top>
 
             <Bottom>
-                {props.transport && props.transport.type && (
-                    <P>
-                        <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
-                        <br />
-                        <GoBack onClick={() => props.goto('wallet-index')}>
-                            <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
-                        </GoBack>
-                    </P>
-                )}
+                {props.transport &&
+                    props.transport.type &&
+                    props.device &&
+                    props.device.type !== 'unreadable' && (
+                        <P>
+                            <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
+                            <GoBack onClick={() => props.goto('wallet-index')}>
+                                <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
+                            </GoBack>
+                        </P>
+                    )}
             </Bottom>
         </Wrapper>
     );
