@@ -14,7 +14,6 @@ suite-desktop type check:
 
 suite-desktop build mac:
     stage: build desktop apps
-    when: manual
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -28,7 +27,6 @@ suite-desktop build mac:
 
 suite-desktop build linux:
     stage: build desktop apps
-    when: manual
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -43,17 +41,17 @@ suite-desktop build linux:
     dependencies:
         - install and build
 
-suite-desktop build windows:
-    image: electronuserland/builder:wine
-    stage: build desktop apps
-    when: manual
-    script:
-        - yarn cache clean
-        - yarn workspace @trezor/suite-data copy-static-files
-        - yarn workspace @trezor/suite-desktop build:win
-    artifacts:
-        expire_in: 1 day
-        paths:
-            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
-    dependencies:
-        - install and build
+# suite-desktop build windows:
+#     image: electronuserland/builder:wine
+#     stage: build desktop apps
+#     when: manual
+#     script:
+#         - yarn cache clean
+#         - yarn workspace @trezor/suite-data copy-static-files
+#         - yarn workspace @trezor/suite-desktop build:win
+#     artifacts:
+#         expire_in: 1 day
+#         paths:
+#             - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
+#     dependencies:
+#         - install and build
