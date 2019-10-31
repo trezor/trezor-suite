@@ -329,7 +329,7 @@ const getSelectedDevice = [
 
 const sortByTimestamp = {
     devices: [{ id: 1, ts: 1 }, { id: 2 }, { id: 3 }, { id: 5, ts: 3 }, { id: 4, ts: 2 }],
-    result: [{ id: 5, ts: 3 }, { id: 4, ts: 2 }, { id: 1, ts: 1 }, { id: 3 }, { id: 2 }],
+    result: [{ id: 5, ts: 3 }, { id: 4, ts: 2 }, { id: 1, ts: 1 }, { id: 2 }, { id: 3 }],
 };
 
 const d = (obj: any) => ({

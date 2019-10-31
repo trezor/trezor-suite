@@ -218,9 +218,12 @@ export const getSelectedDevice = (
  * @returns {TrezorDevice[]}
  */
 export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] => {
+    // Node.js v11+ changed sort algo https://github.com/nodejs/node/pull/22754#issuecomment-423452575
+    // In unit tests some devices have undefined ts
     return devices.sort((a, b) => {
+        if (!a.ts && !b.ts) return 0; // both devices has undefined ts, keep their pos
         if (!b.ts && a.ts) return -1;
-        if (!a.ts || !b.ts) return 1;
+        if (!a.ts && b.ts) return 1;
         return b.ts - a.ts;
     });
 };
