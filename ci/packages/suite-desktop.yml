@@ -42,7 +42,6 @@ suite-desktop build linux:
 suite-desktop build windows:
     image: electronuserland/builder:wine
     stage: build desktop apps
-    when: manual
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
