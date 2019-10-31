@@ -200,7 +200,7 @@ const getAccountNotification = (
 
     // case 4: account does exists and device is unavailable (created with different passphrase settings) account cannot be accessed
     // this is related to device instance in url, it's not used for now (device clones are disabled)
-    if (device && !device.available) {
+    if (!device.available) {
         return {
             type: 'info',
             variant: 'info',
