@@ -18,7 +18,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device {deviceLabel} is unavailable',
     },
     TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE: {
-        id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
+        id: 'TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE',
         defaultMessage: 'Change passphrase settings to use this device',
     },
 });
