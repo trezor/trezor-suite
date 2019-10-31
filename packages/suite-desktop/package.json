@@ -21,7 +21,7 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "build": {
-        "appId": "io.trezor.${name}",
+        "appId": "io.trezor.TrezorSuite",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
         "asar": false,
