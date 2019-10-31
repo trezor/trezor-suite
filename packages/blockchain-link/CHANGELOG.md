@@ -1,3 +1,7 @@
+# 1.0.5
+#### changes
+- Fixed Ripple-lib transaction event transformation (missing ledger_index field in transaction object)
+
 # 1.0.4
 #### changes
 - Update dependencies (ripple-lib@1.4.0) and fix reconnection issue

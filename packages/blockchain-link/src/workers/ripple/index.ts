@@ -440,7 +440,7 @@ const onTransaction = (event: any) => {
             type: 'notification',
             payload: {
                 descriptor,
-                tx: utils.transformTransaction(descriptor, event.transaction),
+                tx: utils.transformTransaction(descriptor, { ...event, ...tx }),
             },
         },
     });
