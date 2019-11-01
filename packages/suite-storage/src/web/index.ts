@@ -327,6 +327,26 @@ class CommonDB<TDBStructure> {
         const items = await tx.store.getAll();
         return items;
     };
+
+    static clearStores = async <TDBStructure>(
+        db: OnUpgradeProps<TDBStructure>['db'],
+        transaction: OnUpgradeProps<TDBStructure>['transaction'],
+        remove?: boolean
+    ) => {
+        const list = db.objectStoreNames;
+        const { length } = list;
+        for (let i = 0; i < length; i++) {
+            const storeName = list.item(i);
+            if (storeName) {
+                const objectStore = transaction.objectStore(storeName);
+                // eslint-disable-next-line no-await-in-loop
+                await objectStore.clear();
+                if (remove) {
+                    db.deleteObjectStore(storeName);
+                }
+            }
+        }
+    };
 }
 
 export default CommonDB;

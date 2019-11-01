@@ -7,8 +7,9 @@ import { State as SendFormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery } from '@wallet-types';
 import { migrate } from './migrations';
+import CommonDB from '@trezor/suite-storage';
 
-const VERSION = 5;
+const VERSION = 10;
 
 export interface SuiteDBSchema extends DBSchema {
     txs: {
@@ -70,21 +71,15 @@ const onUpgrade = async (
     newVersion: OnUpgradeProps<SuiteDBSchema>['newVersion'],
     transaction: OnUpgradeProps<SuiteDBSchema>['transaction'],
 ) => {
-    // TODO: uncomment before RELEASE,
     // instead of doing proper migration just delete all object stores and recreate them
+    // TODO: uncomment before RELEASE,
     // const shouldInitDB = oldVersion === 0;
     // if (shouldInitDB) {
     if (oldVersion < VERSION) {
         try {
-            db.deleteObjectStore('accounts');
-            db.deleteObjectStore('devices');
-            db.deleteObjectStore('discovery');
-            db.deleteObjectStore('sendForm');
-            db.deleteObjectStore('suiteSettings');
-            db.deleteObjectStore('txs');
-            db.deleteObjectStore('walletSettings');
+            await CommonDB.clearStores<SuiteDBSchema>(db, transaction, true);
         } catch (err) {
-            // do nothing;
+            console.error('error during removing all stores', err);
         }
 
         // init db
