@@ -4,16 +4,11 @@ import { Props as NotificationProps } from '@suite-components/Notification';
 import { Action, ExtendedMessageDescriptor } from '@suite-types';
 import { Network, Account, Discovery } from '@wallet-types';
 
-interface CtaShape {
-    label: ExtendedMessageDescriptor;
-    callback: () => any;
-}
-
 export interface Loader {
     type: string;
     title: string | ExtendedMessageDescriptor;
     message?: string | ExtendedMessageDescriptor;
-    actions?: CtaShape[];
+    actions?: NotificationProps['actions'];
 }
 
 export interface ExceptionPage {
@@ -23,8 +18,9 @@ export interface ExceptionPage {
     symbol: string;
 }
 
-interface AccountNotification extends NotificationProps {
+export interface AccountNotification extends NotificationProps {
     type: 'info' | 'backend';
+    shouldRender: boolean;
 }
 export interface State {
     // location: string;

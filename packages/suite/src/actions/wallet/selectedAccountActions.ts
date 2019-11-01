@@ -15,6 +15,7 @@ import {
     State as SelectedAccountState,
     Loader,
     ExceptionPage,
+    AccountNotification,
 } from '@wallet-reducers/selectedAccountReducer';
 
 import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
@@ -149,11 +150,11 @@ const getAccountLoader = (
 };
 
 // display notification above the component, with or without component body
-const getAccountNotification = (
-    state: AppState,
-    selectedAccount: SelectedAccountState,
+const getAccountNotification = (selectedAccount: SelectedAccountState) => (
     dispatch: Dispatch,
-) => {
+    getState: GetState,
+): AccountNotification | null => {
+    const state: AppState = getState();
     const { device } = state.suite;
     const { account, network, discovery } = selectedAccount;
     if (!device || !network) return null;
@@ -283,7 +284,7 @@ export const observe = (prevState: AppState, action: Action) => (
     // get "selectedAccount" status from newState
     const exceptionPage = getExceptionPage(state, newState);
     const loader = getAccountLoader(state, newState);
-    const notification = getAccountNotification(state, newState, dispatch);
+    const notification = dispatch(getAccountNotification(newState));
 
     if (exceptionPage) {
         newState.exceptionPage = exceptionPage;
