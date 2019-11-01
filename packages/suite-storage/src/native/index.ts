@@ -157,7 +157,6 @@ class CommonDB<TDBStructure> {
         await tx.done;
     };
 
-    // TODO: It would be awesome if return type could be something like Promise<StoreValue<TDBStructure, store>>
     getItemByPK = async <
         TStoreName extends StoreNames<TDBStructure>,
         TKey extends StoreKey<TDBStructure, TStoreName>
