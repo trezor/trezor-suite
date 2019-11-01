@@ -7,7 +7,6 @@ import { State as SendFormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery } from '@wallet-types';
 import { migrate } from './migrations';
-import CommonDB from '@trezor/suite-storage';
 
 const VERSION = 10;
 
@@ -77,7 +76,7 @@ const onUpgrade = async (
     // if (shouldInitDB) {
     if (oldVersion < VERSION) {
         try {
-            await CommonDB.clearStores<SuiteDBSchema>(db, transaction, true);
+            await SuiteDB.clearStores<SuiteDBSchema>(db, transaction, true);
         } catch (err) {
             console.error('error during removing all stores', err);
         }
