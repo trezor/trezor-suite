@@ -137,6 +137,8 @@ class CommonDB<TDBStructure> {
         upsert?: boolean
     ) => {
         const db = await this.getDB();
+        // jest won't resolve tx.done when 'items' is empty array
+        if (items.length === 0) return Promise.resolve();
         const tx = db.transaction(store, 'readwrite');
 
         const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];

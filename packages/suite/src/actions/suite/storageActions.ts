@@ -38,26 +38,13 @@ export const rememberDevice = (device: TrezorDevice) => async (
         .map(a => allTxs[getAccountKey(a.descriptor, a.symbol, a.deviceState)] || [])
         .flat();
 
-    // TODO: Jest get stuck on Promise.all
-
-    // await Promise.all([
-    //     db.addItem('devices', { ...device, remember: true, connected: false }, device.state),
-    //     db.addItems('accounts', accounts, true),
-    //     db.addItems('discovery', serializableDiscovery, true),
-    //     db.addItems('txs', transactions, true),
-    // ]).catch(error => {
-    //     if (error) {
-    //         console.error('errorName', error.name);
-    //         console.error('errorMessage', error.message);
-    //     } else {
-    //         console.error('error', error);
-    //     }
-    // });
     try {
-        await db.addItem('devices', { ...device, remember: true, connected: false }, device.state);
-        await db.addItems('accounts', accounts, true);
-        await db.addItems('discovery', serializableDiscovery, true);
-        await db.addItems('txs', transactions, true);
+        await Promise.all([
+            db.addItem('devices', { ...device, remember: true, connected: false }, device.state),
+            db.addItems('accounts', accounts, true),
+            db.addItems('discovery', serializableDiscovery, true),
+            db.addItems('txs', transactions, true),
+        ]);
     } catch (error) {
         if (error) {
             console.error('errorName', error.name);
