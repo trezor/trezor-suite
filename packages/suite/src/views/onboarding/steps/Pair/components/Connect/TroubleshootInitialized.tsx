@@ -30,9 +30,9 @@ const TroubleshootInitialized = (props: Props) => {
     const { device, activeSubStep, onboardingActions } = props;
 
     return (
-        <React.Fragment>
+        <>
             {activeSubStep === null && (
-                <React.Fragment>
+                <>
                     <Text>
                         <FormattedMessage
                             {...l10nMessages.TR_DEVICE_LABEL}
@@ -61,11 +61,11 @@ const TroubleshootInitialized = (props: Props) => {
                             />
                         </OnboardingButton.Alt>
                     </Wrapper.Controls>
-                </React.Fragment>
+                </>
             )}
 
             {activeSubStep === 'user-worked-before' && (
-                <React.Fragment>
+                <>
                     <Text>
                         <FormattedMessage {...l10nMessages.TR_INSTRUCTION_TO_SKIP} />
                     </Text>
@@ -80,11 +80,11 @@ const TroubleshootInitialized = (props: Props) => {
                             <FormattedMessage {...l10nCommonMessages.TR_SKIP_ALL} />
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
-                </React.Fragment>
+                </>
             )}
 
             {activeSubStep === 'is-brand-new' && (
-                <React.Fragment>
+                <>
                     <Text>
                         <FormattedMessage
                             {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS}
@@ -100,9 +100,9 @@ const TroubleshootInitialized = (props: Props) => {
                             </OnboardingButton.Cta>
                         </Link>
                     </Wrapper.Controls>
-                </React.Fragment>
+                </>
             )}
-        </React.Fragment>
+        </>
     );
 };
 

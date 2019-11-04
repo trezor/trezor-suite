@@ -59,11 +59,7 @@ const Index = (props: Props) => {
     }
 
     if (device.type === 'unacquired') {
-        return (
-            <SuiteLayout showSuiteHeader>
-                <AcquireDevice />
-            </SuiteLayout>
-        );
+        return <AcquireDevice />;
     }
 
     if (device.features && device.mode === 'initialize') {

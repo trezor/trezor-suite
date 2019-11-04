@@ -21,7 +21,7 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "build": {
-        "appId": "io.trezor.${name}",
+        "appId": "io.trezor.TrezorSuite",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
         "asar": false,
@@ -49,11 +49,10 @@
             ]
         },
         "mac": {
+            "target": "tar.gz",
             "icon": "build/static/images/suite/icons/64x64.png"
         },
-        "win": {
-            "icon": "build/static/images/suite/icons/64x64.ico"
-        },
+        "win": {},
         "linux": {
             "icon": "build/static/images/suite/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
@@ -76,7 +75,7 @@
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.0.8",
         "electron": "^6.0.9",
-        "electron-builder": "^21.2.0",
+        "electron-builder": "22.0.0",
         "git-revision-webpack-plugin": "^3.0.3",
         "next": "^9.0.5",
         "next-plugin-custom-babel-config": "^1.0.0",

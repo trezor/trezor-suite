@@ -1,15 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-// import { DEVICE } from 'trezor-connect';
-
-// todo: importing like this works now.
-// import * as connectActions from '@onboarding-actions/connectActions';
-
-// declaration for support files is not present in babel.config (and probably shouldnt be)
-// import { getConnectDevice, getDeviceFeatures } from '../../../../suite/src/support/tests/setupJest';
-
-const DEVICE_PATH = '1';
 
 describe('Onboarding happy paths', () => {
+    const DEVICE_PATH = '1';
+
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
@@ -50,24 +43,23 @@ describe('Onboarding happy paths', () => {
             });
 
         cy.onboardingShouldLoad()
-            .getTestElement('button-path-create')
+            .getTestElement('@onboarding/button-path-create')
             .click()
             // todo: add snapshots in distance future when everything is stable
             // .matchImageSnapshot()
             .get('html')
             .should('contain', 'New device')
-            .getTestElement('button-new-path')
+            .getTestElement('@onboarding/button-new-path')
             .click()
             .get('html')
             .should('contain', 'Select your device')
-            .getTestElement('option-model-t-path')
+            .getTestElement('@onboarding/option-model-t-path')
             .click()
             .get('html')
             .should('contain', 'Hologram check')
-            .getTestElement('button-continue')
+            .getTestElement('@onboarding/button-continue')
             .click()
-            .get('html')
-            .should('contain', 'Pair device')
+            .getTestElement('@onboarding/pair-device-step')
             .connectDevice(
                 {
                     path: DEVICE_PATH,
@@ -80,7 +72,7 @@ describe('Onboarding happy paths', () => {
                     initialized: false,
                 },
             )
-            .getTestElement('button-continue')
+            .getTestElement('@onboarding/button-continue')
             .click()
             .get('html')
             .should('contain', 'Get the latest firmware')
@@ -96,11 +88,11 @@ describe('Onboarding happy paths', () => {
                     initialized: false,
                 },
             )
-            .getTestElement('button-continue')
+            .getTestElement('@onboarding/button-continue')
             .click()
             .get('html')
             .should('contain', 'Seed type')
-            .getTestElement('button-standard-backup')
+            .getTestElement('@onboarding/button-standard-backup')
             .click()
             // it would be nice to dispatch change device as result of mocked TrezorConnect.resetDevice call
             // but I am not sure it is possible in Cypress.
