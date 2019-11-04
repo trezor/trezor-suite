@@ -3,10 +3,10 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/components';
 import { ExtendedMessageDescriptor } from '@suite-types';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import l10nMessages from '../../index.messages';
 import { Props as BaseProps } from '../../Container';
-import { EXTERNAL_NETWORKS, NETWORKS } from '@wallet-config';
+import { NETWORKS } from '@wallet-config';
 
 const { FONT_SIZE } = variables;
 
@@ -84,7 +84,7 @@ const ToggleAll = styled.div`
 `;
 
 interface CoinRowProps {
-    network: Network | ExternalNetwork;
+    network: Network;
     checked: boolean;
     changeCoinVisibility: BaseProps['changeCoinVisibility'];
 }
@@ -111,81 +111,34 @@ const CoinRow = ({ network, checked, changeCoinVisibility }: CoinRowProps) => (
     </CoinRowWrapper>
 );
 
-interface CoinsGroupBaseProps {
+interface CoinsGroupProps {
     title: ExtendedMessageDescriptor;
     tooltip: ExtendedMessageDescriptor;
     toggleGroupCoinsVisibility: BaseProps['toggleGroupCoinsVisibility'];
     changeCoinVisibility: BaseProps['changeCoinVisibility'];
-}
-
-interface ExternalCoinsGroupProps extends CoinsGroupBaseProps {
-    enabledNetworks: ExternalNetwork['symbol'][];
-    networks: ExternalNetwork[];
-}
-
-const ExternalCoinsGroup = (props: ExternalCoinsGroupProps) => {
-    const rows = props.networks.map(network => (
-        <CoinRow
-            network={network}
-            checked={(props.enabledNetworks as string[]).includes(network.symbol as string)}
-            changeCoinVisibility={props.changeCoinVisibility}
-            key={network.symbol}
-        ></CoinRow>
-    ));
-    return (
-        <CoinsGroup
-            {...props}
-            rows={rows}
-            showAll={
-                !props.networks.some(checked => props.enabledNetworks.includes(checked.symbol))
-            }
-            onToggleAll={() => props.toggleGroupCoinsVisibility(undefined, true)}
-        />
-    );
-};
-
-interface InternalCoinsGroupProps extends CoinsGroupBaseProps {
     networksFilterFn?: (n: Network) => boolean | undefined;
     enabledNetworks: Network['symbol'][];
     networks: Network[];
 }
 
-const InternalCoinsGroup = ({ networksFilterFn, ...props }: InternalCoinsGroupProps) => {
-    let filteredNetworks = props.networks.filter(n => !n.accountType);
+const CoinsGroup = (props: CoinsGroupProps) => {
+    const { title, tooltip, toggleGroupCoinsVisibility, networks, networksFilterFn } = props;
+    let filteredNetworks = networks.filter(n => !n.accountType);
     if (networksFilterFn) {
         filteredNetworks = filteredNetworks.filter(networksFilterFn);
     }
+    const showAll = !filteredNetworks.some(checked =>
+        props.enabledNetworks.includes(checked.symbol),
+    );
+
     const rows = filteredNetworks.map(network => (
         <CoinRow
             network={network}
-            checked={(props.enabledNetworks as string[]).includes(network.symbol as string)}
+            checked={props.enabledNetworks.includes(network.symbol)}
             changeCoinVisibility={props.changeCoinVisibility}
             key={network.symbol}
         ></CoinRow>
     ));
-    return (
-        <CoinsGroup
-            {...props}
-            rows={rows}
-            showAll={
-                !filteredNetworks.some(checked => props.enabledNetworks.includes(checked.symbol))
-            }
-            onToggleAll={() => props.toggleGroupCoinsVisibility(networksFilterFn, false)}
-        />
-    );
-};
-
-const CoinsGroup = ({
-    title,
-    tooltip,
-    onToggleAll,
-    showAll,
-    rows,
-}: Pick<CoinsGroupBaseProps, 'title' | 'tooltip'> & {
-    onToggleAll: () => void;
-    showAll: boolean;
-    rows: JSX.Element[];
-}) => {
     return (
         <Content>
             <Label>
@@ -204,7 +157,7 @@ const CoinsGroup = ({
                 <Right>
                     <ToggleAll
                         onClick={() => {
-                            onToggleAll();
+                            toggleGroupCoinsVisibility(networksFilterFn);
                         }}
                     >
                         {showAll ? 'Show all' : 'Hide all'}
@@ -218,23 +171,17 @@ const CoinsGroup = ({
 
 interface Props {
     enabledNetworks: Network['symbol'][];
-    enabledExternalNetworks: ExternalNetwork['symbol'][];
     changeCoinVisibility: BaseProps['changeCoinVisibility'];
     toggleGroupCoinsVisibility: BaseProps['toggleGroupCoinsVisibility'];
 }
 
 const CoinsSettings = (props: Props) => {
-    const {
-        enabledNetworks,
-        enabledExternalNetworks,
-        changeCoinVisibility,
-        toggleGroupCoinsVisibility,
-    } = props;
+    const { enabledNetworks, changeCoinVisibility, toggleGroupCoinsVisibility } = props;
 
     return (
         <Wrapper>
             <Row>
-                <InternalCoinsGroup
+                <CoinsGroup
                     title={l10nMessages.TR_VISIBLE_COINS}
                     tooltip={l10nMessages.TR_VISIBLE_COINS_EXPLAINED}
                     networksFilterFn={(n: Network) => n && !n.testnet}
@@ -243,20 +190,12 @@ const CoinsSettings = (props: Props) => {
                     toggleGroupCoinsVisibility={toggleGroupCoinsVisibility}
                     changeCoinVisibility={changeCoinVisibility}
                 />
-                <InternalCoinsGroup
+                <CoinsGroup
                     title={l10nMessages.TR_VISIBLE_TESTNET_COINS}
                     tooltip={l10nMessages.TR_VISIBLE_TESTNET_COINS_EXPLAINED}
                     networksFilterFn={(n: Network) => 'testnet' in n && n.testnet}
                     networks={NETWORKS}
                     enabledNetworks={enabledNetworks}
-                    toggleGroupCoinsVisibility={toggleGroupCoinsVisibility}
-                    changeCoinVisibility={changeCoinVisibility}
-                />
-                <ExternalCoinsGroup
-                    title={l10nMessages.TR_VISIBLE_COINS_EXTERNAL}
-                    tooltip={l10nMessages.TR_VISIBLE_COINS_EXTERNAL_EXPLAINED}
-                    enabledNetworks={enabledExternalNetworks}
-                    networks={EXTERNAL_NETWORKS}
                     toggleGroupCoinsVisibility={toggleGroupCoinsVisibility}
                     changeCoinVisibility={changeCoinVisibility}
                 />

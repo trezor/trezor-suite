@@ -32,15 +32,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Testnet coins dont have any value but you still may use them to learn and experiment.',
     },
-    TR_VISIBLE_COINS_EXTERNAL: {
-        id: 'TR_VISIBLE_COINS_EXTERNAL',
-        defaultMessage: 'Visible external coins',
-    },
-    TR_VISIBLE_COINS_EXTERNAL_EXPLAINED: {
-        id: 'TR_VISIBLE_COINS_EXTERNAL_EXPLAINED',
-        defaultMessage:
-            'Below listed coins are supported only by your device. If active, they will appear in menu, but will only redirect you to an external wallet',
-    },
 });
 
 export default definedMessages;

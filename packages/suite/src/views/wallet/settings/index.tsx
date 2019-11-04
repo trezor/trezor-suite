@@ -124,7 +124,6 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
                 changeCoinVisibility={props.changeCoinVisibility}
                 toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
                 enabledNetworks={props.wallet.settings.enabledNetworks}
-                enabledExternalNetworks={props.wallet.settings.enabledExternalNetworks}
             />
         </Section>
         <Actions>

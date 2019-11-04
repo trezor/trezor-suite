@@ -76,10 +76,3 @@ export interface Transaction extends BlockchainLinkTransaction {
     symbol: string;
     rejected?: boolean;
 }
-
-// typeguard
-export const isExternalNetwork = (
-    symbol: Network['symbol'] | ExternalNetwork['symbol'],
-): symbol is ExternalNetwork['symbol'] => {
-    return EXTERNAL_NETWORKS.map(n => n.symbol as string).includes(symbol as string);
-};

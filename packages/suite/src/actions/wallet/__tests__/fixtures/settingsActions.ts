@@ -26,14 +26,6 @@ export default [
         },
     },
     {
-        description: 'Try external network',
-        initialState: {},
-        action: () => settingsActions.changeCoinVisibility('xem', false),
-        result: {
-            enabledExternalNetworks: ['xlm', 'ada', 'xtz'],
-        },
-    },
-    {
         description: 'Set hide balance true',
         initialState: { hideBalance: false },
         action: () => settingsActions.setHideBalance(true),
@@ -79,24 +71,6 @@ export default [
         action: () => settingsActions.toggleGroupCoinsVisibility(undefined),
         result: {
             enabledNetworks: [],
-        },
-    },
-    {
-        description: 'toggleGroupCoinsVisibility - hide all external, dont affect others',
-        initialState: { enabledNetworks: ['btc', 'eth'] },
-        action: () => settingsActions.toggleGroupCoinsVisibility(undefined, true),
-        result: {
-            enabledNetworks: ['btc', 'eth'],
-            enabledExternalNetworks: [],
-        },
-    },
-    {
-        description: 'toggleGroupCoinsVisibility - show all external, dont affect others',
-        initialState: { enabledNetworks: ['btc', 'eth'], enabledExternalNetworks: [] },
-        action: () => settingsActions.toggleGroupCoinsVisibility(undefined, true),
-        result: {
-            enabledNetworks: ['btc', 'eth'],
-            enabledExternalNetworks: ['xem', 'xlm', 'ada', 'xtz'],
         },
     },
     {
