@@ -108,8 +108,9 @@ export const formatAmount = (amount: string, decimals: number) => {
     }
 };
 
-export const networkAmountToSatoshi = (amount: string, symbol: Account['symbol']) => {
+export const networkAmountToSatoshi = (amount: string | null, symbol: Account['symbol']) => {
     const network = NETWORKS.find(n => n.symbol === symbol);
+    if (!amount) return '0';
     if (!network) return amount;
     try {
         const bAmount = new BigNumber(amount);
