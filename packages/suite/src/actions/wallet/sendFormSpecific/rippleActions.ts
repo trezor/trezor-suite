@@ -25,7 +25,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { availableBalance } = account;
     const feeInSatoshi = send.selectedFee.value;
     let tx;
-    const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi || '0', feeInSatoshi));
+    const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi, feeInSatoshi));
 
     const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi));
     const payloadData = {
