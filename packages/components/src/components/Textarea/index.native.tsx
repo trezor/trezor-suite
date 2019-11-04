@@ -45,7 +45,16 @@ const BottomText = styled.Text<{ color?: string }>`
     margin-top: 10px;
 `;
 
-interface StyledTextareaProps extends TextInputProps {
+// TODO: tmp workaround for "Types of property 'accessibilityActions' are incompatible"
+interface StyledTextareaProps
+    extends Omit<
+        TextInputProps,
+        | 'accessibilityActions'
+        | 'accessibilityRole'
+        | 'onAccessibilityAction'
+        | 'accessibilityStates'
+        | 'selectionState'
+    > {
     border?: string;
     disabled?: boolean;
 }

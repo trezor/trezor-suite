@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInputProperties } from 'react-native';
+import { TextInputProps } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
 import { FONT_SIZE_NATIVE, FONT_WEIGHT, LINE_HEIGHT } from '../../../config/variables';
@@ -131,7 +131,16 @@ interface TooltipActionProps {
     action?: React.ReactNode;
 }
 
-interface InputProps extends TextInputProperties {
+// TODO: tmp workaround for "Types of property 'accessibilityActions' are incompatible"
+interface InputProps
+    extends Omit<
+        TextInputProps,
+        | 'accessibilityActions'
+        | 'accessibilityRole'
+        | 'onAccessibilityAction'
+        | 'accessibilityStates'
+        | 'selectionState'
+    > {
     hasIcon?: boolean;
     hasAddon?: boolean;
     isPartiallyHidden?: boolean;
