@@ -9,10 +9,6 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
         defaultMessage: 'Device {deviceLabel} is not backed up',
     },
-    TR_DEVICE_LABEL_IS_UNAVAILABLE: {
-        id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
-        defaultMessage: 'Device "{deviceLabel}" is unavailable',
-    },
     TR_PLEASE_CONNECT_YOUR_DEVICE: {
         id: 'TR_PLEASE_CONNECT_YOUR_DEVICE',
         defaultMessage: 'Please connect your device to continue with the verification process',

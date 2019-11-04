@@ -5,7 +5,9 @@ import styled from 'styled-components';
 
 import { H5, P, Button } from '@trezor/components';
 
+import globalMessages from '@suite-support/Messages';
 import l10nMessages from './messages';
+
 import { AcquiredDevice } from '@suite-types';
 
 interface Props {
@@ -62,7 +64,7 @@ const RequestInstance: FunctionComponent<Props> = ({
                     <FormattedMessage {...l10nMessages.TR_CREATE_INSTANCE} />
                 </Button>
                 <Button variant="white" onClick={onCancel}>
-                    <FormattedMessage {...l10nMessages.TR_CANCEL} />
+                    <FormattedMessage {...globalMessages.TR_CANCEL} />
                 </Button>
             </Row>
         </Wrapper>

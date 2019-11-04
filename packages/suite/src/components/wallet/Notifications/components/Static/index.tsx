@@ -3,7 +3,7 @@ import { Notification, Link } from '@trezor/components';
 import Bignumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 
-import l10nCommonMessages from '@suite-views/index.messages';
+import globalMessages from '@suite-support/Messages';
 import { getRoute } from '@suite-utils/router';
 import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
@@ -48,9 +48,10 @@ export default (props: Props) => {
                                 values={{
                                     minBalance: bigReserve.toString(),
                                     TR_LEARN_MORE: (
+                                        // todo: add link to config urls
                                         <Link href="https://wiki.trezor.io/Ripple_(XRP)">
                                             <FormattedMessage
-                                                {...l10nCommonMessages.TR_LEARN_MORE}
+                                                {...globalMessages.TR_LEARN_MORE_LINK}
                                             />
                                         </Link>
                                     ),

@@ -12,7 +12,6 @@ const definedMessages = defineMessages({
             'It is possible to re-create device from bip39 backup. First of all, chose number of words of your backup.',
         description: 'Subheading in recover page. Basic info about recovery',
     },
-
     TR_WORDS: {
         id: 'TR_WORDS',
         defaultMessage: '{count} words',
@@ -34,12 +33,6 @@ const definedMessages = defineMessages({
         id: 'TR_ADVANCED_RECOVERY_OPTION',
         defaultMessage: 'Advanced recovery (5 minutes)',
         description: 'Button for selecting advanced recovery option',
-    },
-    TR_ENTER_SEED_WORDS_INSTRUCTION: {
-        id: 'TR_ENTER_SEED_WORDS_INSTRUCTION',
-        defaultMessage: 'Enter words from your seed in order displayed on your device.',
-        description:
-            'User is instructed to enter words from seed (backup) into the form in browser',
     },
     // TR_RANDOM_SEED_WORDS_DISCLAIMER: {
     //     id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',

@@ -1,17 +1,11 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_RECOVER_HEADING: {
-        id: 'TR_RECOVER_HEADING',
-        defaultMessage: 'Recover your device',
-        description: 'Heading in recover page',
-    },
     TR_START_RECOVERY: {
         id: 'TR_START_RECOVERY',
         defaultMessage: 'Start recovery',
         description: 'Button.',
     },
-
     TR_CHECK_YOUR_DEVICE: {
         id: 'TR_CHECK_YOUR_DEVICE',
         defaultMessage: 'Check your device',

@@ -18,6 +18,7 @@ import {
 } from '@wallet-reducers/selectedAccountReducer';
 
 import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import suiteMessages from '@suite-views/index.messages';
 import l10nNotificationMessages from '@wallet-components/Notifications/components/Account/index.messages';
 import l10nLoaderMessages from '@wallet-components/Content/index.messages';
 import l10nFwUnsupportedMessages from '@wallet-components/Content/components/FirmwareUnsupported/index.messages';
@@ -113,7 +114,7 @@ const getAccountLoader = (
             return {
                 type: 'info',
                 title: {
-                    ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                    ...suiteMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
                     values: { deviceLabel: device.instanceLabel || device.label },
                 },
                 message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
@@ -199,7 +200,7 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
             type: 'info',
             variant: 'info',
             title: {
-                ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                ...suiteMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
                 values: { deviceLabel: device.instanceLabel },
             },
             message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,

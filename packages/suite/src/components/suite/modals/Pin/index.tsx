@@ -6,8 +6,9 @@ import { FormattedMessage } from 'react-intl';
 import { PinInput } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 
-import modalsMessages from '../messages';
 import messages from './messages';
+import globalMessages from '@suite-support/Messages';
+
 import { URLS } from '@suite-constants';
 
 const ModalWrapper = styled.div`
@@ -31,7 +32,7 @@ const Pin = ({ device, onEnterPin }: Props) => {
         <ModalWrapper>
             <H5>
                 <FormattedMessage
-                    {...messages.TR_ENTER_PIN}
+                    {...globalMessages.TR_ENTER_PIN}
                     values={{
                         deviceLabel: device.label,
                     }}
@@ -44,7 +45,7 @@ const Pin = ({ device, onEnterPin }: Props) => {
             <BottomMessage size="small">
                 <FormattedMessage {...messages.TR_HOW_PIN_WORKS} />{' '}
                 <Link href={URLS.PIN_MANUAL_URL}>
-                    <FormattedMessage {...modalsMessages.TR_LEARN_MORE} />
+                    <FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />
                 </Link>
             </BottomMessage>
         </ModalWrapper>

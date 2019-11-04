@@ -12,6 +12,13 @@ suite type check:
     dependencies:
         - install and build
 
+suite detect l10n duplicities:
+    stage: unit testing
+    script:
+        - yarn workspace @trezor/suite translations:extract
+    dependencies:
+        - install and build
+
 suite test unit:
     stage: unit testing
     script:
