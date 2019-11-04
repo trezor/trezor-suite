@@ -1,5 +1,8 @@
-# only images with chrome stable build are provided by cypress. So lets take one and enrich it with beta release
-FROM cypress/base:10
+FROM node:lts
+
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
 
 USER root
 
