@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
 import { H1, P } from '@trezor/components';
-import Discovery from '@wallet-components/Discovery';
 import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
@@ -43,7 +42,6 @@ const Preloader: React.FunctionComponent<Props> = props => {
     return (
         <View style={styles.wrapper}>
             <H1>Loading</H1>
-            <Discovery />
             <View>{loaded && props.children}</View>
         </View>
     );

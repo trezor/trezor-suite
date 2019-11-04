@@ -14,6 +14,8 @@
         "nohoist": [
             "!(suite-native)/react-native",
             "!(suite-native)/react-native/**",
+            "!(suite-native)/react",
+            "!(suite-native)/react/**",
             "**/babel-jest"
         ]
     },

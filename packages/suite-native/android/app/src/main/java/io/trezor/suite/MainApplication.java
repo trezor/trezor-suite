@@ -1,14 +1,15 @@
 package io.trezor.suite;
 
 import android.app.Application;
-
+import android.content.Context;
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 // https://github.com/react-native-community/react-native-svg#android
@@ -25,11 +26,12 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-          new SvgPackage(),
-          new RNSentryPackage()
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      packages.add(
+        new SvgPackage(),
+        new RNSentryPackage()
       );
+      return packages;
     }
 
     @Override
