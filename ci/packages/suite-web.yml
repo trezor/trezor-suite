@@ -64,7 +64,7 @@ suite-web delete review:
         - install and build
 
 suite-web test integration google-chrome:
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
+    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
     script:
         - apt-get update
@@ -83,7 +83,7 @@ suite-web test integration google-chrome:
 suite-web test integration google-chrome-beta:
     only:
         - schedules
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
+    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
     script:
         - apt-get update
