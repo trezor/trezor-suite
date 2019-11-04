@@ -10,6 +10,6 @@ export const VALIDATION_ERRORS = {
 
 export const CUSTOM_FEE = 'custom' as const;
 export const FIRST_OUTPUT_ID = 0;
-export const BITCOIN_INPUT_SEQUENCE = 0xffffffff - 2;
+export const BTC_INPUT_SEQUENCE = 0xffffffff - 2;
 export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
