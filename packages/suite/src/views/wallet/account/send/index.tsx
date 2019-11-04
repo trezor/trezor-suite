@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { WrappedComponentProps } from 'react-intl';
-import { CoinLogo, Icon, colors } from '@trezor/components';
+import { Icon, colors } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
+import AccountName from '@wallet-components/AccountName';
 
-import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { StateProps, DispatchProps } from './Container';
-import { Content, Title, LayoutAccount } from '@wallet-components';
+import { Content, LayoutAccount } from '@wallet-components';
+import l10nMessages from './components/messages';
 import {
     Address,
     Amount,
@@ -47,16 +47,7 @@ const OutputWrapper = styled.div`
     padding: 0 0 30px 0;
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-right: 10px;
-`;
-
-const StyledTitle = styled(Title)`
-    display: flex;
-    align-items: center;
-`;
-
-const Send = (props: WrappedComponentProps & StateProps & DispatchProps) => {
+const Send = (props: StateProps & DispatchProps) => {
     const {
         device,
         suite,
@@ -77,6 +68,10 @@ const Send = (props: WrappedComponentProps & StateProps & DispatchProps) => {
     }, [props.selectedAccount]);
 
     const { account, network, discovery, shouldRender } = props.selectedAccount;
+    const accountNameMessage =
+        account && account.networkType === 'ethereum'
+            ? l10nMessages.TR_SEND_NETWORK_AND_TOKENS
+            : l10nMessages.TR_SEND_NETWORK;
 
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
@@ -87,15 +82,9 @@ const Send = (props: WrappedComponentProps & StateProps & DispatchProps) => {
         );
     }
 
-    const accountType = getTypeForNetwork(account.accountType, props.intl);
-
     return (
         <LayoutAccount title="Send">
-            <StyledTitle>
-                <StyledCoinLogo size={24} symbol={account.symbol} />
-                Send {getTitleForNetwork(network.symbol, props.intl)}
-                {accountType ? ` (${accountType})` : ''}
-            </StyledTitle>
+            <AccountName account={account} message={accountNameMessage} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     <SlimRow isOnlyOne={send.outputs.length === 1}>

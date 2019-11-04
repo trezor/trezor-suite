@@ -1,38 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { CoinLogo, Link, variables } from '@trezor/components';
-import l10nCommonMessages from '@suite-views/index.messages';
+import { Link, variables } from '@trezor/components';
+import AccountName from '@wallet-components/AccountName';
 import l10nSummaryMessages from '../../common.messages';
 import AccountBalance from './components/Balance';
 import { Account, Network, Fiat } from '@wallet-types';
 
-const { FONT_WEIGHT, FONT_SIZE } = variables;
+const { FONT_SIZE } = variables;
 
 const AccountHeading = styled.div`
     padding-bottom: 35px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-`;
-
-const AccountName = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const AccountTitle = styled.div`
-    font-size: ${FONT_SIZE.WALLET_TITLE};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    align-items: end;
 `;
 
 const StyledLink = styled(Link)`
     font-size: ${FONT_SIZE.SMALL};
-`;
-
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-right: 10px;
 `;
 
 interface Props {
@@ -50,20 +35,14 @@ const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }:
         account.networkType === 'ripple' && !account.empty && account.misc && account.misc.reserve
             ? account.misc.reserve
             : '0';
+    const accountNameMessage =
+        account && account.networkType === 'ethereum'
+            ? l10nSummaryMessages.TR_NETWORK_AND_TOKENS
+            : undefined;
     return (
         <>
             <AccountHeading>
-                <AccountName>
-                    <StyledCoinLogo size={24} symbol={account.symbol} />
-                    <AccountTitle>
-                        <FormattedMessage
-                            {...(account.imported
-                                ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
-                                : l10nCommonMessages.TR_ACCOUNT_HASH)}
-                            values={{ number: String(account.index + 1) }}
-                        />
-                    </AccountTitle>
-                </AccountName>
+                <AccountName account={account} message={accountNameMessage} />
                 <StyledLink href={explorerLink} variant="gray">
                     <FormattedMessage {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
                 </StyledLink>
