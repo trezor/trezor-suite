@@ -5,7 +5,6 @@ import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezo
 import l10nCommonMessages from '@suite-views/index.messages';
 import WalletLayout from '@wallet-components/WalletLayout';
 import { FIAT } from '@suite-config';
-import { NETWORKS } from '@wallet-config';
 import Coins from './components/Coins';
 import l10nMessages from './index.messages';
 import { Props } from './Container';
@@ -122,11 +121,9 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
         </Section>
         <Section>
             <Coins
-                networks={NETWORKS}
                 changeCoinVisibility={props.changeCoinVisibility}
                 toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
                 enabledNetworks={props.wallet.settings.enabledNetworks}
-                externalNetworks={props.wallet.settings.enabledExternalNetworks}
             />
         </Section>
         <Actions>

@@ -1,9 +1,11 @@
 import { Dispatch, GetState } from '@suite-types';
 import { SETTINGS } from './constants';
+import { NETWORKS } from '@wallet-config';
+import { Network, ExternalNetwork } from '@wallet-types';
 
 export type SettingsActions =
-    | { type: typeof SETTINGS.CHANGE_NETWORKS; payload: string[] }
-    | { type: typeof SETTINGS.CHANGE_EXTERNAL_NETWORKS; payload: string[] }
+    | { type: typeof SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
+    | { type: typeof SETTINGS.CHANGE_EXTERNAL_NETWORKS; payload: ExternalNetwork['symbol'][] }
     | { type: typeof SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
     | { type: typeof SETTINGS.SET_HIDE_BALANCE; toggled: boolean };
 
@@ -17,41 +19,42 @@ export const setHideBalance = (toggled: boolean) => ({
     toggled,
 });
 
-export const changeCoinVisibility = (
-    symbol: string,
-    shouldBeVisible: boolean,
-    isExternal: boolean,
-) => (dispatch: Dispatch, getState: GetState) => {
-    const configuration: string[] = isExternal
-        ? getState().wallet.settings.enabledExternalNetworks
-        : getState().wallet.settings.enabledNetworks;
-    let newConfig: string[] = configuration;
-    const isAlreadyHidden = configuration.find(coin => coin === symbol);
-
+export const changeCoinVisibility = (symbol: Network['symbol'], shouldBeVisible: boolean) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    let { enabledNetworks } = getState().wallet.settings;
+    const isAlreadyHidden = enabledNetworks.find(coin => coin === symbol);
     if (!shouldBeVisible) {
-        newConfig = configuration.filter(coin => coin !== symbol);
+        enabledNetworks = enabledNetworks.filter(coin => coin !== symbol);
     } else if (!isAlreadyHidden) {
-        newConfig = [...configuration, symbol];
+        enabledNetworks = [...enabledNetworks, symbol];
     }
 
     dispatch({
-        type: isExternal ? SETTINGS.CHANGE_EXTERNAL_NETWORKS : SETTINGS.CHANGE_NETWORKS,
-        payload: newConfig,
+        type: SETTINGS.CHANGE_NETWORKS,
+        payload: enabledNetworks,
     });
 };
 
 export const toggleGroupCoinsVisibility = (
-    allCoins: string[],
-    checked: boolean,
-    isExternal: boolean,
-) => (dispatch: Dispatch) => {
-    dispatch({
-        type: isExternal ? SETTINGS.CHANGE_EXTERNAL_NETWORKS : SETTINGS.CHANGE_NETWORKS,
-        payload: checked ? [] : allCoins,
+    filterFn?: (network: Network) => boolean | undefined,
+) => (dispatch: Dispatch, getState: GetState) => {
+    const { enabledNetworks } = getState().wallet.settings;
+    const matchedNetworks = filterFn ? NETWORKS.filter(filterFn) : NETWORKS;
+
+    const atLeastOneChecked = matchedNetworks.some(m => enabledNetworks.includes(m.symbol));
+    const nextEnabledNetworks = atLeastOneChecked
+        ? enabledNetworks.filter(en => !matchedNetworks.some(m => m.symbol === en))
+        : [...enabledNetworks, ...matchedNetworks.map(m => m.symbol)];
+
+    return dispatch({
+        type: SETTINGS.CHANGE_NETWORKS,
+        payload: Array.from(new Set(nextEnabledNetworks)),
     });
 };
 
-export const changeNetworks = (payload: string[]) => ({
+export const changeNetworks = (payload: Network['symbol'][]) => ({
     type: SETTINGS.CHANGE_NETWORKS,
     payload,
 });
