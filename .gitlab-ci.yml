@@ -1,6 +1,7 @@
 # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:03ec6c675f226e055160d51104562e57db6c3f69
 # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:a0bc4ffe4db4741a99ad0b9d9f025e614ab54eda
+# image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:a0bc4ffe4db4741a99ad0b9d9f025e614ab54eda
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:4ca331fd92c65e99721c8d2abae371f9528c3208
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
