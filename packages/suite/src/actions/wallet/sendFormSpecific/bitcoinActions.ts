@@ -30,7 +30,7 @@ export const compose = (setMax: boolean = false) => async (
     const { outputs } = send;
 
     const composedOutputs = outputs.map(o => {
-        const amount = networkAmountToSatoshi(o.amount.value || '0', account.symbol);
+        const amount = networkAmountToSatoshi(o.amount.value, account.symbol);
 
         // address is set
         if (o.address.value) {

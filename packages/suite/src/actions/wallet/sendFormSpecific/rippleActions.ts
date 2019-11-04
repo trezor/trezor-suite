@@ -21,10 +21,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!send || !account) return null;
 
     const output = getOutput(send.outputs, 0);
-    const amountInSatoshi = networkAmountToSatoshi(
-        output.amount.value || '0',
-        account.symbol,
-    ).toString();
+    const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = send.selectedFee.value;
     let tx;
@@ -102,7 +99,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const payment: Payment = {
         destination: outputs[0].address.value,
-        amount: networkAmountToSatoshi(outputs[0].amount.value || '0', account.symbol),
+        amount: networkAmountToSatoshi(outputs[0].amount.value, account.symbol),
     };
 
     if (destinationTag.value) {
