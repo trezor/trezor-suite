@@ -5,6 +5,14 @@ suite lint:
     dependencies:
         - install and build
 
+suite detect l10n duplicities:
+    stage: lint and prettier
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/suite translations:extract
+    dependencies:
+        - install and build
+
 suite type check:
     stage: typescript type check
     script:
@@ -12,14 +20,6 @@ suite type check:
     dependencies:
         - install and build
 
-suite detect l10n duplicities:
-    # stage: unit testing
-    # temporarily put to the end so that we might fix it incrementaly and be sure nothing else was broken by fixes.
-    stage: integration testing
-    script:
-        - yarn workspace @trezor/suite translations:extract
-    dependencies:
-        - install and build
 
 suite test unit:
     stage: unit testing
