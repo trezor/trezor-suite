@@ -8,6 +8,7 @@ export interface Loader {
     type: string;
     title: string | ExtendedMessageDescriptor;
     message?: string | ExtendedMessageDescriptor;
+    actions?: NotificationProps['actions'];
 }
 
 export interface ExceptionPage {
@@ -17,8 +18,9 @@ export interface ExceptionPage {
     symbol: string;
 }
 
-interface AccountNotification extends NotificationProps {
+export interface AccountNotification extends NotificationProps {
     type: 'info' | 'backend';
+    shouldRender: boolean;
 }
 export interface State {
     // location: string;
