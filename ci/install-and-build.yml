@@ -16,7 +16,6 @@ install and build:
             
             # node_modules
             - node_modules
-            - node_modules/.bin
             - packages/blockchain-link/node_modules
             - packages/components/node_modules
             - packages/components-storybook/node_modules
