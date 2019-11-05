@@ -1,15 +1,17 @@
-import React from 'react';
-import { Input, Button, Icon, colors } from '@trezor/components';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import styled from 'styled-components';
-import { isAddressInAccount, getAccountDevice } from '@wallet-utils/accountUtils';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Output } from '@wallet-types/sendForm';
-import commonMessages from '@wallet-views/messages';
-import messages from './index.messages';
+import { Translation } from '@suite-components/Intl';
 import { AppState } from '@suite-types';
+import { Button, colors, Icon, Input } from '@trezor/components';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
+import { Output } from '@wallet-types/sendForm';
+import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
+import commonMessages from '@wallet-views/messages';
+import React from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import styled from 'styled-components';
+
 import { DispatchProps } from '../../Container';
+import messages from './index.messages';
 
 const TopLabel = styled.div``;
 
@@ -39,7 +41,7 @@ const getMessage = (
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
-    if (address) {
+    if (address && !VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
         const account = isAddressInAccount(networkType, address, accounts);
         if (account) {
             const device = getAccountDevice(devices, account);
@@ -51,9 +53,11 @@ const getMessage = (
 
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_SET} />;
+            return <Translation>{messages.TR_ADDRESS_IS_NOT_SET}</Translation>;
         case VALIDATION_ERRORS.NOT_VALID:
-            return <FormattedMessage {...messages.TR_ADDRESS_IS_NOT_VALID} />;
+            return <Translation>{messages.TR_ADDRESS_IS_NOT_VALID}</Translation>;
+        case VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF:
+            return <Translation>{messages.CANNOT_SEND_TO_MYSELF}</Translation>;
         default:
             return null;
     }

@@ -4,7 +4,8 @@ import { SUITE } from '@suite-actions/constants';
 import { Button } from '@trezor/components';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { FormattedMessage } from 'react-intl';
+import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
+import { Translation } from '@suite-components/Intl';
 import commonMessages from '@wallet-views/messages';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
@@ -49,14 +50,11 @@ const isDisabled = (
 ) => {
     let isDisabled = false;
 
-    // TODO handle all coins
-    if (networkType === 'bitcoin') {
-        if (
-            !send.networkTypeBitcoin.transactionInfo ||
-            send.networkTypeBitcoin.transactionInfo.type !== 'final'
-        ) {
-            isDisabled = true;
-        }
+    const transactionInfo = getTransactionInfo(networkType, send);
+
+    // compose error or progress
+    if (!transactionInfo || transactionInfo.type !== 'final') {
+        isDisabled = true;
     }
 
     // form errors
@@ -66,6 +64,7 @@ const isDisabled = (
         }
     });
 
+    // error in advanced form
     if (send.customFee.error) {
         isDisabled = true;
     }
@@ -89,10 +88,12 @@ const isDisabled = (
 };
 
 const getSendText = (
-    transactionInfo: SendFormState['networkTypeBitcoin']['transactionInfo'],
+    send: SendFormState,
+    networkType: Account['networkType'],
     symbol: Account['symbol'],
 ) => {
-    if (transactionInfo && transactionInfo.type === 'final') {
+    const transactionInfo = getTransactionInfo(networkType, send);
+    if (transactionInfo && transactionInfo.type !== 'error') {
         return `Send ${formatNetworkAmount(
             transactionInfo.totalSpent,
             symbol,
@@ -105,11 +106,11 @@ const getSendText = (
 const SendAndClear = (props: Props) => (
     <Wrapper>
         <Clear variant="white" onClick={() => props.sendFormActions.clear()}>
-            <FormattedMessage {...commonMessages.TR_CLEAR} />
+            <Translation>{commonMessages.TR_CLEAR}</Translation>
         </Clear>
         {props.networkType === 'bitcoin' && (
             <Button variant="white" onClick={() => props.sendFormActionsBitcoin.addRecipient()}>
-                <FormattedMessage {...messages.TR_ADD_RECIPIENT} />
+                <Translation>{messages.TR_ADD_RECIPIENT}</Translation>
             </Button>
         )}
         <Send
@@ -133,7 +134,7 @@ const SendAndClear = (props: Props) => (
                 }
             }}
         >
-            {getSendText(props.send.networkTypeBitcoin.transactionInfo, props.symbol)}
+            {getSendText(props.send, props.networkType, props.symbol)}
         </Send>
     </Wrapper>
 );

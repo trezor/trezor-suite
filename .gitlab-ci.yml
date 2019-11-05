@@ -1,4 +1,4 @@
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:03ec6c675f226e055160d51104562e57db6c3f69
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:185f6b09c97a723def538953f1dcf87314c5f56d
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'

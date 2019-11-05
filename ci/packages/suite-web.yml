@@ -63,18 +63,32 @@ suite-web delete review:
     dependencies:
         - install and build
 
-suite-web test integration:
-    # for some reason unknown to me cypress test crash often with "downasaurus" for suite web. 
-    # it might have something to do with that tests are running in docker in CI https://github.com/cypress-io/cypress/issues/349
-    # or there might possibly be a bug in certain version of electron used internally by cypress
-    # finally made it work using this https://github.com/cypress-io/cypress/issues/350#issuecomment-503231128
-    # tests are now running in chrome instead of electron
-    image: cypress/browsers:node10.2.1-chrome74
+suite-web test integration google-chrome:
+    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
     script:
+        - apt-get update
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser chrome
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - suite-web/test/snapshots
+            - suite-web/test/screenshots
+    dependencies:
+        - install and build
+
+suite-web test integration google-chrome-beta:
+    only:
+        - schedules
+    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
+    stage: integration testing
+    script:
+        - apt-get update
+        - npx cypress install
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser /usr/bin/google-chrome-beta
     artifacts:
         expire_in: 2 days
         when: always
