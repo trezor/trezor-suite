@@ -7,7 +7,6 @@ suite lint:
 
 suite detect l10n duplicities:
     stage: lint and prettier
-    allow_failure: true
     script:
         - yarn workspace @trezor/suite translations:extract
     dependencies:
