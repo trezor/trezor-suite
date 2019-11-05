@@ -16,6 +16,7 @@
         "type-check:watch": "yarn type-check -- --watch"
     },
     "main": "./lib/native/index.js",
+    "native": "./lib/native/index.js",
     "browser": "./lib/web/index.js",
     "dependencies": {
         "idb": "^4.0.4"

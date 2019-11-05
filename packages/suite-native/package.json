@@ -20,7 +20,6 @@
         "react": "16.8.6",
         "react-native": "0.59.4",
         "react-native-router-flux": "^4.0.6",
-        "react-native-sentry": "^0.43.1",
         "react-redux": "^7.0.3",
         "redux": "^4.0.1",
         "redux-thunk": "^2.3.0"
