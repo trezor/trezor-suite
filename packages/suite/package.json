@@ -6,7 +6,7 @@
         "lint": "yarn lint:styles && yarn lint:js",
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
-        "translations:extract": "rimraf translations/extractedMessages && cross-env NODE_ENV=translations npx babel src/**/*.{tsx,ts} && yarn ttm merge-msgs && yarn ttm build-csv",
+        "translations:extract": "rimraf translations/extractedMessages && cross-env NODE_ENV=translations npx babel src/**/*.{tsx,ts} && npx ttm merge-msgs && yarn ttm build-csv",
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations",
         "type-check": "tsc --project tsconfig.json",
         "test": "run-s test:*",
