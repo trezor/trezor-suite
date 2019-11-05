@@ -8,6 +8,7 @@ import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormU
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
 
+import * as storageActions from '@suite-actions/storageActions';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
 // import * as ethereumActions from './sendFormSpecific/ethereumActions';
 import * as rippleActions from './sendFormSpecific/rippleActions';
@@ -18,7 +19,7 @@ import * as rippleActions from './sendFormSpecific/rippleActions';
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { settings } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
+    const { account } = getState().wallet.selectewdAccount;
     if (router.app !== 'wallet' || !router.params || !account) return;
 
     let cachedState = null;
