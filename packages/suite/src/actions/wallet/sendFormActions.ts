@@ -19,7 +19,7 @@ import * as rippleActions from './sendFormSpecific/rippleActions';
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { settings } = getState().wallet;
-    const { account } = getState().wallet.selectewdAccount;
+    const { account } = getState().wallet.selectedAccount;
     if (router.app !== 'wallet' || !router.params || !account) return;
 
     let cachedState = null;
