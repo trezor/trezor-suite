@@ -9,36 +9,21 @@ import {
 } from 'idb';
 import { StorageUpdateMessage, StorageMessageEvent } from './types';
 
-export interface OnUpgradeProps<TDBStructure> {
-    db: IDBPDatabase<TDBStructure>;
-    oldVersion: number;
-    newVersion: number | null;
-    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>;
-}
-
+export type OnUpgradeFunc<TDBStructure> = (
+    db: IDBPDatabase<TDBStructure>,
+    oldVersion: number,
+    newVersion: number | null,
+    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>
+) => Promise<void>;
 class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
     dbName!: string;
     version!: number;
     db!: IDBPDatabase<TDBStructure>;
     broadcastChannel!: any;
-    onUpgrade!: (
-        db: OnUpgradeProps<TDBStructure>['db'],
-        oldVersion: OnUpgradeProps<TDBStructure>['oldVersion'],
-        newVersion: OnUpgradeProps<TDBStructure>['newVersion'],
-        transaction: OnUpgradeProps<TDBStructure>['transaction']
-    ) => Promise<void>;
+    onUpgrade!: OnUpgradeFunc<TDBStructure>;
 
-    constructor(
-        dbName: string,
-        version: number,
-        onUpgrade: (
-            db: OnUpgradeProps<TDBStructure>['db'],
-            oldVersion: OnUpgradeProps<TDBStructure>['oldVersion'],
-            newVersion: OnUpgradeProps<TDBStructure>['newVersion'],
-            transaction: OnUpgradeProps<TDBStructure>['transaction']
-        ) => Promise<void>
-    ) {
+    constructor(dbName: string, version: number, onUpgrade: OnUpgradeFunc<TDBStructure>) {
         if (CommonDB.instance) {
             return CommonDB.instance;
         }
@@ -217,8 +202,7 @@ class CommonDB<TDBStructure> {
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
-        const res = await tx.store.delete(key);
-        return res;
+        return tx.store.delete(key);
         // TODO: needs to differentiate between PKs, Index keys...
         // if (res) {
         //     this.notify(store, [key]);
@@ -282,17 +266,15 @@ class CommonDB<TDBStructure> {
             // all txs for given accountId
             // bound([accountId, undefined], [accountId, '']) should cover all timestamps
             const keyRange = IDBKeyRange.bound([filters.key], [filters.key, '']);
-            const items = await index.getAll(keyRange);
-            return items;
+            return index.getAll(keyRange);
         }
         // no accountId, return all txs
-        const items = await tx.store.getAll();
-        return items;
+        return tx.store.getAll();
     };
 
     static clearStores = async <TDBStructure>(
-        db: OnUpgradeProps<TDBStructure>['db'],
-        transaction: OnUpgradeProps<TDBStructure>['transaction'],
+        db: IDBPDatabase<TDBStructure>,
+        transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
         remove?: boolean
     ) => {
         const list = db.objectStoreNames;
