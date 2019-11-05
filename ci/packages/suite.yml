@@ -13,7 +13,9 @@ suite type check:
         - install and build
 
 suite detect l10n duplicities:
-    stage: unit testing
+    # stage: unit testing
+    # temporarily put to the end so that we might fix it incrementaly and be sure nothing else was broken by fixes.
+    stage: integration testing
     script:
         - yarn workspace @trezor/suite translations:extract
     dependencies:
