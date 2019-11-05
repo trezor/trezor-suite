@@ -5,6 +5,7 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 import { getAccountKey } from '@suite/utils/wallet/accountUtils';
 import { State as SendFormState } from '@wallet-types/sendForm';
+import { getDeviceInstances } from '@suite/utils/suite/device';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
@@ -68,8 +69,14 @@ export const forgetDevice = (device: TrezorDevice) => async (
     _getState: GetState,
 ) => {
     if (!device.state) return;
+
+    // get all device instances
+    const storedDevices = await db.getItemsExtended('devices');
+    const deviceInstances = getDeviceInstances(device, storedDevices);
+
     await Promise.all([
         db.removeItemByPK('devices', device.state),
+        deviceInstances.filter(d => !!d.state).map(d => db.removeItemByPK('devices', d.state!)),
         db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByPK('discovery', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),

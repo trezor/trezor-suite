@@ -53,7 +53,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case DISCOVERY.STOP:
         case DISCOVERY.COMPLETE: {
             // TODO: explore better way to update discovery only
-            const device = api.getState().devices.find(d => d.state === action.payload.deviceState);
+            const { device } = api.getState().suite;
             if (device && device.features && device.remember) {
                 api.dispatch(storageActions.rememberDevice(device));
             }
@@ -62,6 +62,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case SUITE.FORGET_DEVICE:
             api.dispatch(storageActions.forgetDevice(action.payload));
+            break;
+
+        case SUITE.UPDATE_SELECTED_DEVICE:
+            api.dispatch(storageActions.rememberDevice(action.payload));
             break;
 
         case WALLET_SETTINGS.CHANGE_NETWORKS:
