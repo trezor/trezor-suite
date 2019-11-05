@@ -1,4 +1,4 @@
-import SuiteDB, { StorageUpdateMessage, OnUpgradeProps } from '@trezor/suite-storage';
+import SuiteDB, { StorageUpdateMessage, OnUpgradeFunc } from '@trezor/suite-storage';
 import { DBSchema } from 'idb';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
@@ -58,18 +58,8 @@ export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
 /**
  *  If the object stores don't already exist then creates them.
  *  Otherwise runs a migration function that transform the data to new scheme version if necessary
- *
- * @param {OnUpgradeProps<SuiteDBSchema>['db']} db
- * @param {OnUpgradeProps<SuiteDBSchema>['oldVersion']} oldVersion
- * @param {OnUpgradeProps<SuiteDBSchema>['newVersion']} newVersion
- * @param {OnUpgradeProps<SuiteDBSchema>['transaction']} transaction
  */
-const onUpgrade = async (
-    db: OnUpgradeProps<SuiteDBSchema>['db'],
-    oldVersion: OnUpgradeProps<SuiteDBSchema>['oldVersion'],
-    newVersion: OnUpgradeProps<SuiteDBSchema>['newVersion'],
-    transaction: OnUpgradeProps<SuiteDBSchema>['transaction'],
-) => {
+const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
     // instead of doing proper migration just delete all object stores and recreate them
     // TODO: uncomment before RELEASE,
     // const shouldInitDB = oldVersion === 0;

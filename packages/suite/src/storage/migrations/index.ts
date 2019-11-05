@@ -1,10 +1,10 @@
-import { OnUpgradeProps } from '@trezor/suite-storage';
+import { OnUpgradeFunc } from '@trezor/suite-storage';
 
 export const migrate = async <TDBType>(
-    _db: OnUpgradeProps<TDBType>['db'],
-    oldVersion: OnUpgradeProps<TDBType>['oldVersion'],
-    newVersion: OnUpgradeProps<TDBType>['newVersion'],
-    _transaction: OnUpgradeProps<TDBType>['transaction'],
+    _db: Parameters<OnUpgradeFunc<TDBType>>['0'],
+    oldVersion: Parameters<OnUpgradeFunc<TDBType>>['1'],
+    newVersion: Parameters<OnUpgradeFunc<TDBType>>['2'],
+    _transaction: Parameters<OnUpgradeFunc<TDBType>>['3'],
 ) => {
     console.log(`Migrating database from version ${oldVersion} to ${newVersion}`);
 
