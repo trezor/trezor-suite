@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, Tooltip, H5, P, Icon, colors } from '@trezor/components';
+import { Button, Tooltip, H5, P, Icon, Modal, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import * as logActions from '@suite-actions/logActions';
 import { AppState, Dispatch } from '@suite-types';
 import l10nMessages from './index.messages';
+import { useKeyPress } from '@suite-utils/dom';
 
 interface Props {
     toggle: typeof logActions.toggle;
@@ -68,7 +69,13 @@ const TooltipContainer = styled.div`
 `;
 
 const Log = (props: Props) => {
+    const escPressed = useKeyPress('Escape');
+
     if (!props.log.opened) return null;
+
+    if (escPressed) {
+        props.toggle();
+    }
 
     const copyBtn = (
         <ButtonCopy onClick={() => props.copyToClipboard()}>
@@ -76,32 +83,34 @@ const Log = (props: Props) => {
         </ButtonCopy>
     );
     return (
-        <Wrapper>
-            <Click onClick={props.toggle}>
-                <Icon size={12} color={colors.INFO_PRIMARY} icon="CLOSE" />
-            </Click>
-            <H5>
-                <FormattedMessage {...l10nMessages.TR_LOG} />
-            </H5>
-            <StyledParagraph size="small">
-                <FormattedMessage {...l10nMessages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
-            </StyledParagraph>
-            <LogWrapper>{JSON.stringify(props.log.entries)}</LogWrapper>
-            {props.log.copied ? (
-                <TooltipContainer>
-                    <Tooltip
-                        maxWidth={285}
-                        placement="top"
-                        content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
-                        onHidden={props.resetCopyState}
-                    >
-                        {copyBtn}
-                    </Tooltip>
-                </TooltipContainer>
-            ) : (
-                <CopyWrapper>{copyBtn}</CopyWrapper>
-            )}
-        </Wrapper>
+        <Modal>
+            <Wrapper>
+                <Click onClick={props.toggle}>
+                    <Icon size={12} color={colors.INFO_PRIMARY} icon="CLOSE" />
+                </Click>
+                <H5>
+                    <FormattedMessage {...l10nMessages.TR_LOG} />
+                </H5>
+                <StyledParagraph size="small">
+                    <FormattedMessage {...l10nMessages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
+                </StyledParagraph>
+                <LogWrapper>{JSON.stringify(props.log.entries)}</LogWrapper>
+                {props.log.copied ? (
+                    <TooltipContainer>
+                        <Tooltip
+                            maxWidth={285}
+                            placement="top"
+                            content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
+                            onHidden={props.resetCopyState}
+                        >
+                            {copyBtn}
+                        </Tooltip>
+                    </TooltipContainer>
+                ) : (
+                    <CopyWrapper>{copyBtn}</CopyWrapper>
+                )}
+            </Wrapper>
+        </Modal>
     );
 };
 

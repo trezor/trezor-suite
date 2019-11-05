@@ -3,9 +3,8 @@ import {
     WalletAccountTransaction,
 } from '@wallet-reducers/transactionReducer';
 import { AccountTransaction } from 'trezor-connect';
-import l10nMessages from '@wallet-views/account/messages';
-import { WrappedComponentProps } from 'react-intl';
 import BigNumber from 'bignumber.js';
+import l10nMessages from '@wallet-views/account/messages';
 import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network } from '@wallet-types';
 import { AppState } from '@suite-types';
@@ -34,67 +33,61 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
     return fiatValue;
 };
 
-export const getTitleForNetwork = (
-    symbol: Account['symbol'],
-    intl: WrappedComponentProps['intl'],
-) => {
+export const getTitleForNetwork = (symbol: Account['symbol']) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN);
+            return l10nMessages.TR_NETWORK_BITCOIN;
         case 'test':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN_TESTNET);
+            return l10nMessages.TR_NETWORK_BITCOIN_TESTNET;
         case 'bch':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN_CASH);
+            return l10nMessages.TR_NETWORK_BITCOIN_CASH;
         case 'btg':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_BITCOIN_GOLD);
+            return l10nMessages.TR_NETWORK_BITCOIN_GOLD;
         case 'dash':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_DASH);
+            return l10nMessages.TR_NETWORK_DASH;
         case 'dgb':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_DIGIBYTE);
+            return l10nMessages.TR_NETWORK_DIGIBYTE;
         case 'doge':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_DOGECOIN);
+            return l10nMessages.TR_NETWORK_DOGECOIN;
         case 'ltc':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_LITECOIN);
+            return l10nMessages.TR_NETWORK_LITECOIN;
         case 'nmc':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_NAMECOIN);
+            return l10nMessages.TR_NETWORK_NAMECOIN;
         case 'vtc':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_VERTCOIN);
+            return l10nMessages.TR_NETWORK_VERTCOIN;
         case 'zec':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_ZCASH);
+            return l10nMessages.TR_NETWORK_ZCASH;
         case 'eth':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_ETHEREUM);
+            return l10nMessages.TR_NETWORK_ETHEREUM;
         case 'trop':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_ETHEREUM_TESTNET);
+            return l10nMessages.TR_NETWORK_ETHEREUM_TESTNET;
         case 'etc':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_ETHEREUM_CLASSIC);
+            return l10nMessages.TR_NETWORK_ETHEREUM_CLASSIC;
         case 'xem':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_NEM);
+            return l10nMessages.TR_NETWORK_NEM;
         case 'xlm':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_STELLAR);
+            return l10nMessages.TR_NETWORK_STELLAR;
         case 'ada':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_CARDANO);
+            return l10nMessages.TR_NETWORK_CARDANO;
         case 'xtz':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_TEZOS);
+            return l10nMessages.TR_NETWORK_TEZOS;
         case 'xrp':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_XRP);
+            return l10nMessages.TR_NETWORK_XRP;
         case 'txrp':
-            return intl.formatMessage(l10nMessages.TR_NETWORK_XRP_TESTNET);
+            return l10nMessages.TR_NETWORK_XRP_TESTNET;
         default:
-            return intl.formatMessage(l10nMessages.TR_NETWORK_UNKNOWN);
+            return l10nMessages.TR_NETWORK_UNKNOWN;
     }
 };
 
-export const getTypeForNetwork = (
-    accountType: Account['accountType'],
-    intl: WrappedComponentProps['intl'],
-) => {
+export const getTypeForNetwork = (accountType: Account['accountType']) => {
     switch (accountType) {
         case ACCOUNT_TYPE.NORMAL:
             return null;
         case ACCOUNT_TYPE.SEGWIT:
-            return intl.formatMessage(l10nMessages.TR_NETWORK_TYPE_SEGWIT);
+            return l10nMessages.TR_NETWORK_TYPE_SEGWIT;
         case ACCOUNT_TYPE.LEGACY:
-            return intl.formatMessage(l10nMessages.TR_NETWORK_TYPE_LEGACY);
+            return l10nMessages.TR_NETWORK_TYPE_LEGACY;
         // no default
     }
 };
@@ -115,8 +108,9 @@ export const formatAmount = (amount: string, decimals: number) => {
     }
 };
 
-export const networkAmountToSatoshi = (amount: string, symbol: Account['symbol']) => {
+export const networkAmountToSatoshi = (amount: string | null, symbol: Account['symbol']) => {
     const network = NETWORKS.find(n => n.symbol === symbol);
+    if (!amount) return '0';
     if (!network) return amount;
     try {
         const bAmount = new BigNumber(amount);

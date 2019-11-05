@@ -49,10 +49,15 @@
             ]
         },
         "mac": {
-            "target": "tar.gz",
-            "icon": "build/static/images/suite/icons/64x64.png"
+            "icon": "build/static/images/suite/icons/64x64.png",
+            "artifactName": "${productName}-${version}.${ext}",
+            "target": "tar.gz"
         },
-        "win": {},
+        "win": {
+            "icon": "build/static/images/suite/icons/64x64.png",
+            "artifactName": "${productName}-${version}.${ext}",
+            "target": "portable"
+        },
         "linux": {
             "icon": "build/static/images/suite/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",

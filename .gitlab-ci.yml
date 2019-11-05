@@ -1,3 +1,4 @@
+# TODO: update the image
 image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:0434bcea7c4be20c0c197bb44553c2b88270bd64
 
 variables:

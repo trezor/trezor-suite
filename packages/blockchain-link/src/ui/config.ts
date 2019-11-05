@@ -35,6 +35,7 @@ export default [
             name: 'Ripple Testnet',
             worker: 'js/ripple-worker.js',
             server: ['wss://s.altnet.rippletest.net'],
+            // server: ['wss://s.devnet.rippletest.net'],
             debug: true,
         },
         data: {

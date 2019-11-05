@@ -9,6 +9,10 @@ const definedMessages = defineMessages({
         id: 'TR_ADDRESS_IS_NOT_VALID',
         defaultMessage: 'Address is not valid',
     },
+    CANNOT_SEND_TO_MYSELF: {
+        id: 'CANNOT_SEND_TO_MYSELF',
+        defaultMessage: 'Cannot send to myself',
+    },
 });
 
 export default definedMessages;

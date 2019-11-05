@@ -2,7 +2,8 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Button, variables, colors } from '@trezor/components';
-// import { getTypeForNetwork } from '@wallet-utils/accountUtils';
+import { getTypeForNetwork } from '@wallet-utils/accountUtils';
+import l10nCommonMessages from '@suite-views/index.messages';
 import { Network, ExternalNetwork, Account } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 import l10nMessages from '../messages';
@@ -33,10 +34,15 @@ const AccountNameWrapper = styled.div`
 const AccountName = styled.div`
     font-size: ${variables.FONT_SIZE.BIG};
     color: ${colors.TEXT_PRIMARY};
+    text-transform: uppercase;
 `;
 
 const AccountDescription = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const LabelAddon = styled.span`
+    padding-right: 3px;
 `;
 
 const EnableNetwork = (props: {
@@ -78,9 +84,9 @@ const AccountButton = (props: {
         enabled = false;
         description = 'Account index is greater than 10';
     }
-    // const accountType = getTypeForNetwork(props.network.accountType, props.intl);
-    const prefix = props.network.accountType ? `${props.network.accountType} ` : '';
-    const label = `${prefix}Account #${index}`;
+
+    const accountType = getTypeForNetwork(props.network.accountType || 'normal');
+
     return (
         <StyledButton
             icon="PLUS"
@@ -91,7 +97,19 @@ const AccountButton = (props: {
             onClick={() => props.onEnableAccount(account)}
         >
             <AccountNameWrapper>
-                <AccountName>{label}</AccountName>
+                <AccountName>
+                    {accountType && (
+                        <LabelAddon>
+                            <FormattedMessage {...accountType} />
+                        </LabelAddon>
+                    )}
+                    <FormattedMessage
+                        {...(account.imported
+                            ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
+                            : l10nCommonMessages.TR_ACCOUNT_HASH)}
+                        values={{ number: String(index) }}
+                    />
+                </AccountName>
                 <AccountDescription>{description}</AccountDescription>
             </AccountNameWrapper>
         </StyledButton>

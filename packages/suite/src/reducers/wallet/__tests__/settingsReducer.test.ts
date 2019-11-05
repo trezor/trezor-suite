@@ -65,11 +65,11 @@ describe('settings reducer', () => {
         expect(
             reducer(undefined, {
                 type: SETTINGS.CHANGE_EXTERNAL_NETWORKS,
-                payload: ['eth'],
+                payload: ['xem'],
             }),
         ).toEqual({
             ...initialState,
-            enabledExternalNetworks: ['eth'],
+            enabledExternalNetworks: ['xem'],
         });
     });
 });

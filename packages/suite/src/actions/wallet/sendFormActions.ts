@@ -1,48 +1,16 @@
-import BigNumber from 'bignumber.js';
-import { SEND } from '@wallet-actions/constants';
-import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
-import { formatNetworkAmount, getFiatValue, getAccountKey } from '@wallet-utils/accountUtils';
-import { Output, InitialState, FeeLevel } from '@wallet-types/sendForm';
-import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import { getLocalCurrency } from '@wallet-utils/settingsUtils';
-import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
-import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
-import * as storageActions from '@suite-actions/storageActions';
+import { SEND } from '@wallet-actions/constants';
+import { Account } from '@wallet-types';
+import { FeeLevel, Output } from '@wallet-types/sendForm';
+import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
+import { ParsedURI } from '@wallet-utils/cryptoUriParser';
+import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
+import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import BigNumber from 'bignumber.js';
 
-export type SendFormActions =
-    | {
-          type: typeof SEND.HANDLE_ADDRESS_CHANGE;
-          outputId: number;
-          address: string;
-          symbol: Account['symbol'];
-      }
-    | {
-          type: typeof SEND.HANDLE_AMOUNT_CHANGE;
-          outputId: number;
-          amount: string;
-          decimals: number;
-          availableBalance: Account['availableBalance'];
-      }
-    | { type: typeof SEND.SET_MAX; outputId: number }
-    | { type: typeof SEND.COMPOSE_PROGRESS; isComposing: boolean }
-    | { type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE; outputId: number; fiatValue: string }
-    | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeLevel }
-    | { type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE; customFee: string | null }
-    | {
-          type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
-          outputId: number;
-          localCurrency: Output['localCurrency']['value'];
-      }
-    | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
-    | { type: typeof SEND.CLEAR; localCurrency: Output['localCurrency']['value'] }
-    | { type: typeof SEND.BTC_DELETE_TRANSACTION_INFO }
-    | {
-          type: typeof SEND.INIT;
-          payload: InitialState;
-          localCurrency: Output['localCurrency']['value'];
-      }
-    | { type: typeof SEND.DISPOSE };
+import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
+// import * as ethereumActions from './sendFormSpecific/ethereumActions';
+import * as rippleActions from './sendFormSpecific/rippleActions';
 
 /**
  * Initialize current form, load values from session storage
@@ -99,10 +67,45 @@ export const compose = (setMax: boolean = false) => async (
 ) => {
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
     const account = getState().wallet.selectedAccount.account as Account;
-    if (account.networkType === 'bitcoin') {
-        dispatch({ type: SEND.BTC_DELETE_TRANSACTION_INFO });
-        return dispatch(bitcoinActions.compose(setMax));
+
+    switch (account.networkType) {
+        case 'bitcoin': {
+            return dispatch(bitcoinActions.compose(setMax));
+        }
+        case 'ripple': {
+            return dispatch(rippleActions.compose());
+        }
+        // case 'ethereum': {
+        //     return dispatch(ethereumActions.compose());
+        // }
+        // no default
     }
+};
+
+const applyChange = (composeBy?: 'address' | 'amount') => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return null;
+
+    dispatch({
+        type: SEND.DELETE_TRANSACTION_INFO,
+        networkType: account.networkType,
+    });
+
+    if (!composeBy) {
+        dispatch(compose());
+    }
+
+    if (composeBy) {
+        if (shouldComposeBy(composeBy, send.outputs)) {
+            dispatch(compose());
+        }
+    }
+
+    dispatch(cache());
 };
 
 /*
@@ -120,16 +123,11 @@ export const handleAddressChange = (outputId: number, address: string) => (
         outputId,
         address,
         symbol: account.symbol,
+        networkType: account.networkType,
+        currentAccountAddress: account.descriptor,
     });
 
-    const { send } = getState().wallet;
-    if (!send) return null;
-
-    if (shouldComposeBy('address', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('address'));
 };
 
 /*
@@ -167,14 +165,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         availableBalance: account.formattedBalance,
     });
 
-    const freshSendState = getState().wallet.send;
-    if (!freshSendState) return null;
-
-    if (shouldComposeBy('amount', freshSendState.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -220,11 +211,7 @@ export const handleSelectCurrencyChange = (
         localCurrency,
     });
 
-    if (shouldComposeBy('amount', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -261,11 +248,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         availableBalance: account.formattedBalance,
     });
 
-    if (shouldComposeBy('amount', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -304,13 +287,17 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     if (composedTransaction && composedTransaction.type !== 'error') {
         const availableBalanceBig = new BigNumber(account.availableBalance);
 
+        const amount = formatNetworkAmount(
+            availableBalanceBig.minus(composedTransaction.fee).toString(),
+            account.symbol,
+        );
+
+        const amountBig = new BigNumber(amount);
+
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
-            amount: formatNetworkAmount(
-                availableBalanceBig.minus(composedTransaction.fee).toString(),
-                account.symbol,
-            ),
+            amount: amountBig.isLessThan(0) ? '0' : amountBig.toString(),
             decimals: network.decimals,
             availableBalance: account.availableBalance,
         });
@@ -324,11 +311,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         });
     }
 
-    if (shouldComposeBy('amount', send.outputs)) {
-        dispatch(compose());
-    }
-
-    dispatch(cache());
+    dispatch(applyChange('amount'));
 };
 
 /*
@@ -358,8 +341,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    dispatch(compose());
-    dispatch(cache());
+    dispatch(applyChange());
 };
 
 /*
@@ -388,8 +370,7 @@ export const handleCustomFeeValueChange = (customFee: string) => (
         },
     });
 
-    dispatch(compose());
-    dispatch(cache());
+    dispatch(applyChange());
 };
 
 /*

@@ -30,6 +30,10 @@ export default class MyDocument extends Document<Props> {
             <html lang="en" style={{ height: '100%' }}>
                 <Head>
                     <meta charSet="utf-8" />
+                    <script
+                        type="text/javascript"
+                        src={resolveStaticPath('js/browserDetection.js')}
+                    ></script>
                     <link
                         media="all"
                         rel="stylesheet"

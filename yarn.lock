@@ -4624,6 +4624,39 @@ app-builder-lib@~21.2.0:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-21.2.0.tgz#fa1d1604601431e2c3476857e9b9b61d33ad26cc"
   integrity sha512-aOX/nv77/Bti6NymJDg7p9T067xD8m1ipIEJR7B4Mm1GsJWpMm9PZdXtCRiMNRjHtQS5KIljT0g17781y6qn5A==
+
+app-builder-lib@22.0.0:
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-22.0.0.tgz#e5ea3b676724d3dbaaca2f800aa20aef8f402db9"
+  integrity sha512-4Q7JDb2lm6lNvtQxhjgjl2w9u3KuVOiNN6MFY46MWABkFbJbic8GDrQnktYPKOJ5p/KwV2itxcz6F+xAIgc15A==
+  dependencies:
+    "7zip-bin" "~5.0.3"
+    "@develar/schema-utils" "~2.1.0"
+    async-exit-hook "^2.0.1"
+    bluebird-lst "^1.0.9"
+    builder-util "22.0.0"
+    builder-util-runtime "8.4.0"
+    chromium-pickle-js "^0.2.0"
+    debug "^4.1.1"
+    ejs "^2.7.1"
+    electron-publish "22.0.0"
+    fs-extra "^8.1.0"
+    hosted-git-info "^3.0.0"
+    is-ci "^2.0.0"
+    isbinaryfile "^4.0.2"
+    js-yaml "^3.13.1"
+    lazy-val "^1.0.4"
+    minimatch "^3.0.4"
+    normalize-package-data "^2.5.0"
+    read-config-file "5.0.0"
+    sanitize-filename "^1.6.3"
+    semver "^6.3.0"
+    temp-file "^3.3.4"
+
+app-builder-lib@~21.2.0:
+  version "21.2.0"
+  resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-21.2.0.tgz#fa1d1604601431e2c3476857e9b9b61d33ad26cc"
+  integrity sha512-aOX/nv77/Bti6NymJDg7p9T067xD8m1ipIEJR7B4Mm1GsJWpMm9PZdXtCRiMNRjHtQS5KIljT0g17781y6qn5A==
   dependencies:
     "7zip-bin" "~5.0.3"
     "@develar/schema-utils" "~2.1.0"
@@ -6111,6 +6144,27 @@ builder-util@21.2.0, builder-util@~21.2.0:
     "7zip-bin" "~5.0.3"
     "@types/debug" "^4.1.4"
     app-builder-bin "3.4.3"
+    bluebird-lst "^1.0.9"
+    builder-util-runtime "8.3.0"
+    chalk "^2.4.2"
+    debug "^4.1.1"
+    fs-extra "^8.1.0"
+    is-ci "^2.0.0"
+    js-yaml "^3.13.1"
+    source-map-support "^0.5.13"
+    stat-mode "^0.3.0"
+    temp-file "^3.3.4"
+
+builder-util@22.0.0, builder-util@~22.0.0:
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/builder-util/-/builder-util-22.0.0.tgz#97a0ee9b5f87b268af4fd6f3d1bc1a44af833a7e"
+  integrity sha512-fLTdykjOr1PWubJaj7LukaDJ1THqPkyTgJWswen6fn6TWUngZyDmAcg9hk4Aa1nf4BvyGx/iJCUhYjCkwpmimA==
+  dependencies:
+    "7zip-bin" "~5.0.3"
+    "@types/debug" "^4.1.5"
+    app-builder-bin "3.4.4"
+    bluebird-lst "^1.0.9"
+    builder-util-runtime "8.4.0"
     bluebird-lst "^1.0.9"
     builder-util-runtime "8.3.0"
     chalk "^2.4.2"
