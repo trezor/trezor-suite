@@ -1,2 +1,3 @@
 translations/extractedMessages
 translations/*.csv
+translations/master.json
