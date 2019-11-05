@@ -125,6 +125,10 @@ export const isDisabled = (
 };
 */
 
+export const isDeviceRemembered = (device?: TrezorDevice): device is AcquiredDevice => {
+    return !!device && !!device.features && device.remember;
+};
+
 export const isDeviceAccessible = (device?: TrezorDevice) => {
     if (!device || !device.features) return false;
     return device.mode === 'normal' && device.firmware !== 'required';

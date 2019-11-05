@@ -6,6 +6,8 @@ import { Account } from '@wallet-types';
 import { getAccountKey } from '@suite/utils/wallet/accountUtils';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { getDeviceInstances } from '@suite/utils/suite/device';
+import { Discovery } from '@suite/reducers/wallet/discoveryReducer';
+import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
@@ -24,6 +26,30 @@ export const removeSendForm = async (accountKey: string) => {
     return db.removeItemByPK('sendForm', accountKey);
 };
 
+export const saveDevice = async (device: TrezorDevice) => {
+    if (!device || !device.features || !device.state) return;
+    return db.addItem('devices', { ...device, remember: true, connected: false }, device.state);
+};
+
+export const removeAccount = async (account: Account, device: TrezorDevice) => {
+    if (!device.state) return;
+    return db.removeItemByPK('accounts', [account.descriptor, account.symbol, device.state]);
+};
+
+export const saveAccounts = async (accounts: Account[]) => {
+    return db.addItems('accounts', accounts, true);
+};
+
+export const saveDiscovery = async (discoveries: Discovery[]) => {
+    return db.addItems('discovery', discoveries, true);
+};
+
+export const saveTransactions = async (transactions: WalletAccountTransaction[]) => {
+    return db.addItems('txs', transactions, true);
+};
+
+export const serializeDiscovery = (discovery: Discovery) => ({ ...discovery, running: undefined });
+
 export const rememberDevice = (device: TrezorDevice) => async (
     _dispatch: Dispatch,
     getState: GetState,
@@ -33,7 +59,7 @@ export const rememberDevice = (device: TrezorDevice) => async (
     const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
     const discovery = wallet.discovery.filter(d => d.deviceState === device.state);
     // trim promise function from discovery object
-    const serializableDiscovery = discovery.map(d => ({ ...d, running: undefined }));
+    const serializableDiscovery = discovery.map(d => serializeDiscovery(d));
     const allTxs = wallet.transactions.transactions;
     const transactions = accounts
         .map(a => allTxs[getAccountKey(a.descriptor, a.symbol, a.deviceState)] || [])
@@ -41,10 +67,10 @@ export const rememberDevice = (device: TrezorDevice) => async (
 
     try {
         await Promise.all([
-            db.addItem('devices', { ...device, remember: true, connected: false }, device.state),
-            db.addItems('accounts', accounts, true),
-            db.addItems('discovery', serializableDiscovery, true),
-            db.addItems('txs', transactions, true),
+            saveDevice(device),
+            saveAccounts(accounts),
+            saveDiscovery(serializableDiscovery),
+            saveTransactions(transactions),
         ]);
     } catch (error) {
         if (error) {

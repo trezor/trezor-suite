@@ -8,6 +8,8 @@ import { SUITE } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
 import { ACCOUNT, DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
+import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
+import { isDeviceRemembered } from '@suite-utils/device';
 // import { ACCOUNT } from '@suite/actions/wallet/constants';
 // import { AccountInfo } from 'trezor-connect';
 
@@ -24,22 +26,42 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             api.dispatch(storageActions.rememberDevice(action.payload));
             break;
 
+        case SUITE.FORGET_DEVICE:
+            api.dispatch(storageActions.forgetDevice(action.payload));
+            break;
+
         case ACCOUNT.CREATE:
         case ACCOUNT.UPDATE: {
-            // TODO: explore better way to update accounts only
             const device = accountUtils.getAccountDevice(api.getState().devices, action.payload);
-            if (device && device.features && device.remember) {
-                api.dispatch(storageActions.rememberDevice(device));
+            // update only transactions for remembered device
+            if (isDeviceRemembered(device)) {
+                storageActions.saveAccounts([action.payload]);
             }
+            break;
+        }
+
+        case ACCOUNT.REMOVE: {
+            const accounts = action.payload;
+            const { devices } = api.getState();
+            accounts.forEach(account => {
+                const device = accountUtils.getAccountDevice(devices, account);
+                if (isDeviceRemembered(device)) {
+                    storageActions.removeAccount(account, device);
+                }
+            });
             break;
         }
 
         case TRANSACTION.ADD:
         case TRANSACTION.FETCH_SUCCESS: {
-            // TODO: explore better way to update accounts only
             const device = accountUtils.getAccountDevice(api.getState().devices, action.account);
-            if (device && device.features && device.remember) {
-                api.dispatch(storageActions.rememberDevice(device));
+            // update only transactions for remembered device
+            if (isDeviceRemembered(device)) {
+                await storageActions.saveTransactions(
+                    action.transactions.map(tx =>
+                        accountUtils.enhanceTransaction(tx, action.account),
+                    ),
+                );
             }
             break;
         }
@@ -52,20 +74,23 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case DISCOVERY.INTERRUPT:
         case DISCOVERY.STOP:
         case DISCOVERY.COMPLETE: {
-            // TODO: explore better way to update discovery only
             const { device } = api.getState().suite;
-            if (device && device.features && device.remember) {
-                api.dispatch(storageActions.rememberDevice(device));
+            // update only discovery for remembered device
+            if (isDeviceRemembered(device)) {
+                const discovery = api.dispatch(getDiscoveryForDevice());
+                if (discovery) {
+                    await storageActions.saveDiscovery([
+                        storageActions.serializeDiscovery(discovery),
+                    ]);
+                }
             }
             break;
         }
 
-        case SUITE.FORGET_DEVICE:
-            api.dispatch(storageActions.forgetDevice(action.payload));
-            break;
-
         case SUITE.UPDATE_SELECTED_DEVICE:
-            api.dispatch(storageActions.rememberDevice(action.payload));
+            if (isDeviceRemembered(action.payload)) {
+                storageActions.saveDevice(action.payload);
+            }
             break;
 
         case WALLET_SETTINGS.CHANGE_NETWORKS:
