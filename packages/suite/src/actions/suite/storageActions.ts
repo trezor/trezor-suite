@@ -36,6 +36,14 @@ export const removeAccount = async (account: Account, device: TrezorDevice) => {
     return db.removeItemByPK('accounts', [account.descriptor, account.symbol, device.state]);
 };
 
+export const removeAccountTransactions = async (account: Account) => {
+    await db.removeItemByIndex('txs', 'accountKey', [
+        account.descriptor,
+        account.symbol,
+        account.deviceState,
+    ]);
+};
+
 export const saveAccounts = async (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
 };
@@ -80,14 +88,6 @@ export const rememberDevice = (device: TrezorDevice) => async (
             console.error('error', error);
         }
     }
-};
-
-export const removeAccountTransactions = async (account: Account) => {
-    await db.removeItemByIndex('txs', 'accountKey', [
-        account.descriptor,
-        account.symbol,
-        account.deviceState,
-    ]);
 };
 
 export const forgetDevice = (device: TrezorDevice) => async (

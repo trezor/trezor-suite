@@ -10,8 +10,6 @@ import { WalletAction } from '@wallet-types';
 import { ACCOUNT, DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
-// import { ACCOUNT } from '@suite/actions/wallet/constants';
-// import { AccountInfo } from 'trezor-connect';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
@@ -47,6 +45,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
                 const device = accountUtils.getAccountDevice(devices, account);
                 if (isDeviceRemembered(device)) {
                     storageActions.removeAccount(account, device);
+                    storageActions.removeAccountTransactions(account);
                 }
             });
             break;
@@ -57,7 +56,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             const device = accountUtils.getAccountDevice(api.getState().devices, action.account);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {
-                await storageActions.saveTransactions(
+                storageActions.saveTransactions(
                     action.transactions.map(tx =>
                         accountUtils.enhanceTransaction(tx, action.account),
                     ),
@@ -79,9 +78,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             if (isDeviceRemembered(device)) {
                 const discovery = api.dispatch(getDiscoveryForDevice());
                 if (discovery) {
-                    await storageActions.saveDiscovery([
-                        storageActions.serializeDiscovery(discovery),
-                    ]);
+                    storageActions.saveDiscovery([storageActions.serializeDiscovery(discovery)]);
                 }
             }
             break;
