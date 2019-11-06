@@ -8,6 +8,7 @@ suite lint:
 suite detect l10n duplicities:
     stage: lint and prettier
     script:
+        - yarn workspace @trezor/translations-manager build:lib
         - yarn workspace @trezor/suite translations:extract
     dependencies:
         - install and build
