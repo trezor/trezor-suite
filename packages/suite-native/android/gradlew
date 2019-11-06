@@ -22,6 +22,7 @@ done
 SAVED="`pwd`"
 cd "`dirname \"$PRG\"`/" >/dev/null
 APP_HOME="`pwd -P`"
+echo $APP_HOME
 cd "$SAVED" >/dev/null
 
 APP_NAME="Gradle"

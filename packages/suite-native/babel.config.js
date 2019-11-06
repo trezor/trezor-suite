@@ -1,4 +1,12 @@
+const fs = require('fs');
+
+fs.writeFileSync('./a', '1');
+const pwd = process.env.PWD;
+console.log('pwd ============================= pwd', pwd);
+
 module.exports = api => {
+    const pwd = process.env.PWD;
+    console.log('pwd ============================= pwd', pwd);
     api.cache(true);
     return {
         presets: ['module:metro-react-native-babel-preset'],
@@ -6,6 +14,21 @@ module.exports = api => {
             [
                 'module-resolver',
                 {
+                    extensions: ['.js', '.ios.js', '.android.js', '.json'],
+                    // root: ['../../'],
+                    resolvePath(sourcePath, currentFile, opts) {
+                        /**
+                         * The `opts` argument is the options object that is passed through the Babel config.
+                         * opts = {
+                         *   extensions: [".js"],
+                         *   resolvePath: ...,
+                         * }
+                         */
+                        console.log('sourcePath', sourcePath);
+                        console.log('currentFile', currentFile);
+
+                        return 'kurwa-drat-xxx';
+                    },
                     alias: {
                         // TODO: alias for routerActions could be removed
                         // since it will be handled with resolver for custom .useNative extension

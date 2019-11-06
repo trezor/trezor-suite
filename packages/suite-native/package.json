@@ -12,7 +12,9 @@
         "start:clean": "yarn workspace @trezor/suite-native clean && yarn workspace @trezor/suite-native start -- --reset-cache",
         "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "type-check": "tsc --project tsconfig.json"
+        "type-check": "tsc --project tsconfig.json",
+        "build:android": "rm -rf /tmp/metro-bundler-cache-* && rm -rf /tmp/haste-map-react-native-packager-* && cd android && ./gradlew bundleRelease"
+
     },
     "dependencies": {
         "@trezor/components": "^1.0.0",
