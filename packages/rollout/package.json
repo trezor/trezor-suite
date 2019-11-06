@@ -25,10 +25,9 @@
     "cross-fetch": "^3.0.4"
   },
   "devDependencies": {
-    "jest": "^24.8.0",
     "jest-mock-random": "^1.0.2",
-    "rollup": "^0.67.4",
+    "rollup": "^1.26.3",
     "rollup-plugin-cleanup": "^3.0.0",
-    "rollup-plugin-typescript2": "^0.21.2"
+    "rollup-plugin-typescript2": "^0.25.2"
   }
 }

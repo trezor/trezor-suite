@@ -40,7 +40,6 @@
         "eslint-plugin-jsx-a11y": "^6.1.2",
         "eslint-plugin-react": "^7.12.3",
         "fs-extra": "^7.0.1",
-        "jest": "^24.8.0",
         "npm-run-all": "^4.1.5",
         "react": "^16.8.6",
         "react-docgen-typescript-loader": "^3.1.0",
@@ -65,7 +64,7 @@
         "react-native-picker-select": "^6.2.0",
         "react-native-svg": "^9.4.0",
         "react-native-svg-uri": "^1.2.3",
-        "react-select": "^3.0.3",
+        "react-select": "^3.0.8",
         "react-svg": "^10.0.12",
         "react-switch": "^5.0.1"
     },
