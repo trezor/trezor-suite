@@ -3,7 +3,7 @@ import React, { useState, FunctionComponent, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { colors } from '@trezor/components';
 
-const InputDiv = styled.div<State>`
+const InputDiv = styled.div<InputProps>`
     position: relative;
     width: 100%;
     height: 40px;
@@ -27,10 +27,10 @@ const InputDiv = styled.div<State>`
         `}
 `;
 
-const DotWrapper = styled.div<DotsProps>`
+const DotWrapper = styled.div<DotProps>`
     position: absolute;
     top: 0;
-    left: ${props => props.charAt * 10 + 5}px;
+    left: ${props => props.charPosition * 10 + 5}px;
     padding: 17px 4px 16px;
 `;
 
@@ -41,27 +41,42 @@ const Dot = styled.div`
     border-radius: 3px;
 `;
 
-const FakeCursor = styled.div<CursorProps>`
+const Cursor = styled.div<CursorProps>`
     position: absolute;
     top: 10px;
     width: 1px;
     height: 20px;
     background: ${colors.TEXT};
     left: ${props => props.position * 10 + 8}px;
-    opacity: ${props => (props.focus ? 1 : 0)};
+    opacity: ${props => (props.active ? 1 : 0)};
 `;
 
-interface State {
+const Selector = styled.div<SelectorProps>`
+    position: absolute;
+    top: 5px;
+    background: #b4d7ff;
+    left: ${props => props.start * 10 + 8}px;
+    width: ${props => props.end * 10}px;
+    height: 20px;
+`;
+
+interface InputProps {
     focus: boolean;
 }
 
-interface DotsProps {
-    charAt: number;
+interface DotProps {
+    charPosition: number;
 }
 
 interface CursorProps {
     position: number;
-    focus: boolean;
+    active: boolean;
+}
+
+interface SelectorProps {
+    active: boolean;
+    start: number;
+    end: number;
 }
 
 interface Props {
@@ -70,69 +85,22 @@ interface Props {
 
 const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
     const [value, setValue] = useState([] as string[]);
-    const [cursorPosition, setCursorPosition] = useState(0);
     const [focus, setFocus] = useState(false);
-    const [lock, setLock] = useState(false);
+    const [ctrl, setCtrl] = useState(false);
+    const [shift, setShift] = useState(false);
+    const [cursorPosition, setCursorPosition] = useState(0);
+    const [selectorPosition, setSelectorPosition] = useState(0);
     const inputRef = React.createRef<HTMLDivElement>();
+
     const onFocus = (event: React.MouseEvent<HTMLDivElement>) => {
         setFocus(true);
         if (event.target === inputRef.current) {
             setCursorPosition(value.length);
         }
     };
+
     const onBlur = () => {
         setFocus(false);
-    };
-
-    const keyHandler = (event: KeyboardEvent) => {
-        if (!focus) return;
-        // console.log(event);
-        switch (event.keyCode) {
-            case 8:
-                // backspace, handled on keydown
-                break;
-            case 13:
-                // enter
-                break;
-            case 16:
-                // shift
-                break;
-            case 17:
-            case 91:
-                // ctrl
-                console.log('unset lock');
-                setLock(false);
-                break;
-            case 37:
-                // arrow left
-                if (cursorPosition > 0) {
-                    setCursorPosition(cursorPosition - 1);
-                }
-                break;
-            case 39:
-                // arrow right
-                if (cursorPosition < value.length) {
-                    setCursorPosition(cursorPosition + 1);
-                }
-                break;
-            case 38:
-                // arrow up
-                setCursorPosition(0);
-                break;
-            case 40:
-                // arrow down
-                setCursorPosition(value.length);
-                break;
-            default:
-                if (event.key.length === 1 && !lock) {
-                    // is char
-                    setValue((val: string[]) => val.concat([event.key]));
-                    setCursorPosition(cursorPosition + 1);
-                } else {
-                    // other
-                    console.log('otherChar', event);
-                }
-        }
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -146,12 +114,77 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
                     setCursorPosition(cursorPosition - 1);
                 }
                 break;
+            case 16:
+                // shift
+                setShift(true);
+                break;
             case 17:
             case 91:
-                // lock on keydown ctrl/cmd
-                setLock(true);
+                // ctrl on keydown ctrl/cmd
+                setCtrl(true);
+                break;
+            case 37:
+                // arrow left
+                break;
+            case 39:
+                // arrow righ
+                if (shift) {
+                    setSelectorPosition(selectorPosition + 1);
+                }
                 break;
             default:
+        }
+    };
+
+    const keyUpHandler = (event: KeyboardEvent) => {
+        if (!focus) return;
+        // console.log(event);
+        switch (event.keyCode) {
+            case 8:
+                // backspace, handled on keydown
+                break;
+            case 13:
+                // enter
+                break;
+            case 16:
+                // shift
+                setShift(false);
+                break;
+            case 17:
+            case 91:
+                // ctrl/cmd
+                console.log('unset ctrl');
+                setCtrl(false);
+                break;
+            case 37:
+                // arrow left
+                if (cursorPosition > 0 && !ctrl) {
+                    setCursorPosition(cursorPosition - 1);
+                }
+                break;
+            case 39:
+                // arrow right
+                if (cursorPosition < value.length && !ctrl) {
+                    setCursorPosition(cursorPosition + 1);
+                }
+                break;
+            case 38:
+                // arrow up
+                setCursorPosition(0);
+                break;
+            case 40:
+                // arrow down
+                setCursorPosition(value.length);
+                break;
+            default:
+                if (event.key.length === 1 && !ctrl) {
+                    // is char
+                    setValue((val: string[]) => val.concat([event.key]));
+                    setCursorPosition(cursorPosition + 1);
+                } else {
+                    // other
+                    console.log('otherChar', event);
+                }
         }
     };
 
@@ -170,19 +203,24 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
         }
     };
 
+    const setCursor = (key: number) => {
+        setCursorPosition(key);
+        setSelectorPosition(0);
+    };
+
     useEffect(() => {
-        window.addEventListener('keyup', keyHandler);
+        window.addEventListener('keyup', keyUpHandler);
         window.addEventListener('keydown', keyDownHandler);
         document.addEventListener('paste', onPaste);
         return () => {
-            window.removeEventListener('keyup', keyHandler);
+            window.removeEventListener('keyup', keyUpHandler);
             window.removeEventListener('keydown', keyDownHandler);
             document.removeEventListener('paste', onPaste);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [focus, cursorPosition]);
 
-    console.log(value);
+    onChange(value.join(''));
 
     return (
         <InputDiv
@@ -192,18 +230,23 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
             focus={focus}
             ref={inputRef}
         >
+            <Selector
+                active={selectorPosition !== 0}
+                start={cursorPosition}
+                end={selectorPosition}
+            />
             {value.map((val: string, key: number) => {
                 return (
                     <DotWrapper
-                        charAt={key}
-                        onClick={() => setCursorPosition(key)}
+                        charPosition={key}
+                        onClick={() => setCursor(key)}
                         key={`${val}-${key}`}
                     >
                         <Dot />
                     </DotWrapper>
                 );
             })}
-            <FakeCursor position={cursorPosition} focus={focus} />
+            <Cursor position={cursorPosition} active={focus && selectorPosition === 0} />
         </InputDiv>
     );
 };

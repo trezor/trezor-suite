@@ -118,7 +118,11 @@ const Passphrase: FunctionComponent<Props> = ({
                     value={value}
                     innerRef={ref}
                 />
-                <PassphraseInput onChange={() => {}} />
+                <PassphraseInput
+                    onChange={value => {
+                        console.log(value);
+                    }}
+                />
             </FormRow>
             {!shouldShowSingleInput && (
                 <FormRow>
