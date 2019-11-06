@@ -55,7 +55,7 @@
     },
     "dependencies": {
         "@tippy.js/react": "^2.1.1",
-        "@types/react-select": "^3.0.0",
+        "@types/react-select": "^3.0.8",
         "@types/storybook__addon-info": "^4.1.1",
         "@types/storybook__addon-knobs": "^4.0.5",
         "@types/storybook__addon-links": "^3.3.4",
@@ -64,7 +64,7 @@
         "react-native-picker-select": "^6.3.3",
         "react-native-svg": "^9.4.0",
         "react-native-svg-uri": "^1.2.3",
-        "react-select": "^3.0.3",
+        "react-select": "^3.0.8",
         "react-svg": "^10.0.23",
         "react-switch": "^5.0.1"
     },
