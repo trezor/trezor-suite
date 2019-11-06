@@ -89,14 +89,7 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
         // console.log(event);
         switch (event.keyCode) {
             case 8:
-                // backspace
-                if (cursorPosition >= 0) {
-                    setValue((val: string[]) => {
-                        val.splice(cursorPosition - 1, 1);
-                        return val;
-                    });
-                    setCursorPosition(cursorPosition - 1);
-                }
+                // backspace, handled on keydown
                 break;
             case 13:
                 // enter
@@ -105,7 +98,7 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
                 // shift
                 break;
             case 17:
-            case 93:
+            case 91:
                 // ctrl
                 console.log('unset lock');
                 setLock(false);
@@ -143,9 +136,22 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
-        if (event.keyCode === 17 || event.keyCode === 91) {
-            console.log('set lock');
-            setLock(true);
+        switch (event.keyCode) {
+            case 8:
+                if (cursorPosition > 0) {
+                    setValue((val: string[]) => {
+                        val.splice(cursorPosition - 1, 1);
+                        return val;
+                    });
+                    setCursorPosition(cursorPosition - 1);
+                }
+                break;
+            case 17:
+            case 91:
+                // lock on keydown ctrl/cmd
+                setLock(true);
+                break;
+            default:
         }
     };
 
@@ -160,11 +166,8 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
                 val.splice(cursorPosition, 0, ...pasteValue);
                 return val;
             });
+            setCursorPosition(cursorPosition + pasteValue.length);
         }
-    };
-
-    const setCursor = (key: number) => {
-        setCursorPosition(key);
     };
 
     useEffect(() => {
@@ -191,7 +194,11 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
         >
             {value.map((val: string, key: number) => {
                 return (
-                    <DotWrapper charAt={key} onClick={() => setCursor(key)} key={`${val}-${key}`}>
+                    <DotWrapper
+                        charAt={key}
+                        onClick={() => setCursorPosition(key)}
+                        key={`${val}-${key}`}
+                    >
                         <Dot />
                     </DotWrapper>
                 );
