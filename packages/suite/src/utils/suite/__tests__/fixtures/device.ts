@@ -332,6 +332,19 @@ const sortByTimestamp = {
     result: [{ id: 5, ts: 3 }, { id: 4, ts: 2 }, { id: 1, ts: 1 }, { id: 2 }, { id: 3 }],
 };
 
+const isDeviceRemembered = [
+    {
+        description: 'acquired non remembered device',
+        device: getSuiteDevice({ type: 'acquired', remember: true }),
+        result: true,
+    },
+    {
+        description: 'acquired remembered device',
+        device: getSuiteDevice({ type: 'acquired', remember: false }),
+        result: false,
+    },
+];
+
 const d = (obj: any) => ({
     path: obj.path ? obj.path : obj.id,
     features: obj.id
@@ -464,4 +477,5 @@ export default {
     sortByTimestamp,
     getOtherDevices,
     getDeviceInstances,
+    isDeviceRemembered,
 };
