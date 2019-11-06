@@ -23,7 +23,7 @@ module.exports = {
     },
     resolver: {
         // todo: move main to front
-        resolverMainFields: ['react-native', 'native', 'browser', 'main'],
+        resolverMainFields: ['react-native', 'native', 'main', 'browser'],
         extraNodeModules: {
             crypto: nodejs.crypto,
             stream: nodejs.stream,
