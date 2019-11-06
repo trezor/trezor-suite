@@ -1,7 +1,9 @@
 import produce from 'immer';
 import { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
+import { STORAGE } from '@suite-actions/constants';
 import { WalletAction, Network } from '@wallet-types';
+import { Action as SuiteAction } from '@suite-types';
 
 type AccountNetworkSpecific =
     | {
@@ -100,9 +102,11 @@ const update = (draft: Account[], account: Account) => {
     }
 };
 
-export default (state: Account[] = initialState, action: WalletAction): Account[] => {
+export default (state: Account[] = initialState, action: WalletAction | SuiteAction): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.wallet.accounts;
             case ACCOUNT.CREATE:
                 create(draft, action.payload);
                 break;

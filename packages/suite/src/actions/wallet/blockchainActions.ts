@@ -157,7 +157,7 @@ const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => (
     _dispatch: Dispatch,
     _getState: GetState,
 ) => {
-    // changed transaction count (total + confirmed)
+    // changed transaction count (total + unconfirmed)
     const changedTxCount =
         accountInfo.history.total + (accountInfo.history.unconfirmed || 0) !==
         account.history.total + (account.history.unconfirmed || 0);
