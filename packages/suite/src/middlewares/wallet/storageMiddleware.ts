@@ -10,6 +10,7 @@ import { WalletAction } from '@wallet-types';
 import { ACCOUNT, DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
+import { serializeDiscovery } from '@suite-utils/storage';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
@@ -78,7 +79,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             if (isDeviceRemembered(device)) {
                 const discovery = api.dispatch(getDiscoveryForDevice());
                 if (discovery) {
-                    storageActions.saveDiscovery([storageActions.serializeDiscovery(discovery)]);
+                    storageActions.saveDiscovery([serializeDiscovery(discovery)]);
                 }
             }
             break;

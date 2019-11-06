@@ -6,6 +6,7 @@ import * as suiteActions from '../suiteActions';
 import * as languageActions from '../languageActions.useNative';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
+import * as SUITE from '@suite-actions/constants/suiteConstants';
 
 import accountsReducer from '@wallet-reducers/accountsReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
@@ -22,7 +23,8 @@ import 'fake-indexeddb/auto';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
 
-// TODO: add method in suite-storage for deleting all stored data, call it after each test
+// TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
+// TODO: test deleting device instances on parent device forget
 
 // HACK: suite-storage has as a react-native version of the lib as a 'main' entry in package.json
 // It is a hacky 'solution' to prevent TSC in suite-native from throwing errors on IDB.
@@ -37,10 +39,12 @@ jest.mock('@trezor/suite-storage', () => {
 
 const dev1 = getSuiteDevice({
     state: 'state1',
+    path: '1',
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const dev2 = getSuiteDevice({
     state: 'state2',
+    path: '2',
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const acc1 = getWalletAccount({
@@ -120,6 +124,7 @@ const updateStore = (store: mockStoreType) => {
         const action = store.getActions().pop();
         const prevState = store.getState();
         store.getState().suite = getInitialState(prevState, action).suite;
+        store.getState().devices = getInitialState(prevState, action).devices;
         store.getState().wallet = getInitialState(prevState, action).wallet;
         store.getActions().push(action);
     });
@@ -360,5 +365,36 @@ describe('Storage actions', () => {
         expect(acc2Txs.length).toEqual(1);
         await store.dispatch(storageActions.forgetDevice(dev1));
         await store.dispatch(storageActions.forgetDevice(dev2));
+    });
+
+    it('should update device settings in the db', async () => {
+        // device needs to be connected otherwise devices reducer doesn't update the device
+        const dev1Connected = { ...dev1, connected: true } as const;
+        const store = mockStore(
+            getInitialState({
+                devices: [dev1Connected],
+
+                wallet: {
+                    accounts: [acc1],
+                },
+            }),
+        );
+        updateStore(store);
+
+        // store device in db
+        await store.dispatch(storageActions.rememberDevice(dev1));
+
+        // Change device label inside a reducer
+        await store.dispatch({
+            type: SUITE.UPDATE_SELECTED_DEVICE,
+            payload: {
+                ...dev1Connected,
+                label: 'New Label',
+            },
+        });
+
+        await store.dispatch(storageActions.loadStorage());
+        const dev = getLastAction(store).payload.devices[0];
+        expect(dev.label).toBe('New Label');
     });
 });

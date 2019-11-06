@@ -8,6 +8,7 @@ import { State as SendFormState } from '@wallet-types/sendForm';
 import { getDeviceInstances } from '@suite/utils/suite/device';
 import { Discovery } from '@suite/reducers/wallet/discoveryReducer';
 import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
+import { serializeDiscovery } from '@suite-utils/storage';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
@@ -55,8 +56,6 @@ export const saveDiscovery = async (discoveries: Discovery[]) => {
 export const saveTransactions = async (transactions: WalletAccountTransaction[]) => {
     return db.addItems('txs', transactions, true);
 };
-
-export const serializeDiscovery = (discovery: Discovery) => ({ ...discovery, running: undefined });
 
 export const rememberDevice = (device: TrezorDevice) => async (
     _dispatch: Dispatch,
