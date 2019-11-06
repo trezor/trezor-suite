@@ -10,9 +10,11 @@
         "run-android": "react-native run-android --no-packager",
         "start": "node ../../node_modules/react-native/local-cli/cli.js start --projectRoot ../../ --config ./metro.config.js",
         "start:clean": "yarn workspace @trezor/suite-native clean && yarn workspace @trezor/suite-native start -- --reset-cache",
-        "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*",
+        "clean": "watchman watch-del-all && rm -rf $TMPDIR/react-native-packager-cache-* && rm -rf $TMPDIR/metro-bundler-cache-*",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "type-check": "tsc --project tsconfig.json"
+        "type-check": "tsc --project tsconfig.json",
+        "bundle": "yarn workspace @trezor/suite-native react-native bundle --entry-file packages/suite-native/index.js --bundle-output bundle.js",
+        "build:android": "yarn workspace @trezor/suite-native bundle --reset-cache && cd ./android && ./gradlew assembleRelease -x bundleReleaseJsAndAssets --no-build-cache"
     },
     "dependencies": {
         "@trezor/components": "^1.0.0",

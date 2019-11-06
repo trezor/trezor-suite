@@ -59,3 +59,4 @@ buck-out/
 # Bundle artifact
 *.jsbundle
 static
+bundle.js

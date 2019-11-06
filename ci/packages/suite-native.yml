@@ -12,3 +12,18 @@ suite-native type check:
         - yarn workspace @trezor/suite-native type-check
     dependencies:
         - install and build
+
+suite-native build android:
+    # todo rename desktop to something like "installable" :D dunno 
+    stage: build desktop apps
+    script:
+        - yarn cache clean
+        - yarn workspace @trezor/suite-data copy-static-files
+        - yarn workspace @trezor/suite-native build:android
+        - mv $PACKAGE_PATH_SUITE_NATIVE/android/app/build/outputs/apk/release/app-release-unsigned.apk .
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - app-release-unsigned.apk
+    dependencies:
+        - install and build

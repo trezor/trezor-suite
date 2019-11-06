@@ -73,7 +73,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "packages/suite-native/index.js",
+    entryFile: "packages/suite-native/bundle.js",
     root: "../../../../"
 ]
 
