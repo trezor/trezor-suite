@@ -15,9 +15,10 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "dependencies": {
+        "react": "16.8.3",
+        "react-dom": "16.8.3",
         "@trezor/components": "^1.0.0",
         "@trezor/suite-storage": "^1.0.0",
-        "react": "16.8.6",
         "react-native": "0.59.4",
         "react-native-router-flux": "^4.0.6",
         "react-native-sentry": "^0.43.1",

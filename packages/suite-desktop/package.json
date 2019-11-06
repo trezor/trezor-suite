@@ -65,6 +65,9 @@
         }
     },
     "dependencies": {
+        "react": "16.8.6",
+        "react-dom": "16.8.6",
+        "next": "^9.0.5",
         "electron-is-dev": "^1.1.0",
         "electron-localshortcut": "^3.1.0",
         "electron-next": "^3.1.5",
@@ -82,7 +85,6 @@
         "electron": "^6.0.9",
         "electron-builder": "22.0.0",
         "git-revision-webpack-plugin": "^3.0.3",
-        "next": "^9.0.5",
         "next-plugin-custom-babel-config": "^1.0.0",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "next-transpile-modules": "^2.0.0",
