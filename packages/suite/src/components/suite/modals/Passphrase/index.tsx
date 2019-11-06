@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState, useEffect, createRef } from 'react'
 import styled from 'styled-components';
 
 import { H5, P, Button, Input, Checkbox, colors } from '@trezor/components';
+import PassphraseInput from './components/PassphraseInput';
 import { FormattedMessage } from 'react-intl';
 import { useKeyPress } from '@suite-utils/dom';
 
@@ -117,6 +118,7 @@ const Passphrase: FunctionComponent<Props> = ({
                     value={value}
                     innerRef={ref}
                 />
+                <PassphraseInput onChange={() => {}} />
             </FormRow>
             {!shouldShowSingleInput && (
                 <FormRow>
