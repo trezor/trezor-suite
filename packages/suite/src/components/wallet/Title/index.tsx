@@ -8,6 +8,9 @@ interface OwnProps {
 }
 
 const Wrapper = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     font-size: ${variables.FONT_SIZE.WALLET_TITLE};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding-bottom: 35px;

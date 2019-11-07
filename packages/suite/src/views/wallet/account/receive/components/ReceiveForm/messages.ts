@@ -41,6 +41,10 @@ const definedMessages = defineMessages({
         id: 'TR_RECEIVE_NETWORK',
         defaultMessage: 'Receive {network}',
     },
+    TR_RECEIVE_NETWORK_AND_TOKENS: {
+        id: 'TR_RECEIVE_NETWORK_AND_TOKENS',
+        defaultMessage: 'Receive {network} and tokens',
+    },
 });
 
 export default definedMessages;

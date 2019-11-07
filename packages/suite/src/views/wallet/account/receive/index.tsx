@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 
+import AccountName from '@wallet-components/AccountName';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import Content from '@wallet-components/Content';
 import * as receiveActions from '@wallet-actions/receiveActions';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import ReceiveForm from './components/ReceiveForm';
@@ -29,7 +29,7 @@ type Props = WrappedComponentProps &
     ReturnType<typeof mapDispatchToProps>;
 
 const AccountReceive = (props: Props) => {
-    const { device, intl } = props;
+    const { device } = props;
     const { account, network, discovery, shouldRender } = props.selectedAccount;
 
     if (!device || !account || !discovery || !network || !shouldRender) {
@@ -65,6 +65,11 @@ const AccountReceive = (props: Props) => {
     const showButtonDisabled =
         props.locks.includes(SUITE.LOCK_TYPE.DEVICE) || props.locks.includes(SUITE.LOCK_TYPE.UI);
 
+    const accountNameMessage =
+        account && account.networkType === 'ethereum'
+            ? l10nMessages.TR_RECEIVE_NETWORK_AND_TOKENS
+            : l10nMessages.TR_RECEIVE_NETWORK;
+
     return (
         <LayoutAccount title="Receive">
             <ReceiveForm
@@ -75,14 +80,7 @@ const AccountReceive = (props: Props) => {
                 isAddressPartiallyHidden={isAddressPartiallyHidden}
                 getAddressReceiveInfo={getAddressReceiveInfo}
                 networkType={network.networkType}
-                title={
-                    <FormattedMessage
-                        {...l10nMessages.TR_RECEIVE_NETWORK}
-                        values={{
-                            network: getTitleForNetwork(account.symbol, intl),
-                        }}
-                    />
-                }
+                title={<AccountName account={account} message={accountNameMessage} />}
             />
         </LayoutAccount>
     );

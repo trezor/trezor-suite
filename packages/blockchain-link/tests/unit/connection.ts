@@ -191,6 +191,18 @@ workers.forEach(instance => {
             expect(r).toEqual(true);
         });
 
+        it('Websocket connection closed without error before connection.open event', async () => {
+            // auto reconnect RippleApi issue: https://github.com/ripple/ripple-lib/issues/1068
+            server.removeAllListeners('connection');
+            server.on('connection', (ws: any) => ws.close());
+
+            try {
+                await blockchain.connect();
+            } catch (error) {
+                expect(error.code).toEqual('blockchain_link/connect');
+            }
+        });
+
         it('Connect error (server field with invalid values)', async () => {
             blockchain.settings.server = [
                 'gibberish',

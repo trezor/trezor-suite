@@ -138,6 +138,24 @@ const getWalletTransaction = (t: Partial<WalletAccountTransaction>): WalletAccou
     };
 };
 
+class BroadcastChannel {
+    name: string;
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    get onmessage() {
+        return undefined;
+    } // getter method
+    set onmessage(_handler) {
+        // do nothing
+    }
+
+    postMessage = (_message: any) => {
+        // do nothing
+    };
+}
+
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace NodeJS {
@@ -150,6 +168,7 @@ declare global {
                 getWalletTransaction: typeof getWalletTransaction;
                 intlMock: typeof intlMock;
             };
+            BroadcastChannel: typeof BroadcastChannel;
         }
     }
 }
@@ -167,3 +186,5 @@ global.JestMocks = {
     getWalletTransaction,
     intlMock,
 };
+
+global.BroadcastChannel = BroadcastChannel;

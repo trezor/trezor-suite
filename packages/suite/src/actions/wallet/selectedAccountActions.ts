@@ -15,15 +15,18 @@ import {
     State as SelectedAccountState,
     Loader,
     ExceptionPage,
+    AccountNotification,
 } from '@wallet-reducers/selectedAccountReducer';
 
 import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 import l10nNotificationMessages from '@wallet-components/Notifications/components/Account/index.messages';
 import l10nLoaderMessages from '@wallet-components/Content/index.messages';
 import l10nFwUnsupportedMessages from '@wallet-components/Content/components/FirmwareUnsupported/index.messages';
+import l10nMessages from '@suite-views/index.messages';
 import { NETWORKS } from '@wallet-config';
 import { Action, GetState, Dispatch, AppState } from '@suite-types';
 import { DISCOVERY } from './constants';
+import { goto } from '@suite-actions/routerActions';
 
 export type SelectedAccountActions =
     | { type: typeof ACCOUNT.DISPOSE }
@@ -147,7 +150,11 @@ const getAccountLoader = (
 };
 
 // display notification above the component, with or without component body
-const getAccountNotification = (state: AppState, selectedAccount: SelectedAccountState) => {
+const getAccountNotification = (selectedAccount: SelectedAccountState) => (
+    dispatch: Dispatch,
+    getState: GetState,
+): AccountNotification | null => {
+    const state: AppState = getState();
     const { device } = state.suite;
     const { account, network, discovery } = selectedAccount;
     if (!device || !network) return null;
@@ -200,9 +207,17 @@ const getAccountNotification = (state: AppState, selectedAccount: SelectedAccoun
             variant: 'info',
             title: {
                 ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
-                values: { deviceLabel: device.instanceLabel },
+                values: { deviceLabel: device.instanceLabel || device.label },
             },
             message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
+            actions: [
+                {
+                    label: l10nMessages.TR_DEVICE_SETTINGS,
+                    callback: () => {
+                        dispatch(goto('suite-device-settings'));
+                    },
+                },
+            ],
             shouldRender: true,
         };
     }
@@ -269,13 +284,12 @@ export const observe = (prevState: AppState, action: Action) => (
     // get "selectedAccount" status from newState
     const exceptionPage = getExceptionPage(state, newState);
     const loader = getAccountLoader(state, newState);
-    const notification = getAccountNotification(state, newState);
+    const notification = dispatch(getAccountNotification(newState));
 
     if (exceptionPage) {
         newState.exceptionPage = exceptionPage;
     } else {
         newState.loader = loader;
-        // @ts-ignore TODO
         newState.notification = notification;
     }
 

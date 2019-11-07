@@ -16,9 +16,10 @@
         "type-check:watch": "yarn type-check -- --watch"
     },
     "main": "./lib/native/index.js",
+    "native": "./lib/native/index.js",
     "browser": "./lib/web/index.js",
     "dependencies": {
-        "idb": "^4.0.4"
+        "idb": "^4.0.5"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0"

@@ -89,6 +89,17 @@ const connect = async (): Promise<RippleAPI> => {
 
     try {
         api = new RippleAPI({ server: endpoints[0], timeout: timeout || DEFAULT_TIMEOUT });
+        // disable websocket auto reconnecting
+        // workaround for RippleApi which doesn't have possibility to disable reconnection
+        // issue: https://github.com/ripple/ripple-lib/issues/1068
+        // override Api (connection) private methods and return never ending promises to prevent this behavior
+        const { connection } = api;
+        /* eslint-disable no-underscore-dangle */
+        connection._retryConnect = () => new Promise(() => {});
+        const onUnexpectedClose = connection._onUnexpectedClose.bind(connection);
+        connection._onUnexpectedClose = (_beforeOpen, resolve, reject, code) =>
+            onUnexpectedClose(false, resolve, reject, code);
+        /* eslint-enable no-underscore-dangle */
         await api.connect();
     } catch (error) {
         // clear custom timeout
@@ -106,11 +117,6 @@ const connect = async (): Promise<RippleAPI> => {
     }
     // clear custom timeout
     clearTimeout(connectionTimeout);
-
-    // disable reconnecting
-    // workaround for RippleApi which doesn't have possibility to disable reconnection
-    // override Api private method and return never ending promise, this will prevent reconnection
-    api.connection._retryConnect = () => new Promise(() => {}); // eslint-disable-line no-underscore-dangle
 
     // Ripple api does set ledger listener automatically
     api.on('ledger', ledger => {
@@ -434,7 +440,7 @@ const onTransaction = (event: any) => {
             type: 'notification',
             payload: {
                 descriptor,
-                tx: utils.transformTransaction(descriptor, event.transaction),
+                tx: utils.transformTransaction(descriptor, { ...event, ...tx }),
             },
         },
     });

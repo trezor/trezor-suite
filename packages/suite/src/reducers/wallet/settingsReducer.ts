@@ -3,12 +3,13 @@ import { STORAGE } from '@suite-actions/constants';
 import { SETTINGS } from '@wallet-actions/constants';
 import { EXTERNAL_NETWORKS } from '@wallet-config';
 import { Action } from '@suite-types';
+import { Network, ExternalNetwork } from '@suite/types/wallet';
 
 export interface State {
     localCurrency: string;
     hideBalance: boolean;
-    enabledNetworks: string[];
-    enabledExternalNetworks: string[];
+    enabledNetworks: Network['symbol'][];
+    enabledExternalNetworks: ExternalNetwork['symbol'][];
 }
 
 export const initialState: State = {

@@ -43,7 +43,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
     return (
         <View style={styles.wrapper}>
             <H1>Loading</H1>
-            <Discovery />
+            {/* <Discovery /> */}
             <View>{loaded && props.children}</View>
         </View>
     );

@@ -8,6 +8,25 @@ const buildNetworkOption = (network: Network | ExternalNetwork) => ({
     label: network.name,
 });
 
+const buildNetworkOptions = (networks: Network[], externalNetworks: ExternalNetwork[]) => {
+    const mainNetworks = networks.filter(n => !n.testnet);
+    const testNetworks = networks.filter(n => n.testnet);
+    return [
+        {
+            label: 'Main networks',
+            options: mainNetworks.map(n => buildNetworkOption(n)),
+        },
+        {
+            label: 'Testnet networks',
+            options: testNetworks.map(n => buildNetworkOption(n)),
+        },
+        {
+            label: 'External networks',
+            options: externalNetworks.map(n => buildNetworkOption(n)),
+        },
+    ];
+};
+
 type Option = ReturnType<typeof buildNetworkOption>;
 
 const StyledSelect = styled(Select)`
@@ -38,17 +57,23 @@ const NetworkOption = ({ value, label }: Option) => (
 
 interface Props {
     selectedNetwork?: Network | ExternalNetwork;
-    networks: (Network | ExternalNetwork)[];
+    networks: Network[];
+    externalNetworks: ExternalNetwork[];
     setSelectedNetwork: (n: Network['symbol'] | ExternalNetwork['symbol']) => void;
 }
 
-const NetworkSelect = ({ selectedNetwork, networks, setSelectedNetwork }: Props) => (
+const NetworkSelect = ({
+    selectedNetwork,
+    networks,
+    externalNetworks,
+    setSelectedNetwork,
+}: Props) => (
     <StyledSelect
         placeholder="Select network..."
         isSearchable={false}
         isClearable={false}
         value={buildNetworkOption(selectedNetwork || networks[0])}
-        options={networks.map(n => buildNetworkOption(n))}
+        options={buildNetworkOptions(networks, externalNetworks)}
         formatOptionLabel={NetworkOption}
         onChange={(option: Option) => setSelectedNetwork(option.value)}
     />

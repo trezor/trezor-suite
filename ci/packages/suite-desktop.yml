@@ -18,10 +18,11 @@ suite-desktop build mac:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:mac
+        - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.tar.gz .
     artifacts:
         expire_in: 1 day
         paths:
-            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
+            - TrezorSuite-*.tar.gz
     dependencies:
         - install and build
 
@@ -46,9 +47,10 @@ suite-desktop build windows:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:win
+        - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.exe .
     artifacts:
         expire_in: 1 day
         paths:
-            - $PACKAGE_PATH_SUITE_DESKTOP/build-electron
+            - TrezorSuite-*.exe
     dependencies:
         - install and build

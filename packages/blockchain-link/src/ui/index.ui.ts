@@ -2,8 +2,10 @@
 
 // import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.js!../workers/blockbook/index'; // eslint-disable-line no-unused-vars
 // import RippleWorker from 'worker-loader?name=js/ripple-worker.js!../workers/ripple/index'; // eslint-disable-line no-unused-vars
-import * as BlockbookWorker from '../workers/blockbook/index'; // eslint-disable-line no-unused-vars
-import * as RippleWorker from '../workers/ripple/index'; // eslint-disable-line no-unused-vars
+// @ts-ignore no default export
+import BlockbookWorker from '../workers/blockbook/index'; // eslint-disable-line no-unused-vars
+// @ts-ignore no default export
+import RippleWorker from '../workers/ripple/index'; // eslint-disable-line no-unused-vars
 
 import CONFIG from './config';
 import BlockchainLink from '../index';
@@ -135,9 +137,8 @@ const handleClick = (event: MouseEvent) => {
 
         case 'get-blockhash':
             blockchain
-                .getBlockHash(
-                    parseInt(getInputValue('blockhash-number'), 10)
-                ).then(onResponse)
+                .getBlockHash(parseInt(getInputValue('blockhash-number'), 10))
+                .then(onResponse)
                 .catch(onError);
             break;
 

@@ -1,29 +1,29 @@
-import { StoreNames, StoreValue, StoreKey, IndexNames, IndexKey, IDBPDatabase } from 'idb';
+import {
+    StoreNames,
+    StoreValue,
+    StoreKey,
+    IndexNames,
+    IndexKey,
+    IDBPDatabase,
+    IDBPTransaction,
+} from 'idb';
 import { StorageUpdateMessage, StorageMessageEvent } from './types';
 
+export type OnUpgradeFunc<TDBStructure> = (
+    db: IDBPDatabase<TDBStructure>,
+    oldVersion: number,
+    newVersion: number | null,
+    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>
+) => Promise<void>;
 class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
     dbName!: string;
     version!: number;
     db!: IDBPDatabase<TDBStructure>;
     broadcastChannel!: any;
-    onUpgrade!: (
-        db: IDBPDatabase<TDBStructure>,
-        oldVersion: number,
-        newVersion: number | null,
-        transaction: any
-    ) => void;
+    onUpgrade!: OnUpgradeFunc<TDBStructure>;
 
-    constructor(
-        dbName: string,
-        version: number,
-        onUpgrade: (
-            db: IDBPDatabase<TDBStructure>,
-            oldVersion: number,
-            newVersion: number | null,
-            transaction: any
-        ) => void
-    ) {
+    constructor(dbName: string, version: number, onUpgrade: OnUpgradeFunc<TDBStructure>) {
         if (CommonDB.instance) {
             return CommonDB.instance;
         }
@@ -39,20 +39,28 @@ class CommonDB<TDBStructure> {
         CommonDB.instance = this;
     }
 
-    static isDBAvailable = (cb: (isAvailable: boolean) => void) => {
+    static isDBAvailable = () => {
         // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.
         // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
         // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
         // this solution calls callback function from within onerror/onsuccess event handlers.
         // For other browsers checking the window.indexedDB should be enough.
-        const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-        if (isFirefox) {
-            const r = indexedDB.open('test');
-            r.onerror = () => cb(false);
-            r.onsuccess = () => cb(true);
-        } else {
-            cb(!!indexedDB);
-        }
+        const isFirefox = navigator && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+        return new Promise((resolve, _reject) => {
+            if (isFirefox) {
+                const r = indexedDB.open('test');
+                r.onerror = () => resolve(false);
+                r.onsuccess = () => resolve(true);
+            } else {
+                // @ts-ignore
+                const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
+                if (idbAvailable) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            }
+        });
     };
 
     notify = (store: StoreNames<TDBStructure>, keys: any[]) => {
@@ -105,21 +113,35 @@ class CommonDB<TDBStructure> {
         return p;
     };
 
-    addItems = async (store: StoreNames<TDBStructure>, items: any[]) => {
+    addItems = async <
+        TStoreName extends StoreNames<TDBStructure>,
+        TItem extends StoreValue<TDBStructure, TStoreName>
+    >(
+        store: TStoreName,
+        items: TItem[],
+        upsert?: boolean
+    ) => {
         const db = await this.getDB();
+        // jest won't resolve tx.done when 'items' is empty array
+        if (items.length === 0) return Promise.resolve();
         const tx = db.transaction(store, 'readwrite');
 
-        const keys: string[] = [];
+        const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
         items.forEach(item => {
-            tx.store.add(item).then(result => {
-                keys.push(result as string); // TODO: it seems that name of an object store could be string or number
-            });
+            if (upsert) {
+                tx.store.put(item).then(result => {
+                    keys.push(result);
+                });
+            } else {
+                tx.store.add(item).then(result => {
+                    keys.push(result);
+                });
+            }
         });
         this.notify(store, keys);
         await tx.done;
     };
 
-    // TODO: It would be awesome if return type could be something like Promise<StoreValue<TDBStructure, store>>
     getItemByPK = async <
         TStoreName extends StoreNames<TDBStructure>,
         TKey extends StoreKey<TDBStructure, TStoreName>
@@ -180,7 +202,7 @@ class CommonDB<TDBStructure> {
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
-        const res = await tx.store.delete(key);
+        return tx.store.delete(key);
         // TODO: needs to differentiate between PKs, Index keys...
         // if (res) {
         //     this.notify(store, [key]);
@@ -244,12 +266,30 @@ class CommonDB<TDBStructure> {
             // all txs for given accountId
             // bound([accountId, undefined], [accountId, '']) should cover all timestamps
             const keyRange = IDBKeyRange.bound([filters.key], [filters.key, '']);
-            const items = await index.getAll(keyRange);
-            return items;
+            return index.getAll(keyRange);
         }
         // no accountId, return all txs
-        const items = await tx.store.getAll();
-        return items;
+        return tx.store.getAll();
+    };
+
+    static clearStores = async <TDBStructure>(
+        db: IDBPDatabase<TDBStructure>,
+        transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
+        remove?: boolean
+    ) => {
+        const list = db.objectStoreNames;
+        const { length } = list;
+        for (let i = 0; i < length; i++) {
+            const storeName = list.item(i);
+            if (storeName) {
+                const objectStore = transaction.objectStore(storeName);
+                // eslint-disable-next-line no-await-in-loop
+                await objectStore.clear();
+                if (remove) {
+                    db.deleteObjectStore(storeName);
+                }
+            }
+        }
     };
 }
 

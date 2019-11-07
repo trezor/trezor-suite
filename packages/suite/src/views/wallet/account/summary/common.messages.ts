@@ -9,6 +9,10 @@ const definedMessages = defineMessages({
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
     },
+    TR_NETWORK_AND_TOKENS: {
+        id: 'TR_NETWORK_AND_TOKENS',
+        defaultMessage: '{network} and tokens',
+    },
     TR_INSERT_TOKEN_NAME: {
         id: 'TR_INSERT_TOKEN_NAME',
         defaultMessage: 'Insert token name, symbol or address to be able to send it.',
