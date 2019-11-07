@@ -5,11 +5,11 @@
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "homepage": "http://www.trezor.io",
-    "main": "src/electron.js",
+    "main": "dist/electron.js",
     "scripts": {
         "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:desktop": "yarn workspace @trezor/suite-data copy-static-files && electron .",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && electron .",
+        "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:js && electron .",
         "preelectron-pack": "yarn build",
         "pack": "electron-builder --dir",
         "clean": "rimraf ./build-electron && rimraf ./build",
@@ -17,6 +17,7 @@
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
+        "build:js": "tsc --project tsconfig.build.json",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
     },
@@ -35,7 +36,8 @@
             "package.json"
         ],
         "dmg": {
-            "contents": [{
+            "contents": [
+                {
                     "x": 410,
                     "y": 150,
                     "type": "link",
@@ -74,6 +76,7 @@
     "devDependencies": {
         "@babel/core": "^7.0.0",
         "@sentry/browser": "^5.4.0",
+        "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^8.0.6",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",

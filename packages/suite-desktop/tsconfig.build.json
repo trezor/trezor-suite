@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../../",
+    "outDir": "./dist",
+    "noEmit": false,
+    "jsx": "preserve",
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "lib": [
+      "dom",
+      "es2019",
+      "esnext.asynciterable"
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+  },
+  "include": [
+    "next-env.d.ts",
+    "packages/suite-desktop/**/*.ts",
+    "packages/suite-desktop/**/*.tsx",
+  ],
+  "exclude": [
+    "**/*.js",
+    "node_modules/**",
+    ".next/**",
+    "build/**"
+  ]
+}
