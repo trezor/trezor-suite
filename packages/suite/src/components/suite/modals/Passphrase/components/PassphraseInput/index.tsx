@@ -31,8 +31,8 @@ const InputDiv = styled.div<InputProps>`
 const DotWrapper = styled.div<DotProps>`
     position: absolute;
     top: 0;
-    left: ${props => props.position * 10 + 5}px;
-    padding: 17px 4px 16px;
+    left: ${props => props.position * 10 + 8}px;
+    padding: 17px 2px 16px 3px;
 `;
 
 const Dot = styled.div`
@@ -48,7 +48,7 @@ const Cursor = styled.div<CursorProps>`
     width: 1px;
     height: 20px;
     background: ${colors.TEXT};
-    left: ${props => props.position * 10 + 8}px;
+    left: ${props => props.position * 10 + 10}px;
     opacity: ${props => (props.active ? 1 : 0)};
     animation: blinker 1s linear infinite;
     display: ${props => (props.active ? 'block' : 'none')};
@@ -66,13 +66,14 @@ const Cursor = styled.div<CursorProps>`
     }
 `;
 
-const Selector = styled.div<SelectorProps>`
+const Selection = styled.div<SelectionProps>`
     position: absolute;
     top: 10px;
     background: #b4d7ff;
     height: 20px;
     left: ${props => props.start * 10 + 8}px;
     width: ${props => props.end * 10}px;
+    display: ${props => (props.active ? 'block' : 'none')};
 `;
 
 interface InputProps {
@@ -88,7 +89,7 @@ interface CursorProps {
     active: boolean;
 }
 
-interface SelectorProps {
+interface SelectionProps {
     active: boolean;
     start: number;
     end: number;
@@ -99,19 +100,19 @@ interface Props {
 }
 
 const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
-    const [value, setValue] = useState([] as string[]);
+    const [value, setInputValue] = useState([] as string[]);
     const [focus, setFocus] = useState(false);
     const [ctrl, setCtrl] = useState(false);
     const [shift, setShift] = useState(false);
     const [cursorPosition, setCursorPosition] = useState(0);
-    const [selectorPosition, setSelectorPosition] = useState(0);
+    const [selectionPosition, setSelectionPosition] = useState(0);
     const inputRef = React.createRef<HTMLDivElement>();
 
     const onFocus = (event: React.MouseEvent<HTMLDivElement>) => {
         setFocus(true);
         if (event.target === inputRef.current) {
             setCursorPosition(value.length);
-            setSelectorPosition(0);
+            setSelectionPosition(0);
         }
     };
 
@@ -123,7 +124,12 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
 
     const selectAll = () => {
         setCursorPosition(0);
-        setSelectorPosition(value.length);
+        setSelectionPosition(value.length);
+    };
+
+    const setValue = (state: (val: string[]) => string[]) => {
+        setInputValue(state);
+        onChange(value.join(''));
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -135,55 +141,57 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
         switch (event.keyCode) {
             case 8:
                 // backspace
-                if (cursorPosition > 0 && selectorPosition === 0) {
+                if (cursorPosition > 0 && selectionPosition === 0) {
+                    // remove char before the cursor
                     setValue((val: string[]) => {
                         val.splice(cursorPosition - 1, 1);
                         return val;
                     });
                     setCursorPosition(cursorPosition - 1);
-                } else if (selectorPosition !== 0) {
-                    if (selectorPosition < 0) {
+                } else if (selectionPosition !== 0) {
+                    // remove selection
+                    if (selectionPosition < 0) {
                         setValue((val: string[]) => {
-                            val.splice(cursorPosition + selectorPosition, -selectorPosition);
+                            val.splice(cursorPosition + selectionPosition, -selectionPosition);
                             return val;
                         });
-                        setCursorPosition(cursorPosition + selectorPosition);
+                        setCursorPosition(cursorPosition + selectionPosition);
                     } else {
                         setValue((val: string[]) => {
-                            val.splice(cursorPosition, selectorPosition);
+                            val.splice(cursorPosition, selectionPosition);
                             return val;
                         });
                         setCursorPosition(cursorPosition);
                     }
-                    setSelectorPosition(0);
+                    setSelectionPosition(0);
                 }
                 break;
             case 16:
-                // shift
+                // shift keydown
                 setShift(true);
                 break;
             case 17:
             case 91:
             case 224:
-                // ctrl on keydown ctrl/cmd
+                // ctrl/cmd keydown
                 setCtrl(true);
                 break;
             case 37:
-                // arrow left
+                // move selection left
                 if (shift) {
-                    setSelectorPosition(selectorPosition - 1);
+                    setSelectionPosition(selectionPosition - 1);
                 } else if (cursorPosition > 0) {
                     setCursorPosition(cursorPosition - 1);
-                    setSelectorPosition(0);
+                    setSelectionPosition(0);
                 }
                 break;
             case 39:
-                // arrow righ
-                if (shift && selectorPosition + cursorPosition < value.length) {
-                    setSelectorPosition(selectorPosition + 1);
+                // move selection right
+                if (shift && selectionPosition + cursorPosition < value.length) {
+                    setSelectionPosition(selectionPosition + 1);
                 } else if (cursorPosition < value.length && !shift) {
                     setCursorPosition(cursorPosition + 1);
-                    setSelectorPosition(0);
+                    setSelectionPosition(0);
                 }
                 break;
             case 65:
@@ -209,8 +217,7 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
                     });
                     setCursorPosition(cursorPosition + 1);
                 } else {
-                    // other
-                    console.log('otherChar', event);
+                    console.log('otherKey', event);
                 }
         }
     };
@@ -223,19 +230,19 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
 
         switch (event.keyCode) {
             case 8:
-                // backspace, handled on keydown
+                // backspace
                 break;
             case 13:
                 // enter
                 break;
             case 16:
-                // shift
+                // shift keydown
                 setShift(false);
                 break;
             case 17:
             case 91:
             case 224:
-                // ctrl/cmd
+                // ctrl/cmd keydown
                 setCtrl(false);
                 break;
             case 37:
@@ -257,7 +264,7 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
     };
 
     const onPaste = (evt: ClipboardEvent) => {
-        if (!focus) return;
+        // if (!focus) return;
         console.log('onPaste');
         evt.stopPropagation();
         evt.preventDefault();
@@ -274,7 +281,7 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
     };
 
     const setCursor = (key: number) => {
-        setSelectorPosition(0);
+        setSelectionPosition(0);
         setCursorPosition(key);
     };
 
@@ -288,9 +295,7 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
             document.removeEventListener('paste', onPaste);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [focus, selectorPosition, cursorPosition, ctrl, shift]);
-
-    onChange(value.join(''));
+    }, [focus, selectionPosition, cursorPosition, ctrl, shift]);
 
     return (
         <InputDiv
@@ -301,10 +306,10 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
             focus={focus}
             ref={inputRef}
         >
-            <Selector
-                active={selectorPosition !== 0}
-                start={selectorPosition < 0 ? cursorPosition + selectorPosition : cursorPosition}
-                end={selectorPosition < 0 ? -selectorPosition : selectorPosition}
+            <Selection
+                active={selectionPosition !== 0}
+                start={selectionPosition < 0 ? cursorPosition + selectionPosition : cursorPosition}
+                end={selectionPosition < 0 ? -selectionPosition : selectionPosition}
             />
             {value.map((val: string, key: number) => {
                 return (
@@ -313,7 +318,7 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
                     </DotWrapper>
                 );
             })}
-            <Cursor position={cursorPosition} active={focus && selectorPosition === 0} />
+            <Cursor position={cursorPosition} active={focus && selectionPosition === 0} />
         </InputDiv>
     );
 };
