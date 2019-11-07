@@ -17,7 +17,7 @@ components-storybook-v2 build:
   script:
     - yarn workspace @trezor/components-storybook-v2 build
   artifacts:
-    name: components-build-files
+    name: components-v2-build-files
     expire_in: 15 minutes
     paths:
       - packages/components-storybook-v2/.build
