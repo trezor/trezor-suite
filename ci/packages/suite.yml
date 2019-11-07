@@ -5,13 +5,12 @@ suite lint:
     dependencies:
         - install and build
 
-suite detect l10n duplicities:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/translations-manager build:lib
-        - yarn workspace @trezor/suite translations:extract
-    dependencies:
-        - install and build
+# suite detect l10n duplicities:
+#     stage: lint and prettier
+#     script:
+#         - yarn workspace @trezor/suite translations:extract
+#     dependencies:
+#         - install and build
 
 suite type check:
     stage: typescript type check
