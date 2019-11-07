@@ -9,6 +9,7 @@ install and build:
         paths:
             # libs
             - packages/components/lib
+            - packages/components-v2/lib
             - packages/blockchain-link/lib
             - packages/rollout/lib
             - packages/suite-storage/lib
@@ -17,6 +18,7 @@ install and build:
             - node_modules
             - packages/blockchain-link/node_modules
             - packages/components/node_modules
+            - packages/components-v2/node_modules
             - packages/components-storybook/node_modules
             - packages/connect-explorer/node_modules
             - packages/rollout/node_modules
