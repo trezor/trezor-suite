@@ -32,6 +32,10 @@ RUN google-chrome-beta --version
 RUN zip --version
 RUN git --version
 
+# required by react-native build
+RUN echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf
+RUN cat /proc/sys/fs/inotify/max_user_watches
+
 # a few environment variables to make NPM installs easier
 # good colors for most applications
 ENV TERM xterm
