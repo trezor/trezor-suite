@@ -17,6 +17,9 @@ suite-native build android:
     # todo rename desktop to something like "installable" :D dunno 
     stage: build desktop apps
     script:
+        - cat /proc/sys/fs/inotify/max_user_watches
+        - echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf
+        - cat /proc/sys/fs/inotify/max_user_watches
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-native build:android
