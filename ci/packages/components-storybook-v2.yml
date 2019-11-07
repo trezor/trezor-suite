@@ -35,7 +35,6 @@ components-storybook-v2 deploy dev:
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    on_stop: components-storybook-v2 delete review
   before_script: []
   script:
     - cd packages/components-storybook-v2
