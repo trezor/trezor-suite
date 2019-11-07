@@ -53,7 +53,6 @@ connect-explorer deploy dev:
         - mkdir -p ${DEPLOY_BASE_DIR}/connect-explorer
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-        - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
     tags:
         - deploy
 
