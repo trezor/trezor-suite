@@ -5,7 +5,8 @@ import { Link, Button, P, H5, colors } from '@trezor/components';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 
-import l10nCommonMessages from '../../messages';
+import globalMessages from '@suite-support/Messages';
+import suiteMessages from '@suite-views/index.messages';
 import l10nMessages from './messages';
 
 const Wrapper = styled.div`
@@ -92,7 +93,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
         const enable = !!(device.features && device.features.passphrase_protection);
         deviceStatus = (
             <FormattedMessage
-                {...l10nMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
+                {...suiteMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
                 values={{ deviceLabel: device.label }}
             />
         );
@@ -119,7 +120,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             <Content>
                 <Row>
                     <Button onClick={() => verifyAddress()}>
-                        <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />
+                        <FormattedMessage {...globalMessages.TR_TRY_AGAIN} />
                     </Button>
                     <Button isInverse variant="warning" onClick={() => unverifiedAddress()}>
                         <FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
@@ -137,9 +138,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                             />
                         </H5>
                         <StyledP size="small">
-                            <FormattedMessage
-                                {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}
-                            />
+                            <FormattedMessage {...suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
                         </StyledP>
                     </Content>
                     <Content>
@@ -147,7 +146,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                             <Link href={`/?backup#${device.path}`} variant="nostyle">
                                 <BackupButton>
                                     <FormattedMessage
-                                        {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES}
+                                        {...suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}
                                     />
                                 </BackupButton>
                             </Link>

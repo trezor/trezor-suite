@@ -9,10 +9,6 @@ const definedMessages = defineMessages({
         id: 'TR_SHOW_FULL_ADDRESS',
         defaultMessage: 'Show full address',
     },
-    TR_QR_CODE: {
-        id: 'TR_QR_CODE',
-        defaultMessage: 'QR Code',
-    },
     TR_TOTAL_RECEIVED: {
         id: 'TR_TOTAL_RECEIVED',
         defaultMessage: 'Total received: {amount}',

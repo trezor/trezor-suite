@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Input, Tooltip, Icon, colors, Link, TextArea } from '@trezor/components';
-import commonMessages from '@wallet-views/messages';
+import globalMessages from '@suite-support/Messages';
 import localMessages from './index.messages';
 
 const Wrapper = styled.div`
@@ -86,8 +86,11 @@ const NetworkTypeEthereum = () => (
                                         />
                                     }
                                     maxWidth={410}
+                                    // todo: put into config
                                     ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
-                                    ctaText={<FormattedMessage {...commonMessages.TR_LEARN_MORE} />}
+                                    ctaText={
+                                        <FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />
+                                    }
                                     placement="top"
                                 >
                                     <StyledIcon
@@ -143,8 +146,11 @@ const NetworkTypeEthereum = () => (
                                         />
                                     }
                                     maxWidth={400}
+                                    // todo: put link into config
                                     ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
-                                    ctaText={<FormattedMessage {...commonMessages.TR_LEARN_MORE} />}
+                                    ctaText={
+                                        <FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />
+                                    }
                                     placement="top"
                                 >
                                     <StyledIcon

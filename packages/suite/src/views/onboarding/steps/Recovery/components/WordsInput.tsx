@@ -1,18 +1,13 @@
-import React, { useState, useEffect, useCallback, CSSProperties } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { createFilter } from 'react-select';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-
-import { Select, P } from '@trezor/components';
-
-import colors from '@onboarding-config/colors';
-
-import bip39List from '@onboarding-constants/bip39';
-
 import { Text } from '@onboarding-components';
+import colors from '@onboarding-config/colors';
+import bip39List from '@onboarding-constants/bip39';
+import { P, Select } from '@trezor/components';
+import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { createFilter } from 'react-select';
+import styled, { keyframes } from 'styled-components';
 
-// todo move messages here
-import l10nMessages from './WordsInput.messages';
+import messages from '../index.messages';
 
 const sortedBip39 = bip39List.map(item => ({ label: item, value: item }));
 
@@ -86,10 +81,10 @@ const WordsInput = (props: Props) => {
     return (
         <>
             <Text>
-                <FormattedMessage {...l10nMessages.TR_ENTER_SEED_WORDS_INSTRUCTION} />{' '}
+                <FormattedMessage {...messages.TR_ENTER_SEED_WORDS_INSTRUCTION} />{' '}
                 {wordsCount < 24 && (
                     <FormattedMessage
-                        {...l10nMessages.TR_RANDOM_SEED_WORDS_DISCLAIMER}
+                        {...messages.TR_RANDOM_SEED_WORDS_DISCLAIMER}
                         values={{ count: 24 - wordsCount }}
                     />
                 )}
@@ -132,7 +127,7 @@ const WordsInput = (props: Props) => {
                     onChange={(item: any) => {
                         submit(item.value);
                     }}
-                    placeholder={props.intl.formatMessage(l10nMessages.TR_CHECK_YOUR_DEVICE)}
+                    placeholder={props.intl.formatMessage(messages.TR_CHECK_YOUR_DEVICE)}
                     options={sortedBip39}
                     filterOption={createFilter({
                         ignoreCase: true,
@@ -149,7 +144,7 @@ const WordsInput = (props: Props) => {
             {typeof counter === 'number' && counter >= 1 && (
                 <P size="small">
                     <FormattedMessage
-                        {...l10nMessages.TR_MORE_WORDS_TO_ENTER}
+                        {...messages.TR_MORE_WORDS_TO_ENTER}
                         values={{ count: 24 - counter }}
                     />
                 </P>

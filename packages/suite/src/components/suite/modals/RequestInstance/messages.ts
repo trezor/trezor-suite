@@ -16,11 +16,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Create hidden wallet',
         description: 'Create button',
     },
-    TR_CANCEL: {
-        id: 'TR_CANCEL',
-        defaultMessage: 'Cancel',
-        description: 'Cancel button',
-    },
 });
 
 export default definedMessages;

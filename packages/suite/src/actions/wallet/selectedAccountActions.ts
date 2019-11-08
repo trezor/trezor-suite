@@ -116,7 +116,7 @@ const getAccountLoader = (
             return {
                 type: 'info',
                 title: {
-                    ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                    ...l10nMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
                     values: { deviceLabel: device.instanceLabel || device.label },
                 },
                 message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
@@ -206,7 +206,7 @@ const getAccountNotification = (selectedAccount: SelectedAccountState) => (
             type: 'info',
             variant: 'info',
             title: {
-                ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                ...l10nMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
                 values: { deviceLabel: device.instanceLabel || device.label },
             },
             message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,

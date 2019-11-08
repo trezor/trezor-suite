@@ -1,11 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_ACCOUNT_HASH: {
-        id: 'TR_ACCOUNT_HASH',
-        defaultMessage: 'Account #{number}',
-        description: 'Used in auto-generated account label',
-    },
     TR_CLEAR: {
         id: 'TR_CLEAR',
         defaultMessage: 'Clear',
@@ -56,10 +51,6 @@ const definedMessages = defineMessages({
         id: 'TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT',
         defaultMessage: 'Upgrade for the newest features.',
     },
-    TR_LEARN_MORE: {
-        id: 'TR_LEARN_MORE',
-        defaultMessage: 'Learn more',
-    },
     TR_GO_TO_STANDARD_WALLET: {
         id: 'TR_GO_TO_STANDARD_WALLET',
         defaultMessage: 'Go to your standard wallet',
@@ -67,10 +58,6 @@ const definedMessages = defineMessages({
     TR_GO_TO_HIDDEN_WALLET: {
         id: 'TR_GO_TO_HIDDEN_WALLET',
         defaultMessage: 'Go to your hidden wallet',
-    },
-    TR_FORGET_DEVICE: {
-        id: 'TR_FORGET_DEVICE',
-        defaultMessage: 'Forget device',
     },
     TR_CLOSE: {
         id: 'TR_CLOSE',
@@ -83,19 +70,6 @@ const definedMessages = defineMessages({
     TR_THE_ACCOUNT_BALANCE_IS_HIDDEN: {
         id: 'TR_THE_ACCOUNT_BALANCE_IS_HIDDEN',
         defaultMessage: 'The account balance is hidden.',
-    },
-    TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
-        id: 'TR_IF_YOUR_DEVICE_IS_EVER_LOST',
-        defaultMessage:
-            'If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.',
-    },
-    TR_CREATE_BACKUP_IN_3_MINUTES: {
-        id: 'TR_CREATE_BACKUP_IN_3_MINUTES',
-        defaultMessage: 'Create a backup in 3 minutes',
-    },
-    TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
-        id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
-        defaultMessage: 'Your Trezor is not backed up',
     },
     TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK: {
         id: 'TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK',
@@ -120,11 +94,6 @@ const definedMessages = defineMessages({
         id: 'TR_CUSTOM_FEE',
         defaultMessage: 'Custom',
         description: 'fee level',
-    },
-    TR_TRY_AGAIN: {
-        id: 'TR_TRY_AGAIN',
-        defaultMessage: 'Try again',
-        description: 'Try to run the proccess again',
     },
     TR_SELECT_COINS_LINK: {
         id: 'TR_SELECT_COINS_LINK',
