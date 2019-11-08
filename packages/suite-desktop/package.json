@@ -10,7 +10,7 @@
         "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:desktop": "yarn workspace @trezor/suite-data copy-static-files && electron .",
         "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
-        "preelectron-pack": "yarn build",
+        "preelectron-pack": "yarn build:lib && yarn build",
         "pack": "electron-builder --dir",
         "clean": "rimraf ./build-electron && rimraf ./build",
         "build:lib": "tsc --project src-electron/tsconfig.json",
