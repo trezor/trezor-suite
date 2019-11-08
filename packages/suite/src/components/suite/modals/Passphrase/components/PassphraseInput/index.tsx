@@ -135,12 +135,14 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
     const keyDownHandler = (event: KeyboardEvent) => {
         if (!focus) return;
 
-        event.preventDefault();
-        event.stopPropagation();
-
         switch (event.keyCode) {
             case 8:
                 // backspace
+
+                // prevent go back
+                event.preventDefault();
+                event.stopPropagation();
+
                 if (cursorPosition > 0 && selectionPosition === 0) {
                     // remove char before the cursor
                     setValue((val: string[]) => {
@@ -177,8 +179,8 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
                 setCtrl(true);
                 break;
             case 37:
-                // move selection left
                 if (shift) {
+                    // move selection left
                     setSelectionPosition(selectionPosition - 1);
                 } else if (cursorPosition > 0) {
                     setCursorPosition(cursorPosition - 1);
@@ -186,17 +188,22 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
                 }
                 break;
             case 39:
-                // move selection right
                 if (shift && selectionPosition + cursorPosition < value.length) {
+                    // move selection right
                     setSelectionPosition(selectionPosition + 1);
+                } else if (!shift && selectionPosition !== 0) {
+                    setSelectionPosition(0);
                 } else if (cursorPosition < value.length && !shift) {
                     setCursorPosition(cursorPosition + 1);
                     setSelectionPosition(0);
                 }
                 break;
             case 65:
-            case 86:
                 if (ctrl) {
+                    // prevent select text on page
+                    event.preventDefault();
+                    event.stopPropagation();
+
                     // ctrl+a select all
                     event.preventDefault();
                     event.stopPropagation();
@@ -264,8 +271,8 @@ const PassphraseInput: FunctionComponent<Props> = ({ onChange }) => {
     };
 
     const onPaste = (evt: ClipboardEvent) => {
-        // if (!focus) return;
-        console.log('onPaste');
+        if (!focus) return;
+
         evt.stopPropagation();
         evt.preventDefault();
 
