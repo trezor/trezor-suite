@@ -13,6 +13,7 @@ const initialState = (
     loaded: InitialState,
     localCurrency: Output['localCurrency']['value'],
 ): State => ({
+    deviceState: '',
     outputs: [
         {
             // fill first output by default

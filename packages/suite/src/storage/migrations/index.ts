@@ -1,30 +1,32 @@
-// import { MyDBV1 } from '../types';
-// import { STORE_TXS } from '../types';
+import { OnUpgradeFunc } from '@trezor/suite-storage';
 
 export const migrate = async <TDBType>(
-    // 'db' is declared but its value is never read
-    // @ts-ignore
-    db: TDBType,
-    oldVersion: number,
-    newVersion: number | null,
-    // @ts-ignore
-    // 'transaction' is declared but its value is never read
-    transaction: any,
-    // transaction: IDBPTransaction<MyDBV1, "transactions"[]>,
+    _db: Parameters<OnUpgradeFunc<TDBType>>['0'],
+    oldVersion: Parameters<OnUpgradeFunc<TDBType>>['1'],
+    newVersion: Parameters<OnUpgradeFunc<TDBType>>['2'],
+    _transaction: Parameters<OnUpgradeFunc<TDBType>>['3'],
 ) => {
     console.log(`Migrating database from version ${oldVersion} to ${newVersion}`);
 
     // TODO: make separate file for each iterative migration
-    if (oldVersion < 2) {
-        // upgrade to version 2
-        // @ts-ignore TODO: fix
-        db.createObjectStore('sendForm');
-    }
-    if (oldVersion < 3) {
-        // upgrade to version 3
-    }
 
-    // EXAMPLE
+    // EXAMPLES
+
+    // if (oldVersion < 3) {
+    //     // upgrade to version 3
+    //     db.deleteObjectStore('devices');
+    //     db.createObjectStore('devices');
+
+    //     // object store for accounts
+    //     const accountsStore = db.createObjectStore('accounts', {
+    //         keyPath: ['descriptor', 'symbol', 'deviceState'],
+    //     });
+    //     accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+
+    //     // object store for discovery
+    //     db.createObjectStore('discovery', { keyPath: 'deviceState' });
+    // }
+
     // if (oldVersion < 9) {
     //     // added timestamp field
     //     let cursor = await transaction.store.openCursor();
