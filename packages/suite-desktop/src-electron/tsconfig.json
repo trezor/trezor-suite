@@ -1,8 +1,8 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "rootDir": "../../",
-    "outDir": "./dist",
+    "watch": false,
+    "preserveWatchOutput": true,
+    "outDir": "../dist",
     "noEmit": false,
     "jsx": "preserve",
     "target": "esnext",
@@ -21,14 +21,13 @@
     "skipLibCheck": true,
   },
   "include": [
-    "next-env.d.ts",
-    "packages/suite-desktop/**/*.ts",
-    "packages/suite-desktop/**/*.tsx",
+    "**/*.ts",
+    "**/*.tsx",
   ],
   "exclude": [
     "**/*.js",
-    "node_modules/**",
+    "node_modules",
     ".next/**",
-    "build/**"
+    "dist/**"
   ]
 }
