@@ -12,7 +12,7 @@
         "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
         "preelectron-pack": "yarn build",
         "pack": "electron-builder --dir",
-        "clean": "rimraf ./build-electron && rimraf ./build && && rimraf ./dist",
+        "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
         "build:lib": "tsc --project src-electron/tsconfig.json",
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib ",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
