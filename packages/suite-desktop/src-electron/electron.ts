@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { app, session, BrowserWindow, ipcMain, protocol, shell } = require('electron');
-const isDev = require('electron-is-dev');
-const prepareNext = require('electron-next');
-const path = require('path');
-const url = require('url');
-const electronLocalshortcut = require('electron-localshortcut');
+import { app, session, BrowserWindow, ipcMain, shell } from 'electron';
+import isDev from 'electron-is-dev';
+// @ts-ignore
+import prepareNext from 'electron-next';
+import * as path from 'path';
+import * as url from 'url';
+import * as electronLocalshortcut from 'electron-localshortcut';
+
 const { isBridgeRunning, runBridgeProcess } = require('./bridge');
 
-let mainWindow;
+let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
 const src = isDev
     ? 'http://localhost:8000/'
@@ -17,7 +19,7 @@ const src = isDev
           slashes: true,
       });
 
-const registerShortcuts = window => {
+const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
     // https://github.com/electron/electron/issues/8491#issuecomment-274790124
     // https://github.com/electron/electron/issues/1334#issuecomment-310920998
@@ -61,7 +63,7 @@ const init = async () => {
     mainWindow.removeMenu();
 
     // open external links in default browser
-    const handleExternalLink = (event, url) => {
+    const handleExternalLink = (event: Event, url: string) => {
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
@@ -77,17 +79,22 @@ const init = async () => {
             urls: ['http://127.0.0.1:21325/*'],
         };
 
-        session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-            details.requestHeaders.Origin = 'https://electron.trezor.io';
-            callback({ cancel: false, requestHeaders: details.requestHeaders });
-        });
+        if (session.defaultSession) {
+            session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+                // @ts-ignore electron declares requestHeaders as an empty interface
+                details.requestHeaders.Origin = 'https://electron.trezor.io';
+                callback({ cancel: false, requestHeaders: details.requestHeaders });
+            });
 
-        // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
-        session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
-            let url = request.url.substr(PROTOCOL.length + 1);
-            url = path.join(__dirname, '../build/', url);
-            callback({ path: url });
-        });
+            // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
+            session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
+                let url = request.url.substr(PROTOCOL.length + 1);
+                url = path.join(__dirname, '../build/', url);
+                // TODO: I don't believe this work
+                // @ts-ignore
+                callback({ path: url });
+            });
+        }
 
         registerShortcuts(mainWindow);
     }
@@ -123,8 +130,10 @@ app.on('activate', () => {
     }
 });
 
-app.on('browser-window-focus', (event, win) => {
+app.on('browser-window-focus', (_event, win) => {
+    // @ts-ignore
     if (isDev && !win.isDevToolsOpened()) {
+        // @ts-ignore
         win.openDevTools();
     }
 });
