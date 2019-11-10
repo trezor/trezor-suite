@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as sendFormActionsEthereum from '@wallet-actions/sendFormSpecific/ethereumActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import AdditionalFormEthereum from './index';
@@ -14,6 +15,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     sendFormActions: bindActionCreators(sendFormActions, dispatch),
+    sendFormActionsEthereum: bindActionCreators(sendFormActionsEthereum, dispatch),
 });
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

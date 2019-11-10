@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import { Input, Tooltip, Icon, colors, Link, TextArea } from '@trezor/components';
-import globalMessages from '@suite-support/Messages';
-import localMessages from './index.messages';
+import { Props } from './Container';
+import { Input, TextArea } from '@trezor/components';
+import GasLimitTopLabel from './components/GasLimitTopLabel';
+import GasPriceTopLabel from './components/GasPriceTopLabel';
+import DataTopLabel from './components/DataTopLabel';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,26 +21,6 @@ const Row = styled.div`
     }
 `;
 
-const LabelLeft = styled.div`
-    display: flex;
-`;
-
-const InputLabelWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`;
-
-const GreenSpan = styled.span`
-    color: ${colors.GREEN_PRIMARY};
-`;
-
-const Right = styled.div``;
-
-const TooltipContainer = styled.div``;
-
-const StyledLink = styled(Link)``;
-
 const GasInput = styled(Input)`
     padding-bottom: 28px;
     &:first-child {
@@ -47,160 +28,36 @@ const GasInput = styled(Input)`
     }
 `;
 
-const StyledIcon = styled(Icon)`
-    padding: 0 0 0 7px;
-`;
+const NetworkTypeEthereum = ({ send, sendFormActionsEthereum }: Props) => {
+    if (!send) return null;
+    return (
+        <Wrapper>
+            <Row>
+                <GasInput
+                    state={undefined}
+                    topLabel={<GasLimitTopLabel />}
+                    bottomText={undefined}
+                    value={send.networkTypeEthereum.gasLimit.value || ''}
+                    isDisabled={false}
+                    onChange={e => sendFormActionsEthereum.handleGasLimit(e.target.value)}
+                />
 
-const StyledTextarea = styled(TextArea)`
-    min-height: 80px;
-`;
-
-const NetworkTypeEthereum = () => (
-    <Wrapper>
-        <Row>
-            <GasInput
-                state={undefined}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                topLabel={
-                    <InputLabelWrapper>
-                        <LabelLeft>
-                            <FormattedMessage {...localMessages.TR_GAS_LIMIT} />
-                            <TooltipContainer>
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage
-                                            {...localMessages.TR_GAS_LIMIT_REFERS_TO}
-                                            values={{
-                                                TR_GAS_QUOTATION: (
-                                                    <GreenSpan>
-                                                        <FormattedMessage
-                                                            {...localMessages.TR_GAS_QUOTATION}
-                                                        />
-                                                    </GreenSpan>
-                                                ),
-                                                gasLimitTooltipValue: <GreenSpan>aaaaaa</GreenSpan>,
-                                            }}
-                                        />
-                                    }
-                                    maxWidth={410}
-                                    // todo: put into config
-                                    ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
-                                    ctaText={
-                                        <FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />
-                                    }
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon="HELP"
-                                        color={colors.TEXT_SECONDARY}
-                                        size={12}
-                                    />
-                                </Tooltip>
-                            </TooltipContainer>
-                        </LabelLeft>
-                        {true && (
-                            <Right>
-                                <StyledLink onClick={() => {}}>
-                                    <FormattedMessage {...localMessages.TR_SET_DEFAULT} />
-                                </StyledLink>
-                            </Right>
-                        )}
-                    </InputLabelWrapper>
-                }
-                bottomText={undefined}
-                value={1} // TODO: figure out translations in inputs
-                isDisabled={false}
-                onChange={() => {}}
-            />
-
-            <GasInput
-                state={undefined}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                topLabel={
-                    <InputLabelWrapper>
-                        <LabelLeft>
-                            <FormattedMessage {...localMessages.TR_GAS_PRICE} />
-                            <TooltipContainer>
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage
-                                            {...localMessages.TR_GAS_PRICE_REFERS_TO}
-                                            values={{
-                                                TR_GAS_PRICE_QUOTATION: (
-                                                    <GreenSpan>
-                                                        <FormattedMessage
-                                                            {...localMessages.TR_GAS_PRICE_QUOTATION}
-                                                        />
-                                                    </GreenSpan>
-                                                ),
-                                                recommendedGasPrice: (
-                                                    <GreenSpan>recommendedGasPrice</GreenSpan>
-                                                ),
-                                            }}
-                                        />
-                                    }
-                                    maxWidth={400}
-                                    // todo: put link into config
-                                    ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
-                                    ctaText={
-                                        <FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />
-                                    }
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon="HELP"
-                                        color={colors.TEXT_SECONDARY}
-                                        size={12}
-                                    />
-                                </Tooltip>
-                            </TooltipContainer>
-                        </LabelLeft>
-                    </InputLabelWrapper>
-                }
-                bottomText=""
-                value=""
-                onChange={() => {}}
-            />
-        </Row>
-        <Row>
-            <StyledTextarea
-                topLabel={
-                    <InputLabelWrapper>
-                        <LabelLeft>
-                            <FormattedMessage {...localMessages.TR_DATA} />
-                            <TooltipContainer>
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage
-                                            {...localMessages.TR_DATA_IS_USUALLY_USED}
-                                        />
-                                    }
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon="HELP"
-                                        color={colors.TEXT_SECONDARY}
-                                        size={12}
-                                    />
-                                </Tooltip>
-                            </TooltipContainer>
-                        </LabelLeft>
-                    </InputLabelWrapper>
-                }
-                state={undefined}
-                bottomText=""
-                isDisabled={false}
-                value=""
-                onChange={() => {}}
-            />
-        </Row>
-    </Wrapper>
-);
+                <GasInput
+                    state={undefined}
+                    topLabel={<GasPriceTopLabel />}
+                    bottomText=""
+                    value={send.networkTypeEthereum.gasPrice.value || ''}
+                    onChange={e => sendFormActionsEthereum.handleGasPrice(e.target.value)}
+                />
+            </Row>
+            <Row>
+                <TextArea
+                    value={send.networkTypeEthereum.data.value || ''}
+                    topLabel={<DataTopLabel />}
+                />
+            </Row>
+        </Wrapper>
+    );
+};
 
 export default NetworkTypeEthereum;
