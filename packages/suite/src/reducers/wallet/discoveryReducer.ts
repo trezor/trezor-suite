@@ -1,8 +1,10 @@
 import produce from 'immer';
 import { DISCOVERY } from '@wallet-actions/constants';
+import { STORAGE } from '@suite-actions/constants';
 import { Deferred, createDeferred } from '@suite-utils/deferred';
 import { ObjectValues } from '@suite/types/utils';
-import { Action } from '@suite-types';
+import { Action as SuiteAction } from '@suite-types';
+import { WalletAction } from '@wallet-types';
 
 export const DISCOVERY_STATUS = {
     IDLE: 0,
@@ -73,9 +75,11 @@ const remove = (draft: State, payload: PartialDiscovery) => {
     draft.splice(index, 1);
 };
 
-export default (state: State = initialState, action: Action): State => {
+export default (state: State = initialState, action: WalletAction | SuiteAction): State => {
     return produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.wallet.discovery;
             case DISCOVERY.CREATE:
                 create(draft, action.payload);
                 break;

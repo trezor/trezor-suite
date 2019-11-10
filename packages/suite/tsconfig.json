@@ -6,7 +6,7 @@
         "sourceMap": true,
         "lib": [
             "dom",
-            "es2017",
+            "es2019",
             "esnext.asynciterable"
         ],
         "forceConsistentCasingInFileNames": true,

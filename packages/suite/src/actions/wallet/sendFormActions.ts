@@ -1,5 +1,4 @@
 import { Dispatch, GetState } from '@suite-types';
-import { db } from '@suite/storage';
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
@@ -9,6 +8,7 @@ import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormU
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
 
+import * as storageActions from '@suite-actions/storageActions';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
 // import * as ethereumActions from './sendFormSpecific/ethereumActions';
 import * as rippleActions from './sendFormSpecific/rippleActions';
@@ -20,7 +20,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const { settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
-    if (router.app !== 'wallet' || !router.params) return;
+    if (router.app !== 'wallet' || !router.params || !account) return;
 
     let cachedState = null;
     const feeInfo = getState().wallet.fees[router.params.symbol];
@@ -31,17 +31,16 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         blocks: 0,
     });
 
-    if (account) {
-        const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-        const cachedItem = await db.getItemByPK('sendForm', accountKey);
-        cachedState = cachedItem;
-    }
+    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const cachedItem = await storageActions.loadSendForm(accountKey);
+    cachedState = cachedItem;
 
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({
         type: SEND.INIT,
         payload: {
+            deviceState: account.deviceState,
             feeInfo: {
                 ...feeInfo,
                 levels,
@@ -60,7 +59,7 @@ export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
 
     const id = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     const sendFormState = send;
-    db.addItem('sendForm', sendFormState, id);
+    storageActions.saveSendForm(sendFormState, id);
 };
 
 export const compose = (setMax: boolean = false) => async (
@@ -398,6 +397,10 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({ type: SEND.CLEAR, localCurrency });
+    // remove sendForm from the DB here or in storageMiddleware on SEND.CLEAR?
+    storageActions.removeSendForm(
+        getAccountKey(account.descriptor, account.symbol, account.deviceState),
+    );
     dispatch(cache());
 };
 
