@@ -35,3 +35,13 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch) => {
         gasLimit,
     });
 };
+
+/*
+    Change value in input "Data"
+ */
+export const handleData = (data: string) => (dispatch: Dispatch) => {
+    dispatch({
+        type: SEND.ETH_HANDLE_DATA,
+        data,
+    });
+};

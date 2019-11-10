@@ -3,6 +3,7 @@ export const VALIDATION_ERRORS = {
     NOT_ENOUGH: 'not-enough',
     NOT_VALID: 'not-valid',
     NOT_NUMBER: 'not-number',
+    NOT_HEX: 'not-hex',
     NOT_IN_RANGE: 'not-in-range',
     NOT_IN_RANGE_DECIMALS: 'not-in-range-decimals',
     CANNOT_SEND_TO_MYSELF: 'cannot-send-to-myself',
