@@ -43,7 +43,6 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
 
 # fastlane
 #
@@ -57,6 +56,5 @@ buck-out/
 */fastlane/screenshots
 
 # Bundle artifact
-*.jsbundle
 static
 index.android.bundle
