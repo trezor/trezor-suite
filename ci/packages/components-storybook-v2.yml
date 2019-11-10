@@ -40,6 +40,8 @@ components-storybook-v2 deploy dev:
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/components-storybook-v2
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - ls
+    - pwd
     - rsync --delete -va .build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
