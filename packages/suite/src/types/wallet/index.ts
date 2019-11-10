@@ -2,9 +2,12 @@ import { SettingsActions } from '@wallet-actions/settingsActions';
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
-import { SendFormActions } from '@wallet-types/sendForm';
-import { SendFormBitcoinActions } from '@wallet-actions/sendFormSpecific/bitcoinActions';
-import { SendFormRippleActions } from '@wallet-actions/sendFormSpecific/rippleActions';
+import {
+    SendFormActions,
+    SendFormBtcActions,
+    SendFormXrpActions,
+    SendFormEthActions,
+} from '@wallet-types/sendForm';
 
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
@@ -41,8 +44,9 @@ export type WalletAction =
     | SettingsActions
     | ReceiveActions
     | SendFormActions
-    | SendFormBitcoinActions
-    | SendFormRippleActions
+    | SendFormBtcActions
+    | SendFormXrpActions
+    | SendFormEthActions
     | SignVerifyActions
     | TransactionAction
     | FiatRateActions

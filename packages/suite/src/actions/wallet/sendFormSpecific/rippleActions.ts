@@ -4,13 +4,8 @@ import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { SEND } from '@wallet-actions/constants';
 import Bignumber from 'bignumber.js';
-import { PrecomposedTransactionXrp } from '@wallet-types/sendForm';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
-
-export type SendFormRippleActions =
-    | { type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE; destinationTag: string }
-    | { type: typeof SEND.XRP_PRECOMPOSED_TX; payload: PrecomposedTransactionXrp };
 
 /*
     Compose xrp transaction

@@ -1,6 +1,5 @@
-import TrezorConnect, { PrecomposedTransaction } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Output } from '@wallet-types/sendForm';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { SEND } from '@wallet-actions/constants';
@@ -9,11 +8,6 @@ import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as sendFormActions from '../sendFormActions';
-
-export type SendFormBitcoinActions =
-    | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
-    | { type: typeof SEND.BTC_REMOVE_RECIPIENT; outputId: number }
-    | { type: typeof SEND.BTC_PRECOMPOSED_TX; payload: PrecomposedTransaction };
 
 /*
     Compose transaction
