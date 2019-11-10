@@ -38,7 +38,6 @@ connect-explorer deploy dev:
     stage: deploy to dev servers
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect-explorer/${CI_BUILD_REF_NAME}
-        DEPLOY_URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}
     dependencies:
         - install and build
         - connect-explorer build
