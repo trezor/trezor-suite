@@ -13,7 +13,7 @@
         "clean": "watchman watch-del-all && rm -rf $TMPDIR/react-native-packager-cache-* && rm -rf $TMPDIR/metro-bundler-cache-*",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json",
-        "bundle:android": "rimraf packages/suite-native/android/app/src/main/assets/index.android.bundle && yarn workspace @trezor/suite-native react-native bundle --entry-file packages/suite-native/index.js --bundle-output packages/suite-native/android/app/src/main/assets/index.android.bundle --assets-dest packages/suite-native/android/app/src/main/res --platform android --dev false",
+        "bundle:android": "yarn workspace @trezor/suite-native react-native bundle --entry-file packages/suite-native/index.js --bundle-output ./android/app/src/main/assets/index.android.bundle --assets-dest ./android/app/src/main/res --platform android --dev false",
         "build:android": "rimraf packages/suite-native/android/app/build && yarn workspace @trezor/suite-native bundle:android --reset-cache && cd ./android && ./gradlew bundleRelease -x bundleReleaseJsAndAssets --no-build-cache && ./gradlew assembleRelease -x bundleReleaseJsAndAssets --no-build-cache"
     },
     "dependencies": {
