@@ -4,6 +4,39 @@ import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import colors from '../../../config/colors';
 import { FONT_SIZE } from '../../../config/variables';
 
+const getPrimaryPadding = (size: ButtonSize) => {
+    switch (size) {
+        case 'small':
+            return '2px';
+        case 'large':
+            return '10px';
+        default:
+            return '8px';
+    }
+};
+
+const getSecondaryPadding = (size: ButtonSize) => {
+    switch (size) {
+        case 'small':
+            return '1px';
+        case 'large':
+            return '9px';
+        default:
+            return '7px';
+    }
+};
+
+const getTertiarySize = (size: ButtonSize) => {
+    switch (size) {
+        case 'small':
+            return '12px';
+        case 'large':
+            return '14px';
+        default:
+            return '13px';
+    }
+};
+
 const Wrapper = styled.button<WrapperProps>`
     flex: 1;
     cursor: pointer;
@@ -19,9 +52,11 @@ const Wrapper = styled.button<WrapperProps>`
             color: ${colors.WHITE};
             background-image: linear-gradient(${colors.GREEN}, ${colors.GREENER});
             border: none;
+            padding: ${getPrimaryPadding(props.size)};
 
             &:hover {
-                background-image: linear-gradient(${colors.GREENER}, #21c100);
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
+                    linear-gradient(${colors.GREEN}, ${colors.GREENER});
             }
         `}
 
@@ -30,6 +65,7 @@ const Wrapper = styled.button<WrapperProps>`
         css`
             background-image: linear-gradient(${colors.WHITE}, ${colors.WHITE});
             border: 1px solid ${colors.BLACK70};
+            padding: ${getSecondaryPadding(props.size)};
 
             &:hover {
                 background-image: linear-gradient(${colors.WHITE}, ${colors.BLACK92});
@@ -41,25 +77,7 @@ const Wrapper = styled.button<WrapperProps>`
         css`
             background: ${colors.WHITE};
             border: none;
-        `}
-
-    /* set size */
-    ${props =>
-        props.size === 'small' &&
-        css`
-            padding: 2px;
-        `}
-
-    ${props =>
-        props.size === 'medium' &&
-        css`
-            padding: 8px;
-        `}
-
-    ${props =>
-        props.size === 'large' &&
-        css`
-            padding: 10px;
+            padding: ${getTertiarySize(props.size)};
         `}
 
     ${props =>
@@ -67,6 +85,8 @@ const Wrapper = styled.button<WrapperProps>`
         css`
             color: ${colors.BLACK80};
             cursor: default;
+            border: solid 1px ${colors.BLACK70};
+            background-image: linear-gradient(${colors.WHITE}, ${colors.BLACK96});
         `}
 `;
 

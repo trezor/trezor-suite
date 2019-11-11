@@ -7,12 +7,11 @@ import { infoOptions } from '../../../support/info';
 storiesOf('Buttons', module).add(
     'Button',
     () => {
-        const isDisabled = boolean('Disabled', false);
+        const disabled = boolean('Disabled', false);
         const variant: any = select(
             'Variant',
             {
                 'Default (primary)': null,
-                Primary: 'primary',
                 Secondary: 'secondary',
                 Tertiary: 'tertiary',
             },
@@ -23,19 +22,18 @@ storiesOf('Buttons', module).add(
             {
                 'Default (medium)': null,
                 Small: 'small',
-                Medium: 'medium',
                 Large: 'large',
             },
             null
         );
 
         return (
-            <Button 
-                {...(isDisabled ? { isDisabled } : {})}
+            <Button
+                {...(disabled ? { disabled } : {})}
                 {...(variant ? { variant } : {})}
                 {...(size ? { size } : {})}
             >
-                Test text
+                Label
             </Button>
         );
     },
