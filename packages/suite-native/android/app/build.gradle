@@ -77,8 +77,8 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     entryFile: "packages/suite-native/android/src/main/assets/index.android.bundle",
-    root: "../../../../"
-    enableHermes: false,  // clean and rebuild if changing
+    root: "../../../../",
+    enableHermes: false  // clean and rebuild if changing
 ]
 
 apply from: "../../../../node_modules/react-native/react.gradle"
