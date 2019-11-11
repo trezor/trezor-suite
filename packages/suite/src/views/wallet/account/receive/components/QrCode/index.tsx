@@ -48,7 +48,7 @@ const QrCode = (props: Props) => (
             bgColor="#FFFFFF"
             fgColor="#000000"
             level="Q"
-            style={{ width: `${props.width || 150}` }}
+            style={{ width: `${props.width || 150}px` }}
             value={props.value}
         />
         {props.accountPath && (
