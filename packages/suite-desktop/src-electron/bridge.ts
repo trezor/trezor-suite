@@ -85,13 +85,13 @@ const execute = (command: string) => {
     });
 };
 
-const isBridgeRunning = async () => {
+export const isBridgeRunning = async () => {
     const processes = await psList();
     const isRunning = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
     return isRunning;
 };
 
-const runBridgeProcess = async () => {
+export const runBridgeProcess = async () => {
     const isBridgeAlreadyRunning = await isBridgeRunning();
 
     // bridge is already installed and running, nothing to do
@@ -105,16 +105,10 @@ const runBridgeProcess = async () => {
     }
 };
 
-const killBridgeProcess = async () => {
+export const killBridgeProcess = async () => {
     const processes = await psList();
     const bridgeProcess = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
     if (bridgeProcess) {
         execute(`kill -9 ${bridgeProcess.pid}`);
     }
-};
-
-module.exports = {
-    isBridgeRunning,
-    runBridgeProcess,
-    killBridgeProcess,
 };
