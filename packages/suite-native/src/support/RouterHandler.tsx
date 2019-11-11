@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Router, Scene, Actions } from 'react-native-router-flux';
-import Index from '@suite-views/index';
-import Wallet from '@suite/views/wallet';
-import WalletSend from '@suite/views/wallet/account/send';
-import { onLocationChange } from '@suite-actions/routerActions';
+import { Router, Scene, Stack, Actions } from 'react-native-router-flux';
+import { View, Text, Button } from 'react-native';
+import Index from '@suite-views';
+import Wallet from '@wallet-views';
+import DeviceSettings from '@suite-views/settings/index';
+
+import * as routerActions from '@suite-actions/routerActions';
+import { getRoute } from '@suite-utils/router';
 import { Dispatch } from '@suite-types';
 
 // sources:
@@ -32,30 +35,45 @@ const RouterHandler = ({ onLocationChange }: Props) => {
     };
 
     const onBack = () => {
+        console.log('back');
         // TODO: handle back button
         return true;
     };
 
     return (
-        <Router onStateChange={onRouteChanged} backAndroidHandler={onBack}>
-            <Scene key="root">
-                <Scene key="/" drawer component={Index} initial type="replace" />
-                <Scene key="/wallet" drawer component={Wallet} type="replace" />
-                <Scene
-                    key="/wallet/send"
-                    drawer
-                    component={WalletSend}
-                    type="replace" /* type={ActionConst.REPLACE} */
-                />
-            </Scene>
-        </Router>
+        <View style={{ flex: 1 }}>
+            <Router onStateChange={onRouteChanged} backAndroidHandler={onBack}>
+                <Stack key="root">
+                    <Scene
+                        title="Initial view"
+                        key={getRoute('suite-index')}
+                        drawer
+                        component={Index}
+                        initial
+                        // type="replace"
+                    />
+                    <Scene
+                        title="Wallet"
+                        key={getRoute('wallet-index')}
+                        drawer
+                        component={Wallet}
+                    />
+                    <Scene
+                        title="Device settings"
+                        key={getRoute('suite-device-settings')}
+                        drawer
+                        component={DeviceSettings}
+                    />
+                </Stack>
+            </Router>
+        </View>
     );
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
     bindActionCreators(
         {
-            onLocationChange,
+            onLocationChange: routerActions.onLocationChange,
         },
         dispatch,
     );

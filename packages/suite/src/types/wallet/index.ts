@@ -8,27 +8,27 @@ import { SendFormRippleActions } from '@wallet-actions/sendFormSpecific/rippleAc
 
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
-import { Discovery } from '@wallet-reducers/discoveryReducer';
-import { Account } from '@wallet-reducers/accountsReducer';
-import { Fiat } from '@wallet-reducers/fiatRateReducer';
+import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
+import { Account as Account$ } from '@wallet-reducers/accountsReducer';
+import { Fiat as Fiat$ } from '@wallet-reducers/fiatRateReducer';
 
 import { FiatRateActions } from '@wallet-middlewares/coingeckoMiddleware';
 import { BlockchainActions } from '@wallet-actions/blockchainActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
-import { Icon } from './iconTypes';
-import { NetworkToken, Token } from './tokenTypes';
+import { Icon as Icon$ } from './iconTypes';
+import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
 import { ArrayElement } from '../utils';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type ExternalNetwork = ArrayElement<typeof EXTERNAL_NETWORKS>;
-export type NetworkToken = NetworkToken;
-export type Token = Token;
-export type Account = Account;
-export type Icon = Icon;
-export type Fiat = Fiat;
-export type Discovery = Discovery;
+export type NetworkToken = NetworkToken$;
+export type Token = Token$;
+export type Account = Account$;
+export type Icon = Icon$;
+export type Fiat = Fiat$;
+export type Discovery = Discovery$;
 
 interface BlockchainLinkToken {
     name: string;

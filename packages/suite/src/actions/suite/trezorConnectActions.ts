@@ -11,6 +11,7 @@ import { Dispatch, GetState } from '@suite-types';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // set event listeners
+
     TrezorConnect.on(DEVICE_EVENT, event => {
         // dispatch event as action
         delete event.event;

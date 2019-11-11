@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+
 import { SUITE } from '@suite-actions/constants';
 import { Dispatch } from '@suite-types';
 

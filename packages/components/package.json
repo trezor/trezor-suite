@@ -2,6 +2,7 @@
     "name": "@trezor/components",
     "version": "1.0.0",
     "main": "lib/index.js",
+    "react-native": "lib/index.native.js",
     "repository": "https://github.com/trezor/trezor-ui-components",
     "author": "SatoshiLabs s.r.o.",
     "license": "SEE LICENSE IN LICENSE.md",

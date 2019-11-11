@@ -1,9 +1,286 @@
 {
-    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "lib": ["es6"],
+        "lib": [
+            "es2019",
+            "esnext.asynciterable"
+        ],
         "target": "esnext",
         "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react-native",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "noEmit": true,
+        "paths": {
+            // suite root
+            "@suite/*": [
+                "./src/*",
+                "../../packages/suite/src/*"
+            ],
+            "@suite": [
+                "./src/index",
+                "../../packages/suite/src/index",
+            ],
+            // suite 
+            "@suite-components/*": [
+                "./src/components/suite/*",
+                "../../packages/suite/src/components/suite/*"
+            ],
+            "@suite-components": [
+                "./src/components/suite/index",
+                "../../packages/suite/src/components/suite/index"
+            ],
+            "@suite-views/*": [
+                "./src/views/suite/*",
+                "../../packages/suite/src/views/suite/*"
+            ],
+            "@suite-views": [
+                "./src/views/suite/index",
+                "../../packages/suite/src/views/suite/index"
+            ],
+            "@suite-actions/*": [
+                "./src/actions/suite/*",
+                "../../packages/suite/src/actions/suite/*"
+            ],
+            "@suite-actions": [
+                "./src/actions/suite/index",
+                "../../packages/suite/src/actions/suite/index"
+            ],
+            "@suite-utils/*": [
+                "./src/utils/suite/*",
+                "../../packages/suite/src/utils/suite/*"
+            ],
+            "@suite-utils": [
+                "./src/utils/suite/index",
+                "../../packages/suite/src/utils/suite/index"
+            ],
+            "@suite-types/*": [
+                "./src/types/suite/*",
+                "../../packages/suite/src/types/suite/*"
+            ],
+            "@suite-types": [
+                "./src/types/suite/index",
+                "../../packages/suite/src/types/suite/index"
+            ],
+            "@suite-reducers/*": [
+                "./src/reducers/suite/*",
+                "../../packages/suite/src/reducers/suite/*"
+            ],
+            "@suite-reducers": [
+                "./src/reducers/suite/index",
+                "../../packages/suite/src/reducers/suite/index"
+            ],
+            "@suite-support/*": [
+                "./src/support/suite/*",
+                "../../packages/suite/src/support/suite/*"
+            ],
+            "@suite-support": [
+                "./src/support/suite/index",
+                "../../packages/suite/src/support/suite/index"
+            ],
+            "@suite-constants/*": [
+                "./src/constants/suite/*",
+                "../../packages/suite/src/constants/suite/*"
+            ],
+            "@suite-constants": [
+                "./src/constants/suite/index",
+                "../../packages/suite/src/constants/suite/index"
+            ],
+            "@suite-config/*": [
+                "./src/config/suite/*",
+                "../../packages/suite/src/config/suite/*"
+            ],
+            "@suite-config": [
+                "./src/config/suite/index",
+                "../../packages/suite/src/config/suite/index"
+            ],
+            "@suite-middlewares/*": [
+                "./src/middlewares/suite/*",
+                "../../packages/suite/src/middlewares/suite/*"
+            ],
+            "@suite-middlewares": [
+                "./src/middlewares/suite/index",
+                "../../packages/suite/src/middlewares/suite/index"
+            ],
+            // wallet
+            "@wallet-components/*": [
+                "./src/components/wallet/*",
+                "../../packages/suite/src/components/wallet/*"
+            ],
+            "@wallet-components": [
+                "./src/components/wallet/index",
+                "../../packages/suite/src/components/wallet/index"
+            ],
+            "@wallet-views/*": [
+                "./src/views/wallet/*",
+                "../../packages/suite/src/views/wallet/*"
+            ],
+            "@wallet-views": [
+                "./src/views/wallet/index",
+                "../../packages/suite/src/views/wallet/index",
+            ],
+            "@wallet-actions/*": [
+                "./src/actions/wallet/*",
+                "../../packages/suite/src/actions/wallet/*"
+            ],
+            "@wallet-actions": [
+                "./src/actions/wallet/index",
+                "../../packages/suite/src/actions/wallet/index"
+            ],
+            "@wallet-utils/*": [
+                "./src/utils/wallet/*",
+                "../../packages/suite/src/utils/wallet/*"
+            ],
+            "@wallet-utils": [
+                "./src/utils/wallet/index",
+                "../../packages/suite/src/utils/wallet/index"
+            ],
+            "@wallet-types/*": [
+                "./src/types/wallet/*",
+                "../../packages/suite/src/types/wallet/*"
+            ],
+            "@wallet-types": [
+                "./src/types/wallet/index",
+                "../../packages/suite/src/types/wallet/index"
+            ],
+            "@wallet-reducers/*": [
+                "./src/reducers/wallet/*",
+                "../../packages/suite/src/reducers/wallet/*"
+            ],
+            "@wallet-reducers": [
+                "./src/reducers/wallet/index",
+                "../../packages/suite/src/reducers/wallet/index"
+            ],
+            "@wallet-support/*": [
+                "./src/support/wallet/*",
+                "../../packages/suite/src/support/wallet/*"
+            ],
+            "@wallet-support": [
+                "./src/support/wallet/index",
+                "../../packages/suite/src/support/wallet/index"
+            ],
+            "@wallet-constants/*": [
+                "./src/constants/wallet/*",
+                "../../packages/suite/src/constants/wallet/*"
+            ],
+            "@wallet-constants": [
+                "./src/constants/wallet/index",
+                "../../packages/suite/src/constants/wallet/index"
+            ],
+            "@wallet-config/*": [
+                "./src/config/wallet/*",
+                "../../packages/suite/src/config/wallet/*"
+            ],
+            "@wallet-config": [
+                "./src/config/wallet/index",
+                "../../packages/suite/src/config/wallet/index"
+            ],
+            "@wallet-middlewares/*": [
+                "./src/middlewares/wallet/*",
+                "../../packages/suite/src/middlewares/wallet/*"
+            ],
+            "@wallet-middlewares": [
+                "./src/middlewares/wallet/index",
+                "../../packages/suite/src/middlewares/wallet/index"
+            ],
+            // onboarding
+            "@onboarding-components/*": [
+                "./src/components/onboarding/*",
+                "../../packages/suite/src/components/onboarding/*"
+            ],
+            "@onboarding-components": [
+                "./src/components/onboarding/index",
+                "../../packages/suite/src/components/onboarding/index"
+            ],
+            "@onboarding-views/*": [
+                "./src/views/onboarding/*",
+                "../../packages/suite/src/views/onboarding/*"
+            ],
+            "@onboarding-views": [
+                "./src/views/onboarding/index",
+                "../../packages/suite/src/views/onboarding/index"
+            ],
+            "@onboarding-actions/*": [
+                "./src/actions/onboarding/*",
+                "../../packages/suite/src/actions/onboarding/*"
+            ],
+            "@onboarding-actions": [
+                "./src/actions/onboarding/index",
+                "../../packages/suite/src/actions/onboarding/index"
+            ],
+            "@onboarding-utils/*": [
+                "./src/utils/onboarding/*",
+                "../../packages/suite/src/utils/onboarding/*"
+            ],
+            "@onboarding-utils": [
+                "./src/utils/onboarding/index",
+                "../../packages/suite/src/utils/onboarding/index"
+            ],
+            "@onboarding-types/*": [
+                "./src/types/onboarding/*",
+                "../../packages/suite/src/types/onboarding/*"
+            ],
+            "@onboarding-types": [
+                "./src/types/onboarding/index",
+                "../../packages/suite/src/types/onboarding/index"
+            ],
+            "@onboarding-reducers/*": [
+                "./src/reducers/onboarding/*",
+                "../../packages/suite/src/reducers/onboarding/*"
+            ],
+            "@onboarding-reducers": [
+                "./src/reducers/onboarding/index",
+                "../../packages/suite/src/reducers/onboarding/index"
+            ],
+            "@onboarding-support/*": [
+                "./src/support/onboarding/*",
+                "../../packages/suite/src/support/onboarding/*"
+            ],
+            "@onboarding-support": [
+                "./support/onboarding/index",
+                "../../packages/suite/src/support/onboarding/index"
+            ],
+            "@onboarding-constants/*": [
+                "./src/constants/onboarding/*",
+                "../../packages/suite/src/constants/onboarding/*"
+            ],
+            "@onboarding-constants": [
+                "./src/constants/onboarding/index",
+                "../../packages/suite/src/constants/onboarding/index"
+            ],
+            "@onboarding-config/*": [
+                "./src/config/onboarding/*",
+                "../../packages/suite/src/config/onboarding/*"
+            ],
+            "@onboarding-config": [
+                "./src/config/onboarding/index",
+                "../../packages/suite/src/config/onboarding/index"
+            ],
+            "@onboarding-middlewares/*": [
+                "./src/middlewares/onboarding/*",
+                "../../packages/suite/src/middlewares/onboarding/*"
+            ],
+            "@onboarding-middlewares": [
+                "./src/middlewares/onboarding/index",
+                "../../packages/suite/src/middlewares/onboarding/index"
+            ],
+        },
+        "typeRoots": [
+            "../../node_modules/@trezor/typescript-typings/types",
+            "../../node_modules/@types",
+        ],
+        "module": "esnext",
+        "noUnusedParameters": true,
+        "sourceMap": true,
+        "strict": true,
     },
-    "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]
+    "include": [
+        "./src/App.tsx",
+    ],
+    "exclude": [
+        "node_modules",
+        "babel.config.js",
+        "metro.config.js",
+        "jest.config.js",
+    ]
 }
