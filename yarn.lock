@@ -8457,14 +8457,14 @@ electron-is-dev@>=0.3.0, electron-is-dev@^1.1.0:
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-1.1.0.tgz#b15a2a600bdc48a51a857d460e05f15b19a2522c"
   integrity sha512-Z1qA/1oHNowGtSBIcWk0pcLEqYT/j+13xUw/MYOrBUOL4X7VN0i0KCTf5SqyvMPmW5pSPKbo28wkxMxzZ20YnQ==
 
-electron-localshortcut@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/electron-localshortcut/-/electron-localshortcut-3.1.0.tgz#10c1ffd537b8d39170aaf6e1551341f7780dd2ce"
-  integrity sha512-MgL/j5jdjW7iA0R6cI7S045B0GlKXWM1FjjujVPjlrmyXRa6yH0bGSaIAfxXAF9tpJm3pLEiQzerYHkRh9JG/A==
+electron-localshortcut@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/electron-localshortcut/-/electron-localshortcut-3.2.0.tgz#c3251bac86d88bf5eee5e3f05a629db372b327db"
+  integrity sha512-pm72c467BgWEFE+1Cgim2EqhoQe60UlirrobwN24TA+hd+x/2hVgZlwfqzvNEmYfuuegZlzQL8tILjomofbzdg==
   dependencies:
-    debug "^2.6.8"
+    debug "^4.0.1"
     electron-is-accelerator "^0.1.0"
-    keyboardevent-from-electron-accelerator "^1.1.0"
+    keyboardevent-from-electron-accelerator "^2.0.0"
     keyboardevents-areequal "^0.2.1"
 
 electron-next@^3.1.5:
@@ -12614,10 +12614,10 @@ keccak@^2.0.0:
     nan "^2.2.1"
     safe-buffer "^5.1.0"
 
-keyboardevent-from-electron-accelerator@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/keyboardevent-from-electron-accelerator/-/keyboardevent-from-electron-accelerator-1.1.0.tgz#324614f6e33490c37ffc5be5876b3e85fe223c84"
-  integrity sha512-VDC4vKWGrR3VgIKCE4CsXnvObGgP8C2idnTKEMUkuEuvDGE1GEBX9FtNdJzrD00iQlhI3xFxRaeItsUmlERVng==
+keyboardevent-from-electron-accelerator@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/keyboardevent-from-electron-accelerator/-/keyboardevent-from-electron-accelerator-2.0.0.tgz#ace21b1aa4e47148815d160057f9edb66567c50c"
+  integrity sha512-iQcmNA0M4ETMNi0kG/q0h/43wZk7rMeKYrXP7sqKIJbHkTU8Koowgzv+ieR/vWJbOwxx5nDC3UnudZ0aLSu4VA==
 
 keyboardevents-areequal@^0.2.1:
   version "0.2.2"
