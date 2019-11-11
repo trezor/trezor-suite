@@ -79,6 +79,8 @@ PODS:
     - React-Core (= 0.60.6)
   - React-RCTWebSocket (0.60.6):
     - React-Core (= 0.60.6)
+  - RNSVG (9.5.1):
+    - React
   - yoga (0.60.6.React)
 
 DEPENDENCIES:
@@ -102,6 +104,7 @@ DEPENDENCIES:
   - React-RCTText (from `../../../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../../../node_modules/react-native/Libraries/Vibration`)
   - React-RCTWebSocket (from `../../../node_modules/react-native/Libraries/WebSocket`)
+  - RNSVG (from `../../../node_modules/react-native-svg`)
   - yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -149,6 +152,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/Libraries/Vibration"
   React-RCTWebSocket:
     :path: "../../../node_modules/react-native/Libraries/WebSocket"
+  RNSVG:
+    :path: "../../../node_modules/react-native-svg"
   yoga:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
@@ -174,8 +179,9 @@ SPEC CHECKSUMS:
   React-RCTText: d91537e29e38dc69cf09cbca0875cf5dc7402da6
   React-RCTVibration: 7655d72dfb919dd6d8e135ca108a5a2bd9fcd7b4
   React-RCTWebSocket: 7cd2c8d0f8ddd680dc76404defba7ab1f56b83af
+  RNSVG: 0eb087cfb5d7937be93c45b163b26352a647e681
   yoga: 5079887aa3e4c62142d6bcee493022643ee4d730
 
-PODFILE CHECKSUM: 212934118113a83d92f4583427abacbda0ac9df3
+PODFILE CHECKSUM: ca8c0483556ebe66c4e0c06a4f177b1b5519b950
 
 COCOAPODS: 1.8.3

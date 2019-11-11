@@ -5,7 +5,8 @@
     "scripts": {
         "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:ios": "run-p start run-ios",
-        "run-ios": "react-native run-ios --no-packager",
+        "run-ios": "yarn install-pods && react-native run-ios --no-packager",
+        "install-pods": "cd ./ios/ && pod install",
         "dev:android": "run-p start run-android",
         "run-android": "react-native run-android --no-packager",
         "start": "yarn react-native start --projectRoot ../../ --config ./metro.config.js",
