@@ -22,7 +22,7 @@ module.exports = {
         }),
     },
     resolver: {
-        resolverMainFields: ['react-native', 'browser', 'main'],
+        resolverMainFields: ['react-native', 'native', 'browser', 'main'],
         extraNodeModules: {
             crypto: nodejs.crypto,
             stream: nodejs.stream,
