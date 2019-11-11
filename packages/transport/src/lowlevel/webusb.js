@@ -182,7 +182,13 @@ export default class WebUsbPlugin {
 
     if (first) {
       await device.selectConfiguration(this.configurationId);
-      await device.reset();
+
+      if (typeof navigator !== `undefined`) {
+        const chromeOS = /\bCrOS\b/.test(navigator.userAgent);
+        if (!chromeOS) {
+          await device.reset();
+        }
+      }
     }
 
     const interfaceId = debug ? this.debugInterfaceId : this.normalInterfaceId;
