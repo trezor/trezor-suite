@@ -10,11 +10,12 @@
         "run-android": "react-native run-android --no-packager",
         "start": "yarn react-native start --projectRoot ../../ --config ./metro.config.js",
         "start:clean": "yarn workspace @trezor/suite-native clean && yarn workspace @trezor/suite-native start -- --reset-cache",
-        "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*",
+        "clean": "watchman watch-del-all && rm -rf $TMPDIR/react-native-packager-cache-* && rm -rf $TMPDIR/metro-bundler-cache-*",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json",
         "postinstall": "sed -e 's:node ./node_modules/react-native/cli.js config:node \" + root + \"/../../node_modules/react-native/cli.js config:g' -i.bak ../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle",
-        "build:android": "rm -rf /tmp/metro-bundler-cache-* && rm -rf /tmp/haste-map-react-native-packager-* && cd android && ./gradlew bundleRelease"
+        "bundle:android": "yarn workspace @trezor/suite-native react-native bundle --entry-file packages/suite-native/index.js --bundle-output ./android/app/src/main/assets/index.android.bundle --assets-dest ./android/app/src/main/res --platform android --dev false",
+        "build:android": "rimraf packages/suite-native/android/app/build && yarn workspace @trezor/suite-native bundle:android --reset-cache && cd ./android && ./gradlew bundleRelease -x bundleReleaseJsAndAssets --no-build-cache && ./gradlew assembleRelease -x bundleReleaseJsAndAssets --no-build-cache"
     },
     "dependencies": {
         "@trezor/components": "^1.0.0",

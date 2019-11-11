@@ -56,6 +56,20 @@ const definedMessages = defineMessages({
         defaultMessage: 'Learn more.',
         description: 'Link to Trezor wiki.',
     },
+    TR_ENTER_PIN: {
+        id: 'TR_ENTER_PIN',
+        defaultMessage: 'Enter PIN',
+        description: 'Button. Submit PIN',
+    },
+    TR_CANCEL: {
+        id: 'TR_CANCEL',
+        defaultMessage: 'Cancel',
+    },
+    TR_TRY_AGAIN: {
+        id: 'TR_TRY_AGAIN',
+        defaultMessage: 'Try again',
+        description: 'Try to run the process again',
+    },
 });
 
 export default definedMessages;

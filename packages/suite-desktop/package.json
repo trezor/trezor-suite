@@ -5,15 +5,16 @@
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "homepage": "http://www.trezor.io",
-    "main": "src/electron.js",
+    "main": "dist/electron.js",
     "scripts": {
         "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:desktop": "yarn workspace @trezor/suite-data copy-static-files && electron .",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && electron .",
+        "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
         "preelectron-pack": "yarn build",
         "pack": "electron-builder --dir",
-        "clean": "rimraf ./build-electron && rimraf ./build",
-        "build:desktop": "rimraf ./build && next build && next export -o build",
+        "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
+        "build:lib": "tsc --project src-electron/tsconfig.json",
+        "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib ",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
@@ -31,7 +32,7 @@
         },
         "files": [
             "build/**/*",
-            "src/*.js",
+            "dist/*.js",
             "package.json"
         ],
         "dmg": {
@@ -74,6 +75,7 @@
     "devDependencies": {
         "@babel/core": "^7.0.0",
         "@sentry/browser": "^5.4.0",
+        "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^8.0.6",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",

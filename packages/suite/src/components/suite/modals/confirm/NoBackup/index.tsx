@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components/Intl';
 
 import { H5, P, Icon, Button, colors } from '@trezor/components';
-import l10nCommonMessages from '../../messages';
+import suiteMessages from '@suite-views/index.messages';
 
 const Wrapper = styled.div`
     max-width: 370px;
@@ -35,11 +35,11 @@ interface Props {
 const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
     <Wrapper>
         <H5>
-            <Translation>{l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
+            <Translation>{suiteMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
         </H5>
         <Icon size={32} color={colors.WARNING_PRIMARY} icon="WARNING" />
         <StyledP size="small">
-            <Translation>{l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>
+            <Translation>{suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>
         </StyledP>
         <Row>
             <BackupButton
@@ -48,10 +48,10 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                     onCreateBackup();
                 }}
             >
-                <Translation>{l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
+                <Translation>{suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
             </BackupButton>
             <Button isInverse variant="warning" onClick={() => onReceiveConfirmation(true)}>
-                <Translation>{l10nCommonMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
+                <Translation>{suiteMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
             </Button>
         </Row>
     </Wrapper>

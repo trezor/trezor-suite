@@ -1,11 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_ENTER_PIN: {
-        id: 'TR_ENTER_PIN',
-        defaultMessage: 'Enter PIN',
-        description: 'Button. Submit PIN',
-    },
     TR_PIN_MANUAL_LINK: {
         id: 'TR_PIN_MANUAL_LINK',
         defaultMessage: 'Learn more',

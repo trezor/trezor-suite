@@ -13,6 +13,7 @@ import Row from './components/Row';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import l10nMessages from './index.messages';
+import walletAccountMessages from '@wallet-views/account/messages';
 
 const Wrapper = styled.div``;
 
@@ -53,7 +54,8 @@ const DiscoveryStatus = () => (
         <LoadingWrapper>
             <Loader size={15} />
             <LoadingText>
-                <FormattedMessage {...l10nMessages.TR_LOADING_ACCOUNTS} />
+                <FormattedMessage {...walletAccountMessages.TR_LOADING_ACCOUNTS} />
+                {/* todo: if you want dots "..." use Loader.Dots from onboarding */}
             </LoadingText>
         </LoadingWrapper>
     </Wrapper>

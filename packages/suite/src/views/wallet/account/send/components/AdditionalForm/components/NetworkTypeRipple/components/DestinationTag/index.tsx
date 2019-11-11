@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Input, Tooltip, Icon, colors } from '@trezor/components';
-import commonMessages from '@wallet-views/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
+import globalMessages from '@suite-support/Messages';
 import messages from './index.messages';
 import { Props as ContainerProps } from '../../Container';
 
@@ -54,8 +54,9 @@ const NetworkTypeXrp = (props: Props) => (
                 <Tooltip
                     content={<FormattedMessage {...messages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
                     maxWidth={200}
+                    // todo: link into config
                     ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
-                    ctaText={<FormattedMessage {...commonMessages.TR_LEARN_MORE} />}
+                    ctaText={<FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />}
                     placement="top"
                 >
                     <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
