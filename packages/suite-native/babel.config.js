@@ -10,10 +10,8 @@ module.exports = api => {
                         // TODO: alias for routerActions could be removed
                         // since it will be handled with resolver for custom .useNative extension
                         // (after renaming routerActions.ts to routerActions.useNative.ts in suite folder)
-                        '^@suite/actions/routerActions$':
-                            './packages/suite-native/src/actions/routerActions',
-                        '^@suite/actions/(.+).useNative$':
-                            './packages/suite-native/src/actions/\\1', // every action file in suite/actions with .useNative extension will be replaced by a file in suite-native/actions directory
+                        '^@suite/actions/routerActions$': './packages/suite-native/src/actions/routerActions',
+                        '^@suite/actions/(.+).useNative$': './packages/suite-native/src/actions/\\1', // every action file in suite/actions with .useNative extension will be replaced by a file in suite-native/actions directory
                         '^@suite/(.+)': './packages/suite/src/\\1', // relative to "projectRoot: ../../" defined in package.json
                         'node-fetch': 'whatwg-fetch',
                         '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
@@ -38,7 +36,6 @@ module.exports = api => {
                         '^@(.+)-middlewares': './packages/suite/src/middlewares/\\1/index',
                         '^@trezor/components$': './packages/components',
                         '^@trezor/suite-data$': './packages/suite-data',
-                        '^@trezor/blockchain-link$': './packages/blockchain-link',
                     },
                 },
             ],
