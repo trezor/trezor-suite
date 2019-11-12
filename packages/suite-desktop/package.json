@@ -33,10 +33,12 @@
         "files": [
             "build/**/*",
             "dist/*.js",
+            "entitlements.mac.inherit.plist",
             "package.json"
         ],
         "dmg": {
-            "contents": [{
+            "contents": [
+                {
                     "x": 410,
                     "y": 150,
                     "type": "link",
@@ -52,6 +54,8 @@
         "mac": {
             "icon": "build/static/images/suite/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
+            "entitlements": "entitlements.mac.inherit.plist",
+            "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": "tar.gz"
         },
         "win": {
