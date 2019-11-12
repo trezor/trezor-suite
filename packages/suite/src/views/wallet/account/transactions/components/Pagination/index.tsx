@@ -31,6 +31,11 @@ interface Props {
 }
 
 const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: Props) => {
+    // if totalPages is 1 do not render pagination
+    const showPagination = totalPages ? totalPages > 1 : false;
+    if (!showPagination) {
+        return null;
+    }
     // if totalPages is undefined show only start/prev/next buttons
     const showNext = totalPages ? currentPage < totalPages : !isOnLastPage;
     const showPrevious = currentPage > 1;
