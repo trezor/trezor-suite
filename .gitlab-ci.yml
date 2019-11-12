@@ -1,11 +1,11 @@
 image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
 
 variables:
-    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
+    PACKAGE_PATH_COMPONENTS: 'libs/components-storybook'
     PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
     PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
     PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
+    PACKAGE_PATH_CONNECT_EXPLORER: 'libs/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 stages:

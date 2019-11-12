@@ -27,7 +27,7 @@ blockchain-link build:
         expire_in: 2 days
         when: always
         paths:
-            - packages/blockchain-link/lib
-            - packages/blockchain-link/build
+            - libs/blockchain-link/lib
+            - libs/blockchain-link/build
     dependencies:
         - install and build

@@ -20,7 +20,7 @@ components-storybook build:
     name: components-build-files
     expire_in: 15 minutes
     paths:
-      - packages/components-storybook/.build
+      - libs/components-storybook/.build
   dependencies:
     - install and build
 
@@ -38,7 +38,7 @@ components-storybook deploy dev:
     on_stop: components-storybook delete review
   before_script: []
   script:
-    - cd packages/components-storybook
+    - cd libs/components-storybook
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/components-storybook
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
@@ -59,7 +59,7 @@ components-storybook delete review:
     action: stop
   before_script: []
   script:
-    - cd packages/components-storybook
+    - cd libs/components-storybook
     - 'rm -r "${DEPLOY_DIRECTORY}"'
   tags:
     - deploy
@@ -76,8 +76,8 @@ components-storybook test snapshots:
     expire_in: 2 days
     when: always
     paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/screenshots
+      - /builds/satoshilabs/trezor/trezor-suite/libs/components-storybook/test/snapshots
+      - /builds/satoshilabs/trezor/trezor-suite/libs/components-storybook/test/screenshots
 
 components-storybook make snapshot references:
   image: cypress/base:10
@@ -90,7 +90,7 @@ components-storybook make snapshot references:
     expire_in: 5 days
     when: always
     paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
+      - /builds/satoshilabs/trezor/trezor-suite/libs/components-storybook/test/snapshots/
     
   dependencies:
     - install and build

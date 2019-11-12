@@ -7,23 +7,22 @@ install and build:
         expire_in: 3 hours
         when: always
         paths:
-            # libs
+            - libs/blockchain-link/lib
+            - libs/rollout/lib
+            - libs/translations-manager/lib
             - packages/components/lib
-            - packages/blockchain-link/lib
-            - packages/rollout/lib
             - packages/suite-storage/lib
-            - packages/translations-manager/lib
             
-            # node_modules
             - node_modules
-            - packages/blockchain-link/node_modules
+            - libs/blockchain-link/node_modules
+            - libs/translations-manager/node_modules
+            - libs/components-storybook/node_modules
+            - libs/connect-explorer/node_modules
+            - libs/rollout/node_modules
             - packages/components/node_modules
-            - packages/components-storybook/node_modules
-            - packages/connect-explorer/node_modules
-            - packages/rollout/node_modules
             - packages/suite/node_modules
             - packages/suite-web/node_modules
             - packages/suite-desktop/node_modules
             - packages/suite-native/node_modules
             - packages/suite-storage/node_modules
-            - packages/translations-manager/node_modules
+            

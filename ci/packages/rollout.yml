@@ -27,6 +27,6 @@ rollout build:
         expire_in: 2 days
         when: always
         paths:
-            - packages/rollout/lib
+            - libs/rollout/lib
     dependencies:
         - install and build
