@@ -76,9 +76,9 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "packages/suite-native/index.js",
+    entryFile: "packages/suite-native/android/src/main/assets/index.android.bundle",
     root: "../../../../",
-    enableHermes: false,  // clean and rebuild if changing
+    enableHermes: false  // clean and rebuild if changing
 ]
 
 apply from: "../../../../node_modules/react-native/react.gradle"
@@ -148,6 +148,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('DEVELOP_STORE_FILE')) {
+                storeFile file(DEVELOP_STORE_FILE)
+                storePassword DEVELOP_STORE_PASSWORD
+                keyAlias DEVELOP_KEY_ALIAS
+                keyPassword DEVELOP_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
@@ -159,6 +167,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release

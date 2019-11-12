@@ -2,7 +2,7 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import { NOTIFICATION } from '@suite-actions/constants';
 import l10nMessages from '@wallet-components/Notifications/actions.messages';
-import l10nCommonMessages from '@wallet-views/messages';
+import globalMessages from '@suite-support/Messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
 import { WalletAction } from '@wallet-types';
 
@@ -108,7 +108,7 @@ export const showAddress = (path: string) => async (
                 cancelable: true,
                 actions: [
                     {
-                        label: l10nCommonMessages.TR_TRY_AGAIN,
+                        label: globalMessages.TR_TRY_AGAIN,
                         callback: () => {
                             dispatch(showAddress(path));
                         },

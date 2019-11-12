@@ -4,9 +4,9 @@ import { FormattedMessage } from 'react-intl';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
 import { Account, Network } from '@wallet-types';
+import l10nSuiteMessages from '@suite-views/index.messages';
 
 import l10nMessages from './messages';
-import l10nCommonMessages from '../../messages';
 
 const { FONT_SIZE } = variables;
 
@@ -53,7 +53,7 @@ const ConfirmAddress: FunctionComponent<Props> = ({ device, account, network }) 
                 <Label>
                     {network.symbol}
                     <FormattedMessage
-                        {...l10nCommonMessages.TR_ACCOUNT_HASH}
+                        {...l10nSuiteMessages.TR_ACCOUNT_HASH}
                         values={{ number: account.index + 1 }}
                     />
                 </Label>

@@ -104,3 +104,11 @@ describe('getDeviceInstances', () => {
         });
     });
 });
+
+describe('isDeviceRemembered', () => {
+    fixtures.isDeviceRemembered.forEach(f => {
+        it(f.description, () => {
+            expect(utils.isDeviceRemembered(f.device)).toEqual(f.result);
+        });
+    });
+});

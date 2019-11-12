@@ -5,15 +5,16 @@
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "homepage": "http://www.trezor.io",
-    "main": "src/electron.js",
+    "main": "dist/electron.js",
     "scripts": {
         "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:desktop": "yarn workspace @trezor/suite-data copy-static-files && electron .",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && electron .",
+        "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
         "preelectron-pack": "yarn build",
         "pack": "electron-builder --dir",
-        "clean": "rimraf ./build-electron && rimraf ./build",
-        "build:desktop": "rimraf ./build && next build && next export -o build",
+        "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
+        "build:lib": "tsc --project src-electron/tsconfig.json",
+        "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib ",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
@@ -25,17 +26,19 @@
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
         "asar": false,
-        "electronVersion": "6.0.9",
+        "electronVersion": "7.1.1",
         "directories": {
             "output": "build-electron"
         },
         "files": [
             "build/**/*",
-            "src/*.js",
+            "dist/*.js",
+            "entitlements.mac.inherit.plist",
             "package.json"
         ],
         "dmg": {
-            "contents": [{
+            "contents": [
+                {
                     "x": 410,
                     "y": 150,
                     "type": "link",
@@ -51,6 +54,8 @@
         "mac": {
             "icon": "build/static/images/suite/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
+            "entitlements": "entitlements.mac.inherit.plist",
+            "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": "tar.gz"
         },
         "win": {
@@ -66,7 +71,7 @@
     },
     "dependencies": {
         "electron-is-dev": "^1.1.0",
-        "electron-localshortcut": "^3.1.0",
+        "electron-localshortcut": "^3.2.0",
         "electron-next": "^3.1.5",
         "os": "^0.1.1",
         "ps-list": "6.3.0"
@@ -74,13 +79,14 @@
     "devDependencies": {
         "@babel/core": "^7.0.0",
         "@sentry/browser": "^5.4.0",
+        "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^8.0.6",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.0.8",
-        "electron": "^6.0.9",
-        "electron-builder": "22.0.0",
+        "electron": "^7.1.1",
+        "electron-builder": "22.1.0",
         "git-revision-webpack-plugin": "^3.0.3",
         "next": "^9.0.5",
         "next-plugin-custom-babel-config": "^1.0.0",
