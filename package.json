@@ -9,7 +9,8 @@
     },
     "workspaces": {
         "packages": [
-            "packages/*"
+            "packages/*",
+            "libs/*"
         ],
         "nohoist": [
             "!(suite-native)/react-native",
