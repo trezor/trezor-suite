@@ -24,7 +24,7 @@ include:
     # - ci/packages/components.yml
     - ci/packages/components-v2.yml
     # - ci/packages/components-storybook.yml
-    # - ci/packages/components-storybook-v2.yml
+    - ci/packages/components-storybook-v2.yml
     # - ci/packages/suite.yml
     # - ci/packages/suite-web.yml
     # - ci/packages/suite-desktop.yml
