@@ -89,6 +89,5 @@ components-storybook make snapshot references:
     when: always
     paths:
       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
-    
   dependencies:
     - install and build
