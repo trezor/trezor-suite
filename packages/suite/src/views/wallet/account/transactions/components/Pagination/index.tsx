@@ -31,11 +31,6 @@ interface Props {
 }
 
 const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: Props) => {
-    // if totalPages is 1 do not render pagination
-    const showPagination = totalPages ? totalPages > 1 : false;
-    if (!showPagination) {
-        return null;
-    }
     // if totalPages is undefined show only start/prev/next buttons
     const showNext = totalPages ? currentPage < totalPages : !isOnLastPage;
     const showPrevious = currentPage > 1;
@@ -43,6 +38,13 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
     const calculatedPages = useMemo(() => [...Array(totalPages)].map((_p, i) => i + 1), [
         totalPages,
     ]);
+
+    // if totalPages is 1 do not render pagination
+    // if totalPages is undefined always show pagination (e.g. XRP)
+    const showPagination = totalPages ? totalPages > 1 : true;
+    if (!showPagination) {
+        return null;
+    }
 
     return (
         <Wrapper>
