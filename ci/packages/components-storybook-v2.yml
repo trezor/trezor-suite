@@ -1,18 +1,18 @@
-components-sb2 lint:
+components-storybook-v2 lint:
   stage: lint and prettier
   script:
     - yarn workspace @trezor/components-storybook-v2 lint
   dependencies:
     - install and build
 
-components-storybook2 type check:
+components-storybook-v2 type check:
   stage: typescript type check
   script:
     - yarn workspace @trezor/components-storybook-v2 type-check
   dependencies:
     - install and build
 
-components-storybook2 build:
+components-storybook-v2 build:
   stage: build
   script:
     - yarn workspace @trezor/components-storybook-v2 build
@@ -24,17 +24,17 @@ components-storybook2 build:
   dependencies:
     - install and build
 
-components-storybook2 deploy dev:
+components-storybook-v2 deploy dev:
   stage: deploy to dev servers
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components-storybook-v2/${CI_BUILD_REF_NAME}
   dependencies:
     - install and build
-    - components-storybook2 build
+    - components-storybook-v2 build
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    on_stop: components-storybook2 delete review
+    on_stop: components-storybook-v2 delete review
   before_script: []
   script:
     - cd packages/components-storybook-v2
@@ -45,7 +45,7 @@ components-storybook2 deploy dev:
   tags:
     - deploy
 
-components-storybook2 delete review:
+components-storybook-v2 delete review:
   before_script: []
   stage: deploy to dev servers
   variables:
