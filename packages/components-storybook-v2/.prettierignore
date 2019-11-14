@@ -1,0 +1,10 @@
+public
+build
+coverage
+cache/**
+node_modules
+src/flowtype/npm
+scripts/solidity/.*
+**/_old/*
+docs
+lib
