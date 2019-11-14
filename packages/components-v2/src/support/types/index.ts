@@ -2,7 +2,7 @@ import { COINS, ICONS } from '../../config/variables';
 
 export type FeedbackType = 'success' | 'info' | 'warning' | 'error';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ButtonVariant = 'primary' | 'secondary';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
 

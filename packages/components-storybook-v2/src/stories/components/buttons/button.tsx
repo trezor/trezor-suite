@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { text, boolean, select } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
 
 storiesOf('Buttons', module).add(
@@ -13,7 +13,6 @@ storiesOf('Buttons', module).add(
             {
                 'Default (primary)': null,
                 Secondary: 'secondary',
-                Tertiary: 'tertiary',
             },
             null
         );
