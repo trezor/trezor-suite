@@ -27,8 +27,6 @@ const Row = styled.div`
 `;
 
 const GasInput = styled(Input)`
-    padding-bottom: 20px;
-
     &:first-child {
         padding-right: 20px;
     }
