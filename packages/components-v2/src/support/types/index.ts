@@ -1,6 +1,6 @@
 import { COINS, ICONS } from '../../config/variables';
 
-export type FeedbackType = 'success' | 'info' | 'warning' | 'error';
+export type FeedbackType = 'success' | 'warning' | 'error';
 
 export type ButtonVariant = 'primary' | 'secondary';
 
