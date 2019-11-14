@@ -7,8 +7,8 @@ import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import FiatComponent from './components/Fiat';
 import CurrencySelect from './components/CurrencySelect';
 import SetMax from './components/SetMax';
-
-import messages from './index.messages';
+import { getInputState } from '@wallet-utils/sendFormUtils';
+import messages from '@wallet-views/account/send/messages';
 import { DispatchProps } from '../../Container';
 import { Account, Fiat, Network } from '@wallet-types';
 
@@ -64,15 +64,6 @@ const getMessage = (error: Output['amount']['error'], decimals: Network['decimal
     }
 };
 
-const getState = (error: Output['amount']['error'], amount: Output['amount']['value']) => {
-    if (error) {
-        return 'error';
-    }
-    if (amount && !error) {
-        return 'success';
-    }
-};
-
 const hasRates = (
     fiat: any,
     localCurrency: Output['localCurrency']['value'],
@@ -90,12 +81,10 @@ const hasRates = (
     return false;
 };
 
-const StyledInput = styled(Input)``;
-
 const Amount = (props: Props) => (
     <Wrapper>
-        <StyledInput
-            state={getState(props.error, props.amount)}
+        <Input
+            state={getInputState(props.error, props.amount)}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"

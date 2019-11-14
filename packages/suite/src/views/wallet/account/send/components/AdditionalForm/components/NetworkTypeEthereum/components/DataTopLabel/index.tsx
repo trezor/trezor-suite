@@ -3,6 +3,6 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div``;
 
-const DataTopLabel = () => <Wrapper>top label</Wrapper>;
+const DataTopLabel = () => <Wrapper>Data</Wrapper>;
 
 export default DataTopLabel;

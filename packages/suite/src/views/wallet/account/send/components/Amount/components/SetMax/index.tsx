@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
+import messages from '@wallet-views/account/send/messages';
 
 import { Button, variables, Icon, colors } from '@trezor/components';
-import messages from './index.messages';
 import { DispatchProps } from '../../../../Container';
 
 const SetMaxButton = styled(Button)`

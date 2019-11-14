@@ -5,7 +5,8 @@ import { Input } from '@trezor/components';
 import sendMessages from '@wallet-views/account/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
-import messages from './index.messages';
+import { getInputState } from '@wallet-utils/sendFormUtils';
+import messages from '@wallet-views/account/send/messages';
 import { Props as ContainerProps } from '../../../../Container';
 
 const Label = styled.div`
@@ -21,15 +22,6 @@ interface Props {
     minFee: State['feeInfo']['minFee'];
     sendFormActions: ContainerProps['sendFormActions'];
 }
-
-const getState = (error: Props['errors'], customFee: Props['customFee']) => {
-    if (error) {
-        return 'error';
-    }
-    if (customFee && !error) {
-        return 'success';
-    }
-};
 
 const getErrorMessage = (
     error: Props['errors'],
@@ -55,7 +47,7 @@ const getErrorMessage = (
 
 const CustomFee = (props: Props) => (
     <Input
-        state={getState(props.errors, props.customFee)}
+        state={getInputState(props.errors, props.customFee)}
         topLabel={
             <Label>
                 <FormattedMessage {...sendMessages.TR_FEE} />

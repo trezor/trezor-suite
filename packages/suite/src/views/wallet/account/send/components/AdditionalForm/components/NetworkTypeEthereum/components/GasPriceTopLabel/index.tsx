@@ -3,6 +3,6 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div``;
 
-const GasPriceTopLabel = () => <Wrapper>top label</Wrapper>;
+const GasPriceTopLabel = () => <Wrapper>Gas Price</Wrapper>;
 
 export default GasPriceTopLabel;

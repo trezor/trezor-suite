@@ -4,6 +4,7 @@ import { Button, colors, Icon, Input } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
 import commonMessages from '@wallet-views/messages';
 import React from 'react';
@@ -11,7 +12,7 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 
 import { DispatchProps } from '../../Container';
-import messages from './index.messages';
+import messages from '@wallet-views/account/send/messages';
 
 const TopLabel = styled.div``;
 
@@ -63,18 +64,9 @@ const getMessage = (
     }
 };
 
-const getState = (error: Output['address']['error'], address: Output['address']['value']) => {
-    if (error) {
-        return 'error';
-    }
-    if (address && !error) {
-        return 'success';
-    }
-};
-
 const Address = (props: Props) => (
     <Input
-        state={getState(props.error, props.address)}
+        state={getInputState(props.error, props.address)}
         autoComplete="off"
         autoCorrect="off"
         spellCheck={false}

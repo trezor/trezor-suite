@@ -3,6 +3,6 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div``;
 
-const GasLimitTopLabel = () => <Wrapper>top label</Wrapper>;
+const GasLimitTopLabel = () => <Wrapper>Gas Limit</Wrapper>;
 
 export default GasLimitTopLabel;

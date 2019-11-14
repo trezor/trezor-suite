@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Intl';
 import { Input, Tooltip, Icon, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import globalMessages from '@suite-support/Messages';
-import messages from './index.messages';
+import messages from '@wallet-views/account/send/messages';
 import { Props as ContainerProps } from '../../Container';
 
 interface Props {
@@ -27,19 +28,10 @@ const StyledIcon = styled(Icon)`
     height: 100%;
 `;
 
-const getState = (error: Props['errors'], destinationTag: Props['destinationTag']) => {
-    if (error) {
-        return 'error';
-    }
-    if (destinationTag && !error) {
-        return 'success';
-    }
-};
-
 const getErrorMessage = (error: Props['errors']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <FormattedMessage {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;
+            return <Translation>{messages.TR_DESTINATION_TAG_IS_NOT_NUMBER}</Translation>;
         default:
             return null;
     }
@@ -47,16 +39,16 @@ const getErrorMessage = (error: Props['errors']) => {
 
 const NetworkTypeXrp = (props: Props) => (
     <Input
-        state={getState(props.errors, props.destinationTag)}
+        state={getInputState(props.errors, props.destinationTag)}
         topLabel={
             <Label>
-                <FormattedMessage {...messages.TR_XRP_DESTINATION_TAG} />
+                <Translation>{messages.TR_XRP_DESTINATION_TAG}</Translation>
                 <Tooltip
-                    content={<FormattedMessage {...messages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
+                    content={<Translation>{messages.TR_XRP_DESTINATION_TAG_EXPLAINED}</Translation>}
                     maxWidth={200}
                     // todo: link into config
                     ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
-                    ctaText={<FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />}
+                    ctaText={<Translation>{globalMessages.TR_LEARN_MORE_LINK}</Translation>}
                     placement="top"
                 >
                     <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Props } from './Container';
 import { Input, TextArea } from '@trezor/components';
 import GasLimitTopLabel from './components/GasLimitTopLabel';
@@ -30,20 +31,22 @@ const GasInput = styled(Input)`
 
 const NetworkTypeEthereum = ({ send, sendFormActionsEthereum }: Props) => {
     if (!send) return null;
+
+    const { gasLimit, gasPrice, data } = send.networkTypeEthereum;
     return (
         <Wrapper>
             <Row>
                 <GasInput
-                    state={undefined}
+                    state={getInputState(gasLimit.error, gasLimit.value)}
                     topLabel={<GasLimitTopLabel />}
                     bottomText={undefined}
-                    value={send.networkTypeEthereum.gasLimit.value || ''}
+                    value={gasLimit.value || ''}
                     isDisabled={false}
                     onChange={e => sendFormActionsEthereum.handleGasLimit(e.target.value)}
                 />
 
                 <GasInput
-                    state={undefined}
+                    state={getInputState(gasPrice.error, gasPrice.value)}
                     topLabel={<GasPriceTopLabel />}
                     bottomText=""
                     value={send.networkTypeEthereum.gasPrice.value || ''}
@@ -52,7 +55,9 @@ const NetworkTypeEthereum = ({ send, sendFormActionsEthereum }: Props) => {
             </Row>
             <Row>
                 <TextArea
+                    state={getInputState(data.error, data.value)}
                     value={send.networkTypeEthereum.data.value || ''}
+                    onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
                     topLabel={<DataTopLabel />}
                 />
             </Row>

@@ -1,5 +1,6 @@
 import { Output, State } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
 
 export const getOutput = (outputs: Output[], id: number) =>
@@ -73,5 +74,18 @@ export const getTransactionInfo = (networkType: Account['networkType'], send: St
             return send.networkTypeRipple.transactionInfo;
         }
         // no default
+    }
+};
+
+export const getInputState = (
+    error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
+    value: string | null,
+) => {
+    if (error) {
+        return 'error';
+    }
+
+    if (value && !error) {
+        return 'success';
     }
 };

@@ -6,7 +6,8 @@ import AccountName from '@wallet-components/AccountName';
 
 import { StateProps, DispatchProps } from './Container';
 import { Content, LayoutAccount } from '@wallet-components';
-import l10nMessages from './components/messages';
+import messages from '@wallet-views/account/send/messages';
+
 import {
     Address,
     Amount,
@@ -70,8 +71,8 @@ const Send = (props: StateProps & DispatchProps) => {
     const { account, network, discovery, shouldRender } = props.selectedAccount;
     const accountNameMessage =
         account && account.networkType === 'ethereum'
-            ? l10nMessages.TR_SEND_NETWORK_AND_TOKENS
-            : l10nMessages.TR_SEND_NETWORK;
+            ? messages.TR_SEND_NETWORK_AND_TOKENS
+            : messages.TR_SEND_NETWORK;
 
     if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
