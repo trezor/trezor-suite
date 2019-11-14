@@ -92,9 +92,10 @@ const Button = ({
     size = 'medium',
     icon,
     disabled = false,
+    ...rest
 }: ButtonProps) => {
     return (
-        <Wrapper variant={variant} size={size} disabled={disabled}>
+        <Wrapper variant={variant} size={size} disabled={disabled} {...rest}>
             {children}
         </Wrapper>
     );
