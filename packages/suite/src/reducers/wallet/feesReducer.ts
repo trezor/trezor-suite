@@ -28,7 +28,14 @@ export const initialState = NETWORKS.reduce(
             blockTime: 10,
             minFee: 1,
             maxFee: 100,
-            levels: [{ label: 'normal', feePerUnit: '1', blocks: 0, value: '1' }],
+            levels: [
+                {
+                    label: 'normal',
+                    feePerUnit: '1',
+                    blocks: 0,
+                    value: '1',
+                },
+            ],
         };
         return state;
     },

@@ -284,6 +284,21 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 ETH specific
             */
 
+            // compose eth transaction after form change
+            case SEND.ETH_PRECOMPOSED_TX: {
+                draft.networkTypeEthereum.transactionInfo = action.payload;
+
+                if (
+                    action.payload.type === 'error' &&
+                    action.payload.error === 'NOT-ENOUGH-FUNDS'
+                ) {
+                    draft.outputs.map(
+                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
+                    );
+                }
+                return draft;
+            }
+
             // change input "Gas limit"
             case SEND.ETH_HANDLE_GAS_LIMIT: {
                 const { gasLimit } = action;
