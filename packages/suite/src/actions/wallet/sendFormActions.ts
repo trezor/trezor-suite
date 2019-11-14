@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 
 import * as storageActions from '@suite-actions/storageActions';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
-// import * as ethereumActions from './sendFormSpecific/ethereumActions';
+import * as ethereumActions from './sendFormSpecific/ethereumActions';
 import * as rippleActions from './sendFormSpecific/rippleActions';
 
 /**
@@ -76,9 +76,9 @@ export const compose = (setMax: boolean = false) => async (
         case 'ripple': {
             return dispatch(rippleActions.compose());
         }
-        // case 'ethereum': {
-        //     return dispatch(ethereumActions.compose());
-        // }
+        case 'ethereum': {
+            return dispatch(ethereumActions.compose());
+        }
         // no default
     }
 };

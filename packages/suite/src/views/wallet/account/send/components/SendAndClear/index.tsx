@@ -69,6 +69,14 @@ const isDisabled = (
         isDisabled = true;
     }
 
+    // error in advanced eth form
+    if (networkType === 'ethereum') {
+        const { gasPrice, gasLimit, data } = send.networkTypeEthereum;
+        if (gasPrice.error || gasLimit.error || data.error) {
+            isDisabled = true;
+        }
+    }
+
     // locks
     if (suite.locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
         isDisabled = true;

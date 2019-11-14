@@ -73,4 +73,4 @@ export type SendFormEthActions =
     | { type: typeof SEND.ETH_HANDLE_GAS_LIMIT; gasLimit: string }
     | { type: typeof SEND.ETH_HANDLE_GAS_PRICE; gasPrice: string }
     | { type: typeof SEND.ETH_HANDLE_DATA; data: string }
-    | { type: typeof SEND.XRP_PRECOMPOSED_TX; payload: PrecomposedTransactionEth };
+    | { type: typeof SEND.ETH_PRECOMPOSED_TX; payload: PrecomposedTransactionEth };
