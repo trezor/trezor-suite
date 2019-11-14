@@ -18,7 +18,7 @@ components-storybook build:
     - yarn workspace @trezor/components-storybook build
   artifacts:
     name: components-build-files
-    expire_in: 15 minutes
+    expire_in: 10 hours
     paths:
       - packages/components-storybook/.build
   dependencies:
@@ -28,7 +28,6 @@ components-storybook deploy dev:
   stage: deploy to dev servers
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components-storybook/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: ${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME}
   dependencies:
     - install and build
     - components-storybook build
@@ -43,7 +42,6 @@ components-storybook deploy dev:
     - mkdir -p ${DEPLOY_BASE_DIR}/components-storybook
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va .build/ "${DEPLOY_DIRECTORY}/"
-    - curl "https://api.telegram.org/bot${TELEGRAM_DEPLOY_BOT_TOKEN_PART1}:${TELEGRAM_DEPLOY_BOT_TOKEN_PART2}-${TELEGRAM_DEPLOY_BOT_TOKEN_PART3}/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   tags:
     - deploy
 
@@ -91,6 +89,5 @@ components-storybook make snapshot references:
     when: always
     paths:
       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
-    
   dependencies:
     - install and build

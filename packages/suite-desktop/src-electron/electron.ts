@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { app, session, BrowserWindow, ipcMain, shell } from 'electron';
 import isDev from 'electron-is-dev';
-// @ts-ignore
 import prepareNext from 'electron-next';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 
-const { isBridgeRunning, runBridgeProcess } = require('./bridge');
+import { isBridgeRunning, runBridgeProcess } from './bridge';
 
 let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
@@ -90,9 +88,7 @@ const init = async () => {
             session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
                 let url = request.url.substr(PROTOCOL.length + 1);
                 url = path.join(__dirname, '../build/', url);
-                // TODO: I don't believe this work
-                // @ts-ignore
-                callback({ path: url });
+                callback(url);
             });
         }
 
@@ -131,10 +127,8 @@ app.on('activate', () => {
 });
 
 app.on('browser-window-focus', (_event, win) => {
-    // @ts-ignore
-    if (isDev && !win.isDevToolsOpened()) {
-        // @ts-ignore
-        win.openDevTools();
+    if (isDev && !win.webContents.isDevToolsOpened()) {
+        win.webContents.openDevTools();
     }
 });
 
