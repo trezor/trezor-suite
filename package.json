@@ -12,6 +12,8 @@
             "packages/*"
         ],
         "nohoist": [
+            "@trezor/connect-explorer/trezor-connect",
+            "@trezor/connect-explorer/trezor-connect/**",
             "**/babel-jest"
         ]
     },
