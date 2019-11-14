@@ -17,8 +17,8 @@ components-storybook-v2 build:
   script:
     - yarn workspace @trezor/components-storybook-v2 build
   artifacts:
-    name: components-v2-build-files
-    expire_in: 15 minutes
+    name: components-build-files
+    expire_in: 10 hours
     paths:
       - packages/components-storybook-v2/.build
   dependencies:
@@ -34,17 +34,60 @@ components-storybook-v2 deploy dev:
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    on_stop: components-storybook-v2 delete review
   before_script: []
   script:
     - cd packages/components-storybook-v2
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/components-storybook-v2
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-    - ls
-    - pwd
     - rsync --delete -va .build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
 
+components-storybook-v2 delete review:
+  before_script: []
+  stage: deploy to dev servers
+  variables:
+    GIT_STRATEGY: none
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components-storybook-v2/${CI_BUILD_REF_NAME}
+  when: manual
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    action: stop
+  before_script: []
+  script:
+    - cd packages/components-storybook-v2
+    - 'rm -r "${DEPLOY_DIRECTORY}"'
+  tags:
+    - deploy
   dependencies:
     - install and build
+
+# components-storybook test snapshots:
+#   image: cypress/base:10
+#   stage: integration testing
+#   script:
+#     - npx cypress install
+#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook-v2 ci:test:snapshots
+#   artifacts:
+#     expire_in: 2 days
+#     when: always
+#     paths:
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/screenshots
+
+# components-storybook make snapshot references:
+#   image: cypress/base:10
+#   stage: integration testing
+#   when: manual
+#   script:
+#     - npx cypress install
+#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook-v2 ci:test:snapshots:references
+#   artifacts:
+#     expire_in: 5 days
+#     when: always
+#     paths:
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
+#   dependencies:
+#     - install and build

@@ -11,8 +11,7 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
 
-import l10nMessages from './ModelT.messages';
-import l10nRecoveryMessages from '../index.messages';
+import messages from '../index.messages';
 
 import { Dispatch, AppState } from '@suite-types';
 
@@ -79,7 +78,7 @@ const RecoveryStepModelT = (props: Props) => {
                 {getStatus() === null && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_RECOVER_SUBHEADING_MODEL_T} />
+                            <FormattedMessage {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
@@ -87,7 +86,7 @@ const RecoveryStepModelT = (props: Props) => {
                                     recoveryDevice();
                                 }}
                             >
-                                <FormattedMessage {...l10nRecoveryMessages.TR_START_RECOVERY} />
+                                <FormattedMessage {...messages.TR_START_RECOVERY} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -105,7 +104,7 @@ const RecoveryStepModelT = (props: Props) => {
                     <>
                         <Text>
                             <FormattedMessage
-                                {...l10nRecoveryMessages.TR_RECOVERY_ERROR}
+                                {...messages.TR_RECOVERY_ERROR}
                                 values={{ error: deviceCall.error || '' }}
                             />
                         </Text>

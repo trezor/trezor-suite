@@ -7,9 +7,8 @@ import { useKeyPress } from '@suite-utils/dom';
 import { getNewInstanceNumber } from '@suite-utils/device';
 
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-
+import globalMessages from '@suite-support/Messages';
 import l10nMessages from './messages';
-import l10CommonMessages from '../messages';
 
 interface Props {
     device: AcquiredDevice;
@@ -136,7 +135,7 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                     <FormattedMessage {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
                 </StyledButton>
                 <StyledButton variant="white" onClick={onCancel}>
-                    <FormattedMessage {...l10CommonMessages.TR_CANCEL} />
+                    <FormattedMessage {...globalMessages.TR_CANCEL} />
                 </StyledButton>
             </Column>
         </Wrapper>

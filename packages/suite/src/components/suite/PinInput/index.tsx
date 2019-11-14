@@ -4,7 +4,7 @@ import { Button, ButtonPin, InputPin } from '@trezor/components';
 
 import { FormattedMessage } from 'react-intl';
 
-import l10nMessages from './index.messages';
+import globalMessages from '@suite-support/Messages';
 
 const Wrapper = styled.div`
     max-width: 240px;
@@ -144,7 +144,7 @@ const PinInput = (props: Props) => {
 
             <PinFooter>
                 <Button onClick={() => onPinSubmit(pin)}>
-                    <FormattedMessage {...l10nMessages.TR_ENTER_PIN} />
+                    <FormattedMessage {...globalMessages.TR_ENTER_PIN} />
                 </Button>
             </PinFooter>
         </Wrapper>

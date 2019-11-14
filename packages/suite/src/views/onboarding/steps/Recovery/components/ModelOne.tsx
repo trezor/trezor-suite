@@ -18,8 +18,7 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import { BlindMatrix, Option, Text, Wrapper, OnboardingButton } from '@onboarding-components';
-import l10nMessages from './ModelOne.messages';
-import l10nRecoveryMessages from '../index.messages';
+import messages from '../index.messages';
 import WordsInput from './WordsInput';
 import { Dispatch, AppState } from '@suite-types';
 
@@ -112,7 +111,7 @@ const RecoveryStepModelOne = (props: Props) => {
                 {getStatus() === null && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_RECOVER_SUBHEADING} />
+                            <FormattedMessage {...messages.TR_RECOVER_SUBHEADING} />
                         </Text>
                         <Wrapper.Options>
                             <Option
@@ -123,7 +122,7 @@ const RecoveryStepModelOne = (props: Props) => {
                             >
                                 <P>
                                     <FormattedMessage
-                                        {...l10nMessages.TR_WORDS}
+                                        {...messages.TR_WORDS}
                                         values={{ count: '12' }}
                                     />
                                 </P>
@@ -136,7 +135,7 @@ const RecoveryStepModelOne = (props: Props) => {
                             >
                                 <P>
                                     <FormattedMessage
-                                        {...l10nMessages.TR_WORDS}
+                                        {...messages.TR_WORDS}
                                         values={{ count: '18' }}
                                     />
                                 </P>
@@ -149,7 +148,7 @@ const RecoveryStepModelOne = (props: Props) => {
                             >
                                 <P>
                                     <FormattedMessage
-                                        {...l10nMessages.TR_WORDS}
+                                        {...messages.TR_WORDS}
                                         values={{ count: '24' }}
                                     />
                                 </P>
@@ -172,7 +171,7 @@ const RecoveryStepModelOne = (props: Props) => {
                     <>
                         <Text>
                             <FormattedMessage
-                                {...l10nMessages.TR_RECOVERY_TYPES_DESCRIPTION}
+                                {...messages.TR_RECOVERY_TYPES_DESCRIPTION}
                                 values={{
                                     TR_LEARN_MORE_LINK: (
                                         <Link href={RECOVERY_MODEL_ONE_URL} variant="nostyle">
@@ -192,7 +191,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <FormattedMessage {...l10nMessages.TR_BASIC_RECOVERY_OPTION} />
+                                    <FormattedMessage {...messages.TR_BASIC_RECOVERY_OPTION} />
                                 </P>
                             </Option>
                             <Option
@@ -202,9 +201,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_ADVANCED_RECOVERY_OPTION}
-                                    />
+                                    <FormattedMessage {...messages.TR_ADVANCED_RECOVERY_OPTION} />
                                 </P>
                             </Option>
                         </Wrapper.Options>
@@ -215,7 +212,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     recoveryDevice();
                                 }}
                             >
-                                <FormattedMessage {...l10nRecoveryMessages.TR_START_RECOVERY} />
+                                <FormattedMessage {...messages.TR_START_RECOVERY} />
                             </OnboardingButton.Cta>
 
                             <OnboardingButton.Alt
@@ -256,7 +253,7 @@ const RecoveryStepModelOne = (props: Props) => {
                         <Text>
                             {/* TODO: device disconnected error is returned as string, other connect errors are objects */}
                             <FormattedMessage
-                                {...l10nRecoveryMessages.TR_RECOVERY_ERROR}
+                                {...messages.TR_RECOVERY_ERROR}
                                 values={{
                                     error:
                                         typeof deviceCall.error === 'string'

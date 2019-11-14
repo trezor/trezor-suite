@@ -18,7 +18,7 @@ components-storybook build:
     - yarn workspace @trezor/components-storybook build
   artifacts:
     name: components-build-files
-    expire_in: 15 minutes
+    expire_in: 10 hours
     paths:
       - packages/components-storybook/.build
   dependencies:
@@ -89,6 +89,5 @@ components-storybook make snapshot references:
     when: always
     paths:
       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
-    
   dependencies:
     - install and build

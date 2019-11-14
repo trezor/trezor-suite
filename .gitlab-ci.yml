@@ -1,4 +1,4 @@
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:9493247e906bcd36aa11c4da920a2a92c09cf742
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
@@ -28,7 +28,7 @@ include:
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
-    # - ci/packages/suite-native.yml
+    - ci/packages/suite-native.yml
     - ci/packages/blockchain-link.yml
     - ci/packages/rollout.yml
     # - ci/packages/connect-explorer.yml

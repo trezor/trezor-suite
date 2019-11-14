@@ -1,13 +1,13 @@
-const psList = require('ps-list');
-const os = require('os');
-const isDev = require('electron-is-dev');
-const { join } = require('path');
-const { spawn, exec } = require('child_process');
+import psList from 'ps-list';
+import * as os from 'os';
+import isDev from 'electron-is-dev';
+import { join } from 'path';
+import { spawn, exec } from 'child_process';
 
 const TREZOR_PROCESS_NAME = 'trezord';
 const STATUS = { OK: 'ok', ERROR: 'error' };
 
-const error = msg => {
+const error = (msg: string | Error) => {
     throw new Error(`cannot run bridge library - ${msg}`);
 };
 
@@ -66,7 +66,7 @@ const getBridgeLibByOs = () => {
     }
 };
 
-const spawnProcess = command => {
+const spawnProcess = (command: string) => {
     const spawnedProcess = spawn(command, [], {
         detached: true,
     });
@@ -75,25 +75,23 @@ const spawnProcess = command => {
     });
 };
 
-const execute = command => {
-    exec(command, (error, stdout, stderr) => {
+const execute = (command: string) => {
+    exec(command, (error, _stdout, stderr) => {
         if (error) {
-            error(error);
+            console.error(error);
             return;
         }
-        error(`${stderr}`);
+        console.log(`${stderr}`);
     });
 };
 
-const isBridgeRunning = async () => {
+export const isBridgeRunning = async () => {
     const processes = await psList();
     const isRunning = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
     return isRunning;
 };
 
-const runBridgeProcess = async () => {
-    const os = getOS();
-    const arch = getArch();
+export const runBridgeProcess = async () => {
     const isBridgeAlreadyRunning = await isBridgeRunning();
 
     // bridge is already installed and running, nothing to do
@@ -102,17 +100,15 @@ const runBridgeProcess = async () => {
     }
 
     const lib = getBridgeLibByOs();
-    spawnProcess(lib);
+    if (lib) {
+        spawnProcess(lib);
+    }
 };
 
-const killBridgeProcess = async () => {
+export const killBridgeProcess = async () => {
     const processes = await psList();
     const bridgeProcess = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
-    execute(`kill -9 ${bridgeProcess.pid}`);
-};
-
-module.exports = {
-    isBridgeRunning,
-    runBridgeProcess,
-    killBridgeProcess,
+    if (bridgeProcess) {
+        execute(`kill -9 ${bridgeProcess.pid}`);
+    }
 };

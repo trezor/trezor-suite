@@ -4,8 +4,9 @@ import styled, { css } from 'styled-components';
 import { H5, P, Link, Icon, Button, Tooltip, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 import { useKeyPress } from '@suite-utils/dom';
-
+import globalMessages from '@suite-support/Messages';
 import l10nCommonMessages from '../messages';
+import l10nWalletMessages from '@wallet-views/messages';
 import l10nMessages from './messages';
 import { TrezorDevice } from '@suite-types';
 
@@ -116,7 +117,7 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                     <FormattedMessage {...l10nMessages.TR_CONTINUE_TO_ACCESS_STANDARD_WALLET} />
                 </P>
                 <StyledButton onClick={() => onWalletTypeRequest(false)}>
-                    <FormattedMessage {...l10nCommonMessages.TR_GO_TO_STANDARD_WALLET} />
+                    <FormattedMessage {...l10nWalletMessages.TR_GO_TO_STANDARD_WALLET} />
                 </StyledButton>
             </Content>
             <Content>
@@ -124,8 +125,9 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                     <Tooltip
                         maxWidth={285}
                         placement="top"
+                        // todo: add link to config
                         ctaLink="https://wiki.trezor.io/Passphrase"
-                        ctaText={<FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />}
+                        ctaText={<FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />}
                         content={
                             <FormattedMessage {...l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE} />
                         }
