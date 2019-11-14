@@ -293,7 +293,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 draft.networkTypeEthereum.gasLimit.value = gasLimit;
 
                 if (!validator.isNumeric(gasLimit) || gasLimitBig.isLessThanOrEqualTo(0)) {
-                    draft.customFee.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    draft.networkTypeEthereum.gasLimit.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
 
@@ -308,7 +308,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 draft.networkTypeEthereum.gasPrice.value = gasPrice;
 
                 if (!validator.isNumeric(gasPrice) || gasPriceBig.isLessThanOrEqualTo(0)) {
-                    draft.customFee.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    draft.networkTypeEthereum.gasPrice.error = VALIDATION_ERRORS.NOT_NUMBER;
                     return draft;
                 }
 

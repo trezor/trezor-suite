@@ -136,6 +136,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'Transfer cost in XRP drops',
         id: 'TR_XRP_TRANSFER_COST',
     },
+    TR_ETH_GAS_LIMIT_NOT_NUMBER: {
+        defaultMessage: 'Gas limit is not a number',
+        id: 'TR_ETH_GAS_LIMIT_NOT_NUMBER',
+    },
+    TR_ETH_GAS_PRICE_NOT_NUMBER: {
+        defaultMessage: 'Gas price is not a number',
+        id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
+    },
+    TR_ETH_DATA_NOT_HEX: {
+        defaultMessage: 'Data is not valid hexadecimal',
+        id: 'TR_ETH_DATA_NOT_HEX',
+    },
 });
 
 export default definedMessages;
