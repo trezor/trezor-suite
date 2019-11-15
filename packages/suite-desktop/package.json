@@ -56,7 +56,9 @@
             "artifactName": "${productName}-${version}.${ext}",
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
-            "target": "tar.gz"
+            "target": [
+                "zip"
+            ]
         },
         "win": {
             "icon": "build/static/images/suite/icons/64x64.png",
