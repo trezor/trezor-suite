@@ -1,11 +1,11 @@
-import TrezorConnect from 'trezor-connect';
-import { calculateTotal, getOutput, calculateMax } from '@wallet-utils/sendFormUtils';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { XRP_FLAG } from '@wallet-constants/sendForm';
-import { SEND } from '@wallet-actions/constants';
-import Bignumber from 'bignumber.js';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
+import { SEND } from '@wallet-actions/constants';
+import { XRP_FLAG } from '@wallet-constants/sendForm';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { calculateMax, calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
+import Bignumber from 'bignumber.js';
+import TrezorConnect from 'trezor-connect';
 
 /*
     Compose xrp transaction

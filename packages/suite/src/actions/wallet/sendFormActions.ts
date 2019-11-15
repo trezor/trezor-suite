@@ -83,7 +83,7 @@ export const compose = (setMax: boolean = false) => async (
     }
 };
 
-const applyChange = (composeBy?: 'address' | 'amount') => (
+export const applyChange = (composeBy?: 'address' | 'amount') => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {

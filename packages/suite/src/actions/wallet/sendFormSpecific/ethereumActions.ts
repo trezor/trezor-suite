@@ -1,8 +1,14 @@
-import { SEND } from '@wallet-actions/constants';
-import Bignumber from 'bignumber.js';
 import { Dispatch, GetState } from '@suite-types';
-import { calculateTotal, getOutput, calculateMax } from '@wallet-utils/sendFormUtils';
+import { SEND } from '@wallet-actions/constants';
+import { applyChange } from '../sendFormActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import {
+    calculateMax,
+    calculateTotal,
+    getOutput,
+    calculateEthFee,
+} from '@wallet-utils/sendFormUtils';
+import BigNumber from 'bignumber.js';
 
 /*
     Compose eth transaction
@@ -17,8 +23,8 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { availableBalance } = account;
     const feeInSatoshi = send.selectedFee.value;
     let tx;
-    const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi));
+    const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
+    const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
@@ -68,21 +74,59 @@ export const send = () => async () => {
 /*
     Change value in input "gas price"
  */
-export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch) => {
+export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return null;
+
+    const gasLimit = send.networkTypeEthereum.gasLimit.value;
+    const fee = calculateEthFee(gasPrice, gasLimit);
+
+    dispatch({
+        type: SEND.HANDLE_FEE_VALUE_CHANGE,
+        fee: {
+            label: 'custom',
+            feePerUnit: fee,
+            blocks: 2,
+            value: fee,
+        },
+    });
+
     dispatch({
         type: SEND.ETH_HANDLE_GAS_PRICE,
         gasPrice,
     });
+
+    dispatch(applyChange());
 };
 
 /*
     Change value in input "gas limit "
  */
-export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch) => {
+export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getState: GetState) => {
+    const { send } = getState().wallet;
+    const { account } = getState().wallet.selectedAccount;
+    if (!send || !account) return null;
+
+    const gasPrice = send.networkTypeEthereum.gasPrice.value;
+    const fee = calculateEthFee(gasPrice, gasLimit);
+
+    dispatch({
+        type: SEND.HANDLE_FEE_VALUE_CHANGE,
+        fee: {
+            label: 'custom',
+            feePerUnit: fee,
+            blocks: 2,
+            value: fee,
+        },
+    });
+
     dispatch({
         type: SEND.ETH_HANDLE_GAS_LIMIT,
         gasLimit,
     });
+
+    dispatch(applyChange());
 };
 
 /*

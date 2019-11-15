@@ -2,6 +2,7 @@ import { Output, State } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
+import web3 from 'web3';
 
 export const getOutput = (outputs: Output[], id: number) =>
     outputs.find(outputItem => outputItem.id === id) as Output;
@@ -87,5 +88,21 @@ export const getInputState = (
 
     if (value && !error) {
         return 'success';
+    }
+};
+
+/*
+    Calculate fee from gas price and gas limit
+ */
+export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null): string => {
+    if (!gasPrice || !gasLimit) {
+        return '0';
+    }
+    const valueToConvert = new BigNumber(gasPrice).times(gasLimit).toFixed();
+    try {
+        return web3.utils.fromWei(valueToConvert, 'ether');
+    } catch (error) {
+        // TODO: empty input throws this error.
+        return '0';
     }
 };

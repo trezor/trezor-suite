@@ -1,12 +1,13 @@
-import TrezorConnect from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import { Dispatch, GetState } from '@suite-types';
+import * as accountActions from '@wallet-actions/accountActions';
 import { SEND } from '@wallet-actions/constants';
 import { BTC_RBF_SEQUENCE } from '@wallet-constants/sendForm';
-import * as accountActions from '@wallet-actions/accountActions';
-import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import TrezorConnect from 'trezor-connect';
+
 import * as sendFormActions from '../sendFormActions';
 
 /*
