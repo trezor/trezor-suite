@@ -7,6 +7,18 @@ const select = [
     { value: 'xrp', label: 'Ripple' },
     { value: 'txrp', label: 'Ripple Testnet' },
     { value: 'test', label: 'Bitcoin Testnet' },
+    { value: 'dash', label: 'Dash' },
+    { value: 'doge', label: 'Doge' },
+    { value: 'btc', label: 'Bitcoin' },
+    { value: 'bch', label: 'Bitcoin Cash' },
+    { value: 'btg', label: 'Bitcoin Gold' },
+    { value: 'dgb', label: 'Digibyte' },
+    { value: 'nmc', label: 'Namecoin' },
+    { value: 'zec', label: 'Zcash' },
+    { value: 'vtc', label: 'Vertcoin' },
+    { value: 'eth', label: 'Ethereum' },
+    { value: 'etc', label: 'Ethereum Classic' },
+    { value: 'trop', label: 'Ropsten' },
 ];
 
 // const json = `[
@@ -25,6 +37,17 @@ const json = `[
         descriptor: 'rPVMhWBsfF9iMXYj3aAzJVkPDTFNSyWdKy',
     },
 ]`;
+const estimateFeeRequest1 = `{
+    blocks: [1],
+    specific: {
+        from: '0x4ac95f18819c17c4b69fa07086e46ff2d098a9cc',
+        to: '0x419c4db4b9e25d6db2ad9691ccb832c8d9fda05e',
+    }
+    feeLevels: 'smart',
+}`;
+const estimateFeeRequest = `{
+    feeLevels: 'smart',
+}`;
 
 export default [
     {
@@ -77,8 +100,15 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'xrp',
+                value: 'btc',
                 data: select,
+            },
+            {
+                name: 'request',
+                label: 'Request',
+                optional: true,
+                type: 'json',
+                value: estimateFeeRequest,
             },
         ]
     },
