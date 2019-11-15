@@ -17,6 +17,12 @@ const getDisplayWidth = (display: InputProps['display']) => {
 const Wrapper = styled.div<WrapperProps>`
     display: inline-flex;
     flex-direction: column;
+
+    ${props => 
+        props.display === 'block' && 
+        css`
+            width: 100%;
+        `}
 `;
 
 const StyledInput = styled.input<InputProps>`
@@ -68,14 +74,17 @@ const BottomText = styled.div`
     color: ${colors.BLACK50};
 `;
 
+type DisplayType = 'block' | 'default' | 'short';
+
 interface WrapperProps {
     dataTest?: string;
+    display?: DisplayType;
 }
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     hasError?: boolean;
     variant?: 'small' | 'large';
-    display?: 'block' | 'default' | 'short';
+    display?: DisplayType;
     topLabel?: string;
     bottomText?: string;
     monospace?: boolean;
@@ -95,7 +104,7 @@ const Input = ({
     ...rest
 }: InputProps) => {
     return (
-        <Wrapper data-test={dataTest}>
+        <Wrapper data-test={dataTest} display={display}>
             {topLabel && <Label>{topLabel}</Label>}
             <StyledInput
                 type={type}
