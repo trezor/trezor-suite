@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-export const ICONS: { [key: string]: any } = {
+export const ICONS = {
     ARROW_DOWN: require('../../images/icons/arrow_down.svg'),
     ARROW_UP: require('../../images/icons/arrow_up.svg'),
     CHECK: require('../../images/icons/check.svg'),
