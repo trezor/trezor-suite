@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
-    <title>Rectangle 2</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Icon/qr" transform="translate(-2.000000, -2.000000)" fill="#808080">
-            <path d="M9,9 L14,9 L14,14 L9,14 L9,9 Z M10,10 L10,13 L13,13 L13,10 L10,10 Z M11,11 L12,11 L12,12 L11,12 L11,11 Z M2,2 L7,2 L7,7 L2,7 L2,2 Z M3,3 L3,6 L6,6 L6,3 L3,3 Z M4,4 L5,4 L5,5 L4,5 L4,4 Z M9,2 L14,2 L14,7 L9,7 L9,2 Z M10,3 L10,6 L13,6 L13,3 L10,3 Z M11,4 L12,4 L12,5 L11,5 L11,4 Z M2,9 L7,9 L7,14 L2,14 L2,9 Z M3,10 L3,13 L6,13 L6,10 L3,10 Z M4,11 L5,11 L5,12 L4,12 L4,11 Z" id="Rectangle-2"></path>
-        </g>
-    </g>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <path d="M14,14 L24,14 L24,24 L14,24 L14,14 Z M16,16 L16,22 L22,22 L22,16 L16,16 Z M18,18 L20,18 L20,20 L18,20 L18,18 Z M0,0 L10,0 L10,10 L0,10 L0,0 Z M2,2 L2,8 L8,8 L8,2 L2,2 Z M4,4 L6,4 L6,6 L4,6 L4,4 Z M14,0 L24,0 L24,10 L14,10 L14,0 Z M16,2 L16,8 L22,8 L22,2 L16,2 Z M18,4 L20,4 L20,6 L18,6 L18,4 Z M0,14 L10,14 L10,24 L0,24 L0,14 Z M2,16 L2,22 L8,22 L8,16 L2,16 Z M4,18 L6,18 L6,20 L4,20 L4,18 Z"></path>
 </svg>

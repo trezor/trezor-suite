@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
-    <title>Rectangle 2</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Icon/copy" transform="translate(-2.000000, -2.000000)" fill="#808080">
-            <path d="M11.5,7 L13,7 C13.5522847,7 14,7.44771525 14,8 L14,13 C14,13.5522847 13.5522847,14 13,14 L7,14 C6.44771525,14 6,13.5522847 6,13 L6,10.5 L7.5,10.5 L7.5,12.5 L12.5,12.5 L12.5,8.5 L11.5,8.5 L11.5,7 Z M3,2 L9,2 C9.55228475,2 10,2.44771525 10,3 L10,8 C10,8.55228475 9.55228475,9 9,9 L3,9 C2.44771525,9 2,8.55228475 2,8 L2,3 C2,2.44771525 2.44771525,2 3,2 Z M3.5,3.5 L3.5,7.5 L8.5,7.5 L8.5,3.5 L3.5,3.5 Z" id="Rectangle-2"></path>
-        </g>
-    </g>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <path d="M19,10 L22,10 C23.1045694,10 24,10.8954305 24,12 L24,22 C24,23.1045694 23.1045694,24 22,24 L10,24 C8.8954305,24 8,23.1045694 8,22 L8,17 L11,17 L11,21 L21,21 L21,13 L19,13 L19,10 Z M2,0 L14,0 C15.1045695,0 16,0.8954305 16,2 L16,12 C16,13.1045695 15.1045695,14 14,14 L2,14 C0.8954305,14 0,13.1045695 0,12 L0,2 C0,0.8954305 0.8954305,0 2,0 Z M3,3 L3,11 L13,11 L13,3 L3,3 Z"></path>
 </svg>

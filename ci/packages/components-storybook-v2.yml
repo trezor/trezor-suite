@@ -88,6 +88,6 @@ components-storybook-v2 make snapshot references:
     expire_in: 5 days
     when: always
     paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
+      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots/
   dependencies:
     - install and build
