@@ -18,8 +18,8 @@ const Wrapper = styled.div<WrapperProps>`
     display: inline-flex;
     flex-direction: column;
 
-    ${props => 
-        props.display === 'block' && 
+    ${props =>
+        props.display === 'block' &&
         css`
             width: 100%;
         `}
