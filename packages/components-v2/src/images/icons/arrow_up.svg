@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="5px" viewBox="0 0 8 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Arrow</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Arrow-up" transform="translate(-2.000000, -3.000000)" fill="#404040">
+            <path d="M7.05,4.53846154 L9.5,6.96153846 L8.45,8 L6,5.57692308 L3.55,8 L2.5,6.96153846 L6,3.5 L7.05,4.53846154 Z" id="Arrow"></path>
+        </g>
+    </g>
+</svg>

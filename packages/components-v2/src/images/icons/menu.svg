@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="20px" viewBox="0 0 24 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>sort</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/menu" transform="translate(0.000000, -2.000000)" fill="#404040">
+            <path d="M22,22 L2,22 C0.8954305,22 -3.15544362e-30,21.1045695 -3.15544362e-30,20 C-3.15544362e-30,18.8954305 0.8954305,18 2,18 L22,18 C23.1045695,18 24,18.8954305 24,20 C24,21.1045695 23.1045695,22 22,22 Z M22,6 L2,6 C0.8954305,6 -3.15544362e-30,5.1045695 -3.15544362e-30,4 C-3.15544362e-30,2.8954305 0.8954305,2 2,2 L22,2 C23.1045695,2 24,2.8954305 24,4 C24,5.1045695 23.1045695,6 22,6 Z M22,14 L2,14 C0.8954305,14 -3.15544362e-30,13.1045695 -3.15544362e-30,12 C-3.15544362e-30,10.8954305 0.8954305,10 2,10 L22,10 C23.1045695,10 24,10.8954305 24,12 C24,13.1045695 23.1045695,14 22,14 Z" id="sort"></path>
+        </g>
+    </g>
+</svg>
