@@ -45,7 +45,8 @@ const Wrapper = styled.button<WrapperProps>`
             padding: ${getPrimaryPadding(props.size)};
             box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25)),
                     linear-gradient(to top, ${colors.GREENER}, #21c100);
             }
@@ -64,13 +65,18 @@ const Wrapper = styled.button<WrapperProps>`
             border: 1px solid ${colors.BLACK70};
             padding: ${getSecondaryPadding(props.size)};
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15)),
                     linear-gradient(${colors.WHITE}, ${colors.WHITE});
             }
 
             &:active {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)),
+                background-image: linear-gradient(
+                        to bottom,
+                        rgba(0, 0, 0, 0.05),
+                        rgba(0, 0, 0, 0.05)
+                    ),
                     linear-gradient(${colors.WHITE}, ${colors.WHITE});
             }
         `}
