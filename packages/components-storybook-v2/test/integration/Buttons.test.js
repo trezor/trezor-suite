@@ -5,11 +5,11 @@ describe('Buttons', () => {
 
     [
         'button-primary-small',
-        'button-primary',
+        'button-primary-medium',
         'button-primary-large',
         'button-primary-disabled',
         'button-secondary-small',
-        'button-secondary',
+        'button-secondary-medium',
         'button-secondary-large',
         'button-secondary-disabled',
     ].forEach(testName => {

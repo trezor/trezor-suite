@@ -52,7 +52,7 @@ const Wrapper = styled.button<WrapperProps>`
             }
 
             &:active {
-                background-image: linear-gradient(to top, ${colors.GREENER}, ${colors.GREENER});
+                transform: translateY(1px);
             }
         `}
 
@@ -72,12 +72,7 @@ const Wrapper = styled.button<WrapperProps>`
             }
 
             &:active {
-                background-image: linear-gradient(
-                        to bottom,
-                        rgba(0, 0, 0, 0.05),
-                        rgba(0, 0, 0, 0.05)
-                    ),
-                    linear-gradient(${colors.WHITE}, ${colors.WHITE});
+                transform: translateY(1px);
             }
         `}
 
