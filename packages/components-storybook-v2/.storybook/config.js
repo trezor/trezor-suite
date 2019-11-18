@@ -21,6 +21,7 @@ addDecorator(withInfo);
 addDecorator(withKnobs);
 
 function loadStories() {
+    require('../src/stories/components/buttons/all');
     require('../src/stories/components/buttons/button');
 }
 

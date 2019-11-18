@@ -64,30 +64,30 @@ components-storybook-v2 delete review:
   dependencies:
     - install and build
 
-# components-storybook test snapshots:
-#   image: cypress/base:10
-#   stage: integration testing
-#   script:
-#     - npx cypress install
-#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook-v2 ci:test:snapshots
-#   artifacts:
-#     expire_in: 2 days
-#     when: always
-#     paths:
-#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots
-#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/screenshots
+components-storybook-v2 test snapshots:
+  image: cypress/base:10
+  stage: integration testing
+  script:
+    - npx cypress install
+    - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook-v2/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook-v2 ci:test:snapshots
+  artifacts:
+    expire_in: 2 days
+    when: always
+    paths:
+      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots
+      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/screenshots
 
-# components-storybook make snapshot references:
-#   image: cypress/base:10
-#   stage: integration testing
-#   when: manual
-#   script:
-#     - npx cypress install
-#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook-v2 ci:test:snapshots:references
-#   artifacts:
-#     expire_in: 5 days
-#     when: always
-#     paths:
-#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
-#   dependencies:
-#     - install and build
+components-storybook-v2 make snapshot references:
+  image: cypress/base:10
+  stage: integration testing
+  when: manual
+  script:
+    - npx cypress install
+    - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook-v2/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook-v2 ci:test:snapshots:references
+  artifacts:
+    expire_in: 5 days
+    when: always
+    paths:
+      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots/
+  dependencies:
+    - install and build
