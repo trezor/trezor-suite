@@ -39,13 +39,6 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
         totalPages,
     ]);
 
-    // if totalPages is 1 do not render pagination
-    // if totalPages is undefined always show pagination (e.g. XRP)
-    const showPagination = totalPages ? totalPages > 1 : true;
-    if (!showPagination) {
-        return null;
-    }
-
     return (
         <Wrapper>
             <Actions isActive={showPrevious}>
