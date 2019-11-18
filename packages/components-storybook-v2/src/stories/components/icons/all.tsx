@@ -35,7 +35,11 @@ storiesOf('Icons', module).add(
                     {variables.ICONS.map((icon: types.IconType) => (
                         <IconWrapper>
                             <IconText>{icon}</IconText>
-                            <Icon icon={icon} color={colors.BLACK17} />
+                            <Icon
+                                icon={icon}
+                                color={colors.BLACK17}
+                                data-test={`icon-${icon.toLowerCase().replace('_', '-')}`}
+                            />
                         </IconWrapper>
                     ))}
                 </Col>

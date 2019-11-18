@@ -13,9 +13,11 @@ export const FONT_WEIGHT = {} as const;
 
 export const FONT_FAMILY = {} as const;
 
-export const ICONS = [
+export const ICONS: IconType[] = [
     'ARROW_DOWN',
     'ARROW_UP',
+    'ARROW_LEFT',
+    'ARROW_RIGHT',
     'CHECK',
     'COINS',
     'COPY',
@@ -42,4 +44,4 @@ export const ICONS = [
     'TRANSACTIONS',
     'TREZOR',
     'WALLET',
-] as IconType[];
+];
