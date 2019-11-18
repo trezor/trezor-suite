@@ -7,6 +7,11 @@ export const FONT_SIZE_NATIVE = {} as const;
 export const FONT_SIZE = {
     BODY: '14px',
     BUTTON: '14px',
+    H1: '36px',
+    H2: '24px',
+    NORMAL: '16px',
+    SMALL: '14px',
+    TINY: '12px',
 } as const;
 
 export const FONT_WEIGHT = {} as const;
