@@ -8,7 +8,7 @@ import Sidebar from './components/Sidebar';
 import WalletMenuItems from './components/MenuItems';
 import ProgressBar from './components/ProgressBar';
 import { AppState } from '@suite-types';
-import { SuiteLayout, Footer } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
 
 const { SCREEN_SIZE } = variables;
 
@@ -53,7 +53,6 @@ const WalletLayout = (props: Props) => {
     return (
         <SuiteLayout
             showSuiteHeader
-            footer={<Footer />}
             additionalDeviceMenuItems={<WalletMenuItems />}
             title={props.title}
         >

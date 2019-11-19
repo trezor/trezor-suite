@@ -106,7 +106,7 @@ const DeviceRect = styled.rect`
 class ConnectDevice extends PureComponent<Props> {
     render() {
         return (
-            <SuiteLayout isLanding footer={<Footer isLanding />}>
+            <SuiteLayout isLanding>
                 <StyledConnectDevice>
                     <Title>
                         <StyledH1>
