@@ -27,9 +27,8 @@ type Props = {
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    max-width: 1170px;
+    flex: 1;
     flex-direction: row;
-    flex: 1 1 0%;
 `;
 
 const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`

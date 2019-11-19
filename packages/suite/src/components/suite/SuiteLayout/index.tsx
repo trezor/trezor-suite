@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
@@ -22,29 +22,11 @@ const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
 `;
 
 const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
-    width: 100%;
-    margin: 0 auto;
-
-    ${props =>
-        !props.fullscreenMode &&
-        css`
-            max-width: 1170px;
-            margin-top: 30px;
-
-            @media screen and (max-width: 1170px) {
-                border-radius: 0px;
-                margin-top: 0px;
-            }
-        `};
-
+    display: flex;
     flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
-    display: flex;
+
     flex-direction: column;
-    align-items: center;
-    border-radius: 4px 4px 0px 0px;
-    height: 100%;
-    overflow-y: hidden;
 `;
 
 interface Props {
