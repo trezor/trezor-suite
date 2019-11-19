@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import colors from '../../config/colors';
 
@@ -7,10 +7,14 @@ const A = styled.a<Props>`
     text-decoration: none;
     cursor: pointer;
     color: ${colors.GREENER};
+    font-size: inherit;
+
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 
 interface Props {
-    variant?: 'gray' | 'nostyle';
     href?: string;
     to?: any;
     target?: string;
