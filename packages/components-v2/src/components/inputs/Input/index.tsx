@@ -55,6 +55,7 @@ const StyledInput = styled.input<InputProps>`
 
     ${props =>
         !props.disabled &&
+        !props.hasError &&
         css`
             &:hover,
             &:focus,
