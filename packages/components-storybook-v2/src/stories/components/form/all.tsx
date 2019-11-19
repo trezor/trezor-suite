@@ -43,6 +43,14 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input
+                            hasError
+                            value="Short input with error"
+                            display="short"
+                            dataTest="input-short-error"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
                             disabled
                             value="Disabled short input"
                             display="short"
@@ -57,6 +65,9 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input variant="small" value="Small input" dataTest="input-default-small" />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input hasError value="Input with error" dataTest="input-default-error" />
                     </InputWrapper>
                     <InputWrapper>
                         <Input disabled value="Disabled input" dataTest="input-default-disabled" />
@@ -83,6 +94,15 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input
+                            hasError
+                            value="Input label with error"
+                            dataTest="input-error-label"
+                            topLabel="Label"
+                            bottomText="bottom text"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
                             disabled
                             value="Disabled input label"
                             dataTest="input-disabled-label"
@@ -102,6 +122,14 @@ storiesOf('Form', module).add(
                             value="Small block input"
                             display="block"
                             dataTest="input-block-small"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            hasError
+                            value="Block input with error"
+                            display="block"
+                            dataTest="input-block-error"
                         />
                     </InputWrapper>
                     <InputWrapper>

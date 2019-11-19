@@ -6,15 +6,19 @@ describe('Form', () => {
     [
         'input-short',
         'input-short-small',
+        'input-short-error',
         'input-short-disabled',
         'input-default',
         'input-default-small',
+        'input-default-error',
         'input-default-disabled',
         'input-block',
         'input-block-small',
+        'input-block-error',
         'input-block-disabled',
         'input-label',
         'input-small-label',
+        'input-error-label',
         'input-disabled-label',
     ].forEach(testName => {
         it(`${testName}`, () => {
