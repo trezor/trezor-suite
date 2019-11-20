@@ -39,9 +39,15 @@ const StyledInput = styled.input<InputProps>`
     height: ${props => (props.variant === 'small' ? '26px' : '38px')};
 
     ${props =>
-        props.hasError &&
+        props.state === 'error' &&
         css`
             border-color: ${colors.RED};
+        `}
+
+    ${props =>
+        props.state === 'success' &&
+        css`
+            border-color: ${colors.GREENER};
         `}
 
     ${props =>
@@ -55,7 +61,7 @@ const StyledInput = styled.input<InputProps>`
 
     ${props =>
         !props.disabled &&
-        !props.hasError &&
+        !props.state &&
         css`
             &:hover,
             &:focus,
@@ -83,7 +89,7 @@ interface WrapperProps {
 }
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    hasError?: boolean;
+    state?: 'success' | 'error';
     variant?: 'small' | 'large';
     display?: DisplayType;
     topLabel?: string;
@@ -94,7 +100,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = ({
     type = 'text',
-    hasError,
+    state,
     variant = 'large',
     display = 'default',
     topLabel,
@@ -109,7 +115,7 @@ const Input = ({
             {topLabel && <Label>{topLabel}</Label>}
             <StyledInput
                 type={type}
-                hasError={hasError}
+                state={state}
                 variant={variant}
                 disabled={disabled}
                 display={display}
