@@ -260,11 +260,6 @@ const reducerActions = [
         actions: [
             {
                 type: IFRAME.LOADED,
-                payload: {
-                    browser: {
-                        name: 'env',
-                    },
-                },
             },
         ],
         result: [
