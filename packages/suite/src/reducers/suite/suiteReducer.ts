@@ -19,7 +19,6 @@ export interface SuiteState {
     messages: { [key: string]: any };
     deviceMenuOpened: boolean;
     showSidebar?: boolean;
-    platform?: Platform;
     locks: Lock[];
 }
 
@@ -37,14 +36,6 @@ interface Transport {
         }[];
         changelog: string;
     };
-}
-
-interface Platform {
-    mobile?: boolean;
-    name: string;
-    osname: string;
-    outdated: boolean;
-    supported: boolean;
 }
 
 const initialState: SuiteState = {
