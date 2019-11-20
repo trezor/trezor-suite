@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { TRANSPORT, IFRAME } from 'trezor-connect';
+import { TRANSPORT } from 'trezor-connect';
 import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { ObjectValues } from '@suite/types/utils';
@@ -149,10 +149,6 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             case DISCOVERY.STOP:
             case DISCOVERY.COMPLETE:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
-                break;
-
-            case IFRAME.LOADED:
-                draft.platform = action.payload.browser;
                 break;
             // no default
         }
