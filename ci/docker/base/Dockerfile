@@ -40,7 +40,13 @@ ENV npm_config_loglevel warn
 # allow installing when the main user is root
 ENV npm_config_unsafe_perm true
 
-RUN mkdir dummy && cd dummy
+# Out of the blue, we started to run into CI failures. All of them had one thing in common. 
+# Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
+# that was not available at the moment. This happens probably because of the async manner in which
+# base packages are downloaded and installed in concurrence with the fact that the troublesome 
+# package relies on existence of another package already installed.
+# as a quick fix, create a project and install needed packages to provide yarn cache on image level.
+RUN mkdir yarn-cache-project && cd yarn-cache-project
 RUN yarn init -y 
 RUN yarn add opencollective@1.0.3
 RUN cd ..
