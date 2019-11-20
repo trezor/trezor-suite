@@ -9,8 +9,7 @@
 		"url_bitcoinonly": "data/firmware/2/trezor-2.1.5-bitcoinonly.bin",
 		"fingerprint": "40e4bfaf3c5ec77872c1aaaac085aafcc443f60279ca2bb38d29c669233fdf62",
 		"fingerprint_bitcoinonly": "9de90d9f8ca12506f3b9a4cbe7616294144d965d67daa3a03bfe6c0b74a44843",
-		"changelog": "* Introduce Bitcoin-only firmware\n* Fix for sluggish U2F authentication when using Shamir\n* Fix UI for Shamir with 33 words\n* Fix Wanchain signing",
-		"channel": "beta"
+		"changelog": "* Introduce Bitcoin-only firmware\n* Fix for sluggish U2F authentication when using Shamir\n* Fix UI for Shamir with 33 words\n* Fix Wanchain signing"
 	},
 	{
 		"required": false,

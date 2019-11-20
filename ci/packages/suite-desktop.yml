@@ -18,11 +18,11 @@ suite-desktop build mac:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:mac
-        - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.tar.gz .
+        - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.zip .
     artifacts:
         expire_in: 1 day
         paths:
-            - TrezorSuite-*.tar.gz
+            - TrezorSuite-*.zip
     dependencies:
         - install and build
 

@@ -52,8 +52,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
         "styled-components": "^4.3.2",
-        "styled-reset": "^3.0.2",
-        "trezor-connect": "8.0.7-extended",
+        "trezor-connect": "8.0.10-extended",
         "validator": "^11.1.0",
         "wallet-address-validator": "^0.2.4"
     },

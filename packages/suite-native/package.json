@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:ios": "run-p start run-ios",
         "run-ios": "yarn install-pods && react-native run-ios --no-packager",
         "install-pods": "cd ./ios/ && pod install",

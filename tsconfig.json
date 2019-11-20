@@ -8,7 +8,7 @@
             // suite root
             "@suite/*": ["./packages/suite/src/*"],
             "@suite": ["./packages/suite/src/index"],
-            // suite 
+            // suite
             "@suite-components/*": ["./packages/suite/src/components/suite/*"],
             "@suite-components": ["./packages/suite/src/components/suite/index"],
             "@suite-views/*": ["./packages/suite/src/views/suite/*"],
@@ -73,7 +73,7 @@
             "@onboarding-middlewares": ["./packages/suite/src/middlewares/onboarding/index"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
-            "@desktop/*": ["./packages/suite-desktop/src/*"],
+            "@desktop/*": ["./packages/suite-desktop/src/*"]
         },
         "jsx": "react-native",
         "module": "esnext",
@@ -85,10 +85,7 @@
         "sourceMap": true,
         "strict": true,
         "target": "esnext",
-        "typeRoots": [
-            "node_modules/@trezor/typescript-typings/types",
-            "node_modules/@types"
-        ]
+        "typeRoots": ["node_modules/@trezor/typescript-typings/types", "node_modules/@types"]
     },
     "exclude": [
         "node_modules",
