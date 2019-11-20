@@ -2,16 +2,17 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Wrapper = styled.div`
-    background: #2b2b2b;
+    background: #2b2b2b; /* TODO: fetch from components */
     display: flex;
     margin-top: 5px;
 `;
 
-type ComponentProps = {
+interface ComponentProps {
     isActive: boolean;
-};
+}
 
 const In = styled.div<ComponentProps>`
+    cursor: pointer;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     display: flex;
@@ -25,49 +26,37 @@ const In = styled.div<ComponentProps>`
     ${props =>
         props.isActive &&
         css`
-            background: white;
+            background: white; /* TODO: fetch from components */
         `}
 `;
 
-const Icon = styled.div<ComponentProps>`
-    color: white;
-    font-weight: bold;
+const InnerWrapper = styled.div<ComponentProps>`
+    color: white; /* TODO: fetch from components */
+    font-weight: bold; /* TODO: fetch from components */
 
     ${props =>
         props.isActive &&
         css`
-            color: black;
+            color: black; /* TODO: fetch from components */
         `}
 `;
 
-const Text = styled.div<ComponentProps>`
-    color: white;
-    font-weight: bold;
-
-    ${props =>
-        props.isActive &&
-        css`
-            color: black;
-        `}
-`;
+const Icon = styled(InnerWrapper)<ComponentProps>``;
+const Text = styled(InnerWrapper)<ComponentProps>``;
 
 interface Props {
     text: string;
     icon: any;
     link: string;
+    isActive: boolean;
 }
 
-const isActive = (link: string) => {
-    return link === '/wallet';
-};
-
 const Menu = (props: Props) => {
-    const active = isActive(props.link);
     return (
         <Wrapper>
-            <In isActive={active}>
-                <Icon isActive={active}>O</Icon>
-                <Text isActive={active}>{props.text}</Text>
+            <In isActive={props.isActive}>
+                <Icon isActive={props.isActive}>O</Icon>
+                <Text isActive={props.isActive}>{props.text}</Text>
             </In>
         </Wrapper>
     );

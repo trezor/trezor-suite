@@ -12,7 +12,7 @@ import { toggleSidebar } from '@suite-actions/suiteActions';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
-import Menu from '@suite-components/Menu';
+import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import { Header, Log } from '@suite-components';
 
