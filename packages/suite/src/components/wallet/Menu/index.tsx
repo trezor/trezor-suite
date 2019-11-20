@@ -100,6 +100,12 @@ const Menu = ({
 
     return (
         <Wrapper>
+            {discovery.status === 4 && (
+                <AddAccountButton
+                    onClick={requestNewAccount}
+                    tooltipContent={<FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />}
+                />
+            )}
             {discoveryIsRunning && list.length === 0 && <DiscoveryStatus />}
             {normalAccounts.map(account => (
                 <Row
@@ -110,12 +116,6 @@ const Menu = ({
                 />
             ))}
             {discoveryIsRunning && list.length > 0 && <DiscoveryStatus />}
-            {discovery.status === 4 && (
-                <AddAccountButton
-                    onClick={requestNewAccount}
-                    tooltipContent={<FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />}
-                />
-            )}
             {legacyAccounts.length > 0 && (
                 <ToggleLegacyAccounts
                     onToggle={() => setLegacyVisibleState(!legacyVisible)}

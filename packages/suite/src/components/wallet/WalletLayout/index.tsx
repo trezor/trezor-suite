@@ -59,7 +59,6 @@ const WalletLayout = (props: Props) => {
                 <ProgressBar />
                 <Sidebar isOpen={props.suite.showSidebar} />
                 <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-                    {props.topNavigationComponent}
                     <WalletNotifications />
                     <Content>{props.children}</Content>
                 </ContentWrapper>

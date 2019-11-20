@@ -3,54 +3,27 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { Route } from '@suite-constants/routes';
+import { items } from '@wallet-config/menu';
 import * as routerActions from '@suite-actions/routerActions';
 import { findRoute } from '@suite-utils/router';
 import { AppState, Dispatch } from '@suite-types';
 
-const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
+const { FONT_WEIGHT, FONT_SIZE } = variables;
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    align-items: center;
-    overflow-y: hidden;
-    overflow-x: auto;
-    padding: 0px 30px 0 35px;
-    height: 55px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
-    background: ${colors.WHITE};
-    position: relative;
+    padding: 5px 0 0 39px;
     cursor: pointer;
-
-    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
-        justify-content: space-between;
-    }
-
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
-        padding: 0px 16px;
-    }
+    flex-direction: column;
 `;
 
 const StyledNavLink = styled.div<{ active: boolean }>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
-    font-size: ${FONT_SIZE.TOP_MENU};
+    font-size: ${FONT_SIZE.BASE};
     color: ${colors.TEXT_SECONDARY};
-    margin: 0px 4px;
-    padding: 20px 35px;
     display: flex;
-    height: 100%;
     white-space: nowrap;
-    border-bottom: 2px solid ${props => (props.active ? colors.GREEN_PRIMARY : colors.WHITE)};
-
-    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
-        padding: 20px 10px;
-    }
-
-    @media screen and (max-width: ${SCREEN_SIZE.XS}) {
-        font-size: ${FONT_SIZE.BASE};
-        padding: 20px 10px;
-    }
 
     &.active,
     &:hover {
@@ -80,25 +53,16 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-interface NavigationItem {
-    title: React.ReactNode;
-    route: Route['name'];
-    isHidden?: (symbol: string) => boolean;
-}
+type Props = {} & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-type Props = {
-    items: NavigationItem[];
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
-
-const TopNavigation = (props: Props) => {
+const AccountNavigation = (props: Props) => {
     const { pathname, params, app } = props.router;
     const currentRoute = findRoute(pathname);
     if (app !== 'wallet' || !params) return <>Invalid account</>;
 
     return (
         <Wrapper>
-            {props.items.map(item => {
+            {items.map(item => {
                 // show item if isHidden() returns false or when isHidden func is not defined
                 if ((item.isHidden && !item.isHidden(params.symbol)) || !item.isHidden) {
                     return (
@@ -120,4 +84,4 @@ const TopNavigation = (props: Props) => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(TopNavigation);
+)(AccountNavigation);

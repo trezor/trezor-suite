@@ -7,32 +7,21 @@ import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { Link } from '@suite-components';
 import { Account } from '@wallet-types';
+import AccountNavigation from './components/AccountNavigation';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    padding: 0 20px;
+    padding: 10px 20px;
     display: flex;
-    height: 55px;
+    flex-direction: column;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     justify-content: space-between;
 
-    &:hover {
-        background-color: ${colors.GRAY_LIGHT};
-    }
-
-    &:first-child {
-        padding-top: 0;
-    }
-
     ${props =>
         props.selected &&
         css`
-            padding-left: 17px;
-            border-left: 3px solid ${colors.GREEN_PRIMARY};
-            background-color: ${colors.WHITE};
-            &:hover {
-                background-color: ${colors.WHITE};
-            }
+            /* TODO: add from components */
+            background: #fafafa;
         `}
 `;
 
@@ -50,12 +39,6 @@ const AccountIndex = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const BalanceValue = styled.div`
-    text-transform: uppercase;
-    font-size: ${variables.FONT_SIZE.BIG};
-    text-align: right;
-`;
-
 const Left = styled.div`
     display: flex;
     align-items: center;
@@ -69,14 +52,6 @@ const Name = styled.div`
     color: ${colors.TEXT_PRIMARY};
 `;
 
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: flex-end;
-    justify-content: center;
-    flex-direction: column;
-`;
-
 const Label = styled.span`
     display: flex;
     justify-content: center;
@@ -84,23 +59,6 @@ const Label = styled.span`
     padding-right: 3px;
     font-size: ${variables.FONT_SIZE.COUNTER};
     color: ${colors.TEXT_SECONDARY};
-`;
-
-const Balance = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const Transactions = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.COUNTER};
-    align-items: center;
-`;
-
-const TransactionsValue = styled.div`
-    display: flex;
-    padding-right: 2px;
-    align-items: center;
 `;
 
 const LabelAddon = styled.span`
@@ -129,7 +87,7 @@ interface Props {
     selected: boolean;
 }
 
-const Row = React.memo(({ account, hideBalance, selected }: Props) => {
+const Row = React.memo(({ account, selected }: Props) => {
     const accountType = getTypeForNetwork(account.accountType);
     return (
         <StyledLink
@@ -165,23 +123,7 @@ const Row = React.memo(({ account, hideBalance, selected }: Props) => {
                         </AccountIndex>
                     </Name>
                 </Left>
-                {!hideBalance && (
-                    <Right>
-                        <Balance>
-                            <BalanceValue>
-                                {account.formattedBalance} {account.symbol}
-                            </BalanceValue>
-                        </Balance>
-                        {account.history.total !== -1 && (
-                            <Transactions>
-                                <Label>transactions</Label>
-                                <TransactionsValue>
-                                    {account.history.total + (account.history.unconfirmed || 0)}
-                                </TransactionsValue>
-                            </Transactions>
-                        )}
-                    </Right>
-                )}
+                {selected && <AccountNavigation />}
             </Wrapper>
         </StyledLink>
     );

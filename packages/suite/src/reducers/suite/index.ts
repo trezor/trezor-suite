@@ -5,6 +5,7 @@ import modal from './modalReducer';
 import log from './logReducer';
 import firmware from './firmwareReducer';
 import notifications from './notificationReducer';
+import resize from './resizeReducer';
 
 export default {
     suite,
@@ -14,4 +15,5 @@ export default {
     log,
     firmware,
     notifications,
+    resize,
 };
