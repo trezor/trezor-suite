@@ -7,7 +7,6 @@
     "homepage": "http://www.trezor.io",
     "main": "dist/electron.js",
     "scripts": {
-        "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:desktop": "yarn workspace @trezor/suite-data copy-static-files && electron .",
         "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
         "preelectron-pack": "yarn build",
