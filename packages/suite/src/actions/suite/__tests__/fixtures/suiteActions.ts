@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DEVICE, TRANSPORT, IFRAME } from 'trezor-connect';
+import { DEVICE, TRANSPORT } from 'trezor-connect';
 import { SUITE, STORAGE, NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as suiteActions from '../../suiteActions';
@@ -252,21 +252,6 @@ const reducerActions = [
             },
             {
                 locks: [],
-            },
-        ],
-    },
-    {
-        description: `IFRAME.LOADED`,
-        actions: [
-            {
-                type: IFRAME.LOADED,
-            },
-        ],
-        result: [
-            {
-                platform: {
-                    name: 'env',
-                },
             },
         ],
     },
