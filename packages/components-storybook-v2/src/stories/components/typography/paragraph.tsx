@@ -5,7 +5,7 @@ import { select, text } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
 
 storiesOf('Typography', module).add(
-    'Heading',
+    'Paragraph',
     () => {
         const value = text('Value', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
         const align: any = select(
