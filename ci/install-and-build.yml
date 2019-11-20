@@ -1,7 +1,8 @@
 install and build:
     stage: setup environment
     script:
-        - yarn install --ignore-scripts --frozen-lockfile
+        - yarn cache list
+        - yarn
         - yarn run build:libs
     artifacts:
         expire_in: 3 hours
