@@ -39,3 +39,8 @@ ENV TERM xterm
 ENV npm_config_loglevel warn
 # allow installing when the main user is root
 ENV npm_config_unsafe_perm true
+
+RUN mkdir dummy && cd dummy
+RUN yarn init -y 
+RUN yarn add opencollective@1.0.3
+RUN yarn && ../
