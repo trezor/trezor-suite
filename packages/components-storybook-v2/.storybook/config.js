@@ -27,6 +27,8 @@ function loadStories() {
     require('../src/stories/components/form/input');
     require('../src/stories/components/icons/all');
     require('../src/stories/components/typography/all');
+    require('../src/stories/components/typography/heading');
+    require('../src/stories/components/typography/paragraph');
 }
 
 configure(loadStories, module);
