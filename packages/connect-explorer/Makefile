@@ -7,7 +7,7 @@ ghpages:
 	git commit -m "new build"
 	git push
 	make clean
-	git checkout master
+	git checkout v7
 	git stash pop
 
 build-test:
