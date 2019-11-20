@@ -150,10 +150,6 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             case DISCOVERY.COMPLETE:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
-
-            case IFRAME.LOADED:
-                draft.platform = action.payload.browser;
-                break;
             // no default
         }
     });

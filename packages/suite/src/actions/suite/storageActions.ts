@@ -1,4 +1,4 @@
-import { db } from '@suite/storage';
+import { db, DBWalletAccountTransaction } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
@@ -7,7 +7,6 @@ import { getAccountKey } from '@suite/utils/wallet/accountUtils';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { getDeviceInstances } from '@suite/utils/suite/device';
 import { Discovery } from '@suite/reducers/wallet/discoveryReducer';
-import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
 import { serializeDiscovery } from '@suite-utils/storage';
 
 export type StorageActions =
@@ -53,12 +52,24 @@ export const saveDiscovery = async (discoveries: Discovery[]) => {
     return db.addItems('discovery', discoveries, true);
 };
 
-export const saveTransactions = async (transactions: WalletAccountTransaction[]) => {
-    return db.addItems('txs', transactions, true);
+export const saveAccountTransactions = (account: Account) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const allTxs = getState().wallet.transactions.transactions;
+    const accTxs =
+        allTxs[getAccountKey(account.descriptor, account.symbol, account.deviceState)] || [];
+
+    // wrap txs and add its order inside the array
+    const orderedTxs = accTxs.map((accTx, i) => ({
+        tx: accTx,
+        order: i,
+    }));
+    return db.addItems('txs', orderedTxs, true);
 };
 
 export const rememberDevice = (device: TrezorDevice) => async (
-    _dispatch: Dispatch,
+    dispatch: Dispatch,
     getState: GetState,
 ) => {
     if (!device || !device.features || !device.state) return;
@@ -67,17 +78,17 @@ export const rememberDevice = (device: TrezorDevice) => async (
     const discovery = wallet.discovery.filter(d => d.deviceState === device.state);
     // trim promise function from discovery object
     const serializableDiscovery = discovery.map(d => serializeDiscovery(d));
-    const allTxs = wallet.transactions.transactions;
-    const transactions = accounts
-        .map(a => allTxs[getAccountKey(a.descriptor, a.symbol, a.deviceState)] || [])
-        .flat();
+    const txsPromises = accounts.map(acc => {
+        return dispatch(saveAccountTransactions(acc));
+    });
 
+    // TODO: concat
+    await Promise.all(txsPromises);
     try {
         await Promise.all([
             saveDevice(device),
             saveAccounts(accounts),
             saveDiscovery(serializableDiscovery),
-            saveTransactions(transactions),
         ]);
     } catch (error) {
         if (error) {
@@ -150,15 +161,15 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const accounts = await db.getItemsExtended('accounts');
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
-        const txs = await db.getItemsExtended('txs');
+        const txs = await db.getItemsExtended('txs', 'order');
 
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
-        txs.forEach(tx => {
-            const k = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+        txs.forEach(item => {
+            const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
             if (!mappedTxs[k]) {
                 mappedTxs[k] = [];
             }
-            mappedTxs[k].push(tx);
+            mappedTxs[k][item.order] = item.tx;
         });
 
         const initialState = getState();

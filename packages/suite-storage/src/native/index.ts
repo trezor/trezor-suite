@@ -234,7 +234,7 @@ class CommonDB<TDBStructure> {
     >(
         store: TStoreName,
         indexName?: TIndexName,
-        filters?: { key?: any; offset?: number; count?: number }
+        filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
     ) => {
         // TODO: indexName !== undefined && filters === undefined
         const db = await this.getDB();
