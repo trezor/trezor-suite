@@ -1,7 +1,6 @@
 install and build:
     stage: setup environment
     script:
-        - yarn cache list
         - yarn
         - yarn run build:libs
     artifacts:
