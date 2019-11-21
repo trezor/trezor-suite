@@ -17,7 +17,7 @@ storiesOf('Form', module).add(
             null
         );
         const display: any = select(
-            'Size',
+            'Display',
             {
                 'Default (normal)': null,
                 Short: 'short',
@@ -30,6 +30,7 @@ storiesOf('Form', module).add(
         const placeholder: any = text('Placeholder', '');
         const disabled = boolean('Disabled', false);
         const monospace = boolean('Monospace', false);
+        const hasError = boolean('Error', false);
 
         return (
             <Input
@@ -40,6 +41,7 @@ storiesOf('Form', module).add(
                 {...(bottomText ? { bottomText } : {})}
                 {...(placeholder ? { placeholder } : {})}
                 {...(monospace ? { monospace } : {})}
+                {...(hasError ? { hasError } : {})}
                 value={value}
             />
         );
