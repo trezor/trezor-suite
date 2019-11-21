@@ -217,7 +217,7 @@ PODS:
     - React-cxxreact (= 0.61.4)
     - React-jsi (= 0.61.4)
     - ReactCommon/jscallinvoker (= 0.61.4)
-  - RNSVG (9.4.0):
+  - RNSVG (9.5.1):
     - React
   - Yoga (1.14.0)
 
@@ -336,7 +336,7 @@ SPEC CHECKSUMS:
   React-RCTText: 21934e0a51d522abcd0a275407e80af45d6fd9ec
   React-RCTVibration: 0f76400ee3cec6edb9c125da49fed279340d145a
   ReactCommon: a6a294e7028ed67b926d29551aa9394fd989c24c
-  RNSVG: 9cb6e958c4b6a1f58185ac72a350b148947d6fed
+  RNSVG: 0eb087cfb5d7937be93c45b163b26352a647e681
   Yoga: ba3d99dbee6c15ea6bbe3783d1f0cb1ffb79af0f
 
 PODFILE CHECKSUM: 6a62eb82fe6e05f3c53516661bd6cf17e5cb3090
