@@ -82,14 +82,13 @@ export const rememberDevice = (device: TrezorDevice) => async (
         return dispatch(saveAccountTransactions(acc));
     });
 
-    // TODO: concat
-    await Promise.all(txsPromises);
     try {
         await Promise.all([
             saveDevice(device),
             saveAccounts(accounts),
             saveDiscovery(serializableDiscovery),
-        ]);
+            ...txsPromises,
+        ] as Promise<void | string | undefined>[]);
     } catch (error) {
         if (error) {
             console.error('errorName', error.name);
