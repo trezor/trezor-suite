@@ -3,12 +3,10 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
 import * as url from 'url';
-import Store from 'electron-store';
 import * as electronLocalshortcut from 'electron-localshortcut';
-
+import * as store from './store';
 import { isBridgeRunning, runBridgeProcess } from './bridge';
 
-const store = new Store();
 let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
 const src = isDev
@@ -50,7 +48,7 @@ const init = async () => {
         await prepareNext(path.resolve(__dirname, '../'));
     }
 
-    const winBounds = store.get('winBounds', { width: 980, height: 680 });
+    const winBounds = store.getWinBounds();
     mainWindow = new BrowserWindow({
         width: winBounds.width,
         height: winBounds.height,
@@ -62,6 +60,11 @@ const init = async () => {
         },
     });
     mainWindow.removeMenu();
+
+    mainWindow.on('close', () => {
+        // store window bounds
+        store.setWinBounds(mainWindow);
+    });
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
@@ -114,7 +117,6 @@ app.on('window-all-closed', () => {
 
 app.on('will-quit', () => {
     try {
-        store.set('winBounds', mainWindow.getBounds());
         // try to unregister shortcuts
         electronLocalshortcut.unregisterAll(mainWindow);
     } catch (error) {
