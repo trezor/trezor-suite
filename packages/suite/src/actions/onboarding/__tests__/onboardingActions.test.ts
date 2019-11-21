@@ -43,7 +43,6 @@ jest.mock('trezor-connect', () => {
             DISCONNECT: 'device-disconnect',
         },
         TRANSPORT: {},
-        IFRAME: {},
         UI: {
             REQUEST_BUTTON: 'ui-button',
             FIRMWARE_PROGRESS: 'ui-firmware-progress',

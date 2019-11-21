@@ -30,9 +30,6 @@ jest.mock('trezor-connect', () => {
         BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
         DEVICE: {},
         TRANSPORT: {},
-        IFRAME: {
-            LOADED: 'iframe-loaded',
-        },
         // custom method for test purpose
         setTestFixtures: (f: any) => {
             fixture = f;
