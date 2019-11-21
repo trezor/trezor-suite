@@ -38,7 +38,7 @@ module.exports = api => {
                         '^@(.+)-middlewares': './packages/suite/src/middlewares/\\1/index',
                         '^@trezor/components$': './packages/components',
                         '^@trezor/suite-data$': './packages/suite-data',
-                        '^@trezor/blockchain-link$': './packages/blockchain-link',
+                        '^@trezor/blockchain-link$': './packages/blockchain-link', // maybe not necessary, since blockchain-link is declared as extraNodemoduels in metro.config.js
                     },
                 },
             ],
