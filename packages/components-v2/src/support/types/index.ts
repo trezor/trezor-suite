@@ -1,6 +1,6 @@
 import { ICONS } from '../../components/Icon/icons';
 
-export type FeedbackType = 'success' | 'warning' | 'error';
+export type FeedbackType = 'success' | 'warning';
 
 export type ButtonVariant = 'primary' | 'secondary';
 
