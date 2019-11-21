@@ -8,6 +8,7 @@ const A = styled.a<Props>`
     cursor: pointer;
     color: ${colors.GREENER};
     font-size: inherit;
+    font-weight: 600;
 
     &:hover {
         text-decoration: underline;

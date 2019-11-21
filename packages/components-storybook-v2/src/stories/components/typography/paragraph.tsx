@@ -8,7 +8,7 @@ storiesOf('Typography', module).add(
     'Paragraph',
     () => {
         const value = text('Value', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
-        const align: any = select(
+        const textAlign: any = select(
             'Align',
             {
                 Left: 'left',
@@ -22,23 +22,35 @@ storiesOf('Typography', module).add(
             {
                 Normal: 'normal',
                 Small: 'small',
-                Tiny: 'tiny'
+                Tiny: 'tiny',
             },
             'normal'
         );
-        const weight: any = select('Weight', {
-            Normal: 'normal',
-            Bold: 'bold',
-        }, 'normal');
+        const weight: any = select(
+            'Weight',
+            {
+                Normal: 'normal',
+                Bold: 'bold',
+            },
+            'normal'
+        );
 
-        return <P textAlign={align} size={size} weight={weight}>{value}</P>
+        return (
+            <P
+                {...(textAlign !== 'left' ? { textAlign } : {})}
+                {...(size !== 'normal' ? { size } : {})}
+                {...(weight !== 'normal' ? { weight } : {})}
+            >
+                {value}
+            </P>
+        );
     },
     {
         info: {
             ...infoOptions,
             text: `
             ~~~js
-            import { Input } from 'trezor-ui-components';
+            import { P } from 'trezor-ui-components';
             ~~~
             `,
         },

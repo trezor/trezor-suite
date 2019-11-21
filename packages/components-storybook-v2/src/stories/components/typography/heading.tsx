@@ -4,6 +4,9 @@ import { storiesOf } from '@storybook/react';
 import { select, text } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
 
+H1.displayName = 'H1';
+H2.displayName = 'H2';
+
 storiesOf('Typography', module).add(
     'Heading',
     () => {
@@ -16,7 +19,7 @@ storiesOf('Typography', module).add(
             },
             'H1'
         );
-        const align: any = select(
+        const textAlign: any = select(
             'Align',
             {
                 Left: 'left',
@@ -27,16 +30,16 @@ storiesOf('Typography', module).add(
         );
 
         if (size === 'H1') {
-            return <H1 textAlign={align}>{value}</H1>;
+            return <H1 {...(textAlign !== 'left' ? { textAlign } : {})}>{value}</H1>;
         }
-        return <H2 textAlign={align}>{value}</H2>;
+        return <H2 {...(textAlign !== 'left' ? { textAlign } : {})}>{value}</H2>;
     },
     {
         info: {
             ...infoOptions,
             text: `
             ~~~js
-            import { Input } from 'trezor-ui-components';
+            import { Heading } from 'trezor-ui-components';
             ~~~
             `,
         },
