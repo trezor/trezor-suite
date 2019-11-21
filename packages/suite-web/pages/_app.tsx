@@ -9,6 +9,7 @@ import { initStore } from '@suite/reducers/store';
 import { isStatic } from '@suite-utils/router';
 import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
+import Resize from '@suite-support/Resize/Container';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import CypressExportStore from '@suite-support/CypressExportStore';
 import Router from '@suite-support/Router';
@@ -57,6 +58,7 @@ class TrezorSuiteApp extends App<Props> {
                 <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
+                    <Resize />
                     <IntlProvider>
                         <>
                             {/*
