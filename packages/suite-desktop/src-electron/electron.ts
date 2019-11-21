@@ -3,10 +3,12 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
 import * as url from 'url';
+import Store from 'electron-store';
 import * as electronLocalshortcut from 'electron-localshortcut';
 
 import { isBridgeRunning, runBridgeProcess } from './bridge';
 
+const store = new Store();
 let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
 const src = isDev
@@ -48,9 +50,10 @@ const init = async () => {
         await prepareNext(path.resolve(__dirname, '../'));
     }
 
+    const winBounds = store.get('winBounds', { width: 980, height: 680 });
     mainWindow = new BrowserWindow({
-        width: 980,
-        height: 680,
+        width: winBounds.width,
+        height: winBounds.height,
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
@@ -110,8 +113,9 @@ app.on('window-all-closed', () => {
 });
 
 app.on('will-quit', () => {
-    // try to unregister shortcuts
     try {
+        store.set('winBounds', mainWindow.getBounds());
+        // try to unregister shortcuts
         electronLocalshortcut.unregisterAll(mainWindow);
     } catch (error) {
         // do nothing
