@@ -116,8 +116,8 @@ app.on('window-all-closed', () => {
 });
 
 app.on('will-quit', () => {
+    // try to unregister shortcuts
     try {
-        // try to unregister shortcuts
         electronLocalshortcut.unregisterAll(mainWindow);
     } catch (error) {
         // do nothing
