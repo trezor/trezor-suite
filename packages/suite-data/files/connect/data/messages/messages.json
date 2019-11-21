@@ -1711,13 +1711,6 @@
                     "type": "ButtonRequestType",
                     "name": "code",
                     "id": 1
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "string",
-                    "name": "data",
-                    "id": 2
                 }
             ],
             "enums": [
@@ -2329,8 +2322,8 @@
                 {
                     "rule": "optional",
                     "options": {},
-                    "type": "bool",
-                    "name": "up_down",
+                    "type": "DebugSwipeDirection",
+                    "name": "swipe",
                     "id": 2
                 },
                 {
@@ -2339,6 +2332,66 @@
                     "type": "string",
                     "name": "input",
                     "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "x",
+                    "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "y",
+                    "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wait",
+                    "id": 6
+                }
+            ],
+            "enums": [
+                {
+                    "name": "DebugSwipeDirection",
+                    "values": [
+                        {
+                            "name": "UP",
+                            "id": 0
+                        },
+                        {
+                            "name": "DOWN",
+                            "id": 1
+                        },
+                        {
+                            "name": "LEFT",
+                            "id": 2
+                        },
+                        {
+                            "name": "RIGHT",
+                            "id": 3
+                        }
+                    ],
+                    "options": {}
+                }
+            ],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "DebugLinkLayout",
+            "fields": [
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "string",
+                    "name": "lines",
+                    "id": 1
                 }
             ],
             "enums": [],
@@ -2362,6 +2415,13 @@
                     "type": "bool",
                     "name": "wait_word_pos",
                     "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wait_layout",
+                    "id": 3
                 }
             ],
             "enums": [],
@@ -2455,6 +2515,13 @@
                     "type": "uint32",
                     "name": "mnemonic_type",
                     "id": 12
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "string",
+                    "name": "layout_lines",
+                    "id": 13
                 }
             ],
             "enums": [],
@@ -4450,6 +4517,27 @@
                     "type": "Capability",
                     "name": "capabilities",
                     "id": 30
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "BackupType",
+                    "name": "backup_type",
+                    "id": 31
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "sd_card_present",
+                    "id": 32
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "sd_protection",
+                    "id": 33
                 }
             ],
             "enums": [
@@ -4641,6 +4729,41 @@
                 }
             ],
             "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "SdProtect",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "SdProtectOperationType",
+                    "name": "operation",
+                    "id": 1
+                }
+            ],
+            "enums": [
+                {
+                    "name": "SdProtectOperationType",
+                    "values": [
+                        {
+                            "name": "DISABLE",
+                            "id": 0
+                        },
+                        {
+                            "name": "ENABLE",
+                            "id": 1
+                        },
+                        {
+                            "name": "REFRESH",
+                            "id": 2
+                        }
+                    ],
+                    "options": {}
+                }
+            ],
             "messages": [],
             "options": {},
             "oneofs": {}
@@ -4870,33 +4993,14 @@
                 {
                     "rule": "optional",
                     "options": {
-                        "default": "ResetDeviceBackupType_Bip39"
+                        "default": "Bip39"
                     },
-                    "type": "ResetDeviceBackupType",
+                    "type": "BackupType",
                     "name": "backup_type",
                     "id": 10
                 }
             ],
-            "enums": [
-                {
-                    "name": "ResetDeviceBackupType",
-                    "values": [
-                        {
-                            "name": "ResetDeviceBackupType_Bip39",
-                            "id": 0
-                        },
-                        {
-                            "name": "ResetDeviceBackupType_Slip39_Single_Group",
-                            "id": 1
-                        },
-                        {
-                            "name": "ResetDeviceBackupType_Slip39_Multiple_Groups",
-                            "id": 2
-                        }
-                    ],
-                    "options": {}
-                }
-            ],
+            "enums": [],
             "messages": [],
             "options": {},
             "oneofs": {}
@@ -8291,9 +8395,9 @@
                         {
                             "rule": "optional",
                             "options": {},
-                            "type": "TezosContractID",
+                            "type": "bytes",
                             "name": "source",
-                            "id": 1
+                            "id": 7
                         },
                         {
                             "rule": "optional",
@@ -8342,9 +8446,9 @@
                         {
                             "rule": "optional",
                             "options": {},
-                            "type": "TezosContractID",
+                            "type": "bytes",
                             "name": "source",
-                            "id": 1
+                            "id": 9
                         },
                         {
                             "rule": "optional",
@@ -8394,10 +8498,72 @@
                             "type": "bytes",
                             "name": "parameters",
                             "id": 8
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "TezosParametersManager",
+                            "name": "parameters_manager",
+                            "id": 10
                         }
                     ],
                     "enums": [],
-                    "messages": [],
+                    "messages": [
+                        {
+                            "name": "TezosParametersManager",
+                            "fields": [
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "bytes",
+                                    "name": "set_delegate",
+                                    "id": 1
+                                },
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "bool",
+                                    "name": "cancel_delegate",
+                                    "id": 2
+                                },
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "TezosManagerTransfer",
+                                    "name": "transfer",
+                                    "id": 3
+                                }
+                            ],
+                            "enums": [],
+                            "messages": [
+                                {
+                                    "name": "TezosManagerTransfer",
+                                    "fields": [
+                                        {
+                                            "rule": "optional",
+                                            "options": {},
+                                            "type": "TezosContractID",
+                                            "name": "destination",
+                                            "id": 1
+                                        },
+                                        {
+                                            "rule": "optional",
+                                            "options": {},
+                                            "type": "uint64",
+                                            "name": "amount",
+                                            "id": 2
+                                        }
+                                    ],
+                                    "enums": [],
+                                    "messages": [],
+                                    "options": {},
+                                    "oneofs": {}
+                                }
+                            ],
+                            "options": {},
+                            "oneofs": {}
+                        }
+                    ],
                     "options": {},
                     "oneofs": {}
                 },
@@ -8407,9 +8573,9 @@
                         {
                             "rule": "optional",
                             "options": {},
-                            "type": "TezosContractID",
+                            "type": "bytes",
                             "name": "source",
-                            "id": 1
+                            "id": 12
                         },
                         {
                             "rule": "optional",
@@ -8493,9 +8659,9 @@
                         {
                             "rule": "optional",
                             "options": {},
-                            "type": "TezosContractID",
+                            "type": "bytes",
                             "name": "source",
-                            "id": 1
+                            "id": 7
                         },
                         {
                             "rule": "optional",
@@ -8659,6 +8825,142 @@
             "oneofs": {}
         },
         {
+            "name": "WebAuthnListResidentCredentials",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "WebAuthnAddResidentCredential",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "credential_id",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "WebAuthnRemoveResidentCredential",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "index",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "WebAuthnCredentials",
+            "fields": [
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "WebAuthnCredential",
+                    "name": "credentials",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [
+                {
+                    "name": "WebAuthnCredential",
+                    "fields": [
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "index",
+                            "id": 1
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "id",
+                            "id": 2
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "string",
+                            "name": "rp_id",
+                            "id": 3
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "string",
+                            "name": "rp_name",
+                            "id": 4
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "user_id",
+                            "id": 5
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "string",
+                            "name": "user_name",
+                            "id": 6
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "string",
+                            "name": "user_display_name",
+                            "id": 7
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "creation_time",
+                            "id": 8
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bool",
+                            "name": "hmac_secret",
+                            "id": 9
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bool",
+                            "name": "use_sign_count",
+                            "id": 10
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                }
+            ],
+            "options": {},
+            "oneofs": {}
+        },
+        {
             "ref": "google.protobuf.EnumValueOptions",
             "fields": [
                 {
@@ -8736,6 +9038,24 @@
                 {
                     "name": "SPENDP2SHWITNESS",
                     "id": 4
+                }
+            ],
+            "options": {}
+        },
+        {
+            "name": "BackupType",
+            "values": [
+                {
+                    "name": "Bip39",
+                    "id": 0
+                },
+                {
+                    "name": "Slip39_Basic",
+                    "id": 1
+                },
+                {
+                    "name": "Slip39_Advanced",
+                    "id": 2
                 }
             ],
             "options": {}
@@ -8868,6 +9188,10 @@
                     "id": 63
                 },
                 {
+                    "name": "MessageType_SdProtect",
+                    "id": 79
+                },
+                {
                     "name": "MessageType_FirmwareErase",
                     "id": 6
                 },
@@ -8998,6 +9322,10 @@
                 {
                     "name": "MessageType_DebugLinkFlashErase",
                     "id": 113
+                },
+                {
+                    "name": "MessageType_DebugLinkLayout",
+                    "id": 9001
                 },
                 {
                     "name": "MessageType_EthereumGetPublicKey",
@@ -9450,6 +9778,22 @@
                 {
                     "name": "MessageType_BinanceSignedTx",
                     "id": 709
+                },
+                {
+                    "name": "MessageType_WebAuthnListResidentCredentials",
+                    "id": 800
+                },
+                {
+                    "name": "MessageType_WebAuthnCredentials",
+                    "id": 801
+                },
+                {
+                    "name": "MessageType_WebAuthnAddResidentCredential",
+                    "id": 802
+                },
+                {
+                    "name": "MessageType_WebAuthnRemoveResidentCredential",
+                    "id": 803
                 }
             ],
             "options": {}
