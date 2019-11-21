@@ -2,10 +2,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as resizeActions from '@suite-actions/resizeActions';
 
-import { AppState, Dispatch } from '@suite-types';
+import { Dispatch } from '@suite-types';
 import Component from './index';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateWindowSize: bindActionCreators(resizeActions.updateWindowSize, dispatch),

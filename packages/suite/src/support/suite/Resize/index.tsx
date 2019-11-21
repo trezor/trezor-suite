@@ -7,9 +7,9 @@ const Resize = (props: Props) => {
         const handleResize = () => {
             props.updateWindowSize(window.innerWidth, window.innerHeight);
         };
-        window.addEventListener('resize', debounce(handleResize, 250));
+        window.addEventListener('resize', debounce(handleResize, 700));
         return () => {
-            window.removeEventListener('resize', debounce(handleResize, 250));
+            window.removeEventListener('resize', debounce(handleResize, 700));
         };
     });
 
