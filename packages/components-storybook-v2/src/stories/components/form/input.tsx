@@ -17,7 +17,7 @@ storiesOf('Form', module).add(
             null
         );
         const display: any = select(
-            'Size',
+            'Display',
             {
                 'Default (normal)': null,
                 Short: 'short',

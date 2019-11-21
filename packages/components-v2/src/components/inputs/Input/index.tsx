@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import colors from '../../../config/colors';
-import { FONT_SIZE } from '../../../config/variables';
 
 const getDisplayWidth = (display: InputProps['display']) => {
     switch (display) {
