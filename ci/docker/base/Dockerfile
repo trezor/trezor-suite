@@ -46,8 +46,4 @@ ENV npm_config_unsafe_perm true
 # base packages are downloaded and installed in concurrence with the fact that the troublesome 
 # package relies on existence of another package already installed.
 # as a quick fix, create a project and install needed packages to provide yarn cache on image level.
-RUN mkdir yarn-cache-project && cd yarn-cache-project
-RUN yarn init -y 
-RUN yarn add opencollective@1.0.3
-RUN yarn add node-pre-gyp
-RUN cd ..
+RUN yarn global add opencollective node-pre-gyp
