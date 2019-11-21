@@ -109,7 +109,14 @@
                 "cardanoSignTransaction"
             ],
             "min": ["0", "2.1.0"],
-            "comment": ["Since firmware 2.1.0 there is a new protobuf field 'protocol_magic' in CardanoSignTx"]	
+            "comment": ["Since firmware 2.1.0 there is a new protobuf field 'protocol_magic' in CardanoSignTx"]
+        },
+        {
+            "excludedMethods": [
+                "tezosSignTransaction"
+            ],
+            "min": ["0", "2.1.8"],
+            "comment": ["Since 2.1.8 there are new protobuf fields in tezos transaction (Babylon fork)"]
         }
     ]
 }

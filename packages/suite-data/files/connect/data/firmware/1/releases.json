@@ -10,8 +10,7 @@
 		"url_bitcoinonly": "data/firmware/1/trezor-1.8.3-bitcoinonly.bin",
 		"fingerprint": "496aecfab867504b2283a9f057a0b2fd9d17970a22c81f6ad74232e7b914ce68",
 		"fingerprint_bitcoinonly": "13d6089cb935f453eaddbfe193e0ab37924a7aa66f684355a4fe5c660c18247a",
-		"changelog": "* Introduce Bitcoin-only firmware",
-		"channel": "beta"
+		"changelog": "* Introduce Bitcoin-only firmware"
 	},
 	{
 		"required": false,
