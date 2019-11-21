@@ -49,4 +49,5 @@ ENV npm_config_unsafe_perm true
 RUN mkdir yarn-cache-project && cd yarn-cache-project
 RUN yarn init -y 
 RUN yarn add opencollective@1.0.3
+RUN yarn add node-pre-gyp
 RUN cd ..
