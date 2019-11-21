@@ -127,19 +127,24 @@ class CommonDB<TDBStructure> {
         const tx = db.transaction(store, 'readwrite');
 
         const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
-        items.forEach(item => {
-            if (upsert) {
-                tx.store.put(item).then(result => {
-                    keys.push(result);
-                });
-            } else {
-                tx.store.add(item).then(result => {
-                    keys.push(result);
-                });
-            }
+        const promises = Promise.all(
+            items
+                .map(item => {
+                    if (upsert) {
+                        return tx.store.put(item).then(result => {
+                            keys.push(result);
+                        });
+                    }
+                    return tx.store.add(item).then(result => {
+                        keys.push(result);
+                    });
+                })
+                .concat(tx.done)
+        ).then(_ => {
+            // this.notify(store, keys);
         });
-        this.notify(store, keys);
-        await tx.done;
+
+        return promises;
     };
 
     getItemByPK = async <
