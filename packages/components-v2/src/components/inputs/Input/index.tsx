@@ -37,6 +37,12 @@ const StyledInput = styled.input<InputProps>`
     width: ${props => getDisplayWidth(props.display)};
     height: ${props => (props.variant === 'small' ? '26px' : '38px')};
 
+    &:read-only  {
+        background: ${colors.BLACK96};
+        box-shadow: none;
+        color: ${colors.BLACK50};
+    }
+
     ${props =>
         props.state === 'error' &&
         css`
@@ -61,6 +67,7 @@ const StyledInput = styled.input<InputProps>`
     ${props =>
         !props.disabled &&
         !props.state &&
+        !props.readOnly &&
         css`
             &:hover,
             &:focus,
@@ -95,6 +102,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     bottomText?: string;
     monospace?: boolean;
     dataTest?: string;
+    wrapperProps?: Record<string, any>;
 }
 
 const Input = ({
@@ -107,10 +115,11 @@ const Input = ({
     disabled,
     monospace,
     dataTest,
+    wrapperProps,
     ...rest
 }: InputProps) => {
     return (
-        <Wrapper data-test={dataTest} display={display}>
+        <Wrapper data-test={dataTest} display={display} {...wrapperProps}>
             {topLabel && <Label>{topLabel}</Label>}
             <StyledInput
                 type={type}
