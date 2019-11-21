@@ -1,4 +1,4 @@
-import { db, DBWalletAccountTransaction } from '@suite/storage';
+import { db } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
