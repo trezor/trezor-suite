@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { items } from '@wallet-config/menu';
+import { Icon } from '@trezor/components-v2';
+import { ITEMS } from '@wallet-config/menu';
 import * as routerActions from '@suite-actions/routerActions';
 import { findRoute } from '@suite-utils/router';
 import { AppState, Dispatch } from '@suite-types';
@@ -13,7 +14,7 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    padding: 5px 0 0 39px;
+    padding: 10px 0 0 0;
     cursor: pointer;
     flex-direction: column;
 `;
@@ -23,26 +24,22 @@ const StyledNavLink = styled.div<{ active: boolean }>`
     font-size: ${FONT_SIZE.BASE};
     color: ${colors.TEXT_SECONDARY};
     display: flex;
-    white-space: nowrap;
+    align-items: center;
+    margin-bottom: 12px;
 
     &.active,
     &:hover {
         color: ${colors.TEXT_PRIMARY};
     }
 
-    &:first-child {
-        margin-left: 0px;
-    }
-
+    &:first-child,
     &:last-child {
-        margin-right: 0px;
+        margin-left: 0px;
     }
 `;
 
-const LinkContent = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
+const Text = styled.div`
+    padding-left: 5px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -62,16 +59,16 @@ const AccountNavigation = (props: Props) => {
 
     return (
         <Wrapper>
-            {items.map(item => {
-                // show item if isHidden() returns false or when isHidden func is not defined
-                if ((item.isHidden && !item.isHidden(params.symbol)) || !item.isHidden) {
+            {ITEMS.map(item => {
+                if (!item.isHidden(params.symbol)) {
                     return (
                         <StyledNavLink
                             key={item.route}
                             active={currentRoute ? currentRoute.name === item.route : false}
                             onClick={() => props.goto(item.route, undefined, true)}
                         >
-                            <LinkContent>{item.title}</LinkContent>
+                            <Icon size={10} icon={item.icon}></Icon>
+                            <Text>{item.title}</Text>
                         </StyledNavLink>
                     );
                 }

@@ -7,15 +7,13 @@ import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { Link } from '@suite-components';
 import { Account } from '@wallet-types';
-import AccountNavigation from './components/AccountNavigation';
+import AccountNavigation from './components/AccountNavigation/Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`
     padding: 10px 20px;
     display: flex;
-    flex-direction: column;
-    cursor: pointer;
+    flex-direction: row;
     transition: background-color 0.3s, color 0.3s;
-    justify-content: space-between;
 
     ${props =>
         props.selected &&
@@ -25,44 +23,51 @@ const Wrapper = styled.div<{ selected: boolean }>`
         `}
 `;
 
-const CoinName = styled.div``;
-
-const LogoWrapper = styled.div`
-    min-width: 40px;
+const CoinName = styled.div`
     display: flex;
     align-items: center;
+    height: 25px;
 `;
 
-const AccountIndex = styled.div`
+const LogoWrapper = styled.div`
     display: flex;
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const Left = styled.div`
     display: flex;
-    align-items: center;
     justify-content: flex-start;
 `;
 
-const Name = styled.div`
+const Right = styled.div`
     display: flex;
     flex-direction: column;
     font-size: ${variables.FONT_SIZE.BIG};
     color: ${colors.TEXT_PRIMARY};
+    padding-left: 10px;
 `;
 
 const Label = styled.span`
     display: flex;
-    justify-content: center;
+    height: 100%;
+    padding: 2px 0 0 5px;
+    align-items: center;
     text-transform: uppercase;
-    padding-right: 3px;
     font-size: ${variables.FONT_SIZE.COUNTER};
     color: ${colors.TEXT_SECONDARY};
 `;
 
 const LabelAddon = styled.span`
     padding-right: 2px;
+`;
+
+const Balance = styled.div`
+    display: flex;
+`;
+
+const BalanceValue = styled.div``;
+
+const BalanceSymbol = styled.div`
+    padding-left: 5px;
 `;
 
 // todo make no style link component
@@ -102,28 +107,30 @@ const Row = React.memo(({ account, selected }: Props) => {
                     <LogoWrapper>
                         <CoinLogo size={25} symbol={account.symbol} />
                     </LogoWrapper>
-                    <Name>
-                        <CoinName>
-                            <FormattedMessage {...getTitleForNetwork(account.symbol)} />
-                        </CoinName>
-                        <AccountIndex>
-                            <Label>
-                                {accountType && (
-                                    <LabelAddon>
-                                        <FormattedMessage {...accountType} />
-                                    </LabelAddon>
-                                )}
-                                <FormattedMessage
-                                    {...(account.imported
-                                        ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
-                                        : l10nCommonMessages.TR_ACCOUNT_HASH)}
-                                    values={{ number: String(account.index + 1) }}
-                                />
-                            </Label>
-                        </AccountIndex>
-                    </Name>
                 </Left>
-                {selected && <AccountNavigation />}
+                <Right>
+                    <CoinName>
+                        <FormattedMessage {...getTitleForNetwork(account.symbol)} />
+                        <Label>
+                            {accountType && (
+                                <LabelAddon>
+                                    <FormattedMessage {...accountType} />
+                                </LabelAddon>
+                            )}
+                            <FormattedMessage
+                                {...(account.imported
+                                    ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
+                                    : l10nCommonMessages.TR_ACCOUNT_HASH)}
+                                values={{ number: String(account.index + 1) }}
+                            />
+                        </Label>
+                    </CoinName>
+                    <Balance>
+                        <BalanceValue>{account.formattedBalance}</BalanceValue>
+                        <BalanceSymbol>{account.symbol.toUpperCase()}</BalanceSymbol>
+                    </Balance>
+                    {selected && <AccountNavigation />}
+                </Right>
             </Wrapper>
         </StyledLink>
     );

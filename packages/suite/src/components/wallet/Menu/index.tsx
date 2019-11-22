@@ -55,7 +55,6 @@ const DiscoveryStatus = () => (
             <Loader size={15} />
             <LoadingText>
                 <FormattedMessage {...walletAccountMessages.TR_LOADING_ACCOUNTS} />
-                {/* todo: if you want dots "..." use Loader.Dots from onboarding */}
             </LoadingText>
         </LoadingWrapper>
     </Wrapper>
