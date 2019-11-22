@@ -16,6 +16,13 @@ describe('Buttons', () => {
         'button-secondary-disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
+            if (testName.match(/icon/)) {
+                cy.getTestElement(testName)
+                    .find('svg')
+                    .each(el => {
+                        cy.get(el).should('be.visible');
+                    });
+            }
             cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
             cy.getTestElement(testName)
                 .should('be.visible')
