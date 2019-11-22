@@ -24,7 +24,7 @@
         "appId": "io.trezor.TrezorSuite",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
-        "asar": false,
+        "asar": true,
         "electronVersion": "7.1.1",
         "directories": {
             "output": "build-electron"
