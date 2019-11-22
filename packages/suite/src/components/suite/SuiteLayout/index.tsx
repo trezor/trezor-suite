@@ -16,7 +16,6 @@ import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import { Log } from '@suite-components';
-import DeviceMenu from '@suite-components/DeviceMenu';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
@@ -60,7 +59,6 @@ const SuiteLayout = (props: Props & WrappedComponentProps) => (
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
                     <Log />
-                    <DeviceMenu additionalDeviceMenuItems={<WalletMenuItems />} />
                     {props.children}
                 </>
             </AppWrapper>
