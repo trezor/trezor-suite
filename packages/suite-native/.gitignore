@@ -42,6 +42,8 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
+*.keystore
+!debug.keystore
 
 # fastlane
 #
@@ -58,5 +60,9 @@ buck-out/
 /ios/Pods/
 
 # Bundle artifact
+*.jsbundle
 static
+
+# CocoaPods
+/ios/Pods/
 index.android.bundle

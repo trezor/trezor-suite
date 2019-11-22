@@ -1,4 +1,4 @@
-import { COINS, ICONS } from '../../config/variables';
+import { ICONS } from '../../components/Icon/icons';
 
 export type FeedbackType = 'success' | 'info' | 'warning' | 'error';
 
@@ -6,9 +6,7 @@ export type ButtonVariant = 'primary' | 'secondary';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
 
-export type IconType = typeof ICONS[number];
-
-export type CoinType = typeof COINS[number];
+export type IconType = keyof typeof ICONS;
 
 export type TrezorLogoType = 'horizontal' | 'vertical' | 'symbol';
 

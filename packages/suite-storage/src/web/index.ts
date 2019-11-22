@@ -275,39 +275,52 @@ class CommonDB<TDBStructure> {
     >(
         store: TStoreName,
         indexName?: TIndexName,
-        filters?: { key?: any; offset?: number; count?: number }
+        filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
     ) => {
-        // TODO: indexName !== undefined && filters === undefined
         const db = await this.getDB();
         const tx = db.transaction(store);
-        if (filters && indexName && filters.key !== undefined) {
-            if (filters.offset !== undefined || filters.count !== undefined) {
-                const index = tx.store.index(indexName);
-                // cursor with keyrange for given accountId (covers all timestamps)
-                let cursor = await index.openCursor(
-                    IDBKeyRange.bound([filters.key], [filters.key, ''])
-                );
-                const items = [];
-                let counter = 0;
-                if (cursor) {
-                    // move cursor in position
-                    if (filters.offset) cursor = await cursor.advance(filters.offset);
-                    while (cursor && (!filters.count || counter < filters.count)) {
-                        // iterate unless cursor returns null or we have enough items (count param)
-                        items.push(cursor.value);
-                        // eslint-disable-next-line no-await-in-loop
-                        cursor = await cursor.continue();
-                        counter++;
+        if (indexName) {
+            const index = tx.store.index(indexName);
+            if (filters && filters.key !== undefined) {
+                if (filters.offset !== undefined || filters.count !== undefined) {
+                    // cursor with keyrange for given accountId (covers all timestamps)
+                    let cursor = await index.openCursor(
+                        IDBKeyRange.bound([filters.key], [filters.key, ''])
+                    );
+                    const items = [];
+                    let counter = 0;
+                    if (cursor) {
+                        // move cursor in position
+                        if (filters.offset) cursor = await cursor.advance(filters.offset);
+                        while (cursor && (!filters.count || counter < filters.count)) {
+                            // iterate unless cursor returns null or we have enough items (count param)
+                            items.push(cursor.value);
+                            // eslint-disable-next-line no-await-in-loop
+                            cursor = await cursor.continue();
+                            counter++;
+                        }
                     }
+                    return items;
+                }
+                // if offset and count params are undefined just use getAll on index instead of cursor.
+                // all txs for given accountId
+                // bound([accountId, undefined], [accountId, '']) should cover all timestamps
+                const keyRange = IDBKeyRange.bound([filters.key], [filters.key, '']);
+                return index.getAll(keyRange);
+            }
+
+            if (filters && filters.reverse) {
+                // get items in reverse order
+                let cursor = await index.openCursor(undefined, 'prev');
+                const items = [];
+                while (cursor) {
+                    items.push(cursor.value);
+                    // eslint-disable-next-line no-await-in-loop
+                    cursor = await cursor.continue();
                 }
                 return items;
             }
-            // if offset and count params are undefined just use getAll on index instead of cursor.
-            const index = tx.store.index(indexName);
-            // all txs for given accountId
-            // bound([accountId, undefined], [accountId, '']) should cover all timestamps
-            const keyRange = IDBKeyRange.bound([filters.key], [filters.key, '']);
-            return index.getAll(keyRange);
+            return index.getAll();
         }
         // no accountId, return all txs
         return tx.store.getAll();

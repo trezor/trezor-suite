@@ -10,14 +10,20 @@ import { migrate } from './migrations';
 
 const VERSION = 10;
 
+export interface DBWalletAccountTransaction {
+    tx: WalletAccountTransaction;
+    order: number;
+}
+
 export interface SuiteDBSchema extends DBSchema {
     txs: {
         key: string;
-        value: WalletAccountTransaction;
+        value: DBWalletAccountTransaction;
         indexes: {
             accountKey: string[]; // descriptor, symbol, deviceState
             txid: WalletAccountTransaction['txid'];
             deviceState: string;
+            order: number;
             blockTime: number; // TODO: blockTime can be undefined
         };
     };
@@ -74,12 +80,13 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         // init db
         // object store for wallet transactions
         const txsStore = db.createObjectStore('txs', {
-            keyPath: ['deviceState', 'descriptor', 'txid', 'type'],
+            keyPath: ['tx.deviceState', 'tx.descriptor', 'tx.txid', 'tx.type'],
         });
-        txsStore.createIndex('txid', 'txid', { unique: false });
-        txsStore.createIndex('blockTime', 'blockTime', { unique: false });
-        txsStore.createIndex('deviceState', 'deviceState', { unique: false });
-        txsStore.createIndex('accountKey', ['descriptor', 'symbol', 'deviceState'], {
+        txsStore.createIndex('txid', 'tx.txid', { unique: false });
+        txsStore.createIndex('order', 'order', { unique: false });
+        txsStore.createIndex('blockTime', 'tx.blockTime', { unique: false });
+        txsStore.createIndex('deviceState', 'tx.deviceState', { unique: false });
+        txsStore.createIndex('accountKey', ['tx.descriptor', 'tx.symbol', 'tx.deviceState'], {
             unique: false,
         });
 
