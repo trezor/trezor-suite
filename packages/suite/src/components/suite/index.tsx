@@ -1,6 +1,5 @@
 import AcquireDevice from './AcquireDevice';
 import Backdrop from './Backdrop';
-import DeviceMenu from './DeviceMenu';
 import Footer from './Footer';
 import DeviceIcon from './images/DeviceIcon';
 import WalletTypeIcon from './images/WalletType';
@@ -16,7 +15,6 @@ import PinInput from './PinInput';
 
 export {
     AcquireDevice,
-    DeviceMenu,
     Backdrop,
     Footer,
     DeviceIcon,

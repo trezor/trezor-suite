@@ -69,12 +69,11 @@ const Menu = (props: Props) => (
             const { route, icon, text } = item;
             const routeObj = findRouteByName(route);
             const isActive = item.route === `${props.app}-index`;
-
             if (!routeObj) return null;
 
             return (
                 <MenuItemWrapper key={text}>
-                    <In onClick={() => props.goTo(routeObj.pattern)} isActive={isActive}>
+                    <In onClick={() => props.goTo(routeObj.name)} isActive={isActive}>
                         <IconWrapper isActive={isActive}>
                             <Icon
                                 size={20}

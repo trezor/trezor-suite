@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { colors } from '@trezor/components';
-import WalletMenuItems from '@suite-components/DeviceMenu/components/MenuItems';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import Modals from '@suite-components/modals';

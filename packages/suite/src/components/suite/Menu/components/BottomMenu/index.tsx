@@ -1,6 +1,7 @@
 import React from 'react';
 import { findRouteByName } from '@suite-utils/router';
 import styled from 'styled-components';
+import { Switch } from '@trezor/components';
 import { Icon, colors } from '@trezor/components-v2';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
@@ -22,6 +23,15 @@ const Text = styled.div`
     padding-left: 10px;
 `;
 
+const SubMenu = styled.div`
+    margin-top: 10px;
+`;
+
+const SubMenuText = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
 const BottomMenu = () => (
     <Wrapper>
         {BOTTOM_MENU_ITEMS.map(item => {
@@ -40,6 +50,18 @@ const BottomMenu = () => (
             );
         })}
         <Divider />
+        <SubMenu>
+            <MenuItemWrapper>
+                <SubMenuText>Discreet</SubMenuText>
+                <Switch
+                    isSmall
+                    checked={false}
+                    onChange={() => {
+                        console.log('change me');
+                    }}
+                />
+            </MenuItemWrapper>
+        </SubMenu>
     </Wrapper>
 );
 

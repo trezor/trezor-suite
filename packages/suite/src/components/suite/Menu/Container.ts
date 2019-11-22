@@ -7,6 +7,7 @@ import Menu from './index';
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
+    selectedDevice: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

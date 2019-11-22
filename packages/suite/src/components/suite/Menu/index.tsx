@@ -4,7 +4,7 @@ import { colors } from '@trezor/components-v2';
 import styled from 'styled-components';
 
 import TopMenu from './components/TopMenu';
-import AppsMenu from './components/MainMenu';
+import MainMenu from './components/MainMenu';
 import BottomMenu from './components/BottomMenu';
 
 const Wrapper = styled.div`
@@ -17,8 +17,8 @@ const Wrapper = styled.div`
 const Menu = (props: Props) => {
     return (
         <Wrapper>
-            <TopMenu goTo={props.goto} />
-            <AppsMenu app={props.router.app} goTo={props.goto} />
+            <TopMenu selectedDevice={props.selectedDevice} />
+            <MainMenu app={props.router.app} goTo={props.goto} />
             <BottomMenu />
         </Wrapper>
     );
