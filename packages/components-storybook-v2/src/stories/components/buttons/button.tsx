@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button } from '@trezor/components-v2';
+import { Button, variables } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean, select, text } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
 
 storiesOf('Buttons', module).add(
     'Button',
     () => {
-        const disabled = boolean('Disabled', false);
+        const value = text('Value', 'Button');
         const variant: any = select(
             'Variant',
             {
@@ -26,13 +26,23 @@ storiesOf('Buttons', module).add(
             null
         );
 
+        const iconOptions: any = {
+            None: null,
+        };
+        variables.ICONS.forEach((icon: string) => {
+            iconOptions[icon] = icon;
+        });
+        const icon = select('Icon', iconOptions, null);
+        const disabled = boolean('Disabled', false);
+
         return (
             <Button
                 {...(disabled ? { disabled } : {})}
                 {...(variant ? { variant } : {})}
                 {...(size ? { size } : {})}
+                {...(icon ? { icon } : {})}
             >
-                Label
+                {value}
             </Button>
         );
     },

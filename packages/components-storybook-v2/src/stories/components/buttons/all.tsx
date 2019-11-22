@@ -46,10 +46,10 @@ storiesOf('Buttons', module).add(
                             <ButtonWrapper>
                                 <Button
                                     variant={variant as 'primary' | 'secondary'}
-                                    data-test={`button-${variant}-disabled`}
-                                    icon="CHECK"
+                                    data-test={`button-${variant}-icon`}
+                                    icon="PLUS"
                                 >
-                                    {variant} disabled
+                                    {variant} icon
                                 </Button>
                             </ButtonWrapper>
                             <ButtonWrapper>

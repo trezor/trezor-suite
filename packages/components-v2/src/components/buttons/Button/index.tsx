@@ -30,6 +30,7 @@ const getSecondaryPadding = (size: ButtonSize) => {
 
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
+    align-items: center;
     cursor: pointer;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BUTTON};
@@ -89,7 +90,15 @@ const Wrapper = styled.button<WrapperProps>`
         `}
 `;
 
-const IconWrapper = styled.div``;
+const IconWrapper = styled.div`
+    display: flex;
+    margin-right: 8px;
+    margin-left: 3px;
+`;
+
+const Label = styled.div`
+    transform: translateY(1px);
+`;
 
 interface WrapperProps {
     variant: ButtonVariant;
@@ -118,12 +127,18 @@ const Button = ({
                 <IconWrapper>
                     <Icon
                         icon={icon}
-                        size={8}
-                        color={variant === 'primary' ? colors.WHITE : colors.BLACK25}
+                        size={10}
+                        color={
+                            disabled
+                                ? colors.BLACK80
+                                : variant === 'primary'
+                                ? colors.WHITE
+                                : colors.BLACK25
+                        }
                     />
                 </IconWrapper>
             )}
-            {children}
+            <Label>{children}</Label>
         </Wrapper>
     );
 };
