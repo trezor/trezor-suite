@@ -7,10 +7,12 @@ describe('Buttons', () => {
         'button-primary-small',
         'button-primary-medium',
         'button-primary-large',
+        'button-primary-icon',
         'button-primary-disabled',
         'button-secondary-small',
         'button-secondary-medium',
         'button-secondary-large',
+        'button-secondary-icon',
         'button-secondary-disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
