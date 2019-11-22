@@ -43,6 +43,22 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input
+                            state="error"
+                            value="Short input with error"
+                            display="short"
+                            dataTest="input-short-error"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="success"
+                            value="Short input with success"
+                            display="short"
+                            dataTest="input-short-success"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
                             disabled
                             value="Disabled short input"
                             display="short"
@@ -57,6 +73,20 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input variant="small" value="Small input" dataTest="input-default-small" />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="error"
+                            value="Input with error"
+                            dataTest="input-default-error"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="success"
+                            value="Input with success"
+                            dataTest="input-default-success"
+                        />
                     </InputWrapper>
                     <InputWrapper>
                         <Input disabled value="Disabled input" dataTest="input-default-disabled" />
@@ -83,6 +113,24 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input
+                            state="error"
+                            value="Input label with error"
+                            dataTest="input-error-label"
+                            topLabel="Label"
+                            bottomText="bottom text"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="success"
+                            value="Input label with success"
+                            dataTest="input-success-label"
+                            topLabel="Label"
+                            bottomText="bottom text"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
                             disabled
                             value="Disabled input label"
                             dataTest="input-disabled-label"
@@ -102,6 +150,22 @@ storiesOf('Form', module).add(
                             value="Small block input"
                             display="block"
                             dataTest="input-block-small"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="error"
+                            value="Block input with error"
+                            display="block"
+                            dataTest="input-block-error"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="success"
+                            value="Block input with success"
+                            display="block"
+                            dataTest="input-block-success"
                         />
                     </InputWrapper>
                     <InputWrapper>

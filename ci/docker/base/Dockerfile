@@ -39,3 +39,11 @@ ENV TERM xterm
 ENV npm_config_loglevel warn
 # allow installing when the main user is root
 ENV npm_config_unsafe_perm true
+
+# Out of the blue, we started to run into CI failures. All of them had one thing in common. 
+# Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
+# that was not available at the moment. This happens probably because of the async manner in which
+# base packages are downloaded and installed in concurrence with the fact that the troublesome 
+# package relies on existence of another package already installed.
+# as a quick fix, create a project and install needed packages to provide yarn cache on image level.
+RUN yarn global add opencollective node-pre-gyp

@@ -743,15 +743,6 @@ declare module 'trezor-connect' {
           }
         | {
               type: typeof IFRAME.LOADED;
-              payload: {
-                  browser: {
-                      name: string;
-                      osname: string;
-                      mobile?: boolean;
-                      outdated: boolean;
-                      supported: boolean;
-                  }
-              };
           }
         | {
             type: typeof UI.FIRMWARE_PROGRESS;

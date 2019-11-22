@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import colors from '../../../config/colors';
-import { FONT_SIZE } from '../../../config/variables';
 
 const getDisplayWidth = (display: InputProps['display']) => {
     switch (display) {
@@ -38,10 +37,22 @@ const StyledInput = styled.input<InputProps>`
     width: ${props => getDisplayWidth(props.display)};
     height: ${props => (props.variant === 'small' ? '26px' : '38px')};
 
+    &:read-only  {
+        background: ${colors.BLACK96};
+        box-shadow: none;
+        color: ${colors.BLACK50};
+    }
+
     ${props =>
-        props.hasError &&
+        props.state === 'error' &&
         css`
             border-color: ${colors.RED};
+        `}
+
+    ${props =>
+        props.state === 'success' &&
+        css`
+            border-color: ${colors.GREENER};
         `}
 
     ${props =>
@@ -55,6 +66,8 @@ const StyledInput = styled.input<InputProps>`
 
     ${props =>
         !props.disabled &&
+        !props.state &&
+        !props.readOnly &&
         css`
             &:hover,
             &:focus,
@@ -82,18 +95,19 @@ interface WrapperProps {
 }
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    hasError?: boolean;
+    state?: 'success' | 'error';
     variant?: 'small' | 'large';
     display?: DisplayType;
     topLabel?: string;
     bottomText?: string;
     monospace?: boolean;
     dataTest?: string;
+    wrapperProps?: Record<string, any>;
 }
 
 const Input = ({
     type = 'text',
-    hasError,
+    state,
     variant = 'large',
     display = 'default',
     topLabel,
@@ -101,14 +115,15 @@ const Input = ({
     disabled,
     monospace,
     dataTest,
+    wrapperProps,
     ...rest
 }: InputProps) => {
     return (
-        <Wrapper data-test={dataTest} display={display}>
+        <Wrapper data-test={dataTest} display={display} {...wrapperProps}>
             {topLabel && <Label>{topLabel}</Label>}
             <StyledInput
                 type={type}
-                hasError={hasError}
+                state={state}
                 variant={variant}
                 disabled={disabled}
                 display={display}

@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
-    <title>Path</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="plus" transform="translate(-2.000000, -2.000000)" fill="#000000" fill-rule="nonzero">
-            <polygon id="Path" transform="translate(16.970563, 16.970563) rotate(45.000000) translate(-16.970563, -16.970563) " points="16.9705627 13.8401279 25.8401279 4.97056275 28.9705627 8.10099752 20.1009975 16.9705627 28.9705627 25.8401279 25.8401279 28.9705627 16.9705627 20.1009975 8.10099753 28.9705627 4.97056275 25.8401279 13.8401279 16.9705627 4.97056275 8.10099752 8.10099753 4.97056275"></polygon>
-        </g>
-    </g>
+    <polygon transform="translate(16.970563, 16.970563) rotate(45.000000) translate(-16.970563, -16.970563) " points="16.9705627 13.8401279 25.8401279 4.97056275 28.9705627 8.10099752 20.1009975 16.9705627 28.9705627 25.8401279 25.8401279 28.9705627 16.9705627 20.1009975 8.10099753 28.9705627 4.97056275 25.8401279 13.8401279 16.9705627 4.97056275 8.10099752 8.10099753 4.97056275"></polygon>
 </svg>
