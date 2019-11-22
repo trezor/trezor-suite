@@ -1,5 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import { color } from '@storybook/addon-knobs';
+import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import colors from '../../../config/colors';
 import { FONT_SIZE } from '../../../config/variables';
@@ -87,6 +89,8 @@ const Wrapper = styled.button<WrapperProps>`
         `}
 `;
 
+const IconWrapper = styled.div``;
+
 interface WrapperProps {
     variant: ButtonVariant;
     size: ButtonSize;
@@ -110,6 +114,15 @@ const Button = ({
 }: ButtonProps) => {
     return (
         <Wrapper variant={variant} size={size} disabled={disabled} {...rest}>
+            {icon && (
+                <IconWrapper>
+                    <Icon
+                        icon={icon}
+                        size={8}
+                        color={variant === 'primary' ? colors.WHITE : colors.BLACK25}
+                    />
+                </IconWrapper>
+            )}
             {children}
         </Wrapper>
     );
