@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { Props as ContainerProps } from '../../Container';
 
 const Wrapper = styled.div`
     background: #2b2b2b; /* TODO: fetch from components */
@@ -45,16 +46,16 @@ const Icon = styled(InnerWrapper)<ComponentProps>``;
 const Text = styled(InnerWrapper)<ComponentProps>``;
 
 interface Props {
-    text: string;
-    icon: any;
-    link: string;
+    route: any;
     isActive: boolean;
+    text: string;
+    goto: ContainerProps['goto'];
 }
 
 const Menu = (props: Props) => {
     return (
         <Wrapper>
-            <In isActive={props.isActive}>
+            <In onClick={() => props.goto(props.route)} isActive={props.isActive}>
                 <Icon isActive={props.isActive}>O</Icon>
                 <Text isActive={props.isActive}>{props.text}</Text>
             </In>

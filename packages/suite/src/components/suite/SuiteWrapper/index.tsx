@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, P } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as resizeActions from '@suite-actions/resizeActions';
 import { isWebUSB } from '@suite-utils/device';
-import debounce from 'debounce';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
 import SuiteLayout from '@suite-components/SuiteLayout';
@@ -33,15 +32,6 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const Index = (props: Props) => {
     const { suite, goto } = props;
     const { transport, loaded, device } = props.suite;
-
-    // hook for resize reducer to track window size
-    useEffect(() => {
-        window.onresize = debounce(() => {
-            const screenWidth = typeof window === 'object' ? window.innerWidth : null;
-            const screenHeight = typeof window === 'object' ? window.innerHeight : null;
-            props.updateWindowSize(screenWidth, screenHeight);
-        }, 250);
-    });
 
     if (!loaded || !transport) {
         // still loading or

@@ -15,16 +15,18 @@ const Menu = (props: Props) => {
     return (
         <Wrapper>
             {[
-                { text: 'Dashboard', icon: '', link: '/dashboard' },
-                { text: 'Wallet', icon: '', link: '/wallet' },
-                { text: 'Passwords', icon: '', link: '/passwords' },
-                { text: 'Exchange', icon: '', link: '/exchange' },
+                { text: 'Dashboard', icon: '', route: '/dashboard' },
+                { text: 'Wallet', icon: '', route: '/wallet' },
+                { text: 'Passwords', icon: '', route: '/passwords' },
+                { text: 'Exchange', icon: '', route: '/exchange' },
             ].map(item => (
+                // @ts-ignore TODO add routes
                 <Item
-                    isActive={`/${props.router.app}` === item.link}
+                    goto={props.goto}
+                    isActive={`/${props.router.app}` === item.route}
                     key={item.text}
                     icon={item.icon}
-                    link={item.link}
+                    route={item.route}
                     text={item.text}
                 />
             ))}

@@ -8,7 +8,6 @@ import Link from './Link';
 import Log from './Log';
 import Preloader from './Preloader';
 import StaticPageWrapper from './StaticPageWrapper';
-import Header from './Header';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
 import SettingsLayout from './SettingsLayout';
@@ -26,7 +25,6 @@ export {
     Log,
     Preloader,
     StaticPageWrapper,
-    Header,
     FormattedNumber,
     SuiteLayout,
     SettingsLayout,
