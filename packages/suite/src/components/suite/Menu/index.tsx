@@ -1,10 +1,11 @@
 import React from 'react';
 import { Props } from './Container';
+import { colors } from '@trezor/components-v2';
 import styled from 'styled-components';
-import Item from './components/Item';
+import Apps from './components/Apps';
 
 const Wrapper = styled.div`
-    background: #2b2b2b; /* TODO: fetch from components */
+    background: ${colors.BLACK17};
     width: 120px;
     display: flex;
     flex-direction: column;
@@ -14,22 +15,7 @@ const Wrapper = styled.div`
 const Menu = (props: Props) => {
     return (
         <Wrapper>
-            {[
-                { text: 'Dashboard', icon: '', route: '/dashboard' },
-                { text: 'Wallet', icon: '', route: '/wallet' },
-                { text: 'Passwords', icon: '', route: '/passwords' },
-                { text: 'Exchange', icon: '', route: '/exchange' },
-            ].map(item => (
-                // @ts-ignore TODO add routes
-                <Item
-                    goto={props.goto}
-                    isActive={`/${props.router.app}` === item.route}
-                    key={item.text}
-                    icon={item.icon}
-                    route={item.route}
-                    text={item.text}
-                />
-            ))}
+            <Apps app={props.router.app} goTo={props.goto} />
         </Wrapper>
     );
 };
