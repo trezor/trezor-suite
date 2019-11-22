@@ -61,6 +61,7 @@ const CtaButton = styled.button<CtaProps>`
     min-height: 36px;
     cursor: pointer;
     color: ${colors.BLACK25};
+    background: ${colors.WHITE};
 
     &:hover {
         text-decoration: underline;
