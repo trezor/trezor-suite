@@ -1,4 +1,5 @@
 import React from 'react';
+import { findRouteByName } from '@suite-utils/router';
 import styled, { css } from 'styled-components';
 import { Icon, colors } from '@trezor/components-v2';
 import { ITEMS } from '@suite-constants/menu';
@@ -58,11 +59,14 @@ interface Props {
 const Menu = (props: Props) => {
     return ITEMS.map(item => {
         const { route, icon, text } = item;
-        const isActive = item.route === `/${props.app}`;
+        const routeObj = findRouteByName(route);
+        const isActive = item.route === `${props.app}-index`;
+
+        if (!routeObj) return null;
 
         return (
             <Wrapper key={text}>
-                <In onClick={() => props.goTo(route)} isActive={isActive}>
+                <In onClick={() => props.goTo(routeObj.pattern)} isActive={isActive}>
                     <IconWrapper isActive={isActive}>
                         <Icon
                             size={20}
