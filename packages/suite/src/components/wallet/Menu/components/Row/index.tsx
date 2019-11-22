@@ -30,6 +30,7 @@ const CoinName = styled.div`
 `;
 
 const LogoWrapper = styled.div`
+    padding-top: 2px;
     display: flex;
 `;
 
@@ -43,7 +44,7 @@ const Right = styled.div`
     flex-direction: column;
     font-size: ${variables.FONT_SIZE.BIG};
     color: ${colors.TEXT_PRIMARY};
-    padding-left: 10px;
+    padding-left: 7px;
 `;
 
 const Label = styled.span`
@@ -95,20 +96,20 @@ interface Props {
 const Row = React.memo(({ account, selected }: Props) => {
     const accountType = getTypeForNetwork(account.accountType);
     return (
-        <StyledLink
-            href={getRoute('wallet-account-summary', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            })}
-        >
-            <Wrapper selected={selected}>
-                <Left>
-                    <LogoWrapper>
-                        <CoinLogo size={25} symbol={account.symbol} />
-                    </LogoWrapper>
-                </Left>
-                <Right>
+        <Wrapper selected={selected}>
+            <Left>
+                <LogoWrapper>
+                    <CoinLogo size={20} symbol={account.symbol} />
+                </LogoWrapper>
+            </Left>
+            <Right>
+                <StyledLink
+                    href={getRoute('wallet-account-summary', {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    })}
+                >
                     <CoinName>
                         <FormattedMessage {...getTitleForNetwork(account.symbol)} />
                         <Label>
@@ -129,10 +130,10 @@ const Row = React.memo(({ account, selected }: Props) => {
                         <BalanceValue>{account.formattedBalance}</BalanceValue>
                         <BalanceSymbol>{account.symbol.toUpperCase()}</BalanceSymbol>
                     </Balance>
-                    {selected && <AccountNavigation />}
-                </Right>
-            </Wrapper>
-        </StyledLink>
+                </StyledLink>
+                {selected && <AccountNavigation />}
+            </Right>
+        </Wrapper>
     );
 });
 
