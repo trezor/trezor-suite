@@ -79,7 +79,6 @@
         "ps-list": "6.3.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.0.0",
         "@sentry/browser": "^5.4.0",
         "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^8.0.6",
@@ -93,7 +92,6 @@
         "next": "^9.0.5",
         "next-plugin-custom-babel-config": "^1.0.0",
         "next-redux-wrapper": "^3.0.0-alpha.2",
-        "next-transpile-modules": "^2.0.0",
-        "rimraf": "^2.6.3"
+        "next-transpile-modules": "^2.0.0"
     }
 }

@@ -20,7 +20,6 @@
         "next-redux-wrapper": "^3.0.0-alpha.2"
     },
     "devDependencies": {
-        "@babel/core": "^7.0.0",
         "@cypress/webpack-preprocessor": "^4.1.1",
         "@types/next": "^8.0.6",
         "@types/next-redux-wrapper": "^2.0.2",
