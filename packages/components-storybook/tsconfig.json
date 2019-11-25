@@ -3,16 +3,16 @@
     "compilerOptions": {
         // Target latest version of ECMAScript.
         "target": "esnext",
-        "module": "esnext",  
+        "module": "esnext",
         "allowSyntheticDefaultImports": true,
         // fix "duplicate identifier" error
-        "skipLibCheck": true, 
-		// Enable strictest settings like strictNullChecks & noImplicitAny.
-		"strict": true,
-		// Import non-ES modules as default imports.
+        "skipLibCheck": true,
+        // Enable strictest settings like strictNullChecks & noImplicitAny.
+        "strict": true,
+        // Import non-ES modules as default imports.
         "esModuleInterop": true,
         // Only emit ‘.d.ts’ declaration files.
         "emitDeclarationOnly": true,
-        "declarationMap": false,
+        "declarationMap": false
     }
 }
