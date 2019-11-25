@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
-// import { H1, P } from '@trezor/components';
+import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
@@ -23,9 +23,8 @@ const Preloader: React.FunctionComponent<Props> = props => {
     if (error) {
         return (
             <View>
-                <Text>Error {error}</Text>
-                {/* <H1>Failed to load Trezor Suite</H1>
-                <P>Ups, something went wrong. Details: {error}</P> */}
+                <H1>Failed to load Trezor Suite</H1>
+                <P>Ups, something went wrong. Details: {error}</P>
             </View>
         );
     }
@@ -34,8 +33,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
 
     return (
         <View style={{ flex: 1 }}>
-            {/* {!loaded && <H1>Loading</H1>} */}
-            {!loaded && <Text>Loading</Text>}
+            {!loaded && <H1>Loading</H1>}
             {loaded && props.children}
         </View>
     );
