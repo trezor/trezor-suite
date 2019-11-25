@@ -22,9 +22,6 @@ module.exports = {
         '@typescript-eslint/camelcase': 'off',
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
-        // Temp fix for import.
-        // https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
-        'import/named': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.
         'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
         // I believe shadowing is a nice language feature.
