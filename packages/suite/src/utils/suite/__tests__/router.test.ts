@@ -9,7 +9,9 @@ import {
     isStatic,
 } from '../router';
 
-describe.skip('router', () => {
+describe('router', () => {
+    const OLD_ENV = { ...process.env };
+
     beforeEach(() => {
         delete process.env.assetPrefix;
     });
@@ -206,4 +208,7 @@ describe.skip('router', () => {
             });
         });
     });
+
+    // restore old env vars
+    process.env = OLD_ENV;
 });
