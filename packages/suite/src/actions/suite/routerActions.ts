@@ -70,10 +70,21 @@ export const goto = (
 
     const url = getRoute(routeName, params);
 
+    console.log('goto url', url);
+    console.log('goto unlocked', unlocked);
+
     if (preserveParams) {
+        console.log('goto preserveParams', preserveParams);
         const { hash } = window.location;
+        console.log('goto hash', hash);
+        console.log(
+            'goto url + hash, getPrefixedURL(url) + hash',
+            url + hash,
+            getPrefixedURL(url) + hash,
+        );
         await Router.push(url + hash, getPrefixedURL(url) + hash);
     } else {
+        console.log('goto url, getPrefixedURL(url)', url, getPrefixedURL(url));
         await Router.push(url, getPrefixedURL(url));
     }
 };
