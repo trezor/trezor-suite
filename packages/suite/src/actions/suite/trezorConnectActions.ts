@@ -11,7 +11,6 @@ import { Dispatch, GetState } from '@suite-types';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // set event listeners
-
     TrezorConnect.on(DEVICE_EVENT, event => {
         // dispatch event as action
         delete event.event;
@@ -80,7 +79,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             type: SUITE.CONNECT_INITIALIZED,
         });
     } catch (error) {
-        console.log('error', error);
         dispatch({
             type: SUITE.ERROR,
             error: error.message,

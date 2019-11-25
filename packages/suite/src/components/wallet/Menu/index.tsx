@@ -13,7 +13,7 @@ import Row from './components/Row';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import l10nMessages from './index.messages';
-import walletAccountMessages from '@suite/views/wallet/account/index.messages';
+import walletAccountMessages from '@wallet-views/account/index.messages';
 
 const Wrapper = styled.div``;
 
