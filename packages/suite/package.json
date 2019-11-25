@@ -7,6 +7,7 @@
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
         "translations:extract": "rimraf translations/extractedMessages && cross-env NODE_ENV=translations babel src/**/*.{tsx,ts} && node ../translations-manager/lib/cli.js merge-msgs && node ../translations-manager/lib/cli.js build-csv",
+        "translations:extract1": "rimraf translations/extractedMessages && cross-env NODE_ENV=translations babel src/**/*.{tsx,ts} && yarn ttm merge-msgs && yarn ttm build-csv",
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations",
         "type-check": "tsc --project tsconfig.json",
         "test": "run-s test:*",
@@ -51,7 +52,6 @@
         "redux-thunk": "^2.3.0",
         "styled-components": "^4.3.2",
         "trezor-connect": "8.0.10-extended",
-        "ttm": "1.0.0",
         "validator": "^11.1.0",
         "wallet-address-validator": "^0.2.4"
     },
