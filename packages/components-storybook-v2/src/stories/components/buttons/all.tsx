@@ -17,12 +17,13 @@ const Row = styled.div`
 
 const ButtonWrapper = styled.div`
     margin-bottom: 1rem;
+    width: 240px;
 `;
 
 storiesOf('Buttons', module).add(
     'All',
     () => {
-        const variants = ['primary', 'secondary'];
+        const variants = ['primary', 'secondary', 'danger'];
         const sizes = ['small', 'medium', 'large'];
 
         return (
@@ -38,7 +39,7 @@ storiesOf('Buttons', module).add(
                                             size={size as 'small' | 'medium' | 'large'}
                                             data-test={`button-${variant}-${size}`}
                                         >
-                                            {variant} {size}
+                                            {variant[0].toUpperCase()}{variant.slice(1)} {size}
                                         </Button>
                                     </ButtonWrapper>
                                 );
@@ -49,16 +50,36 @@ storiesOf('Buttons', module).add(
                                     data-test={`button-${variant}-icon`}
                                     icon="PLUS"
                                 >
-                                    {variant} icon
+                                    {variant[0].toUpperCase()}{variant.slice(1)} icon
                                 </Button>
                             </ButtonWrapper>
                             <ButtonWrapper>
                                 <Button
                                     variant={variant as 'primary' | 'secondary'}
-                                    disabled
+                                    data-test={`button-${variant}-icon`}
+                                    icon="PLUS"
+                                    isLoading
+                                >
+                                    {variant[0].toUpperCase()}{variant.slice(1)} loading
+                                </Button>
+                            </ButtonWrapper>
+                            <ButtonWrapper>
+                                <Button
+                                    variant={variant as 'primary' | 'secondary'}
+                                    data-test={`button-${variant}-inline-width`}
+                                    icon="PLUS"
+                                    inlineWidth
+                                >
+                                    {variant[0].toUpperCase()}{variant.slice(1)} inline width
+                                </Button>
+                            </ButtonWrapper>
+                            <ButtonWrapper>
+                                <Button
+                                    variant={variant as 'primary' | 'secondary'}
+                                    isDisabled
                                     data-test={`button-${variant}-disabled`}
                                 >
-                                    {variant} disabled
+                                    {variant[0].toUpperCase()}{variant.slice(1)} disabled
                                 </Button>
                             </ButtonWrapper>
                         </Row>

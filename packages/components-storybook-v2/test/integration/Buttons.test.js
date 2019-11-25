@@ -8,12 +8,20 @@ describe('Buttons', () => {
         'button-primary-medium',
         'button-primary-large',
         'button-primary-icon',
+        'button-primary-loading',
         'button-primary-disabled',
         'button-secondary-small',
         'button-secondary-medium',
         'button-secondary-large',
         'button-secondary-icon',
+        'button-secondary-loading',
         'button-secondary-disabled',
+        'button-danger-small',
+        'button-danger-medium',
+        'button-danger-large',
+        'button-danger-icon',
+        'button-danger-loading',
+        'button-danger-disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
             if (testName.match(/icon/)) {

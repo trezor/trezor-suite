@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { color } from '@storybook/addon-knobs';
 import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import colors from '../../../config/colors';
 import { FONT_SIZE } from '../../../config/variables';
+import FluidSpinner from '../../FluidSpinner';
 
 const getPrimaryPadding = (size: ButtonSize) => {
     switch (size) {
@@ -30,7 +30,9 @@ const getSecondaryPadding = (size: ButtonSize) => {
 
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
+    width: ${props => (props.inlineWidth ? 'auto' : '100%')};
     align-items: center;
+    justify-content: center;
     cursor: pointer;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BUTTON};
@@ -40,7 +42,7 @@ const Wrapper = styled.button<WrapperProps>`
 
     ${props =>
         props.variant === 'primary' &&
-        !props.disabled &&
+        !props.isDisabled &&
         css`
             color: ${colors.WHITE};
             background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
@@ -53,15 +55,11 @@ const Wrapper = styled.button<WrapperProps>`
                 background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25)),
                     linear-gradient(to top, ${colors.GREENER}, #21c100);
             }
-
-            &:active {
-                transform: translateY(1px);
-            }
         `}
 
     ${props =>
         props.variant === 'secondary' &&
-        !props.disabled &&
+        !props.isDisabled &&
         css`
             background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05)),
                 linear-gradient(${colors.WHITE}, ${colors.WHITE});
@@ -73,20 +71,41 @@ const Wrapper = styled.button<WrapperProps>`
                 background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15)),
                     linear-gradient(${colors.WHITE}, ${colors.WHITE});
             }
+        `}
 
-            &:active {
-                transform: translateY(1px);
+    ${props =>
+        props.variant === 'danger' &&
+        !props.isDisabled &&
+        css`
+            color: ${colors.WHITE};
+            background-image: linear-gradient(to top, ${colors.RED}, #f25757);
+            border: none;
+            padding: ${getPrimaryPadding(props.size)};
+            box-shadow: 0 3px 6px 0 rgba(205, 73, 73, 0.3);
+
+            &:hover,
+            &:focus {
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25)),
+                    linear-gradient(to top, ${colors.RED}, #f25757);
             }
         `}
 
     ${props =>
-        props.disabled &&
+        props.isDisabled &&
         css`
             color: ${colors.BLACK80};
             cursor: default;
             border: solid 1px ${colors.BLACK70};
             background-image: linear-gradient(${colors.WHITE}, ${colors.BLACK96});
             padding: ${getSecondaryPadding(props.size)};
+        `}
+
+    ${props =>
+        !props.isDisabled &&
+        css`
+            &:active {
+                transform: translateY(1px);
+            }
         `}
 `;
 
@@ -103,14 +122,17 @@ const Label = styled.div`
 interface WrapperProps {
     variant: ButtonVariant;
     size: ButtonSize;
-    disabled: boolean;
+    isDisabled: boolean;
+    inlineWidth: boolean;
 }
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     size?: ButtonSize;
     icon?: IconType;
-    disabled?: boolean;
+    isDisabled?: boolean;
+    isLoading?: boolean;
+    inlineWidth?: boolean;
 }
 
 const Button = ({
@@ -118,24 +140,37 @@ const Button = ({
     variant = 'primary',
     size = 'medium',
     icon,
-    disabled = false,
+    inlineWidth = false,
+    isDisabled = false,
+    isLoading = false,
     ...rest
 }: ButtonProps) => {
     return (
-        <Wrapper variant={variant} size={size} disabled={disabled} {...rest}>
-            {icon && (
+        <Wrapper
+            variant={variant}
+            size={size}
+            isDisabled={isDisabled}
+            inlineWidth={inlineWidth}
+            {...rest}
+        >
+            {!isLoading && icon && (
                 <IconWrapper>
                     <Icon
                         icon={icon}
                         size={10}
                         color={
-                            disabled
+                            isDisabled
                                 ? colors.BLACK80
-                                : variant === 'primary'
+                                : variant === 'primary' || variant === 'danger'
                                 ? colors.WHITE
                                 : colors.BLACK25
                         }
                     />
+                </IconWrapper>
+            )}
+            {isLoading && (
+                <IconWrapper>
+                    <FluidSpinner size={10} />
                 </IconWrapper>
             )}
             <Label>{children}</Label>

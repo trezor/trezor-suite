@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, variables } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { boolean, select, text } from '@storybook/addon-knobs';
+import { bool } from 'prop-types';
 import { infoOptions } from '../../../support/info';
 
 storiesOf('Buttons', module).add(
@@ -13,6 +14,7 @@ storiesOf('Buttons', module).add(
             {
                 'Default (primary)': null,
                 Secondary: 'secondary',
+                Danger: 'danger',
             },
             null
         );
@@ -33,14 +35,18 @@ storiesOf('Buttons', module).add(
             iconOptions[icon] = icon;
         });
         const icon = select('Icon', iconOptions, null);
-        const disabled = boolean('Disabled', false);
+        const inlineWidth = boolean('Full width', true);
+        const isDisabled = boolean('Disabled', false);
+        const isLoading = boolean('Loading', false);
 
         return (
             <Button
-                {...(disabled ? { disabled } : {})}
+                {...(isDisabled ? { isDisabled } : {})}
+                {...(isLoading ? { isLoading } : {})}
                 {...(variant ? { variant } : {})}
                 {...(size ? { size } : {})}
                 {...(icon ? { icon } : {})}
+                {...(!inlineWidth ? { inlineWidth: false } : {})}
             >
                 {value}
             </Button>
