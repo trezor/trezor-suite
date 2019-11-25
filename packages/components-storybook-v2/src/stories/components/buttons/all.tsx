@@ -58,7 +58,7 @@ storiesOf('Buttons', module).add(
                             <ButtonWrapper>
                                 <Button
                                     variant={variant as 'primary' | 'secondary'}
-                                    data-test={`button-${variant}-icon`}
+                                    data-test={`button-${variant}-loading`}
                                     icon="PLUS"
                                     isLoading
                                 >
