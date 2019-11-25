@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from '@trezor/components';
 import * as MethodActions from '../actions/MethodActions';
-import { State, Dispatch } from '../types';
+import { AppState, Dispatch } from '../types';
 
 import {
     Input,
@@ -150,13 +150,13 @@ const Method = props => {
 };
 
 export default connect(
-    (state: State) => {
+    (state: AppState) => {
         return {
             method: state.method,
             docs: state.docs,
         };
     },
-    (dispatch: Dispatch) => {
+    (dispatch: any) => {
         return {
             actions: bindActionCreators(MethodActions, dispatch),
         };
