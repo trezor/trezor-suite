@@ -6,6 +6,10 @@ import android.os.Bundle;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 
+// react-native-router-flux https://reactnavigation.org/docs/en/getting-started.html
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+
 public class MainActivity extends ReactActivity {
 
     /**
@@ -37,6 +41,12 @@ public class MainActivity extends ReactActivity {
                 Bundle initialProps = new Bundle();
                 initialProps.putBoolean("isEmulator", isEmulator());
                 return initialProps;
+            }
+
+            // react-native-router-flux https://reactnavigation.org/docs/en/getting-started.html
+            @Override
+            protected ReactRootView createRootView() {
+                return new RNGestureHandlerEnabledRootView(MainActivity.this);
             }
         };
     }

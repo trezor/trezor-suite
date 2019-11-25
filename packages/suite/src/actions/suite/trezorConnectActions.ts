@@ -80,6 +80,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             type: SUITE.CONNECT_INITIALIZED,
         });
     } catch (error) {
+        console.log('error', error);
         dispatch({
             type: SUITE.ERROR,
             error: error.message,

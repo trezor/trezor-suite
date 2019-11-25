@@ -18,7 +18,6 @@ module.exports = (async () => {
     } = await getDefaultConfig();
     return {
         projectRoot: path.resolve(__dirname, '../../'),
-
         transformer: {
             babelTransformerPath: require.resolve('react-native-svg-transformer'),
             getTransformOptions: async () => ({
@@ -29,7 +28,7 @@ module.exports = (async () => {
             }),
         },
         resolver: {
-            resolverMainFields: ['react-native', 'native', 'browser', 'main'],
+            resolverMainFields: ['react-native', 'browser', 'main'],
             extraNodeModules: {
                 crypto: nodejs.crypto,
                 stream: nodejs.stream,
@@ -46,5 +45,5 @@ module.exports = (async () => {
             assetExts: assetExts.filter(ext => ext !== 'svg'),
             sourceExts: [...sourceExts, 'svg'],
         },
-    },
+    };
 })();
