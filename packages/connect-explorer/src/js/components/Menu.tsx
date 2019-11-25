@@ -1,8 +1,39 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { push } from 'connected-react-router';
 import InfinityMenu from 'react-infinity-menu';
 import config from '../data/menu';
+
+const Leaf = props => {
+    const css = props.isOpen ? 'leaf selected' : 'leaf';
+    return (
+        <div key={props.data.keyPath} className={css} onClick={props.onClick}>
+            <div className="leaf-arrow">
+                <svg
+                    fill="currentColor"
+                    preserveAspectRatio="xMidYMid meet"
+                    height="10"
+                    width="10"
+                    viewBox="0 0 40 40"
+                >
+                    <g>
+                        <path d="m23.3 20l-13.1-13.6c-0.3-0.3-0.3-0.9 0-1.2l2.4-2.4c0.3-0.3 0.9-0.4 1.2-0.1l16 16.7c0.1 0.1 0.2 0.4 0.2 0.6s-0.1 0.5-0.2 0.6l-16 16.7c-0.3 0.3-0.9 0.3-1.2 0l-2.4-2.5c-0.3-0.3-0.3-0.9 0-1.2z" />
+                    </g>
+                </svg>
+            </div>
+            {props.name}
+        </div>
+    );
+};
+
+const Node = props => {
+    const css = props.data.currentUrl === props.data.url ? 'selected' : '';
+    const href = `#${props.data.url}`;
+    return (
+        <a key={props.data.keyPath} className={css} href={href}>
+            {props.name}
+        </a>
+    );
+};
 
 const findFiltered = (url: string, tree, node, key) => {
     node.id = key + 1;
@@ -23,7 +54,6 @@ const findFiltered = (url: string, tree, node, key) => {
         : [];
     node.customComponent = Leaf;
     node.isOpen = subFolder && subFolder.filter(s => s.isOpen).length > 0;
-    node.children = node.children;
     return tree.concat([node]);
 };
 
@@ -38,41 +68,8 @@ const getTree = (url: string) => {
     return filteredTree;
 };
 
-const Leaf = props => {
-    const css = props.isOpen ? 'leaf selected' : 'leaf';
-    const href = `#${props.data.url}`;
-    return (
-        <div key={props.data.keyPath} className={css} onClick={props.onClick}>
-            <div className="leaf-arrow">
-                <svg
-                    fill="currentColor"
-                    preserveAspectRatio="xMidYMid meet"
-                    height="10"
-                    width="10"
-                    viewBox="0 0 40 40"
-                >
-                    <g>
-                        <path d="m23.3 20l-13.1-13.6c-0.3-0.3-0.3-0.9 0-1.2l2.4-2.4c0.3-0.3 0.9-0.4 1.2-0.1l16 16.7c0.1 0.1 0.2 0.4 0.2 0.6s-0.1 0.5-0.2 0.6l-16 16.7c-0.3 0.3-0.9 0.3-1.2 0l-2.4-2.5c-0.3-0.3-0.3-0.9 0-1.2z"></path>
-                    </g>
-                </svg>
-            </div>
-            {props.name}
-        </div>
-    );
-};
-
-const Node = props => {
-    const css = props.data.currentUrl === props.data.url ? 'selected' : '';
-    const href = `#${props.data.url}`;
-    return (
-        <a key={props.data.keyPath} className={css} href={href}>
-            {props.name}
-        </a>
-    );
-};
-
-class Menu extends Component {
-    componentWillMount() {
+class Menu extends Component<any, any> {
+    UNSAFE_componentWillMount() {
         this.setState({
             tree: getTree(this.props.location.pathname),
         });
@@ -80,6 +77,7 @@ class Menu extends Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.location !== this.props.location) {
+            // eslint-disable-next-line react/no-did-update-set-state
             this.setState({
                 tree: getTree(this.props.location.pathname),
             });
@@ -98,6 +96,7 @@ class Menu extends Component {
             <InfinityMenu
                 tree={this.state.tree}
                 disableDefaultHeaderContent
+                // eslint-disable-next-line react/jsx-no-bind
                 onNodeMouseClick={this.onNodeMouseClick.bind(this)}
             />
         );

@@ -54,7 +54,7 @@ const CopyToClipboard = props => {
 const Response = (props): any => {
     let currentTab = null;
     switch (props.tab) {
-        case 'response':
+        case 'response': {
             // const exp = (k, d, l) => {
             //     return true;
             // };
@@ -68,6 +68,7 @@ const Response = (props): any => {
                 </div>
             );
             break;
+        }
 
         case 'code':
             currentTab = (
@@ -80,6 +81,7 @@ const Response = (props): any => {
 
         case 'docs':
             currentTab = (
+                // eslint-disable-next-line react/no-danger
                 <div className="docs-container" dangerouslySetInnerHTML={{ __html: props.docs }} />
             );
             break;
@@ -87,6 +89,9 @@ const Response = (props): any => {
         case 'tests':
             currentTab = <div className="tests-container">TODO</div>;
             break;
+
+        default:
+            currentTab = null;
     }
 
     return (

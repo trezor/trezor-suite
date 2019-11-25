@@ -8,7 +8,7 @@ const Permission = (props): any => {
             <h3>
                 <span>HOST</span> is requesting permissions to:
             </h3>
-            <div className="permissions_list"></div>
+            <div className="permissions_list" />
             <Button onClick={onPermissionGranted}>Accept</Button>
             <Button onClick={onPermissionRejected}>Cancel</Button>
         </div>
