@@ -1,8 +1,18 @@
 import { resolveStaticPath } from '../nextjs';
 
-const OLD_ENV = { ...process.env };
-
 describe('resolve static path', () => {
+    const OLD_ENV = process.env;
+
+    beforeEach(() => {
+        jest.resetModules();
+        process.env = { ...OLD_ENV };
+        delete process.env.assetPrefix;
+    });
+
+    afterEach(() => {
+        process.env = OLD_ENV;
+    });
+
     it('should return static path', () => {
         process.env.assetPrefix = '';
         expect(resolveStaticPath('mypath')).toBe('/static/mypath');
@@ -12,7 +22,4 @@ describe('resolve static path', () => {
         process.env.assetPrefix = 'brachName';
         expect(resolveStaticPath('mypath')).toBe('brachName/static/mypath');
     });
-
-    // restore old env vars
-    process.env = OLD_ENV;
 });

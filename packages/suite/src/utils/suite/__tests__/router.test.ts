@@ -10,10 +10,16 @@ import {
 } from '../router';
 
 describe('router', () => {
-    const OLD_ENV = { ...process.env };
+    const OLD_ENV = process.env;
 
     beforeEach(() => {
+        jest.resetModules();
+        process.env = { ...OLD_ENV };
         delete process.env.assetPrefix;
+    });
+
+    afterEach(() => {
+        process.env = OLD_ENV;
     });
 
     describe('getApp', () => {
@@ -208,7 +214,4 @@ describe('router', () => {
             });
         });
     });
-
-    // restore old env vars
-    process.env = OLD_ENV;
 });
