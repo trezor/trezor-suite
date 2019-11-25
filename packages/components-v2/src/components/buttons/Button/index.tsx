@@ -28,6 +28,17 @@ const getSecondaryPadding = (size: ButtonSize) => {
     }
 };
 
+const getTertiaryFontSize = (size: ButtonSize) => {
+    switch (size) {
+        case 'small':
+            return FONT_SIZE.SMALL;
+        case 'large':
+            return FONT_SIZE.LARGE;
+        default:
+            return FONT_SIZE.MEDIUM;
+    }
+};
+
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
     width: ${props => (props.inlineWidth ? 'auto' : '100%')};
@@ -74,6 +85,22 @@ const Wrapper = styled.button<WrapperProps>`
         `}
 
     ${props =>
+        props.variant === 'tertiary' &&
+        !props.isDisabled &&
+        css`
+            background: ${colors.WHITE};
+            border: none;
+            height: 20px;
+            font-size: ${getTertiaryFontSize(props.size)};
+            padding: 0 4px;
+
+            &:hover,
+            &:focus {
+                background: ${colors.BLACK92};
+            }
+        `}
+
+    ${props =>
         props.variant === 'danger' &&
         !props.isDisabled &&
         css`
@@ -92,12 +119,22 @@ const Wrapper = styled.button<WrapperProps>`
 
     ${props =>
         props.isDisabled &&
+        props.variant !== 'tertiary' &&
         css`
             color: ${colors.BLACK80};
             cursor: default;
             border: solid 1px ${colors.BLACK70};
             background-image: linear-gradient(${colors.WHITE}, ${colors.BLACK96});
             padding: ${getSecondaryPadding(props.size)};
+        `}
+
+    
+    ${props =>
+        props.isDisabled &&
+        props.variant === 'tertiary' &&
+        css`
+            color: ${colors.BLACK80};
+            border: none;
         `}
 
     ${props =>
@@ -113,11 +150,10 @@ const IconWrapper = styled.div`
     display: flex;
     margin-right: 8px;
     margin-left: 3px;
+    transform: translateY(-1px);
 `;
 
-const Label = styled.div`
-    transform: translateY(1px);
-`;
+const Label = styled.div``;
 
 interface WrapperProps {
     variant: ButtonVariant;

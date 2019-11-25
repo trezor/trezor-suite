@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Intl';
 
-import { H5, P, Icon, Button, colors } from '@trezor/components';
+import { H5, P, Icon, colors } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import suiteMessages from '@suite-views/index.messages';
 
 const Wrapper = styled.div`
@@ -11,7 +12,6 @@ const Wrapper = styled.div`
 `;
 
 const BackupButton = styled(Button)`
-    width: 100%;
     margin-bottom: 10px;
 `;
 
@@ -47,10 +47,11 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                     onReceiveConfirmation(false);
                     onCreateBackup();
                 }}
+                inlineWidth
             >
                 <Translation>{suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
             </BackupButton>
-            <Button isInverse variant="warning" onClick={() => onReceiveConfirmation(true)}>
+            <Button variant="secondary" inlineWidth onClick={() => onReceiveConfirmation(true)}>
                 <Translation>{suiteMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
             </Button>
         </Row>

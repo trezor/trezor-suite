@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Tooltip, Icon, Button, ButtonProps } from '@trezor/components';
+import { colors, Tooltip, Icon, ButtonProps } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { AppState } from '@suite/types/suite';
 import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 
@@ -26,7 +27,7 @@ const EyeButton = (props: Props) => {
         color = props.isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY;
     }
     return (
-        <Wrapper isTransparent {...props}>
+        <Wrapper variant="tertiary" inlineWidth {...props}>
             <Tooltip
                 placement="top"
                 content={

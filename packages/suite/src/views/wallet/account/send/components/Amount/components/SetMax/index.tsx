@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-import { Button, variables, Icon, colors } from '@trezor/components';
+import { variables, Icon, colors } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import messages from './index.messages';
 import { DispatchProps } from '../../../../Container';
 
@@ -32,7 +33,8 @@ const SetMax = (props: Props) => (
         onClick={() => {
             props.sendFormActions.setMax(props.outputId);
         }}
-        variant="white"
+        variant="secondary"
+        inlineWidth
     >
         <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />
         {/* {!props.canSetMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />} */}

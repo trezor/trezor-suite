@@ -1,7 +1,8 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import { Button, variables, colors } from '@trezor/components';
+import { variables, colors } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { getTypeForNetwork } from '@wallet-utils/accountUtils';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { Network, ExternalNetwork, Account } from '@wallet-types';
@@ -50,7 +51,10 @@ const EnableNetwork = (props: {
     onEnableNetwork: Props['onEnableNetwork'];
 }) => (
     <>
-        <StyledButton fullWidth onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
+        <StyledButton
+            onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}
+            inlineWidth
+        >
             <FormattedMessage
                 {...l10nMessages.TR_ENABLE_NETWORK_BUTTON}
                 values={{ networkName: props.selectedNetwork.name }}
@@ -90,9 +94,7 @@ const AccountButton = (props: {
     return (
         <StyledButton
             icon="PLUS"
-            fullWidth
-            align="left"
-            variant="white"
+            variant="secondary"
             isDisabled={!enabled}
             onClick={() => props.onEnableAccount(account)}
         >

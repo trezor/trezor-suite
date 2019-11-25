@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 // import { FormattedMessage } from 'react-intl';
 import { FirmwareRelease } from 'trezor-connect';
-import { Button, Checkbox, Tooltip, P, H1, H4, H5, variables } from '@trezor/components';
+import { Checkbox, Tooltip, P, H1, H4, H5, variables } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import * as firmwareActions from '@suite-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -113,7 +114,7 @@ const InstallButton = ({
             placement="bottom"
             content={content}
         >
-            <Button isDisabled={isDisabled} onClick={() => onClick()}>
+            <Button isDisabled={isDisabled} onClick={() => onClick()} inlineWidth>
                 {props.children}
             </Button>
         </Tooltip>
@@ -347,7 +348,7 @@ const FirmwareUpdate = (props: Props) => {
             <Bottom>
                 {firmware.status === 'initial' && (
                     <>
-                        <Button isInverse onClick={() => exitApp()}>
+                        <Button variant="secondary" onClick={() => exitApp()} inlineWidth>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton
@@ -363,12 +364,12 @@ const FirmwareUpdate = (props: Props) => {
                 )}
                 {firmware.status === 'done' && (
                     <>
-                        <Button onClick={() => exitApp()}>{getExitButtonText()}</Button>
+                        <Button onClick={() => exitApp()} inlineWidth>{getExitButtonText()}</Button>
                     </>
                 )}
                 {firmware.status === 'error' && (
                     <>
-                        <Button isInverse onClick={() => exitApp()}>
+                        <Button variant="secondary" onClick={() => exitApp()} inlineWidth>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton

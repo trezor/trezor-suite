@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { Link, Button, P, H5, colors } from '@trezor/components';
+import { Link, P, H5, colors } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 
@@ -38,10 +39,6 @@ const Row = styled.div`
     button + button {
         margin-top: 10px;
     }
-`;
-
-const BackupButton = styled(Button)`
-    width: 100%;
 `;
 
 interface Props {
@@ -119,10 +116,10 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             </Content>
             <Content>
                 <Row>
-                    <Button onClick={() => verifyAddress()}>
+                    <Button onClick={() => verifyAddress()} inlineWidth>
                         <FormattedMessage {...globalMessages.TR_TRY_AGAIN} />
                     </Button>
-                    <Button isInverse variant="warning" onClick={() => unverifiedAddress()}>
+                    <Button variant="secondary" onClick={() => unverifiedAddress()} inlineWidth>
                         <FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
                     </Button>
                 </Row>
@@ -144,11 +141,11 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                     <Content>
                         <Row>
                             <Link href={`/?backup#${device.path}`} variant="nostyle">
-                                <BackupButton>
+                                <Button>
                                     <FormattedMessage
                                         {...suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}
                                     />
-                                </BackupButton>
+                                </Button>
                             </Link>
                         </Row>
                     </Content>

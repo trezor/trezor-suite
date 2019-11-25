@@ -23,7 +23,7 @@ const ButtonWrapper = styled.div`
 storiesOf('Buttons', module).add(
     'All',
     () => {
-        const variants = ['primary', 'secondary', 'danger'];
+        const variants = ['primary', 'secondary', 'tertiary', 'danger'];
         const sizes = ['small', 'medium', 'large'];
 
         return (
@@ -39,7 +39,8 @@ storiesOf('Buttons', module).add(
                                             size={size as 'small' | 'medium' | 'large'}
                                             data-test={`button-${variant}-${size}`}
                                         >
-                                            {variant[0].toUpperCase()}{variant.slice(1)} {size}
+                                            {variant[0].toUpperCase()}
+                                            {variant.slice(1)} {size}
                                         </Button>
                                     </ButtonWrapper>
                                 );
@@ -50,7 +51,8 @@ storiesOf('Buttons', module).add(
                                     data-test={`button-${variant}-icon`}
                                     icon="PLUS"
                                 >
-                                    {variant[0].toUpperCase()}{variant.slice(1)} icon
+                                    {variant[0].toUpperCase()}
+                                    {variant.slice(1)} icon
                                 </Button>
                             </ButtonWrapper>
                             <ButtonWrapper>
@@ -60,7 +62,8 @@ storiesOf('Buttons', module).add(
                                     icon="PLUS"
                                     isLoading
                                 >
-                                    {variant[0].toUpperCase()}{variant.slice(1)} loading
+                                    {variant[0].toUpperCase()}
+                                    {variant.slice(1)} loading
                                 </Button>
                             </ButtonWrapper>
                             <ButtonWrapper>
@@ -70,7 +73,8 @@ storiesOf('Buttons', module).add(
                                     icon="PLUS"
                                     inlineWidth
                                 >
-                                    {variant[0].toUpperCase()}{variant.slice(1)} inline width
+                                    {variant[0].toUpperCase()}
+                                    {variant.slice(1)} inline width
                                 </Button>
                             </ButtonWrapper>
                             <ButtonWrapper>
@@ -79,7 +83,8 @@ storiesOf('Buttons', module).add(
                                     isDisabled
                                     data-test={`button-${variant}-disabled`}
                                 >
-                                    {variant[0].toUpperCase()}{variant.slice(1)} disabled
+                                    {variant[0].toUpperCase()}
+                                    {variant.slice(1)} disabled
                                 </Button>
                             </ButtonWrapper>
                         </Row>

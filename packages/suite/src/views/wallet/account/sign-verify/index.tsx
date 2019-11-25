@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input, TextArea, Button, colors, variables } from '@trezor/components';
+import { Input, TextArea, colors, variables } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import Title from '@wallet-components/Title';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
@@ -153,13 +154,15 @@ class SignVerify extends Component<Props> {
                         <RowButtons>
                             <StyledButton
                                 onClick={this.props.signVerifyActions.clearSign}
-                                variant="white"
+                                variant="secondary"
+                                inlineWidth
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!device.connected}
                                 isDisabled={false}
+                                inlineWidth
                                 // TODO:
                                 // onClick={() =>
                                 //      signVerifyActions.sign(account.accountPath, signMessage)
@@ -207,7 +210,11 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton onClick={signVerifyActions.clearVerify} variant="white">
+                            <StyledButton
+                                onClick={signVerifyActions.clearVerify}
+                                variant="secondary"
+                                inlineWidth
+                            >
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
@@ -222,6 +229,7 @@ class SignVerify extends Component<Props> {
                                         );
                                     }
                                 }}
+                                inlineWidth
                             >
                                 <FormattedMessage {...l10nMessages.TR_VERIFY} />
                             </StyledButton>
