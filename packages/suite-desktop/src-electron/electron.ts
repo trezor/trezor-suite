@@ -4,7 +4,7 @@ import prepareNext from 'electron-next';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
-
+import * as store from './store';
 import { isBridgeRunning, runBridgeProcess } from './bridge';
 
 let mainWindow: BrowserWindow;
@@ -48,9 +48,10 @@ const init = async () => {
         await prepareNext(path.resolve(__dirname, '../'));
     }
 
+    const winBounds = store.getWinBounds();
     mainWindow = new BrowserWindow({
-        width: 980,
-        height: 680,
+        width: winBounds.width,
+        height: winBounds.height,
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
@@ -59,6 +60,11 @@ const init = async () => {
         },
     });
     mainWindow.removeMenu();
+
+    mainWindow.on('close', () => {
+        // store window bounds
+        store.setWinBounds(mainWindow);
+    });
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {

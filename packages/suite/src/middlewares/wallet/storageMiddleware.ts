@@ -57,11 +57,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             const device = accountUtils.getAccountDevice(api.getState().devices, action.account);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {
-                storageActions.saveTransactions(
-                    action.transactions.map(tx =>
-                        accountUtils.enhanceTransaction(tx, action.account),
-                    ),
-                );
+                storageActions.removeAccountTransactions(action.account);
+                api.dispatch(storageActions.saveAccountTransactions(action.account));
             }
             break;
         }
