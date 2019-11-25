@@ -364,7 +364,9 @@ const FirmwareUpdate = (props: Props) => {
                 )}
                 {firmware.status === 'done' && (
                     <>
-                        <Button onClick={() => exitApp()} inlineWidth>{getExitButtonText()}</Button>
+                        <Button onClick={() => exitApp()} inlineWidth>
+                            {getExitButtonText()}
+                        </Button>
                     </>
                 )}
                 {firmware.status === 'error' && (

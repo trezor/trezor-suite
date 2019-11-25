@@ -164,7 +164,11 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                             setLabel(event.currentTarget.value)
                         }
                     />
-                    <ActionButton isDisabled={uiLocked} onClick={() => applySettings({ label })} inlineWidth>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        onClick={() => applySettings({ label })}
+                        inlineWidth
+                    >
                         <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}</Translation>
                     </ActionButton>
                 </ActionColumn>
@@ -208,12 +212,20 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 )}
                 <ActionColumn>
                     <Row isColumn>
-                        <ActionButtonColumn isDisabled onClick={() => applySettings({ label })} inlineWidth>
+                        <ActionButtonColumn
+                            isDisabled
+                            onClick={() => applySettings({ label })}
+                            inlineWidth
+                        >
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
                             </Translation>
                         </ActionButtonColumn>
-                        <ActionButton isDisabled onClick={() => applySettings({ label })} inlineWidth>
+                        <ActionButton
+                            isDisabled
+                            onClick={() => applySettings({ label })}
+                            inlineWidth
+                        >
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
                             </Translation>

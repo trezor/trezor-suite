@@ -147,7 +147,11 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                 <P size="small">
                     <FormattedMessage {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK} />
                 </P>
-                <StyledButton variant="secondary" onClick={() => onWalletTypeRequest(true)} inlineWidth>
+                <StyledButton
+                    variant="secondary"
+                    onClick={() => onWalletTypeRequest(true)}
+                    inlineWidth
+                >
                     <FormattedMessage {...l10nCommonMessages.TR_GO_TO_HIDDEN_WALLET} />
                 </StyledButton>
             </Content>

@@ -173,7 +173,7 @@ const InstallBridge = (props: Props) => {
                         />
 
                         <Link href={`${data.uri}${target.value}`} variant="nostyle">
-                            <DownloadBridgeButton icon="DOWNLOAD" inlineWidth>
+                            <DownloadBridgeButton icon="RECEIVE" inlineWidth>
                                 <FormattedMessage
                                     {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
                                     values={{ version: data.latestVersion }}
