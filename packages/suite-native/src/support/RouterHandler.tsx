@@ -5,7 +5,7 @@ import { Router, Scene, Stack, Actions } from 'react-native-router-flux';
 import { View, Text, Button } from 'react-native';
 import Index from '@suite-views';
 import Wallet from '@wallet-views';
-import DeviceSettings from '@suite-views/settings/index';
+import DeviceSettings from '@suite-views/settings';
 
 import * as routerActions from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';

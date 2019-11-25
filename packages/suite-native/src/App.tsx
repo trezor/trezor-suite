@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Platform, SafeAreaView } from 'react-native';
 import { Provider } from 'react-redux';
-// import 'react-native-gesture-handler'; // https://reactnavigation.org/docs/en/getting-started.html
+import 'react-native-gesture-handler'; // https://reactnavigation.org/docs/en/getting-started.html
 import './support/global';
 import Preloader from './support/TemporaryPreloader';
 import RouterHandler from './support/RouterHandler';

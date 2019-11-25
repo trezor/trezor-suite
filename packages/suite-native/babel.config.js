@@ -23,19 +23,19 @@ module.exports = api => {
 
                         // === Views - no reuse at all ===
                         // exclude .messages.*
-                        '@(suite|wallet|onboarding)*(.+)-views/(?!.*[.]messages)(.+)':
+                        '^@(suite|wallet|onboarding.+)-views\/(?!.*[.]messages)(.+)':
                             './packages/suite-native/src/views/\\1/\\2',
                         '^@(.+)-views': './packages/suite-native/src/views/\\1/index',
 
                         // === Components ===
                         // without (suite|wallet|onboarding) it was failing to resovle style-components/native in /packages/components/lib/components/buttons/Pin/index.native.js
-                        '@(suite|wallet|onboarding)*(.+)-components/(?!.*[.]messages)(.+)':
+                        '^@(suite|wallet|onboarding.+)-components/(?!.*[.]messages)(.+)':
                             './packages/suite-native/src/components/\\1/\\2',
                         // '^@(.+)-components': './packages/suite-native/src/components/\\1/index',
 
                         // === Standard resolvers ===
                         // to find something.messages from suite core
-                        '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
+                        // '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
                         '^@(.+)-components/(.+)': './packages/suite/src/components/\\1/\\2',
 
                         '^@(.+)-actions/(.+)': './packages/suite/src/actions/\\1/\\2',
