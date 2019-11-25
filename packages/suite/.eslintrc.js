@@ -1,9 +1,3 @@
-// Temp fix for import.
-// https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
-const jsExtensions = ['.js', '.jsx'];
-const tsExtensions = ['.ts', '.tsx'];
-const allExtensions = jsExtensions.concat(tsExtensions);
-
 module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
@@ -15,10 +9,11 @@ module.exports = {
         },
         project: './tsconfig.json',
     },
-    plugins: ['@typescript-eslint', 'react-hooks', 'prettier'],
+    plugins: ['import', '@typescript-eslint', 'react-hooks', 'prettier'],
     extends: [
         'airbnb',
         'plugin:@typescript-eslint/recommended',
+        'plugin:import/typescript',
         'prettier',
         'prettier/babel',
         'prettier/@typescript-eslint',
@@ -28,30 +23,10 @@ module.exports = {
         react: {
             version: 'detect',
         },
-        // linkComponents: [
-        //   // Components used as alternatives to <a> for linking, eg. <Link to={ url } />
-        //   'Hyperlink',
-        //   { name: 'Link', linkAttribute: 'to' },
-        // ],
-        // Temp fix for import.
-        // https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
-        'import/extensions': allExtensions,
-        'import/parsers': {
-            '@typescript-eslint/parser': tsExtensions,
-        },
-        'import/resolver': {
-            node: {
-                extensions: allExtensions,
-            },
-        },
     },
-    // Este rules.
     rules: {
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
-        // Temp fix for import.
-        // https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
-        'import/named': 'off',
         'import/order': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.
         'func-style': ['error', 'declaration', {

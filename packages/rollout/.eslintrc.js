@@ -1,7 +1,3 @@
-const jsExtensions = ['.js'];
-const tsExtensions = ['.ts'];
-const allExtensions = jsExtensions.concat(tsExtensions);
-
 module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
@@ -12,34 +8,20 @@ module.exports = {
         },
         project: './tsconfig.json',
     },
-    plugins: ['@typescript-eslint', 'prettier'],
+    plugins: ['import', '@typescript-eslint', 'prettier'],
     extends: [
         'airbnb-base',
         'plugin:@typescript-eslint/recommended',
+        'plugin:import/typescript',
         'prettier',
         'prettier/babel',
         'prettier/@typescript-eslint',
     ],
-    settings: {
-        'import/extensions': allExtensions,
-        'import/parsers': {
-            '@typescript-eslint/parser': tsExtensions,
-        },
-        'import/resolver': {
-            node: {
-                extensions: allExtensions,
-            },
-        },
-    },
-    // Este rules.
     rules: {
         // Ripple-lib uses camel_Case
         '@typescript-eslint/camelcase': 'off',
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
-        // Temp fix for import.
-        // https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
-        'import/named': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.
         'func-style': ['error', 'declaration', {
             allowArrowFunctions: true
