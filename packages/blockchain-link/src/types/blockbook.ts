@@ -154,7 +154,6 @@ export interface AddressNotification {
     tx: Transaction;
 }
 
-/* eslint-disable no-redeclare */
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;

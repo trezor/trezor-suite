@@ -1,9 +1,3 @@
-// Temp fix for import.
-// https://github.com/benmosher/eslint-plugin-import/issues/1285#issuecomment-466212438
-const jsExtensions = ['.js'];
-const tsExtensions = ['.ts'];
-const allExtensions = jsExtensions.concat(tsExtensions);
-
 module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
@@ -12,28 +6,17 @@ module.exports = {
         ecmaFeatures: {
             modules: true,
         },
-        project: './tsconfig.json',
+        project: ['./tsconfig.eslint.json'],
     },
-    plugins: ['@typescript-eslint', 'prettier'],
+    plugins: ['import', '@typescript-eslint', 'prettier'],
     extends: [
         'airbnb-base',
         'plugin:@typescript-eslint/recommended',
+        'plugin:import/typescript',
         'prettier',
         'prettier/babel',
         'prettier/@typescript-eslint',
     ],
-    settings: {
-        'import/extensions': allExtensions,
-        'import/parsers': {
-            '@typescript-eslint/parser': tsExtensions,
-        },
-        'import/resolver': {
-            node: {
-                extensions: allExtensions,
-            },
-        },
-    },
-    // Este rules.
     rules: {
         // Ripple-lib uses camel_Case
         '@typescript-eslint/camelcase': 'off',
@@ -69,6 +52,8 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         'prettier/prettier': 'error',
-        '@typescript-eslint/no-non-null-assertion': 'off'
+        '@typescript-eslint/no-non-null-assertion': 'off',
+        // temporary
+        '@typescript-eslint/ban-ts-ignore': 'off'
     },
 };

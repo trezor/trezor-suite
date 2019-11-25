@@ -32,8 +32,8 @@
     "lint": "eslint '**/*{.ts,.tsx}'",
     "test:unit": "jest --verbose -c jest.config.unit.js",
     "test:node": "jest -c jest.config.integration.js",
-    "build": "rm -rf lib && tsc --p ./tsconfig.json && tsc --p ./tsconfig-workers.json",
-    "type-check": "tsc --project tsconfig.json"
+    "build": "rm -rf lib && tsc --p ./tsconfig.json && tsc --p ./tsconfig.workers.json",
+    "type-check": "tsc --project tsconfig.eslint.json"
   },
   "devDependencies": {
     "@babel/register": "^7.7.4",
