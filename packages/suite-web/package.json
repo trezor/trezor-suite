@@ -21,7 +21,7 @@
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
-        "@cypress/webpack-preprocessor": "^4.1.0",
+        "@cypress/webpack-preprocessor": "^4.1.1",
         "@types/next": "^8.0.6",
         "@types/next-redux-wrapper": "^2.0.2",
         "@types/react": "^16.7.11",
@@ -29,7 +29,7 @@
         "@types/react-redux": "^7.0.8",
         "cypress": "^3.4.1",
         "cypress-image-snapshot": "^3.1.1",
-        "git-revision-webpack-plugin": "^3.0.3",
+        "git-revision-webpack-plugin": "^3.0.4",
         "next-images": "^1.1.1",
         "next-plugin-custom-babel-config": "^1.0.0",
         "next-transpile-modules": "^2.0.0",

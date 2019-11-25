@@ -32,7 +32,6 @@
         "color-hash": "^1.0.3",
         "date-fns": "^2.5.1",
         "ethereumjs-util": "^6.0.0",
-        "fork-ts-checker-webpack-plugin": "^1.5.0",
         "immer": "^4.0.0",
         "pako": "^1.0.10",
         "react": "16.9.0",
