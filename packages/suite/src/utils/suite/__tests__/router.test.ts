@@ -9,7 +9,7 @@ import {
     isStatic,
 } from '../router';
 
-describe('router', () => {
+describe.skip('router', () => {
     beforeEach(() => {
         delete process.env.assetPrefix;
     });
