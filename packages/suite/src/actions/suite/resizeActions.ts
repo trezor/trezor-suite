@@ -7,7 +7,7 @@ export interface ResizeActions {
     screenHeight: number | null;
 }
 
-export const updateWindowSize = (screenWidth: number | null, screenHeight: number | null) => (
+export const updateWindowSize = (screenWidth: number, screenHeight: number) => (
     dispatch: Dispatch,
 ) => {
     dispatch({
