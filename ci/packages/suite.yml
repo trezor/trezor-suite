@@ -5,14 +5,14 @@ suite lint:
     dependencies:
         - install and build
 
-suite detect l10n duplicities:
-    stage: lint and prettier
-    script:
-        # for some reason we cannot run it using simple yarn command https://github.com/trezor/trezor-suite/issues/774
-        # - cd packages/suite && npx @babel/cli && NODE_ENV=translations babel src/**/*.{tsx,ts} && npx node ../../packages/translations-manager/lib/cli.js merge-msgs
-        - yarn workspace @trezor/suite translations:extract
-    dependencies:
-        - install and build
+# suite detect l10n duplicities:
+#     stage: lint and prettier
+#     script:
+#         # for some reason we cannot run it using simple yarn command https://github.com/trezor/trezor-suite/issues/774
+#         # - cd packages/suite && npx @babel/cli && NODE_ENV=translations babel src/**/*.{tsx,ts} && npx node ../../packages/translations-manager/lib/cli.js merge-msgs
+#         - yarn workspace @trezor/suite translations:extract
+#     dependencies:
+#         - install and build
 
 suite type check:
     stage: typescript type check

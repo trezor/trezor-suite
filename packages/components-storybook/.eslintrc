@@ -47,7 +47,8 @@
             }
         ],
         // new rules (eslint 6) temporary disabled until components-v2 and ts-ignore resolve
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "import/no-named-as-default": "off"
     },
     "overrides": [
         {
