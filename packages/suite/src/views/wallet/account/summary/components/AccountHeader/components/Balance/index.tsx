@@ -155,7 +155,7 @@ const AccountBalance = (props: Props) => {
                 />
             </HideBalanceIconWrapper>
             {!isHidden && (
-                <React.Fragment>
+                <>
                     <BalanceWrapper>
                         <Label>
                             <FormattedMessage {...l10nMessages.TR_BALANCE} />
@@ -203,7 +203,7 @@ const AccountBalance = (props: Props) => {
                         </TooltipWrapper>
                         <CoinBalance>1 {network.symbol}</CoinBalance>
                     </BalanceRateWrapper>
-                </React.Fragment>
+                </>
             )}
         </Wrapper>
     );

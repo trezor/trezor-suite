@@ -22,11 +22,11 @@ interface Props {
 }
 
 const Notifications = (props: Props) => (
-    <React.Fragment>
+    <>
         <StaticNotifications router={props.router} />
         <AccountNotifications selectedAccount={props.selectedAccount} blockchain={[]} />
         <ActionNotifications notifications={props.notifications} close={props.close} />
-    </React.Fragment>
+    </>
 );
 
 const mapStateToProps = (state: AppState) => ({

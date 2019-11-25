@@ -198,7 +198,7 @@ const DeviceMenu = ({
                 isSelected
                 data-test="@suite/device-item-selected"
                 icon={
-                    <React.Fragment>
+                    <>
                         {showWalletType && (
                             // <Tooltip
                             //     content={
@@ -259,7 +259,7 @@ const DeviceMenu = ({
                             color={colors.TEXT_SECONDARY}
                             icon="ARROW_DOWN"
                         />
-                    </React.Fragment>
+                    </>
                 }
             />
             {isOpen && (

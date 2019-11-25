@@ -306,7 +306,7 @@ const FirmwareUpdate = (props: Props) => {
                             isLatest={hasNewestFirmware()}
                             firmwareRelease={getFirmwareRelease()}
                             currentVersion={getFwVersion()}
-                        ></ChangeLog>
+                        />
                     )}
                     {(isInProgress() || isInFinishedState()) && (
                         <div>

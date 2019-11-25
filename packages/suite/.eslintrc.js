@@ -97,6 +97,9 @@ module.exports = {
         'import/no-cycle': 'off',
         'prettier/prettier': 'error',
         "react/require-default-props": 'off',
-        '@typescript-eslint/no-non-null-assertion': 'off'
+        '@typescript-eslint/no-non-null-assertion': 'off',
+        // new rules (eslint 6) temporary disabled until components-v2 and ts-ignore resolve
+        'react/jsx-props-no-spreading': 'off',
+        '@typescript-eslint/ban-ts-ignore': 'off'
     },
 };

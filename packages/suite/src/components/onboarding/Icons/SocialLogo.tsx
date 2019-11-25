@@ -3,7 +3,7 @@ import React from 'react';
 const Facebook = ({ sizeMultiplier = 1 }: { sizeMultiplier: number }) => {
     const base = 20;
     return (
-        <React.Fragment>
+        <>
             <svg
                 version="1.1"
                 id="Layer_1"
@@ -26,7 +26,7 @@ const Facebook = ({ sizeMultiplier = 1 }: { sizeMultiplier: number }) => {
                     d="M182.409,262.307v-99.803h33.499l5.016-38.895h-38.515V98.777c0-11.261,3.127-18.935,19.275-18.935 l20.596-0.009V45.045c-3.562-0.474-15.788-1.533-30.012-1.533c-29.695,0-50.025,18.126-50.025,51.413v28.684h-33.585v38.895h33.585 v99.803H182.409z"
                 />
             </svg>
-        </React.Fragment>
+        </>
     );
 };
 
