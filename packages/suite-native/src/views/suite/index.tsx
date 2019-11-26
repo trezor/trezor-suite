@@ -8,8 +8,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { getRoute } from '@suite-utils/router';
 import { AppState, Dispatch } from '@suite-types';
 
-// TODO: logo works, but has problem with typescript, will solve later.
-// import Logo from './trezor_logo_horizontal.svg';
+import Logo from './trezor_logo_horizontal.svg';
 
 const mapStateToProps = (state: AppState) => ({
     // router: state.router,
@@ -95,7 +94,7 @@ const Index = (props: Props) => {
     return (
         <View>
             {/* <Text>Just an example to see that loading svgs work</Text> */}
-            {/* <Logo width="200" height="200" /> */}
+            <Logo width="200" height="200" />
             <Text>Device {suite.device.label} connected</Text>
             <Button
                 title="wallet"
@@ -113,4 +112,7 @@ const Index = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Index);
