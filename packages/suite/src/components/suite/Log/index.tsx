@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, Tooltip, H5, P, Icon, Modal, colors } from '@trezor/components';
+import { Button, Tooltip, Icon, Modal, colors } from '@trezor/components';
+import { H2, P } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 
 import * as logActions from '@suite-actions/logActions';
@@ -88,9 +89,9 @@ const Log = (props: Props) => {
                 <Click onClick={props.toggle}>
                     <Icon size={12} color={colors.INFO_PRIMARY} icon="CLOSE" />
                 </Click>
-                <H5>
+                <H2>
                     <FormattedMessage {...l10nMessages.TR_LOG} />
-                </H5>
+                </H2>
                 <StyledParagraph size="small">
                     <FormattedMessage {...l10nMessages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
                 </StyledParagraph>

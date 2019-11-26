@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 // import { FormattedMessage } from 'react-intl';
 import { FirmwareRelease } from 'trezor-connect';
-import { Button, Checkbox, Tooltip, P, H1, H4, H5, variables } from '@trezor/components';
+import { Button, Checkbox, Tooltip, variables } from '@trezor/components';
+import { H1, H2, P } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import * as firmwareActions from '@suite-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -132,7 +133,7 @@ const ChangeLog = ({
     if (isLatest) {
         return (
             <ChangelogWrapper>
-                <H4>{currentVersion}</H4>
+                <H2>{currentVersion}</H2>
                 <P>Latest firmware already installed</P>
             </ChangelogWrapper>
         );
@@ -140,15 +141,15 @@ const ChangeLog = ({
     if (!firmwareRelease) {
         return (
             <ChangelogWrapper>
-                <H4>Changelog</H4>
+                <H2>Changelog</H2>
                 <P>Connect your device to see changelog</P>
             </ChangelogWrapper>
         );
     }
     return (
         <ChangelogWrapper>
-            <H4>Changelog</H4>
-            <H5>{firmwareRelease.version.join('.')}</H5>
+            <H2>Changelog</H2>
+            <P>{firmwareRelease.version.join('.')}</P>
             {firmwareRelease.changelog.split('*').map((row: string) => (
                 <P key={row.substr(0, 8)}>{row}</P>
             ))}

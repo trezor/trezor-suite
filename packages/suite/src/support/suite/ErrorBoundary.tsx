@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H1, P, Button } from '@trezor/components';
+import { H1, P, Button } from '@trezor/components-v2';
 
 import * as Sentry from '@sentry/browser';
 

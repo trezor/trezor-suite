@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { H4 } from '@trezor/components';
+import { H2 } from '@trezor/components-v2';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@wallet-actions/settingsActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -64,12 +64,12 @@ const AddAccount = (props: Props) => {
 
     return (
         <Wrapper>
-            <H4>
+            <H2>
                 <FormattedMessage
                     {...l10nMessages.TR_ADD_NEW_ACCOUNT}
                     values={{ deviceLabel: props.device.label }}
                 />
-            </H4>
+            </H2>
             <NetworkSelect
                 selectedNetwork={selectedNetwork}
                 networks={internalNetworks}
