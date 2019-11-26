@@ -92,10 +92,10 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
 
     const startIndex = (page - 1) * (perPage || SETTINGS.TXS_PER_PAGE);
     const stopIndex = startIndex + (perPage || SETTINGS.TXS_PER_PAGE);
-    const txsForPage = reducerTxs.slice(startIndex, stopIndex);
+    const txsForPage = reducerTxs.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
 
     // we already got txs for the page in reducer
-    if (txsForPage.length > 0) return;
+    if (txsForPage.length === SETTINGS.TXS_PER_PAGE) return;
 
     dispatch({
         type: TRANSACTION.FETCH_INIT,
