@@ -6,7 +6,7 @@ import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { Translation } from '@suite-components/Intl';
-import commonMessages from '@wallet-views/messages';
+import commonMessages from '@suite/views/wallet/index.messages';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
 import { AppState, TrezorDevice } from '@suite-types';
