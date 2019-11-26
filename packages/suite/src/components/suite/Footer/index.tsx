@@ -95,11 +95,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <FormattedMessage
             {...l10nMessages.TR_EXCHANGE_RATES_BY}
             values={{
-                service: (
-                    <Link href="https://www.coingecko.com">
-                        Coingecko
-                    </Link>
-                ),
+                service: <Link href="https://www.coingecko.com">Coingecko</Link>,
             }}
         />
     );
@@ -107,9 +103,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <Wrapper isLanding={isLanding}>
             <Content>
                 <Left>
-                    <StyledLink href="http://satoshilabs.com">
-                        SatoshiLabs
-                    </StyledLink>
+                    <StyledLink href="http://satoshilabs.com">SatoshiLabs</StyledLink>
                     <StyledLink href="https://trezor.io/tos">
                         <Translation>{l10nMessages.TR_TERMS}</Translation>
                     </StyledLink>
