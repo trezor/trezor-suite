@@ -289,7 +289,4 @@ const DeviceMenu = ({
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(DeviceMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(DeviceMenu);

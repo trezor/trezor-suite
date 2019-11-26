@@ -147,7 +147,4 @@ const UnexpectedState = ({
     }
 };
 
-export default connect(
-    null,
-    mapDispatchToProps,
-)(UnexpectedState);
+export default connect(null, mapDispatchToProps)(UnexpectedState);

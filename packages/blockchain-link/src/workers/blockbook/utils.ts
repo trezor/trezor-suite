@@ -220,22 +220,19 @@ export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens']
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
-    const info = tokens.reduce(
-        (arr, t) => {
-            if (t.type !== 'ERC20') return arr;
-            return arr.concat([
-                {
-                    type: t.type,
-                    name: t.name,
-                    symbol: t.symbol,
-                    address: t.contract,
-                    balance: t.balance,
-                    decimals: t.decimals || 0,
-                },
-            ]);
-        },
-        [] as TokenInfo[]
-    );
+    const info = tokens.reduce((arr, t) => {
+        if (t.type !== 'ERC20') return arr;
+        return arr.concat([
+            {
+                type: t.type,
+                name: t.name,
+                symbol: t.symbol,
+                address: t.contract,
+                balance: t.balance,
+                decimals: t.decimals || 0,
+            },
+        ]);
+    }, [] as TokenInfo[]);
     return info.length > 0 ? info : undefined;
 };
 
@@ -243,22 +240,19 @@ export const transformAddresses = (
     tokens: BlockbookAccountInfo['tokens']
 ): AccountAddresses | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
-    const addresses = tokens.reduce(
-        (arr, t) => {
-            if (t.type !== 'XPUBAddress') return arr;
-            return arr.concat([
-                {
-                    address: t.name,
-                    path: t.path,
-                    transfers: t.transfers,
-                    balance: t.balance,
-                    sent: t.totalSent,
-                    received: t.totalReceived,
-                },
-            ]);
-        },
-        [] as Address[]
-    );
+    const addresses = tokens.reduce((arr, t) => {
+        if (t.type !== 'XPUBAddress') return arr;
+        return arr.concat([
+            {
+                address: t.name,
+                path: t.path,
+                transfers: t.transfers,
+                balance: t.balance,
+                sent: t.totalSent,
+                received: t.totalReceived,
+            },
+        ]);
+    }, [] as Address[]);
 
     if (addresses.length < 1) return undefined;
     const internal = addresses.filter(a => a.path.split('/')[4] === '1');

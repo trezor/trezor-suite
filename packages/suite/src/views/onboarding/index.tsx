@@ -411,7 +411,4 @@ const Onboarding = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Onboarding);
+export default connect(mapStateToProps, mapDispatchToProps)(Onboarding);

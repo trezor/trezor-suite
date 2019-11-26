@@ -48,7 +48,4 @@ const ProgressBar = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(ProgressBar);
+export default connect(mapStateToProps, mapDispatchToProps)(ProgressBar);

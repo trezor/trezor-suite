@@ -42,7 +42,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     // blockchainReconnect: bindActionCreators(reconnect, dispatch),
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Notifications);
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

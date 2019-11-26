@@ -389,7 +389,4 @@ const FirmwareUpdate = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(FirmwareUpdate);
+export default connect(mapStateToProps, mapDispatchToProps)(FirmwareUpdate);
