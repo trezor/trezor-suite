@@ -59,8 +59,6 @@
         "postinstall-postinstall": "^2.0.0",
         "prettier": "1.19.1",
         "prettier-eslint": "^9.0.1",
-        "pretty-quick": "^1.10.0",
-        "prettylint": "^1.0.0",
         "rimraf": "^2.6.3",
         "ts-jest": "^24.2.0",
         "typescript": "3.6.4"
