@@ -93,10 +93,7 @@ const Index = (props: Props) => {
     return (
         <View>
             <Text>Just an example to see that loading svgs work</Text>
-            <Logo
-                width="200"
-                height="200"
-            />
+            <Logo width="200" height="200" />
             <Text>Device {suite.device.label} connected</Text>
             <Button
                 title="wallet"
