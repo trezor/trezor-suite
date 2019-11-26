@@ -6,7 +6,7 @@ module.exports = {
     rootDir: './',
     globals: {
         'ts-jest': {
-            tsConfig: 'tsconfig.json',
+            tsConfig: 'tsconfig.lib.json',
             diagnostics: {
                 // 2322, 2345 - incorrect param type
                 // 2554 - incorrect params length
