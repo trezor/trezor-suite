@@ -30,6 +30,7 @@ describe('Buttons', () => {
         'button-danger-disabled',
     ].forEach(testName => {
         it(`${testName}`, () => {
+            cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
             if (testName.match(/icon/)) {
                 cy.getTestElement(testName)
                     .find('svg')
@@ -37,7 +38,6 @@ describe('Buttons', () => {
                         cy.get(el).should('be.visible');
                     });
             }
-            cy.loadContent('/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();

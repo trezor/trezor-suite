@@ -59,7 +59,6 @@ storiesOf('Buttons', module).add(
                                 <Button
                                     variant={variant as 'primary' | 'secondary'}
                                     data-test={`button-${variant}-loading`}
-                                    icon="PLUS"
                                     isLoading
                                 >
                                     {variant[0].toUpperCase()}
@@ -70,7 +69,6 @@ storiesOf('Buttons', module).add(
                                 <Button
                                     variant={variant as 'primary' | 'secondary'}
                                     data-test={`button-${variant}-inline-width`}
-                                    icon="PLUS"
                                     inlineWidth
                                 >
                                     {variant[0].toUpperCase()}
