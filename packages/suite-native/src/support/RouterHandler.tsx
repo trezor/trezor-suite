@@ -80,7 +80,4 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 
 type Props = ReturnType<typeof mapDispatchToProps>;
 
-export default connect(
-    null,
-    mapDispatchToProps,
-)(RouterHandler);
+export default connect(null, mapDispatchToProps)(RouterHandler);
