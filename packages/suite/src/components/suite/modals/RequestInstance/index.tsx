@@ -3,7 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
-import { H5, P, Button } from '@trezor/components';
+import { Button } from '@trezor/components';
+import { H2, P } from '@trezor/components-v2';
 
 import globalMessages from '@suite-support/Messages';
 import l10nMessages from './messages';
@@ -48,14 +49,14 @@ const RequestInstance: FunctionComponent<Props> = ({
 
     return (
         <Wrapper>
-            <H5>
+            <H2>
                 <FormattedMessage
                     {...l10nMessages.TR_REQUEST_INSTANCE_HEADER}
                     values={{
                         deviceLabel: `${device.label} (${instance})`,
                     }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
                 <FormattedMessage {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
             </StyledP>

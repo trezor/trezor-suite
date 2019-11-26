@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
@@ -94,7 +94,7 @@ const TroubleshootInitialized = (props: Props) => {
                         <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
                             <FormattedMessage {...l10nCommonMessages.TR_BACK} />
                         </OnboardingButton.Alt>
-                        <Link href={SUPPORT_URL} variant="nostyle">
+                        <Link href={SUPPORT_URL}>
                             <OnboardingButton.Cta style={{ width: '100%' }}>
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
                             </OnboardingButton.Cta>

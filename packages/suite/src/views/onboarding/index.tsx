@@ -1,7 +1,8 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import Head from 'next/head';
-import { Link, P, Prompt, variables } from '@trezor/components';
+import { Prompt, variables } from '@trezor/components';
+import { Link, P } from '@trezor/components-v2';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 

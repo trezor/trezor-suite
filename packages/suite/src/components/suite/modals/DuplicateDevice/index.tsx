@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
-import { H5, P, Button, Input, colors, variables } from '@trezor/components';
+import { Button, Input, colors, variables } from '@trezor/components';
+import { H2, P } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 import { useKeyPress } from '@suite-utils/dom';
 import { getNewInstanceNumber } from '@suite-utils/device';
@@ -99,14 +100,14 @@ const DuplicateDevice: FunctionComponent<Props> = ({
 
     return (
         <Wrapper>
-            <H5>
+            <H2>
                 <FormattedMessage
                     {...l10nMessages.TR_CLONE}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
                 <FormattedMessage {...l10nMessages.TR_THIS_WILL_CREATE_NEW_INSTANCE} />
             </StyledP>

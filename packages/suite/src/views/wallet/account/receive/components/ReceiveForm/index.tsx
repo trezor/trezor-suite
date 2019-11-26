@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { AccountAddresses } from 'trezor-connect';
-import { H6, variables, Button, colors, Icon, Link } from '@trezor/components';
+import { Button, colors, Icon } from '@trezor/components';
+import { P, Link } from '@trezor/components-v2';
 
 import { selectText } from '@suite-utils/dom';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -57,11 +58,6 @@ const ShowAddressButton = styled(SmallButton)`
         align-self: auto;
         border-radius: 3px;
     } */
-`;
-
-const SubHeading = styled(H6)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 0;
 `;
 
 const ControlsLink = styled(Link)`
@@ -221,9 +217,9 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     controls={(page, setPage, isCollapsed, setIsCollapsed, moreItems) => (
                         <TitleWrapper>
                             {!isCollapsed && (
-                                <SubHeading>
+                                <P weight="bold">
                                     <FormattedMessage {...l10nMessages.TR_PREVIOUS_ADDRESSES} />
-                                </SubHeading>
+                                </P>
                             )}
 
                             <ControlsWrapper>
@@ -268,9 +264,9 @@ const ReceiveForm = ({ className, ...props }: Props) => {
             )}
 
             <TitleWrapper>
-                <SubHeading>
+                <P weight="bold">
                     <FormattedMessage {...l10nMessages.TR_FRESH_ADDRESS} />
-                </SubHeading>
+                </P>
             </TitleWrapper>
 
             <FreshAddress

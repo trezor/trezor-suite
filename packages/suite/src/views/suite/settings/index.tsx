@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
-import { Input, Switch, Button, P, Icon, H2, H3, variables } from '@trezor/components';
+import { Input, Switch, Button, Icon } from '@trezor/components';
+import { P, H1, H2 } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { SettingsLayout } from '@suite-components';
@@ -26,13 +27,6 @@ const Row = styled.div<RowProps>`
     min-height: 45px;
 `;
 
-const Title = styled(H2)`
-    display: flex;
-    margin: 0;
-    padding: 0;
-    align-items: center;
-`;
-
 const StyledInput = styled(Input)`
     padding-right: 20px;
 `;
@@ -46,18 +40,6 @@ const ActionColumn = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-`;
-
-const Label = styled(H3)`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin: 0;
-    padding: 0;
-    align-items: center;
-`;
-
-const Text = styled(P)`
-    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const ActionButton = styled(Button)`
@@ -144,18 +126,18 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     return (
         <SettingsLayout title="Settings">
             <Row>
-                <Title>
+                <H1 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
-                </Title>
+                </H1>
                 <CloseButton onClick={() => goto('wallet-index')} isTransparent>
                     <Icon icon="CLOSE" size={14} />
                 </CloseButton>
             </Row>
 
             <Row>
-                <Label>
+                <H2 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_LABEL}</Translation>
-                </Label>
+                </H2>
                 <ActionColumn>
                     <StyledInput
                         value={label}
@@ -171,14 +153,14 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
 
             <Row>
                 <Row isColumn marginTop="0">
-                    <Label>
+                    <H2 textAlign="center">
                         <Translation>{messages.TR_DEVICE_SETTINGS_HOMESCREEN_TITLE}</Translation>
-                    </Label>
-                    <Text>
+                    </H2>
+                    <P size="small">
                         <Translation>
                             {messages.TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS}
                         </Translation>
-                    </Text>
+                    </P>
                 </Row>
 
                 {device.features.major_version === 1 && (
@@ -222,9 +204,9 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
             </Row>
 
             <Row>
-                <Label>
+                <H2 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}</Translation>
-                </Label>
+                </H2>
                 <ActionColumn>
                     <Switch
                         checkedIcon={false}
@@ -236,14 +218,14 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     />
                 </ActionColumn>
             </Row>
-            <Text>
+            <P size="small">
                 <Translation>{messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC}</Translation>
-            </Text>
+            </P>
 
             <Row>
-                <Label>
+                <H2 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_PASSPHRASE_TITLE}</Translation>
-                </Label>
+                </H2>
                 <ActionColumn>
                     <Switch
                         checkedIcon={false}
@@ -256,21 +238,21 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     />
                 </ActionColumn>
             </Row>
-            <Text>
+            <P size="small">
                 <Translation>{messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC}</Translation>
-            </Text>
-            <Text>
+            </P>
+            <P size="small">
                 <Translation>{messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE}</Translation>
-            </Text>
+            </P>
 
             {device.features.major_version === 2 && (
                 <Row>
                     <LabelCol>
-                        <Label>
+                        <H2 textAlign="center">
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_DISPLAY_ROTATION}
                             </Translation>
-                        </Label>
+                        </H2>
                     </LabelCol>
                     <ActionColumn>
                         {DISPLAY_ROTATIONS.map(variant => (
@@ -289,7 +271,6 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </Row>
             )}
             <Row>
-                <Label />
                 <ActionButton
                     isDisabled={uiLocked}
                     variant="error"

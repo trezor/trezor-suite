@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate, FormattedMessage } from 'react-intl';
-import { Link, colors, variables } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { ArrayElement } from '@suite/types/utils';
 import l10nMessages from '../../index.messages';
