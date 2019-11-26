@@ -54,7 +54,7 @@ const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
             </P>
 
             <Link href={url} variant="nostyle">
-                <StyledButton onClick={onCancel} inlineWidth>
+                <StyledButton onClick={onCancel}>
                     <Translation>{l10nMessages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
                 </StyledButton>
             </Link>

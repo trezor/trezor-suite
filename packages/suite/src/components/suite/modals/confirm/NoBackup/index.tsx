@@ -47,7 +47,6 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                     onReceiveConfirmation(false);
                     onCreateBackup();
                 }}
-                inlineWidth
             >
                 <Translation>{suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
             </BackupButton>

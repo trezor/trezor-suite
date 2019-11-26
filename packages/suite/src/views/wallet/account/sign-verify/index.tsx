@@ -210,11 +210,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton
-                                onClick={signVerifyActions.clearVerify}
-                                variant="secondary"
-                                inlineWidth
-                            >
+                            <StyledButton onClick={signVerifyActions.clearVerify} inlineWidth>
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
