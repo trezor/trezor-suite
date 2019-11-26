@@ -7,6 +7,7 @@ import * as routerActions from '@suite-actions/routerActions';
 // import AcquireDevice from '@suite-components/AcquireDevice';
 import { getRoute } from '@suite-utils/router';
 import { AppState, Dispatch } from '@suite-types';
+import Logo from './trezor_logo_horizontal.svg';
 
 const mapStateToProps = (state: AppState) => ({
     // router: state.router,
@@ -25,7 +26,6 @@ const Index = (props: Props) => {
         suite,
         // router,
     } = props;
-
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
         return (
@@ -92,6 +92,11 @@ const Index = (props: Props) => {
     // TODO: render requested view
     return (
         <View>
+            <Text>Just an example to see that loading svgs work</Text>
+            <Logo
+                width="200"
+                height="200"
+            />
             <Text>Device {suite.device.label} connected</Text>
             <Button
                 title="wallet"
