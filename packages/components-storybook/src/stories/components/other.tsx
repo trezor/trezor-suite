@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { Link } from 'react-router-dom';
 import { select, number, color, text, object, boolean } from '@storybook/addon-knobs';
-import StoryRouter from 'storybook-react-router';
 import {
     colors,
     Header,
@@ -415,7 +414,6 @@ storiesOf('Other', module)
     );
 
 storiesOf('Other', module)
-    .addDecorator(StoryRouter())
     .add(
         'Header',
         () => {
