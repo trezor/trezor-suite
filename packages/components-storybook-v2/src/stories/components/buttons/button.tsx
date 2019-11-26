@@ -34,7 +34,7 @@ storiesOf('Buttons', module).add(
             iconOptions[icon] = icon;
         });
         const icon = select('Icon', iconOptions, null);
-        const inlineWidth = boolean('Full width', true);
+        const inlineWidth = boolean('Inline width', true);
         const isDisabled = boolean('Disabled', false);
         const isLoading = boolean('Loading', false);
 
