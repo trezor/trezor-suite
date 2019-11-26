@@ -66,7 +66,7 @@
         "@types/redux-mock-store": "^1.0.1",
         "babel-plugin-react-intl": "^4.1.20",
         "canvas": "^2.6.0",
-        "cross-env": "^5.2.0",
+        "cross-env": "^6.0.3",
         "fake-indexeddb": "^2.1.1",
         "jest-watch-typeahead": "^0.4.0",
         "redux-mock-store": "^1.5.3",
