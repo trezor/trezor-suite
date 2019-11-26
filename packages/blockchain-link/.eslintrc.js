@@ -1,7 +1,7 @@
 module.exports = {
     extends: '../../.eslintrc.js',
     parserOptions: {
-        project: ['./tsconfig.eslint.json'],
+        project: ['./tsconfig.json'],
     },
     rules: {
         // Ripple-lib uses camel_Case

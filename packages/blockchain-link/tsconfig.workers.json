@@ -1,6 +1,8 @@
 {
-    "extends": "./tsconfig.json",
+    "extends": "./tsconfig.lib.json",
     "compilerOptions": {
+        "module": "commonjs",
+        "outDir": "./lib",
         "lib": ["webworker", "es2015"]
     },
     "include": [

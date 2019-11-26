@@ -32,8 +32,8 @@
     "lint": "eslint '**/*{.ts,.tsx}'",
     "test:unit": "jest --verbose -c jest.config.unit.js",
     "test:node": "jest -c jest.config.integration.js",
-    "build": "rm -rf lib && tsc --p ./tsconfig.json && tsc --p ./tsconfig.workers.json",
-    "type-check": "tsc --project tsconfig.eslint.json"
+    "build": "rm -rf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
+    "type-check": "tsc --project tsconfig.json"
   },
   "devDependencies": {
     "@babel/register": "^7.7.4",
@@ -46,9 +46,9 @@
     "eslint-loader": "^3.0.2",
     "eslint-plugin-jest": "^23.0.4",
     "html-webpack-plugin": "^3.2.0",
-    "ripple-lib": "^1.4.0",
+    "ripple-lib": "^1.4.2",
     "tiny-worker": "^2.3.0",
-    "ts-loader": "^6.0.4",
+    "ts-loader": "^6.2.1",
     "webpack": "4.41.2",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0",
