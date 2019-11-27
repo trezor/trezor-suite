@@ -37,3 +37,11 @@ suite test integration:
         - yarn workspace @trezor/suite test-health
     dependencies:
         - install and build
+
+suite check outdated:
+    stage: misc
+    allow_failure: true
+    script:
+        - ./ci/scripts/outdated.sh
+    dependencies:
+        - install and build
