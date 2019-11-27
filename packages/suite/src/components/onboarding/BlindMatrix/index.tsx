@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ButtonPin, Button, Icon } from '@trezor/components';
+import { ButtonPin, Icon } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     width: 260px;
@@ -164,7 +165,7 @@ class BlindMatrix extends React.Component<BlindMatrixProps> {
                         </Row>
                     </React.Fragment>
                 )}
-                <Backspace variant="white" onClick={() => this.backspace()}>
+                <Backspace variant="tertiary" onClick={() => this.backspace()} inlineWidth>
                     <Icon style={{ marginRight: '5px' }} icon="BACK" />
                     Backspace
                 </Backspace>
