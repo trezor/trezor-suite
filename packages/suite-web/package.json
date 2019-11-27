@@ -7,11 +7,13 @@
         "type-check:watch": "yarn type-check -- --watch",
         "lint": "eslint . --ext .tsx,.ts",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
+        "dev": "yarn workspace @trezor/suite-data copy-static-files && next -p 8001",
         "build:app": "next build && next export -o build",
         "build": "run-s copy-files build:app",
         "test:integration": "cypress run",
-        "test:integration:local": "cypress run --config baseUrl=http://localhost:3000"
+        "test:integration:local:open": "cypress open --config baseUrl=http://localhost:8001",
+        "test:integration:local:run": "CYPRESS_defaultCommandTimeout=60000 concurrently --success first --kill-others \"yarn dev\" \"python3 ./test/plugins/python/main.py\" \"wait-on --timeout 120000 http://localhost:8001 && cypress run --config baseUrl=http://localhost:8001 --spec \"./test/integration/suite/new-example.test.ts\" --browser chrome\"",
+        "test:integration:ci:run": "concurrently --kill-others \"python3 ./test/plugins/python/main.py\" \"cypress run --browser chrome\""
     },
     "dependencies": {
         "@sentry/browser": "^5.4.0",
