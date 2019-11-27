@@ -28,7 +28,7 @@ module.exports = withBundleAnalyzer(
                 assetPrefix: process.env.assetPrefix || '',
                 webpack: (config, options) => {
                     config.plugins.push(
-                        new webpack.DefinePlugin({
+                        new webpack.EnvironmentPlugin({
                             'process.env.SUITE_TYPE': JSON.stringify('web'),
                             'process.env.VERSION': JSON.stringify(packageJson.version),
                             'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
