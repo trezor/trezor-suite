@@ -6,6 +6,7 @@ import { P, H1, Link, colors, variables, animations } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
 import { SuiteLayout, Footer } from '@suite-components';
 import l10nMessages from './index.messages';
+import { Translation } from '../../Intl';
 
 interface Props {
     deviceLabel: string;
@@ -110,7 +111,7 @@ class ConnectDevice extends PureComponent<Props> {
                 <StyledConnectDevice>
                     <Title>
                         <StyledH1>
-                            <FormattedMessage {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} />
+                            <Translation {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} />
                         </StyledH1>
                         <P>
                             <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} />

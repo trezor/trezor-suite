@@ -1,4 +1,4 @@
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { AppState } from '@suite-types';
 import { Button, colors, Icon, Input } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';

@@ -5,7 +5,7 @@ import { Button } from '@trezor/components';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import commonMessages from '@wallet-views/messages';
 import messages from './index.messages';
 import { DispatchProps } from '../../Container';
