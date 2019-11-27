@@ -20,7 +20,7 @@ const ConfirmAction: FunctionComponent<Props> = ({ device }) => {
     const majorVersion = device.features ? device.features.major_version : 2;
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@suite/modal/confirm-action-on-device">
             <Header>
                 <Prompt model={majorVersion} size={32}>
                     <Translation

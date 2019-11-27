@@ -12,16 +12,6 @@ const { Controller } = require('./python/websocket-client');
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 
-// let pythonProcess;
-// const spawnProcess = () => {
-//     const src = path.resolve(__dirname, './python/main.py');
-//     const child = spawn('python3', [src], {
-//         detached: true,
-//         stdio: ['ignore', 'ignore', 'ignore'],
-//     });
-//     return child;
-// };
-
 module.exports = on => {
     addMatchImageSnapshotPlugin(on);
     on('file:preprocessor', cypressTypeScriptPreprocessor);
@@ -34,15 +24,6 @@ module.exports = on => {
     });
 
     on('task', {
-        // startPython: async () => {
-        //     pythonProcess = spawnProcess();
-        //     return new Promise((resolve, reject) => {
-        //         setTimeout(() => resolve(null), 3000);
-        //         pythonProcess.on('error', err => {
-        //             reject();
-        //         });
-        //     });
-        // },
         startBridge: async () => {
             await controller.connect();
             const response = await controller.send({ type: 'bridge-start' });
@@ -51,6 +32,11 @@ module.exports = on => {
         startEmu: async () => {
             await controller.connect();
             const response = await controller.send({ type: 'emulator-start' });
+            return null;
+        },
+        sendDecision: async method => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-decision', method });
             return null;
         },
     });

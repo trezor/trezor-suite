@@ -140,12 +140,17 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <StyledInput
+                        data-test="@suite/device-settings/label-input"
                         value={label}
                         onChange={(event: React.FormEvent<HTMLInputElement>) =>
                             setLabel(event.currentTarget.value)
                         }
                     />
-                    <ActionButton isDisabled={uiLocked} onClick={() => applySettings({ label })}>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        onClick={() => applySettings({ label })}
+                        data-test="@suite/device-settings/label-submit"
+                    >
                         <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}</Translation>
                     </ActionButton>
                 </ActionColumn>
