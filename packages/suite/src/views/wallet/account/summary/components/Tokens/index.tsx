@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H5, colors } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import l10nMessages from './index.messages';
 import TokenItem from './components/TokenItem';
 import { Account } from '@wallet-types';
@@ -29,7 +29,7 @@ const Tokens = ({ tokens, hideBalance }: Props) => {
         <>
             <TokensHeadingWrapper>
                 <H5>
-                    <FormattedMessage {...l10nMessages.TR_TOKENS} />
+                    <Translation {...l10nMessages.TR_TOKENS} />
                 </H5>
             </TokensHeadingWrapper>
             <AddedTokensWrapper>

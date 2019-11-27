@@ -232,7 +232,7 @@ const DeviceMenu = ({
                         )}
                         {/* <Tooltip
                         content={
-                            <FormattedMessage
+                            <Translation
                                 {...l10nCommonMessages.TR_APPLICATION_SETTINGS}
                             />
                         }

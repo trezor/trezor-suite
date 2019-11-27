@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 import { H5, P, Button, Input, colors, variables } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { useKeyPress } from '@suite-utils/dom';
 import { getNewInstanceNumber } from '@suite-utils/device';
 
@@ -100,7 +100,7 @@ const DuplicateDevice: FunctionComponent<Props> = ({
     return (
         <Wrapper>
             <H5>
-                <FormattedMessage
+                <Translation
                     {...l10nMessages.TR_CLONE}
                     values={{
                         deviceLabel: device.label,
@@ -108,11 +108,11 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                 />
             </H5>
             <StyledP size="small">
-                <FormattedMessage {...l10nMessages.TR_THIS_WILL_CREATE_NEW_INSTANCE} />
+                <Translation {...l10nMessages.TR_THIS_WILL_CREATE_NEW_INSTANCE} />
             </StyledP>
             <Column>
                 <Label>
-                    <FormattedMessage {...l10nMessages.TR_INSTANCE_NAME} />
+                    <Translation {...l10nMessages.TR_INSTANCE_NAME} />
                 </Label>
                 <Input
                     type="text"
@@ -126,16 +126,16 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                 />
                 {isUsed && (
                     <ErrorMessage>
-                        <FormattedMessage {...l10nMessages.TR_INSTANCE_NAME_IN_USE} />
+                        <Translation {...l10nMessages.TR_INSTANCE_NAME_IN_USE} />
                     </ErrorMessage>
                 )}
             </Column>
             <Column>
                 <StyledButton disabled={isUsed} onClick={() => submit()}>
-                    <FormattedMessage {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
+                    <Translation {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
                 </StyledButton>
                 <StyledButton variant="white" onClick={onCancel}>
-                    <FormattedMessage {...globalMessages.TR_CANCEL} />
+                    <Translation {...globalMessages.TR_CANCEL} />
                 </StyledButton>
             </Column>
         </Wrapper>

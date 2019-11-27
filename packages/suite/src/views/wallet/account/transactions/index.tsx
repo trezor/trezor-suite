@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { Loader, colors } from '@trezor/components';
 import * as transactionActions from '@wallet-actions/transactionActions';
@@ -67,14 +67,14 @@ const Transactions = (props: Props) => {
                 <LoaderWrapper>
                     <Loader size={40} />
                     <LoaderText>
-                        <FormattedMessage {...l10nMessages.TR_LOADING_TRANSACTIONS} />
+                        <Translation {...l10nMessages.TR_LOADING_TRANSACTIONS} />
                     </LoaderText>
                 </LoaderWrapper>
             )}
             {accountTransactions.length === 0 && !transactions.isLoading && (
                 <LoaderWrapper>
                     <NoTransactions>
-                        <FormattedMessage {...l10nMessages.TR_NO_TRANSACTIONS} />
+                        <Translation {...l10nMessages.TR_NO_TRANSACTIONS} />
                     </NoTransactions>
                 </LoaderWrapper>
             )}

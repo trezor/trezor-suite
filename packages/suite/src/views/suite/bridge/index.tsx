@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import { Button, Select, P, Link, H1, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
@@ -146,19 +146,19 @@ const InstallBridge = (props: Props) => {
                     Trezor Bridge
                     {isLoading && (
                         <Version>
-                            <FormattedMessage {...l10nMessages.TR_VERSION_IS_LOADING} />
+                            <Translation {...l10nMessages.TR_VERSION_IS_LOADING} />
                         </Version>
                     )}
                     {props.transport && <Version>{data && data.currentVersion}</Version>}
                 </TitleHeader>
                 <P>
-                    <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
+                    <Translation {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
                 </P>
                 {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
                         <P>
-                            <FormattedMessage {...l10nMessages.TR_GATHERING_INFO} />
+                            <Translation {...l10nMessages.TR_GATHERING_INFO} />
                         </P>
                     </LoaderWrapper>
                 ) : (
@@ -173,7 +173,7 @@ const InstallBridge = (props: Props) => {
 
                         <Link href={`${data.uri}${target.value}`} variant="nostyle">
                             <DownloadBridgeButton icon="DOWNLOAD">
-                                <FormattedMessage
+                                <Translation
                                     {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
                                     values={{ version: data.latestVersion }}
                                 />
@@ -184,12 +184,12 @@ const InstallBridge = (props: Props) => {
 
                 <P size="small">
                     <LearnMoreText>
-                        <FormattedMessage
+                        <Translation
                             {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
                             values={{
                                 TR_CHANGELOG: (
                                     <Link href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md">
-                                        <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
+                                        <Translation {...l10nMessages.TR_CHANGELOG} />
                                     </Link>
                                 ),
                             }}
@@ -200,7 +200,7 @@ const InstallBridge = (props: Props) => {
                 <P>
                     {target && data && target.signature && (
                         <Link href={data.uri + target.signature}>
-                            <FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
+                            <Translation {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
                         </Link>
                     )}
                 </P>
@@ -212,9 +212,9 @@ const InstallBridge = (props: Props) => {
                     props.device &&
                     props.device.type !== 'unreadable' && (
                         <P>
-                            <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
+                            <Translation {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
                             <GoBack onClick={() => props.goto('wallet-index')}>
-                                <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
+                                <Translation {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
                             </GoBack>
                         </P>
                     )}

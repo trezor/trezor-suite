@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import Modals from '@suite-components/modals';
@@ -21,6 +21,7 @@ import l10nMessages from './index.messages';
 import { LANGUAGES } from '@suite-config';
 import { AppState } from '@suite-types';
 import { Header, Log } from '@suite-components';
+import { Translation } from '../Translation';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
@@ -82,8 +83,8 @@ const SuiteLayout = (props: Props & WrappedComponentProps) => (
             logoLinkComponent={<Link href={getRoute('wallet-index')} variant="nostyle" />}
             sidebarOpened={props.suite.showSidebar}
             toggleSidebar={props.toggleSidebar}
-            togglerOpenText={<FormattedMessage {...l10nMessages.TR_MENU} />}
-            togglerCloseText={<FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />}
+            togglerOpenText={<Translation {...l10nMessages.TR_MENU} />}
+            togglerCloseText={<Translation {...l10nMessages.TR_MENU_CLOSE} />}
             sidebarEnabled={props.disableSidebar ? false : !props.isLanding}
             rightAddon={
                 <NoSSR>
