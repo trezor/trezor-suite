@@ -6,7 +6,7 @@ import { P, H1, Link, colors, variables, animations } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
 import { SuiteLayout, Footer } from '@suite-components';
 import l10nMessages from './index.messages';
-import { Translation } from '../../Intl';
+import { Translation } from '../../Translation';
 
 interface Props {
     deviceLabel: string;
