@@ -26,15 +26,13 @@ module.exports = withBundleAnalyzer(
                 ],
                 exportTrailingSlash: true,
                 assetPrefix: process.env.assetPrefix || '',
-                webpack: (config, options) => {
+                webpack: config => {
                     config.plugins.push(
                         new webpack.EnvironmentPlugin({
-                            'process.env.SUITE_TYPE': JSON.stringify('web'),
-                            'process.env.VERSION': JSON.stringify(packageJson.version),
-                            'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
-                            'process.env.COMMITHASH': JSON.stringify(
-                                gitRevisionPlugin.commithash(),
-                            ),
+                            'process.env.SUITE_TYPE': 'web',
+                            'process.env.VERSION': packageJson.version,
+                            'process.env.assetPrefix': process.env.assetPrefix,
+                            'process.env.COMMITHASH': gitRevisionPlugin.commithash(),
                         }),
                     );
                     return config;

@@ -31,12 +31,10 @@ module.exports = withBundleAnalyzer(
                 assetPrefix: process.env.assetPrefix || '',
                 webpack: config => {
                     config.plugins.push(
-                        new webpack.DefinePlugin({
-                            'process.env.SUITE_TYPE': JSON.stringify('desktop'),
-                            'process.env.VERSION': JSON.stringify(packageJson.version),
-                            'process.env.COMMITHASH': JSON.stringify(
-                                gitRevisionPlugin.commithash(),
-                            ),
+                        new webpack.EnvironmentPlugin({
+                            'process.env.SUITE_TYPE': 'web',
+                            'process.env.VERSION': packageJson.version,
+                            'process.env.COMMITHASH': gitRevisionPlugin.commithash(),
                         }),
                     );
                     return config;
