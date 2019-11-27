@@ -53,10 +53,10 @@ const SuiteLayout = (props: Props & WrappedComponentProps) => (
         </Head>
         <Menu />
         <ErrorBoundary>
-            {!props.disableNotifications && <SuiteNotifications />}
             {!props.disableModals && <Modals />}
             <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
                 <>
+                    {!props.disableNotifications && <SuiteNotifications />}
                     <Log />
                     {props.children}
                 </>
