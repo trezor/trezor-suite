@@ -15,7 +15,7 @@ const reducers = combineReducers({
     wallet: walletReducers,
 });
 
-export type State = ReturnType<typeof reducers>;
+export type AppState = ReturnType<typeof reducers>;
 
 const middlewares = [thunkMiddleware, ...suiteMiddlewares, ...walletMiddlewares];
 

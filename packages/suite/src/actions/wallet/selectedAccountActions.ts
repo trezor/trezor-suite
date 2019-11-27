@@ -18,7 +18,7 @@ import {
     AccountNotification,
 } from '@wallet-reducers/selectedAccountReducer';
 
-import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import l10nNotificationMessages from '@wallet-components/Notifications/components/Account/index.messages';
 import l10nLoaderMessages from '@wallet-components/Content/index.messages';
 import l10nFwUnsupportedMessages from '@wallet-components/Content/components/FirmwareUnsupported/index.messages';

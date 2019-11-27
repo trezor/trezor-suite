@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 // https://github.com/react-native-community/react-native-svg#android
-import com.horcrux.svg.SvgPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
