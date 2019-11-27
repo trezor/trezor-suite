@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
-import { H5, P, Button, Input, colors, variables } from '@trezor/components';
+import { H5, P, Input, colors, variables } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import { useKeyPress } from '@suite-utils/dom';
 import { getNewInstanceNumber } from '@suite-utils/device';
@@ -131,10 +132,10 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                 )}
             </Column>
             <Column>
-                <StyledButton disabled={isUsed} onClick={() => submit()}>
+                <StyledButton disabled={isUsed} onClick={() => submit()} inlineWidth>
                     <Translation {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
                 </StyledButton>
-                <StyledButton variant="white" onClick={onCancel}>
+                <StyledButton variant="secondary" onClick={onCancel} inlineWidth>
                     <Translation {...globalMessages.TR_CANCEL} />
                 </StyledButton>
             </Column>

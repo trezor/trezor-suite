@@ -47,6 +47,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             ]);
             // 3. init connect;
             api.dispatch(trezorConnectActions.init());
+
             break;
         }
         case SUITE.CONNECT_INITIALIZED:

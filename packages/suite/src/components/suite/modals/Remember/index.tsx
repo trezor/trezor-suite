@@ -2,7 +2,8 @@ import React, { FunctionComponent, useState, useEffect } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
-import { H5, P, Loader, Button } from '@trezor/components';
+import { H5, P, Loader } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 
 import commonMessages from '@suite-views/index.messages';
@@ -100,7 +101,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                 />
             </StyledP>
             <Column>
-                <ButtonWithLoader onClick={() => onForgetDevice(device)}>
+                <ButtonWithLoader onClick={() => onForgetDevice(device)} inlineWidth>
                     <ButtonContent>
                         <Text>
                             <Translation {...commonMessages.TR_FORGET_DEVICE} />
@@ -113,7 +114,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                         />
                     </ButtonContent>
                 </ButtonWithLoader>
-                <Button variant="white" onClick={() => onRememberDevice(device)}>
+                <Button variant="secondary" onClick={() => onRememberDevice(device)} inlineWidth>
                     <Translation {...messages.TR_REMEMBER_DEVICE} />
                 </Button>
             </Column>

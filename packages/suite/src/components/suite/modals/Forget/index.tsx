@@ -2,7 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
-import { H5, P, Button } from '@trezor/components';
+import { H5, P } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -54,10 +55,10 @@ const ForgetDevice: FunctionComponent<Props> = ({ device, onForgetDevice, onCanc
                 <Translation {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
             </StyledP>
             <Row>
-                <Button onClick={() => onForgetDevice(device)}>
+                <Button onClick={() => onForgetDevice(device)} inlineWidth>
                     <Translation {...l10nCommonMessages.TR_FORGET_DEVICE} />
                 </Button>
-                <Button variant="white" onClick={onCancel}>
+                <Button variant="secondary" onClick={onCancel} inlineWidth>
                     <Translation {...l10nMessages.TR_DONT_FORGET} />
                 </Button>
             </Row>

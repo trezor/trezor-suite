@@ -12,7 +12,7 @@ import {
     BlockchainEvent,
 } from 'trezor-connect';
 import { RouterActions } from '@suite-actions/routerActions';
-import { AppState } from '@suite/reducers/store';
+import { AppState as AppState$ } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ModalActions } from '@suite-actions/modalActions';
@@ -31,7 +31,7 @@ type TrezorConnectEvents =
     | Omit<DeviceEvent, 'event'>
     | BlockchainEvent;
 
-export type AppState = AppState;
+export type AppState = AppState$;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =

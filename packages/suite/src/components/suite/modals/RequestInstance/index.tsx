@@ -3,7 +3,8 @@ import { Translation } from '@suite-components/Translation';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
-import { H5, P, Button } from '@trezor/components';
+import { H5, P } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 
 import globalMessages from '@suite-support/Messages';
 import l10nMessages from './messages';
@@ -60,10 +61,10 @@ const RequestInstance: FunctionComponent<Props> = ({
                 <Translation {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
             </StyledP>
             <Row>
-                <Button onClick={() => onCreateInstance(device)}>
+                <Button onClick={() => onCreateInstance(device)} inlineWidth>
                     <Translation {...l10nMessages.TR_CREATE_INSTANCE} />
                 </Button>
-                <Button variant="white" onClick={onCancel}>
+                <Button variant="secondary" onClick={onCancel} inlineWidth>
                     <Translation {...globalMessages.TR_CANCEL} />
                 </Button>
             </Row>

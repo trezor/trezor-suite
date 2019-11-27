@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Icon } from '@trezor/components';
 
 import colors from '@suite/config/onboarding/colors';
@@ -27,16 +27,16 @@ const CardInner = styled.div<{ showBack: boolean; flipOnMouseOver: boolean }>`
     transform: ${({ showBack }) => (showBack ? 'rotateY(180deg)' : 'rotateY(0)')};
     box-shadow: 0 4px 8px 0 ${colors.gray};
     border: ${BORDER};
-
-    ${props =>
-        props.flipOnMouseOver &&
+`;
+// weird ts error after changes to suite-native, dont get it really
+/* ${props =>
+    props.flipOnMouseOver &&
         css`
             &:hover {
                 transform: ${({ showBack }: { showBack: boolean }) =>
                     !showBack ? 'rotateY(180deg)' : 'rotateY(0)'};
             }
-        `};
-`;
+`}; */
 
 const CardFront = styled.div`
     position: absolute;

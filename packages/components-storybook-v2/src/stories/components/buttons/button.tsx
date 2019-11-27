@@ -1,18 +1,19 @@
 import React from 'react';
-import { Button } from '@trezor/components-v2';
+import { Button, variables } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean, select, text } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
 
 storiesOf('Buttons', module).add(
     'Button',
     () => {
-        const disabled = boolean('Disabled', false);
+        const value = text('Value', 'Button');
         const variant: any = select(
             'Variant',
             {
                 'Default (primary)': null,
                 Secondary: 'secondary',
+                Danger: 'danger',
             },
             null
         );
@@ -26,13 +27,27 @@ storiesOf('Buttons', module).add(
             null
         );
 
+        const iconOptions: any = {
+            None: null,
+        };
+        variables.ICONS.forEach((icon: string) => {
+            iconOptions[icon] = icon;
+        });
+        const icon = select('Icon', iconOptions, null);
+        const inlineWidth = boolean('Inline width', true);
+        const isDisabled = boolean('Disabled', false);
+        const isLoading = boolean('Loading', false);
+
         return (
             <Button
-                {...(disabled ? { disabled } : {})}
+                {...(isDisabled ? { isDisabled } : {})}
+                {...(isLoading ? { isLoading } : {})}
                 {...(variant ? { variant } : {})}
                 {...(size ? { size } : {})}
+                {...(icon ? { icon } : {})}
+                {...(!inlineWidth ? { inlineWidth: false } : {})}
             >
-                Label
+                {value}
             </Button>
         );
     },
