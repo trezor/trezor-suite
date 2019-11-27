@@ -1,8 +1,25 @@
 FROM node:12
 
-RUN apt-get update
-RUN apt-get install -y build-essential
-RUN apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
+RUN apt-get update && apt-get install -y \ 
+    build-essential \
+    # required by cypress
+    xvfb \
+    libgtk2.0-0 \
+    libnotify-dev \
+    libgconf-2-4 \
+    libnss3 \
+    libxss1 \
+    libasound2 \ 
+    # required by core/emulator
+    scons \
+    libsdl2-dev \
+    libsdl2-image-dev \
+    # why not
+    zip
+
+RUN apt-get install -y \
+    python3-dev \
+    python3-pip
 
 USER root
 
@@ -20,8 +37,10 @@ RUN \
 # https://github.com/SeleniumHQ/docker-selenium/issues/87
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
 
-# Add zip utility - it comes in very handy
-RUN apt-get update && apt-get install -y zip
+
+RUN git clone https://github.com/trezor/trezor-firmware.git
+RUN cd trezor-firmware/core
+RUN pipenv run make build_unix
 
 # versions of local tools
 RUN node -v
