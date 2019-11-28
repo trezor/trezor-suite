@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { P, H1, Link, variables, Modal } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
@@ -65,24 +65,6 @@ const StyledLink = styled(Link)`
 
 const StyledH1 = styled(H1)`
     font-size: ${variables.FONT_SIZE.HUGE};
-`;
-
-const animationConnect = keyframes`
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-4px)
-    }
-`;
-const ImageWrapper = styled.svg`
-    position: absolute;
-    top: -8px;
-    left: -24px;
-`;
-
-const DeviceRect = styled.rect`
-    animation: ${animationConnect} 1.3s ease-out infinite;
 `;
 
 class ConnectDevice extends PureComponent<Props> {
