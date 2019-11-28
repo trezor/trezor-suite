@@ -51,7 +51,4 @@ const Settings = ({ device, applySettings }: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

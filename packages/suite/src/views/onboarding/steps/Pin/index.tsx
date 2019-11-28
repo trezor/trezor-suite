@@ -89,7 +89,7 @@ const SetPinStep = (props: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getStatus() === 'initial' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_PIN_SUBHEADING} />
                         </Text>
@@ -107,7 +107,7 @@ const SetPinStep = (props: Props) => {
                                 <FormattedMessage {...l10nMessages.TR_SET_PIN} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'first' && (
@@ -145,7 +145,7 @@ const SetPinStep = (props: Props) => {
                 )}
 
                 {getStatus() === 'second' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_FIRST_PIN_ENTERED} />
                         </Text>
@@ -154,11 +154,11 @@ const SetPinStep = (props: Props) => {
                                 props.connectActions.submitNewPin({ pin });
                             }}
                         />
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'success' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_PIN_SET_SUCCESS} />
                         </Text>
@@ -169,11 +169,11 @@ const SetPinStep = (props: Props) => {
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {getStatus() === 'mismatch' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage
                                 {...l10nMessages.TR_PIN_ERROR_TROUBLESHOOT}
@@ -196,7 +196,7 @@ const SetPinStep = (props: Props) => {
                                 <FormattedMessage {...l10nMessages.TR_START_AGAIN} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
             </Wrapper.StepBody>
         </Wrapper.Step>

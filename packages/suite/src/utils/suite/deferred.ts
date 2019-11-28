@@ -10,10 +10,10 @@ export const createDeferred = <T>(): Deferred<T> => {
     let localReject: (e: Error) => void = () => {};
     // let id: string;
 
-    const promise: Promise<T> = new Promise(async (resolve, reject) => {
+    const promise: Promise<T> = new Promise((resolve, reject) => {
         localResolve = resolve;
         localReject = reject;
-        // if (typeof arg === 'function') {
+        // if (typeof arg === 'function') {clear
         //     try {
         //         await arg();
         //     } catch (error) {

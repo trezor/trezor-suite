@@ -181,6 +181,16 @@ const Button = ({
     isLoading = false,
     ...rest
 }: ButtonProps) => {
+    const getColor = () => {
+        if (isDisabled) {
+            return colors.BLACK80;
+        }
+        if (variant === 'primary' || variant === 'danger') {
+            return colors.WHITE;
+        }
+        return colors.BLACK25;
+    };
+
     return (
         <Wrapper
             variant={variant}
@@ -191,17 +201,7 @@ const Button = ({
         >
             {!isLoading && icon && (
                 <IconWrapper>
-                    <Icon
-                        icon={icon}
-                        size={10}
-                        color={
-                            isDisabled
-                                ? colors.BLACK80
-                                : variant === 'primary' || variant === 'danger'
-                                ? colors.WHITE
-                                : colors.BLACK25
-                        }
-                    />
+                    <Icon icon={icon} size={10} color={getColor()} />
                 </IconWrapper>
             )}
             {isLoading && (

@@ -114,7 +114,7 @@ const NewsleterStep = (props: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {status === 'initial' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <Translation>{l10nMessages.TR_NEWSLETTER_SUBHEADING}</Translation>
                         </Text>
@@ -166,11 +166,11 @@ const NewsleterStep = (props: Props) => {
                                 <Translation>{l10nCommonMessages.TR_SUBMIT}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {status === 'socials' && (
-                    <React.Fragment>
+                    <>
                         {!newsletter.skipped && (
                             <Text>
                                 <Translation>{l10nMessages.TR_THANK_YOU_FOR_EMAIL}</Translation>
@@ -197,7 +197,7 @@ const NewsleterStep = (props: Props) => {
                                 <Translation>{l10nCommonMessages.TR_CONTINUE}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
             </Wrapper.StepBody>
         </Wrapper.Step>

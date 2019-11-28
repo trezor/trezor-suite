@@ -3,6 +3,7 @@ import { Field } from '../../types';
 
 interface Props {
     field: Field;
+    onChange: any;
 }
 
 const CoinSelect: React.FC<Props> = props => {
@@ -30,8 +31,8 @@ const CoinSelect: React.FC<Props> = props => {
                 value={field.value}
                 onChange={event => {
                     // event.target.value is always string, if we want to keep number, we need to cast it back.
-                    if (!isNaN(parseInt(event.target.value))) {
-                        return props.onChange(field, parseInt(event.target.value));
+                    if (!Number.isNaN(parseInt(event.target.value, 10))) {
+                        return props.onChange(field, parseInt(event.target.value, 10));
                     }
                     return props.onChange(field, event.target.value);
                 }}

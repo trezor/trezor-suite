@@ -224,7 +224,4 @@ const InstallBridge = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(InstallBridge);
+export default connect(mapStateToProps, mapDispatchToProps)(InstallBridge);

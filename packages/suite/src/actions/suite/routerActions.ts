@@ -62,7 +62,7 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 export const goto = (
     routeName: Route['name'],
     params?: RouteParams,
-    preserveParams: boolean = false,
+    preserveParams = false,
 ) => async (dispatch: Dispatch) => {
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;

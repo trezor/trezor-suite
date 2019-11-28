@@ -28,7 +28,4 @@ const IsSameDevice = ({ actionAlt }: Props) => (
     </>
 );
 
-export default connect(
-    null,
-    mapDispatchToProps,
-)(IsSameDevice);
+export default connect(null, mapDispatchToProps)(IsSameDevice);

@@ -140,7 +140,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     toggle: bindActionCreators(logActions.toggle, dispatch),
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Footer);
+export default connect(mapStateToProps, mapDispatchToProps)(Footer);

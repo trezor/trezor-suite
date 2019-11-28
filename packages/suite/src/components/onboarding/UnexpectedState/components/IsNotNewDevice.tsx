@@ -41,7 +41,4 @@ const IsNotNewDevice = ({ actionAlt }: Props) => (
     </>
 );
 
-export default connect(
-    null,
-    mapDispatchToProps,
-)(IsNotNewDevice);
+export default connect(null, mapDispatchToProps)(IsNotNewDevice);

@@ -106,7 +106,4 @@ const TroubleshootInitialized = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(TroubleshootInitialized);
+export default connect(mapStateToProps, mapDispatchToProps)(TroubleshootInitialized);

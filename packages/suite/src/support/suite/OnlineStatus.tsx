@@ -36,7 +36,4 @@ const OnlineStatus = (props: Props) => {
     return null;
 };
 
-export default connect(
-    null,
-    mapDispatchToProps,
-)(OnlineStatus);
+export default connect(null, mapDispatchToProps)(OnlineStatus);

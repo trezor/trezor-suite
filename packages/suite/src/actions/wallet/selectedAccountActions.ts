@@ -102,7 +102,7 @@ const getAccountLoader = (
     // account not found (yet). checking why...
 
     // @ts-ignore TODO
-    if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
+    if (!discovery || discovery.waitingForDevice || discovery.interrupted) {
         if (device.connected) {
             // case 1: device is connected but discovery not started yet (probably waiting for auth)
             if (device.available) {

@@ -104,7 +104,4 @@ const AddAccount = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(AddAccount);
+export default connect(mapStateToProps, mapDispatchToProps)(AddAccount);
