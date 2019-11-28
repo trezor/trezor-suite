@@ -120,7 +120,6 @@ const Button = styled.button`
     color: ${colors.BLACK25};
     border: none;
     outline: none;
-    background: none;
     display: flex;
     align-items: center;
     cursor: pointer;
