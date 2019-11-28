@@ -66,6 +66,7 @@ suite-web test integration google-chrome:
     stage: integration testing
     script:
         - apt-get update
+        # needed ?
         - npx cypress install
         - python3 --version
         # add DEBUG=cypress:* env variable to debug cypress in ci
