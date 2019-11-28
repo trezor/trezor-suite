@@ -25,7 +25,7 @@ module.exports = withBundleAnalyzer(
                     '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
                 ],
                 exportTrailingSlash: true,
-                assetPrefix: process.env.assetPrefix || '',
+                assetPrefix: process.env.assetPrefix || 'AHOJ',
                 webpack: config => {
                     config.plugins.push(
                         new webpack.EnvironmentPlugin({
