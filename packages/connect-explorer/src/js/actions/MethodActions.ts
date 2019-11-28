@@ -96,7 +96,7 @@ export const onVerify = (url: string) => async (dispatch: Dispatch, getState: Ge
     };
 
     // ethereum extra field
-    if (method.params.hasOwnProperty('hex')) {
+    if (Object.prototype.hasOwnProperty.call(method.params, 'hex')) {
         verifyMethodValues.hex = method.params.hex;
     }
 

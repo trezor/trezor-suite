@@ -1,11 +1,7 @@
-// Preload workers in webpack, force webpack to compile them
-
-// import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.js!../workers/blockbook/index'; // eslint-disable-line no-unused-vars
-// import RippleWorker from 'worker-loader?name=js/ripple-worker.js!../workers/ripple/index'; // eslint-disable-line no-unused-vars
 // @ts-ignore no default export
-import BlockbookWorker from '../workers/blockbook/index'; // eslint-disable-line no-unused-vars
+import BlockbookWorker from '../workers/blockbook/index';
 // @ts-ignore no default export
-import RippleWorker from '../workers/ripple/index'; // eslint-disable-line no-unused-vars
+import RippleWorker from '../workers/ripple/index';
 
 import CONFIG from './config';
 import BlockchainLink from '../index';
@@ -147,7 +143,7 @@ const handleClick = (event: MouseEvent) => {
     }
 };
 
-const prepareResponse = (parent: HTMLElement, response: any, isError: boolean = false) => {
+const prepareResponse = (parent: HTMLElement, response: any, isError = false) => {
     const div = document.createElement('pre');
     div.className = isError ? 'response error' : 'response';
     const close = document.createElement('div');

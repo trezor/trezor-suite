@@ -9,7 +9,7 @@ export default props => (
                 checked={props.field.value}
                 onChange={event => props.onChange(props.field, event.target.checked)}
             />
-            <span className="indicator"></span>
+            <span className="indicator" />
         </label>
     </div>
 );

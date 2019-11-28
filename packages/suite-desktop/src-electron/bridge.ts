@@ -69,6 +69,8 @@ const getBridgeLibByOs = () => {
 const spawnProcess = (command: string) => {
     const spawnedProcess = spawn(command, [], {
         detached: true,
+        // stdio: [process.stdin, process.stdout, process.stderr], // do not pipe stdio. pipe needs to be flushed from time to time
+        stdio: ['ignore', 'ignore', 'ignore'],
     });
     spawnedProcess.on('error', err => {
         error(err);

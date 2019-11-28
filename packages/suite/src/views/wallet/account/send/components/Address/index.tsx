@@ -6,7 +6,7 @@ import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
 import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
-import commonMessages from '@wallet-views/messages';
+import commonMessages from '@suite/views/wallet/index.messages';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';

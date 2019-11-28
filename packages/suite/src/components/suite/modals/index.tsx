@@ -214,7 +214,4 @@ const Modal = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Modal);
+export default connect(mapStateToProps, mapDispatchToProps)(Modal);

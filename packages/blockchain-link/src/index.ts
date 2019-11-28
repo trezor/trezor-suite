@@ -69,7 +69,7 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
 class BlockchainLink extends EventEmitter implements Emitter {
     settings: BlockchainSettings;
 
-    messageId: number = 0;
+    messageId = 0;
 
     worker: Worker | undefined;
 

@@ -77,7 +77,4 @@ const Backup = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Backup);
+export default connect(mapStateToProps, mapDispatchToProps)(Backup);

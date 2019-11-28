@@ -84,7 +84,7 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
                 variant="tertiary"
                 icon="CROSS"
                 inlineWidth
-            ></Button>
+            />
         </CloseWrapper>
         <Section>
             <LabelTop>

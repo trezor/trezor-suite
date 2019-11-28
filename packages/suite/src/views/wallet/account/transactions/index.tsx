@@ -103,7 +103,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Transactions);
+export default connect(mapStateToProps, mapDispatchToProps)(Transactions);
