@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage, MessageDescriptor } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
 export const isChildrenMessageDescriptor = (
