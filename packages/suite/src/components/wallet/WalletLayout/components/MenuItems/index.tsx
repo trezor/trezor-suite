@@ -113,7 +113,4 @@ const MenuItems = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(MenuItems);
+export default connect(mapStateToProps, mapDispatchToProps)(MenuItems);

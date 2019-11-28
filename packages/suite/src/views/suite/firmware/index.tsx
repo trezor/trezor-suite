@@ -306,7 +306,7 @@ const FirmwareUpdate = (props: Props) => {
                             isLatest={hasNewestFirmware()}
                             firmwareRelease={getFirmwareRelease()}
                             currentVersion={getFwVersion()}
-                        ></ChangeLog>
+                        />
                     )}
                     {(isInProgress() || isInFinishedState()) && (
                         <div>
@@ -389,7 +389,4 @@ const FirmwareUpdate = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(FirmwareUpdate);
+export default connect(mapStateToProps, mapDispatchToProps)(FirmwareUpdate);

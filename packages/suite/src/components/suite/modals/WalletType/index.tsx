@@ -7,7 +7,7 @@ import { Translation } from '@suite-components/Translation';
 import { useKeyPress } from '@suite-utils/dom';
 import globalMessages from '@suite-support/Messages';
 import l10nCommonMessages from '../messages';
-import l10nWalletMessages from '@wallet-views/messages';
+import l10nWalletMessages from '@suite/views/wallet/index.messages';
 import l10nMessages from './messages';
 import { TrezorDevice } from '@suite-types';
 

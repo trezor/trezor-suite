@@ -102,7 +102,7 @@ const Icon = ({
                     svg.setAttribute('height', `${size}px`);
                     svg.setAttribute('fill', color);
                 }}
-                loading={() => <span className="loading"></span>}
+                loading={() => <span className="loading" />}
             />
         </SvgWrapper>
     );

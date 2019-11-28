@@ -125,7 +125,7 @@ class ConnectDevice extends PureComponent<Props> {
                                 />
                             )}
                             {!this.props.showDisconnect && (
-                                <React.Fragment>
+                                <>
                                     <ImageWrapper width="12px" height="35px" viewBox="0 0 20 57">
                                         <g
                                             stroke="none"
@@ -162,19 +162,21 @@ class ConnectDevice extends PureComponent<Props> {
                                             />
                                         </g>
                                     </ImageWrapper>
-                                    <Translation {...l10nMessages.TR_CONNECT_TREZOR_TO_CONTINUE} />
-                                </React.Fragment>
+                                    <Translation
+                                        {...l10nMessages.TR_CONNECT_TREZOR_TO_CONTINUE}
+                                    />
+                                </>
                             )}
                         </ConnectTrezorWrapper>
                         {this.props.showWebUsb && !this.props.showDisconnect && (
-                            <React.Fragment>
+                            <>
                                 <And>
                                     <Translation {...l10nMessages.TR_AND} />
                                 </And>
                                 <ButtonWrapper>
                                     <WebusbButton ready />
                                 </ButtonWrapper>
-                            </React.Fragment>
+                            </>
                         )}
                     </Wrapper>
                     <Image src={resolveStaticPath('images/wallet/macbook.png')} />

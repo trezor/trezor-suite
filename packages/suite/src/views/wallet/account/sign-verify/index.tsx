@@ -8,7 +8,7 @@ import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 import { WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 
-import l10nCommonMessages from '@wallet-views/messages';
+import l10nCommonMessages from '@suite/views/wallet/index.messages';
 import l10nMessages from './index.messages';
 import { StateProps, DispatchProps } from './Container';
 

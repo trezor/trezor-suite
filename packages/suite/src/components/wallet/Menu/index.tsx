@@ -135,7 +135,4 @@ const Menu = ({
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Menu);
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

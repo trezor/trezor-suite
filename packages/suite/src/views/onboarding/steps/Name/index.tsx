@@ -85,7 +85,7 @@ const NameStep = (props: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {status === 'initial' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <Translation {...l10nMessages.TR_NAME_SUBHEADING} />
                         </Text>
@@ -114,11 +114,11 @@ const NameStep = (props: Props) => {
                                 <Translation {...l10nCommonMessages.TR_SUBMIT} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {status === 'changed' && (
-                    <React.Fragment>
+                    <>
                         <Text>
                             <Translation {...l10nMessages.TR_NAME_CHANGED_TEXT} />
                         </Text>
@@ -129,7 +129,7 @@ const NameStep = (props: Props) => {
                                 <Translation {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
             </Wrapper.StepBody>
         </Wrapper.Step>

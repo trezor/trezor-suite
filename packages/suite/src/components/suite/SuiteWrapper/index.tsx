@@ -146,7 +146,4 @@ const Index = (props: Props) => {
     return <>{props.children}</>;
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

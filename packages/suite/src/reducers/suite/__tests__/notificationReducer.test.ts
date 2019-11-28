@@ -44,7 +44,6 @@ describe('notification reducer', () => {
             payload: getPayload({ devicePath: '2' }),
         });
         expect(state.length).toEqual(2);
-        // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
         const payload = { path: '2' } as Device;
         state = reducer(state, { type: DEVICE.DISCONNECT, payload });
         expect(state.length).toEqual(1);

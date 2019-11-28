@@ -38,9 +38,4 @@ const Notifications = (props: Props & WrappedComponentProps) => (
     </>
 );
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Notifications),
-);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Notifications));

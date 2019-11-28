@@ -117,7 +117,4 @@ const TopNavigation = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(TopNavigation);
+export default connect(mapStateToProps, mapDispatchToProps)(TopNavigation);

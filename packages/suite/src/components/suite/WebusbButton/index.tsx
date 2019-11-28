@@ -61,7 +61,7 @@ const WebusbButton = ({ ready }: Props) => {
         }
     }, [ready]);
 
-    return <div id="web-usb-placeholder" style={{ width: '100%', height: '40px' }}></div>;
+    return <div id="web-usb-placeholder" style={{ width: '100%', height: '40px' }} />;
 };
 
 export default WebusbButton;

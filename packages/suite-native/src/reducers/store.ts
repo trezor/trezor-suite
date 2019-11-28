@@ -33,10 +33,7 @@ const logger = createLogger({
     collapsed: true,
 });
 
-const composedEnhancers = compose(
-    applyMiddleware(logger, ...middlewares),
-    ...enhancers,
-);
+const composedEnhancers = compose(applyMiddleware(logger, ...middlewares), ...enhancers);
 
 export const initStore = () => {
     return createStore(reducers, composedEnhancers);

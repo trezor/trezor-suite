@@ -6,7 +6,7 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
-import accountMessages from '@wallet-views/account/index.messages';
+import accountMessages from '@suite/views/wallet/account/index.messages';
 import { DispatchProps } from '../../Container';
 import { Account } from '@wallet-types';
 

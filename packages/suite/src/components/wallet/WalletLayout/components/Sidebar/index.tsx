@@ -81,9 +81,6 @@ const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
 });
 
-export default connect(
-    mapStateToProps,
-    dispatch => ({
-        toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
-    }),
-)(Sidebar);
+export default connect(mapStateToProps, dispatch => ({
+    toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
+}))(Sidebar);

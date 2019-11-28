@@ -112,7 +112,4 @@ const Index = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

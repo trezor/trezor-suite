@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { H5, colors } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import l10nMessages from './index.messages';
+import l10nMessages from '../../common.messages';
 import TokenItem from './components/TokenItem';
 import { Account } from '@wallet-types';
 

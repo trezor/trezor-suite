@@ -8,8 +8,8 @@ const AccountSelection = props => {
         const accountStatus: string = a.fresh ? 'Fresh account' : formatAmount(a.balance, coinInfo);
         // Loading...
         return (
-            <div key={index} className="account account_default">
-                <Button onClick={event => props.modalActions.onAccountSelect(index)}>
+            <div key={a} className="account account_default">
+                <Button onClick={() => props.modalActions.onAccountSelect(index)}>
                     <span className="account_title">{a.label}</span>
                     <span className="account_status">{accountStatus}</span>
                 </Button>

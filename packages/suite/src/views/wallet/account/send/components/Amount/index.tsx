@@ -10,6 +10,7 @@ import CurrencySelect from './components/CurrencySelect';
 import SetMax from './components/SetMax';
 
 import messages from './index.messages';
+import walletMessages from '@wallet-views/index.messages';
 import { DispatchProps } from '../../Container';
 import { Account, Fiat, Network } from '@wallet-types';
 
@@ -104,7 +105,7 @@ const Amount = (props: Props) => (
             topLabel={
                 <LabelWrapper>
                     <Label>
-                        <Translation {...messages.TR_AMOUNT} />
+                        <Translation {...walletMessages.TR_AMOUNT} />
                     </Label>
                     {true && (
                         <Label>

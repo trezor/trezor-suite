@@ -15,7 +15,7 @@
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
-        "connected-react-router": "6.0.0",
+        "connected-react-router": "6.6.1",
         "markdown-it": "^8.4.2",
         "markdown-it-link-attributes": "^2.1.0",
         "markdown-it-replace-link": "^1.0.1",
@@ -27,26 +27,21 @@
         "trezor-connect": "8.0.10-extended"
     },
     "devDependencies": {
-        "@babel/cli": "^7.2.2",
-        "@babel/core": "^7.2.2",
-        "@babel/node": "^7.2.2",
-        "@babel/preset-env": "^7.3.1",
-        "@babel/preset-react": "^7.0.0",
-        "@cypress/webpack-preprocessor": "^4.1.0",
+        "@cypress/webpack-preprocessor": "^4.1.1",
         "babel-loader": "^8.0.0",
-        "copy-webpack-plugin": "^5.0.0",
-        "cross-env": "^5.2.0",
-        "css-loader": "^3.1.0",
-        "file-loader": "^3.0.1",
+        "copy-webpack-plugin": "5.0.5",
+        "cross-env": "^6.0.3",
+        "css-loader": "3.2.0",
+        "file-loader": "^5.0.2",
         "html-webpack-plugin": "^3.2.0",
-        "less": "^3.9.0",
+        "less": "^3.10.3",
         "less-loader": "^5.0.0",
-        "mini-css-extract-plugin": "^0.5.0",
-        "react-hot-loader": "4.12.9",
+        "mini-css-extract-plugin": "^0.8.0",
+        "react-hot-loader": "4.12.18",
         "styled-components": "^4.3.2",
-        "type-coverage": "^2.2.0-alpha.2",
-        "webpack": "^4.12.0",
-        "webpack-cli": "^3.0.4",
-        "webpack-dev-server": "^3.1.4"
+        "type-coverage": "^2.3.1",
+        "webpack": "4.41.2",
+        "webpack-cli": "3.3.10",
+        "webpack-dev-server": "3.9.0"
     }
 }
