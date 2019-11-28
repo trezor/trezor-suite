@@ -49,9 +49,7 @@ const TroubleshootInitialized = (props: Props) => {
                         <OnboardingButton.Alt
                             onClick={() => onboardingActions.goToSubStep('user-worked-before')}
                         >
-                            <Translation
-                                {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE}
-                            />
+                            <Translation {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE} />
                         </OnboardingButton.Alt>
                         <OnboardingButton.Alt
                             onClick={() => onboardingActions.goToSubStep('is-brand-new')}

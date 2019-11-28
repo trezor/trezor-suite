@@ -50,9 +50,7 @@ const TokenItem = ({ token, hideBalance }: Props) => {
                         maxWidth={200}
                         placement="top"
                         content={
-                            <Translation
-                                {...l10nCommonMessages.TR_THE_ACCOUNT_BALANCE_IS_HIDDEN}
-                            />
+                            <Translation {...l10nCommonMessages.TR_THE_ACCOUNT_BALANCE_IS_HIDDEN} />
                         }
                     >
                         <TooltipIcon icon="EYE_CROSSED" size={14} color={colors.TEXT_SECONDARY} />

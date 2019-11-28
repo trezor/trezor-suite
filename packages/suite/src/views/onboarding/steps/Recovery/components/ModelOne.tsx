@@ -121,10 +121,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <Translation
-                                        {...messages.TR_WORDS}
-                                        values={{ count: '12' }}
-                                    />
+                                    <Translation {...messages.TR_WORDS} values={{ count: '12' }} />
                                 </P>
                             </Option>
                             <Option
@@ -134,10 +131,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <Translation
-                                        {...messages.TR_WORDS}
-                                        values={{ count: '18' }}
-                                    />
+                                    <Translation {...messages.TR_WORDS} values={{ count: '18' }} />
                                 </P>
                             </Option>
                             <Option
@@ -147,10 +141,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <Translation
-                                        {...messages.TR_WORDS}
-                                        values={{ count: '24' }}
-                                    />
+                                    <Translation {...messages.TR_WORDS} values={{ count: '24' }} />
                                 </P>
                             </Option>
                         </Wrapper.Options>

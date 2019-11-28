@@ -92,9 +92,7 @@ const BackupStep = (props: Props) => {
                                 values={{
                                     TR_SEED_MANUAL_LINK: (
                                         <Link href={SEED_MANUAL_URL} variant="nostyle">
-                                            <Translation
-                                                {...l10nMessages.TR_SEED_MANUAL_LINK}
-                                            />
+                                            <Translation {...l10nMessages.TR_SEED_MANUAL_LINK} />
                                         </Link>
                                     ),
                                 }}
@@ -117,9 +115,7 @@ const BackupStep = (props: Props) => {
                                 onClick={() => setUserUnderstands(!userUnderstands)}
                             >
                                 <P>
-                                    <Translation
-                                        {...l10nMessages.TR_I_HAVE_READ_INSTRUCTIONS}
-                                    />
+                                    <Translation {...l10nMessages.TR_I_HAVE_READ_INSTRUCTIONS} />
                                 </P>
                             </Checkbox>
                         </Wrapper.Checkbox>

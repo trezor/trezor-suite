@@ -88,9 +88,7 @@ const NetworkTypeEthereum = () => (
                                     maxWidth={410}
                                     // todo: put into config
                                     ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
-                                    ctaText={
-                                        <Translation {...globalMessages.TR_LEARN_MORE_LINK} />
-                                    }
+                                    ctaText={<Translation {...globalMessages.TR_LEARN_MORE_LINK} />}
                                     placement="top"
                                 >
                                     <StyledIcon
@@ -148,9 +146,7 @@ const NetworkTypeEthereum = () => (
                                     maxWidth={400}
                                     // todo: put link into config
                                     ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
-                                    ctaText={
-                                        <Translation {...globalMessages.TR_LEARN_MORE_LINK} />
-                                    }
+                                    ctaText={<Translation {...globalMessages.TR_LEARN_MORE_LINK} />}
                                     placement="top"
                                 >
                                     <StyledIcon
@@ -177,9 +173,7 @@ const NetworkTypeEthereum = () => (
                             <TooltipContainer>
                                 <Tooltip
                                     content={
-                                        <Translation
-                                            {...localMessages.TR_DATA_IS_USUALLY_USED}
-                                        />
+                                        <Translation {...localMessages.TR_DATA_IS_USUALLY_USED} />
                                     }
                                     placement="top"
                                 >

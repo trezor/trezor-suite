@@ -91,9 +91,7 @@ const PairDeviceStep = (props: Props) => {
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
-                                            <Translation
-                                                {...l10nMessages.TR_FOUND_OK_DEVICE}
-                                            />
+                                            <Translation {...l10nMessages.TR_FOUND_OK_DEVICE} />
                                         </Text>
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
@@ -102,9 +100,7 @@ const PairDeviceStep = (props: Props) => {
                                                     props.onboardingActions.goToNextStep()
                                                 }
                                             >
-                                                <Translation
-                                                    {...l10nCommonMessages.TR_CONTINUE}
-                                                />
+                                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
                                             </OnboardingButton.Cta>
                                         </Wrapper.Controls>
                                     </>

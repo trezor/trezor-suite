@@ -74,9 +74,7 @@ const SetPinStep = (props: Props) => {
         <Wrapper.Step>
             <Wrapper.StepHeading>
                 {getStatus() === 'initial' && 'PIN'}
-                {getStatus() === 'first' && (
-                    <Translation {...l10nMessages.TR_PIN_HEADING_FIRST} />
-                )}
+                {getStatus() === 'first' && <Translation {...l10nMessages.TR_PIN_HEADING_FIRST} />}
                 {getStatus() === 'second' && (
                     <Translation {...l10nMessages.TR_PIN_HEADING_REPEAT} />
                 )}

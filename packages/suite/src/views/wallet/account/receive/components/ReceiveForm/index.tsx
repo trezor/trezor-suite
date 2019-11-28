@@ -236,9 +236,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                             color={colors.GREEN_PRIMARY}
                                             icon="ARROW_DOWN"
                                         />
-                                        <Translation
-                                            {...l10nMessages.TR_HIDE_PREVIOUS_ADDRESSES}
-                                        />
+                                        <Translation {...l10nMessages.TR_HIDE_PREVIOUS_ADDRESSES} />
                                     </ControlsLink>
                                 )}
                                 {(moreItems || isCollapsed) && (
@@ -253,9 +251,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                             color={colors.GREEN_PRIMARY}
                                             icon="ARROW_UP"
                                         />
-                                        <Translation
-                                            {...l10nMessages.TR_SHOW_PREVIOUS_ADDRESSES}
-                                        />
+                                        <Translation {...l10nMessages.TR_SHOW_PREVIOUS_ADDRESSES} />
                                     </ControlsLink>
                                 )}
                             </ControlsWrapper>
@@ -359,9 +355,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                             icon="TREZOR"
                                             inlineWidth
                                         >
-                                            <Translation
-                                                {...l10nMessages.TR_SHOW_FULL_ADDRESS}
-                                            />
+                                            <Translation {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
                                         </ShowAddressButton>
                                     )}
                                 {(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) &&
