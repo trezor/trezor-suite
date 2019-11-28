@@ -9,7 +9,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const { Controller } = require('./python/websocket-client');
-
+const CONSTANTS = require('../constants')
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 
 module.exports = on => {
@@ -34,9 +34,18 @@ module.exports = on => {
             const response = await controller.send({ type: 'bridge-stop' });
             return null;
         },
-        setupEmu: async () => {
+        setupEmu: async (options) => {
+            // todo: figure out how to pass more options.
+            // these are probably all options supported by python trezor
+            // https://github.com/trezor/python-trezor/blob/688d1ac03bfed162372bc5ac2dfafa0ee69378c8/trezorlib/debuglink.py
+            const defaults = {
+                mnemonic: 'all all all all all all all all all all all all',
+                pin: '',
+                passphrase_protection: false,
+                label: CONSTANTS.DEFAULT_TREZOR_LABEL,
+            };
             await controller.connect();
-            const response = await controller.send({ type: 'emulator-setup' });
+            const response = await controller.send({ type: 'emulator-setup', ...defaults, ...options });
             return null;
         },
         startEmu: async () => {

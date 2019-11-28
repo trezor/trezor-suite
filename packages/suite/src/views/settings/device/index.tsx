@@ -124,7 +124,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     ] as const;
 
     return (
-        <SettingsLayout title="Settings">
+        <SettingsLayout title="Settings" data-test="@suite/device-settings/page">
             <Row>
                 <H1 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
@@ -214,6 +214,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <Switch
+                        data-test="@suite/device-settings/pin-switch"
                         checkedIcon={false}
                         uncheckedIcon={false}
                         onChange={checked => {
@@ -233,6 +234,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <Switch
+                        data-test="@suite/device-settings/passphrase-switch"
                         checkedIcon={false}
                         uncheckedIcon={false}
                         onChange={checked => {
