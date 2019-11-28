@@ -67,7 +67,7 @@ const AccountNavigation = (props: Props) => {
                             active={currentRoute ? currentRoute.name === item.route : false}
                             onClick={() => props.goto(item.route, undefined, true)}
                         >
-                            <Icon size={10} icon={item.icon}></Icon>
+                            <Icon size={10} icon={item.icon} />
                             <Text>{item.title}</Text>
                         </StyledNavLink>
                     );

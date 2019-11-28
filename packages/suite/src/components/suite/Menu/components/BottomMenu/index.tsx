@@ -43,7 +43,7 @@ const BottomMenu = () => (
             return (
                 <MenuItemWrapper key={text}>
                     <IconWrapper>
-                        <Icon color={colors.WHITE} size={10} icon={icon}></Icon>
+                        <Icon color={colors.WHITE} size={10} icon={icon} />
                     </IconWrapper>
                     <Text>{text}</Text>
                 </MenuItemWrapper>

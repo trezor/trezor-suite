@@ -79,7 +79,7 @@ const Menu = (props: Props) => (
                                 size={20}
                                 color={isActive ? colors.BLACK0 : colors.WHITE}
                                 icon={icon}
-                            ></Icon>
+                            />
                         </IconWrapper>
                         <Text isActive={isActive}>{text}</Text>
                     </In>

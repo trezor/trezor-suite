@@ -15,10 +15,10 @@ const Line = styled.div`
     background: ${colors.BLACK96};
 `;
 
-const BottomMenu = () => (
+const Divider = () => (
     <Wrapper>
-        <Line></Line>
+        <Line />
     </Wrapper>
 );
 
-export default BottomMenu;
+export default Divider;
