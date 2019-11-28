@@ -7,7 +7,7 @@ import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 import { FormattedMessage, WrappedComponentProps } from 'react-intl';
 
-import l10nCommonMessages from '@wallet-views/messages';
+import l10nCommonMessages from '@suite/views/wallet/index.messages';
 import l10nMessages from './index.messages';
 import { StateProps, DispatchProps } from './Container';
 

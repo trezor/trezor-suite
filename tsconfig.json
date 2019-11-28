@@ -94,7 +94,6 @@
         "**/build",
         "**/api/generated/**/*.*",
         "**/_old/**/*.*",
-        ".next",
-        "packages/suite-web/test/**/*.*"
+        ".next"
     ]
 }

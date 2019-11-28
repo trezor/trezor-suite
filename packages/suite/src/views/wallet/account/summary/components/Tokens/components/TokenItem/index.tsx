@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
-import l10nCommonMessages from '@wallet-views/messages';
+import l10nCommonMessages from '@suite/views/wallet/index.messages';
 import { formatAmount } from '@wallet-utils/accountUtils';
 import { AccountInfo } from 'trezor-connect';
 import TokenIcon from '../TokenIcon';

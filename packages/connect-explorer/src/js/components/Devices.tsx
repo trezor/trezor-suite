@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Devices: React.FC = props => {
+const Devices: React.FC = (props: any) => {
     const { devices, selectedDevice } = props.connect;
-    const deviceList: any[] = devices.map((dev, index) => {
+    const deviceList: any[] = devices.map(dev => {
         let css = '';
         if (dev.unacquired) {
             css += 'unacquired';
@@ -17,7 +17,7 @@ const Devices: React.FC = props => {
             css += ' active';
         }
         return (
-            <li key={index} className={css} onClick={event => props.onSelectDevice(dev.path)}>
+            <li key={dev} className={css} onClick={() => props.onSelectDevice(dev.path)}>
                 {dev.label}
             </li>
         );

@@ -17,9 +17,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(SignVerify),
-);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SignVerify));

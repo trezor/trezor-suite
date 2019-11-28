@@ -21,7 +21,7 @@ export type SignVerifyActions =
     | { type: typeof SIGN_VERIFY.TOUCH; inputName: inputNameType }
     | { type: typeof SIGN_VERIFY.ERROR; inputName: inputNameType; message?: string };
 
-export const sign = (path: [number], message: string, hex: boolean = false) => async (
+export const sign = (path: [number], message: string, hex = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -59,12 +59,10 @@ export const sign = (path: [number], message: string, hex: boolean = false) => a
     }
 };
 
-export const verify = (
-    address: string,
-    message: string,
-    signature: string,
-    hex: boolean = false,
-) => async (dispatch: Dispatch, getState: GetState) => {
+export const verify = (address: string, message: string, signature: string, hex = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const selectedDevice = getState().suite.device;
     if (!selectedDevice) return;
     const error = validateAddress(address);

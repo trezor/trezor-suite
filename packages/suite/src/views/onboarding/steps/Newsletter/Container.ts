@@ -34,9 +34,4 @@ export type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &
     WrappedComponentProps;
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Step),
-);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Step));

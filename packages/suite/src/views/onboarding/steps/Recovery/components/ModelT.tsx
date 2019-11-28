@@ -132,9 +132,4 @@ const RecoveryStepModelT = (props: Props) => {
     );
 };
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(RecoveryStepModelT),
-);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelT));

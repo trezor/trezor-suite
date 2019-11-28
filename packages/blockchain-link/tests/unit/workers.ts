@@ -31,7 +31,6 @@ describe('Worker', () => {
         if (typeof Worker === 'undefined') {
             global.Worker = () => {
                 const W = {
-                    // eslint-disable-next-line no-unused-vars
                     onmessage: (_data: any) => {},
                     postMessage: (data: any) => {
                         if (data.type === 'm_connect') {
@@ -136,7 +135,6 @@ describe('Worker', () => {
             global.Worker = () => {
                 const W = {
                     postMessage: () => {},
-                    // eslint-disable-next-line no-unused-vars
                     onerror: (_e: any) => {},
                 };
                 setTimeout(() => {
@@ -186,9 +184,7 @@ describe('Worker', () => {
         if (typeof Worker === 'undefined') {
             global.Worker = () => {
                 const W = {
-                    // eslint-disable-next-line no-unused-vars
                     onerror: (_e: any) => {},
-                    // eslint-disable-next-line no-unused-vars
                     onmessage: (_data: any) => {},
                     postMessage: () => {
                         setTimeout(() => {

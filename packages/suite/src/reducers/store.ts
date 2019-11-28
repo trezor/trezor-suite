@@ -52,10 +52,7 @@ if (buildUtils.isDev()) {
     /* eslint-enable no-underscore-dangle */
 }
 
-const composedEnhancers = compose(
-    applyMiddleware(...middlewares),
-    ...enhancers,
-);
+const composedEnhancers = compose(applyMiddleware(...middlewares), ...enhancers);
 
 export const initStore = () => {
     return createStore(rootReducer, composedEnhancers);

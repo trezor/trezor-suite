@@ -43,10 +43,7 @@ const Acquire = (props: Props) => {
 };
 
 export default injectIntl(
-    connect(
-        mapStateToProps,
-        dispatch => ({
-            acquireDevice: bindActionCreators(acquireDevice, dispatch),
-        }),
-    )(Acquire),
+    connect(mapStateToProps, dispatch => ({
+        acquireDevice: bindActionCreators(acquireDevice, dispatch),
+    }))(Acquire),
 );

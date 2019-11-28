@@ -94,7 +94,4 @@ const MenuItems = ({
     );
 };
 
-export default connect(
-    null,
-    mapDispatchToProps,
-)(MenuItems);
+export default connect(null, mapDispatchToProps)(MenuItems);

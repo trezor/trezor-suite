@@ -42,7 +42,7 @@ const TrezorLogo = ({
                     }
                     svg.setAttribute('fill', variant);
                 }}
-                loading={() => <span className="loading"></span>}
+                loading={() => <span className="loading" />}
             />
         </SvgWrapper>
     );

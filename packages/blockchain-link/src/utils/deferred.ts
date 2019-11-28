@@ -5,7 +5,7 @@ export function create<T>(id: number | string): Deferred<T> {
     /* istanbul ignore next */
     let localReject: (e?: Error) => void = () => {};
 
-    const promise: Promise<T> = new Promise(async (resolve, reject) => {
+    const promise: Promise<T> = new Promise((resolve, reject) => {
         localResolve = resolve;
         localReject = reject;
     });
