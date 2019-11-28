@@ -1,0 +1,99 @@
+{
+  "name": "hd-wallet",
+  "version": "8.2.4",
+  "description": "Data structures and algorithms for Bitcoin HD wallet.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build-lib": "make clean;make lib",
+    "build-example": "make example",
+    "test": "make eslint && make flow && make unit",
+    "unit": "make unit",
+    "unit-build-tx": "make unit-build-tx",
+    "unit-discovery": "make unit-discovery",
+    "unit-bitcore-with-docker": "make bitcore-test-docker && make unit-bitcore",
+    "unit-bitcore": "make unit-bitcore",
+    "coverage-html": "make coverage-html",
+    "coverage": "make run-coverage",
+    "flow": "make flow",
+    "eslint": "make eslint",
+    "lint": "make eslint-fix",
+    "karma-firefox": "make karma-firefox",
+    "karma-chrome": "make karma-chrome",
+    "jest": "jest test"
+  },
+  "author": "TREZOR <info@trezor.io>",
+  "repository": "https://github.com/trezor/hd-wallet",
+  "license": "LGPL-3.0+",
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "@babel/preset-env"
+          ],
+          "plugins": [
+            "@babel/plugin-transform-flow-strip-types",
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-proposal-object-rest-spread"
+          ]
+        }
+      ]
+    ]
+  },
+  "nyc": {
+    "sourceMap": false,
+    "instrument": false
+  },
+  "browserify-shim": {
+    "../../../src/socketio-worker/inside.js": "global:thisIsJustForKarmaTestButIHaveToWriteItHere"
+  },
+  "browserslist": "> 5%, IE > 9, last 10 versions",
+  "dependencies": {
+    "bchaddrjs": "^0.2.1",
+    "bitcoinjs-lib-zcash": "3.6.1",
+    "queue": "^4.4.2",
+    "socket.io-client": "^2.2.0",
+    "whatwg-fetch": "^0.11.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.5.5",
+    "@babel/core": "7.5.5",
+    "@babel/plugin-proposal-class-properties": "7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "7.5.5",
+    "@babel/plugin-transform-flow-strip-types": "7.4.4",
+    "@babel/preset-env": "7.5.5",
+    "@babel/register": "7.5.5",
+    "babel-eslint": "^8.2.6",
+    "babel-jest": "^23.6.0",
+    "babel-plugin-istanbul": "^5.1.0",
+    "babelify": "^10.0.0",
+    "browserify": "^14.0.0",
+    "browserify-shim": "^3.8.14",
+    "eslint": "^5.2.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-flowtype": "^2.30.4",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jest": "^21.18.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "exorcist": "0.4.0",
+    "flow-bin": "0.59.0",
+    "isomorphic-fetch": "^2.2.1",
+    "jest": "^23.4.1",
+    "karma": "^1.6.0",
+    "karma-browserify": "^5.1.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-mocha": "^1.3.0",
+    "mocha": "^3.1.0",
+    "nyc": "^13",
+    "tiny-worker": "^2.0.3",
+    "uglifyify": "3.0.1",
+    "virtual-dom": "2.1.1",
+    "watchify": "3.6.0",
+    "workerify": "1.0.0"
+  }
+}

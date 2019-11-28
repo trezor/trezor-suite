@@ -1,0 +1,5 @@
+fastxpub/build/fastxpub.js
+trezor-crypto/*
+fastxpub/**
+type/**
+coverage/**
