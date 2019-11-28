@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { CoinLogo, Button, colors } from '@trezor/components';
-import { H2, P, Link } from '@trezor/components-v2';
+import { CoinLogo, colors } from '@trezor/components';
+import { Button, H2, P, Link } from '@trezor/components-v2';
 
 import { FormattedMessage } from 'react-intl';
 import { Translation } from '@suite/components/suite/Intl';

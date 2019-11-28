@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { Input } from '@trezor/components';
-import sendMessages from '@wallet-views/account/messages';
+import sendMessages from '@wallet-views/account/index.messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
 import messages from './index.messages';

@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, Tooltip, Icon, Modal, colors } from '@trezor/components';
-import { H2, P } from '@trezor/components-v2';
+import { Tooltip, Icon, Modal, colors } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 
 import * as logActions from '@suite-actions/logActions';
@@ -79,7 +79,7 @@ const Log = (props: Props) => {
     }
 
     const copyBtn = (
-        <ButtonCopy onClick={() => props.copyToClipboard()}>
+        <ButtonCopy onClick={() => props.copyToClipboard()} inlineWidth>
             <FormattedMessage {...l10nMessages.TR_COPY_TO_CLIPBOARD} />
         </ButtonCopy>
     );

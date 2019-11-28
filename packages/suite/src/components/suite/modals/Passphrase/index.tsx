@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 
-import { Button, Input, Checkbox, colors } from '@trezor/components';
-import { H2, P } from '@trezor/components-v2';
+import { Input, Checkbox, colors } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 import { useKeyPress } from '@suite-utils/dom';
 
@@ -137,7 +137,11 @@ const Passphrase: FunctionComponent<Props> = ({
                 </Checkbox>
             </FormRow>
             <Column>
-                <Button onClick={() => onEnterPassphrase(value)} isDisabled={!passwordsMatch}>
+                <Button
+                    onClick={() => onEnterPassphrase(value)}
+                    isDisabled={!passwordsMatch}
+                    inlineWidth
+                >
                     <FormattedMessage {...messages.TR_ENTER_PASSPHRASE} />
                 </Button>
                 <ErrorMessage size="small" show={!passwordsMatch}>

@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { Button, colors } from '@trezor/components';
-import { P, H2, Link } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
+import { Button, P, H2, Link } from '@trezor/components-v2';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 
@@ -39,10 +39,6 @@ const Row = styled.div`
     button + button {
         margin-top: 10px;
     }
-`;
-
-const BackupButton = styled(Button)`
-    width: 100%;
 `;
 
 interface Props {
@@ -120,10 +116,10 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             </Content>
             <Content>
                 <Row>
-                    <Button onClick={() => verifyAddress()}>
+                    <Button onClick={() => verifyAddress()} inlineWidth>
                         <FormattedMessage {...globalMessages.TR_TRY_AGAIN} />
                     </Button>
-                    <Button isInverse variant="warning" onClick={() => unverifiedAddress()}>
+                    <Button variant="danger" onClick={() => unverifiedAddress()} inlineWidth>
                         <FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
                     </Button>
                 </Row>
@@ -145,11 +141,11 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                     <Content>
                         <Row>
                             <Link href={`/?backup#${device.path}`}>
-                                <BackupButton>
+                                <Button>
                                     <FormattedMessage
                                         {...suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}
                                     />
-                                </BackupButton>
+                                </Button>
                             </Link>
                         </Row>
                     </Content>

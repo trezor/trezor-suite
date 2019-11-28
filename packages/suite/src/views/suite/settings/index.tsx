@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
-import { Input, Switch, Button, Icon } from '@trezor/components';
-import { P, H1, H2 } from '@trezor/components-v2';
+import { Input, Switch, Icon } from '@trezor/components';
+import { Button, P, H1, H2 } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { SettingsLayout } from '@suite-components';
@@ -129,7 +129,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 <H1 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
                 </H1>
-                <CloseButton onClick={() => goto('wallet-index')} isTransparent>
+                <CloseButton onClick={() => goto('wallet-index')} variant="tertiary" inlineWidth>
                     <Icon icon="CLOSE" size={14} />
                 </CloseButton>
             </Row>
@@ -145,7 +145,11 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                             setLabel(event.currentTarget.value)
                         }
                     />
-                    <ActionButton isDisabled={uiLocked} onClick={() => applySettings({ label })}>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        onClick={() => applySettings({ label })}
+                        inlineWidth
+                    >
                         <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}</Translation>
                     </ActionButton>
                 </ActionColumn>
@@ -189,12 +193,20 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 )}
                 <ActionColumn>
                     <Row isColumn>
-                        <ActionButtonColumn isDisabled onClick={() => applySettings({ label })}>
+                        <ActionButtonColumn
+                            isDisabled
+                            onClick={() => applySettings({ label })}
+                            inlineWidth
+                        >
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
                             </Translation>
                         </ActionButtonColumn>
-                        <ActionButton isDisabled onClick={() => applySettings({ label })}>
+                        <ActionButton
+                            isDisabled
+                            onClick={() => applySettings({ label })}
+                            inlineWidth
+                        >
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
                             </Translation>
@@ -258,11 +270,12 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                         {DISPLAY_ROTATIONS.map(variant => (
                             <OrientationButton
                                 key={variant.icon}
-                                variant="white"
+                                variant="secondary"
                                 onClick={() =>
                                     /* eslint-disable-next-line @typescript-eslint/camelcase */
                                     applySettings({ display_rotation: variant.value })
                                 }
+                                inlineWidth
                             >
                                 <Icon size={14} icon={variant.icon} />
                             </OrientationButton>
@@ -273,8 +286,9 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
             <Row>
                 <ActionButton
                     isDisabled={uiLocked}
-                    variant="error"
+                    variant="danger"
                     onClick={() => wipeDevice({ device })}
+                    inlineWidth
                 >
                     <Translation>{messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}</Translation>
                 </ActionButton>
