@@ -14,6 +14,7 @@ storiesOf('Form', module).add(
             {
                 None: null,
                 Success: 'success',
+                Warning: 'warning',
                 Error: 'error',
             },
             null
@@ -52,14 +53,14 @@ storiesOf('Form', module).add(
             null
         ) as 'right' | 'center';
 
-        const button: string = text('Button', '');
-        const inputButton = {
-            text: button,
+        const buttonText: string = text('Button', '');
+        const button = {
+            text: buttonText,
             icon: undefined,
             onClick: () => {},
         };
 
-        if (button) {
+        if (buttonText) {
             const iconOptions: any = {
                 None: null,
             };
@@ -68,7 +69,7 @@ storiesOf('Form', module).add(
             });
             const icon = select('Icon', iconOptions, null);
             if (icon) {
-                inputButton.icon = icon;
+                button.icon = icon;
             }
         }
 
@@ -83,7 +84,7 @@ storiesOf('Form', module).add(
                 {...(placeholder ? { placeholder } : {})}
                 {...(isLoading ? { isLoading } : {})}
                 {...(monospace ? { monospace } : {})}
-                {...(button ? { inputButton } : {})}
+                {...(buttonText ? { button } : {})}
                 {...(align ? { align } : {})}
                 value={value}
             />
