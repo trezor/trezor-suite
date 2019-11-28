@@ -47,8 +47,13 @@ const Translation = (props: ChildrenType | MsgType) => {
     // message passed via props (id, defaultMessage, values)
     if (isMsgType(props)) {
         Object.keys(props.values || []).forEach(key => {
+            // Iterates through all values. The entry may also contain a MessageDescriptor.
+            // Renders MessageDescriptor by passing it to `Translation` component
+            // It also works for string values as 'Translation' just renders its children in case the children is not MessageDescriptor
             values[key] = <Translation>{props.values![key]}</Translation>;
         });
+
+        // pass undefined to a 'values' prop in case of an empty values object
         return (
             <FormattedMessage
                 {...props}
@@ -56,17 +61,14 @@ const Translation = (props: ChildrenType | MsgType) => {
             />
         );
     }
-    // passed children prop (component or ExtendedMessageDescriptor obj)
+    // Passed children prop (ExtendedMessageDescriptor obj)
+    // Basically same logic as for MsgType
     if (isChildrenType(props) && isChildrenMessageDescriptor(props.children)) {
-        // Message with variables passed via 'values' prop.
-        // Value entry can also contain a MessageDescriptor.
-        // Copy values and extract necessary messages to a new 'values' object
         Object.keys(props.children.values || []).forEach(key => {
             // @ts-ignore
             values[key] = <Translation>{props.children.values[key]}</Translation>;
         });
 
-        // pass undefined to a 'values' prop in case of an empty values object
         return (
             <FormattedMessage
                 {...props.children}
@@ -75,6 +77,7 @@ const Translation = (props: ChildrenType | MsgType) => {
         );
     }
 
+    // passed children prop (regular ReactChild, not ExtendedMessageDescriptor)
     return <>{props.children}</>;
 };
 
