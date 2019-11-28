@@ -64,9 +64,9 @@ class CommonDB<TDBStructure> {
         // });
     };
 
-    notify = (store: StoreNames<TDBStructure>, keys: any[]) => {};
+    notify = (_store: StoreNames<TDBStructure>, _keys: any[]) => {};
 
-    onChange = (handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
+    onChange = (_handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
 
     getDB = async (): Promise<IDBPDatabase<TDBStructure>> => {
         // @ts-ignore
@@ -78,9 +78,9 @@ class CommonDB<TDBStructure> {
         TItem extends StoreValue<TDBStructure, TStoreName>,
         TKey extends StoreKey<TDBStructure, TStoreName>
     >(
-        store: TStoreName,
-        item: TItem,
-        key?: TKey
+        _store: TStoreName,
+        _item: TItem,
+        _key?: TKey
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
         // @ts-ignore
         return Promise.resolve();
@@ -90,9 +90,9 @@ class CommonDB<TDBStructure> {
         TStoreName extends StoreNames<TDBStructure>,
         TItem extends StoreValue<TDBStructure, TStoreName>
     >(
-        store: TStoreName,
-        items: TItem[],
-        upsert?: boolean
+        _store: TStoreName,
+        _items: TItem[],
+        _upsert?: boolean
     ) => {
         return Promise.resolve();
     };
@@ -101,8 +101,8 @@ class CommonDB<TDBStructure> {
         TStoreName extends StoreNames<TDBStructure>,
         TKey extends StoreKey<TDBStructure, TStoreName>
     >(
-        store: TStoreName,
-        primaryKey: TKey
+        _store: TStoreName,
+        _primaryKey: TKey
     ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> => {
         // @ts-ignore
         return Promise.resolve();
@@ -113,9 +113,9 @@ class CommonDB<TDBStructure> {
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
     >(
-        store: TStoreName,
-        indexName: TIndexName,
-        key: TKey
+        _store: TStoreName,
+        _indexName: TIndexName,
+        _key: TKey
     ) => {
         return Promise.resolve();
     };
@@ -125,10 +125,10 @@ class CommonDB<TDBStructure> {
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
     >(
-        store: TStoreName,
-        indexName: TIndexName,
-        key: TKey,
-        updateObject: { [key: string]: any }
+        _store: TStoreName,
+        _indexName: TIndexName,
+        _key: TKey,
+        _updateObject: { [key: string]: any }
     ) => {
         return Promise.resolve();
     };
@@ -137,8 +137,8 @@ class CommonDB<TDBStructure> {
         TStoreName extends StoreNames<TDBStructure>,
         TKey extends StoreKey<TDBStructure, TStoreName>
     >(
-        store: TStoreName,
-        key: TKey
+        _store: TStoreName,
+        _key: TKey
     ) => {
         return Promise.resolve();
     };
@@ -148,9 +148,9 @@ class CommonDB<TDBStructure> {
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
     >(
-        store: TStoreName,
-        indexName: TIndexName,
-        key: TKey
+        _store: TStoreName,
+        _indexName: TIndexName,
+        _key: TKey
     ) => {
         return Promise.resolve();
     };
@@ -159,17 +159,17 @@ class CommonDB<TDBStructure> {
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>
     >(
-        store: TStoreName,
-        indexName?: TIndexName,
-        filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
+        _store: TStoreName,
+        _indexName?: TIndexName,
+        _filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
     ) => {
         return (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
     };
 
     static clearStores = async <TDBStructure>(
-        db: IDBPDatabase<TDBStructure>,
-        transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
-        remove?: boolean
+        _db: IDBPDatabase<TDBStructure>,
+        _transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
+        _remove?: boolean
     ) => {
         return Promise.resolve();
     };
