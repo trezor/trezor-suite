@@ -75,7 +75,7 @@ describe('Translation component', () => {
                 {...messages.TR_HELLO_NAME}
                 values={{
                     TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
-                    TR_AGE: '100',
+                    TR_AGE: 100,
                 }}
             />,
         );
@@ -93,7 +93,7 @@ describe('Translation component', () => {
                             {{ ...messages.TR_NAME, values: { name: 'John' } }}
                         </Translation>
                     ),
-                    TR_AGE: '100',
+                    TR_AGE: 100,
                 }}
             />,
         );
@@ -108,7 +108,7 @@ describe('Translation component', () => {
                     ...messages.TR_HELLO_NAME,
                     values: {
                         TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
-                        TR_AGE: '100',
+                        TR_AGE: 100,
                     },
                 }}
             </Translation>,

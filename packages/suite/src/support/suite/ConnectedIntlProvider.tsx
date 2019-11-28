@@ -42,10 +42,12 @@ require('@formatjs/intl-relativetimeformat/dist/locale-data/de');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/bn');
 require('@formatjs/intl-relativetimeformat/dist/locale-data/cs');
 
+type PrimitiveType = string | number | boolean | Date | null | undefined;
+
 // Add MessageDescriptor type to values entry
 export interface ExtendedMessageDescriptor extends MessageDescriptor {
     values?: {
-        [key: string]: string | React.ReactElement | MessageDescriptor;
+        [key: string]: PrimitiveType | React.ReactElement | MessageDescriptor;
     };
 }
 

@@ -25,7 +25,7 @@ export const isChildrenType = (props: MsgType | ChildrenType): props is Children
 };
 
 interface ChildrenType {
-    children: React.ReactChild | ExtendedMessageDescriptor;
+    children: React.ReactNode | ExtendedMessageDescriptor;
 }
 
 interface MsgType extends ExtendedMessageDescriptor {
