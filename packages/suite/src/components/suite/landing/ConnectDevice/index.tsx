@@ -162,9 +162,7 @@ class ConnectDevice extends PureComponent<Props> {
                                             />
                                         </g>
                                     </ImageWrapper>
-                                    <Translation
-                                        {...l10nMessages.TR_CONNECT_TREZOR_TO_CONTINUE}
-                                    />
+                                    <Translation {...l10nMessages.TR_CONNECT_TREZOR_TO_CONTINUE} />
                                 </>
                             )}
                         </ConnectTrezorWrapper>
