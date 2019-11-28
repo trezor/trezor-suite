@@ -1,0 +1,46 @@
+{
+  "name": "trezor-link",
+  "version": "1.6.6",
+  "description": "Trezor Link for browser",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "make build",
+    "check": "make check"
+  },
+  "repository": "https://github.com/trezor/trezor-link.git",
+  "author": "Karel Bílek <kb@karelbilek.com>",
+  "license": "LGPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/trezor/trezor-link/issues"
+  },
+  "homepage": "https://github.com/trezor/trezor-link",
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-flow": "^7.0.0",
+    "babel-eslint": "^10.0.2",
+    "babel-plugin-add-module-exports": "^1.0.2",
+    "babel-plugin-inline-version": "^1.0.2",
+    "bump-version": "^0.5.0",
+    "eslint": "^6.1.0",
+    "eslint-plugin-flowtype": "^3.12.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "flow-bin": "0.78.0"
+  },
+  "dependencies": {
+    "bigi": "^1.4.1",
+    "ecurve": "^1.0.3",
+    "json-stable-stringify": "^1.0.1",
+    "node-fetch": "^2.6.0",
+    "object.values": "^1.1.0",
+    "protobufjs-old-fixed-webpack": "3.8.5",
+    "semver-compare": "^1.0.0",
+    "whatwg-fetch": "^3.0.0"
+  }
+}
