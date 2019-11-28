@@ -144,7 +144,7 @@ const StyledIcon = styled(Icon)`
 
 const StateIconWrapper = styled.div`
     display: flex;
-    padding-right: 5px;
+    padding: 0 5px;
     background: ${colors.WHITE};
 `;
 
