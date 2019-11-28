@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { AccountAddresses } from 'trezor-connect';
-import { H6, variables, Button, colors, Icon, Link } from '@trezor/components';
+import { H6, variables, colors, Icon, Link } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 
 import { selectText } from '@suite-utils/dom';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -20,11 +21,7 @@ import EyeButton from '../EyeButton';
 
 const Wrapper = styled.div``;
 
-const SmallButton = styled(Button)`
-    padding: 8px 16px;
-`;
-
-const AddFreshAddress = styled(SmallButton)``;
+const AddFreshAddress = styled(Button)``;
 
 const ButtonsWrapper = styled.div`
     display: flex;
@@ -40,7 +37,7 @@ const FreshAddress = styled(AddressItem)`
     height: 47px;
 `;
 
-const ShowAddressButton = styled(SmallButton)`
+const ShowAddressButton = styled(Button)`
     flex: 1 0 0;
     white-space: nowrap;
     display: flex;
@@ -300,7 +297,8 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                         props.showAddress(firstFreshAddress.path);
                                     }}
                                     // isDisabled={device.connected && !discovery.completed}
-                                    icon="EYE"
+                                    size="small"
+                                    inlineWidth
                                 >
                                     <FormattedMessage {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
                                 </ShowAddressButton>
@@ -327,12 +325,14 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                 <>
                     <ButtonsWrapper>
                         <AddFreshAddress
-                            variant="white"
+                            variant="secondary"
+                            size="small"
                             onClick={() => {
                                 setFreshAddrCount(freshAddrCount + 1);
                             }}
                             icon="PLUS"
                             isDisabled={freshAddrCount >= SETTINGS.FRESH_ADDRESS_LIMIT + 1}
+                            inlineWidth
                         >
                             <FormattedMessage {...l10nMessages.TR_ADD_FRESH_ADDRESS} />
                         </AddFreshAddress>
@@ -356,7 +356,8 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                         <ShowAddressButton
                                             isDisabled={props.showButtonDisabled}
                                             onClick={() => props.showAddress(addr.path)}
-                                            icon="EYE"
+                                            icon="TREZOR"
+                                            inlineWidth
                                         >
                                             <FormattedMessage
                                                 {...l10nMessages.TR_SHOW_FULL_ADDRESS}

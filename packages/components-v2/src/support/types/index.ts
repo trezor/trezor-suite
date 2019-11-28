@@ -2,7 +2,7 @@ import { ICONS } from '../../components/Icon/icons';
 
 export type FeedbackType = 'success' | 'info' | 'warning' | 'error';
 
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
 

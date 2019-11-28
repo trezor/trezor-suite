@@ -184,23 +184,27 @@ android {
         }
     }
 
-    packagingOptions {
-        pickFirst '**/armeabi-v7a/libc++_shared.so'
-        pickFirst '**/x86/libc++_shared.so'
-        pickFirst '**/arm64-v8a/libc++_shared.so'
-        pickFirst '**/x86_64/libc++_shared.so'
-        pickFirst '**/x86/libjsc.so'
-        pickFirst '**/armeabi-v7a/libjsc.so'
-    }
+    // packagingOptions {
+    //     pickFirst '**/armeabi-v7a/libc++_shared.so'
+    //     pickFirst '**/x86/libc++_shared.so'
+    //     pickFirst '**/arm64-v8a/libc++_shared.so'
+    //     pickFirst '**/x86_64/libc++_shared.so'
+    //     pickFirst '**/x86/libjsc.so'
+    //     pickFirst '**/armeabi-v7a/libjsc.so'
+    // }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    implementation project(':react-native-svg') // https://github.com/react-native-community/react-native-svg#android
+    // implementation project(':react-native-svg') // https://github.com/react-native-community/react-native-svg#android
+    
+    // needed by react-native-router flux https://reactnavigation.org/docs/en/getting-started.html
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
 
     if (enableHermes) {
-      def hermesPath = "../../node_modules/hermesvm/android/";
+      def hermesPath = "../../../../node_modules/hermes-engine/android/";
       debugImplementation files(hermesPath + "hermes-debug.aar")
       releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {

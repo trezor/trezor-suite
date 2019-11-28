@@ -24,7 +24,7 @@
         "appId": "io.trezor.TrezorSuite",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
-        "asar": false,
+        "asar": true,
         "electronVersion": "7.1.1",
         "directories": {
             "output": "build-electron"
@@ -74,6 +74,7 @@
         "electron-is-dev": "^1.1.0",
         "electron-localshortcut": "^3.2.0",
         "electron-next": "^3.1.5",
+        "electron-store": "^5.1.0",
         "os": "^0.1.1",
         "ps-list": "6.3.0"
     },

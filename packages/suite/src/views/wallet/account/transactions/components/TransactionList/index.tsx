@@ -51,6 +51,7 @@ const TransactionList = ({
         startIndex,
         stopIndex,
     ]);
+
     const transactionsByDate = useMemo(() => groupTransactionsByDate(slicedTransactions), [
         slicedTransactions,
     ]);

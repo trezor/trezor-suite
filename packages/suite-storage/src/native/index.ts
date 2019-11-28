@@ -45,39 +45,32 @@ class CommonDB<TDBStructure> {
         // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
         // this solution calls callback function from within onerror/onsuccess event handlers.
         // For other browsers checking the window.indexedDB should be enough.
-        const isFirefox = navigator && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-        return new Promise((resolve, _reject) => {
-            if (isFirefox) {
-                const r = indexedDB.open('test');
-                r.onerror = () => resolve(false);
-                r.onsuccess = () => resolve(true);
-            } else {
-                // @ts-ignore
-                const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
-                if (idbAvailable) {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            }
-        });
+        return false;
+        // const isFirefox = navigator && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+        // return new Promise((resolve, _reject) => {
+        //     if (isFirefox) {
+        //         const r = indexedDB.open('test');
+        //         r.onerror = () => resolve(false);
+        //         r.onsuccess = () => resolve(true);
+        //     } else {
+        //         // @ts-ignore
+        //         const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
+        //         if (idbAvailable) {
+        //             resolve(true);
+        //         } else {
+        //             resolve(false);
+        //         }
+        //     }
+        // });
     };
 
-    notify = (store: StoreNames<TDBStructure>, keys: any[]) => {
-        // sends the message containing store, keys which were updated to other tabs/windows
-        const message = { store, keys };
-        this.broadcastChannel.postMessage(message);
-    };
+    notify = (store: StoreNames<TDBStructure>, keys: any[]) => {};
 
-    onChange = (handler: (event: StorageMessageEvent<TDBStructure>) => any) => {
-        // listens to the channel. On receiving a message triggers the handler func
-        this.broadcastChannel.onmessage = handler;
-    };
+    onChange = (handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
 
     getDB = async (): Promise<IDBPDatabase<TDBStructure>> => {
-        return new Promise((resolve, _reject) => {
-            resolve(this.db);
-        });
+        // @ts-ignore
+        return Promise.resolve();
     };
 
     addItem = async <
@@ -89,28 +82,8 @@ class CommonDB<TDBStructure> {
         item: TItem,
         key?: TKey
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
-        // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
-        // and I couldn't figure out how to catch it. Maybe a bug in idb?
-        // So instead of using idb wrapper I use indexedDB directly, wrapped in my own promise.
         // @ts-ignore
-        const db = unwrap(await this.getDB());
-
-        const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
-            const tx = db.transaction(store, 'readwrite');
-            const req: IDBRequest = key
-                ? tx.objectStore(store).put(item)
-                : tx.objectStore(store).add(item);
-            req.onerror = _event => {
-                reject(req.error);
-            };
-            req.onsuccess = _event => {
-                this.notify(store, [req.result]);
-                resolve(req.result);
-            };
-        }).catch(err => {
-            throw err;
-        });
-        return p;
+        return Promise.resolve();
     };
 
     addItems = async <
@@ -121,25 +94,7 @@ class CommonDB<TDBStructure> {
         items: TItem[],
         upsert?: boolean
     ) => {
-        const db = await this.getDB();
-        // jest won't resolve tx.done when 'items' is empty array
-        if (items.length === 0) return Promise.resolve();
-        const tx = db.transaction(store, 'readwrite');
-
-        const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
-        items.forEach(item => {
-            if (upsert) {
-                tx.store.put(item).then(result => {
-                    keys.push(result);
-                });
-            } else {
-                tx.store.add(item).then(result => {
-                    keys.push(result);
-                });
-            }
-        });
-        this.notify(store, keys);
-        await tx.done;
+        return Promise.resolve();
     };
 
     getItemByPK = async <
@@ -149,10 +104,8 @@ class CommonDB<TDBStructure> {
         store: TStoreName,
         primaryKey: TKey
     ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> => {
-        const db = await this.getDB();
-        const tx = db.transaction(store);
-        const item = await tx.store.get(primaryKey);
-        return item;
+        // @ts-ignore
+        return Promise.resolve();
     };
 
     getItemByIndex = async <
@@ -164,12 +117,7 @@ class CommonDB<TDBStructure> {
         indexName: TIndexName,
         key: TKey
     ) => {
-        // returns the tx with txID
-        const db = await this.getDB();
-        const tx = db.transaction(store);
-        const index = tx.store.index(indexName);
-        const item = await index.get(IDBKeyRange.only(key));
-        return item;
+        return Promise.resolve();
     };
 
     updateItemByIndex = async <
@@ -182,15 +130,7 @@ class CommonDB<TDBStructure> {
         key: TKey,
         updateObject: { [key: string]: any }
     ) => {
-        const db = await this.getDB();
-        const tx = db.transaction(store, 'readwrite');
-        const index = tx.store.index(indexName);
-        const result = await index.get(key);
-        if (result) {
-            Object.assign(result, updateObject);
-            this.notify(store, [result]);
-            return tx.store.put(result);
-        }
+        return Promise.resolve();
     };
 
     removeItemByPK = async <
@@ -200,13 +140,7 @@ class CommonDB<TDBStructure> {
         store: TStoreName,
         key: TKey
     ) => {
-        const db = await this.getDB();
-        const tx = db.transaction(store, 'readwrite');
-        return tx.store.delete(key);
-        // TODO: needs to differentiate between PKs, Index keys...
-        // if (res) {
-        //     this.notify(store, [key]);
-        // }
+        return Promise.resolve();
     };
 
     removeItemByIndex = async <
@@ -218,14 +152,7 @@ class CommonDB<TDBStructure> {
         indexName: TIndexName,
         key: TKey
     ) => {
-        const db = await this.getDB();
-        const tx = db.transaction(store, 'readwrite');
-        const txIdIndex = tx.store.index(indexName);
-        const p = await txIdIndex.openCursor(IDBKeyRange.only(key));
-        if (p) {
-            p.delete();
-            this.notify(store, p.value ? [p.value] : []);
-        }
+        return Promise.resolve();
     };
 
     getItemsExtended = async <
@@ -234,42 +161,9 @@ class CommonDB<TDBStructure> {
     >(
         store: TStoreName,
         indexName?: TIndexName,
-        filters?: { key?: any; offset?: number; count?: number }
+        filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
     ) => {
-        // TODO: indexName !== undefined && filters === undefined
-        const db = await this.getDB();
-        const tx = db.transaction(store);
-        if (filters && indexName && filters.key !== undefined) {
-            if (filters.offset !== undefined || filters.count !== undefined) {
-                const index = tx.store.index(indexName);
-                // cursor with keyrange for given accountId (covers all timestamps)
-                let cursor = await index.openCursor(
-                    IDBKeyRange.bound([filters.key], [filters.key, ''])
-                );
-                const items = [];
-                let counter = 0;
-                if (cursor) {
-                    // move cursor in position
-                    if (filters.offset) await cursor.advance(filters.offset);
-                    while (cursor && (!filters.count || counter < filters.count)) {
-                        // iterate unless cursor returns null or we have enough items (count param)
-                        items.push(cursor.value);
-                        // eslint-disable-next-line no-await-in-loop
-                        cursor = await cursor.continue();
-                        counter++;
-                    }
-                }
-                return items;
-            }
-            // if offset and count params are undefined just use getAll on index instead of cursor.
-            const index = tx.store.index(indexName);
-            // all txs for given accountId
-            // bound([accountId, undefined], [accountId, '']) should cover all timestamps
-            const keyRange = IDBKeyRange.bound([filters.key], [filters.key, '']);
-            return index.getAll(keyRange);
-        }
-        // no accountId, return all txs
-        return tx.store.getAll();
+        return (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
     };
 
     static clearStores = async <TDBStructure>(
@@ -277,19 +171,7 @@ class CommonDB<TDBStructure> {
         transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
         remove?: boolean
     ) => {
-        const list = db.objectStoreNames;
-        const { length } = list;
-        for (let i = 0; i < length; i++) {
-            const storeName = list.item(i);
-            if (storeName) {
-                const objectStore = transaction.objectStore(storeName);
-                // eslint-disable-next-line no-await-in-loop
-                await objectStore.clear();
-                if (remove) {
-                    db.deleteObjectStore(storeName);
-                }
-            }
-        }
+        return Promise.resolve();
     };
 }
 
