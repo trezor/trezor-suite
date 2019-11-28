@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, P } from '@trezor/components';
+import { P } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import * as resizeActions from '@suite-actions/resizeActions';
 import { isWebUSB } from '@suite-utils/device';
@@ -68,7 +69,9 @@ const Index = (props: Props) => {
         return (
             <SuiteLayout showSuiteHeader>
                 <P data-test="initialize-message">Device is not set up.</P>
-                <Button onClick={() => goto('onboarding-index')}>Go to setup wizard</Button>
+                <Button onClick={() => goto('onboarding-index')} inlineWidth>
+                    Go to setup wizard
+                </Button>
             </SuiteLayout>
         );
     }
@@ -84,7 +87,9 @@ const Index = (props: Props) => {
         return (
             <SuiteLayout showSuiteHeader>
                 <P data-test="no-firmware-message">Device has no firmware installed. </P>
-                <Button onClick={() => goto('onboarding-index')}>Go to setup wizard</Button>
+                <Button onClick={() => goto('onboarding-index')} inlineWidth>
+                    Go to setup wizard
+                </Button>
             </SuiteLayout>
         );
     }
@@ -94,7 +99,9 @@ const Index = (props: Props) => {
         return (
             <SuiteLayout showSuiteHeader>
                 <P data-test="bootloader-message">Device is in bootloader mode. Reconnect it.</P>
-                <Button onClick={() => goto('suite-device-firmware')}>Or go to firmware</Button>
+                <Button onClick={() => goto('suite-device-firmware')} inlineWidth>
+                    Or go to firmware
+                </Button>
             </SuiteLayout>
         );
     }
@@ -107,7 +114,9 @@ const Index = (props: Props) => {
                     possibly any USB device. To make communication possible, you will need to
                     install Trezor Bridge.{' '}
                 </P>
-                <Button onClick={() => goto('suite-bridge')}>See details</Button>
+                <Button onClick={() => goto('suite-bridge')} inlineWidth>
+                    See details
+                </Button>
             </SuiteLayout>
         );
     }
@@ -119,7 +128,9 @@ const Index = (props: Props) => {
                     Your device has firmware that is no longer supported. You will need to update
                     it.{' '}
                 </P>
-                <Button onClick={() => goto('suite-device-firmware')}>See details</Button>
+                <Button onClick={() => goto('suite-device-firmware')} inlineWidth>
+                    See details
+                </Button>
             </SuiteLayout>
         );
     }
@@ -137,7 +148,4 @@ const Index = (props: Props) => {
     return <>{props.children}</>;
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

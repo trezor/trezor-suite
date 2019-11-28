@@ -1,12 +1,13 @@
 import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
 
-import { H5, P, Link, Icon, Button, Tooltip, colors } from '@trezor/components';
+import { H5, P, Link, Icon, Tooltip, colors } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 import { useKeyPress } from '@suite-utils/dom';
 import globalMessages from '@suite-support/Messages';
 import l10nCommonMessages from '../messages';
-import l10nWalletMessages from '@wallet-views/messages';
+import l10nWalletMessages from '@suite/views/wallet/index.messages';
 import l10nMessages from './messages';
 import { TrezorDevice } from '@suite-types';
 
@@ -116,7 +117,7 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                 <P size="small">
                     <FormattedMessage {...l10nMessages.TR_CONTINUE_TO_ACCESS_STANDARD_WALLET} />
                 </P>
-                <StyledButton onClick={() => onWalletTypeRequest(false)}>
+                <StyledButton onClick={() => onWalletTypeRequest(false)} inlineWidth>
                     <FormattedMessage {...l10nWalletMessages.TR_GO_TO_STANDARD_WALLET} />
                 </StyledButton>
             </Content>
@@ -146,7 +147,11 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                 <P size="small">
                     <FormattedMessage {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK} />
                 </P>
-                <StyledButton variant="white" onClick={() => onWalletTypeRequest(true)}>
+                <StyledButton
+                    variant="secondary"
+                    onClick={() => onWalletTypeRequest(true)}
+                    inlineWidth
+                >
                     <FormattedMessage {...l10nCommonMessages.TR_GO_TO_HIDDEN_WALLET} />
                 </StyledButton>
             </Content>

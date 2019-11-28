@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { Link } from 'react-router-dom';
 import { select, number, color, text, object, boolean } from '@storybook/addon-knobs';
-import StoryRouter from 'storybook-react-router';
 import {
     colors,
     Header,
@@ -414,51 +413,49 @@ storiesOf('Other', module)
         }
     );
 
-storiesOf('Other', module)
-    .addDecorator(StoryRouter())
-    .add(
-        'Header',
-        () => {
-            return (
-                <Header
-                    sidebarEnabled={boolean('sidebarEnabled', true)}
-                    sidebarOpened={boolean('sidebarOpened', false)}
-                    togglerOpenText={text('togglerOpenText', 'Menu')}
-                    togglerCloseText={text('togglerCloseText', 'Close')}
-                    rightAddon={null}
-                    logoLinkComponent={<Link to="/" />}
-                    links={object('links', [
-                        {
-                            href: 'https://trezor.io/',
-                            title: 'Trezor',
-                        },
-                        {
-                            href: 'https://wiki.trezor.io/',
-                            title: 'Wiki',
-                        },
-                        {
-                            href: 'https://blog.trezor.io/',
-                            title: 'Blog',
-                        },
-                        {
-                            href: 'https://trezor.io/support/',
-                            title: 'Support',
-                        },
-                    ])}
-                />
-            );
-        },
-        {
-            info: {
-                ...infoOptions,
-                text: `
+storiesOf('Other', module).add(
+    'Header',
+    () => {
+        return (
+            <Header
+                sidebarEnabled={boolean('sidebarEnabled', true)}
+                sidebarOpened={boolean('sidebarOpened', false)}
+                togglerOpenText={text('togglerOpenText', 'Menu')}
+                togglerCloseText={text('togglerCloseText', 'Close')}
+                rightAddon={null}
+                logoLinkComponent={<Link to="/" />}
+                links={object('links', [
+                    {
+                        href: 'https://trezor.io/',
+                        title: 'Trezor',
+                    },
+                    {
+                        href: 'https://wiki.trezor.io/',
+                        title: 'Wiki',
+                    },
+                    {
+                        href: 'https://blog.trezor.io/',
+                        title: 'Blog',
+                    },
+                    {
+                        href: 'https://trezor.io/support/',
+                        title: 'Support',
+                    },
+                ])}
+            />
+        );
+    },
+    {
+        info: {
+            ...infoOptions,
+            text: `
         ~~~js
         import { Header } from 'trezor-ui-components';
         ~~~
         `,
-            },
-        }
-    );
+        },
+    }
+);
 
 storiesOf('Other', module)
     .add(

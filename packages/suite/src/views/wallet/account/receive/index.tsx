@@ -86,9 +86,4 @@ const AccountReceive = (props: Props) => {
     );
 };
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(AccountReceive),
-);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(AccountReceive));

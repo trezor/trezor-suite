@@ -295,7 +295,7 @@ export const getOtherDevices = (
 export const getDeviceInstances = (
     device: TrezorDevice,
     devices: TrezorDevice[],
-    includeCurrent: boolean = false,
+    includeCurrent = false,
 ): AcquiredDevice[] => {
     if (!device || !device.features || !device.features.device_id) return [];
     return devices

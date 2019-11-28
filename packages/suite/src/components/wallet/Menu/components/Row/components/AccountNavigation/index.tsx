@@ -78,7 +78,4 @@ const AccountNavigation = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(AccountNavigation);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountNavigation);

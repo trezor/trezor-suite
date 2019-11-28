@@ -72,11 +72,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 export default injectIntl(
-    connect(
-        mapStateToProps,
-        dispatch => ({
-            fetchLocale: bindActionCreators(fetchLocale, dispatch),
-            toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
-        }),
-    )(SuiteLayout),
+    connect(mapStateToProps, dispatch => ({
+        fetchLocale: bindActionCreators(fetchLocale, dispatch),
+        toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
+    }))(SuiteLayout),
 );

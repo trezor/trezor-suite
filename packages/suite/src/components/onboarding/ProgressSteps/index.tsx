@@ -37,11 +37,11 @@ interface Props {
 }
 
 class ProgressSteps extends React.Component<Props> {
-    changeOverHowManySteps: number = 0;
+    changeOverHowManySteps = 0;
 
-    isGoingForward: boolean = true;
+    isGoingForward = true;
 
-    componentWillReceiveProps(nextProps: Props) {
+    UNSAFE_componentWillReceiveProps(nextProps: Props) {
         if (nextProps.activeStep) {
             const nextStepIndex = this.props.steps.findIndex(
                 (step: Step) => step.title === nextProps.activeStep.title,

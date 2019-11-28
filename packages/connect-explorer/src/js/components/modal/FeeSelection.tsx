@@ -8,6 +8,8 @@ import { formatAmount, formatTime } from '../../utils/formatUtils';
 
 interface Props {
     onChangeAccount: () => void;
+    modalActions: any;
+    modal: any;
     // todo:
 }
 
@@ -31,12 +33,10 @@ const FeeSelection: React.FC<Props> = props => {
             feeName = <span className="fee-name">{feeItem.name}</span>;
         }
 
-        let feeButton: string;
-
         if (feeItem.fee > 0) {
             return (
-                <div className="fee" key={index}>
-                    <Button onClick={event => onFeeSelect(index)}>
+                <div className="fee" key={feeItem}>
+                    <Button onClick={() => onFeeSelect(index)}>
                         {feeName}
                         <span className="fee-size">{formatAmount(feeItem.fee, coinInfo)}</span>
                         <span className="fee-minutes">{formatTime(feeItem.minutes)}</span>
@@ -45,7 +45,7 @@ const FeeSelection: React.FC<Props> = props => {
             );
         }
         return (
-            <div className="fee insufficient-funds" key={index}>
+            <div className="fee insufficient-funds" key={feeItem}>
                 <Button isDisabled>
                     {feeName}
                     <span className="fee-insufficient-funds">Insufficient funds</span>
@@ -68,9 +68,9 @@ const FeeSelection: React.FC<Props> = props => {
                         onClick={onCustomFeeOpen}
                     >
                         <span className="fee-name">custom</span>
-                        <span className="fee-insufficient-funds"></span>
-                        <span className="fee-size"></span>
-                        <span className="fee-minutes"></span>
+                        <span className="fee-insufficient-funds" />
+                        <span className="fee-size" />
+                        <span className="fee-minutes" />
                     </Button>
                     <div className={`fee-custom ${customFeeOpened ? '' : 'hidden'}`}>
                         <div className="fee-custom-wrapper">
@@ -81,7 +81,7 @@ const FeeSelection: React.FC<Props> = props => {
                                 onChange={event => onCustomFeeChange(event.target.value)}
                             />
                             <div className="fee-custom-label">sat/B</div>
-                            <Button className="fee-custom-button" isDisabled="disabled">
+                            <Button className="fee-custom-button" isDisabled={false}>
                                 SEND
                             </Button>
                         </div>

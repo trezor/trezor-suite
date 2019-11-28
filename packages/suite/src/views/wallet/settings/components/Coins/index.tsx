@@ -137,7 +137,7 @@ const CoinsGroup = (props: CoinsGroupProps) => {
             checked={props.enabledNetworks.includes(network.symbol)}
             changeCoinVisibility={props.changeCoinVisibility}
             key={network.symbol}
-        ></CoinRow>
+        />
     ));
     return (
         <Content>

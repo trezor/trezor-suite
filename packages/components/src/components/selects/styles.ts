@@ -1,6 +1,6 @@
 import colors from '../../config/colors';
 
-const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) => ({
+const styles = (isSearchable: boolean, withDropdownIndicator = true) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
         maxWidth: 'calc(100% - 10px)', // 8px padding + 2px maring-left

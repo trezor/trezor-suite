@@ -16,7 +16,7 @@
         "noImplicitAny": true,
         "strictNullChecks": true,
         "jsx": "react",
-        "outDir": "./lib",
+        "outDir": "./lib"
     },
     "include": ["./src"],
     "exclude": ["node_modules", "**/__tests__/*"]

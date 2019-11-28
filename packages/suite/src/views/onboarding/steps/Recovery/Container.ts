@@ -10,7 +10,4 @@ const mapStateToProps = (state: AppState) => ({
 
 export type Props = ReturnType<typeof mapStateToProps>;
 
-export default connect(
-    mapStateToProps,
-    () => {},
-)(Step);
+export default connect(mapStateToProps, () => {})(Step);

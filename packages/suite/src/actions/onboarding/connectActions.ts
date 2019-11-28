@@ -202,8 +202,8 @@ const submitWord = (params: any) => (dispatch: Dispatch) =>
 const callActionAndGoToNextStep = (
     action: any,
     stepId?: AnyStepId,
-    goOnSuccess: boolean = true,
-    goOnError: boolean = false,
+    goOnSuccess = true,
+    goOnError = false,
 ) => (dispatch: Dispatch) => {
     dispatch(action).then((response: any) => {
         if (response.success && goOnSuccess) {

@@ -90,9 +90,6 @@ const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
 });
 
-export default connect(
-    mapStateToProps,
-    dispatch => ({
-        goto: bindActionCreators(goto, dispatch),
-    }),
-)(Index);
+export default connect(mapStateToProps, dispatch => ({
+    goto: bindActionCreators(goto, dispatch),
+}))(Index);

@@ -1,11 +1,12 @@
 import { Translation } from '@suite-components/Intl';
 import { AppState } from '@suite-types';
-import { Button, colors, Icon, Input } from '@trezor/components';
+import { colors, Icon, Input } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
 import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
-import commonMessages from '@wallet-views/messages';
+import commonMessages from '@suite/views/wallet/index.messages';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
@@ -92,8 +93,9 @@ const Address = (props: Props) => (
         sideAddons={
             <QrButton
                 key="qrButton"
-                variant="white"
+                variant="secondary"
                 onClick={() => props.openQrModal(props.outputId)}
+                inlineWidth
             >
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />
             </QrButton>

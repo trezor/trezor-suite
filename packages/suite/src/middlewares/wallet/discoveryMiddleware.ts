@@ -118,7 +118,8 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         if (
             device &&
             device.connected &&
-            (discovery && (discovery.status === 0 || discovery.status >= DISCOVERY_STATUS.STOPPED))
+            discovery &&
+            (discovery.status === 0 || discovery.status >= DISCOVERY_STATUS.STOPPED)
         ) {
             api.dispatch(discoveryActions.start());
         }

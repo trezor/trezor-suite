@@ -20,18 +20,19 @@ interface StepState {
     keys: { [index: number]: boolean };
 }
 
+const D_KEY = 68;
+const CTRL_KEYS_WIN = [17];
+// const CTRL_KEYS_MAC = [91, 93];
+
 class BookmarkStep extends React.Component<Props, StepState> {
-    static readonly D_KEY = 68;
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            keys: {},
+        };
+    }
 
-    static readonly CTRL_KEYS_WIN = [17];
-
-    static readonly CTRL_KEYS_MAC = [91, 93];
-
-    state: StepState = {
-        keys: {},
-    };
-
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
         window.addEventListener('keyup', this.keyboardHandler, false);
@@ -64,14 +65,14 @@ class BookmarkStep extends React.Component<Props, StepState> {
     nextDisabled() {
         const { keys } = this.state;
         // const ctrlKeys = Platform.isMac() ? BookmarkStep.CTRL_KEYS_MAC : BookmarkStep.CTRL_KEYS_WIN;
-        const ctrlKeys = BookmarkStep.CTRL_KEYS_WIN;
-        return !keys[BookmarkStep.D_KEY] || !ctrlKeys.find(key => keys[key] === true);
+        const ctrlKeys = CTRL_KEYS_WIN;
+        return !keys[D_KEY] || !ctrlKeys.find(key => keys[key] === true);
     }
 
     render() {
         const { keys } = this.state;
         // const ctrlKeys = Platform.isMac() ? BookmarkStep.CTRL_KEYS_MAC : BookmarkStep.CTRL_KEYS_WIN;
-        const ctrlKeys = BookmarkStep.CTRL_KEYS_WIN;
+        const ctrlKeys = CTRL_KEYS_WIN;
 
         return (
             <Wrapper.Step>
@@ -92,7 +93,7 @@ class BookmarkStep extends React.Component<Props, StepState> {
                         />
                     </Text>
                     {/* {!Platform.isMobile() && ( */}
-                    <React.Fragment>
+                    <>
                         <Text>
                             <FormattedMessage {...l10nMessages.TR_USE_THE_KEYBOARD_SHORTCUT} />
                         </Text>
@@ -102,12 +103,12 @@ class BookmarkStep extends React.Component<Props, StepState> {
                                 text="Ctrl"
                             />
                             <P> + </P>
-                            <Key isPressed={keys[BookmarkStep.D_KEY] === true} text="D" />
+                            <Key isPressed={keys[D_KEY] === true} text="D" />
                         </Keys>
-                    </React.Fragment>
+                    </>
                     <Wrapper.Controls>
                         {/* {!Platform.isMobile() && ( */}
-                        <React.Fragment>
+                        <>
                             <OnboardingButton.Alt onClick={() => this.setBookmarkFlagAndContinue()}>
                                 <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
                             </OnboardingButton.Alt>
@@ -117,12 +118,12 @@ class BookmarkStep extends React.Component<Props, StepState> {
                             >
                                 <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
-                        </React.Fragment>
+                        </>
                         {/* )} */}
                         {/*  todo: for mobile add to homescreen */}
                         {/* {Platform.isMobile() && (
                             <React.Fragment>
-                                <Button variant="white" onClick={() => this.setBookmarkFlagAndContinue()}>
+                                <Button variant="secondary" onClick={() => this.setBookmarkFlagAndContinue()} inlineWidth>
                                     <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
                                 </Button>
                                 <Button onClick={() => this.setBookmarkFlagAndContinue()}>

@@ -18,6 +18,7 @@ stages:
     - deploy to dev servers
     - integration testing
     - build desktop apps
+    - misc
 
 include:
     - ci/environment.yml

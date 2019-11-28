@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H1, P, Button } from '@trezor/components';
+import { H1, P } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 
 import * as Sentry from '@sentry/browser';
 
@@ -44,7 +45,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
                     <H1>Error occurred</H1>
                     <P>It appears something is broken. You might let us know by sending report</P>
                     {/* Sentry.showReportDialog({ eventId: this.state.eventId }) */}
-                    <StyledButton onClick={() => Sentry.showReportDialog()}>
+                    <StyledButton onClick={() => Sentry.showReportDialog()} inlineWidth>
                         Send report
                     </StyledButton>
                 </Wrapper>

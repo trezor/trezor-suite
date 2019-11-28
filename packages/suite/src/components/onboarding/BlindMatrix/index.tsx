@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ButtonPin, Button, Icon } from '@trezor/components';
+import { ButtonPin, Icon } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     width: 260px;
@@ -30,7 +31,7 @@ interface BlindMatrixProps {
 }
 
 class BlindMatrix extends React.Component<BlindMatrixProps> {
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
     }
@@ -129,7 +130,7 @@ class BlindMatrix extends React.Component<BlindMatrixProps> {
         return (
             <Wrapper>
                 {this.props.count === 9 && (
-                    <React.Fragment>
+                    <>
                         <Row>
                             <ButtonPin type="button" data-value="7" onClick={() => onSubmit('7')} />
                             <ButtonPin type="button" data-value="8" onClick={() => onSubmit('8')} />
@@ -145,11 +146,11 @@ class BlindMatrix extends React.Component<BlindMatrixProps> {
                             <ButtonPin type="button" data-value="2" onClick={() => onSubmit('2')} />
                             <ButtonPin type="button" data-value="3" onClick={() => onSubmit('3')} />
                         </Row>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {this.props.count === 6 && (
-                    <React.Fragment>
+                    <>
                         <Row>
                             <ButtonPin type="button" data-value="8" onClick={() => onSubmit('7')} />
                             <ButtonPin type="button" data-value="9" onClick={() => onSubmit('9')} />
@@ -162,9 +163,9 @@ class BlindMatrix extends React.Component<BlindMatrixProps> {
                             <ButtonPin type="button" data-value="2" onClick={() => onSubmit('1')} />
                             <ButtonPin type="button" data-value="3" onClick={() => onSubmit('3')} />
                         </Row>
-                    </React.Fragment>
+                    </>
                 )}
-                <Backspace variant="white" onClick={() => this.backspace()}>
+                <Backspace variant="tertiary" onClick={() => this.backspace()} inlineWidth>
                     <Icon style={{ marginRight: '5px' }} icon="BACK" />
                     Backspace
                 </Backspace>

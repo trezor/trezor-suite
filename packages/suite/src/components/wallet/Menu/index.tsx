@@ -13,7 +13,7 @@ import Row from './components/Row';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import l10nMessages from './index.messages';
-import walletAccountMessages from '@wallet-views/account/messages';
+import walletAccountMessages from '@wallet-views/account/index.messages';
 
 const Wrapper = styled.div``;
 
@@ -134,7 +134,4 @@ const Menu = ({
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Menu);
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

@@ -20,7 +20,12 @@ module.exports = {
             {
                 test: /\.ts?$/,
                 exclude: /node_modules/,
-                use: ['ts-loader'],
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: { configFile: 'tsconfig.workers.json' },
+                    },
+                ],
             },
         ],
     },
@@ -32,7 +37,8 @@ module.exports = {
     performance: {
         hints: false,
     },
-    plugins: [],
+    // ignore those modules, otherwise webpack throws warning about missing (ws dependency)
+    externals: ['utf-8-validate', 'bufferutil'],
 
     // optimization: {
     //     minimize: false,

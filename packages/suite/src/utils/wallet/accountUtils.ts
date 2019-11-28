@@ -4,7 +4,7 @@ import {
 } from '@wallet-reducers/transactionReducer';
 import { AccountTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import l10nMessages from '@wallet-views/account/messages';
+import l10nMessages from '@wallet-views/account/index.messages';
 import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network } from '@wallet-types';
 import { AppState } from '@suite-types';

@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, WrappedComponentProps } from 'react-intl';
-import { Switch, Select, Button, Tooltip, Icon, colors, variables } from '@trezor/components';
+import { Switch, Select, Tooltip, Icon, colors, variables } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import l10nCommonMessages from '@suite-views/index.messages';
 import WalletLayout from '@wallet-components/WalletLayout';
 import { FIAT } from '@suite-config';
@@ -78,9 +79,12 @@ const buildCurrencyOption = (currency: string) => {
 const WalletSettings = (props: Props & WrappedComponentProps) => (
     <WalletLayout title="Settings">
         <CloseWrapper>
-            <Button onClick={() => props.goto('wallet-index')} isTransparent>
-                <Icon icon="CLOSE" size={14} />
-            </Button>
+            <Button
+                onClick={() => props.goto('wallet-index')}
+                variant="tertiary"
+                icon="CROSS"
+                inlineWidth
+            />
         </CloseWrapper>
         <Section>
             <LabelTop>

@@ -80,14 +80,14 @@ class ConnectDevice extends PureComponent<Props> {
                         </Title>
                         <Wrapper>
                             {this.props.showWebUsb && !this.props.showDisconnect && (
-                                <React.Fragment>
+                                <>
                                     <And>
                                         <FormattedMessage {...l10nMessages.TR_AND} />
                                     </And>
                                     <ButtonWrapper>
                                         <WebusbButton ready />
                                     </ButtonWrapper>
-                                </React.Fragment>
+                                </>
                             )}
                         </Wrapper>
                         <BridgeWrapper>
