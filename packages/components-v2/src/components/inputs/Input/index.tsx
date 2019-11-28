@@ -94,14 +94,16 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputIconWrapper = styled.div``;
-
-const SpinnerWrapper = styled.div`
+const InputIconWrapper = styled.div`
     position: absolute;
-    left: auto;
-    top: 12px;
-    right: 15px;
+    top: 1px;
+    bottom: 1px;
+    right: 10px;
+    display: flex;
+    align-items: center;
 `;
+
+const SpinnerWrapper = styled.div``;
 
 const Label = styled.label`
     padding: 10px;
@@ -116,16 +118,14 @@ const BottomText = styled.div<InputProps>`
 
 const Button = styled.button`
     color: ${colors.BLACK25};
-    position: absolute;
-    top: 4px;
-    right: 10px;
     border: none;
     outline: none;
     background: none;
     display: flex;
     align-items: center;
-    padding: 12px 0;
     cursor: pointer;
+    padding: 0 0 0 5px;
+    background: ${colors.WHITE};
 
     &:hover {
         color: ${colors.BLACK0};
@@ -140,6 +140,12 @@ const ButtonText = styled.div`
 
 const StyledIcon = styled(Icon)`
     margin-right: 5px;
+`;
+
+const StateIconWrapper = styled.div`
+    display: flex;
+    padding-right: 5px;
+    background: ${colors.WHITE};
 `;
 
 interface WrapperProps {
@@ -180,12 +186,13 @@ const Input = ({
     ...rest
 }: InputProps) => {
     const [buttonHover, setButtonHover] = React.useState(false);
-    const handleButtonFocus = (event: React.FocusEvent<HTMLButtonElement>) => {
+    const handleButtonEnter = () => {
         setButtonHover(true);
     };
-    const handleButtonBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
+    const handleButtonLeave = () => {
         setButtonHover(false);
     };
+
     return (
         <Wrapper data-test={dataTest} display={display} {...wrapperProps}>
             {topLabel && <Label>{topLabel}</Label>}
@@ -199,18 +206,27 @@ const Input = ({
                     {inputButton && (
                         <Button
                             onClick={inputButton.onClick}
-                            onFocus={handleButtonFocus}
-                            onBlur={handleButtonBlur}
+                            onMouseEnter={handleButtonEnter}
+                            onMouseLeave={handleButtonLeave}
                         >
                             {inputButton.icon && (
                                 <StyledIcon
                                     icon={inputButton.icon}
-                                    size={12}
-                                    color={buttonHover ? colors.BLACK25 : colors.BLACK0}
+                                    size={10}
+                                    color={buttonHover ? colors.BLACK0 : colors.BLACK50}
                                 />
                             )}
                             {inputButton.text && <ButtonText>{inputButton.text}</ButtonText>}
                         </Button>
+                    )}
+                    {state && (
+                        <StateIconWrapper>
+                            <Icon
+                                icon={state === 'success' ? 'CHECK' : 'CROSS'}
+                                color={state === 'success' ? colors.GREENER : colors.RED}
+                                size={10}
+                            />
+                        </StateIconWrapper>
                     )}
                 </InputIconWrapper>
                 <StyledInput

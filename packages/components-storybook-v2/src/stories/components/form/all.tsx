@@ -177,6 +177,21 @@ storiesOf('Form', module).add(
                         />
                     </InputWrapper>
                 </Col>
+                <Col>
+                    <SubHeading>Monospace with button</SubHeading>
+                    <InputWrapper>
+                        <Input
+                            value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
+                            display="block"
+                            dataTest="input-block-monospace-button"
+                            inputButton={{
+                                text: 'Scan',
+                                icon: 'QR',
+                                onClick: () => {},
+                            }}
+                        />
+                    </InputWrapper>
+                </Col>
             </Wrapper>
         );
     },

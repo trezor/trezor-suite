@@ -14,16 +14,17 @@ describe('Form', () => {
         'input-default-error',
         'input-default-success',
         'input-default-disabled',
-        'input-block',
-        'input-block-small',
-        'input-block-error',
-        'input-block-success',
-        'input-block-disabled',
         'input-label',
         'input-small-label',
         'input-error-label',
         'input-success-label',
         'input-disabled-label',
+        'input-block',
+        'input-block-small',
+        'input-block-error',
+        'input-block-success',
+        'input-block-disabled',
+        'input-block-monospace-button',
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Form&selectedStory=All&full=0');
