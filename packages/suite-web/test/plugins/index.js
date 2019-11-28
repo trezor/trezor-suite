@@ -29,9 +29,24 @@ module.exports = on => {
             const response = await controller.send({ type: 'bridge-start' });
             return null;
         },
+        stopBridge: async () => {
+            await controller.connect();
+            const response = await controller.send({ type: 'bridge-stop' });
+            return null;
+        },
+        setupEmu: async () => {
+            await controller.connect();
+            const response = await controller.send({ type: 'emulator-setup' });
+            return null;
+        },
         startEmu: async () => {
             await controller.connect();
             const response = await controller.send({ type: 'emulator-start' });
+            return null;
+        },
+        stopEmu: async () => {
+            await controller.connect();
+            const response = await controller.send({ type: 'emulator-stop' });
             return null;
         },
         sendDecision: async method => {
