@@ -58,15 +58,13 @@ const Translation = (props: ChildrenType | MsgType) => {
     }
     // passed children prop (component or ExtendedMessageDescriptor obj)
     if (isChildrenType(props) && isChildrenMessageDescriptor(props.children)) {
-        if (props.children.values) {
-            // Message with variables passed via 'values' prop.
-            // Value entry can also contain a MessageDescriptor.
-            // Copy values and extract necessary messages to a new 'values' object
-            Object.keys(props.children.values).forEach(key => {
-                // @ts-ignore
-                values[key] = <Translation>{props.children.values[key]}</Translation>;
-            });
-        }
+        // Message with variables passed via 'values' prop.
+        // Value entry can also contain a MessageDescriptor.
+        // Copy values and extract necessary messages to a new 'values' object
+        Object.keys(props.children.values || []).forEach(key => {
+            // @ts-ignore
+            values[key] = <Translation>{props.children.values[key]}</Translation>;
+        });
 
         // pass undefined to a 'values' prop in case of an empty values object
         return (
