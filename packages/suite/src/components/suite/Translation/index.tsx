@@ -51,7 +51,7 @@ const Translation = (props: ChildrenType | MsgType) => {
         });
         return (
             <FormattedMessage
-                {...(props as MessageDescriptor)} // override the Partial<MessageDescriptor>, these props are mandatory
+                {...props}
                 values={Object.keys(values).length === 0 ? undefined : values}
             />
         );
