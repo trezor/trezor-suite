@@ -24,12 +24,19 @@ def start():
         # - run T1 emulator
         # - run T1 & T2 emulator at once
         # - run two T2/T1 emulators
+        print (os.getcwd());
         proc = Popen(
-            # ["./emulator", "-O0", "-X", "heapsize=20M", "-m", "main"],
-            # "./packages/suite-web/test/trezor-emu-core-v2.0.10 -O0 -X heapsize=20M -m main",
-            "./test/trezor-emu-core-v2.0.10 -O0 -X heapsize=20M -m main",
-            # "TREZOR_OLED_SCALE=2 ./packages/suite-web/test/trezor-emu-legacy-v1.6.2 -O0",
+            # todo: run from binary directly, need to solve glibc error;
+    
+            # "./emu.sh",
+            # cwd="../../../trezor-firmware/core"
             
+            
+            # "TREZOR_OLED_SCALE=2 ./packages/suite-web/test/trezor-emu-legacy-v1.6.2 -O0",
+
+    
+            # "./packages/suite-web/test/trezor-emu-core-v2.0.10 -O0 -X heapsize=20M -m main",
+            "./test/trezor-emu-core-v2.1.4 -O0 -X heapsize=20M -m main",
             shell=True,
             preexec_fn=os.setsid
         )

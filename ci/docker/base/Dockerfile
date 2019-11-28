@@ -14,6 +14,19 @@ RUN apt-get update && apt-get install -y \
     scons \
     libsdl2-dev \
     libsdl2-image-dev \
+    # libsdl2-2.0-0
+    # otazne
+    # check \
+    # clang-format \
+    # git \
+    # graphviz \
+    # libjpeg-dev \
+    # libsodium-dev \
+    # libssl-dev \
+    # libudev-dev \
+    # libusb-1.0-0-dev \
+    # valgrind \
+    # zlib1g-de \
     # why not
     zip
 
@@ -21,9 +34,11 @@ RUN apt-get install -y \
     python3-dev \
     python3-pip
 
-USER root
+RUN pip3 install --upgrade setuptools
+RUN pip3 install trezor
+RUN pip3 install termcolor
 
-RUN node --version
+USER root
 
 # install Chromebrowser
 RUN \
@@ -37,10 +52,30 @@ RUN \
 # https://github.com/SeleniumHQ/docker-selenium/issues/87
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
 
+# a few environment variables to make NPM installs easier
+# good colors for most applications
+ENV TERM xterm
+# avoid million NPM install messages
+ENV npm_config_loglevel warn
+# allow installing when the main user is root
+ENV npm_config_unsafe_perm true
 
-RUN git clone https://github.com/trezor/trezor-firmware.git
-RUN cd trezor-firmware/core
-RUN pipenv run make build_unix
+# pipenv click https://click.palletsprojects.com/en/7.x/python3/
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+# Out of the blue, we started to run into CI failures. All of them had one thing in common. 
+# Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
+# that was not available at the moment. This happens probably because of the async manner in which
+# base packages are downloaded and installed in concurrence with the fact that the troublesome 
+# package relies on existence of another package already installed.
+# as a quick fix, create a project and install needed packages to provide yarn cache on image level.
+RUN yarn global add opencollective node-pre-gyp
+
+# RUN ls -la
+# RUN cd ..
+
+RUN python3 -m pip install pipenv
 
 # versions of local tools
 RUN node -v
@@ -50,19 +85,11 @@ RUN google-chrome --version
 RUN google-chrome-beta --version
 RUN zip --version
 RUN git --version
+RUN python3 --version
+RUN pipenv --version
+RUN python3 -m pip --version
+RUN trezorctl version
 
-# a few environment variables to make NPM installs easier
-# good colors for most applications
-ENV TERM xterm
-# avoid million NPM install messages
-ENV npm_config_loglevel warn
-# allow installing when the main user is root
-ENV npm_config_unsafe_perm true
-
-# Out of the blue, we started to run into CI failures. All of them had one thing in common. 
-# Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
-# that was not available at the moment. This happens probably because of the async manner in which
-# base packages are downloaded and installed in concurrence with the fact that the troublesome 
-# package relies on existence of another package already installed.
-# as a quick fix, create a project and install needed packages to provide yarn cache on image level.
-RUN yarn global add opencollective node-pre-gyp
+# RUN git clone https://github.com/trezor/trezor-firmware.git
+# RUN cd trezor-firmware/core
+# RUN pipenv run make build_unix

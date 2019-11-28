@@ -43,12 +43,22 @@ def start():
         # - check if trezord process is already running and kill it if so
         # - check if Popen process starts without error (if 21325 port is listening)
         # - custom path to binary (?)
-        proc = Popen(
-            "./test/trezord-go -ed 21324:21325",
-            # "./packages/suite-web/test/trezord-go -ed 21324:21325",
-            shell=True,
-            preexec_fn=os.setsid
-        )
+        if 'CI' in os.environ:
+            print('running in ci')
+            proc = Popen(
+                "./test/trezord-go -ed 21324:21325 -u=false",
+                # "./packages/suite-web/test/trezord-go -ed 21324:21325",
+                shell=True,
+                preexec_fn=os.setsid
+            )
+        else:
+            print('not running in ci')
+            proc = Popen(
+                "./test/trezord-go -ed 21324:21325",
+                # "./packages/suite-web/test/trezord-go -ed 21324:21325",
+                shell=True,
+                preexec_fn=os.setsid
+            )
         loader()
         # TODO: - add else condition and check if trezord is running and if i own this process (trezord pid is the same with proc pid)
 

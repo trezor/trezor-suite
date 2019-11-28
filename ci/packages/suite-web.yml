@@ -64,11 +64,16 @@ suite-web delete review:
 suite-web test integration google-chrome:
     # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
+    variables: 
+        SDL_VIDEODRIVER: "dummy"
+        XDG_RUNTIME_DIR: "/var/tmp"
     script:
-        - apt-get update
+        # - apt-get update
         # needed ?
+        #  We expected the binary to be installed here: /root/.cache/Cypress/3.4.1/Cypress/Cypress
         - npx cypress install
         - python3 --version
+        # - pip3 install termcolor
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration:ci:run
     artifacts:
