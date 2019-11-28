@@ -51,6 +51,14 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input
+                            state="warning"
+                            value="Short input with warning"
+                            display="short"
+                            dataTest="input-short-warning"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
                             state="success"
                             value="Short input with success"
                             display="short"
@@ -79,6 +87,13 @@ storiesOf('Form', module).add(
                             state="error"
                             value="Input with error"
                             dataTest="input-default-error"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="warning"
+                            value="Input with warning"
+                            dataTest="input-default-warning"
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -116,6 +131,15 @@ storiesOf('Form', module).add(
                             state="error"
                             value="Input label with error"
                             dataTest="input-error-label"
+                            topLabel="Label"
+                            bottomText="bottom text"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
+                            state="warning"
+                            value="Input label with warning"
+                            dataTest="input-warning-label"
                             topLabel="Label"
                             bottomText="bottom text"
                         />
@@ -162,6 +186,14 @@ storiesOf('Form', module).add(
                     </InputWrapper>
                     <InputWrapper>
                         <Input
+                            state="warning"
+                            value="Block input with warning"
+                            display="block"
+                            dataTest="input-block-warning"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <Input
                             state="success"
                             value="Block input with success"
                             display="block"
@@ -184,7 +216,7 @@ storiesOf('Form', module).add(
                             value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                             display="block"
                             dataTest="input-block-monospace-button"
-                            inputButton={{
+                            button={{
                                 text: 'Scan',
                                 icon: 'QR',
                                 onClick: () => {},

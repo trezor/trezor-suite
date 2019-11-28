@@ -8,7 +8,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
 
-export type InputState = 'success' | 'error';
+export type InputState = 'success' | 'warning' | 'error';
 
 export type InputVariant = 'small' | 'large';
 

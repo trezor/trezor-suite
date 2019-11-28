@@ -2,6 +2,7 @@ export default {
     GREEN: '#30c100',
     GREENER: '#259f2a',
     YELLOW: '#fdcb33',
+    YELLOWER: '#e9b000',
     BLUE: '#1faaff',
     RED: '#cd4949',
     BLACK0: '#000000',

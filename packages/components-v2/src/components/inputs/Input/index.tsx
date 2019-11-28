@@ -22,6 +22,30 @@ const getDisplayWidth = (display: InputProps['display']) => {
     }
 };
 
+const getStateColor = (state: InputState | undefined) => {
+    switch (state) {
+        case 'success':
+            return colors.GREENER;
+        case 'warning':
+            return colors.YELLOWER;
+        case 'error':
+            return colors.RED;
+        default:
+            return colors.BLACK50;
+    }
+};
+
+const getStateIcon = (state: InputState) => {
+    switch (state) {
+        case 'warning':
+            return 'INFO';
+        case 'error':
+            return 'CROSS';
+        default:
+            return 'CHECK';
+    }
+};
+
 const Wrapper = styled.div<WrapperProps>`
     display: inline-flex;
     flex-direction: column;
@@ -35,7 +59,7 @@ const Wrapper = styled.div<WrapperProps>`
 
 const StyledInput = styled.input<InputProps>`
     font-family: ${props => (props.monospace ? 'RobotoMono' : 'TTHoves')};
-    padding: ${props => (props.monospace ? '0 10px 2px' : '0 10px')};
+    padding: 0 10px;
     font-size: ${props => (props.value ? '16px' : '14px')};
     border-radius: 3px;
     box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
@@ -46,25 +70,25 @@ const StyledInput = styled.input<InputProps>`
     width: ${props => getDisplayWidth(props.display)};
     height: ${props => (props.variant === 'small' ? '38px' : '48px')};
     text-align: ${props => props.align || 'left'};
+    border-color: ${props => getStateColor(props.state)};
+    color: ${props => getStateColor(props.state)};
 
-    &:read-only  {
+    &:read-only {
         background: ${colors.BLACK96};
         box-shadow: none;
         color: ${colors.BLACK50};
     }
 
     ${props =>
-        props.state === 'error' &&
+        props.monospace &&
         css`
-            border-color: ${colors.RED};
-            color: ${colors.RED};
+            padding-bottom: 2px;
         `}
 
     ${props =>
-        props.state === 'success' &&
+        props.state &&
         css`
-            border-color: ${colors.GREENER};
-            color: ${colors.GREENER};
+            padding-right: 30px;
         `}
 
     ${props =>
@@ -112,8 +136,7 @@ const Label = styled.label`
 const BottomText = styled.div<InputProps>`
     padding: 10px;
     font-size: 12px;
-    color: ${props =>
-        props.state ? (props.state === 'success' ? colors.GREENER : colors.RED) : colors.BLACK50};
+    color: ${props => getStateColor(props.state)};
 `;
 
 const Button = styled.button`
@@ -156,7 +179,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     state?: InputState;
     variant?: InputVariant;
     display?: InputDisplay;
-    inputButton?: InputButton;
+    button?: InputButton;
     topLabel?: string;
     bottomText?: string;
     monospace?: boolean;
@@ -172,7 +195,7 @@ const Input = ({
     state,
     variant = 'large',
     display = 'default',
-    inputButton,
+    button,
     topLabel,
     bottomText,
     disabled,
@@ -202,27 +225,27 @@ const Input = ({
                             <FluidSpinner size={16} color={colors.GREEN} />
                         </SpinnerWrapper>
                     )}
-                    {inputButton && (
+                    {button && (
                         <Button
-                            onClick={inputButton.onClick}
+                            onClick={button.onClick}
                             onMouseEnter={handleButtonEnter}
                             onMouseLeave={handleButtonLeave}
                         >
-                            {inputButton.icon && (
+                            {button.icon && (
                                 <StyledIcon
-                                    icon={inputButton.icon}
+                                    icon={button.icon}
                                     size={10}
                                     color={buttonHover ? colors.BLACK0 : colors.BLACK50}
                                 />
                             )}
-                            {inputButton.text && <ButtonText>{inputButton.text}</ButtonText>}
+                            {button.text && <ButtonText>{button.text}</ButtonText>}
                         </Button>
                     )}
                     {state && (
                         <StateIconWrapper>
                             <Icon
-                                icon={state === 'success' ? 'CHECK' : 'CROSS'}
-                                color={state === 'success' ? colors.GREENER : colors.RED}
+                                icon={getStateIcon(state)}
+                                color={getStateColor(state)}
                                 size={10}
                             />
                         </StateIconWrapper>
