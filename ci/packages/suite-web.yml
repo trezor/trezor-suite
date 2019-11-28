@@ -17,7 +17,7 @@ suite-web build:
     script:
         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
     artifacts:
-        expire_in: 15 minutes
+        expire_in: 60 minutes
         paths:
             - $PACKAGE_PATH_SUITE_WEB/build
     dependencies:
