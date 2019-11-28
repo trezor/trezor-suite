@@ -7,7 +7,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { SettingsLayout } from '@suite-components';
 import { Translation } from '@suite-components/Intl';
-import messages from './index.messages';
+import messages from '@suite/support/messages';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 
 import { Props } from './Container';

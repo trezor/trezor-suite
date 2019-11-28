@@ -2,21 +2,17 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-// import { FormattedMessage } from 'react-intl';
 import { FirmwareRelease } from 'trezor-connect';
 import { Checkbox, Tooltip, P, H1, H4, H5, variables } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import * as firmwareActions from '@suite-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-
 import { ConnectPrompt } from '@suite-components/Prompts';
 
 // todo move to suite components;
 import { Loaders } from '@onboarding-components';
-
 import { AppState, Dispatch } from '@suite-types';
-// import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     display: flex;

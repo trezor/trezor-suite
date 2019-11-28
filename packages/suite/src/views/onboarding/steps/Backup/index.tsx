@@ -11,7 +11,7 @@ import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
 import SeedCard from './components/SeedCard';
 import Instructions from './components/Instructions';
 import { Props } from './Container';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 const Panel = styled(P)`
     background-color: ${colors.grayLight};
@@ -88,27 +88,25 @@ const BackupStep = (props: Props) => {
                     <>
                         <P>
                             <FormattedMessage
-                                {...l10nMessages.TR_BACKUP_SUBHEADING_1}
+                                {...messages.TR_BACKUP_SUBHEADING_1}
                                 values={{
                                     TR_SEED_MANUAL_LINK: (
                                         <Link href={SEED_MANUAL_URL} variant="nostyle">
-                                            <FormattedMessage
-                                                {...l10nMessages.TR_SEED_MANUAL_LINK}
-                                            />
+                                            <FormattedMessage {...messages.TR_SEED_MANUAL_LINK} />
                                         </Link>
                                     ),
                                 }}
                             />
                         </P>
                         <P>
-                            <FormattedMessage {...l10nMessages.TR_BACKUP_SUBHEADING_2} />
+                            <FormattedMessage {...messages.TR_BACKUP_SUBHEADING_2} />
                         </P>
 
                         <Instructions />
 
                         <Panel>
                             <FormattedMessage
-                                {...l10nMessages.TR_SATOSHILABS_CANNOT_BE_HELD_RESPONSIBLE}
+                                {...messages.TR_SATOSHILABS_CANNOT_BE_HELD_RESPONSIBLE}
                             />
                         </Panel>
                         <Wrapper.Checkbox>
@@ -117,9 +115,7 @@ const BackupStep = (props: Props) => {
                                 onClick={() => setUserUnderstands(!userUnderstands)}
                             >
                                 <P>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_I_HAVE_READ_INSTRUCTIONS}
-                                    />
+                                    <FormattedMessage {...messages.TR_I_HAVE_READ_INSTRUCTIONS} />
                                 </P>
                             </Checkbox>
                         </Wrapper.Checkbox>
@@ -141,7 +137,7 @@ const BackupStep = (props: Props) => {
                                     onClick={() => props.backupDevice()}
                                     isDisabled={!device || !userUnderstands}
                                 >
-                                    <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
+                                    <FormattedMessage {...messages.TR_START_BACKUP} />
                                 </OnboardingButton.Cta>
                             )}
                         </Wrapper.Controls>
@@ -181,7 +177,7 @@ const BackupStep = (props: Props) => {
                                     props.backupDevice();
                                 }}
                             >
-                                <FormattedMessage {...l10nMessages.TR_START_BACKUP} />
+                                <FormattedMessage {...messages.TR_START_BACKUP} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -215,7 +211,7 @@ const BackupStep = (props: Props) => {
                     <>
                         <P>
                             <FormattedMessage
-                                {...l10nMessages.TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION}
+                                {...messages.TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION}
                             />
                         </P>
 
@@ -252,12 +248,12 @@ const BackupStep = (props: Props) => {
                 {getStatus() === 'success' && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_TEXT} />
+                            <FormattedMessage {...messages.TR_BACKUP_FINISHED_TEXT} />
                         </Text>
 
                         <Wrapper.Controls>
                             <OnboardingButton.Cta onClick={() => props.goToNextStep()}>
-                                <FormattedMessage {...l10nMessages.TR_BACKUP_FINISHED_BUTTON} />
+                                <FormattedMessage {...messages.TR_BACKUP_FINISHED_BUTTON} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
