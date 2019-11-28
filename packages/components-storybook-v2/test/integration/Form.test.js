@@ -32,6 +32,13 @@ describe('Form', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Form&selectedStory=All&full=0');
+            if (testName.match(/error|warning|success/)) {
+                cy.getTestElement(testName)
+                    .find('svg')
+                    .each(el => {
+                        cy.get(el).should('be.visible');
+                    });
+            }
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();
