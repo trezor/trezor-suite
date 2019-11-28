@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { P, H1, Link, colors, variables, animations, Modal } from '@trezor/components';
+import { P, H1, Link, variables, Modal } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
 import { SuiteLayout } from '@suite-components';
 import l10nMessages from './index.messages';
@@ -33,14 +33,6 @@ const Wrapper = styled.div`
         align-content: center;
         flex-direction: column;
     }
-`;
-
-const ConnectTrezorWrapper = styled.div`
-    position: relative;
-    animation: ${animations.PULSATE} 1.3s ease-out infinite;
-    color: ${colors.GREEN_PRIMARY};
-    font-size: ${variables.FONT_SIZE.BIG};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const And = styled(P)`
