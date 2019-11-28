@@ -3,7 +3,7 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { P, Link } from '@trezor/components';
-
+import { Translation } from '@suite-components/Translation';
 import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
 import {
     WORD_REQUEST_PLAIN,
@@ -278,4 +278,9 @@ const RecoveryStepModelOne = (props: Props) => {
     );
 };
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelOne));
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps,
+    )(RecoveryStepModelOne),
+);
