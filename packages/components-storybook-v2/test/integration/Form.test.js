@@ -29,6 +29,7 @@ describe('Form', () => {
         'input-block-success',
         'input-block-disabled',
         'input-block-monospace-button',
+        'input-block-monospace-hidden',
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Form&selectedStory=All&full=0');

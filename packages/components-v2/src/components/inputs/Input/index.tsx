@@ -125,6 +125,7 @@ const InputIconWrapper = styled.div`
     right: 10px;
     display: flex;
     align-items: center;
+    z-index: 2;
 `;
 
 const SpinnerWrapper = styled.div``;
@@ -170,40 +171,61 @@ const StateIconWrapper = styled.div`
     background: ${colors.WHITE};
 `;
 
+const Overlay = styled.div<InputProps>`
+    bottom: 1px;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    position: absolute;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
+    z-index: 1;
+`;
+
 interface WrapperProps {
     dataTest?: string;
     display?: InputDisplay;
 }
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    state?: InputState;
+    innerRef?: React.RefObject<HTMLInputElement>;
     variant?: InputVariant;
     display?: InputDisplay;
     button?: InputButton;
     topLabel?: string;
     bottomText?: string;
     monospace?: boolean;
-    dataTest?: string;
-    wrapperProps?: Record<string, any>;
+    isDisabled?: boolean;
+    autoComplete?: string;
+    autoCorrect?: string;
+    autoCapitalize?: string;
+    spellCheck?: boolean;
     isLoading?: boolean;
-    sideAddons?: React.ReactNode;
+    isPartiallyHidden?: boolean;
+    wrapperProps?: Record<string, any>;
+    type?: string;
+    state?: InputState;
     align?: TextAlign;
 }
 
 const Input = ({
     type = 'text',
+    innerRef,
     state,
     variant = 'large',
     display = 'default',
     button,
     topLabel,
     bottomText,
-    disabled,
+    isDisabled,
+    autoComplete = 'off',
+    autoCorrect = 'off',
+    autoCapitalize = 'off',
     monospace,
-    dataTest,
     wrapperProps,
     isLoading,
-    sideAddons,
+    isPartiallyHidden,
     align,
     ...rest
 }: InputProps) => {
@@ -216,7 +238,7 @@ const Input = ({
     };
 
     return (
-        <Wrapper data-test={dataTest} display={display} {...wrapperProps}>
+        <Wrapper display={display} {...wrapperProps}>
             {topLabel && <Label>{topLabel}</Label>}
             <InputWrapper>
                 <InputIconWrapper>
@@ -251,21 +273,23 @@ const Input = ({
                         </StateIconWrapper>
                     )}
                 </InputIconWrapper>
+                {isPartiallyHidden && <Overlay />}
                 <StyledInput
                     type={type}
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
+                    autoComplete={autoComplete}
+                    autoCorrect={autoCorrect}
+                    autoCapitalize={autoCapitalize}
                     spellCheck={false}
                     state={state}
                     variant={variant}
-                    disabled={disabled}
+                    disabled={isDisabled}
                     display={display}
                     monospace={monospace}
                     align={align}
+                    ref={innerRef}
+                    data-lpignore="true"
                     {...rest}
                 />
-                {sideAddons}
             </InputWrapper>
             {bottomText && <BottomText state={state}>{bottomText}</BottomText>}
         </Wrapper>

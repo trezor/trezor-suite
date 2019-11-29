@@ -16,7 +16,7 @@ export type InputDisplay = 'block' | 'default' | 'short';
 
 export interface InputButton {
     icon?: IconType;
-    text: string;
+    text?: string;
     onClick: () => void;
 }
 

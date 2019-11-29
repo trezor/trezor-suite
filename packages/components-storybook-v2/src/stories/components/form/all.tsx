@@ -31,14 +31,18 @@ storiesOf('Form', module).add(
                 <Col>
                     <SubHeading>Short</SubHeading>
                     <InputWrapper>
-                        <Input value="Short input" display="short" dataTest="input-short" />
+                        <Input
+                            value="Short input"
+                            display="short"
+                            wrapperProps={{ 'data-test': 'input-short' }}
+                        />
                     </InputWrapper>
                     <InputWrapper>
                         <Input
                             variant="small"
                             value="Small short input"
                             display="short"
-                            dataTest="input-short-small"
+                            wrapperProps={{ 'data-test': 'input-short-small' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -46,7 +50,7 @@ storiesOf('Form', module).add(
                             state="error"
                             value="Short input with error"
                             display="short"
-                            dataTest="input-short-error"
+                            wrapperProps={{ 'data-test': 'input-short-error' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -54,7 +58,7 @@ storiesOf('Form', module).add(
                             state="warning"
                             value="Short input with warning"
                             display="short"
-                            dataTest="input-short-warning"
+                            wrapperProps={{ 'data-test': 'input-short-warning' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -62,7 +66,7 @@ storiesOf('Form', module).add(
                             state="success"
                             value="Short input with success"
                             display="short"
-                            dataTest="input-short-success"
+                            wrapperProps={{ 'data-test': 'input-short-success' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -70,41 +74,52 @@ storiesOf('Form', module).add(
                             disabled
                             value="Disabled short input"
                             display="short"
-                            dataTest="input-short-disabled"
+                            wrapperProps={{ 'data-test': 'input-short-disabled' }}
                         />
                     </InputWrapper>
                 </Col>
                 <Col>
                     <SubHeading>Default</SubHeading>
                     <InputWrapper>
-                        <Input value="Default input" dataTest="input-default" />
+                        <Input
+                            value="Default input"
+                            wrapperProps={{ 'data-test': 'input-default' }}
+                        />
                     </InputWrapper>
                     <InputWrapper>
-                        <Input variant="small" value="Small input" dataTest="input-default-small" />
+                        <Input
+                            variant="small"
+                            value="Small input"
+                            wrapperProps={{ 'data-test': 'input-default-small' }}
+                        />
                     </InputWrapper>
                     <InputWrapper>
                         <Input
                             state="error"
                             value="Input with error"
-                            dataTest="input-default-error"
+                            wrapperProps={{ 'data-test': 'input-default-error' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
                         <Input
                             state="warning"
                             value="Input with warning"
-                            dataTest="input-default-warning"
+                            wrapperProps={{ 'data-test': 'input-default-warning' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
                         <Input
                             state="success"
                             value="Input with success"
-                            dataTest="input-default-success"
+                            wrapperProps={{ 'data-test': 'input-default-success' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
-                        <Input disabled value="Disabled input" dataTest="input-default-disabled" />
+                        <Input
+                            disabled
+                            value="Disabled input"
+                            wrapperProps={{ 'data-test': 'input-default-disabled' }}
+                        />
                     </InputWrapper>
                 </Col>
                 <Col>
@@ -112,7 +127,7 @@ storiesOf('Form', module).add(
                     <InputWrapper>
                         <Input
                             value="Input label"
-                            dataTest="input-label"
+                            wrapperProps={{ 'data-test': 'input-label' }}
                             topLabel="Label"
                             bottomText="bottom text"
                         />
@@ -121,7 +136,7 @@ storiesOf('Form', module).add(
                         <Input
                             variant="small"
                             value="Small input label"
-                            dataTest="input-small-label"
+                            wrapperProps={{ 'data-test': 'input-small-label' }}
                             topLabel="Label"
                             bottomText="bottom text"
                         />
@@ -130,7 +145,7 @@ storiesOf('Form', module).add(
                         <Input
                             state="error"
                             value="Input label with error"
-                            dataTest="input-error-label"
+                            wrapperProps={{ 'data-test': 'input-error-label' }}
                             topLabel="Label"
                             bottomText="bottom text"
                         />
@@ -139,7 +154,7 @@ storiesOf('Form', module).add(
                         <Input
                             state="warning"
                             value="Input label with warning"
-                            dataTest="input-warning-label"
+                            wrapperProps={{ 'data-test': 'input-warning-label' }}
                             topLabel="Label"
                             bottomText="bottom text"
                         />
@@ -148,7 +163,7 @@ storiesOf('Form', module).add(
                         <Input
                             state="success"
                             value="Input label with success"
-                            dataTest="input-success-label"
+                            wrapperProps={{ 'data-test': 'input-success-label' }}
                             topLabel="Label"
                             bottomText="bottom text"
                         />
@@ -157,7 +172,7 @@ storiesOf('Form', module).add(
                         <Input
                             disabled
                             value="Disabled input label"
-                            dataTest="input-disabled-label"
+                            wrapperProps={{ 'data-test': 'input-disabled-label' }}
                             topLabel="Label"
                             bottomText="bottom text"
                         />
@@ -166,14 +181,18 @@ storiesOf('Form', module).add(
                 <Col>
                     <SubHeading>Block</SubHeading>
                     <InputWrapper>
-                        <Input value="Block input" display="block" dataTest="input-block" />
+                        <Input
+                            value="Block input"
+                            display="block"
+                            wrapperProps={{ 'data-test': 'input-block' }}
+                        />
                     </InputWrapper>
                     <InputWrapper>
                         <Input
                             variant="small"
                             value="Small block input"
                             display="block"
-                            dataTest="input-block-small"
+                            wrapperProps={{ 'data-test': 'input-block-small' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -181,7 +200,7 @@ storiesOf('Form', module).add(
                             state="error"
                             value="Block input with error"
                             display="block"
-                            dataTest="input-block-error"
+                            wrapperProps={{ 'data-test': 'input-block-error' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -189,7 +208,7 @@ storiesOf('Form', module).add(
                             state="warning"
                             value="Block input with warning"
                             display="block"
-                            dataTest="input-block-warning"
+                            wrapperProps={{ 'data-test': 'input-block-warning' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -197,7 +216,7 @@ storiesOf('Form', module).add(
                             state="success"
                             value="Block input with success"
                             display="block"
-                            dataTest="input-block-success"
+                            wrapperProps={{ 'data-test': 'input-block-success' }}
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -205,7 +224,7 @@ storiesOf('Form', module).add(
                             disabled
                             value="Disabled block input"
                             display="block"
-                            dataTest="input-block-disabled"
+                            wrapperProps={{ 'data-test': 'input-block-disabled' }}
                         />
                     </InputWrapper>
                 </Col>
@@ -215,10 +234,24 @@ storiesOf('Form', module).add(
                         <Input
                             value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                             display="block"
-                            dataTest="input-block-monospace-button"
+                            wrapperProps={{ 'data-test': 'input-block-monospace-button' }}
                             button={{
                                 text: 'Scan',
                                 icon: 'QR',
+                                onClick: () => {},
+                            }}
+                        />
+                    </InputWrapper>
+                    <SubHeading>Partially hidden</SubHeading>
+                    <InputWrapper>
+                        <Input
+                            value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
+                            display="block"
+                            wrapperProps={{ 'data-test': 'input-block-monospace-hidden' }}
+                            isPartiallyHidden
+                            button={{
+                                text: 'Show full address',
+                                icon: 'TREZOR',
                                 onClick: () => {},
                             }}
                         />
