@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { FeedbackType } from '../../support/types';
+import { FeedbackState } from '../../support/types';
 import colors from '../../config/colors';
 import { getFeedbackColor } from '../../utils/colors';
 
@@ -37,7 +37,7 @@ const Title = styled.div`
     color: ${colors.BLACK25};
 `;
 
-const Description = styled.div`
+const Message = styled.div`
     font-size: 12px;
     color: ${colors.BLACK50};
     margin-top: 6px;
@@ -98,46 +98,45 @@ interface CtaProps {
 
 interface CtaShape {
     label: React.ReactNode | string;
-    callback: () => any;
+    onClick: () => any;
 }
 
 interface NotificationProps {
     title: string;
-    description?: string;
-    isLoading?: boolean;
+    message?: string;
     mainCta?: CtaShape;
     secondCta?: CtaShape;
-    state?: FeedbackType;
-    dataTest?: string;
+    isLoading?: boolean;
+    state?: FeedbackState;
 }
 
 const Notification = ({
     title,
-    description,
+    message,
     isLoading,
     mainCta,
     secondCta,
     state = 'success',
-    dataTest,
+    ...rest
 }: NotificationProps) => {
     return (
-        <Wrapper data-test={dataTest} hasCta={!!(mainCta || isLoading)}>
+        <Wrapper hasCta={!!(mainCta || isLoading)} {...rest}>
             <StateWrapper>
                 <State state={state} />
             </StateWrapper>
             <ContentWrapper>
                 <Title>{title}</Title>
-                {description && <Description>{description}</Description>}
+                {message && <Message>{message}</Message>}
             </ContentWrapper>
             {(mainCta || isLoading) && (
                 <CtaWrapper>
                     {!isLoading && mainCta && (
-                        <CtaButton onClick={mainCta.callback} isMain>
+                        <CtaButton onClick={mainCta.onClick} isMain>
                             {mainCta.label}
                         </CtaButton>
                     )}
                     {!isLoading && secondCta && (
-                        <CtaButton onClick={secondCta.callback}>{secondCta.label}</CtaButton>
+                        <CtaButton onClick={secondCta.onClick}>{secondCta.label}</CtaButton>
                     )}
                     {isLoading && <CtaLoading>loading...</CtaLoading>}
                 </CtaWrapper>
