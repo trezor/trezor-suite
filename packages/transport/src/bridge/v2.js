@@ -75,7 +75,7 @@ export default class BridgeTransport {
   }
 
   @debugInOut
-  async configure(signedData: string): Promise<void> {
+  async configure(signedData: JSON | string): Promise<void> {
     const messages = parseConfigure(signedData);
     this.configured = true;
     this._messages = messages;
