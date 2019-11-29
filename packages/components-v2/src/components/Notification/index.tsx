@@ -123,7 +123,7 @@ const Notification = ({
     return (
         <Wrapper data-test={dataTest} hasCta={!!(mainCta || isLoading)}>
             <StateWrapper>
-                <State state={state}></State>
+                <State state={state} />
             </StateWrapper>
             <ContentWrapper>
                 <Title>{title}</Title>
