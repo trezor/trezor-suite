@@ -103,6 +103,10 @@ const definedMessages = defineMessages({
         id: 'TR_COMPOSE_PROGRESS',
         defaultMessage: 'Loading',
     },
+    TR_AMOUNT: {
+        id: 'TR_AMOUNT',
+        defaultMessage: 'Amount',
+    },
 });
 
 export default definedMessages;

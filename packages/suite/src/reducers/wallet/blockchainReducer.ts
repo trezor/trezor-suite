@@ -19,19 +19,16 @@ export type State = {
 const initialStatePredefined: Partial<State> = {};
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-export const initialState = NETWORKS.reduce(
-    (state, network) => {
-        if (network.accountType) return state;
-        state[network.symbol] = {
-            connected: false,
-            blockHash: '0',
-            blockHeight: 0,
-            version: '0',
-        };
-        return state;
-    },
-    initialStatePredefined as State,
-);
+export const initialState = NETWORKS.reduce((state, network) => {
+    if (network.accountType) return state;
+    state[network.symbol] = {
+        connected: false,
+        blockHash: '0',
+        blockHeight: 0,
+        version: '0',
+    };
+    return state;
+}, initialStatePredefined as State);
 
 const connect = (draft: State, info: BlockchainInfo) => {
     const symbol = info.coin.shortcut.toLowerCase();
@@ -77,10 +74,7 @@ export default (state: State = initialState, action: BlockchainEvent) => {
     return produce(state, draft => {
         switch (action.type) {
             case BLOCKCHAIN.CONNECT:
-                connect(
-                    draft,
-                    action.payload,
-                );
+                connect(draft, action.payload);
                 break;
             case BLOCKCHAIN.ERROR:
                 error(draft, action.payload.coin.shortcut, action.payload.error);

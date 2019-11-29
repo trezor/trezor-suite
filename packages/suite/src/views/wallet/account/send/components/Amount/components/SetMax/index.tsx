@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { variables, Icon, colors } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
-import messages from './index.messages';
+import messages from '../../index.messages';
 import { DispatchProps } from '../../../../Container';
 
 const SetMaxButton = styled(Button)`

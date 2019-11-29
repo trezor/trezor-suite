@@ -11,11 +11,11 @@
         "noImplicitAny": false,
         "outDir": "./lib",
         "target": "es3",
-        "rootDir": "src",
+        "rootDir": "src"
     },
     "include": ["src/**/*"],
     "exclude": [
         "node_modules",
-        "lib",
+        "lib"
     ]
 }

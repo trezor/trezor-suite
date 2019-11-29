@@ -32,14 +32,7 @@
     "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.3.1",
-    "babel-plugin-module-resolver": "^3.2.0",
-    "eslint": "^5.13.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "rimraf": "^2.6.3"
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-node": "^10.0.0"
   }
 }

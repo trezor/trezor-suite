@@ -57,7 +57,4 @@ const RouterComponent: FunctionComponent<Props> = (props: Props) => {
     return null;
 };
 
-export default connect(
-    null,
-    mapDispatchToProps,
-)(RouterComponent);
+export default connect(null, mapDispatchToProps)(RouterComponent);

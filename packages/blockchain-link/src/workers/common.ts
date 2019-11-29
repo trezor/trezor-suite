@@ -130,12 +130,9 @@ class WorkerCommon {
         const valid = this.validateAccounts(acc);
         const others = this.accounts.filter(a => !valid.find(b => b.descriptor === a.descriptor));
         this.accounts = others.concat(valid);
-        const addresses = this.accounts.reduce(
-            (addr, a) => {
-                return addr.concat(this.getAccountAddresses(a));
-            },
-            [] as string[]
-        );
+        const addresses = this.accounts.reduce((addr, a) => {
+            return addr.concat(this.getAccountAddresses(a));
+        }, [] as string[]);
         this.addAddresses(addresses);
         return valid;
     }
@@ -162,12 +159,9 @@ class WorkerCommon {
         const accountsToRemove = this.accounts.filter(a =>
             valid.find(b => b.descriptor === a.descriptor)
         );
-        const addressesToRemove = accountsToRemove.reduce(
-            (addr, acc) => {
-                return addr.concat(this.getAccountAddresses(acc));
-            },
-            [] as string[]
-        );
+        const addressesToRemove = accountsToRemove.reduce((addr, acc) => {
+            return addr.concat(this.getAccountAddresses(acc));
+        }, [] as string[]);
         this.accounts = this.accounts.filter(a => accountsToRemove.indexOf(a) < 0);
         this.removeAddresses(addressesToRemove);
         return this.accounts;

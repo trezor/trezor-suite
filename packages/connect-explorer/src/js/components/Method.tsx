@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from '@trezor/components';
 import * as MethodActions from '../actions/MethodActions';
-import { State, Dispatch } from '../types';
+import { AppState, Dispatch } from '../types';
 
 import {
     Input,
@@ -21,9 +21,11 @@ const getArray = (field, props) => {
     const items = field.items.map((batch, index) => {
         const key = `${field.name}-${index}`;
         const children = batch.map(batchField => {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             return getField(batchField, props);
         });
         return (
+            // eslint-disable-next-line react/jsx-no-bind
             <BatchWrapper key={key} onRemove={props.actions.onBatchRemove.bind(this, field, batch)}>
                 {children}
             </BatchWrapper>
@@ -33,6 +35,7 @@ const getArray = (field, props) => {
         <ArrayWrapper
             key={field.name}
             field={field}
+            // eslint-disable-next-line react/jsx-no-bind
             onAdd={props.actions.onBatchAdd.bind(this, field)}
         >
             {items}
@@ -147,13 +150,13 @@ const Method = props => {
 };
 
 export default connect(
-    (state: State) => {
+    (state: AppState) => {
         return {
             method: state.method,
             docs: state.docs,
         };
     },
-    (dispatch: Dispatch) => {
+    (dispatch: any) => {
         return {
             actions: bindActionCreators(MethodActions, dispatch),
         };

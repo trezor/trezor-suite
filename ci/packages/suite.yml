@@ -7,9 +7,9 @@ suite lint:
 
 suite detect l10n duplicities:
     stage: lint and prettier
+    allow_failure: true
     script:
-        # for some reason we cannot run it using simple yarn command https://github.com/trezor/trezor-suite/issues/774
-        - cd packages/suite && NODE_ENV=translations npx babel src/**/*.{tsx,ts} && npx node ../../packages/translations-manager/lib/cli.js merge-msgs
+        - yarn workspace @trezor/suite translations:extract
     dependencies:
         - install and build
 
