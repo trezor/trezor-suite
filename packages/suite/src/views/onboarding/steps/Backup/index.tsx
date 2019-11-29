@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { P, Checkbox, Link, Prompt } from '@trezor/components';
+import { Checkbox, Prompt } from '@trezor/components';
+import { P, Link } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 
 import colors from '@suite/config/onboarding/colors';
@@ -91,7 +92,7 @@ const BackupStep = (props: Props) => {
                                 {...l10nMessages.TR_BACKUP_SUBHEADING_1}
                                 values={{
                                     TR_SEED_MANUAL_LINK: (
-                                        <Link href={SEED_MANUAL_URL} variant="nostyle">
+                                        <Link href={SEED_MANUAL_URL}>
                                             <FormattedMessage
                                                 {...l10nMessages.TR_SEED_MANUAL_LINK}
                                             />

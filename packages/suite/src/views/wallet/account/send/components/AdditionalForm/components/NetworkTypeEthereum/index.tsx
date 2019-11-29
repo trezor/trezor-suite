@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { Input, Tooltip, Icon, colors, Link, TextArea } from '@trezor/components';
+import { Input, Tooltip, Icon, colors, TextArea } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import globalMessages from '@suite-support/Messages';
 import localMessages from './index.messages';
 

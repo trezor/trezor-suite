@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
 
-import { H5, P, Link, Icon, Tooltip, colors } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Icon, Tooltip, colors } from '@trezor/components';
+import { Button, H2, P, Link } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 import { useKeyPress } from '@suite-utils/dom';
 import globalMessages from '@suite-support/Messages';
@@ -22,7 +22,7 @@ const Header = styled.div`
     color: ${colors.TEXT_PRIMARY};
 `;
 
-const StyledHeading = styled(H5)`
+const StyledHeading = styled(H2)`
     padding: 30px 48px 10px 48px;
 `;
 
@@ -88,7 +88,7 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
     return (
         <Wrapper>
             {device.state && (
-                <StyledLink onClick={onCancel} variant="nostyle">
+                <StyledLink onClick={onCancel}>
                     <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
                 </StyledLink>
             )}

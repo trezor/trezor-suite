@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { P, H4, Loader, colors, variables } from '@trezor/components';
+import { Loader, colors, variables } from '@trezor/components';
+import { P, H2 } from '@trezor/components-v2';
 import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
 import { Translation } from '@suite-components/Intl';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
@@ -32,11 +33,8 @@ interface TitleProps {
     type: string;
 }
 
-const Title = styled(H4)`
-    font-size: ${variables.FONT_SIZE.BIGGER};
-    font-weight: ${variables.FONT_WEIGHT.NORMAL};
+const Title = styled(H2)`
     color: ${(props: TitleProps) => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
-    text-align: center;
     padding: 0;
 `;
 
@@ -82,7 +80,7 @@ const Content = ({ className, children, isLoading = false, loader, exceptionPage
                             <Loader size={30} />
                         </LoaderWrapper>
                     )}
-                    <Title type={loader.type}>
+                    <Title textAlign="center" type={loader.type}>
                         {<Translation>{loader.title}</Translation> || (
                             <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />
                         )}

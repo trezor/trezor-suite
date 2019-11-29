@@ -2,7 +2,8 @@ import React, { FormEvent } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Intl';
 
-import { Link, Input, Checkbox, P } from '@trezor/components';
+import { Input, Checkbox } from '@trezor/components';
+import { Link, P } from '@trezor/components-v2';
 
 import l10nCommonMessages from '@suite-support/Messages';
 import { isEmail } from '@suite-utils/validators';
@@ -181,13 +182,13 @@ const NewsleterStep = (props: Props) => {
                             </Text>
                         )}
                         <SocialWrapper>
-                            <Link href={BLOG_URL} variant="nostyle">
+                            <Link href={BLOG_URL}>
                                 <OnboardingIcon.SocialLogo name="medium" sizeMultiplier={2} />
                             </Link>
-                            <Link href={SOCIAL_FACEBOOK_URL} variant="nostyle">
+                            <Link href={SOCIAL_FACEBOOK_URL}>
                                 <OnboardingIcon.SocialLogo name="facebook" sizeMultiplier={2} />
                             </Link>
-                            <Link href={SOCIAL_TWITTER_URL} variant="nostyle">
+                            <Link href={SOCIAL_TWITTER_URL}>
                                 <OnboardingIcon.SocialLogo name="twitter" sizeMultiplier={2} />
                             </Link>
                         </SocialWrapper>

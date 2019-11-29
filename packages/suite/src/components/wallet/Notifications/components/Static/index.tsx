@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Notification, Link } from '@trezor/components';
+import { Notification } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import Bignumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 

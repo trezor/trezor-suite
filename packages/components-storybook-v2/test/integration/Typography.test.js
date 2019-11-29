@@ -1,4 +1,4 @@
-describe('Form', () => {
+describe('Typography', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

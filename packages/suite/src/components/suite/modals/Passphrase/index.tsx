@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
 
-import { H5, P, Input, Checkbox, colors } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Input, Checkbox, colors } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
 import { FormattedMessage } from 'react-intl';
 import { useKeyPress } from '@suite-utils/dom';
 
@@ -98,14 +98,14 @@ const Passphrase: FunctionComponent<Props> = ({
 
     return (
         <Wrapper>
-            <H5>
+            <H2>
                 <FormattedMessage
                     {...modalsMessages.TR_PASSPHRASE_LABEL}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
-            </H5>
+            </H2>
             <TopMessage size="small">
                 <FormattedMessage {...messages.TR_PASSPHRASE_CASE_SENSITIVE} />
             </TopMessage>

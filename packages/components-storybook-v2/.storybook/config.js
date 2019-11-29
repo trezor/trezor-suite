@@ -28,6 +28,9 @@ function loadStories() {
     require('../src/stories/components/icons/all');
     require('../src/stories/components/icons/icon');
     require('../src/stories/components/typography/all');
+    require('../src/stories/components/typography/heading');
+    require('../src/stories/components/typography/paragraph');
+    require('../src/stories/components/typography/link');
     require('../src/stories/components/notifications/all');
     require('../src/stories/components/notifications/notification');
 }

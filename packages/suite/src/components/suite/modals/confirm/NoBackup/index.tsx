@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Intl';
 
-import { H5, P, Icon, colors } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Icon, colors } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
 import suiteMessages from '@suite-views/index.messages';
 
 const Wrapper = styled.div`
@@ -34,9 +34,9 @@ interface Props {
 
 const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
     <Wrapper>
-        <H5>
+        <H2>
             <Translation>{suiteMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
-        </H5>
+        </H2>
         <Icon size={32} color={colors.WARNING_PRIMARY} icon="WARNING" />
         <StyledP size="small">
             <Translation>{suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>

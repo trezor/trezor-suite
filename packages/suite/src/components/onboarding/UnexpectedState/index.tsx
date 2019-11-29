@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { P, H2 } from '@trezor/components';
+import { P, H2 } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
