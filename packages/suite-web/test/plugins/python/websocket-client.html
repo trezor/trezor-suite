@@ -49,6 +49,15 @@
         _send({ type: 'emulator-start' });
     }
 
+    function emulatorWipe() {
+        _send({ type: 'emulator-wipe' });
+    }
+
+
+    // function emulatorErase() {
+    //     _send({ type: 'emulator-erase' });
+    // }
+
     function emulatorSetup() {
         _send({
             type: 'emulator-setup',
@@ -95,6 +104,8 @@
         <button onclick="emulatorSetup(); return false;">Setup</button>
         <button onclick="emulatorDecision(); return false;">Decision</button>
         <button onclick="emulatorStop(); return false;">Stop</button>
+        <button onclick="emulatorWipe(); return false;">Wipe</button>
+        <button onclick="emulatorErase(); return false;">Erase</button>
         
     </div>
     <div>

@@ -58,6 +58,11 @@ module.exports = on => {
             const response = await controller.send({ type: 'emulator-stop' });
             return null;
         },
+        wipeEmu: async () => {
+            await controller.connect();
+            const response = await controller.send({ type: 'emulator-wipe' });
+            return null;
+        },
         sendDecision: async method => {
             await controller.connect();
             await controller.send({ type: 'emulator-decision', method });

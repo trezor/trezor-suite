@@ -81,6 +81,14 @@ def setup_device(mnemonic, pin, passphrase_protection, label):
     client.close()
     # time.sleep(1)
 
+def wipe_device():
+    transport = get_bridge_device()
+    print(transport)
+    client = TrezorClientDebugLink(transport)
+    client.open()
+    device.wipe(client)
+    client.close()
+
 def decision():
     # TODO:
     # - "path" parameter to work with correct device, keep transport with device
@@ -94,3 +102,11 @@ def decision():
     # client.swipe_down()
     client.press_yes()
     client.close()
+
+# def erase_device():
+#     transport = get_bridge_device()
+#     print(transport)
+#     client = TrezorClientDebugLink(transport)
+#     client.open()
+#     debuglink.flash_erase()
+#     client.close()

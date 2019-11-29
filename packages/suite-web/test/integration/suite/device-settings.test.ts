@@ -30,10 +30,10 @@ describe('Device settings happy path', () => {
             .type('My Tenzor');
         cy.getTestElement('@suite/device-settings/label-submit')
             .click()
-            .getTestElement('@suite/modal/confirm-action-on-device');
+            .getConfirmActionOnDeviceModal();
 
         cy.task('sendDecision', { method: 'applySettings' });
-        cy.getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible');
+        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
     });
 
     it.skip('turn on pin protection', () => {
@@ -51,8 +51,8 @@ describe('Device settings happy path', () => {
     it('turn on passphrase protection', () => {
         cy.getTestElement('@suite/device-settings/passphrase-switch')
             .click({ force: true })
-            .getTestElement('@suite/modal/confirm-action-on-device');
+            .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
-        cy.getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible');
+        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
     });
 });
