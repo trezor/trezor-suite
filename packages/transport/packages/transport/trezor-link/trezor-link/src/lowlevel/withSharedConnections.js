@@ -277,7 +277,7 @@ export default class LowlevelTransportWithSharedConnections {
   }
 
   @debugInOut
-  async configure(signedData: string): Promise<void> {
+  async configure(signedData: JSON | string): Promise<void> {
     const messages = parseConfigure(signedData);
     this._messages = messages;
     this.configured = true;

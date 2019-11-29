@@ -23,7 +23,7 @@ export type Transport = {
   listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>>;
   acquire(input: AcquireInput, debugLink: boolean): Promise<string>;
   release(session: string, onclose: boolean, debugLink: boolean): Promise<void>;
-  configure(signedData: string): Promise<void>;
+  configure(signedData: JSON | string): Promise<void>;
   call(session: string, name: string, data: Object, debugLink: boolean): Promise<MessageFromTrezor>;
   post(session: string, name: string, data: Object, debugLink: boolean): Promise<void>;
   read(session: string, debugLink: boolean): Promise<MessageFromTrezor>;

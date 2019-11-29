@@ -41,7 +41,7 @@ export default class FallbackTransport {
   }
 
   // first one that inits successfuly is the final one; others won't even start initing
-  async _tryConfigureTransports(data: string): Promise<Transport> {
+  async _tryConfigureTransports(data: JSON | string): Promise<Transport> {
     let lastError: ?Error = null;
     for (const transport of this._availableTransports) {
       try {
@@ -69,7 +69,7 @@ export default class FallbackTransport {
   }
 
   isOutdated: boolean;
-  async configure(signedData: string): Promise<void> {
+  async configure(signedData: JSON | string): Promise<void> {
     const pt: Promise<Transport> = this._tryConfigureTransports(signedData);
     this.activeTransport = await pt;
     this.configured = this.activeTransport.configured;
