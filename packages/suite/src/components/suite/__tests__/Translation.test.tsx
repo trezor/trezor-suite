@@ -69,8 +69,6 @@ describe('Translation component', () => {
 
     test('with message that holds another message object in values (passed via props)', () => {
         const component = createComponentWithIntl(
-            // TODO: why it has a problem?
-            // @ts-ignore
             <Translation
                 {...messages.TR_HELLO_NAME}
                 values={{

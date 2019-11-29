@@ -47,7 +47,7 @@ type PrimitiveType = string | number | boolean | Date | null | undefined;
 // Add MessageDescriptor type to values entry
 export interface ExtendedMessageDescriptor extends MessageDescriptor {
     values?: {
-        [key: string]: PrimitiveType | React.ReactElement | MessageDescriptor;
+        [key: string]: PrimitiveType | React.ReactElement | ExtendedMessageDescriptor;
     };
 }
 

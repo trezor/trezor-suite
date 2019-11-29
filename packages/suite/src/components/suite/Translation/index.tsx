@@ -43,7 +43,7 @@ type PrimitiveType = string | number | boolean | Date | null | undefined;
  * and renders FormattedMessage with the message. Otherwise it just simply render passed children.
  */
 const Translation = (props: ChildrenType | MsgType) => {
-    const values: Record<string, PrimitiveType | React.ReactNode> = {};
+    const values: Record<string, PrimitiveType | React.ReactNode | ExtendedMessageDescriptor> = {};
     // message passed via props (id, defaultMessage, values)
     if (isMsgType(props)) {
         Object.keys(props.values || []).forEach(key => {
