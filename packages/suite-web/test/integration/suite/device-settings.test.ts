@@ -36,7 +36,7 @@ describe('Device settings happy path', () => {
         cy.getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible');
     });
 
-    it('turn on pin protection', () => {
+    it.skip('turn on pin protection', () => {
         // TODO: set pin part. need to extend python script to allow input digits on emulator
         // cy
         //     .getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible')

@@ -14,19 +14,6 @@ RUN apt-get update && apt-get install -y \
     scons \
     libsdl2-dev \
     libsdl2-image-dev \
-    # libsdl2-2.0-0
-    # otazne
-    # check \
-    # clang-format \
-    # git \
-    # graphviz \
-    # libjpeg-dev \
-    # libsodium-dev \
-    # libssl-dev \
-    # libudev-dev \
-    # libusb-1.0-0-dev \
-    # valgrind \
-    # zlib1g-de \
     # why not
     zip
 
@@ -61,8 +48,11 @@ ENV npm_config_loglevel warn
 ENV npm_config_unsafe_perm true
 
 # pipenv click https://click.palletsprojects.com/en/7.x/python3/
-ENV LC_ALL C.UTF-8
-ENV LANG C.UTF-8
+# ENV LC_ALL C.UTF-8
+# ENV LANG C.UTF-8
+
+# needed? probably not
+# RUN python3 -m pip install pipenv
 
 # Out of the blue, we started to run into CI failures. All of them had one thing in common. 
 # Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
@@ -71,11 +61,6 @@ ENV LANG C.UTF-8
 # package relies on existence of another package already installed.
 # as a quick fix, create a project and install needed packages to provide yarn cache on image level.
 RUN yarn global add opencollective node-pre-gyp
-
-# RUN ls -la
-# RUN cd ..
-
-RUN python3 -m pip install pipenv
 
 # versions of local tools
 RUN node -v
@@ -89,7 +74,3 @@ RUN python3 --version
 RUN pipenv --version
 RUN python3 -m pip --version
 RUN trezorctl version
-
-# RUN git clone https://github.com/trezor/trezor-firmware.git
-# RUN cd trezor-firmware/core
-# RUN pipenv run make build_unix
