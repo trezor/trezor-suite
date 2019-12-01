@@ -47,9 +47,13 @@ ENV npm_config_loglevel warn
 # allow installing when the main user is root
 ENV npm_config_unsafe_perm true
 
-# pipenv click https://click.palletsprojects.com/en/7.x/python3/
-# ENV LC_ALL C.UTF-8
-# ENV LANG C.UTF-8
+# trezor emu
+ENV SDL_VIDEODRIVER "dummy"
+ENV XDG_RUNTIME_DIR "/var/tmp"
+
+# trezorctl https://click.palletsprojects.com/en/7.x/python3/
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
 
 # needed? probably not
 # RUN python3 -m pip install pipenv
@@ -71,6 +75,6 @@ RUN google-chrome-beta --version
 RUN zip --version
 RUN git --version
 RUN python3 --version
-RUN pipenv --version
+# RUN pipenv --version
 RUN python3 -m pip --version
 RUN trezorctl version
