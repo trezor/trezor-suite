@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 describe('Onboarding happy paths', () => {
-    // const DEVICE_PATH = '1';
-
     before(() => {
         cy.task('startBridge')
             .task('startEmu')
