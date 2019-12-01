@@ -15,6 +15,10 @@ describe('Onboarding happy paths', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
+    after(() => {
+        cy.task('stopBridge').task('stopEmu');
+    });
+
     it('this is just example how to use setState command', () => {
         cy.visit('/').onboardingShouldLoad();
         // @ts-ignore
