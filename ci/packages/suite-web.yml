@@ -78,8 +78,8 @@ suite-web test integration google-chrome:
         expire_in: 2 days
         when: always
         paths:
-            - suite-web/test/snapshots
-            - suite-web/test/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
     dependencies:
         - install and build
 
@@ -88,14 +88,14 @@ suite-web test integration google-chrome-beta:
         - schedules
     stage: integration testing
     script:
-        - apt-get update
         - npx cypress install
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser /usr/bin/google-chrome-beta
+        # todo: fix command
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration:ci:run --browser /usr/bin/google-chrome-beta
     artifacts:
         expire_in: 2 days
         when: always
         paths:
-            - suite-web/test/snapshots
-            - suite-web/test/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
     dependencies:
         - install and build
