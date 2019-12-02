@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from '@trezor/components-v2';
 
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { SUPPORT_URL } from '@onboarding-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';

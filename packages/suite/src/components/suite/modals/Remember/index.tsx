@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Loader } from '@trezor/components';
 import { H2, P, Button } from '@trezor/components-v2';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import commonMessages from '@suite-views/index.messages';
 import modalsMessages from '../messages';
@@ -85,7 +85,7 @@ const RememberDevice: FunctionComponent<Props> = ({
     return (
         <Wrapper>
             <H2>
-                <FormattedMessage
+                <Translation
                     {...modalsMessages.TR_FORGET_LABEL}
                     values={{
                         deviceLabel: device.label,
@@ -93,7 +93,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                 />
             </H2>
             <StyledP size="small">
-                <FormattedMessage
+                <Translation
                     {...messages.TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO}
                     values={{
                         deviceCount,
@@ -104,7 +104,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                 <ButtonWithLoader onClick={() => onForgetDevice(device)} inlineWidth>
                     <ButtonContent>
                         <Text>
-                            <FormattedMessage {...commonMessages.TR_FORGET_DEVICE} />
+                            <Translation {...commonMessages.TR_FORGET_DEVICE} />
                         </Text>
                         <StyledLoader
                             isSmallText
@@ -115,7 +115,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                     </ButtonContent>
                 </ButtonWithLoader>
                 <Button variant="secondary" onClick={() => onRememberDevice(device)} inlineWidth>
-                    <FormattedMessage {...messages.TR_REMEMBER_DEVICE} />
+                    <Translation {...messages.TR_REMEMBER_DEVICE} />
                 </Button>
             </Column>
         </Wrapper>

@@ -1,5 +1,5 @@
 import React from 'react';
-// import { FormattedMessage } from 'react-intl';
+// import { Translation } from '@suite-components/Translation';
 import { P } from '@trezor/components-v2';
 
 import * as STEP from '@onboarding-constants/steps';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
 import { CoinLogo } from '@trezor/components';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { Input, Tooltip, Icon, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
@@ -39,7 +39,7 @@ const getState = (error: Props['errors'], destinationTag: Props['destinationTag'
 const getErrorMessage = (error: Props['errors']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <FormattedMessage {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;
+            return <Translation {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;
         default:
             return null;
     }
@@ -50,13 +50,13 @@ const NetworkTypeXrp = (props: Props) => (
         state={getState(props.errors, props.destinationTag)}
         topLabel={
             <Label>
-                <FormattedMessage {...messages.TR_XRP_DESTINATION_TAG} />
+                <Translation {...messages.TR_XRP_DESTINATION_TAG} />
                 <Tooltip
-                    content={<FormattedMessage {...messages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
+                    content={<Translation {...messages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
                     maxWidth={200}
                     // todo: link into config
                     ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
-                    ctaText={<FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />}
+                    ctaText={<Translation {...globalMessages.TR_LEARN_MORE_LINK} />}
                     placement="top"
                 >
                     <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />

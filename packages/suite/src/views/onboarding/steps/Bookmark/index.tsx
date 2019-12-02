@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import { Link, P } from '@trezor/components-v2';
 
@@ -77,16 +77,16 @@ class BookmarkStep extends React.Component<Props, StepState> {
         return (
             <Wrapper.Step>
                 <Wrapper.StepHeading>
-                    <FormattedMessage {...l10nMessages.TR_BOOKMARK_HEADING} />
+                    <Translation {...l10nMessages.TR_BOOKMARK_HEADING} />
                 </Wrapper.StepHeading>
                 <Wrapper.StepBody>
                     <Text>
-                        <FormattedMessage
+                        <Translation
                             {...l10nMessages.TR_BOOKMARK_SUBHEADING}
                             values={{
                                 TR_PHISHING_ATTACKS: (
                                     <Link href={PHISHING_URL}>
-                                        <FormattedMessage {...l10nMessages.TR_PHISHING_ATTACKS} />
+                                        <Translation {...l10nMessages.TR_PHISHING_ATTACKS} />
                                     </Link>
                                 ),
                             }}
@@ -95,7 +95,7 @@ class BookmarkStep extends React.Component<Props, StepState> {
                     {/* {!Platform.isMobile() && ( */}
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_USE_THE_KEYBOARD_SHORTCUT} />
+                            <Translation {...l10nMessages.TR_USE_THE_KEYBOARD_SHORTCUT} />
                         </Text>
                         <Keys>
                             <Key
@@ -110,13 +110,13 @@ class BookmarkStep extends React.Component<Props, StepState> {
                         {/* {!Platform.isMobile() && ( */}
                         <>
                             <OnboardingButton.Alt onClick={() => this.setBookmarkFlagAndContinue()}>
-                                <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
+                                <Translation {...l10nCommonMessages.TR_SKIP} />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 isDisabled={this.nextDisabled()}
                                 onClick={() => this.setBookmarkFlagAndContinue()}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </>
                         {/* )} */}
@@ -124,10 +124,10 @@ class BookmarkStep extends React.Component<Props, StepState> {
                         {/* {Platform.isMobile() && (
                             <React.Fragment>
                                 <Button variant="secondary" onClick={() => this.setBookmarkFlagAndContinue()} inlineWidth>
-                                    <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
+                                    <Translation {...l10nCommonMessages.TR_SKIP} />
                                 </Button>
                                 <Button onClick={() => this.setBookmarkFlagAndContinue()}>
-                                    <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                    <Translation {...l10nCommonMessages.TR_CONTINUE} />
                                 </Button>
                             </React.Fragment>
                         )} */}

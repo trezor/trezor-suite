@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { P, Link } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
 
 import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
 import {
@@ -111,7 +112,7 @@ const RecoveryStepModelOne = (props: Props) => {
                 {getStatus() === null && (
                     <>
                         <Text>
-                            <FormattedMessage {...messages.TR_RECOVER_SUBHEADING} />
+                            <Translation {...messages.TR_RECOVER_SUBHEADING} />
                         </Text>
                         <Wrapper.Options>
                             <Option
@@ -121,10 +122,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <FormattedMessage
-                                        {...messages.TR_WORDS}
-                                        values={{ count: '12' }}
-                                    />
+                                    <Translation {...messages.TR_WORDS} values={{ count: '12' }} />
                                 </P>
                             </Option>
                             <Option
@@ -134,10 +132,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <FormattedMessage
-                                        {...messages.TR_WORDS}
-                                        values={{ count: '18' }}
-                                    />
+                                    <Translation {...messages.TR_WORDS} values={{ count: '18' }} />
                                 </P>
                             </Option>
                             <Option
@@ -147,10 +142,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <FormattedMessage
-                                        {...messages.TR_WORDS}
-                                        values={{ count: '24' }}
-                                    />
+                                    <Translation {...messages.TR_WORDS} values={{ count: '24' }} />
                                 </P>
                             </Option>
                         </Wrapper.Options>
@@ -162,7 +154,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     setStatus('select-advanced-recovery');
                                 }}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -170,12 +162,12 @@ const RecoveryStepModelOne = (props: Props) => {
                 {getStatus() === 'select-advanced-recovery' && (
                     <>
                         <Text>
-                            <FormattedMessage
+                            <Translation
                                 {...messages.TR_RECOVERY_TYPES_DESCRIPTION}
                                 values={{
                                     TR_LEARN_MORE_LINK: (
                                         <Link href={RECOVERY_MODEL_ONE_URL}>
-                                            <FormattedMessage
+                                            <Translation
                                                 {...l10nCommonMessages.TR_LEARN_MORE_LINK}
                                             />
                                         </Link>
@@ -191,7 +183,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <FormattedMessage {...messages.TR_BASIC_RECOVERY_OPTION} />
+                                    <Translation {...messages.TR_BASIC_RECOVERY_OPTION} />
                                 </P>
                             </Option>
                             <Option
@@ -201,7 +193,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 }}
                             >
                                 <P>
-                                    <FormattedMessage {...messages.TR_ADVANCED_RECOVERY_OPTION} />
+                                    <Translation {...messages.TR_ADVANCED_RECOVERY_OPTION} />
                                 </P>
                             </Option>
                         </Wrapper.Options>
@@ -212,7 +204,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     recoveryDevice();
                                 }}
                             >
-                                <FormattedMessage {...messages.TR_START_RECOVERY} />
+                                <Translation {...messages.TR_START_RECOVERY} />
                             </OnboardingButton.Cta>
 
                             <OnboardingButton.Alt
@@ -221,7 +213,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     setStatus(null);
                                 }}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_BACK} />
+                                <Translation {...l10nCommonMessages.TR_BACK} />
                             </OnboardingButton.Alt>
                         </Wrapper.Controls>
                     </>
@@ -252,7 +244,7 @@ const RecoveryStepModelOne = (props: Props) => {
                     <>
                         <Text>
                             {/* TODO: device disconnected error is returned as string, other connect errors are objects */}
-                            <FormattedMessage
+                            <Translation
                                 {...messages.TR_RECOVERY_ERROR}
                                 values={{
                                     error:
@@ -268,7 +260,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 setStatus(null);
                             }}
                         >
-                            <FormattedMessage {...l10nCommonMessages.TR_RETRY} />
+                            <Translation {...l10nCommonMessages.TR_RETRY} />
                         </OnboardingButton.Cta>
                     </>
                 )}

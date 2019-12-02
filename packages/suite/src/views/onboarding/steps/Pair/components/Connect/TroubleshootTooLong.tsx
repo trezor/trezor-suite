@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { P, Link } from '@trezor/components-v2';
 import TrezorConnect from 'trezor-connect';
 
@@ -25,7 +25,7 @@ const Card = styled.div`
 
 const ContactSupportLink = (
     <Link href={SUPPORT_URL}>
-        <FormattedMessage {...l10nMessages.TR_CONTACT_TREZOR_SUPPORT_LINK} />
+        <Translation {...l10nMessages.TR_CONTACT_TREZOR_SUPPORT_LINK} />
     </Link>
 );
 
@@ -36,7 +36,7 @@ interface Props {
 const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
     <>
         {/* <Text>
-            <FormattedMessage {...l10nMessages.TR_SEARCHING_TAKES_TOO_LONG} />
+            <Translation {...l10nMessages.TR_SEARCHING_TAKES_TOO_LONG} />
         </Text> */}
 
         <Card>
@@ -44,14 +44,14 @@ const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
             <Text>
                 Check out our interactive{' '}
                 <Link href={TROUBLESHOOTER_URL}>troubleshooting guide</Link>
-                {/* <FormattedMessage {...l10nMessages.TR_REFRESH_INSTRUCTION} /> */}
+                {/* <Translation {...l10nMessages.TR_REFRESH_INSTRUCTION} /> */}
             </Text>
         </Card>
         {!webusb && (
             <Card>
                 <P weight="bold">Broken cable</P>
                 <Text>
-                    <FormattedMessage {...l10nMessages.TR_ANOTHER_CABLE_INSTRUCTION} />
+                    <Translation {...l10nMessages.TR_ANOTHER_CABLE_INSTRUCTION} />
                 </Text>
             </Card>
         )}
@@ -68,7 +68,7 @@ const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
         )}
         <Wrapper.Controls>
             <OnboardingButton.Alt>
-                <FormattedMessage
+                <Translation
                     {...l10nMessages.TR_LAST_RESORT_INSTRUCTION}
                     values={{ ContactSupportLink }}
                 />

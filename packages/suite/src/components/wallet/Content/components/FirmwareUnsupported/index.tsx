@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import { CoinLogo, colors } from '@trezor/components';
 import { Button, H2, P, Link } from '@trezor/components-v2';
 
-import { FormattedMessage } from 'react-intl';
-import { Translation } from '@suite/components/suite/Intl';
+import { Translation } from '@suite-components/Translation';
 import { ExtendedMessageDescriptor } from '@suite/types/suite';
 import l10nMessages from './index.messages';
 
@@ -79,8 +78,8 @@ const FirmwareUnsupported = (props: Props) => (
                 <Translation>{props.message}</Translation>
             </Message>
             <Link href={getInfoUrl(props.symbol)}>
-                <Button>
-                    <FormattedMessage {...l10nMessages.TR_FIND_OUT_MORE_INFO} />
+                <Button inlineWidth>
+                    <Translation {...l10nMessages.TR_FIND_OUT_MORE_INFO} />
                 </Button>
             </Link>
         </Row>

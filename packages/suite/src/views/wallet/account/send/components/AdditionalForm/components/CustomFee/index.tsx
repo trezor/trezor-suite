@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { Input } from '@trezor/components';
 import sendMessages from '@wallet-views/account/index.messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
@@ -38,15 +38,12 @@ const getErrorMessage = (
 ) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <FormattedMessage {...messages.TR_CUSTOM_FEE_IS_NOT_SET} />;
+            return <Translation {...messages.TR_CUSTOM_FEE_IS_NOT_SET} />;
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <FormattedMessage {...messages.TR_CUSTOM_FEE_IS_NOT_VALID} />;
+            return <Translation {...messages.TR_CUSTOM_FEE_IS_NOT_VALID} />;
         case VALIDATION_ERRORS.NOT_IN_RANGE:
             return (
-                <FormattedMessage
-                    {...messages.TR_CUSTOM_FEE_NOT_IN_RANGE}
-                    values={{ maxFee, minFee }}
-                />
+                <Translation {...messages.TR_CUSTOM_FEE_NOT_IN_RANGE} values={{ maxFee, minFee }} />
             );
         default:
             return null;
@@ -58,7 +55,7 @@ const CustomFee = (props: Props) => (
         state={getState(props.errors, props.customFee)}
         topLabel={
             <Label>
-                <FormattedMessage {...sendMessages.TR_FEE} />
+                <Translation {...sendMessages.TR_FEE} />
             </Label>
         }
         bottomText={getErrorMessage(props.errors, props.maxFee, props.minFee)}

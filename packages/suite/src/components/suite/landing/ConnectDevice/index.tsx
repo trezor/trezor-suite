@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { colors, variables, animations } from '@trezor/components';
 import { Link, P, H1 } from '@trezor/components-v2';
 import WebusbButton from '@suite-components/WebusbButton';
@@ -111,16 +111,16 @@ class ConnectDevice extends PureComponent<Props> {
                 <StyledConnectDevice>
                     <Title>
                         <StyledH1>
-                            <FormattedMessage {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} />
+                            <Translation {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} />
                         </StyledH1>
                         <P>
-                            <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} />
+                            <Translation {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} />
                         </P>
                     </Title>
                     <Wrapper>
                         <ConnectTrezorWrapper>
                             {this.props.showDisconnect && (
-                                <FormattedMessage
+                                <Translation
                                     {...l10nMessages.TR_UNPLUG_DEVICE_LABEL}
                                     values={{ deviceLabel: this.props.deviceLabel }}
                                 />
@@ -163,16 +163,14 @@ class ConnectDevice extends PureComponent<Props> {
                                             />
                                         </g>
                                     </ImageWrapper>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_CONNECT_TREZOR_TO_CONTINUE}
-                                    />
+                                    <Translation {...l10nMessages.TR_CONNECT_TREZOR_TO_CONTINUE} />
                                 </>
                             )}
                         </ConnectTrezorWrapper>
                         {this.props.showWebUsb && !this.props.showDisconnect && (
                             <>
                                 <And>
-                                    <FormattedMessage {...l10nMessages.TR_AND} />
+                                    <Translation {...l10nMessages.TR_AND} />
                                 </And>
                                 <ButtonWrapper>
                                     <WebusbButton ready />
@@ -185,7 +183,7 @@ class ConnectDevice extends PureComponent<Props> {
                         {this.props.showWebUsb && (
                             <P>
                                 <Text>
-                                    <FormattedMessage
+                                    <Translation
                                         {...l10nMessages.TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING}
                                         values={{
                                             link: (
@@ -198,12 +196,12 @@ class ConnectDevice extends PureComponent<Props> {
                         )}
                         <P>
                             <Text>
-                                <FormattedMessage
+                                <Translation
                                     {...l10nMessages.TR_DONT_HAVE_A_TREZOR}
                                     values={{
                                         getOne: (
                                             <StyledLink href="https://trezor.io/">
-                                                <FormattedMessage {...l10nMessages.TR_GET_ONE} />
+                                                <Translation {...l10nMessages.TR_GET_ONE} />
                                             </StyledLink>
                                         ),
                                     }}

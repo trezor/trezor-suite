@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import TopNavigation from '@wallet-components/TopNavigation';
 import WalletLayout from '@wallet-components/WalletLayout';
 import { FLAGS } from '@suite-config';

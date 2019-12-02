@@ -1,4 +1,4 @@
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { ParsedURI, parseUri } from '@suite-utils/parseUri';
 import { colors } from '@trezor/components';
 import { H2, P } from '@trezor/components-v2';

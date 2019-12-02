@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Network } from '@wallet-types';
@@ -143,10 +143,10 @@ const CoinsGroup = (props: CoinsGroupProps) => {
         <Content>
             <Label>
                 <Left>
-                    {title && <FormattedMessage {...title} />}
+                    {title && <Translation {...title} />}
                     {tooltip && (
                         <Tooltip
-                            content={<FormattedMessage {...tooltip} />}
+                            content={<Translation {...tooltip} />}
                             maxWidth={210}
                             placement="right"
                         >
