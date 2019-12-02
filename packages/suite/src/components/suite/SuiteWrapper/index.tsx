@@ -28,7 +28,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateWindowSize: bindActionCreators(resizeActions.updateWindowSize, dispatch),
 });
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+export type Props = OwnProps &
+    ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => {
     const { suite, goto } = props;
@@ -53,7 +55,7 @@ const Index = (props: Props) => {
         return (
             <ConnectDevice
                 showWebUsb={isWebUSB(suite.transport)}
-                goto={goto}
+                goTo={goto}
                 // showDisconnect={shouldShowDisconnectDevice}
                 // deviceLabel={deviceLabel}
                 deviceLabel=""

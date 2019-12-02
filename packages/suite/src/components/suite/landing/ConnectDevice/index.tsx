@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { Props as ContainerProps } from '@suite-components/SuiteWrapper';
 import { Translation } from '@suite-components/Translation';
 import { P, H1, Link, colors, variables, animations, Modal } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
@@ -10,7 +11,7 @@ interface Props {
     deviceLabel: string;
     showWebUsb: boolean;
     showDisconnect: boolean;
-    goto: (param: string) => void;
+    goTo: ContainerProps['goto'];
 }
 
 const StyledConnectDevice = styled.div`
@@ -178,7 +179,7 @@ class ConnectDevice extends PureComponent<Props> {
                                                 link: (
                                                     <StyledLink
                                                         onClick={() =>
-                                                            this.props.goto('suite-bridge')
+                                                            this.props.goTo('suite-bridge')
                                                         }
                                                     >
                                                         Trezor Bridge

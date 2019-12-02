@@ -1,5 +1,5 @@
 import React from 'react';
-import { findRouteByName } from '@suite-utils/router';
+import { Props as ContainerProps } from '../../Container';
 import styled from 'styled-components';
 import { Switch } from '@trezor/components';
 import { Icon, colors } from '@trezor/components-v2';
@@ -15,6 +15,7 @@ const MenuItemWrapper = styled.div`
     font-weight: bold;
     padding-bottom: 10px;
     color: ${colors.WHITE};
+    cursor: pointer;
 `;
 
 const IconWrapper = styled.div``;
@@ -32,16 +33,17 @@ const SubMenuText = styled.div`
     flex: 1;
 `;
 
-const BottomMenu = () => (
+interface Props {
+    goTo: ContainerProps['goto'];
+}
+
+const BottomMenu = (props: Props) => (
     <Wrapper>
         {BOTTOM_MENU_ITEMS.map(item => {
             const { route, icon, text } = item;
-            const routeObj = findRouteByName(route);
-
-            if (!routeObj) return null;
 
             return (
-                <MenuItemWrapper key={text}>
+                <MenuItemWrapper key={text} onClick={() => props.goTo(route)}>
                     <IconWrapper>
                         <Icon color={colors.WHITE} size={10} icon={icon} />
                     </IconWrapper>
