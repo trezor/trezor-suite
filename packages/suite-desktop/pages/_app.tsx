@@ -13,6 +13,7 @@ import BridgeStatus from '@desktop/support/BridgeStatus';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { SENTRY } from '@suite-config';
+import Resize from '@suite-support/Resize/Container';
 
 Sentry.init({ dsn: SENTRY });
 
@@ -34,6 +35,7 @@ class TrezorSuiteApp extends App<Props> {
         return (
             <ErrorBoundary>
                 <ReduxProvider store={store}>
+                    <Resize />
                     <IntlProvider>
                         <>
                             <Router />
