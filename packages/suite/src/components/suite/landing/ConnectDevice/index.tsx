@@ -10,6 +10,7 @@ interface Props {
     deviceLabel: string;
     showWebUsb: boolean;
     showDisconnect: boolean;
+    goto: (param: string) => void;
 }
 
 const StyledConnectDevice = styled.div`
@@ -175,7 +176,11 @@ class ConnectDevice extends PureComponent<Props> {
                                             {...l10nMessages.TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING}
                                             values={{
                                                 link: (
-                                                    <StyledLink to="/bridge">
+                                                    <StyledLink
+                                                        onClick={() =>
+                                                            this.props.goto('suite-bridge')
+                                                        }
+                                                    >
                                                         Trezor Bridge
                                                     </StyledLink>
                                                 ),
