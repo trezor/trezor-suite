@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Translation } from '@suite-components/Translation';
 import { P, H1, Link, colors, variables, animations, Modal } from '@trezor/components';
 import WebusbButton from '@suite-components/WebusbButton';
-import { SuiteLayout, Footer } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
 import l10nMessages from './index.messages';
 
 interface Props {
@@ -56,16 +55,6 @@ const ButtonWrapper = styled.div`
     width: 200px;
 `;
 
-const Image = styled.img`
-    width: 100%;
-    max-width: 850px;
-    height: auto;
-    margin: auto;
-    background-repeat: no-repeat;
-    background-position: center 0px;
-    background-size: contain;
-`;
-
 const BridgeWrapper = styled.div`
     margin-bottom: 22px;
     display: flex;
@@ -95,6 +84,7 @@ const ImageWrapper = styled.svg`
     top: -8px;
     left: -24px;
 `;
+
 const DeviceRect = styled.rect`
     animation: ${animationConnect} 1.3s ease-out infinite;
 `;
@@ -102,13 +92,13 @@ const DeviceRect = styled.rect`
 class ConnectDevice extends PureComponent<Props> {
     render() {
         return (
-            <SuiteLayout isLanding footer={<Footer isLanding />}>
+            <SuiteLayout>
                 <Modal>
                     <StyledConnectDevice>
                         <Title>
-                            <P>
-                                <Translation {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} />
-                            </P>
+                            <H1>
+                                <Translation {...l10nMessages.TR_CONNECT_TREZOR} />
+                            </H1>
                         </Title>
                         <Wrapper>
                             <ConnectTrezorWrapper>
@@ -177,7 +167,6 @@ class ConnectDevice extends PureComponent<Props> {
                                 </>
                             )}
                         </Wrapper>
-                        <Image src={resolveStaticPath('images/wallet/macbook.png')} />
                         <BridgeWrapper>
                             {this.props.showWebUsb && (
                                 <P>

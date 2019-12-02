@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { FLAGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import messages from '@wallet-components/Menu/components/Row/components/AccountNavigation/index.messages';
