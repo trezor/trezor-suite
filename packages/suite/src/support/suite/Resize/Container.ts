@@ -5,7 +5,7 @@ import * as resizeActions from '@suite-actions/resizeActions';
 import { Dispatch } from '@suite-types';
 import Component from './index';
 
-const mapStateToProps = () => ({});
+const mapStateToProps = () => null;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateWindowSize: bindActionCreators(resizeActions.updateWindowSize, dispatch),
