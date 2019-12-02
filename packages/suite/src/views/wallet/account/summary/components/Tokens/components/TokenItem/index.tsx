@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import l10nCommonMessages from '@suite/views/wallet/index.messages';
 import { formatAmount } from '@wallet-utils/accountUtils';
@@ -50,9 +50,7 @@ const TokenItem = ({ token, hideBalance }: Props) => {
                         maxWidth={200}
                         placement="top"
                         content={
-                            <FormattedMessage
-                                {...l10nCommonMessages.TR_THE_ACCOUNT_BALANCE_IS_HIDDEN}
-                            />
+                            <Translation {...l10nCommonMessages.TR_THE_ACCOUNT_BALANCE_IS_HIDDEN} />
                         }
                     >
                         <TooltipIcon icon="EYE_CROSSED" size={14} color={colors.TEXT_SECONDARY} />

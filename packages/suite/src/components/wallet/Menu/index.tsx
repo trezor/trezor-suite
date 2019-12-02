@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
 import * as accountActions from '@wallet-actions/accountActions';
@@ -54,7 +54,7 @@ const DiscoveryStatus = () => (
         <LoadingWrapper>
             <Loader size={15} />
             <LoadingText>
-                <FormattedMessage {...walletAccountMessages.TR_LOADING_ACCOUNTS} />
+                <Translation {...walletAccountMessages.TR_LOADING_ACCOUNTS} />
                 {/* todo: if you want dots "..." use Loader.Dots from onboarding */}
             </LoadingText>
         </LoadingWrapper>
@@ -113,7 +113,7 @@ const Menu = ({
             {discovery.status === 4 && (
                 <AddAccountButton
                     onClick={requestNewAccount}
-                    tooltipContent={<FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />}
+                    tooltipContent={<Translation {...l10nMessages.TR_ADD_ACCOUNT} />}
                 />
             )}
             {legacyAccounts.length > 0 && (

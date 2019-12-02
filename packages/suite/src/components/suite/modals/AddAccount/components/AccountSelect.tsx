@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
@@ -55,7 +55,7 @@ const EnableNetwork = (props: {
             onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}
             inlineWidth
         >
-            <FormattedMessage
+            <Translation
                 {...l10nMessages.TR_ENABLE_NETWORK_BUTTON}
                 values={{ networkName: props.selectedNetwork.name }}
             />
@@ -102,10 +102,10 @@ const AccountButton = (props: {
                 <AccountName>
                     {accountType && (
                         <LabelAddon>
-                            <FormattedMessage {...accountType} />
+                            <Translation {...accountType} />
                         </LabelAddon>
                     )}
-                    <FormattedMessage
+                    <Translation
                         {...(account.imported
                             ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
                             : l10nCommonMessages.TR_ACCOUNT_HASH)}

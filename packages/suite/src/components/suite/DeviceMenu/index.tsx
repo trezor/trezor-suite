@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
@@ -232,7 +232,7 @@ const DeviceMenu = ({
                         )}
                         {/* <Tooltip
                         content={
-                            <FormattedMessage
+                            <Translation
                                 {...l10nCommonMessages.TR_APPLICATION_SETTINGS}
                             />
                         }

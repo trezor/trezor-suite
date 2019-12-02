@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Switch, Icon, colors } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import MenuItem from '@suite-components/DeviceMenu/components/MenuItem';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -68,7 +68,7 @@ const MenuItems = (props: Props) => {
                         <Icon icon="WALLET_HIDDEN" size={14} color={colors.TEXT_SECONDARY} />
                     </IconWrapper>
                     <Label>
-                        <FormattedMessage {...l10nMessages.TR_ADD_HIDDEN_WALLET} />
+                        <Translation {...l10nMessages.TR_ADD_HIDDEN_WALLET} />
                     </Label>
                 </MenuItem>
             )}
@@ -78,7 +78,7 @@ const MenuItems = (props: Props) => {
                     <Icon icon="EYE_CROSSED" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
+                    <Translation {...l10nCommonMessages.TR_HIDE_BALANCE} />
                 </Label>
                 <SwitchWrapper
                     onClick={event => {
@@ -106,7 +106,7 @@ const MenuItems = (props: Props) => {
                     <Icon icon="COG" size={14} color={colors.TEXT_SECONDARY} />
                 </IconWrapper>
                 <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
+                    <Translation {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
                 </Label>
             </MenuItem>
         </>

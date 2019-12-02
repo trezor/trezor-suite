@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 
 import { P } from '@trezor/components';
 

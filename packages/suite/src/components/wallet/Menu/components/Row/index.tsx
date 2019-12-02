@@ -3,7 +3,7 @@ import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { Link } from '@suite-components';
 import { Account } from '@wallet-types';
@@ -146,16 +146,16 @@ const Row = React.memo(({ account, hideBalance, selected }: Props) => {
                     </LogoWrapper>
                     <Name>
                         <CoinName>
-                            <FormattedMessage {...getTitleForNetwork(account.symbol)} />
+                            <Translation {...getTitleForNetwork(account.symbol)} />
                         </CoinName>
                         <AccountIndex>
                             <Label>
                                 {accountType && (
                                     <LabelAddon>
-                                        <FormattedMessage {...accountType} />
+                                        <Translation {...accountType} />
                                     </LabelAddon>
                                 )}
-                                <FormattedMessage
+                                <Translation
                                     {...(account.imported
                                         ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
                                         : l10nCommonMessages.TR_ACCOUNT_HASH)}

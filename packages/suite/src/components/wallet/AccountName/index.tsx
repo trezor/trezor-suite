@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { CoinLogo, variables, colors } from '@trezor/components';
 import l10nCommonMessages from '@suite-views/index.messages';
 import { ExtendedMessageDescriptor } from '@suite/types/suite';
@@ -43,21 +43,21 @@ const AccountName = ({ account, message }: Props) => {
             <StyledCoinLogo size={24} symbol={account.symbol} />
             <AccountTitle>
                 {message && (
-                    <FormattedMessage
+                    <Translation
                         {...message}
                         values={{
-                            network: <FormattedMessage {...getTitleForNetwork(account.symbol)} />,
+                            network: <Translation {...getTitleForNetwork(account.symbol)} />,
                         }}
                     />
                 )}
-                {!message && <FormattedMessage {...getTitleForNetwork(account.symbol)} />}
+                {!message && <Translation {...getTitleForNetwork(account.symbol)} />}
                 <Label>
                     {accountType && (
                         <LabelAddon>
-                            <FormattedMessage {...accountType} />
+                            <Translation {...accountType} />
                         </LabelAddon>
                     )}
-                    <FormattedMessage
+                    <Translation
                         {...(account.imported
                             ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
                             : l10nCommonMessages.TR_ACCOUNT_HASH)}

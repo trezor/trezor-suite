@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import { variables, Icon, colors } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
@@ -38,7 +38,7 @@ const SetMax = (props: Props) => (
     >
         <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />
         {/* {!props.canSetMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />} */}
-        <FormattedMessage {...messages.TR_SET_MAX} />
+        <Translation {...messages.TR_SET_MAX} />
     </SetMaxButton>
 );
 
