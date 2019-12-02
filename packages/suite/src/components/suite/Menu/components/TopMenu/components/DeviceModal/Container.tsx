@@ -8,6 +8,7 @@ import Component from './index';
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
     selectedDevice: state.suite.device,
+    devices: state.devices,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
