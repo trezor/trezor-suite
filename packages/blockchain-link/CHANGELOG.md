@@ -1,3 +1,8 @@
+# 1.0.6
+#### changes
+- Fix for react-native workers
+- Update outdated node_modules
+
 # 1.0.5
 #### changes
 - Fixed Ripple-lib transaction event transformation (missing ledger_index field in transaction object)

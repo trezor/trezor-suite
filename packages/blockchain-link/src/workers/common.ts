@@ -2,8 +2,6 @@ import { Response, BlockchainSettings, SubscriptionAccountInfo } from '../types'
 import { MESSAGES, RESPONSES } from '../constants';
 import { CustomError } from '../constants/errors';
 
-declare function postMessage(data: Response): void;
-
 class WorkerCommon {
     post: (data: Response) => void;
     settings: BlockchainSettings;
@@ -11,7 +9,7 @@ class WorkerCommon {
     addresses: string[];
     accounts: SubscriptionAccountInfo[];
     subscription: { [key: string]: boolean };
-    constructor(postFn?: (data: Response) => void) {
+    constructor(postFn: (data: Response) => void) {
         this.addresses = [];
         this.accounts = [];
         this.subscription = {};
@@ -21,7 +19,11 @@ class WorkerCommon {
             server: [],
         };
         this.debugPrefix = '[UnknownWorker]';
-        this.post = postFn || postMessage;
+        this.post = () =>
+            console.warn('BlockchainLink:workers.common: postMessage method is not set');
+        if (typeof postFn !== 'undefined') {
+            this.post = postFn;
+        }
     }
 
     handshake() {
