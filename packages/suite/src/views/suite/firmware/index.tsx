@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-// import { FormattedMessage } from 'react-intl';
+// import { Translation } from '@suite-components/Translation';
 import { FirmwareRelease } from 'trezor-connect';
 import { Checkbox, Tooltip, P, H1, H4, H5, variables } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
@@ -357,7 +357,7 @@ const FirmwareUpdate = (props: Props) => {
                             userUnderstands={userUnderstandsWarning()}
                             onClick={() => props.firmwareUpdate()}
                         >
-                            {/* <FormattedMessage {...l10nMessages.TR_INSTALL} /> */}
+                            {/* <Translation {...l10nMessages.TR_INSTALL} /> */}
                             {!isInBootloader() && hasNewestFirmware() ? 'Reinstall' : 'Install'}
                         </InstallButton>
                     </>

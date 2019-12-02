@@ -1,5 +1,5 @@
 import React from 'react';
-// import { FormattedMessage } from 'react-intl';
+// import { Translation } from '@suite-components/Translation';
 import { Link } from '@trezor/components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
@@ -24,7 +24,7 @@ const ShamirStep = (props: Props) => {
             <Wrapper.StepHeading>
                 {getModel() === 1 && 'Almost there! Prepare to launch'}
                 {getModel() === 2 && 'Seed type'}
-                {/* <FormattedMessage {...l10nMessages.TR_SECURITY_HEADING} /> */}
+                {/* <Translation {...l10nMessages.TR_SECURITY_HEADING} /> */}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getModel() === 1 && (

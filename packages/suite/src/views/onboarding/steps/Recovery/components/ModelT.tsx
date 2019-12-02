@@ -1,8 +1,9 @@
 import React from 'react';
 // import styled from 'styled-components';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Translation } from '@suite-components/Translation';
 
 import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
 
@@ -78,7 +79,7 @@ const RecoveryStepModelT = (props: Props) => {
                 {getStatus() === null && (
                     <>
                         <Text>
-                            <FormattedMessage {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
+                            <Translation {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
@@ -86,7 +87,7 @@ const RecoveryStepModelT = (props: Props) => {
                                     recoveryDevice();
                                 }}
                             >
-                                <FormattedMessage {...messages.TR_START_RECOVERY} />
+                                <Translation {...messages.TR_START_RECOVERY} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -103,7 +104,7 @@ const RecoveryStepModelT = (props: Props) => {
                 {getStatus() === 'error' && (
                     <>
                         <Text>
-                            <FormattedMessage
+                            <Translation
                                 {...messages.TR_RECOVERY_ERROR}
                                 values={{ error: deviceCall.error || '' }}
                             />
@@ -113,7 +114,7 @@ const RecoveryStepModelT = (props: Props) => {
                                 props.connectActions.resetCall();
                             }}
                         >
-                            <FormattedMessage {...l10nCommonMessages.TR_RETRY} />
+                            <Translation {...l10nCommonMessages.TR_RETRY} />
                         </OnboardingButton.Cta>
                     </>
                 )}

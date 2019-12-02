@@ -1,4 +1,4 @@
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { AppState } from '@suite-types';
 import { colors, Icon, Input } from '@trezor/components';
 import { Button } from '@trezor/components-v2';

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
@@ -50,7 +50,7 @@ const RequestInstance: FunctionComponent<Props> = ({
     return (
         <Wrapper>
             <H5>
-                <FormattedMessage
+                <Translation
                     {...l10nMessages.TR_REQUEST_INSTANCE_HEADER}
                     values={{
                         deviceLabel: `${device.label} (${instance})`,
@@ -58,14 +58,14 @@ const RequestInstance: FunctionComponent<Props> = ({
                 />
             </H5>
             <StyledP size="small">
-                <FormattedMessage {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
+                <Translation {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
             </StyledP>
             <Row>
                 <Button onClick={() => onCreateInstance(device)} inlineWidth>
-                    <FormattedMessage {...l10nMessages.TR_CREATE_INSTANCE} />
+                    <Translation {...l10nMessages.TR_CREATE_INSTANCE} />
                 </Button>
                 <Button variant="secondary" onClick={onCancel} inlineWidth>
-                    <FormattedMessage {...globalMessages.TR_CANCEL} />
+                    <Translation {...globalMessages.TR_CANCEL} />
                 </Button>
             </Row>
         </Wrapper>

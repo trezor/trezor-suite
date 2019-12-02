@@ -3,7 +3,8 @@ import colors from '@onboarding-config/colors';
 import bip39List from '@onboarding-constants/bip39';
 import { P, Select } from '@trezor/components';
 import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
-import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
 
@@ -81,9 +82,9 @@ const WordsInput = (props: Props) => {
     return (
         <>
             <Text>
-                <FormattedMessage {...messages.TR_ENTER_SEED_WORDS_INSTRUCTION} />{' '}
+                <Translation {...messages.TR_ENTER_SEED_WORDS_INSTRUCTION} />{' '}
                 {wordsCount < 24 && (
-                    <FormattedMessage
+                    <Translation
                         {...messages.TR_RANDOM_SEED_WORDS_DISCLAIMER}
                         values={{ count: 24 - wordsCount }}
                     />
@@ -143,7 +144,7 @@ const WordsInput = (props: Props) => {
             </SelectWrapper>
             {typeof counter === 'number' && counter >= 1 && (
                 <P size="small">
-                    <FormattedMessage
+                    <Translation
                         {...messages.TR_MORE_WORDS_TO_ENTER}
                         values={{ count: 24 - counter }}
                     />
