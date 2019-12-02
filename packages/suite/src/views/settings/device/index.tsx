@@ -123,6 +123,8 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
         { icon: 'ARROW_LEFT', value: 270 },
     ] as const;
 
+    console.log('render');
+
     return (
         <SettingsLayout title="Settings" data-test="@suite/device-settings/page">
             <Row>

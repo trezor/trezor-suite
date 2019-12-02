@@ -1,4 +1,5 @@
-FROM node:12
+# buster is for debian 10. the same version as firmware team has in its Dockerfile.
+FROM node:12-buster
 
 RUN apt-get update && apt-get install -y \ 
     build-essential \
@@ -54,9 +55,6 @@ ENV XDG_RUNTIME_DIR "/var/tmp"
 # trezorctl https://click.palletsprojects.com/en/7.x/python3/
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
-
-# needed? probably not
-# RUN python3 -m pip install pipenv
 
 # Out of the blue, we started to run into CI failures. All of them had one thing in common. 
 # Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/

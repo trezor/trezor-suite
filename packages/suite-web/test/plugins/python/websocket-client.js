@@ -1,14 +1,10 @@
-
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
 
 const createDeferred = (id) => {
-    // intentionally ignore below lines in test coverage, they will be overridden in promise creation
-    /* istanbul ignore next */
     let localResolve = (t) => () => {};
-    /* istanbul ignore next */
     let localReject = (e) => () => {};
 
     const promise = new Promise(async (resolve, reject) => {

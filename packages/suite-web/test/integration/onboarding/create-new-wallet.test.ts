@@ -6,7 +6,6 @@ describe('Onboarding happy paths', () => {
             .task('startEmu')
             .task('wipeEmu')
             .task('stopEmu');
-        cy.viewport(1024, 768).resetDb();
     });
 
     beforeEach(() => {

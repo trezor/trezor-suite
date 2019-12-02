@@ -1,16 +1,16 @@
-# suite-web lint:
-#     stage: lint and prettier
-#     script:
-#         - yarn workspace @trezor/suite-web lint
-#     dependencies:
-#         - install and build
+suite-web lint:
+    stage: lint and prettier
+    script:
+        - yarn workspace @trezor/suite-web lint
+    dependencies:
+        - install and build
 
-# suite-web type check:
-#     stage: typescript type check
-#     script:
-#         - yarn workspace @trezor/suite-web type-check
-#     dependencies:
-#         - install and build
+suite-web type check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/suite-web type-check
+    dependencies:
+        - install and build
 
 suite-web build:
     stage: build
@@ -62,16 +62,11 @@ suite-web delete review:
         - install and build
 
 suite-web test integration google-chrome:
-    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
-    # variables: 
-    #     SDL_VIDEODRIVER: "dummy"
-    #     XDG_RUNTIME_DIR: "/var/tmp"
     script:
         #  Would like not to have npx here, but cypress requires binary at: /root/.cache/Cypress/3.4.1/Cypress/Cypress
         #  And it is not packed with artifacts
         - npx cypress install
-        - python3 --version
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration:ci:run
     artifacts:
@@ -80,6 +75,7 @@ suite-web test integration google-chrome:
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
     dependencies:
         - install and build
 
@@ -97,5 +93,6 @@ suite-web test integration google-chrome-beta:
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
     dependencies:
         - install and build

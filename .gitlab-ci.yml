@@ -1,6 +1,5 @@
 # ! DO NOT set latest here USE custom hash !
-# image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:30432a76306b0b3ae5f0fa57d0bc9a63fb4d025f
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:08e13ae814688c94451db0693e98d7c5a8feb617
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
@@ -24,14 +23,14 @@ stages:
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    # - ci/packages/components.yml
-    # - ci/packages/components-v2.yml
-    # - ci/packages/components-storybook.yml
-    # - ci/packages/components-storybook-v2.yml
-    # - ci/packages/suite.yml
+    - ci/packages/components.yml
+    - ci/packages/components-v2.yml
+    - ci/packages/components-storybook.yml
+    - ci/packages/components-storybook-v2.yml
+    - ci/packages/suite.yml
     - ci/packages/suite-web.yml
-    # - ci/packages/suite-desktop.yml
-    # - ci/packages/suite-native.yml
-    # - ci/packages/blockchain-link.yml
-    # - ci/packages/rollout.yml
+    - ci/packages/suite-desktop.yml
+    - ci/packages/suite-native.yml
+    - ci/packages/blockchain-link.yml
+    - ci/packages/rollout.yml
     # - ci/packages/connect-explorer.yml

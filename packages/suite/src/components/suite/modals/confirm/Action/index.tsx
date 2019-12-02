@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Prompt } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -16,7 +16,7 @@ const Header = styled.div`
     padding: 48px;
 `;
 
-const ConfirmAction: FunctionComponent<Props> = ({ device }) => {
+const ConfirmAction = ({ device }: Props) => {
     const majorVersion = device.features ? device.features.major_version : 2;
 
     return (
