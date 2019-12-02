@@ -11,7 +11,7 @@ interface Props {
     deviceLabel: string;
     showWebUsb: boolean;
     showDisconnect: boolean;
-    goTo: ContainerProps['goto'];
+    goto: ContainerProps['goto'];
 }
 
 const StyledConnectDevice = styled.div`
@@ -179,7 +179,7 @@ class ConnectDevice extends PureComponent<Props> {
                                                 link: (
                                                     <StyledLink
                                                         onClick={() =>
-                                                            this.props.goTo('suite-bridge')
+                                                            this.props.goto('suite-bridge')
                                                         }
                                                     >
                                                         Trezor Bridge

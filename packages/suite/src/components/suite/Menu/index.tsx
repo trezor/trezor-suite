@@ -18,8 +18,8 @@ const Menu = (props: Props) => {
     return (
         <Wrapper>
             <TopMenu selectedDevice={props.selectedDevice} />
-            <MainMenu app={props.router.app} goTo={props.goto} />
-            <BottomMenu goTo={props.goto} />
+            <MainMenu app={props.router.app} goto={props.goto} />
+            <BottomMenu goto={props.goto} />
         </Wrapper>
     );
 };

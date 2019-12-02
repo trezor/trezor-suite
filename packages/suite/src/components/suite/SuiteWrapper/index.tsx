@@ -55,7 +55,7 @@ const Index = (props: Props) => {
         return (
             <ConnectDevice
                 showWebUsb={isWebUSB(suite.transport)}
-                goTo={goto}
+                goto={goto}
                 // showDisconnect={shouldShowDisconnectDevice}
                 // deviceLabel={deviceLabel}
                 deviceLabel=""

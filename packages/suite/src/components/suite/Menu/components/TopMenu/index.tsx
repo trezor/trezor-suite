@@ -52,7 +52,7 @@ const TopMenu = (props: Props) => {
     return (
         <Wrapper>
             <DeviceStatus>
-                {!props.selectedDevice && <DeviceRow>no device</DeviceRow>}
+                {!props.selectedDevice && <DeviceRow />}
                 {props.selectedDevice && (
                     <DeviceRow onClick={() => showModal()}>
                         <DeviceIcon size={12} device={props.selectedDevice} />

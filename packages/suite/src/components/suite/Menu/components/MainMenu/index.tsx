@@ -60,7 +60,7 @@ const Text = styled(InnerWrapper)<ComponentProps>``;
 
 interface Props {
     app: string;
-    goTo: ContainerProps['goto'];
+    goto: ContainerProps['goto'];
 }
 
 const Menu = (props: Props) => (
@@ -73,7 +73,7 @@ const Menu = (props: Props) => (
 
             return (
                 <MenuItemWrapper key={text}>
-                    <In onClick={() => props.goTo(routeObj.name)} isActive={isActive}>
+                    <In onClick={() => props.goto(routeObj.name)} isActive={isActive}>
                         <IconWrapper isActive={isActive}>
                             <Icon
                                 size={20}

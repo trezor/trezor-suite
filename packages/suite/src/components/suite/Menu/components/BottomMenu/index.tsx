@@ -34,7 +34,7 @@ const SubMenuText = styled.div`
 `;
 
 interface Props {
-    goTo: ContainerProps['goto'];
+    goto: ContainerProps['goto'];
 }
 
 const BottomMenu = (props: Props) => (
@@ -43,7 +43,7 @@ const BottomMenu = (props: Props) => (
             const { route, icon, text } = item;
 
             return (
-                <MenuItemWrapper key={text} onClick={() => props.goTo(route)}>
+                <MenuItemWrapper key={text} onClick={() => props.goto(route)}>
                     <IconWrapper>
                         <Icon color={colors.WHITE} size={10} icon={icon} />
                     </IconWrapper>
