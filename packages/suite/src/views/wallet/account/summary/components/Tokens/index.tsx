@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H5, colors } from '@trezor/components';
+import { H2, P } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import l10nMessages from '../../common.messages';
 import TokenItem from './components/TokenItem';
@@ -9,12 +9,6 @@ import { Account } from '@wallet-types';
 const TokensHeadingWrapper = styled.div`
     display: flex;
     padding: 20px 0;
-`;
-
-const NoTokens = styled.div`
-    display: flex;
-    justify-content: center;
-    color: ${colors.TEXT_SECONDARY};
 `;
 
 const AddedTokensWrapper = styled.div``;
@@ -28,12 +22,12 @@ const Tokens = ({ tokens, hideBalance }: Props) => {
     return (
         <>
             <TokensHeadingWrapper>
-                <H5>
+                <H2>
                     <Translation {...l10nMessages.TR_TOKENS} />
-                </H5>
+                </H2>
             </TokensHeadingWrapper>
             <AddedTokensWrapper>
-                {tokens.length === 0 && <NoTokens>No tokens</NoTokens>}
+                {tokens.length === 0 && <P textAlign="center">No tokens</P>}
                 {tokens.map(token => (
                     <TokenItem key={token.address} token={token} hideBalance={hideBalance} />
                 ))}

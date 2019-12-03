@@ -1,6 +1,7 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import { H6, TrezorImage } from '@trezor/components';
+import { TrezorImage } from '@trezor/components';
+import { P } from '@trezor/components-v2';
 import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
 
 import l10nMessages from './index.messages';
@@ -24,9 +25,9 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                         }}
                     >
                         <TrezorImage style={{ margin: '15px' }} model={1} height={DEVICE_HEIGHT} />
-                        <H6>
+                        <P weight="bold">
                             <Translation {...l10nMessages.TR_MODEL_ONE} />
-                        </H6>
+                        </P>
                     </Option>
                     <Option
                         data-test="@onboarding/option-model-t-path"
@@ -36,9 +37,9 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                         }}
                     >
                         <TrezorImage style={{ margin: '15px' }} model={2} height={DEVICE_HEIGHT} />
-                        <H6>
+                        <P weight="bold">
                             <Translation {...l10nMessages.TR_MODEL_T} />
-                        </H6>
+                        </P>
                     </Option>
                 </Wrapper.Options>
             </Wrapper.StepBody>

@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UI } from 'trezor-connect';
-import { Link } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 // import { Link, Modal } from '@trezor/components';
 
 import { Translation } from '@suite-components/Translation';
@@ -177,7 +177,7 @@ const SetPinStep = (props: Props) => {
                                 {...l10nMessages.TR_PIN_ERROR_TROUBLESHOOT}
                                 values={{
                                     TR_DOCUMENTATION: (
-                                        <Link href={URLS.PIN_MANUAL_URL} variant="nostyle">
+                                        <Link href={URLS.PIN_MANUAL_URL}>
                                             <Translation {...l10nMessages.TR_DOCUMENTATION} />
                                         </Link>
                                     ),

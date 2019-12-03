@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 
-import { P, H1 } from '@trezor/components';
+import { P } from '@trezor/components';
+import { H1 } from '@trezor/components-v2';
 import { Loaders } from '@onboarding-components';
 
 const ANIMATION_DURATION = 2.5;

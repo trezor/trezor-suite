@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { P, Link } from '@trezor/components';
+import { P, Link } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
+
 import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
 import {
     WORD_REQUEST_PLAIN,
@@ -165,7 +166,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 {...messages.TR_RECOVERY_TYPES_DESCRIPTION}
                                 values={{
                                     TR_LEARN_MORE_LINK: (
-                                        <Link href={RECOVERY_MODEL_ONE_URL} variant="nostyle">
+                                        <Link href={RECOVERY_MODEL_ONE_URL}>
                                             <Translation
                                                 {...l10nCommonMessages.TR_LEARN_MORE_LINK}
                                             />

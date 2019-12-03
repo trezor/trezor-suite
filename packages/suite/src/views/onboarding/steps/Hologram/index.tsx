@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 
 import {
@@ -66,17 +67,17 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 {...l10nMessages.TR_DID_YOU_PURCHASE}
                                 values={{
                                     TR_PACKAGING_LINK: (
-                                        <Link href={TREZOR_PACKAGING_URL} variant="nostyle">
+                                        <Link href={TREZOR_PACKAGING_URL}>
                                             <Translation {...l10nMessages.TR_PACKAGING_LINK} />
                                         </Link>
                                     ),
                                     TR_RESELLERS_LINK: (
-                                        <Link href={TREZOR_RESELLERS_URL} variant="nostyle">
+                                        <Link href={TREZOR_RESELLERS_URL}>
                                             <Translation {...l10nMessages.TR_RESELLERS_LINK} />
                                         </Link>
                                     ),
                                     TR_CONTACT_OUR_SUPPORT_LINK: (
-                                        <Link href={SUPPORT_URL} variant="nostyle">
+                                        <Link href={SUPPORT_URL}>
                                             <Translation
                                                 {...l10nMessages.TR_CONTACT_OUR_SUPPORT_LINK}
                                             />
@@ -93,7 +94,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 Back
                             </OnboardingButton.Alt>
 
-                            <Link href={SUPPORT_URL} target="_self" variant="nostyle">
+                            <Link href={SUPPORT_URL} target="_self">
                                 <OnboardingButton.Cta
                                     data-test="button-contact-support"
                                     style={{ width: '100%' }}

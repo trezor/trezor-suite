@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { Select, Link } from '@trezor/components';
+import { Select } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 
@@ -119,7 +120,7 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                             onChange={(v: Installer) => this.onChange(v)}
                             options={installers}
                         />
-                        <Link href={`${uri}${target.value}`} variant="nostyle">
+                        <Link href={`${uri}${target.value}`}>
                             <OnboardingButton.Cta onClick={() => this.download()}>
                                 <Translation {...l10nMessages.TR_DOWNLOAD} />
                             </OnboardingButton.Cta>

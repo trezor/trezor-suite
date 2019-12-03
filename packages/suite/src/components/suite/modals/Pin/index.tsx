@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { P, H5, Link } from '@trezor/components';
+import { P, H2, Link } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import { PinInput } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
@@ -30,14 +30,14 @@ interface Props {
 const Pin = ({ device, onEnterPin }: Props) => {
     return (
         <ModalWrapper>
-            <H5>
+            <H2>
                 <Translation
                     {...globalMessages.TR_ENTER_PIN}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
-            </H5>
+            </H2>
             <TopMessage size="small">
                 <Translation {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
             </TopMessage>

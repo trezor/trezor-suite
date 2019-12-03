@@ -2,8 +2,8 @@ import React from 'react';
 import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
-import { H5, Link, P, CoinLogo } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { CoinLogo } from '@trezor/components';
+import { Button, H2, Link, P } from '@trezor/components-v2';
 import { Network, ExternalNetwork } from '@wallet-types';
 import l10nMessages from './messages';
 
@@ -46,14 +46,14 @@ const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
     return (
         <Wrapper>
             <StyledCoinLogo size={64} symbol={symbol} />
-            <H5>
+            <H2>
                 <Translation>{getHeader(symbol)}</Translation>
-            </H5>
+            </H2>
             <P size="small">
                 <Translation>{l10nMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL}</Translation>
             </P>
 
-            <Link href={url} variant="nostyle">
+            <Link href={url}>
                 <StyledButton onClick={onCancel}>
                     <Translation>{l10nMessages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
                 </StyledButton>

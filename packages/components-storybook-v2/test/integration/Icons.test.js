@@ -1,4 +1,4 @@
-describe('Form', () => {
+describe('Icons', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { Link, P, H5, colors } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
+import { Button, P, H2, Link } from '@trezor/components-v2';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 
@@ -106,7 +106,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     return (
         <Wrapper>
             <Content>
-                <H5>{deviceStatus}</H5>
+                <H2>{deviceStatus}</H2>
                 <StyledP size="small">
                     <Translation
                         {...l10nMessages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
@@ -128,19 +128,19 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             {needsBackup && (
                 <>
                     <Content>
-                        <H5>
+                        <H2>
                             <Translation
                                 {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_BACKED_UP}
                                 values={{ deviceLabel: device.label }}
                             />
-                        </H5>
+                        </H2>
                         <StyledP size="small">
                             <Translation {...suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
                         </StyledP>
                     </Content>
                     <Content>
                         <Row>
-                            <Link href={`/?backup#${device.path}`} variant="nostyle">
+                            <Link href={`/?backup#${device.path}`}>
                                 <Button>
                                     <Translation {...suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
                                 </Button>

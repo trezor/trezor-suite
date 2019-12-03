@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Link, colors, variables } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
@@ -93,11 +94,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <Translation
             {...l10nMessages.TR_EXCHANGE_RATES_BY}
             values={{
-                service: (
-                    <Link href="https://www.coingecko.com" variant="nostyle">
-                        Coingecko
-                    </Link>
-                ),
+                service: <Link href="https://www.coingecko.com">Coingecko</Link>,
             }}
         />
     );
@@ -105,10 +102,8 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <Wrapper isLanding={isLanding}>
             <Content>
                 <Left>
-                    <StyledLink href="http://satoshilabs.com" variant="nostyle">
-                        SatoshiLabs
-                    </StyledLink>
-                    <StyledLink href="https://trezor.io/tos" variant="nostyle">
+                    <StyledLink href="http://satoshilabs.com">SatoshiLabs</StyledLink>
+                    <StyledLink href="https://trezor.io/tos">
                         <Translation>{l10nMessages.TR_TERMS}</Translation>
                     </StyledLink>
                     <StyledLink onClick={toggle}>{opened ? 'Hide Log' : 'Show Log'}</StyledLink>

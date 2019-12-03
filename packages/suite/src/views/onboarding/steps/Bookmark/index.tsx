@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 
-import { Link, P } from '@trezor/components';
+import { Link, P } from '@trezor/components-v2';
 
 import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
 import l10nCommonMessages from '@suite-support/Messages';

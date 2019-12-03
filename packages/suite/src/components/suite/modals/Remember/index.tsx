@@ -2,8 +2,8 @@ import React, { FunctionComponent, useState, useEffect } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
-import { H5, P, Loader } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Loader } from '@trezor/components';
+import { H2, P, Button } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 
 import commonMessages from '@suite-views/index.messages';
@@ -84,14 +84,14 @@ const RememberDevice: FunctionComponent<Props> = ({
 
     return (
         <Wrapper>
-            <H5>
+            <H2>
                 <Translation
                     {...modalsMessages.TR_FORGET_LABEL}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
                 <Translation
                     {...messages.TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO}

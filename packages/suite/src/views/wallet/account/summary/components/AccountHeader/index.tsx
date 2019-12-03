@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { Link, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import AccountName from '@wallet-components/AccountName';
 import l10nSummaryMessages from '../../common.messages';
 import AccountBalance from './components/Balance';
@@ -43,7 +44,7 @@ const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }:
         <>
             <AccountHeading>
                 <AccountName account={account} message={accountNameMessage} />
-                <StyledLink href={explorerLink} variant="gray">
+                <StyledLink href={explorerLink}>
                     <Translation {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
                 </StyledLink>
             </AccountHeading>
