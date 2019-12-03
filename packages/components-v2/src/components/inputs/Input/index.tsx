@@ -10,41 +10,7 @@ import {
     InputButton,
     TextAlign,
 } from '../../../support/types';
-
-const getDisplayWidth = (display: InputProps['display']) => {
-    switch (display) {
-        case 'block':
-            return '100%';
-        case 'short':
-            return '160px';
-        default:
-            return '480px';
-    }
-};
-
-const getStateColor = (state: InputState | undefined) => {
-    switch (state) {
-        case 'success':
-            return colors.GREENER;
-        case 'warning':
-            return colors.YELLOWER;
-        case 'error':
-            return colors.RED;
-        default:
-            return colors.BLACK50;
-    }
-};
-
-const getStateIcon = (state: InputState) => {
-    switch (state) {
-        case 'warning':
-            return 'INFO';
-        case 'error':
-            return 'CROSS';
-        default:
-            return 'CHECK';
-    }
-};
+import { getStateColor, getDisplayWidth } from '../../../utils';
 
 const Wrapper = styled.div<WrapperProps>`
     display: inline-flex;
@@ -58,19 +24,18 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const StyledInput = styled.input<InputProps>`
-    font-family: ${props => (props.monospace ? 'RobotoMono' : 'TTHoves')};
+    font-family: 'TTHoves';
     padding: 0 10px;
     font-size: ${props => (props.value ? '16px' : '14px')};
     border-radius: 3px;
     box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
-    border: solid 1px ${colors.BLACK80};
+    border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};
     background-color: ${colors.WHITE};
     outline: none;
     box-sizing: border-box;
-    width: ${props => getDisplayWidth(props.display)};
+    width: ${props => getDisplayWidth(props.display || 'default')};
     height: ${props => (props.variant === 'small' ? '38px' : '48px')};
     text-align: ${props => props.align || 'left'};
-    border-color: ${props => getStateColor(props.state)};
     color: ${props => getStateColor(props.state)};
 
     &:read-only {
@@ -236,6 +201,16 @@ const Input = ({
     const handleButtonLeave = () => {
         setButtonHover(false);
     };
+    const getStateIcon = () => {
+        switch (state) {
+            case 'warning':
+                return 'INFO';
+            case 'error':
+                return 'CROSS';
+            default:
+                return 'CHECK';
+        }
+    };
 
     return (
         <Wrapper display={display} {...wrapperProps}>
@@ -265,11 +240,7 @@ const Input = ({
                     )}
                     {state && (
                         <StateIconWrapper>
-                            <Icon
-                                icon={getStateIcon(state)}
-                                color={getStateColor(state)}
-                                size={10}
-                            />
+                            <Icon icon={getStateIcon()} color={getStateColor(state)} size={10} />
                         </StateIconWrapper>
                     )}
                 </InputIconWrapper>

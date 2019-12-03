@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input } from '@trezor/components-v2';
+import { Input, Textarea } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -11,7 +11,7 @@ const Col = styled.div`
     margin: 1rem 0 2rem;
 `;
 
-const InputWrapper = styled.div`
+const ComponentWrapper = styled.div`
     margin-bottom: 1rem;
     width: 100%;
 `;
@@ -27,112 +27,279 @@ storiesOf('Form', module).add(
     () => {
         return (
             <Wrapper>
+                <Heading>Textarea short</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            wrapperProps={{ 'data-test': 'textarea-short' }}
+                            display="short"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="success"
+                            wrapperProps={{ 'data-test': 'textarea-short-success' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="warning"
+                            wrapperProps={{ 'data-test': 'textarea-short-warning' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="error"
+                            wrapperProps={{ 'data-test': 'textarea-short-error' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            wrapperProps={{ 'data-test': 'textarea-short-label' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            disabled
+                            wrapperProps={{ 'data-test': 'textarea-short-disabled' }}
+                            display="short"
+                        />
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Textarea default</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            wrapperProps={{ 'data-test': 'textarea-default' }}
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="success"
+                            wrapperProps={{ 'data-test': 'textarea-success' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="warning"
+                            wrapperProps={{ 'data-test': 'textarea-warning' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="error"
+                            wrapperProps={{ 'data-test': 'textarea-error' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            wrapperProps={{ 'data-test': 'textarea-label' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            disabled
+                            wrapperProps={{ 'data-test': 'textarea-disabled' }}
+                        />
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Textarea block</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            wrapperProps={{ 'data-test': 'textarea-block-default' }}
+                            display="block"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="success"
+                            wrapperProps={{ 'data-test': 'textarea-block-success' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="warning"
+                            wrapperProps={{ 'data-test': 'textarea-block-warning' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="error"
+                            wrapperProps={{ 'data-test': 'textarea-block-error' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            wrapperProps={{ 'data-test': 'textarea-block-label' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            disabled
+                            wrapperProps={{ 'data-test': 'textarea-block-disabled' }}
+                            display="block"
+                        />
+                    </ComponentWrapper>
+                </Col>
+
                 <Heading>Input</Heading>
                 <Col>
                     <SubHeading>Short</SubHeading>
-                    <InputWrapper>
+                    <ComponentWrapper>
                         <Input
                             value="Short input"
                             display="short"
                             wrapperProps={{ 'data-test': 'input-short' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             variant="small"
                             value="Small short input"
                             display="short"
                             wrapperProps={{ 'data-test': 'input-short-small' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="error"
                             value="Short input with error"
                             display="short"
                             wrapperProps={{ 'data-test': 'input-short-error' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="warning"
                             value="Short input with warning"
                             display="short"
                             wrapperProps={{ 'data-test': 'input-short-warning' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="success"
                             value="Short input with success"
                             display="short"
                             wrapperProps={{ 'data-test': 'input-short-success' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             disabled
                             value="Disabled short input"
                             display="short"
                             wrapperProps={{ 'data-test': 'input-short-disabled' }}
                         />
-                    </InputWrapper>
+                    </ComponentWrapper>
                 </Col>
+
+                <SubHeading>Default</SubHeading>
                 <Col>
-                    <SubHeading>Default</SubHeading>
-                    <InputWrapper>
+                    <ComponentWrapper>
                         <Input
                             value="Default input"
                             wrapperProps={{ 'data-test': 'input-default' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             variant="small"
                             value="Small input"
                             wrapperProps={{ 'data-test': 'input-default-small' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="error"
                             value="Input with error"
                             wrapperProps={{ 'data-test': 'input-default-error' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="warning"
                             value="Input with warning"
                             wrapperProps={{ 'data-test': 'input-default-warning' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="success"
                             value="Input with success"
                             wrapperProps={{ 'data-test': 'input-default-success' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             disabled
                             value="Disabled input"
                             wrapperProps={{ 'data-test': 'input-default-disabled' }}
                         />
-                    </InputWrapper>
+                    </ComponentWrapper>
                 </Col>
+
+                <SubHeading>With label &amp; bottom text</SubHeading>
                 <Col>
-                    <SubHeading>With label &amp; bottom text</SubHeading>
-                    <InputWrapper>
+                    <ComponentWrapper>
                         <Input
                             value="Input label"
                             wrapperProps={{ 'data-test': 'input-label' }}
                             topLabel="Label"
                             bottomText="bottom text"
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             variant="small"
                             value="Small input label"
@@ -140,8 +307,8 @@ storiesOf('Form', module).add(
                             topLabel="Label"
                             bottomText="bottom text"
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="error"
                             value="Input label with error"
@@ -149,8 +316,8 @@ storiesOf('Form', module).add(
                             topLabel="Label"
                             bottomText="bottom text"
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="warning"
                             value="Input label with warning"
@@ -158,8 +325,8 @@ storiesOf('Form', module).add(
                             topLabel="Label"
                             bottomText="bottom text"
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="success"
                             value="Input label with success"
@@ -167,8 +334,8 @@ storiesOf('Form', module).add(
                             topLabel="Label"
                             bottomText="bottom text"
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             disabled
                             value="Disabled input label"
@@ -176,61 +343,62 @@ storiesOf('Form', module).add(
                             topLabel="Label"
                             bottomText="bottom text"
                         />
-                    </InputWrapper>
+                    </ComponentWrapper>
                 </Col>
+
+                <SubHeading>Block</SubHeading>
                 <Col>
-                    <SubHeading>Block</SubHeading>
-                    <InputWrapper>
+                    <ComponentWrapper>
                         <Input
                             value="Block input"
                             display="block"
                             wrapperProps={{ 'data-test': 'input-block' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             variant="small"
                             value="Small block input"
                             display="block"
                             wrapperProps={{ 'data-test': 'input-block-small' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="error"
                             value="Block input with error"
                             display="block"
                             wrapperProps={{ 'data-test': 'input-block-error' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="warning"
                             value="Block input with warning"
                             display="block"
                             wrapperProps={{ 'data-test': 'input-block-warning' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             state="success"
                             value="Block input with success"
                             display="block"
                             wrapperProps={{ 'data-test': 'input-block-success' }}
                         />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </ComponentWrapper>
+                    <ComponentWrapper>
                         <Input
                             disabled
                             value="Disabled block input"
                             display="block"
                             wrapperProps={{ 'data-test': 'input-block-disabled' }}
                         />
-                    </InputWrapper>
+                    </ComponentWrapper>
                 </Col>
                 <Col>
                     <SubHeading>Monospace with button</SubHeading>
-                    <InputWrapper>
+                    <ComponentWrapper>
                         <Input
                             value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                             display="block"
@@ -241,9 +409,9 @@ storiesOf('Form', module).add(
                                 onClick: () => {},
                             }}
                         />
-                    </InputWrapper>
+                    </ComponentWrapper>
                     <SubHeading>Partially hidden</SubHeading>
-                    <InputWrapper>
+                    <ComponentWrapper>
                         <Input
                             value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                             display="block"
@@ -255,7 +423,7 @@ storiesOf('Form', module).add(
                                 onClick: () => {},
                             }}
                         />
-                    </InputWrapper>
+                    </ComponentWrapper>
                 </Col>
             </Wrapper>
         );
