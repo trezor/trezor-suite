@@ -12,6 +12,7 @@ const Wrapper = styled.div`
     flex: 1;
     flex-direction: column;
     padding: 40px 35px 40px 35px;
+    max-width: 1024px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 20px 35px;

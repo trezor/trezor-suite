@@ -100,6 +100,12 @@ const Menu = ({
 
     return (
         <Wrapper>
+            {discovery.status === 4 && (
+                <AddAccountButton
+                    onClick={requestNewAccount}
+                    tooltipContent={<Translation {...l10nMessages.TR_ADD_ACCOUNT} />}
+                />
+            )}
             {discoveryIsRunning && list.length === 0 && <DiscoveryStatus />}
             {normalAccounts.map(account => (
                 <Row

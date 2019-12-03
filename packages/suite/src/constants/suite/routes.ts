@@ -4,6 +4,26 @@ const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 
 const routes = [
     {
+        name: 'wallet-index',
+        pattern: '/wallet',
+        app: 'wallet',
+    },
+    {
+        name: 'passwords-index',
+        pattern: '/passwords',
+        app: 'passwords',
+    },
+    {
+        name: 'exchange-index',
+        pattern: '/exchange',
+        app: 'exchange',
+    },
+    {
+        name: 'dashboard-index',
+        pattern: '/dashboard',
+        app: 'dashboard',
+    },
+    {
         name: 'suite-index',
         pattern: '/',
         app: 'wallet',
@@ -41,11 +61,6 @@ const routes = [
         name: 'suite-device-backup',
         pattern: '/backup',
         app: 'deviceManagement',
-    },
-    {
-        name: 'wallet-index',
-        pattern: '/wallet',
-        app: 'wallet',
     },
     {
         name: 'wallet-settings',

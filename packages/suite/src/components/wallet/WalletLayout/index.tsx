@@ -5,10 +5,9 @@ import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
 import Sidebar from './components/Sidebar';
-import WalletMenuItems from './components/MenuItems';
 import ProgressBar from './components/ProgressBar';
 import { AppState } from '@suite-types';
-import { SuiteLayout, Footer } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
 
 const { SCREEN_SIZE } = variables;
 
@@ -27,9 +26,8 @@ type Props = {
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    max-width: 1170px;
+    flex: 1;
     flex-direction: row;
-    flex: 1 1 0%;
 `;
 
 const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
@@ -51,17 +49,11 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 
 const WalletLayout = (props: Props) => {
     return (
-        <SuiteLayout
-            showSuiteHeader
-            footer={<Footer />}
-            additionalDeviceMenuItems={<WalletMenuItems />}
-            title={props.title}
-        >
+        <SuiteLayout showSuiteHeader title={props.title}>
             <Wrapper data-test="@wallet/layout">
                 <ProgressBar />
                 <Sidebar isOpen={props.suite.showSidebar} />
                 <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-                    {props.topNavigationComponent}
                     <WalletNotifications />
                     <Content>{props.children}</Content>
                 </ContentWrapper>
