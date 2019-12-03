@@ -128,10 +128,10 @@ const getDeviceContextModal = (props: Props) => {
         case SUITE.REQUEST_DEVICE_INSTANCE:
             return (
                 <RequestInstance
-                    device={device as AcquiredDevice}
+                    device={modal.device as AcquiredDevice}
                     instance={deviceUtils.getNewInstanceNumber(
                         props.devices,
-                        device as AcquiredDevice,
+                        modal.device as AcquiredDevice,
                     )}
                     onCreateInstance={modalActions.onCreateDeviceInstance}
                     onCancel={modalActions.onCancel}

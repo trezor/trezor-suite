@@ -3,11 +3,19 @@ import styled, { css } from 'styled-components';
 import { Modal } from '@trezor/components';
 import { Icon, Button, colors } from '@trezor/components-v2';
 import * as deviceUtils from '@suite-utils/device';
+import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
-import { AcquiredDevice } from '@suite/types/suite';
+import { AcquiredDevice, TrezorDevice } from '@suite/types/suite';
+
+// TODO:
+// Undiscovered wallet, connect to discover https://app.zeplin.io/project/5dadb7820bdfd3832e04afca/screen/5dde6fd821730311f40ad3a0
+// Title for wallet instances (coinds, usd value,...)
+// Device ordering
+// refactor to multiple components
+// remove forget modal, move forgetDevice from modalActions
 
 const StyledModal = styled(Modal)`
-    box-shadow: 0 10px 60px 0 #4d4d4d;  
+    box-shadow: 0 10px 60px 0 #4d4d4d;
 `;
 
 const Wrapper = styled.div`
@@ -46,6 +54,10 @@ const DeviceBox = styled.div`
     border: solid 2px #ebebeb;
     background-color: #ffffff;
     width: 100%;
+
+    & + & {
+        margin-top: 10px;
+    }
 `;
 
 const Device = styled.div`
@@ -54,18 +66,15 @@ const Device = styled.div`
     flex-direction: row;
     align-items: center;
     border-bottom: 2px solid #f5f5f5;
-    & + & {
-        margin-top: 10px;
-    }
 `;
 
 const DeviceTitle = styled.span`
     font-size: 16px;
 `;
-const DeviceStatus = styled.span<{ connected: boolean }>`
+const DeviceStatus = styled.span<{ color: string }>`
     font-size: 14px;
     font-weight: 600;
-    color: ${props => (props.connected ? '#259f2a' : '#494949')};
+    color: ${props => props.color};
 `;
 
 const Badge = styled.div`
@@ -91,6 +100,12 @@ const WalletInstance = styled.div<{ active: boolean }>`
     padding: 10px 24px;
     align-items: center;
     flex-direction: row;
+    cursor: pointer;
+
+    &:hover {
+        background: #f5f5f5;
+    }
+
     ${props =>
         props.active &&
         css`
@@ -107,7 +122,7 @@ const InstanceTitle = styled.div`
 const InstanceType = styled.div`
     color: #808080;
     font-size: 12px;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 `;
 
 const Actions = styled.div`
@@ -131,11 +146,20 @@ const ForgetButton = styled(Button)`
 const SwitchDeviceModal = (props: Props) => {
     if (!props.isOpen) return null;
     const { devices, selectedDevice } = props;
-    const selectedInstances = deviceUtils.getDeviceInstances(selectedDevice, devices)
     const otherDevices = deviceUtils.getOtherDevices(selectedDevice, devices);
 
-    const otherInstances: AcquiredDevice[][] = [];
-    otherDevices.forEach(d => otherInstances.push(deviceUtils.getDeviceInstances(d, devices)));
+    const getAccountsNumber = (device: TrezorDevice) =>
+        accountUtils.getDeviceAccounts(device, props.accounts).length;
+
+    const onSelectInstance = (instance: TrezorDevice) => {
+        props.closeModal();
+        props.selectDevice(instance);
+    };
+
+    const onAddHiddenWallet = (instance: TrezorDevice) => {
+        props.closeModal();
+        props.requestDeviceInstance(instance);
+    };
 
     return (
         <StyledModal>
@@ -146,42 +170,101 @@ const SwitchDeviceModal = (props: Props) => {
                         This is a place to see all your devices. You can further set them up in
                         Settings but here you can switch between devices and see their statuses.
                     </Description>
-                    {props.devices.map}
-                    <DeviceBox>
-                        <Device>
-                            <Col>
-                                <DeviceTitle>My trezor</DeviceTitle>
-                                <DeviceStatus connected>Connected</DeviceStatus>
-                            </Col>
-                            <Col grow={1}>
-                                <Badge>Guest Mode</Badge>
-                            </Col>
-                            <Col>
-                                <ForgetButton size="small" variant="secondary" inlineWidth>
-                                    Forget device
-                                </ForgetButton>
-                            </Col>
-                        </Device>
-                        <WalletInstance active>
-                            <SortIconWrapper>
-                                <Icon size={12} icon="SORT" />
-                            </SortIconWrapper>
-                            <Col grow={1}>
-                                <InstanceTitle>2 Accounts - 2 COINS - 4000 USD</InstanceTitle>
-                                <InstanceType>No Passphrase</InstanceType>
-                            </Col>
-                            <Col>
-                                <ForgetButton size="small" variant="secondary" inlineWidth>
-                                    Forget device
-                                </ForgetButton>
-                            </Col>
-                        </WalletInstance>
-                        <Actions>
-                            <Button inlineWidth variant="tertiary" icon="PLUS">
-                                Add hidden wallet
-                            </Button>
-                        </Actions>
-                    </DeviceBox>
+                    {[selectedDevice, ...otherDevices].map(device => {
+                        if (!device) return null;
+                        const deviceStatus = deviceUtils.getStatus(device);
+                        const deviceInstances = deviceUtils.getDeviceInstances(
+                            device,
+                            devices,
+                            true,
+                        );
+                        console.log('device', device.label);
+                        console.log('instances', deviceInstances);
+                        return (
+                            <DeviceBox key={device.path}>
+                                <Device>
+                                    <Col>
+                                        <DeviceTitle>{device.label}</DeviceTitle>
+                                        <DeviceStatus
+                                            color={deviceUtils.getStatusColor(deviceStatus)}
+                                        >
+                                            {deviceUtils.getStatusName(deviceStatus, props.intl)}
+                                        </DeviceStatus>
+                                    </Col>
+                                    <Col grow={1}>
+                                        {!deviceUtils.isDeviceRemembered(device) && (
+                                            <Badge>Guest Mode</Badge>
+                                        )}
+                                    </Col>
+                                    <Col>
+                                        <ForgetButton
+                                            size="small"
+                                            variant="secondary"
+                                            inlineWidth
+                                            onClick={() => {
+                                                props.forgetDevice(device);
+                                            }}
+                                        >
+                                            Forget device
+                                        </ForgetButton>
+                                    </Col>
+                                </Device>
+
+                                {deviceInstances.map(instance => (
+                                    <WalletInstance
+                                        key={`${instance.label}${instance.instance}${instance.state}`}
+                                        active={selectedDevice.state === instance.state}
+                                        onClick={() => {
+                                            onSelectInstance(instance);
+                                        }}
+                                    >
+                                        <SortIconWrapper>
+                                            <Icon size={12} icon="SORT" />
+                                        </SortIconWrapper>
+                                        <Col grow={1}>
+                                            <InstanceTitle>
+                                                {getAccountsNumber(instance)} Accounts - X COINS - Y
+                                                USD
+                                            </InstanceTitle>
+                                            <InstanceType>
+                                                {instance.useEmptyPassphrase
+                                                    ? 'No passphrapse'
+                                                    : 'Passphrase'}
+                                            </InstanceType>
+                                        </Col>
+                                        <Col>
+                                            {!instance.useEmptyPassphrase && (
+                                                <ForgetButton
+                                                    size="small"
+                                                    variant="secondary"
+                                                    inlineWidth
+                                                    onClick={() => {
+                                                        props.forgetDeviceInstance(instance);
+                                                    }}
+                                                >
+                                                    Forget instance
+                                                </ForgetButton>
+                                            )}
+                                        </Col>
+                                    </WalletInstance>
+                                ))}
+                                <Actions>
+                                    <Button
+                                        inlineWidth
+                                        variant="tertiary"
+                                        icon="PLUS"
+                                        onClick={() => {
+                                            onAddHiddenWallet(device);
+                                            console.log(device.label);
+                                            console.log(device);
+                                        }}
+                                    >
+                                        Add hidden wallet
+                                    </Button>
+                                </Actions>
+                            </DeviceBox>
+                        );
+                    })}
                     <ModalActions>
                         <Button variant="secondary" onClick={() => props.closeModal()}>
                             Close
