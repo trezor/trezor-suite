@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import { P, H4, Loader, colors, variables } from '@trezor/components';
+import { Translation } from '@suite-components/Translation';
+import { Loader, colors, variables } from '@trezor/components';
+import { P, H2 } from '@trezor/components-v2';
 import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
-import { Translation } from '@suite-components/Intl';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 import l10nMessages from './index.messages';
@@ -13,6 +13,7 @@ const Wrapper = styled.div`
     flex: 1;
     flex-direction: column;
     padding: 40px 35px 40px 35px;
+    max-width: 1024px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 20px 35px;
@@ -32,11 +33,8 @@ interface TitleProps {
     type: string;
 }
 
-const Title = styled(H4)`
-    font-size: ${variables.FONT_SIZE.BIGGER};
-    font-weight: ${variables.FONT_WEIGHT.NORMAL};
+const Title = styled(H2)`
     color: ${(props: TitleProps) => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
-    text-align: center;
     padding: 0;
 `;
 
@@ -82,9 +80,9 @@ const Content = ({ className, children, isLoading = false, loader, exceptionPage
                             <Loader size={30} />
                         </LoaderWrapper>
                     )}
-                    <Title type={loader.type}>
+                    <Title textAlign="center" type={loader.type}>
                         {<Translation>{loader.title}</Translation> || (
-                            <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />
+                            <Translation {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />
                         )}
                     </Title>
                 </Row>

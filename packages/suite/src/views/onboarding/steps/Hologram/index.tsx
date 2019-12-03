@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, variables } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { variables } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
 
 import {
     TREZOR_RESELLERS_URL,
@@ -32,13 +33,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_HEADING} />
+                <Translation {...l10nMessages.TR_HOLOGRAM_STEP_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {activeSubStep !== 'hologram-different' && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
+                            <Translation {...l10nMessages.TR_HOLOGRAM_STEP_SUBHEADING} />
                         </Text>
                         <HologramWrapper>
                             <Hologram model={model || actualModel || 2} />
@@ -48,15 +49,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 data-test="@onboarding/button-hologram-different"
                                 onClick={() => onboardingActions.goToSubStep('hologram-different')}
                             >
-                                <FormattedMessage
-                                    {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_NOT_OK}
-                                />
+                                <Translation {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_NOT_OK} />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/button-continue"
                                 onClick={() => onboardingActions.goToNextStep()}
                             >
-                                <FormattedMessage {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK} />
+                                <Translation {...l10nMessages.TR_HOLOGRAM_STEP_ACTION_OK} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -64,22 +63,22 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                 {activeSubStep === 'hologram-different' && (
                     <>
                         <Text>
-                            <FormattedMessage
+                            <Translation
                                 {...l10nMessages.TR_DID_YOU_PURCHASE}
                                 values={{
                                     TR_PACKAGING_LINK: (
-                                        <Link href={TREZOR_PACKAGING_URL} variant="nostyle">
-                                            <FormattedMessage {...l10nMessages.TR_PACKAGING_LINK} />
+                                        <Link href={TREZOR_PACKAGING_URL}>
+                                            <Translation {...l10nMessages.TR_PACKAGING_LINK} />
                                         </Link>
                                     ),
                                     TR_RESELLERS_LINK: (
-                                        <Link href={TREZOR_RESELLERS_URL} variant="nostyle">
-                                            <FormattedMessage {...l10nMessages.TR_RESELLERS_LINK} />
+                                        <Link href={TREZOR_RESELLERS_URL}>
+                                            <Translation {...l10nMessages.TR_RESELLERS_LINK} />
                                         </Link>
                                     ),
                                     TR_CONTACT_OUR_SUPPORT_LINK: (
-                                        <Link href={SUPPORT_URL} variant="nostyle">
-                                            <FormattedMessage
+                                        <Link href={SUPPORT_URL}>
+                                            <Translation
                                                 {...l10nMessages.TR_CONTACT_OUR_SUPPORT_LINK}
                                             />
                                         </Link>
@@ -95,12 +94,12 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 Back
                             </OnboardingButton.Alt>
 
-                            <Link href={SUPPORT_URL} target="_self" variant="nostyle">
+                            <Link href={SUPPORT_URL} target="_self">
                                 <OnboardingButton.Cta
                                     data-test="button-contact-support"
                                     style={{ width: '100%' }}
                                 >
-                                    <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
+                                    <Translation {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
                                 </OnboardingButton.Cta>
                             </Link>
                         </Wrapper.Controls>
@@ -116,7 +115,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                             )
                         }
                     >
-                        <FormattedMessage {...l10nCommonMessages.TR_BACK} />
+                        <Translation {...l10nCommonMessages.TR_BACK} />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>
             </Wrapper.StepFooter>

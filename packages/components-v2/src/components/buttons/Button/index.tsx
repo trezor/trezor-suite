@@ -31,11 +31,11 @@ const getSecondaryPadding = (size: ButtonSize) => {
 const getTertiaryFontSize = (size: ButtonSize) => {
     switch (size) {
         case 'small':
-            return FONT_SIZE.SMALL;
+            return FONT_SIZE.TINY;
         case 'large':
-            return FONT_SIZE.LARGE;
+            return FONT_SIZE.NORMAL;
         default:
-            return FONT_SIZE.MEDIUM;
+            return FONT_SIZE.SMALL;
     }
 };
 

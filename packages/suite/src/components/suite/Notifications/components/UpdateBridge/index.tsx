@@ -12,7 +12,6 @@ interface Props {
 }
 
 const UpdateBridge = ({ transport, intl, goto }: Props & WrappedComponentProps) => {
-    // @ts-ignore TODO
     if (transport && transport.outdated) {
         return (
             <Notification

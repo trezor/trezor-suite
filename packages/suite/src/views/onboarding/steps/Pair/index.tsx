@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import TrezorConnect from 'trezor-connect';
 import l10nCommonMessages from '@suite-support/Messages';
 import WebusbButton from '@suite-components/WebusbButton';
@@ -91,9 +91,7 @@ const PairDeviceStep = (props: Props) => {
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
-                                            <FormattedMessage
-                                                {...l10nMessages.TR_FOUND_OK_DEVICE}
-                                            />
+                                            <Translation {...l10nMessages.TR_FOUND_OK_DEVICE} />
                                         </Text>
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
@@ -102,9 +100,7 @@ const PairDeviceStep = (props: Props) => {
                                                     props.onboardingActions.goToNextStep()
                                                 }
                                             >
-                                                <FormattedMessage
-                                                    {...l10nCommonMessages.TR_CONTINUE}
-                                                />
+                                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
                                             </OnboardingButton.Cta>
                                         </Wrapper.Controls>
                                     </>

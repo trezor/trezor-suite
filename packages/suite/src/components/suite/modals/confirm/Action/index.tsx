@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { Prompt } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { TrezorDevice } from '@suite-types';
 
 import l10nMessages from './messages';
@@ -23,7 +23,7 @@ const ConfirmAction: FunctionComponent<Props> = ({ device }) => {
         <Wrapper>
             <Header>
                 <Prompt model={majorVersion} size={32}>
-                    <FormattedMessage
+                    <Translation
                         {...l10nMessages.TR_CONFIRM_ACTION_ON_YOUR}
                         values={{ deviceLabel: device.label }}
                     />

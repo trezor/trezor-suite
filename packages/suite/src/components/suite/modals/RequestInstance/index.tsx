@@ -1,10 +1,9 @@
 import React, { FunctionComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
-import { H5, P } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Button, H2, P } from '@trezor/components-v2';
 
 import globalMessages from '@suite-support/Messages';
 import l10nMessages from './messages';
@@ -49,23 +48,23 @@ const RequestInstance: FunctionComponent<Props> = ({
 
     return (
         <Wrapper>
-            <H5>
-                <FormattedMessage
+            <H2>
+                <Translation
                     {...l10nMessages.TR_REQUEST_INSTANCE_HEADER}
                     values={{
                         deviceLabel: `${device.label} (${instance})`,
                     }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
-                <FormattedMessage {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
+                <Translation {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
             </StyledP>
             <Row>
                 <Button onClick={() => onCreateInstance(device)} inlineWidth>
-                    <FormattedMessage {...l10nMessages.TR_CREATE_INSTANCE} />
+                    <Translation {...l10nMessages.TR_CREATE_INSTANCE} />
                 </Button>
                 <Button variant="secondary" onClick={onCancel} inlineWidth>
-                    <FormattedMessage {...globalMessages.TR_CANCEL} />
+                    <Translation {...globalMessages.TR_CANCEL} />
                 </Button>
             </Row>
         </Wrapper>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from '@trezor/components';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import l10nCommonMessages from '@suite-support/Messages';
 import { isASCII } from '@suite-utils/validators';
@@ -75,9 +75,9 @@ const NameStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                {status === 'initial' && <FormattedMessage {...l10nMessages.TR_NAME_HEADING} />}
+                {status === 'initial' && <Translation {...l10nMessages.TR_NAME_HEADING} />}
                 {status === 'changed' && (
-                    <FormattedMessage
+                    <Translation
                         {...l10nMessages.TR_NAME_HEADING_CHANGED}
                         values={{ label: device!.features!.label }}
                     />
@@ -87,7 +87,7 @@ const NameStep = (props: Props) => {
                 {status === 'initial' && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_NAME_SUBHEADING} />
+                            <Translation {...l10nMessages.TR_NAME_SUBHEADING} />
                         </Text>
 
                         <NameInput
@@ -105,13 +105,13 @@ const NameStep = (props: Props) => {
                             <OnboardingButton.Alt
                                 onClick={() => props.onboardingActions.goToNextStep()}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_SKIP} />
+                                <Translation {...l10nCommonMessages.TR_SKIP} />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 isDisabled={validateInput().state !== 'success'}
                                 onClick={changeLabel}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_SUBMIT} />
+                                <Translation {...l10nCommonMessages.TR_SUBMIT} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -120,13 +120,13 @@ const NameStep = (props: Props) => {
                 {status === 'changed' && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_NAME_CHANGED_TEXT} />
+                            <Translation {...l10nMessages.TR_NAME_CHANGED_TEXT} />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => props.onboardingActions.goToNextStep()}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>

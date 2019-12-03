@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
-import l10nMessages from '@suite-components/DeviceMenu/index.messages';
+import l10nMessages from '@suite-components/SuiteLayout/index.messages';
 
 const { getSuiteDevice } = global.JestMocks;
 
