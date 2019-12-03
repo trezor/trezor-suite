@@ -24,6 +24,15 @@ storiesOf('Form', module).add(
             .map((k: string) => {
                 return values[k];
             });
+        const display: any = select(
+            'Display',
+            {
+                'Default (normal)': null,
+                Short: 'short',
+                Block: 'block',
+            },
+            null
+        );
 
         return (
             <Select
@@ -31,6 +40,7 @@ storiesOf('Form', module).add(
                 {...(isClearable ? { isClearable } : {})}
                 {...(isDisabled ? { isDisabled } : {})}
                 {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
+                {...(display ? { display } : {})}
                 value={select('Value', values, null)}
                 options={options}
                 topLabel={topLabel}
