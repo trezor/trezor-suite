@@ -24,7 +24,7 @@
         "react-json-tree": "^0.11.0",
         "react-transition-group": "^2.3.1",
         "stringify-object": "^3.3.0",
-        "trezor-connect": "8.0.10-extended"
+        "trezor-connect": "8.0.11-extended"
     },
     "devDependencies": {
         "@cypress/webpack-preprocessor": "^4.1.1",
