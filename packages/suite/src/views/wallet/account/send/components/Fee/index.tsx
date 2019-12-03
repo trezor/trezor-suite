@@ -1,14 +1,15 @@
-import React from 'react';
-import { colors, Select, P } from '@trezor/components';
-import styled from 'styled-components';
-import { CUSTOM_FEE } from '@wallet-constants/sendForm';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { FeeLevel } from '@wallet-types/sendForm';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
-import accountMessages from '@suite/views/wallet/account/index.messages';
-import { DispatchProps } from '../../Container';
+import messages from '@suite/support/messages';
+import { colors, P, Select } from '@trezor/components';
+import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { Account } from '@wallet-types';
+import { FeeLevel } from '@wallet-types/sendForm';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import React from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import styled from 'styled-components';
+
+import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -66,7 +67,7 @@ const getValue = (
 const FeeComponent = (props: Props) => (
     <Wrapper>
         <Label>
-            <Translation {...accountMessages.TR_FEE} />
+            <Translation {...messages.TR_FEE} />
         </Label>
         <StyledSelect
             isSearchable={false}
