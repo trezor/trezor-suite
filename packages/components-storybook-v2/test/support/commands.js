@@ -17,7 +17,7 @@ Cypress.Commands.add('loadContent', url => {
     return cy.visit(url).then(() => {
         return cy.document().then(doc => {
             return doc.fonts.ready.then(() => {
-                return doc.fonts.load('12px Roboto');
+                return doc.fonts.load('14px TTHoves');
             });
         });
     });
