@@ -8,7 +8,7 @@ storiesOf('Notifications', module).add(
     'Notification',
     () => {
         const title: any = text('Title', 'The main message');
-        const description: any = text(
+        const message: any = text(
             'Description',
             'Something else that needs to be told. This short message is optional and also not needed.'
         );
@@ -33,17 +33,17 @@ storiesOf('Notifications', module).add(
             return (
                 <Notification
                     title={title}
-                    {...(description ? { description } : {})}
+                    {...(message ? { message } : {})}
                     {...(state ? { state } : {})}
                     {...(isLoading ? { isLoading } : {})}
                     mainCta={{
-                        callback: () => {},
+                        onClick: () => {},
                         label: mainCtaLabel,
                     }}
                     {...(secondCta
                         ? {
                               secondCta: {
-                                  callback: () => {},
+                                  onClick: () => {},
                                   label: secondCtaLabel,
                               },
                           }
@@ -55,7 +55,7 @@ storiesOf('Notifications', module).add(
         return (
             <Notification
                 title={title}
-                {...(description ? { description } : {})}
+                {...(message ? { message } : {})}
                 {...(state ? { state } : {})}
                 {...(isLoading ? { isLoading } : {})}
             />

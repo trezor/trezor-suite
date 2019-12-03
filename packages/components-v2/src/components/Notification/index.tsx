@@ -108,6 +108,7 @@ interface NotificationProps {
     secondCta?: CtaShape;
     isLoading?: boolean;
     state?: FeedbackState;
+    wrapperProps?: Record<string, any>;
 }
 
 const Notification = ({
@@ -117,10 +118,11 @@ const Notification = ({
     mainCta,
     secondCta,
     state = 'success',
+    wrapperProps,
     ...rest
 }: NotificationProps) => {
     return (
-        <Wrapper hasCta={!!(mainCta || isLoading)} {...rest}>
+        <Wrapper hasCta={!!(mainCta || isLoading)} {...wrapperProps} {...rest}>
             <StateWrapper>
                 <State state={state} />
             </StateWrapper>

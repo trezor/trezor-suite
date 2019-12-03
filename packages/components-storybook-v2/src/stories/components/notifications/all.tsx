@@ -27,33 +27,33 @@ storiesOf('Notifications', module).add(
                             <Notification
                                 title="The main message"
                                 state={state as StateType}
-                                dataTest={`notification-${state}`}
+                                wrapperProps={{ 'data-test': `notification-${state}` }}
                             />
                         </NotificationWrapper>
                         <NotificationWrapper>
                             <Notification
                                 title="The main message"
                                 mainCta={{
-                                    callback: () => {},
+                                    onClick: () => {},
                                     label: 'CTA',
                                 }}
                                 state={state as StateType}
-                                dataTest={`notification-cta-${state}`}
+                                wrapperProps={{ 'data-test': `notification-cta-${state}` }}
                             />
                         </NotificationWrapper>
                         <NotificationWrapper>
                             <Notification
                                 title="The main message"
                                 mainCta={{
-                                    callback: () => {},
+                                    onClick: () => {},
                                     label: 'Main CTA',
                                 }}
                                 secondCta={{
-                                    callback: () => {},
+                                    onClick: () => {},
                                     label: 'Second CTA',
                                 }}
                                 state={state as StateType}
-                                dataTest={`notification-second-cta-${state}`}
+                                wrapperProps={{ 'data-test': `notification-second-cta-${state}` }}
                             />
                         </NotificationWrapper>
                         <NotificationWrapper>
@@ -61,52 +61,56 @@ storiesOf('Notifications', module).add(
                                 title="The main message"
                                 isLoading
                                 state={state as StateType}
-                                dataTest={`notification-loading-${state}`}
+                                wrapperProps={{ 'data-test': `notification-loading-${state}` }}
                             />
                         </NotificationWrapper>
                         <NotificationWrapper>
                             <Notification
                                 title="The main message"
-                                description="Something else that needs to be told. This short message is optional and also not needed."
+                                message="Something else that needs to be told. This short message is optional and also not needed."
                                 state={state as StateType}
-                                dataTest={`notification-desc-${state}`}
+                                wrapperProps={{ 'data-test': `notification-desc-${state}` }}
                             />
                         </NotificationWrapper>
                         <NotificationWrapper>
                             <Notification
                                 title="The main message"
-                                description="Something else that needs to be told. This short message is optional and also not needed."
+                                message="Something else that needs to be told. This short message is optional and also not needed."
                                 mainCta={{
-                                    callback: () => {},
+                                    onClick: () => {},
                                     label: 'CTA',
                                 }}
                                 state={state as StateType}
-                                dataTest={`notification-desc-cta-${state}`}
+                                wrapperProps={{ 'data-test': `notification-desc-cta-${state}` }}
                             />
                         </NotificationWrapper>
                         <NotificationWrapper>
                             <Notification
                                 title="The main message"
-                                description="Something else that needs to be told. This short message is optional and also not needed."
+                                message="Something else that needs to be told. This short message is optional and also not needed."
                                 mainCta={{
-                                    callback: () => {},
+                                    onClick: () => {},
                                     label: 'Main CTA',
                                 }}
                                 secondCta={{
-                                    callback: () => {},
+                                    onClick: () => {},
                                     label: 'Second CTA',
                                 }}
                                 state={state as StateType}
-                                dataTest={`notification-desc-second-cta-${state}`}
+                                wrapperProps={{
+                                    'data-test': `notification-desc-second-cta-${state}`,
+                                }}
                             />
                         </NotificationWrapper>
                         <NotificationWrapper>
                             <Notification
                                 title="The main message"
-                                description="Something else that needs to be told. This short message is optional and also not needed."
+                                message="Something else that needs to be told. This short message is optional and also not needed."
                                 isLoading
                                 state={state as StateType}
-                                dataTest={`notification-desc-loading-${state}`}
+                                wrapperProps={{
+                                    'data-test': `notification-desc-loading-${state}`,
+                                }}
                             />
                         </NotificationWrapper>
                     </>
