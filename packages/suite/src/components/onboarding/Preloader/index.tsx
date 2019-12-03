@@ -6,6 +6,15 @@ import { P } from '@trezor/components';
 import { H1 } from '@trezor/components-v2';
 import { Loaders } from '@onboarding-components';
 
+// import {
+//     PROGRESSBAR_HEIGHT,
+//     PROGRESSBAR_HEIGHT_UNIT,
+//     STEP_HEIGHT,
+//     STEP_HEIGHT_UNIT,
+//     NAVBAR_HEIGHT,
+//     NAVBAR_HEIGHT_UNIT,
+// } from '@suite/config/onboarding/layout';
+
 const ANIMATION_DURATION = 2.5;
 
 const TRANSITION_PROPS = {
@@ -34,6 +43,23 @@ const Logo = styled.svg`
 
 const Loader = styled(P)`
     text-align: center;
+`;
+
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: hidden;
+
+    max-width: 700px; /* neat boxed view */
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        width: calc(55vw + 150px);
+        margin: 50px auto;
+        height: 65vh;
+        overflow: hidden;
+    }
 `;
 
 const PreloaderWrapper = styled.div`
@@ -77,7 +103,7 @@ const Preloader: React.SFC<Props> = props => {
     const preloaderFinished = loaded && introTimedout;
 
     return (
-        <>
+        <Wrapper>
             <CSSTransition
                 {...TRANSITION_PROPS}
                 in={!preloaderFinished}
@@ -108,7 +134,7 @@ const Preloader: React.SFC<Props> = props => {
             <CSSTransition in={introExited} timeout={1000} {...TRANSITION_PROPS}>
                 <div style={{ width: '100%' }}>{props.children}</div>
             </CSSTransition>
-        </>
+        </Wrapper>
     );
 };
 
