@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea } from '@trezor/components-v2';
+import { Input, Textarea, Select } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -27,6 +27,27 @@ storiesOf('Form', module).add(
     () => {
         return (
             <Wrapper>
+                <Heading>Select</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Select
+                            options={[
+                                {
+                                    label: 'Option one',
+                                    value: 'value-one',
+                                },
+                                {
+                                    label: 'Option two',
+                                    value: 'value-two',
+                                },
+                                {
+                                    label: 'Option tree',
+                                    value: 'value-tree',
+                                },
+                            ]}
+                        />
+                    </ComponentWrapper>
+                </Col>
                 <Heading>Textarea short</Heading>
                 <Col>
                     <ComponentWrapper>
