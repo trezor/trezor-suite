@@ -35,8 +35,6 @@
         "@types/dotenv": "^8.2.0",
         "@types/extract-zip": "^1.6.2",
         "@types/meow": "^5.0.0",
-        "@types/request-promise-native": "^1.0.17",
-        "eslint-config-airbnb-base": "^14.0.0",
-        "eslint-plugin-node": "^10.0.0"
+        "@types/request-promise-native": "^1.0.17"
     }
 }
