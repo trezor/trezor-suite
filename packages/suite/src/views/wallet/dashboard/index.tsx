@@ -1,8 +1,9 @@
 import React from 'react';
 import NetworkGroup from './components/NetworkGroup';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { H4, Loader, Icon, colors } from '@trezor/components';
+import { Loader, Icon, colors } from '@trezor/components';
+import { H2 } from '@trezor/components-v2';
 import WalletLayout from '@wallet-components/WalletLayout';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
@@ -71,7 +72,7 @@ const Dashboard = (props: Props) => {
     return (
         <WalletLayout title="Dashboard">
             <Content data-test="Dashboard__page__content">
-                <H4>Dashboard</H4>
+                <H2>Dashboard</H2>
                 {isLoading && (
                     <LoadingContent>
                         <Loader size={30} />
@@ -99,7 +100,7 @@ const Dashboard = (props: Props) => {
                             <IconWrapper>
                                 <Icon icon="PLUS" size={10} color={colors.TEXT_SECONDARY} />
                             </IconWrapper>
-                            <FormattedMessage {...messages.TR_ADD_MORE_COINS} />
+                            <Translation {...messages.TR_ADD_MORE_COINS} />
                         </AddMoreCoins>
                     </CardsWrapper>
                 )}

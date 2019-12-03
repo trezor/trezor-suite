@@ -1,6 +1,6 @@
 import React from 'react';
-// import { FormattedMessage } from 'react-intl';
-import { Link } from '@trezor/components';
+// import { Translation } from '@suite-components/Translation';
+import { Link } from '@trezor/components-v2';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { URLS } from '@onboarding-constants';
@@ -24,16 +24,13 @@ const ShamirStep = (props: Props) => {
             <Wrapper.StepHeading>
                 {getModel() === 1 && 'Almost there! Prepare to launch'}
                 {getModel() === 2 && 'Seed type'}
-                {/* <FormattedMessage {...l10nMessages.TR_SECURITY_HEADING} /> */}
+                {/* <Translation {...l10nMessages.TR_SECURITY_HEADING} /> */}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getModel() === 1 && (
                     <Text>
                         You are one step from creating your wallet. By clicking the button below you
-                        agree with{' '}
-                        <Link href={URLS.TOS_URL} variant="nostyle">
-                            TOS
-                        </Link>
+                        agree with <Link href={URLS.TOS_URL}>TOS</Link>
                     </Text>
                 )}
                 {getModel() === 2 && (

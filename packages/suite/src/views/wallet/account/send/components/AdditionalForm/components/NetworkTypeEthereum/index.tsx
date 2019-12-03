@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import { Input, Tooltip, Icon, colors, Link, TextArea } from '@trezor/components';
+import { Translation } from '@suite-components/Translation';
+import { Input, Tooltip, Icon, colors, TextArea } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import globalMessages from '@suite-support/Messages';
 import localMessages from './index.messages';
 
@@ -67,16 +68,16 @@ const NetworkTypeEthereum = () => (
                 topLabel={
                     <InputLabelWrapper>
                         <LabelLeft>
-                            <FormattedMessage {...localMessages.TR_GAS_LIMIT} />
+                            <Translation {...localMessages.TR_GAS_LIMIT} />
                             <TooltipContainer>
                                 <Tooltip
                                     content={
-                                        <FormattedMessage
+                                        <Translation
                                             {...localMessages.TR_GAS_LIMIT_REFERS_TO}
                                             values={{
                                                 TR_GAS_QUOTATION: (
                                                     <GreenSpan>
-                                                        <FormattedMessage
+                                                        <Translation
                                                             {...localMessages.TR_GAS_QUOTATION}
                                                         />
                                                     </GreenSpan>
@@ -88,9 +89,7 @@ const NetworkTypeEthereum = () => (
                                     maxWidth={410}
                                     // todo: put into config
                                     ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
-                                    ctaText={
-                                        <FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />
-                                    }
+                                    ctaText={<Translation {...globalMessages.TR_LEARN_MORE_LINK} />}
                                     placement="top"
                                 >
                                     <StyledIcon
@@ -104,7 +103,7 @@ const NetworkTypeEthereum = () => (
                         {true && (
                             <Right>
                                 <StyledLink onClick={() => {}}>
-                                    <FormattedMessage {...localMessages.TR_SET_DEFAULT} />
+                                    <Translation {...localMessages.TR_SET_DEFAULT} />
                                 </StyledLink>
                             </Right>
                         )}
@@ -125,16 +124,16 @@ const NetworkTypeEthereum = () => (
                 topLabel={
                     <InputLabelWrapper>
                         <LabelLeft>
-                            <FormattedMessage {...localMessages.TR_GAS_PRICE} />
+                            <Translation {...localMessages.TR_GAS_PRICE} />
                             <TooltipContainer>
                                 <Tooltip
                                     content={
-                                        <FormattedMessage
+                                        <Translation
                                             {...localMessages.TR_GAS_PRICE_REFERS_TO}
                                             values={{
                                                 TR_GAS_PRICE_QUOTATION: (
                                                     <GreenSpan>
-                                                        <FormattedMessage
+                                                        <Translation
                                                             {...localMessages.TR_GAS_PRICE_QUOTATION}
                                                         />
                                                     </GreenSpan>
@@ -148,9 +147,7 @@ const NetworkTypeEthereum = () => (
                                     maxWidth={400}
                                     // todo: put link into config
                                     ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
-                                    ctaText={
-                                        <FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />
-                                    }
+                                    ctaText={<Translation {...globalMessages.TR_LEARN_MORE_LINK} />}
                                     placement="top"
                                 >
                                     <StyledIcon
@@ -173,13 +170,11 @@ const NetworkTypeEthereum = () => (
                 topLabel={
                     <InputLabelWrapper>
                         <LabelLeft>
-                            <FormattedMessage {...localMessages.TR_DATA} />
+                            <Translation {...localMessages.TR_DATA} />
                             <TooltipContainer>
                                 <Tooltip
                                     content={
-                                        <FormattedMessage
-                                            {...localMessages.TR_DATA_IS_USUALLY_USED}
-                                        />
+                                        <Translation {...localMessages.TR_DATA_IS_USUALLY_USED} />
                                     }
                                     placement="top"
                                 >

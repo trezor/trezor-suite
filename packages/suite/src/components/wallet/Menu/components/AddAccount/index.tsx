@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { Icon, Tooltip, colors } from '@trezor/components';
 import l10nMessages from '../../index.messages';
 
@@ -42,7 +42,7 @@ const AddAccountButton = ({ onClick, tooltipContent, disabled }: Props) => {
                 <AddAccountIconWrapper>
                     <Icon icon="PLUS" size={14} color={colors.TEXT_SECONDARY} />
                 </AddAccountIconWrapper>
-                <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
+                <Translation {...l10nMessages.TR_ADD_ACCOUNT} />
             </RowAddAccountWrapper>
         </Wrapper>
     );

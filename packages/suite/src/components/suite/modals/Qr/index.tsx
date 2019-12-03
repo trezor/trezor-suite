@@ -1,6 +1,7 @@
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { ParsedURI, parseUri } from '@suite-utils/parseUri';
-import { colors, H5, P } from '@trezor/components';
+import { colors } from '@trezor/components';
+import { H2, P } from '@trezor/components-v2';
 import dynamic from 'next/dynamic';
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
@@ -102,9 +103,9 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
     return (
         <Wrapper>
             <Padding>
-                <H5>
+                <H2>
                     <Translation>{l10nMessages.TR_SCAN_QR_CODE}</Translation>
-                </H5>
+                </H2>
                 {!readerLoaded && !error && (
                     <CameraPlaceholder>
                         <Translation>{l10nMessages.TR_WAITING_FOR_CAMERA}</Translation>

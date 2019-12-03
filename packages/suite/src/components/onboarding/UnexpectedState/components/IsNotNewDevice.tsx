@@ -1,9 +1,9 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { SUPPORT_URL } from '@onboarding-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
@@ -26,7 +26,7 @@ const IsNotNewDevice = ({ actionAlt }: Props) => (
             <Translation>{l10nMessages.TR_IS_NOT_NEW_DEVICE}</Translation>
         </Text>
         <Wrapper.Controls>
-            <Link href={SUPPORT_URL} variant="nostyle">
+            <Link href={SUPPORT_URL}>
                 <OnboardingButton.Cta style={{ width: '100%' }}>
                     <Translation>{l10nCommonMessages.TR_CONTACT_SUPPORT}</Translation>
                 </OnboardingButton.Cta>

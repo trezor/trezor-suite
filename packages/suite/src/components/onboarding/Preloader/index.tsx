@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 
-import { P, H1 } from '@trezor/components';
+import { P } from '@trezor/components';
+import { H1 } from '@trezor/components-v2';
 import { Loaders } from '@onboarding-components';
 
 const ANIMATION_DURATION = 2.5;
@@ -41,6 +42,10 @@ const PreloaderWrapper = styled.div`
     flex-direction: column;
     flex: 1;
     justify-content: center;
+`;
+
+const StyledH1 = styled(H1)`
+    text-align: center;
 `;
 
 interface Props {
@@ -91,7 +96,7 @@ const Preloader: React.SFC<Props> = props => {
                         />
                     </Logo>
 
-                    <H1>Welcome to Trezor</H1>
+                    <StyledH1>Welcome to Trezor</StyledH1>
 
                     <Loader>
                         Loading

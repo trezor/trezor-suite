@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { P, H2 } from '@trezor/components';
-import { Translation } from '@suite-components/Intl';
+import { P, H2 } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 

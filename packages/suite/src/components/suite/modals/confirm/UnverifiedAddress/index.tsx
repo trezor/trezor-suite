@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import { Link, P, H5, colors } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
+import { colors } from '@trezor/components';
+import { Button, P, H2, Link } from '@trezor/components-v2';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 
@@ -79,25 +79,25 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
 
     if (!device.connected) {
         deviceStatus = (
-            <FormattedMessage
+            <Translation
                 {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
                 values={{ deviceLabel: device.label }}
             />
         );
-        claim = <FormattedMessage {...l10nMessages.TR_PLEASE_CONNECT_YOUR_DEVICE} />;
+        claim = <Translation {...l10nMessages.TR_PLEASE_CONNECT_YOUR_DEVICE} />;
     } else {
         // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
         const enable = !!(device.features && device.features.passphrase_protection);
         deviceStatus = (
-            <FormattedMessage
+            <Translation
                 {...suiteMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
                 values={{ deviceLabel: device.label }}
             />
         );
         claim = enable ? (
-            <FormattedMessage {...l10nMessages.TR_PLEASE_ENABLE_PASSPHRASE} />
+            <Translation {...l10nMessages.TR_PLEASE_ENABLE_PASSPHRASE} />
         ) : (
-            <FormattedMessage {...l10nMessages.TR_PLEASE_DISABLE_PASSPHRASE} />
+            <Translation {...l10nMessages.TR_PLEASE_DISABLE_PASSPHRASE} />
         );
     }
 
@@ -106,9 +106,9 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     return (
         <Wrapper>
             <Content>
-                <H5>{deviceStatus}</H5>
+                <H2>{deviceStatus}</H2>
                 <StyledP size="small">
-                    <FormattedMessage
+                    <Translation
                         {...l10nMessages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
                         values={{ claim }}
                     />
@@ -117,10 +117,10 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             <Content>
                 <Row>
                     <Button onClick={() => verifyAddress()} inlineWidth>
-                        <FormattedMessage {...globalMessages.TR_TRY_AGAIN} />
+                        <Translation {...globalMessages.TR_TRY_AGAIN} />
                     </Button>
                     <Button variant="danger" onClick={() => unverifiedAddress()} inlineWidth>
-                        <FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
+                        <Translation {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
                     </Button>
                 </Row>
             </Content>
@@ -128,23 +128,21 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             {needsBackup && (
                 <>
                     <Content>
-                        <H5>
-                            <FormattedMessage
+                        <H2>
+                            <Translation
                                 {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_BACKED_UP}
                                 values={{ deviceLabel: device.label }}
                             />
-                        </H5>
+                        </H2>
                         <StyledP size="small">
-                            <FormattedMessage {...suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
+                            <Translation {...suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
                         </StyledP>
                     </Content>
                     <Content>
                         <Row>
-                            <Link href={`/?backup#${device.path}`} variant="nostyle">
+                            <Link href={`/?backup#${device.path}`}>
                                 <Button>
-                                    <FormattedMessage
-                                        {...suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}
-                                    />
+                                    <Translation {...suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
                                 </Button>
                             </Link>
                         </Row>
