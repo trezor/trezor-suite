@@ -12,7 +12,7 @@ import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import { AppState, Dispatch } from '@suite-types';
 import TransactionList from './components/TransactionList';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 const LoaderWrapper = styled.div`
     display: flex;
@@ -57,8 +57,8 @@ const Transactions = (props: Props) => {
 
     const accountNameMessage =
         selectedAccount.account && selectedAccount.account.networkType === 'ethereum'
-            ? l10nMessages.TR_TRANSACTIONS_AND_TOKENS
-            : l10nMessages.TR_TRANSACTIONS;
+            ? messages.TR_TRANSACTIONS_AND_TOKENS
+            : messages.TR_TRANSACTIONS;
 
     return (
         <LayoutAccount title="Transactions">
@@ -67,14 +67,14 @@ const Transactions = (props: Props) => {
                 <LoaderWrapper>
                     <Loader size={40} />
                     <LoaderText>
-                        <Translation {...l10nMessages.TR_LOADING_TRANSACTIONS} />
+                        <Translation {...messages.TR_LOADING_TRANSACTIONS} />
                     </LoaderText>
                 </LoaderWrapper>
             )}
             {accountTransactions.length === 0 && !transactions.isLoading && (
                 <LoaderWrapper>
                     <NoTransactions>
-                        <Translation {...l10nMessages.TR_NO_TRANSACTIONS} />
+                        <Translation {...messages.TR_NO_TRANSACTIONS} />
                     </NoTransactions>
                 </LoaderWrapper>
             )}

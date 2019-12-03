@@ -4,7 +4,7 @@ import { Prompt } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { TrezorDevice } from '@suite-types';
 
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 interface Props {
     device: TrezorDevice;
@@ -24,7 +24,7 @@ const ConfirmAction: FunctionComponent<Props> = ({ device }) => {
             <Header>
                 <Prompt model={majorVersion} size={32}>
                     <Translation
-                        {...l10nMessages.TR_CONFIRM_ACTION_ON_YOUR}
+                        {...messages.TR_CONFIRM_ACTION_ON_YOUR}
                         values={{ deviceLabel: device.label }}
                     />
                 </Prompt>

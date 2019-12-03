@@ -1,11 +1,9 @@
 import React from 'react';
-// import { Translation } from '@suite-components/Translation';
 import { P } from '@trezor/components-v2';
 
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { Props } from './Container';
-// import l10nMessages from './index.messages';
 
 const NewOrUsedStep = (props: Props) => {
     const handleNewDeviceOnClick = () => {

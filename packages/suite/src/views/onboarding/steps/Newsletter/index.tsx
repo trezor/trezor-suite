@@ -14,7 +14,7 @@ import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
 import { Wrapper, Text, OnboardingIcon, OnboardingButton, Loaders } from '@onboarding-components';
 import { Props } from './Container';
 
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 const CheckboxexSection = styled.div`
     display: flex;
@@ -74,7 +74,7 @@ const NewsleterStep = (props: Props) => {
         if (!isEmail(email)) {
             return {
                 state: 'error',
-                bottomText: props.intl.formatMessage(l10nMessages.TR_WRONG_EMAIL_FORMAT),
+                bottomText: props.intl.formatMessage(messages.TR_WRONG_EMAIL_FORMAT),
             };
         }
         return { state: 'success' };
@@ -110,13 +110,13 @@ const NewsleterStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <Translation>{l10nMessages.TR_NEWSLETTER_HEADING}</Translation>
+                <Translation>{messages.TR_NEWSLETTER_HEADING}</Translation>
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {status === 'initial' && (
                     <>
                         <Text>
-                            <Translation>{l10nMessages.TR_NEWSLETTER_SUBHEADING}</Translation>
+                            <Translation>{messages.TR_NEWSLETTER_SUBHEADING}</Translation>
                         </Text>
                         <InputWrapper>
                             <Input
@@ -173,12 +173,12 @@ const NewsleterStep = (props: Props) => {
                     <>
                         {!newsletter.skipped && (
                             <Text>
-                                <Translation>{l10nMessages.TR_THANK_YOU_FOR_EMAIL}</Translation>
+                                <Translation>{messages.TR_THANK_YOU_FOR_EMAIL}</Translation>
                             </Text>
                         )}
                         {newsletter.skipped && (
                             <Text>
-                                <Translation>{l10nMessages.TR_EMAIL_SKIPPED}</Translation>
+                                <Translation>{messages.TR_EMAIL_SKIPPED}</Translation>
                             </Text>
                         )}
                         <SocialWrapper>

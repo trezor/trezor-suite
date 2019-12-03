@@ -4,7 +4,7 @@ import { TrezorImage } from '@trezor/components';
 import { P } from '@trezor/components-v2';
 import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
 
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 import { Props } from './Container';
 
 const DEVICE_HEIGHT = 130;
@@ -13,7 +13,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <Translation {...l10nMessages.TR_SELECT_YOUR_DEVICE_HEADING} />
+                <Translation {...messages.TR_SELECT_YOUR_DEVICE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 <Wrapper.Options>
@@ -26,7 +26,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                     >
                         <TrezorImage style={{ margin: '15px' }} model={1} height={DEVICE_HEIGHT} />
                         <P weight="bold">
-                            <Translation {...l10nMessages.TR_MODEL_ONE} />
+                            <Translation {...messages.TR_MODEL_ONE} />
                         </P>
                     </Option>
                     <Option
@@ -38,7 +38,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                     >
                         <TrezorImage style={{ margin: '15px' }} model={2} height={DEVICE_HEIGHT} />
                         <P weight="bold">
-                            <Translation {...l10nMessages.TR_MODEL_T} />
+                            <Translation {...messages.TR_MODEL_T} />
                         </P>
                     </Option>
                 </Wrapper.Options>
