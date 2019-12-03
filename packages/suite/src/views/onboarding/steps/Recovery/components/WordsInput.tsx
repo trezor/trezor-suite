@@ -8,7 +8,7 @@ import { Translation } from '@suite-components/Translation';
 import { createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
 
-import messages from '../index.messages';
+import messages from '@suite/support/messages';
 
 const sortedBip39 = bip39List.map(item => ({ label: item, value: item }));
 

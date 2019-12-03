@@ -2052,9 +2052,22 @@ const definedMessages = defineMessages({
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
     },
+    TR_NTH_WORD: {
+        id: 'TR_NTH_WORD',
+        defaultMessage: '{number}. word',
+        description: 'Ordinal number. For example: 1. word',
+    },
     TR_WAITING_FOR_CAMERA: {
         defaultMessage: 'Waiting for camera...',
         id: 'TR_WAITING_FOR_CAMERA',
+    },
+    TR_CONFIRM_ADDRESS_ON_TREZOR: {
+        id: 'TR_CONFIRM_ADDRESS_ON_TREZOR',
+        defaultMessage: 'Confirm address on Trezor',
+    },
+    TR_PLEASE_COMPARE_YOUR_ADDRESS: {
+        id: 'TR_PLEASE_COMPARE_YOUR_ADDRESS',
+        defaultMessage: 'Please compare your address on device with address shown bellow',
     },
     TR_WAS_USED_IN_ANOTHER_WINDOW: {
         defaultMessage: 'Reload session',
