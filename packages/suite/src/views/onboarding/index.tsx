@@ -76,8 +76,6 @@ const WrapperOutside = styled.div`
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         height: 100%;
         animation: ${backgroundAnimation} 1s linear;
-        background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
-        background-size: cover;
     }
 `;
 
