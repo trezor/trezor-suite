@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { Input, Checkbox } from '@trezor/components';
 import { Link, P } from '@trezor/components-v2';
 
-import l10nCommonMessages from '@suite-support/Messages';
+import messages from '@suite/support/messages';
 import { isEmail } from '@suite-utils/validators';
 import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
 import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
@@ -154,7 +154,7 @@ const NewsleterStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             <OnboardingButton.Alt onClick={() => skipEmail()}>
-                                <Translation>{l10nCommonMessages.TR_SKIP}</Translation>
+                                <Translation>{messages.TR_SKIP}</Translation>
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 isDisabled={
@@ -163,7 +163,7 @@ const NewsleterStep = (props: Props) => {
                                 }
                                 onClick={submitEmail}
                             >
-                                <Translation>{l10nCommonMessages.TR_SUBMIT}</Translation>
+                                <Translation>{messages.TR_SUBMIT}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -194,7 +194,7 @@ const NewsleterStep = (props: Props) => {
                         </SocialWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta onClick={() => goToNextStep()}>
-                                <Translation>{l10nCommonMessages.TR_CONTINUE}</Translation>
+                                <Translation>{messages.TR_CONTINUE}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>

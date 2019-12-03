@@ -3,17 +3,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { UI } from 'trezor-connect';
 import { Link } from '@trezor/components-v2';
-// import { Link, Modal } from '@trezor/components';
-
 import { Translation } from '@suite-components/Translation';
-
-// import { resolveStaticPath } from '@suite-utils/nextjs';
-import l10nCommonMessages from '@suite-support/Messages';
+import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import { PinMatrix, Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
-
-import l10nMessages from './index.messages';
 
 const NewPinWrapper = styled.div`
     display: flex;
@@ -74,35 +68,31 @@ const SetPinStep = (props: Props) => {
         <Wrapper.Step>
             <Wrapper.StepHeading>
                 {getStatus() === 'initial' && 'PIN'}
-                {getStatus() === 'first' && <Translation {...l10nMessages.TR_PIN_HEADING_FIRST} />}
-                {getStatus() === 'second' && (
-                    <Translation {...l10nMessages.TR_PIN_HEADING_REPEAT} />
-                )}
-                {getStatus() === 'success' && (
-                    <Translation {...l10nMessages.TR_PIN_HEADING_SUCCESS} />
-                )}
+                {getStatus() === 'first' && <Translation {...messages.TR_PIN_HEADING_FIRST} />}
+                {getStatus() === 'second' && <Translation {...messages.TR_PIN_HEADING_REPEAT} />}
+                {getStatus() === 'success' && <Translation {...messages.TR_PIN_HEADING_SUCCESS} />}
                 {getStatus() === 'mismatch' && (
-                    <Translation {...l10nMessages.TR_PIN_HEADING_MISMATCH} />
+                    <Translation {...messages.TR_PIN_HEADING_MISMATCH} />
                 )}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getStatus() === 'initial' && (
                     <>
                         <Text>
-                            <Translation {...l10nMessages.TR_PIN_SUBHEADING} />
+                            <Translation {...messages.TR_PIN_SUBHEADING} />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
                                 onClick={() => props.onboardingActions.goToNextStep()}
                             >
-                                <Translation {...l10nCommonMessages.TR_SKIP} />
+                                <Translation {...messages.TR_SKIP} />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 onClick={() => {
                                     props.connectActions.changePin();
                                 }}
                             >
-                                <Translation {...l10nMessages.TR_SET_PIN} />
+                                <Translation {...messages.TR_SET_PIN} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -145,7 +135,7 @@ const SetPinStep = (props: Props) => {
                 {getStatus() === 'second' && (
                     <>
                         <Text>
-                            <Translation {...l10nMessages.TR_FIRST_PIN_ENTERED} />
+                            <Translation {...messages.TR_FIRST_PIN_ENTERED} />
                         </Text>
                         <PinMatrix
                             onPinSubmit={(pin: string) => {
@@ -158,13 +148,13 @@ const SetPinStep = (props: Props) => {
                 {getStatus() === 'success' && (
                     <>
                         <Text>
-                            <Translation {...l10nMessages.TR_PIN_SET_SUCCESS} />
+                            <Translation {...messages.TR_PIN_SET_SUCCESS} />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => props.onboardingActions.goToNextStep()}
                             >
-                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...messages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -174,11 +164,11 @@ const SetPinStep = (props: Props) => {
                     <>
                         <Text>
                             <Translation
-                                {...l10nMessages.TR_PIN_ERROR_TROUBLESHOOT}
+                                {...messages.TR_PIN_ERROR_TROUBLESHOOT}
                                 values={{
                                     TR_DOCUMENTATION: (
                                         <Link href={URLS.PIN_MANUAL_URL}>
-                                            <Translation {...l10nMessages.TR_DOCUMENTATION} />
+                                            <Translation {...messages.TR_DOCUMENTATION} />
                                         </Link>
                                     ),
                                 }}
@@ -191,7 +181,7 @@ const SetPinStep = (props: Props) => {
                                     props.connectActions.changePin();
                                 }}
                             >
-                                <Translation {...l10nMessages.TR_START_AGAIN} />
+                                <Translation {...messages.TR_START_AGAIN} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
