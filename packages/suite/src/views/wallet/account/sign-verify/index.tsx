@@ -5,7 +5,8 @@ import { Button } from '@trezor/components-v2';
 import Title from '@wallet-components/Title';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
-import { FormattedMessage, WrappedComponentProps } from 'react-intl';
+import { WrappedComponentProps } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import l10nCommonMessages from '@suite/views/wallet/index.messages';
 import l10nMessages from './index.messages';
@@ -117,7 +118,7 @@ class SignVerify extends Component<Props> {
                 <Wrapper>
                     <Sign>
                         <Title>
-                            <FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE} />
+                            <Translation {...l10nMessages.TR_SIGN_MESSAGE} />
                         </Title>
                         <Row>
                             <Input
@@ -157,7 +158,7 @@ class SignVerify extends Component<Props> {
                                 variant="secondary"
                                 inlineWidth
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
+                                <Translation {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!device.connected}
@@ -168,13 +169,13 @@ class SignVerify extends Component<Props> {
                                 //      signVerifyActions.sign(account.accountPath, signMessage)
                                 // }
                             >
-                                <FormattedMessage {...l10nMessages.TR_SIGN} />
+                                <Translation {...l10nMessages.TR_SIGN} />
                             </StyledButton>
                         </RowButtons>
                     </Sign>
                     <Verify>
                         <Title>
-                            <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE} />
+                            <Translation {...l10nMessages.TR_VERIFY_MESSAGE} />
                         </Title>
                         <Row>
                             <Input
@@ -211,7 +212,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <RowButtons>
                             <StyledButton onClick={signVerifyActions.clearVerify} inlineWidth>
-                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
+                                <Translation {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!!verifyAddressError || !device.connected}
@@ -227,7 +228,7 @@ class SignVerify extends Component<Props> {
                                 }}
                                 inlineWidth
                             >
-                                <FormattedMessage {...l10nMessages.TR_VERIFY} />
+                                <Translation {...l10nMessages.TR_VERIFY} />
                             </StyledButton>
                         </RowButtons>
                     </Verify>

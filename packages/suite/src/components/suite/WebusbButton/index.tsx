@@ -34,7 +34,7 @@ const WebusbButton = ({ ready }: Props) => {
             elem.style.left = `${left}px`;
             elem.style.width = `${right - left}px`;
             iframe.style.width = `${right - left}px`;
-            elem.style.zIndex = '1000';
+            elem.style.zIndex = '9999999';
         };
 
         const moveWebusbOut = () => {

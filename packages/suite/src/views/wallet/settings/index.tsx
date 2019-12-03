@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage, WrappedComponentProps } from 'react-intl';
+import { WrappedComponentProps } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { Switch, Select, Tooltip, Icon, colors, variables } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
 import l10nCommonMessages from '@suite-views/index.messages';
@@ -88,7 +89,7 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
         </CloseWrapper>
         <Section>
             <LabelTop>
-                <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
+                <Translation {...l10nMessages.TR_LOCAL_CURRENCY} />
             </LabelTop>
             <CurrencySelect
                 isSearchable
@@ -103,9 +104,9 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
         <Section>
             <Row>
                 <Label>
-                    <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
+                    <Translation {...l10nCommonMessages.TR_HIDE_BALANCE} />
                     <Tooltip
-                        content={<FormattedMessage {...l10nMessages.TR_HIDE_BALANCE_EXPLAINED} />}
+                        content={<Translation {...l10nMessages.TR_HIDE_BALANCE_EXPLAINED} />}
                         maxWidth={210}
                         placement="right"
                     >
@@ -132,11 +133,11 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
         </Section>
         <Actions>
             <Info>
-                <FormattedMessage {...l10nMessages.TR_THE_CHANGES_ARE_SAVED} />
+                <Translation {...l10nMessages.TR_THE_CHANGES_ARE_SAVED} />
             </Info>
             <Buttons>
                 <Button onClick={() => props.goto('wallet-index')}>
-                    <FormattedMessage {...l10nCommonMessages.TR_CLOSE} />
+                    <Translation {...l10nCommonMessages.TR_CLOSE} />
                 </Button>
             </Buttons>
         </Actions>

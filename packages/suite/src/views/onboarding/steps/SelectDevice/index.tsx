@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { TrezorImage } from '@trezor/components';
 import { P } from '@trezor/components-v2';
 import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
@@ -13,7 +13,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <FormattedMessage {...l10nMessages.TR_SELECT_YOUR_DEVICE_HEADING} />
+                <Translation {...l10nMessages.TR_SELECT_YOUR_DEVICE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 <Wrapper.Options>
@@ -26,7 +26,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                     >
                         <TrezorImage style={{ margin: '15px' }} model={1} height={DEVICE_HEIGHT} />
                         <P weight="bold">
-                            <FormattedMessage {...l10nMessages.TR_MODEL_ONE} />
+                            <Translation {...l10nMessages.TR_MODEL_ONE} />
                         </P>
                     </Option>
                     <Option
@@ -38,7 +38,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                     >
                         <TrezorImage style={{ margin: '15px' }} model={2} height={DEVICE_HEIGHT} />
                         <P weight="bold">
-                            <FormattedMessage {...l10nMessages.TR_MODEL_T} />
+                            <Translation {...l10nMessages.TR_MODEL_T} />
                         </P>
                     </Option>
                 </Wrapper.Options>

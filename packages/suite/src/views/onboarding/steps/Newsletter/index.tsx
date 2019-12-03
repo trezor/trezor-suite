@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 
 import { Input, Checkbox } from '@trezor/components';
 import { Link, P } from '@trezor/components-v2';

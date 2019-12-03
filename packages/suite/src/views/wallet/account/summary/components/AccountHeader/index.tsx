@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { variables } from '@trezor/components';
 import { Link } from '@trezor/components-v2';
 import AccountName from '@wallet-components/AccountName';
@@ -45,7 +45,7 @@ const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }:
             <AccountHeading>
                 <AccountName account={account} message={accountNameMessage} />
                 <StyledLink href={explorerLink}>
-                    <FormattedMessage {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
+                    <Translation {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
                 </StyledLink>
             </AccountHeading>
             <AccountBalance

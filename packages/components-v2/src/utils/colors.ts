@@ -1,7 +1,7 @@
-import { FeedbackType } from '../support/types';
+import { FeedbackState } from '../support/types';
 import colors from '../config/colors';
 
-const getFeedbackColor = (state: FeedbackType) => {
+const getFeedbackColor = (state: FeedbackState) => {
     switch (state) {
         case 'error':
             return colors.RED;

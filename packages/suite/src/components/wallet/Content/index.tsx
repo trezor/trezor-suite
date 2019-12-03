@@ -1,10 +1,9 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { Loader, colors, variables } from '@trezor/components';
 import { P, H2 } from '@trezor/components-v2';
 import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
-import { Translation } from '@suite-components/Intl';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 import l10nMessages from './index.messages';
@@ -14,6 +13,7 @@ const Wrapper = styled.div`
     flex: 1;
     flex-direction: column;
     padding: 40px 35px 40px 35px;
+    max-width: 1024px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 20px 35px;
@@ -82,7 +82,7 @@ const Content = ({ className, children, isLoading = false, loader, exceptionPage
                     )}
                     <Title textAlign="center" type={loader.type}>
                         {<Translation>{loader.title}</Translation> || (
-                            <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />
+                            <Translation {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />
                         )}
                     </Title>
                 </Row>

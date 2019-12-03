@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from '@trezor/components-v2';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import l10nCommonMessages from '@suite-support/Messages';
@@ -34,11 +34,11 @@ const TroubleshootInitialized = (props: Props) => {
             {activeSubStep === null && (
                 <>
                     <Text>
-                        <FormattedMessage
+                        <Translation
                             {...l10nMessages.TR_DEVICE_LABEL}
                             values={{ label: device.label }}
                         />{' '}
-                        <FormattedMessage
+                        <Translation
                             {...l10nMessages.TR_DEVICE_FIRMWARE_VERSION}
                             values={{
                                 firmware: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
@@ -49,14 +49,12 @@ const TroubleshootInitialized = (props: Props) => {
                         <OnboardingButton.Alt
                             onClick={() => onboardingActions.goToSubStep('user-worked-before')}
                         >
-                            <FormattedMessage
-                                {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE}
-                            />
+                            <Translation {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE} />
                         </OnboardingButton.Alt>
                         <OnboardingButton.Alt
                             onClick={() => onboardingActions.goToSubStep('is-brand-new')}
                         >
-                            <FormattedMessage
+                            <Translation
                                 {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE}
                             />
                         </OnboardingButton.Alt>
@@ -67,17 +65,17 @@ const TroubleshootInitialized = (props: Props) => {
             {activeSubStep === 'user-worked-before' && (
                 <>
                     <Text>
-                        <FormattedMessage {...l10nMessages.TR_INSTRUCTION_TO_SKIP} />
+                        <Translation {...l10nMessages.TR_INSTRUCTION_TO_SKIP} />
                     </Text>
 
                     <Wrapper.Controls>
                         <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
-                            <FormattedMessage {...l10nCommonMessages.TR_BACK} />
+                            <Translation {...l10nCommonMessages.TR_BACK} />
                         </OnboardingButton.Alt>
                         <OnboardingButton.Cta
                             onClick={() => onboardingActions.goToNextStep(STEP.ID_FINAL_STEP)}
                         >
-                            <FormattedMessage {...l10nCommonMessages.TR_SKIP_ALL} />
+                            <Translation {...l10nCommonMessages.TR_SKIP_ALL} />
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
                 </>
@@ -86,17 +84,17 @@ const TroubleshootInitialized = (props: Props) => {
             {activeSubStep === 'is-brand-new' && (
                 <>
                     <Text>
-                        <FormattedMessage
+                        <Translation
                             {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS}
                         />
                     </Text>
                     <Wrapper.Controls>
                         <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
-                            <FormattedMessage {...l10nCommonMessages.TR_BACK} />
+                            <Translation {...l10nCommonMessages.TR_BACK} />
                         </OnboardingButton.Alt>
                         <Link href={SUPPORT_URL}>
                             <OnboardingButton.Cta style={{ width: '100%' }}>
-                                <FormattedMessage {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
+                                <Translation {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
                             </OnboardingButton.Cta>
                         </Link>
                     </Wrapper.Controls>

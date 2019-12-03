@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import * as STEP from '@onboarding-constants/steps';
 import CONFIG from '@onboarding-config';
@@ -34,11 +34,11 @@ const WelcomeStep = (props: Props) => {
         <Wrapper.Step data-test="onboarding_first_page">
             <Wrapper.StepBody>
                 <Wrapper.StepHeading>
-                    <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} />
+                    <Translation {...l10nMessages.TR_WELCOME_TO_TREZOR} />
                 </Wrapper.StepHeading>
 
                 <Text>
-                    <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR_TEXT} />
+                    <Translation {...l10nMessages.TR_WELCOME_TO_TREZOR_TEXT} />
                 </Text>
 
                 <Wrapper.Options>
@@ -73,7 +73,7 @@ const WelcomeStep = (props: Props) => {
                         data-test="button-use-wallet"
                         onClick={() => props.exitApp(CONFIG.APP.EXIT_APP_ROUTE)}
                     >
-                        <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
+                        <Translation {...l10nMessages.TR_USE_WALLET_NOW} />
                     </OnboardingButton.Back>
                 )}
             </Wrapper.StepFooter>

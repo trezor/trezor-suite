@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import { H2, P } from '@trezor/components-v2';
 import { TrezorDevice } from '@suite-types';
@@ -26,13 +26,13 @@ const DisconnectDevice = ({ device }: Props) => {
     return (
         <Wrapper>
             <H2>
-                <FormattedMessage
+                <Translation
                     {...l10nMessages.TR_DISCONNECT_DEVICE_HEADER}
                     values={{ label: device.label }}
                 />
             </H2>
             <StyledP size="small">
-                <FormattedMessage {...l10nMessages.TR_DISCONNECT_DEVICE_TEXT} />
+                <Translation {...l10nMessages.TR_DISCONNECT_DEVICE_TEXT} />
             </StyledP>
         </Wrapper>
     );

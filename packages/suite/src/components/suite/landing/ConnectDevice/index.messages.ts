@@ -6,9 +6,9 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor Wallet is an easy-to-use interface for your Trezor. Trezor Wallet allows you to easily control your funds, manage your balance and initiate transfers.',
     },
-    TR_THE_PRIVATE_BANK_IN_YOUR_HANDS: {
-        id: 'TR_THE_PRIVATE_BANK_IN_YOUR_HANDS',
-        defaultMessage: 'The private bank in your hands.',
+    TR_CONNECT_TREZOR: {
+        id: 'TR_CONNECT_TREZOR',
+        defaultMessage: 'Connect Trezor to continue...',
     },
     TR_CONNECT_TREZOR_TO_CONTINUE: {
         id: 'TR_CONNECT_TREZOR_TO_CONTINUE',
