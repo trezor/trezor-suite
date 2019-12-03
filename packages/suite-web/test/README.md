@@ -10,7 +10,7 @@ Cypress does not send request origin headers correctly, so tests must be run aga
 
 Emulator binary is present in tests folder. Currently tests run with 2.1.4.
 
-## Debugging tests locally
+## Debug tests locally
 
 Run dev server first
 `yarn workspace @trezor/suite-web dev`
