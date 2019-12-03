@@ -1,18 +1,17 @@
-import React from 'react';
-import styled from 'styled-components';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
-import { Output } from '@wallet-types/sendForm';
-import { Input, variables, colors } from '@trezor/components';
+import messages from '@suite/support/messages';
+import { colors, Input, variables } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import FiatComponent from './components/Fiat';
-import CurrencySelect from './components/CurrencySelect';
-import SetMax from './components/SetMax';
-
-import messages from './index.messages';
-import walletMessages from '@wallet-views/index.messages';
-import { DispatchProps } from '../../Container';
 import { Account, Fiat, Network } from '@wallet-types';
+import { Output } from '@wallet-types/sendForm';
+import React from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import styled from 'styled-components';
+
+import { DispatchProps } from '../../Container';
+import CurrencySelect from './components/CurrencySelect';
+import FiatComponent from './components/Fiat';
+import SetMax from './components/SetMax';
 
 const Wrapper = styled.div`
     display: flex;
@@ -105,7 +104,7 @@ const Amount = (props: Props) => (
             topLabel={
                 <LabelWrapper>
                     <Label>
-                        <Translation {...walletMessages.TR_AMOUNT} />
+                        <Translation {...messages.TR_AMOUNT} />
                     </Label>
                     {true && (
                         <Label>

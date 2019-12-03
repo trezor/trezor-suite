@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
-import l10nCommonMessages from '@suite-views/index.messages';
+import messages from '@suite/support/messages';
 import { Link } from '@suite-components';
 import { Account } from '@wallet-types';
 import AccountNavigation from './components/AccountNavigation/Container';
@@ -120,8 +120,8 @@ const Row = React.memo(({ account, selected }: Props) => {
                             )}
                             <Translation
                                 {...(account.imported
-                                    ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
-                                    : l10nCommonMessages.TR_ACCOUNT_HASH)}
+                                    ? messages.TR_IMPORTED_ACCOUNT_HASH
+                                    : messages.TR_ACCOUNT_HASH)}
                                 values={{ number: String(account.index + 1) }}
                             />
                         </Label>

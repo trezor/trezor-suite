@@ -1219,6 +1219,15 @@ const definedMessages = defineMessages({
             'Excellent, your device has a custom name now. It will be visible on your device display from now on.',
         description: 'Text to display after user has changed label.',
     },
+    TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO: {
+        id: 'TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO',
+        defaultMessage:
+            'Would you like Trezor Wallet to forget your {deviceCount, plural, one {device} other {devices}} or to remember {deviceCount, plural, one {it} other {them}}, so that it is still visible even while disconnected?',
+    },
+    TR_REMEMBER_DEVICE: {
+        id: 'TR_REMEMBER_DEVICE',
+        defaultMessage: 'Remember device',
+    },
     TR_NAME_ONLY_ASCII: {
         id: 'TR_NAME_ONLY_ASCII',
         defaultMessage: 'Name can contain only basic letters',
@@ -1587,6 +1596,115 @@ const definedMessages = defineMessages({
         id: 'TR_IF_WRONG_PASSPHRASE',
         defaultMessage:
             'If you enter a wrong passphrase, you will not unlock the desired hidden wallet.',
+    },
+    CANNOT_SEND_TO_MYSELF: {
+        id: 'CANNOT_SEND_TO_MYSELF',
+        defaultMessage: 'Cannot send to myself',
+    },
+    TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT: {
+        id: 'TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT',
+        defaultMessage: 'New Trezor firmware is available.',
+    },
+    TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE: {
+        id: 'TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE',
+        defaultMessage: 'New Trezor Bridge is available.',
+    },
+    TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL: {
+        id: 'TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL',
+        defaultMessage: 'You will be redirected to external wallet',
+    },
+    TR_GO_TO_EXTERNAL_WALLET: {
+        id: 'TR_GO_TO_EXTERNAL_WALLET',
+        defaultMessage: 'Go to external wallet',
+    },
+    TR_STELLAR_WALLET: {
+        id: 'TR_STELLAR_WALLET',
+        defaultMessage: 'Stellar wallet',
+    },
+    TR_CARDANO_WALLET: {
+        id: 'TR_CARDANO_WALLET',
+        defaultMessage: 'Cardano wallet',
+    },
+    TR_TEZOS_WALLET: {
+        id: 'TR_TEZOS_WALLET',
+        defaultMessage: 'Tezos wallet',
+    },
+    TR_NEM_WALLET: {
+        id: 'TR_NEM_WALLET',
+        defaultMessage: 'NEM wallet',
+    },
+    TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM: {
+        id: 'TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM',
+        defaultMessage:
+            'We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.',
+    },
+    TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL: {
+        id: 'TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL',
+        defaultMessage: 'Make sure you download the Universal Client for Trezor support.',
+    },
+    TR_GO_TO_NEM_DOT_IO: {
+        id: 'TR_GO_TO_NEM_DOT_IO',
+        defaultMessage: 'Go to nem.io',
+    },
+    TR_ADD_NEW_ACCOUNT: {
+        id: 'TR_ADD_NEW_ACCOUNT',
+        defaultMessage: 'Add new account',
+    },
+    TR_ENABLE_NETWORK_BUTTON: {
+        id: 'TR_ENABLE_NETWORK_BUTTON',
+        defaultMessage: 'Find my {networkName} accounts',
+    },
+    TR_FIND_OUT_MORE_INFO: {
+        id: 'TR_FIND_OUT_MORE_INFO',
+        defaultMessage: 'Find out more info',
+    },
+    TR_NETWORK_IS_NOT_SUPPORTED_BY_TREZOR: {
+        id: 'TR_NETWORK_IS_NOT_SUPPORTED_BY_TREZOR',
+        defaultMessage: '{networkName} is not supported by Trezor {deviceVersion}',
+    },
+    TR_CONNECT_TO_BACKEND: {
+        id: 'TR_CONNECT_TO_BACKEND',
+        defaultMessage: 'Connect',
+    },
+    TR_LOADING_OTHER_ACCOUNTS: {
+        id: 'TR_LOADING_OTHER_ACCOUNTS',
+        defaultMessage: 'Loading other accounts...',
+    },
+    TR_DEVICE_LABEL_IS_DISCONNECTED: {
+        id: 'TR_DEVICE_LABEL_IS_DISCONNECTED',
+        defaultMessage: 'Device {deviceLabel} is disconnected',
+    },
+    TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE: {
+        id: 'TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE',
+        defaultMessage: 'Change passphrase settings to use this device',
+    },
+    TR_FIND_MORE_INFORMATION_ON_TREZOR_WIKI: {
+        id: 'TR_FIND_MORE_INFORMATION_ON_TREZOR_WIKI',
+        defaultMessage: 'Find more information on Trezor Wiki.',
+    },
+    TR_INITIALIZING_ACCOUNTS: {
+        id: 'TR_INITIALIZING_ACCOUNTS',
+        defaultMessage: 'Initializing accounts',
+    },
+    TR_LOADING_DEVICE_DOT_DOT_DOT: {
+        id: 'TR_LOADING_DEVICE_DOT_DOT_DOT',
+        defaultMessage: 'Loading device...',
+    },
+    TR_LOADING_ACCOUNT: {
+        id: 'TR_LOADING_ACCOUNT',
+        defaultMessage: 'Loading account',
+    },
+    TR_AUTHENTICATING_DEVICE: {
+        id: 'TR_AUTHENTICATING_DEVICE',
+        defaultMessage: 'Authenticating device...',
+    },
+    TR_CONNECT_DEVICE_TO_LOAD_ACCOUNT: {
+        id: 'TR_CONNECT_DEVICE_TO_LOAD_ACCOUNT',
+        defaultMessage: 'Connect device to load accounts',
+    },
+    TR_ACCOUNT_DOES_NOT_EXIST: {
+        id: 'TR_ACCOUNT_DOES_NOT_EXIST',
+        defaultMessage: 'Account does not exist',
     },
 });
 

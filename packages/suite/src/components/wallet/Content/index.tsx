@@ -1,12 +1,12 @@
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { colors, Loader, variables } from '@trezor/components';
+import { H2, P } from '@trezor/components-v2';
+import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import { Loader, colors, variables } from '@trezor/components';
-import { P, H2 } from '@trezor/components-v2';
-import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
-import FirmwareUnsupported from './components/FirmwareUnsupported';
 
-import l10nMessages from './index.messages';
+import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 const Wrapper = styled.div`
     display: flex;
@@ -82,7 +82,7 @@ const Content = ({ className, children, isLoading = false, loader, exceptionPage
                     )}
                     <Title textAlign="center" type={loader.type}>
                         {<Translation>{loader.title}</Translation> || (
-                            <Translation {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />
+                            <Translation {...messages.TR_INITIALIZING_ACCOUNTS} />
                         )}
                     </Title>
                 </Row>

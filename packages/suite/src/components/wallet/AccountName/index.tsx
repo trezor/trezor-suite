@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { CoinLogo, variables, colors } from '@trezor/components';
-import l10nCommonMessages from '@suite-views/index.messages';
+import messages from '@suite/support/messages';
 import { ExtendedMessageDescriptor } from '@suite/types/suite';
 import Title from '@wallet-components/Title';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
@@ -59,8 +59,8 @@ const AccountName = ({ account, message }: Props) => {
                     )}
                     <Translation
                         {...(account.imported
-                            ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
-                            : l10nCommonMessages.TR_ACCOUNT_HASH)}
+                            ? messages.TR_IMPORTED_ACCOUNT_HASH
+                            : messages.TR_ACCOUNT_HASH)}
                         values={{ number: String(account.index + 1) }}
                     />
                 </Label>

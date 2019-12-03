@@ -227,7 +227,7 @@ const BackupStep = (props: Props) => {
                                         }}
                                         isDisabled={!device || !device.connected}
                                     >
-                                        <Translation {...l10nCommonMessages.TR_RETRY} />
+                                        <Translation {...messages.TR_RETRY} />
                                     </OnboardingButton.Cta>
                                     <OnboardingButton.Alt
                                         onClick={() => {
