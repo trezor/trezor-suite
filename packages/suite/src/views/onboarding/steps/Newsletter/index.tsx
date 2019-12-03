@@ -1,20 +1,16 @@
+import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
+import { BLOG_URL, SOCIAL_FACEBOOK_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
+import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
+import { Translation } from '@suite-components/Translation';
+import { addToFlags, HAS_EMAIL_FLAG } from '@suite-utils/flags';
+import { isEmail } from '@suite-utils/validators';
+import messages from '@suite/support/messages';
+import { Checkbox, Input } from '@trezor/components';
+import { Link, P } from '@trezor/components-v2';
 import React, { FormEvent } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
 
-import { Input, Checkbox } from '@trezor/components';
-import { Link, P } from '@trezor/components-v2';
-
-import messages from '@suite/support/messages';
-import { isEmail } from '@suite-utils/validators';
-import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
-import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
-
-import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
-import { Wrapper, Text, OnboardingIcon, OnboardingButton, Loaders } from '@onboarding-components';
 import { Props } from './Container';
-
-import messages from '@suite/support/messages';
 
 const CheckboxexSection = styled.div`
     display: flex;
