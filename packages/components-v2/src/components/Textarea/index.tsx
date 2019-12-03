@@ -100,8 +100,6 @@ const ArrowUp = styled.div`
 type BaseTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 interface StyledTextareaProps extends BaseTextareaProps {
-    isSmallText?: boolean;
-    border?: string;
     tooltipAction?: React.ReactNode;
     display?: InputDisplay;
     state?: InputState;
