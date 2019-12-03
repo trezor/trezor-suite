@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import FluidSpinner from '../../FluidSpinner';
 import { Icon } from '../../Icon';
-import colors from '../../../config/colors';
+import { colors, variables } from '../../../config';
 import {
     InputState,
     InputVariant,
@@ -24,7 +24,7 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const StyledInput = styled.input<InputProps>`
-    font-family: 'TTHoves';
+    font-family: ${variables.FONT_FAMILY.TTHOVES};
     padding: 0 10px;
     font-size: ${props => (props.value ? '16px' : '14px')};
     border-radius: 3px;
