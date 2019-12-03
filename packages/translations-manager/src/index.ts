@@ -1,10 +1,18 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
 import csvToJson from 'csvtojson';
 import csvStringify from 'csv-stringify/lib/sync';
 import { ensureDirSync } from 'fs-extra';
-import createRowArray from './utils/create-row-array';
+import createRowArray, { MessageObject } from './utils/create-row-array';
+
+interface MessageDescription {
+    id: string;
+    defaultMessage: string;
+    description?: string;
+    file: string;
+}
 
 /*
     Aggregates the default messages that were extracted from the app's
@@ -26,15 +34,18 @@ import createRowArray from './utils/create-row-array';
         ...
     ]
 */
-export const mergeMessages = (filePattern, outputFilePath, allowDuplicates = false) => {
-    const transformedMessages = glob.sync(filePattern)
+export const mergeMessages = (
+    filePattern: string,
+    outputFilePath: string,
+    allowDuplicates = false,
+) => {
+    const transformedMessages = glob
+        .sync(filePattern)
         .map(filename => fs.readFileSync(filename, 'utf8'))
         .map(file => JSON.parse(file))
         .reduce((collection, descriptors) => {
-            descriptors.forEach((d) => {
-                const {
-                    id, defaultMessage, description, file,
-                } = d;
+            descriptors.forEach((d: MessageDescription) => {
+                const { id, defaultMessage, description, file } = d;
                 if ({}.hasOwnProperty.call(collection, id)) {
                     if (!allowDuplicates) {
                         console.log(collection[id].meta.occurrences);
@@ -51,9 +62,7 @@ export const mergeMessages = (filePattern, outputFilePath, allowDuplicates = fal
                         source: defaultMessage,
                         meta: {
                             comment: description,
-                            occurrences: [
-                                file,
-                            ],
+                            occurrences: [file],
                         },
                     };
                 }
@@ -83,24 +92,45 @@ export const mergeMessages = (filePattern, outputFilePath, allowDuplicates = fal
     ]
 }
 */
-export const buildCSV = (inputFilePath, outputFilePath, languages) => {
-    const messages = JSON.parse(fs.readFileSync(inputFilePath, 'utf-8')); // this contains our master data;
-    const csvArrays = Object.entries(messages).map(([k, v]) => createRowArray(k, v).concat(Array(languages.length).join('.').split('.')));
+export const buildCSV = (inputFilePath: string, outputFilePath: string, languages: string[]) => {
+    const messages: { [key: string]: MessageObject } = JSON.parse(
+        fs.readFileSync(inputFilePath, 'utf-8'),
+    ); // this contains our master data;
+    const csvArrays = Object.entries(messages).map(([k, v]) =>
+        createRowArray(k, v).concat(
+            Array(languages.length)
+                .join('.')
+                .split('.'),
+        ),
+    );
     const cols = ['key', 'source', 'context'].concat(languages);
-    fs.writeFileSync(outputFilePath, csvStringify(csvArrays, {
-        header: true, columns: cols, quoted: true, quoted_empty: true,
-    }));
+    fs.writeFileSync(
+        outputFilePath,
+        csvStringify(csvArrays, {
+            header: true,
+            columns: cols,
+            quoted: true,
+            quoted_empty: true,
+        }),
+    );
 };
 
 /*
     Build language json files from translated master.csv downloaded from Crowdin
  */
-export const buildLocales = async (inputFilePath, outputDir, languages, langToFileNameMap = null, deleteCSV = true) => {
+export const buildLocales = async (
+    inputFilePath: string,
+    outputDir: string,
+    languages: string[],
+    langToFileNameMap: { [key: string]: string } | undefined = undefined,
+    deleteCSV = true,
+) => {
     const jsonArray = await csvToJson().fromFile(inputFilePath);
 
-    languages.forEach((language) => {
+    languages.forEach(language => {
         const langMessages = {};
-        jsonArray.forEach((record) => {
+        jsonArray.forEach(record => {
+            // @ts-ignore
             langMessages[record.key] = record[language];
         });
 
