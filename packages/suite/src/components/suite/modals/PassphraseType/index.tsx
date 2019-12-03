@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 import { P, Prompt } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { TrezorDevice } from '@suite-types';
 
 import messages from './messages';
@@ -26,7 +26,7 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
         <Wrapper>
             <Header>
                 <Prompt model={majorVersion} size={32}>
-                    <FormattedMessage
+                    <Translation
                         {...commonMessages.TR_COMPLETE_ACTION_ON_DEVICE}
                         values={{
                             deviceLabel: device.label,
@@ -35,7 +35,7 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
                 </Prompt>
 
                 <P size="small">
-                    <FormattedMessage {...messages.TR_IF_WRONG_PASSPHRASE} />
+                    <Translation {...messages.TR_IF_WRONG_PASSPHRASE} />
                 </P>
             </Header>
         </Wrapper>

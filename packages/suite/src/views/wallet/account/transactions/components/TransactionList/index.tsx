@@ -1,6 +1,7 @@
 /* eslint-disable radix */
 import React, { useMemo } from 'react';
-import { FormattedDate, FormattedMessage } from 'react-intl';
+import { FormattedDate } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { H5, P, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
@@ -70,7 +71,7 @@ const TransactionList = ({
                         <StyledH5>
                             {dateKey === 'pending' ? (
                                 <P>
-                                    <FormattedMessage {...l10nMessages.TR_PENDING} />
+                                    <Translation {...l10nMessages.TR_PENDING} />
                                 </P>
                             ) : (
                                 <FormattedDate

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 import { H1, H4 } from '@trezor/components';
 
 // import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL } from '@onboarding-constants/urls';

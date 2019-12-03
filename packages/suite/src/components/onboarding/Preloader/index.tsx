@@ -43,6 +43,10 @@ const PreloaderWrapper = styled.div`
     justify-content: center;
 `;
 
+const StyledH1 = styled(H1)`
+    text-align: center;
+`;
+
 interface Props {
     loaded: boolean;
     loadedTimeout?: number;
@@ -91,7 +95,7 @@ const Preloader: React.SFC<Props> = props => {
                         />
                     </Logo>
 
-                    <H1>Welcome to Trezor</H1>
+                    <StyledH1>Welcome to Trezor</StyledH1>
 
                     <Loader>
                         Loading

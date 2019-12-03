@@ -31,7 +31,7 @@ module.exports = {
         '^@(.+)-middlewares/(.+)': '<rootDir>/src/middlewares/$1/$2',
         '^@(.+)-middlewares': '<rootDir>/src/middlewares/$1/index',
     },
-    moduleFileExtensions: ['js', 'ts'],
+    moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',
     collectCoverage: true,
     collectCoverageFrom: [
@@ -65,9 +65,9 @@ module.exports = {
         '/node_modules/',
         '/node_modules/(?!intl-messageformat|intl-messageformat-parser).+\\.js$',
     ],
-    testMatch: ['**/*.test.(ts|js)'],
+    testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
-        '^.+\\.(ts)$': 'ts-jest',
+        '^.+\\.(ts|tsx)$': 'ts-jest',
     },
     preset: 'ts-jest',
     verbose: false,

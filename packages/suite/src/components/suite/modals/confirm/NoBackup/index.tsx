@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 
 import { H5, P, Icon, colors } from '@trezor/components';
 import { Button } from '@trezor/components-v2';

@@ -2,9 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link, colors, variables } from '@trezor/components';
 import { bindActionCreators } from 'redux';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
-import { Translation } from '@suite-components/Intl';
 
 import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';
@@ -91,7 +90,7 @@ const Content = styled.div`
 
 const Footer = ({ opened, toggle, isLanding = false }: Props) => {
     const exchangeRates = (
-        <FormattedMessage
+        <Translation
             {...l10nMessages.TR_EXCHANGE_RATES_BY}
             values={{
                 service: (
@@ -118,12 +117,12 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
                 {!isLanding && (
                     <Right>
                         <TranslatorsRight>
-                            <FormattedMessage
+                            <Translation
                                 {...l10nMessages.TR_WE_THANK_OUR_TRANSLATORS}
                                 values={{
                                     TR_CONTRIBUTION: (
                                         <Link href="https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation">
-                                            <FormattedMessage {...l10nMessages.TR_CONTRIBUTION} />
+                                            <Translation {...l10nMessages.TR_CONTRIBUTION} />
                                         </Link>
                                     ),
                                 }}

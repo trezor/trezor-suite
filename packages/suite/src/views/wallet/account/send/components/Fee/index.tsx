@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FeeLevel } from '@wallet-types/sendForm';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import accountMessages from '@suite/views/wallet/account/index.messages';
 import { DispatchProps } from '../../Container';
 import { Account } from '@wallet-types';
@@ -65,7 +66,7 @@ const getValue = (
 const FeeComponent = (props: Props) => (
     <Wrapper>
         <Label>
-            <FormattedMessage {...accountMessages.TR_FEE} />
+            <Translation {...accountMessages.TR_FEE} />
         </Label>
         <StyledSelect
             isSearchable={false}

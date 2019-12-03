@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { P, Tooltip } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import commonMessages from '@suite-support/Messages';
 
@@ -32,7 +32,7 @@ const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =>
                 isDisabled={!isConnected || !isInBootloader}
                 onClick={() => onClick()}
             >
-                <FormattedMessage {...l10nMessages.TR_INSTALL} />
+                <Translation {...l10nMessages.TR_INSTALL} />
             </OnboardingButton.Cta>
         </Tooltip>
     );
@@ -56,7 +56,7 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
                 isDisabled={!isConnected || isInBootloader}
                 onClick={() => onClick()}
             >
-                <FormattedMessage {...commonMessages.TR_CONTINUE} />
+                <Translation {...commonMessages.TR_CONTINUE} />
             </OnboardingButton.Cta>
         </Tooltip>
     );
@@ -206,7 +206,7 @@ const FirmwareStep = ({
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <FormattedMessage {...l10nMessages.TR_FIRMWARE_HEADING} />
+                <Translation {...l10nMessages.TR_FIRMWARE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {/*  text section */}
@@ -215,7 +215,7 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'none' && (
                             <>
                                 <Text>
-                                    <FormattedMessage {...l10nMessages.TR_FIRMWARE_SUBHEADING} />
+                                    <Translation {...l10nMessages.TR_FIRMWARE_SUBHEADING} />
                                 </Text>
                             </>
                         )}
@@ -223,7 +223,7 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'outdated' && !isInBootloader && (
                             <>
                                 <Text>
-                                    <FormattedMessage
+                                    <Translation
                                         {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
                                         values={{
                                             version: getVersionStr(),
@@ -240,7 +240,7 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'required' && !isInBootloader && (
                             <>
                                 <Text>
-                                    <FormattedMessage
+                                    <Translation
                                         {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
                                         values={{
                                             version: getVersionStr(),
@@ -261,7 +261,7 @@ const FirmwareStep = ({
                 {getFirmwareStatus() === 'valid' && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_FIRMWARE_INSTALLED} />
+                            <Translation {...l10nMessages.TR_FIRMWARE_INSTALLED} />
                         </Text>
                     </>
                 )}
@@ -352,7 +352,7 @@ const FirmwareStep = ({
                                     isDisabled={!isConnected}
                                     onClick={() => install()}
                                 >
-                                    <FormattedMessage {...commonMessages.TR_RETRY} />
+                                    <Translation {...commonMessages.TR_RETRY} />
                                 </OnboardingButton.Cta>
                             </Tooltip>
                         )}
