@@ -168,6 +168,11 @@ const definedMessages = defineMessages({
         description: 'Button for selecting basic recovery option',
         id: 'TR_BASIC_RECOVERY_OPTION',
     },
+    TR_BLOG: {
+        defaultMessage: 'Blog',
+        description: 'Link in header navigation',
+        id: 'TR_BLOG',
+    },
     TR_BOOKMARK_HEADING: {
         defaultMessage: 'Browser bookmark',
         description: 'Heading in bookmark step',
@@ -260,6 +265,14 @@ const definedMessages = defineMessages({
         description: 'Clear form button',
         id: 'TR_CLEAR',
     },
+    TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN: {
+        defaultMessage: 'Click here to access your hidden wallet.',
+        id: 'TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN',
+    },
+    TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD: {
+        defaultMessage: 'Click here to access your standard or another hidden wallet.',
+        id: 'TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD',
+    },
     TR_CLICK_HERE_TO_USE_THEM: {
         defaultMessage: 'Click here to use them',
         description: 'Button to use recommended updated fees.',
@@ -315,10 +328,40 @@ const definedMessages = defineMessages({
         defaultMessage: 'Connect your Trezor to verify this address',
         id: 'TR_CONNECT_YOUR_TREZOR_TO_CHECK',
     },
+    TR_CONNECTED: {
+        defaultMessage: 'Connected',
+        description: 'Device status',
+        id: 'TR_CONNECTED',
+    },
+    TR_CONNECTED_BOOTLOADER: {
+        defaultMessage: 'Connected (bootloader mode)',
+        description: 'Device status',
+        id: 'TR_CONNECTED_BOOTLOADER',
+    },
     TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER: {
         defaultMessage: 'Connected device is in bootloader mode. Reconnect it to continue.',
         description: 'Text that indicates that user connected device in bootloader mode',
         id: 'TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER',
+    },
+    TR_CONNECTED_NOT_INITIALIZED: {
+        defaultMessage: 'Connected (not initialized)',
+        description: 'Device status',
+        id: 'TR_CONNECTED_NOT_INITIALIZED',
+    },
+    TR_CONNECTED_SEEDLESS: {
+        defaultMessage: 'Connected (seedless mode)',
+        description: 'Device status',
+        id: 'TR_CONNECTED_SEEDLESS',
+    },
+    TR_CONNECTED_UPDATE_RECOMMENDED: {
+        defaultMessage: 'Connected (update recommended)',
+        description: 'Device status',
+        id: 'TR_CONNECTED_UPDATE_RECOMMENDED',
+    },
+    TR_CONNECTED_UPDATE_REQUIRED: {
+        defaultMessage: 'Connected (update required)',
+        description: 'Device status',
+        id: 'TR_CONNECTED_UPDATE_REQUIRED',
     },
     TR_CONTACT_OUR_SUPPORT_LINK: {
         defaultMessage: 'contact our support',
@@ -578,6 +621,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Disconnect your device',
         description: 'Prompt to disconnect device.',
         id: 'TR_DISCONNECT_YOUR_DEVICE',
+    },
+    TR_DISCONNECTED: {
+        defaultMessage: 'Disconnected',
+        description: 'Device status',
+        id: 'TR_DISCONNECTED',
     },
     TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION: {
         defaultMessage: 'Do not write it into a computer',
@@ -1016,6 +1064,16 @@ const definedMessages = defineMessages({
         defaultMessage: 'Make sure you download the Universal Client for Trezor support.',
         id: 'TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL',
     },
+    TR_MENU: {
+        defaultMessage: 'Menu',
+        description: 'Mobile sidebar toggler',
+        id: 'TR_MENU',
+    },
+    TR_MENU_CLOSE: {
+        defaultMessage: 'Close',
+        description: 'Used on button for closing sidebar menu',
+        id: 'TR_MENU_CLOSE',
+    },
     TR_MESSAGE: {
         defaultMessage: 'Message',
         description: 'Used as a label for message input field in Sign and Verify form',
@@ -1080,6 +1138,37 @@ const definedMessages = defineMessages({
         defaultMessage: 'Name is too long',
         description: 'Validation message in label input',
         id: 'TR_NAME_TOO_LONG',
+    },
+    TR_NAV_RECEIVE: {
+        defaultMessage: 'Receive',
+        description: 'Title of the navigation tab that contains the account address',
+        id: 'TR_NAV_RECEIVE',
+    },
+    TR_NAV_SEND: {
+        defaultMessage: 'Send',
+        description: 'Title of the navigation tab that contains a form for sending funds',
+        id: 'TR_NAV_SEND',
+    },
+    TR_NAV_SIGN_AND_VERIFY: {
+        defaultMessage: 'Sign & Verify',
+        description:
+            'Title of the navigation tab that contains a form for signing and verifying messages',
+        id: 'TR_NAV_SIGN_AND_VERIFY',
+    },
+    TR_NAV_SUMMARY: {
+        defaultMessage: 'Summary',
+        description:
+            'Title of the navigation tab that contains information about selected account (balance, tx history).',
+        id: 'TR_NAV_SUMMARY',
+    },
+    TR_NAV_TRANSACTIONS: {
+        defaultMessage: 'Transactions',
+        description: 'Title of the navigation tab that contains tx history.',
+        id: 'TR_NAV_TRANSACTIONS',
+    },
+    TR_NEED_HELP: {
+        defaultMessage: 'Need help?',
+        id: 'TR_NEED_HELP',
     },
     TR_NEM_WALLET: {
         defaultMessage: 'NEM wallet',
@@ -1221,6 +1310,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'not running',
         description: 'Bridge status in box next to heading',
         id: 'TR_NOT_RUNNING',
+    },
+    TR_NUMBER_OF_DEVICES: {
+        defaultMessage: 'Number of devices',
+        id: 'TR_NUMBER_OF_DEVICES',
     },
     TR_OOPS_SOMETHING_WENT_WRONG: {
         defaultMessage: 'Oops! Something went wrong!',
@@ -1667,6 +1760,11 @@ const definedMessages = defineMessages({
         description: 'Button.',
         id: 'TR_START_RECOVERY',
     },
+    TR_STATUS_UNKNOWN: {
+        defaultMessage: 'Status unknown',
+        description: 'Device status',
+        id: 'TR_STATUS_UNKNOWN',
+    },
     TR_STELLAR_WALLET: {
         defaultMessage: 'Stellar wallet',
         id: 'TR_STELLAR_WALLET',
@@ -1675,6 +1773,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Submit',
         description: 'Button text',
         id: 'TR_SUBMIT',
+    },
+    TR_SUPPORT: {
+        defaultMessage: 'Support',
+        description: 'Link in header navigation',
+        id: 'TR_SUPPORT',
     },
     TR_TAKE_ME_BACK_TO_WALLET: {
         defaultMessage: 'Take me back to the wallet',
@@ -1688,124 +1791,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Terms',
         description: 'As in Terms and Conditions, In the bottom footer',
         id: 'TR_TERMS',
-    },
-    TR_MENU: {
-        id: 'TR_MENU',
-        defaultMessage: 'Menu',
-        description: 'Mobile sidebar toggler',
-    },
-    TR_MENU_CLOSE: {
-        id: 'TR_MENU_CLOSE',
-        defaultMessage: 'Close',
-        description: 'Used on button for closing sidebar menu',
-    },
-    TR_TREZOR: {
-        id: 'TR_TREZOR',
-        defaultMessage: 'Trezor',
-        description: 'Link in header navigation',
-    },
-    TR_WIKI: {
-        id: 'TR_WIKI',
-        defaultMessage: 'Wiki',
-        description: 'Link in header navigation',
-    },
-    TR_BLOG: {
-        id: 'TR_BLOG',
-        defaultMessage: 'Blog',
-        description: 'Link in header navigation',
-    },
-    TR_SUPPORT: {
-        id: 'TR_SUPPORT',
-        defaultMessage: 'Support',
-        description: 'Link in header navigation',
-    },
-    TR_CONNECTED: {
-        id: 'TR_CONNECTED',
-        defaultMessage: 'Connected',
-        description: 'Device status',
-    },
-    TR_CONNECTED_BOOTLOADER: {
-        id: 'TR_CONNECTED_BOOTLOADER',
-        defaultMessage: 'Connected (bootloader mode)',
-        description: 'Device status',
-    },
-    TR_CONNECTED_NOT_INITIALIZED: {
-        id: 'TR_CONNECTED_NOT_INITIALIZED',
-        defaultMessage: 'Connected (not initialized)',
-        description: 'Device status',
-    },
-    TR_CONNECTED_SEEDLESS: {
-        id: 'TR_CONNECTED_SEEDLESS',
-        defaultMessage: 'Connected (seedless mode)',
-        description: 'Device status',
-    },
-    TR_CONNECTED_UPDATE_REQUIRED: {
-        id: 'TR_CONNECTED_UPDATE_REQUIRED',
-        defaultMessage: 'Connected (update required)',
-        description: 'Device status',
-    },
-    TR_CONNECTED_UPDATE_RECOMMENDED: {
-        id: 'TR_CONNECTED_UPDATE_RECOMMENDED',
-        defaultMessage: 'Connected (update recommended)',
-        description: 'Device status',
-    },
-    TR_USED_IN_ANOTHER_WINDOW: {
-        id: 'TR_USED_IN_ANOTHER_WINDOW',
-        defaultMessage: 'Used in other window',
-        description: 'Device status',
-    },
-    TR_WAS_USED_IN_ANOTHER_WINDOW: {
-        id: 'TR_WAS_USED_IN_ANOTHER_WINDOW',
-        defaultMessage: 'Reload session',
-        description: 'Device status',
-    },
-    TR_UNAVAILABLE: {
-        id: 'TR_UNAVAILABLE',
-        defaultMessage: 'Unavailable',
-        description: 'Device status',
-    },
-    TR_UNREADABLE: {
-        id: 'TR_UNREADABLE',
-        defaultMessage: 'Unreadable',
-        description: 'Device status',
-    },
-    TR_DISCONNECTED: {
-        id: 'TR_DISCONNECTED',
-        defaultMessage: 'Disconnected',
-        description: 'Device status',
-    },
-    TR_STATUS_UNKNOWN: {
-        id: 'TR_STATUS_UNKNOWN',
-        defaultMessage: 'Status unknown',
-        description: 'Device status',
-    },
-    TR_YOU_ARE_IN_YOUR_STANDARD_WALLET: {
-        id: 'TR_YOU_ARE_IN_YOUR_STANDARD_WALLET',
-        defaultMessage: 'You are in your standard wallet.',
-    },
-    TR_YOU_ARE_IN_YOUR_HIDDEN_WALLET: {
-        id: 'TR_YOU_ARE_IN_YOUR_WALLET',
-        defaultMessage: 'You are in your hidden wallet.',
-    },
-    TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN: {
-        id: 'TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN',
-        defaultMessage: 'Click here to access your hidden wallet.',
-    },
-    TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD: {
-        id: 'TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD',
-        defaultMessage: 'Click here to access your standard or another hidden wallet.',
-    },
-    TR_TO_ACCESS_OTHER_WALLETS: {
-        id: 'TR_TO_ACCESS_OTHER_WALLETS',
-        defaultMessage: 'To access other wallets please connect your device.',
-    },
-    TR_NEED_HELP: {
-        id: 'TR_NEED_HELP',
-        defaultMessage: 'Need help?',
-    },
-    TR_NUMBER_OF_DEVICES: {
-        id: 'TR_NUMBER_OF_DEVICES',
-        defaultMessage: 'Number of devices',
     },
     TR_TEZOS_WALLET: {
         defaultMessage: 'Tezos wallet',
@@ -1833,6 +1818,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'This will create new instance of device which can be used with different passphrase',
         id: 'TR_THIS_WILL_CREATE_NEW_INSTANCE',
+    },
+    TR_TO_ACCESS_OTHER_WALLETS: {
+        defaultMessage: 'To access other wallets please connect your device.',
+        id: 'TR_TO_ACCESS_OTHER_WALLETS',
     },
     TR_TO_ADD_A_NEW_ACCOUNT_LAST: {
         defaultMessage: 'To add a new account, last account must have some transactions.',
@@ -1880,6 +1869,11 @@ const definedMessages = defineMessages({
     TR_TRANSACTIONS_AND_TOKENS: {
         defaultMessage: '{network} and tokens transactions',
         id: 'TR_TRANSACTIONS_AND_TOKENS',
+    },
+    TR_TREZOR: {
+        defaultMessage: 'Trezor',
+        description: 'Link in header navigation',
+        id: 'TR_TREZOR',
     },
     TR_TREZOR_BRIDGE_IS_NOT_RUNNING: {
         defaultMessage: 'Trezor Bridge is not running',
@@ -1935,6 +1929,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Type in a token name or a token address.',
         id: 'TR_TYPE_IN_A_TOKEN_NAME',
     },
+    TR_UNAVAILABLE: {
+        defaultMessage: 'Unavailable',
+        description: 'Device status',
+        id: 'TR_UNAVAILABLE',
+    },
     TR_UNKNOWN_TRANSACTION: {
         defaultMessage: '(Unknown transaction)',
         id: 'TR_UNKNOWN_TRANSACTION',
@@ -1946,6 +1945,11 @@ const definedMessages = defineMessages({
     TR_UNPLUG_DEVICE_LABEL: {
         defaultMessage: 'Unplug "{deviceLabel}" device',
         id: 'TR_UNPLUG_DEVICE_LABEL',
+    },
+    TR_UNREADABLE: {
+        defaultMessage: 'Unreadable',
+        description: 'Device status',
+        id: 'TR_UNREADABLE',
     },
     TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
         defaultMessage: 'Unverified address, connect your Trezor to verify it',
@@ -1972,6 +1976,11 @@ const definedMessages = defineMessages({
     TR_USE_YOUR_DEVICE_IN_THIS_WINDOW: {
         defaultMessage: 'Do you want to use your device in this window?',
         id: 'TR_USE_YOUR_DEVICE_IN_THIS_WINDOW',
+    },
+    TR_USED_IN_ANOTHER_WINDOW: {
+        defaultMessage: 'Used in other window',
+        description: 'Device status',
+        id: 'TR_USED_IN_ANOTHER_WINDOW',
     },
     TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE: {
         defaultMessage: 'It is a brand new device, just unpacked',
@@ -2047,6 +2056,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Waiting for camera...',
         id: 'TR_WAITING_FOR_CAMERA',
     },
+    TR_WAS_USED_IN_ANOTHER_WINDOW: {
+        defaultMessage: 'Reload session',
+        description: 'Device status',
+        id: 'TR_WAS_USED_IN_ANOTHER_WINDOW',
+    },
     TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM: {
         defaultMessage:
             'We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.',
@@ -2065,6 +2079,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Let us take you through a short setup.',
         description: 'Welcome message on welcome page, longer text.',
         id: 'TR_WELCOME_TO_TREZOR_TEXT',
+    },
+    TR_WIKI: {
+        defaultMessage: 'Wiki',
+        description: 'Link in header navigation',
+        id: 'TR_WIKI',
     },
     TR_WIPE_DEVICE: {
         defaultMessage: 'Retry backup',
@@ -2103,6 +2122,14 @@ const definedMessages = defineMessages({
     TR_XRP_TRANSFER_COST: {
         defaultMessage: 'Transfer cost in XRP drops',
         id: 'TR_XRP_TRANSFER_COST',
+    },
+    TR_YOU_ARE_IN_YOUR_HIDDEN_WALLET: {
+        defaultMessage: 'You are in your hidden wallet.',
+        id: 'TR_YOU_ARE_IN_YOUR_WALLET',
+    },
+    TR_YOU_ARE_IN_YOUR_STANDARD_WALLET: {
+        defaultMessage: 'You are in your standard wallet.',
+        id: 'TR_YOU_ARE_IN_YOUR_STANDARD_WALLET',
     },
     TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS: {
         defaultMessage: 'You cannot add more than 10 accounts',
