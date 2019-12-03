@@ -188,6 +188,11 @@ export const getAccountDevice = (devices: AppState['devices'], account: Account)
     return device;
 };
 
+export const getDeviceAccounts = (device: AppState['devices'][number], accounts: Account[]) => {
+    const deviceAccs = accounts.filter(a => a.deviceState === device.state);
+    return deviceAccs;
+};
+
 export const getSelectedAccount = (
     accounts: Account[],
     device: AppState['suite']['device'],
