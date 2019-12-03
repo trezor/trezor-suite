@@ -45,6 +45,7 @@ def start():
         # - custom path to binary (?)
         base = "./test/trezord-go -ed 21324:21325"
         command = base + " -u=false" if 'CI' in os.environ else base
+        print(command)
         proc = Popen(
             command,
             shell=True,

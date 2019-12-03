@@ -68,7 +68,7 @@ suite-web test integration google-chrome:
         #  And it is not packed with artifacts
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration:ci:run
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} ./test/run-ci.sh chrome
     artifacts:
         expire_in: 2 days
         when: always
@@ -85,8 +85,7 @@ suite-web test integration google-chrome-beta:
     stage: integration testing
     script:
         - npx cypress install
-        # todo: fix command
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration:ci:run --browser /usr/bin/google-chrome-beta
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} ./test/run-ci.sh /usr/bin/google-chrome-beta
     artifacts:
         expire_in: 2 days
         when: always

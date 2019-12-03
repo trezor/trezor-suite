@@ -7,13 +7,8 @@ describe.skip('Device settings happy path', () => {
             .task('startEmu')
             .task('setupEmu');
         cy.viewport(1024, 768).resetDb();
-    });
 
-    after(() => {
-        cy.task('stopEmu').task('stopBridge');
-    });
-
-    it('navigate to device settings page', () => {
+        // navigate to device settings page
         cy.visit('/')
             .onboardingShouldLoad()
             .getTestElement('button-use-wallet')
@@ -22,6 +17,10 @@ describe.skip('Device settings happy path', () => {
             .toggleDeviceMenu()
             .getTestElement('@suite/menu-item/device-settings')
             .click();
+    });
+
+    after(() => {
+        cy.task('stopEmu').task('stopBridge');
     });
 
     it('change device label', () => {
