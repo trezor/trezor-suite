@@ -13,7 +13,7 @@ export default `
     }
 
     body, html {
-      background: ${colors.BACKGROUND};
+      background: ${colors.WHITE};
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;

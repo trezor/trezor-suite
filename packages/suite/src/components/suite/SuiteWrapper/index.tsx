@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { P } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
+import * as resizeActions from '@suite-actions/resizeActions';
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
@@ -24,9 +25,12 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
+    updateWindowSize: bindActionCreators(resizeActions.updateWindowSize, dispatch),
 });
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+export type Props = OwnProps &
+    ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => {
     const { suite, goto } = props;
@@ -51,6 +55,7 @@ const Index = (props: Props) => {
         return (
             <ConnectDevice
                 showWebUsb={isWebUSB(suite.transport)}
+                goto={goto}
                 // showDisconnect={shouldShowDisconnectDevice}
                 // deviceLabel={deviceLabel}
                 deviceLabel=""
