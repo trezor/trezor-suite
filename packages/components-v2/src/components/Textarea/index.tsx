@@ -15,7 +15,6 @@ const Wrapper = styled.div`
 
 const StyledTextarea = styled.textarea<StyledTextareaProps>`
     width: ${props => getDisplayWidth(props.display || 'default')};
-    min-height: 85px;
     padding: 10px;
     box-sizing: border-box;
     border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};
@@ -127,6 +126,7 @@ const Textarea = ({
     tooltipAction,
     wrapperProps,
     display,
+    rows = 5,
     ...rest
 }: Props) => {
     return (
@@ -140,6 +140,7 @@ const Textarea = ({
                 disabled={isDisabled}
                 display={display}
                 state={state}
+                rows={rows}
                 {...rest}
             />
             <TooltipAction action={tooltipAction}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Textarea } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { text, boolean, select } from '@storybook/addon-knobs';
+import { text, boolean, select, number } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
 
 storiesOf('Form', module).add(
@@ -32,6 +32,12 @@ storiesOf('Form', module).add(
         const bottomText: string = text('Bottom text', '');
         const placeholder: string = text('Placeholder', '');
         const disabled = boolean('Disabled', false);
+        const rows = number('Rows', 5, {
+            min: 1,
+            max: 30,
+            range: true,
+            step: 1,
+        });
 
         return (
             <Textarea
@@ -41,6 +47,7 @@ storiesOf('Form', module).add(
                 {...(topLabel ? { topLabel } : {})}
                 {...(bottomText ? { bottomText } : {})}
                 {...(placeholder ? { placeholder } : {})}
+                {...(rows !== 5 ? { rows } : {})}
                 value={value}
             />
         );
