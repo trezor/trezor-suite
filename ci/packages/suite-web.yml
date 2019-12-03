@@ -75,7 +75,7 @@ suite-web test integration google-chrome:
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
+            # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
     dependencies:
         - install and build
 
@@ -92,6 +92,6 @@ suite-web test integration google-chrome-beta:
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
+            # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
     dependencies:
         - install and build
