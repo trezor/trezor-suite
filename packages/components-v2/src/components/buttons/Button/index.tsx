@@ -39,6 +39,11 @@ const getTertiaryFontSize = (size: ButtonSize) => {
     }
 };
 
+const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
+    if (isDisabled) return colors.BLACK80;
+    return variant === 'primary' || variant === 'danger' ? colors.WHITE : colors.BLACK25;
+};
+
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
     width: ${props => (props.inlineWidth ? 'auto' : '100%')};
@@ -181,16 +186,6 @@ const Button = ({
     isLoading = false,
     ...rest
 }: ButtonProps) => {
-    const getColor = () => {
-        if (isDisabled) {
-            return colors.BLACK80;
-        }
-        if (variant === 'primary' || variant === 'danger') {
-            return colors.WHITE;
-        }
-        return colors.BLACK25;
-    };
-
     return (
         <Wrapper
             variant={variant}
@@ -201,7 +196,7 @@ const Button = ({
         >
             {!isLoading && icon && (
                 <IconWrapper>
-                    <Icon icon={icon} size={10} color={getColor()} />
+                    <Icon icon={icon} size={10} color={getIconColor(variant, isDisabled)} />
                 </IconWrapper>
             )}
             {isLoading && (

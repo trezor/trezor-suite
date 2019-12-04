@@ -1,14 +1,11 @@
-import React, { FunctionComponent, useState, useEffect, createRef } from 'react';
-import styled from 'styled-components';
-
-import { Input, Checkbox, colors } from '@trezor/components';
-import { Button, H2, P } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
-import { useKeyPress } from '@suite-utils/dom';
-
-import modalsMessages from '../messages';
-import messages from './messages';
 import { TrezorDevice } from '@suite-types';
+import { useKeyPress } from '@suite-utils/dom';
+import messages from '@suite/support/messages';
+import { Checkbox, colors, Input } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
+import React, { createRef, FunctionComponent, useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 const TopMessage = styled(P)``;
 
@@ -100,7 +97,7 @@ const Passphrase: FunctionComponent<Props> = ({
         <Wrapper>
             <H2>
                 <Translation
-                    {...modalsMessages.TR_PASSPHRASE_LABEL}
+                    {...messages.TR_PASSPHRASE_LABEL}
                     values={{
                         deviceLabel: device.label,
                     }}

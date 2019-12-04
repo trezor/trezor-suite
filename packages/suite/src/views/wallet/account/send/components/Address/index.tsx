@@ -1,18 +1,17 @@
 import { Translation } from '@suite-components/Translation';
 import { AppState } from '@suite-types';
+import messages from '@suite/support/messages';
 import { colors, Icon, Input } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
 import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
-import commonMessages from '@suite/views/wallet/index.messages';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 
 import { DispatchProps } from '../../Container';
-import messages from './index.messages';
 
 const TopLabel = styled.div``;
 
@@ -80,7 +79,7 @@ const Address = (props: Props) => (
         autoCorrect="off"
         spellCheck={false}
         autoCapitalize="off"
-        topLabel={<TopLabel>{props.intl.formatMessage(commonMessages.TR_ADDRESS)}</TopLabel>}
+        topLabel={<TopLabel>{props.intl.formatMessage(messages.TR_ADDRESS)}</TopLabel>}
         bottomText={getMessage(
             props.error,
             props.networkType,

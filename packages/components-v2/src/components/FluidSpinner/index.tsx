@@ -5,6 +5,7 @@ import { SPIN } from '../../config/animations';
 interface Props {
     size: number;
     strokeWidth?: number;
+    color?: string;
 }
 
 const Wrapper = styled.div<Props>`
@@ -37,8 +38,8 @@ const Wrapper = styled.div<Props>`
     }
 `;
 
-const FluidSpinner = ({ size, strokeWidth }: Props) => (
-    <Wrapper size={size} strokeWidth={strokeWidth}>
+const FluidSpinner = ({ size, strokeWidth, color }: Props) => (
+    <Wrapper size={size} strokeWidth={strokeWidth} color={color}>
         <div />
         <div />
         <div />

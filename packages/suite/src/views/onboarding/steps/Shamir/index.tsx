@@ -1,10 +1,8 @@
 import React from 'react';
-// import { Translation } from '@suite-components/Translation';
 import { Link } from '@trezor/components-v2';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { URLS } from '@onboarding-constants';
-// import l10nMessages from './index.messages';
 import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
@@ -24,7 +22,6 @@ const ShamirStep = (props: Props) => {
             <Wrapper.StepHeading>
                 {getModel() === 1 && 'Almost there! Prepare to launch'}
                 {getModel() === 2 && 'Seed type'}
-                {/* <Translation {...l10nMessages.TR_SECURITY_HEADING} /> */}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getModel() === 1 && (

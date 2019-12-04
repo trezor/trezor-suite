@@ -4,7 +4,7 @@ import { Translation } from '@suite-components/Translation';
 
 import { variables, Icon, colors } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
-import messages from '../../index.messages';
+import messages from '@suite/support/messages';
 import { DispatchProps } from '../../../../Container';
 
 const SetMaxButton = styled(Button)`

@@ -1,8 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import { NOTIFICATION } from '@suite-actions/constants';
-import l10nMessages from '@wallet-components/Notifications/actions.messages';
-import globalMessages from '@suite-support/Messages';
+import messages from '@suite/support/messages';
 import { GetState, Dispatch, TrezorDevice } from '@suite-types';
 import { WalletAction } from '@wallet-types';
 
@@ -103,12 +102,12 @@ export const showAddress = (path: string) => async (
             type: NOTIFICATION.ADD,
             payload: {
                 variant: 'error',
-                title: l10nMessages.TR_VERIFYING_ADDRESS_ERROR,
+                title: messages.TR_VERIFYING_ADDRESS_ERROR,
                 message: response.payload.error,
                 cancelable: true,
                 actions: [
                     {
-                        label: globalMessages.TR_TRY_AGAIN,
+                        label: messages.TR_TRY_AGAIN,
                         callback: () => {
                             dispatch(showAddress(path));
                         },

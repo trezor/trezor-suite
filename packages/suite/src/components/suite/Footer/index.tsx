@@ -7,7 +7,7 @@ import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
 
 import * as logActions from '@suite-actions/logActions';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 import { AppState, Dispatch } from '@suite-types';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
@@ -92,7 +92,7 @@ const Content = styled.div`
 const Footer = ({ opened, toggle, isLanding = false }: Props) => {
     const exchangeRates = (
         <Translation
-            {...l10nMessages.TR_EXCHANGE_RATES_BY}
+            {...messages.TR_EXCHANGE_RATES_BY}
             values={{
                 service: <Link href="https://www.coingecko.com">Coingecko</Link>,
             }}
@@ -104,7 +104,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
                 <Left>
                     <StyledLink href="http://satoshilabs.com">SatoshiLabs</StyledLink>
                     <StyledLink href="https://trezor.io/tos">
-                        <Translation>{l10nMessages.TR_TERMS}</Translation>
+                        <Translation>{messages.TR_TERMS}</Translation>
                     </StyledLink>
                     <StyledLink onClick={toggle}>{opened ? 'Hide Log' : 'Show Log'}</StyledLink>
                     <RatesLeft>{exchangeRates}</RatesLeft>
@@ -113,11 +113,11 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
                     <Right>
                         <TranslatorsRight>
                             <Translation
-                                {...l10nMessages.TR_WE_THANK_OUR_TRANSLATORS}
+                                {...messages.TR_WE_THANK_OUR_TRANSLATORS}
                                 values={{
                                     TR_CONTRIBUTION: (
                                         <Link href="https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation">
-                                            <Translation {...l10nMessages.TR_CONTRIBUTION} />
+                                            <Translation {...messages.TR_CONTRIBUTION} />
                                         </Link>
                                     ),
                                 }}
