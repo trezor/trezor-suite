@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Head from 'next/head';
-import { Prompt, variables } from '@trezor/components';
+import { Prompt, Modal, variables } from '@trezor/components';
 import { Link, P } from '@trezor/components-v2';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,7 +29,6 @@ import {
     NAVBAR_HEIGHT_UNIT,
 } from '@suite/config/onboarding/layout';
 
-// import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';

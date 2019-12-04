@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 
-import { P } from '@trezor/components';
+import { P, variables } from '@trezor/components';
 import { H1 } from '@trezor/components-v2';
 import { Loaders } from '@onboarding-components';
 
