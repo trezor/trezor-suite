@@ -6,11 +6,10 @@ import * as deviceUtils from '@suite-utils/device';
 import { Props } from './Container';
 import DeviceItem from './components/DeviceItem';
 import { TrezorDevice } from '@suite-types';
-import * as accountUtils from '@wallet-utils/accountUtils';
 
 // TODO:
 // Undiscovered wallet, connect to discover https://app.zeplin.io/project/5dadb7820bdfd3832e04afca/screen/5dde6fd821730311f40ad3a0
-// Title for wallet instances (coins, usd value,...)
+// Title for wallet instances (usd value,...)
 
 const StyledModal = styled(Modal)`
     box-shadow: 0 10px 60px 0 #4d4d4d;
