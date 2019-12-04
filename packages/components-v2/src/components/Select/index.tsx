@@ -19,25 +19,30 @@ const selectStyle = (isSearchable: boolean, withDropdownIndicator = true) => ({
     control: (
         base: Record<string, any>,
         { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean }
-    ) => ({
-        ...base,
-        minHeight: 'initial',
-        height: '40px',
-        borderRadius: '3px',
-        borderColor: colors.BLACK80,
-        boxShadow: 'none',
-        background: isDisabled ? colors.BLACK92 : 'none',
-        backgroundImage: isFocused
+    ) => {
+        let backgroundImage = isFocused
             ? `linear-gradient(to top, ${colors.WHITE}, ${colors.BLACK96})`
-            : `linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE})`,
-        '&:hover, &:focus': {
-            cursor: 'pointer',
-            borderColor: colors.BLACK50,
-        },
-        ' > div': {
-            overflow: 'visible',
-        },
-    }),
+            : `linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE})`;
+        if (isDisabled) {
+            backgroundImage = `linear-gradient(to top, ${colors.BLACK92}, ${colors.BLACK92})`;
+        }
+        return {
+            ...base,
+            minHeight: 'initial',
+            height: '40px',
+            borderRadius: '3px',
+            borderColor: colors.BLACK80,
+            boxShadow: 'none',
+            backgroundImage,
+            '&:hover, &:focus': {
+                cursor: 'pointer',
+                borderColor: colors.BLACK50,
+            },
+            ' > div': {
+                overflow: 'visible',
+            },
+        };
+    },
     indicatorSeparator: () => ({
         display: 'none',
     }),

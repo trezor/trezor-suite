@@ -45,7 +45,34 @@ storiesOf('Form', module).add(
                                     value: 'value-tree',
                                 },
                             ]}
+                            topLabel="Not selected"
                         />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Select
+                            options={[
+                                {
+                                    label: 'Option one',
+                                    value: 'value-one',
+                                },
+                                {
+                                    label: 'Option two',
+                                    value: 'value-two',
+                                },
+                                {
+                                    label: 'Option tree',
+                                    value: 'value-tree',
+                                },
+                            ]}
+                            value={{
+                                label: 'Option one',
+                                value: 'value-one',
+                            }}
+                            topLabel="Selected"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Select isDisabled topLabel="Disabled" />
                     </ComponentWrapper>
                 </Col>
                 <Heading>Textarea short</Heading>
