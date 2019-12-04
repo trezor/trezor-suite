@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Checkbox } from '@trezor/components-v2';
+import { Input, Checkbox, Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -27,6 +27,18 @@ storiesOf('Form', module).add(
     () => {
         return (
             <Wrapper>
+                <Heading>Switch</Heading>
+                <Col>
+                    <SubHeading>Off</SubHeading>
+                    <InputWrapper>
+                        <Switch onChange={() => {}} checked={false} />
+                    </InputWrapper>
+                    <SubHeading>On</SubHeading>
+                    <InputWrapper>
+                        <Switch onChange={() => {}} checked />
+                    </InputWrapper>
+                </Col>
+
                 <Heading>Checkbox</Heading>
                 <Col>
                     <SubHeading>Unchecked</SubHeading>
