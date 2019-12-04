@@ -25,7 +25,6 @@ import ConfirmAction from './confirm/Action';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import ForgetDevice from './Forget';
 import RequestInstance from './RequestInstance';
 import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
@@ -113,15 +112,6 @@ const getDeviceContextModal = (props: Props) => {
                     device={modal.device as AcquiredDevice}
                     onRememberDevice={modalActions.onRememberDevice}
                     onForgetDevice={modalActions.onForgetDevice}
-                />
-            );
-
-        case SUITE.REQUEST_FORGET_DEVICE:
-            return (
-                <ForgetDevice
-                    device={modal.device as AcquiredDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
-                    onCancel={modalActions.onCancel}
                 />
             );
 
