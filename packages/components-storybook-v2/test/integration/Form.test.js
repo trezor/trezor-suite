@@ -4,6 +4,8 @@ describe('Form', () => {
     });
 
     [
+        'checkbox',
+        'checkbox-checked',
         'input-short',
         'input-short-small',
         'input-short-error',
