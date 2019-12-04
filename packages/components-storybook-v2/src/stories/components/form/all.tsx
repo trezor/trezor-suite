@@ -31,11 +31,11 @@ storiesOf('Form', module).add(
                 <Col>
                     <SubHeading>Off</SubHeading>
                     <InputWrapper>
-                        <Switch onChange={() => {}} checked={false} />
+                        <Switch onChange={() => {}} checked={false} data-test="switch-off" />
                     </InputWrapper>
                     <SubHeading>On</SubHeading>
                     <InputWrapper>
-                        <Switch onChange={() => {}} checked />
+                        <Switch onChange={() => {}} checked data-test="switch-on" />
                     </InputWrapper>
                 </Col>
 

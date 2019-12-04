@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 
 const StyledReactSwitch = styled(ReactSwitch)`
     .react-switch-bg {
-        background: ${props => props.checked ? colors.GREEN : colors.BLACK70} !important;
+        background: ${props => (props.checked ? colors.GREEN : colors.BLACK70)} !important;
     }
 
     .react-switch-handle {
@@ -17,12 +17,14 @@ const StyledReactSwitch = styled(ReactSwitch)`
         background-image: linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE}) !important;
 
         ${props =>
-            props.checked && css`
+            props.checked &&
+            css`
                 transform: translateX(22px) !important;
             `}
 
         ${props =>
-            !props.checked && css`
+            !props.checked &&
+            css`
                 left: 2px;
             `}
     }
