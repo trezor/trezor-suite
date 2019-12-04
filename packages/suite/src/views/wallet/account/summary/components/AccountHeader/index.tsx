@@ -4,7 +4,7 @@ import { Translation } from '@suite-components/Translation';
 import { variables } from '@trezor/components';
 import { Link } from '@trezor/components-v2';
 import AccountName from '@wallet-components/AccountName';
-import l10nSummaryMessages from '../../common.messages';
+import messages from '@suite/support/messages';
 import AccountBalance from './components/Balance';
 import { Account, Network, Fiat } from '@wallet-types';
 
@@ -37,15 +37,13 @@ const AccountHeader = ({ account, network, fiatRates, localCurrency, isHidden }:
             ? account.misc.reserve
             : '0';
     const accountNameMessage =
-        account && account.networkType === 'ethereum'
-            ? l10nSummaryMessages.TR_NETWORK_AND_TOKENS
-            : undefined;
+        account && account.networkType === 'ethereum' ? messages.TR_NETWORK_AND_TOKENS : undefined;
     return (
         <>
             <AccountHeading>
                 <AccountName account={account} message={accountNameMessage} />
                 <StyledLink href={explorerLink}>
-                    <Translation {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
+                    <Translation {...messages.TR_SEE_FULL_TRANSACTION_HISTORY} />
                 </StyledLink>
             </AccountHeading>
             <AccountBalance

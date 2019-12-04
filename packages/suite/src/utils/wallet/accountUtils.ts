@@ -4,7 +4,7 @@ import {
 } from '@wallet-reducers/transactionReducer';
 import { AccountTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import l10nMessages from '@wallet-views/account/index.messages';
+import messages from '@suite/support/messages';
 import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network } from '@wallet-types';
 import { AppState } from '@suite-types';
@@ -36,47 +36,47 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
 export const getTitleForNetwork = (symbol: Account['symbol']) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
-            return l10nMessages.TR_NETWORK_BITCOIN;
+            return messages.TR_NETWORK_BITCOIN;
         case 'test':
-            return l10nMessages.TR_NETWORK_BITCOIN_TESTNET;
+            return messages.TR_NETWORK_BITCOIN_TESTNET;
         case 'bch':
-            return l10nMessages.TR_NETWORK_BITCOIN_CASH;
+            return messages.TR_NETWORK_BITCOIN_CASH;
         case 'btg':
-            return l10nMessages.TR_NETWORK_BITCOIN_GOLD;
+            return messages.TR_NETWORK_BITCOIN_GOLD;
         case 'dash':
-            return l10nMessages.TR_NETWORK_DASH;
+            return messages.TR_NETWORK_DASH;
         case 'dgb':
-            return l10nMessages.TR_NETWORK_DIGIBYTE;
+            return messages.TR_NETWORK_DIGIBYTE;
         case 'doge':
-            return l10nMessages.TR_NETWORK_DOGECOIN;
+            return messages.TR_NETWORK_DOGECOIN;
         case 'ltc':
-            return l10nMessages.TR_NETWORK_LITECOIN;
+            return messages.TR_NETWORK_LITECOIN;
         case 'nmc':
-            return l10nMessages.TR_NETWORK_NAMECOIN;
+            return messages.TR_NETWORK_NAMECOIN;
         case 'vtc':
-            return l10nMessages.TR_NETWORK_VERTCOIN;
+            return messages.TR_NETWORK_VERTCOIN;
         case 'zec':
-            return l10nMessages.TR_NETWORK_ZCASH;
+            return messages.TR_NETWORK_ZCASH;
         case 'eth':
-            return l10nMessages.TR_NETWORK_ETHEREUM;
+            return messages.TR_NETWORK_ETHEREUM;
         case 'trop':
-            return l10nMessages.TR_NETWORK_ETHEREUM_TESTNET;
+            return messages.TR_NETWORK_ETHEREUM_TESTNET;
         case 'etc':
-            return l10nMessages.TR_NETWORK_ETHEREUM_CLASSIC;
+            return messages.TR_NETWORK_ETHEREUM_CLASSIC;
         case 'xem':
-            return l10nMessages.TR_NETWORK_NEM;
+            return messages.TR_NETWORK_NEM;
         case 'xlm':
-            return l10nMessages.TR_NETWORK_STELLAR;
+            return messages.TR_NETWORK_STELLAR;
         case 'ada':
-            return l10nMessages.TR_NETWORK_CARDANO;
+            return messages.TR_NETWORK_CARDANO;
         case 'xtz':
-            return l10nMessages.TR_NETWORK_TEZOS;
+            return messages.TR_NETWORK_TEZOS;
         case 'xrp':
-            return l10nMessages.TR_NETWORK_XRP;
+            return messages.TR_NETWORK_XRP;
         case 'txrp':
-            return l10nMessages.TR_NETWORK_XRP_TESTNET;
+            return messages.TR_NETWORK_XRP_TESTNET;
         default:
-            return l10nMessages.TR_NETWORK_UNKNOWN;
+            return messages.TR_NETWORK_UNKNOWN;
     }
 };
 
@@ -85,9 +85,9 @@ export const getTypeForNetwork = (accountType: Account['accountType']) => {
         case ACCOUNT_TYPE.NORMAL:
             return null;
         case ACCOUNT_TYPE.SEGWIT:
-            return l10nMessages.TR_NETWORK_TYPE_SEGWIT;
+            return messages.TR_NETWORK_TYPE_SEGWIT;
         case ACCOUNT_TYPE.LEGACY:
-            return l10nMessages.TR_NETWORK_TYPE_LEGACY;
+            return messages.TR_NETWORK_TYPE_LEGACY;
         // no default
     }
 };

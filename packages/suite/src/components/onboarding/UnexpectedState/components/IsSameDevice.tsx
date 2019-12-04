@@ -1,14 +1,11 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components/Translation';
-
-import { resetOnboarding } from '@suite/actions/onboarding/onboardingActions';
-import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
-
 import { Dispatch } from '@suite-types';
-
-import l10nMessages from './IsSameDevice.messages';
+import { resetOnboarding } from '@suite/actions/onboarding/onboardingActions';
+import messages from '@suite/support/messages';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     actionAlt: bindActionCreators(resetOnboarding, dispatch),
@@ -19,7 +16,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const IsSameDevice = ({ actionAlt }: Props) => (
     <>
         <Text>
-            <Translation>{l10nMessages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT}></Translation>
+            <Translation>{messages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT}></Translation>
         </Text>
         <Text>--- or ---</Text>
         <Wrapper.Controls>

@@ -9,7 +9,7 @@ import { groupTransactionsByDate, parseKey } from '@wallet-utils/transactionUtil
 import { SETTINGS } from '@suite-config';
 import TransactionItem from '../TransactionItem';
 import Pagination from '../Pagination';
-import l10nMessages from '../../index.messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div``;
 
@@ -71,7 +71,7 @@ const TransactionList = ({
                         <StyledH5>
                             {dateKey === 'pending' ? (
                                 <P>
-                                    <Translation {...l10nMessages.TR_PENDING} />
+                                    <Translation {...messages.TR_PENDING} />
                                 </P>
                             ) : (
                                 <FormattedDate

@@ -1,10 +1,9 @@
+import { getRoute } from '@suite-utils/router';
+import messages from '@suite/support/messages';
+import { Notification } from '@trezor/components';
 import * as React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { Notification } from '@trezor/components';
-import l10nCommonMessages from '@suite-views/index.messages';
-import { getRoute } from '@suite-utils/router';
 
-import l10nMessages from './index.messages';
 import { Props as BaseProps } from '../../index';
 
 interface Props extends WrappedComponentProps {
@@ -29,11 +28,11 @@ const UpdateFirmware = ({ device, pathname, intl, goto }: Props) => {
         <Notification
             key="update-firmware"
             variant="warning"
-            title={intl.formatMessage(l10nMessages.TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT)}
-            message={intl.formatMessage(l10nCommonMessages.TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT)}
+            title={intl.formatMessage(messages.TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT)}
+            message={intl.formatMessage(messages.TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT)}
             actions={[
                 {
-                    label: intl.formatMessage(l10nCommonMessages.TR_SHOW_DETAILS),
+                    label: intl.formatMessage(messages.TR_SHOW_DETAILS),
                     callback: () => goto('suite-device-firmware'),
                 },
             ]}
