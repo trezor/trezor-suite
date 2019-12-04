@@ -32,10 +32,10 @@ const Title = styled.div`
 `;
 
 const Description = styled.div`
-    font-size: 14px;
+    font-size: ${variables.FONT_SIZE.BODY};
     line-height: 1.43;
     margin-bottom: 20px;
-    color: #7e7e7e;
+    color: ${colors.BLACK50};
 `;
 
 const In = styled.div`

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, Button } from '@trezor/components-v2';
+import { Icon, Button, colors, variables } from '@trezor/components-v2';
 import { AcquiredDevice, TrezorDevice } from '@suite/types/suite';
 
 const Wrapper = styled.div<{ active: boolean }>`
@@ -11,30 +11,30 @@ const Wrapper = styled.div<{ active: boolean }>`
     cursor: pointer;
 
     &:hover {
-        background: #f5f5f5;
+        background: ${colors.BLACK96};
     }
 
     ${props =>
         props.active &&
         css`
-            background: #f5f5f5;
+            background: ${colors.BLACK96};
         `}
 `;
 
 const InstanceTitle = styled.div`
-    color: #808080;
+    color: ${colors.BLACK50};
     font-weight: 600;
-    font-size: 12px;
+    font-size: ${variables.FONT_SIZE.TINY};
     text-transform: uppercase;
 `;
 const InstanceType = styled.div`
-    color: #808080;
-    font-size: 12px;
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
     /* text-transform: uppercase; */
 `;
 
 const SortIconWrapper = styled.div`
-    margin-right: 12px;
+    margin-right: ${variables.FONT_SIZE.TINY};
 `;
 
 const Col = styled.div<{ grow?: number }>`
@@ -45,7 +45,7 @@ const Col = styled.div<{ grow?: number }>`
 `;
 
 const ForgetButton = styled(Button)`
-    font-size: 14px;
+    font-size: ${variables.FONT_SIZE.BUTTON};
 `;
 
 interface Props {

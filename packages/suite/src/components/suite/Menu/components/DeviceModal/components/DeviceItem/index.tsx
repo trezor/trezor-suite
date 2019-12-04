@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components-v2';
+import { Button, colors, variables } from '@trezor/components-v2';
 import * as deviceUtils from '@suite-utils/device';
 import { Props as DeviceModalProps } from '../../Container';
 import { AcquiredDevice, TrezorDevice } from '@suite-types';
@@ -11,8 +11,8 @@ const DeviceWrapper = styled.div`
     display: flex;
     flex-direction: column;
     border-radius: 6px;
-    border: solid 2px #ebebeb;
-    background-color: #ffffff;
+    border: solid 2px ${colors.BLACK92};
+    background-color: ${colors.WHITE};
     width: 100%;
 
     & + & {
@@ -29,20 +29,20 @@ const Device = styled.div`
 `;
 
 const DeviceTitle = styled.span`
-    font-size: 16px;
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 const DeviceStatus = styled.span<{ color: string }>`
-    font-size: 14px;
+    font-size: ${variables.FONT_SIZE.BODY};
     font-weight: 600;
     color: ${props => props.color};
 `;
 
 const Badge = styled.div`
-    font-size: 12px;
+    font-size: ${variables.FONT_SIZE.TINY};
     font-weight: 600;
     padding: 1px 2px;
     border-radius: 2px;
-    background-color: #b3b3b3;
+    background-color: ${colors.BLACK70};
     text-transform: uppercase;
     color: white;
     align-self: center;
@@ -62,7 +62,7 @@ const Actions = styled.div`
 `;
 
 const ForgetButton = styled(Button)`
-    font-size: 14px;
+    font-size: ${variables.FONT_SIZE.BUTTON};
 `;
 
 interface Props extends WrappedComponentProps {
