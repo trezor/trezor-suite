@@ -84,17 +84,8 @@ const call = async (
     name: ObjectValues<typeof CALLS>,
     params?: any,
 ) => {
-    const modifiedParams = {
-        ...applyDefaultParams(state, name),
-        ...params,
-    };
+    // todo: reset and start in separate calls?
     dispatch({ type: DEVICE_CALL_RESET });
-
-    // todo: maybe UI lock? hmm but...
-    dispatch({
-        type: DEVICE_CALL_START,
-        name,
-    });
 
     const { device } = state.suite;
 
@@ -105,7 +96,18 @@ const call = async (
             error: 'no device connected',
             name,
         });
+        return { success: false };
     }
+    // todo: maybe UI lock? hmm but...
+    dispatch({
+        type: DEVICE_CALL_START,
+        name,
+    });
+
+    const modifiedParams = {
+        ...applyDefaultParams(state, name),
+        ...params,
+    };
 
     let fn;
     switch (name) {
