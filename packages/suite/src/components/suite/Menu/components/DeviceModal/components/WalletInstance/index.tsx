@@ -52,6 +52,7 @@ interface Props {
     instance: AcquiredDevice;
     active: boolean;
     accountsCount: number;
+    coinsCount: number;
     selectInstance: (instance: TrezorDevice) => void;
     forgetDeviceInstance: (instance: TrezorDevice) => void;
 }
@@ -60,6 +61,7 @@ const WalletInstance = ({
     instance,
     active,
     accountsCount,
+    coinsCount,
     selectInstance,
     forgetDeviceInstance,
 }: Props) => {
@@ -75,7 +77,9 @@ const WalletInstance = ({
                 <Icon size={12} icon="SORT" />
             </SortIconWrapper>
             <Col grow={1}>
-                <InstanceTitle>{accountsCount} Accounts - X COINS - Y USD</InstanceTitle>
+                <InstanceTitle>
+                    {accountsCount} Accounts - {coinsCount} COINS - Y USD
+                </InstanceTitle>
                 <InstanceType>
                     {instance.useEmptyPassphrase ? 'No passphrapse' : 'Passphrase'}
                 </InstanceType>

@@ -6,6 +6,8 @@ import { Props as DeviceModalProps } from '../../Container';
 import { AcquiredDevice, TrezorDevice } from '@suite-types';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import WalletInstance from '../WalletInstance';
+import * as accountUtils from '@wallet-utils/accountUtils';
+import { Account } from '@wallet-types';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -69,17 +71,23 @@ interface Props extends WrappedComponentProps {
     device: TrezorDevice;
     selectedDevice?: TrezorDevice;
     instances: AcquiredDevice[];
-    getAccountsCount: (d: AcquiredDevice) => number;
+    accounts: DeviceModalProps['accounts'];
     selectInstance: (instance: TrezorDevice) => void;
     forgetDevice: DeviceModalProps['forgetDevice'];
     addHiddenWallet: (instance: TrezorDevice) => void;
     forgetDeviceInstance: DeviceModalProps['forgetDeviceInstance'];
 }
 
+const countCoins = (accounts: Account[]) => {
+    const coins = new Set();
+    accounts.forEach(acc => coins.add(acc.symbol));
+    return coins.size;
+};
+
 const DeviceItem = ({
     device,
     instances,
-    getAccountsCount,
+    accounts,
     selectInstance,
     addHiddenWallet,
     forgetDevice,
@@ -88,6 +96,11 @@ const DeviceItem = ({
     ...props
 }: Props) => {
     const deviceStatus = deviceUtils.getStatus(device);
+    const getAccountsCount = (device: TrezorDevice) =>
+        accountUtils.getDeviceAccounts(device, accounts).length;
+
+    const getCoinsCount = (device: TrezorDevice) =>
+        countCoins(accountUtils.getDeviceAccounts(device, accounts));
 
     return (
         <DeviceWrapper key={device.path}>
@@ -119,6 +132,7 @@ const DeviceItem = ({
                     key={`${instance.label}-${instance.instance}-${instance.state}`}
                     instance={instance}
                     accountsCount={getAccountsCount(instance)}
+                    coinsCount={getCoinsCount(instance)}
                     active={selectedDevice ? selectedDevice.state === instance.state : false}
                     selectInstance={selectInstance}
                     forgetDeviceInstance={forgetDeviceInstance}

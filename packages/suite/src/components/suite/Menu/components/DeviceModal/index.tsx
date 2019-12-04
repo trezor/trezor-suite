@@ -3,15 +3,14 @@ import styled from 'styled-components';
 import { Modal } from '@trezor/components';
 import { Button, colors, variables } from '@trezor/components-v2';
 import * as deviceUtils from '@suite-utils/device';
-import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import DeviceItem from './components/DeviceItem';
 import { TrezorDevice } from '@suite-types';
+import * as accountUtils from '@wallet-utils/accountUtils';
 
 // TODO:
 // Undiscovered wallet, connect to discover https://app.zeplin.io/project/5dadb7820bdfd3832e04afca/screen/5dde6fd821730311f40ad3a0
 // Title for wallet instances (coins, usd value,...)
-// remove forget modal, move forgetDevice from modalActions
 
 const StyledModal = styled(Modal)`
     box-shadow: 0 10px 60px 0 #4d4d4d;
@@ -65,9 +64,6 @@ const SwitchDeviceModal = (props: Props) => {
         props.requestDeviceInstance(instance);
     };
 
-    const getAccountsCount = (device: TrezorDevice) =>
-        accountUtils.getDeviceAccounts(device, props.accounts).length;
-
     return (
         <StyledModal>
             <Wrapper>
@@ -86,7 +82,7 @@ const SwitchDeviceModal = (props: Props) => {
                             addHiddenWallet={onAddHiddenWallet}
                             selectInstance={onSelectInstance}
                             forgetDevice={props.forgetDevice}
-                            getAccountsCount={getAccountsCount}
+                            accounts={props.accounts}
                             forgetDeviceInstance={props.forgetDeviceInstance}
                         />
                     ))}
