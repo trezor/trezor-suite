@@ -236,8 +236,45 @@ export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] => {
     });
 };
 
+export const sortByPriorityCmp = (a: TrezorDevice, b: TrezorDevice) => {
+    // sort by priority:
+    // 1. unacquired
+    // 2. unexpected mode
+    // 3. outdated firmware
+    // 5. timestamp
+
+    if (!b.features && !a.features) return 0;
+    if (!b.features && a.features) return 1;
+    if (!b.features || !a.features) return -1;
+
+    if (a.mode !== 'normal' && b.mode !== 'normal') return 0;
+    if (b.mode !== 'normal') return 1;
+    if (a.mode !== 'normal') return -1;
+
+    if (a.firmware !== 'valid' && b.firmware !== 'valid') return 0;
+    if (b.firmware !== 'valid') return 1;
+    if (a.firmware !== 'valid') return -1;
+
+    if (!b.ts && !a.ts) return 0;
+    if (!b.ts && a.ts) return -1;
+    if (!b.ts || !a.ts) return 1;
+    return b.ts - a.ts;
+};
+
+/**
+ * Used by 'Switch device' modal
+ * Returns physical devices (without its instances) sorted by priority
+ * @param {TrezorDevice[]} devices
+ * @returns {TrezorDevice[]}
+ */
+export const getPhysDevices = (devices: TrezorDevice[]): TrezorDevice[] => {
+    const physDevices = devices.filter(d => !d.instance);
+    return physDevices.sort(sortByPriorityCmp);
+};
+
 /**
  * Used by suiteActions and <DeviceMenu />
+ * Returns all physical devices except the selected one or
  * @param {TrezorDevice | undefined} selected
  * @param {TrezorDevice[]} devices
  * @returns {TrezorDevice[]}
@@ -260,30 +297,7 @@ export const getOtherDevices = (
             devices = devices.filter(d => d.path !== selected.path);
         }
     }
-
-    // sort by priority:
-    // 1. unacquired
-    // 2. unexpected mode
-    // 3. outdated firmware
-    // 5. timestamp
-    return devices.sort((a, b) => {
-        if (!b.features && !a.features) return 0;
-        if (!b.features && a.features) return 1;
-        if (!b.features || !a.features) return -1;
-
-        if (a.mode !== 'normal' && b.mode !== 'normal') return 0;
-        if (b.mode !== 'normal') return 1;
-        if (a.mode !== 'normal') return -1;
-
-        if (a.firmware !== 'valid' && b.firmware !== 'valid') return 0;
-        if (b.firmware !== 'valid') return 1;
-        if (a.firmware !== 'valid') return -1;
-
-        if (!b.ts && !a.ts) return 0;
-        if (!b.ts && a.ts) return -1;
-        if (!b.ts || !a.ts) return 1;
-        return b.ts - a.ts;
-    });
+    return devices.sort(sortByPriorityCmp);
 };
 
 /**
