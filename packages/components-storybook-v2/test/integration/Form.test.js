@@ -4,6 +4,9 @@ describe('Form', () => {
     });
 
     [
+        'select',
+        'select-selected',
+        'select-disabled',
         'textarea-short',
         'textarea-short-success',
         'textarea-short-warning',

@@ -46,6 +46,9 @@ storiesOf('Form', module).add(
                                 },
                             ]}
                             topLabel="Not selected"
+                            wrapperProps={{
+                                'data-test': 'select',
+                            }}
                         />
                     </ComponentWrapper>
                     <ComponentWrapper>
@@ -69,10 +72,19 @@ storiesOf('Form', module).add(
                                 value: 'value-one',
                             }}
                             topLabel="Selected"
+                            wrapperProps={{
+                                'data-test': 'select-selected',
+                            }}
                         />
                     </ComponentWrapper>
                     <ComponentWrapper>
-                        <Select isDisabled topLabel="Disabled" />
+                        <Select
+                            isDisabled
+                            topLabel="Disabled"
+                            wrapperProps={{
+                                'data-test': 'select-disabled',
+                            }}
+                        />
                     </ComponentWrapper>
                 </Col>
                 <Heading>Textarea short</Heading>
