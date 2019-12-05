@@ -12,8 +12,7 @@ import { Account } from '@wallet-types';
 import Row from './components/Row';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
-import l10nMessages from './index.messages';
-import walletAccountMessages from '@wallet-views/account/index.messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div``;
 
@@ -54,7 +53,7 @@ const DiscoveryStatus = () => (
         <LoadingWrapper>
             <Loader size={15} />
             <LoadingText>
-                <Translation {...walletAccountMessages.TR_LOADING_ACCOUNTS} />
+                <Translation {...messages.TR_LOADING_ACCOUNTS} />
                 {/* todo: if you want dots "..." use Loader.Dots from onboarding */}
             </LoadingText>
         </LoadingWrapper>
@@ -103,7 +102,7 @@ const Menu = ({
             {discovery.status === 4 && (
                 <AddAccountButton
                     onClick={requestNewAccount}
-                    tooltipContent={<Translation {...l10nMessages.TR_ADD_ACCOUNT} />}
+                    tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
                 />
             )}
             {discoveryIsRunning && list.length === 0 && <DiscoveryStatus />}
@@ -119,7 +118,7 @@ const Menu = ({
             {discovery.status === 4 && (
                 <AddAccountButton
                     onClick={requestNewAccount}
-                    tooltipContent={<Translation {...l10nMessages.TR_ADD_ACCOUNT} />}
+                    tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
                 />
             )}
             {legacyAccounts.length > 0 && (

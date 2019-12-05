@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { P, Link } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
-
+import * as connectActions from '@onboarding-actions/connectActions';
 import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
 import {
-    WORD_REQUEST_PLAIN,
-    WORD_REQUEST_MATRIX9,
     WORD_REQUEST_MATRIX6,
+    WORD_REQUEST_MATRIX9,
+    WORD_REQUEST_PLAIN,
 } from '@onboarding-actions/constants/events';
-
-import { RECOVERY_MODEL_ONE_URL } from '@onboarding-constants/urls';
-
-import l10nCommonMessages from '@suite-support/Messages';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
-import * as connectActions from '@onboarding-actions/connectActions';
-import { BlindMatrix, Option, Text, Wrapper, OnboardingButton } from '@onboarding-components';
-import messages from '../index.messages';
+import { BlindMatrix, OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
+import { RECOVERY_MODEL_ONE_URL } from '@onboarding-constants/urls';
+import { Translation } from '@suite-components/Translation';
+import { AppState, Dispatch } from '@suite-types';
+import messages from '@suite/support/messages';
+import { Link, P } from '@trezor/components-v2';
+import React, { useState } from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import WordsInput from './WordsInput';
-import { Dispatch, AppState } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
@@ -154,7 +151,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     setStatus('select-advanced-recovery');
                                 }}
                             >
-                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...messages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -167,9 +164,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 values={{
                                     TR_LEARN_MORE_LINK: (
                                         <Link href={RECOVERY_MODEL_ONE_URL}>
-                                            <Translation
-                                                {...l10nCommonMessages.TR_LEARN_MORE_LINK}
-                                            />
+                                            <Translation {...messages.TR_LEARN_MORE_LINK} />
                                         </Link>
                                     ),
                                 }}
@@ -213,7 +208,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     setStatus(null);
                                 }}
                             >
-                                <Translation {...l10nCommonMessages.TR_BACK} />
+                                <Translation {...messages.TR_BACK} />
                             </OnboardingButton.Alt>
                         </Wrapper.Controls>
                     </>
@@ -260,7 +255,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 setStatus(null);
                             }}
                         >
-                            <Translation {...l10nCommonMessages.TR_RETRY} />
+                            <Translation {...messages.TR_RETRY} />
                         </OnboardingButton.Cta>
                     </>
                 )}

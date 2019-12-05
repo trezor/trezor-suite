@@ -4,8 +4,7 @@ import { Translation } from '@suite-components/Translation';
 import { Input, Tooltip, Icon, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
-import globalMessages from '@suite-support/Messages';
-import messages from './index.messages';
+import messages from '@suite/support/messages';
 import { Props as ContainerProps } from '../../Container';
 
 interface Props {
@@ -56,7 +55,7 @@ const NetworkTypeXrp = (props: Props) => (
                     maxWidth={200}
                     // todo: link into config
                     ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
-                    ctaText={<Translation {...globalMessages.TR_LEARN_MORE_LINK} />}
+                    ctaText={<Translation {...messages.TR_LEARN_MORE_LINK} />}
                     placement="top"
                 >
                     <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />

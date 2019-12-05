@@ -4,7 +4,7 @@ import { Translation } from '@suite-components/Translation';
 import { colors, Switch, CoinLogo, Tooltip, Icon, variables } from '@trezor/components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Network } from '@wallet-types';
-import l10nMessages from '../../index.messages';
+import messages from '@suite/support/messages';
 import { Props as BaseProps } from '../../Container';
 import { NETWORKS } from '@wallet-config';
 
@@ -182,8 +182,8 @@ const CoinsSettings = (props: Props) => {
         <Wrapper>
             <Row>
                 <CoinsGroup
-                    title={l10nMessages.TR_VISIBLE_COINS}
-                    tooltip={l10nMessages.TR_VISIBLE_COINS_EXPLAINED}
+                    title={messages.TR_VISIBLE_COINS}
+                    tooltip={messages.TR_VISIBLE_COINS_EXPLAINED}
                     networksFilterFn={(n: Network) => n && !n.testnet}
                     networks={NETWORKS}
                     enabledNetworks={enabledNetworks}
@@ -191,8 +191,8 @@ const CoinsSettings = (props: Props) => {
                     changeCoinVisibility={changeCoinVisibility}
                 />
                 <CoinsGroup
-                    title={l10nMessages.TR_VISIBLE_TESTNET_COINS}
-                    tooltip={l10nMessages.TR_VISIBLE_TESTNET_COINS_EXPLAINED}
+                    title={messages.TR_VISIBLE_TESTNET_COINS}
+                    tooltip={messages.TR_VISIBLE_TESTNET_COINS_EXPLAINED}
                     networksFilterFn={(n: Network) => 'testnet' in n && n.testnet}
                     networks={NETWORKS}
                     enabledNetworks={enabledNetworks}

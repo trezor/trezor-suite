@@ -1,12 +1,9 @@
-import React, { FunctionComponent } from 'react';
-import styled from 'styled-components';
-
-import { P, Prompt } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { TrezorDevice } from '@suite-types';
-
-import messages from './messages';
-import commonMessages from '../messages';
+import messages from '@suite/support/messages';
+import { P, Prompt } from '@trezor/components';
+import React, { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 interface Props {
     device: TrezorDevice;
@@ -27,7 +24,7 @@ const PassphraseType: FunctionComponent<Props> = ({ device }) => {
             <Header>
                 <Prompt model={majorVersion} size={32}>
                     <Translation
-                        {...commonMessages.TR_COMPLETE_ACTION_ON_DEVICE}
+                        {...messages.TR_COMPLETE_ACTION_ON_DEVICE}
                         values={{
                             deviceLabel: device.label,
                         }}

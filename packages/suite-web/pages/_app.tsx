@@ -13,7 +13,7 @@ import Resize from '@suite-support/Resize/Container';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import CypressExportStore from '@suite-support/CypressExportStore';
 import Router from '@suite-support/Router';
-import l10nCommonMessages from '@suite-views/index.messages';
+import messages from '@suite/support/messages';
 import { isDev } from '@suite-utils/build';
 import TrezorConnect from 'trezor-connect';
 import { SENTRY } from '@suite-config';
@@ -71,7 +71,7 @@ class TrezorSuiteApp extends App<Props> {
                                 additionalClassName="trezor-webusb-button"
                                 style={{ width: '100%', position: 'absolute', top: '-1000px' }}
                             >
-                                <Translation {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
+                                <Translation {...messages.TR_CHECK_FOR_DEVICES} />
                             </Button>
                             <Router />
                             <Preloader isStatic={isStaticRoute}>

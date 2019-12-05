@@ -10,6 +10,24 @@ describe('Form', () => {
         'switch-on-small',
         'checkbox',
         'checkbox-checked',
+        'textarea-short',
+        'textarea-short-success',
+        'textarea-short-warning',
+        'textarea-short-error',
+        'textarea-short-label',
+        'textarea-short-disabled',
+        'textarea-default',
+        'textarea-success',
+        'textarea-warning',
+        'textarea-error',
+        'textarea-label',
+        'textarea-disabled',
+        'textarea-block-default',
+        'textarea-block-success',
+        'textarea-block-warning',
+        'textarea-block-error',
+        'textarea-block-label',
+        'textarea-block-disabled',
         'input-short',
         'input-short-small',
         'input-short-error',
@@ -39,7 +57,7 @@ describe('Form', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Form&selectedStory=All&full=0');
-            if (testName.match(/error|warning|success/)) {
+            if (testName.match(/error|warning|success/) && !testName.match(/textarea/)) {
                 cy.getTestElement(testName)
                     .find('svg')
                     .each(el => {
