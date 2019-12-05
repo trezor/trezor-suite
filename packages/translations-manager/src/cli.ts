@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import meow from 'meow';
 import { mergeMessages, buildCSV, buildLocales } from './index';
 import Crowdin from './services/crowdin';
