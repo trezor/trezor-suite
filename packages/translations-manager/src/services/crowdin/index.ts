@@ -3,7 +3,7 @@ import fs from 'fs';
 import { ensureDirSync } from 'fs-extra';
 import * as path from 'path';
 import request from 'request-promise-native';
-import * as extractZip from 'extract-zip';
+import extractZip from 'extract-zip';
 
 interface FormData {
     files: {
