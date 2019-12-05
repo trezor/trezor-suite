@@ -6,7 +6,11 @@ import meow from 'meow';
 import { mergeMessages, buildCSV, buildLocales } from './index';
 import Crowdin from './services/crowdin';
 
-dotenv.config();
+const result = dotenv.config();
+
+if (result.error) {
+    throw result.error;
+}
 
 const cli = meow(
     `
