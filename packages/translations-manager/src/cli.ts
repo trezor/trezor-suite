@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-// @ts-ignore TODO: tsc can't find types even if they are installed
 import dotenv from 'dotenv';
 import meow from 'meow';
 import { mergeMessages, buildCSV, buildLocales } from './index';
