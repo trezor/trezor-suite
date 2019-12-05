@@ -242,6 +242,12 @@ export const getAccountTransactions = (
     return transactions[accountHash] || [];
 };
 
+export const countUniqueCoins = (accounts: Account[]) => {
+    const coins = new Set();
+    accounts.forEach(acc => coins.add(acc.symbol));
+    return coins.size;
+};
+
 /**
  * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
  *

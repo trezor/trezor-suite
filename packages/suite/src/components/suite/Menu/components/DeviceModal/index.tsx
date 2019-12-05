@@ -82,7 +82,6 @@ const SwitchDeviceModal = (props: Props) => {
                             selectInstance={onSelectInstance}
                             forgetDevice={props.forgetDevice}
                             accounts={props.accounts}
-                            forgetDeviceInstance={props.forgetDeviceInstance}
                         />
                     ))}
                     <ModalActions>

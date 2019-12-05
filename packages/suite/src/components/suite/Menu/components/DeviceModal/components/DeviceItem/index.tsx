@@ -5,9 +5,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { Props as DeviceModalProps } from '../../Container';
 import { AcquiredDevice, TrezorDevice } from '@suite-types';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import WalletInstance from '../WalletInstance';
-import * as accountUtils from '@wallet-utils/accountUtils';
-import { Account } from '@wallet-types';
+import WalletInstance from '../WalletInstance/Container';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -75,14 +73,7 @@ interface Props extends WrappedComponentProps {
     selectInstance: (instance: TrezorDevice) => void;
     forgetDevice: DeviceModalProps['forgetDevice'];
     addHiddenWallet: (instance: TrezorDevice) => void;
-    forgetDeviceInstance: DeviceModalProps['forgetDeviceInstance'];
 }
-
-const countCoins = (accounts: Account[]) => {
-    const coins = new Set();
-    accounts.forEach(acc => coins.add(acc.symbol));
-    return coins.size;
-};
 
 const DeviceItem = ({
     device,
@@ -91,16 +82,10 @@ const DeviceItem = ({
     selectInstance,
     addHiddenWallet,
     forgetDevice,
-    forgetDeviceInstance,
     selectedDevice,
     ...props
 }: Props) => {
     const deviceStatus = deviceUtils.getStatus(device);
-    const getAccountsCount = (device: TrezorDevice) =>
-        accountUtils.getDeviceAccounts(device, accounts).length;
-
-    const getCoinsCount = (device: TrezorDevice) =>
-        countCoins(accountUtils.getDeviceAccounts(device, accounts));
 
     return (
         <DeviceWrapper key={device.path}>
@@ -131,11 +116,8 @@ const DeviceItem = ({
                 <WalletInstance
                     key={`${instance.label}-${instance.instance}-${instance.state}`}
                     instance={instance}
-                    accountsCount={getAccountsCount(instance)}
-                    coinsCount={getCoinsCount(instance)}
                     active={selectedDevice ? selectedDevice.state === instance.state : false}
                     selectInstance={selectInstance}
-                    forgetDeviceInstance={forgetDeviceInstance}
                 />
             ))}
             <Actions>

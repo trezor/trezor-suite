@@ -1,7 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, Button, colors, variables } from '@trezor/components-v2';
-import { AcquiredDevice, TrezorDevice } from '@suite/types/suite';
+import * as accountUtils from '@wallet-utils/accountUtils';
+import { Props } from './Container';
+import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div<{ active: boolean }>`
     display: flex;
@@ -48,23 +51,32 @@ const ForgetButton = styled(Button)`
     font-size: ${variables.FONT_SIZE.BUTTON};
 `;
 
-interface Props {
-    instance: AcquiredDevice;
-    active: boolean;
-    accountsCount: number;
-    coinsCount: number;
-    selectInstance: (instance: TrezorDevice) => void;
-    forgetDeviceInstance: (instance: TrezorDevice) => void;
-}
-
 const WalletInstance = ({
     instance,
     active,
-    accountsCount,
-    coinsCount,
     selectInstance,
     forgetDeviceInstance,
+    accounts,
+    fiat,
+    localCurrency,
+    getDiscovery,
 }: Props) => {
+    const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
+    const deviceAccounts = accountUtils.getDeviceAccounts(instance, accounts);
+    const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
+    const accountsCount = deviceAccounts.length;
+
+    const instanceBalance = new BigNumber(0);
+    deviceAccounts.forEach(a => {
+        const fiatRates = fiat.find(f => f.symbol === a.symbol);
+        if (fiatRates) {
+            const fiatBalance = toFiatCurrency(a.balance, localCurrency, fiatRates);
+            console.log(fiatBalance);
+            instanceBalance.plus(fiatBalance || '0');
+        }
+    });
+    console.log(instanceBalance);
+
     return (
         <Wrapper
             key={`${instance.label}${instance.instance}${instance.state}`}
@@ -77,15 +89,19 @@ const WalletInstance = ({
                 <Icon size={12} icon="SORT" />
             </SortIconWrapper>
             <Col grow={1}>
-                <InstanceTitle>
-                    {accountsCount} Accounts - {coinsCount} COINS - Y USD
-                </InstanceTitle>
+                {discoveryProcess && (
+                    <InstanceTitle>
+                        {accountsCount} Accounts - {coinsCount} COINS - {instanceBalance.toString()}{' '}
+                        USD
+                    </InstanceTitle>
+                )}
+                {!discoveryProcess && <InstanceTitle>Undiscovered wallet</InstanceTitle>}
                 <InstanceType>
-                    {instance.useEmptyPassphrase ? 'No passphrapse' : 'Passphrase'}
+                    {instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase'}
                 </InstanceType>
             </Col>
             <Col>
-                {!instance.useEmptyPassphrase && (
+                {discoveryProcess && !instance.useEmptyPassphrase && (
                     <ForgetButton
                         size="small"
                         variant="secondary"
@@ -96,6 +112,18 @@ const WalletInstance = ({
                     >
                         Forget instance
                     </ForgetButton>
+                )}
+                {!discoveryProcess && (
+                    <Button
+                        size="small"
+                        isDisabled
+                        variant="tertiary"
+                        inlineWidth
+                        icon="INFO"
+                        onClick={() => {}}
+                    >
+                        Connect to discover
+                    </Button>
                 )}
             </Col>
         </Wrapper>
