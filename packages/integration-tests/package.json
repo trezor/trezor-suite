@@ -1,0 +1,12 @@
+{
+    "name": "@trezor/integration-tests",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "test-components-storybook-v2": "cypress run --project ./projects/components-storybook-v2"
+    },
+    "dependencies": {
+        "cypress": "^3.7.0"
+    },
+    "devDependencies": {}
+}
