@@ -10,7 +10,7 @@ import * as receiveActions from '@wallet-actions/receiveActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import ReceiveForm from './components/ReceiveForm';
-import l10nMessages from './components/ReceiveForm/messages';
+import messages from '@suite/support/messages';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -67,8 +67,8 @@ const AccountReceive = (props: Props) => {
 
     const accountNameMessage =
         account && account.networkType === 'ethereum'
-            ? l10nMessages.TR_RECEIVE_NETWORK_AND_TOKENS
-            : l10nMessages.TR_RECEIVE_NETWORK;
+            ? messages.TR_RECEIVE_NETWORK_AND_TOKENS
+            : messages.TR_RECEIVE_NETWORK;
 
     return (
         <LayoutAccount title="Receive">

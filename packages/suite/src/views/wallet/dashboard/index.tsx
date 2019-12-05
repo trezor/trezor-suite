@@ -9,7 +9,7 @@ import { sortByCoin } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Network, Account } from '@wallet-types';
 import { Props } from './Container';
-import messages from './index.messages';
+import messages from '@suite/support/messages';
 
 const Content = styled.div`
     flex: 1;

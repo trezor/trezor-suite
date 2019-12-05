@@ -3,13 +3,11 @@ import { Input } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 
-import l10nCommonMessages from '@suite-support/Messages';
+import messages from '@suite/support/messages';
 import { isASCII } from '@suite-utils/validators';
 import { DEFAULT_LABEL } from '@onboarding-constants/trezor';
 import { Wrapper, OnboardingButton, Text } from '@onboarding-components';
 import { Props } from './Container';
-
-import l10nMessages from './index.messages';
 
 interface NameInputProps {
     value: string;
@@ -50,24 +48,24 @@ const NameStep = (props: Props) => {
         if (label === DEFAULT_LABEL) {
             return {
                 state: 'error',
-                bottomText: props.intl.formatMessage(l10nMessages.TR_NAME_BORING),
+                bottomText: props.intl.formatMessage(messages.TR_NAME_BORING),
             };
         }
         if (!isASCII(label)) {
             return {
                 state: 'error',
-                bottomText: props.intl.formatMessage(l10nMessages.TR_NAME_ONLY_ASCII),
+                bottomText: props.intl.formatMessage(messages.TR_NAME_ONLY_ASCII),
             };
         }
         if (label.length > 16) {
             return {
                 state: 'error',
-                bottomText: props.intl.formatMessage(l10nMessages.TR_NAME_TOO_LONG),
+                bottomText: props.intl.formatMessage(messages.TR_NAME_TOO_LONG),
             };
         }
         return {
             state: 'success',
-            bottomText: props.intl.formatMessage(l10nMessages.TR_NAME_OK),
+            bottomText: props.intl.formatMessage(messages.TR_NAME_OK),
         };
     };
 
@@ -75,10 +73,10 @@ const NameStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                {status === 'initial' && <Translation {...l10nMessages.TR_NAME_HEADING} />}
+                {status === 'initial' && <Translation {...messages.TR_NAME_HEADING} />}
                 {status === 'changed' && (
                     <Translation
-                        {...l10nMessages.TR_NAME_HEADING_CHANGED}
+                        {...messages.TR_NAME_HEADING_CHANGED}
                         values={{ label: device!.features!.label }}
                     />
                 )}
@@ -87,7 +85,7 @@ const NameStep = (props: Props) => {
                 {status === 'initial' && (
                     <>
                         <Text>
-                            <Translation {...l10nMessages.TR_NAME_SUBHEADING} />
+                            <Translation {...messages.TR_NAME_SUBHEADING} />
                         </Text>
 
                         <NameInput
@@ -105,13 +103,13 @@ const NameStep = (props: Props) => {
                             <OnboardingButton.Alt
                                 onClick={() => props.onboardingActions.goToNextStep()}
                             >
-                                <Translation {...l10nCommonMessages.TR_SKIP} />
+                                <Translation {...messages.TR_SKIP} />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 isDisabled={validateInput().state !== 'success'}
                                 onClick={changeLabel}
                             >
-                                <Translation {...l10nCommonMessages.TR_SUBMIT} />
+                                <Translation {...messages.TR_SUBMIT} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -120,13 +118,13 @@ const NameStep = (props: Props) => {
                 {status === 'changed' && (
                     <>
                         <Text>
-                            <Translation {...l10nMessages.TR_NAME_CHANGED_TEXT} />
+                            <Translation {...messages.TR_NAME_CHANGED_TEXT} />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => props.onboardingActions.goToNextStep()}
                             >
-                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...messages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>

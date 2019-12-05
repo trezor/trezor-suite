@@ -1,23 +1,18 @@
+import { Loaders } from '@onboarding-components';
+import * as firmwareActions from '@suite-actions/firmwareActions';
+import * as routerActions from '@suite-actions/routerActions';
+import * as suiteActions from '@suite-actions/suiteActions';
+import { ConnectPrompt } from '@suite-components/Prompts';
+import { AppState, Dispatch } from '@suite-types';
+import { Checkbox, Tooltip, variables } from '@trezor/components';
+import { Button, H1, H2, P } from '@trezor/components-v2';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-// import { Translation } from '@suite-components/Translation';
 import { FirmwareRelease } from 'trezor-connect';
-import { Checkbox, Tooltip, variables } from '@trezor/components';
-import { Button, H1, H2, P } from '@trezor/components-v2';
-import * as routerActions from '@suite-actions/routerActions';
-import * as firmwareActions from '@suite-actions/firmwareActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-
-import { ConnectPrompt } from '@suite-components/Prompts';
 
 // todo move to suite components;
-import { Loaders } from '@onboarding-components';
-
-import { AppState, Dispatch } from '@suite-types';
-// import l10nMessages from './index.messages';
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -357,7 +352,6 @@ const FirmwareUpdate = (props: Props) => {
                             userUnderstands={userUnderstandsWarning()}
                             onClick={() => props.firmwareUpdate()}
                         >
-                            {/* <Translation {...l10nMessages.TR_INSTALL} /> */}
                             {!isInBootloader() && hasNewestFirmware() ? 'Reinstall' : 'Install'}
                         </InstallButton>
                     </>

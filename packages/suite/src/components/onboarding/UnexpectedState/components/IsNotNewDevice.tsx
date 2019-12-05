@@ -8,11 +8,9 @@ import { SUPPORT_URL } from '@onboarding-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
+import messages from '@suite/support/messages';
 
 import { Dispatch } from '@suite-types';
-import l10nCommonMessages from '@suite-support/Messages';
-
-import l10nMessages from './IsNotNewDevice.messages';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     actionAlt: bindActionCreators(onboardingActions.removePath, dispatch),
@@ -23,12 +21,12 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const IsNotNewDevice = ({ actionAlt }: Props) => (
     <>
         <Text>
-            <Translation>{l10nMessages.TR_IS_NOT_NEW_DEVICE}</Translation>
+            <Translation>{messages.TR_IS_NOT_NEW_DEVICE}</Translation>
         </Text>
         <Wrapper.Controls>
             <Link href={SUPPORT_URL}>
                 <OnboardingButton.Cta style={{ width: '100%' }}>
-                    <Translation>{l10nCommonMessages.TR_CONTACT_SUPPORT}</Translation>
+                    <Translation>{messages.TR_CONTACT_SUPPORT}</Translation>
                 </OnboardingButton.Cta>
             </Link>
             <OnboardingButton.Alt

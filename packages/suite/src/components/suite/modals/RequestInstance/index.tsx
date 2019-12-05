@@ -2,12 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { Translation } from '@suite-components/Translation';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
-
+import messages from '@suite/support/messages';
 import { Button, H2, P } from '@trezor/components-v2';
-
-import globalMessages from '@suite-support/Messages';
-import l10nMessages from './messages';
-
 import { AcquiredDevice } from '@suite-types';
 
 interface Props {
@@ -50,21 +46,21 @@ const RequestInstance: FunctionComponent<Props> = ({
         <Wrapper>
             <H2>
                 <Translation
-                    {...l10nMessages.TR_REQUEST_INSTANCE_HEADER}
+                    {...messages.TR_REQUEST_INSTANCE_HEADER}
                     values={{
                         deviceLabel: `${device.label} (${instance})`,
                     }}
                 />
             </H2>
             <StyledP size="small">
-                <Translation {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
+                <Translation {...messages.TR_REQUEST_INSTANCE_DESCRIPTION} />
             </StyledP>
             <Row>
                 <Button onClick={() => onCreateInstance(device)} inlineWidth>
-                    <Translation {...l10nMessages.TR_CREATE_INSTANCE} />
+                    <Translation {...messages.TR_CREATE_INSTANCE} />
                 </Button>
                 <Button variant="secondary" onClick={onCancel} inlineWidth>
-                    <Translation {...globalMessages.TR_CANCEL} />
+                    <Translation {...messages.TR_CANCEL} />
                 </Button>
             </Row>
         </Wrapper>

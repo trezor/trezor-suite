@@ -3,7 +3,7 @@ import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import messages from './messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;

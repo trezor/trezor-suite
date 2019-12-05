@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { Button, ButtonPin, InputPin } from '@trezor/components';
 
 import { Translation } from '@suite-components/Translation';
-
-import globalMessages from '@suite-support/Messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     max-width: 240px;
@@ -144,7 +143,7 @@ const PinInput = (props: Props) => {
 
             <PinFooter>
                 <Button onClick={() => onPinSubmit(pin)}>
-                    <Translation {...globalMessages.TR_ENTER_PIN} />
+                    <Translation {...messages.TR_ENTER_PIN} />
                 </Button>
             </PinFooter>
         </Wrapper>

@@ -10,7 +10,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import { Account, Network, ExternalNetwork } from '@wallet-types';
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 import NetworkSelect from './components/NetworkSelect';
 import AccountSelect from './components/AccountSelect';
 import ExternalWallet from './components/ExternalWallet';
@@ -66,7 +66,7 @@ const AddAccount = (props: Props) => {
         <Wrapper>
             <H2>
                 <Translation
-                    {...l10nMessages.TR_ADD_NEW_ACCOUNT}
+                    {...messages.TR_ADD_NEW_ACCOUNT}
                     values={{ deviceLabel: props.device.label }}
                 />
             </H2>
