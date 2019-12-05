@@ -14,9 +14,16 @@ export const FONT_SIZE = {
     TINY: '12px',
 } as const;
 
-export const FONT_WEIGHT = {} as const;
+export const FONT_WEIGHT = {
+    LIGHT: 300,
+    REGULAR: 400,
+    DEMI_BOLD: 600,
+    BOLD: 700,
+} as const;
 
-export const FONT_FAMILY = {} as const;
+export const FONT_FAMILY = {
+    TTHOVES: 'TTHoves',
+} as const;
 
 export const ICONS: IconType[] = [
     'ARROW_DOWN',

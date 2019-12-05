@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { FeedbackState } from '../../support/types';
 import colors from '../../config/colors';
-import { getFeedbackColor } from '../../utils/colors';
+import { getStateColor } from '../../utils/colors';
 
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
@@ -20,7 +20,7 @@ const State = styled.div<StateProps>`
     display: flex;
     width: 4px;
     height: 100%;
-    background: ${props => getFeedbackColor(props.state || 'success')};
+    background: ${props => getStateColor(props.state || 'success')};
     border-radius: 4px;
 `;
 
