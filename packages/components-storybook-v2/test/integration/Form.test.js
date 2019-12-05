@@ -6,6 +6,8 @@ describe('Form', () => {
     [
         'switch-off',
         'switch-on',
+        'switch-off-small',
+        'switch-on-small',
         'checkbox',
         'checkbox-checked',
         'input-short',

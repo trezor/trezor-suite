@@ -37,6 +37,19 @@ storiesOf('Form', module).add(
                     <InputWrapper>
                         <Switch onChange={() => {}} checked data-test="switch-on" />
                     </InputWrapper>
+                    <SubHeading>Off small</SubHeading>
+                    <InputWrapper>
+                        <Switch
+                            onChange={() => {}}
+                            checked={false}
+                            data-test="switch-on-small"
+                            isSmall
+                        />
+                    </InputWrapper>
+                    <SubHeading>On</SubHeading>
+                    <InputWrapper>
+                        <Switch onChange={() => {}} checked data-test="switch-on-small" isSmall />
+                    </InputWrapper>
                 </Col>
 
                 <Heading>Checkbox</Heading>

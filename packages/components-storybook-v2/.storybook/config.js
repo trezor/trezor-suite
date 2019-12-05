@@ -26,6 +26,7 @@ function loadStories() {
     require('../src/stories/components/form/all');
     require('../src/stories/components/form/input');
     require('../src/stories/components/form/checkbox');
+    require('../src/stories/components/form/switch');
     require('../src/stories/components/icons/all');
     require('../src/stories/components/icons/icon');
     require('../src/stories/components/typography/all');

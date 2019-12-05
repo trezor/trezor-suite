@@ -6,7 +6,7 @@ import { Icon } from '../Icon';
 import colors from '../../config/colors';
 
 const Wrapper = styled.div`
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
     cursor: pointer;
     align-items: center;
