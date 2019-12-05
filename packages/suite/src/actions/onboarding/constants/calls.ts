@@ -1,5 +1,5 @@
 export const GET_FEATURES = 'getFeatures';
-export const FIRMWARE_UPDATE = 'firmwareUpdate';
+// export const FIRMWARE_UPDATE = 'firmwareUpdate';
 export const RESET_DEVICE = 'resetDevice';
 export const BACKUP_DEVICE = 'backupDevice';
 export const APPLY_SETTINGS = 'applySettings';
