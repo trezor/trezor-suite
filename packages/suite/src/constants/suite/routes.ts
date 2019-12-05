@@ -47,7 +47,7 @@ const routes = [
         isStatic: true,
     },
     {
-        name: 'suite-device-settings',
+        name: 'settings-index',
         pattern: '/settings',
         app: 'deviceManagement',
     },

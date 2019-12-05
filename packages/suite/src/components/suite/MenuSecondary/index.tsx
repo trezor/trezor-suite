@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { bindActionCreators } from 'redux';
 import Backdrop from '@suite-components/Backdrop';
 import { toggleSidebar } from '@suite-actions/suiteActions';
 import { variables, colors } from '@trezor/components';
-import { bindActionCreators } from 'redux';
-import Menu from '@wallet-components/Menu';
 import { AppState } from '@suite-types';
 
 const { SCREEN_SIZE } = variables;
@@ -15,6 +14,7 @@ interface Props {
     suite: AppState['suite'];
     isOpen?: boolean;
     toggleSidebar: typeof toggleSidebar;
+    children: React.ReactNode;
 }
 
 type WrapperProps = Pick<Props, 'isOpen'>;
@@ -25,7 +25,7 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
     background: ${colors.WHITE};
 `;
 
-const SidebarWrapper = styled.div`
+const Wrapper = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -43,14 +43,12 @@ const StyledBackdrop = styled(Backdrop)`
     }
 `;
 
-const Sidebar = ({ isOpen, toggleSidebar }: Props) => {
+const MenuSecondary = ({ isOpen, toggleSidebar, children }: Props) => {
     return (
         <>
             <StyledBackdrop show={isOpen} onClick={toggleSidebar} animated />
             <AbsoluteWrapper isOpen={isOpen}>
-                <SidebarWrapper>
-                    <Menu />
-                </SidebarWrapper>
+                <Wrapper>{children}</Wrapper>
             </AbsoluteWrapper>
         </>
     );
@@ -63,4 +61,4 @@ const mapStateToProps = (state: AppState) => ({
 
 export default connect(mapStateToProps, dispatch => ({
     toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
-}))(Sidebar);
+}))(MenuSecondary);
