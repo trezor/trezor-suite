@@ -9,7 +9,7 @@ import Crowdin from './services/crowdin';
 const result = dotenv.config();
 
 if (result.error) {
-    throw result.error;
+    console.warn(result.error);
 }
 
 const cli = meow(
@@ -86,10 +86,9 @@ const apiKey = process.env[config.project.apiKeyEnv];
 
 if (!apiKey) {
     console.error(`Could not read CrowdIn API key from env variable ${config.project.apiKeyEnv}`);
-    cli.showHelp();
 }
 
-const crowdin = new Crowdin(projectId, apiKey!);
+const crowdin = new Crowdin(projectId, apiKey || '');
 
 const mergedJSONFile = path.join(outputDir, `${projectFilename}.json`);
 const mergedCSVFile = path.join(outputDir, `${projectFilename}.csv`);
