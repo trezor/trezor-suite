@@ -46,9 +46,30 @@ const routes = [
         app: 'onboarding',
         isStatic: true,
     },
+    // todo: app will be just settings probably
     {
         name: 'settings-index',
         pattern: '/settings',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-device',
+        pattern: '/settings/device',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-dashboard',
+        pattern: '/settings/dashboard',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-wallet',
+        pattern: '/settings/wallet',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-coins',
+        pattern: '/settings/coins',
         app: 'deviceManagement',
     },
     {
