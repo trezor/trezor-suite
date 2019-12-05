@@ -60,10 +60,10 @@ const RequestInstance: FunctionComponent<Props> = ({
                 <Translation {...l10nMessages.TR_REQUEST_INSTANCE_DESCRIPTION} />
             </StyledP>
             <Row>
-                <Button onClick={() => onCreateInstance(device)} inlineWidth>
+                <Button onClick={() => onCreateInstance(device)}>
                     <Translation {...l10nMessages.TR_CREATE_INSTANCE} />
                 </Button>
-                <Button variant="secondary" onClick={onCancel} inlineWidth>
+                <Button variant="secondary" onClick={onCancel}>
                     <Translation {...globalMessages.TR_CANCEL} />
                 </Button>
             </Row>

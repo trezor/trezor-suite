@@ -156,14 +156,12 @@ class SignVerify extends Component<Props> {
                             <StyledButton
                                 onClick={this.props.signVerifyActions.clearSign}
                                 variant="secondary"
-                                inlineWidth
                             >
                                 <Translation {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!device.connected}
                                 isDisabled={false}
-                                inlineWidth
                                 // TODO:
                                 // onClick={() =>
                                 //      signVerifyActions.sign(account.accountPath, signMessage)
@@ -211,7 +209,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton onClick={signVerifyActions.clearVerify} inlineWidth>
+                            <StyledButton onClick={signVerifyActions.clearVerify}>
                                 <Translation {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
@@ -226,7 +224,6 @@ class SignVerify extends Component<Props> {
                                         );
                                     }
                                 }}
-                                inlineWidth
                             >
                                 <Translation {...l10nMessages.TR_VERIFY} />
                             </StyledButton>

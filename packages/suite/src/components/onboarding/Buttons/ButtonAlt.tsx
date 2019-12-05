@@ -6,7 +6,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const ButtonAlt = (props: Props) => (
-    <Button variant="secondary" {...props} inlineWidth>
+    <Button variant="secondary" {...props}>
         {props.children}
     </Button>
 );

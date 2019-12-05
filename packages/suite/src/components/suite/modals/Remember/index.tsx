@@ -101,7 +101,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                 />
             </StyledP>
             <Column>
-                <ButtonWithLoader onClick={() => onForgetDevice(device)} inlineWidth>
+                <ButtonWithLoader onClick={() => onForgetDevice(device)}>
                     <ButtonContent>
                         <Text>
                             <Translation {...commonMessages.TR_FORGET_DEVICE} />
@@ -114,7 +114,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                         />
                     </ButtonContent>
                 </ButtonWithLoader>
-                <Button variant="secondary" onClick={() => onRememberDevice(device)} inlineWidth>
+                <Button variant="secondary" onClick={() => onRememberDevice(device)}>
                     <Translation {...messages.TR_REMEMBER_DEVICE} />
                 </Button>
             </Column>

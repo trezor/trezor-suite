@@ -114,7 +114,7 @@ const InstallButton = ({
             placement="bottom"
             content={content}
         >
-            <Button isDisabled={isDisabled} onClick={() => onClick()} inlineWidth>
+            <Button isDisabled={isDisabled} onClick={() => onClick()}>
                 {props.children}
             </Button>
         </Tooltip>
@@ -348,7 +348,7 @@ const FirmwareUpdate = (props: Props) => {
             <Bottom>
                 {firmware.status === 'initial' && (
                     <>
-                        <Button variant="secondary" onClick={() => exitApp()} inlineWidth>
+                        <Button variant="secondary" onClick={() => exitApp()}>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton
@@ -364,14 +364,12 @@ const FirmwareUpdate = (props: Props) => {
                 )}
                 {firmware.status === 'done' && (
                     <>
-                        <Button onClick={() => exitApp()} inlineWidth>
-                            {getExitButtonText()}
-                        </Button>
+                        <Button onClick={() => exitApp()}>{getExitButtonText()}</Button>
                     </>
                 )}
                 {firmware.status === 'error' && (
                     <>
-                        <Button variant="secondary" onClick={() => exitApp()} inlineWidth>
+                        <Button variant="secondary" onClick={() => exitApp()}>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton

@@ -54,10 +54,10 @@ const ForgetDevice: FunctionComponent<Props> = ({ device, onForgetDevice, onCanc
                 <Translation {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
             </StyledP>
             <Row>
-                <Button onClick={() => onForgetDevice(device)} inlineWidth>
+                <Button onClick={() => onForgetDevice(device)}>
                     <Translation {...l10nCommonMessages.TR_FORGET_DEVICE} />
                 </Button>
-                <Button variant="secondary" onClick={onCancel} inlineWidth>
+                <Button variant="secondary" onClick={onCancel}>
                     <Translation {...l10nMessages.TR_DONT_FORGET} />
                 </Button>
             </Row>

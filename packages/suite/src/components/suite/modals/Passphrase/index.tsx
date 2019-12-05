@@ -137,11 +137,7 @@ const Passphrase: FunctionComponent<Props> = ({
                 </Checkbox>
             </FormRow>
             <Column>
-                <Button
-                    onClick={() => onEnterPassphrase(value)}
-                    isDisabled={!passwordsMatch}
-                    inlineWidth
-                >
+                <Button onClick={() => onEnterPassphrase(value)} isDisabled={!passwordsMatch}>
                     <Translation {...messages.TR_ENTER_PASSPHRASE} />
                 </Button>
                 <ErrorMessage size="small" show={!passwordsMatch}>

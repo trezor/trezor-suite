@@ -34,7 +34,6 @@ const SetMax = (props: Props) => (
             props.sendFormActions.setMax(props.outputId);
         }}
         variant="secondary"
-        inlineWidth
     >
         <StyledIcon icon="TOP" size={14} color={colors.TEXT_SECONDARY} />
         {/* {!props.canSetMax && <StyledIcon icon="SUCCESS" size={14} color={colors.WHITE} />} */}

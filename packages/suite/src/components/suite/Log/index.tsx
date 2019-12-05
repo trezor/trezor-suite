@@ -79,7 +79,7 @@ const Log = (props: Props) => {
     }
 
     const copyBtn = (
-        <ButtonCopy onClick={() => props.copyToClipboard()} inlineWidth>
+        <ButtonCopy onClick={() => props.copyToClipboard()}>
             <Translation {...l10nMessages.TR_COPY_TO_CLIPBOARD} />
         </ButtonCopy>
     );

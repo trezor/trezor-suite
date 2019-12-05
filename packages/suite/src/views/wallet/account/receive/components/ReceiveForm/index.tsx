@@ -289,7 +289,6 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                     }}
                                     // isDisabled={device.connected && !discovery.completed}
                                     size="small"
-                                    inlineWidth
                                 >
                                     <Translation {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
                                 </ShowAddressButton>
@@ -323,7 +322,6 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                             }}
                             icon="PLUS"
                             isDisabled={freshAddrCount >= SETTINGS.FRESH_ADDRESS_LIMIT + 1}
-                            inlineWidth
                         >
                             <Translation {...l10nMessages.TR_ADD_FRESH_ADDRESS} />
                         </AddFreshAddress>
@@ -348,7 +346,6 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                             isDisabled={props.showButtonDisabled}
                                             onClick={() => props.showAddress(addr.path)}
                                             icon="TREZOR"
-                                            inlineWidth
                                         >
                                             <Translation {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
                                         </ShowAddressButton>
