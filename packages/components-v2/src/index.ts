@@ -8,6 +8,8 @@ import { Icon } from './components/Icon';
 import { H1, H2 } from './components/Heading';
 import { P } from './components/Paragraph';
 import { Link } from './components/Link';
+import { CoinLogo } from './components/CoinLogo';
+import { TrezorLogo } from './components/TrezorLogo';
 import * as types from './support/types';
 
-export { colors, variables, Button, Input, Textarea, Icon, H1, H2, P, Link, types };
+export { colors, variables, Button, Input, Textarea, Icon, H1, H2, P, Link, CoinLogo, TrezorLogo, types };

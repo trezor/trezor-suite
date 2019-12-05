@@ -1,4 +1,5 @@
 import { ICONS } from '../../components/Icon/icons';
+import { COINS } from '../../components/CoinLogo/coins';
 
 export type TextAlign = 'left' | 'center' | 'right';
 
@@ -21,6 +22,8 @@ export interface InputButton {
 }
 
 export type IconType = keyof typeof ICONS;
+
+export type CoinType = keyof typeof COINS;
 
 export type ParagraphSize = 'normal' | 'small' | 'tiny';
 
