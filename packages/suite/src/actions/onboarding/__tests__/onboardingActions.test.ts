@@ -10,8 +10,6 @@ import fixtures, { deviceCallsSpecific, deviceCallsGeneral } from './fixtures/on
 
 import { Action } from '@suite-types';
 
-const { getSuiteDevice } = global.JestMocks;
-
 // todo fighting with typescript here. How to keep string literal being exported from fixtures and not converted
 // to string? if exported as const, it makes all properties readonly and thus not assignable to reducer which
 // expects mutable properties;
@@ -68,7 +66,6 @@ export const getInitialState = (custom?: any) => {
         },
         suite: {
             ...suiteReducer(undefined, {} as Action),
-            device: getSuiteDevice(),
             ...suite,
         },
     };
@@ -135,15 +132,9 @@ describe('Onboarding Actions - deviceCalls - specific calls', () => {
         it(f.description, async () => {
             const store = mockStore(getInitialState(f.initialState));
             require('trezor-connect').setTestFixtures(f);
-
             const promise = store.dispatch(f.action());
-            // if (f.expect && f.expect.stateBeforeResolve) {
-            //     expect(store.getState().onboarding).toMatchObject(f.expect.stateBeforeResolve);
-            // }
             await promise;
-            // if (f.expect && f.expect.stateAfterResolve) {
-            //     expect(store.getState().onboarding).toMatchObject(f.expect.stateAfterResolve);
-            // }
+            // no assertions on purpose here.
         });
     });
 });
