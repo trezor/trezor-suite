@@ -29,12 +29,12 @@ const fromFiatCurrency = (
     decimals: number,
 ) => {
     if (!networkRates || !networkRates.rates || !localAmount) {
-        return '';
+        return null;
     }
 
     const rate = networkRates.rates[fiatCurrency];
     if (!rate) {
-        return '';
+        return null;
     }
 
     let formattedLocalAmount = localAmount;
@@ -43,7 +43,7 @@ const fromFiatCurrency = (
     }
 
     const amount = new BigNumber(formattedLocalAmount).div(rate);
-    const amountStr = amount.isNaN() ? '' : amount.toFixed(decimals);
+    const amountStr = amount.isNaN() ? null : amount.toFixed(decimals);
     return amountStr;
 };
 
