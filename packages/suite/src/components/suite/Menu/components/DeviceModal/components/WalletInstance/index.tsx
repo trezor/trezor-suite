@@ -5,6 +5,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
 import BigNumber from 'bignumber.js';
+import { FormattedNumber } from '@suite/components/suite';
 
 const Wrapper = styled.div<{ active: boolean }>`
     display: flex;
@@ -66,16 +67,18 @@ const WalletInstance = ({
     const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
 
-    const instanceBalance = new BigNumber(0);
+    let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
         const fiatRates = fiat.find(f => f.symbol === a.symbol);
         if (fiatRates) {
             const fiatBalance = toFiatCurrency(a.balance, localCurrency, fiatRates);
-            console.log(fiatBalance);
-            instanceBalance.plus(fiatBalance || '0');
+            if (fiatBalance) {
+                instanceBalance = instanceBalance.plus(
+                    accountUtils.formatNetworkAmount(fiatBalance, a.symbol),
+                );
+            }
         }
     });
-    console.log(instanceBalance);
 
     return (
         <Wrapper
@@ -91,8 +94,11 @@ const WalletInstance = ({
             <Col grow={1}>
                 {discoveryProcess && (
                     <InstanceTitle>
-                        {accountsCount} Accounts - {coinsCount} COINS - {instanceBalance.toString()}{' '}
-                        USD
+                        {accountsCount} Accounts - {coinsCount} COINS -{' '}
+                        <FormattedNumber
+                            value={instanceBalance.toString()}
+                            currency={localCurrency}
+                        />
                     </InstanceTitle>
                 )}
                 {!discoveryProcess && <InstanceTitle>Undiscovered wallet</InstanceTitle>}
