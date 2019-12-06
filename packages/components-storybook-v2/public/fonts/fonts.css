@@ -14,7 +14,17 @@
   src: local(TTHoves-Regular),
     url(tthoves/TTHoves-Regular.woff2) format("woff2"),
     url(tthoves/TTHoves-Regular.woff) format("woff");
-  font-weight: normal;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+@font-face {
+  font-family: TTHoves;
+  src: local(TTHoves-Medium),
+    url(tthoves/TTHoves-Normal.woff2) format("woff2"),
+    url(tthoves/TTHoves-DemiBold.woff) format("woff");
+  font-weight: 500;
   font-style: normal;
   font-stretch: normal;
 }
@@ -34,7 +44,7 @@
   src: local(TTHoves-Bold),
     url(tthoves/TTHoves-Bold.woff2) format("woff2"),
     url(tthoves/TTHoves-Bold.woff) format("woff");
-  font-weight: bold;
+  font-weight: 700;
   font-style: normal;
   font-stretch: normal;
 }
