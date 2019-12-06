@@ -8,7 +8,13 @@ const Wrapper = styled.div`
 `;
 
 const Col = styled.div`
-    margin: 1rem 0 2rem;
+    margin: 1rem 0 3rem;
+`;
+
+const Row = styled.div`
+    margin: 1rem 0 3rem;
+    display: flex;
+    align-items: center;
 `;
 
 const Heading = styled.h2``;
@@ -20,19 +26,25 @@ const IconWrapper = styled.div`
     width: 20%;
 `;
 
-const ComponentWrapper = styled.div`
+const LogoWrapper = styled.div`
     display: inline-block;
-    margin: 2rem 0 0 0;
+    margin: 2rem 1rem 0;
     padding: 1rem;
     text-align: center;
+    justify-content: flex-start;
 `;
 
-const ComponentWrapperDark = styled(ComponentWrapper)`
+const LogoWrapperDark = styled(LogoWrapper)`
     background: ${colors.BLACK17};
 `;
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
+    color: ${colors.BLACK50};
+`;
+
+const LogoName = styled.div`
+    margin-bottom: 1rem;
     color: ${colors.BLACK50};
 `;
 
@@ -46,43 +58,70 @@ storiesOf('Logos', module).add(
                     {variables.COINS.map((coin: types.CoinType) => (
                         <IconWrapper>
                             <CoinName>{coin}</CoinName>
-                            <CoinLogo
-                                symbol={coin}
-                                data-test={`icon-${coin.toLowerCase().replace('_', '-')}`}
-                            />
+                            <CoinLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
                         </IconWrapper>
                     ))}
                 </Col>
-                <Heading>Trezor logo black</Heading>
-                <Col>
-                    <ComponentWrapper>
-                        <CoinName>Horizontal</CoinName>
-                        <TrezorLogo type="horizontal" variant="black" width="200px" />
-                    </ComponentWrapper>
-                    <ComponentWrapper>
-                        <CoinName>Vertical</CoinName>
-                        <TrezorLogo type="vertical" variant="black" width="120px" />
-                    </ComponentWrapper>
-                    <ComponentWrapper>
-                        <CoinName>Symbol</CoinName>
-                        <TrezorLogo type="symbol" variant="black" width="50px" />
-                    </ComponentWrapper>
-                </Col>
-                <Heading>Trezor logo white</Heading>
-                <Col>
-                    <ComponentWrapperDark>
-                        <CoinName>Horizontal</CoinName>
-                        <TrezorLogo type="horizontal" variant="white" width="200px" />
-                    </ComponentWrapperDark>
-                    <ComponentWrapperDark>
-                        <CoinName>Vertical</CoinName>
-                        <TrezorLogo type="vertical" variant="white" width="120px" />
-                    </ComponentWrapperDark>
-                    <ComponentWrapperDark>
-                        <CoinName>Symbol</CoinName>
-                        <TrezorLogo type="symbol" variant="white" width="50px" />
-                    </ComponentWrapperDark>
-                </Col>
+                <Heading>Trezor black</Heading>
+                <Row>
+                    <LogoWrapper>
+                        <LogoName>Horizontal</LogoName>
+                        <TrezorLogo
+                            type="horizontal"
+                            variant="black"
+                            width="200px"
+                            data-test="trezor-logo-horizontal-black"
+                        />
+                    </LogoWrapper>
+                    <LogoWrapper>
+                        <LogoName>Vertical</LogoName>
+                        <TrezorLogo
+                            type="vertical"
+                            variant="black"
+                            width="120px"
+                            data-test="trezor-logo-vertical-black"
+                        />
+                    </LogoWrapper>
+                    <LogoWrapper>
+                        <LogoName>Symbol</LogoName>
+                        <TrezorLogo
+                            type="symbol"
+                            variant="black"
+                            width="50px"
+                            data-test="trezor-logo-symbol-black"
+                        />
+                    </LogoWrapper>
+                </Row>
+                <Heading>Trezor white</Heading>
+                <Row>
+                    <LogoWrapperDark>
+                        <LogoName>Horizontal</LogoName>
+                        <TrezorLogo
+                            type="horizontal"
+                            variant="white"
+                            width="200px"
+                            data-test="trezor-logo-horizontal-white"
+                        />
+                    </LogoWrapperDark>
+                    <LogoWrapperDark>
+                        <LogoName>Vertical</LogoName>
+                        <TrezorLogo
+                            type="vertical"
+                            variant="white"
+                            width="120px"
+                            data-test="trezor-logo-vertical-white"
+                        />
+                    </LogoWrapperDark>
+                    <LogoWrapperDark>
+                        <LogoName>Symbol</LogoName>
+                        <TrezorLogo
+                            type="symbol"
+                            variant="white"
+                            width="50px"
+                            data-test="trezor-logo-symbol-white"
+                        />
+                    </LogoWrapperDark>
+                </Row>
             </Wrapper>
         );
     },

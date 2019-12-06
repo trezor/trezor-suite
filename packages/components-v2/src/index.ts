@@ -12,4 +12,18 @@ import { CoinLogo } from './components/CoinLogo';
 import { TrezorLogo } from './components/TrezorLogo';
 import * as types from './support/types';
 
-export { colors, variables, Button, Input, Textarea, Icon, H1, H2, P, Link, CoinLogo, TrezorLogo, types };
+export {
+    colors,
+    variables,
+    Button,
+    Input,
+    Textarea,
+    Icon,
+    H1,
+    H2,
+    P,
+    Link,
+    CoinLogo,
+    TrezorLogo,
+    types,
+};
