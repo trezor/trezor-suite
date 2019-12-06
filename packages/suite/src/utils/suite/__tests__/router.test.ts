@@ -38,6 +38,7 @@ describe('router', () => {
 
     describe('getPrefixedURL', () => {
         it('should return url not prefixed since assetPrefix is not set', () => {
+            process.env.assetPrefix = '';
             expect(getPrefixedURL('/wallet')).toEqual(`/wallet`);
         });
         it('should return url prefixed with assetPrefix env variable', () => {
