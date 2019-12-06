@@ -2,7 +2,7 @@ import { isDev, isBeta } from '../build';
 
 describe('build', () => {
     describe('dev true by BUILD variable', () => {
-        const OLD_ENV = process.env;
+        const OLD_ENV = { ...process.env };
 
         beforeEach(() => {
             jest.resetModules();
@@ -19,7 +19,7 @@ describe('build', () => {
     });
 
     describe('dev true by NODE_ENV variable', () => {
-        const OLD_ENV = process.env;
+        const OLD_ENV = { ...process.env };
 
         beforeEach(() => {
             jest.resetModules();
@@ -36,7 +36,7 @@ describe('build', () => {
     });
 
     describe('beta true by BUILD variable', () => {
-        const OLD_ENV = process.env;
+        const OLD_ENV = { ...process.env };
 
         beforeEach(() => {
             jest.resetModules();
@@ -53,7 +53,7 @@ describe('build', () => {
     });
 
     describe('should NOT be beta', () => {
-        const OLD_ENV = process.env;
+        const OLD_ENV = { ...process.env };
 
         beforeEach(() => {
             jest.resetModules();
@@ -70,7 +70,7 @@ describe('build', () => {
     });
 
     describe('should NOT be development', () => {
-        const OLD_ENV = process.env;
+        const OLD_ENV = { ...process.env };
 
         beforeEach(() => {
             jest.resetModules();

@@ -9,9 +9,11 @@ import {
     isStatic,
 } from '../router';
 
+const OLD_ENV = { ...process.env };
+
 describe('router', () => {
-    beforeEach(() => {
-        delete process.env.assetPrefix;
+    afterEach(() => {
+        process.env = OLD_ENV;
     });
 
     describe('getApp', () => {
