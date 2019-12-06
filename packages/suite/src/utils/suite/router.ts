@@ -4,12 +4,14 @@ import { NETWORKS } from '@wallet-config';
 // Prefix a url with assetPrefix (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
 export const getPrefixedURL = (url: string) => {
+    // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.assetPrefix;
     if (prefix && url.indexOf(prefix) !== 0) return prefix + url;
     return url;
 };
 
 export const stripPrefixedURL = (url: string) => {
+    // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.assetPrefix;
     if (typeof prefix === 'string' && url.indexOf(prefix) === 0) {
         url = url.slice(prefix.length);
