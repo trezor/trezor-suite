@@ -12,4 +12,18 @@ import { P } from './components/Paragraph';
 import { Link } from './components/Link';
 import * as types from './support/types';
 
-export { colors, variables, Button, Input, Textarea, Checkbox, Switch, Icon, H1, H2, P, Link, types };
+export {
+    colors,
+    variables,
+    Button,
+    Input,
+    Textarea,
+    Checkbox,
+    Switch,
+    Icon,
+    H1,
+    H2,
+    P,
+    Link,
+    types,
+};
