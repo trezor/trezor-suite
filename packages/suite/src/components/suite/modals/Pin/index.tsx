@@ -1,14 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-
 import { P, H2, Link } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import { PinInput } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
-
-import messages from './messages';
-import globalMessages from '@suite-support/Messages';
-
+import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 
 const ModalWrapper = styled.div`
@@ -32,7 +28,7 @@ const Pin = ({ device, onEnterPin }: Props) => {
         <ModalWrapper>
             <H2>
                 <Translation
-                    {...globalMessages.TR_ENTER_PIN}
+                    {...messages.TR_ENTER_PIN}
                     values={{
                         deviceLabel: device.label,
                     }}
@@ -45,7 +41,7 @@ const Pin = ({ device, onEnterPin }: Props) => {
             <BottomMessage size="small">
                 <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
                 <Link href={URLS.PIN_MANUAL_URL}>
-                    <Translation {...globalMessages.TR_LEARN_MORE_LINK} />
+                    <Translation {...messages.TR_LEARN_MORE_LINK} />
                 </Link>
             </BottomMessage>
         </ModalWrapper>

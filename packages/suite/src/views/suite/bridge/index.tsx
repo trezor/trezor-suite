@@ -10,7 +10,7 @@ import { Button, P, Link, H1 } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -147,19 +147,19 @@ const InstallBridge = (props: Props) => {
                     Trezor Bridge
                     {isLoading && (
                         <Version>
-                            <Translation {...l10nMessages.TR_VERSION_IS_LOADING} />
+                            <Translation {...messages.TR_VERSION_IS_LOADING} />
                         </Version>
                     )}
                     {props.transport && <Version>{data && data.currentVersion}</Version>}
                 </TitleHeader>
                 <P>
-                    <Translation {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
+                    <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
                 </P>
                 {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
                         <P>
-                            <Translation {...l10nMessages.TR_GATHERING_INFO} />
+                            <Translation {...messages.TR_GATHERING_INFO} />
                         </P>
                     </LoaderWrapper>
                 ) : (
@@ -175,7 +175,7 @@ const InstallBridge = (props: Props) => {
                         <Link href={`${data.uri}${target.value}`}>
                             <DownloadBridgeButton icon="RECEIVE">
                                 <Translation
-                                    {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                    {...messages.TR_DOWNLOAD_LATEST_BRIDGE}
                                     values={{ version: data.latestVersion }}
                                 />
                             </DownloadBridgeButton>
@@ -186,11 +186,11 @@ const InstallBridge = (props: Props) => {
                 <P size="small">
                     <LearnMoreText>
                         <Translation
-                            {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
+                            {...messages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
                             values={{
                                 TR_CHANGELOG: (
                                     <Link href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md">
-                                        <Translation {...l10nMessages.TR_CHANGELOG} />
+                                        <Translation {...messages.TR_CHANGELOG} />
                                     </Link>
                                 ),
                             }}
@@ -201,7 +201,7 @@ const InstallBridge = (props: Props) => {
                 <P>
                     {target && data && target.signature && (
                         <Link href={data.uri + target.signature}>
-                            <Translation {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
+                            <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
                         </Link>
                     )}
                 </P>
@@ -213,9 +213,9 @@ const InstallBridge = (props: Props) => {
                     props.device &&
                     props.device.type !== 'unreadable' && (
                         <P>
-                            <Translation {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
+                            <Translation {...messages.TR_DONT_UPGRADE_BRIDGE} />
                             <GoBack onClick={() => props.goto('wallet-index')}>
-                                <Translation {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
+                                <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
                             </GoBack>
                         </P>
                     )}

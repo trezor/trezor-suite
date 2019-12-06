@@ -10,7 +10,7 @@ import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
 import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
 import { PinMatrix, Text, Wrapper, OnboardingButton } from '@onboarding-components';
 import { Dispatch, AppState } from '@suite-types';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 import Reconnect from './components/Reconnect';
 import IsSameDevice from './components/IsSameDevice';
 import IsNotNewDevice from './components/IsNotNewDevice';
@@ -27,7 +27,7 @@ const UnexpectedStateCommon = ({ children }: { children: ReactNode }) => (
 
 const IsNotInBootloader = () => (
     <P>
-        <Translation>{l10nMessages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER}</Translation>
+        <Translation>{messages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER}</Translation>
     </P>
 );
 
@@ -42,13 +42,13 @@ const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequesti
         <>
             <H2>
                 {uiInteraction.counter === 0 && (
-                    <Translation> {l10nMessages.TR_ENTER_PIN_HEADING} ></Translation>
+                    <Translation>{messages.TR_ENTER_PIN_HEADING} ></Translation>
                 )}
                 {uiInteraction.counter > 1 && 'Incorrect PIN entered'}
             </H2>
             <Text>
                 {uiInteraction.counter === 0 && (
-                    <Translation>{l10nMessages.TR_ENTER_PIN_TEXT}</Translation>
+                    <Translation>{messages.TR_ENTER_PIN_TEXT}</Translation>
                 )}
                 {uiInteraction.counter > 1 &&
                     'You entered wrong PIN. To make sure, that your device can not be accessed by unauthorized person, it will get wiped after 16 incorrect entries.'}
@@ -69,14 +69,14 @@ interface DeviceIsUsedHereProps {
 const DeviceIsUsedHere = ({ actionCta }: DeviceIsUsedHereProps) => (
     <>
         <H2>
-            <Translation>{l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING}</Translation>
+            <Translation>{messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING}</Translation>
         </H2>
         <P>
-            <Translation>{l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT}</Translation>
+            <Translation>{messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT}</Translation>
         </P>
         <Wrapper.Controls>
             <OnboardingButton.Cta onClick={actionCta}>
-                <Translation>{l10nMessages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON}</Translation>
+                <Translation>{messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON}</Translation>
             </OnboardingButton.Cta>
         </Wrapper.Controls>
     </>

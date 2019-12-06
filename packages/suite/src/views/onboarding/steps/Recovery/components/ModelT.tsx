@@ -1,21 +1,16 @@
-import React from 'react';
-// import styled from 'styled-components';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Translation } from '@suite-components/Translation';
-
-import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
-
-import l10nCommonMessages from '@suite-support/Messages';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
-import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
+import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
+import { Translation } from '@suite-components/Translation';
+import { AppState, Dispatch } from '@suite-types';
+import messages from '@suite/support/messages';
+import React from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import messages from '../index.messages';
-
-import { Dispatch, AppState } from '@suite-types';
-
+// import styled from 'styled-components';
 const mapStateToProps = (state: AppState) => ({
     uiInteraction: state.onboarding.uiInteraction,
     deviceCall: state.onboarding.deviceCall,
@@ -114,7 +109,7 @@ const RecoveryStepModelT = (props: Props) => {
                                 props.connectActions.resetCall();
                             }}
                         >
-                            <Translation {...l10nCommonMessages.TR_RETRY} />
+                            <Translation {...messages.TR_RETRY} />
                         </OnboardingButton.Cta>
                     </>
                 )}

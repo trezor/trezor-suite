@@ -1,14 +1,12 @@
+import { PHISHING_URL } from '@onboarding-constants/urls';
+import { Translation } from '@suite-components/Translation';
+import { addToFlags, HAS_BOOKMARK_FLAG } from '@suite-utils/flags';
+import { Key, OnboardingButton, Text, Wrapper } from '@suite/components/onboarding';
+import messages from '@suite/support/messages';
+import { Link, P } from '@trezor/components-v2';
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
 
-import { Link, P } from '@trezor/components-v2';
-
-import { HAS_BOOKMARK_FLAG, addToFlags } from '@suite-utils/flags';
-import l10nCommonMessages from '@suite-support/Messages';
-import { PHISHING_URL } from '@onboarding-constants/urls';
-import { Wrapper, OnboardingButton, Key, Text } from '@suite/components/onboarding';
-import l10nMessages from './index.messages';
 import { Props } from './Container';
 
 const Keys = styled.div`
@@ -77,16 +75,16 @@ class BookmarkStep extends React.Component<Props, StepState> {
         return (
             <Wrapper.Step>
                 <Wrapper.StepHeading>
-                    <Translation {...l10nMessages.TR_BOOKMARK_HEADING} />
+                    <Translation {...messages.TR_BOOKMARK_HEADING} />
                 </Wrapper.StepHeading>
                 <Wrapper.StepBody>
                     <Text>
                         <Translation
-                            {...l10nMessages.TR_BOOKMARK_SUBHEADING}
+                            {...messages.TR_BOOKMARK_SUBHEADING}
                             values={{
                                 TR_PHISHING_ATTACKS: (
                                     <Link href={PHISHING_URL}>
-                                        <Translation {...l10nMessages.TR_PHISHING_ATTACKS} />
+                                        <Translation {...messages.TR_PHISHING_ATTACKS} />
                                     </Link>
                                 ),
                             }}
@@ -95,7 +93,7 @@ class BookmarkStep extends React.Component<Props, StepState> {
                     {/* {!Platform.isMobile() && ( */}
                     <>
                         <Text>
-                            <Translation {...l10nMessages.TR_USE_THE_KEYBOARD_SHORTCUT} />
+                            <Translation {...messages.TR_USE_THE_KEYBOARD_SHORTCUT} />
                         </Text>
                         <Keys>
                             <Key
@@ -110,13 +108,13 @@ class BookmarkStep extends React.Component<Props, StepState> {
                         {/* {!Platform.isMobile() && ( */}
                         <>
                             <OnboardingButton.Alt onClick={() => this.setBookmarkFlagAndContinue()}>
-                                <Translation {...l10nCommonMessages.TR_SKIP} />
+                                <Translation {...messages.TR_SKIP} />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 isDisabled={this.nextDisabled()}
                                 onClick={() => this.setBookmarkFlagAndContinue()}
                             >
-                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...messages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </>
                         {/* )} */}
@@ -124,10 +122,10 @@ class BookmarkStep extends React.Component<Props, StepState> {
                         {/* {Platform.isMobile() && (
                             <React.Fragment>
                                 <Button variant="secondary" onClick={() => this.setBookmarkFlagAndContinue()}>
-                                    <Translation {...l10nCommonMessages.TR_SKIP} />
+                                    <Translation {...messages.TR_SKIP} />
                                 </Button>
                                 <Button onClick={() => this.setBookmarkFlagAndContinue()}>
-                                    <Translation {...l10nCommonMessages.TR_CONTINUE} />
+                                    <Translation {...messages.TR_CONTINUE} />
                                 </Button>
                             </React.Fragment>
                         )} */}

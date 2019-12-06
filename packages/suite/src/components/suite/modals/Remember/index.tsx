@@ -1,15 +1,11 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import { Translation } from '@suite-components/Translation';
+import { TrezorDevice } from '@suite-types';
+import messages from '@suite/support/messages';
+import { Loader } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
-
-import { Loader } from '@trezor/components';
-import { H2, P, Button } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
-
-import commonMessages from '@suite-views/index.messages';
-import modalsMessages from '../messages';
-import messages from './messages';
-import { TrezorDevice } from '@suite-types';
 
 const ButtonContent = styled.div`
     display: flex;
@@ -86,7 +82,7 @@ const RememberDevice: FunctionComponent<Props> = ({
         <Wrapper>
             <H2>
                 <Translation
-                    {...modalsMessages.TR_FORGET_LABEL}
+                    {...messages.TR_FORGET_LABEL}
                     values={{
                         deviceLabel: device.label,
                     }}
@@ -104,7 +100,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                 <ButtonWithLoader onClick={() => onForgetDevice(device)}>
                     <ButtonContent>
                         <Text>
-                            <Translation {...commonMessages.TR_FORGET_DEVICE} />
+                            <Translation {...messages.TR_FORGET_DEVICE} />
                         </Text>
                         <StyledLoader
                             isSmallText

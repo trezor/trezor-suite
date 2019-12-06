@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
@@ -71,11 +71,11 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
             err.name === 'NotReadableError' ||
             err.name === 'TrackStartError'
         ) {
-            setError(<Translation>{l10nMessages.TR_CAMERA_PERMISSION_DENIED}</Translation>);
+            setError(<Translation>{messages.TR_CAMERA_PERMISSION_DENIED}</Translation>);
         } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-            setError(<Translation>{l10nMessages.TR_CAMERA_NOT_RECOGNIZED}</Translation>);
+            setError(<Translation>{messages.TR_CAMERA_NOT_RECOGNIZED}</Translation>);
         } else {
-            setError(<Translation>{l10nMessages.TR_UNKOWN_ERROR_SEE_CONSOLE}</Translation>);
+            setError(<Translation>{messages.TR_UNKOWN_ERROR_SEE_CONSOLE}</Translation>);
         }
     };
 
@@ -104,17 +104,17 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
         <Wrapper>
             <Padding>
                 <H2>
-                    <Translation>{l10nMessages.TR_SCAN_QR_CODE}</Translation>
+                    <Translation>{messages.TR_SCAN_QR_CODE}</Translation>
                 </H2>
                 {!readerLoaded && !error && (
                     <CameraPlaceholder>
-                        <Translation>{l10nMessages.TR_WAITING_FOR_CAMERA}</Translation>
+                        <Translation>{messages.TR_WAITING_FOR_CAMERA}</Translation>
                     </CameraPlaceholder>
                 )}
                 {error && (
                     <Error>
                         <ErrorTitle>
-                            <Translation>{l10nMessages.TR_OOPS_SOMETHING_WENT_WRONG}</Translation>
+                            <Translation>{messages.TR_OOPS_SOMETHING_WENT_WRONG}</Translation>
                         </ErrorTitle>
                         <ErrorMessage>{error.toString()}</ErrorMessage>
                     </Error>

@@ -1,10 +1,11 @@
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { colors, Icon, Tooltip, variables } from '@trezor/components';
+import { formatAmount } from '@wallet-utils/accountUtils';
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import { Icon, Tooltip, colors, variables } from '@trezor/components';
-import l10nCommonMessages from '@suite/views/wallet/index.messages';
-import { formatAmount } from '@wallet-utils/accountUtils';
 import { AccountInfo } from 'trezor-connect';
+
 import TokenIcon from '../TokenIcon';
 
 const TokenWrapper = styled.div`
@@ -49,9 +50,7 @@ const TokenItem = ({ token, hideBalance }: Props) => {
                     <Tooltip
                         maxWidth={200}
                         placement="top"
-                        content={
-                            <Translation {...l10nCommonMessages.TR_THE_ACCOUNT_BALANCE_IS_HIDDEN} />
-                        }
+                        content={<Translation {...messages.TR_THE_ACCOUNT_BALANCE_IS_HIDDEN} />}
                     >
                         <TooltipIcon icon="EYE_CROSSED" size={14} color={colors.TEXT_SECONDARY} />
                     </Tooltip>

@@ -1,10 +1,9 @@
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { colors, Icon } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-
-import { Icon, colors } from '@trezor/components';
-import { Button, H2, P } from '@trezor/components-v2';
-import suiteMessages from '@suite-views/index.messages';
 
 const Wrapper = styled.div`
     max-width: 370px;
@@ -35,11 +34,11 @@ interface Props {
 const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
     <Wrapper>
         <H2>
-            <Translation>{suiteMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
+            <Translation>{messages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
         </H2>
         <Icon size={32} color={colors.WARNING_PRIMARY} icon="WARNING" />
         <StyledP size="small">
-            <Translation>{suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>
+            <Translation>{messages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>
         </StyledP>
         <Row>
             <BackupButton
@@ -49,10 +48,10 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                 }}
                 fullWidth
             >
-                <Translation>{suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
+                <Translation>{messages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
             </BackupButton>
             <Button variant="secondary" onClick={() => onReceiveConfirmation(true)}>
-                <Translation>{suiteMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
+                <Translation>{messages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
             </Button>
         </Row>
     </Wrapper>

@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { Input } from '@trezor/components';
-import sendMessages from '@wallet-views/account/index.messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
-import messages from './index.messages';
+import messages from '@suite/support/messages';
 import { Props as ContainerProps } from '../../../../Container';
 
 const Label = styled.div`
@@ -55,7 +54,7 @@ const CustomFee = (props: Props) => (
         state={getState(props.errors, props.customFee)}
         topLabel={
             <Label>
-                <Translation {...sendMessages.TR_FEE} />
+                <Translation {...messages.TR_FEE} />
             </Label>
         }
         bottomText={getErrorMessage(props.errors, props.maxFee, props.minFee)}

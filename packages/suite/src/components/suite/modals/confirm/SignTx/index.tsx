@@ -8,7 +8,7 @@ import { Translation } from '@suite-components/Translation';
 import { TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 const { LINE_HEIGHT, FONT_SIZE, FONT_WEIGHT } = variables;
 
@@ -109,18 +109,18 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
             <Header>
                 <Prompt model={majorVersion}>
                     <Translation
-                        {...l10nMessages.TR_CONFIRM_TRANSACTION_ON}
+                        {...messages.TR_CONFIRM_TRANSACTION_ON}
                         values={{ deviceLabel: device.label }}
                     />
                 </Prompt>
                 <P>
-                    <Translation {...l10nMessages.TR_DETAILS_ARE_SHOWN_ON} />
+                    <Translation {...messages.TR_DETAILS_ARE_SHOWN_ON} />
                 </P>
             </Header>
             <Content>
                 <Section>
                     <Heading>
-                        <Translation {...l10nMessages.TR_SEND_LABEL} />
+                        <Translation {...messages.TR_SEND_LABEL} />
                     </Heading>
                     {outputs.map(output => (
                         <OutputWrapper key={output.id}>
@@ -130,7 +130,7 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                             </Row>
                             <Row>
                                 <Label>
-                                    <Translation {...l10nMessages.TR_TO_LABEL} />
+                                    <Translation {...messages.TR_TO_LABEL} />
                                 </Label>
                                 <Address>{output.address.value}</Address>
                             </Row>
@@ -139,7 +139,7 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                 </Section>
                 <Section>
                     <Heading>
-                        <Translation {...l10nMessages.TR_FEE_LABEL} />
+                        <Translation {...messages.TR_FEE_LABEL} />
                     </Heading>
                     <Row>
                         <Value>
@@ -155,7 +155,7 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                 {account.networkType === 'bitcoin' && (
                     <Section>
                         <Heading>
-                            <Translation {...l10nMessages.TR_ESTIMATED_TIME} />
+                            <Translation {...messages.TR_ESTIMATED_TIME} />
                         </Heading>
                         <Row>
                             <Value>

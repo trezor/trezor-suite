@@ -6,7 +6,7 @@ import { Button, H2, P, Link } from '@trezor/components-v2';
 
 import { Translation } from '@suite-components/Translation';
 import { ExtendedMessageDescriptor } from '@suite/types/suite';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 interface Props {
     symbol?: string | null;
@@ -79,7 +79,7 @@ const FirmwareUnsupported = (props: Props) => (
             </Message>
             <Link href={getInfoUrl(props.symbol)}>
                 <Button>
-                    <Translation {...l10nMessages.TR_FIND_OUT_MORE_INFO} />
+                    <Translation {...messages.TR_FIND_OUT_MORE_INFO} />
                 </Button>
             </Link>
         </Row>

@@ -4,11 +4,10 @@ import { WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 import { Switch, Select, Tooltip, Icon, colors, variables } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
-import l10nCommonMessages from '@suite-views/index.messages';
+import messages from '@suite/support/messages';
 import WalletLayout from '@wallet-components/WalletLayout';
 import { FIAT } from '@suite-config';
 import Coins from './components/Coins';
-import l10nMessages from './index.messages';
 import { Props } from './Container';
 
 const { FONT_SIZE } = variables;
@@ -84,7 +83,7 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
         </CloseWrapper>
         <Section>
             <LabelTop>
-                <Translation {...l10nMessages.TR_LOCAL_CURRENCY} />
+                <Translation {...messages.TR_LOCAL_CURRENCY} />
             </LabelTop>
             <CurrencySelect
                 isSearchable
@@ -99,9 +98,9 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
         <Section>
             <Row>
                 <Label>
-                    <Translation {...l10nCommonMessages.TR_HIDE_BALANCE} />
+                    <Translation {...messages.TR_HIDE_BALANCE} />
                     <Tooltip
-                        content={<Translation {...l10nMessages.TR_HIDE_BALANCE_EXPLAINED} />}
+                        content={<Translation {...messages.TR_HIDE_BALANCE_EXPLAINED} />}
                         maxWidth={210}
                         placement="right"
                     >
@@ -128,11 +127,11 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
         </Section>
         <Actions>
             <Info>
-                <Translation {...l10nMessages.TR_THE_CHANGES_ARE_SAVED} />
+                <Translation {...messages.TR_THE_CHANGES_ARE_SAVED} />
             </Info>
             <Buttons>
                 <Button onClick={() => props.goto('wallet-index')}>
-                    <Translation {...l10nCommonMessages.TR_CLOSE} />
+                    <Translation {...messages.TR_CLOSE} />
                 </Button>
             </Buttons>
         </Actions>

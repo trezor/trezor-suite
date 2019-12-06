@@ -13,7 +13,7 @@ import { DeviceIcon } from '@suite-components';
 import { SETTINGS } from '@suite-config';
 import { AppState } from '@suite-types';
 import { Network } from '@wallet-types';
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 import QrCode from '../QrCode';
 import AddressList from '../AddressList';
 import AddressItem from '../AddressItem';
@@ -157,7 +157,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
         return isAddressVerifying(descriptor) ? (
             <>
                 <StyledDeviceIcon size={16} device={props.device} color={colors.WHITE} />
-                <Translation {...l10nMessages.TR_CHECK_ADDRESS_ON_TREZOR} />
+                <Translation {...messages.TR_CHECK_ADDRESS_ON_TREZOR} />
             </>
         ) : null;
     };
@@ -183,7 +183,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                     secondaryText={addr => (
                         <>
                             <Translation
-                                {...l10nMessages.TR_TOTAL_RECEIVED}
+                                {...messages.TR_TOTAL_RECEIVED}
                                 values={{
                                     amount: (
                                         <TextGreen>
@@ -214,7 +214,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                         <TitleWrapper>
                             {!isCollapsed && (
                                 <P weight="bold">
-                                    <Translation {...l10nMessages.TR_PREVIOUS_ADDRESSES} />
+                                    <Translation {...messages.TR_PREVIOUS_ADDRESSES} />
                                 </P>
                             )}
 
@@ -231,7 +231,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                             color={colors.GREEN_PRIMARY}
                                             icon="ARROW_DOWN"
                                         />
-                                        <Translation {...l10nMessages.TR_HIDE_PREVIOUS_ADDRESSES} />
+                                        <Translation {...messages.TR_HIDE_PREVIOUS_ADDRESSES} />
                                     </ControlsLink>
                                 )}
                                 {(moreItems || isCollapsed) && (
@@ -246,7 +246,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                             color={colors.GREEN_PRIMARY}
                                             icon="ARROW_UP"
                                         />
-                                        <Translation {...l10nMessages.TR_SHOW_PREVIOUS_ADDRESSES} />
+                                        <Translation {...messages.TR_SHOW_PREVIOUS_ADDRESSES} />
                                     </ControlsLink>
                                 )}
                             </ControlsWrapper>
@@ -257,7 +257,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
 
             <TitleWrapper>
                 <P weight="bold">
-                    <Translation {...l10nMessages.TR_FRESH_ADDRESS} />
+                    <Translation {...messages.TR_FRESH_ADDRESS} />
                 </P>
             </TitleWrapper>
 
@@ -290,7 +290,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                     // isDisabled={device.connected && !discovery.completed}
                                     size="small"
                                 >
-                                    <Translation {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
+                                    <Translation {...messages.TR_SHOW_FULL_ADDRESS} />
                                 </ShowAddressButton>
                             )}
                         {(isAddressVerified(firstFreshAddress.path) ||
@@ -323,7 +323,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                             icon="PLUS"
                             isDisabled={freshAddrCount >= SETTINGS.FRESH_ADDRESS_LIMIT + 1}
                         >
-                            <Translation {...l10nMessages.TR_ADD_FRESH_ADDRESS} />
+                            <Translation {...messages.TR_ADD_FRESH_ADDRESS} />
                         </AddFreshAddress>
                     </ButtonsWrapper>
 
@@ -347,7 +347,7 @@ const ReceiveForm = ({ className, ...props }: Props) => {
                                             onClick={() => props.showAddress(addr.path)}
                                             icon="TREZOR"
                                         >
-                                            <Translation {...l10nMessages.TR_SHOW_FULL_ADDRESS} />
+                                            <Translation {...messages.TR_SHOW_FULL_ADDRESS} />
                                         </ShowAddressButton>
                                     )}
                                 {(isAddressVerified(addr.path) || isAddressUnverified(addr.path)) &&

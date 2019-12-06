@@ -1,14 +1,10 @@
+import { Translation } from '@suite-components/Translation';
+import { TrezorDevice } from '@suite-types';
+import messages from '@suite/support/messages';
+import { Button, H2, P } from '@trezor/components-v2';
 import React, { FunctionComponent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
-
-import { Button, H2, P } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
-
-import l10nCommonMessages from '@suite-views/index.messages';
-import l10nDeviceMessages from '../messages';
-import l10nMessages from './messages';
-import { TrezorDevice } from '@suite-types';
 
 interface Props {
     device: TrezorDevice;
@@ -44,21 +40,21 @@ const ForgetDevice: FunctionComponent<Props> = ({ device, onForgetDevice, onCanc
         <Wrapper>
             <H2>
                 <Translation
-                    {...l10nDeviceMessages.TR_FORGET_LABEL}
+                    {...messages.TR_FORGET_LABEL}
                     values={{
                         deviceLabel: device.instanceLabel,
                     }}
                 />
             </H2>
             <StyledP size="small">
-                <Translation {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
+                <Translation {...messages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
             </StyledP>
             <Row>
                 <Button onClick={() => onForgetDevice(device)}>
-                    <Translation {...l10nCommonMessages.TR_FORGET_DEVICE} />
+                    <Translation {...messages.TR_FORGET_DEVICE} />
                 </Button>
                 <Button variant="secondary" onClick={onCancel}>
-                    <Translation {...l10nMessages.TR_DONT_FORGET} />
+                    <Translation {...messages.TR_DONT_FORGET} />
                 </Button>
             </Row>
         </Wrapper>

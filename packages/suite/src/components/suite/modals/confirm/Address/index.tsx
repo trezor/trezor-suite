@@ -4,9 +4,7 @@ import { Translation } from '@suite-components/Translation';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
 import { Account, Network } from '@wallet-types';
-import l10nSuiteMessages from '@suite-views/index.messages';
-
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 const { FONT_SIZE } = variables;
 
@@ -42,10 +40,10 @@ const ConfirmAddress: FunctionComponent<Props> = ({ device, account, network }) 
         <Wrapper>
             <Header>
                 <Prompt model={majorVersion}>
-                    <Translation {...l10nMessages.TR_CONFIRM_ADDRESS_ON_TREZOR} />
+                    <Translation {...messages.TR_CONFIRM_ADDRESS_ON_TREZOR} />
                 </Prompt>
                 <P>
-                    <Translation {...l10nMessages.TR_PLEASE_COMPARE_YOUR_ADDRESS} />
+                    <Translation {...messages.TR_PLEASE_COMPARE_YOUR_ADDRESS} />
                 </P>
             </Header>
             <Content>
@@ -53,7 +51,7 @@ const ConfirmAddress: FunctionComponent<Props> = ({ device, account, network }) 
                 <Label>
                     {network.symbol}
                     <Translation
-                        {...l10nSuiteMessages.TR_ACCOUNT_HASH}
+                        {...messages.TR_ACCOUNT_HASH}
                         values={{ number: account.index + 1 }}
                     />
                 </Label>
