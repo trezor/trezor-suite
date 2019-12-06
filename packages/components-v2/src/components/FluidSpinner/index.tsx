@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { SPIN } from '../../config/animations';
+import { animations } from '../../config';
 
 interface Props {
     size: number;
@@ -20,7 +20,7 @@ const Wrapper = styled.div<Props>`
         height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
         border: ${props => (props.strokeWidth ? `${props.strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
         border-radius: 50%;
-        animation: ${SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        animation: ${animations.SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         border-color: #fff transparent transparent transparent;
         border-top-color: ${props => (props.color ? props.color : 'inherit')};
     }
