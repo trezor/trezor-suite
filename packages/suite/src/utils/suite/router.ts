@@ -10,9 +10,9 @@ export const getPrefixedURL = (url: string) => {
 };
 
 export const stripPrefixedURL = (url: string) => {
-    const { assetPrefix } = process.env;
-    if (typeof assetPrefix === 'string' && url.indexOf(assetPrefix) === 0) {
-        url = url.slice(assetPrefix.length);
+    const prefix = process.env.assetPrefix;
+    if (typeof prefix === 'string' && url.indexOf(prefix) === 0) {
+        url = url.slice(prefix.length);
     }
     return url;
 };
