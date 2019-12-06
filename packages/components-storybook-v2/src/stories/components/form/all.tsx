@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Checkbox, Switch } from '@trezor/components-v2';
+import { Input, Textarea, Checkbox, Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -42,7 +42,7 @@ storiesOf('Form', module).add(
                         <Switch
                             onChange={() => {}}
                             checked={false}
-                            data-test="switch-on-small"
+                            data-test="switch-off-small"
                             isSmall
                         />
                     </ComponentWrapper>
@@ -65,6 +65,171 @@ storiesOf('Form', module).add(
                         <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
                             Label
                         </Checkbox>
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Textarea short</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            wrapperProps={{ 'data-test': 'textarea-short' }}
+                            display="short"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="success"
+                            wrapperProps={{ 'data-test': 'textarea-short-success' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="warning"
+                            wrapperProps={{ 'data-test': 'textarea-short-warning' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="error"
+                            wrapperProps={{ 'data-test': 'textarea-short-error' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            wrapperProps={{ 'data-test': 'textarea-short-label' }}
+                            display="short"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            disabled
+                            wrapperProps={{ 'data-test': 'textarea-short-disabled' }}
+                            display="short"
+                        />
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Textarea default</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            wrapperProps={{ 'data-test': 'textarea-default' }}
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="success"
+                            wrapperProps={{ 'data-test': 'textarea-success' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="warning"
+                            wrapperProps={{ 'data-test': 'textarea-warning' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="error"
+                            wrapperProps={{ 'data-test': 'textarea-error' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            wrapperProps={{ 'data-test': 'textarea-label' }}
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            disabled
+                            wrapperProps={{ 'data-test': 'textarea-disabled' }}
+                        />
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Textarea block</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            wrapperProps={{ 'data-test': 'textarea-block-default' }}
+                            display="block"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="success"
+                            wrapperProps={{ 'data-test': 'textarea-block-success' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="warning"
+                            wrapperProps={{ 'data-test': 'textarea-block-warning' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            state="error"
+                            wrapperProps={{ 'data-test': 'textarea-block-error' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            wrapperProps={{ 'data-test': 'textarea-block-label' }}
+                            display="block"
+                            topLabel="Top label"
+                            bottomText="bottom text"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Textarea
+                            value="test value"
+                            disabled
+                            wrapperProps={{ 'data-test': 'textarea-block-disabled' }}
+                            display="block"
+                        />
                     </ComponentWrapper>
                 </Col>
 
