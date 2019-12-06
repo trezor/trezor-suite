@@ -31,7 +31,7 @@ describe('fiatConverter utils: toFiatCurrency', () => {
 
     it('to existing fiat missing network rates', () => {
         // @ts-ignore
-        expect(utils.toFiatCurrency('1', 'czk', null)).toBe('');
+        expect(utils.toFiatCurrency('1', 'czk', null)).toBe(null);
     });
 });
 
@@ -88,6 +88,6 @@ describe('fiatConverter utils: fromFiatCurrency', () => {
 
     it('missing fiat rates', () => {
         // @ts-ignore
-        expect(utils.fromFiatCurrency('1', 'usd', undefined, decimals)).toBe('');
+        expect(utils.fromFiatCurrency('1', 'usd', undefined, decimals)).toBe(null);
     });
 });
