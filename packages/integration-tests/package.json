@@ -8,5 +8,7 @@
     "dependencies": {
         "cypress": "^3.7.0"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "cypress-image-snapshot": "^3.1.1"
+    }
 }
