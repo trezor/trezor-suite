@@ -68,8 +68,9 @@ storiesOf('Form', module).add(
                     </ComponentWrapper>
                 </Col>
 
-                <Heading>Textarea short</Heading>
+                <Heading>Textarea</Heading>
                 <Col>
+                    <SubHeading>Short</SubHeading>
                     <ComponentWrapper>
                         <Textarea
                             value="test value"
@@ -124,9 +125,8 @@ storiesOf('Form', module).add(
                         />
                     </ComponentWrapper>
                 </Col>
-
-                <Heading>Textarea default</Heading>
                 <Col>
+                    <SubHeading>Default</SubHeading>
                     <ComponentWrapper>
                         <Textarea
                             value="test value"
@@ -175,9 +175,8 @@ storiesOf('Form', module).add(
                         />
                     </ComponentWrapper>
                 </Col>
-
-                <Heading>Textarea block</Heading>
                 <Col>
+                    <SubHeading>Block</SubHeading>
                     <ComponentWrapper>
                         <Textarea
                             value="test value"
