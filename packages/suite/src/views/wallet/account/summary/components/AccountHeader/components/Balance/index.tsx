@@ -124,12 +124,8 @@ const AccountBalance = (props: Props) => {
 
     const { network, localCurrency } = props;
     const fiatRates = props.fiat.find(f => f.symbol === network.symbol);
-    let fiatRateValue = NaN;
-    let fiat = '';
-    if (fiatRates) {
-        fiatRateValue = fiatRates.rates[localCurrency];
-        fiat = toFiatCurrency(props.balance, localCurrency, fiatRates);
-    }
+    const fiatRateValue = fiatRates ? fiatRates.rates[localCurrency] : null;
+    const fiat = fiatRates ? toFiatCurrency(props.balance, localCurrency, fiatRates) : null;
 
     const NoRatesTooltip = (
         <TooltipContainer>
@@ -163,7 +159,7 @@ const AccountBalance = (props: Props) => {
                         <TooltipWrapper>
                             <FiatValue>
                                 {fiatRates ? (
-                                    <FormattedNumber currency={localCurrency} value={fiat} />
+                                    <FormattedNumber currency={localCurrency} value={fiat!} />
                                 ) : (
                                     'N/A'
                                 )}
@@ -193,7 +189,7 @@ const AccountBalance = (props: Props) => {
                                 {fiatRates ? (
                                     <FormattedNumber
                                         currency={localCurrency}
-                                        value={fiatRateValue}
+                                        value={fiatRateValue!}
                                     />
                                 ) : (
                                     'N/A'
