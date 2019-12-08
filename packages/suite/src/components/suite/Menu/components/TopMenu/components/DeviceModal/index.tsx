@@ -36,7 +36,9 @@ const DeviceMenu = (props: Props) => {
                 <In>
                     <Title>Switch Device</Title>
                     https://app.zeplin.io/project/5dadb7820bdfd3832e04afca/screen/5dde6fd8cbe83f201c1f35ba
-                    <Button onClick={() => props.closeModal()}>Close</Button>
+                    <Button onClick={() => props.closeModal()} fullWidth>
+                        Close
+                    </Button>
                 </In>
             </Wrapper>
         </Modal>
