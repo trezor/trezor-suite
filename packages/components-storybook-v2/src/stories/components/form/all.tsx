@@ -16,6 +16,10 @@ const ComponentWrapper = styled.div`
     width: 100%;
 `;
 
+const SwitchWrapper = styled.div`
+    display: inline-flex;
+`;
+
 const Heading = styled.h2``;
 
 const SubHeading = styled.h4`
@@ -31,24 +35,27 @@ storiesOf('Form', module).add(
                 <Col>
                     <SubHeading>Off</SubHeading>
                     <ComponentWrapper>
-                        <Switch onChange={() => {}} checked={false} data-test="switch-off" />
+                        <SwitchWrapper data-test="switch-off">
+                            <Switch onChange={() => {}} checked={false} />
+                        </SwitchWrapper>
                     </ComponentWrapper>
                     <SubHeading>On</SubHeading>
                     <ComponentWrapper>
-                        <Switch onChange={() => {}} checked data-test="switch-on" />
+                        <SwitchWrapper data-test="switch-on">
+                            <Switch onChange={() => {}} checked />
+                        </SwitchWrapper>
                     </ComponentWrapper>
                     <SubHeading>Off small</SubHeading>
                     <ComponentWrapper>
-                        <Switch
-                            onChange={() => {}}
-                            checked={false}
-                            data-test="switch-off-small"
-                            isSmall
-                        />
+                        <SwitchWrapper data-test="switch-off-small">
+                            <Switch onChange={() => {}} checked={false} isSmall />
+                        </SwitchWrapper>
                     </ComponentWrapper>
                     <SubHeading>On</SubHeading>
                     <ComponentWrapper>
-                        <Switch onChange={() => {}} checked data-test="switch-on-small" isSmall />
+                        <SwitchWrapper data-test="switch-on-small">
+                            <Switch onChange={() => {}} checked isSmall />
+                        </SwitchWrapper>
                     </ComponentWrapper>
                 </Col>
 
