@@ -46,10 +46,11 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                     onReceiveConfirmation(false);
                     onCreateBackup();
                 }}
+                fullWidth
             >
                 <Translation>{messages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
             </BackupButton>
-            <Button variant="secondary" inlineWidth onClick={() => onReceiveConfirmation(true)}>
+            <Button variant="secondary" onClick={() => onReceiveConfirmation(true)}>
                 <Translation>{messages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
             </Button>
         </Row>

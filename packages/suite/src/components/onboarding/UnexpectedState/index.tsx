@@ -42,7 +42,7 @@ const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequesti
         <>
             <H2>
                 {uiInteraction.counter === 0 && (
-                    <Translation> {messages.TR_ENTER_PIN_HEADING} ></Translation>
+                    <Translation>{messages.TR_ENTER_PIN_HEADING} ></Translation>
                 )}
                 {uiInteraction.counter > 1 && 'Incorrect PIN entered'}
             </H2>

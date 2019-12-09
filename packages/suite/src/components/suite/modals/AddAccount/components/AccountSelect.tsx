@@ -45,10 +45,7 @@ const EnableNetwork = (props: {
     onEnableNetwork: Props['onEnableNetwork'];
 }) => (
     <>
-        <StyledButton
-            onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}
-            inlineWidth
-        >
+        <StyledButton onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
             <Translation
                 {...messages.TR_ENABLE_NETWORK_BUTTON}
                 values={{ networkName: props.selectedNetwork.name }}

@@ -9,6 +9,21 @@ import { Icon } from './components/Icon';
 import { H1, H2 } from './components/Heading';
 import { P } from './components/Paragraph';
 import { Link } from './components/Link';
+import { Notification } from './components/Notification';
 import * as types from './support/types';
 
-export { colors, variables, Button, Input, Textarea, Select, Icon, H1, H2, P, Link, types };
+export {
+    colors,
+    variables,
+    Button,
+    Input,
+    Textarea,
+    Select,
+    Icon,
+    H1,
+    H2,
+    P,
+    Link,
+    Notification,
+    types,
+};

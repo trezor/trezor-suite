@@ -23,7 +23,7 @@ const Reconnect = ({ model }: { model: number }) => (
                 <Translation>{messages.TR_RECONNECT_TROUBLESHOOT_CABEL}</Translation>
             </P>
             <P>
-                <Translation> {messages.TR_RECONNECT_TROUBLESHOOT_BRIDGE}</Translation>
+                <Translation>{messages.TR_RECONNECT_TROUBLESHOOT_BRIDGE}</Translation>
             </P>
         </Wrapper.StepBody>
     </Wrapper.Step>

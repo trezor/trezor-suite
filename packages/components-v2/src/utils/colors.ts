@@ -1,7 +1,20 @@
+import { FeedbackState, InputState } from '../support/types';
 import colors from '../config/colors';
-import { InputState } from '../support/types';
 
-export const getStateColor = (state: InputState | undefined) => {
+const getFeedbackColor = (state: FeedbackState) => {
+    switch (state) {
+        case 'error':
+            return colors.RED;
+        case 'info':
+            return colors.BLUE;
+        case 'warning':
+            return colors.YELLOW;
+        default:
+            return colors.GREEN;
+    }
+};
+
+const getStateColor = (state: InputState | undefined) => {
     switch (state) {
         case 'success':
             return colors.GREENER;
@@ -13,3 +26,5 @@ export const getStateColor = (state: InputState | undefined) => {
             return colors.BLACK50;
     }
 };
+
+export { getStateColor, getFeedbackColor };
