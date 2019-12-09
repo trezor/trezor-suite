@@ -6,6 +6,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { observeChanges } from '@suite-utils/reducerUtils';
 import { AppState, Action, Dispatch } from '@suite-types';
+import { findRoute } from '@suite-utils/router';
 
 const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -17,7 +18,11 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         prevState.router.route &&
         prevState.router.route.name === 'wallet-account-send'
     ) {
-        api.dispatch(sendFormActions.dispose());
+        const nextRoute = findRoute(action.url);
+        // don't call dispose if next route is the same
+        if (nextRoute && nextRoute.name !== 'wallet-account-send') {
+            api.dispatch(sendFormActions.dispose());
+        }
     }
 
     if (
