@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-// @ts-ignore TODO: tsc can't find types even if they are installed
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import meow from 'meow';
 import { mergeMessages, buildCSV, buildLocales } from './index';
 import Crowdin from './services/crowdin';
 
-dotenv.config();
+const result = dotenv.config();
+
+if (result.error) {
+    console.warn(result.error);
+}
 
 const cli = meow(
     `
@@ -83,10 +86,9 @@ const apiKey = process.env[config.project.apiKeyEnv];
 
 if (!apiKey) {
     console.error(`Could not read CrowdIn API key from env variable ${config.project.apiKeyEnv}`);
-    cli.showHelp();
 }
 
-const crowdin = new Crowdin(projectId, apiKey!);
+const crowdin = new Crowdin(projectId, apiKey || '');
 
 const mergedJSONFile = path.join(outputDir, `${projectFilename}.json`);
 const mergedCSVFile = path.join(outputDir, `${projectFilename}.csv`);

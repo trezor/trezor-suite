@@ -13,6 +13,7 @@ storiesOf('Buttons', module).add(
             {
                 'Default (primary)': null,
                 Secondary: 'secondary',
+                Tertiary: 'tertiary',
                 Danger: 'danger',
             },
             null
@@ -34,7 +35,7 @@ storiesOf('Buttons', module).add(
             iconOptions[icon] = icon;
         });
         const icon = select('Icon', iconOptions, null);
-        const inlineWidth = boolean('Inline width', true);
+        const fullWidth = boolean('Full width', false);
         const isDisabled = boolean('Disabled', false);
         const isLoading = boolean('Loading', false);
 
@@ -45,7 +46,7 @@ storiesOf('Buttons', module).add(
                 {...(variant ? { variant } : {})}
                 {...(size ? { size } : {})}
                 {...(icon ? { icon } : {})}
-                {...(!inlineWidth ? { inlineWidth: false } : {})}
+                {...(fullWidth ? { fullWidth } : {})}
             >
                 {value}
             </Button>

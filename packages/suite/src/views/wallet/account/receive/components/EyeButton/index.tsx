@@ -29,7 +29,7 @@ const EyeButton = (props: Props) => {
         color = props.isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY;
     }
     return (
-        <Wrapper variant="tertiary" inlineWidth {...props}>
+        <Wrapper variant="tertiary" {...props}>
             <Tooltip
                 placement="top"
                 content={
