@@ -43,7 +43,6 @@ interface Props {
     additionalDeviceMenuItems?: React.ReactNode;
     disableNotifications?: boolean;
     disableModals?: boolean;
-    disableSidebar?: boolean;
 }
 
 const SuiteLayout = (props: Props & WrappedComponentProps) => (
