@@ -6,8 +6,7 @@ import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { Translation } from '@suite-components/Translation';
-import commonMessages from '@suite/views/wallet/index.messages';
-import messages from './index.messages';
+import messages from '@suite/support/messages';
 import { DispatchProps } from '../../Container';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -105,15 +104,11 @@ const getSendText = (
 
 const SendAndClear = (props: Props) => (
     <Wrapper>
-        <Clear variant="secondary" onClick={() => props.sendFormActions.clear()} inlineWidth>
-            <Translation>{commonMessages.TR_CLEAR}</Translation>
+        <Clear variant="secondary" onClick={() => props.sendFormActions.clear()}>
+            <Translation>{messages.TR_CLEAR}</Translation>
         </Clear>
         {props.networkType === 'bitcoin' && (
-            <Button
-                variant="secondary"
-                onClick={() => props.sendFormActionsBitcoin.addRecipient()}
-                inlineWidth
-            >
+            <Button variant="secondary" onClick={() => props.sendFormActionsBitcoin.addRecipient()}>
                 <Translation>{messages.TR_ADD_RECIPIENT}</Translation>
             </Button>
         )}
@@ -137,7 +132,6 @@ const SendAndClear = (props: Props) => (
                     // no default
                 }
             }}
-            inlineWidth
         >
             {getSendText(props.send, props.networkType, props.symbol)}
         </Send>

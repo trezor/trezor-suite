@@ -9,22 +9,22 @@ import FluidSpinner from '../../FluidSpinner';
 const getPrimaryPadding = (size: ButtonSize) => {
     switch (size) {
         case 'small':
-            return '5px';
+            return '5px 12px 3px';
         case 'large':
-            return '11px';
+            return '11px 12px 9px';
         default:
-            return '9px';
+            return '9px 12px 7px';
     }
 };
 
 const getSecondaryPadding = (size: ButtonSize) => {
     switch (size) {
         case 'small':
-            return '4px';
+            return '4px 12px 2px';
         case 'large':
-            return '10px';
+            return '10px 12px 8px';
         default:
-            return '8px';
+            return '8px 12px 6px';
     }
 };
 
@@ -46,7 +46,7 @@ const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
 
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
-    width: ${props => (props.inlineWidth ? 'auto' : '100%')};
+    width: ${props => (props.fullWidth ? '100%' : 'auto')};
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -158,13 +158,15 @@ const IconWrapper = styled.div`
     transform: translateY(-1px);
 `;
 
-const Label = styled.div``;
+const Label = styled.div`
+    line-height: 18px;
+`;
 
 interface WrapperProps {
     variant: ButtonVariant;
     size: ButtonSize;
     isDisabled: boolean;
-    inlineWidth: boolean;
+    fullWidth: boolean;
 }
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -173,7 +175,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: IconType;
     isDisabled?: boolean;
     isLoading?: boolean;
-    inlineWidth?: boolean;
+    fullWidth?: boolean;
 }
 
 const Button = ({
@@ -181,7 +183,7 @@ const Button = ({
     variant = 'primary',
     size = 'medium',
     icon,
-    inlineWidth = false,
+    fullWidth = false,
     isDisabled = false,
     isLoading = false,
     ...rest
@@ -191,7 +193,7 @@ const Button = ({
             variant={variant}
             size={size}
             isDisabled={isDisabled}
-            inlineWidth={inlineWidth}
+            fullWidth={fullWidth}
             {...rest}
         >
             {!isLoading && icon && (

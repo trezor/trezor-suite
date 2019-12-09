@@ -1,16 +1,14 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Link } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
-
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
-import l10nCommonMessages from '@suite-support/Messages';
-import { SUPPORT_URL } from '@onboarding-constants/urls';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import * as STEP from '@onboarding-constants/steps';
-import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
-import l10nMessages from './TroubleshootInitialized.messages';
-import { Dispatch, AppState, AcquiredDevice } from '@suite-types';
+import { SUPPORT_URL } from '@onboarding-constants/urls';
+import { Translation } from '@suite-components/Translation';
+import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
+import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
+import messages from '@suite/support/messages';
+import { Link } from '@trezor/components-v2';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 const mapStateToProps = (state: AppState) => ({
     activeSubStep: state.onboarding.activeSubStep,
@@ -35,11 +33,11 @@ const TroubleshootInitialized = (props: Props) => {
                 <>
                     <Text>
                         <Translation
-                            {...l10nMessages.TR_DEVICE_LABEL}
+                            {...messages.TR_DEVICE_LABEL}
                             values={{ label: device.label }}
                         />{' '}
                         <Translation
-                            {...l10nMessages.TR_DEVICE_FIRMWARE_VERSION}
+                            {...messages.TR_DEVICE_FIRMWARE_VERSION}
                             values={{
                                 firmware: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
                             }}
@@ -49,14 +47,12 @@ const TroubleshootInitialized = (props: Props) => {
                         <OnboardingButton.Alt
                             onClick={() => onboardingActions.goToSubStep('user-worked-before')}
                         >
-                            <Translation {...l10nMessages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE} />
+                            <Translation {...messages.TR_USER_HAS_WORKED_WITH_THIS_DEVICE} />
                         </OnboardingButton.Alt>
                         <OnboardingButton.Alt
                             onClick={() => onboardingActions.goToSubStep('is-brand-new')}
                         >
-                            <Translation
-                                {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE}
-                            />
+                            <Translation {...messages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE} />
                         </OnboardingButton.Alt>
                     </Wrapper.Controls>
                 </>
@@ -65,17 +61,17 @@ const TroubleshootInitialized = (props: Props) => {
             {activeSubStep === 'user-worked-before' && (
                 <>
                     <Text>
-                        <Translation {...l10nMessages.TR_INSTRUCTION_TO_SKIP} />
+                        <Translation {...messages.TR_INSTRUCTION_TO_SKIP} />
                     </Text>
 
                     <Wrapper.Controls>
                         <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
-                            <Translation {...l10nCommonMessages.TR_BACK} />
+                            <Translation {...messages.TR_BACK} />
                         </OnboardingButton.Alt>
                         <OnboardingButton.Cta
                             onClick={() => onboardingActions.goToNextStep(STEP.ID_FINAL_STEP)}
                         >
-                            <Translation {...l10nCommonMessages.TR_SKIP_ALL} />
+                            <Translation {...messages.TR_SKIP_ALL} />
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
                 </>
@@ -85,16 +81,16 @@ const TroubleshootInitialized = (props: Props) => {
                 <>
                     <Text>
                         <Translation
-                            {...l10nMessages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS}
+                            {...messages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS}
                         />
                     </Text>
                     <Wrapper.Controls>
                         <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>
-                            <Translation {...l10nCommonMessages.TR_BACK} />
+                            <Translation {...messages.TR_BACK} />
                         </OnboardingButton.Alt>
                         <Link href={SUPPORT_URL}>
                             <OnboardingButton.Cta style={{ width: '100%' }}>
-                                <Translation {...l10nCommonMessages.TR_CONTACT_SUPPORT} />
+                                <Translation {...messages.TR_CONTACT_SUPPORT} />
                             </OnboardingButton.Cta>
                         </Link>
                     </Wrapper.Controls>

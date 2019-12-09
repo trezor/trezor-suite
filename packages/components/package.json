@@ -32,7 +32,7 @@
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.5.2",
         "typescript-styled-plugin": "^0.14.0",
-        "wait-on": "^3.2.0"
+        "wait-on": "^3.3.0"
     },
     "dependencies": {
         "@tippy.js/react": "^2.1.1",

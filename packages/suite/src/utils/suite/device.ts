@@ -1,6 +1,6 @@
 import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
 import { WrappedComponentProps } from 'react-intl';
-import messages from '@suite-components/SuiteLayout/index.messages';
+import messages from '@suite/support/messages';
 import { TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
 
 type Transport = NonNullable<AppState['suite']['transport']>;

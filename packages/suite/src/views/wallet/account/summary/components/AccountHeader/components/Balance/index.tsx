@@ -7,7 +7,7 @@ import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FormattedNumber } from '@suite/components/suite';
 import { Network, Fiat } from '@wallet-types';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
@@ -132,7 +132,7 @@ const AccountBalance = (props: Props) => {
             <Tooltip
                 maxWidth={285}
                 placement="top"
-                content={<Translation {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
+                content={<Translation {...messages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
             >
                 <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
             </Tooltip>
@@ -154,7 +154,7 @@ const AccountBalance = (props: Props) => {
                 <>
                     <BalanceWrapper>
                         <Label>
-                            <Translation {...l10nMessages.TR_BALANCE} />
+                            <Translation {...messages.TR_BALANCE} />
                         </Label>
                         <TooltipWrapper>
                             <FiatValue>
@@ -173,7 +173,7 @@ const AccountBalance = (props: Props) => {
                     {props.xrpReserve && props.xrpReserve !== '0' && (
                         <BalanceWrapper>
                             <Label>
-                                <Translation {...l10nMessages.TR_RESERVE} />
+                                <Translation {...messages.TR_RESERVE} />
                             </Label>
                             <FiatValueRate>
                                 {formatNetworkAmount(props.xrpReserve, 'xrp')} {network.symbol}
@@ -182,7 +182,7 @@ const AccountBalance = (props: Props) => {
                     )}
                     <BalanceRateWrapper>
                         <Label>
-                            <Translation {...l10nMessages.TR_RATE} />
+                            <Translation {...messages.TR_RATE} />
                         </Label>
                         <TooltipWrapper>
                             <FiatValueRate>

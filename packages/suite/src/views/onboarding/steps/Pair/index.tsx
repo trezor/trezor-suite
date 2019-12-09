@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components/Translation';
-import TrezorConnect from 'trezor-connect';
-import l10nCommonMessages from '@suite-support/Messages';
 import WebusbButton from '@suite-components/WebusbButton';
-import { Wrapper, Text, OnboardingButton } from '@onboarding-components';
+import messages from '@suite/support/messages';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import TrezorConnect from 'trezor-connect';
+
 import Bridge from './components/Bridge/Container';
 import Connect from './components/Connect';
-import TroubleshootSearchingTooLong from './components/Connect/TroubleshootTooLong';
 import TroubleshootBootloader from './components/Connect/TroubleshootBootloader';
 import TroubleshootInitialized from './components/Connect/TroubleshootInitialized';
-
-import l10nMessages from './index.messages';
+import TroubleshootSearchingTooLong from './components/Connect/TroubleshootTooLong';
 import { Props } from './Container';
 
 const WebusbButtonWrapper = styled.div`
@@ -91,7 +90,7 @@ const PairDeviceStep = (props: Props) => {
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
-                                            <Translation {...l10nMessages.TR_FOUND_OK_DEVICE} />
+                                            <Translation {...messages.TR_FOUND_OK_DEVICE} />
                                         </Text>
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
@@ -100,7 +99,7 @@ const PairDeviceStep = (props: Props) => {
                                                     props.onboardingActions.goToNextStep()
                                                 }
                                             >
-                                                <Translation {...l10nCommonMessages.TR_CONTINUE} />
+                                                <Translation {...messages.TR_CONTINUE} />
                                             </OnboardingButton.Cta>
                                         </Wrapper.Controls>
                                     </>

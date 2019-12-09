@@ -5,10 +5,7 @@ import { colors } from '@trezor/components';
 import { Button, P, H2, Link } from '@trezor/components-v2';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
-
-import globalMessages from '@suite-support/Messages';
-import suiteMessages from '@suite-views/index.messages';
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     max-width: 370px;
@@ -80,24 +77,24 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     if (!device.connected) {
         deviceStatus = (
             <Translation
-                {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
+                {...messages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
                 values={{ deviceLabel: device.label }}
             />
         );
-        claim = <Translation {...l10nMessages.TR_PLEASE_CONNECT_YOUR_DEVICE} />;
+        claim = <Translation {...messages.TR_PLEASE_CONNECT_YOUR_DEVICE} />;
     } else {
         // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
         const enable = !!(device.features && device.features.passphrase_protection);
         deviceStatus = (
             <Translation
-                {...suiteMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
+                {...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
                 values={{ deviceLabel: device.label }}
             />
         );
         claim = enable ? (
-            <Translation {...l10nMessages.TR_PLEASE_ENABLE_PASSPHRASE} />
+            <Translation {...messages.TR_PLEASE_ENABLE_PASSPHRASE} />
         ) : (
-            <Translation {...l10nMessages.TR_PLEASE_DISABLE_PASSPHRASE} />
+            <Translation {...messages.TR_PLEASE_DISABLE_PASSPHRASE} />
         );
     }
 
@@ -109,18 +106,18 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                 <H2>{deviceStatus}</H2>
                 <StyledP size="small">
                     <Translation
-                        {...l10nMessages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
+                        {...messages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
                         values={{ claim }}
                     />
                 </StyledP>
             </Content>
             <Content>
                 <Row>
-                    <Button onClick={() => verifyAddress()} inlineWidth>
-                        <Translation {...globalMessages.TR_TRY_AGAIN} />
+                    <Button onClick={() => verifyAddress()}>
+                        <Translation {...messages.TR_TRY_AGAIN} />
                     </Button>
-                    <Button variant="danger" onClick={() => unverifiedAddress()} inlineWidth>
-                        <Translation {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
+                    <Button variant="danger" onClick={() => unverifiedAddress()}>
+                        <Translation {...messages.TR_SHOW_UNVERIFIED_ADDRESS} />
                     </Button>
                 </Row>
             </Content>
@@ -130,19 +127,19 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                     <Content>
                         <H2>
                             <Translation
-                                {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_BACKED_UP}
+                                {...messages.TR_DEVICE_LABEL_IS_NOT_BACKED_UP}
                                 values={{ deviceLabel: device.label }}
                             />
                         </H2>
                         <StyledP size="small">
-                            <Translation {...suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
+                            <Translation {...messages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
                         </StyledP>
                     </Content>
                     <Content>
                         <Row>
                             <Link href={`/?backup#${device.path}`}>
                                 <Button>
-                                    <Translation {...suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
+                                    <Translation {...messages.TR_CREATE_BACKUP_IN_3_MINUTES} />
                                 </Button>
                             </Link>
                         </Row>

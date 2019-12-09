@@ -9,7 +9,7 @@ import { Translation } from '@suite-components/Translation';
 
 import * as logActions from '@suite-actions/logActions';
 import { AppState, Dispatch } from '@suite-types';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 import { useKeyPress } from '@suite-utils/dom';
 
 interface Props {
@@ -79,8 +79,8 @@ const Log = (props: Props) => {
     }
 
     const copyBtn = (
-        <ButtonCopy onClick={() => props.copyToClipboard()} inlineWidth>
-            <Translation {...l10nMessages.TR_COPY_TO_CLIPBOARD} />
+        <ButtonCopy onClick={() => props.copyToClipboard()}>
+            <Translation {...messages.TR_COPY_TO_CLIPBOARD} />
         </ButtonCopy>
     );
     return (
@@ -90,10 +90,10 @@ const Log = (props: Props) => {
                     <Icon size={12} color={colors.INFO_PRIMARY} icon="CLOSE" />
                 </Click>
                 <H2>
-                    <Translation {...l10nMessages.TR_LOG} />
+                    <Translation {...messages.TR_LOG} />
                 </H2>
                 <StyledParagraph size="small">
-                    <Translation {...l10nMessages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
+                    <Translation {...messages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
                 </StyledParagraph>
                 <LogWrapper>{JSON.stringify(props.log.entries)}</LogWrapper>
                 {props.log.copied ? (
@@ -101,7 +101,7 @@ const Log = (props: Props) => {
                         <Tooltip
                             maxWidth={285}
                             placement="top"
-                            content={<Translation {...l10nMessages.TR_COPIED} />}
+                            content={<Translation {...messages.TR_COPIED} />}
                             onHidden={props.resetCopyState}
                         >
                             {copyBtn}

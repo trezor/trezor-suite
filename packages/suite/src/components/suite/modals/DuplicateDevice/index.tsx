@@ -8,8 +8,7 @@ import { useKeyPress } from '@suite-utils/dom';
 import { getNewInstanceNumber } from '@suite-utils/device';
 
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import globalMessages from '@suite-support/Messages';
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 interface Props {
     device: AcquiredDevice;
@@ -102,18 +101,18 @@ const DuplicateDevice: FunctionComponent<Props> = ({
         <Wrapper>
             <H2>
                 <Translation
-                    {...l10nMessages.TR_CLONE}
+                    {...messages.TR_CLONE}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
             </H2>
             <StyledP size="small">
-                <Translation {...l10nMessages.TR_THIS_WILL_CREATE_NEW_INSTANCE} />
+                <Translation {...messages.TR_THIS_WILL_CREATE_NEW_INSTANCE} />
             </StyledP>
             <Column>
                 <Label>
-                    <Translation {...l10nMessages.TR_INSTANCE_NAME} />
+                    <Translation {...messages.TR_INSTANCE_NAME} />
                 </Label>
                 <Input
                     type="text"
@@ -127,16 +126,16 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                 />
                 {isUsed && (
                     <ErrorMessage>
-                        <Translation {...l10nMessages.TR_INSTANCE_NAME_IN_USE} />
+                        <Translation {...messages.TR_INSTANCE_NAME_IN_USE} />
                     </ErrorMessage>
                 )}
             </Column>
             <Column>
-                <StyledButton disabled={isUsed} onClick={() => submit()} inlineWidth>
-                    <Translation {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
+                <StyledButton disabled={isUsed} onClick={() => submit()}>
+                    <Translation {...messages.TR_CREATE_NEW_INSTANCE} />
                 </StyledButton>
-                <StyledButton variant="secondary" onClick={onCancel} inlineWidth>
-                    <Translation {...globalMessages.TR_CANCEL} />
+                <StyledButton variant="secondary" onClick={onCancel}>
+                    <Translation {...messages.TR_CANCEL} />
                 </StyledButton>
             </Column>
         </Wrapper>
