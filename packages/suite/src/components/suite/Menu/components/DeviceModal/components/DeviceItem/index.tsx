@@ -6,6 +6,8 @@ import { Props as DeviceModalProps } from '../../Container';
 import { AcquiredDevice, TrezorDevice } from '@suite-types';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import WalletInstance from '../WalletInstance/Container';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -103,12 +105,11 @@ const DeviceItem = ({
                     <ForgetButton
                         size="small"
                         variant="secondary"
-                        inlineWidth
                         onClick={() => {
                             forgetDevice(device);
                         }}
                     >
-                        Forget device
+                        <Translation {...messages.TR_FORGET} />
                     </ForgetButton>
                 </Col>
             </Device>
@@ -122,14 +123,13 @@ const DeviceItem = ({
             ))}
             <Actions>
                 <Button
-                    inlineWidth
                     variant="tertiary"
                     icon="PLUS"
                     onClick={() => {
                         addHiddenWallet(device);
                     }}
                 >
-                    Add hidden wallet
+                    <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
                 </Button>
             </Actions>
         </DeviceWrapper>

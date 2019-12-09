@@ -6,6 +6,8 @@ import * as deviceUtils from '@suite-utils/device';
 import { Props } from './Container';
 import DeviceItem from './components/DeviceItem';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
+import { Translation } from '@suite/components/suite/Translation';
+import messages from '@suite/support/messages';
 
 // TODO:
 // Undiscovered wallet, connect to discover https://app.zeplin.io/project/5dadb7820bdfd3832e04afca/screen/5dde6fd821730311f40ad3a0
@@ -74,10 +76,11 @@ const SwitchDeviceModal = (props: Props) => {
         <StyledModal>
             <Wrapper>
                 <In>
-                    <Title>Switch Device</Title>
+                    <Title>
+                        <Translation {...messages.TR_SWITCH_DEVICE} />
+                    </Title>
                     <Description>
-                        This is a place to see all your devices. You can further set them up in
-                        Settings but here you can switch between devices and see their statuses.
+                        <Translation {...messages.TR_THIS_IS_PLACE_TO_SEE_ALL} />
                     </Description>
                     {sortedDevices.map(device => (
                         <DeviceItem
@@ -93,7 +96,7 @@ const SwitchDeviceModal = (props: Props) => {
                     ))}
                     <ModalActions>
                         <Button variant="secondary" onClick={() => props.closeModal()}>
-                            Close
+                            <Translation {...messages.TR_CLOSE} />
                         </Button>
                     </ModalActions>
                 </In>

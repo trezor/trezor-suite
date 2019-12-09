@@ -6,6 +6,8 @@ import { Props } from './Container';
 import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
 import BigNumber from 'bignumber.js';
 import { FormattedNumber } from '@suite/components/suite';
+import { Translation } from '@suite/components/suite/Translation';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div<{ active: boolean }>`
     display: flex;
@@ -94,14 +96,26 @@ const WalletInstance = ({
             <Col grow={1}>
                 {discoveryProcess && (
                     <InstanceTitle>
-                        {accountsCount} Accounts - {coinsCount} COINS -{' '}
-                        <FormattedNumber
-                            value={instanceBalance.toString()}
-                            currency={localCurrency}
+                        <Translation
+                            {...messages.TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE}
+                            values={{
+                                accountsCount,
+                                coinsCount,
+                                fiatValue: (
+                                    <FormattedNumber
+                                        value={instanceBalance.toString()}
+                                        currency={localCurrency}
+                                    />
+                                ),
+                            }}
                         />
                     </InstanceTitle>
                 )}
-                {!discoveryProcess && <InstanceTitle>Undiscovered wallet</InstanceTitle>}
+                {!discoveryProcess && (
+                    <InstanceTitle>
+                        <Translation {...messages.TR_UNDISCOVERED_WALLET} />
+                    </InstanceTitle>
+                )}
                 <InstanceType>
                     {instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase'}
                 </InstanceType>
@@ -111,12 +125,11 @@ const WalletInstance = ({
                     <ForgetButton
                         size="small"
                         variant="secondary"
-                        inlineWidth
                         onClick={() => {
                             forgetDeviceInstance(instance);
                         }}
                     >
-                        Forget instance
+                        <Translation {...messages.TR_FORGET} />
                     </ForgetButton>
                 )}
                 {!discoveryProcess && (
@@ -124,11 +137,10 @@ const WalletInstance = ({
                         size="small"
                         isDisabled
                         variant="tertiary"
-                        inlineWidth
                         icon="INFO"
                         onClick={() => {}}
                     >
-                        Connect to discover
+                        <Translation {...messages.TR_CONNECT_TO_DISCOVER} />
                     </Button>
                 )}
             </Col>
