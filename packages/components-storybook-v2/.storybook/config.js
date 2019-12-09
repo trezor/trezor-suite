@@ -34,6 +34,8 @@ function loadStories() {
     require('../src/stories/components/typography/heading');
     require('../src/stories/components/typography/paragraph');
     require('../src/stories/components/typography/link');
+    require('../src/stories/components/notifications/all');
+    require('../src/stories/components/notifications/notification');
 }
 
 configure(loadStories, module);

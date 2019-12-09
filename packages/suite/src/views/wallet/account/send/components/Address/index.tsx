@@ -94,7 +94,6 @@ const Address = (props: Props) => (
                 key="qrButton"
                 variant="secondary"
                 onClick={() => props.openQrModal(props.outputId)}
-                inlineWidth
             >
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />
             </QrButton>

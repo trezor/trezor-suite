@@ -165,7 +165,7 @@ class BlindMatrix extends React.Component<BlindMatrixProps> {
                         </Row>
                     </>
                 )}
-                <Backspace variant="tertiary" onClick={() => this.backspace()} inlineWidth>
+                <Backspace variant="tertiary" onClick={() => this.backspace()}>
                     <Icon style={{ marginRight: '5px' }} icon="BACK" />
                     Backspace
                 </Backspace>

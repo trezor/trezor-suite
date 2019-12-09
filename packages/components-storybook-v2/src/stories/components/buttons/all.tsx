@@ -10,14 +10,12 @@ const Wrapper = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     margin: 1rem 0 2rem;
     width: 400px;
 `;
 
 const ButtonWrapper = styled.div`
     margin-bottom: 1rem;
-    width: 240px;
 `;
 
 storiesOf('Buttons', module).add(
@@ -68,11 +66,11 @@ storiesOf('Buttons', module).add(
                             <ButtonWrapper>
                                 <Button
                                     variant={variant as 'primary' | 'secondary'}
-                                    data-test={`button-${variant}-inline-width`}
-                                    inlineWidth
+                                    data-test={`button-${variant}-full-width`}
+                                    fullWidth
                                 >
                                     {variant[0].toUpperCase()}
-                                    {variant.slice(1)} inline width
+                                    {variant.slice(1)} full width
                                 </Button>
                             </ButtonWrapper>
                             <ButtonWrapper>

@@ -79,12 +79,7 @@ const buildCurrencyOption = (currency: string) => {
 const WalletSettings = (props: Props & WrappedComponentProps) => (
     <WalletLayout title="Settings">
         <CloseWrapper>
-            <Button
-                onClick={() => props.goto('wallet-index')}
-                variant="tertiary"
-                icon="CROSS"
-                inlineWidth
-            />
+            <Button onClick={() => props.goto('wallet-index')} variant="tertiary" icon="CROSS" />
         </CloseWrapper>
         <Section>
             <LabelTop>
