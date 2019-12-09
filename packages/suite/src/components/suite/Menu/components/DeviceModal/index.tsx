@@ -9,10 +9,6 @@ import { TrezorDevice, AcquiredDevice } from '@suite-types';
 import { Translation } from '@suite/components/suite/Translation';
 import messages from '@suite/support/messages';
 
-// TODO:
-// Undiscovered wallet, connect to discover https://app.zeplin.io/project/5dadb7820bdfd3832e04afca/screen/5dde6fd821730311f40ad3a0
-// Title for wallet instances (usd value,...)
-
 const StyledModal = styled(Modal)`
     box-shadow: 0 10px 60px 0 #4d4d4d;
 `;
