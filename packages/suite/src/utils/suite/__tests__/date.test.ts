@@ -17,11 +17,11 @@ describe('Date utils', () => {
         const dateInIso = '2014-06-25T10:00:00.000Z';
 
         expect(utils.getDateWithTimeZone(dateInMs, 'Asia/Tokyo')).toEqual(
-            new Date('2019-08-14T22:52:59.000Z'),
+            new Date('2019-08-15T00:52:59.000Z'),
         );
         expect(utils.getDateWithTimeZone(dateInMs)).toEqual(new Date('2019-08-14T15:52:59.000Z'));
         expect(utils.getDateWithTimeZone(dateInIso, 'America/New_York')).toEqual(
-            new Date('2014-06-25T04:00:00.000Z'),
+            new Date('2014-06-25T06:00:00.000Z'),
         );
     });
 });
