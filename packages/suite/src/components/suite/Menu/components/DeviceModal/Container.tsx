@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
+import * as deviceSettingsActions from '@suite-actions/deviceSettingsActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
@@ -18,7 +19,9 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
     forgetDevice: bindActionCreators(modalActions.onForgetDevice, dispatch),
+    onCreateDeviceInstance: bindActionCreators(modalActions.onCreateDeviceInstance, dispatch),
     selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
+    applySettings: bindActionCreators(deviceSettingsActions.applySettings, dispatch),
     requestDeviceInstance: bindActionCreators(suiteActions.requestDeviceInstance, dispatch),
 });
 

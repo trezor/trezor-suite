@@ -117,6 +117,8 @@ const getDeviceContextModal = (props: Props) => {
 
         case SUITE.REQUEST_DEVICE_INSTANCE:
             return (
+                // TODO: DELETE or implement new design once it's ready
+                // Used to be triggered from function 'requestDeviceInstance' fired on 'add hidden wallet' btn in 'SwitchDeviceModal'
                 <RequestInstance
                     device={modal.device as AcquiredDevice}
                     instance={deviceUtils.getNewInstanceNumber(

@@ -5,7 +5,7 @@ import { Button, colors, variables } from '@trezor/components-v2';
 import * as deviceUtils from '@suite-utils/device';
 import { Props } from './Container';
 import DeviceItem from './components/DeviceItem';
-import { TrezorDevice } from '@suite-types';
+import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 // TODO:
 // Undiscovered wallet, connect to discover https://app.zeplin.io/project/5dadb7820bdfd3832e04afca/screen/5dde6fd821730311f40ad3a0
@@ -60,7 +60,14 @@ const SwitchDeviceModal = (props: Props) => {
 
     const onAddHiddenWallet = (instance: TrezorDevice) => {
         props.closeModal();
-        props.requestDeviceInstance(instance);
+        // TODO: if we really want to auto-enable passphrase feature,
+        // we need to wait for the device to trigger 'confirm on device' modal,
+        // then for the user to confirm it and only then we can fire up adding a new hidden wallet
+        // if (instance.features && !instance.features.passphrase_protection) {
+        //     // eslint-disable-next-line @typescript-eslint/camelcase
+        //     props.applySettings({ use_passphrase: true });
+        // }
+        props.onCreateDeviceInstance(instance as AcquiredDevice);
     };
 
     return (
