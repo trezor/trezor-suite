@@ -1,8 +1,9 @@
 import CONSTANTS from '../../constants';
 
-// todo: cant work after rebase.
+// todo: does not work now as device settings is not available in the new design yet.
 describe.skip('Device settings happy path', () => {
-    before(() => {
+    // Note that running this beforeEach makes tests run about 5 times longer.
+    beforeEach(() => {
         cy.task('startBridge')
             .task('startEmu')
             .task('setupEmu');
@@ -35,6 +36,7 @@ describe.skip('Device settings happy path', () => {
         // there is probably a short period of time before discovery-stop event
         // is propagated and cypress sometimes is fast enough to run into
         // call in progress error;
+        // It is probably enough to implement device lock.
         cy.wait(1000);
         cy.getTestElement('@suite/device-settings/label-submit').click();
         cy.getConfirmActionOnDeviceModal();
