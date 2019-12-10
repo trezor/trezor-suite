@@ -49,7 +49,7 @@ interface ProgressEvent {
 const LIMIT = 10;
 
 // Get discovery process for deviceState.
-const getDiscovery = (deviceState: string) => (
+export const getDiscovery = (deviceState: string) => (
     _dispatch: Dispatch,
     getState: GetState,
 ): Discovery | undefined => {

@@ -4,12 +4,12 @@ import { Fiat } from '@wallet-types';
 const toFiatCurrency = (amount: string, fiatCurrency: string, networkRates: Fiat) => {
     // calculate amount in local currency
     if (!networkRates || !networkRates.rates || !amount) {
-        return '';
+        return null;
     }
 
     const rate = networkRates.rates[fiatCurrency];
     if (!rate) {
-        return '';
+        return null;
     }
 
     let formattedAmount = amount;
@@ -18,7 +18,7 @@ const toFiatCurrency = (amount: string, fiatCurrency: string, networkRates: Fiat
     }
 
     const localAmount = new BigNumber(formattedAmount).times(rate);
-    const localAmountStr = localAmount.isNaN() ? '' : localAmount.toFixed(2);
+    const localAmountStr = localAmount.isNaN() ? null : localAmount.toFixed(2);
     return localAmountStr;
 };
 
@@ -29,12 +29,12 @@ const fromFiatCurrency = (
     decimals: number,
 ) => {
     if (!networkRates || !networkRates.rates || !localAmount) {
-        return '';
+        return null;
     }
 
     const rate = networkRates.rates[fiatCurrency];
     if (!rate) {
-        return '';
+        return null;
     }
 
     let formattedLocalAmount = localAmount;
@@ -43,7 +43,7 @@ const fromFiatCurrency = (
     }
 
     const amount = new BigNumber(formattedLocalAmount).div(rate);
-    const amountStr = amount.isNaN() ? '' : amount.toFixed(decimals);
+    const amountStr = amount.isNaN() ? null : amount.toFixed(decimals);
     return amountStr;
 };
 
