@@ -1,16 +1,18 @@
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { Account, Fiat, Network } from '@wallet-types';
 import React from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Output } from '@wallet-types/sendForm';
 import { Input, variables, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import FiatComponent from './components/Fiat';
-import CurrencySelect from './components/CurrencySelect';
-import SetMax from './components/SetMax';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import messages from '@wallet-views/account/send/messages';
+
 import { DispatchProps } from '../../Container';
-import { Account, Fiat, Network } from '@wallet-types';
+import CurrencySelect from './components/CurrencySelect';
+import FiatComponent from './components/Fiat';
+import SetMax from './components/SetMax';
 
 const Wrapper = styled.div`
     display: flex;
@@ -47,14 +49,14 @@ interface Props extends WrappedComponentProps {
 const getMessage = (error: Output['amount']['error'], decimals: Network['decimals']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_SET} />;
+            return <Translation {...messages.TR_AMOUNT_IS_NOT_SET} />;
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
+            return <Translation {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
         case VALIDATION_ERRORS.NOT_ENOUGH:
-            return <FormattedMessage {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
+            return <Translation {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
         case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
             return (
-                <FormattedMessage
+                <Translation
                     {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS}
                     values={{ decimals }}
                 />
@@ -92,11 +94,11 @@ const Amount = (props: Props) => (
             topLabel={
                 <LabelWrapper>
                     <Label>
-                        <FormattedMessage {...messages.TR_AMOUNT} />
+                        <Translation {...messages.TR_AMOUNT} />
                     </Label>
                     {true && (
                         <Label>
-                            {/* <FormattedMessage
+                            {/* <Translation
                                 {...accountMessages.TR_XRP_RESERVE}
                                 values={{ value: '`${accountReserve} ${network.symbol}`' }}
                             /> */}

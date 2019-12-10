@@ -1,8 +1,8 @@
 import React from 'react';
 import { variables, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import messages from '@wallet-views/account/send/messages';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
@@ -27,7 +27,7 @@ interface Props {
 
 const ToggleAdditionalButton = (props: Props) => (
     <Wrapper onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
-        <FormattedMessage {...messages.TR_ADVANCED_SETTINGS} />
+        <Translation {...messages.TR_ADVANCED_SETTINGS} />
         <ToggleIcon
             icon="ARROW_DOWN"
             color={colors.TEXT_SECONDARY}

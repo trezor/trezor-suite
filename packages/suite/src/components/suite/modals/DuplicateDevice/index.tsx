@@ -1,14 +1,14 @@
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
-import { H5, P, Button, Input, colors, variables } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Input, colors, variables } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
 import { useKeyPress } from '@suite-utils/dom';
 import { getNewInstanceNumber } from '@suite-utils/device';
 
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import globalMessages from '@suite-support/Messages';
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 interface Props {
     device: AcquiredDevice;
@@ -99,20 +99,20 @@ const DuplicateDevice: FunctionComponent<Props> = ({
 
     return (
         <Wrapper>
-            <H5>
-                <FormattedMessage
-                    {...l10nMessages.TR_CLONE}
+            <H2>
+                <Translation
+                    {...messages.TR_CLONE}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
-                <FormattedMessage {...l10nMessages.TR_THIS_WILL_CREATE_NEW_INSTANCE} />
+                <Translation {...messages.TR_THIS_WILL_CREATE_NEW_INSTANCE} />
             </StyledP>
             <Column>
                 <Label>
-                    <FormattedMessage {...l10nMessages.TR_INSTANCE_NAME} />
+                    <Translation {...messages.TR_INSTANCE_NAME} />
                 </Label>
                 <Input
                     type="text"
@@ -126,16 +126,16 @@ const DuplicateDevice: FunctionComponent<Props> = ({
                 />
                 {isUsed && (
                     <ErrorMessage>
-                        <FormattedMessage {...l10nMessages.TR_INSTANCE_NAME_IN_USE} />
+                        <Translation {...messages.TR_INSTANCE_NAME_IN_USE} />
                     </ErrorMessage>
                 )}
             </Column>
             <Column>
                 <StyledButton disabled={isUsed} onClick={() => submit()}>
-                    <FormattedMessage {...l10nMessages.TR_CREATE_NEW_INSTANCE} />
+                    <Translation {...messages.TR_CREATE_NEW_INSTANCE} />
                 </StyledButton>
-                <StyledButton variant="white" onClick={onCancel}>
-                    <FormattedMessage {...globalMessages.TR_CANCEL} />
+                <StyledButton variant="secondary" onClick={onCancel}>
+                    <Translation {...messages.TR_CANCEL} />
                 </StyledButton>
             </Column>
         </Wrapper>

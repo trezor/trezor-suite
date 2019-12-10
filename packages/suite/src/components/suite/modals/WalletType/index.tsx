@@ -1,13 +1,11 @@
 import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
 
-import { H5, P, Link, Icon, Button, Tooltip, colors } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Icon, Tooltip, colors } from '@trezor/components';
+import { Button, H2, P, Link } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
 import { useKeyPress } from '@suite-utils/dom';
-import globalMessages from '@suite-support/Messages';
-import l10nCommonMessages from '../messages';
-import l10nWalletMessages from '@wallet-views/messages';
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 import { TrezorDevice } from '@suite-types';
 
 const Wrapper = styled.div``;
@@ -21,7 +19,7 @@ const Header = styled.div`
     color: ${colors.TEXT_PRIMARY};
 `;
 
-const StyledHeading = styled(H5)`
+const StyledHeading = styled(H2)`
     padding: 30px 48px 10px 48px;
 `;
 
@@ -87,19 +85,19 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
     return (
         <Wrapper>
             {device.state && (
-                <StyledLink onClick={onCancel} variant="nostyle">
+                <StyledLink onClick={onCancel}>
                     <Icon size={12} color={colors.TEXT_SECONDARY} icon="CLOSE" />
                 </StyledLink>
             )}
             <StyledHeading>
                 {device.state ? (
-                    <FormattedMessage
-                        {...l10nMessages.TR_CHANGE_WALLET_TYPE_FOR}
+                    <Translation
+                        {...messages.TR_CHANGE_WALLET_TYPE_FOR}
                         values={{ deviceLabel: device.instanceLabel }}
                     />
                 ) : (
-                    <FormattedMessage
-                        {...l10nMessages.TR_SELECT_WALLET_TYPE_FOR}
+                    <Translation
+                        {...messages.TR_SELECT_WALLET_TYPE_FOR}
                         values={{ deviceLabel: device.instanceLabel }}
                     />
                 )}
@@ -111,13 +109,13 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                         size={16}
                         color={colors.TEXT_PRIMARY}
                     />
-                    <FormattedMessage {...l10nMessages.TR_STANDARD_WALLET} />
+                    <Translation {...messages.TR_STANDARD_WALLET} />
                 </Header>
                 <P size="small">
-                    <FormattedMessage {...l10nMessages.TR_CONTINUE_TO_ACCESS_STANDARD_WALLET} />
+                    <Translation {...messages.TR_CONTINUE_TO_ACCESS_STANDARD_WALLET} />
                 </P>
                 <StyledButton onClick={() => onWalletTypeRequest(false)}>
-                    <FormattedMessage {...l10nWalletMessages.TR_GO_TO_STANDARD_WALLET} />
+                    <Translation {...messages.TR_GO_TO_STANDARD_WALLET} />
                 </StyledButton>
             </Content>
             <Content>
@@ -127,10 +125,8 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                         placement="top"
                         // todo: add link to config
                         ctaLink="https://wiki.trezor.io/Passphrase"
-                        ctaText={<FormattedMessage {...globalMessages.TR_LEARN_MORE_LINK} />}
-                        content={
-                            <FormattedMessage {...l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE} />
-                        }
+                        ctaText={<Translation {...messages.TR_LEARN_MORE_LINK} />}
+                        content={<Translation {...messages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE} />}
                     >
                         <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={16} />
                     </Tooltip>
@@ -141,13 +137,13 @@ const WalletType: FunctionComponent<Props> = ({ device, onWalletTypeRequest, onC
                         size={16}
                         color={colors.TEXT_PRIMARY}
                     />
-                    <FormattedMessage {...l10nMessages.TR_HIDDEN_WALLET} />
+                    <Translation {...messages.TR_HIDDEN_WALLET} />
                 </Header>
                 <P size="small">
-                    <FormattedMessage {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK} />
+                    <Translation {...messages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK} />
                 </P>
-                <StyledButton variant="white" onClick={() => onWalletTypeRequest(true)}>
-                    <FormattedMessage {...l10nCommonMessages.TR_GO_TO_HIDDEN_WALLET} />
+                <StyledButton variant="secondary" onClick={() => onWalletTypeRequest(true)}>
+                    <Translation {...messages.TR_GO_TO_HIDDEN_WALLET} />
                 </StyledButton>
             </Content>
         </Wrapper>

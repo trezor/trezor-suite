@@ -1,23 +1,20 @@
-import React from 'react';
-import { Translation } from '@suite-components/Intl';
-import { H1, H4 } from '@trezor/components';
-
-// import { NEXT_WALLET_URL, PASSWORD_MANAGER_URL } from '@onboarding-constants/urls';
-import { Wrapper, OnboardingButton } from '@onboarding-components';
+import { OnboardingButton, Wrapper } from '@onboarding-components';
 import CONFIG from '@onboarding-config';
-import l10nMessages from './index.messages';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { H1, H2 } from '@trezor/components-v2';
+import React from 'react';
+
 import { Props } from './Container';
 
 const FinalStep = ({ exitApp }: Props) => (
     <Wrapper.Step>
         <H1>
-            <Translation>{l10nMessages.TR_FINAL_HEADING}</Translation>
+            <Translation>{messages.TR_FINAL_HEADING}</Translation>
         </H1>
-
-        <H4>
-            <Translation>{l10nMessages.TR_FINAL_SUBHEADING}</Translation>
-        </H4>
-
+        <H2>
+            <Translation>{messages.TR_FINAL_SUBHEADING}</Translation>
+        </H2>
         <Wrapper.Controls>
             <OnboardingButton.Cta onClick={() => exitApp(CONFIG.APP.EXIT_APP_ROUTE)}>
                 Go to wallet

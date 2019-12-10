@@ -1,15 +1,15 @@
 import React from 'react';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Translation } from '@suite-components/Intl';
 import { State } from '@wallet-types/sendForm';
 import styled from 'styled-components';
-import messages from '@wallet-views/account/send/messages';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Props } from './Container';
 import { Input, TextArea } from '@trezor/components';
 import GasLimitTopLabel from './components/GasLimitTopLabel';
 import GasPriceTopLabel from './components/GasPriceTopLabel';
 import DataTopLabel from './components/DataTopLabel';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,20 +1,16 @@
-import React from 'react';
-// import styled from 'styled-components';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
-import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
-
-import l10nCommonMessages from '@suite-support/Messages';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
-import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
+import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
+import { Translation } from '@suite-components/Translation';
+import { AppState, Dispatch } from '@suite-types';
+import messages from '@suite/support/messages';
+import React from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import messages from '../index.messages';
-
-import { Dispatch, AppState } from '@suite-types';
-
+// import styled from 'styled-components';
 const mapStateToProps = (state: AppState) => ({
     uiInteraction: state.onboarding.uiInteraction,
     deviceCall: state.onboarding.deviceCall,
@@ -78,7 +74,7 @@ const RecoveryStepModelT = (props: Props) => {
                 {getStatus() === null && (
                     <>
                         <Text>
-                            <FormattedMessage {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
+                            <Translation {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
@@ -86,7 +82,7 @@ const RecoveryStepModelT = (props: Props) => {
                                     recoveryDevice();
                                 }}
                             >
-                                <FormattedMessage {...messages.TR_START_RECOVERY} />
+                                <Translation {...messages.TR_START_RECOVERY} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -103,7 +99,7 @@ const RecoveryStepModelT = (props: Props) => {
                 {getStatus() === 'error' && (
                     <>
                         <Text>
-                            <FormattedMessage
+                            <Translation
                                 {...messages.TR_RECOVERY_ERROR}
                                 values={{ error: deviceCall.error || '' }}
                             />
@@ -113,7 +109,7 @@ const RecoveryStepModelT = (props: Props) => {
                                 props.connectActions.resetCall();
                             }}
                         >
-                            <FormattedMessage {...l10nCommonMessages.TR_RETRY} />
+                            <Translation {...messages.TR_RETRY} />
                         </OnboardingButton.Cta>
                     </>
                 )}
@@ -132,9 +128,4 @@ const RecoveryStepModelT = (props: Props) => {
     );
 };
 
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(RecoveryStepModelT),
-);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelT));

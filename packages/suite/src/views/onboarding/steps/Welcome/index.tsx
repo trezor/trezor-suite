@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import * as STEP from '@onboarding-constants/steps';
 import CONFIG from '@onboarding-config';
 import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 const Small = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -34,11 +34,11 @@ const WelcomeStep = (props: Props) => {
         <Wrapper.Step data-test="onboarding_first_page">
             <Wrapper.StepBody>
                 <Wrapper.StepHeading>
-                    <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR} />
+                    <Translation {...messages.TR_WELCOME_TO_TREZOR} />
                 </Wrapper.StepHeading>
 
                 <Text>
-                    <FormattedMessage {...l10nMessages.TR_WELCOME_TO_TREZOR_TEXT} />
+                    <Translation {...messages.TR_WELCOME_TO_TREZOR_TEXT} />
                 </Text>
 
                 <Wrapper.Options>
@@ -73,7 +73,7 @@ const WelcomeStep = (props: Props) => {
                         data-test="button-use-wallet"
                         onClick={() => props.exitApp(CONFIG.APP.EXIT_APP_ROUTE)}
                     >
-                        <FormattedMessage {...l10nMessages.TR_USE_WALLET_NOW} />
+                        <Translation {...messages.TR_USE_WALLET_NOW} />
                     </OnboardingButton.Back>
                 )}
             </Wrapper.StepFooter>

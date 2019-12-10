@@ -1,14 +1,10 @@
+import { Translation } from '@suite-components/Translation';
+import { TrezorDevice } from '@suite-types';
+import messages from '@suite/support/messages';
+import { Button, H2, P } from '@trezor/components-v2';
 import React, { FunctionComponent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
-
-import { H5, P, Button } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
-
-import l10nCommonMessages from '@suite-views/index.messages';
-import l10nDeviceMessages from '../messages';
-import l10nMessages from './messages';
-import { TrezorDevice } from '@suite-types';
 
 interface Props {
     device: TrezorDevice;
@@ -42,23 +38,23 @@ const ForgetDevice: FunctionComponent<Props> = ({ device, onForgetDevice, onCanc
 
     return (
         <Wrapper>
-            <H5>
-                <FormattedMessage
-                    {...l10nDeviceMessages.TR_FORGET_LABEL}
+            <H2>
+                <Translation
+                    {...messages.TR_FORGET_LABEL}
                     values={{
                         deviceLabel: device.instanceLabel,
                     }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
-                <FormattedMessage {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
+                <Translation {...messages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
             </StyledP>
             <Row>
                 <Button onClick={() => onForgetDevice(device)}>
-                    <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
+                    <Translation {...messages.TR_FORGET_DEVICE} />
                 </Button>
-                <Button variant="white" onClick={onCancel}>
-                    <FormattedMessage {...l10nMessages.TR_DONT_FORGET} />
+                <Button variant="secondary" onClick={onCancel}>
+                    <Translation {...messages.TR_DONT_FORGET} />
                 </Button>
             </Row>
         </Wrapper>

@@ -1,11 +1,11 @@
 html, body {
     font-size: 14px;
+    margin: 0;
 }
 
 * {
-    font-family: 'Roboto';
+    font-family: 'TTHoves';
     line-height: 1.15;
-    margin: 0;
     text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

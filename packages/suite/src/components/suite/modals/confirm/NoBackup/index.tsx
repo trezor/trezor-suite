@@ -1,9 +1,9 @@
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { colors, Icon } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Intl';
-
-import { H5, P, Icon, Button, colors } from '@trezor/components';
-import suiteMessages from '@suite-views/index.messages';
 
 const Wrapper = styled.div`
     max-width: 370px;
@@ -11,7 +11,6 @@ const Wrapper = styled.div`
 `;
 
 const BackupButton = styled(Button)`
-    width: 100%;
     margin-bottom: 10px;
 `;
 
@@ -34,12 +33,12 @@ interface Props {
 
 const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
     <Wrapper>
-        <H5>
-            <Translation>{suiteMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
-        </H5>
+        <H2>
+            <Translation>{messages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
+        </H2>
         <Icon size={32} color={colors.WARNING_PRIMARY} icon="WARNING" />
         <StyledP size="small">
-            <Translation>{suiteMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>
+            <Translation>{messages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>
         </StyledP>
         <Row>
             <BackupButton
@@ -47,11 +46,12 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                     onReceiveConfirmation(false);
                     onCreateBackup();
                 }}
+                fullWidth
             >
-                <Translation>{suiteMessages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
+                <Translation>{messages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
             </BackupButton>
-            <Button isInverse variant="warning" onClick={() => onReceiveConfirmation(true)}>
-                <Translation>{suiteMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
+            <Button variant="secondary" onClick={() => onReceiveConfirmation(true)}>
+                <Translation>{messages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
             </Button>
         </Row>
     </Wrapper>

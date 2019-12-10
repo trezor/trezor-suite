@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
-import l10nMessages from './NthWord.messages';
+import messages from '@suite/support/messages';
 
 const Word = styled.div`
     font-size: 3em;
@@ -15,7 +15,7 @@ const NthWord = ({ number }: { number: number }) => {
     }
     return (
         <Word>
-            <FormattedMessage {...l10nMessages.TR_NTH_WORD} values={{ number }} />
+            <Translation {...messages.TR_NTH_WORD} values={{ number }} />
         </Word>
     );
 };

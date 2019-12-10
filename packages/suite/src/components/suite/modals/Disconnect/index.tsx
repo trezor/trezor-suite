@@ -1,11 +1,9 @@
+import { Translation } from '@suite-components/Translation';
+import { TrezorDevice } from '@suite-types';
+import messages from '@suite/support/messages';
+import { H2, P } from '@trezor/components-v2';
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-
-import { H5, P } from '@trezor/components';
-import { TrezorDevice } from '@suite-types';
-
-import l10nMessages from './messages';
 
 const Wrapper = styled.div`
     width: 360px;
@@ -25,14 +23,14 @@ interface Props {
 const DisconnectDevice = ({ device }: Props) => {
     return (
         <Wrapper>
-            <H5>
-                <FormattedMessage
-                    {...l10nMessages.TR_DISCONNECT_DEVICE_HEADER}
+            <H2>
+                <Translation
+                    {...messages.TR_DISCONNECT_DEVICE_HEADER}
                     values={{ label: device.label }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
-                <FormattedMessage {...l10nMessages.TR_DISCONNECT_DEVICE_TEXT} />
+                <Translation {...messages.TR_DISCONNECT_DEVICE_TEXT} />
             </StyledP>
         </Wrapper>
     );

@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { P, Tooltip } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import React, { useEffect, useState } from 'react';
 
-import commonMessages from '@suite-support/Messages';
-
-// import * as STEP from '@onboarding-constants/steps';
-import { Text, OnboardingIcon, Loaders, OnboardingButton, Wrapper } from '@onboarding-components';
-import l10nMessages from './index.messages';
 import { Props } from './Container';
 
 interface ButtonProps {
@@ -32,7 +29,7 @@ const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =>
                 isDisabled={!isConnected || !isInBootloader}
                 onClick={() => onClick()}
             >
-                <FormattedMessage {...l10nMessages.TR_INSTALL} />
+                <Translation {...messages.TR_INSTALL} />
             </OnboardingButton.Cta>
         </Tooltip>
     );
@@ -56,7 +53,7 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
                 isDisabled={!isConnected || isInBootloader}
                 onClick={() => onClick()}
             >
-                <FormattedMessage {...commonMessages.TR_CONTINUE} />
+                <Translation {...messages.TR_CONTINUE} />
             </OnboardingButton.Cta>
         </Tooltip>
     );
@@ -143,7 +140,7 @@ const FirmwareStep = ({
             firmwareUpdate.device.features &&
             firmwareUpdate.device.features.major_version === 1
         ) {
-            return intl.formatMessage(l10nMessages.TR_CONNECT_YOUR_DEVICE_AGAIN);
+            return intl.formatMessage(messages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
         if (
             status === 'restarting' &&
@@ -151,7 +148,7 @@ const FirmwareStep = ({
             device.features &&
             device.features.major_version === 1
         ) {
-            return intl.formatMessage(l10nMessages.TR_DISCONNECT_YOUR_DEVICE);
+            return intl.formatMessage(messages.TR_DISCONNECT_YOUR_DEVICE);
         }
         if (
             status === 'restarting' &&
@@ -159,7 +156,7 @@ const FirmwareStep = ({
             device.features &&
             device.features.major_version === 2
         ) {
-            return intl.formatMessage(l10nMessages.TR_WAIT_FOR_REBOOT);
+            return intl.formatMessage(messages.TR_WAIT_FOR_REBOOT);
         }
         if (status === 'waiting-for-confirmation') {
             return 'waiting for confirmation';
@@ -167,7 +164,7 @@ const FirmwareStep = ({
         if (status === 'done' || status === 'error') {
             return null;
         }
-        return intl.formatMessage(l10nMessages.TR_INSTALLING);
+        return intl.formatMessage(messages.TR_INSTALLING);
     };
 
     const install = () => {
@@ -206,7 +203,7 @@ const FirmwareStep = ({
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <FormattedMessage {...l10nMessages.TR_FIRMWARE_HEADING} />
+                <Translation {...messages.TR_FIRMWARE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {/*  text section */}
@@ -215,7 +212,7 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'none' && (
                             <>
                                 <Text>
-                                    <FormattedMessage {...l10nMessages.TR_FIRMWARE_SUBHEADING} />
+                                    <Translation {...messages.TR_FIRMWARE_SUBHEADING} />
                                 </Text>
                             </>
                         )}
@@ -223,8 +220,8 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'outdated' && !isInBootloader && (
                             <>
                                 <Text>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
+                                    <Translation
+                                        {...messages.TR_FIRMWARE_INSTALLED_TEXT}
                                         values={{
                                             version: getVersionStr(),
                                         }}
@@ -240,8 +237,8 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'required' && !isInBootloader && (
                             <>
                                 <Text>
-                                    <FormattedMessage
-                                        {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
+                                    <Translation
+                                        {...messages.TR_FIRMWARE_INSTALLED_TEXT}
                                         values={{
                                             version: getVersionStr(),
                                         }}
@@ -261,7 +258,7 @@ const FirmwareStep = ({
                 {getFirmwareStatus() === 'valid' && (
                     <>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_FIRMWARE_INSTALLED} />
+                            <Translation {...messages.TR_FIRMWARE_INSTALLED} />
                         </Text>
                     </>
                 )}
@@ -352,7 +349,7 @@ const FirmwareStep = ({
                                     isDisabled={!isConnected}
                                     onClick={() => install()}
                                 >
-                                    <FormattedMessage {...commonMessages.TR_RETRY} />
+                                    <Translation {...messages.TR_RETRY} />
                                 </OnboardingButton.Cta>
                             </Tooltip>
                         )}

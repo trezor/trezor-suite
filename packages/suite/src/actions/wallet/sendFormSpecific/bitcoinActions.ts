@@ -14,10 +14,7 @@ import * as sendFormActions from '../sendFormActions';
     Compose transaction
  */
 
-export const compose = (setMax: boolean = false) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     const account = selectedAccount.account as Account;
     if (!send || !account.addresses || !account.utxo) return;

@@ -1,6 +1,6 @@
 import React from 'react';
 import NextLink, { LinkProps } from 'next/link';
-import { Link as TLink } from '@trezor/components';
+import { Link as TLink } from '@trezor/components-v2';
 import { getPrefixedURL, isInternalRoute } from '@suite-utils/router';
 
 interface Props extends LinkProps {

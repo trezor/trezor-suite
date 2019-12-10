@@ -2,8 +2,8 @@ import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,7 +43,7 @@ interface Props {
 
 const QrCode = (props: Props) => (
     <Wrapper>
-        <Label>{props.title || <FormattedMessage {...messages.TR_QR_CODE} />}</Label>
+        <Label>{props.title || <Translation {...messages.TR_QR_CODE} />}</Label>
         <StyledQRCode
             bgColor="#FFFFFF"
             fgColor="#000000"

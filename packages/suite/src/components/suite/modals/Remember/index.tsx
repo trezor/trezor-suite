@@ -1,14 +1,11 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import { Translation } from '@suite-components/Translation';
+import { TrezorDevice } from '@suite-types';
+import messages from '@suite/support/messages';
+import { Loader } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
-
-import { H5, P, Loader, Button } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
-
-import commonMessages from '@suite-views/index.messages';
-import modalsMessages from '../messages';
-import messages from './messages';
-import { TrezorDevice } from '@suite-types';
 
 const ButtonContent = styled.div`
     display: flex;
@@ -83,16 +80,16 @@ const RememberDevice: FunctionComponent<Props> = ({
 
     return (
         <Wrapper>
-            <H5>
-                <FormattedMessage
-                    {...modalsMessages.TR_FORGET_LABEL}
+            <H2>
+                <Translation
+                    {...messages.TR_FORGET_LABEL}
                     values={{
                         deviceLabel: device.label,
                     }}
                 />
-            </H5>
+            </H2>
             <StyledP size="small">
-                <FormattedMessage
+                <Translation
                     {...messages.TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO}
                     values={{
                         deviceCount,
@@ -103,7 +100,7 @@ const RememberDevice: FunctionComponent<Props> = ({
                 <ButtonWithLoader onClick={() => onForgetDevice(device)}>
                     <ButtonContent>
                         <Text>
-                            <FormattedMessage {...commonMessages.TR_FORGET_DEVICE} />
+                            <Translation {...messages.TR_FORGET_DEVICE} />
                         </Text>
                         <StyledLoader
                             isSmallText
@@ -113,8 +110,8 @@ const RememberDevice: FunctionComponent<Props> = ({
                         />
                     </ButtonContent>
                 </ButtonWithLoader>
-                <Button variant="white" onClick={() => onRememberDevice(device)}>
-                    <FormattedMessage {...messages.TR_REMEMBER_DEVICE} />
+                <Button variant="secondary" onClick={() => onRememberDevice(device)}>
+                    <Translation {...messages.TR_REMEMBER_DEVICE} />
                 </Button>
             </Column>
         </Wrapper>

@@ -1,10 +1,9 @@
-import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import { ConnectPrompt } from '@suite-components/Prompts';
 import { Loaders, Text } from '@onboarding-components';
-
-import l10nMessages from './index.messages';
+import { ConnectPrompt } from '@suite-components/Prompts';
+import { Translation } from '@suite-components/Translation';
 import { AppState } from '@suite-types';
+import messages from '@suite/support/messages';
+import React from 'react';
 
 interface StepProps {
     model: AppState['onboarding']['selectedModel'];
@@ -17,8 +16,8 @@ const ConnectStep = ({ model, deviceIsConnected }: StepProps) => {
             <ConnectPrompt model={model || 2} height={180} loop={!deviceIsConnected} />
             {!deviceIsConnected && (
                 <Text>
-                    <FormattedMessage {...l10nMessages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
-                    <FormattedMessage {...l10nMessages.TR_SEARCHING_FOR_YOUR_DEVICE} />
+                    <Translation {...messages.TR_MAKE_SURE_IT_IS_WELL_CONNECTED} />{' '}
+                    <Translation {...messages.TR_SEARCHING_FOR_YOUR_DEVICE} />
                     <Loaders.Dots />
                 </Text>
             )}

@@ -1,19 +1,16 @@
+import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
+import { BLOG_URL, SOCIAL_FACEBOOK_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
+import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
+import { Translation } from '@suite-components/Translation';
+import { addToFlags, HAS_EMAIL_FLAG } from '@suite-utils/flags';
+import { isEmail } from '@suite-utils/validators';
+import messages from '@suite/support/messages';
+import { Checkbox, Input } from '@trezor/components';
+import { Link, P } from '@trezor/components-v2';
 import React, { FormEvent } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Intl';
 
-import { Link, Input, Checkbox, P } from '@trezor/components';
-
-import l10nCommonMessages from '@suite-support/Messages';
-import { isEmail } from '@suite-utils/validators';
-import { HAS_EMAIL_FLAG, addToFlags } from '@suite-utils/flags';
-import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
-
-import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
-import { Wrapper, Text, OnboardingIcon, OnboardingButton, Loaders } from '@onboarding-components';
 import { Props } from './Container';
-
-import l10nMessages from './index.messages';
 
 const CheckboxexSection = styled.div`
     display: flex;
@@ -73,7 +70,7 @@ const NewsleterStep = (props: Props) => {
         if (!isEmail(email)) {
             return {
                 state: 'error',
-                bottomText: props.intl.formatMessage(l10nMessages.TR_WRONG_EMAIL_FORMAT),
+                bottomText: props.intl.formatMessage(messages.TR_WRONG_EMAIL_FORMAT),
             };
         }
         return { state: 'success' };
@@ -109,13 +106,13 @@ const NewsleterStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <Translation>{l10nMessages.TR_NEWSLETTER_HEADING}</Translation>
+                <Translation>{messages.TR_NEWSLETTER_HEADING}</Translation>
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {status === 'initial' && (
-                    <React.Fragment>
+                    <>
                         <Text>
-                            <Translation>{l10nMessages.TR_NEWSLETTER_SUBHEADING}</Translation>
+                            <Translation>{messages.TR_NEWSLETTER_SUBHEADING}</Translation>
                         </Text>
                         <InputWrapper>
                             <Input
@@ -153,7 +150,7 @@ const NewsleterStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             <OnboardingButton.Alt onClick={() => skipEmail()}>
-                                <Translation>{l10nCommonMessages.TR_SKIP}</Translation>
+                                <Translation>{messages.TR_SKIP}</Translation>
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 isDisabled={
@@ -162,41 +159,41 @@ const NewsleterStep = (props: Props) => {
                                 }
                                 onClick={submitEmail}
                             >
-                                <Translation>{l10nCommonMessages.TR_SUBMIT}</Translation>
+                                <Translation>{messages.TR_SUBMIT}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
 
                 {status === 'socials' && (
-                    <React.Fragment>
+                    <>
                         {!newsletter.skipped && (
                             <Text>
-                                <Translation>{l10nMessages.TR_THANK_YOU_FOR_EMAIL}</Translation>
+                                <Translation>{messages.TR_THANK_YOU_FOR_EMAIL}</Translation>
                             </Text>
                         )}
                         {newsletter.skipped && (
                             <Text>
-                                <Translation>{l10nMessages.TR_EMAIL_SKIPPED}</Translation>
+                                <Translation>{messages.TR_EMAIL_SKIPPED}</Translation>
                             </Text>
                         )}
                         <SocialWrapper>
-                            <Link href={BLOG_URL} variant="nostyle">
+                            <Link href={BLOG_URL}>
                                 <OnboardingIcon.SocialLogo name="medium" sizeMultiplier={2} />
                             </Link>
-                            <Link href={SOCIAL_FACEBOOK_URL} variant="nostyle">
+                            <Link href={SOCIAL_FACEBOOK_URL}>
                                 <OnboardingIcon.SocialLogo name="facebook" sizeMultiplier={2} />
                             </Link>
-                            <Link href={SOCIAL_TWITTER_URL} variant="nostyle">
+                            <Link href={SOCIAL_TWITTER_URL}>
                                 <OnboardingIcon.SocialLogo name="twitter" sizeMultiplier={2} />
                             </Link>
                         </SocialWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta onClick={() => goToNextStep()}>
-                                <Translation>{l10nCommonMessages.TR_CONTINUE}</Translation>
+                                <Translation>{messages.TR_CONTINUE}</Translation>
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </React.Fragment>
+                    </>
                 )}
             </Wrapper.StepBody>
         </Wrapper.Step>

@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import { H6, Link } from '@trezor/components';
+import { Translation } from '@suite-components/Translation';
+import { P, Link } from '@trezor/components-v2';
 import TrezorConnect from 'trezor-connect';
 
 import { SUPPORT_URL, TROUBLESHOOTER_URL } from '@onboarding-constants/urls';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
-import l10nMessages from './TroubleshootTooLong.messages';
+import messages from '@suite/support/messages';
 
 const Card = styled.div`
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -24,8 +24,8 @@ const Card = styled.div`
 `;
 
 const ContactSupportLink = (
-    <Link href={SUPPORT_URL} variant="nostyle">
-        <FormattedMessage {...l10nMessages.TR_CONTACT_TREZOR_SUPPORT_LINK} />
+    <Link href={SUPPORT_URL}>
+        <Translation {...messages.TR_CONTACT_TREZOR_SUPPORT_LINK} />
     </Link>
 );
 
@@ -36,44 +36,40 @@ interface Props {
 const TroubleshootSearchingTooLong = ({ webusb }: Props) => (
     <>
         {/* <Text>
-            <FormattedMessage {...l10nMessages.TR_SEARCHING_TAKES_TOO_LONG} />
+            <Translation {...messages.TR_SEARCHING_TAKES_TOO_LONG} />
         </Text> */}
 
         <Card>
-            <H6>Troubleshooting guide</H6>
+            <P weight="bold">Troubleshooting guide</P>
             <Text>
                 Check out our interactive{' '}
-                <Link href={TROUBLESHOOTER_URL} variant="nostyle">
-                    troubleshooting guide
-                </Link>
-                {/* <FormattedMessage {...l10nMessages.TR_REFRESH_INSTRUCTION} /> */}
+                <Link href={TROUBLESHOOTER_URL}>troubleshooting guide</Link>
+                {/* <Translation {...messages.TR_REFRESH_INSTRUCTION} /> */}
             </Text>
         </Card>
         {!webusb && (
             <Card>
-                <H6>Broken cable</H6>
+                <P weight="bold">Broken cable</P>
                 <Text>
-                    <FormattedMessage {...l10nMessages.TR_ANOTHER_CABLE_INSTRUCTION} />
+                    <Translation {...messages.TR_ANOTHER_CABLE_INSTRUCTION} />
                 </Text>
             </Card>
         )}
 
         {webusb && (
             <Card>
-                <H6>Try Trezor bridge</H6>
+                <P weight="bold">Try Trezor bridge</P>
                 <Text>
                     You may install{' '}
-                    <Link onClick={() => TrezorConnect.disableWebUSB()} variant="nostyle">
-                        Trezor Bridge
-                    </Link>{' '}
-                    is a special communication daemon running in background on your computer
+                    <Link onClick={() => TrezorConnect.disableWebUSB()}>Trezor Bridge</Link> is a
+                    special communication daemon running in background on your computer
                 </Text>
             </Card>
         )}
         <Wrapper.Controls>
             <OnboardingButton.Alt>
-                <FormattedMessage
-                    {...l10nMessages.TR_LAST_RESORT_INSTRUCTION}
+                <Translation
+                    {...messages.TR_LAST_RESORT_INSTRUCTION}
                     values={{ ContactSupportLink }}
                 />
             </OnboardingButton.Alt>

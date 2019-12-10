@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Notification, Link } from '@trezor/components';
+import { Notification } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
 import Bignumber from 'bignumber.js';
-import { FormattedMessage } from 'react-intl';
-
-import globalMessages from '@suite-support/Messages';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { getRoute } from '@suite-utils/router';
-import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
 interface Props {
@@ -39,19 +38,19 @@ export default (props: Props) => {
                     key="xrp-warning"
                     variant="warning"
                     title={
-                        <FormattedMessage {...l10nMessages.TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED} />
+                        <Translation {...messages.TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED} />
                     }
                     message={
                         <>
-                            <FormattedMessage
-                                {...l10nMessages.TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE}
+                            <Translation
+                                {...messages.TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE}
                                 values={{
                                     minBalance: bigReserve.toString(),
                                     TR_LEARN_MORE: (
                                         // todo: add link to config urls
                                         <Link href="https://wiki.trezor.io/Ripple_(XRP)">
-                                            <FormattedMessage
-                                                {...globalMessages.TR_LEARN_MORE_LINK}
+                                            <Translation
+                                                {...messages.TR_LEARN_MORE_LINK}
                                             />
                                         </Link>
                                     ),

@@ -17,9 +17,9 @@ const ERROR: { [key: string]: string | undefined } = {
 export class CustomError extends Error {
     code: string | undefined;
 
-    message: string = '';
+    message = '';
 
-    constructor(code: string, message: string = '') {
+    constructor(code: string, message = '') {
         // test reports that super is not covered, TODO: investigate more
         super(message);
 

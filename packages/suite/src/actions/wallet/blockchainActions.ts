@@ -18,7 +18,7 @@ import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { BLOCKCHAIN } from './constants';
-import { goto } from '../suite/routerActions';
+import { goto } from '@suite-actions/routerActions';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event

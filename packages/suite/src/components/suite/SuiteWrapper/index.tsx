@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, P } from '@trezor/components';
+import { P } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
+import * as resizeActions from '@suite-actions/resizeActions';
 import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
 import SuiteLayout from '@suite-components/SuiteLayout';
-import Bridge from '@suite-views/bridge';
+import Bridge from '@suite/views/suite/bridge';
 import AcquireDevice from '@suite-components/AcquireDevice';
 
 import { AppState, Dispatch } from '@suite-types';
@@ -23,9 +25,12 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
+    updateWindowSize: bindActionCreators(resizeActions.updateWindowSize, dispatch),
 });
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+export type Props = OwnProps &
+    ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => {
     const { suite, goto } = props;
@@ -50,6 +55,7 @@ const Index = (props: Props) => {
         return (
             <ConnectDevice
                 showWebUsb={isWebUSB(suite.transport)}
+                goto={goto}
                 // showDisconnect={shouldShowDisconnectDevice}
                 // deviceLabel={deviceLabel}
                 deviceLabel=""
@@ -135,7 +141,4 @@ const Index = (props: Props) => {
     return <>{props.children}</>;
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

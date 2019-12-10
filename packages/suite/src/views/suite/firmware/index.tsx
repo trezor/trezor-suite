@@ -1,22 +1,18 @@
+import { Loaders } from '@onboarding-components';
+import * as firmwareActions from '@suite-actions/firmwareActions';
+import * as routerActions from '@suite-actions/routerActions';
+import * as suiteActions from '@suite-actions/suiteActions';
+import { ConnectPrompt } from '@suite-components/Prompts';
+import { AppState, Dispatch } from '@suite-types';
+import { Checkbox, Tooltip, variables } from '@trezor/components';
+import { Button, H1, H2, P } from '@trezor/components-v2';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-// import { FormattedMessage } from 'react-intl';
 import { FirmwareRelease } from 'trezor-connect';
-import { Button, Checkbox, Tooltip, P, H1, H4, H5, variables } from '@trezor/components';
-import * as routerActions from '@suite-actions/routerActions';
-import * as firmwareActions from '@suite-actions/firmwareActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-
-import { ConnectPrompt } from '@suite-components/Prompts';
 
 // todo move to suite components;
-import { Loaders } from '@onboarding-components';
-
-import { AppState, Dispatch } from '@suite-types';
-// import l10nMessages from './index.messages';
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -132,7 +128,7 @@ const ChangeLog = ({
     if (isLatest) {
         return (
             <ChangelogWrapper>
-                <H4>{currentVersion}</H4>
+                <H2>{currentVersion}</H2>
                 <P>Latest firmware already installed</P>
             </ChangelogWrapper>
         );
@@ -140,15 +136,15 @@ const ChangeLog = ({
     if (!firmwareRelease) {
         return (
             <ChangelogWrapper>
-                <H4>Changelog</H4>
+                <H2>Changelog</H2>
                 <P>Connect your device to see changelog</P>
             </ChangelogWrapper>
         );
     }
     return (
         <ChangelogWrapper>
-            <H4>Changelog</H4>
-            <H5>{firmwareRelease.version.join('.')}</H5>
+            <H2>Changelog</H2>
+            <P>{firmwareRelease.version.join('.')}</P>
             {firmwareRelease.changelog.split('*').map((row: string) => (
                 <P key={row.substr(0, 8)}>{row}</P>
             ))}
@@ -305,7 +301,7 @@ const FirmwareUpdate = (props: Props) => {
                             isLatest={hasNewestFirmware()}
                             firmwareRelease={getFirmwareRelease()}
                             currentVersion={getFwVersion()}
-                        ></ChangeLog>
+                        />
                     )}
                     {(isInProgress() || isInFinishedState()) && (
                         <div>
@@ -347,7 +343,7 @@ const FirmwareUpdate = (props: Props) => {
             <Bottom>
                 {firmware.status === 'initial' && (
                     <>
-                        <Button isInverse onClick={() => exitApp()}>
+                        <Button variant="secondary" onClick={() => exitApp()}>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton
@@ -356,7 +352,6 @@ const FirmwareUpdate = (props: Props) => {
                             userUnderstands={userUnderstandsWarning()}
                             onClick={() => props.firmwareUpdate()}
                         >
-                            {/* <FormattedMessage {...l10nMessages.TR_INSTALL} /> */}
                             {!isInBootloader() && hasNewestFirmware() ? 'Reinstall' : 'Install'}
                         </InstallButton>
                     </>
@@ -368,7 +363,7 @@ const FirmwareUpdate = (props: Props) => {
                 )}
                 {firmware.status === 'error' && (
                     <>
-                        <Button isInverse onClick={() => exitApp()}>
+                        <Button variant="secondary" onClick={() => exitApp()}>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton
@@ -386,7 +381,4 @@ const FirmwareUpdate = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(FirmwareUpdate);
+export default connect(mapStateToProps, mapDispatchToProps)(FirmwareUpdate);

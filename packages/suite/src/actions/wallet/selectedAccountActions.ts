@@ -1,32 +1,23 @@
-// import { BLOCKCHAIN } from 'trezor-connect';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-// import * as WALLET from '@wallet-actions/';
-import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
-// import * as DISCOVERY from 'actions/constants/discovery';
-// import * as TOKEN from 'actions/constants/token';
-// import * as PENDING from 'actions/constants/pendingTx';
-
-import * as reducerUtils from '@suite-utils/reducerUtils';
-import { getSelectedAccount, getSelectedNetwork } from '@wallet-utils/accountUtils';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { getVersion } from '@suite-utils/device';
-import {
-    initialState,
-    State as SelectedAccountState,
-    Loader,
-    ExceptionPage,
-    AccountNotification,
-} from '@wallet-reducers/selectedAccountReducer';
-
-import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
-import l10nNotificationMessages from '@wallet-components/Notifications/components/Account/index.messages';
-import l10nLoaderMessages from '@wallet-components/Content/index.messages';
-import l10nFwUnsupportedMessages from '@wallet-components/Content/components/FirmwareUnsupported/index.messages';
-import l10nMessages from '@suite-views/index.messages';
-import { NETWORKS } from '@wallet-config';
-import { Action, GetState, Dispatch, AppState } from '@suite-types';
-import { DISCOVERY } from './constants';
+import { ROUTER, SUITE } from '@suite-actions/constants';
 import { goto } from '@suite-actions/routerActions';
+import { Action, AppState, Dispatch, GetState } from '@suite-types';
+import { getVersion } from '@suite-utils/device';
+import * as reducerUtils from '@suite-utils/reducerUtils';
+import messages from '@suite/support/messages';
+import * as ACCOUNT from '@wallet-actions/constants/accountConstants';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { NETWORKS } from '@wallet-config';
+import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
+import {
+    AccountNotification,
+    ExceptionPage,
+    initialState,
+    Loader,
+    State as SelectedAccountState,
+} from '@wallet-reducers/selectedAccountReducer';
+import { getSelectedAccount, getSelectedNetwork } from '@wallet-utils/accountUtils';
+
+import { DISCOVERY } from './constants';
 
 export type SelectedAccountActions =
     | { type: typeof ACCOUNT.DISPOSE }
@@ -61,13 +52,13 @@ const getExceptionPage = (
         return {
             type: 'fwNotSupported',
             title: {
-                ...l10nFwUnsupportedMessages.TR_NETWORK_IS_NOT_SUPPORTED_BY_TREZOR,
+                ...messages.TR_NETWORK_IS_NOT_SUPPORTED_BY_TREZOR,
                 values: {
                     networkName: network.name,
                     deviceVersion: getVersion(device),
                 },
             },
-            message: l10nFwUnsupportedMessages.TR_FIND_MORE_INFORMATION_ON_TREZOR_WIKI,
+            message: messages.TR_FIND_MORE_INFORMATION_ON_TREZOR_WIKI,
             symbol: network.symbol,
         };
     }
@@ -86,7 +77,7 @@ const getAccountLoader = (
     if (!device || !device.state) {
         return {
             type: 'progress',
-            title: l10nLoaderMessages.TR_LOADING_DEVICE_DOT_DOT_DOT,
+            title: messages.TR_LOADING_DEVICE_DOT_DOT_DOT,
         };
     }
 
@@ -94,7 +85,7 @@ const getAccountLoader = (
     if (!network) {
         return {
             type: 'progress',
-            title: l10nLoaderMessages.TR_LOADING_ACCOUNT,
+            title: messages.TR_LOADING_ACCOUNT,
         };
     }
 
@@ -102,13 +93,13 @@ const getAccountLoader = (
     // account not found (yet). checking why...
 
     // @ts-ignore TODO
-    if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
+    if (!discovery || discovery.waitingForDevice || discovery.interrupted) {
         if (device.connected) {
             // case 1: device is connected but discovery not started yet (probably waiting for auth)
             if (device.available) {
                 return {
                     type: 'progress',
-                    title: l10nLoaderMessages.TR_AUTHENTICATING_DEVICE,
+                    title: messages.TR_AUTHENTICATING_DEVICE,
                 };
             }
             // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
@@ -116,10 +107,10 @@ const getAccountLoader = (
             return {
                 type: 'info',
                 title: {
-                    ...l10nMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                    ...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
                     values: { deviceLabel: device.instanceLabel || device.label },
                 },
-                message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
+                message: messages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
             };
         }
 
@@ -127,10 +118,10 @@ const getAccountLoader = (
         return {
             type: 'info',
             title: {
-                ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_DISCONNECTED,
+                ...messages.TR_DEVICE_LABEL_IS_DISCONNECTED,
                 values: { deviceLabel: device.instanceLabel },
             },
-            message: l10nLoaderMessages.TR_CONNECT_DEVICE_TO_LOAD_ACCOUNT,
+            message: messages.TR_CONNECT_DEVICE_TO_LOAD_ACCOUNT,
         };
     }
 
@@ -138,14 +129,14 @@ const getAccountLoader = (
         // case 4: account not found and discovery is completed
         return {
             type: 'info',
-            title: l10nLoaderMessages.TR_ACCOUNT_DOES_NOT_EXIST,
+            title: messages.TR_ACCOUNT_DOES_NOT_EXIST,
         };
     }
 
     // case default: account information isn't loaded yet
     return {
         type: 'progress',
-        title: l10nLoaderMessages.TR_LOADING_ACCOUNT,
+        title: messages.TR_LOADING_ACCOUNT,
     };
 };
 
@@ -181,7 +172,7 @@ const getAccountNotification = (selectedAccount: SelectedAccountState) => (
         return {
             type: 'info',
             variant: 'info',
-            title: l10nNotificationMessages.TR_LOADING_OTHER_ACCOUNTS,
+            title: messages.TR_LOADING_OTHER_ACCOUNTS,
             shouldRender: true,
         };
     }
@@ -192,7 +183,7 @@ const getAccountNotification = (selectedAccount: SelectedAccountState) => (
             type: 'info',
             variant: 'info',
             title: {
-                ...l10nNotificationMessages.TR_DEVICE_LABEL_IS_DISCONNECTED,
+                ...messages.TR_DEVICE_LABEL_IS_DISCONNECTED,
                 values: { deviceLabel: device.instanceLabel },
             },
             shouldRender: true,
@@ -206,15 +197,15 @@ const getAccountNotification = (selectedAccount: SelectedAccountState) => (
             type: 'info',
             variant: 'info',
             title: {
-                ...l10nMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
+                ...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
                 values: { deviceLabel: device.instanceLabel || device.label },
             },
-            message: l10nNotificationMessages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
+            message: messages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
             actions: [
                 {
-                    label: l10nMessages.TR_DEVICE_SETTINGS,
+                    label: messages.TR_DEVICE_SETTINGS,
                     callback: () => {
-                        dispatch(goto('suite-device-settings'));
+                        dispatch(goto('settings-index'));
                     },
                 },
             ],

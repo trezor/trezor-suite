@@ -4,6 +4,26 @@ const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 
 const routes = [
     {
+        name: 'wallet-index',
+        pattern: '/wallet',
+        app: 'wallet',
+    },
+    {
+        name: 'passwords-index',
+        pattern: '/passwords',
+        app: 'passwords',
+    },
+    {
+        name: 'exchange-index',
+        pattern: '/exchange',
+        app: 'exchange',
+    },
+    {
+        name: 'dashboard-index',
+        pattern: '/dashboard',
+        app: 'dashboard',
+    },
+    {
         name: 'suite-index',
         pattern: '/',
         app: 'wallet',
@@ -26,9 +46,30 @@ const routes = [
         app: 'onboarding',
         isStatic: true,
     },
+    // todo: app will be just settings probably
     {
-        name: 'suite-device-settings',
+        name: 'settings-index',
         pattern: '/settings',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-device',
+        pattern: '/settings/device',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-dashboard',
+        pattern: '/settings/dashboard',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-wallet',
+        pattern: '/settings/wallet',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-coins',
+        pattern: '/settings/coins',
         app: 'deviceManagement',
     },
     {
@@ -41,11 +82,6 @@ const routes = [
         name: 'suite-device-backup',
         pattern: '/backup',
         app: 'deviceManagement',
-    },
-    {
-        name: 'wallet-index',
-        pattern: '/wallet',
-        app: 'wallet',
     },
     {
         name: 'wallet-settings',

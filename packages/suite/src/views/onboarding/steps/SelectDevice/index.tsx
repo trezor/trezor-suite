@@ -1,9 +1,10 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import { H6, TrezorImage } from '@trezor/components';
+import { Translation } from '@suite-components/Translation';
+import { TrezorImage } from '@trezor/components';
+import { P } from '@trezor/components-v2';
 import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
 
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 import { Props } from './Container';
 
 const DEVICE_HEIGHT = 130;
@@ -12,7 +13,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <FormattedMessage {...l10nMessages.TR_SELECT_YOUR_DEVICE_HEADING} />
+                <Translation {...messages.TR_SELECT_YOUR_DEVICE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 <Wrapper.Options>
@@ -24,9 +25,9 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                         }}
                     >
                         <TrezorImage style={{ margin: '15px' }} model={1} height={DEVICE_HEIGHT} />
-                        <H6>
-                            <FormattedMessage {...l10nMessages.TR_MODEL_ONE} />
-                        </H6>
+                        <P weight="bold">
+                            <Translation {...messages.TR_MODEL_ONE} />
+                        </P>
                     </Option>
                     <Option
                         data-test="@onboarding/option-model-t-path"
@@ -36,9 +37,9 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                         }}
                     >
                         <TrezorImage style={{ margin: '15px' }} model={2} height={DEVICE_HEIGHT} />
-                        <H6>
-                            <FormattedMessage {...l10nMessages.TR_MODEL_T} />
-                        </H6>
+                        <P weight="bold">
+                            <Translation {...messages.TR_MODEL_T} />
+                        </P>
                     </Option>
                 </Wrapper.Options>
             </Wrapper.StepBody>

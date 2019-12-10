@@ -2,7 +2,6 @@
  * Router actions for 'next/router' used in web and desktop apps
  * Use override for react-native (@trezor/suite-native/src/actions)
  */
-
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
 import { SUITE, ROUTER } from '@suite-actions/constants';
@@ -63,7 +62,7 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 export const goto = (
     routeName: Route['name'],
     params?: RouteParams,
-    preserveParams: boolean = false,
+    preserveParams = false,
 ) => async (dispatch: Dispatch) => {
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;

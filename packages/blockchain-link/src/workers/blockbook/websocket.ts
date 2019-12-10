@@ -31,7 +31,7 @@ const DEFAULT_PING_TIMEOUT = 50 * 1000;
 export default class Socket extends EventEmitter {
     options: Options;
     ws: WebSocket | undefined;
-    messageID: number = 0;
+    messageID = 0;
     messages: Deferred<any>[] = [];
     subscriptions: Subscription[] = [];
     pingTimeout: ReturnType<typeof setTimeout> | undefined;

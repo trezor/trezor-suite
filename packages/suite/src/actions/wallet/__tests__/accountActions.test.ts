@@ -133,11 +133,13 @@ describe('Account Actions', () => {
             }),
         );
         store.dispatch(
-            accountActions.changeAccountVisibility(getAccount({
-                symbol: 'ltc',
-                path: '1',
-                visible: false,
-            }) as Account),
+            accountActions.changeAccountVisibility(
+                getAccount({
+                    symbol: 'ltc',
+                    path: '1',
+                    visible: false,
+                }) as Account,
+            ),
         );
         expect(store.getState().wallet.accounts[0]).toEqual(
             getAccount({ symbol: 'ltc', path: '1', visible: true }),
@@ -147,11 +149,13 @@ describe('Account Actions', () => {
     it('Change account visibility (account not found)', async () => {
         const store = initStore(getInitialState());
         store.dispatch(
-            accountActions.changeAccountVisibility(getAccount({
-                symbol: 'ltc',
-                path: '1',
-                visible: false,
-            }) as Account),
+            accountActions.changeAccountVisibility(
+                getAccount({
+                    symbol: 'ltc',
+                    path: '1',
+                    visible: false,
+                }) as Account,
+            ),
         );
         expect(store.getState().wallet.accounts.length).toEqual(0);
     });

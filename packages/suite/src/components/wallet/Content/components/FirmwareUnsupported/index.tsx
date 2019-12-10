@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { CoinLogo, H4, P, Button, Link, colors } from '@trezor/components';
+import { CoinLogo, colors } from '@trezor/components';
+import { Button, H2, P, Link } from '@trezor/components-v2';
 
-import { FormattedMessage } from 'react-intl';
-import { Translation } from '@suite/components/suite/Intl';
+import { Translation } from '@suite-components/Translation';
 import { ExtendedMessageDescriptor } from '@suite/types/suite';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 
 interface Props {
     symbol?: string | null;
@@ -71,15 +71,15 @@ const FirmwareUnsupported = (props: Props) => (
                     <StyledCoinLogo symbol={props.symbol} />
                 </CoinLogoWrapper>
             )}
-            <H4>
+            <H2>
                 <Translation>{props.title}</Translation>
-            </H4>
+            </H2>
             <Message>
                 <Translation>{props.message}</Translation>
             </Message>
-            <Link href={getInfoUrl(props.symbol)} variant="nostyle">
+            <Link href={getInfoUrl(props.symbol)}>
                 <Button>
-                    <FormattedMessage {...l10nMessages.TR_FIND_OUT_MORE_INFO} />
+                    <Translation {...messages.TR_FIND_OUT_MORE_INFO} />
                 </Button>
             </Link>
         </Row>

@@ -1,15 +1,14 @@
 import React from 'react';
 import { P } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
-
-import l10nMessages from './TroubleshootBootloader.messages';
+import messages from '@suite/support/messages';
+import { Translation } from '@suite-components/Translation';
 
 const TroubleshootBootloader = () => (
-    <React.Fragment>
+    <>
         <P>
-            <FormattedMessage {...l10nMessages.TR_DEVICE_IN_BOOTLOADER_MODE_INSTRUCTIONS} />
+            <Translation {...messages.TR_DEVICE_IN_BOOTLOADER_MODE_INSTRUCTIONS} />
         </P>
-    </React.Fragment>
+    </>
 );
 
 export default TroubleshootBootloader;

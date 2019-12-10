@@ -1,6 +1,6 @@
 import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
 import { WrappedComponentProps } from 'react-intl';
-import l10nMessages from '@suite-components/DeviceMenu/index.messages';
+import messages from '@suite/support/messages';
 import { TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
 
 type Transport = NonNullable<AppState['suite']['transport']>;
@@ -52,31 +52,31 @@ export const getStatusName = (
 ): string => {
     switch (deviceStatus) {
         case 'connected':
-            return intl.formatMessage(l10nMessages.TR_CONNECTED);
+            return intl.formatMessage(messages.TR_CONNECTED);
         case 'disconnected':
-            return intl.formatMessage(l10nMessages.TR_DISCONNECTED);
+            return intl.formatMessage(messages.TR_DISCONNECTED);
         case 'bootloader':
-            return intl.formatMessage(l10nMessages.TR_CONNECTED_BOOTLOADER);
+            return intl.formatMessage(messages.TR_CONNECTED_BOOTLOADER);
         case 'initialize':
-            return intl.formatMessage(l10nMessages.TR_CONNECTED_NOT_INITIALIZED);
+            return intl.formatMessage(messages.TR_CONNECTED_NOT_INITIALIZED);
         case 'seedless':
-            return intl.formatMessage(l10nMessages.TR_CONNECTED_SEEDLESS);
+            return intl.formatMessage(messages.TR_CONNECTED_SEEDLESS);
         case 'firmware-required':
-            return intl.formatMessage(l10nMessages.TR_CONNECTED_UPDATE_REQUIRED);
+            return intl.formatMessage(messages.TR_CONNECTED_UPDATE_REQUIRED);
         case 'firmware-recommended':
-            return intl.formatMessage(l10nMessages.TR_CONNECTED_UPDATE_RECOMMENDED);
+            return intl.formatMessage(messages.TR_CONNECTED_UPDATE_RECOMMENDED);
         case 'used-in-other-window':
-            return intl.formatMessage(l10nMessages.TR_USED_IN_ANOTHER_WINDOW);
+            return intl.formatMessage(messages.TR_USED_IN_ANOTHER_WINDOW);
         case 'was-used-in-other-window':
-            return intl.formatMessage(l10nMessages.TR_WAS_USED_IN_ANOTHER_WINDOW);
+            return intl.formatMessage(messages.TR_WAS_USED_IN_ANOTHER_WINDOW);
         case 'unacquired':
-            return intl.formatMessage(l10nMessages.TR_USED_IN_ANOTHER_WINDOW);
+            return intl.formatMessage(messages.TR_USED_IN_ANOTHER_WINDOW);
         case 'unavailable':
-            return intl.formatMessage(l10nMessages.TR_UNAVAILABLE);
+            return intl.formatMessage(messages.TR_UNAVAILABLE);
         case 'unreadable':
-            return intl.formatMessage(l10nMessages.TR_UNREADABLE);
+            return intl.formatMessage(messages.TR_UNREADABLE);
         default:
-            return intl.formatMessage(l10nMessages.TR_STATUS_UNKNOWN);
+            return intl.formatMessage(messages.TR_STATUS_UNKNOWN);
     }
 };
 
@@ -295,7 +295,7 @@ export const getOtherDevices = (
 export const getDeviceInstances = (
     device: TrezorDevice,
     devices: TrezorDevice[],
-    includeCurrent: boolean = false,
+    includeCurrent = false,
 ): AcquiredDevice[] => {
     if (!device || !device.features || !device.features.device_id) return [];
     return devices

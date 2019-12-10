@@ -3,108 +3,74 @@ import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
-import { FormattedMessage } from 'react-intl';
-import l10nCommonMessages from '@suite-views/index.messages';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { Link } from '@suite-components';
 import { Account } from '@wallet-types';
+import AccountNavigation from './components/AccountNavigation/Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    padding: 0 20px;
+    margin: 5px 15px;
+    padding: 10px;
     display: flex;
-    height: 55px;
-    cursor: pointer;
+    border-radius: 10px;
+    flex-direction: row;
     transition: background-color 0.3s, color 0.3s;
-    justify-content: space-between;
-
-    &:hover {
-        background-color: ${colors.GRAY_LIGHT};
-    }
-
-    &:first-child {
-        padding-top: 0;
-    }
 
     ${props =>
         props.selected &&
         css`
-            padding-left: 17px;
-            border-left: 3px solid ${colors.GREEN_PRIMARY};
-            background-color: ${colors.WHITE};
-            &:hover {
-                background-color: ${colors.WHITE};
-            }
+            /* TODO: add from components */
+            background: #fafafa;
         `}
 `;
 
-const CoinName = styled.div``;
+const CoinName = styled.div`
+    display: flex;
+    align-items: center;
+    height: 25px;
+`;
 
 const LogoWrapper = styled.div`
-    min-width: 40px;
+    padding-top: 2px;
     display: flex;
-    align-items: center;
-`;
-
-const AccountIndex = styled.div`
-    display: flex;
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-const BalanceValue = styled.div`
-    text-transform: uppercase;
-    font-size: ${variables.FONT_SIZE.BIG};
-    text-align: right;
 `;
 
 const Left = styled.div`
     display: flex;
-    align-items: center;
     justify-content: flex-start;
-`;
-
-const Name = styled.div`
-    display: flex;
-    flex-direction: column;
-    font-size: ${variables.FONT_SIZE.BIG};
-    color: ${colors.TEXT_PRIMARY};
 `;
 
 const Right = styled.div`
     display: flex;
-    flex: 1;
-    align-items: flex-end;
-    justify-content: center;
     flex-direction: column;
+    font-size: ${variables.FONT_SIZE.BIG};
+    color: ${colors.TEXT_PRIMARY};
+    padding-left: 7px;
 `;
 
 const Label = styled.span`
     display: flex;
-    justify-content: center;
+    height: 100%;
+    padding: 2px 0 0 5px;
+    align-items: center;
     text-transform: uppercase;
-    padding-right: 3px;
     font-size: ${variables.FONT_SIZE.COUNTER};
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const Balance = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const Transactions = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.COUNTER};
-    align-items: center;
-`;
-
-const TransactionsValue = styled.div`
-    display: flex;
-    padding-right: 2px;
-    align-items: center;
-`;
-
 const LabelAddon = styled.span`
     padding-right: 2px;
+`;
+
+const Balance = styled.div`
+    display: flex;
+`;
+
+const BalanceValue = styled.div``;
+
+const BalanceSymbol = styled.div`
+    padding-left: 5px;
 `;
 
 // todo make no style link component
@@ -129,61 +95,47 @@ interface Props {
     selected: boolean;
 }
 
-const Row = React.memo(({ account, hideBalance, selected }: Props) => {
+const Row = React.memo(({ account, selected }: Props) => {
     const accountType = getTypeForNetwork(account.accountType);
     return (
-        <StyledLink
-            href={getRoute('wallet-account-summary', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            })}
-        >
-            <Wrapper selected={selected}>
-                <Left>
-                    <LogoWrapper>
-                        <CoinLogo size={25} symbol={account.symbol} />
-                    </LogoWrapper>
-                    <Name>
-                        <CoinName>
-                            <FormattedMessage {...getTitleForNetwork(account.symbol)} />
-                        </CoinName>
-                        <AccountIndex>
-                            <Label>
-                                {accountType && (
-                                    <LabelAddon>
-                                        <FormattedMessage {...accountType} />
-                                    </LabelAddon>
-                                )}
-                                <FormattedMessage
-                                    {...(account.imported
-                                        ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
-                                        : l10nCommonMessages.TR_ACCOUNT_HASH)}
-                                    values={{ number: String(account.index + 1) }}
-                                />
-                            </Label>
-                        </AccountIndex>
-                    </Name>
-                </Left>
-                {!hideBalance && (
-                    <Right>
-                        <Balance>
-                            <BalanceValue>
-                                {account.formattedBalance} {account.symbol}
-                            </BalanceValue>
-                        </Balance>
-                        {account.history.total !== -1 && (
-                            <Transactions>
-                                <Label>transactions</Label>
-                                <TransactionsValue>
-                                    {account.history.total + (account.history.unconfirmed || 0)}
-                                </TransactionsValue>
-                            </Transactions>
-                        )}
-                    </Right>
-                )}
-            </Wrapper>
-        </StyledLink>
+        <Wrapper selected={selected}>
+            <Left>
+                <LogoWrapper>
+                    <CoinLogo size={20} symbol={account.symbol} />
+                </LogoWrapper>
+            </Left>
+            <Right>
+                <StyledLink
+                    href={getRoute('wallet-account-summary', {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    })}
+                >
+                    <CoinName>
+                        <Translation {...getTitleForNetwork(account.symbol)} />
+                        <Label>
+                            {accountType && (
+                                <LabelAddon>
+                                    <Translation {...accountType} />
+                                </LabelAddon>
+                            )}
+                            <Translation
+                                {...(account.imported
+                                    ? messages.TR_IMPORTED_ACCOUNT_HASH
+                                    : messages.TR_ACCOUNT_HASH)}
+                                values={{ number: String(account.index + 1) }}
+                            />
+                        </Label>
+                    </CoinName>
+                    <Balance>
+                        <BalanceValue>{account.formattedBalance}</BalanceValue>
+                        <BalanceSymbol>{account.symbol.toUpperCase()}</BalanceSymbol>
+                    </Balance>
+                </StyledLink>
+                {selected && <AccountNavigation />}
+            </Right>
+        </Wrapper>
     );
 });
 

@@ -1,3 +1,3 @@
-import Version from '@suite-views/version';
+import Version from '@suite/views/suite/version';
 
 export default Version;

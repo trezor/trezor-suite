@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, H5, H6 } from '@trezor/components';
+import { Link, H2, P } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,15 +16,14 @@ const Line = styled.div`
 
 const Version = () => (
     <Wrapper>
-        <H6>APPLICATION VERSION</H6>
-        <H5>{process.env.VERSION}</H5>
+        <P size="small" weight="bold">
+            APPLICATION VERSION
+        </P>
+        <H2>{process.env.VERSION}</H2>
         <Line />
-        <H6>LAST COMMIT HASH</H6>
-        <Link
-            variant="gray"
-            href={`https://github.com/trezor/trezor-suite/commits/${process.env.COMMITHASH}`}
-        >
-            <H5>{process.env.COMMITHASH}</H5>
+        <P>LAST COMMIT HASH</P>
+        <Link href={`https://github.com/trezor/trezor-suite/commits/${process.env.COMMITHASH}`}>
+            <H2>{process.env.COMMITHASH}</H2>
         </Link>
     </Wrapper>
 );

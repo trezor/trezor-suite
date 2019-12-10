@@ -33,7 +33,7 @@ export default class MyDocument extends Document<Props> {
                     <script
                         type="text/javascript"
                         src={resolveStaticPath('js/browserDetection.js')}
-                    ></script>
+                    />
                     <link
                         media="all"
                         rel="stylesheet"

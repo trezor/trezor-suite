@@ -7,7 +7,6 @@
     "homepage": "http://www.trezor.io",
     "main": "dist/electron.js",
     "scripts": {
-        "preinstall": "yarn workspace @trezor/suite-data copy-static-files",
         "dev:desktop": "yarn workspace @trezor/suite-data copy-static-files && electron .",
         "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
         "preelectron-pack": "yarn build",
@@ -25,7 +24,7 @@
         "appId": "io.trezor.TrezorSuite",
         "productName": "TrezorSuite",
         "copyright": "Copyright © year ${author}",
-        "asar": false,
+        "asar": true,
         "electronVersion": "7.1.1",
         "directories": {
             "output": "build-electron"
@@ -56,7 +55,9 @@
             "artifactName": "${productName}-${version}.${ext}",
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
-            "target": "tar.gz"
+            "target": [
+                "zip"
+            ]
         },
         "win": {
             "icon": "build/static/images/suite/icons/64x64.png",
@@ -73,25 +74,24 @@
         "electron-is-dev": "^1.1.0",
         "electron-localshortcut": "^3.2.0",
         "electron-next": "^3.1.5",
+        "electron-store": "^5.1.0",
         "os": "^0.1.1",
         "ps-list": "6.3.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.0.0",
         "@sentry/browser": "^5.4.0",
         "@types/electron-localshortcut": "^3.1.0",
-        "@types/next": "^8.0.6",
-        "@types/next-redux-wrapper": "^2.0.2",
+        "@types/next": "^9.0.0",
+        "@types/next-redux-wrapper": "^3.0.0",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.0.8",
         "electron": "^7.1.1",
         "electron-builder": "22.1.0",
-        "git-revision-webpack-plugin": "^3.0.3",
-        "next": "^9.0.5",
-        "next-plugin-custom-babel-config": "^1.0.0",
-        "next-redux-wrapper": "^3.0.0-alpha.2",
-        "next-transpile-modules": "^2.0.0",
-        "rimraf": "^2.6.3"
+        "git-revision-webpack-plugin": "^3.0.4",
+        "next": "^9.1.4",
+        "next-plugin-custom-babel-config": "^1.0.2",
+        "next-redux-wrapper": "^4.0.1",
+        "next-transpile-modules": "^2.3.1"
     }
 }

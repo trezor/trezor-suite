@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input, TextArea, Button, colors, variables } from '@trezor/components';
+import { Input, TextArea, colors, variables } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import Title from '@wallet-components/Title';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
-import { FormattedMessage, WrappedComponentProps } from 'react-intl';
-
-import l10nCommonMessages from '@wallet-views/messages';
-import l10nMessages from './index.messages';
+import { WrappedComponentProps } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { StateProps, DispatchProps } from './Container';
 
 const Wrapper = styled.div`
@@ -116,11 +116,11 @@ class SignVerify extends Component<Props> {
                 <Wrapper>
                     <Sign>
                         <Title>
-                            <FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE} />
+                            <Translation {...messages.TR_SIGN_MESSAGE} />
                         </Title>
                         <Row>
                             <Input
-                                topLabel={intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
+                                topLabel={intl.formatMessage(messages.TR_ADDRESS)}
                                 name="signAddress"
                                 value=""
                                 // value={account.descriptor}
@@ -130,7 +130,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <TextArea
-                                topLabel={intl.formatMessage(l10nMessages.TR_MESSAGE)}
+                                topLabel={intl.formatMessage(messages.TR_MESSAGE)}
                                 name="signMessage"
                                 value={signMessage}
                                 onChange={this.handleInputChange}
@@ -141,7 +141,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <TextArea
-                                topLabel={intl.formatMessage(l10nMessages.TR_SIGNATURE)}
+                                topLabel={intl.formatMessage(messages.TR_SIGNATURE)}
                                 name="signSignature"
                                 value={signSignature}
                                 rows={4}
@@ -153,9 +153,9 @@ class SignVerify extends Component<Props> {
                         <RowButtons>
                             <StyledButton
                                 onClick={this.props.signVerifyActions.clearSign}
-                                variant="white"
+                                variant="secondary"
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
+                                <Translation {...messages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!device.connected}
@@ -165,17 +165,17 @@ class SignVerify extends Component<Props> {
                                 //      signVerifyActions.sign(account.accountPath, signMessage)
                                 // }
                             >
-                                <FormattedMessage {...l10nMessages.TR_SIGN} />
+                                <Translation {...messages.TR_SIGN} />
                             </StyledButton>
                         </RowButtons>
                     </Sign>
                     <Verify>
                         <Title>
-                            <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE} />
+                            <Translation {...messages.TR_VERIFY_MESSAGE} />
                         </Title>
                         <Row>
                             <Input
-                                topLabel={intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
+                                topLabel={intl.formatMessage(messages.TR_ADDRESS)}
                                 name="verifyAddress"
                                 value={verifyAddress}
                                 onChange={this.handleInputChange}
@@ -186,7 +186,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <TextArea
-                                topLabel={intl.formatMessage(l10nMessages.TR_MESSAGE)}
+                                topLabel={intl.formatMessage(messages.TR_MESSAGE)}
                                 name="verifyMessage"
                                 value={verifyMessage}
                                 onChange={this.handleInputChange}
@@ -197,7 +197,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <TextArea
-                                topLabel={intl.formatMessage(l10nMessages.TR_SIGNATURE)}
+                                topLabel={intl.formatMessage(messages.TR_SIGNATURE)}
                                 name="verifySignature"
                                 value={verifySignature}
                                 onChange={this.handleInputChange}
@@ -207,8 +207,8 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton onClick={signVerifyActions.clearVerify} variant="white">
-                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
+                            <StyledButton onClick={signVerifyActions.clearVerify}>
+                                <Translation {...messages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!!verifyAddressError || !device.connected}
@@ -223,7 +223,7 @@ class SignVerify extends Component<Props> {
                                     }
                                 }}
                             >
-                                <FormattedMessage {...l10nMessages.TR_VERIFY} />
+                                <Translation {...messages.TR_VERIFY} />
                             </StyledButton>
                         </RowButtons>
                     </Verify>

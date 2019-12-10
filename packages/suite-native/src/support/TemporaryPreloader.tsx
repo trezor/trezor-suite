@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
 import { H1, P } from '@trezor/components';
-import Discovery from '@wallet-components/Discovery';
 import { AppState, Dispatch } from '@suite-types';
 
 interface Props {
@@ -12,14 +11,6 @@ interface Props {
     dispatch: Dispatch;
     isStatic: boolean;
 }
-
-const styles = StyleSheet.create({
-    wrapper: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-    },
-});
 
 const Preloader: React.FunctionComponent<Props> = props => {
     const { loaded, error, dispatch, isStatic } = props;
@@ -31,7 +22,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
 
     if (error) {
         return (
-            <View style={styles.wrapper}>
+            <View>
                 <H1>Failed to load Trezor Suite</H1>
                 <P>Ups, something went wrong. Details: {error}</P>
             </View>
@@ -41,10 +32,9 @@ const Preloader: React.FunctionComponent<Props> = props => {
     if (isStatic) return <View>{props.children}</View>;
 
     return (
-        <View style={styles.wrapper}>
-            <H1>Loading</H1>
-            {/* <Discovery /> */}
-            <View>{loaded && props.children}</View>
+        <View style={{ flex: 1 }}>
+            {!loaded && <H1>Loading</H1>}
+            {loaded && props.children}
         </View>
     );
 };

@@ -6,7 +6,7 @@ import AccountName from '@wallet-components/AccountName';
 
 import { StateProps, DispatchProps } from './Container';
 import { Content, LayoutAccount } from '@wallet-components';
-import messages from '@wallet-views/account/send/messages';
+import messages from '@suite/support/messages';
 
 import {
     Address,

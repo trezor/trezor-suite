@@ -2,9 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Button, ButtonPin, InputPin } from '@trezor/components';
 
-import { FormattedMessage } from 'react-intl';
-
-import globalMessages from '@suite-support/Messages';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     max-width: 240px;
@@ -144,7 +143,7 @@ const PinInput = (props: Props) => {
 
             <PinFooter>
                 <Button onClick={() => onPinSubmit(pin)}>
-                    <FormattedMessage {...globalMessages.TR_ENTER_PIN} />
+                    <Translation {...messages.TR_ENTER_PIN} />
                 </Button>
             </PinFooter>
         </Wrapper>

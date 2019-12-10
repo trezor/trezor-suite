@@ -1,10 +1,11 @@
 import React from 'react';
-import { Translation } from '@suite-components/Intl';
+import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
-import { Button, H5, Link, P, CoinLogo } from '@trezor/components';
+import { CoinLogo } from '@trezor/components';
+import { Button, H2, Link, P } from '@trezor/components-v2';
 import { Network, ExternalNetwork } from '@wallet-types';
-import l10nMessages from './messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -23,13 +24,13 @@ const StyledCoinLogo = styled(CoinLogo)`
 const getHeader = (symbol: ExternalNetwork['symbol']) => {
     switch (symbol) {
         case 'xem':
-            return l10nMessages.TR_NEM_WALLET;
+            return messages.TR_NEM_WALLET;
         case 'xlm':
-            return l10nMessages.TR_STELLAR_WALLET;
+            return messages.TR_STELLAR_WALLET;
         case 'ada':
-            return l10nMessages.TR_CARDANO_WALLET;
+            return messages.TR_CARDANO_WALLET;
         case 'xtz':
-            return l10nMessages.TR_TEZOS_WALLET;
+            return messages.TR_TEZOS_WALLET;
         // no default
     }
 };
@@ -45,16 +46,16 @@ const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
     return (
         <Wrapper>
             <StyledCoinLogo size={64} symbol={symbol} />
-            <H5>
+            <H2>
                 <Translation>{getHeader(symbol)}</Translation>
-            </H5>
+            </H2>
             <P size="small">
-                <Translation>{l10nMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL}</Translation>
+                <Translation>{messages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL}</Translation>
             </P>
 
-            <Link href={url} variant="nostyle">
-                <StyledButton fullWidth onClick={onCancel}>
-                    <Translation>{l10nMessages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
+            <Link href={url}>
+                <StyledButton onClick={onCancel} fullWidth>
+                    <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
                 </StyledButton>
             </Link>
         </Wrapper>

@@ -1,6 +1,7 @@
 /* eslint-disable radix */
 import React, { useMemo } from 'react';
-import { FormattedDate, FormattedMessage } from 'react-intl';
+import { FormattedDate } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { H5, P, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
@@ -8,7 +9,7 @@ import { groupTransactionsByDate, parseKey } from '@wallet-utils/transactionUtil
 import { SETTINGS } from '@suite-config';
 import TransactionItem from '../TransactionItem';
 import Pagination from '../Pagination';
-import l10nMessages from '../../index.messages';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div``;
 
@@ -51,9 +52,16 @@ const TransactionList = ({
         startIndex,
         stopIndex,
     ]);
+
     const transactionsByDate = useMemo(() => groupTransactionsByDate(slicedTransactions), [
         slicedTransactions,
     ]);
+
+    // if totalPages is 1 do not render pagination
+    // if totalPages is undefined check current page and number of txs (e.g. XRP)
+    // Edge case: if there is exactly 25 txs, pagination will be displayed
+    const isOnLastPage = slicedTransactions.length < SETTINGS.TXS_PER_PAGE;
+    const showPagination = totalPages ? totalPages > 1 : currentPage === 1 && !isOnLastPage;
 
     return (
         <Wrapper>
@@ -63,7 +71,7 @@ const TransactionList = ({
                         <StyledH5>
                             {dateKey === 'pending' ? (
                                 <P>
-                                    <FormattedMessage {...l10nMessages.TR_PENDING} />
+                                    <Translation {...messages.TR_PENDING} />
                                 </P>
                             ) : (
                                 <FormattedDate
@@ -84,12 +92,14 @@ const TransactionList = ({
                     </React.Fragment>
                 ))}
             </Transactions>
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                isOnLastPage={slicedTransactions.length < SETTINGS.TXS_PER_PAGE}
-                onPageSelected={onPageSelected}
-            />
+            {showPagination && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    isOnLastPage={isOnLastPage}
+                    onPageSelected={onPageSelected}
+                />
+            )}
         </Wrapper>
     );
 };

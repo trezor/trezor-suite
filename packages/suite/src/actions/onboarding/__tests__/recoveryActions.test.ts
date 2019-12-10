@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-object-literal-type-assertion */
-
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 

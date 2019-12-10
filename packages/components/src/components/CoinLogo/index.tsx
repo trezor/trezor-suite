@@ -29,7 +29,7 @@ const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => {
                     svg.setAttribute('width', `${size}px`);
                     svg.setAttribute('height', `${size}px`);
                 }}
-                loading={() => <span className="loading"></span>}
+                loading={() => <span className="loading" />}
             />
         </SvgWrapper>
     );

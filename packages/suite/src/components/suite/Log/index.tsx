@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, Tooltip, H5, P, Icon, Modal, colors } from '@trezor/components';
-import { FormattedMessage } from 'react-intl';
+import { Tooltip, Icon, Modal, colors } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
 
 import * as logActions from '@suite-actions/logActions';
 import { AppState, Dispatch } from '@suite-types';
-import l10nMessages from './index.messages';
+import messages from '@suite/support/messages';
 import { useKeyPress } from '@suite-utils/dom';
 
 interface Props {
@@ -79,7 +80,7 @@ const Log = (props: Props) => {
 
     const copyBtn = (
         <ButtonCopy onClick={() => props.copyToClipboard()}>
-            <FormattedMessage {...l10nMessages.TR_COPY_TO_CLIPBOARD} />
+            <Translation {...messages.TR_COPY_TO_CLIPBOARD} />
         </ButtonCopy>
     );
     return (
@@ -88,11 +89,11 @@ const Log = (props: Props) => {
                 <Click onClick={props.toggle}>
                     <Icon size={12} color={colors.INFO_PRIMARY} icon="CLOSE" />
                 </Click>
-                <H5>
-                    <FormattedMessage {...l10nMessages.TR_LOG} />
-                </H5>
+                <H2>
+                    <Translation {...messages.TR_LOG} />
+                </H2>
                 <StyledParagraph size="small">
-                    <FormattedMessage {...l10nMessages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
+                    <Translation {...messages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
                 </StyledParagraph>
                 <LogWrapper>{JSON.stringify(props.log.entries)}</LogWrapper>
                 {props.log.copied ? (
@@ -100,7 +101,7 @@ const Log = (props: Props) => {
                         <Tooltip
                             maxWidth={285}
                             placement="top"
-                            content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
+                            content={<Translation {...messages.TR_COPIED} />}
                             onHidden={props.resetCopyState}
                         >
                             {copyBtn}

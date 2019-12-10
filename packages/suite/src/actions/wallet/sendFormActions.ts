@@ -62,10 +62,7 @@ export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
     storageActions.saveSendForm(sendFormState, id);
 };
 
-export const compose = (setMax: boolean = false) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
     const account = getState().wallet.selectedAccount.account as Account;
 

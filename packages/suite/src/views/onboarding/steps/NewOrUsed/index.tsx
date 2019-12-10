@@ -1,11 +1,9 @@
 import React from 'react';
-// import { FormattedMessage } from 'react-intl';
-import { H6 } from '@trezor/components';
+import { P } from '@trezor/components-v2';
 
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { Props } from './Container';
-// import l10nMessages from './index.messages';
 
 const NewOrUsedStep = (props: Props) => {
     const handleNewDeviceOnClick = () => {
@@ -27,7 +25,7 @@ const NewOrUsedStep = (props: Props) => {
             <Wrapper.StepBody>
                 <Wrapper.Options>
                     <Option>
-                        <H6>I have a new device</H6>
+                        <P weight="bold">I have a new device</P>
                         <Text>Sealed package that you just bought or received</Text>
                         <OnboardingButton.Cta
                             data-test="@onboarding/button-new-path"
@@ -40,7 +38,7 @@ const NewOrUsedStep = (props: Props) => {
                     </Option>
 
                     <Option>
-                        <H6>I have a used device</H6>
+                        <P weight="bold">I have a used device</P>
                         <Text>Unpacked device that has been already used before</Text>
                         <OnboardingButton.Alt
                             data-test="@onboarding/button-used-path"

@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, P } from '@trezor/components';
+import { P } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import * as backupActions from '@suite-actions/backupActions';
 import * as routerActions from '@suite-actions/routerActions';
 import styled from 'styled-components';
@@ -72,7 +73,4 @@ const Backup = (props: Props) => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Backup);
+export default connect(mapStateToProps, mapDispatchToProps)(Backup);

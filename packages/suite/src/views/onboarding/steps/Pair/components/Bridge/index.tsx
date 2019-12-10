@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { Select, Link } from '@trezor/components';
-import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { Select } from '@trezor/components';
+import { Link } from '@trezor/components-v2';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { Translation } from '@suite-components/Translation';
 
 import { goToSubStep, goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
-import l10nCommonMessages from '@suite-support/Messages';
-
-import l10nCommonBridgeMessages from '@suite-views/bridge/index.messages';
+import messages from '@suite/support/messages';
 import { Loaders, Text, OnboardingButton, Wrapper } from '@onboarding-components';
-import l10nMessages from './index.messages';
 import { AppState } from '@suite-types';
 
 const PageWrapper = styled.div``;
@@ -95,18 +94,18 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
             <PageWrapper data-test="@onboarding/bridge">
                 <Text size="small">
                     {status === 'installed' && (
-                        <FormattedMessage
-                            {...l10nMessages.TR_TREZOR_BRIDGE_IS_RUNNING_VERSION}
+                        <Translation
+                            {...messages.TR_TREZOR_BRIDGE_IS_RUNNING_VERSION}
                             values={{ version: this.props.transport!.version }}
                         />
                     )}
                     {status !== 'installed' && (
-                        <FormattedMessage {...l10nMessages.TR_TREZOR_BRIDGE_IS_NOT_RUNNING} />
+                        <Translation {...messages.TR_TREZOR_BRIDGE_IS_NOT_RUNNING} />
                     )}
                 </Text>
 
                 <Text>
-                    <FormattedMessage {...l10nMessages.TR_BRIDGE_SUBHEADING} />
+                    <Translation {...messages.TR_BRIDGE_SUBHEADING} />
                 </Text>
 
                 {status === null && (
@@ -118,9 +117,9 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                             onChange={(v: Installer) => this.onChange(v)}
                             options={installers}
                         />
-                        <Link href={`${uri}${target.value}`} variant="nostyle">
+                        <Link href={`${uri}${target.value}`}>
                             <OnboardingButton.Cta onClick={() => this.download()}>
-                                <FormattedMessage {...l10nMessages.TR_DOWNLOAD} />
+                                <Translation {...messages.TR_DOWNLOAD} />
                             </OnboardingButton.Cta>
                         </Link>
                     </Download>
@@ -130,26 +129,22 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                     <>
                         <Text>1.</Text>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_WAIT_FOR_FILE_TO_DOWNLOAD} />
+                            <Translation {...messages.TR_WAIT_FOR_FILE_TO_DOWNLOAD} />
                         </Text>
                         {target.signature && (
                             <Text>
                                 <Link href={uri + target.signature}>
-                                    <FormattedMessage
-                                        {...l10nCommonBridgeMessages.TR_CHECK_PGP_SIGNATURE}
-                                    />
+                                    <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
                                 </Link>
                             </Text>
                         )}
                         <Text>2.</Text>
                         <Text>
-                            <FormattedMessage
-                                {...l10nMessages.TR_DOUBLE_CLICK_IT_TO_RUN_INSTALLER}
-                            />
+                            <Translation {...messages.TR_DOUBLE_CLICK_IT_TO_RUN_INSTALLER} />
                         </Text>
                         <Text>3.</Text>
                         <Text>
-                            <FormattedMessage {...l10nMessages.TR_DETECTING_BRIDGE} />
+                            <Translation {...messages.TR_DETECTING_BRIDGE} />
                             <Loaders.Dots maxCount={3} />
                         </Text>
                     </>
@@ -161,7 +156,7 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                             <OnboardingButton.Cta
                                 onClick={() => this.props.onboardingActions.goToNextStep()}
                             >
-                                <FormattedMessage {...l10nCommonMessages.TR_CONTINUE} />
+                                <Translation {...messages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>

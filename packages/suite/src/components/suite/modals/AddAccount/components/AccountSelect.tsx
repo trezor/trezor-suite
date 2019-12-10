@@ -1,12 +1,12 @@
-import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import styled from 'styled-components';
-import { Button, variables, colors } from '@trezor/components';
-import { getTypeForNetwork } from '@wallet-utils/accountUtils';
-import l10nCommonMessages from '@suite-views/index.messages';
-import { Network, ExternalNetwork, Account } from '@wallet-types';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { colors, variables } from '@trezor/components';
+import { Button } from '@trezor/components-v2';
 import { NETWORKS } from '@wallet-config';
-import l10nMessages from '../messages';
+import { Account, ExternalNetwork, Network } from '@wallet-types';
+import { getTypeForNetwork } from '@wallet-utils/accountUtils';
+import React from 'react';
+import styled from 'styled-components';
 
 interface Props {
     selectedNetwork?: Network | ExternalNetwork;
@@ -19,11 +19,6 @@ interface Props {
 const StyledButton = styled(Button)`
     margin: 4px 0px;
 `;
-
-// keeping it here in case we want to add some texts
-// const StyledP = styled(P)`
-//     margin: 20px 0;
-// `;
 
 const AccountNameWrapper = styled.div`
     display: flex;
@@ -50,9 +45,9 @@ const EnableNetwork = (props: {
     onEnableNetwork: Props['onEnableNetwork'];
 }) => (
     <>
-        <StyledButton fullWidth onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
-            <FormattedMessage
-                {...l10nMessages.TR_ENABLE_NETWORK_BUTTON}
+        <StyledButton onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}>
+            <Translation
+                {...messages.TR_ENABLE_NETWORK_BUTTON}
                 values={{ networkName: props.selectedNetwork.name }}
             />
         </StyledButton>
@@ -90,9 +85,7 @@ const AccountButton = (props: {
     return (
         <StyledButton
             icon="PLUS"
-            fullWidth
-            align="left"
-            variant="white"
+            variant="secondary"
             isDisabled={!enabled}
             onClick={() => props.onEnableAccount(account)}
         >
@@ -100,13 +93,13 @@ const AccountButton = (props: {
                 <AccountName>
                     {accountType && (
                         <LabelAddon>
-                            <FormattedMessage {...accountType} />
+                            <Translation {...accountType} />
                         </LabelAddon>
                     )}
-                    <FormattedMessage
+                    <Translation
                         {...(account.imported
-                            ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
-                            : l10nCommonMessages.TR_ACCOUNT_HASH)}
+                            ? messages.TR_IMPORTED_ACCOUNT_HASH
+                            : messages.TR_ACCOUNT_HASH)}
                         values={{ number: String(index) }}
                     />
                 </AccountName>

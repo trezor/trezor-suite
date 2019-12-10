@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable @typescript-eslint/no-object-literal-type-assertion */
 
 import { UI, DEVICE } from 'trezor-connect';
 import * as STEP from '@onboarding-constants/steps';
