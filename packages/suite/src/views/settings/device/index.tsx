@@ -5,10 +5,10 @@ import { Input, Switch, Icon } from '@trezor/components';
 import { Button, P, H1, H2 } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { elementToHomescreen } from '@suite-utils/homescreen';
-import { SettingsLayout } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
+import { SuiteLayout, SettingsMenu } from '@suite-components';
 
 import { Props } from './Container';
 
@@ -124,7 +124,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     ] as const;
 
     return (
-        <SettingsLayout title="Settings">
+        <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
             <Row>
                 <H1 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
@@ -285,7 +285,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 { name: 'passphrase_source', type: 'number' }, is not in features, so probably skip for now ?
                 { name: 'auto_lock_delay_ms', type: 'number' }, is not implemented, skip for now.
             */}
-        </SettingsLayout>
+        </SuiteLayout>
     );
 };
 
