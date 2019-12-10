@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import Backdrop from '@suite-components/Backdrop';
 import { toggleSidebar } from '@suite-actions/suiteActions';
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
+import { colors } from '@trezor/components-v2';
+
 import { AppState } from '@suite-types';
 
 const { SCREEN_SIZE } = variables;
@@ -22,6 +24,8 @@ type WrapperProps = Pick<Props, 'isOpen'>;
 const AbsoluteWrapper = styled.aside<WrapperProps>`
     width: 240px;
     background: ${colors.WHITE};
+    box-shadow: 2px 0px 3px rgb(0, 0, 0, 0.1);
+    margin-right: 3px;
 `;
 
 const Wrapper = styled.div`
