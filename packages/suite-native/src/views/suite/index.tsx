@@ -105,7 +105,7 @@ const Index = (props: Props) => {
             <Button
                 title="device settings"
                 onPress={() => {
-                    props.goto(getRoute('suite-device-settings'));
+                    props.goto(getRoute('settings-index'));
                 }}
             />
         </View>

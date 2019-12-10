@@ -4,11 +4,13 @@ import { CustomError } from '../../constants/errors';
 import { MESSAGES, RESPONSES } from '../../constants';
 
 import * as MessageTypes from '../../types/messages';
-import { Message, SubscriptionAccountInfo, AccountInfo } from '../../types';
+import { Message, Response, SubscriptionAccountInfo, AccountInfo } from '../../types';
 import * as utils from './utils';
 import WorkerCommon from '../common';
 
-const common = new WorkerCommon();
+declare function postMessage(data: Response): void;
+
+const common = new WorkerCommon(postMessage);
 
 let rippleApi: RippleAPI | undefined;
 let pingTimeout: ReturnType<typeof setTimeout>;
