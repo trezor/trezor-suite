@@ -2165,6 +2165,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'Your Trezor is not backed up',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     },
+    TR_ETH_GAS_LIMIT_NOT_NUMBER: {
+        defaultMessage: 'Gas limit is not a number',
+        id: 'TR_ETH_GAS_LIMIT_NOT_NUMBER',
+    },
+    TR_ETH_GAS_PRICE_NOT_NUMBER: {
+        defaultMessage: 'Gas price is not a number',
+        id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
+    },
+    TR_ETH_DATA_NOT_HEX: {
+        defaultMessage: 'Data is not hex',
+        id: 'TR_ETH_DATA_NOT_HEX',
+    },
 });
 
 export default definedMessages;
