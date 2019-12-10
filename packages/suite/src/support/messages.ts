@@ -1,9 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    CANNOT_SEND_TO_MYSELF: {
+    TR_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
-        id: 'CANNOT_SEND_TO_MYSELF',
+        id: 'TR_CANNOT_SEND_TO_MYSELF',
     },
     TR_ACCOUNT_DISCOVERY_ERROR: {
         defaultMessage: 'Account discovery error',
@@ -221,10 +221,6 @@ const definedMessages = defineMessages({
     TR_CANCEL: {
         defaultMessage: 'Cancel',
         id: 'TR_CANCEL',
-    },
-    TR_CANNOT_SEND_TO_MYSELF: {
-        defaultMessage: 'Cannot send to myself',
-        id: 'CANNOT_SEND_TO_MYSELF',
     },
     TR_CARDANO_WALLET: {
         defaultMessage: 'Cardano wallet',
@@ -2207,6 +2203,10 @@ const definedMessages = defineMessages({
     TR_ADD_HIDDEN_WALLET: {
         id: 'TR_ADD_HIDDEN_WALLET',
         defaultMessage: 'Add hidden wallet',
+    },
+    TR_RECIPIENT_ADDRESS: {
+        id: 'TR_RECIPIENT_ADDRESS',
+        defaultMessage: 'Recipient address',
     },
 });
 

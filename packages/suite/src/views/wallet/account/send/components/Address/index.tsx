@@ -46,7 +46,7 @@ const getMessage = (
         case VALIDATION_ERRORS.NOT_VALID:
             return <Translation>{messages.TR_ADDRESS_IS_NOT_VALID}</Translation>;
         case VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF:
-            return <Translation>{messages.CANNOT_SEND_TO_MYSELF}</Translation>;
+            return <Translation>{messages.TR_CANNOT_SEND_TO_MYSELF}</Translation>;
         default:
             return undefined;
     }
@@ -57,7 +57,7 @@ const Address = (props: Props) => (
         state={getInputState(props.error, props.address)}
         display="block"
         monospace
-        topLabel={props.intl.formatMessage(messages.TR_ADDRESS)}
+        topLabel={props.intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
         // @ts-ignore
         bottomText={getMessage(
             props.error,
