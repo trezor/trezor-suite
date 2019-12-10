@@ -21420,13 +21420,13 @@ traverse@0.6.6, traverse@>=0.2.4:
   resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.3.9.tgz#717b8f220cc0bb7b44e40514c22b2e8bbc70d8b9"
   integrity sha1-cXuPIgzAu3tE5AUUwisui7xw2Lk=
 
-trezor-connect@8.0.10-extended:
-  version "8.0.10-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.0.10-extended.tgz#18fc933f5fff4a2773d95476c546ec8ddf014b7b"
-  integrity sha512-qKAHdUQwbFzML0NtpIOrOCmbTGJmCjxzBfhjSO1HIujz1uzJA1ZskaQXpVpNlUb215qbVBOCMOnRTzB2qNI3mw==
+trezor-connect@8.0.11-extended:
+  version "8.0.11-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.0.11-extended.tgz#6daaa6a26663e39633d42a0437efbcc24d81670b"
+  integrity sha512-ZkOtnIwWWVHSaBIt6bDRHH9PKxi6FWX6Yp8NDCv5J1Z3T5Fci7rNJTB5RjQhXUrDDV4PN0QHjbpdbTZ5SeSOzw==
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@trezor/blockchain-link" "^1.0.5"
+    "@trezor/blockchain-link" "^1.0.6"
     "@trezor/utxo-lib" "^0.0.2"
     bchaddrjs "^0.4.4"
     bignumber.js "^9.0.0"
@@ -21437,13 +21437,13 @@ trezor-connect@8.0.10-extended:
     node-fetch "^2.6.0"
     parse-uri "^1.0.0"
     tiny-worker "^2.3.0"
-    trezor-link "1.6.6"
+    trezor-link "1.6.7"
     whatwg-fetch "^3.0.0"
 
-trezor-link@1.6.6:
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/trezor-link/-/trezor-link-1.6.6.tgz#61b90f20f579be70537cb76dd2e3e390a6aa71e5"
-  integrity sha512-GzbK+8Q+onK836eVJSAd3ewao2VxtKO8KBx53leKtDvnO2Hgw8QzOEjxvfIZ0LJIhmoNJkm6sbyxezX4R3Pduw==
+trezor-link@1.6.7:
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/trezor-link/-/trezor-link-1.6.7.tgz#674a80d1efbc44db2908b77fbfb3c56e0d5ecdb4"
+  integrity sha512-Eqi8OFd4eI+c1KTsGTONt4K4P2Lba6ijXx8S1cHuvPGV5UYj65+PiG/e9Ze4OVuHPvWKk4ilYOCcUPEmDZYYDA==
   dependencies:
     bigi "^1.4.1"
     ecurve "^1.0.3"

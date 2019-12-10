@@ -3,12 +3,14 @@ import { MESSAGES, RESPONSES } from '../../constants';
 import Connection from './websocket';
 import * as utils from './utils';
 
-import { Message, SubscriptionAccountInfo } from '../../types';
+import { Message, Response, SubscriptionAccountInfo } from '../../types';
 import { AddressNotification, BlockNotification } from '../../types/blockbook';
 import * as MessageTypes from '../../types/messages';
 import WorkerCommon from '../common';
 
-const common = new WorkerCommon();
+declare function postMessage(data: Response): void;
+
+const common = new WorkerCommon(postMessage);
 
 let api: Connection | undefined;
 let endpoints: string[] = [];

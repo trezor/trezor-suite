@@ -2,40 +2,47 @@
 /* eslint-disable */
 module.exports = function (source, map, foo, bar) {
     this.cacheable();
-    // prevent handshake
-    var clean = source.replace('"use strict"', '').replace('common.handshake', '// common.handshake');
+    // disable handshake sent from Worker, handshake will be called from BlockchainLinkWorker module constructor (below)
+    var clean = source.replace('common.handshake();', '');
 
     return `
-// BlockchainLinkWorker: pack worker file into function
+// BlockchainLinkWorker: wrap whole worker file into function to allow multiple initializations
 function initModule(postFn) {
-    // create references for global methods used in worker
+    // create missing references for worker globals
     var onmessage;
-    var postMessage = function() {};
-    // worker content
+    var postMessage = postFn;
+    // worker content start
     ${clean}
-    // use BlockchainLinkWorker callback
-    common.post = postFn;
-    // return this onmessage method
+    // worker content end
+    // return worker "onmessage" function to BlockchainLinkWorker module
     return onmessage;
 };
 
-// prepare Worker class
+// Module with an interface of the Web Worker
 var BlockchainLinkWorker = (function () {
     function BlockchainLinkWorker() {
         var _this = this;
-        // pass worker postMessage to parent
-        // _this.onmessage couldn't be bind at this point
-        // this function is provided after this constructor
-        var onMessage = initModule(function (data) {
+        // Names are confusing:
+        // _this.onmessage   - listener set by parent who initialize Worker. Reflection of Worker.postMessage. Passes data from Worker to parent
+        // _this.postMessage - listener declared inside Worker. Reflection of Worker.onmessage. Passes data from parent to Worker
+
+        // _this.onmessage couldn't be bind at this point yet since it will be set later by parent
+        var workerPostMessage = function (data) {
             _this.onmessage({ data: data });
-        });
-        // pass parent message to worker
-        this.postMessage = function(data) {
-            onMessage({ data: data });
         }
-        // init communication
+    
+        // init Worker module
+        // pass custom "postMessage" function to Worker and get Worker.onmessage reference
+        var workerOnMessage = initModule(workerPostMessage);
+        
+        // send message from parent to Worker
+        _this.postMessage = function(data) {
+            workerOnMessage({ data: data });
+        }
+        // send handshake to parent
+        // timeout is necessary here since Worker.onmessage listener is set after this constructor
         setTimeout(function () {
-            _this.onmessage({ data: { id: -1, type: 'm_handshake' } });
+            workerPostMessage({ id: -1, type: 'm_handshake' });
         }, 100);
     }
     BlockchainLinkWorker.prototype.postMessage = function (message) {};
