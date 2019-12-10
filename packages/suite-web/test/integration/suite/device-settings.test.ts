@@ -35,7 +35,7 @@ describe('Device settings happy path', () => {
         // there is probably a short period of time before discovery-stop event
         // is propagated and cypress sometimes is fast enough to run into
         // call in progress error;
-        cy.wait(1000);
+        cy.wait(2000);
         cy.getTestElement('@suite/settings/device/label-submit').click();
         cy.getConfirmActionOnDeviceModal();
 
