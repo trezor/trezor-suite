@@ -11,11 +11,9 @@ const LoaderWrapper = styled.div`
 `;
 
 const Loading = () => (
-    <SuiteLayout isLanding>
         <LoaderWrapper>
             <Loader text="Loading" size={100} strokeWidth={1} />
         </LoaderWrapper>
-    </SuiteLayout>
 );
 
 export default Loading;

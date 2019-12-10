@@ -39,7 +39,11 @@ const Index = (props: Props) => {
     if (!loaded || !transport) {
         // still loading or
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while).
-        return <Loading />;
+        return (
+            <SuiteLayout isLanding>
+                <Loading />
+            </SuiteLayout>
+        );
     }
 
     if (!transport.type) {
