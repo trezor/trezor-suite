@@ -1,4 +1,4 @@
-# weird stuff, notes and issues
+# Weird stuff, notes and issues
 
 - [Android emulator no internet](https://stackoverflow.com/questions/42736038/android-emulator-not-able-to-access-the-internet)
 
@@ -8,7 +8,7 @@
 
 - [Tests for custom hooks in suite are ignored (modulePathIgnorePatterns: '<rootDir>/src/utils/suite/hooks')](./packages/suite/jest.config.js)
 
-## things to do in future
+## Things to do in future
 
 ### Bridge in electron
 - package.json > "build": { "asar": false } required
@@ -41,3 +41,6 @@ Output:
 `
 
 At the moment, we target these by adding image level cache of troublesome packages to Docker image. See coment in `ci/docker/base/Dockerfile`
+
+## Tests
+- All suite tests use **UTC timezone** (set in [jest.config.js#L2](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/jest.config.js#L2))

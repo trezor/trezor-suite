@@ -1,6 +1,10 @@
 import * as utils from '../date';
 
 describe('Date utils', () => {
+    test('timezone should always be UTC', () => {
+        expect(new Date().getTimezoneOffset()).toBe(0);
+    });
+
     test('format duration', () => {
         expect(utils.formatDuration(1)).toBe('less than 5 seconds');
         expect(utils.formatDuration(3600)).toBe('about 1 hour');
