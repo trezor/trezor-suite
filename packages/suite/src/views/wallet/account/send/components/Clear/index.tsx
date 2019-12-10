@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, colors as oldColors } from '@trezor/components';
 
-import { StateProps, DispatchProps } from '../../Container';
+import { DispatchProps } from '../../Container';
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
@@ -26,7 +26,11 @@ const ClearText = styled.div`
     padding-top: 2px;
 `;
 
-const Clear = (props: StateProps & DispatchProps) => (
+interface Props {
+    sendFormActions: DispatchProps['sendFormActions'];
+}
+
+const Clear = (props: Props) => (
     <Wrapper>
         <In onClick={() => props.sendFormActions.clear()}>
             <StyledIcon size={10} color={oldColors.TEXT_SECONDARY} icon="CLOSE" />
