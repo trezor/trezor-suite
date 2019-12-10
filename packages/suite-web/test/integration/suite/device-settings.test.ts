@@ -1,8 +1,8 @@
 import CONSTANTS from '../../constants';
 
 // todo: does not work now as device settings is not available in the new design yet.
-describe.skip('Device settings happy path', () => {
-    // Note that running this beforeEach makes tests run about 5 times longer.
+describe('Device settings happy path', () => {
+    // Note that running this beforeEach makes tests run about 5 (I guess) times longer.
     beforeEach(() => {
         cy.task('startBridge')
             .task('startEmu')
@@ -15,8 +15,9 @@ describe.skip('Device settings happy path', () => {
             .getTestElement('button-use-wallet')
             .click()
             .walletShouldLoad()
-            .toggleDeviceMenu()
-            .getTestElement('@suite/menu-item/device-settings')
+            .getTestElement('@suite/menu/settings')
+            .click({ force: true })
+            .getTestElement('@suite/settings/menu/device')
             .click();
     });
 
@@ -25,9 +26,7 @@ describe.skip('Device settings happy path', () => {
     });
 
     it('change device label', () => {
-        cy.get('html').screenshot('0');
-
-        cy.getTestElement('@suite/device-settings/label-input')
+        cy.getTestElement('@suite/settings/device/label-input')
             .should('have.value', CONSTANTS.DEFAULT_TREZOR_LABEL)
             .clear()
             .type('My Tenzor');
@@ -37,10 +36,18 @@ describe.skip('Device settings happy path', () => {
         // is propagated and cypress sometimes is fast enough to run into
         // call in progress error;
         // It is probably enough to implement device lock.
-        cy.wait(1000);
-        cy.getTestElement('@suite/device-settings/label-submit').click();
+        // cy.wait(1000);
+        cy.getTestElement('@suite/settings/device/label-submit').click();
         cy.getConfirmActionOnDeviceModal();
 
+        cy.task('sendDecision', { method: 'applySettings' });
+        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
+    });
+
+    it('turn on passphrase protection', () => {
+        cy.getTestElement('@suite/settings/device/passphrase-switch')
+            .click({ force: true })
+            .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
         cy.getConfirmActionOnDeviceModal().should('not.be.visible');
     });
@@ -49,7 +56,7 @@ describe.skip('Device settings happy path', () => {
     // it.skip('turn on pin protection', () => {
     //     cy
     //         .getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible')
-    //         .getTestElement('@suite/device-settings/pin-switch')
+    //         .getTestElement('@suite/settings/device/pin-switch')
     //         .click({ force: true })
     //         .getTestElement('@suite/modal/confirm-action-on-device');
     //     cy.task('sendDecision', { method: 'applySettings' });
@@ -57,11 +64,6 @@ describe.skip('Device settings happy path', () => {
     //         .getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible')
     // });
 
-    it('turn on passphrase protection', () => {
-        cy.getTestElement('@suite/device-settings/passphrase-switch')
-            .click({ force: true })
-            .getConfirmActionOnDeviceModal();
-        cy.task('sendDecision', { method: 'applySettings' });
-        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
-    });
+    // TODO: change rotation
+    // TODO: change background
 });

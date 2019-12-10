@@ -126,7 +126,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     console.log('render');
 
     return (
-        <SettingsLayout title="Settings" data-test="@suite/device-settings/page">
+        <SettingsLayout title="Settings">
             <Row>
                 <H1 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
@@ -142,7 +142,8 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <StyledInput
-                        data-test="@suite/device-settings/label-input"
+                        data-test="@suite/settings/device/label-input"
+                        isDisabled={uiLocked}
                         value={label}
                         onChange={(event: React.FormEvent<HTMLInputElement>) =>
                             setLabel(event.currentTarget.value)
@@ -151,7 +152,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     <ActionButton
                         isDisabled={uiLocked}
                         onClick={() => applySettings({ label })}
-                        data-test="@suite/device-settings/label-submit"
+                        data-test="@suite/settings/device/label-submit"
                     >
                         <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}</Translation>
                     </ActionButton>
@@ -216,7 +217,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <Switch
-                        data-test="@suite/device-settings/pin-switch"
+                        data-test="@suite/settings/device/pin-switch"
                         checkedIcon={false}
                         uncheckedIcon={false}
                         onChange={checked => {
@@ -236,7 +237,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <Switch
-                        data-test="@suite/device-settings/passphrase-switch"
+                        data-test="@suite/settings/device/passphrase-switch"
                         checkedIcon={false}
                         uncheckedIcon={false}
                         onChange={checked => {
@@ -266,6 +267,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     <ActionColumn>
                         {DISPLAY_ROTATIONS.map(variant => (
                             <OrientationButton
+                                isDisabled={uiLocked}
                                 key={variant.icon}
                                 variant="secondary"
                                 onClick={() =>
