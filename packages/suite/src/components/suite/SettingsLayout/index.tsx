@@ -47,7 +47,7 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 const SettingsLayout = (props: Props) => {
     const showSidebar = true;
     return (
-        <SuiteLayout showSuiteHeader title={props.title}>
+        <SuiteLayout title={props.title}>
             <Wrapper>
                 <MenuSecondary isOpen={showSidebar}>
                     <Menu />

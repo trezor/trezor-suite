@@ -50,7 +50,7 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 
 const WalletLayout = (props: Props) => {
     return (
-        <SuiteLayout showSuiteHeader title={props.title}>
+        <SuiteLayout title={props.title}>
             <Wrapper data-test="@wallet/layout">
                 <ProgressBar />
                 <MenuSecondary isOpen={props.suite.showSidebar}>
