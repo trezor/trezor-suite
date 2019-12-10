@@ -13,10 +13,7 @@
         "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
         "build": "build-storybook -s ./public -c .storybook -o .build",
         "type-check": "tsc --project tsconfig.types.json",
-        "type-check:watch": "yarn type-check -- --watch",
-        "ci:test:snapshots": "cypress run",
-        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots",
-        "ci:test:open": "cypress open"
+        "type-check:watch": "yarn type-check -- --watch"
     },
     "dependencies": {
         "@storybook/addon-actions": "^5.0.10",
