@@ -248,6 +248,7 @@ const Onboarding = (props: Props) => {
 
     return (
         <>
+            wtf odkud to bere suitelayout?
             <ModalContainer />
             <ModalWindow>
                 <Head>

@@ -9,7 +9,6 @@ import Preloader from './Preloader';
 import StaticPageWrapper from './StaticPageWrapper';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
-import SettingsLayout from './SettingsLayout';
 import Notification from './Notification';
 import PinInput from './PinInput';
 import SettingsMenu from './SettingsMenu';
@@ -26,7 +25,6 @@ export {
     StaticPageWrapper,
     FormattedNumber,
     SuiteLayout,
-    SettingsLayout,
     Notification,
     PinInput,
     SettingsMenu,

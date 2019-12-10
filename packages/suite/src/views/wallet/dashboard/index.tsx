@@ -4,7 +4,6 @@ import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { Loader, Icon, colors } from '@trezor/components';
 import { H2 } from '@trezor/components-v2';
-import WalletLayout from '@wallet-components/WalletLayout';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Network, Account } from '@wallet-types';
@@ -70,42 +69,36 @@ const Dashboard = (props: Props) => {
     const isLoading = !discovery || accounts.length < 1;
 
     return (
-        <WalletLayout title="Dashboard">
-            <Content data-test="Dashboard__page__content">
-                <H2>Dashboard</H2>
-                {isLoading && (
-                    <LoadingContent>
-                        <Loader size={30} />
-                    </LoadingContent>
-                )}
-                {!isLoading && (
-                    <CardsWrapper>
-                        {Object.keys(group).map(symbol => {
-                            const network = NETWORKS.find(
-                                n => n.symbol === symbol && !n.accountType,
-                            ) as Network;
-                            return (
-                                <NetworkGroup
-                                    key={symbol}
-                                    network={network}
-                                    accounts={group[symbol]}
-                                />
-                            );
-                        })}
-                        <AddMoreCoins
-                            onClick={() => {
-                                props.goto('wallet-settings');
-                            }}
-                        >
-                            <IconWrapper>
-                                <Icon icon="PLUS" size={10} color={colors.TEXT_SECONDARY} />
-                            </IconWrapper>
-                            <Translation {...messages.TR_ADD_MORE_COINS} />
-                        </AddMoreCoins>
-                    </CardsWrapper>
-                )}
-            </Content>
-        </WalletLayout>
+        <Content data-test="Dashboard__page__content">
+            <H2>Dashboard</H2>
+            {isLoading && (
+                <LoadingContent>
+                    <Loader size={30} />
+                </LoadingContent>
+            )}
+            {!isLoading && (
+                <CardsWrapper>
+                    {Object.keys(group).map(symbol => {
+                        const network = NETWORKS.find(
+                            n => n.symbol === symbol && !n.accountType,
+                        ) as Network;
+                        return (
+                            <NetworkGroup key={symbol} network={network} accounts={group[symbol]} />
+                        );
+                    })}
+                    <AddMoreCoins
+                        onClick={() => {
+                            props.goto('wallet-settings');
+                        }}
+                    >
+                        <IconWrapper>
+                            <Icon icon="PLUS" size={10} color={colors.TEXT_SECONDARY} />
+                        </IconWrapper>
+                        <Translation {...messages.TR_ADD_MORE_COINS} />
+                    </AddMoreCoins>
+                </CardsWrapper>
+            )}
+        </Content>
     );
 };
 

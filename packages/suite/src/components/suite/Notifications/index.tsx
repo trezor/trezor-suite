@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
@@ -18,6 +19,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
+const Wrapper = styled.div`
+    margin: 10px;
+    width: 300px;
+`;
+
 export type Props = {
     children?: React.ReactNode;
 } & ReturnType<typeof mapStateToProps> &
@@ -25,14 +31,26 @@ export type Props = {
 
 const Notifications = (props: Props & WrappedComponentProps) => (
     <>
-        <OnlineStatus isOnline={props.suite.online} />
-        <UpdateBridge transport={props.suite.transport} goto={props.goto} />
-        <UpdateFirmware
-            device={props.suite.device}
-            pathname={props.router.pathname}
-            goto={props.goto}
-        />
-        <NoBackup device={props.suite.device} pathname={props.router.pathname} goto={props.goto} />
+        <Wrapper>
+            <OnlineStatus isOnline={props.suite.online} />
+        </Wrapper>
+        <Wrapper>
+            <UpdateBridge transport={props.suite.transport} goto={props.goto} />
+        </Wrapper>
+        <Wrapper>
+            <UpdateFirmware
+                device={props.suite.device}
+                pathname={props.router.pathname}
+                goto={props.goto}
+            />
+        </Wrapper>
+        <Wrapper>
+            <NoBackup
+                device={props.suite.device}
+                pathname={props.router.pathname}
+                goto={props.goto}
+            />
+        </Wrapper>
         {/* TODO: add Failed backup */}
         {/* TODO: add Pin not set */}
     </>
