@@ -147,15 +147,6 @@ const reducerActions = [
         ],
     },
     {
-        description: `requestForgetDevice (just for coverage)`,
-        actions: [suiteActions.requestForgetDevice(getSuiteDevice())],
-        result: [
-            {
-                online: true,
-            },
-        ],
-    },
-    {
         description: `requestDeviceInstance (just for coverage)`,
         actions: [suiteActions.requestDeviceInstance(getSuiteDevice())],
         result: [
