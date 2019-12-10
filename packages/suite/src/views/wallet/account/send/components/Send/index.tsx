@@ -26,8 +26,6 @@ const Send = styled(Button)`
     min-width: 200px;
 `;
 
-const Clear = styled(Button)``;
-
 interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
     sendFormActionsBitcoin: DispatchProps['sendFormActionsBitcoin'];
@@ -112,9 +110,6 @@ const getSendText = (
 
 const SendAndClear = (props: Props) => (
     <Wrapper>
-        <Clear variant="secondary" onClick={() => props.sendFormActions.clear()}>
-            <Translation>{messages.TR_CLEAR}</Translation>
-        </Clear>
         {props.networkType === 'bitcoin' && (
             <Button variant="secondary" onClick={() => props.sendFormActionsBitcoin.addRecipient()}>
                 <Translation>{messages.TR_ADD_RECIPIENT}</Translation>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, colors } from '@trezor/components';
+import { Icon, colors as oldColors } from '@trezor/components';
+import { colors } from '@trezor/components-v2';
 import { Output } from '@wallet-types/sendForm';
 import AccountName from '@wallet-components/AccountName';
 
@@ -8,14 +9,13 @@ import { StateProps, DispatchProps } from './Container';
 import { Content, LayoutAccount } from '@wallet-components';
 import messages from '@suite/support/messages';
 
-import {
-    Address,
-    Amount,
-    Fee,
-    SendAndClear,
-    AdditionalForm,
-    ButtonToggleAdditional,
-} from './components';
+import Address from './components/Address';
+import Amount from './components/Amount';
+import Clear from './components/Clear';
+import Fee from './components/Fee';
+import SendButton from './components/Send';
+import AdditionalForm from './components/AdditionalForm';
+import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 
 const Row = styled.div`
     display: flex;
@@ -45,7 +45,9 @@ const StyledIcon = styled(Icon)`
 `;
 
 const OutputWrapper = styled.div`
-    padding: 0 0 30px 0;
+    padding: 23px 40px;
+    border-radius: 6px;
+    background: ${colors.BLACK96};
 `;
 
 const Send = (props: StateProps & DispatchProps) => {
@@ -88,11 +90,12 @@ const Send = (props: StateProps & DispatchProps) => {
             <AccountName account={account} message={accountNameMessage} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
+                    <Clear sendFormActions={sendFormActions} />
                     <SlimRow isOnlyOne={send.outputs.length === 1}>
                         <StyledIcon
                             onClick={() => props.sendFormActionsBitcoin.removeRecipient(output.id)}
                             size={10}
-                            color={colors.TEXT_SECONDARY}
+                            color={oldColors.TEXT_SECONDARY}
                             icon="CLOSE"
                         />
                     </SlimRow>
@@ -141,7 +144,7 @@ const Send = (props: StateProps & DispatchProps) => {
                 {send.isAdditionalFormVisible && (
                     <AdditionalForm networkType={network.networkType} />
                 )}
-                <SendAndClear
+                <SendButton
                     isComposing={send.isComposing}
                     send={send}
                     suite={suite}
