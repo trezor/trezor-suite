@@ -17,6 +17,7 @@ import MenuSecondary from '@suite/components/suite/MenuSecondary';
 const PageWrapper = styled.div`
     display: flex;
     flex: 1;
+    height: 100vh;
 `;
 
 const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
@@ -24,6 +25,7 @@ const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     flex-direction: column;
+    overflow: auto;
 `;
 
 const ExperimentalNotificationsWrapper = styled.div`
