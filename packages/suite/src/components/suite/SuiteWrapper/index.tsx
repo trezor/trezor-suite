@@ -70,7 +70,7 @@ const Index = (props: Props) => {
 
     if (device.features && device.mode === 'initialize') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="initialize-message">Device is not set up.</P>
                 <Button onClick={() => goto('onboarding-index')}>Go to setup wizard</Button>
             </SuiteLayout>
@@ -86,7 +86,7 @@ const Index = (props: Props) => {
         device.features.firmware_present === false
     ) {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="no-firmware-message">Device has no firmware installed. </P>
                 <Button onClick={() => goto('onboarding-index')}>Go to setup wizard</Button>
             </SuiteLayout>
@@ -96,7 +96,7 @@ const Index = (props: Props) => {
     // general bootloader case, has firmware installed
     if (device.features && device.mode === 'bootloader') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="bootloader-message">Device is in bootloader mode. Reconnect it.</P>
                 <Button onClick={() => goto('suite-device-firmware')}>Or go to firmware</Button>
             </SuiteLayout>
@@ -105,7 +105,7 @@ const Index = (props: Props) => {
 
     if (device.type === 'unreadable') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="unreadable-device-message">
                     We cant see details about your device. It might be Trezor with old firmware or
                     possibly any USB device. To make communication possible, you will need to
@@ -118,7 +118,7 @@ const Index = (props: Props) => {
 
     if (device.features && device.firmware === 'required') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="firmware-required-message">
                     Your device has firmware that is no longer supported. You will need to update
                     it.{' '}
@@ -130,7 +130,7 @@ const Index = (props: Props) => {
 
     if (device.features && device.mode === 'seedless') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="seedles-message">
                     Your device is in seedless mode and is not allowed to be used with this wallet.
                 </P>
