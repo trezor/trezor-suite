@@ -35,8 +35,7 @@ describe('Device settings happy path', () => {
         // there is probably a short period of time before discovery-stop event
         // is propagated and cypress sometimes is fast enough to run into
         // call in progress error;
-        // It is probably enough to implement device lock.
-        // cy.wait(1000);
+        cy.wait(1000);
         cy.getTestElement('@suite/settings/device/label-submit').click();
         cy.getConfirmActionOnDeviceModal();
 
