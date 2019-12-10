@@ -25,7 +25,6 @@ import ConfirmAction from './confirm/Action';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import ForgetDevice from './Forget';
 import RequestInstance from './RequestInstance';
 import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
@@ -116,22 +115,15 @@ const getDeviceContextModal = (props: Props) => {
                 />
             );
 
-        case SUITE.REQUEST_FORGET_DEVICE:
-            return (
-                <ForgetDevice
-                    device={modal.device as AcquiredDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-
         case SUITE.REQUEST_DEVICE_INSTANCE:
             return (
+                // TODO: DELETE or implement new design once it's ready
+                // Used to be triggered from function 'requestDeviceInstance' fired on 'add hidden wallet' btn in 'SwitchDeviceModal'
                 <RequestInstance
-                    device={device as AcquiredDevice}
+                    device={modal.device as AcquiredDevice}
                     instance={deviceUtils.getNewInstanceNumber(
                         props.devices,
-                        device as AcquiredDevice,
+                        modal.device as AcquiredDevice,
                     )}
                     onCreateInstance={modalActions.onCreateDeviceInstance}
                     onCancel={modalActions.onCancel}

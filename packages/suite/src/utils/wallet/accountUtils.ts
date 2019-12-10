@@ -188,6 +188,11 @@ export const getAccountDevice = (devices: AppState['devices'], account: Account)
     return device;
 };
 
+export const getDeviceAccounts = (device: AppState['devices'][number], accounts: Account[]) => {
+    const deviceAccs = accounts.filter(a => a.deviceState === device.state);
+    return deviceAccs;
+};
+
 export const getSelectedAccount = (
     accounts: Account[],
     device: AppState['suite']['device'],
@@ -235,6 +240,12 @@ export const getAccountTransactions = (
 ) => {
     const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     return transactions[accountHash] || [];
+};
+
+export const countUniqueCoins = (accounts: Account[]) => {
+    const coins = new Set();
+    accounts.forEach(acc => coins.add(acc.symbol));
+    return coins.size;
 };
 
 /**

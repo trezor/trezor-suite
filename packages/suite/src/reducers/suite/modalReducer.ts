@@ -67,7 +67,6 @@ export default (state: State = initialState, action: Action): State => {
                 windowType: action.payload.view,
             };
         case SUITE.REQUEST_REMEMBER_DEVICE:
-        case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
         case SUITE.REQUEST_PASSPHRASE_MODE:
         case SUITE.REQUEST_DISCONNECT_DEVICE:
