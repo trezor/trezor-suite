@@ -11,6 +11,7 @@ const Wrapper = styled.div`
     background: ${colors.BLACK17};
     width: 120px;
     display: flex;
+    height: 100vh;
     flex-direction: column;
 `;
 
