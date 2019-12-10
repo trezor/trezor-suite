@@ -21,7 +21,6 @@ type WrapperProps = Pick<Props, 'isOpen'>;
 
 const AbsoluteWrapper = styled.aside<WrapperProps>`
     width: 240px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     background: ${colors.WHITE};
 `;
 
@@ -29,7 +28,6 @@ const Wrapper = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         height: calc(100vh - 52px);
     }

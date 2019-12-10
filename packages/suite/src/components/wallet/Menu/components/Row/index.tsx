@@ -10,8 +10,10 @@ import { Account } from '@wallet-types';
 import AccountNavigation from './components/AccountNavigation/Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    padding: 10px 20px;
+    margin: 5px 15px;
+    padding: 10px;
     display: flex;
+    border-radius: 10px;
     flex-direction: row;
     transition: background-color 0.3s, color 0.3s;
 
