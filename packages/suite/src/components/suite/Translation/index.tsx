@@ -48,9 +48,12 @@ const Translation = (props: ChildrenType | MsgType) => {
     if (isMsgType(props)) {
         Object.keys(props.values || []).forEach(key => {
             // Iterates through all values. The entry may also contain a MessageDescriptor.
-            // Renders MessageDescriptor by passing it to `Translation` component
-            // It also works for string values as 'Translation' just renders its children in case the children is not MessageDescriptor
-            values[key] = <Translation>{props.values![key]}</Translation>;
+            // If so, Renders MessageDescriptor by passing it to `Translation` component
+            values[key] = isChildrenMessageDescriptor(props.values![key]) ? (
+                <Translation>{props.values![key]}</Translation>
+            ) : (
+                props.values![key]
+            );
         });
 
         // pass undefined to a 'values' prop in case of an empty values object
@@ -66,7 +69,8 @@ const Translation = (props: ChildrenType | MsgType) => {
     if (isChildrenType(props) && isChildrenMessageDescriptor(props.children)) {
         Object.keys(props.children.values || []).forEach(key => {
             // @ts-ignore
-            values[key] = <Translation>{props.children.values[key]}</Translation>;
+            const val = props.children.values[key];
+            values[key] = isChildrenMessageDescriptor(val) ? <Translation>{val}</Translation> : val;
         });
 
         return (

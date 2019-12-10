@@ -5,7 +5,7 @@ import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
 import { MENU_PADDING } from '@suite-constants/menu';
-import DeviceModal from './components/DeviceModal/Container';
+import DeviceModal from '../DeviceModal/Container';
 
 const Wrapper = styled.div`
     padding: ${MENU_PADDING}px 10px;

@@ -203,20 +203,6 @@ export default [
         },
     },
     {
-        description: 'SUITE.REQUEST_FORGET_DEVICE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_FORGET_DEVICE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_FORGET_DEVICE,
-        },
-    },
-    {
         description: 'SUITE.REQUEST_DEVICE_INSTANCE',
         initialState,
         actions: [
