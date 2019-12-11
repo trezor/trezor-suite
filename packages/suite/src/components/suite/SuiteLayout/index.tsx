@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { colors } from '@trezor/components';
 import Modals from '@suite-components/modals';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import SuiteNotifications from '@suite-components/Notifications';
+// import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';

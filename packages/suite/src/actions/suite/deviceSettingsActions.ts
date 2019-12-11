@@ -1,9 +1,14 @@
 import TrezorConnect, { ApplySettingsParams, ChangePinParams, CommonParams } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
-import { SUITE } from '@suite-actions/constants';
-import { Dispatch, GetState } from '@suite-types';
+import { SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
+import { Dispatch, GetState, AcquiredDevice } from '@suite-types';
 
 //  TODO: should be reworked to deviceManagementActions
+
+export type DeviceSettingsActions = {
+    type: typeof DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL;
+    payload: AcquiredDevice;
+};
 
 export const applySettings = (params: ApplySettingsParams) => async (
     dispatch: Dispatch,
@@ -67,4 +72,13 @@ export const wipeDevice = (params: CommonParams) => async (
             payload: device,
         });
     }
+};
+
+export const openBackgroundGalleryModal = () => (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+    if (!device || !device.features) return;
+    dispatch({
+        type: DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL,
+        payload: device,
+    });
 };
