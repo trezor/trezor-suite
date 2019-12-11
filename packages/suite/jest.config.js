@@ -1,3 +1,6 @@
+// all tests have same UTC timezone
+process.env.TZ = 'UTC';
+
 module.exports = {
     roots: ['./src'],
     globals: {

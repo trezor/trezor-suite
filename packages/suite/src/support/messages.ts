@@ -2165,6 +2165,37 @@ const definedMessages = defineMessages({
         defaultMessage: 'Your Trezor is not backed up',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     },
+    TR_SWITCH_DEVICE: {
+        id: 'TR_SWITCH_DEVICE',
+        defaultMessage: 'Switch Device',
+    },
+    TR_THIS_IS_PLACE_TO_SEE_ALL: {
+        id: 'TR_THIS_IS_PLACE_TO_SEE_ALL',
+        defaultMessage:
+            'This is a place to see all your devices. You can further set them up in Settings but here you can switch between devices and see their statuses.',
+    },
+    TR_FORGET: {
+        id: 'TR_FORGET',
+        defaultMessage: 'Forget',
+    },
+    TR_UNDISCOVERED_WALLET: {
+        id: 'TR_UNDISCOVERED_WALLET',
+        defaultMessage: 'Undiscovered wallet',
+    },
+    TR_CONNECT_TO_DISCOVER: {
+        id: 'TR_CONNECT_TO_DISCOVER',
+        defaultMessage: 'Connect to discover',
+    },
+    TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE: {
+        id: 'TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE',
+        defaultMessage:
+            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} - {coinsCount} {coinsCount, plural, one {coin} other {coins}} - {fiatValue}',
+        description: 'Used as title for a wallet instance in Switch Device modal',
+    },
+    TR_ADD_HIDDEN_WALLET: {
+        id: 'TR_ADD_HIDDEN_WALLET',
+        defaultMessage: 'Add hidden wallet',
+    },
 });
 
 export default definedMessages;
