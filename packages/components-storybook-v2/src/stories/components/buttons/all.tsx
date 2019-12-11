@@ -28,10 +28,10 @@ storiesOf('Buttons', module).add(
             <Wrapper>
                 {variants.map(variant => {
                     return (
-                        <Row>
+                        <Row key={variant}>
                             {sizes.map(size => {
                                 return (
-                                    <ButtonWrapper>
+                                    <ButtonWrapper key={size}>
                                         <Button
                                             variant={variant as 'primary' | 'secondary'}
                                             size={size as 'small' | 'medium' | 'large'}
