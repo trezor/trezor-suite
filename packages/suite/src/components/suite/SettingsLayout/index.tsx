@@ -1,38 +1,63 @@
 import React from 'react';
-import styled from 'styled-components';
-import WalletNotifications from '@wallet-components/Notifications';
+import styled, { css } from 'styled-components';
 import { SuiteLayout } from '@suite-components';
+import MenuSecondary from '@suite/components/suite/MenuSecondary';
+
+import { variables } from '@trezor/components';
+// import { AppState } from '@suite-types';
+import { Menu } from '@suite-components/SettingsLayout/components';
+
+const { SCREEN_SIZE } = variables;
+
+// should not we have AppLayout component????
 
 interface Props {
     title: string;
     children?: React.ReactNode;
 }
 
+// TODO: duplicity with WalletLayout start
+
 const Wrapper = styled.div`
     display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    margin: 0 auto;
     width: 100%;
-    max-width: 800px;
-    padding: 20px 35px 40px 35px;
+    flex: 1;
+    flex-direction: row;
 `;
 
-const Layout = styled.div`
+const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
     display: flex;
-    width: 100%;
-    max-width: 1170px;
     flex-direction: column;
+    flex: 1 1 0%;
+    overflow: auto;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        ${props =>
+            props.preventBgScroll &&
+            css`
+                position: fixed;
+                width: 100%;
+                min-height: calc(100vh - 52px);
+            `}
+    }
 `;
+
+// TODO: duplicity with WalletLayout end
 
 const SettingsLayout = (props: Props) => {
+    const showSidebar = true;
     return (
-        <SuiteLayout showSuiteHeader disableSidebar title={props.title}>
-            <Layout>
-                <WalletNotifications />
-                <Wrapper>{props.children}</Wrapper>
-            </Layout>
+        <SuiteLayout showSuiteHeader title={props.title}>
+            <Wrapper>
+                <MenuSecondary isOpen={showSidebar}>
+                    <Menu />
+                </MenuSecondary>
+                <ContentWrapper preventBgScroll={showSidebar}>
+                    {/* <WalletNotifications /> */}
+                    {/* settings notifications? not sure */}
+                    {props.children}
+                </ContentWrapper>
+            </Wrapper>
         </SuiteLayout>
     );
 };

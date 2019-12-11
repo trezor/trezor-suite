@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { Switch, Select, Tooltip, Icon, colors, variables } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
 import messages from '@suite/support/messages';
-import WalletLayout from '@wallet-components/WalletLayout';
+import SettingsLayout from '@suite-components/SettingsLayout';
 import { FIAT } from '@suite-config';
 import Coins from './components/Coins';
 import { Props } from './Container';
@@ -77,7 +77,7 @@ const buildCurrencyOption = (currency: string) => {
 };
 
 const WalletSettings = (props: Props & WrappedComponentProps) => (
-    <WalletLayout title="Settings">
+    <SettingsLayout title="Settings">
         <CloseWrapper>
             <Button onClick={() => props.goto('wallet-index')} variant="tertiary" icon="CROSS" />
         </CloseWrapper>
@@ -135,7 +135,7 @@ const WalletSettings = (props: Props & WrappedComponentProps) => (
                 </Button>
             </Buttons>
         </Actions>
-    </WalletLayout>
+    </SettingsLayout>
 );
 
 export default WalletSettings;

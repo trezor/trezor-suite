@@ -24,12 +24,12 @@
         "react-json-tree": "^0.11.0",
         "react-transition-group": "^2.3.1",
         "stringify-object": "^3.3.0",
-        "trezor-connect": "8.0.10-extended"
+        "trezor-connect": "8.0.11-extended"
     },
     "devDependencies": {
         "@cypress/webpack-preprocessor": "^4.1.1",
         "babel-loader": "^8.0.0",
-        "copy-webpack-plugin": "5.0.5",
+        "copy-webpack-plugin": "5.1.0",
         "cross-env": "^6.0.3",
         "css-loader": "3.2.0",
         "file-loader": "^5.0.2",

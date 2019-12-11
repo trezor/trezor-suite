@@ -7,6 +7,7 @@ import { Link } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
+import { getDateWithTimeZone } from '@suite/utils/suite/date';
 
 const Wrapper = styled.div`
     display: flex;
@@ -174,7 +175,7 @@ const TransactionItem = React.memo(
                     <Timestamp href={explorerUrl}>
                         {blockHeight !== 0 && blockTime && blockTime > 0 && (
                             <FormattedDate
-                                value={new Date(blockTime * 1000)}
+                                value={getDateWithTimeZone(blockTime * 1000)}
                                 hour="numeric"
                                 minute="numeric"
                             />

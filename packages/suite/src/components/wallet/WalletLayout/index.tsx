@@ -4,10 +4,11 @@ import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
-import Sidebar from './components/Sidebar';
+import MenuSecondary from '@suite/components/suite/MenuSecondary';
 import ProgressBar from './components/ProgressBar';
 import { AppState } from '@suite-types';
 import { SuiteLayout } from '@suite-components';
+import Menu from '@wallet-components/Menu';
 
 const { SCREEN_SIZE } = variables;
 
@@ -52,7 +53,9 @@ const WalletLayout = (props: Props) => {
         <SuiteLayout showSuiteHeader title={props.title}>
             <Wrapper data-test="@wallet/layout">
                 <ProgressBar />
-                <Sidebar isOpen={props.suite.showSidebar} />
+                <MenuSecondary isOpen={props.suite.showSidebar}>
+                    <Menu />
+                </MenuSecondary>
                 <ContentWrapper preventBgScroll={props.suite.showSidebar}>
                     <WalletNotifications />
                     <Content>{props.children}</Content>

@@ -21,7 +21,6 @@ export type SuiteActions =
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof SUITE.REQUEST_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice; name?: string }
-    | { type: typeof SUITE.REQUEST_FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
@@ -120,16 +119,6 @@ export const lockDevice = (payload: boolean): Action => ({
  */
 export const lockRouter = (payload: boolean): Action => ({
     type: SUITE.LOCK_ROUTER,
-    payload,
-});
-
-/**
- * Called from user action in `@suite-components/DeviceMenu`
- * Show modal with possible decisions
- * @param {TrezorDevice} payload
- */
-export const requestForgetDevice = (payload: TrezorDevice) => ({
-    type: SUITE.REQUEST_FORGET_DEVICE,
     payload,
 });
 
