@@ -22,13 +22,6 @@ type Props = {
     children?: React.ReactNode;
 } & ReturnType<typeof mapStateToProps>;
 
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    flex: 1;
-    flex-direction: row;
-`;
-
 const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
     display: flex;
     flex-direction: column;
@@ -49,13 +42,11 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 const WalletLayout = (props: Props) => {
     return (
         <SuiteLayout title={props.title || 'Trezor Suite | Wallet'} secondaryMenu={<Menu />}>
-            <Wrapper data-test="@wallet/layout">
+            <ContentWrapper preventBgScroll={props.suite.showSidebar}>
                 <ProgressBar />
-                <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-                    <WalletNotifications />
-                    <Content>{props.children}</Content>
-                </ContentWrapper>
-            </Wrapper>
+                <WalletNotifications />
+                <Content>{props.children}</Content>
+            </ContentWrapper>
         </SuiteLayout>
     );
 };

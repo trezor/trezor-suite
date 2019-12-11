@@ -18,15 +18,21 @@ const PageWrapper = styled.div`
     display: flex;
     flex: 1;
     height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
 `;
 
 const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
-    flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     flex-direction: column;
     overflow: auto;
+    flex: 1 1 0%;
 `;
+// display: flex;
+// flex-direction: column;
+// flex: 1 1 0%;
+// overflow: auto;
 
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
@@ -59,7 +65,7 @@ const SuiteLayout = (props: Props) => {
                 )}
                 <AppWrapper isLanding={props.isLanding}>
                     <>
-                        {!props.disableNotifications && <SuiteNotifications />}
+                        {/* {!props.disableNotifications && <SuiteNotifications />} */}
                         <Log />
                         {props.children}
                     </>
