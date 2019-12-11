@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-// import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { colors } from '@trezor/components';
 import Modals from '@suite-components/modals';
@@ -29,10 +28,6 @@ const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     overflow: auto;
     flex: 1 1 0%;
 `;
-// display: flex;
-// flex-direction: column;
-// flex: 1 1 0%;
-// overflow: auto;
 
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
@@ -65,6 +60,7 @@ const SuiteLayout = (props: Props) => {
                 )}
                 <AppWrapper isLanding={props.isLanding}>
                     <>
+                        {/* notifications disabled now. lets redo them into new design */}
                         {/* {!props.disableNotifications && <SuiteNotifications />} */}
                         <Log />
                         {props.children}
@@ -76,5 +72,4 @@ const SuiteLayout = (props: Props) => {
     );
 };
 
-// export default injectIntl(SuiteLayout);
 export default connect(mapStateToProps)(SuiteLayout);
