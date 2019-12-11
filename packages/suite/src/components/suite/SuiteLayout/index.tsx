@@ -28,12 +28,6 @@ const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     overflow: auto;
 `;
 
-const ExperimentalNotificationsWrapper = styled.div`
-    position: fixed;
-    right: 0;
-    bottom: 0;
-`;
-
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
 });
@@ -65,11 +59,7 @@ const SuiteLayout = (props: Props) => {
                 )}
                 <AppWrapper isLanding={props.isLanding}>
                     <>
-                        {!props.disableNotifications && (
-                            <ExperimentalNotificationsWrapper>
-                                <SuiteNotifications />
-                            </ExperimentalNotificationsWrapper>
-                        )}
+                        {!props.disableNotifications && <SuiteNotifications />}
                         <Log />
                         {props.children}
                     </>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import Backdrop from '@suite-components/Backdrop';
 import { toggleSidebar } from '@suite-actions/suiteActions';
