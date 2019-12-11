@@ -6,9 +6,9 @@ const projectRoot = resolve(__dirname);
 const packagesRoot = resolve(projectRoot, '../');
 
 const paths = {
-    web: join(packagesRoot, 'suite-web', 'static'),
-    desktop: join(packagesRoot, 'suite-desktop', 'static'),
-    native: join(packagesRoot, 'suite-native', 'static'),
+    web: join(packagesRoot, 'suite-web', 'public', 'static'),
+    desktop: join(packagesRoot, 'suite-desktop', 'public', 'static'),
+    native: join(packagesRoot, 'suite-native', 'public', 'static'),
 };
 
 const copyFiles = (from: string, to: string) => {
