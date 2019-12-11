@@ -1,6 +1,5 @@
 import CONSTANTS from '../../constants';
 
-// todo: does not work now as device settings is not available in the new design yet.
 describe('Device settings happy path', () => {
     // Note that running this beforeEach makes tests run about 5 (I guess) times longer.
     beforeEach(() => {
@@ -18,7 +17,12 @@ describe('Device settings happy path', () => {
             .getTestElement('@suite/menu/settings')
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')
-            .click();
+            .click()
+            // TODO:
+            // altough all buttons have isDisabled based on uiLocks, somehow cypress (in CI only) is
+            // too fast and manages to trigger new call to device while calls from discovery process
+            // are not stopped yet. dont know much how to debug it.
+            .wait(500);
     });
 
     after(() => {
@@ -31,11 +35,6 @@ describe('Device settings happy path', () => {
             .clear()
             .type('My Tenzor');
 
-        // TODO:
-        // there is probably a short period of time before discovery-stop event
-        // is propagated and cypress sometimes is fast enough to run into
-        // call in progress error;
-        cy.wait(2000);
         cy.getTestElement('@suite/settings/device/label-submit').click();
         cy.getConfirmActionOnDeviceModal();
 
