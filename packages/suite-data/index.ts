@@ -1,5 +1,6 @@
 import config from './config';
 import * as fs from 'fs-extra';
+import * as rm from 'rimraf';
 import { resolve, join } from 'path';
 
 const projectRoot = resolve(__dirname);
@@ -12,6 +13,10 @@ const paths = {
 };
 
 const copyFiles = (from: string, to: string) => {
+    rm.sync(join(packagesRoot, 'suite-web', 'public'));
+    rm.sync(join(packagesRoot, 'suite-desktop', 'public'));
+    rm.sync(join(packagesRoot, 'suite-native', 'public'));
+
     fs.copy(from, to, err => {
         if (err) return console.error(err);
         console.log('copied', from, to);
