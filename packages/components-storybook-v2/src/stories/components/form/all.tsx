@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea, Select } from '@trezor/components-v2';
+import { Input, Textarea, Select, Checkbox, Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -14,6 +14,10 @@ const Col = styled.div`
 const ComponentWrapper = styled.div`
     margin-bottom: 1rem;
     width: 100%;
+`;
+
+const SwitchWrapper = styled.div`
+    display: inline-flex;
 `;
 
 const Heading = styled.h2``;
@@ -88,7 +92,53 @@ storiesOf('Form', module).add(
                     </ComponentWrapper>
                 </Col>
                 <Heading>Textarea short</Heading>
+                <Heading>Switch</Heading>
                 <Col>
+                    <SubHeading>Off</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-off">
+                            <Switch onChange={() => {}} checked={false} />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                    <SubHeading>On</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-on">
+                            <Switch onChange={() => {}} checked />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                    <SubHeading>Off small</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-off-small">
+                            <Switch onChange={() => {}} checked={false} isSmall />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                    <SubHeading>On</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-on-small">
+                            <Switch onChange={() => {}} checked isSmall />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Checkbox</Heading>
+                <Col>
+                    <SubHeading>Unchecked</SubHeading>
+                    <ComponentWrapper>
+                        <Checkbox onClick={() => {}} data-test="checkbox">
+                            Label
+                        </Checkbox>
+                    </ComponentWrapper>
+                    <SubHeading>Checked</SubHeading>
+                    <ComponentWrapper>
+                        <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
+                            Label
+                        </Checkbox>
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Textarea</Heading>
+                <Col>
+                    <SubHeading>Short</SubHeading>
                     <ComponentWrapper>
                         <Textarea
                             value="test value"
@@ -143,9 +193,8 @@ storiesOf('Form', module).add(
                         />
                     </ComponentWrapper>
                 </Col>
-
-                <Heading>Textarea default</Heading>
                 <Col>
+                    <SubHeading>Default</SubHeading>
                     <ComponentWrapper>
                         <Textarea
                             value="test value"
@@ -194,9 +243,8 @@ storiesOf('Form', module).add(
                         />
                     </ComponentWrapper>
                 </Col>
-
-                <Heading>Textarea block</Heading>
                 <Col>
+                    <SubHeading>Block</SubHeading>
                     <ComponentWrapper>
                         <Textarea
                             value="test value"
