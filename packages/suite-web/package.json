@@ -16,7 +16,7 @@
     "dependencies": {
         "@sentry/browser": "^5.4.0",
         "@trezor/suite": "^1.0.0",
-        "next": "^9.1.4",
+        "next": "^9.1.5",
         "next-redux-wrapper": "^4.0.1"
     },
     "devDependencies": {
