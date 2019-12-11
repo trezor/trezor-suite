@@ -35,7 +35,6 @@ const StyledAsset = styled(Asset)`
 `;
 
 const StyledCard = styled(Card)`
-    display: flex;
     flex-direction: column;
 `;
 
