@@ -205,7 +205,7 @@ const getAccountNotification = (selectedAccount: SelectedAccountState) => (
                 {
                     label: messages.TR_DEVICE_SETTINGS,
                     callback: () => {
-                        dispatch(goto('suite-device-settings'));
+                        dispatch(goto('settings-index'));
                     },
                 },
             ],

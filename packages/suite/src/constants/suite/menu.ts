@@ -7,7 +7,7 @@ export const MAIN_MENU_ITEMS = [
 
 export const BOTTOM_MENU_ITEMS = [
     { text: 'Tips', icon: 'TIPS', route: 'dashboard-index' },
-    { text: 'Settings', icon: 'SETTINGS', route: 'wallet-settings' },
+    { text: 'Settings', icon: 'SETTINGS', route: 'settings-index' },
 ] as const;
 
 export const MENU_PADDING = 10;

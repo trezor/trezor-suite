@@ -1,6 +1,10 @@
 import * as utils from '../date';
 
 describe('Date utils', () => {
+    test('timezone should always be UTC', () => {
+        expect(new Date().getTimezoneOffset()).toBe(0);
+    });
+
     test('format duration', () => {
         expect(utils.formatDuration(1)).toBe('less than 5 seconds');
         expect(utils.formatDuration(3600)).toBe('about 1 hour');
@@ -10,5 +14,18 @@ describe('Date utils', () => {
         expect(utils.formatDuration(31556926)).toBe('about 1 year');
         expect(utils.formatDuration(63671184000)).toBe('over 2017 years'); // jesus was born
         expect(utils.formatDuration(99999999999)).toBe('almost 3169 years');
+    });
+
+    test('get date with timezone', () => {
+        const dateInMs = 1565797979000;
+        const dateInIso = '2014-06-25T10:00:00.000Z';
+
+        expect(utils.getDateWithTimeZone(dateInMs, 'Asia/Tokyo')).toEqual(
+            new Date('2019-08-15T00:52:59.000Z'),
+        );
+        expect(utils.getDateWithTimeZone(dateInMs)).toEqual(new Date('2019-08-14T15:52:59.000Z'));
+        expect(utils.getDateWithTimeZone(dateInIso, 'America/New_York')).toEqual(
+            new Date('2014-06-25T06:00:00.000Z'),
+        );
     });
 });

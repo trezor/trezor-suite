@@ -1,7 +1,8 @@
 import WorkerCommon from '../../src/workers/common';
 import fixtures from './fixtures/common';
 
-const common = new WorkerCommon();
+declare function postMessage(data: any): void;
+const common = new WorkerCommon(postMessage);
 
 describe('Add and remove address in sequence', () => {
     fixtures.addAddresses.forEach(f => {
