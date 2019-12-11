@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 import Backdrop from '@suite-components/Backdrop';
 import { toggleSidebar } from '@suite-actions/suiteActions';
@@ -26,6 +26,10 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
     background: ${colors.WHITE};
     box-shadow: 2px 0px 3px rgb(0, 0, 0, 0.1);
     margin-right: 3px;
+    overflow-y: auto;
+    & ::-webkit-scrollbar {
+        display: none;
+    }
 `;
 
 const Wrapper = styled.div`
