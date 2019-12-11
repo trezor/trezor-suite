@@ -22,7 +22,7 @@ describe('Device settings happy path', () => {
             // altough all buttons have isDisabled based on uiLocks, somehow cypress (in CI only) is
             // too fast and manages to trigger new call to device while calls from discovery process
             // are not stopped yet. dont know much how to debug it.
-            .wait(500);
+            .wait(1000);
     });
 
     after(() => {
