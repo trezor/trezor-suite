@@ -58,7 +58,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     const nextState = api.getState();
     // code below runs only in wallet context
-    if (nextState.router.app !== 'wallet') return action;
+    if (nextState.router.app !== 'wallet' || nextState.router.app !== 'dashboard') return action;
 
     if (action.type === SETTINGS.CHANGE_NETWORKS) {
         // update Discovery fields
