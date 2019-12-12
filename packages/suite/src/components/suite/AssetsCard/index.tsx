@@ -7,6 +7,7 @@ import Card from '../Card';
 import BigNumber from 'bignumber.js';
 import { AppState } from '@suite/types/suite';
 import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
+import { Loader } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,13 +39,19 @@ const StyledCard = styled(Card)`
     flex-direction: column;
 `;
 
+const InfoMessage = styled.div`
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+`;
+
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     assets: { [key: string]: Account[] };
     localCurrency: string;
     rates: AppState['wallet']['fiat'];
 }
 
-const AssetsCard = ({ assets, localCurrency, rates, ...rest }: Props) => {
+const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props) => {
     return (
         <StyledCard>
             <Header>
@@ -52,11 +59,17 @@ const AssetsCard = ({ assets, localCurrency, rates, ...rest }: Props) => {
                     {/* todo */}
                     <div>Assets</div>
                     <div>Values</div>
-                    <div></div>
+                    <div />
                     <div>Exchange rate</div>
-                    <div></div>
+                    <div />
                 </HeaderTitle>
             </Header>
+            {console.log('assets', assets)}
+            {isLoading && (
+                <InfoMessage>
+                    <Loader size={20} />
+                </InfoMessage>
+            )}
             {Object.keys(assets).map(symbol => {
                 const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
                 if (!network) {
