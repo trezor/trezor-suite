@@ -12306,10 +12306,10 @@ hosted-git-info@^3.0.0:
   dependencies:
     lru-cache "^5.1.1"
 
-hotkeys-js@3.6.12:
-  version "3.6.12"
-  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.6.12.tgz#316a312dc6864f0cd5dae2b26f443d53b38490c0"
-  integrity sha512-M5HLqgE1NAh67v+4dOIL/mGY8t8oLXtJG5wu60c3NVHCpHQZdznxKS0BswSz7pgA4tEiYvh8dZFF9am3L3PFgg==
+hotkeys-js@3.7.3:
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.7.3.tgz#f0c718166e844b3e52065d1b60cffaa6065b5183"
+  integrity sha512-CSaeVPAKEEYNexYR35znMJnCqoofk7oqG/AOOqWow1qDT0Yxy+g+Y8Hs/LhGlsZaSJ7973YN6/N41LAr3t30QQ==
 
 hpack.js@^2.1.6:
   version "2.1.6"
@@ -18478,12 +18478,12 @@ react-hot-loader@4.12.18:
     shallowequal "^1.1.0"
     source-map "^0.7.3"
 
-react-hotkeys-hook@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/react-hotkeys-hook/-/react-hotkeys-hook-1.5.1.tgz#7c4eb387a64f56643125b9611e7027d5119d33c0"
-  integrity sha512-FfYUxwuw22P1z5XxCQor5pxKv8jddX7Yw/UEFN3bvPWmcaBN+DlYeGukJE+gfoYe+wL+zWu6wrkzkOiV3SoGXA==
+react-hotkeys-hook@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/react-hotkeys-hook/-/react-hotkeys-hook-1.5.4.tgz#afc0405ed6ca6a9d3d171574f4dc993dc534a993"
+  integrity sha512-skGZ6hrnyJUPXFC9fXvs0oO4mX0P2hkpukkGtZdhQjSSrp6LyoH1/SIv4isJn2X1VI/MO1cMnV5ZdFySc4IPvw==
   dependencies:
-    hotkeys-js "3.6.12"
+    hotkeys-js "3.7.3"
 
 react-hotkeys@2.0.0-pre4:
   version "2.0.0-pre4"
