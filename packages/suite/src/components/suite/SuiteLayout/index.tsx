@@ -17,7 +17,6 @@ const PageWrapper = styled.div`
     display: flex;
     flex: 1;
     height: 100vh;
-    width: 100vw;
     overflow-x: hidden;
 `;
 
@@ -26,6 +25,7 @@ const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     flex-direction: column;
     overflow: auto;
+    height: 100vh;
     flex: 1 1 0%;
 `;
 

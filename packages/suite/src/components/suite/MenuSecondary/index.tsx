@@ -26,8 +26,31 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
     background: ${colors.WHITE};
     box-shadow: 2px 0px 3px rgb(0, 0, 0, 0.1);
     margin-right: 3px;
+    height: 100%;
     overflow-y: auto;
-    & ::-webkit-scrollbar {
+
+    /* TODO: this make nice scrollbar on webkit-like browsers however it prevents hiding the scrollbar on macs (should hide when there is no mouse connected) */
+    /* Maybe we should just use something like https://github.com/Grsmto/simplebar */
+    ::-webkit-scrollbar {
+        background-color: #fff;
+        width: 10px;
+    }
+
+    /* background of the scrollbar except button or resizer */
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    /* scrollbar itself */
+    ::-webkit-scrollbar-thumb {
+        /* 7F7F7F for mac-like color */
+        background-color: #babac0;
+        border-radius: 10px;
+        border: 2px solid #fff;
+    }
+
+    /* set button(top and bottom of the scrollbar) */
+    ::-webkit-scrollbar-button {
         display: none;
     }
 `;
