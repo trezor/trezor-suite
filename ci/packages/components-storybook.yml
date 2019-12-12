@@ -65,7 +65,6 @@ components-storybook delete review:
     - install and build
 
 components-storybook test snapshots:
-  image: cypress/base:10
   stage: integration testing
   script:
     - npx cypress install
