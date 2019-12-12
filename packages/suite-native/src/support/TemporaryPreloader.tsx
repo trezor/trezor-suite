@@ -5,14 +5,18 @@ import { SUITE } from '@suite-actions/constants';
 import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
 
-interface Props {
-    loaded: AppState['suite']['loaded'];
-    error: AppState['suite']['error'];
+const mapStateToProps = (state: AppState) => ({
+    loaded: state.suite.loaded,
+    error: state.suite.error,
+});
+
+type Props = ReturnType<typeof mapStateToProps> & {
     dispatch: Dispatch;
     isStatic: boolean;
-}
+    children: React.ReactNode;
+};
 
-const Preloader: React.FunctionComponent<Props> = props => {
+const Preloader = (props: Props) => {
     const { loaded, error, dispatch, isStatic } = props;
     useEffect(() => {
         if (!loaded && !isStatic) {
@@ -38,10 +42,5 @@ const Preloader: React.FunctionComponent<Props> = props => {
         </View>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    loaded: state.suite.loaded,
-    error: state.suite.error,
-});
 
 export default connect(mapStateToProps)(Preloader);

@@ -12,6 +12,7 @@ import TroubleshootBootloader from './components/Connect/TroubleshootBootloader'
 import TroubleshootInitialized from './components/Connect/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/Connect/TroubleshootTooLong';
 import { Props } from './Container';
+import { isWebUSB } from '@suite-utils/device';
 
 const WebusbButtonWrapper = styled.div`
     width: 200px;
@@ -34,10 +35,6 @@ const PairDeviceStep = (props: Props) => {
 
     const isDeviceUnreadable = () => {
         return device && device.type === 'unreadable';
-    };
-
-    const isWebusb = () => {
-        return Boolean(transport && transport.type === 'webusb');
     };
 
     const hasNoTransport = () => transport && !transport.type;
@@ -124,7 +121,7 @@ const PairDeviceStep = (props: Props) => {
 
                         {!isDetectingDevice() && (
                             <>
-                                {isWebusb() && (
+                                {isWebUSB(transport) && (
                                     <>
                                         {!isDeviceUnreadable() && (
                                             <Wrapper.Controls>
@@ -140,7 +137,7 @@ const PairDeviceStep = (props: Props) => {
                                         )}
                                     </>
                                 )}
-                                {!isWebusb() && (
+                                {!isWebUSB(transport) && (
                                     <Wrapper.Controls>
                                         <OnboardingButton.Alt
                                             onClick={() => setShowTroubleshoot(true)}
@@ -156,7 +153,7 @@ const PairDeviceStep = (props: Props) => {
                 {hasNoTransport() && <Bridge />}
 
                 {showTroubleshoot && !hasNoTransport() && (
-                    <TroubleshootSearchingTooLong webusb={isWebusb()} />
+                    <TroubleshootSearchingTooLong webusb={isWebUSB(transport)} />
                 )}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
