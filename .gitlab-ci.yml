@@ -1,33 +1,14 @@
 # ! DO NOT set latest here USE custom hash !
 image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:faa15996fb896c7dffedda20a6ee76078aed6051
 
-variables:
-    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
-    PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
-    PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
-    PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
-    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
-
 before_script:
     - yarn
 
-stages:
-    - setup environment
-    - lint and prettier
-    - typescript type check
-    - unit testing
-    - build
-    - deploy to dev servers
-    - integration testing
-    - build desktop apps
-    - misc
-
-include:
+include: 
     - ci/environment.yml
     - ci/install-and-build.yml
     - ci/packages/components.yml
-    - ci/packages/components-v2.yml
+    # - ci/packages/components-v2.yml
     - ci/packages/components-storybook.yml
     - ci/packages/components-storybook-v2.yml
     - ci/packages/suite.yml
@@ -36,4 +17,36 @@ include:
     - ci/packages/suite-native.yml
     - ci/packages/blockchain-link.yml
     - ci/packages/rollout.yml
-    # - ci/packages/connect-explorer.yml
+
+variables: 
+    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
+    PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+    PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
+    PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
+    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
+    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+
+stages: 
+    - "setup environment"
+    - "lint and types"
+    - "unit testing"
+    - build
+    - "deploy to dev servers"
+    - "integration testing"
+    - "build desktop apps"
+    - misc
+
+lint: 
+    dependencies: 
+        - "install and build"
+    script: 
+        - "yarn lerna run lint"
+    stage: "lint and types"
+
+type check:
+    dependencies: 
+        - "install and build"
+    script: 
+        - "yarn lerna run type-check"
+    stage: "lint and types"
+
