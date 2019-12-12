@@ -1,17 +1,3 @@
-suite-native lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/suite-native lint
-    dependencies:
-        - install and build
-
-suite-native type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/suite-native type-check
-    dependencies:
-        - install and build
-
 suite-native build android:
     image: reactnativecommunity/react-native-android
     stage: build artifacts
