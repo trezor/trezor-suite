@@ -7292,15 +7292,14 @@ cypress-image-snapshot@^3.0.1, cypress-image-snapshot@^3.1.1:
     jest-image-snapshot "2.8.2"
     pkg-dir "^3.0.0"
     term-img "^4.0.0"
-
+    
 cypress@^3.4.1:
-  version "3.7.0"
-  resolved "http://proxy1.gitlab.prod.hq.sldev.cz:8081/repository/npm-proxy-suite/cypress/-/cypress-3.7.0.tgz#e2cd71b87b6ce0d4c72c6ea25da1005d75c1f231"
-  integrity sha512-o+vfRxqAba8TduelzfZQ4WHmj2yNEjaoO2EuZ8dZ9pJpuW+WGtBGheKIp6zkoQsp8ZgFe8OoHh1i2mY8BDnMAw==
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-3.4.1.tgz#ca2e4e9864679da686c6a6189603efd409664c30"
+  integrity sha512-1HBS7t9XXzkt6QHbwfirWYty8vzxNMawGj1yI+Fu6C3/VZJ8UtUngMW6layqwYZzLTZV8tiDpdCNBypn78V4Dg==
   dependencies:
     "@cypress/listr-verbose-renderer" "0.4.1"
     "@cypress/xvfb" "1.2.4"
-    "@types/sizzle" "2.3.2"
     arch "2.1.1"
     bluebird "3.5.0"
     cachedir "1.3.0"
@@ -7327,7 +7326,6 @@ cypress@^3.4.1:
     request-progress "3.0.0"
     supports-color "5.5.0"
     tmp "0.1.0"
-    untildify "3.0.3"
     url "0.11.0"
     yauzl "2.10.0"
 
