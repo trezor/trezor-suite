@@ -13714,10 +13714,10 @@ jest-message-util@^24.9.0:
     slash "^2.0.0"
     stack-utils "^1.0.1"
 
-jest-mock-random@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/jest-mock-random/-/jest-mock-random-1.0.2.tgz#81a1aa641fdb3a049bf64e2a7a0411fd8fc3fb20"
-  integrity sha1-gaGqZB/bOgSb9k4qegQR/Y/D+yA=
+jest-mock-random@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/jest-mock-random/-/jest-mock-random-1.0.3.tgz#9d2aad3e8cf822f68d402f7bc3eab1a09a82cbdb"
+  integrity sha512-2wVQFxQsRPBiui6NjuhsximKZjmOckw9ZpoNtNjFAGgT8RT8zEo8JbhSrqiZeXP9DjUa74did+78/n7ek3TSrQ==
 
 jest-mock@^24.9.0:
   version "24.9.0"
