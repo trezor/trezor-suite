@@ -65,7 +65,6 @@ components-storybook-v2 delete review:
     - install and build
 
 components-storybook-v2 test snapshots:
-  image: cypress/base:10
   stage: integration testing
   script:
     - npx cypress install
