@@ -9,6 +9,9 @@ variables:
     PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
+before_script:
+    - yarn
+
 stages:
     - setup environment
     - lint and prettier
