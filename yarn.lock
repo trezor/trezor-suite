@@ -9904,10 +9904,10 @@ electron-is-dev@>=0.3.0, electron-is-dev@^1.1.0:
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-1.1.0.tgz#b15a2a600bdc48a51a857d460e05f15b19a2522c"
   integrity sha512-Z1qA/1oHNowGtSBIcWk0pcLEqYT/j+13xUw/MYOrBUOL4X7VN0i0KCTf5SqyvMPmW5pSPKbo28wkxMxzZ20YnQ==
 
-electron-localshortcut@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/electron-localshortcut/-/electron-localshortcut-3.2.0.tgz#c3251bac86d88bf5eee5e3f05a629db372b327db"
-  integrity sha512-pm72c467BgWEFE+1Cgim2EqhoQe60UlirrobwN24TA+hd+x/2hVgZlwfqzvNEmYfuuegZlzQL8tILjomofbzdg==
+electron-localshortcut@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/electron-localshortcut/-/electron-localshortcut-3.2.1.tgz#cfc83a3eff5e28faf98ddcc87f80a2ce4f623cd3"
+  integrity sha512-DWvhKv36GsdXKnaFFhEiK8kZZA+24/yFLgtTwJJHc7AFgDjNRIBJZ/jq62Y/dWv9E4ypYwrVWN2bVrCYw1uv7Q==
   dependencies:
     debug "^4.0.1"
     electron-is-accelerator "^0.1.0"
