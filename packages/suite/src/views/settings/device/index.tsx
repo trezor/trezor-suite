@@ -123,6 +123,8 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
         { icon: 'ARROW_LEFT', value: 270 },
     ] as const;
 
+    console.log('render');
+
     return (
         <SettingsLayout title="Settings">
             <Row>
@@ -140,12 +142,18 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <StyledInput
+                        data-test="@suite/settings/device/label-input"
+                        isDisabled={uiLocked}
                         value={label}
                         onChange={(event: React.FormEvent<HTMLInputElement>) =>
                             setLabel(event.currentTarget.value)
                         }
                     />
-                    <ActionButton isDisabled={uiLocked} onClick={() => applySettings({ label })}>
+                    <ActionButton
+                        isDisabled={uiLocked}
+                        onClick={() => applySettings({ label })}
+                        data-test="@suite/settings/device/label-submit"
+                    >
                         <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}</Translation>
                     </ActionButton>
                 </ActionColumn>
@@ -209,6 +217,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <Switch
+                        data-test="@suite/settings/device/pin-switch"
                         checkedIcon={false}
                         uncheckedIcon={false}
                         onChange={checked => {
@@ -228,6 +237,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </H2>
                 <ActionColumn>
                     <Switch
+                        data-test="@suite/settings/device/passphrase-switch"
                         checkedIcon={false}
                         uncheckedIcon={false}
                         onChange={checked => {
@@ -257,6 +267,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     <ActionColumn>
                         {DISPLAY_ROTATIONS.map(variant => (
                             <OrientationButton
+                                isDisabled={uiLocked}
                                 key={variant.icon}
                                 variant="secondary"
                                 onClick={() =>
