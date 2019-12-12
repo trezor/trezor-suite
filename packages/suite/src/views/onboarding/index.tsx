@@ -133,7 +133,7 @@ const TrezorAction = ({ model, event }: { model: number; event: string }) => {
     }
 
     return (
-        <TrezorActionOverlay>
+        <TrezorActionOverlay data-test="@onboading/confirm-action-on-device">
             <Prompt model={model} size={100}>
                 <TrezorActionText />
             </Prompt>

@@ -7,11 +7,12 @@
         "type-check:watch": "yarn type-check -- --watch",
         "lint": "eslint . --ext .tsx,.ts",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
+        "dev": "yarn workspace @trezor/suite-data copy-static-files && next -p 8001",
         "build:app": "next build && next export -o build",
         "build": "run-s copy-files build:app",
-        "test:integration": "cypress run",
-        "test:integration:local": "cypress run --config baseUrl=http://localhost:3000"
+        "test:integration:local:open": "./test/open-local.sh",
+        "test:integration:local:run": "./test/run-local.sh",
+        "test:integration:ci:run": "./test/run-ci.sh"
     },
     "dependencies": {
         "@sentry/browser": "^5.4.0",

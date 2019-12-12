@@ -99,6 +99,7 @@ const CoinRow = ({ network, checked, changeCoinVisibility }: CoinRowProps) => (
         </Left>
         <Right>
             <Switch
+                data-test="@wallet/settings/coin-switch"
                 isSmall
                 checkedIcon={false}
                 uncheckedIcon={false}
@@ -119,6 +120,7 @@ interface CoinsGroupProps {
     networksFilterFn?: (n: Network) => boolean | undefined;
     enabledNetworks: Network['symbol'][];
     networks: Network[];
+    testDescriptor: 'mainnet' | 'testnet';
 }
 
 const CoinsGroup = (props: CoinsGroupProps) => {
@@ -156,6 +158,7 @@ const CoinsGroup = (props: CoinsGroupProps) => {
                 </Left>
                 <Right>
                     <ToggleAll
+                        data-test={`@wallet/settings/toggle-all-${props.testDescriptor}`}
                         onClick={() => {
                             toggleGroupCoinsVisibility(networksFilterFn);
                         }}
@@ -189,6 +192,7 @@ const CoinsSettings = (props: Props) => {
                     enabledNetworks={enabledNetworks}
                     toggleGroupCoinsVisibility={toggleGroupCoinsVisibility}
                     changeCoinVisibility={changeCoinVisibility}
+                    testDescriptor="mainnet"
                 />
                 <CoinsGroup
                     title={messages.TR_VISIBLE_TESTNET_COINS}
@@ -198,6 +202,7 @@ const CoinsSettings = (props: Props) => {
                     enabledNetworks={enabledNetworks}
                     toggleGroupCoinsVisibility={toggleGroupCoinsVisibility}
                     changeCoinVisibility={changeCoinVisibility}
+                    testDescriptor="testnet"
                 />
             </Row>
         </Wrapper>
