@@ -26,7 +26,8 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
     background: ${colors.WHITE};
     box-shadow: 2px 0px 3px rgb(0, 0, 0, 0.1);
     margin-right: 3px;
-    height: 100%;
+    height: 100vh;
+    min-height: 600px;
     overflow-y: auto;
 
     /* TODO: this make nice scrollbar on webkit-like browsers however it prevents hiding the scrollbar on macs (should hide when there is no mouse connected) */

@@ -16,6 +16,7 @@ import MenuSecondary from '@suite/components/suite/MenuSecondary';
 const PageWrapper = styled.div`
     display: flex;
     flex: 1;
+    min-height: 600px;
     height: 100vh;
     overflow-x: hidden;
 `;
