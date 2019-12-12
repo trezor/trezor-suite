@@ -10,4 +10,5 @@ public interface TrezorInterface {
     public void openConnection(Context context) throws TrezorException;
     public void closeConnection();
     public String getSerial();
+    public boolean ping();
 }

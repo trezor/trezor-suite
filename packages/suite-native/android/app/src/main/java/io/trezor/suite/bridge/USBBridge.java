@@ -306,6 +306,12 @@ public class USBBridge implements BridgeInterface {
         }
 
         @Override
+        public boolean ping() {
+            // used only in UDP transport
+            return false;
+        }
+
+        @Override
         public String toString() { // TODO: remove this?
             return "{\"path\":\"" + this.serial + "\",\"session\": null}";
         }
