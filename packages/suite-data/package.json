@@ -14,7 +14,7 @@
     "dependencies": {},
     "devDependencies": {
         "@types/fs-extra": "^8.0.0",
-        "copy-webpack-plugin": "^5.0.5",
+        "copy-webpack-plugin": "5.1.0",
         "fs-extra": "^8.1.0",
         "html-webpack-plugin": "^3.2.0",
         "remove-files-webpack-plugin": "^1.1.3",
