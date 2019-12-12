@@ -23,6 +23,8 @@ public class UDPBridge implements BridgeInterface {
     private static final String TAG = UDPBridge.class.getSimpleName();
     private static final String EMULATOR_UDP_HOST = "10.0.2.2";
     private static final int EMULATOR_UDP_PORT = 21324;
+    private final byte[] PING = "PINGPING".getBytes();
+    private final String PONG = "PONGPONG";
     private static UDPBridge instance;
 
     private Context context;
@@ -42,14 +44,10 @@ public class UDPBridge implements BridgeInterface {
 
     @Override
     public List<TrezorInterface> enumerate() {
-        if (trezorDeviceList.size() == 0) {
-            if (checkDevice()){
-                trezorDeviceList.add(new TrezorDevice("emulator"));
-            }
-        } else {
-            if (!checkDevice()) {
-                trezorDeviceList = new ArrayList<>();
-            }
+        if (!checkDevice()) {
+            trezorDeviceList = new ArrayList<>();
+        } else if (trezorDeviceList.size() == 0) {
+            trezorDeviceList.add(new TrezorDevice("udp-emulator"));
         }
 
         return trezorDeviceList;
@@ -57,7 +55,7 @@ public class UDPBridge implements BridgeInterface {
 
     @Override
     public TrezorInterface getDeviceByPath(String path) {
-        if (trezorDeviceList.size()>0){
+        if (trezorDeviceList.size() > 0){
             return trezorDeviceList.get(0);
         }else{
             return enumerate().get(0);
@@ -68,24 +66,38 @@ public class UDPBridge implements BridgeInterface {
     public void findAlreadyConnectedDevices() {
     }
 
-    private boolean checkDevice(){
-        TrezorInterface trezorDevice = new TrezorDevice("emulator");
+    DatagramSocket socket;
+    InetAddress socketAddress;
+
+    private boolean checkDevice() {
         try {
-            trezorDevice.openConnection(context);
-            return trezorDevice.ping();
-        } catch (TrezorException e) {
+            socketAddress = InetAddress.getByName(EMULATOR_UDP_HOST);
+            if (socket == null) {
+                socket = new DatagramSocket();
+                socket.setSoTimeout(500);
+            }
+
+            DatagramPacket pingPacket = new DatagramPacket(PING, PING.length, socketAddress, EMULATOR_UDP_PORT);
+            socket.send(pingPacket);
+
+            byte[] pong = new byte[8];
+            DatagramPacket pongPacket = new DatagramPacket(pong, pong.length, socketAddress, EMULATOR_UDP_PORT);
+            socket.receive(pongPacket);
+
+            return new String(pong).equals(PONG);
+        } catch (IOException e) {
+            // e.printStackTrace();
             return false;
         }
     }
 
-    public static class TrezorDevice implements TrezorInterface{
+    public static class TrezorDevice implements TrezorInterface {
         private static final String TAG = "UDP"+ UDPBridge.TrezorDevice.class.getSimpleName();
 
         private String path;
         private DatagramSocket socket;
         private InetAddress socketAddress;
-        private final byte[] PING = "PINGPING".getBytes();
-        private final String PONG = "PONGPONG";
+        private byte[] response;
 
         public TrezorDevice(String path){
             this.path = path;
@@ -117,26 +129,21 @@ public class UDPBridge implements BridgeInterface {
                 e.printStackTrace();
             }
 
-        }
-
-        @Override
-        public boolean ping() {
+            response = null;
             try {
-                DatagramPacket pingPacket = new DatagramPacket(PING, PING.length, socketAddress, EMULATOR_UDP_PORT);
-                socket.send(pingPacket);
-
-                byte[] pong = new byte[8];
-                DatagramPacket pongPacket = new DatagramPacket(pong, pong.length, socketAddress, EMULATOR_UDP_PORT);
-                socket.receive(pongPacket);
-
-                return new String(pong).equals(PONG);
-            } catch (IOException e) {
-                return false;
+                response = rawRead1();
+            } catch (Exception e) {
+                Log.d(TAG, e.getMessage());
+                e.printStackTrace();
             }
         }
 
         @Override
         public byte[] rawRead() {
+            return response;
+        }
+
+        public byte[] rawRead1() {
             ByteBuffer data = null;//ByteBuffer.allocate(32768);
             byte[] b = new byte[64];
             DatagramPacket datagramPacketIn;
@@ -149,6 +156,8 @@ public class UDPBridge implements BridgeInterface {
                 try {
                     socket.receive(datagramPacketIn);
                 } catch (IOException e) {
+                    Log.e(TAG, "messageRead: read from socket failed");
+                    e.printStackTrace();
                     throw new TrezorException("Socket IOException",e);
                 }
                 Log.i(TAG, String.format("messageRead: Read chunk: %d bytes", b.length));
@@ -179,6 +188,7 @@ public class UDPBridge implements BridgeInterface {
                 try {
                     socket.receive(datagramPacketIn);
                 } catch (IOException e) {
+                    e.printStackTrace();
                     throw new TrezorException("Socket IOException",e);
                 }
                 Log.i(TAG, String.format("messageRead: Read chunk (cont): %d bytes", b.length));
@@ -202,7 +212,6 @@ public class UDPBridge implements BridgeInterface {
                 socketAddress = InetAddress.getByName(EMULATOR_UDP_HOST);
                 if (socket == null) {
                     socket = new DatagramSocket();
-                    socket.setSoTimeout(500);
                 }
             } catch (SocketException e) {
                 e.printStackTrace();
@@ -231,3 +240,4 @@ public class UDPBridge implements BridgeInterface {
 
     }
 }
+

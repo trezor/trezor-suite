@@ -55,7 +55,7 @@ public class BridgeModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(array);
         } catch (Exception e) {
-            promise.reject("EUNSPECIFIED", e); // TODO: error to string
+            promise.reject("EUNSPECIFIED", e.toString());
         }
     }
 
@@ -70,21 +70,21 @@ public class BridgeModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("EUNSPECIFIED", e);
+            promise.reject("EUNSPECIFIED", e.toString());
         }
     }
 
     @ReactMethod
     public void release(String path, Boolean debugLink, Boolean shouldClose, Promise promise) {
-        Log.i(TAG, "close device " + path + " ");
+        Log.i(TAG, "close connection " + path + " ");
         promise.resolve(true);
         try {
-            TrezorInterface device = bridge.getDeviceByPath(path); // TODO: debugLink interface
+            TrezorInterface device = bridge.getDeviceByPath(path);
             if (device != null) {
                 device.closeConnection();
             }
         } catch (Exception e) {
-            promise.reject("EUNSPECIFIED", e);
+            promise.reject("EUNSPECIFIED", e.toString());
         }
     }
 
@@ -100,31 +100,26 @@ public class BridgeModule extends ReactContextBaseJavaModule {
                 promise.reject("EUNSPECIFIED", "error device not found");
             }
 
-            // TODO: return response from device
-
         } catch (Exception e) {
-            promise.reject("EUNSPECIFIED", e.toString()); // TODO: error to string
+            promise.reject("EUNSPECIFIED", e.toString());
         }
     }
 
-    private int _step = 0;
-
     @ReactMethod
     public void read(String path, Boolean debugLink, Promise promise) {
-        WritableMap map = Arguments.createMap();
-
         try {
             TrezorInterface device = bridge.getDeviceByPath(path);
             if (device != null) {
                 byte[] bytes = device.rawRead();
+                WritableMap map = Arguments.createMap();
                 map.putString("data", Utils.byteArrayToHexString(bytes));
+                promise.resolve(map);
+            } else {
+                promise.reject("EUNSPECIFIED", "error device not found");
             }
         } catch (Exception e) {
-            // promise.reject("error", e);
-            map.putString("data-error", e.toString());
+            promise.reject("EUNSPECIFIED", e.toString());
         }
-
-        promise.resolve(map);
     }
 
 }
