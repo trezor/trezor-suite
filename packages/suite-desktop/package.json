@@ -85,11 +85,11 @@
         "@types/next-redux-wrapper": "^3.0.0",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
-        "@types/react-redux": "^7.0.8",
+        "@types/react-redux": "^7.1.5",
         "electron": "^7.1.1",
         "electron-builder": "22.1.0",
         "git-revision-webpack-plugin": "^3.0.4",
-        "next": "^9.1.4",
+        "next": "^9.1.5",
         "next-plugin-custom-babel-config": "^1.0.2",
         "next-redux-wrapper": "^4.0.1",
         "next-transpile-modules": "^2.3.1"
