@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactSelect from 'react-select';
-import { Props as SelectProps } from 'react-select/lib/Select';
 import styled from 'styled-components';
 import styles from '../styles';
 import colors from '../../../config/colors';
@@ -17,10 +16,11 @@ const TopLabel = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-interface Props extends SelectProps {
+interface Props {
     isSearchable?: boolean;
     withDropdownIndicator?: boolean;
     topLabel?: React.ReactNode;
+    className: string;
     wrapperProps?: Record<string, any>;
 }
 

@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React from 'react';
-import ReactSvg from 'react-svg';
+import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
 
@@ -23,7 +23,7 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => {
     return (
         <SvgWrapper className={className} size={size} {...rest}>
-            <ReactSvg
+            <ReactSVG
                 src={COINS[symbol]}
                 beforeInjection={svg => {
                     svg.setAttribute('width', `${size}px`);

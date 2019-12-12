@@ -1,10 +1,8 @@
 import React from 'react';
 import Async from 'react-select/async';
-import { OptionProps } from 'react-select/lib/types';
-import { Props as SelectProps } from 'react-select/lib/Select';
 import styles from '../styles';
 
-interface Props extends SelectProps<OptionProps> {
+interface Props {
     isSearchable?: boolean;
     withDropdownIndicator?: boolean;
 }
