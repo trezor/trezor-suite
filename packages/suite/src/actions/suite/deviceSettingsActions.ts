@@ -1,4 +1,4 @@
-import TrezorConnect, { ApplySettingsParams, ChangePinParams, CommonParams } from 'trezor-connect';
+import TrezorConnect, { ApplySettingsParams, ChangePinParams } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
 import { Dispatch, GetState, AcquiredDevice } from '@suite-types';
@@ -48,14 +48,10 @@ export const changePin = (params: ChangePinParams) => async (
     );
 };
 
-export const wipeDevice = (params: CommonParams) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     const result = await TrezorConnect.wipeDevice({
         device,
-        ...params,
     });
 
     dispatch(

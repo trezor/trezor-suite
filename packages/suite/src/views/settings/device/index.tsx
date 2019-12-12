@@ -224,11 +224,7 @@ const Settings = ({
                 </Row>
             )}
             <Row>
-                <ActionButton
-                    isDisabled={uiLocked}
-                    variant="danger"
-                    onClick={() => wipeDevice({ device })}
-                >
+                <ActionButton isDisabled={uiLocked} variant="danger" onClick={() => wipeDevice()}>
                     <Translation>{messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}</Translation>
                 </ActionButton>
             </Row>
