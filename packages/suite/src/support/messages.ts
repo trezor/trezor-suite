@@ -2198,7 +2198,7 @@ const definedMessages = defineMessages({
     },
     TR_BACKGROUND_GALLERY: {
         id: 'TR_BACKGROUND_GALLERY',
-        defaultMessage: 'Background gallery',
+        defaultMessage: 'Homescreen background gallery',
     },
 });
 
