@@ -10,7 +10,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { MODAL, SUITE } from '@suite-actions/constants';
+import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { RECEIVE } from '@suite/actions/wallet/constants';
@@ -32,6 +32,7 @@ import WalletType from './WalletType';
 import AddAccount from './AddAccount';
 import QrScanner from './Qr';
 import Disconnect from './Disconnect';
+import BackgroundGallery from './BackgroundGallery';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -135,6 +136,14 @@ const getDeviceContextModal = (props: Props) => {
         case ACCOUNT.REQUEST_NEW_ACCOUNT:
             return (
                 <AddAccount device={device as AcquiredDevice} onCancel={modalActions.onCancel} />
+            );
+
+        case DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL:
+            return (
+                <BackgroundGallery
+                    device={device as AcquiredDevice}
+                    onCancel={modalActions.onCancel}
+                />
             );
 
         default:

@@ -1,9 +1,13 @@
 import React from 'react';
 // import styled from 'styled-components';
-import { SettingsLayout } from '@suite-components';
+import { SuiteLayout, SettingsMenu } from '@suite-components';
 
 const Settings = () => {
-    return <SettingsLayout title="Settings">Settings</SettingsLayout>;
+    return (
+        <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
+            Settings
+        </SuiteLayout>
+    );
 };
 
 export default Settings;
