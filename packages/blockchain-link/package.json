@@ -25,14 +25,14 @@
   "scripts": {
     "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
     "build:lib": "yarn build && yarn build:workers",
-    "build:workers": "rm -rf build && yarn build:workers-web && yarn build:workers-node && yarn build:workers-module",
+    "build:workers": "rimraf build && yarn build:workers-web && yarn build:workers-node && yarn build:workers-module",
     "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
     "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
     "build:workers-module": "webpack --config ./webpack/workers.module.babel.js --mode production",
     "lint": "eslint '**/*{.ts,.tsx}'",
     "test:unit": "jest --verbose -c jest.config.unit.js",
     "test:node": "jest -c jest.config.integration.js",
-    "build": "rm -rf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
+    "build": "rimraf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
     "type-check": "tsc --project tsconfig.json"
   },
   "devDependencies": {

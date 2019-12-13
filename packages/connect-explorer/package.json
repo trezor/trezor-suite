@@ -9,7 +9,7 @@
         "type-coverage": "type-coverage --at-least 90 --strict",
         "dev": "webpack-dev-server --config ./webpack/dev.babel.js --mode development",
         "dev:local": "cross-env LOCAL=true webpack-dev-server --progress --colors --config ./webpack/local.babel.js --mode development --bail",
-        "build": "rm -rf build && webpack --config ./webpack/prod.babel.js --progress",
+        "build": "rimraf build && webpack --config ./webpack/prod.babel.js --progress",
         "ci:test:snapshots": "cypress run",
         "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots"
     },
