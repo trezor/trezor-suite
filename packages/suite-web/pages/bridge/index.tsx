@@ -1,3 +1,3 @@
-import Bridge from '@suite/views/suite/bridge';
+import Bridge from '@suite-views/bridge';
 
 export default Bridge;
