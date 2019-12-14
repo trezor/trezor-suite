@@ -61,7 +61,7 @@ type PulsePromptProps = Required<Omit<Props, 'type' | 'children'>> & { children?
 
 const PulsePrompt = ({ model, size, children, ...rest }: PulsePromptProps) => {
     return (
-        <Wrapper>
+        <Wrapper {...rest}>
             <ImgWrapper size={size}>
                 <Pulse />
                 <Icon icon={getDeviceIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
@@ -84,10 +84,10 @@ const DeviceRect = styled.rect`
     animation: ${animationConnect} 1.3s ease-out infinite;
 `;
 
-const ConnectDevicePrompt = ({ size }: Required<Pick<Props, 'size'>>) => {
+const ConnectDevicePrompt = ({ size, ...rest }: Required<Pick<Props, 'size'>>) => {
     const ratio = 20 / 57;
     return (
-        <Wrapper>
+        <Wrapper {...rest}>
             <div style={{ width: `${size * ratio}px` }}>
                 <svg viewBox="0 0 20 57">
                     <g stroke="none" strokeWidth="1" fill="none" transform="translate(1, 1)">
