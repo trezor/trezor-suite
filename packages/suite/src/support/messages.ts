@@ -2200,6 +2200,44 @@ const definedMessages = defineMessages({
         id: 'TR_BACKGROUND_GALLERY',
         defaultMessage: 'Homescreen background gallery',
     },
+    TR_BACKUP: {
+        id: 'TR_BACKUP',
+        defaultMessage: 'Backup',
+    },
+    TR_BACKUP_RECOVERY_SEED: {
+        id: 'TR_BACKUP_RECOVERY_SEED',
+        defaultMessage: 'Backup (Recovery seed)',
+    },
+    TR_RECOVERY_SEED_IS: {
+        id: 'TR_RECOVERY_SEED_IS',
+        defaultMessage:
+            'Recovery seed is a list of words in a specific order which store all the information needed.',
+    },
+    TR_CREATE_BACKUP: {
+        id: 'TR_CREATE_BACKUP',
+        defaultMessage: 'Create backup',
+    },
+    TR_CHECK_RECOVERY_SEED: {
+        id: 'TR_CHECK_RECOVERY_SEED',
+        defaultMessage: 'Check recovery seed',
+    },
+    TR_CHECK_SEED: {
+        id: 'TR_CHECK_SEED',
+        defaultMessage: 'Check seed',
+    },
+    TR_FIRMWARE_VERSION: {
+        id: 'TR_FIRMWARE_VERSION',
+        defaultMessage: 'Firmware version',
+    },
+    TR_YOUR_CURRENT_FIRMWARE: {
+        id: 'TR_YOUR_CURRENT_FIRMWARE',
+        defaultMessage: 'Your current firmware version is {version}',
+    },
+    TR_WIPING_YOUR_DEVICE: {
+        id: 'TR_WIPING_YOUR_DEVICE',
+        defaultMessage:
+            'Wiping the device removes all its information. Only wipe your device if you have your device if you have your recovery seed at hand or there are no funds stored on this device.',
+    },
 });
 
 export default definedMessages;
