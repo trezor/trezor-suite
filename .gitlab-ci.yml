@@ -6,7 +6,6 @@ variables:
     PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
     PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
     PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 stages:
@@ -33,4 +32,3 @@ include:
     - ci/packages/suite-native.yml
     - ci/packages/blockchain-link.yml
     - ci/packages/rollout.yml
-    # - ci/packages/connect-explorer.yml
