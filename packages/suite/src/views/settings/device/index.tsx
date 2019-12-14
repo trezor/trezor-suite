@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
-import { Select, variables as oldVariables } from '@trezor/components';
-import { Input, Button, Switch, P, H2, Link, colors, variables } from '@trezor/components-v2';
+import { Input, Select, variables as oldVariables } from '@trezor/components';
+import { Button, Switch, P, H2, Link, colors, variables } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
@@ -25,14 +25,7 @@ const ActionButton = styled(Button)`
     }
 `;
 
-const Section = styled.div`
-    border: 1px solid ${colors.BLACK96};
-    border-radius: 6px;
-    margin-top: 16px;
-    margin-bottom: 30px;
-`;
-
-const SectionHeader = styled(P)`
+const SectionHeader = styled.div`
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.BOLD};
@@ -41,8 +34,6 @@ const SectionHeader = styled(P)`
 const Row = styled.div`
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid ${colors.BLACK96};
-    border-bottom: 1px solid ${colors.BLACK96};
     padding: 28px 24px;
 
     @media all and (max-width: ${SCREEN_SIZE.SM}) {
@@ -50,13 +41,36 @@ const Row = styled.div`
     }
 `;
 
+interface SectionProps {
+    borderless?: boolean;
+}
+
+const Section = styled.div<SectionProps>`
+    border-radius: 6px;
+    margin-top: 16px;
+    margin-bottom: 30px;
+
+    ${({ borderless }) =>
+        !borderless &&
+        css`
+            border: 1px solid ${colors.BLACK96};
+        `}
+
+    /* actually using ${Row} works but stylelint doesnt like */
+    & > div:not(:last-child) {
+        border-bottom: 1px solid ${colors.BLACK96};
+    }
+    & > div:not(:first-child) {
+        border-top: 1px solid ${colors.BLACK96};
+    }
+`;
+
 const TextColumn = styled.div`
     display: flex;
-    /* flex: 3; */
     flex-direction: column;
 `;
 
-const SmallDescription = styled(P)`
+const SmallDescription = styled.div`
     color: ${colors.BLACK50};
     margin: 4px 16px 4px 0;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -337,7 +351,7 @@ const Settings = ({
                     )}
                 </Section>
 
-                <Section>
+                <Section borderless>
                     <Row>
                         <TextColumn>
                             <Description>
