@@ -19,15 +19,15 @@ blockchain-link test:
     dependencies:
         - install and build
 
-blockchain-link build:
-    stage: build
-    script:
-        - yarn workspace @trezor/blockchain-link build
-    artifacts:
-        expire_in: 2 days
-        when: always
-        paths:
-            - packages/blockchain-link/lib
-            - packages/blockchain-link/build
-    dependencies:
-        - install and build
+# blockchain-link build:
+#     stage: build
+#     script:
+#         - yarn workspace @trezor/blockchain-link build
+#     artifacts:
+#         expire_in: 2 days
+#         when: always
+#         paths:
+#             - packages/blockchain-link/lib
+#             - packages/blockchain-link/build
+#     dependencies:
+#         - install and build
