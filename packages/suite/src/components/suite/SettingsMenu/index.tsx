@@ -26,20 +26,36 @@ const ITEMS_BORDER = `2px solid ${SECONDARY_COLOR}`;
 
 const ContentWrapper = styled.div`
     margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const Bottom = styled.div`
+    margin-top: auto;
 `;
 
 const Heading = styled(H2)`
-    border-bottom: ${ITEMS_BORDER};
     padding-left: ${LEFT_PADDING};
     color: ${TEXT_COLOR};
 `;
 
-const ItemWrapper = styled.div<{ isActive: boolean }>`
+const Items = styled.div`
+    & > div:first-child {
+        border-top: ${ITEMS_BORDER};
+        border-bottom: ${ITEMS_BORDER};
+    }
+    & > div:not(:first-child) {
+        border-bottom: ${ITEMS_BORDER};
+    }
+`;
+
+const ItemWrapper = styled.div<{ isActive?: boolean }>`
     width: 100%;
-    height: 40px;
+    height: 50px;
     cursor: pointer;
     color: ${({ isActive }) => (isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR)};
-    border-bottom: ${ITEMS_BORDER};
+
     display: flex;
     align-items: center;
     ${({ isActive }) =>
@@ -56,10 +72,10 @@ const StyledIcon = styled(Icon)`
 
 interface ItemProps {
     label: string;
-    icon: IconType; // better
-    onClick: () => void;
-    dataTest: string;
-    isActive: boolean;
+    icon: IconType;
+    onClick?: () => void;
+    dataTest?: string;
+    isActive?: boolean;
 }
 
 const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
@@ -73,7 +89,7 @@ const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
     </ItemWrapper>
 );
 
-const items = [
+const ITEMS = [
     {
         label: 'General',
         dataTest: 'general',
@@ -106,22 +122,43 @@ const items = [
     },
 ] as const;
 
+const BOTTOM_ITEMS = [
+    {
+        label: 'Support',
+        icon: 'SUPPORT',
+    },
+    {
+        label: 'Show log',
+        icon: 'LOG',
+    },
+] as const;
+
 const SettignsMenu = ({ goto, router }: Props) => {
     return (
         <ContentWrapper>
             <Heading>Settings</Heading>
-            {items.map(i => (
-                <Item
-                    key={i.label}
-                    {...i}
-                    onClick={() => goto(i.route)}
-                    isActive={
-                        router &&
-                        typeof router.route !== 'undefined' &&
-                        i.route === router.route.name
-                    }
-                />
-            ))}
+            <Items>
+                {ITEMS.map(i => (
+                    <Item
+                        key={i.label}
+                        {...i}
+                        onClick={() => goto(i.route)}
+                        isActive={
+                            router &&
+                            typeof router.route !== 'undefined' &&
+                            i.route === router.route.name
+                        }
+                    />
+                ))}
+            </Items>
+
+            <Bottom>
+                <Items>
+                    {BOTTOM_ITEMS.map(i => (
+                        <Item key={i.label} {...i} />
+                    ))}
+                </Items>
+            </Bottom>
         </ContentWrapper>
     );
 };
