@@ -1,16 +1,16 @@
-# suite-web lint:
-#     stage: lint and prettier
-#     script:
-#         - yarn workspace @trezor/suite-web lint
-#     dependencies:
-#         - install and build
+suite-web lint:
+    stage: lint and prettier
+    script:
+        - yarn workspace @trezor/suite-web lint
+    dependencies:
+        - install and build
 
-# suite-web type check:
-#     stage: typescript type check
-#     script:
-#         - yarn workspace @trezor/suite-web type-check
-#     dependencies:
-#         - install and build
+suite-web type check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/suite-web type-check
+    dependencies:
+        - install and build
 
 suite-web build:
     stage: build
@@ -61,44 +61,44 @@ suite-web delete review:
     dependencies:
         - install and build
 
-# suite-web test integration google-chrome:
-#     stage: integration testing
-#     script:
-#         #  Would like not to have npx here, but cypress requires binary at: /root/.cache/Cypress/3.4.1/Cypress/Cypress
-#         #  And it is not packed with artifacts
-#         - npx cypress install
-#         # add DEBUG=cypress:* env variable to debug cypress in ci
-#         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=chrome yarn workspace @trezor/suite-web test:integration:ci:run
-#     artifacts:
-#         expire_in: 2 days
-#         when: always
-#         paths:
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
-#             # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
-#     dependencies:
-#         - install and build
+suite-web test integration google-chrome:
+    stage: integration testing
+    script:
+        #  Would like not to have npx here, but cypress requires binary at: /root/.cache/Cypress/3.4.1/Cypress/Cypress
+        #  And it is not packed with artifacts
+        - npx cypress install
+        # add DEBUG=cypress:* env variable to debug cypress in ci
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=chrome yarn workspace @trezor/suite-web test:integration:ci:run
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
+            # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
+    dependencies:
+        - install and build
 
-# suite-web test integration google-chrome-beta:
-#     only:
-#         - schedules
-#     stage: integration testing
-#     script:
-#         - npx cypress install
-#         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/suite-web test:integration:ci:run 
-#     artifacts:
-#         expire_in: 2 days
-#         when: always
-#         paths:
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
-#             # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
-#     dependencies:
-#         - install and build
+suite-web test integration google-chrome-beta:
+    only:
+        - schedules
+    stage: integration testing
+    script:
+        - npx cypress install
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/suite-web test:integration:ci:run 
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
+            # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
+    dependencies:
+        - install and build
 
 suite-web test security:
-    # only: 
-    #     - schedules
+    only: 
+        - schedules
     stage: misc
     script: 
         yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
