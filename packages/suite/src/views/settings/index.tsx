@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { H2 } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
@@ -8,23 +8,34 @@ import messages from '@suite/support/messages';
 import { SUITE } from '@suite-actions/constants';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
 import { Section } from '@suite-components/Settings';
-import { AppState } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
+import { FIAT } from '@suite-config';
+import * as settingsActions from '@wallet-actions/settingsActions';
+
+const buildCurrencyOption = (currency: string) => {
+    return {
+        value: currency,
+        label: currency.toUpperCase(),
+    };
+};
 
 const mapStateToProps = (state: AppState) => ({
     // device: state.suite.device,
     locks: state.suite.locks,
+    wallet: state.wallet,
 });
 
-// const mapDispatchToProps = (dispatch: Dispatch) => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    setLocalCurrency: bindActionCreators(settingsActions.setLocalCurrency, dispatch),
+});
 
-export type Props = ReturnType<typeof mapStateToProps>;
-//  & ReturnType<typeof mapDispatchToProps>;
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({ locks }: Props) => {
+const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
@@ -58,12 +69,14 @@ const Settings = ({ locks }: Props) => {
                                     {
                                         type: 'select',
                                         props: {
-                                            onChange: () => console.log('fooo'),
-                                            options: [
-                                                { label: 'USD', value: 'usd' },
-                                                { label: 'BLYAT', value: 'blyatcoin' },
-                                            ],
-                                            value: null,
+                                            onChange: (option: { value: string; label: string }) =>
+                                                setLocalCurrency(option.value),
+                                            value: buildCurrencyOption(
+                                                wallet.settings.localCurrency,
+                                            ),
+                                            options: FIAT.currencies.map(c =>
+                                                buildCurrencyOption(c),
+                                            ),
                                         },
                                     },
                                 ],
@@ -151,4 +164,4 @@ const Settings = ({ locks }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, null)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

@@ -2024,23 +2024,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'Version is loading',
         id: 'TR_VERSION_IS_LOADING',
     },
-    TR_VISIBLE_COINS: {
-        defaultMessage: 'Visible coins',
-        id: 'TR_VISIBLE_COINS',
+    TR_COINS: {
+        defaultMessage: 'Coins',
+        id: 'TR_COINS',
     },
-    TR_VISIBLE_COINS_EXPLAINED: {
-        defaultMessage:
-            'Select the coins you wish to see in the wallet interface. You will be able to change your preferences later.',
-        id: 'TR_VISIBLE_COINS_EXPLAINED',
+    TR_TESTNET_COINS: {
+        defaultMessage: 'Testnet coins',
+        id: 'TR_TESTNET_COINS',
     },
-    TR_VISIBLE_TESTNET_COINS: {
-        defaultMessage: 'Visible testnet coins',
-        id: 'TR_VISIBLE_TESTNET_COINS',
-    },
-    TR_VISIBLE_TESTNET_COINS_EXPLAINED: {
+    TR_TESTNET_COINS_EXPLAINED: {
         defaultMessage:
             'Testnet coins dont have any value but you still may use them to learn and experiment.',
-        id: 'TR_VISIBLE_TESTNET_COINS_EXPLAINED',
+        id: 'TR_TESTNET_COINS_EXPLAINED',
     },
     TR_WAIT_FOR_FILE_TO_DOWNLOAD: {
         defaultMessage: 'Wait for file to download',

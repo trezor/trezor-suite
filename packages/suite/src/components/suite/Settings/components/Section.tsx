@@ -4,6 +4,7 @@ import { Input, Select, variables as oldVariables } from '@trezor/components';
 import { Button, Switch, P, Link, colors, variables } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import SectionHeader from './SectionHeader';
 
 const { SCREEN_SIZE } = oldVariables;
 
@@ -17,16 +18,10 @@ const ActionButton = styled(Button)`
     }
 `;
 
-const SectionHeader = styled.div`
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.BOLD};
-`;
-
 const Row = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 28px 24px;
+    padding: 26px 24px;
 
     @media all and (max-width: ${SCREEN_SIZE.SM}) {
         flex-direction: column;
@@ -109,12 +104,10 @@ const SectionWrapper = styled.div<SectionProps>`
     }
 `;
 
-type Value = React.ReactNode;
-
 type Left =
     | {
-          type: 'description' | 'small-description';
-          value: Value;
+          type: 'description' | 'small-description' | 'custom';
+          value: React.ReactNode;
       }
     | {
           type: 'learn-more';
@@ -123,7 +116,7 @@ type Left =
 
 interface Right {
     type: 'button' | 'input' | 'switch' | 'select';
-    value?: Value;
+    value?: React.ReactNode;
     props?: any;
 }
 
@@ -137,7 +130,7 @@ interface Props {
     borderless?: boolean;
     rows: readonly RowProps[];
     controlsDisabled?: boolean;
-    header?: Value;
+    header?: React.ReactNode;
 }
 
 let id = 0;
@@ -169,6 +162,7 @@ const Section = ({ borderless, rows, controlsDisabled, header }: Props) => {
                                             {rl.type === 'learn-more' && (
                                                 <LearnMore href={rl.href} />
                                             )}
+                                            {rl.type === 'custom' && rl.value}
                                         </React.Fragment>
                                     ))}
                             </TextColumn>
