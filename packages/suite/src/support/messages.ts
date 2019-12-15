@@ -2238,6 +2238,42 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Wiping the device removes all its information. Only wipe your device if you have your device if you have your recovery seed at hand or there are no funds stored on this device.',
     },
+    TR_CURRENCY: {
+        id: 'TR_CURRENCY',
+        defaultMessage: 'Currency',
+    },
+    TR_PRIMARY_FIAT: {
+        id: 'TR_PRIMARY_FIAT',
+        defaultMessage: 'Primary FIAT currency to display',
+    },
+    TR_LABELING: {
+        id: 'TR_LABELING',
+        defaultMessage: 'Labeling',
+    },
+    TR_DROPBOX_CONNECTION: {
+        id: 'TR_DROPBOX_CONNECTION',
+        defaultMessage: 'Dropbox connection',
+    },
+    TR_YOUR_LABELS_WILL_BE_SAVED: {
+        id: 'TR_YOUR_LABELS_WILL_BE_SAVED',
+        defaultMessage: 'Your labels will be saved in Dropbox folder and synced across devices',
+    },
+    TR_CONNECT_DROPBOX: {
+        id: 'TR_CONNECT_DROPBOX',
+        defaultMessage: 'Connect Dropbox',
+    },
+    TR_SUITE_VERSION: {
+        id: 'TR_SUITE_VERSION',
+        defaultMessage: 'Suite version',
+    },
+    TR_YOUR_CURRENT_VERSION: {
+        id: 'TR_YOUR_CURRENT_VERSION',
+        defaultMessage: 'Your current Suite version is 1.2.0',
+    },
+    TR_CHECK_FOR_UPDATES: {
+        id: 'TR_CHECK_FOR_UPDATES',
+        defaultMessage: 'Check for updates',
+    },
 });
 
 export default definedMessages;

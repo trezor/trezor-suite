@@ -178,6 +178,7 @@ const Section = ({ borderless, rows, controlsDisabled, header }: Props) => {
                                         <React.Fragment key={getKey()}>
                                             {rr.type === 'button' && (
                                                 <ActionButton
+                                                    variant="secondary"
                                                     isDisabled={controlsDisabled}
                                                     {...rr.props}
                                                 >
