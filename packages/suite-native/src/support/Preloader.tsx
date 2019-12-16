@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { View, StyleSheet } from 'react-native';
+import { View, SafeAreaView, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
 import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
@@ -15,6 +15,13 @@ type Props = ReturnType<typeof mapStateToProps> & {
     isStatic: boolean;
     children: React.ReactNode;
 };
+
+const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: 'powderblue',
+    },
+});
 
 const Preloader = (props: Props) => {
     const { loaded, error, dispatch, isStatic } = props;
@@ -33,13 +40,15 @@ const Preloader = (props: Props) => {
         );
     }
 
-    if (isStatic) return <View>{props.children}</View>;
+    if (isStatic) {
+        return <SafeAreaView style={styles.safeArea}>{props.children}</SafeAreaView>;
+    }
 
     return (
-        <View style={{ flex: 1 }}>
+        <SafeAreaView style={styles.safeArea}>
             {!loaded && <H1>Loading</H1>}
             {loaded && props.children}
-        </View>
+        </SafeAreaView>
     );
 };
 

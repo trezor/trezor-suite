@@ -1,4 +1,8 @@
 import React from 'react';
-import SettingsLayout from '@suite-components/SettingsLayout';
+import { SuiteLayout, SettingsMenu } from '@suite-components';
 
-export default () => <SettingsLayout title="Dashboard settings">Dashboard settings</SettingsLayout>;
+export default () => (
+    <SuiteLayout title="Dashboard settings" secondaryMenu={<SettingsMenu />}>
+        Dashboard settings
+    </SuiteLayout>
+);

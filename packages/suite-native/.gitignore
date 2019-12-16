@@ -61,7 +61,7 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
-static
+public
 
 # CocoaPods
 /ios/Pods/

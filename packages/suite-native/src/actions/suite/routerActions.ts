@@ -2,7 +2,7 @@ import { Linking } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { ROUTER } from '@suite-actions/constants';
 
-export const LOCATION_CHANGE = '@router-location-change';
+// export const LOCATION_CHANGE = '@router/location-change';
 export const UPDATE = 'goto';
 
 interface LocationChange {
@@ -14,8 +14,8 @@ export type RouterActions = LocationChange;
 
 export const onLocationChange = (url: string) => {
     return {
-        type: LOCATION_CHANGE,
-        pathname: url,
+        type: ROUTER.LOCATION_CHANGE,
+        url,
     };
 };
 
