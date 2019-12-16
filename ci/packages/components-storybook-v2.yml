@@ -51,7 +51,7 @@ components-storybook-v2 delete review:
     - install and build
 
 components-storybook-v2 test snapshots:
-  image: cypress/base:12
+  image: cypress/base:12.1.0
   stage: integration testing
   script:
     - npx cypress install
@@ -64,7 +64,7 @@ components-storybook-v2 test snapshots:
       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/screenshots
 
 components-storybook-v2 make snapshot references:
-  image: cypress/base:12
+  image: cypress/base:12.1.0
   stage: integration testing
   when: manual
   script:
