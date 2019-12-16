@@ -118,6 +118,7 @@ const BottomText = styled.div<InputProps>`
 `;
 
 const Button = styled.button`
+    font-family: ${variables.FONT_FAMILY.TTHOVES};
     color: ${colors.BLACK25};
     border: none;
     outline: none;
@@ -136,6 +137,7 @@ const ButtonText = styled.div`
     font-size: 14px;
     font-weight: 500;
     height: 14px;
+    line-height: 16px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -170,8 +172,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     variant?: InputVariant;
     display?: InputDisplay;
     button?: InputButton;
-    topLabel?: string;
-    bottomText?: string;
+    topLabel?: React.ReactNode;
+    bottomText?: React.ReactNode;
     monospace?: boolean;
     isDisabled?: boolean;
     autoComplete?: string;
