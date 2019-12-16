@@ -17,7 +17,7 @@ stages:
     - build
     - deploy to dev servers
     - integration testing
-    - build desktop apps
+    - build artifacts
     - misc
 
 include:
