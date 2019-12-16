@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Network } from '@wallet-types';
 import { CoinLogo } from '@trezor/components';
 import BigNumber from 'bignumber.js';
-import { FormattedNumber } from '@suite-components';
+import { FormattedNumber, NoRatesTooltip } from '@suite-components';
 import { variables, colors } from '@trezor/components-v2';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 
@@ -74,6 +74,8 @@ const AssetName = styled.div`
 // Similar Badge in DeviceItem (part of switch device modal)
 // TOOD: refactor to single component
 const Badge = styled.div`
+    display: flex;
+    align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: 600;
     padding: 5px;
@@ -83,6 +85,10 @@ const Badge = styled.div`
     color: ${colors.BLACK50};
     align-self: center;
     white-space: nowrap;
+`;
+
+const BadgeText = styled.div`
+    margin-right: 6px;
 `;
 
 const Col = styled.div`
@@ -192,7 +198,13 @@ const Asset = ({
                         <FormattedNumber value={exchangeRate.toString()} currency={localCurrency} />
                     </Badge>
                 )}
-                {!exchangeRate && <Badge>N/A (tooltip)</Badge>}
+                {!exchangeRate && (
+                    <>
+                        <Badge>
+                            <BadgeText>N/A</BadgeText> <NoRatesTooltip />
+                        </Badge>
+                    </>
+                )}
             </Col>
         </Wrapper>
     );

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { FormattedNumber } from '@suite/components/suite';
+import { FormattedNumber, NoRatesTooltip } from '@suite-components';
 import { Network, Fiat } from '@wallet-types';
 import messages from '@suite/support/messages';
 
@@ -127,15 +127,9 @@ const AccountBalance = (props: Props) => {
     const fiatRateValue = fiatRates ? fiatRates.rates[localCurrency] : null;
     const fiat = fiatRates ? toFiatCurrency(props.balance, localCurrency, fiatRates) : null;
 
-    const NoRatesTooltip = (
+    const WrappedNoRatesTooltip = (
         <TooltipContainer>
-            <Tooltip
-                maxWidth={285}
-                placement="top"
-                content={<Translation {...messages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
-            >
-                <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
-            </Tooltip>
+            <NoRatesTooltip />
         </TooltipContainer>
     );
 
@@ -164,7 +158,7 @@ const AccountBalance = (props: Props) => {
                                     'N/A'
                                 )}
                             </FiatValue>
-                            {!fiatRates && NoRatesTooltip}
+                            {!fiatRates && WrappedNoRatesTooltip}
                         </TooltipWrapper>
                         <CoinBalance>
                             {props.balance} {network.symbol}
@@ -195,7 +189,7 @@ const AccountBalance = (props: Props) => {
                                     'N/A'
                                 )}
                             </FiatValueRate>
-                            {!fiatRates && NoRatesTooltip}
+                            {!fiatRates && WrappedNoRatesTooltip}
                         </TooltipWrapper>
                         <CoinBalance>1 {network.symbol}</CoinBalance>
                     </BalanceRateWrapper>
