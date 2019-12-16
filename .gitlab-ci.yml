@@ -2,7 +2,7 @@
 image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:faa15996fb896c7dffedda20a6ee76078aed6051
 
 before_script:
-    - yarn
+    - yarn install --network-timeout 100000
 
 include:
     - ci/environment.yml
