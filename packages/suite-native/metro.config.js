@@ -34,7 +34,10 @@ module.exports = (async () => {
                 stream: nodejs.stream,
                 path: nodejs.path,
                 vm: nodejs.vm,
-                '@trezor/blockchain-link': path.resolve(__dirname, '../../packages/blockchain-link'),
+                '@trezor/blockchain-link': path.resolve(
+                    __dirname,
+                    '../../packages/blockchain-link',
+                ),
             },
             // https://github.com/facebook/metro/issues/265
             blacklistRE: blacklist([

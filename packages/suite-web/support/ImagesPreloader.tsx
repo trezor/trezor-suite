@@ -14,7 +14,9 @@ class ImagesPreloader extends Component {
     }
 
     render() {
-        const images = this.importAll(require.context('../static/images', true, /\.(png|jpe?g)$/));
+        const images = this.importAll(
+            require.context('../public/static/images', true, /\.(png|jpe?g)$/),
+        );
         return (
             <Wrapper>
                 {images.map((image: string) => (

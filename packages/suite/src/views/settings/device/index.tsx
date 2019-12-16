@@ -3,16 +3,11 @@ import styled from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
 import { Input, Switch, Icon } from '@trezor/components';
 import { Button, P, H1, H2 } from '@trezor/components-v2';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-import { elementToHomescreen } from '@suite-utils/homescreen';
-import { SettingsLayout } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { homescreensT1, homescreensT2 } from '@suite-constants';
+import { SuiteLayout, SettingsMenu } from '@suite-components';
 
 import { Props } from './Container';
-
-type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
 interface RowProps {
     isColumn?: boolean;
@@ -54,42 +49,21 @@ const OrientationButton = styled(Button)`
     margin-left: 3px;
 `;
 
-const BackgroundGalleryT2 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 200px;
-    margin-right: 10px;
-`;
-
-const BackgroundGalleryT1 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 490px;
-    margin-right: 10px;
-`;
-
-const BackgroundImageT2 = styled.img`
-    border-radius: 50%;
-    margin: 5px;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-`;
-
-const BackgroundImageT1 = styled.img`
-    margin: 5px;
-    cursor: pointer;
-    width: 64px;
-    height: 32px;
-`;
-
 const CloseButton = styled(Button)`
     padding: 0;
     margin: 0;
     cursor: pointer;
 `;
 
-const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }: Props) => {
+const Settings = ({
+    device,
+    locks,
+    applySettings,
+    changePin,
+    wipeDevice,
+    goto,
+    openBackgroundGalleryModal,
+}: Props) => {
     // todo: need to solve typescript here.
 
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -108,14 +82,6 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
 
     const { features } = device;
 
-    const setHomescreen = (image: AnyImageName) => {
-        const element = document.getElementById(image);
-        if (element instanceof HTMLImageElement) {
-            const hex = elementToHomescreen(element, features.major_version);
-            applySettings({ homescreen: hex, device });
-        }
-    };
-
     const DISPLAY_ROTATIONS = [
         { icon: 'ARROW_UP', value: 0 },
         { icon: 'ARROW_RIGHT', value: 90 },
@@ -126,7 +92,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
     console.log('render');
 
     return (
-        <SettingsLayout title="Settings">
+        <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
             <Row>
                 <H1 textAlign="center">
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
@@ -171,30 +137,6 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                     </P>
                 </Row>
 
-                {device.features.major_version === 1 && (
-                    <BackgroundGalleryT1>
-                        {homescreensT1.map(image => (
-                            <BackgroundImageT1
-                                key={image}
-                                id={image}
-                                onClick={() => setHomescreen(image)}
-                                src={resolveStaticPath(`images/suite/homescreens/t1/${image}.png`)}
-                            />
-                        ))}
-                    </BackgroundGalleryT1>
-                )}
-                {device.features.major_version === 2 && (
-                    <BackgroundGalleryT2>
-                        {homescreensT2.map(image => (
-                            <BackgroundImageT2
-                                key={image}
-                                id={image}
-                                onClick={() => setHomescreen(image)}
-                                src={resolveStaticPath(`images/suite/homescreens/t2/${image}.png`)}
-                            />
-                        ))}
-                    </BackgroundGalleryT2>
-                )}
                 <ActionColumn>
                     <Row isColumn>
                         <ActionButtonColumn isDisabled onClick={() => applySettings({ label })}>
@@ -202,7 +144,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                                 {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
                             </Translation>
                         </ActionButtonColumn>
-                        <ActionButton isDisabled onClick={() => applySettings({ label })}>
+                        <ActionButton onClick={() => openBackgroundGalleryModal()}>
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
                             </Translation>
@@ -282,11 +224,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 </Row>
             )}
             <Row>
-                <ActionButton
-                    isDisabled={uiLocked}
-                    variant="danger"
-                    onClick={() => wipeDevice({ device })}
-                >
+                <ActionButton isDisabled={uiLocked} variant="danger" onClick={() => wipeDevice()}>
                     <Translation>{messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}</Translation>
                 </ActionButton>
             </Row>
@@ -296,7 +234,7 @@ const Settings = ({ device, locks, applySettings, changePin, wipeDevice, goto }:
                 { name: 'passphrase_source', type: 'number' }, is not in features, so probably skip for now ?
                 { name: 'auto_lock_delay_ms', type: 'number' }, is not implemented, skip for now.
             */}
-        </SettingsLayout>
+        </SuiteLayout>
     );
 };
 

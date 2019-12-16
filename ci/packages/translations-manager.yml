@@ -1,0 +1,6 @@
+translations-manager lint:
+    stage: lint and prettier
+    script:
+        - yarn workspace @trezor/translations-manager lint
+    dependencies:
+        - install and build

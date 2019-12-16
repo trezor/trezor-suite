@@ -14,8 +14,7 @@ suite-native type check:
 
 suite-native build android:
     image: reactnativecommunity/react-native-android
-    # todo rename 'build desktop apps' to something like 'build apps'
-    stage: build desktop apps
+    stage: build artifacts
     script:
         - yarn cache clean
         - yarn build:libs
