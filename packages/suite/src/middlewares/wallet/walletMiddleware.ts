@@ -1,12 +1,13 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
+import { ACCOUNT, DISCOVERY, SETTINGS } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { observeChanges } from '@suite-utils/reducerUtils';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { findRoute } from '@suite-utils/router';
+import { handleRatesUpdate } from '@wallet-actions/fiatRatesActions';
 
 const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -55,9 +56,11 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
             // update discovery in selectedAccount
             api.dispatch(selectedAccountActions.observe(prevState, action));
             break;
-
-        default:
+        case SETTINGS.CHANGE_NETWORKS:
+            api.dispatch(handleRatesUpdate());
             break;
+        default:
+        // no default
     }
 
     return action;
