@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import colors from '../../../config/colors';
-import { FONT_SIZE } from '../../../config/variables';
+import { FONT_SIZE, FONT_FAMILY } from '../../../config/variables';
 import FluidSpinner from '../../FluidSpinner';
 
 const getPrimaryPadding = (size: ButtonSize) => {
@@ -56,6 +56,7 @@ const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
 };
 
 const Wrapper = styled.button<WrapperProps>`
+    font-family: ${FONT_FAMILY.TTHOVES};
     display: flex;
     width: ${props => (props.fullWidth ? '100%' : 'auto')};
     align-items: center;
