@@ -1,17 +1,3 @@
-components-storybook-v2 lint:
-  stage: lint and prettier
-  script:
-    - yarn workspace @trezor/components-storybook-v2 lint
-  dependencies:
-    - install and build
-
-components-storybook-v2 type check:
-  stage: typescript type check
-  script:
-    - yarn workspace @trezor/components-storybook-v2 type-check
-  dependencies:
-    - install and build
-
 components-storybook-v2 build:
   stage: build
   script:

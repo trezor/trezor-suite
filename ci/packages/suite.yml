@@ -1,26 +1,3 @@
-suite lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/suite lint
-    dependencies:
-        - install and build
-
-suite detect l10n duplicities:
-    stage: lint and prettier
-    allow_failure: true
-    script:
-        - yarn workspace @trezor/suite translations:extract
-    dependencies:
-        - install and build
-
-suite type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/suite type-check
-    dependencies:
-        - install and build
-
-
 suite test unit:
     stage: unit testing
     script:
@@ -45,3 +22,13 @@ suite check outdated:
         - ./ci/scripts/outdated.sh
     dependencies:
         - install and build
+
+# just try if messagess extraction works, not sure if very useful now
+suite check messages:
+    stage: misc
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/suite translations:extract
+    dependencies:
+        - install and build
+
