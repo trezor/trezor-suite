@@ -3,6 +3,7 @@ import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import { RATE_UPDATE } from './constants/fiatRatesConstants';
 import { Network } from '@wallet-types';
+import { saveFiatRates } from '@suite-actions/storageActions';
 
 export interface NetworkRate {
     symbol: string;
@@ -17,7 +18,7 @@ export type FiatRateActions = {
 
 // how often should suite check for outdated rates;
 const INTERVAL = 1000 * 60;
-// which rates should be consider outdated and updated;
+// which rates should be considered outdated and updated;
 const MAX_AGE = 1000 * 6 * 10;
 
 export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -34,7 +35,7 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
                 // if no rates loaded yet, load them;
                 if (fiat.length === 0) return true;
                 const watchedTicker = fiat.find(f => f.symbol === t.symbol);
-                // is not in rates, means is not watched, for example coin was added in settings
+                // is not in fiat[], means is not watched, for example coin was added in settings, add it
                 if (!watchedTicker) return true;
                 // otherwise load only older ones
                 return Date.now() - watchedTicker.timestamp > MAX_AGE;
@@ -50,6 +51,8 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
                         symbol: response.symbol,
                         rates: response.market_data.current_price,
                     });
+                    // save to storage
+                    dispatch(saveFiatRates());
                 }
             });
         await Promise.all(promises);

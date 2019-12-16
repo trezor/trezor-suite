@@ -3,6 +3,7 @@ import { DBSchema } from 'idb';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
+import { Fiat } from '@wallet-reducers/fiatRateReducer';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery } from '@wallet-types';
@@ -57,6 +58,10 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: Discovery;
     };
+    fiatRates: {
+        key: string;
+        value: Fiat[];
+    };
 }
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
@@ -108,6 +113,8 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         // object store for send form
         const sendFormStore = db.createObjectStore('sendForm');
         sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
+
+        db.createObjectStore('fiatRates');
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);
