@@ -31,11 +31,24 @@ const SettignsMenu = ({ goto }: Props) => {
     return (
         <>
             <>Settings</>
-            <Item onClick={() => goto('settings-index')}>General</Item>
-            <Item onClick={() => goto('settings-device')}>Device</Item>
-            <Item onClick={() => goto('settings-dashboard')}>Dashboard</Item>
-            <Item onClick={() => goto('settings-wallet')}>Wallet</Item>
-            <Item onClick={() => goto('settings-coins')}>Coins</Item>
+            <Item onClick={() => goto('settings-index')} data-test="@suite/settings/menu/general">
+                General
+            </Item>
+            <Item onClick={() => goto('settings-device')} data-test="@suite/settings/menu/device">
+                Device
+            </Item>
+            <Item
+                onClick={() => goto('settings-dashboard')}
+                data-test="@suite/settings/menu/dashboard"
+            >
+                Dashboard
+            </Item>
+            <Item onClick={() => goto('settings-wallet')} data-test="@suite/settings/menu/wallet">
+                Wallet
+            </Item>
+            <Item onClick={() => goto('settings-coins')} data-test="@suite/settings/menu/coins">
+                Coins
+            </Item>
         </>
     );
 };

@@ -1,5 +1,5 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:30432a76306b0b3ae5f0fa57d0bc9a63fb4d025f
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:faa15996fb896c7dffedda20a6ee76078aed6051
 
 variables:
     PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
