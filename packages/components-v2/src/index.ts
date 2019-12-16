@@ -11,6 +11,8 @@ import { H1, H2 } from './components/Heading';
 import { P } from './components/Paragraph';
 import { Link } from './components/Link';
 import { Notification } from './components/Notification';
+import { CoinLogo } from './components/CoinLogo';
+import { TrezorLogo } from './components/TrezorLogo';
 import * as types from './support/types';
 
 export {
@@ -27,5 +29,7 @@ export {
     P,
     Link,
     Notification,
+    CoinLogo,
+    TrezorLogo,
     types,
 };
