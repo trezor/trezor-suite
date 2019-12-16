@@ -2,7 +2,7 @@
 image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:faa15996fb896c7dffedda20a6ee76078aed6051
 
 variables:
-    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
+    # PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
     PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
     PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
     PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
@@ -23,9 +23,9 @@ stages:
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    - ci/packages/components.yml
+    # - ci/packages/components.yml
     - ci/packages/components-v2.yml
-    - ci/packages/components-storybook.yml
+    # - ci/packages/components-storybook.yml
     - ci/packages/components-storybook-v2.yml
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
