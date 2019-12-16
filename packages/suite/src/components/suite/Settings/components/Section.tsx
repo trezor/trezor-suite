@@ -50,9 +50,9 @@ const LearnMore = ({ href, ...props }: { href: string }) => (
     </LearnMoreWrapper>
 );
 
-const Description = styled(P)`
-    line-height: 1.29;
-`;
+const Description = ({ children }: { children: React.ReactNode }) => {
+    return <P size="small">{children}</P>;
+};
 
 const ActionColumn = styled.div`
     display: flex;
