@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Network, Account } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { NETWORKS } from '@suite/config/wallet';
 import Asset from './components/Asset';
 import Card from '../Card';
@@ -8,10 +8,6 @@ import BigNumber from 'bignumber.js';
 import { AppState } from '@suite/types/suite';
 import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
 import { Loader } from '@trezor/components';
-
-const Wrapper = styled.div`
-    display: flex;
-`;
 
 const Header = styled.div`
     display: flex;
@@ -49,11 +45,12 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     assets: { [key: string]: Account[] };
     localCurrency: string;
     rates: AppState['wallet']['fiat'];
+    isLoading?: boolean;
 }
 
 const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props) => {
     return (
-        <StyledCard>
+        <StyledCard {...rest}>
             <Header>
                 <HeaderTitle>
                     {/* todo */}
