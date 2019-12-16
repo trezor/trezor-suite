@@ -29,7 +29,7 @@ const StyledReactSwitch = styled(ReactSwitch)<Props>`
 
 interface Props extends ReactSwitchProps {
     onChange: (checked: boolean) => any;
-    disabled?: boolean;
+    isDisabled?: boolean;
     isSmall?: boolean;
 }
 
@@ -37,7 +37,7 @@ interface StateProps {
     checked: boolean;
 }
 
-const Switch = ({ onChange, disabled, isSmall, ...rest }: Props) => {
+const Switch = ({ onChange, isDisabled, isSmall, ...rest }: Props) => {
     const [checked, setChecked] = useState<StateProps['checked']>(false);
     const handleChange = (checked: boolean) => {
         onChange(checked);
@@ -47,7 +47,7 @@ const Switch = ({ onChange, disabled, isSmall, ...rest }: Props) => {
     return (
         <StyledReactSwitch
             checked={checked}
-            disabled={disabled}
+            disabled={isDisabled}
             onChange={handleChange}
             onColor={colors.GREEN}
             checkedIcon={false}

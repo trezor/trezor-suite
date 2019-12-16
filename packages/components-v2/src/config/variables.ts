@@ -22,7 +22,8 @@ export const FONT_WEIGHT = {
 } as const;
 
 export const FONT_FAMILY = {
-    TTHOVES: 'TTHoves',
+    TTHOVES: 'TT Hoves',
+    MONOSPACE: 'Menlo, Monaco, Consolas, “Courier New”, monospace',
 } as const;
 
 export const ICONS: IconType[] = [

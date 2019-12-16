@@ -19,7 +19,7 @@ storiesOf('Form', module).add(
             ...infoOptions,
             text: `
         ~~~js
-        import { Checkbox } from 'trezor-ui-components';
+        import { Checkbox } from '@trezor/components-v2';
         ~~~
         `,
         },

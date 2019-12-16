@@ -47,6 +47,7 @@ const StyledInput = styled.input<InputProps>`
     ${props =>
         props.monospace &&
         css`
+            font-family: ${variables.FONT_FAMILY.MONOSPACE};
             padding-bottom: 2px;
         `}
 
@@ -83,14 +84,25 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputIconWrapper = styled.div`
+const InputIconWrapper = styled.div<InputProps>`
     position: absolute;
     top: 1px;
     bottom: 1px;
-    right: 10px;
     display: flex;
     align-items: center;
     z-index: 2;
+
+    ${props =>
+        props.align === 'left' &&
+        css`
+            right: 10px;
+        `}
+
+    ${props =>
+        props.align === 'right' &&
+        css`
+            left: 10px;
+        `}
 `;
 
 const SpinnerWrapper = styled.div``;
@@ -191,7 +203,7 @@ const Input = ({
     wrapperProps,
     isLoading,
     isPartiallyHidden,
-    align,
+    align = 'left',
     ...rest
 }: InputProps) => {
     const [buttonHover, setButtonHover] = React.useState(false);
@@ -216,7 +228,7 @@ const Input = ({
         <Wrapper display={display} {...wrapperProps}>
             {topLabel && <Label>{topLabel}</Label>}
             <InputWrapper>
-                <InputIconWrapper>
+                <InputIconWrapper align={align}>
                     {isLoading && (
                         <SpinnerWrapper>
                             <FluidSpinner size={16} color={colors.GREEN} />
