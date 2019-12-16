@@ -18640,7 +18640,7 @@ react-native-reanimated@^1.4.0:
 
 react-native-router-flux@^4.2.0-beta.2:
   version "4.2.0-beta.2"
-  resolved "http://proxy1.gitlab.prod.hq.sldev.cz:8081/repository/npm-proxy-suite/react-native-router-flux/-/react-native-router-flux-4.2.0-beta.2.tgz#cb722593722d2656d5885e46393e0e9230de1b5d"
+  resolved "https://registry.yarnpkg.com/react-native-router-flux/-/react-native-router-flux-4.2.0-beta.2.tgz#cb722593722d2656d5885e46393e0e9230de1b5d"
   integrity sha512-np5zrCNMXHd1JuZZ2EcXHrU6fZ0ANBVMDSatUjXGEfgJlalZFntlaJr6NBZsH/iuL17lsOmKBYldHejKdDV7Ew==
   dependencies:
     "@babel/runtime" "^7.6.0"
