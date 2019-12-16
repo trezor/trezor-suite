@@ -45,7 +45,7 @@ const Backup = (props: Props) => {
     };
 
     return (
-        <SuiteLayout showSuiteHeader>
+        <SuiteLayout>
             <Wrapper>
                 {getStatus() === 'backup-failed' && (
                     <P>

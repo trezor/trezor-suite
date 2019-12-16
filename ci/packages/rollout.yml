@@ -19,14 +19,14 @@ rollout test unit:
     dependencies:
         - install and build
 
-rollout build:
-    stage: build
-    script:
-        - yarn workspace @trezor/rollout build:lib
-    artifacts:
-        expire_in: 2 days
-        when: always
-        paths:
-            - packages/rollout/lib
-    dependencies:
-        - install and build
+# rollout build:
+#     stage: build
+#     script:
+#         - yarn workspace @trezor/rollout build:lib
+#     artifacts:
+#         expire_in: 2 days
+#         when: always
+#         paths:
+#             - packages/rollout/lib
+#     dependencies:
+#         - install and build

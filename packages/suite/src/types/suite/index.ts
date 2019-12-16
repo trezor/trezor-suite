@@ -20,6 +20,7 @@ import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import OnboardingActions from '@onboarding-types/actions';
+import { DeviceSettingsActions } from '@suite-actions/deviceSettingsActions';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 
@@ -45,7 +46,8 @@ export type Action =
     | ModalActions
     | NotificationActions
     | WalletAction
-    | OnboardingActions;
+    | OnboardingActions
+    | DeviceSettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
 export type Dispatch = ThunkDispatch<AppState, any, Action>;

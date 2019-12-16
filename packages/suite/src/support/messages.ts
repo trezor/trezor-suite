@@ -2196,6 +2196,10 @@ const definedMessages = defineMessages({
         id: 'TR_ADD_HIDDEN_WALLET',
         defaultMessage: 'Add hidden wallet',
     },
+    TR_BACKGROUND_GALLERY: {
+        id: 'TR_BACKGROUND_GALLERY',
+        defaultMessage: 'Homescreen background gallery',
+    },
 });
 
 export default definedMessages;

@@ -26,7 +26,9 @@
         "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
-        "suite:build:web": "yarn workspace @trezor/suite-web build"
+        "suite:build:web": "yarn workspace @trezor/suite-web build",
+        "type-check": "yarn lerna run type-check",
+        "lint": "yarn lerna run lint"
     },
     "devDependencies": {
         "@babel/cli": "^7.7.4",
@@ -38,10 +40,11 @@
         "@babel/preset-env": "^7.7.4",
         "@babel/preset-react": "^7.7.4",
         "@babel/preset-typescript": "^7.7.4",
+        "@types/jest": "^24.0.23",
         "@typescript-eslint/eslint-plugin": "^2.9.0",
         "@typescript-eslint/parser": "^2.9.0",
-        "@types/jest": "^24.0.23",
         "babel-plugin-module-resolver": "^3.2.0",
+        "concurrently": "^5.0.1",
         "eslint": "^6.7.1",
         "eslint-config-airbnb": "^18.0.1",
         "eslint-config-prettier": "^6.7.0",
@@ -53,13 +56,13 @@
         "eslint-plugin-react": "^7.16.0",
         "eslint-plugin-react-hooks": "^2.3.0",
         "jest": "^24.9.0",
-        "lerna": "^3.16.2",
+        "lerna": "^3.19.0",
         "npm-run-all": "^4.1.5",
         "patch-package": "^6.2.0",
         "postinstall-postinstall": "^2.0.0",
         "prettier": "1.19.1",
         "prettier-eslint": "^9.0.1",
-        "rimraf": "^2.6.3",
+        "rimraf": "^3.0.0",
         "ts-jest": "^24.2.0",
         "typescript": "3.6.4"
     }
