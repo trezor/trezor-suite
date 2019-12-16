@@ -61,7 +61,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     <div />
                 </HeaderTitle>
             </Header>
-            {console.log('assets', assets)}
             {isLoading && (
                 <InfoMessage>
                     <Loader size={20} />

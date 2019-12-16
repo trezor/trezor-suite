@@ -47,7 +47,7 @@ const Dashboard = (props: Props) => {
     );
 
     const isLoading = !discovery || accounts.length < 1;
-    console.log(groupedAssets);
+
     return (
         <SuiteLayout>
             <Wrapper>
@@ -55,6 +55,8 @@ const Dashboard = (props: Props) => {
                     <PortfolioCard
                         portfolioValue={instanceBalance.toString()}
                         localCurrency={props.localCurrency}
+                        buyClickHandler={() => props.goto('wallet-account-receive')}
+                        receiveClickHandler={() => props.goto('wallet-account-receive')}
                     />
                 </Divider>
                 <Divider>

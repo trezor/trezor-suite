@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import FormattedNumber from '@suite-components/FormattedNumber';
-import { colors } from '@trezor/components-v2';
+import { colors, Button } from '@trezor/components-v2';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -11,7 +11,8 @@ const StyledCard = styled(Card)`
 const Header = styled.div`
     display: flex;
     padding: 20px;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     border-bottom: solid 2px #f5f5f5;
 `;
 
@@ -38,19 +39,59 @@ const Body = styled.div`
     align-items: center;
 `;
 
+const Left = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+`;
+
+const Right = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const ActionButton = styled(Button)`
+    min-width: 150px;
+
+    & + & {
+        margin-left: 20px;
+    }
+`;
+
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     portfolioValue: string;
     localCurrency: string;
+    buyClickHandler: () => void;
+    receiveClickHandler: () => void;
 }
 
-const PortfolioCard = ({ portfolioValue, localCurrency, ...rest }: Props) => {
+const PortfolioCard = ({
+    portfolioValue,
+    localCurrency,
+    buyClickHandler,
+    receiveClickHandler,
+    ...rest
+}: Props) => {
     return (
         <StyledCard {...rest}>
             <Header>
-                <HeaderTitle>Total portfolio value</HeaderTitle>
-                <ValueWrapper>
-                    <FormattedNumber value={portfolioValue.toString()} currency={localCurrency} />
-                </ValueWrapper>
+                <Left>
+                    <HeaderTitle>Total portfolio value</HeaderTitle>
+                    <ValueWrapper>
+                        <FormattedNumber
+                            value={portfolioValue.toString()}
+                            currency={localCurrency}
+                        />
+                    </ValueWrapper>
+                </Left>
+                <Right>
+                    <ActionButton variant="primary" onClick={buyClickHandler}>
+                        Buy
+                    </ActionButton>
+                    <ActionButton variant="secondary" onClick={receiveClickHandler}>
+                        Receive
+                    </ActionButton>
+                </Right>
             </Header>
             <Body>graficek</Body>
         </StyledCard>
