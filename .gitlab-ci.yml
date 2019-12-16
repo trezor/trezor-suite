@@ -10,7 +10,7 @@ variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
 
 before_script:
-    - yarn
+    - yarn install --network-timeout 100000
 
 stages:
     - setup environment
