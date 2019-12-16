@@ -15,7 +15,7 @@ stages:
     - build
     - deploy to dev servers
     - integration testing
-    - build artifacts
+    - build desktop apps
     - misc
 
 include: 
@@ -38,7 +38,7 @@ lint:
         - install and build
     script: 
         - yarn lerna run lint
-    stage: lint and types
+    stage: "lint and types"
 
 type check:
     dependencies: 
