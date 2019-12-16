@@ -60,8 +60,7 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
             break;
         case SUITE.CREATE_DEVICE_INSTANCE:
-            // TODO: tmp redirect to the wallet to trigger accounts discovery. Should be changed to dashboard.
-            await api.dispatch(routerActions.goto('wallet-index'));
+            await api.dispatch(routerActions.goto('suite-index'));
             break;
         default:
             break;
