@@ -32,7 +32,7 @@ export default class MyDocument extends Document<Props> {
                     <meta charSet="utf-8" />
                     <script
                         type="text/javascript"
-                        src={resolveStaticPath('js/browserDetection.js')}
+                        src={resolveStaticPath('browser-detection/index.js')}
                     />
                     <link
                         media="all"

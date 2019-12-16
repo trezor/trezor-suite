@@ -1,78 +1,76 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { colors } from '@trezor/components';
-
-import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import Modals from '@suite-components/modals';
-import { toggleSidebar } from '@suite-actions/suiteActions';
-
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import SuiteNotifications from '@suite-components/Notifications';
+// import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import { Log } from '@suite-components';
+import MenuSecondary from '@suite/components/suite/MenuSecondary';
 
-const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
+// const { SCREEN_SIZE } = variables;
+
+const PageWrapper = styled.div`
     display: flex;
     flex: 1;
+    min-height: 600px;
+    height: 100vh;
+    overflow-x: hidden;
 `;
 
-const AppWrapper = styled.div<Pick<Props, 'isLanding' | 'fullscreenMode'>>`
+const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     display: flex;
-    flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
-
     flex-direction: column;
+    overflow: auto;
+    height: 100vh;
+    flex: 1 1 0%;
 `;
-
-interface Props {
-    router: AppState['router'];
-    suite: AppState['suite'];
-    fetchLocale: typeof fetchLocale;
-    toggleSidebar: () => void;
-    isLanding?: boolean;
-    showSuiteHeader?: boolean;
-    fullscreenMode?: boolean;
-    title?: string;
-    children: React.ReactNode;
-    footer?: React.ReactNode;
-    additionalDeviceMenuItems?: React.ReactNode;
-    disableNotifications?: boolean;
-    disableModals?: boolean;
-}
-
-const SuiteLayout = (props: Props & WrappedComponentProps) => (
-    <PageWrapper isLanding={props.isLanding}>
-        <Head>
-            <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
-        </Head>
-        <Menu />
-        <ErrorBoundary>
-            {!props.disableModals && <Modals />}
-            <AppWrapper fullscreenMode={props.fullscreenMode} isLanding={props.isLanding}>
-                <>
-                    {!props.disableNotifications && <SuiteNotifications />}
-                    <Log />
-                    {props.children}
-                </>
-            </AppWrapper>
-        </ErrorBoundary>
-        {!props.fullscreenMode ? props.footer : null}
-    </PageWrapper>
-);
 
 const mapStateToProps = (state: AppState) => ({
-    router: state.router,
     suite: state.suite,
 });
 
-export default injectIntl(
-    connect(mapStateToProps, dispatch => ({
-        fetchLocale: bindActionCreators(fetchLocale, dispatch),
-        toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
-    }))(SuiteLayout),
-);
+type Props = ReturnType<typeof mapStateToProps> & {
+    children?: React.ReactNode;
+    fullscreenMode?: boolean;
+    title?: string;
+    footer?: React.ReactNode;
+    disableNotifications?: boolean;
+    disableModals?: boolean;
+    secondaryMenu?: React.ReactNode;
+    isLanding?: boolean;
+};
+
+const SuiteLayout = (props: Props) => {
+    return (
+        <PageWrapper>
+            <Head>
+                <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
+            </Head>
+            <Menu />
+            <ErrorBoundary>
+                {!props.disableModals && <Modals />}
+                {props.secondaryMenu && (
+                    <MenuSecondary isOpen={props.suite.showSidebar}>
+                        {props.secondaryMenu}
+                    </MenuSecondary>
+                )}
+                <AppWrapper isLanding={props.isLanding}>
+                    <>
+                        {/* notifications disabled now. lets redo them into new design */}
+                        {/* {!props.disableNotifications && <SuiteNotifications />} */}
+                        <Log />
+                        {props.children}
+                    </>
+                </AppWrapper>
+            </ErrorBoundary>
+            {!props.fullscreenMode ? props.footer : null}
+        </PageWrapper>
+    );
+};
+
+export default connect(mapStateToProps)(SuiteLayout);

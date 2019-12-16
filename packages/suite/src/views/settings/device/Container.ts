@@ -2,7 +2,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
-import { applySettings, changePin, wipeDevice } from '@suite-actions/deviceSettingsActions';
+import {
+    applySettings,
+    changePin,
+    wipeDevice,
+    openBackgroundGalleryModal,
+} from '@suite-actions/deviceSettingsActions';
+
 import { AppState, Dispatch } from '@suite-types';
 
 import DeviceSettings from './index';
@@ -17,6 +23,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     changePin: bindActionCreators(changePin, dispatch),
     wipeDevice: bindActionCreators(wipeDevice, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
+    openBackgroundGalleryModal: bindActionCreators(openBackgroundGalleryModal, dispatch),
 });
 
 export type Props = WrappedComponentProps &

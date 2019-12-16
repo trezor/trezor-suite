@@ -45,18 +45,13 @@ module.exports = {
         '!**/constants/**',
         '!**/constants/**',
         '!**/__tests__/**',
-        // TODO REMOVE THIS
-        '!<rootDir>/src/reducers/wallet/sendFormReducer.ts',
-        '!<rootDir>/src/reducers/wallet/feesReducer.ts',
-        '!<rootDir>/src/actions/wallet/sendFormActions.ts',
-        '!<rootDir>/src/actions/wallet/sendFormSpecific/**',
     ],
     coverageThreshold: {
         global: {
-            statements: 66.3,
-            branches: 65.31,
+            statements: 63.3,
+            branches: 58.88,
             functions: 66.78,
-            lines: 66.87,
+            lines: 63.72,
         },
     },
     modulePathIgnorePatterns: [
