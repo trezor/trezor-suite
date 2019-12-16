@@ -34,15 +34,15 @@ include:
     # - ci/packages/translations-manager.yml
 
 lint: 
+    stage: lint and types
     dependencies: 
         - install and build
     script: 
-        - yarn lerna run lint
-    stage: "lint and types"
-
+        - lerna run lint
+    
 type check:
+    stage: lint and types
     dependencies: 
         - install and build
     script: 
-        - yarn lerna run type-check
-    stage: "lint and types"
+        - lerna run type-check
