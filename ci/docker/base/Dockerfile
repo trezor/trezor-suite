@@ -62,7 +62,7 @@ ENV LANG C.UTF-8
 # base packages are downloaded and installed in concurrence with the fact that the troublesome 
 # package relies on existence of another package already installed.
 # as a quick fix, create a project and install needed packages to provide yarn cache on image level.
-RUN yarn global add opencollective node-pre-gyp
+RUN yarn global add opencollective node-pre-gyp lerna
 
 # versions of local tools
 RUN node -v
