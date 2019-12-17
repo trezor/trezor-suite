@@ -61,11 +61,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     <div />
                 </HeaderTitle>
             </Header>
-            {isLoading && (
-                <InfoMessage>
-                    <Loader size={20} />
-                </InfoMessage>
-            )}
             {Object.keys(assets).map(symbol => {
                 const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
                 if (!network) {
@@ -95,6 +90,11 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     />
                 );
             })}
+            {isLoading && (
+                <InfoMessage>
+                    <Loader size={20} />
+                </InfoMessage>
+            )}
         </StyledCard>
     );
 };

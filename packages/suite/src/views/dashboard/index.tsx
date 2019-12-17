@@ -8,6 +8,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import Card from '@suite-components/Card';
 import PortfolioCard from '@suite-components/PortfolioCard';
+import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
 const Wrapper = styled.div`
     padding: 30px 50px;
@@ -46,7 +47,8 @@ const Dashboard = (props: Props) => {
         props.fiat,
     );
 
-    const isLoading = !discovery || accounts.length < 1;
+    // @ts-ignore
+    const isLoading = !discovery || discovery && discovery.status === DISCOVERY_STATUS.RUNNING;
 
     return (
         <SuiteLayout>

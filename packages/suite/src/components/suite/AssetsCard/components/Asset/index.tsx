@@ -7,6 +7,11 @@ import { FormattedNumber, NoRatesTooltip } from '@suite-components';
 import { variables, colors } from '@trezor/components-v2';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 
+const greenArea = '#D6F3CC';
+const greenStroke = '#30c100';
+const redArea = '#F6DBDB';
+const redStroke = '#d04949';
+
 const data = [
     {
         name: 'Page A',
@@ -119,95 +124,103 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     localCurrency: string;
 }
 
-const Asset = ({
-    name,
-    symbol,
-    cryptoValue,
-    fiatValue,
-    exchangeRate,
-    localCurrency,
-    ...rest
-}: Props) => {
-    const greenArea = '#D6F3CC';
-    const greenStroke = '#30c100';
-    const redArea = '#F6DBDB';
-    const redStroke = '#d04949';
-    const isGraphGreen = Math.random() > 0.5;
+const Asset = React.memo(
+    ({ name, symbol, cryptoValue, fiatValue, exchangeRate, localCurrency, ...rest }: Props) => {
+        const isGraphGreen = Math.random() > 0.5;
 
-    return (
-        <Wrapper {...rest}>
-            <Col>
-                <AssetLogoWrapper>
-                    <CoinLogo symbol={symbol} size={16} />
-                </AssetLogoWrapper>
-                <AssetName>
-                    {name} ({symbol.toUpperCase()})
-                </AssetName>
-            </Col>
-            <Col>
-                <CryptoValueWrapper>
-                    {cryptoValue} {symbol.toUpperCase()}{' '}
-                </CryptoValueWrapper>
-            </Col>
-            <Col>
-                <FiatValueWrapper>
-                    <Badge>
-                        <FormattedNumber value={fiatValue.toString()} currency={localCurrency} />
-                    </Badge>
-                </FiatValueWrapper>
-            </Col>
-            <Col>
-                <GraphWrapper>
-                    <ResponsiveContainer id={symbol} height="100%" width="100%">
-                        <AreaChart
-                            data={data}
-                            margin={{
-                                right: 10,
-                                left: 0,
-                            }}
-                        >
-                            <defs>
-                                <linearGradient id="greenAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="30%" stopColor={greenArea} stopOpacity={1} />
-                                    <stop offset="95%" stopColor="#fff" stopOpacity={1} />
-                                </linearGradient>
-                                <linearGradient id="redAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="30%" stopColor={redArea} stopOpacity={1} />
-                                    <stop offset="95%" stopColor="#fff" stopOpacity={1} />
-                                </linearGradient>
-                            </defs>
-                            <Area
-                                isAnimationActive={false}
-                                type="monotone"
-                                dataKey="uv"
-                                stroke={isGraphGreen ? greenStroke : redStroke}
-                                fill={
-                                    isGraphGreen
-                                        ? 'url(#greenAreaGradient)'
-                                        : 'url(#redAreaGradient)'
-                                }
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </GraphWrapper>
-            </Col>
-            <Col>
-                {exchangeRate && (
-                    <Badge>
-                        1 {symbol.toUpperCase()} ={' '}
-                        <FormattedNumber value={exchangeRate.toString()} currency={localCurrency} />
-                    </Badge>
-                )}
-                {!exchangeRate && (
-                    <>
+        return (
+            <Wrapper {...rest}>
+                <Col>
+                    <AssetLogoWrapper>
+                        <CoinLogo symbol={symbol} size={16} />
+                    </AssetLogoWrapper>
+                    <AssetName>
+                        {name} ({symbol.toUpperCase()})
+                    </AssetName>
+                </Col>
+                <Col>
+                    <CryptoValueWrapper>
+                        {cryptoValue} {symbol.toUpperCase()}{' '}
+                    </CryptoValueWrapper>
+                </Col>
+                <Col>
+                    <FiatValueWrapper>
                         <Badge>
-                            <BadgeText>N/A</BadgeText> <NoRatesTooltip />
+                            <FormattedNumber
+                                value={fiatValue.toString()}
+                                currency={localCurrency}
+                            />
                         </Badge>
-                    </>
-                )}
-            </Col>
-        </Wrapper>
-    );
-};
+                    </FiatValueWrapper>
+                </Col>
+                <Col>
+                    <GraphWrapper>
+                        <ResponsiveContainer id={symbol} height="100%" width="100%">
+                            <AreaChart
+                                data={data}
+                                margin={{
+                                    right: 10,
+                                    left: 0,
+                                }}
+                            >
+                                <defs>
+                                    <linearGradient
+                                        id="greenAreaGradient"
+                                        x1="0"
+                                        y1="0"
+                                        x2="0"
+                                        y2="1"
+                                    >
+                                        <stop offset="30%" stopColor={greenArea} stopOpacity={1} />
+                                        <stop offset="95%" stopColor="#fff" stopOpacity={1} />
+                                    </linearGradient>
+                                    <linearGradient
+                                        id="redAreaGradient"
+                                        x1="0"
+                                        y1="0"
+                                        x2="0"
+                                        y2="1"
+                                    >
+                                        <stop offset="30%" stopColor={redArea} stopOpacity={1} />
+                                        <stop offset="95%" stopColor="#fff" stopOpacity={1} />
+                                    </linearGradient>
+                                </defs>
+                                <Area
+                                    isAnimationActive={false}
+                                    type="monotone"
+                                    dataKey="uv"
+                                    stroke={isGraphGreen ? greenStroke : redStroke}
+                                    fill={
+                                        isGraphGreen
+                                            ? 'url(#greenAreaGradient)'
+                                            : 'url(#redAreaGradient)'
+                                    }
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </GraphWrapper>
+                </Col>
+                <Col>
+                    {exchangeRate && (
+                        <Badge>
+                            1 {symbol.toUpperCase()} ={' '}
+                            <FormattedNumber
+                                value={exchangeRate.toString()}
+                                currency={localCurrency}
+                            />
+                        </Badge>
+                    )}
+                    {!exchangeRate && (
+                        <>
+                            <Badge>
+                                <BadgeText>N/A</BadgeText> <NoRatesTooltip />
+                            </Badge>
+                        </>
+                    )}
+                </Col>
+            </Wrapper>
+        );
+    },
+);
 
 export default Asset;
