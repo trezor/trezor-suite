@@ -48,7 +48,7 @@ const Dashboard = (props: Props) => {
     );
 
     // @ts-ignore
-    const isLoading = !discovery || discovery && discovery.status === DISCOVERY_STATUS.RUNNING;
+    const isLoading = !discovery || (discovery && discovery.status === DISCOVERY_STATUS.RUNNING);
 
     return (
         <SuiteLayout>
