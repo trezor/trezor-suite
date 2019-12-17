@@ -12,20 +12,20 @@ export interface Fiat {
 
 export const initialState: Fiat[] = [];
 
-const update = (state: Fiat[], fiat: Pick<Fiat, 'symbol' | 'rates'>) => {
-    const { symbol, rates } = fiat;
+const update = (state: Fiat[], fiat: Fiat) => {
+    const { symbol, rates, timestamp } = fiat;
     const affected = state.find(f => f.symbol === symbol);
     Object.keys(rates).map(k => rates[k].toFixed(2));
     if (!affected) {
         state.push({
             symbol,
             rates,
-            timestamp: Date.now(),
+            timestamp,
         });
     } else {
         affected.symbol = symbol;
         affected.rates = rates;
-        affected.timestamp = Date.now();
+        affected.timestamp = timestamp;
     }
 };
 
@@ -33,7 +33,7 @@ export default (state: Fiat[] = initialState, action: Action): Fiat[] => {
     return produce(state, draft => {
         switch (action.type) {
             case RATE_UPDATE:
-                update(draft, { symbol: action.symbol, rates: action.rates });
+                update(draft, action.payload);
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.fiat;

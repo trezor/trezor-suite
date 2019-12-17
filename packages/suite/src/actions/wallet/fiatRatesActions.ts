@@ -5,15 +5,13 @@ import { RATE_UPDATE } from './constants/fiatRatesConstants';
 import { Network } from '@wallet-types';
 import { saveFiatRates } from '@suite-actions/storageActions';
 
-export interface NetworkRate {
-    symbol: string;
-    rates: { [key: string]: number };
-}
-
 export type FiatRateActions = {
     type: typeof RATE_UPDATE;
-    symbol: Network['symbol'];
-    rates: { [key: string]: number };
+    payload: {
+        symbol: Network['symbol'];
+        rates: { [key: string]: number };
+        timestamp: number;
+    };
 };
 
 // how often should suite check for outdated rates;
@@ -48,8 +46,11 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
                 if (response) {
                     dispatch({
                         type: RATE_UPDATE,
-                        symbol: response.symbol,
-                        rates: response.market_data.current_price,
+                        payload: {
+                            symbol: response.symbol,
+                            rates: response.market_data.current_price,
+                            timestamp: Date.now(),
+                        },
                     });
                     // save to storage
                     dispatch(saveFiatRates());

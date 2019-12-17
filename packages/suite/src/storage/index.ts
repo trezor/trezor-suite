@@ -60,7 +60,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     fiatRates: {
         key: string;
-        value: Fiat[];
+        value: Fiat;
     };
 }
 
@@ -114,7 +114,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         const sendFormStore = db.createObjectStore('sendForm');
         sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
 
-        db.createObjectStore('fiatRates');
+        db.createObjectStore('fiatRates', { keyPath: 'symbol' });
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);
