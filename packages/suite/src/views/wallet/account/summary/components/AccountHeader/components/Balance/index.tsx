@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { Icon, Tooltip, colors, variables } from '@trezor/components';
+import { Icon, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FormattedNumber, NoRatesTooltip } from '@suite-components';
@@ -92,12 +92,6 @@ const CoinBalance = styled.div`
 const Label = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
-`;
-
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    align-items: center;
-    margin-top: -5px;
 `;
 
 const TooltipContainer = styled.div`
