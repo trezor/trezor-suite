@@ -64,8 +64,6 @@ const Settings = ({
     goto,
     openBackgroundGalleryModal,
 }: Props) => {
-    // todo: need to solve typescript here.
-
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
 

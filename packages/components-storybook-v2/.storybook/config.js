@@ -30,6 +30,9 @@ function loadStories() {
     require('../src/stories/components/form/textarea');
     require('../src/stories/components/icons/all');
     require('../src/stories/components/icons/icon');
+    require('../src/stories/components/logos/all');
+    require('../src/stories/components/logos/coin');
+    require('../src/stories/components/logos/trezor');
     require('../src/stories/components/typography/all');
     require('../src/stories/components/typography/heading');
     require('../src/stories/components/typography/paragraph');
