@@ -19,14 +19,9 @@ const routes = [
         app: 'exchange',
     },
     {
-        name: 'dashboard-index',
-        pattern: '/dashboard',
-        app: 'dashboard',
-    },
-    {
         name: 'suite-index',
         pattern: '/',
-        app: 'wallet',
+        app: 'dashboard',
     },
     {
         name: 'suite-version',
