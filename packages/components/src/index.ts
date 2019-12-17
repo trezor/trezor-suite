@@ -14,7 +14,6 @@ import { TrezorImage, TrezorImageProps } from './components/TrezorImage';
 import { TrezorLogo, TrezorLogoProps } from './components/TrezorLogo';
 import { LanguagePicker, LanguagePickerProps } from './components/LanguagePicker';
 import { Select, SelectProps } from './components/selects/Select';
-import { AsyncSelect, AsyncSelectProps } from './components/selects/AsyncSelect';
 
 import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
 import { Link, LinkProps } from './components/Link';
@@ -51,8 +50,6 @@ export {
     SwitchProps,
     Select,
     SelectProps,
-    AsyncSelect,
-    AsyncSelectProps,
     H1,
     H2,
     H3,

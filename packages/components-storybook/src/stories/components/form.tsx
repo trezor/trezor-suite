@@ -2,17 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
-import {
-    Checkbox,
-    Switch,
-    Input,
-    InputPin,
-    TextArea,
-    AsyncSelect,
-    Select,
-    H1,
-    H5,
-} from '@trezor/components';
+import { Checkbox, Switch, Input, InputPin, TextArea, Select, H1, H5 } from '@trezor/components';
 import { infoOptions } from '../../support/info';
 
 const Wrapper = styled.div`
@@ -787,39 +777,6 @@ storiesOf('Form', module)
             import { Select } from 'trezor-ui-components';
             ~~~
             *<Select> is just a styling wrapper around [react-select](https://react-select.com) component. See the [official documentation](https://react-select.com) for more information about its props and usage.*
-            `,
-            },
-        }
-    )
-    .add(
-        'Select (Async)',
-        () => (
-            <AsyncSelect
-                defaultOptions={[
-                    { value: 'hello', label: 'Hello' },
-                    { value: 'world', label: 'World' },
-                ]}
-                cacheOptions={false}
-                onInputChange={() => {}}
-                loadOptions={(inputValue: string, callback: (data: any) => void) => {
-                    const data = [
-                        { value: 'hello', label: 'Hello' },
-                        { value: 'world', label: 'World' },
-                    ].filter(
-                        item => item.label.toLowerCase().search(inputValue.toLowerCase()) !== -1
-                    );
-                    callback(data);
-                }}
-            />
-        ),
-        {
-            info: {
-                ...infoOptions,
-                text: `
-            ~~~js
-            import { AsyncSelect } from 'trezor-ui-components';
-            ~~~
-            *<AsyncSelect> is just a styling wrapper around async version of [react-select](https://react-select.com) component. See the [official documentation](https://react-select.com/async) for more information about its props and usage.*
             `,
             },
         }
