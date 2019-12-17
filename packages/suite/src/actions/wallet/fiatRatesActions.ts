@@ -15,9 +15,9 @@ export type FiatRateActions = {
 };
 
 // how often should suite check for outdated rates;
-const INTERVAL = 1000 * 60;
+const INTERVAL = 1000 * 60; // 1 min
 // which rates should be considered outdated and updated;
-const MAX_AGE = 1000 * 6 * 10;
+const MAX_AGE = 1000 * 60 * 10; // 10 mins
 
 export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     const { fiat } = getState().wallet;
