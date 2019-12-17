@@ -18,13 +18,6 @@
         "test:unit": "jest"
     },
     "devDependencies": {
-        "@types/react-native": "0.57.45",
-        "@types/react-select": "^3.0.0",
-        "@types/storybook__addon-info": "^4.1.1",
-        "@types/storybook__addon-knobs": "^4.0.5",
-        "@types/storybook__addon-links": "^3.3.4",
-        "@types/storybook__react": "^4.0.1",
-        "@types/styled-components": "^4.1.15",
         "awesome-typescript-loader": "^5.2.1",
         "babel-jest": "^24.9.0",
         "babel-loader": "^8.0.5",
@@ -42,9 +35,16 @@
         "wait-on": "^3.3.0"
     },
     "dependencies": {
+        "@types/react-native": "0.57.45",
+        "@types/react-select": "3.0.8",
+        "@types/storybook__addon-info": "^4.1.1",
+        "@types/storybook__addon-knobs": "^4.0.5",
+        "@types/storybook__addon-links": "^3.3.4",
+        "@types/storybook__react": "^4.0.1",
+        "@types/styled-components": "^4.1.15",
         "@tippy.js/react": "^2.1.1",
         "react-native-picker-select": "^6.2.0",
-        "react-select": "^3.0.3",
+        "react-select": "3.0.8",
         "react-svg": "^10.0.12",
         "react-switch": "^5.0.1"
     },

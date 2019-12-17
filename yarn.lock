@@ -5735,6 +5735,15 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-select@3.0.1":
+  version "3.0.1"
+  resolved "http://proxy1.gitlab.prod.hq.sldev.cz:8081/repository/npm-proxy-suite/@types/react-select/-/react-select-3.0.1.tgz#b988d04323b5d64512fb95931f63f7298300446c"
+  integrity sha512-l8zyWE+UfmO8HMOsmDH1Y6gopjlaEBEAt6q22gQzr3y8gPeaaou6cZLE/ERwHyDspCrMfcc63twk1kkdJmKinA==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-dom" "*"
+    "@types/react-transition-group" "*"
+
 "@types/react-select@^2.0.17":
   version "2.0.19"
   resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-2.0.19.tgz#59a80ef81a4a5cb37f59970c53a4894d15065199"
@@ -5744,10 +5753,10 @@
     "@types/react-dom" "*"
     "@types/react-transition-group" "*"
 
-"@types/react-select@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.0.tgz#d8e2fa078099963d2f33bea20b735a962799015a"
-  integrity sha512-eu+4qdByhx1Szqtpqke/7Bwhl5B1cWm47ojlYKp+PR2x9eVnzoytRoi2FNthQxCTQor4t81xgqY/8X4Naf2rKQ==
+"@types/react-select@^3.0.8":
+  version "3.0.8"
+  resolved "http://proxy1.gitlab.prod.hq.sldev.cz:8081/repository/npm-proxy-suite/@types/react-select/-/react-select-3.0.8.tgz#b824a12d438dd493c30ffff49a805f797602a837"
+  integrity sha512-0763TXYZc8bTiHM+DUnWoy9Rg5mk6PxYWBrEe6Fkjgc0Kv0r1RqjZk9/BrK4wdM0RNjYjixlFPnUhOJb76sMGg==
   dependencies:
     "@types/react" "*"
     "@types/react-dom" "*"
@@ -19963,6 +19972,22 @@ react-scale-text@^1.2.2:
     shortid "^2.2.8"
     warning "^3.0.0"
 
+react-select@3.0.1:
+  version "3.0.1"
+  resolved "http://proxy1.gitlab.prod.hq.sldev.cz:8081/repository/npm-proxy-suite/react-select/-/react-select-3.0.1.tgz#b498e721d1cb8f71ebe47cf09985bdbb7cbc1404"
+  integrity sha512-F5RAZShmvu8M/wALV5/0YsHIMqEAr+5wqGmxhltXPfOZZEhmqQUYnNZHjyH5ifzHON3aYWdWqc7C1MkiDvuvhg==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@emotion/cache" "^10.0.9"
+    "@emotion/core" "^10.0.9"
+    "@emotion/css" "^10.0.9"
+    classnames "^2.2.5"
+    memoize-one "^5.0.0"
+    prop-types "^15.6.0"
+    raf "^3.4.0"
+    react-input-autosize "^2.2.1"
+    react-transition-group "^2.2.1"
+
 react-select@^2.2.0:
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.4.4.tgz#ba72468ef1060c7d46fbb862b0748f96491f1f73"
@@ -19976,7 +20001,7 @@ react-select@^2.2.0:
     react-input-autosize "^2.2.1"
     react-transition-group "^2.2.1"
 
-react-select@^3.0.0:
+react-select@^3.0.0, react-select@^3.0.8:
   version "3.0.8"
   resolved "https://registry.npmjs.org/react-select/-/react-select-3.0.8.tgz#06ff764e29db843bcec439ef13e196865242e0c1"
   integrity sha512-v9LpOhckLlRmXN5A6/mGGEft4FMrfaBFTGAnuPHcUgVId7Je42kTq9y0Z+Ye5z8/j0XDT3zUqza8gaRaI1PZIg==
@@ -19988,22 +20013,6 @@ react-select@^3.0.0:
     memoize-one "^5.0.0"
     prop-types "^15.6.0"
     react-input-autosize "^2.2.2"
-    react-transition-group "^2.2.1"
-
-react-select@^3.0.3:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-3.0.4.tgz#16bde37c24fd4f6444914d4681e78f15ffbc86d3"
-  integrity sha512-fbVISKa/lSUlLsltuatfUiKcWCNvdLXxFFyrzVQCBUsjxJZH/m7UMPdw/ywmRixAmwXAP++MdbNNZypOsiDEfA==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    "@emotion/cache" "^10.0.9"
-    "@emotion/core" "^10.0.9"
-    "@emotion/css" "^10.0.9"
-    classnames "^2.2.5"
-    memoize-one "^5.0.0"
-    prop-types "^15.6.0"
-    raf "^3.4.0"
-    react-input-autosize "^2.2.1"
     react-transition-group "^2.2.1"
 
 react-sizeme@^2.6.7:
