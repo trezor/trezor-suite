@@ -68,7 +68,7 @@ suite-web test integration google-chrome:
         - apt-get update
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser chrome
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test-suite-web --browser chrome
     artifacts:
         expire_in: 2 days
         when: always
@@ -81,12 +81,10 @@ suite-web test integration google-chrome:
 suite-web test integration google-chrome-beta:
     only:
         - schedules
-    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
     script:
-        - apt-get update
-        - npx cypress install
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser /usr/bin/google-chrome-beta
+        - npx cypress install 
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test-suite-web --browser /usr/bin/google-chrome-beta
     artifacts:
         expire_in: 2 days
         when: always

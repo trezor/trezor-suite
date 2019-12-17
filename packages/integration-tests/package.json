@@ -3,12 +3,15 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "test-components-storybook-v2": "cypress run --project ./projects/components-storybook-v2"
+        "test-components-storybook-v2": "cypress run --project ./projects/components-storybook-v2",
+        "test-components-storybook": "cypress run --project ./projects/components-storybook",
+        "test-suite-web": "cypress run --project ./projects/suite-web"
     },
     "dependencies": {
         "cypress": "^3.7.0"
     },
     "devDependencies": {
+        "@cypress/webpack-preprocessor": "^4.1.1",
         "cypress-image-snapshot": "^3.1.1"
     }
 }
