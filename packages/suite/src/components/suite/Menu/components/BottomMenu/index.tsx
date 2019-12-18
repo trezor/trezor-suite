@@ -1,8 +1,7 @@
 import React from 'react';
 import { Props as ContainerProps } from '../../Container';
 import styled from 'styled-components';
-import { Switch } from '@trezor/components';
-import { Icon, colors } from '@trezor/components-v2';
+import { Icon, colors, Switch } from '@trezor/components-v2';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 

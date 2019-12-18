@@ -54,10 +54,9 @@ const Switch = ({ onChange, disabled, isSmall, ...rest }: Props) => {
             uncheckedIcon={false}
             offColor={colors.BLACK70}
             color={colors.GREEN}
-            isSmall={isSmall}
-            width={isSmall ? 42 : 58}
-            height={isSmall ? 24 : 32}
-            handleDiameter={isSmall ? 16 : 22}
+            width={isSmall ? 32 : 42}
+            height={isSmall ? 18 : 24}
+            handleDiameter={isSmall ? 11 : 16}
             boxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.5)"
             activeBoxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.8)"
             {...rest}
