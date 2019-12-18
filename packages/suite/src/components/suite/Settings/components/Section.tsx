@@ -1,84 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Input, Select, variables as oldVariables } from '@trezor/components';
-import { Button, Switch, P, Link, colors, variables } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { colors } from '@trezor/components-v2';
 import SectionHeader from './SectionHeader';
-
-const { SCREEN_SIZE } = oldVariables;
-
-const ActionButton = styled(Button)`
-    min-width: 170px;
-    margin-left: 10px;
-
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        min-width: 100%;
-        margin: 5px 0;
-    }
-`;
-
-const Row = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 26px 24px;
-
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
-const TextColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const SmallDescription = styled.div`
-    color: ${colors.BLACK50};
-    margin: 4px 16px 4px 0;
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const LearnMoreWrapper = styled(Link)`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK17};
-`;
-
-const LearnMore = ({ href, ...props }: { href: string }) => (
-    <LearnMoreWrapper href={href} {...props}>
-        <Translation>{messages.TR_LEARN_MORE_LINK}</Translation>
-    </LearnMoreWrapper>
-);
-
-const Description = ({ children }: { children: React.ReactNode }) => {
-    return <P size="small">{children}</P>;
-};
-
-const ActionColumn = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
-const ActionInput = styled(Input)`
-    width: 170px;
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        min-width: 100%;
-        margin: 5px 0;
-    }
-`;
-
-const ActionSelect = styled(Select)`
-    width: 170px;
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        min-width: 100%;
-        margin: 5px 0;
-    }
-`;
 
 interface SectionProps {
     borderless?: boolean;
@@ -95,7 +18,6 @@ const SectionWrapper = styled.div<SectionProps>`
             border: 1px solid ${colors.BLACK96};
         `}
 
-    /* actually using ${Row} works but stylelint doesnt like */
     & > div:not(:last-child) {
         border-bottom: 1px solid ${colors.BLACK96};
     }
@@ -104,106 +26,17 @@ const SectionWrapper = styled.div<SectionProps>`
     }
 `;
 
-type Left =
-    | {
-          type: 'description' | 'small-description' | 'custom';
-          value: React.ReactNode;
-      }
-    | {
-          type: 'learn-more';
-          href: string;
-      };
-
-interface Right {
-    type: 'button' | 'input' | 'switch' | 'select';
-    value?: React.ReactNode;
-    props?: any;
-}
-
-interface RowProps {
-    hide?: boolean;
-    left?: readonly Left[];
-    right?: readonly Right[];
-}
-
 interface Props {
+    children: React.ReactNode;
     borderless?: boolean;
-    rows: readonly RowProps[];
-    controlsDisabled?: boolean;
     header?: React.ReactNode;
 }
 
-let id = 0;
-const getKey = () => {
-    id++;
-    return id.toString();
-};
-
-const Section = ({ borderless, rows, controlsDisabled, header }: Props) => {
+const Section = ({ borderless, children, header }: Props) => {
     return (
         <>
             {header && <SectionHeader>{header}</SectionHeader>}
-
-            <SectionWrapper borderless={borderless}>
-                {rows
-                    .filter(r => !r.hide)
-                    .map(r => (
-                        <Row key={getKey()}>
-                            <TextColumn>
-                                {r.left &&
-                                    r.left.map(rl => (
-                                        <React.Fragment key={getKey()}>
-                                            {rl.type === 'description' && (
-                                                <Description>{rl.value}</Description>
-                                            )}
-                                            {rl.type === 'small-description' && (
-                                                <SmallDescription>{rl.value}</SmallDescription>
-                                            )}
-                                            {rl.type === 'learn-more' && (
-                                                <LearnMore href={rl.href} />
-                                            )}
-                                            {rl.type === 'custom' && rl.value}
-                                        </React.Fragment>
-                                    ))}
-                            </TextColumn>
-                            <ActionColumn>
-                                {r.right &&
-                                    r.right.map(rr => (
-                                        <React.Fragment key={getKey()}>
-                                            {rr.type === 'button' && (
-                                                <ActionButton
-                                                    variant="secondary"
-                                                    isDisabled={controlsDisabled}
-                                                    {...rr.props}
-                                                >
-                                                    {rr.value}
-                                                </ActionButton>
-                                            )}
-                                            {rr.type === 'switch' && (
-                                                <Switch
-                                                    // todo: switch does not support isDisabled
-                                                    // isDisabled={uiLocked}
-                                                    {...rr.props}
-                                                />
-                                            )}
-                                            {rr.type === 'input' && (
-                                                <ActionInput
-                                                    isDisabled={controlsDisabled}
-                                                    {...rr.props}
-                                                />
-                                            )}
-                                            {rr.type === 'select' && (
-                                                <ActionSelect
-                                                    isDisabled={controlsDisabled}
-                                                    {...rr.props}
-                                                />
-                                            )}
-                                        </React.Fragment>
-                                    ))}
-                            </ActionColumn>
-                        </Row>
-                    ))}
-            </SectionWrapper>
+            <SectionWrapper borderless={borderless}>{children}</SectionWrapper>
         </>
     );
 };

@@ -7,7 +7,14 @@ import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SUITE } from '@suite-actions/constants';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
-import { Section } from '@suite-components/Settings';
+import {
+    Section,
+    ActionColumn,
+    Row,
+    TextColumn,
+    ActionSelect,
+    ActionButton,
+} from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT } from '@suite-config';
 import * as settingsActions from '@wallet-actions/settingsActions';
@@ -50,114 +57,54 @@ const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
                 }}
             >
                 <H2>General</H2>
+                <Section header={<Translation>{messages.TR_CURRENCY}</Translation>}>
+                    <Row>
+                        <TextColumn title={<Translation>{messages.TR_PRIMARY_FIAT}</Translation>} />
+                        <ActionColumn>
+                            <ActionSelect
+                                onChange={(option: { value: string; label: string }) =>
+                                    setLocalCurrency(option.value)
+                                }
+                                value={buildCurrencyOption(wallet.settings.localCurrency)}
+                                options={FIAT.currencies.map(c => buildCurrencyOption(c))}
+                                isDisabled={uiLocked}
+                            />
+                        </ActionColumn>
+                    </Row>
+                </Section>
 
-                <Section
-                    controlsDisabled={uiLocked}
-                    header={<Translation>{messages.TR_CURRENCY}</Translation>}
-                    rows={
-                        [
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>{messages.TR_PRIMARY_FIAT}</Translation>
-                                        ),
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'select',
-                                        props: {
-                                            onChange: (option: { value: string; label: string }) =>
-                                                setLocalCurrency(option.value),
-                                            value: buildCurrencyOption(
-                                                wallet.settings.localCurrency,
-                                            ),
-                                            options: FIAT.currencies.map(c =>
-                                                buildCurrencyOption(c),
-                                            ),
-                                        },
-                                    },
-                                ],
-                            },
-                        ] as const
-                    }
-                />
+                <Section header={<Translation>{messages.TR_LABELING}</Translation>}>
+                    <Row>
+                        <TextColumn
+                            title={<Translation>{messages.TR_CONNECT_DROPBOX}</Translation>}
+                        />
+                        <ActionColumn>
+                            <ActionButton onClick={() => console.log('fooo')} isDisabled={uiLocked}>
+                                <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
 
-                <Section
-                    controlsDisabled={uiLocked}
-                    header={<Translation>{messages.TR_LABELING}</Translation>}
-                    rows={
-                        [
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DROPBOX_CONNECTION}
-                                            </Translation>
-                                        ),
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'button',
-                                        value: (
-                                            <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
-                                        ),
-                                        props: {
-                                            onClick: () => console.log('fooo'),
-                                        },
-                                    },
-                                ],
-                            },
-                        ] as const
-                    }
-                />
                 <BottomContainer>
-                    <Section
-                        borderless
-                        controlsDisabled={uiLocked}
-                        rows={
-                            [
-                                {
-                                    left: [
-                                        {
-                                            type: 'description',
-                                            value: (
-                                                <Translation>
-                                                    {messages.TR_SUITE_VERSION}
-                                                </Translation>
-                                            ),
-                                        },
-                                        {
-                                            type: 'small-description',
-                                            value: (
-                                                <Translation>
-                                                    {messages.TR_YOUR_CURRENT_VERSION}
-                                                </Translation>
-                                            ),
-                                        },
-                                    ],
-                                    right: [
-                                        {
-                                            type: 'button',
-                                            value: (
-                                                <Translation>
-                                                    {messages.TR_CHECK_FOR_UPDATES}
-                                                </Translation>
-                                            ),
-                                            props: {
-                                                onClick: () => console.log('fooo'),
-                                            },
-                                        },
-                                    ],
-                                },
-                            ] as const
-                        }
-                    />
+                    <Section borderless>
+                        <Row>
+                            <TextColumn
+                                title={<Translation>{messages.TR_SUITE_VERSION}</Translation>}
+                                description={
+                                    <Translation>{messages.TR_YOUR_CURRENT_VERSION}</Translation>
+                                }
+                            />
+                            <ActionColumn>
+                                <ActionButton
+                                    onClick={() => console.log('moo')}
+                                    isDisabled={uiLocked}
+                                >
+                                    <Translation>{messages.TR_CHECK_FOR_UPDATES}</Translation>
+                                </ActionButton>
+                            </ActionColumn>
+                        </Row>
+                    </Section>
                 </BottomContainer>
             </div>
         </SuiteLayout>

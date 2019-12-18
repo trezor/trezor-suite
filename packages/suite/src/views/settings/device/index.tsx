@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
 import { SUITE } from '@suite-actions/constants';
-import { H2 } from '@trezor/components-v2';
+import { H2, Switch } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
@@ -10,7 +10,16 @@ import { getFwVersion } from '@suite-utils/device';
 import { Props } from './Container';
 import { SEED_MANUAL_URL } from '@onboarding-constants/urls';
 import { DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
-import { Section } from '@suite-components/Settings';
+
+import {
+    Section,
+    ActionColumn,
+    Row,
+    TextColumn,
+    ActionSelect,
+    ActionButton,
+    ActionInput,
+} from '@suite-components/Settings';
 
 const Settings = ({
     device,
@@ -51,365 +60,217 @@ const Settings = ({
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
                 </H2>
 
-                <Section
-                    controlsDisabled={uiLocked}
-                    header={<Translation>{messages.TR_BACKUP}</Translation>}
-                    rows={
-                        [
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_BACKUP_RECOVERY_SEED}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_RECOVERY_SEED_IS}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'learn-more',
-                                        href: SEED_MANUAL_URL,
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'button',
-                                        value: (
-                                            <Translation>{messages.TR_CREATE_BACKUP}</Translation>
-                                        ),
-                                        props: {
-                                            onClick: () => console.log('fooo'),
-                                        },
-                                    },
-                                ],
-                            },
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_CHECK_RECOVERY_SEED}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_RECOVERY_SEED_IS}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'learn-more',
-                                        href: DRY_RUN_URL,
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'button',
-                                        value: <Translation>{messages.TR_CHECK_SEED}</Translation>,
-                                        props: {
-                                            onClick: () => console.log('fooo'),
-                                        },
-                                    },
-                                ],
-                            },
-                        ] as const
-                    }
-                />
+                <Section header={<Translation>{messages.TR_BACKUP}</Translation>}>
+                    <Row>
+                        <TextColumn
+                            title={<Translation>{messages.TR_BACKUP_RECOVERY_SEED}</Translation>}
+                            description={<Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>}
+                            learnMore={SEED_MANUAL_URL}
+                        />
+                        <ActionColumn>
+                            <ActionButton onClick={() => console.log('foo')} isDisabled={uiLocked}>
+                                <Translation>{messages.TR_CREATE_BACKUP}</Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
 
-                <Section
-                    controlsDisabled={uiLocked}
-                    header="Security"
-                    rows={
-                        [
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_FIRMWARE_VERSION}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation
-                                                values={{ version: getFwVersion(device) }}
-                                                {...messages.TR_YOUR_CURRENT_FIRMWARE}
-                                            />
-                                        ),
-                                    },
-                                    {
-                                        type: 'learn-more',
-                                        href: SEED_MANUAL_URL,
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'button',
-                                        value: 'Check for update',
-                                        props: {
-                                            onClick: () => console.log('fooo'),
-                                        },
-                                    },
-                                ],
-                            },
-                            //
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation
-                                                {...messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC}
-                                            />
-                                        ),
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'switch',
-                                        props: {
-                                            checked: features.pin_protection,
-                                            onChange: () =>
-                                                changePin({ remove: !features.pin_protection }),
-                                        },
-                                    },
-                                ],
-                            },
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_PASSPHRASE_TITLE}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'learn-more',
-                                        href: PASSPHRASE_URL,
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'switch',
-                                        props: {
-                                            checked: features.passphrase_protection,
-                                            onChange: () =>
-                                                applySettings({
-                                                    use_passphrase: !features.passphrase_protection,
-                                                }),
-                                        },
-                                    },
-                                ],
-                            },
-                        ] as const
-                    }
-                />
+                    <Row>
+                        <TextColumn
+                            title={<Translation>{messages.TR_CHECK_RECOVERY_SEED}</Translation>}
+                            description={<Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>}
+                            learnMore={DRY_RUN_URL}
+                        />
+                        <ActionColumn>
+                            <ActionButton onClick={() => console.log('foo')} isDisabled={uiLocked}>
+                                <Translation>{messages.TR_CHECK_SEED}</Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
 
-                <Section
-                    controlsDisabled={uiLocked}
-                    header="Personalization"
-                    rows={
-                        [
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_DEVICE_LABEL}
-                                            </Translation>
-                                        ),
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'input',
-                                        props: {
-                                            value: label,
-                                            onChange: (event: React.FormEvent<HTMLInputElement>) =>
-                                                setLabel(event.currentTarget.value),
-                                        },
-                                    },
-                                    {
-                                        type: 'button',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}
-                                            </Translation>
-                                        ),
-                                        props: {
-                                            onClick: () => applySettings({ label }),
-                                        },
-                                    },
-                                ],
-                            },
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_HOMESCREEN_TITLE}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation>
-                                                {
-                                                    messages.TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS
-                                                }
-                                            </Translation>
-                                        ),
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'button',
-                                        value: (
-                                            <Translation>
-                                                {
-                                                    messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE
-                                                }
-                                            </Translation>
-                                        ),
-                                        props: {
-                                            onClick: () => console.log('todo'),
-                                        },
-                                    },
-                                    {
-                                        type: 'button',
-                                        value: (
-                                            <Translation>
-                                                {
-                                                    messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY
-                                                }
-                                            </Translation>
-                                        ),
-                                        props: {
-                                            onClick: () => openBackgroundGalleryModal(),
-                                        },
-                                    },
-                                ],
-                            },
+                <Section header="Security">
+                    <Row>
+                        <TextColumn
+                            title={<Translation>{messages.TR_FIRMWARE_VERSION}</Translation>}
+                            description={
+                                <Translation
+                                    values={{ version: getFwVersion(device) }}
+                                    {...messages.TR_YOUR_CURRENT_FIRMWARE}
+                                />
+                            }
+                            learnMore={SEED_MANUAL_URL}
+                        />
+                        <ActionColumn>
+                            <ActionButton onClick={() => console.log('boo')} isDisabled={uiLocked}>
+                                Check for update
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
 
-                            {
-                                hide: features.major_version !== 2,
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_DISPLAY_ROTATION}
-                                            </Translation>
-                                        ),
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'select',
-                                        value: null,
-                                        props: {
-                                            options: DISPLAY_ROTATIONS.map(variant => ({
-                                                label: variant.label,
-                                                value: variant.value,
-                                            })),
-                                            // todo: this is not provided by device.features now
-                                            value: null,
-                                            onChange: (option: typeof DISPLAY_ROTATIONS[number]) =>
-                                                applySettings({ display_rotation: option.value }),
-                                        },
-                                    },
-                                ],
-                            },
-                        ] as const
-                    }
-                />
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}
+                                </Translation>
+                            }
+                            description={
+                                <Translation {...messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC} />
+                            }
+                        />
 
-                <Section
-                    controlsDisabled={uiLocked}
-                    borderless
-                    rows={
-                        [
-                            {
-                                left: [
-                                    {
-                                        type: 'description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
-                                            </Translation>
-                                        ),
-                                    },
-                                    {
-                                        type: 'small-description',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_WIPING_YOUR_DEVICE}
-                                            </Translation>
-                                        ),
-                                    },
-                                ],
-                                right: [
-                                    {
-                                        type: 'button',
-                                        value: (
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
-                                            </Translation>
-                                        ),
-                                        props: {
-                                            variant: 'danger',
-                                            onClick: () => wipeDevice(),
-                                        },
-                                    },
-                                ],
-                            },
-                        ] as const
-                    }
-                />
+                        <ActionColumn>
+                            <Switch
+                                checked={features.pin_protection}
+                                onChange={() => changePin({ remove: !features.pin_protection })}
+                                // isDisabled={uiLocked}
+                            />
+                        </ActionColumn>
+                    </Row>
+
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_PASSPHRASE_TITLE}
+                                </Translation>
+                            }
+                            description={
+                                <>
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC}
+                                    </Translation>
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE}
+                                    </Translation>
+                                </>
+                            }
+                            learnMore={PASSPHRASE_URL}
+                        />
+                        <ActionColumn>
+                            <Switch
+                                checked={features.passphrase_protection}
+                                onChange={() =>
+                                    applySettings({
+                                        use_passphrase: !features.passphrase_protection,
+                                    })
+                                }
+                                // isDisabled={uiLocked}
+                            />
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
+                <Section header="Personalization">
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_DEVICE_LABEL}
+                                </Translation>
+                            }
+                        />
+                        <ActionColumn>
+                            <ActionInput
+                                value={label}
+                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                    setLabel(event.currentTarget.value)
+                                }
+                            />
+                            <ActionButton
+                                onClick={() => applySettings({ label })}
+                                isDisabled={uiLocked}
+                            >
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}
+                                </Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_TITLE}
+                                </Translation>
+                            }
+                            description={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS}
+                                </Translation>
+                            }
+                        />
+                        <ActionColumn>
+                            <ActionButton onClick={() => console.log('woo')} isDisabled={uiLocked}>
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
+                                </Translation>
+                            </ActionButton>
+
+                            <ActionButton
+                                onClick={() => openBackgroundGalleryModal()}
+                                isDisabled={uiLocked}
+                            >
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
+                                </Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+
+                    {features.major_version === 2 && (
+                        <Row>
+                            <TextColumn
+                                title={
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_DISPLAY_ROTATION}
+                                    </Translation>
+                                }
+                            />
+                            <ActionColumn>
+                                <ActionSelect
+                                    options={DISPLAY_ROTATIONS.map(variant => ({
+                                        label: variant.label,
+                                        value: variant.value,
+                                    }))}
+                                    // todo: this is not provided by device.features now
+                                    value={null}
+                                    onChange={(option: typeof DISPLAY_ROTATIONS[number]) =>
+                                        applySettings({ display_rotation: option.value })
+                                    }
+                                    isDisabled={uiLocked}
+                                />
+                            </ActionColumn>
+                        </Row>
+                    )}
+                </Section>
+
+                <Section borderless>
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
+                                </Translation>
+                            }
+                            description={
+                                <Translation>{messages.TR_WIPING_YOUR_DEVICE}</Translation>
+                            }
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="danger"
+                                onClick={() => wipeDevice()}
+                                isDisabled={uiLocked}
+                            >
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
+                                </Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
             </div>
         </SuiteLayout>
     );

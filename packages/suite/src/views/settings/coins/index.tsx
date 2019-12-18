@@ -2,16 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2, P, variables, colors } from '@trezor/components-v2';
+import { H2, P, Switch, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
-import { Section, SectionHeader } from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
 import networks from '@suite/config/wallet/networks';
 import { Network } from '@wallet-types';
 import { CoinLogo } from '@trezor/components';
 import * as settingsActions from '@wallet-actions/settingsActions';
+import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
 
 const mapStateToProps = (state: AppState) => ({
     wallet: state.wallet,
@@ -95,39 +95,31 @@ const CoinsGroup = ({
             </HeaderLeft>
             <ToggleAll onClick={() => onToggleAllFn(filterFn)}>
                 {networks.filter(filterFn).some(n => enabledNetworks.includes(n.symbol))
-                    ? 'Activate all'
-                    : 'Deactivate all'}
+                    ? 'Deactivate all'
+                    : 'Activate all'}
             </ToggleAll>
         </Header>
 
-        <Section
-            rows={networks.filter(filterFn).map(n => ({
-                left: [
-                    {
-                        type: 'custom',
-                        value: (
-                            <Coin>
-                                <CoinLogo size={24} symbol={n.symbol} />
-                                <CoinName> {n.name}</CoinName>
-                                <CoinSymbol> {n.symbol.toUpperCase()}</CoinSymbol>
-                            </Coin>
-                        ),
-                    },
-                ],
-                right: [
-                    {
-                        type: 'switch',
-                        props: {
-                            isSmall: true,
-                            onChange: (visible: boolean) => {
+        <Section>
+            {networks.filter(filterFn).map(n => (
+                <Row key={n.symbol}>
+                    <Coin>
+                        <CoinLogo size={24} symbol={n.symbol} />
+                        <CoinName> {n.name}</CoinName>
+                        <CoinSymbol> {n.symbol.toUpperCase()}</CoinSymbol>
+                    </Coin>
+                    <ActionColumn>
+                        <Switch
+                            isSmall
+                            onChange={(visible: boolean) => {
                                 onToggleOneFn(n.symbol, visible);
-                            },
-                            checked: enabledNetworks.includes(n.symbol),
-                        },
-                    },
-                ],
-            }))}
-        />
+                            }}
+                            checked={enabledNetworks.includes(n.symbol)}
+                        />
+                    </ActionColumn>
+                </Row>
+            ))}
+        </Section>
     </CoinsGroupWrapper>
 );
 
