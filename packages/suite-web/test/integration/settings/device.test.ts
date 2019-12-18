@@ -1,8 +1,8 @@
 import CONSTANTS from '../../constants';
+import { homescreensT2 } from '@suite-constants';
 
-// TODO: this test is somewhat flaky, so skipping it for now.
-describe.skip('Device settings happy path', () => {
-    // Note that running this beforeEach makes tests run about 5 (I guess) times longer.
+describe('Device settings', () => {
+    // Note that running this beforeEach makes tests run about 5 (I guess) times longer. I disagree with such practice
     beforeEach(() => {
         cy.task('startBridge')
             .task('startEmu')
@@ -18,16 +18,7 @@ describe.skip('Device settings happy path', () => {
             .getTestElement('@suite/menu/settings')
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')
-            .click()
-            // TODO:
-            // altough all buttons have isDisabled based on uiLocks, somehow cypress (in CI only) is
-            // too fast and manages to trigger new call to device while calls from discovery process
-            // are not stopped yet. dont know much how to debug it.
-            .wait(1000);
-    });
-
-    after(() => {
-        cy.task('stopEmu').task('stopBridge');
+            .click();
     });
 
     it('change device label', () => {
@@ -45,24 +36,37 @@ describe.skip('Device settings happy path', () => {
 
     it('turn on passphrase protection', () => {
         cy.getTestElement('@suite/settings/device/passphrase-switch')
+            // TODO: find a way how to remove force: true 
             .click({ force: true })
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
         cy.getConfirmActionOnDeviceModal().should('not.be.visible');
     });
 
-    // TODO: set pin part. need to extend python script to allow input digits on emulator
-    // it.skip('turn on pin protection', () => {
-    //     cy
-    //         .getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible')
-    //         .getTestElement('@suite/settings/device/pin-switch')
-    //         .click({ force: true })
-    //         .getTestElement('@suite/modal/confirm-action-on-device');
-    //     cy.task('sendDecision', { method: 'applySettings' });
-    //     cy
-    //         .getTestElement('@suite/modal/confirm-action-on-device').should('not.be.visible')
-    // });
+    it('change background', () => {
+        cy.getTestElement('@suite/settings/device/select-from-gallery')
+            .click()
+            // might be nice to try all! I would even like to employ random choice from all possibilities
+            // but this would cause heart attack to reviewers
+            .getTestElement(`@modal/gallery/t2/${homescreensT2[4]}`)
+            .click()
+            .getConfirmActionOnDeviceModal();
+        cy.task('sendDecision', { method: 'applySettings' });
+        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
+    });
 
+    // TODO: ...
+    it.skip('change display rotation', () => {
+        cy.getTestElement('@suite/settings/device/select-rotation')
+            .click()
+            .getTestElement(`@suite/settings/device/select-rotation/90`)
+            .click()
+            .getConfirmActionOnDeviceModal();
+        cy.task('sendDecision', { method: 'applySettings' });
+        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
+    });
+
+    // TODO: upload custom image
+    // TODO: set pin part. need to extend python script to allow input digits on emulator
     // TODO: change rotation
-    // TODO: change background
 });

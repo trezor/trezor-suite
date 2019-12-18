@@ -155,6 +155,7 @@ const Settings = ({
                                         use_passphrase: !features.passphrase_protection,
                                     })
                                 }
+                                data-test="@suite/settings/device/passphrase-switch"
                                 // isDisabled={uiLocked}
                             />
                         </ActionColumn>
@@ -176,10 +177,12 @@ const Settings = ({
                                 onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                     setLabel(event.currentTarget.value)
                                 }
+                                data-test="@suite/settings/device/label-input"
                             />
                             <ActionButton
                                 onClick={() => applySettings({ label })}
                                 isDisabled={uiLocked}
+                                data-test="@suite/settings/device/label-submit"
                             >
                                 <Translation>
                                     {messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}
@@ -211,6 +214,7 @@ const Settings = ({
                             <ActionButton
                                 onClick={() => openBackgroundGalleryModal()}
                                 isDisabled={uiLocked}
+                                data-test="@suite/settings/device/select-from-gallery"
                             >
                                 <Translation>
                                     {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
@@ -233,6 +237,7 @@ const Settings = ({
                                     options={DISPLAY_ROTATIONS.map(variant => ({
                                         label: variant.label,
                                         value: variant.value,
+                                        'data-test': `@suite/settings/device/select-rotation/${variant.value}`,
                                     }))}
                                     // todo: this is not provided by device.features now
                                     value={null}
@@ -240,6 +245,7 @@ const Settings = ({
                                         applySettings({ display_rotation: option.value })
                                     }
                                     isDisabled={uiLocked}
+                                    data-test="@suite/settings/device/select-rotation"
                                 />
                             </ActionColumn>
                         </Row>
