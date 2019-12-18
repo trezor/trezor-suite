@@ -4,22 +4,11 @@
         "jsx": "preserve",
         "moduleResolution": "node",
         "sourceMap": true,
-        "lib": [
-            "dom",
-            "es2019",
-            "esnext.asynciterable"
-        ],
+        "lib": ["dom", "es2019", "esnext.asynciterable"],
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "isolatedModules": true
     },
-    "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx"
-    ],
-    "exclude": [
-        "test/**/*.*"
-    ]
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }
