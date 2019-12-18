@@ -6,3 +6,7 @@
 export const getTestElement = (selector: string) => {
     return cy.get(`[data-test="${selector}"]`);
 };
+
+export const getConfirmActionOnDeviceModal = () => {
+    return cy.getTestElement('@suite/modal/confirm-action-on-device');
+};

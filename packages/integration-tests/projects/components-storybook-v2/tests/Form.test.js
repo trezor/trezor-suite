@@ -4,6 +4,12 @@ describe('Form', () => {
     });
 
     [
+        'switch-off',
+        'switch-on',
+        'switch-off-small',
+        'switch-on-small',
+        'checkbox',
+        'checkbox-checked',
         'textarea-short',
         'textarea-short-success',
         'textarea-short-warning',

@@ -113,10 +113,10 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             </Content>
             <Content>
                 <Row>
-                    <Button onClick={() => verifyAddress()} inlineWidth>
+                    <Button onClick={() => verifyAddress()}>
                         <Translation {...messages.TR_TRY_AGAIN} />
                     </Button>
-                    <Button variant="danger" onClick={() => unverifiedAddress()} inlineWidth>
+                    <Button variant="danger" onClick={() => unverifiedAddress()}>
                         <Translation {...messages.TR_SHOW_UNVERIFIED_ADDRESS} />
                     </Button>
                 </Row>

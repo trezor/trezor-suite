@@ -3,12 +3,13 @@ import { DBSchema } from 'idb';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
+import { Fiat } from '@wallet-reducers/fiatRateReducer';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery } from '@wallet-types';
 import { migrate } from './migrations';
 
-const VERSION = 11;
+const VERSION = 12;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -56,6 +57,10 @@ export interface SuiteDBSchema extends DBSchema {
     discovery: {
         key: string;
         value: Discovery;
+    };
+    fiatRates: {
+        key: string;
+        value: Fiat;
     };
 }
 
@@ -108,6 +113,8 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         // object store for send form
         const sendFormStore = db.createObjectStore('sendForm');
         sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
+
+        db.createObjectStore('fiatRates', { keyPath: 'symbol' });
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);

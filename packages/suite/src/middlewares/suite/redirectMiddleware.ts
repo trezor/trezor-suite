@@ -59,6 +59,9 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         case SUITE.SELECT_DEVICE:
             await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
             break;
+        case SUITE.CREATE_DEVICE_INSTANCE:
+            await api.dispatch(routerActions.goto('suite-index'));
+            break;
         default:
             break;
     }

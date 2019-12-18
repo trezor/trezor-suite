@@ -104,15 +104,11 @@ const getSendText = (
 
 const SendAndClear = (props: Props) => (
     <Wrapper>
-        <Clear variant="secondary" onClick={() => props.sendFormActions.clear()} inlineWidth>
+        <Clear variant="secondary" onClick={() => props.sendFormActions.clear()}>
             <Translation>{messages.TR_CLEAR}</Translation>
         </Clear>
         {props.networkType === 'bitcoin' && (
-            <Button
-                variant="secondary"
-                onClick={() => props.sendFormActionsBitcoin.addRecipient()}
-                inlineWidth
-            >
+            <Button variant="secondary" onClick={() => props.sendFormActionsBitcoin.addRecipient()}>
                 <Translation>{messages.TR_ADD_RECIPIENT}</Translation>
             </Button>
         )}
@@ -136,7 +132,6 @@ const SendAndClear = (props: Props) => (
                     // no default
                 }
             }}
-            inlineWidth
         >
             {getSendText(props.send, props.networkType, props.symbol)}
         </Send>

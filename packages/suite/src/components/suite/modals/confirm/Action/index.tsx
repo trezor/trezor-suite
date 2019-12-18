@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Prompt } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -16,11 +16,11 @@ const Header = styled.div`
     padding: 48px;
 `;
 
-const ConfirmAction: FunctionComponent<Props> = ({ device }) => {
+const ConfirmAction = ({ device }: Props) => {
     const majorVersion = device.features ? device.features.major_version : 2;
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@suite/modal/confirm-action-on-device">
             <Header>
                 <Prompt model={majorVersion} size={32}>
                     <Translation

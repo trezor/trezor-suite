@@ -25,13 +25,20 @@ function loadStories() {
     require('../src/stories/components/buttons/button');
     require('../src/stories/components/form/all');
     require('../src/stories/components/form/input');
+    require('../src/stories/components/form/checkbox');
+    require('../src/stories/components/form/switch');
     require('../src/stories/components/form/textarea');
     require('../src/stories/components/icons/all');
     require('../src/stories/components/icons/icon');
+    require('../src/stories/components/logos/all');
+    require('../src/stories/components/logos/coin');
+    require('../src/stories/components/logos/trezor');
     require('../src/stories/components/typography/all');
     require('../src/stories/components/typography/heading');
     require('../src/stories/components/typography/paragraph');
     require('../src/stories/components/typography/link');
+    require('../src/stories/components/notifications/all');
+    require('../src/stories/components/notifications/notification');
 }
 
 configure(loadStories, module);

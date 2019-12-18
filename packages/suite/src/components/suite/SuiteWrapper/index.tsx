@@ -9,7 +9,7 @@ import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
 import SuiteLayout from '@suite-components/SuiteLayout';
-import Bridge from '@suite-views/bridge';
+import Bridge from '@suite/views/suite/bridge';
 import AcquireDevice from '@suite-components/AcquireDevice';
 
 import { AppState, Dispatch } from '@suite-types';
@@ -39,7 +39,11 @@ const Index = (props: Props) => {
     if (!loaded || !transport) {
         // still loading or
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while).
-        return <Loading />;
+        return (
+            <SuiteLayout isLanding>
+                <Loading />
+            </SuiteLayout>
+        );
     }
 
     if (!transport.type) {
@@ -70,11 +74,9 @@ const Index = (props: Props) => {
 
     if (device.features && device.mode === 'initialize') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="initialize-message">Device is not set up.</P>
-                <Button onClick={() => goto('onboarding-index')} inlineWidth>
-                    Go to setup wizard
-                </Button>
+                <Button onClick={() => goto('onboarding-index')}>Go to setup wizard</Button>
             </SuiteLayout>
         );
     }
@@ -88,11 +90,9 @@ const Index = (props: Props) => {
         device.features.firmware_present === false
     ) {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="no-firmware-message">Device has no firmware installed. </P>
-                <Button onClick={() => goto('onboarding-index')} inlineWidth>
-                    Go to setup wizard
-                </Button>
+                <Button onClick={() => goto('onboarding-index')}>Go to setup wizard</Button>
             </SuiteLayout>
         );
     }
@@ -100,47 +100,41 @@ const Index = (props: Props) => {
     // general bootloader case, has firmware installed
     if (device.features && device.mode === 'bootloader') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="bootloader-message">Device is in bootloader mode. Reconnect it.</P>
-                <Button onClick={() => goto('suite-device-firmware')} inlineWidth>
-                    Or go to firmware
-                </Button>
+                <Button onClick={() => goto('suite-device-firmware')}>Or go to firmware</Button>
             </SuiteLayout>
         );
     }
 
     if (device.type === 'unreadable') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="unreadable-device-message">
                     We cant see details about your device. It might be Trezor with old firmware or
                     possibly any USB device. To make communication possible, you will need to
                     install Trezor Bridge.{' '}
                 </P>
-                <Button onClick={() => goto('suite-bridge')} inlineWidth>
-                    See details
-                </Button>
+                <Button onClick={() => goto('suite-bridge')}>See details</Button>
             </SuiteLayout>
         );
     }
 
     if (device.features && device.firmware === 'required') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="firmware-required-message">
                     Your device has firmware that is no longer supported. You will need to update
                     it.{' '}
                 </P>
-                <Button onClick={() => goto('suite-device-firmware')} inlineWidth>
-                    See details
-                </Button>
+                <Button onClick={() => goto('suite-device-firmware')}>See details</Button>
             </SuiteLayout>
         );
     }
 
     if (device.features && device.mode === 'seedless') {
         return (
-            <SuiteLayout showSuiteHeader>
+            <SuiteLayout>
                 <P data-test="seedles-message">
                     Your device is in seedless mode and is not allowed to be used with this wallet.
                 </P>

@@ -44,7 +44,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     // consider if discovery should be interrupted
     let interruptionIntent = action.type === SUITE.SELECT_DEVICE;
     if (action.type === ROUTER.LOCATION_CHANGE) {
-        interruptionIntent = getApp(action.url) !== 'wallet';
+        interruptionIntent = getApp(action.url) !== 'wallet' && getApp(action.url) !== 'dashboard';
     }
 
     // discovery interruption ends after DISCOVERY.STOP action
@@ -58,7 +58,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     const nextState = api.getState();
     // code below runs only in wallet context
-    if (nextState.router.app !== 'wallet') return action;
+    if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard') return action;
 
     if (action.type === SETTINGS.CHANGE_NETWORKS) {
         // update Discovery fields

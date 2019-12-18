@@ -60,7 +60,7 @@ const RouterHandler = ({ onLocationChange }: Props) => {
                     />
                     <Scene
                         title="Device settings"
-                        key={getRoute('suite-device-settings')}
+                        key={getRoute('settings-index')}
                         drawer
                         component={DeviceSettings}
                     />

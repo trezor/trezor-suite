@@ -5,12 +5,16 @@ import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import * as STEP from '@onboarding-constants/steps';
 
 const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
-const connectSuccessRepsonse = { success: true };
+const connectSuccessResponse = { success: true };
 
 export default [
     {
         description: 'goToNextStep (without param)',
-        initialState: {},
+        initialState: {
+            suite: {
+                device: getSuiteDevice(),
+            },
+        },
         action: () => onboardingActions.goToNextStep(),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_NEW_OR_USED },
@@ -18,7 +22,11 @@ export default [
     },
     {
         description: 'goToNextStep (with param)',
-        initialState: {},
+        initialState: {
+            suite: {
+                device: getSuiteDevice(),
+            },
+        },
         action: () => onboardingActions.goToNextStep('firmware'),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
@@ -26,7 +34,11 @@ export default [
     },
     {
         description: 'goToSubStep',
-        initialState: {},
+        initialState: {
+            suite: {
+                device: getSuiteDevice(),
+            },
+        },
         action: () => onboardingActions.goToSubStep('moo'),
         expect: {
             toMatchObject: { activeSubStep: 'moo' },
@@ -50,6 +62,9 @@ export default [
             onboarding: {
                 path: ['new'],
             },
+            suite: {
+                device: getSuiteDevice(),
+            },
         },
         action: () => onboardingActions.addPath('create'),
         expect: {
@@ -61,6 +76,9 @@ export default [
         initialState: {
             onboarding: {
                 path: ['new'],
+            },
+            suite: {
+                device: getSuiteDevice(),
             },
         },
         action: () => onboardingActions.addPath('new'),
@@ -86,6 +104,9 @@ export default [
             onboarding: {
                 path: ['create', 'new'],
             },
+            suite: {
+                device: getSuiteDevice(),
+            },
         },
         action: () => onboardingActions.removePath(['create', 'new']),
         expect: {
@@ -97,6 +118,9 @@ export default [
         initialState: {
             onboarding: {
                 selectModel: 1,
+            },
+            suite: {
+                device: getSuiteDevice(),
             },
         },
         action: () => onboardingActions.selectTrezorModel(2),
@@ -111,6 +135,9 @@ export default [
                 path: ['create', 'new', 'used'],
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
+            suite: {
+                device: getSuiteDevice(),
+            },
         },
         action: () => onboardingActions.resetOnboarding(),
         expect: {
@@ -123,6 +150,9 @@ export default [
             onboarding: {
                 backupType: 0,
             },
+            suite: {
+                device: getSuiteDevice(),
+            },
         },
         action: () => onboardingActions.setBackupType(1),
         expect: {
@@ -134,7 +164,11 @@ export default [
 export const deviceCallsGeneral = [
     {
         description: 'deviceCall: test error and isProgress',
-        initialState: {},
+        initialState: {
+            suite: {
+                device: getSuiteDevice(),
+            },
+        },
         mocks: {
             connectResponse: {
                 success: false,
@@ -163,9 +197,13 @@ export const deviceCallsGeneral = [
     },
     {
         description: 'deviceCall: test success and isProgress',
-        initialState: {},
+        initialState: {
+            suite: {
+                device: getSuiteDevice(),
+            },
+        },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.applySettings({ label: 'foo' }),
         expect: {
@@ -180,6 +218,29 @@ export const deviceCallsGeneral = [
                 deviceCall: {
                     name: 'applySettings',
                     error: null,
+                    isProgress: false,
+                },
+            },
+        },
+    },
+    {
+        description: 'deviceCall: no device in reducer',
+        initialState: {},
+        mocks: {},
+        action: () => connectActions.applySettings({ label: 'foo' }),
+        expect: {
+            // actually no waiting for promise here and call is resolved right away so both assertions are same.
+            stateBeforeResolve: {
+                deviceCall: {
+                    name: 'applySettings',
+                    error: 'no device connected',
+                    isProgress: false,
+                },
+            },
+            stateAfterResolve: {
+                deviceCall: {
+                    name: 'applySettings',
+                    error: 'no device connected',
                     isProgress: false,
                 },
             },
@@ -200,7 +261,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.resetDevice(),
     },
@@ -214,7 +275,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.resetDevice(),
     },
@@ -228,7 +289,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.backupDevice(),
     },
@@ -242,7 +303,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.applySettings({ label: 'foo' }),
     },
@@ -256,7 +317,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.applyFlags({ flags: 1 }),
     },
@@ -270,7 +331,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.changePin(),
     },
@@ -284,7 +345,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.recoveryDevice(),
     },
@@ -298,7 +359,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.recoveryDevice(),
     },
@@ -312,7 +373,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.wipeDevice(),
     },
@@ -326,7 +387,7 @@ export const deviceCallsSpecific = [
             },
         },
         mocks: {
-            connectResponse: connectSuccessRepsonse,
+            connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.getFeatures(),
     },

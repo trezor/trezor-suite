@@ -5,10 +5,6 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isDisabled?: boolean;
 }
 
-const ButtonCta = (props: Props) => (
-    <Button {...props} inlineWidth>
-        {props.children}
-    </Button>
-);
+const ButtonCta = (props: Props) => <Button {...props}>{props.children}</Button>;
 
 export default ButtonCta;

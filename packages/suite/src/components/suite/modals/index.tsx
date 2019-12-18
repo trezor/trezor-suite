@@ -10,7 +10,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { MODAL, SUITE } from '@suite-actions/constants';
+import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { RECEIVE } from '@suite/actions/wallet/constants';
@@ -25,7 +25,6 @@ import ConfirmAction from './confirm/Action';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import ForgetDevice from './Forget';
 import RequestInstance from './RequestInstance';
 import RememberDevice from './Remember';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
@@ -33,6 +32,7 @@ import WalletType from './WalletType';
 import AddAccount from './AddAccount';
 import QrScanner from './Qr';
 import Disconnect from './Disconnect';
+import BackgroundGallery from './BackgroundGallery';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -116,22 +116,15 @@ const getDeviceContextModal = (props: Props) => {
                 />
             );
 
-        case SUITE.REQUEST_FORGET_DEVICE:
-            return (
-                <ForgetDevice
-                    device={modal.device as AcquiredDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-
         case SUITE.REQUEST_DEVICE_INSTANCE:
             return (
+                // TODO: DELETE or implement new design once it's ready
+                // Used to be triggered from function 'requestDeviceInstance' fired on 'add hidden wallet' btn in 'SwitchDeviceModal'
                 <RequestInstance
-                    device={device as AcquiredDevice}
+                    device={modal.device as AcquiredDevice}
                     instance={deviceUtils.getNewInstanceNumber(
                         props.devices,
-                        device as AcquiredDevice,
+                        modal.device as AcquiredDevice,
                     )}
                     onCreateInstance={modalActions.onCreateDeviceInstance}
                     onCancel={modalActions.onCancel}
@@ -143,6 +136,14 @@ const getDeviceContextModal = (props: Props) => {
         case ACCOUNT.REQUEST_NEW_ACCOUNT:
             return (
                 <AddAccount device={device as AcquiredDevice} onCancel={modalActions.onCancel} />
+            );
+
+        case DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL:
+            return (
+                <BackgroundGallery
+                    device={device as AcquiredDevice}
+                    onCancel={modalActions.onCancel}
+                />
             );
 
         default:

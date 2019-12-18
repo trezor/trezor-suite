@@ -1,8 +1,9 @@
 import { ICONS } from '../../components/Icon/icons';
+import { COINS } from '../../components/CoinLogo/coins';
 
 export type TextAlign = 'left' | 'center' | 'right';
 
-export type FeedbackType = 'success' | 'info' | 'warning' | 'error';
+export type FeedbackState = 'success' | 'info' | 'warning' | 'error';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
 
@@ -21,6 +22,8 @@ export interface InputButton {
 }
 
 export type IconType = keyof typeof ICONS;
+
+export type CoinType = keyof typeof COINS;
 
 export type ParagraphSize = 'normal' | 'small' | 'tiny';
 

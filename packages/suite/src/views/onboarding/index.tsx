@@ -1,7 +1,7 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import Head from 'next/head';
-import { Prompt, variables } from '@trezor/components';
+import { Prompt } from '@trezor/components';
 import { Link, P } from '@trezor/components-v2';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,7 +29,6 @@ import {
     NAVBAR_HEIGHT_UNIT,
 } from '@suite/config/onboarding/layout';
 
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFnForRule } from '@suite/utils/onboarding/rules';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
@@ -47,7 +46,7 @@ import NameStep from '@onboarding-views/steps/Name/Container';
 import BookmarkStep from '@onboarding-views/steps/Bookmark/Container';
 import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
-import { ProgressSteps, UnexpectedState, Preloader } from '@onboarding-components';
+import { UnexpectedState, Preloader } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';
 // import { CSSTransition } from 'react-transition-group';
@@ -59,26 +58,29 @@ const TRANSITION_PROPS = {
     unmountOnExit: true,
 };
 
-const backgroundAnimation = keyframes`
-    0% { opacity: 0 }
-    100% { opacity: 1 }
+// todo: Modal should be solved by some common suite-modal-component
+const ModalContainer = styled.div`
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    padding: 20px;
 `;
 
-const WrapperOutside = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-height: calc(100vh - ${`${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT}`});
-    max-width: 100vw;
-    width: 100%;
-    overflow-x: hidden;
-
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
-        height: 100%;
-        animation: ${backgroundAnimation} 1s linear;
-        background-image: url(${resolveStaticPath('images/onboarding/background.jpg')});
-        background-size: cover;
-    }
+const ModalWindow = styled.div`
+    z-index: 10001;
+    margin: auto;
+    position: relative;
+    border-radius: 4px;
+    background-color: ${colors.white};
+    text-align: center;
 `;
 
 interface WrapperInsideProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -89,26 +91,11 @@ const WrapperInside = styled.div<WrapperInsideProps>`
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: ${colors.white};
-    border-radius: ${BORDER_RADIUS}px;
-    z-index: 0;
-    max-width: 700px; /* neat boxed view */
-    max-height: ${({ isGlobalInteraction }) =>
-        isGlobalInteraction
-            ? `calc(100vh - ${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT} - ${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT})`
-            : 'none'};
-
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
-        width: calc(55vw + 150px);
-        margin: 50px auto;
-        overflow: hidden;
-        height: 70%;
-    }
 `;
 
-const ProgressStepsSlot = styled.div`
-    height: ${`${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT}`};
-`;
+// const ProgressStepsSlot = styled.div`
+//     height: ${`${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT}`};
+// `;
 
 const ComponentWrapper = styled.div`
     display: flex;
@@ -146,7 +133,7 @@ const TrezorAction = ({ model, event }: { model: number; event: string }) => {
     }
 
     return (
-        <TrezorActionOverlay>
+        <TrezorActionOverlay data-test="@onboading/confirm-action-on-device">
             <Prompt model={model} size={100}>
                 <TrezorActionText />
             </Prompt>
@@ -202,6 +189,21 @@ export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type Props = StateProps & DispatchProps;
 
 const Onboarding = (props: Props) => {
+    const {
+        selectedModel,
+        activeStepId,
+
+        deviceCall,
+        uiInteraction,
+
+        loaded,
+        device,
+        prevDevice,
+    } = props;
+
+    const model =
+        (device && device.features && device.features.major_version) || selectedModel || 2;
+
     const getStep = (activeStepId: AppState['onboarding']['activeStepId']) => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
         // todo: is there a better way how to solve lookup completeness with typescript?
@@ -225,7 +227,6 @@ const Onboarding = (props: Props) => {
     };
 
     const isGlobalInteraction = () => {
-        const { uiInteraction, deviceCall } = props;
         const globals = [
             EVENTS.BUTTON_REQUEST__PROTECT_CALL,
             EVENTS.BUTTON_REQUEST__WIPE_DEVICE,
@@ -243,31 +244,16 @@ const Onboarding = (props: Props) => {
         );
     };
 
-    const {
-        selectedModel,
-        activeStepId,
-
-        deviceCall,
-        uiInteraction,
-
-        loaded,
-        device,
-        prevDevice,
-    } = props;
-
-    const model =
-        (device && device.features && device.features.major_version) || selectedModel || 2;
-
     const errorState = getError();
-    const activeStep = getStep(activeStepId);
 
     return (
         <>
-            <Head>
-                <title>Onboarding | Trezor Suite</title>
-            </Head>
-            <Preloader loaded={loaded}>
-                <WrapperOutside>
+            <ModalContainer />
+            <ModalWindow>
+                <Head>
+                    <title>Onboarding | Trezor Suite</title>
+                </Head>
+                <Preloader loaded={loaded}>
                     <WrapperInside isGlobalInteraction={isGlobalInteraction()}>
                         {errorState && (
                             <UnexpectedStateOverlay>
@@ -283,7 +269,7 @@ const Onboarding = (props: Props) => {
                                 />
                             </UnexpectedStateOverlay>
                         )}
-                        <ProgressStepsSlot>
+                        {/* <ProgressStepsSlot>
                             <ProgressSteps
                                 hiddenOnSteps={[
                                     STEP.ID_WELCOME_STEP,
@@ -294,7 +280,7 @@ const Onboarding = (props: Props) => {
                                 activeStep={activeStep}
                                 isDisabled={deviceCall.isProgress}
                             />
-                        </ProgressStepsSlot>
+                        </ProgressStepsSlot> */}
                         <ComponentWrapper>
                             {uiInteraction.name && isGlobalInteraction() && (
                                 <TrezorAction model={model} event={uiInteraction.name} />
@@ -406,8 +392,8 @@ const Onboarding = (props: Props) => {
                             </CSSTransition>
                         </ComponentWrapper>
                     </WrapperInside>
-                </WrapperOutside>
-            </Preloader>
+                </Preloader>
+            </ModalWindow>
         </>
     );
 };

@@ -7,9 +7,8 @@ import { Discovery } from '@wallet-types';
 import { AppState, Dispatch } from '@suite-types';
 
 const Wrapper = styled.div`
-    position: absolute;
     width: 100%;
-    max-width: 1170px;
+    height: 1px;
     z-index: 1;
 `;
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, Button, View } from 'react-native';
+import { Text, Button, ScrollView, View } from 'react-native';
 import { bindActionCreators } from 'redux';
 
 import * as routerActions from '@suite-actions/routerActions';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
 // import AcquireDevice from '@suite-components/AcquireDevice';
 import { getRoute } from '@suite-utils/router';
 import { AppState, Dispatch } from '@suite-types';
@@ -11,13 +12,15 @@ import { AppState, Dispatch } from '@suite-types';
 import Logo from './trezor_logo_horizontal.svg';
 
 const mapStateToProps = (state: AppState) => ({
-    // router: state.router,
     suite: state.suite,
     devices: state.devices,
+    accounts: state.wallet.accounts,
+    discovery: state.wallet.discovery,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
+    getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -31,11 +34,7 @@ const Index = (props: Props) => {
     if (!suite.transport) {
         return (
             <View>
-                <Text>
-                    Don't have Transport info not yet. This means that transport event was not
-                    emitted. For now, you need to have bridge running on testing laptop and both
-                    must be on same local network.
-                </Text>
+                <Text>Loading transport...</Text>
             </View>
         );
     }
@@ -49,17 +48,14 @@ const Index = (props: Props) => {
     if (!suite.transport.type) {
         return (
             <View>
-                <Text>
-                    No transport. Do you have SL testing laptop and mobile device on same network?
-                    (and IP matches in node_modules/trezor-connect/lib/Device/DeviceList.js)?
-                </Text>
+                <Text>No transport</Text>
             </View>
         );
     }
 
     // no available device
     if (!suite.device) {
-        // TODO: render "connect device" view with webusb button
+        // TODO: render "connect device" view
         return (
             <View>
                 <Text>Connect Trezor to continue</Text>
@@ -90,10 +86,28 @@ const Index = (props: Props) => {
         );
     }
 
-    // TODO: render requested view
+    const discovery = props.getDiscoveryForDevice();
+    let percent = 0;
+    if (discovery) {
+        if (discovery.loaded && discovery.total) {
+            percent = Math.round((discovery.loaded / discovery.total) * 100);
+        }
+    }
+
+    const accounts = props.accounts.map(a => (
+        <View
+            key={a.descriptor}
+            style={{ borderBottomWidth: 1, borderBottomColor: 'grey', padding: 20 }}
+        >
+            <Text>{a.path}</Text>
+            <Text>
+                {a.balance} {a.symbol}
+            </Text>
+        </View>
+    ));
+
     return (
-        <View>
-            {/* <Text>Just an example to see that loading svgs work</Text> */}
+        <ScrollView>
             <Logo width="200" height="200" />
             <Text>Device {suite.device.label} connected</Text>
             <Button
@@ -105,10 +119,18 @@ const Index = (props: Props) => {
             <Button
                 title="device settings"
                 onPress={() => {
-                    props.goto(getRoute('suite-device-settings'));
+                    props.goto(getRoute('settings-index'));
                 }}
             />
-        </View>
+            <View
+                style={{
+                    width: `${percent}%`,
+                    height: 5,
+                    backgroundColor: 'red',
+                }}
+            />
+            {accounts}
+        </ScrollView>
     );
 };
 
