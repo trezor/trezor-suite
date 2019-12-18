@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const wp = require('@cypress/webpack-preprocessor');
-const babel = require('../../babel.config');
+const babel = require('../../../../suite-web/babel.config');
 
 // hackinsh smackish way how to make it work, I didnt want to touch app config at all
 const babelOptions = babel({ cache: () => {} });

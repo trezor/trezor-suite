@@ -1,13 +1,11 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "noEmit": false,
-    "isolatedModules": false,
-    "types": ["trezor-connect", "cypress"],
-    "allowJs": true,
-  },
-  "include": [
-    "**/*.ts"
-  ],
-  "exclude": []
+    "extends": "../../../suite-web/tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "isolatedModules": false,
+        "types": ["trezor-connect", "cypress"],
+        "allowJs": true
+    },
+    "include": ["**/*.ts"],
+    "exclude": []
 }
