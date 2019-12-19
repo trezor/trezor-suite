@@ -3,27 +3,10 @@ import { H2, P, Modal } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 
-const ModalWrapper = styled.div`
-    padding: 30px 48px;
-    width: 260px;
-`;
 const InputWrapper = styled.div`
     margin-top: 24px;
     margin-bottom: 10px;
     max-width: 260px;
-`;
-const PinRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    button {
-        width: 30%;
-        height: 0;
-        padding-bottom: 30%;
-    }
-
-    & + & {
-        margin-top: 10px;
-    }
 `;
 
 const PinFooter = styled.div`
@@ -32,35 +15,61 @@ const PinFooter = styled.div`
     flex-direction: column;
 `;
 
-ModalWrapper.displayName = 'ModalWrapper';
 InputWrapper.displayName = 'InputWrapper';
-PinRow.displayName = 'PinRow';
 PinFooter.displayName = 'PinFooter';
 
-storiesOf('Modal', module).add(
-    'Hello world!',
-    () => (
-        <Modal cancelable cancelText="Close">
-            <ModalWrapper>
+storiesOf('Modals', module)
+    .add(
+        'Small',
+        () => (
+            <Modal cancelable cancelText="Close" size="small" data-test="modal-small">
                 <H2>Hello world!</H2>
                 <P>Some description.</P>
-            </ModalWrapper>
-        </Modal>
-    ),
-    {
-        info: {
-            text: `
+            </Modal>
+        ),
+        {
+            info: {
+                text: `
             ~~~js
             import { Modal } from 'trezor-ui-components';
             ~~~
-
-            ModalWrapper
+            `,
+            },
+        }
+    )
+    .add(
+        'Medium',
+        () => (
+            <Modal cancelable cancelText="Close" data-test="modal-medium">
+                <H2>Hello world!</H2>
+                <P>Some description.</P>
+            </Modal>
+        ),
+        {
+            info: {
+                text: `
             ~~~js
-            const ModalWrapper = styled.div\`
-                padding: 30px 48px;
-            \`;
+            import { Modal } from 'trezor-ui-components';
             ~~~
             `,
-        },
-    }
-);
+            },
+        }
+    )
+    .add(
+        'Large',
+        () => (
+            <Modal cancelable cancelText="Close" size="large" data-test="modal-large">
+                <H2>Hello world!</H2>
+                <P>Some description.</P>
+            </Modal>
+        ),
+        {
+            info: {
+                text: `
+            ~~~js
+            import { Modal } from 'trezor-ui-components';
+            ~~~
+            `,
+            },
+        }
+    );

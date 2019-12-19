@@ -6,6 +6,17 @@ import { Link } from '../Link';
 import { Icon } from '../Icon';
 import { colors, variables } from '../../config';
 
+const getModalWidth = (size: Props['size']) => {
+    switch (size) {
+        case 'small':
+            return '400px';
+        case 'large':
+            return '800px';
+        default:
+            return '600px';
+    }
+};
+
 const ModalContainer = styled.div`
     position: fixed;
     z-index: 10000;
@@ -20,13 +31,26 @@ const ModalContainer = styled.div`
     overflow: auto;
 `;
 
-const ModalWindow = styled.div`
+const ModalWindow = styled.div<Props>`
     margin: auto;
     position: relative;
     border-radius: 4px;
     background-color: ${colors.WHITE};
     box-shadow: 0 10px 60px 0 ${colors.BLACK25};
     text-align: center;
+    width: ${props => getModalWidth(props.size)};
+
+    @media only screen and (max-width: 800px) {
+        width: 90%;
+    }
+`;
+
+const Wrapper = styled.div`
+    margin: 40px;
+
+    @media only screen and (max-width: 800px) {
+        margin: 20px;
+    }
 `;
 
 const StyledLink = styled(Link)`
@@ -54,10 +78,11 @@ interface Props {
     children: React.ReactNode;
     cancelable?: boolean;
     cancelText?: string;
+    size?: 'small' | 'medium' | 'large';
     onCancel?: () => void;
 }
 
-const Modal = ({ children, cancelable, cancelText, onCancel }: Props) => {
+const Modal = ({ children, cancelable, cancelText, onCancel, size = 'medium', ...rest }: Props) => {
     const escPressed = useKeyPress('Escape');
 
     if (cancelable && onCancel && escPressed) {
@@ -65,15 +90,17 @@ const Modal = ({ children, cancelable, cancelText, onCancel }: Props) => {
     }
 
     return (
-        <ModalContainer>
-            <ModalWindow>
-                {children}
-                {cancelable && (
-                    <StyledLink onClick={onCancel}>
-                        {cancelText}
-                        <StyledIcon size={8} color={colors.BLACK25} icon="CROSS" />
-                    </StyledLink>
-                )}
+        <ModalContainer {...rest}>
+            <ModalWindow size={size}>
+                <Wrapper>
+                    {children}
+                    {cancelable && (
+                        <StyledLink onClick={onCancel}>
+                            {cancelText}
+                            <StyledIcon size={8} color={colors.BLACK25} icon="CROSS" />
+                        </StyledLink>
+                    )}
+                </Wrapper>
             </ModalWindow>
         </ModalContainer>
     );
