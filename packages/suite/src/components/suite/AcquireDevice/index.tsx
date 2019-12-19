@@ -24,7 +24,7 @@ const Acquire = (props: Props) => {
     if (!device) return null;
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
-        <SuiteLayout showSuiteHeader>
+        <SuiteLayout>
             <Notification
                 title={props.intl.formatMessage(messages.TR_DEVICE_USED_IN_OTHER)}
                 message={props.intl.formatMessage(messages.TR_USE_YOUR_DEVICE_IN_THIS_WINDOW)}

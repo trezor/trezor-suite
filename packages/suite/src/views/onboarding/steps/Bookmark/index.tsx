@@ -121,7 +121,7 @@ class BookmarkStep extends React.Component<Props, StepState> {
                         {/*  todo: for mobile add to homescreen */}
                         {/* {Platform.isMobile() && (
                             <React.Fragment>
-                                <Button variant="secondary" onClick={() => this.setBookmarkFlagAndContinue()} inlineWidth>
+                                <Button variant="secondary" onClick={() => this.setBookmarkFlagAndContinue()}>
                                     <Translation {...messages.TR_SKIP} />
                                 </Button>
                                 <Button onClick={() => this.setBookmarkFlagAndContinue()}>

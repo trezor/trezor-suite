@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
-import Sidebar from './components/Sidebar';
 import ProgressBar from './components/ProgressBar';
 import { AppState } from '@suite-types';
 import { SuiteLayout } from '@suite-components';
+import Menu from '@wallet-components/Menu';
 
 const { SCREEN_SIZE } = variables;
 
@@ -18,17 +18,9 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 type Props = {
-    topNavigationComponent?: React.ReactNode;
-    title: string;
+    title?: string;
     children?: React.ReactNode;
 } & ReturnType<typeof mapStateToProps>;
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    flex: 1;
-    flex-direction: row;
-`;
 
 const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
     display: flex;
@@ -49,15 +41,12 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 
 const WalletLayout = (props: Props) => {
     return (
-        <SuiteLayout showSuiteHeader title={props.title}>
-            <Wrapper data-test="@wallet/layout">
+        <SuiteLayout title={props.title || 'Trezor Suite | Wallet'} secondaryMenu={<Menu />}>
+            <ContentWrapper preventBgScroll={props.suite.showSidebar}>
                 <ProgressBar />
-                <Sidebar isOpen={props.suite.showSidebar} />
-                <ContentWrapper preventBgScroll={props.suite.showSidebar}>
-                    <WalletNotifications />
-                    <Content>{props.children}</Content>
-                </ContentWrapper>
-            </Wrapper>
+                <WalletNotifications />
+                <Content>{props.children}</Content>
+            </ContentWrapper>
         </SuiteLayout>
     );
 };

@@ -16,6 +16,9 @@ module.exports = withBundleAnalyzer(
     withCustomBabelConfig(
         withTranspileModules(
             withImages({
+                typescript: {
+                    ignoreDevErrors: true,
+                },
                 inlineImageLimit: 0,
                 babelConfigFile: path.resolve('babel.config.js'),
                 // https://github.com/zeit/next.js/issues/6219

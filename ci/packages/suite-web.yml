@@ -1,17 +1,3 @@
-suite-web lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/suite-web lint
-    dependencies:
-        - install and build
-
-suite-web type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/suite-web type-check
-    dependencies:
-        - install and build
-
 suite-web build:
     stage: build
     script:
@@ -62,36 +48,43 @@ suite-web delete review:
         - install and build
 
 suite-web test integration google-chrome:
-    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
     script:
-        - apt-get update
+        #  Would like not to have npx here, but cypress requires binary at: /root/.cache/Cypress/3.4.1/Cypress/Cypress
+        #  And it is not packed with artifacts
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser chrome
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=chrome yarn workspace @trezor/suite-web test:integration:ci:run
     artifacts:
         expire_in: 2 days
         when: always
         paths:
-            - suite-web/test/snapshots
-            - suite-web/test/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
+            # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
     dependencies:
         - install and build
 
 suite-web test integration google-chrome-beta:
     only:
         - schedules
-    # image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/cypress:b8de9bcdb9f19e076564c8ccf4ec5d7a46c1cbba
     stage: integration testing
     script:
-        - apt-get update
         - npx cypress install
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web test:integration --browser /usr/bin/google-chrome-beta
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/suite-web test:integration:ci:run 
     artifacts:
         expire_in: 2 days
         when: always
         paths:
-            - suite-web/test/snapshots
-            - suite-web/test/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
+            # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
     dependencies:
         - install and build
+
+suite-web test security:
+    only: 
+        - schedules
+    stage: misc
+    script: 
+        yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js

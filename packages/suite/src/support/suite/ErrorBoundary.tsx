@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H1, P, Button } from '@trezor/components-v2';
-
 import * as Sentry from '@sentry/browser';
+import { H1, P, Button } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     display: flex;
@@ -10,6 +9,10 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
+`;
+
+const Buttons = styled.div`
+    display: flex;
 `;
 
 const StyledButton = styled(Button)`
@@ -43,10 +46,16 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
                 <Wrapper>
                     <H1>Error occurred</H1>
                     <P>It appears something is broken. You might let us know by sending report</P>
-                    {/* Sentry.showReportDialog({ eventId: this.state.eventId }) */}
-                    <StyledButton onClick={() => Sentry.showReportDialog()} inlineWidth>
-                        Send report
-                    </StyledButton>
+
+                    <Buttons>
+                        <StyledButton onClick={() => Sentry.showReportDialog()}>
+                            Send report
+                        </StyledButton>
+
+                        <StyledButton icon="REFRESH" onClick={() => window.location.reload()}>
+                            Reload window
+                        </StyledButton>
+                    </Buttons>
                 </Wrapper>
             );
         }
@@ -57,3 +66,26 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
 }
 
 export default ErrorBoundary;
+
+// In case we would like to translate these. Not possible now, ErrorBoundary is not nested in
+// IntlProvider. Not sure if we need so much to have this translated here.
+
+// import { Translation } from '@suite-components/Translation';
+// import messages from '@suite/support/messages';
+
+// TR_ERROR_OCCURRED: {
+//     id: 'TR_ERROR_OCCURRED',
+//     defaultMessage: 'Error occurred',
+// },
+// TR_IT_APPEARS_SOMETHING_IS_BROKEN: {
+//     id: 'TR_IT_APPEARS_SOMETHING_IS_BROKEN',
+//     defaultMessage: 'It appears something is broken. You might let us know by sending report',
+// },
+// TR_SEND_REPORT: {
+//     id: 'TR_SEND_REPORT',
+//     defaultMessage: 'Send report',
+// },
+// TR_RELOAD_WINDOW: {
+//     id: 'TR_RELOAD_WINDOW',
+//     defaultMessage: 'Reload window',
+// },

@@ -1,5 +1,5 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
-import { MODAL, SUITE } from '@suite-actions/constants';
+import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
 import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 
@@ -67,11 +67,11 @@ export default (state: State = initialState, action: Action): State => {
                 windowType: action.payload.view,
             };
         case SUITE.REQUEST_REMEMBER_DEVICE:
-        case SUITE.REQUEST_FORGET_DEVICE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
         case SUITE.REQUEST_PASSPHRASE_MODE:
         case SUITE.REQUEST_DISCONNECT_DEVICE:
         case ACCOUNT.REQUEST_NEW_ACCOUNT:
+        case DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload,
@@ -98,7 +98,6 @@ export default (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_SCAN_QR,
                 outputId: action.outputId,
             };
-
         default:
             return state;
     }

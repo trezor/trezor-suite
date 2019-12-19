@@ -103,7 +103,7 @@ const isWebUSB = [
         description: `Transport is webusb`,
         transport: {
             ...TRANSPORT,
-            type: 'webusb',
+            type: 'WebUsbPlugin',
         },
         result: true,
     },
