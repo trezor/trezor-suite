@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-
+// @ts-ignore
 import { DEVICE, Features, Device } from 'trezor-connect';
 import {
     getConnectDevice,
@@ -12,6 +12,7 @@ import {
  * @param device
  * @param features
  */
+
 export const connectDevice = (device?: Partial<Device>, features?: Partial<Features>) => {
     return cy
         .window()
