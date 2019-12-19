@@ -5775,22 +5775,6 @@
     "@storybook/react" "^5.2.0"
     "@types/react" "*"
 
-"@types/storybook__addon-info@^4.1.1":
-  version "4.1.2"
-  resolved "https://registry.npmjs.org/@types/storybook__addon-info/-/storybook__addon-info-4.1.2.tgz#a61c0b201e23380b6ec6ed3902a87350d92652d8"
-  integrity sha512-zr2+pLF+BYHz0gNKtFj+oorXyJsOoaeyvrtOLrGUABPUKc1lv/k/7sALK0bjX8lfaYpgsukWD+k8uPf79EABtA==
-  dependencies:
-    "@types/react" "*"
-    "@types/storybook__react" "*"
-
-"@types/storybook__addon-knobs@^4.0.5":
-  version "4.0.5"
-  resolved "https://registry.npmjs.org/@types/storybook__addon-knobs/-/storybook__addon-knobs-4.0.5.tgz#3984ab2a5934832f5161d85066ac6e65ecbd4581"
-  integrity sha512-5W9mdCn6J7v22jfh+OQCa0gMOgVo1SjTpxez2AmNA9hWbvkG3LVDhzozTtCnPFR5zZF029yRWAf7HSf/sQkEfQ==
-  dependencies:
-    "@types/react" "*"
-    "@types/storybook__react" "*"
-
 "@types/storybook__addon-knobs@^5.0.0":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@types/storybook__addon-knobs/-/storybook__addon-knobs-5.0.1.tgz#707d96150931936f2050b88ae518e9860c0c8281"
@@ -22514,7 +22498,7 @@ stylelint-processor-styled-components@^1.9.0:
     micromatch "^4.0.2"
     postcss "^7.0.0"
 
-stylelint@12.0.0:
+stylelint@12.0.0, stylelint@^12.0.0:
   version "12.0.0"
   resolved "https://registry.npmjs.org/stylelint/-/stylelint-12.0.0.tgz#2e8613675f7be11769ce474f45137fdf7751380a"
   integrity sha512-TwqtATrFOT07SPlUGyHN7tVhWqxwitn5BlAvyBQy/ekA+Nwu4mLU9L1dvGQPNxHUBLowjvkSW18QzHHR6/FVVQ==
