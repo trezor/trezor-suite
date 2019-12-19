@@ -33,16 +33,16 @@ include:
     # - ci/packages/rollout.yml
     # - ci/packages/translations-manager.yml
 
-lint: 
-    stage: lint and types
-    dependencies: 
-        - install and build
-    script: 
-        - lerna run lint
+# lint: 
+#     stage: lint and types
+#     dependencies: 
+#         - install and build
+#     script: 
+#         - lerna run lint
     
-type check:
-    stage: lint and types
-    dependencies: 
-        - install and build
-    script: 
-        - lerna run type-check
+# type check:
+#     stage: lint and types
+#     dependencies: 
+#         - install and build
+#     script: 
+#         - lerna run type-check

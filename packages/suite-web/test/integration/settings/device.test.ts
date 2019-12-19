@@ -19,6 +19,8 @@ describe('Device settings', () => {
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')
             .click();
+        // TODO: a little antipattern but perfection is the enemy of good.
+        // there is a problem with device call in progress (from discovery)
         cy.wait(2000);
     });
 
