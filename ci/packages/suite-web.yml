@@ -1,51 +1,51 @@
-# suite-web build:
-#     stage: build
-#     script:
-#         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
-#     artifacts:
-#         expire_in: 15 minutes
-#         paths:
-#             - $PACKAGE_PATH_SUITE_WEB/build
-#     dependencies:
-#         - install and build
+suite-web build:
+    stage: build
+    script:
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 15 minutes
+        paths:
+            - $PACKAGE_PATH_SUITE_WEB/build
+    dependencies:
+        - install and build
 
-# suite-web deploy dev:
-#     stage: deploy to dev servers
-#     variables:
-#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-#     dependencies:
-#         - install and build
-#         - suite-web build
-#     environment:
-#         name: ${CI_BUILD_REF_NAME}
-#         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-#         on_stop: suite-web delete review
-#     before_script: []
-#     script:
-#         - cd ${PACKAGE_PATH_SUITE_WEB}
-#         - echo "Deploy to dev servers"
-#         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-#         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-#         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-#     tags:
-#         - deploy
+suite-web deploy dev:
+    stage: deploy to dev servers
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    dependencies:
+        - install and build
+        - suite-web build
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+        on_stop: suite-web delete review
+    before_script: []
+    script:
+        - cd ${PACKAGE_PATH_SUITE_WEB}
+        - echo "Deploy to dev servers"
+        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
+        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    tags:
+        - deploy
 
-# suite-web delete review:
-#     stage: deploy to dev servers
-#     variables:
-#         GIT_STRATEGY: none
-#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-#     when: manual
-#     environment:
-#         name: ${CI_BUILD_REF_NAME}
-#         action: stop
-#     script:
-#         - cd packages/suite-web
-#         - 'rm -r "${DEPLOY_DIRECTORY}"'
-#     tags:
-#         - deploy
-#     dependencies:
-#         - install and build
+suite-web delete review:
+    stage: deploy to dev servers
+    variables:
+        GIT_STRATEGY: none
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    when: manual
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        action: stop
+    script:
+        - cd packages/suite-web
+        - 'rm -r "${DEPLOY_DIRECTORY}"'
+    tags:
+        - deploy
+    dependencies:
+        - install and build
 
 suite-web test integration google-chrome:
     stage: integration testing
@@ -65,26 +65,26 @@ suite-web test integration google-chrome:
     dependencies:
         - install and build
 
-# suite-web test integration google-chrome-beta:
-#     only:
-#         - schedules
-#     stage: integration testing
-#     script:
-#         - npx cypress install
-#         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/suite-web test:integration:ci:run 
-#     artifacts:
-#         expire_in: 2 days
-#         when: always
-#         paths:
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
-#             # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
-#     dependencies:
-#         - install and build
+suite-web test integration google-chrome-beta:
+    only:
+        - schedules
+    stage: integration testing
+    script:
+        - npx cypress install
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/suite-web test:integration:ci:run 
+    artifacts:
+        expire_in: 2 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
+            # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
+    dependencies:
+        - install and build
 
-# suite-web test security:
-#     only: 
-#         - schedules
-#     stage: misc
-#     script: 
-#         yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
+suite-web test security:
+    only: 
+        - schedules
+    stage: misc
+    script: 
+        yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js

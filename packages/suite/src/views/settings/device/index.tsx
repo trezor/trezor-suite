@@ -31,6 +31,7 @@ const Settings = ({
     applySettings,
     changePin,
     wipeDevice,
+    backupDevice,
     openBackgroundGalleryModal,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -72,7 +73,10 @@ const Settings = ({
                             learnMore={SEED_MANUAL_URL}
                         />
                         <ActionColumn>
-                            <ActionButton onClick={() => console.log('foo')} isDisabled={uiLocked}>
+                            <ActionButton
+                                onClick={() => backupDevice({})}
+                                isDisabled={uiLocked || !features.needs_backup}
+                            >
                                 <Translation>{messages.TR_CREATE_BACKUP}</Translation>
                             </ActionButton>
                         </ActionColumn>
@@ -85,7 +89,13 @@ const Settings = ({
                             learnMore={DRY_RUN_URL}
                         />
                         <ActionColumn>
-                            <ActionButton onClick={() => console.log('foo')} isDisabled={uiLocked}>
+                            <ActionButton
+                                onClick={() =>
+                                    console.log('todo: add recoveryDevice({dry_run: true})')
+                                }
+                                isDisabled={uiLocked || features.needs_backup}
+                                variant="secondary"
+                            >
                                 <Translation>{messages.TR_CHECK_SEED}</Translation>
                             </ActionButton>
                         </ActionColumn>
@@ -105,7 +115,11 @@ const Settings = ({
                             learnMore={SEED_MANUAL_URL}
                         />
                         <ActionColumn>
-                            <ActionButton onClick={() => console.log('boo')} isDisabled={uiLocked}>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => console.log('boo')}
+                                isDisabled={uiLocked}
+                            >
                                 Check for update
                             </ActionButton>
                         </ActionColumn>
