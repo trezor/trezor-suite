@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 import { DEVICE, Features, Device } from 'trezor-connect';
-import { getConnectDevice, getDeviceFeatures } from '../../../../suite/src/support/tests/setupJest';
+import {
+    getConnectDevice,
+    getDeviceFeatures,
+} from '../../../../../suite/src/support/tests/setupJest';
 
 /**
  * Helper method to dispatch DEVICE.CONNECT action.

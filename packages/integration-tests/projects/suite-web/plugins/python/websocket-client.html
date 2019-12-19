@@ -1,102 +1,119 @@
 <html>
+
 <head>
-  <title>Trezor Device Controller client</title>
+    <title>Trezor Device Controller client</title>
+    <script type="text/javascript">
+        var ws;
+        var id = 0;
 
-  <script type="text/javascript">
-    var ws;
-    var id = 0;
-    function init() {
-        // Connect to Web Socket
-        ws = new WebSocket("ws://localhost:9001/");
-        // Set event handlers.
-        ws.onopen = function() {
-            output("onopen");
-        };
-        ws.onmessage = function(e) {
-            // e.data contains received string.
-            output("onmessage: " + e.data);
-        };
-        ws.onclose = function() {
-            output("onclose");
-        };
-        ws.onerror = function(e) {
-            output("onerror");
-            console.log(e)
-        };
-    }
-    
-    function onSubmit() {
-        var input = document.getElementById("input");
-        // You can send message to the Web Socket using ws.send.
-        ws.send(input.value);
-        output("send: " + input.value);
-        input.value = "";
-        input.focus();
-    }
-    
-    function onCloseClick() {
-        ws.close();
-    }
-    
-    function output(str) {
-        var log = document.getElementById("log");
-        var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").
+        function init() {
+            // Connect to Web Socket
+            ws = new WebSocket("ws://localhost:9001/");
+            // Set event handlers.
+            ws.onopen = function () {
+                output("onopen");
+            };
+            ws.onmessage = function (e) {
+                // e.data contains received string.
+                output("onmessage: " + e.data);
+            };
+            ws.onclose = function () {
+                output("onclose");
+            };
+            ws.onerror = function (e) {
+                output("onerror");
+                console.log(e)
+            };
+        }
+
+        function onSubmit() {
+            var input = document.getElementById("input");
+            // You can send message to the Web Socket using ws.send.
+            ws.send(input.value);
+            output("send: " + input.value);
+            input.value = "";
+            input.focus();
+        }
+
+        function onCloseClick() {
+            ws.close();
+        }
+
+        function output(str) {
+            var log = document.getElementById("log");
+            var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").
             replace(/>/, "&gt;").replace(/"/, "&quot;"); // "
-        log.innerHTML = escaped + "<br>" + log.innerHTML;
-    }
+            log.innerHTML = escaped + "<br>" + log.innerHTML;
+        }
 
-    function emulatorStart() {
-        _send({ type: 'emulator-start' });
-    }
+        function emulatorStart() {
+            _send({
+                type: 'emulator-start'
+            });
+        }
 
-    function emulatorWipe() {
-        _send({ type: 'emulator-wipe' });
-    }
+        function emulatorWipe() {
+            _send({
+                type: 'emulator-wipe'
+            });
+        }
 
 
-    // function emulatorErase() {
-    //     _send({ type: 'emulator-erase' });
-    // }
+        // function emulatorErase() {
+        //     _send({ type: 'emulator-erase' });
+        // }
 
-    function emulatorSetup() {
-        _send({
-            type: 'emulator-setup',
-            mnemonic: 'all all all all all all all all all all all all',
-            pin: '',
-            passphrase_protection: false,
-            label: 'Hello!',
-        })
-    }
+        function emulatorSetup() {
+            _send({
+                type: 'emulator-setup',
+                mnemonic: 'all all all all all all all all all all all all',
+                pin: '',
+                passphrase_protection: false,
+                label: 'Hello!',
+            })
+        }
 
-    function emulatorDecision() {
-        _send({ type: 'emulator-decision' });
-    }
+        function emulatorDecision() {
+            _send({
+                type: 'emulator-decision'
+            });
+        }
 
-    function emulatorStop() {
-        _send({ type: 'emulator-stop' });
-    }
+        function emulatorStop() {
+            _send({
+                type: 'emulator-stop'
+            });
+        }
 
-    function bridgeStart() {
-        _send({ type: 'bridge-start' });
-    }
+        function bridgeStart() {
+            _send({
+                type: 'bridge-start'
+            });
+        }
 
-    function bridgeStop() {
-        _send({ type: 'bridge-stop' });
-    }
+        function bridgeStop() {
+            _send({
+                type: 'bridge-stop'
+            });
+        }
 
-    function exit() {
-        _send({ type: 'exit' });
-    }
+        function exit() {
+            _send({
+                type: 'exit'
+            });
+        }
 
-    function _send(json) {
-        ws.send(
-            JSON.stringify(Object.assign(json, { id: id }))
-        );
-        id++;
-    }
-
-  </script>
+        function _send(json) {
+            ws.send(
+                JSON.stringify(Object.assign(json, {
+                    id: id
+                }))
+            );
+            id++;
+        }
+    </script>
 </head>
+
 <body onload="init();">
     <div>
         <h3>Emulator</h3>
@@ -106,7 +123,7 @@
         <button onclick="emulatorStop(); return false;">Stop</button>
         <button onclick="emulatorWipe(); return false;">Wipe</button>
         <button onclick="emulatorErase(); return false;">Erase</button>
-        
+
     </div>
     <div>
         <h3>Bridge</h3>
@@ -116,12 +133,13 @@
     <h3>Server</h3>
     <form onsubmit="onSubmit(); return false;">
         <textarea id="input" rows="3"></textarea>
-        <br/>
+        <br />
         <input type="submit" value="Send">
     </form>
     <button onclick="exit(); return false;">Exit server</button>
     <button onclick="onCloseClick(); return false;">Close websocket</button>
-    <hr/>
+    <hr />
     <div id="log"></div>
 </body>
+
 </html>

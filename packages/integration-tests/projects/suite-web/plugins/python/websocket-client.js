@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
 
-const createDeferred = (id) => {
-    let localResolve = (t) => () => {};
-    let localReject = (e) => () => {};
+const createDeferred = id => {
+    let localResolve = t => () => {};
+    let localReject = e => () => {};
 
-    const promise = new Promise(async (resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
         localResolve = resolve;
         localReject = reject;
     });
@@ -18,7 +19,7 @@ const createDeferred = (id) => {
         reject: localReject,
         promise,
     };
-}
+};
 
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
@@ -37,7 +38,7 @@ class Controller extends EventEmitter {
         this.clearConnectionTimeout();
         this.connectionTimeout = setTimeout(
             this.onTimeout.bind(this),
-            this.options.timeout || DEFAULT_TIMEOUT
+            this.options.timeout || DEFAULT_TIMEOUT,
         );
     }
 
@@ -122,7 +123,7 @@ class Controller extends EventEmitter {
             console.log('response in websocketclinet.js', resp);
             if (dfd) {
                 if (!success) {
-                    dfd.reject(new Error('websocket_error_message' + resp.error.message));
+                    dfd.reject(new Error(`websocket_error_message${resp.error.message}`));
                 } else {
                     dfd.resolve(resp);
                 }
@@ -229,4 +230,4 @@ class Controller extends EventEmitter {
 
 module.exports = {
     Controller,
-}
+};

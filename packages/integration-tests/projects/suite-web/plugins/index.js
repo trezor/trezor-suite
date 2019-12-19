@@ -5,7 +5,7 @@
 // https://github.com/bahmutov/add-typescript-to-cypress/tree/master/e2e/cypress
 
 const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
-const cypressTypeScriptPreprocessor = require('./ts-preprocessor');
+const webpack = require('@cypress/webpack-preprocessor');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -15,8 +15,20 @@ const CONSTANTS = require('../constants');
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 
 module.exports = on => {
+    // make ts possible start
+    const options = {
+        // send in the options from your webpack.config.js, so it works the same
+        // as your app's code
+        // eslint-disable-next-line global-require
+        webpackOptions: require('../webpack.config'),
+        watchOptions: {},
+    };
+    on('file:preprocessor', webpack(options));
+    // make ts possible end
+
+    // add snapshot plugin
     addMatchImageSnapshotPlugin(on);
-    on('file:preprocessor', cypressTypeScriptPreprocessor);
+
     on('before:browser:launch', (browser = {}, args) => {
         if (browser.name === 'chrome') {
             args.push('--disable-dev-shm-usage');
