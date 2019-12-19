@@ -12,6 +12,7 @@ const Col = styled.div`
 `;
 
 const ComponentWrapper = styled.div`
+    display: flex;
     margin-bottom: 1rem;
     width: 100%;
 `;
