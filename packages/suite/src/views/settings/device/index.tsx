@@ -269,6 +269,7 @@ const Settings = ({
                                 variant="danger"
                                 onClick={() => wipeDevice()}
                                 isDisabled={uiLocked}
+                                data-test="@suite/settings/device/wipe-button"
                             >
                                 <Translation>
                                     {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}

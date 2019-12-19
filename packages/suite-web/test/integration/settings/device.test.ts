@@ -36,7 +36,7 @@ describe('Device settings', () => {
 
     it('turn on passphrase protection', () => {
         cy.getTestElement('@suite/settings/device/passphrase-switch')
-            // TODO: find a way how to remove force: true 
+            // TODO: find a way how to remove force: true
             .click({ force: true })
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
@@ -55,7 +55,7 @@ describe('Device settings', () => {
         cy.getConfirmActionOnDeviceModal().should('not.be.visible');
     });
 
-    // TODO: ...
+    // TODO: data-test does not appear on Select element
     it.skip('change display rotation', () => {
         cy.getTestElement('@suite/settings/device/select-rotation')
             .click()
@@ -66,6 +66,13 @@ describe('Device settings', () => {
         cy.getConfirmActionOnDeviceModal().should('not.be.visible');
     });
 
+    it('wipe device', () => {
+        cy.getTestElement('@suite/settings/device/wipe-button')
+            .click()
+            .getConfirmActionOnDeviceModal();
+        cy.task('sendDecision', { method: 'wipeDevice' });
+        cy.getTestElement('@modal/disconnect-device');
+    });
     // TODO: upload custom image
     // TODO: set pin part. need to extend python script to allow input digits on emulator
     // TODO: change rotation
