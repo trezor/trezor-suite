@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
 import { H2, Switch } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
@@ -16,10 +17,13 @@ import {
     ActionColumn,
     Row,
     TextColumn,
-    ActionSelect,
     ActionButton,
     ActionInput,
 } from '@suite-components/Settings';
+
+const RotationButton = styled(ActionButton)`
+    min-width: 78px;
+`;
 
 const Settings = ({
     device,
@@ -46,7 +50,7 @@ const Settings = ({
     const { features } = device;
 
     const DISPLAY_ROTATIONS = [
-        { label: 'North (default)', value: 0 },
+        { label: 'North', value: 0 },
         { label: 'East', value: 90 },
         { label: 'South', value: 180 },
         { label: 'West', value: 270 },
@@ -205,7 +209,11 @@ const Settings = ({
                             }
                         />
                         <ActionColumn>
-                            <ActionButton onClick={() => console.log('woo')} isDisabled={uiLocked}>
+                            <ActionButton
+                                onClick={() => console.log('woo')}
+                                isDisabled={uiLocked}
+                                variant="secondary"
+                            >
                                 <Translation>
                                     {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
                                 </Translation>
@@ -215,6 +223,7 @@ const Settings = ({
                                 onClick={() => openBackgroundGalleryModal()}
                                 isDisabled={uiLocked}
                                 data-test="@suite/settings/device/select-from-gallery"
+                                variant="secondary"
                             >
                                 <Translation>
                                     {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
@@ -233,20 +242,19 @@ const Settings = ({
                                 }
                             />
                             <ActionColumn>
-                                <ActionSelect
-                                    options={DISPLAY_ROTATIONS.map(variant => ({
-                                        label: variant.label,
-                                        value: variant.value,
-                                        'data-test': `@suite/settings/device/select-rotation/${variant.value}`,
-                                    }))}
-                                    // todo: this is not provided by device.features now
-                                    value={null}
-                                    onChange={(option: typeof DISPLAY_ROTATIONS[number]) =>
-                                        applySettings({ display_rotation: option.value })
-                                    }
-                                    isDisabled={uiLocked}
-                                    data-test="@suite/settings/device/select-rotation"
-                                />
+                                {DISPLAY_ROTATIONS.map(variant => (
+                                    <RotationButton
+                                        key={variant.value}
+                                        variant="secondary"
+                                        onClick={() =>
+                                            applySettings({ display_rotation: variant.value })
+                                        }
+                                        data-test={`@suite/settings/device/rotation-button/${variant.value}`}
+                                        isDisabled={uiLocked}
+                                    >
+                                        {variant.label}
+                                    </RotationButton>
+                                ))}
                             </ActionColumn>
                         </Row>
                     )}

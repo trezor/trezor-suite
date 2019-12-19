@@ -19,6 +19,7 @@ describe('Device settings', () => {
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')
             .click();
+        cy.wait(2000);
     });
 
     it('change device label', () => {
@@ -55,11 +56,8 @@ describe('Device settings', () => {
         cy.getConfirmActionOnDeviceModal().should('not.be.visible');
     });
 
-    // TODO: data-test does not appear on Select element
-    it.skip('change display rotation', () => {
-        cy.getTestElement('@suite/settings/device/select-rotation')
-            .click()
-            .getTestElement(`@suite/settings/device/select-rotation/90`)
+    it('change display rotation', () => {
+        cy.getTestElement('@suite/settings/device/rotation-button/90')
             .click()
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
@@ -73,6 +71,7 @@ describe('Device settings', () => {
         cy.task('sendDecision', { method: 'wipeDevice' });
         cy.getTestElement('@modal/disconnect-device');
     });
+
     // TODO: upload custom image
     // TODO: set pin part. need to extend python script to allow input digits on emulator
     // TODO: change rotation
