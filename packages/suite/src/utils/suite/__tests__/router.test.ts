@@ -7,6 +7,7 @@ import {
     stripPrefixedPathname,
     isInternalRoute,
     isStatic,
+    getTopLevelRoute,
 } from '../router';
 
 const OLD_ENV = { ...process.env };
@@ -207,6 +208,26 @@ describe('router', () => {
                 params: undefined,
                 route: undefined,
             });
+        });
+    });
+
+    describe('getTopLevelRoute', () => {
+        it('should return value if url is a nested page', () => {
+            process.env.assetPrefix = undefined;
+            expect(getTopLevelRoute('/')).toEqual(undefined);
+            expect(getTopLevelRoute('/wallet')).toEqual(undefined);
+            expect(getTopLevelRoute('/wallet/account')).toEqual('/wallet');
+            expect(getTopLevelRoute('dummy-data-without-slash')).toEqual(undefined);
+            // @ts-ignore: intentional invalid param type
+            expect(getTopLevelRoute(1)).toEqual(undefined);
+        });
+
+        it('should return value if url is a nested page (with prefix)', () => {
+            const prefix = '/test/asset/prefix';
+            process.env.assetPrefix = prefix;
+            expect(getTopLevelRoute(`${prefix}/`)).toEqual(undefined);
+            expect(getTopLevelRoute(`${prefix}/wallet`)).toEqual(undefined);
+            expect(getTopLevelRoute(`${prefix}/wallet/account`)).toEqual(`${prefix}/wallet`);
         });
     });
 });

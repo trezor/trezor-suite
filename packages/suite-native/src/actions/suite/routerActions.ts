@@ -2,7 +2,13 @@ import { Linking } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { DrawerActions } from 'react-navigation-drawer';
 import { Route } from '@suite-constants/routes';
-import { getRoute, getAppWithParams, RouteParams, findRouteByName } from '@suite-utils/router';
+import {
+    getRoute,
+    getAppWithParams,
+    RouteParams,
+    findRouteByName,
+    getTopLevelRoute,
+} from '@suite-utils/router';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { ReduxNavigator, getActiveRoute, isDrawerOpened } from '@suite-support/Router';
 
@@ -33,9 +39,10 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
  * Check if router is not locked
  * Called from `goto`, `onLocationChange` and `back`
  */
-const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
-    const { locks } = getState().suite;
-    return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
+const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState) => {
+    // const { locks } = getState().suite;
+    // return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
+    return true;
 };
 
 /**
@@ -55,12 +62,6 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
     });
 };
 
-const getRootAppPathname = (url: string) => {
-    if (url === '/') return '/';
-    const split = url.split('/');
-    return `/${split[1]}`;
-};
-
 // links inside of application
 export const goto = (routeName: Route['name'], params?: RouteParams, _preserveParams = false) => (
     dispatch: Dispatch,
@@ -77,12 +78,12 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
 
-    const r = findRouteByName(routeName);
-    const isModal = r && r.isModal;
+    const requestedRoute = findRouteByName(routeName);
+    const isModal = requestedRoute && requestedRoute.isModal;
 
     const pathname = getRoute(routeName);
-    const currentRoute = getActiveRoute(state);
-    const currentApp = getAppWithParams(currentRoute.routeName);
+    const navigatorRoute = getActiveRoute(state);
+    const currentApp = getAppWithParams(navigatorRoute.routeName);
     const nextApp = getAppWithParams(pathname);
 
     if (isModal) {
@@ -91,23 +92,24 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
         navigator.dispatch(
             StackActions.push({
                 routeName: pathname,
+                params: {
+                    routeParams: params,
+                },
             }),
         );
     } else if (currentApp.app !== nextApp.app) {
         // Application change (use case: "/wallet" > "/settings")
-        // check if requested url is a "nested" route and dispatch second action if so
-        // TODO: better retrieve "base" url
-        const split = pathname.split('/');
-        const action =
-            split.length > 2
-                ? NavigationActions.navigate({
-                      routeName: pathname,
-                      params: {
-                          routeParams: params,
-                          // TODO: pass navigationOptions?
-                      },
-                  })
-                : undefined;
+        // check if requested url has topLevelRoute route and dispatch second action if so
+        const topLevelRoute = getTopLevelRoute(pathname);
+        const action = topLevelRoute
+            ? NavigationActions.navigate({
+                  routeName: pathname,
+                  params: {
+                      routeParams: params,
+                      // TODO: pass navigationOptions?
+                  },
+              })
+            : undefined;
 
         // Navigation flow: reset root stack > navigate to requested route (base) > additionally navigate to nested route
         navigator.dispatch(
@@ -116,7 +118,7 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
                 key: null,
                 actions: [
                     NavigationActions.navigate({
-                        routeName: action ? getRootAppPathname(pathname) : pathname,
+                        routeName: topLevelRoute || pathname,
                         action,
                     }),
                 ],
@@ -149,38 +151,36 @@ export const back = () => (dispatch: Dispatch) => {
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
 
-    const { navigator } = ReduxNavigator;
-    if (navigator) {
-        // TODO: investigate more
-        // IDK if it's a 'react-navigation' bug or i'm doing something wrong
-        // NavigationActions.back() doesn't work as expected in this case
-        // whenever previous route has more than 2 nested navigators (so 100% cases) back action will render only first nested (Drawer)
-        const { nav } = navigator.state;
-        if (!nav) return;
-        if (nav.routes.length < 2 || nav.index === 0) {
-            // fallback
-            dispatch(goto('suite-index'));
-            return;
-        }
-        const firstRoute = nav.routes[0];
-        const currentRoute = getActiveRoute(firstRoute);
-        navigator.dispatch(
-            StackActions.reset({
-                index: 0,
-                actions: [
-                    NavigationActions.navigate({
-                        routeName: firstRoute.routeName,
-                        action: NavigationActions.navigate({
-                            routeName: currentRoute.routeName,
-                            params: currentRoute.params,
-                        }),
-                    }),
-                ],
-            }),
-        );
+    const { navigator, state } = ReduxNavigator;
+    if (!navigator) return;
 
-        // navigator.dispatch(NavigationActions.back());
+    // TODO: investigate more
+    // IDK if it's a 'react-navigation' bug or i'm doing something wrong
+    // NavigationActions.back() doesn't work as expected in this case
+    // whenever previous route has more than 2 nested navigators (so 100% cases) back action will render only first nested (Drawer)
+    if (!state || state.routes.length < 2 || state.index === 0) {
+        // fallback
+        dispatch(goto('suite-index'));
+        return;
     }
+    const firstRoute = state.routes[0];
+    const currentRoute = getActiveRoute(firstRoute);
+    navigator.dispatch(
+        StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({
+                    routeName: firstRoute.routeName,
+                    action: NavigationActions.navigate({
+                        routeName: currentRoute.routeName,
+                        params: currentRoute.params,
+                    }),
+                }),
+            ],
+        }),
+    );
+
+    // navigator.dispatch(NavigationActions.back());
 };
 
 /**
