@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import {
     NavigationContainer,
     createAppContainer,
@@ -19,7 +18,9 @@ import TabsBar from '@suite-components/Tabs';
 import Drawer from '@suite-components/Drawer';
 import HeaderLeft from '@suite-components/Header';
 
-type ScreenComponent = NavigationComponent<{}, {}>;
+type ScreenComponent = NavigationComponent<{}, {}> & {
+    router?: any; // nested Navigator
+};
 type ScreenConfigMap = NavigationRouteConfigMap<{}, {}>;
 
 const useDrawer = (key: string, screen: ScreenComponent) => {
@@ -41,8 +42,10 @@ const useDrawer = (key: string, screen: ScreenComponent) => {
 };
 
 const useStack = (key: string, screen: ScreenComponent) => {
+    // add prefix only for nested Navigators
+    const stackKey = screen.router ? `_stack_${key}` : key;
     const config: ScreenConfigMap = {};
-    config[`_stack_${key}`] = {
+    config[stackKey] = {
         // config[key] = {
         screen,
         navigationOptions: {

@@ -7,25 +7,22 @@
  * - additional routes: "/device-select"
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { BackHandler } from 'react-native';
 import {
     NavigationState,
     StackActions,
     NavigationActions,
     NavigationAction,
-    NavigationParams,
     NavigationContainer,
-    NavigationContainerComponent,
-    NavigationStateRoute,
 } from 'react-navigation';
 import { enableScreens } from 'react-native-screens'; // https://github.com/kmagiera/react-native-screens
 import 'react-native-gesture-handler'; // https://reactnavigation.org/docs/en/getting-started.html
 
-import { create } from './RouterBuilder';
-
-import { getRoute, RouteParams } from '@suite-utils/router';
+import { getRoute } from '@suite-utils/router';
+import * as routerActions from '@suite-actions/routerActions';
 
 // Views
 // import InitialRun from '../components/InitialRun';
@@ -47,11 +44,13 @@ import Onboarding from '@suite-views/onboarding';
 import Firmware from '@suite-views/firmware';
 import Backup from '@suite-views/backup';
 import SwitchDevice from '@suite-views/switch-device';
-import { ROUTER } from '@suite-actions/constants';
 
 // import DeviceSelect from '../components/DeviceSelect';
 
 import { AppState, Dispatch } from '@suite-types';
+
+import { create } from './RouterBuilder';
+import { setNavigator, getActiveRoute } from './NavigatorService';
 
 enableScreens();
 
@@ -119,65 +118,23 @@ const initNavigator = (initialRoute: string) =>
         initialRoute,
     );
 
-// custom Navigation state with optional fields and types for Navigator.state.params
-type RouteState = NavigationStateRoute<{
-    routeParams: RouteParams; // used in LOCATION.CHANGE action
-    navigationOptions: NavigationParams; // used in Navigation state
-}> & {
-    isDrawerOpen?: boolean; // instead of import { NavigationDrawerState } from 'react-navigation-drawer';
-};
-
-// NavigationContainerComponent.state state is wrapped in to "nav" object
-type FixedNavigationContainerComponent = NavigationContainerComponent & {
-    // state: NavigationContainerComponent['state'] & {
-    //     nav: NavigationContainerComponent['state'],
-    // }
-    dispatch: NavigationContainerComponent['dispatch'];
-    state: NavigationContainerComponent['state'] & {
-        nav?: RouteState;
-    };
-};
-
-type IReduxNavigator<P> = React.FunctionComponent<P> & {
-    navigator?: FixedNavigationContainerComponent | null;
-    state?: RouteState;
-};
-
-type Props = {
-    router: AppState['router'];
-    dispatch: Dispatch;
-};
-
-// Utilities:
-export const getActiveRoute = (state: NavigationState): RouteState => {
-    if (!state.routes || state.routes.length === 0 || state.index >= state.routes.length) {
-        return state as RouteState;
-    }
-    const childActiveRoute = state.routes[state.index] as RouteState;
-    return getActiveRoute(childActiveRoute);
-};
-
-export const isDrawerOpened = (state?: RouteState): boolean => {
-    if (!state) return false;
-    if (state.isDrawerOpen) return true;
-    if (!state.routes || state.routes.length === 0) {
-        return false;
-    }
-    const childActiveRoute = state.routes[state.index] as RouteState;
-    return isDrawerOpened(childActiveRoute);
-};
-
 // Wrap `Navigator` with redux connected component
 // - hold reference to NavigationContainerComponent once it's mounted
 // - handle Navigation state change and dispatch LOCATION.CHANGE action
 // - handle android back button
 
-export const ReduxNavigator: IReduxNavigator<Props> = props => {
-    const [navigator, setNavigator] = useState<FixedNavigationContainerComponent | null>(null);
-    // Set reference as static filed accessible from outside
-    ReduxNavigator.navigator = navigator;
-    ReduxNavigator.state = navigator ? navigator.state.nav : undefined;
+const mapStateToProps = (state: AppState) => ({
+    router: state.router,
+});
 
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    onLocationChange: bindActionCreators(routerActions.onLocationChange, dispatch),
+    androidBack: bindActionCreators(routerActions.androidBack, dispatch),
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+export const ReduxNavigator = (props: Props) => {
     const onNavigationStateChange = (
         _oldState: NavigationState,
         newState: NavigationState,
@@ -190,11 +147,8 @@ export const ReduxNavigator: IReduxNavigator<Props> = props => {
             action.type === StackActions.RESET
         ) {
             const activeRoute = getActiveRoute(newState);
-            console.log('LOCATION.CVHNAE', action.type, activeRoute, action);
-            props.dispatch({
-                type: ROUTER.LOCATION_CHANGE,
-                url: activeRoute.routeName,
-            });
+            console.log('LOCATION.CHANGE', action.type, activeRoute, action);
+            props.onLocationChange(activeRoute.routeName);
 
             // console.log(JSON.stringify(_oldState, null, 2));
             // console.log('---------------------');
@@ -203,20 +157,12 @@ export const ReduxNavigator: IReduxNavigator<Props> = props => {
     };
 
     useEffect(() => {
-        const onBack = () => {
-            if (ReduxNavigator.navigator) {
-                if (isDrawerOpened(ReduxNavigator.navigator.state.nav)) {
-                    ReduxNavigator.navigator.dispatch(NavigationActions.back());
-                }
-            }
-            return true;
-        };
-        BackHandler.addEventListener('hardwareBackPress', onBack);
+        BackHandler.addEventListener('hardwareBackPress', props.androidBack);
         return () => {
-            BackHandler.removeEventListener('hardwareBackPress', onBack);
+            BackHandler.removeEventListener('hardwareBackPress', props.androidBack);
             // TrezorConnect.dispose();
         };
-    }, []);
+    }, [props.androidBack]);
 
     if (!Navigator) {
         // initialize here to pass current route from reducer
@@ -229,12 +175,7 @@ export const ReduxNavigator: IReduxNavigator<Props> = props => {
     // - withNavigationFocus,
     // - withOrientation, createKeyboardAwareNavigator
 
-    return (
-        <Navigator
-            onNavigationStateChange={onNavigationStateChange}
-            ref={nav => setNavigator(nav)}
-        />
-    );
+    return <Navigator onNavigationStateChange={onNavigationStateChange} ref={setNavigator} />;
 };
 
-export default connect((state: AppState) => ({ router: state.router }))(ReduxNavigator);
+export default connect(mapStateToProps, mapDispatchToProps)(ReduxNavigator);

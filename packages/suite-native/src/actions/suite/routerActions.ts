@@ -9,8 +9,13 @@ import {
     findRouteByName,
     getTopLevelRoute,
 } from '@suite-utils/router';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import { ReduxNavigator, getActiveRoute, isDrawerOpened } from '@suite-support/Router';
+import { ROUTER } from '@suite-actions/constants';
+import {
+    getNavigator,
+    getNavigatorState,
+    getActiveRoute,
+    isDrawerOpened,
+} from '@suite-support/NavigatorService';
 
 import { GetState, Dispatch } from '@suite-types';
 
@@ -66,7 +71,8 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 export const goto = (routeName: Route['name'], params?: RouteParams, _preserveParams = false) => (
     dispatch: Dispatch,
 ) => {
-    const { navigator, state } = ReduxNavigator;
+    const navigator = getNavigator();
+    const state = getNavigatorState();
     if (!navigator) {
         console.warn('Navigator not found');
         return;
@@ -147,11 +153,21 @@ export const gotoUrl = (url: string) => {
     Linking.openURL(url);
 };
 
+export const androidBack = () => () => {
+    const navigator = getNavigator();
+    const state = getNavigatorState();
+    if (navigator && isDrawerOpened(state)) {
+        navigator.dispatch(NavigationActions.back());
+    }
+    return true; // always return true to block android behavior
+};
+
 export const back = () => (dispatch: Dispatch) => {
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
 
-    const { navigator, state } = ReduxNavigator;
+    const navigator = getNavigator();
+    const state = getNavigatorState();
     if (!navigator) return;
 
     // TODO: investigate more
