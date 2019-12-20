@@ -22,7 +22,7 @@ interface Props {
 
 const DisconnectDevice = ({ device }: Props) => {
     return (
-        <Wrapper>
+        <Wrapper data-test="@modal/disconnect-device">
             <H2>
                 <Translation
                     {...messages.TR_DISCONNECT_DEVICE_HEADER}
