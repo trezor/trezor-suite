@@ -106,7 +106,7 @@ const initNavigator = (initialRoute: string) =>
                 screen: Firmware,
             },
             {
-                key: getRoute('suite-device-backup'),
+                key: getRoute('settings-device'),
                 type: 'default',
                 screen: Backup,
             },
