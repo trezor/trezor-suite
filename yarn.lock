@@ -19606,10 +19606,10 @@ react-native-safe-area-view@^0.14.1, react-native-safe-area-view@^0.14.6:
   dependencies:
     debounce "^1.2.0"
 
-react-native-screens@^2.0.0-alpha.17:
-  version "2.0.0-alpha.18"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.18.tgz#70c116cc96069ad1d930f2984bbec7d66856a1ee"
-  integrity sha512-ML5MVFMWsw7x4GdAA6xWMnFUp37Rk4dpNb5MKrRIPqOTYTS+cN+eyo7UCqICEa6KwYKCtGN6Kq7xrKOtboWPMg==
+react-native-screens@^2.0.0-alpha.20:
+  version "2.0.0-alpha.20"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.20.tgz#a50a74eaafb562ace110daf7a70f9816442fbb3d"
+  integrity sha512-jf2yULUrqftVXVW4boqyZZEXS2bbAAt2PNA6+Twm33aVF4i1RP/jLkMd7IliPhLXGYLJYLJyNjGIZ+piPIi+Pg==
   dependencies:
     debounce "^1.2.0"
 
@@ -19629,14 +19629,6 @@ react-native-svg-uri@^1.2.3:
   integrity sha1-L2fzBWQGig/uaKdRhFMypRhaGqs=
   dependencies:
     xmldom "^0.1.22"
-
-react-native-svg@^9.13.3:
-  version "9.13.3"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.13.3.tgz#6414b337d55af169ac2487ab70f3108404434446"
-  integrity sha512-H50b2m4jvrQ7KxKs8uYSuWecr6e5XC7BDfS7DaA96+0Owjh0C9DksI5l8SRyHnmE+emiYMPu6Qqfr9dCyKkaJQ==
-  dependencies:
-    css-select "^2.0.2"
-    css-tree "^1.0.0-alpha.37"
 
 react-native-svg@^9.13.6:
   version "9.13.6"
