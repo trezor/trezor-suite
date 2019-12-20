@@ -11,6 +11,8 @@ import { AppState, Dispatch } from '@suite-types';
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     accounts: state.wallet.accounts,
+    selectedAccount: state.wallet.selectedAccount,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -29,11 +31,16 @@ const Wallet = (props: Props) => {
         </View>
     ));
 
+    const accountIdFromReducer = props.router.params ? JSON.stringify(props.router.params) : 'unknown';
+
     return (
-        <Layout title="Wallet" disableTabs>
-            <Text>Account transactions</Text>
-            {accounts}
-        </Layout>
+        <View>
+            <Text>{accountIdFromReducer}</Text>
+            <Layout title="Wallet" disableTabs>
+                <Text>Account transactions</Text>
+                {accounts}
+            </Layout>
+        </View>
     );
 };
 

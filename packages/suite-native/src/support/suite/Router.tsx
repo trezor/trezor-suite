@@ -21,7 +21,7 @@ import {
 import { enableScreens } from 'react-native-screens'; // https://github.com/kmagiera/react-native-screens
 import 'react-native-gesture-handler'; // https://reactnavigation.org/docs/en/getting-started.html
 
-import { getRoute } from '@suite-utils/router';
+import { getRoute, findRoute } from '@suite-utils/router';
 import * as routerActions from '@suite-actions/routerActions';
 
 // Views
@@ -146,9 +146,18 @@ export const ReduxNavigator = (props: Props) => {
             action.type === NavigationActions.BACK ||
             action.type === StackActions.RESET
         ) {
-            const activeRoute = getActiveRoute(newState);
-            console.log('LOCATION.CHANGE', action.type, activeRoute, action);
-            props.onLocationChange(activeRoute.routeName);
+            const navigatorRoute = getActiveRoute(newState);
+            const suiteRoute = findRoute(navigatorRoute.routeName);
+            const params = navigatorRoute.params ? navigatorRoute.params.routeParams : undefined;
+            console.log('LOCATION.CHANGE', action.type, navigatorRoute, action);
+            if (params && suiteRoute) {
+                // params in @suite/routerReducer are parsed from window.location hash # (url: string)
+                // to keep it compatible convert params to string
+                // TODO: consider rewrite `onLocationChange` and `routerReducer` to accept params as object
+                props.onLocationChange(getRoute(suiteRoute.name, params));
+            } else {
+                props.onLocationChange(navigatorRoute.routeName);
+            }
 
             // console.log(JSON.stringify(_oldState, null, 2));
             // console.log('---------------------');

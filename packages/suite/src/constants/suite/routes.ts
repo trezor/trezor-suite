@@ -7,6 +7,7 @@ const routes = [
         name: 'wallet-index',
         pattern: '/wallet',
         app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'passwords-index',

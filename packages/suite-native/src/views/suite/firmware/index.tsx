@@ -29,7 +29,13 @@ const Backup = (props: Props) => {
                 <Button onPress={props.back} title="Back to previous screen" />
             </View>
             <Button
-                onPress={() => props.goto('wallet-account-receive')}
+                onPress={() =>
+                    props.goto('wallet-account-receive', {
+                        symbol: 'btc',
+                        accountIndex: 2,
+                        accountType: 'normal',
+                    })
+                }
                 title="Go to wallet receive page"
             />
         </View>
