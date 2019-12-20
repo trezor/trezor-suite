@@ -12,6 +12,7 @@ import SuiteLayout from './SuiteLayout';
 import Notification from './Notification';
 import PinInput from './PinInput';
 import SettingsMenu from './SettingsMenu';
+import NoRatesTooltip from './NoRatesTooltip';
 
 export {
     AcquireDevice,
@@ -28,4 +29,5 @@ export {
     Notification,
     PinInput,
     SettingsMenu,
+    NoRatesTooltip,
 };
