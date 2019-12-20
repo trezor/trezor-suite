@@ -161,7 +161,7 @@ const getConfirmationModal = (props: Props) => {
             return (
                 <ConfirmNoBackup
                     onReceiveConfirmation={modalActions.onReceiveConfirmation}
-                    onCreateBackup={() => goto('suite-device-backup')}
+                    onCreateBackup={() => goto('settings-device')}
                 />
             );
         default:

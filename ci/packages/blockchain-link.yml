@@ -1,33 +1,6 @@
-blockchain-link lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/blockchain-link lint
-    dependencies:
-        - install and build
-
-blockchain-link type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/blockchain-link type-check
-    dependencies:
-        - install and build
-
 blockchain-link test:
     stage: unit testing
     script:
         - yarn workspace @trezor/blockchain-link test:unit
-    dependencies:
-        - install and build
-
-blockchain-link build:
-    stage: build
-    script:
-        - yarn workspace @trezor/blockchain-link build
-    artifacts:
-        expire_in: 2 days
-        when: always
-        paths:
-            - packages/blockchain-link/lib
-            - packages/blockchain-link/build
     dependencies:
         - install and build

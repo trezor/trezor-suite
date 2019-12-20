@@ -2,13 +2,8 @@
     "name": "@trezor/translations-manager",
     "version": "1.0.0",
     "main": "./lib/index.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/trezor/trezor-translations-manager.git"
-    },
-    "author": "Trezor <info@trezor.io>",
     "scripts": {
-        "lint": "eslint .",
+        "lint": "eslint '**/*.ts'",
         "clean": "rimraf lib",
         "build:lib": "yarn tsc",
         "prepublishOnly": "yarn run lint && npm run build"

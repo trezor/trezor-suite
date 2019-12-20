@@ -2024,23 +2024,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'Version is loading',
         id: 'TR_VERSION_IS_LOADING',
     },
-    TR_VISIBLE_COINS: {
-        defaultMessage: 'Visible coins',
-        id: 'TR_VISIBLE_COINS',
+    TR_COINS: {
+        defaultMessage: 'Coins',
+        id: 'TR_COINS',
     },
-    TR_VISIBLE_COINS_EXPLAINED: {
-        defaultMessage:
-            'Select the coins you wish to see in the wallet interface. You will be able to change your preferences later.',
-        id: 'TR_VISIBLE_COINS_EXPLAINED',
+    TR_TESTNET_COINS: {
+        defaultMessage: 'Testnet coins',
+        id: 'TR_TESTNET_COINS',
     },
-    TR_VISIBLE_TESTNET_COINS: {
-        defaultMessage: 'Visible testnet coins',
-        id: 'TR_VISIBLE_TESTNET_COINS',
-    },
-    TR_VISIBLE_TESTNET_COINS_EXPLAINED: {
+    TR_TESTNET_COINS_EXPLAINED: {
         defaultMessage:
             'Testnet coins dont have any value but you still may use them to learn and experiment.',
-        id: 'TR_VISIBLE_TESTNET_COINS_EXPLAINED',
+        id: 'TR_TESTNET_COINS_EXPLAINED',
     },
     TR_WAIT_FOR_FILE_TO_DOWNLOAD: {
         defaultMessage: 'Wait for file to download',
@@ -2198,7 +2193,81 @@ const definedMessages = defineMessages({
     },
     TR_BACKGROUND_GALLERY: {
         id: 'TR_BACKGROUND_GALLERY',
-        defaultMessage: 'Background gallery',
+        defaultMessage: 'Homescreen background gallery',
+    },
+    TR_BACKUP: {
+        id: 'TR_BACKUP',
+        defaultMessage: 'Backup',
+    },
+    TR_BACKUP_RECOVERY_SEED: {
+        id: 'TR_BACKUP_RECOVERY_SEED',
+        defaultMessage: 'Backup (Recovery seed)',
+    },
+    TR_RECOVERY_SEED_IS: {
+        id: 'TR_RECOVERY_SEED_IS',
+        defaultMessage:
+            'Recovery seed is a list of words in a specific order which store all the information needed.',
+    },
+    TR_CREATE_BACKUP: {
+        id: 'TR_CREATE_BACKUP',
+        defaultMessage: 'Create backup',
+    },
+    TR_CHECK_RECOVERY_SEED: {
+        id: 'TR_CHECK_RECOVERY_SEED',
+        defaultMessage: 'Check recovery seed',
+    },
+    TR_CHECK_SEED: {
+        id: 'TR_CHECK_SEED',
+        defaultMessage: 'Check seed',
+    },
+    TR_FIRMWARE_VERSION: {
+        id: 'TR_FIRMWARE_VERSION',
+        defaultMessage: 'Firmware version',
+    },
+    TR_YOUR_CURRENT_FIRMWARE: {
+        id: 'TR_YOUR_CURRENT_FIRMWARE',
+        defaultMessage: 'Your current firmware version is {version}',
+    },
+    TR_WIPING_YOUR_DEVICE: {
+        id: 'TR_WIPING_YOUR_DEVICE',
+        defaultMessage:
+            'Wiping the device removes all its information. Only wipe your device if you have your device if you have your recovery seed at hand or there are no funds stored on this device.',
+    },
+    TR_CURRENCY: {
+        id: 'TR_CURRENCY',
+        defaultMessage: 'Currency',
+    },
+    TR_PRIMARY_FIAT: {
+        id: 'TR_PRIMARY_FIAT',
+        defaultMessage: 'Primary FIAT currency to display',
+    },
+    TR_LABELING: {
+        id: 'TR_LABELING',
+        defaultMessage: 'Labeling',
+    },
+    TR_DROPBOX_CONNECTION: {
+        id: 'TR_DROPBOX_CONNECTION',
+        defaultMessage: 'Dropbox connection',
+    },
+    TR_YOUR_LABELS_WILL_BE_SAVED: {
+        id: 'TR_YOUR_LABELS_WILL_BE_SAVED',
+        defaultMessage: 'Your labels will be saved in Dropbox folder and synced across devices',
+    },
+    TR_CONNECT_DROPBOX: {
+        id: 'TR_CONNECT_DROPBOX',
+        defaultMessage: 'Connect Dropbox',
+    },
+    TR_SUITE_VERSION: {
+        id: 'TR_SUITE_VERSION',
+        defaultMessage: 'Suite version',
+    },
+    TR_YOUR_CURRENT_VERSION: {
+        id: 'TR_YOUR_CURRENT_VERSION',
+        defaultMessage: 'Your current Suite version is 1.2.0',
+    },
+    TR_CHECK_FOR_UPDATES: {
+        id: 'TR_CHECK_FOR_UPDATES',
+        defaultMessage: 'Check for updates',
     },
 });
 

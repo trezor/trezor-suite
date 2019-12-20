@@ -1,19 +1,5 @@
-suite-desktop lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/suite-desktop lint
-    dependencies:
-        - install and build
-
-suite-desktop type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/suite-desktop type-check
-    dependencies:
-        - install and build
-
 suite-desktop build mac:
-    stage: build desktop apps
+    stage: build artifacts
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -27,7 +13,7 @@ suite-desktop build mac:
         - install and build
 
 suite-desktop build linux:
-    stage: build desktop apps
+    stage: build artifacts
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -42,7 +28,7 @@ suite-desktop build linux:
 
 suite-desktop build windows:
     image: electronuserland/builder:wine
-    stage: build desktop apps
+    stage: build artifacts
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files

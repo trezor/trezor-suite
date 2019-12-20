@@ -129,6 +129,10 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
     );
 };
 
+export const saveFiatRates = () => (_dispatch: Dispatch, getState: GetState) => {
+    return db.addItems('fiatRates', getState().wallet.fiat, true);
+};
+
 export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState) => {
     const { suite } = getState();
     db.addItem(
@@ -160,6 +164,8 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const accounts = await db.getItemsExtended('accounts');
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
+        const fiatRates = await db.getItemsExtended('fiatRates');
+
         const txs = await db.getItemsExtended('txs', 'order');
 
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
@@ -193,6 +199,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         ...initialState.wallet.transactions,
                         transactions: mappedTxs,
                     },
+                    fiat: fiatRates || [],
                 },
             },
         });

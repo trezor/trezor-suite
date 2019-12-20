@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { H2 } from '@trezor/components-v2';
+import { P } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
@@ -13,31 +13,31 @@ import { Dispatch, AcquiredDevice } from '@suite-types';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
-/* uuurgh, shall we have this solved on one place? now we have modal wrapper in probably each modal */
 const ModalWrapper = styled.div`
-    padding: 30px 45px;
-    /* width: 356px; */
+    padding: 30px 30px;
+    height: 450px;
+    overflow-y: auto;
 `;
 
 const BackgroundGalleryT2 = styled.div`
     display: flex;
     flex-wrap: wrap;
-    max-width: 200px;
-    margin-right: 10px;
+    /* width of T2 image + margin * number of images in row. Plus 1px to make it work :D */
+    width: ${(80 + 10) * 4 + 1}px;
 `;
 
 const BackgroundGalleryT1 = styled.div`
     display: flex;
     flex-wrap: wrap;
-    max-width: 490px;
-    margin-right: 10px;
+    /* width of T1 image + its margin * number of images wanted in row */
+    width: ${(64 + 10) * 5}px;
 `;
 
 const BackgroundImageT2 = styled.img`
     border-radius: 50%;
     margin: 5px;
-    width: 30px;
-    height: 30px;
+    width: 80px;
+    height: 80px;
     cursor: pointer;
 `;
 
@@ -46,6 +46,13 @@ const BackgroundImageT1 = styled.img`
     cursor: pointer;
     width: 64px;
     height: 32px;
+`;
+
+const StyledP = styled(P)`
+    font-weight: 18px;
+    text-align: left;
+    padding-left: 10px;
+    margin-bottom: 28px;
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -68,9 +75,9 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
 
     return (
         <ModalWrapper>
-            <H2>
+            <StyledP>
                 <Translation {...messages.TR_BACKGROUND_GALLERY} />
-            </H2>
+            </StyledP>
 
             {device.features.major_version === 1 && (
                 <BackgroundGalleryT1>
@@ -88,6 +95,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
                 <BackgroundGalleryT2>
                     {homescreensT2.map(image => (
                         <BackgroundImageT2
+                            data-test={`@modal/gallery/t2/${image}`}
                             key={image}
                             id={image}
                             onClick={() => setHomescreen(image)}

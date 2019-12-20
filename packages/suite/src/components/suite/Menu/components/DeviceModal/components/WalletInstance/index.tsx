@@ -3,8 +3,6 @@ import styled, { css } from 'styled-components';
 import { Icon, Button, colors, variables } from '@trezor/components-v2';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
-import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
-import BigNumber from 'bignumber.js';
 import { FormattedNumber } from '@suite/components/suite';
 import { Translation } from '@suite/components/suite/Translation';
 import messages from '@suite/support/messages';
@@ -68,19 +66,7 @@ const WalletInstance = ({
     const deviceAccounts = accountUtils.getDeviceAccounts(instance, accounts);
     const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
-
-    let instanceBalance = new BigNumber(0);
-    deviceAccounts.forEach(a => {
-        const fiatRates = fiat.find(f => f.symbol === a.symbol);
-        if (fiatRates) {
-            const fiatBalance = toFiatCurrency(a.balance, localCurrency, fiatRates);
-            if (fiatBalance) {
-                instanceBalance = instanceBalance.plus(
-                    accountUtils.formatNetworkAmount(fiatBalance, a.symbol),
-                );
-            }
-        }
-    });
+    const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);
 
     return (
         <Wrapper

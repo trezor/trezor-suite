@@ -1,56 +1,166 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { colors } from '@trezor/components';
 
+import { H2, Icon, colors } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
+import { AppState, Dispatch } from '@suite-types';
+import { IconType } from '@trezor/components-v2/lib/support/types';
 
-import { Dispatch } from '@suite-types';
-
-// const mapStateToProps = (state: AppState) => ({
-//     // router: state.router,
-//     // suite: state.suite,
-//     // devices: state.devices,
-// });
+const mapStateToProps = (state: AppState) => ({
+    router: state.router,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-type Props = ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
-const Item = styled.div`
-    width: 100%;
-    height: 40px;
-    cursor: pointer;
-    color: ${colors.TEXT_PRIMARY};
+const LEFT_PADDING = '10px';
+const TEXT_COLOR = colors.BLACK70;
+const ACTIVE_TEXT_COLOR = colors.BLACK25;
+const SECONDARY_COLOR = colors.BLACK92;
+const ITEMS_BORDER = `2px solid ${SECONDARY_COLOR}`;
+
+const ContentWrapper = styled.div`
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 `;
 
-const SettignsMenu = ({ goto }: Props) => {
+const Bottom = styled.div`
+    margin-top: auto;
+`;
+
+const Heading = styled(H2)`
+    padding-left: ${LEFT_PADDING};
+    color: ${TEXT_COLOR};
+`;
+
+const Items = styled.div`
+    & > div:first-child {
+        border-top: ${ITEMS_BORDER};
+        border-bottom: ${ITEMS_BORDER};
+    }
+    & > div:not(:first-child) {
+        border-bottom: ${ITEMS_BORDER};
+    }
+`;
+
+const ItemWrapper = styled.div<{ isActive?: boolean }>`
+    width: 100%;
+    height: 50px;
+    cursor: pointer;
+    color: ${({ isActive }) => (isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR)};
+
+    display: flex;
+    align-items: center;
+    ${({ isActive }) =>
+        isActive &&
+        css`
+            background-color: ${SECONDARY_COLOR};
+        `}
+`;
+
+const StyledIcon = styled(Icon)`
+    padding-left: ${LEFT_PADDING};
+    padding-right: 10px;
+`;
+
+interface ItemProps {
+    label: string;
+    icon: IconType;
+    onClick?: () => void;
+    dataTest?: string;
+    isActive?: boolean;
+}
+
+const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
+    <ItemWrapper
+        onClick={onClick}
+        data-test={`@suite/settings/menu/${dataTest}`}
+        isActive={isActive}
+    >
+        <StyledIcon color={isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR} icon={icon} size={18} />
+        {label}
+    </ItemWrapper>
+);
+
+const ITEMS = [
+    {
+        label: 'General',
+        dataTest: 'general',
+        icon: 'SETTINGS',
+        route: 'settings-index',
+    },
+    {
+        label: 'Device',
+        dataTest: 'device',
+        icon: 'TREZOR',
+        route: 'settings-device',
+    },
+    {
+        label: 'Dashboard',
+        dataTest: 'dashboard',
+        icon: 'DASHBOARD',
+        route: 'settings-dashboard',
+    },
+    {
+        label: 'Wallet',
+        dataTest: 'wallet',
+        icon: 'WALLET',
+        route: 'settings-wallet',
+    },
+    {
+        label: 'Coins',
+        dataTest: 'coins',
+        icon: 'COINS',
+        route: 'settings-coins',
+    },
+] as const;
+
+const BOTTOM_ITEMS = [
+    {
+        label: 'Support',
+        icon: 'SUPPORT',
+    },
+    {
+        label: 'Show log',
+        icon: 'LOG',
+    },
+] as const;
+
+const SettignsMenu = ({ goto, router }: Props) => {
     return (
-        <>
-            <>Settings</>
-            <Item onClick={() => goto('settings-index')} data-test="@suite/settings/menu/general">
-                General
-            </Item>
-            <Item onClick={() => goto('settings-device')} data-test="@suite/settings/menu/device">
-                Device
-            </Item>
-            <Item
-                onClick={() => goto('settings-dashboard')}
-                data-test="@suite/settings/menu/dashboard"
-            >
-                Dashboard
-            </Item>
-            <Item onClick={() => goto('settings-wallet')} data-test="@suite/settings/menu/wallet">
-                Wallet
-            </Item>
-            <Item onClick={() => goto('settings-coins')} data-test="@suite/settings/menu/coins">
-                Coins
-            </Item>
-        </>
+        <ContentWrapper>
+            <Heading>Settings</Heading>
+            <Items>
+                {ITEMS.map(i => (
+                    <Item
+                        key={i.label}
+                        {...i}
+                        onClick={() => goto(i.route)}
+                        isActive={
+                            router &&
+                            typeof router.route !== 'undefined' &&
+                            i.route === router.route.name
+                        }
+                    />
+                ))}
+            </Items>
+
+            <Bottom>
+                <Items>
+                    {BOTTOM_ITEMS.map(i => (
+                        <Item key={i.label} {...i} />
+                    ))}
+                </Items>
+            </Bottom>
+        </ContentWrapper>
     );
 };
 
-export default connect(null, mapDispatchToProps)(SettignsMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SettignsMenu);

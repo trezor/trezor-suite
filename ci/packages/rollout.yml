@@ -1,32 +1,6 @@
-rollout lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/rollout lint
-    dependencies:
-        - install and build
-
-rollout type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/rollout type-check
-    dependencies:
-        - install and build
-
 rollout test unit:
     stage: unit testing
     script:
         - yarn workspace @trezor/rollout test
-    dependencies:
-        - install and build
-
-rollout build:
-    stage: build
-    script:
-        - yarn workspace @trezor/rollout build:lib
-    artifacts:
-        expire_in: 2 days
-        when: always
-        paths:
-            - packages/rollout/lib
     dependencies:
         - install and build

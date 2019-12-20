@@ -28,13 +28,20 @@ module.exports = {
         '@typescript-eslint/explicit-function-return-type': 'off',
         'import/order': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.
-        'func-style': ['error', 'declaration', {
-            allowArrowFunctions: true
-        }],
+        'func-style': [
+            'error',
+            'declaration',
+            {
+                allowArrowFunctions: true,
+            },
+        ],
         // Fix for TypeScript.
-        'react/jsx-filename-extension': ['error', {
-            extensions: ['.tsx']
-        }],
+        'react/jsx-filename-extension': [
+            'error',
+            {
+                extensions: ['.tsx'],
+            },
+        ],
         // I believe shadowing is a nice language feature.
         'no-shadow': 'off',
         // Does not work with TypeScript export type.
@@ -70,10 +77,11 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         'prettier/prettier': 'error',
-        "react/require-default-props": 'off',
+        'react/require-default-props': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         // new rules (eslint 6) temporary disabled until components-v2 and ts-ignore resolve
         'react/jsx-props-no-spreading': 'off',
-        '@typescript-eslint/ban-ts-ignore': 'off'
+        '@typescript-eslint/ban-ts-ignore': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
     },
 };

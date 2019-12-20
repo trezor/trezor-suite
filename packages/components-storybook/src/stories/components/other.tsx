@@ -289,11 +289,20 @@ storiesOf('Other', module)
                     '1': 1,
                     '2': 2,
                 },
+
                 1
             ) as number;
 
+            const type = select(
+                'type',
+                {
+                    pulse: 'pulse',
+                    'connect device': 'connect-device',
+                } as const,
+                'pulse'
+            );
             return (
-                <Prompt model={model} size={number('size', 32)}>
+                <Prompt model={model} size={number('size', 32)} type={type}>
                     {text('children', 'Complete the action on your device')}
                 </Prompt>
             );

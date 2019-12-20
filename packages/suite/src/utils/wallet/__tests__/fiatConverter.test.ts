@@ -1,16 +1,18 @@
 import * as utils from '../fiatConverterUtils';
 
-describe('fiatConverter utils: toFiatCurrency', () => {
-    const ratesETH = {
-        symbol: 'eth',
-        rates: {
-            czk: 3007.1079886708517,
-            eos: 36.852136278995445,
-            eur: 117.13118845579191,
-            gbp: 100.43721437661289,
-        },
-    };
+const ratesETH = {
+    symbol: 'eth',
+    rates: {
+        czk: 3007.1079886708517,
+        eos: 36.852136278995445,
+        eur: 117.13118845579191,
+        gbp: 100.43721437661289,
+    },
+    timestamp: Date.now(),
+} as const;
+const decimals = 18;
 
+describe('fiatConverter utils: toFiatCurrency', () => {
     it('to existing fiat currency', () => {
         expect(utils.toFiatCurrency('1', 'czk', ratesETH)).toBe('3007.11');
         expect(utils.toFiatCurrency('0', 'czk', ratesETH)).toBe('0.00');
@@ -36,17 +38,6 @@ describe('fiatConverter utils: toFiatCurrency', () => {
 });
 
 describe('fiatConverter utils: fromFiatCurrency', () => {
-    const ratesETH = {
-        symbol: 'eth',
-        rates: {
-            czk: 3007.1079886708517,
-            eos: 36.852136278995445,
-            eur: 117.13118845579191,
-            gbp: 100.43721437661289,
-        },
-    };
-    const decimals = 18;
-
     it('from existing fiat currency', () => {
         expect(utils.fromFiatCurrency('3007.1079886708517', 'czk', ratesETH, decimals)).toBe(
             '1.000000000000000000',

@@ -1,21 +1,14 @@
-import {
-    addParameters,
-    addDecorator,
-    configure
-} from '@storybook/react';
-import {
-    withInfo
-} from '@storybook/addon-info';
-import {
-    withKnobs
-} from '@storybook/addon-knobs';
+import { addParameters, addDecorator, configure } from '@storybook/react';
+import { withInfo } from '@storybook/addon-info';
+import { withKnobs } from '@storybook/addon-knobs';
 import Theme from './theme';
 
 addParameters({
     options: {
         theme: Theme,
-        panelPosition: 'right',
-    }
+        showPanel: true,
+        panelPosition: 'bottom',
+    },
 });
 addDecorator(withInfo);
 addDecorator(withKnobs);
@@ -30,6 +23,9 @@ function loadStories() {
     require('../src/stories/components/form/textarea');
     require('../src/stories/components/icons/all');
     require('../src/stories/components/icons/icon');
+    require('../src/stories/components/logos/all');
+    require('../src/stories/components/logos/coin');
+    require('../src/stories/components/logos/trezor');
     require('../src/stories/components/typography/all');
     require('../src/stories/components/typography/heading');
     require('../src/stories/components/typography/paragraph');
