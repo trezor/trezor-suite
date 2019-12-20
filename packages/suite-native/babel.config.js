@@ -22,6 +22,8 @@ module.exports = api => {
                         // react-native support
                         '^@suite-support/(.+)': './packages/suite-native/src/support/suite/\\1/\\2',
 
+                        '^@suite/support/messages': './packages/suite/src/support/messages',
+
                         // relative to "projectRoot: ../../" defined in package.json
                         '^@suite/(.+)': './packages/suite/src/\\1',
 
