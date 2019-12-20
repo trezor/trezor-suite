@@ -13,6 +13,7 @@ import { Link } from './components/Link';
 import { Notification } from './components/Notification';
 import { CoinLogo } from './components/CoinLogo';
 import { TrezorLogo } from './components/TrezorLogo';
+import { Loader } from './components/Loader';
 import * as types from './support/types';
 
 export {
@@ -31,5 +32,6 @@ export {
     Notification,
     CoinLogo,
     TrezorLogo,
+    Loader,
     types,
 };
