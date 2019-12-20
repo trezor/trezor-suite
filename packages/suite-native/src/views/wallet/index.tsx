@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Text, View, ScrollView } from 'react-native';
 
+import Layout from '@suite-components/Layout';
 import * as routerActions from '@suite-actions/routerActions';
 
 import { AppState, Dispatch } from '@suite-types';
@@ -29,10 +30,10 @@ const Wallet = (props: Props) => {
     ));
 
     return (
-        <ScrollView>
-            <Text>wallet dashboard</Text>
+        <Layout title="Wallet" disableTabs>
+            <Text>Account transactions</Text>
             {accounts}
-        </ScrollView>
+        </Layout>
     );
 };
 
