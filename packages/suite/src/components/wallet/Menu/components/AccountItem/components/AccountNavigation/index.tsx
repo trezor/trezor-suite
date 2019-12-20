@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledNavLink = styled.div<{ active: boolean }>`
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    font-weight: ${FONT_WEIGHT.NORMAL};
     font-size: ${FONT_SIZE.BASE};
     color: ${colors.TEXT_SECONDARY};
     display: flex;
@@ -38,8 +38,14 @@ const StyledNavLink = styled.div<{ active: boolean }>`
     }
 `;
 
+const IconWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 16px;
+`;
+
 const Text = styled.div`
-    padding-left: 5px;
+    padding-left: 8px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -67,7 +73,9 @@ const AccountNavigation = (props: Props) => {
                             active={currentRoute ? currentRoute.name === item.route : false}
                             onClick={() => props.goto(item.route, undefined, true)}
                         >
-                            <Icon size={10} icon={item.icon} />
+                            <IconWrapper>
+                            <Icon size={12} icon={item.icon} />
+                            </IconWrapper>
                             <Text>{item.title}</Text>
                         </StyledNavLink>
                     );
