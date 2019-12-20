@@ -27,7 +27,7 @@ storiesOf('Loaders', module).add(
                 <H1>Loader</H1>
                 <H2>default</H2>
                 <Section>
-                    <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
+                    <Loader size={100} strokeWidth={2} text="loading" data-test="loader-default" />
                 </Section>
 
                 <H2>small text</H2>
@@ -37,7 +37,7 @@ storiesOf('Loaders', module).add(
                         strokeWidth={2}
                         text="loading"
                         isSmallText
-                        data-test="loader_small_text"
+                        data-test="loader-small-text"
                     />
                 </Section>
 
@@ -48,7 +48,7 @@ storiesOf('Loaders', module).add(
                         strokeWidth={2}
                         text="loading"
                         transparentRoute
-                        data-test="loader_transparent_route"
+                        data-test="loader-transparent-route"
                     />
                 </Section>
 
@@ -59,7 +59,7 @@ storiesOf('Loaders', module).add(
                         strokeWidth={2}
                         text="loading"
                         isWhiteText
-                        data-test="loader_white_text"
+                        data-test="loader-white-text"
                     />
                 </SectionDark>
 
@@ -71,7 +71,7 @@ storiesOf('Loaders', module).add(
                         text="loading"
                         isWhiteText
                         transparentRoute
-                        data-test="loader_white_text_transparent"
+                        data-test="loader-white-text-transparent"
                     />
                 </SectionDark>
             </Wrapper>
