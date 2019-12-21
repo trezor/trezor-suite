@@ -31,7 +31,9 @@ const Wallet = (props: Props) => {
         </View>
     ));
 
-    const accountIdFromReducer = props.router.params ? JSON.stringify(props.router.params) : 'unknown';
+    const accountIdFromReducer = props.router.params
+        ? JSON.stringify(props.router.params)
+        : 'unknown';
 
     return (
         <View>
