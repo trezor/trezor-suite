@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
     NavigationContainer,
     createAppContainer,
@@ -14,47 +15,35 @@ import createNativeStackNavigator from 'react-native-screens/createNativeStackNa
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
-import TabsBar from '@suite-components/Tabs';
-import Drawer from '@suite-components/Drawer';
-import HeaderLeft from '@suite-components/Header';
-
 type ScreenComponent = NavigationComponent<{}, {}> & {
     router?: any; // nested Navigator
 };
 type ScreenConfigMap = NavigationRouteConfigMap<{}, {}>;
 
-const useDrawer = (key: string, screen: ScreenComponent) => {
+const useDrawer = (key: string, customViews: NavigatorViews, screen: ScreenComponent) => {
+    const drawerKey = `_drawer_${key}`;
     const config: ScreenConfigMap = {};
-    config[`_drawer_${key}`] = {
-        // config[key] = {
+    config[drawerKey] = {
         screen,
     };
     return createDrawerNavigator(config, {
-        contentComponent: Drawer,
-        // statusBarAnimation: 'slide',
-        // hideStatusBar: true,
-        // navigationOptions: {
-        //     headerStyle: {
-        //         backgroundColor: '#f4511e',
-        //     },
-        // },
+        contentComponent: customViews.drawer,
     });
 };
 
-const useStack = (key: string, screen: ScreenComponent) => {
+const useStack = (key: string, customViews: NavigatorViews, screen: ScreenComponent) => {
     // add prefix only for nested Navigators
     const stackKey = screen.router ? `_stack_${key}` : key;
     const config: ScreenConfigMap = {};
     config[stackKey] = {
-        // config[key] = {
         screen,
         navigationOptions: {
-            headerLeft: HeaderLeft,
+            // headerLeft: HeaderLeft,
+            headerLeft: customViews.headerLeft,
         },
     };
     // return createNativeStackNavigator(config, {
     return createStackNavigator(config, {
-        initialRouteKey: `_stack_${key}`,
         navigationOptions: ({ navigation, screenProps }) => ({
             ...getActiveChildNavigationOptions(navigation, screenProps),
         }),
@@ -77,33 +66,69 @@ const withNavigationOptions = (Component: ScreenComponent) => {
         return undefined;
     };
 
-    // withNavigationFocus
+    // TODO: withNavigationFocus
     return Component;
-
-    // return (props: any) => {
-    //     // const [state, setState] = useState('unknown')
-    //     // useEffect(() => {
-    //     //     console.log("---NAV MOUNT", )
-
-    //     //     props.navigation.addListener('didBlur', (a) => {
-    //     //         console.log("---NAV didBlur", a)
-    //     //         setState('didBlur')
-    //     //     })
-
-    //     //     props.navigation.addListener('didFocus', (a) => {
-    //     //         console.log("---NAV didFocus", a)
-    //     //         setState('didFocus')
-    //     //     })
-    //     //     props.navigation.addListener('willFocus', (a) => {
-    //     //         console.log("---NAV willFocus", props.navigation.state)
-    //     //         setState('willFocus')
-    //     //     })
-    //     // }, []);
-    //     // console.log("---RENDER NAV OPT")
-    //     // return <Component {...props} focusState={state} />;
-    //     return <Component {...props} />;
-    // };
 };
+
+const useDrawerStack = (key: string, customViews: NavigatorViews, screen: ScreenComponent) => {
+    return useDrawer(key, customViews, useStack(key, customViews, screen));
+};
+
+const useTabs = (key: string, customViews: NavigatorViews, config: ScreenConfigMap) => {
+    return useDrawerStack(
+        key,
+        customViews,
+        createBottomTabNavigator(config, {
+            backBehavior: 'none', // 'history'
+            tabBarComponent: customViews.tabs,
+
+            // pass child Tab.navigationOptions received from by `withNavigationOptions` wrapper
+            navigationOptions: ({ navigation, screenProps }) => ({
+                headerMode: 'float',
+                headerStyle: {
+                    backgroundColor: '#f4511e',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+                ...getActiveChildNavigationOptions(navigation, screenProps),
+            }),
+        }),
+    );
+};
+
+type NavigatorViews = {
+    drawer?: React.ComponentType<any>;
+    headerLeft?: React.ComponentType<any>;
+    tabs?: React.ComponentType<any>;
+};
+
+type Screen =
+    | {
+          key: string;
+          type: 'default';
+          screen: ScreenComponent;
+      }
+    | {
+          key: string;
+          type: 'drawer';
+          screen: ScreenComponent;
+          navigators: NavigatorViews;
+      }
+    | {
+          key: string;
+          type: 'tabs';
+          tabs: Readonly<
+              {
+                  key: string;
+                  screen: ScreenComponent;
+              }[]
+          >;
+          navigators: NavigatorViews;
+      };
+
+export type Config = Readonly<Screen[]>;
 
 /*
 +-----------------------------------------------------------+
@@ -132,70 +157,25 @@ const withNavigationOptions = (Component: ScreenComponent) => {
 // 4. BottomTab Navigator displays TabMenu only
 // 5. withNavigationOptions passes "navigationOptions" to parent Navigators
 
-const useDrawerStack = (key: string, screen: ScreenComponent) => {
-    return useDrawer(key, useStack(key, screen));
-};
-
-const useTabs = (key: string, config: ScreenConfigMap) => {
-    return useDrawer(
-        key,
-        useStack(
-            key,
-            createBottomTabNavigator(config, {
-                backBehavior: 'none', // 'history'
-                tabBarComponent: TabsBar,
-
-                // pass child Tab.navigationOptions received from by `withNavigationOptions` wrapper
-                navigationOptions: ({ navigation, screenProps }) => {
-                    return {
-                        headerMode: 'float',
-                        headerStyle: {
-                            backgroundColor: '#f4511e',
-                        },
-                        headerTintColor: '#fff',
-                        headerTitleStyle: {
-                            fontWeight: 'bold',
-                        },
-                        ...getActiveChildNavigationOptions(navigation, screenProps),
-                    };
-                },
-            }),
-        ),
-    );
-};
-
-export type Config = (
-    | {
-          key: string;
-          type: 'default' | 'drawer';
-          screen: ScreenComponent;
-      }
-    | {
-          key: string;
-          type: 'tabs';
-          tabs: {
-              key: string;
-              screen: ScreenComponent;
-          }[];
-      }
-)[];
-
 export const create = (config: Config, initialRouteName: string): NavigationContainer => {
     const navigationConfig: ScreenConfigMap = {};
     config.forEach(app => {
         if (app.type === 'drawer') {
+            // Drawer > Stack
             navigationConfig[app.key] = {
-                screen: useDrawerStack(app.key, withNavigationOptions(app.screen)),
+                screen: useDrawerStack(app.key, app.navigators, withNavigationOptions(app.screen)),
             };
         } else if (app.type === 'tabs') {
+            // Drawer > Stack > Tabs
             const tabConfig: ScreenConfigMap = {};
             app.tabs.forEach(tab => {
                 tabConfig[tab.key] = withNavigationOptions(tab.screen);
             });
             navigationConfig[app.key] = {
-                screen: useTabs(app.key, tabConfig),
+                screen: useTabs(app.key, app.navigators, tabConfig),
             };
         } else {
+            // default without any navigator
             navigationConfig[app.key] = {
                 screen: app.screen,
             };

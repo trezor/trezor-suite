@@ -1,9 +1,15 @@
 import { Linking } from 'react-native';
-import { NavigationActions, StackActions } from 'react-navigation';
+import {
+    NavigationActions,
+    StackActions,
+    NavigationState,
+    NavigationAction,
+} from 'react-navigation';
 import { DrawerActions } from 'react-navigation-drawer';
 import { Route } from '@suite-constants/routes';
 import {
     getRoute,
+    findRoute,
     getAppWithParams,
     RouteParams,
     findRouteByName,
@@ -153,6 +159,7 @@ export const gotoUrl = (url: string) => {
     Linking.openURL(url);
 };
 
+// Called from @support/Router
 export const androidBack = () => () => {
     const navigator = getNavigator();
     const state = getNavigatorState();
@@ -160,6 +167,28 @@ export const androidBack = () => () => {
         navigator.dispatch(NavigationActions.back());
     }
     return true; // always return true to block android behavior
+};
+
+// Called from @support/Router
+export const onNavigationStateChange = (
+    _oldState: NavigationState,
+    newState: NavigationState,
+    action: NavigationAction & { routeName?: string },
+) => (dispatch: Dispatch): void => {
+    if (
+        action.routeName ||
+        action.type === NavigationActions.BACK ||
+        action.type === StackActions.RESET
+    ) {
+        const navigatorRoute = getActiveRoute(newState);
+        const { routeName } = navigatorRoute;
+        const suiteRoute = findRoute(routeName);
+        const params = navigatorRoute.params ? navigatorRoute.params.routeParams : undefined;
+        // params in browser version of @suite/routerReducer are parsed from window.location hash # (url: string)
+        // to keep it compatible convert params to string
+        // TODO: consider rewrite `onLocationChange` and `routerReducer` to accept params as object
+        dispatch(onLocationChange(suiteRoute ? getRoute(suiteRoute.name, params) : routeName));
+    }
 };
 
 export const back = () => (dispatch: Dispatch) => {
