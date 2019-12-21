@@ -1,7 +1,7 @@
 /**
  * File corresponding with @suite-components/Preloader
  * Differences:
- * - SafeAreaView wrapper (react-native)
+ * - SafeAreaView wrapper (react-navigation)
  * - No "OnlineStatus" component (@suite-support/OnlineStatus is using "window" object)
  */
 
@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-navigation';
 import { SUITE } from '@suite-actions/constants';
 import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
+import styles from '@suite-support/styles';
 
 const mapStateToProps = (state: AppState) => ({
     loading: state.suite.loading,
@@ -42,12 +43,7 @@ const Preloader = (props: Props) => {
     }
 
     return (
-        <SafeAreaView
-            style={{
-                flex: 2,
-                backgroundColor: 'white',
-            }}
-        >
+        <SafeAreaView style={styles.safeArea}>
             {!loaded && <H1>Loading</H1>}
             {loaded && props.children}
         </SafeAreaView>

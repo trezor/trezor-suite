@@ -1,3 +1,9 @@
+/**
+ * Component reflecting 'next/head' and working with 'react-navigation'
+ * It should be mounted in some top level wrapper (Layout)
+ * Sends requested params (title, drawerLockMode etc.) into current Navigator
+ */
+
 import { useEffect } from 'react';
 import { withNavigation, NavigationInjectedProps } from 'react-navigation';
 
@@ -16,7 +22,7 @@ const Head = (props: Props) => {
     const { setParams } = navigation;
     useEffect(() => {
         const isEnabled = !(enabled === false);
-        const isTabEnabled = true; // !disableTabs;
+        const isTabEnabled = true; // TODO: !disableTabs;
         setParams({
             navigationOptions: {
                 title,
@@ -25,7 +31,7 @@ const Head = (props: Props) => {
                 tabBarVisible: isEnabled && isTabEnabled,
             },
         });
-    }, [title, enabled, disableTabs]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [title, enabled, disableTabs, setParams]); // eslint-disable-line react-hooks/exhaustive-deps
     return null;
 };
 

@@ -1,7 +1,5 @@
 /**
  * Main file corresponding with @suite/reducers/store.ts
- * Differences:
- * - added 'react-navigation' reducer and middleware
  */
 
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';

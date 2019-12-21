@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
+import { DrawerContentComponentProps } from 'react-navigation-drawer';
 
 // TODO: remove
 const StyledButton = (props: any) => {
@@ -22,7 +23,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> &
+    DrawerContentComponentProps;
 
 const AccountsMenu = (props: Props) => {
     return (

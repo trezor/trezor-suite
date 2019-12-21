@@ -2,8 +2,8 @@
  * Combination of @suite-support/Router and @suite-web/pages || @suite-desktop/pages
  * Differences:
  * - Routes are declared in similar structure as next.js "pages" directories (@suite-web/pages)
- * - Unlike next.js views are not separated into chunks, so all files are imported here in one place and assigned to a proper Scene (route)
- * - missing / not used routes: "/bridge", "/version"
+ * - Unlike next.js views are not separated into chunks, so all files are imported in one place: `router.config`
+ * - not used routes: "/bridge", "/version"
  * - additional routes: "/device-select"
  */
 

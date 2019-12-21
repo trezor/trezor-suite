@@ -50,19 +50,19 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
  * Check if router is not locked
  * Called from `goto`, `onLocationChange` and `back`
  */
-const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState) => {
+const isRouterUnlocked = () => (_dispatch: Dispatch, _getState: GetState) => {
     // const { locks } = getState().suite;
     // return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
     return true;
 };
 
 /**
- * Handle changes of window.location and window.location.hash
- * Called from ./support/Router
+ * Handle changes of Navigation state
+ * Called from `@suite-support/Router`
  * @param {string} url
  */
 export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: GetState) => {
-    const unlocked = dispatch(onBeforePopState());
+    const unlocked = dispatch(isRouterUnlocked());
     if (!unlocked) return;
     const { router } = getState();
     if (router.pathname === url) return null;
@@ -73,7 +73,13 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
     });
 };
 
-// links inside of application
+/**
+ * Links inside of application
+ * Called from any view component
+ * @param {Route['name']} routeName
+ * @param {RouteParams|undefined} params
+ * @param {boolean} preserveParams
+ */
 export const goto = (routeName: Route['name'], params?: RouteParams, _preserveParams = false) => (
     dispatch: Dispatch,
 ) => {
@@ -87,7 +93,7 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
         console.warn('Navigator state not found');
         return;
     }
-    const unlocked = dispatch(onBeforePopState());
+    const unlocked = dispatch(isRouterUnlocked());
     if (!unlocked) return;
 
     const requestedRoute = findRouteByName(routeName);
@@ -100,7 +106,7 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
 
     if (isModal) {
         // Application modals (Onboarding, FW Update, Backup, Select Device...)
-        // display as a second child of root stack to be able get back to exact previous screen
+        // display as a second child on top of root stack
         navigator.dispatch(
             StackActions.push({
                 routeName: pathname,
@@ -110,8 +116,8 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
             }),
         );
     } else if (currentApp.app !== nextApp.app) {
-        // Application change (use case: "/wallet" > "/settings")
-        // check if requested url has topLevelRoute route and dispatch second action if so
+        // Application change ("/wallet" > "/settings")
+        // check if requested url has topLevelRoute route and dispatch second action
         const topLevelRoute = getTopLevelRoute(pathname);
         const action = topLevelRoute
             ? NavigationActions.navigate({
@@ -123,7 +129,7 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
               })
             : undefined;
 
-        // Navigation flow: reset root stack > navigate to requested route (base) > additionally navigate to nested route
+        // Navigation flow: reset root stack > navigate to requested route (topLevel) > additionally navigate to nested route
         navigator.dispatch(
             StackActions.reset({
                 index: 0,
@@ -137,7 +143,7 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
             }),
         );
     } else {
-        // TODO: Catch same url here
+        // TODO: Catch same url here "/" > "/"
         // Nested route change (use case: Account #1 > Account #2)
         if (isDrawerOpened(state)) {
             navigator.dispatch(DrawerActions.closeDrawer());
@@ -154,12 +160,19 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
     }
 };
 
-// external links
+/**
+ * External links
+ * Called from any view component
+ * @param {string} url
+ */
 export const gotoUrl = (url: string) => {
     Linking.openURL(url);
 };
 
-// Called from @support/Router
+/**
+ * Handle Android hardware back button
+ * Called from `@suite-support/Router`
+ */
 export const androidBack = () => () => {
     const navigator = getNavigator();
     const state = getNavigatorState();
@@ -169,7 +182,10 @@ export const androidBack = () => () => {
     return true; // always return true to block android behavior
 };
 
-// Called from @support/Router
+/**
+ * Handle changes of Navigation state
+ * Called from `@suite-support/Router`
+ */
 export const onNavigationStateChange = (
     _oldState: NavigationState,
     newState: NavigationState,
@@ -191,8 +207,12 @@ export const onNavigationStateChange = (
     }
 };
 
+/**
+ * Request previous screen in stack
+ * Should be called only from "modal routes" like "Backup" or "Firmware update"
+ */
 export const back = () => (dispatch: Dispatch) => {
-    const unlocked = dispatch(onBeforePopState());
+    const unlocked = dispatch(isRouterUnlocked());
     if (!unlocked) return;
 
     const navigator = getNavigator();
@@ -234,7 +254,7 @@ export const back = () => (dispatch: Dispatch) => {
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
     const { initialRun } = getState().suite;
-    const unlocked = dispatch(onBeforePopState());
+    const unlocked = dispatch(isRouterUnlocked());
     if (initialRun && unlocked) {
         await dispatch(onLocationChange(getRoute('onboarding-index')));
     }
