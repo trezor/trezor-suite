@@ -43,6 +43,10 @@ suite-desktop build windows:
 
 suite-desktop deploy:
     stage: deploy to dev servers
+    only:
+        refs:
+            - develop
+            - schedules
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     script:
