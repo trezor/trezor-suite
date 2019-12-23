@@ -1,3 +1,3 @@
-import Page from '@suite/views/settings/dashboard';
+import Page from '@settings-views/dashboard';
 
 export default Page;
