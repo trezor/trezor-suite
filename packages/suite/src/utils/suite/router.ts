@@ -102,3 +102,14 @@ export const isStatic = (url: string) => {
     const route = findRoute(url);
     return route ? !!route.isStatic : true; // 404 page act as a static
 };
+
+// Used in @suite-native routerActions
+export const getTopLevelRoute = (url: string) => {
+    if (typeof url !== 'string') return;
+    const clean = stripPrefixedPathname(url);
+    const split = clean.split('/');
+    split.splice(0, 1);
+    if (split.length > 1) {
+        return getPrefixedURL(`/${split[0]}`);
+    }
+};

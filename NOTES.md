@@ -30,3 +30,9 @@ rm -rf /Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB
 
 ## Tests
 - All suite tests use **UTC timezone** (set in [jest.config.js#L2](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/jest.config.js#L2))
+
+
+# React-native tsconfig regex:
+copy block from top level tsconfig.json
+find: "./packages/suite/src/(.*)"
+replace: "./src/$1", "../../packages/suite/src/$1"

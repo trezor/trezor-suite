@@ -93,6 +93,7 @@ describe('suite middleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isStatic: true,
+                        isModal: true,
                     },
                 }),
             );

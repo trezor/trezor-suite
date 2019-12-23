@@ -1,3 +1,3 @@
-import Settings from '@suite/views/settings/wallet/Container';
+import Settings from '@settings-views/wallet/Container';
 
 export default Settings;
