@@ -45,8 +45,8 @@ suite-desktop deploy:
     stage: deploy to dev servers
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
-    dependencies:
-        - suite-desktop build mac
+    # dependencies:
+    # - suite-desktop build mac
     environment:
         name: ${CI_BUILD_REF_NAME}
         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
