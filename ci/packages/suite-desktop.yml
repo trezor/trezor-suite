@@ -47,15 +47,15 @@ suite-desktop deploy:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     # dependencies:
     # - suite-desktop build mac
-    environment:
-        name: ${CI_BUILD_REF_NAME}
-        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    before_script: []
+    # environment:
+    #     name: ${CI_BUILD_REF_NAME}
+    #     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    # before_script: []
     script:
-        - cd ${PACKAGE_PATH_SUITE_DESKTOP}
-        - echo "Deploy to dev servers"
-        - mkdir -p ${DEPLOY_BASE_DIR}/suite-desktop
+        # - cd ${PACKAGE_PATH_SUITE_DESKTOP}
+        # - echo "Deploy to dev servers"
+        # - mkdir -p ${DEPLOY_BASE_DIR}/suite-desktop
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync --delete -va build-electron/ "${DEPLOY_DIRECTORY}/"
+        - rsync --delete -va TrezorSuite-*.zip "${DEPLOY_DIRECTORY}/"
     tags:
         - deploy
