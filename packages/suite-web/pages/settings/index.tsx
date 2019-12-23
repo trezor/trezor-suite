@@ -1,3 +1,3 @@
-import Page from '@suite/views/settings';
+import Page from '@settings-views';
 
 export default Page;

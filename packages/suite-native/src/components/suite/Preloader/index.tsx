@@ -1,35 +1,37 @@
+/**
+ * File corresponding with @suite-components/Preloader
+ * Differences:
+ * - SafeAreaView wrapper (react-navigation)
+ * - No "OnlineStatus" component (@suite-support/OnlineStatus is using "window" object)
+ */
+
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { View, SafeAreaView, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
 import { SUITE } from '@suite-actions/constants';
 import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
+import styles from '@suite-support/styles';
 
 const mapStateToProps = (state: AppState) => ({
+    loading: state.suite.loading,
     loaded: state.suite.loaded,
     error: state.suite.error,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & {
     dispatch: Dispatch;
-    isStatic: boolean;
     children: React.ReactNode;
 };
 
-const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: 'powderblue',
-    },
-});
-
 const Preloader = (props: Props) => {
-    const { loaded, error, dispatch, isStatic } = props;
+    const { loading, loaded, error, dispatch } = props;
     useEffect(() => {
-        if (!loaded && !isStatic) {
+        if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
         }
-    }, [dispatch, isStatic, loaded, props.children]);
+    }, [dispatch, loaded, loading, error]);
 
     if (error) {
         return (
@@ -38,10 +40,6 @@ const Preloader = (props: Props) => {
                 <P>Ups, something went wrong. Details: {error}</P>
             </View>
         );
-    }
-
-    if (isStatic) {
-        return <SafeAreaView style={styles.safeArea}>{props.children}</SafeAreaView>;
     }
 
     return (
