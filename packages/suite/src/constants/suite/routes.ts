@@ -73,6 +73,7 @@ const routes = [
         pattern: '/firmware',
         app: 'firmware',
         isStatic: true,
+        isModal: true,
     },
     {
         name: 'wallet-settings',

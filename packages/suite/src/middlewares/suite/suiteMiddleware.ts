@@ -20,6 +20,14 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
     if (action.type === ROUTER.LOCATION_CHANGE && getApp(action.url) !== prevApp) {
         api.dispatch({ type: SUITE.APP_CHANGED, payload: getApp(action.url) });
     }
+
+    if (action.type === SUITE.APP_CHANGED) {
+        if (api.getState().router.route && api.getState().router.route.isMobile) {
+            console.log('lock bujaaa');
+            api.dispatch(suiteActions.lockRouter(true));
+        }
+    }
+
     // pass action to reducers
     next(action);
 

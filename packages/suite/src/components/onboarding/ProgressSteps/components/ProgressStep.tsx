@@ -15,8 +15,8 @@ const ProgressStepWrapper = styled.div`
 
 const Circle = styled.div`
     border: 1.2px solid;
-    height: 12px;
-    width: 12px;
+    height: 44px;
+    width: 44px;
     border-radius: 50%;
     display: flex;
     justify-content: center;

@@ -5,7 +5,7 @@
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { getPrefixedURL, getRoute, RouteParams } from '@suite-utils/router';
+import { getPrefixedURL, getRoute, findRouteByName, RouteParams } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 interface LocationChange {
@@ -47,6 +47,7 @@ export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) 
  */
 export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: GetState) => {
     const unlocked = dispatch(onBeforePopState());
+    console.log('unlocked2', unlocked);
     if (!unlocked) return;
     const { router } = getState();
     if (router.pathname === url) return null;
@@ -65,9 +66,15 @@ export const goto = (
     preserveParams = false,
 ) => async (dispatch: Dispatch) => {
     const unlocked = dispatch(onBeforePopState());
-    if (!unlocked) return;
+    console.log('unlocked', unlocked);
 
+    if (!unlocked) return;
+    
     const url = getRoute(routeName, params);
+
+    if (findRouteByName(routeName).isModal) {
+        return dispatch(onLocationChange(url));
+    }
 
     if (preserveParams) {
         const { hash } = window.location;

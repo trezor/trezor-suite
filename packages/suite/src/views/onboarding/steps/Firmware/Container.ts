@@ -11,6 +11,7 @@ const mapStateToProps = (state: AppState) => ({
     deviceCall: state.onboarding.deviceCall,
     device: state.suite.device,
     firmwareUpdate: state.firmware,
+    // locks: state.suite.locks,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

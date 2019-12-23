@@ -10,7 +10,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
+import { MODAL, SUITE, DEVICE_SETTINGS, FIRMWARE } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { RECEIVE } from '@suite/actions/wallet/constants';
@@ -33,6 +33,7 @@ import AddAccount from './AddAccount';
 import QrScanner from './Qr';
 import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
+import FirmwareUpdate from '@suite-components/FirmwareUpdate';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -40,6 +41,7 @@ const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
     send: state.wallet.send,
     account: state.wallet.selectedAccount.account,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -185,12 +187,13 @@ const getQrModal = (props: Props) => {
 
 // modal container component
 const Modal = (props: Props) => {
-    const { modal } = props;
-
-    if (modal.context === MODAL.CONTEXT_NONE) return null;
+    const { modal, router } = props;
 
     let component = null;
     switch (modal.context) {
+        case MODAL.CONTEXT_NONE:
+            component = null;
+            break;
         case MODAL.CONTEXT_DEVICE:
             component = getDeviceContextModal(props);
             break;
@@ -202,6 +205,20 @@ const Modal = (props: Props) => {
             break;
         default:
             break;
+    }
+
+    if (!component && router.route && router.route.isModal) {
+        switch(router.app) {
+            case 'firmware':
+                component = <FirmwareUpdate />;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (!component) {
+        return null;
     }
 
     return (

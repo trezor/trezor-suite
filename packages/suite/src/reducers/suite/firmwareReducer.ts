@@ -1,15 +1,17 @@
 import produce from 'immer';
-import { SUITE, FIRMWARE } from '@suite-actions/constants';
-import { DEVICE, UI, Device } from 'trezor-connect';
-import { TrezorDevice, Action } from '@suite-types';
+import { FIRMWARE } from '@suite-actions/constants';
+import { UI } from 'trezor-connect';
+import { Action } from '@suite-types';
 
 const INITIAL = 'initial';
 const STARTED = 'started';
 const DOWNLOADING = 'downloading';
 const WAITING_FOR_CONFIRMATION = 'waiting-for-confirmation';
 const INSTALLING = 'installing';
+const PARTIALLY_DONE = 'partially-done';
 const DONE = 'done';
-const RESTARTING = 'restarting';
+const WAIT_FOR_REBOOT = 'wait-for-reboot';
+const UNPLUG = 'unplug';
 const ERROR = 'error';
 
 export type AnyStatus =
@@ -18,73 +20,35 @@ export type AnyStatus =
     | typeof DOWNLOADING
     | typeof WAITING_FOR_CONFIRMATION
     | typeof INSTALLING
-    | typeof RESTARTING
+    | typeof WAIT_FOR_REBOOT
+    | typeof UNPLUG
     | typeof ERROR
+    | typeof PARTIALLY_DONE
     | typeof DONE;
 
 export interface FirmwareUpdateState {
-    reducerEnabled: boolean;
     status: AnyStatus;
-    device?: Device;
     installingProgress?: number;
     error?: string;
+    userConfirmedSeed: boolean;
 }
 
 const initialState: FirmwareUpdateState = {
-    // reducerEnabled means that reducer is listening for actions.
-    reducerEnabled: false,
     status: INITIAL,
-    device: undefined,
     installingProgress: undefined,
     error: undefined,
-};
-
-const handleSelectDevice = (draft: FirmwareUpdateState, device?: TrezorDevice) => {
-    const prevDevice = draft.device;
-
-    // should not happen but who knows.
-    if (!device) {
-        return;
-    }
-
-    if (draft.status === 'restarting') {
-        // remain inactive until we have prev device disconnected in bootloader
-        if (!prevDevice || !prevDevice.features || prevDevice.mode !== 'bootloader') {
-            return;
-        }
-        // there is prev device in bootloader and current status is restarting, so lets
-        // assume that the reconnected device is the same device and show success screen
-        draft.status = 'done';
-    }
+    userConfirmedSeed: false,
 };
 
 const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
-    if (
-        !state.reducerEnabled &&
-        ![FIRMWARE.RESET_REDUCER, FIRMWARE.ENABLE_REDUCER].includes(action.type)
-    ) {
-        return state;
-    }
-
     return produce(state, draft => {
         switch (action.type) {
             case FIRMWARE.SET_UPDATE_STATUS:
                 draft.status = action.payload;
-                if (action.payload === 'started') {
-                    // reset
-                    draft.installingProgress = undefined;
-                }
                 break;
             case FIRMWARE.SET_ERROR:
                 draft.status = 'error';
                 draft.error = action.payload;
-                break;
-            case DEVICE.DISCONNECT:
-                draft.device = action.payload;
-                break;
-            case SUITE.SELECT_DEVICE:
-                // draft.device = action.payload;
-                handleSelectDevice(draft, action.payload);
                 break;
             case UI.REQUEST_BUTTON:
                 if (action.payload && action.payload.code === 'ButtonRequest_FirmwareUpdate') {
@@ -92,17 +56,16 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 }
                 break;
             case UI.FIRMWARE_PROGRESS:
-                // if (!Number.isNaN(action.payload.progress)) {
                 draft.installingProgress = action.payload.progress;
                 draft.status = 'installing';
-                // }
-                break;
-            case FIRMWARE.ENABLE_REDUCER:
-                draft.reducerEnabled = action.payload;
                 break;
             case FIRMWARE.RESET_REDUCER:
                 return initialState;
+            case FIRMWARE.CONFIRM_SEED:
+                draft.userConfirmedSeed = true;
+                break;
             default:
+            // no default
         }
     });
 };

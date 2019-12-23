@@ -33,6 +33,8 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openBackgroundGalleryModal,
+    firmwareInit,
+    goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
@@ -117,10 +119,14 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() => console.log('boo')}
-                                isDisabled={uiLocked}
+                                onClick={() => goto('suite-device-firmware')}
+                                isDisabled={
+                                    uiLocked || !['required', 'outdated'].includes(device.firmware)
+                                }
                             >
-                                Check for update
+                                {['required', 'outdated'].includes(device.firmware) &&
+                                    'Update available'}
+                                {device.firmware === 'valid' && 'Up to date'}
                             </ActionButton>
                         </ActionColumn>
                     </Row>

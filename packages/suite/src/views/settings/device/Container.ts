@@ -10,6 +10,7 @@ import {
 } from '@suite-actions/deviceSettingsActions';
 // todo: device management actions
 import * as backupActions from '@suite-actions/backupActions';
+import * as firmwareActions from '@suite-actions/firmwareActions';
 
 import { AppState, Dispatch } from '@suite-types';
 
@@ -27,6 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
     openBackgroundGalleryModal: bindActionCreators(openBackgroundGalleryModal, dispatch),
+    firmwareInit: bindActionCreators(firmwareActions.init, dispatch),
 });
 
 export type Props = WrappedComponentProps &
