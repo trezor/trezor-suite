@@ -1,6 +1,6 @@
 suite-native build android:
     image: reactnativecommunity/react-native-android
-    stage: build artifacts
+    stage: build
     script:
         - yarn cache clean
         - yarn build:libs

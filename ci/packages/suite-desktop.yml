@@ -1,5 +1,5 @@
 suite-desktop build mac:
-    stage: build artifacts
+    stage: build
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -13,7 +13,7 @@ suite-desktop build mac:
         - install and build
 
 suite-desktop build linux:
-    stage: build artifacts
+    stage: build
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -28,7 +28,7 @@ suite-desktop build linux:
 
 suite-desktop build windows:
     image: electronuserland/builder:wine
-    stage: build artifacts
+    stage: build
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -40,3 +40,22 @@ suite-desktop build windows:
             - TrezorSuite-*.exe
     dependencies:
         - install and build
+
+suite-desktop deploy:
+    stage: deploy to dev servers
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
+    dependencies:
+        - suite-desktop build mac
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    before_script: []
+    script:
+        - cd ${PACKAGE_PATH_SUITE_DESKTOP}
+        - echo "Deploy to dev servers"
+        - mkdir -p ${DEPLOY_BASE_DIR}/suite-desktop
+        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+        - rsync --delete -va build-electron/ "${DEPLOY_DIRECTORY}/"
+    tags:
+        - deploy
