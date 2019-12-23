@@ -32,6 +32,50 @@ storiesOf('Form', module).add(
     () => {
         return (
             <Wrapper>
+                <Heading>Switch</Heading>
+                <Col>
+                    <SubHeading>Off</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-off">
+                            <Switch onChange={() => {}} checked={false} />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                    <SubHeading>On</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-on">
+                            <Switch onChange={() => {}} checked />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                    <SubHeading>Off small</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-off-small">
+                            <Switch onChange={() => {}} checked={false} isSmall />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                    <SubHeading>On</SubHeading>
+                    <ComponentWrapper>
+                        <SwitchWrapper data-test="switch-on-small">
+                            <Switch onChange={() => {}} checked isSmall />
+                        </SwitchWrapper>
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Checkbox</Heading>
+                <Col>
+                    <SubHeading>Unchecked</SubHeading>
+                    <ComponentWrapper>
+                        <Checkbox onClick={() => {}} data-test="checkbox">
+                            Label
+                        </Checkbox>
+                    </ComponentWrapper>
+                    <SubHeading>Checked</SubHeading>
+                    <ComponentWrapper>
+                        <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
+                            Label
+                        </Checkbox>
+                    </ComponentWrapper>
+                </Col>
+
                 <Heading>Select</Heading>
                 <Col>
                     <ComponentWrapper>
@@ -90,50 +134,6 @@ storiesOf('Form', module).add(
                                 'data-test': 'select-disabled',
                             }}
                         />
-                    </ComponentWrapper>
-                </Col>
-                <Heading>Textarea short</Heading>
-                <Heading>Switch</Heading>
-                <Col>
-                    <SubHeading>Off</SubHeading>
-                    <ComponentWrapper>
-                        <SwitchWrapper data-test="switch-off">
-                            <Switch onChange={() => {}} checked={false} />
-                        </SwitchWrapper>
-                    </ComponentWrapper>
-                    <SubHeading>On</SubHeading>
-                    <ComponentWrapper>
-                        <SwitchWrapper data-test="switch-on">
-                            <Switch onChange={() => {}} checked />
-                        </SwitchWrapper>
-                    </ComponentWrapper>
-                    <SubHeading>Off small</SubHeading>
-                    <ComponentWrapper>
-                        <SwitchWrapper data-test="switch-off-small">
-                            <Switch onChange={() => {}} checked={false} isSmall />
-                        </SwitchWrapper>
-                    </ComponentWrapper>
-                    <SubHeading>On</SubHeading>
-                    <ComponentWrapper>
-                        <SwitchWrapper data-test="switch-on-small">
-                            <Switch onChange={() => {}} checked isSmall />
-                        </SwitchWrapper>
-                    </ComponentWrapper>
-                </Col>
-
-                <Heading>Checkbox</Heading>
-                <Col>
-                    <SubHeading>Unchecked</SubHeading>
-                    <ComponentWrapper>
-                        <Checkbox onClick={() => {}} data-test="checkbox">
-                            Label
-                        </Checkbox>
-                    </ComponentWrapper>
-                    <SubHeading>Checked</SubHeading>
-                    <ComponentWrapper>
-                        <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
-                            Label
-                        </Checkbox>
                     </ComponentWrapper>
                 </Col>
 
