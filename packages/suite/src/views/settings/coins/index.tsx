@@ -110,7 +110,6 @@ const CoinsGroup = ({
                     </Coin>
                     <ActionColumn>
                         <Switch
-                            isSmall
                             onChange={(visible: boolean) => {
                                 onToggleOneFn(n.symbol, visible);
                             }}
