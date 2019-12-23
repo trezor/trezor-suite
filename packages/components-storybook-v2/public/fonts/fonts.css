@@ -23,14 +23,6 @@
 }
 
 @font-face {
-    font-family: 'TTHoves Hairline';
-    src: url(TTHoves/TTHoves-HairlineItalic.woff2) format('woff2'),
-        url(TTHoves/TTHoves-HairlineItalic.woff) format('woff');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
     font-family: TTHoves;
     src: url(TTHoves/TTHoves-DemiBoldItalic.woff2) format('woff2'),
         url(TTHoves/TTHoves-DemiBoldItalic.woff) format('woff');
@@ -139,14 +131,6 @@
     src: url(TTHoves/TTHoves-Medium.woff2) format('woff2'),
         url(TTHoves/TTHoves-Medium.woff) format('woff');
     font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'TTHoves Hairline';
-    src: url(TTHoves/TTHoves-Hairline.woff2) format('woff2'),
-        url(TTHoves/TTHoves-Hairline.woff) format('woff');
-    font-weight: normal;
     font-style: normal;
 }
 
