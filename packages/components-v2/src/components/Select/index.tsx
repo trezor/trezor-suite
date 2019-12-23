@@ -92,7 +92,7 @@ const TopLabel = styled.span`
     padding-bottom: 10px;
 `;
 
-interface Props extends SelectProps {
+interface Props extends Omit<SelectProps, 'components'> {
     isSearchable?: boolean;
     withDropdownIndicator?: boolean;
     topLabel?: React.ReactNode;
