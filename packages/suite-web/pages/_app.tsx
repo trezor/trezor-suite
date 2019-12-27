@@ -51,7 +51,11 @@ class TrezorSuiteApp extends App<Props> {
 
     render() {
         const { Component, pageProps, store, router } = this.props;
-        const isStaticRoute = isStatic(router.pathname);
+        // const isModal = (store.getState().router && store.getState().router.route) ? store.getState.router.route.isModal : false;
+
+        const isModal = true;
+        console.log('router', router);
+        console.log('isModal0', isModal);
 
         return (
             <ErrorBoundary>
@@ -74,7 +78,7 @@ class TrezorSuiteApp extends App<Props> {
                                 <Translation {...messages.TR_CHECK_FOR_DEVICES} />
                             </Button>
                             <Router />
-                            <Preloader isStatic={isStaticRoute}>
+                            <Preloader isModal={isModal}>
                                 <Component {...pageProps} />
                             </Preloader>
                         </>

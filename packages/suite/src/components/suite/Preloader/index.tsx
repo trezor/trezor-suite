@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 });
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, dispatch, isStatic } = props;
+    const { loading, loaded, error, dispatch, isModal } = props;
     useEffect(() => {
         if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
@@ -45,12 +45,14 @@ const Preloader = (props: Props) => {
         );
     }
 
-    if (isStatic) {
+    console.log('isModal', isModal);
+    if (isModal) {
         return (
-            <StaticPageWrapper>
+            <>
                 <OnlineStatus />
+                <div>isModal preloader</div>
                 {props.children}
-            </StaticPageWrapper>
+            </>
         );
     }
 

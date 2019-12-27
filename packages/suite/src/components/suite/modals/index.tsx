@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
 import { UI } from 'trezor-connect';
-import { Modal as ModalComponent } from '@trezor/components';
+import { Modal as ModalComponent, Button } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -40,6 +40,7 @@ const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
     send: state.wallet.send,
     account: state.wallet.selectedAccount.account,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -50,6 +51,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+const ExampleAppModal = ({goto}) => (
+    <ModalComponent>
+        <div>exmaple app modal</div>
+        <Button onClick={() => goto('settings-devcie')}>Exit</Button>
+    </ModalComponent>
+);
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
@@ -185,12 +193,13 @@ const getQrModal = (props: Props) => {
 
 // modal container component
 const Modal = (props: Props) => {
-    const { modal } = props;
-
-    if (modal.context === MODAL.CONTEXT_NONE) return null;
+    const { modal, router } = props;
 
     let component = null;
     switch (modal.context) {
+        case MODAL.CONTEXT_NONE:
+            component = null;
+            break;
         case MODAL.CONTEXT_DEVICE:
             component = getDeviceContextModal(props);
             break;
@@ -202,6 +211,20 @@ const Modal = (props: Props) => {
             break;
         default:
             break;
+    }
+
+    if (!component && router.route && router.route.isModal) {
+        switch (router.app) {
+            case 'firmware':
+                component = <ExampleAppModal goto={props.goto} />;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (!component) {
+        return null;
     }
 
     return (
