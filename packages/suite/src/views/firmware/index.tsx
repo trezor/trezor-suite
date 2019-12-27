@@ -1,33 +1,94 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { Button, Checkbox, H1 } from '@trezor/components-v2';
 
-import { Button, H1 } from '@trezor/components-v2';
-import { InjectedModalApplicationProps } from '@suite-types';
+import * as firmwareActions from '@settings-actions/firmwareActions';
+import * as routerActions from '@suite-actions/routerActions';
+import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 
 const Wrapper = styled.div`
     width: 400px;
-    height: 400px;
+    height: 500px;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding: '100px';
+    padding: 60px;
 `;
 
-type Props = InjectedModalApplicationProps;
+const StyledButton = styled(Button)`
+    margin: 5px;
+`;
 
-const Firmware = ({ closeModalApp, modal }: Props) => (
+const Status = styled.div`
+    height: 80px;
+`;
+
+const mapStateToProps = (state: AppState) => ({
+    firmware: state.firmware,
+    device: state.suite.device,
+    // devices: state.devices,
+    // router: state.router,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
+    firmwareUpdate: bindActionCreators(firmwareActions.firmwareUpdate, dispatch),
+    resetReducer: bindActionCreators(firmwareActions.resetReducer, dispatch),
+    confirmSeed: bindActionCreators(firmwareActions.confirmSeed, dispatch),
+});
+
+type Props = ReturnType<typeof mapDispatchToProps> &
+    ReturnType<typeof mapStateToProps> &
+    InjectedModalApplicationProps;
+
+const Firmware = ({
+    closeModalApp,
+    firmwareUpdate,
+    resetReducer,
+    confirmSeed,
+    firmware,
+    device,
+}: Props) => (
     <Wrapper>
-        {modal && modal}
-        {!modal && (
-            <>
-                <H1>Example app modal</H1>
-                <Button onClick={closeModalApp} data-test="@modal/firmware/exit-button">
-                    Exit
-                </Button>
-            </>
-        )}
+        <>
+            <H1>Where is my design</H1>
+            <Status>
+                {firmware.error && firmware.error}
+                {!firmware.error && firmware.status}
+            </Status>
+
+            <Checkbox
+                isChecked={firmware.userConfirmedSeed}
+                onClick={() => confirmSeed(!firmware.userConfirmedSeed)}
+            >
+                I have seed and attend service at church regularly
+            </Checkbox>
+
+            <StyledButton
+                isDisabled={
+                    !firmware.userConfirmedSeed ||
+                    !device ||
+                    (device && device.features && device.mode !== 'bootloader')
+                }
+                onClick={() => firmwareUpdate()}
+                data-test="@modal/firmware/start-button"
+            >
+                Start
+            </StyledButton>
+            <StyledButton
+                onClick={() => {
+                    closeModalApp();
+                    resetReducer();
+                }}
+                data-test="@modal/firmware/exit-button"
+                variant="secondary"
+            >
+                Exit
+            </StyledButton>
+        </>
     </Wrapper>
 );
 
-export default connect(null)(Firmware);
+export default connect(mapStateToProps, mapDispatchToProps)(Firmware);

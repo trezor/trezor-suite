@@ -8,6 +8,7 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@suite/types/utils';
 import * as firmwareActions from '../firmwareActions';
 import { firmwareUpdate, reducerActions } from '../__fixtures__/firmwareActions';
+import { TrezorDevice } from '@suite-types';
 
 type Fixture = ArrayElement<typeof firmwareUpdate>;
 
@@ -16,6 +17,7 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 interface InitialState {
     suite?: Partial<SuiteState>;
     firmware?: Partial<FirmwareState>;
+    devices?: TrezorDevice[];
 }
 
 jest.mock('@trezor/rollout', () => {
@@ -79,6 +81,8 @@ jest.mock('trezor-connect', () => {
 export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
     const firmware = override ? override.firmware : undefined;
+    const devices = override ? override.devices : [];
+
     return {
         suite: {
             device: {
@@ -91,10 +95,8 @@ export const getInitialState = (override?: InitialState): any => {
             locks: [],
             ...suite,
         },
-        firmware: {
-            reducerEnabled: true,
-            ...firmware,
-        },
+        firmware,
+        devices,
     };
 };
 
@@ -136,10 +138,7 @@ describe('Firmware Actions', () => {
                         expect(result).toMatchObject(f.result.state);
                     }
                     if (f.result.actions) {
-                        f.result.actions.forEach((action, index) => {
-                            expect(store.getActions()[index].type).toEqual(action.type);
-                            expect(store.getActions()[index].payload).toEqual(action.payload);
-                        });
+                        expect(store.getActions()).toMatchObject(f.result.actions);
                     }
                 }
             });

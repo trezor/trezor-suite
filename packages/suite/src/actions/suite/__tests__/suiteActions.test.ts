@@ -64,6 +64,15 @@ jest.mock('trezor-connect', () => {
     };
 });
 
+jest.mock('next/router', () => {
+    return {
+        __esModule: true, // this property makes it work
+        default: {
+            back: () => {},
+        },
+    };
+});
+
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
 type RouterState = ReturnType<typeof routerReducer>;

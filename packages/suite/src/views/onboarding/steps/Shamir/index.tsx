@@ -6,7 +6,8 @@ import { TOS_URL } from '@suite-constants/urls';
 import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
-    const { device } = props;
+    const { device, onboarding } = props;
+    const { deviceCall } = onboarding;
 
     // this step expects device
     if (!device || !device.features) {
@@ -80,6 +81,7 @@ const ShamirStep = (props: Props) => {
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
                 )}
+                {deviceCall.error && <>Error: {deviceCall.error} </>}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>

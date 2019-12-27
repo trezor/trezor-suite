@@ -206,11 +206,17 @@ export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = 
  */
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
+    const { firmware } = getState();
     // todo:
     // We are waiting for device in bootloader mode (only in firmware update)
-    // if (selectedDevice && device.mode === 'bootloader' && 'waiting-for-bootloader-todo') {
-    //     dispatch(selectDevice(device));
-    // }
+    if (
+        selectedDevice &&
+        device.features &&
+        device.mode === 'bootloader' &&
+        firmware.status === 'waiting-for-bootloader'
+    ) {
+        dispatch(selectDevice(device));
+    }
     if (!selectedDevice) {
         dispatch(selectDevice(device));
     } else {
