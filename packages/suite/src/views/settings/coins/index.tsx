@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2, P, Switch, Link, variables, colors } from '@trezor/components-v2';
+import { H2, P, Switch, Link, Icon, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
@@ -77,6 +77,28 @@ const Coin = ({ network }: { network: Network | ExternalNetwork }) => (
     </CoinWrapper>
 );
 
+const AdvancedSettings = styled.div`
+    cursor: pointer;
+    font-size: ${variables.FONT_SIZE.TINY};
+    /* todo: not in variables but is in design */
+    font-weight: 500;
+    margin-right: 4%;
+    min-width: 120px;
+    visibility: hidden;
+`;
+
+const SettingsIcon = styled(Icon)`
+    position: relative;
+    top: 2px;
+    right: 4px;
+`;
+
+const CoinRow = styled(Row)`
+    &:hover ${AdvancedSettings} {
+        visibility: visible;
+    }
+`;
+
 type FilterFn = (n: Network) => boolean;
 interface CoinsGroupProps {
     label: React.ReactNode;
@@ -110,9 +132,13 @@ const CoinsGroup = ({
 
         <Section>
             {NETWORKS.filter(filterFn).map(n => (
-                <Row key={n.symbol}>
+                <CoinRow key={n.symbol}>
                     <Coin network={n} />
                     <ActionColumn>
+                        <AdvancedSettings>
+                            <SettingsIcon icon="SETTINGS" size={12} />
+                            Advanced settings
+                        </AdvancedSettings>
                         <Switch
                             onChange={(visible: boolean) => {
                                 onToggleOneFn(n.symbol, visible);
@@ -120,7 +146,7 @@ const CoinsGroup = ({
                             checked={enabledNetworks.includes(n.symbol)}
                         />
                     </ActionColumn>
-                </Row>
+                </CoinRow>
             ))}
         </Section>
     </CoinsGroupWrapper>
