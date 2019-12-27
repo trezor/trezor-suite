@@ -18,7 +18,7 @@ import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
 import steps from '@suite/config/onboarding/steps';
 
 import colors from '@suite/config/onboarding/colors';
-import { TOS_URL } from '@suite/constants/onboarding/urls';
+import { TOS_URL } from '@suite-constants/urls';
 
 import {
     PROGRESSBAR_HEIGHT,
