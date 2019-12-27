@@ -23,12 +23,5 @@ suite check outdated:
     dependencies:
         - install and build
 
-# just try if messagess extraction works, not sure if very useful now
-suite check messages:
-    stage: misc
-    allow_failure: true
-    script:
-        - yarn workspace @trezor/suite translations:extract
-    dependencies:
-        - install and build
-
+# TODO: add messages (values) duplicities check
+# TODO: add check if there are unused messages https://github.com/trezor/trezor-suite/issues/944
