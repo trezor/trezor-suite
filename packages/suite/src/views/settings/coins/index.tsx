@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2, P, Switch, variables, colors } from '@trezor/components-v2';
+import { H2, P, Switch, Link, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
 import { AppState, Dispatch } from '@suite-types';
-import networks from '@suite/config/wallet/networks';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network } from '@wallet-types';
 import { CoinLogo } from '@trezor/components';
 import * as settingsActions from '@wallet-actions/settingsActions';
@@ -94,14 +94,14 @@ const CoinsGroup = ({
                 {description && <P size="tiny">{description}</P>}
             </HeaderLeft>
             <ToggleAll onClick={() => onToggleAllFn(filterFn)}>
-                {networks.filter(filterFn).some(n => enabledNetworks.includes(n.symbol))
+                {NETWORKS.filter(filterFn).some(n => enabledNetworks.includes(n.symbol))
                     ? 'Deactivate all'
                     : 'Activate all'}
             </ToggleAll>
         </Header>
 
         <Section>
-            {networks.filter(filterFn).map(n => (
+            {NETWORKS.filter(filterFn).map(n => (
                 <Row key={n.symbol}>
                     <Coin>
                         <CoinLogo size={24} symbol={n.symbol} />
@@ -168,6 +168,29 @@ const Settings = (props: Props) => {
                     onToggleOneFn={props.changeCoinVisibility}
                     onToggleAllFn={props.toggleGroupCoinsVisibility}
                 />
+
+                <SectionHeader>
+                    <Translation>{messages.TR_3RD_PARTY_WALLETS}</Translation>
+                    <P size="tiny">
+                        <Translation>{messages.TR_3RD_PARTY_WALLETS_DESC}</Translation>
+                    </P>
+                </SectionHeader>
+                <Section>
+                    {EXTERNAL_NETWORKS.map(n => (
+                        <Row key={n.symbol}>
+                            <Coin>
+                                <CoinLogo size={24} symbol={n.symbol} />
+                                <CoinName> {n.name}</CoinName>
+                                <CoinSymbol> {n.symbol.toUpperCase()}</CoinSymbol>
+                            </Coin>
+                            <ActionColumn>
+                                <Link href={n.url}>
+                                    <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
+                                </Link>
+                            </ActionColumn>
+                        </Row>
+                    ))}
+                </Section>
             </div>
         </SuiteLayout>
     );
