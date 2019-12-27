@@ -102,14 +102,12 @@ const Settings = ({
                     {features.unfinished_backup && (
                         <BackupFailedRow>
                             <P size="tiny">
-                                Backup failed and your Wallet is not backed up. You can still use it
-                                without any problems but highly recommend you following the link and
-                                see how to successfully create a backup.
+                                <Translation>{messages.TR_BACKUP_FAILED}</Translation>
                             </P>
                             <ActionColumn>
                                 {/* todo: add proper link */}
                                 <BackupFailedLink href="https://fooo">
-                                    What to do now
+                                    <Translation>{messages.TR_WHAT_TO_DO_NOW}</Translation>
                                 </BackupFailedLink>
                             </ActionColumn>
                         </BackupFailedRow>
