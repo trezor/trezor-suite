@@ -13,6 +13,7 @@ import Notification from './Notification';
 import PinInput from './PinInput';
 import SettingsMenu from './SettingsMenu';
 import NoRatesTooltip from './NoRatesTooltip';
+import FirmwareUpdate from './FirmwareUpdate';
 
 export {
     AcquireDevice,
@@ -30,4 +31,5 @@ export {
     PinInput,
     SettingsMenu,
     NoRatesTooltip,
+    FirmwareUpdate,
 };
