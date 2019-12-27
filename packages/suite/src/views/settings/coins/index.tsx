@@ -8,7 +8,7 @@ import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
 import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
-import { Network } from '@wallet-types';
+import { Network, ExternalNetwork } from '@wallet-types';
 import { CoinLogo } from '@trezor/components';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
@@ -50,7 +50,7 @@ const ToggleAll = styled.div`
     text-align: right;
 `;
 
-const Coin = styled.div`
+const CoinWrapper = styled.div`
     display: flex;
     align-items: center;
 `;
@@ -68,6 +68,14 @@ const CoinSymbol = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-top: 2px;
 `;
+
+const Coin = ({ network }: { network: Network | ExternalNetwork }) => (
+    <CoinWrapper>
+        <CoinLogo size={24} symbol={network.symbol} />
+        <CoinName> {network.name}</CoinName>
+        <CoinSymbol> {network.symbol.toUpperCase()}</CoinSymbol>
+    </CoinWrapper>
+);
 
 type FilterFn = (n: Network) => boolean;
 interface CoinsGroupProps {
@@ -103,11 +111,7 @@ const CoinsGroup = ({
         <Section>
             {NETWORKS.filter(filterFn).map(n => (
                 <Row key={n.symbol}>
-                    <Coin>
-                        <CoinLogo size={24} symbol={n.symbol} />
-                        <CoinName> {n.name}</CoinName>
-                        <CoinSymbol> {n.symbol.toUpperCase()}</CoinSymbol>
-                    </Coin>
+                    <Coin network={n} />
                     <ActionColumn>
                         <Switch
                             onChange={(visible: boolean) => {
@@ -178,11 +182,7 @@ const Settings = (props: Props) => {
                 <Section>
                     {EXTERNAL_NETWORKS.map(n => (
                         <Row key={n.symbol}>
-                            <Coin>
-                                <CoinLogo size={24} symbol={n.symbol} />
-                                <CoinName> {n.name}</CoinName>
-                                <CoinSymbol> {n.symbol.toUpperCase()}</CoinSymbol>
-                            </Coin>
+                            <Coin network={n} />
                             <ActionColumn>
                                 <Link href={n.url}>
                                     <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
