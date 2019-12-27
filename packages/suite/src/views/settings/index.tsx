@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+import { LanguagePicker } from '@trezor/components';
 import { H2 } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -16,8 +17,9 @@ import {
     ActionButton,
 } from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
-import { FIAT } from '@suite-config';
+import { FIAT, LANGUAGES } from '@suite-config';
 import * as settingsActions from '@wallet-actions/settingsActions';
+import * as languageActions from '@suite-actions/languageActions.useNative';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -30,10 +32,12 @@ const mapStateToProps = (state: AppState) => ({
     // device: state.suite.device,
     locks: state.suite.locks,
     wallet: state.wallet,
+    language: state.suite.language,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(settingsActions.setLocalCurrency, dispatch),
+    fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -42,7 +46,7 @@ const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
+const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
@@ -79,9 +83,27 @@ const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
                             title={<Translation>{messages.TR_CONNECT_DROPBOX}</Translation>}
                         />
                         <ActionColumn>
-                            <ActionButton onClick={() => console.log('fooo')} isDisabled={uiLocked}>
+                            <ActionButton
+                                onClick={() => console.log('fooo')}
+                                isDisabled={uiLocked}
+                                variant="secondary"
+                            >
                                 <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
                             </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
+                <Section header={<Translation>{messages.TR_LANGUAGE}</Translation>}>
+                    <Row>
+                        <TextColumn title={<Translation>{messages.TR_LANGUAGE}</Translation>} />
+                        <ActionColumn>
+                            <LanguagePicker
+                                language={language}
+                                languages={LANGUAGES}
+                                // @ts-ignore types in components need some love
+                                onChange={(option: any) => fetchLocale(option.value)}
+                            />
                         </ActionColumn>
                     </Row>
                 </Section>
@@ -99,6 +121,7 @@ const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
                                 <ActionButton
                                     onClick={() => console.log('moo')}
                                     isDisabled={uiLocked}
+                                    variant="secondary"
                                 >
                                     <Translation>{messages.TR_CHECK_FOR_UPDATES}</Translation>
                                 </ActionButton>
