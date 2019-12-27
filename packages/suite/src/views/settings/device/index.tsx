@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import TrezorConnect from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import { H2, Switch } from '@trezor/components-v2';
+import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
@@ -22,6 +23,15 @@ import {
 
 const RotationButton = styled(ActionButton)`
     min-width: 78px;
+`;
+
+const BackupFailedRow = styled(Row)`
+    background-color: ${colors.BLACK96};
+`;
+
+const BackupFailedLink = styled(Link)`
+    min-width: 120px;
+    margin-left: 40px;
 `;
 
 const Settings = ({
@@ -74,31 +84,64 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 onClick={() => backupDevice({})}
-                                isDisabled={uiLocked || !features.needs_backup}
+                                isDisabled={
+                                    uiLocked || !features.needs_backup || features.unfinished_backup
+                                }
                             >
-                                <Translation>{messages.TR_CREATE_BACKUP}</Translation>
+                                {features.needs_backup && (
+                                    <Translation>{messages.TR_CREATE_BACKUP}</Translation>
+                                )}
+                                {!features.needs_backup &&
+                                    !features.unfinished_backup &&
+                                    'Backup successful'}
+                                {features.unfinished_backup && 'Backup failed'}
                             </ActionButton>
                         </ActionColumn>
                     </Row>
 
-                    <Row>
-                        <TextColumn
-                            title={<Translation>{messages.TR_CHECK_RECOVERY_SEED}</Translation>}
-                            description={<Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>}
-                            learnMore={DRY_RUN_URL}
-                        />
-                        <ActionColumn>
-                            <ActionButton
-                                onClick={() =>
-                                    console.log('todo: add recoveryDevice({dry_run: true})')
+                    {features.unfinished_backup && (
+                        <BackupFailedRow>
+                            <P size="tiny">
+                                Backup failed and your Wallet is not backed up. You can still use it
+                                without any problems but highly recommend you following the link and
+                                see how to successfully create a backup.
+                            </P>
+                            <ActionColumn>
+                                {/* todo: add proper link */}
+                                <BackupFailedLink href="https://fooo">
+                                    What to do now
+                                </BackupFailedLink>
+                            </ActionColumn>
+                        </BackupFailedRow>
+                    )}
+
+                    {!features.unfinished_backup && (
+                        <Row>
+                            <TextColumn
+                                title={<Translation>{messages.TR_CHECK_RECOVERY_SEED}</Translation>}
+                                description={
+                                    <Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>
                                 }
-                                isDisabled={uiLocked || features.needs_backup}
-                                variant="secondary"
-                            >
-                                <Translation>{messages.TR_CHECK_SEED}</Translation>
-                            </ActionButton>
-                        </ActionColumn>
-                    </Row>
+                                learnMore={DRY_RUN_URL}
+                            />
+                            <ActionColumn>
+                                <ActionButton
+                                    onClick={
+                                        () => TrezorConnect.recoveryDevice({ dry_run: true })
+                                        // console.log('t/odo: add recoveryDevice({dry_run: true})')
+                                    }
+                                    isDisabled={
+                                        uiLocked ||
+                                        features.needs_backup ||
+                                        features.unfinished_backup
+                                    }
+                                    variant="secondary"
+                                >
+                                    <Translation>{messages.TR_CHECK_SEED}</Translation>
+                                </ActionButton>
+                            </ActionColumn>
+                        </Row>
+                    )}
                 </Section>
 
                 <Section header="Security">
