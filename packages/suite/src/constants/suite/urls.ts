@@ -22,3 +22,9 @@ export const RECOVERY_MODEL_ONE_URL =
 export const NEXT_WALLET_URL = 'https://beta-wallet.trezor.io/next/#/';
 export const PASSWORD_MANAGER_URL = 'https://trezor.io/passwords/';
 export const TROUBLESHOOTER_URL = 'https://trezor.io/support/#technical-technical-issues';
+export const SATOSHILABS_URL = 'http://satoshilabs.com';
+export const COIN_GECKO_URL = 'https://www.coingecko.com';
+export const TRANSLATIONS_MANUAL_URL =
+    'https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation';
+export const RIPPLE_MANUAL_URL = 'https://wiki.trezor.io/Ripple_(XRP)';
+export const BRIDGE_CHANGELOG_URL = 'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
