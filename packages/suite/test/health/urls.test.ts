@@ -18,7 +18,7 @@ const getUrls = (urls: string[]) => {
 
 describe('Test that all external links are alive', () => {
     beforeEach(() => {
-        jest.setTimeout(20000);
+        jest.setTimeout(30000);
     });
     getUrls(Object.values(URLS)).forEach((url: string) => {
         it(`HTTP GET request to ${url} should respond with range >= 200 && < 400`, async () => {
