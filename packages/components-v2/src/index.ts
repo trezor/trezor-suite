@@ -4,6 +4,7 @@ import * as variables from './config/variables';
 import { Button } from './components/buttons/Button';
 import { Input } from './components/inputs/Input';
 import { Textarea } from './components/Textarea';
+import { Select } from './components/Select';
 import { Checkbox } from './components/Checkbox';
 import { Switch } from './components/Switch';
 import { Icon } from './components/Icon';
@@ -22,6 +23,7 @@ export {
     Button,
     Input,
     Textarea,
+    Select,
     Checkbox,
     Switch,
     Icon,
