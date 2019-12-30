@@ -2269,6 +2269,15 @@ const definedMessages = defineMessages({
         id: 'TR_CHECK_FOR_UPDATES',
         defaultMessage: 'Check for updates',
     },
+    TR_3RD_PARTY_WALLETS: {
+        id: 'TR_3RD_PARTY_WALLETS',
+        defaultMessage: '3rd party wallets',
+    },
+    TR_3RD_PARTY_WALLETS_DESC: {
+        id: 'TR_3RD_PARTY_WALLETS_DESC',
+        defaultMessage:
+            'These coins are supported by Trezor but only in 3rd party wallets. These coins cannot be managed by Trezor Suite or Wallet.',
+    },
 });
 
 export default definedMessages;

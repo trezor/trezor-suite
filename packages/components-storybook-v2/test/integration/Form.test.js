@@ -4,6 +4,9 @@ describe('Form', () => {
     });
 
     [
+        'select',
+        'select-selected',
+        'select-disabled',
         'switch-off',
         'switch-on',
         'switch-off-small',

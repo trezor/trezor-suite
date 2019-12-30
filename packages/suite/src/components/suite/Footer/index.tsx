@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import * as logActions from '@suite-actions/logActions';
 import messages from '@suite/support/messages';
 import { AppState, Dispatch } from '@suite-types';
+import { URLS } from '@suite-constants';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 const FOOTER_HEIGHT = '59px';
@@ -94,7 +95,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <Translation
             {...messages.TR_EXCHANGE_RATES_BY}
             values={{
-                service: <Link href="https://www.coingecko.com">Coingecko</Link>,
+                service: <Link href={URLS.COIN_GECKO_URL}>Coingecko</Link>,
             }}
         />
     );
@@ -102,8 +103,8 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
         <Wrapper isLanding={isLanding}>
             <Content>
                 <Left>
-                    <StyledLink href="http://satoshilabs.com">SatoshiLabs</StyledLink>
-                    <StyledLink href="https://trezor.io/tos">
+                    <StyledLink href={URLS.SATOSHILABS_URL}>SatoshiLabs</StyledLink>
+                    <StyledLink href={URLS.TOS_URL}>
                         <Translation>{messages.TR_TERMS}</Translation>
                     </StyledLink>
                     <StyledLink onClick={toggle}>{opened ? 'Hide Log' : 'Show Log'}</StyledLink>
@@ -116,7 +117,7 @@ const Footer = ({ opened, toggle, isLanding = false }: Props) => {
                                 {...messages.TR_WE_THANK_OUR_TRANSLATORS}
                                 values={{
                                     TR_CONTRIBUTION: (
-                                        <Link href="https://wiki.trezor.io/CrowdIn.com_-_A_tool_for_translation">
+                                        <Link href={URLS.TRANSLATIONS_MANUAL_URL}>
                                             <Translation {...messages.TR_CONTRIBUTION} />
                                         </Link>
                                     ),

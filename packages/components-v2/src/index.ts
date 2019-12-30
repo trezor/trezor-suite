@@ -4,6 +4,7 @@ import * as variables from './config/variables';
 import { Button } from './components/buttons/Button';
 import { Input } from './components/inputs/Input';
 import { Textarea } from './components/Textarea';
+import { Select } from './components/Select';
 import { Checkbox } from './components/Checkbox';
 import { Switch } from './components/Switch';
 import { Icon } from './components/Icon';
@@ -14,6 +15,7 @@ import { Notification } from './components/Notification';
 import { Modal } from './components/Modal';
 import { CoinLogo } from './components/CoinLogo';
 import { TrezorLogo } from './components/TrezorLogo';
+import { Loader } from './components/Loader';
 import * as types from './support/types';
 
 export {
@@ -22,6 +24,7 @@ export {
     Button,
     Input,
     Textarea,
+    Select,
     Checkbox,
     Switch,
     Icon,
@@ -33,5 +36,6 @@ export {
     Modal,
     CoinLogo,
     TrezorLogo,
+    Loader,
     types,
 };
