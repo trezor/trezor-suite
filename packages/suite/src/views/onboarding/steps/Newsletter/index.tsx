@@ -1,5 +1,5 @@
 import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
-import { BLOG_URL, SOCIAL_FACEBOOK_URL, SOCIAL_TWITTER_URL } from '@onboarding-constants/urls';
+import { BLOG_URL, SOCIAL_FACEBOOK_URL, SOCIAL_TWITTER_URL } from '@suite-constants/urls';
 import { Checkbox as CheckboxType } from '@onboarding-types/newsletter';
 import { Translation } from '@suite-components/Translation';
 import { addToFlags, HAS_EMAIL_FLAG } from '@suite-utils/flags';

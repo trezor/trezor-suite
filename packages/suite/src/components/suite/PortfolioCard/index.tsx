@@ -85,11 +85,11 @@ const PortfolioCard = ({
                     </ValueWrapper>
                 </Left>
                 <Right>
-                    <ActionButton variant="primary" onClick={buyClickHandler}>
-                        Buy
-                    </ActionButton>
                     <ActionButton variant="secondary" onClick={receiveClickHandler}>
                         Receive
+                    </ActionButton>
+                    <ActionButton variant="primary" onClick={buyClickHandler}>
+                        Buy
                     </ActionButton>
                 </Right>
             </Header>

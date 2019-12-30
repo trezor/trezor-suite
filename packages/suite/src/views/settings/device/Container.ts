@@ -8,6 +8,8 @@ import {
     wipeDevice,
     openBackgroundGalleryModal,
 } from '@suite-actions/deviceSettingsActions';
+// todo: device management actions
+import * as backupActions from '@suite-actions/backupActions';
 
 import { AppState, Dispatch } from '@suite-types';
 
@@ -22,6 +24,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     applySettings: bindActionCreators(applySettings, dispatch),
     changePin: bindActionCreators(changePin, dispatch),
     wipeDevice: bindActionCreators(wipeDevice, dispatch),
+    backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
     openBackgroundGalleryModal: bindActionCreators(openBackgroundGalleryModal, dispatch),
 });

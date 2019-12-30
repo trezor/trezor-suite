@@ -3,9 +3,11 @@ import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import colors from '../../config/colors';
 import styled, { css } from 'styled-components';
 
-const StyledReactSwitch = styled(ReactSwitch)<Props>`
+const StyledReactSwitch = styled(({ isSmall, ...rest }) => <ReactSwitch {...rest} />)<
+    Pick<Props, 'isSmall'>
+>`
     .react-switch-handle {
-        top: ${props => (props.isSmall ? 3 : 4)}px !important;
+        top: ${props => (props.isSmall ? 2 : 3)}px !important;
         border: solid 1px ${colors.WHITE} !important;
         background-image: linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE}) !important;
 
@@ -13,16 +15,16 @@ const StyledReactSwitch = styled(ReactSwitch)<Props>`
             props.checked &&
             css`
                 transform: ${props.isSmall
-                    ? 'translateX(21px) !important'
-                    : 'translateX(30px) !important'};
+                    ? 'translateX(16px) !important'
+                    : 'translateX(21px) !important'};
             `}
 
         ${props =>
             !props.checked &&
             css`
                 transform: ${props.isSmall
-                    ? 'translateX(3px) !important'
-                    : 'translateX(4px) !important'};
+                    ? 'translateX(2px) !important'
+                    : 'translateX(3px) !important'};
             `}
     }
 `;
@@ -55,9 +57,9 @@ const Switch = ({ onChange, disabled, isSmall, ...rest }: Props) => {
             offColor={colors.BLACK70}
             color={colors.GREEN}
             isSmall={isSmall}
-            width={isSmall ? 42 : 58}
-            height={isSmall ? 24 : 32}
-            handleDiameter={isSmall ? 16 : 22}
+            width={isSmall ? 32 : 42}
+            height={isSmall ? 18 : 24}
+            handleDiameter={isSmall ? 14 : 18}
             boxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.5)"
             activeBoxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.8)"
             {...rest}
