@@ -189,7 +189,7 @@ const InstallBridge = (props: Props) => {
                             {...messages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
                             values={{
                                 TR_CHANGELOG: (
-                                    <Link href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md">
+                                    <Link href={URLS.BRIDGE_CHANGELOG_URL}>
                                         <Translation {...messages.TR_CHANGELOG} />
                                     </Link>
                                 ),

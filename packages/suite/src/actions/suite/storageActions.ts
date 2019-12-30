@@ -162,7 +162,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
     const isDBAvailable = await SuiteDB.isDBAvailable();
 
     if (!isDBAvailable) {
-        console.warn('IndexedDB not supported');
+        // console.warn('IndexedDB not supported');
         const initialState = getState();
         dispatch({
             type: STORAGE.LOADED,

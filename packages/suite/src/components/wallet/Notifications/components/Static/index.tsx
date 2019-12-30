@@ -6,6 +6,7 @@ import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { getRoute } from '@suite-utils/router';
 import { AppState } from '@suite-types';
+import { URLS } from '@suite-constants';
 
 interface Props {
     router: AppState['router'];
@@ -47,8 +48,7 @@ export default (props: Props) => {
                                 values={{
                                     minBalance: bigReserve.toString(),
                                     TR_LEARN_MORE: (
-                                        // todo: add link to config urls
-                                        <Link href="https://wiki.trezor.io/Ripple_(XRP)">
+                                        <Link href={URLS.RIPPLE_MANUAL_URL}>
                                             <Translation
                                                 {...messages.TR_LEARN_MORE_LINK}
                                             />

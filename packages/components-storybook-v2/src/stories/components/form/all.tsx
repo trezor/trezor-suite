@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea, Checkbox, Switch } from '@trezor/components-v2';
+import { Input, Textarea, Select, Checkbox, Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -12,6 +12,7 @@ const Col = styled.div`
 `;
 
 const ComponentWrapper = styled.div`
+    display: flex;
     margin-bottom: 1rem;
     width: 100%;
 `;
@@ -72,6 +73,67 @@ storiesOf('Form', module).add(
                         <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
                             Label
                         </Checkbox>
+                    </ComponentWrapper>
+                </Col>
+
+                <Heading>Select</Heading>
+                <Col>
+                    <ComponentWrapper>
+                        <Select
+                            options={[
+                                {
+                                    label: 'Option one',
+                                    value: 'value-one',
+                                },
+                                {
+                                    label: 'Option two',
+                                    value: 'value-two',
+                                },
+                                {
+                                    label: 'Option tree',
+                                    value: 'value-tree',
+                                },
+                            ]}
+                            topLabel="Not selected"
+                            wrapperProps={{
+                                'data-test': 'select',
+                            }}
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Select
+                            options={[
+                                {
+                                    label: 'Option one',
+                                    value: 'value-one',
+                                },
+                                {
+                                    label: 'Option two',
+                                    value: 'value-two',
+                                },
+                                {
+                                    label: 'Option tree',
+                                    value: 'value-tree',
+                                },
+                            ]}
+                            value={{
+                                label: 'Option one',
+                                value: 'value-one',
+                            }}
+                            topLabel="Selected"
+                            wrapperProps={{
+                                'data-test': 'select-selected',
+                            }}
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Select
+                            isDisabled
+                            topLabel="Disabled"
+                            wrapperProps={{
+                                'data-test': 'select-disabled',
+                            }}
+                        />
                     </ComponentWrapper>
                 </Col>
 

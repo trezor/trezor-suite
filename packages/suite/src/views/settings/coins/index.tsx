@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2, P, Switch, variables, colors } from '@trezor/components-v2';
+import { H2, P, Switch, Link, Icon, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout, SettingsMenu } from '@suite-components';
 import { AppState, Dispatch } from '@suite-types';
-import networks from '@suite/config/wallet/networks';
-import { Network } from '@wallet-types';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
+import { Network, ExternalNetwork } from '@wallet-types';
 import { CoinLogo } from '@trezor/components';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
@@ -50,7 +50,7 @@ const ToggleAll = styled.div`
     text-align: right;
 `;
 
-const Coin = styled.div`
+const CoinWrapper = styled.div`
     display: flex;
     align-items: center;
 `;
@@ -67,6 +67,37 @@ const CoinSymbol = styled.div`
     color: ${colors.BLACK50};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-top: 2px;
+`;
+
+const Coin = ({ network }: { network: Network | ExternalNetwork }) => (
+    <CoinWrapper>
+        <CoinLogo size={24} symbol={network.symbol} />
+        <CoinName> {network.name}</CoinName>
+        <CoinSymbol> {network.symbol.toUpperCase()}</CoinSymbol>
+    </CoinWrapper>
+);
+
+const AdvancedSettings = styled.div`
+    cursor: pointer;
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK25};
+    /* todo: not in variables but is in design */
+    font-weight: 500;
+    margin-right: 4%;
+    min-width: 120px;
+    visibility: hidden;
+`;
+
+const SettingsIcon = styled(Icon)`
+    position: relative;
+    top: 2px;
+    right: 4px;
+`;
+
+const CoinRow = styled(Row)`
+    &:hover ${AdvancedSettings} {
+        visibility: visible;
+    }
 `;
 
 type FilterFn = (n: Network) => boolean;
@@ -94,30 +125,29 @@ const CoinsGroup = ({
                 {description && <P size="tiny">{description}</P>}
             </HeaderLeft>
             <ToggleAll onClick={() => onToggleAllFn(filterFn)}>
-                {networks.filter(filterFn).some(n => enabledNetworks.includes(n.symbol))
+                {NETWORKS.filter(filterFn).some(n => enabledNetworks.includes(n.symbol))
                     ? 'Deactivate all'
                     : 'Activate all'}
             </ToggleAll>
         </Header>
 
         <Section>
-            {networks.filter(filterFn).map(n => (
-                <Row key={n.symbol}>
-                    <Coin>
-                        <CoinLogo size={24} symbol={n.symbol} />
-                        <CoinName> {n.name}</CoinName>
-                        <CoinSymbol> {n.symbol.toUpperCase()}</CoinSymbol>
-                    </Coin>
+            {NETWORKS.filter(filterFn).map(n => (
+                <CoinRow key={n.symbol}>
+                    <Coin network={n} />
                     <ActionColumn>
+                        <AdvancedSettings>
+                            <SettingsIcon icon="SETTINGS" size={12} />
+                            Advanced settings
+                        </AdvancedSettings>
                         <Switch
-                            isSmall
                             onChange={(visible: boolean) => {
                                 onToggleOneFn(n.symbol, visible);
                             }}
                             checked={enabledNetworks.includes(n.symbol)}
                         />
                     </ActionColumn>
-                </Row>
+                </CoinRow>
             ))}
         </Section>
     </CoinsGroupWrapper>
@@ -169,6 +199,25 @@ const Settings = (props: Props) => {
                     onToggleOneFn={props.changeCoinVisibility}
                     onToggleAllFn={props.toggleGroupCoinsVisibility}
                 />
+
+                <SectionHeader>
+                    <Translation>{messages.TR_3RD_PARTY_WALLETS}</Translation>
+                    <P size="tiny">
+                        <Translation>{messages.TR_3RD_PARTY_WALLETS_DESC}</Translation>
+                    </P>
+                </SectionHeader>
+                <Section>
+                    {EXTERNAL_NETWORKS.map(n => (
+                        <Row key={n.symbol}>
+                            <Coin network={n} />
+                            <ActionColumn>
+                                <Link href={n.url}>
+                                    <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
+                                </Link>
+                            </ActionColumn>
+                        </Row>
+                    ))}
+                </Section>
             </div>
         </SuiteLayout>
     );

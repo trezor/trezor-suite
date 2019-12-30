@@ -1,3 +1,3 @@
-import Firmware from '@suite/views/suite/firmware';
+import Firmware from '@suite-views/firmware';
 
 export default Firmware;

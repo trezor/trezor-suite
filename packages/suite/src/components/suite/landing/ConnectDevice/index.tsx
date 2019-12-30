@@ -7,6 +7,7 @@ import { Link, P, H1 } from '@trezor/components-v2';
 import WebusbButton from '@suite-components/WebusbButton';
 import { SuiteLayout } from '@suite-components';
 import messages from '@suite/support/messages';
+import { URLS } from '@suite-constants';
 
 interface Props {
     deviceLabel: string;
@@ -139,7 +140,7 @@ const ConnectDevice = (props: Props) => (
                                 {...messages.TR_DONT_HAVE_A_TREZOR}
                                 values={{
                                     getOne: (
-                                        <StyledLink href="https://trezor.io/">
+                                        <StyledLink href={URLS.TREZOR_URL}>
                                             <Translation {...messages.TR_GET_ONE} />
                                         </StyledLink>
                                     ),

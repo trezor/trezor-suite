@@ -1,3 +1,3 @@
-import Page from '@suite/views/settings/coins';
+import Page from '@settings-views/coins';
 
 export default Page;

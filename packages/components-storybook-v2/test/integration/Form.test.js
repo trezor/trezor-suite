@@ -4,6 +4,9 @@ describe('Form', () => {
     });
 
     [
+        'select',
+        'select-selected',
+        'select-disabled',
         'switch-off',
         'switch-on',
         'switch-off-small',
@@ -57,7 +60,7 @@ describe('Form', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Form&selectedStory=All&full=0');
-            if (testName.match(/error|warning|success/) && !testName.match(/textarea/)) {
+            if (testName.match(/error|warning|success|checked/) && !testName.match(/textarea/)) {
                 cy.getTestElement(testName)
                     .find('svg')
                     .each(el => {

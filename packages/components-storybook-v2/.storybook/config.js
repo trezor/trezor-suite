@@ -7,7 +7,7 @@ addParameters({
     options: {
         theme: Theme,
         showPanel: true,
-        panelPosition: 'bottom',
+        panelPosition: 'right',
     },
 });
 addDecorator(withInfo);
@@ -21,6 +21,7 @@ function loadStories() {
     require('../src/stories/components/form/checkbox');
     require('../src/stories/components/form/switch');
     require('../src/stories/components/form/textarea');
+    require('../src/stories/components/form/select');
     require('../src/stories/components/icons/all');
     require('../src/stories/components/icons/icon');
     require('../src/stories/components/logos/all');
@@ -32,6 +33,8 @@ function loadStories() {
     require('../src/stories/components/typography/link');
     require('../src/stories/components/notifications/all');
     require('../src/stories/components/notifications/notification');
+    require('../src/stories/components/loaders/all');
+    require('../src/stories/components/loaders/loader');
 }
 
 configure(loadStories, module);

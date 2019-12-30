@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from '@trezor/components-v2';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
-import { URLS } from '@onboarding-constants';
+import { TOS_URL } from '@suite-constants/urls';
 import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
@@ -27,7 +27,7 @@ const ShamirStep = (props: Props) => {
                 {getModel() === 1 && (
                     <Text>
                         You are one step from creating your wallet. By clicking the button below you
-                        agree with <Link href={URLS.TOS_URL}>TOS</Link>
+                        agree with <Link href={TOS_URL}>TOS</Link>
                     </Text>
                 )}
                 {getModel() === 2 && (
