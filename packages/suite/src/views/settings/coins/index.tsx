@@ -80,6 +80,7 @@ const Coin = ({ network }: { network: Network | ExternalNetwork }) => (
 const AdvancedSettings = styled.div`
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK25};
     /* todo: not in variables but is in design */
     font-weight: 500;
     margin-right: 4%;
