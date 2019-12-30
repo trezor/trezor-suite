@@ -71,7 +71,7 @@ const Dashboard = (props: Props) => {
                     />
                 </Divider>
                 <Divider>
-                    <SecurityFeatures />
+                    <SecurityFeatures device={props.device} discreetMode={props.hideBalance}/>
                 </Divider>
                 <Divider>
                     <PlaceholderCard>placeholder</PlaceholderCard>{' '}
