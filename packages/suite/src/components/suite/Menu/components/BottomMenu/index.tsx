@@ -34,6 +34,8 @@ const SubMenuText = styled.div`
 
 interface Props {
     goto: ContainerProps['goto'];
+    hideBalance: boolean;
+    setHideBalance: (s: boolean) => void;
 }
 
 const BottomMenu = (props: Props) => (
@@ -60,9 +62,9 @@ const BottomMenu = (props: Props) => (
                 <SubMenuText>Discreet</SubMenuText>
                 <Switch
                     isSmall
-                    checked={false}
-                    onChange={() => {
-                        console.log('change me');
+                    checked={props.hideBalance}
+                    onChange={checked => {
+                        props.setHideBalance(checked);
                     }}
                 />
             </MenuItemWrapper>
