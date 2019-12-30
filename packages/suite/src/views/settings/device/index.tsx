@@ -9,8 +9,7 @@ import { SuiteLayout, SettingsMenu } from '@suite-components';
 import { getFwVersion } from '@suite-utils/device';
 
 import { Props } from './Container';
-import { SEED_MANUAL_URL } from '@onboarding-constants/urls';
-import { DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
+import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
 
 import {
     Section,

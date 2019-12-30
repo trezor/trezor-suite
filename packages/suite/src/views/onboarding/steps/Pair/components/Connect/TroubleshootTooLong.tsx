@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { P, Link } from '@trezor/components-v2';
 import TrezorConnect from 'trezor-connect';
 
-import { SUPPORT_URL, TROUBLESHOOTER_URL } from '@onboarding-constants/urls';
+import { SUPPORT_URL, TROUBLESHOOTER_URL } from '@suite-constants/urls';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import messages from '@suite/support/messages';
 
