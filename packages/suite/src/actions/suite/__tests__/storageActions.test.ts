@@ -47,6 +47,13 @@ const dev2 = getSuiteDevice({
     path: '2',
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
+const dev2Instance1 = getSuiteDevice({
+    state: 'state3',
+    path: '2',
+    instance: 1,
+    remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
+});
+
 const acc1 = getWalletAccount({
     deviceState: dev1.state,
     symbol: 'btc',
@@ -247,7 +254,7 @@ describe('Storage actions', () => {
     it('should store remembered device', async () => {
         const store = mockStore(
             getInitialState({
-                devices: [dev1, dev2],
+                devices: [dev1, dev2, dev2Instance1],
                 wallet: {
                     accounts: [acc1, acc2],
                 },
@@ -277,7 +284,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.loadStorage());
 
         // stored devices
-        expect(getLastAction(store).payload.devices.length).toEqual(2);
+        expect(getLastAction(store).payload.devices.length).toEqual(3);
         expect(getLastAction(store).payload.devices[0]).toEqual(dev1);
         // stored txs
         const acc1Txs = getAccountTransactions(
@@ -304,11 +311,11 @@ describe('Storage actions', () => {
         // stored 1 account
         expect(getLastAction(store).payload.wallet.accounts[1]).toEqual(acc2);
 
-        // FORGET DEVICE
+        // forget dev1
         await store.dispatch(storageActions.forgetDeviceInstance(dev1));
         await store.dispatch(storageActions.loadStorage());
-        // device deleted
-        expect(getLastAction(store).payload.devices.length).toEqual(1);
+        // device deleted, dev2 and dev2Instance1 should still be there
+        expect(getLastAction(store).payload.devices.length).toEqual(2);
         expect(getLastAction(store).payload.devices[0]).toEqual(dev2);
         // txs deleted
         const deletedAcc1Txs = getAccountTransactions(
@@ -322,8 +329,10 @@ describe('Storage actions', () => {
         // acc1 deleted
         expect(getLastAction(store).payload.wallet.accounts.length).toEqual(1);
         expect(getLastAction(store).payload.wallet.accounts[0].deviceState).toEqual(dev2.state);
-        await store.dispatch(storageActions.forgetDeviceInstance(dev1));
-        await store.dispatch(storageActions.forgetDeviceInstance(dev2));
+        // forget whole device dev1 along with its instances
+        await store.dispatch(storageActions.forgetDevice(dev2));
+        await store.dispatch(storageActions.loadStorage());
+        expect(getLastAction(store).payload.devices.length).toEqual(0);
     });
 
     it('should remove all txs for the acc', async () => {
