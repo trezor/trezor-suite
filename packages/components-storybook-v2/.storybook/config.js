@@ -7,7 +7,7 @@ addParameters({
     options: {
         theme: Theme,
         showPanel: true,
-        panelPosition: 'bottom',
+        panelPosition: 'right',
     },
 });
 addDecorator(withInfo);
@@ -32,6 +32,8 @@ function loadStories() {
     require('../src/stories/components/typography/link');
     require('../src/stories/components/notifications/all');
     require('../src/stories/components/notifications/notification');
+    require('../src/stories/components/loaders/all');
+    require('../src/stories/components/loaders/loader');
 }
 
 configure(loadStories, module);
