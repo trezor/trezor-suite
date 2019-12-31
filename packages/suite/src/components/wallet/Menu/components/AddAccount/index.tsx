@@ -35,7 +35,7 @@ const AddAccountButton = ({ onClick, tooltipContent, disabled }: Props) => {
     const ButtonRow = (
         <Wrapper onClick={onClick}>
             {/* <RowAddAccountWrapper disabled={disabled}> */}
-                <Icon icon="PLUS" size={16} color={disabled ? colors.BLACK50 : colors.BLACK17} />
+            <Icon icon="PLUS" size={16} color={disabled ? colors.BLACK50 : colors.BLACK17} />
             {/* <Translation {...messages.TR_ADD_ACCOUNT} /> */}
             {/* </RowAddAccountWrapper> */}
         </Wrapper>
