@@ -139,7 +139,7 @@ const Settings = ({
                         <ActionColumn>
                             <Switch
                                 checked={features.pin_protection}
-                                onChange={() => changePin({ remove: !features.pin_protection })}
+                                onChange={() => changePin({ remove: features.pin_protection })}
                                 // isDisabled={uiLocked}
                             />
                         </ActionColumn>
