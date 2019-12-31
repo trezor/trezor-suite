@@ -1,24 +1,23 @@
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types';
+import { Dispatch, AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 import AccountItem from './index';
 
 const mapStateToProps = (state: AppState) => ({
     localCurrency: state.wallet.settings.localCurrency,
+    hideBalance: state.wallet.settings.hideBalance,
     fiat: state.wallet.fiat,
 });
 
-// const mapDispatchToProps = (dispatch: Dispatch) => ({
-// });
+const mapDispatchToProps = (_dispatch: Dispatch) => ({});
 
 interface OwnProps {
     account: Account;
-    hideBalance: boolean;
     selected: boolean;
 }
 
-export type StateProps = ReturnType<typeof mapStateToProps>;
-// export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export type Props = StateProps & OwnProps;
+export type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> &
+    OwnProps;
 
-export default connect(mapStateToProps, null)(AccountItem);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountItem);

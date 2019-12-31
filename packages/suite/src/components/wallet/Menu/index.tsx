@@ -53,7 +53,6 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     accounts: state.wallet.accounts,
     selectedAccount: state.wallet.selectedAccount,
-    hideBalance: state.wallet.settings.hideBalance,
     discovery: state.wallet.discovery,
     router: state.router,
 });
@@ -84,7 +83,6 @@ const Menu = ({
     device,
     accounts,
     selectedAccount,
-    hideBalance,
     getDiscoveryForDevice,
     requestNewAccount,
 }: Props) => {
@@ -133,7 +131,6 @@ const Menu = ({
             {normalAccounts.map(account => (
                 <AccountItem
                     account={account}
-                    hideBalance={hideBalance}
                     selected={isSelected(account)}
                     key={`${account.descriptor}-${account.symbol}`}
                 />
@@ -149,7 +146,6 @@ const Menu = ({
                 legacyAccounts.map(account => (
                     <AccountItem
                         account={account}
-                        hideBalance={hideBalance}
                         selected={isSelected(account)}
                         key={`${account.descriptor}-${account.symbol}`}
                     />

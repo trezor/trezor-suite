@@ -15,8 +15,7 @@ import Badge from '@suite/components/suite/Badge';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    margin: 0px 10px 5px 10px;
-    padding: 10px;
+    margin: 0px 10px 0px 10px;
     display: flex;
     border-radius: 10px;
     flex-direction: column;
@@ -51,7 +50,6 @@ const Right = styled.div`
 const Label = styled.span`
     display: flex;
     white-space: nowrap;
-    color: ${colors.TEXT_SECONDARY};
     font-size: 16px;
     letter-spacing: -0.2px;
     color: #808080;
@@ -76,8 +74,19 @@ const CryptoValue = styled.div`
     white-space: nowrap;
 `;
 
-const AccountHeader = styled.div`
+const AccountHeader = styled.div<{ selected: boolean }>`
     display: flex;
+    padding: 10px;
+    border-radius: 10px;
+
+    ${props =>
+        !props.selected &&
+        css`
+            &:hover {
+                /* TODO: add from components */
+                background: #f5f5f5;
+            }
+        `}
 `;
 
 // todo make no style link component
@@ -86,13 +95,14 @@ const StyledLink = styled(Link)`
     flex-direction: column;
     color: ${colors.TEXT_PRIMARY};
 
+    /* TODO: remove and use nostyle Link */
     &:focus,
     &:hover,
     &:visited,
     &:link,
     &:active {
-        color: ${colors.TEXT_PRIMARY};
-        text-decoration: none;
+        color: ${colors.TEXT_PRIMARY} !important;
+        text-decoration: none !important;
     }
 `;
 
@@ -107,7 +117,7 @@ const AccountItem = React.memo((props: Props) => {
 
     return (
         <Wrapper selected={selected}>
-            <AccountHeader>
+            <AccountHeader selected={selected}>
                 <Left>
                     <LogoWrapper>
                         <CoinLogo size={16} symbol={account.symbol} />

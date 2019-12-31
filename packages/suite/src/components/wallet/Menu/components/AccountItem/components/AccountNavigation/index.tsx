@@ -1,13 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
-import { Icon } from '@trezor/components-v2';
+import { Icon, colors, variables } from '@trezor/components-v2';
 import { ITEMS } from '@wallet-config/menu';
-import * as routerActions from '@suite-actions/routerActions';
 import { findRoute } from '@suite-utils/router';
-import { AppState, Dispatch } from '@suite-types';
+import { Props } from './Container';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
@@ -17,19 +13,20 @@ const Wrapper = styled.div`
     padding: 10px 0 0 0;
     cursor: pointer;
     flex-direction: column;
+    padding: 0px 10px 10px 10px;
 `;
 
 const StyledNavLink = styled.div<{ active: boolean }>`
-    font-weight: ${FONT_WEIGHT.NORMAL};
-    font-size: ${FONT_SIZE.BASE};
-    color: ${colors.TEXT_SECONDARY};
+    font-size: ${FONT_SIZE.SMALL};
+    color: ${props => (props.active ? colors.BLACK17 : colors.BLACK50)};
+    font-weight: ${props => (props.active ? 500 : FONT_WEIGHT.REGULAR)};
     display: flex;
     align-items: center;
     margin-bottom: 12px;
 
-    &.active,
+    &:active,
     &:hover {
-        color: ${colors.TEXT_PRIMARY};
+        color: ${colors.BLACK17};
     }
 
     &:first-child,
@@ -48,16 +45,6 @@ const Text = styled.div`
     padding-left: 8px;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    router: state.router,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = {} & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
 const AccountNavigation = (props: Props) => {
     const { pathname, params, app } = props.router;
     const currentRoute = findRoute(pathname);
@@ -74,7 +61,7 @@ const AccountNavigation = (props: Props) => {
                             onClick={() => props.goto(item.route, undefined, true)}
                         >
                             <IconWrapper>
-                            <Icon size={12} icon={item.icon} />
+                                <Icon size={12} icon={item.icon} />
                             </IconWrapper>
                             <Text>{item.title}</Text>
                         </StyledNavLink>
@@ -86,4 +73,4 @@ const AccountNavigation = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountNavigation);
+export default AccountNavigation;
