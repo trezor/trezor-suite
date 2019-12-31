@@ -33,7 +33,7 @@ const Wrapper = styled.div<Pick<State, 'isHidden'>>`
     border-bottom: 1px solid ${colors.DIVIDER};
 `;
 
-const discreetModeIconWrapper = styled.div`
+const DiscreetModeIconWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,7 +111,7 @@ const AccountBalance = (props: Props) => {
         setIsHidden(props.isHidden);
     }, [props.isHidden]);
 
-    const handlediscreetModeIconClick = () => {
+    const handleDiscreetModeIconClick = () => {
         setCanAnimatediscreetModeIcon(true);
         setIsHidden(!isHidden);
     };
@@ -129,7 +129,7 @@ const AccountBalance = (props: Props) => {
 
     return (
         <Wrapper isHidden={isHidden}>
-            <discreetModeIconWrapper onClick={() => handlediscreetModeIconClick()}>
+            <DiscreetModeIconWrapper onClick={() => handleDiscreetModeIconClick()}>
                 <Icon
                     canAnimate={canAnimatediscreetModeIcon}
                     isActive={isHidden}
@@ -137,7 +137,7 @@ const AccountBalance = (props: Props) => {
                     color={colors.TEXT_SECONDARY}
                     size={14}
                 />
-            </discreetModeIconWrapper>
+            </DiscreetModeIconWrapper>
             {!isHidden && (
                 <>
                     <BalanceWrapper>

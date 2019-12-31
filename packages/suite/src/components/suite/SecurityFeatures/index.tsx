@@ -93,7 +93,7 @@ const SecurityFeatures = ({
                         cta={{
                             label: 'Set PIN',
                             action: () => {
-                                changePin();
+                                changePin({});
                             },
                         }}
                     />
