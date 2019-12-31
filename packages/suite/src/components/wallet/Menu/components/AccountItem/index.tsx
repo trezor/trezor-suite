@@ -50,9 +50,10 @@ const Right = styled.div`
 
 const Label = styled.span`
     display: flex;
-    font-size: ${variables.FONT_SIZE.COUNTER};
+    white-space: nowrap;
     color: ${colors.TEXT_SECONDARY};
     font-size: 16px;
+    letter-spacing: -0.2px;
     color: #808080;
 `;
 
