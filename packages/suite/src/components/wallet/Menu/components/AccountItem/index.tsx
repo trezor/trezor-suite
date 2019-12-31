@@ -45,10 +45,12 @@ const Right = styled.div`
     font-size: ${variables.FONT_SIZE.BIG};
     color: ${colors.TEXT_PRIMARY};
     padding-left: 8px;
+    min-width: 0; /* this makes text-overflow on label work */
 `;
 
 const Label = styled.span`
-    display: flex;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 16px;
     letter-spacing: -0.2px;
@@ -91,8 +93,6 @@ const AccountHeader = styled.div<{ selected: boolean }>`
 
 // todo make no style link component
 const StyledLink = styled(Link)`
-    display: flex;
-    flex-direction: column;
     color: ${colors.TEXT_PRIMARY};
 
     /* TODO: remove and use nostyle Link */
@@ -115,36 +115,40 @@ const AccountItem = React.memo((props: Props) => {
     const accountType = getTypeForNetwork(account.accountType);
     const fiatBalance = getAccountBalance(account, props.localCurrency, props.fiat);
 
+    const accountName = (
+        <>
+            <Translation {...getTitleForNetwork(account.symbol)} />
+            {accountType && (
+                <LabelAddon>
+                    <Translation {...accountType} />
+                </LabelAddon>
+            )}{' '}
+            <Translation
+                {...(account.imported
+                    ? messages.TR_IMPORTED_ACCOUNT_HASH
+                    : messages.TR_ACCOUNT_HASH)}
+                values={{ number: String(account.index + 1) }}
+            />
+        </>
+    );
+
     return (
         <Wrapper selected={selected}>
-            <AccountHeader selected={selected}>
-                <Left>
-                    <LogoWrapper>
-                        <CoinLogo size={16} symbol={account.symbol} />
-                    </LogoWrapper>
-                </Left>
-                <Right>
-                    <StyledLink
-                        href={getRoute('wallet-account-summary', {
-                            symbol: account.symbol,
-                            accountIndex: account.index,
-                            accountType: account.accountType,
-                        })}
-                    >
-                        <Label>
-                            <Translation {...getTitleForNetwork(account.symbol)} />
-                            {accountType && (
-                                <LabelAddon>
-                                    <Translation {...accountType} />
-                                </LabelAddon>
-                            )}{' '}
-                            <Translation
-                                {...(account.imported
-                                    ? messages.TR_IMPORTED_ACCOUNT_HASH
-                                    : messages.TR_ACCOUNT_HASH)}
-                                values={{ number: String(account.index + 1) }}
-                            />
-                        </Label>
+            <StyledLink
+                href={getRoute('wallet-account-summary', {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                })}
+            >
+                <AccountHeader selected={selected}>
+                    <Left>
+                        <LogoWrapper>
+                            <CoinLogo size={16} symbol={account.symbol} />
+                        </LogoWrapper>
+                    </Left>
+                    <Right>
+                        <Label>{accountName}</Label>
                         <Balance>
                             <CryptoValue>
                                 {account.formattedBalance} {account.symbol.toUpperCase()}
@@ -158,9 +162,9 @@ const AccountItem = React.memo((props: Props) => {
                                 </StyledBadge>
                             )}
                         </Balance>
-                    </StyledLink>
-                </Right>
-            </AccountHeader>
+                    </Right>
+                </AccountHeader>
+            </StyledLink>
             {selected && <AccountNavigation />}
         </Wrapper>
     );

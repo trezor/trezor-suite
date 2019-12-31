@@ -10,7 +10,6 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    padding: 10px 0 0 0;
     cursor: pointer;
     flex-direction: column;
     padding: 0px 10px 10px 10px;
