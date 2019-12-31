@@ -2,7 +2,7 @@ import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components/Translation';
 import { BACKUP_DEVICE } from '@suite/actions/onboarding/constants/calls';
 import colors from '@suite/config/onboarding/colors';
-import { SEED_MANUAL_URL } from '@suite/constants/onboarding/urls';
+import { SEED_MANUAL_URL } from '@suite-constants/urls';
 import messages from '@suite/support/messages';
 import { Checkbox, Prompt } from '@trezor/components';
 import { Link, P } from '@trezor/components-v2';

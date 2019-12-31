@@ -1,3 +1,7 @@
+/**
+ * Main file corresponding with @suite/reducers/store.ts
+ */
+
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';

@@ -1,6 +1,6 @@
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import * as STEP from '@onboarding-constants/steps';
-import { SUPPORT_URL } from '@onboarding-constants/urls';
+import { SUPPORT_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components/Translation';
 import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';

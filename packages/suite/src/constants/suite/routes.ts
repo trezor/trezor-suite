@@ -7,6 +7,7 @@ const routes = [
         name: 'wallet-index',
         pattern: '/wallet',
         app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'passwords-index',
@@ -40,6 +41,7 @@ const routes = [
         pattern: '/onboarding',
         app: 'onboarding',
         isStatic: true,
+        isModal: true,
     },
     // todo: app will be just settings probably
     {
@@ -67,16 +69,19 @@ const routes = [
         pattern: '/settings/coins',
         app: 'deviceManagement',
     },
+    // todo: remove this route and move functionality to settings
     {
         name: 'suite-device-firmware',
         pattern: '/firmware',
         app: 'firmware',
         isStatic: true,
+        isModal: true,
     },
     {
-        name: 'suite-device-backup',
-        pattern: '/backup',
+        name: 'suite-switch-device',
+        pattern: '/switch-device',
         app: 'deviceManagement',
+        isModal: true,
     },
     {
         name: 'wallet-settings',
@@ -122,6 +127,7 @@ const routes = [
 
 export type Route = {
     isStatic?: boolean;
+    isModal?: boolean;
     params?: typeof walletParams;
 } & ArrayElement<typeof routes>;
 
