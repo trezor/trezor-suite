@@ -37,16 +37,16 @@ const TooltipIcon = styled(Icon)`
 
 interface Props {
     token: Required<AccountInfo>['tokens'][number]; // extract TokenInfo interface
-    hideBalance: boolean;
+    discreetMode: boolean;
 }
 
-const TokenItem = ({ token, hideBalance }: Props) => {
+const TokenItem = ({ token, discreetMode }: Props) => {
     return (
         <TokenWrapper>
             <TokenIcon address={token.address} symbol={token.symbol} />
             <TokenName>{token.name}</TokenName>
             <TokenBalance>
-                {hideBalance ? (
+                {discreetMode ? (
                     <Tooltip
                         maxWidth={200}
                         placement="top"

@@ -10,7 +10,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setHideBalance: bindActionCreators(settingsActions.setHideBalance, dispatch),
+    setDiscreetMode: bindActionCreators(settingsActions.setDiscreetMode, dispatch),
     changeCoinVisibility: bindActionCreators(settingsActions.changeCoinVisibility, dispatch),
 });
 

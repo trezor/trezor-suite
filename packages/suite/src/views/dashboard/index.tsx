@@ -8,7 +8,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import Card from '@suite-components/Card';
 import PortfolioCard from '@suite-components/PortfolioCard';
-import SecurityFeatures from '@suite-components/SecurityFeatures';
+import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
 const Wrapper = styled.div`
@@ -71,7 +71,7 @@ const Dashboard = (props: Props) => {
                     />
                 </Divider>
                 <Divider>
-                    <SecurityFeatures device={props.device} discreetMode={props.hideBalance} />
+                    <SecurityFeatures />
                 </Divider>
                 <Divider>
                     <PlaceholderCard>placeholder</PlaceholderCard>{' '}

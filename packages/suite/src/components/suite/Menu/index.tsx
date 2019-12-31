@@ -21,8 +21,8 @@ const Menu = (props: Props) => {
             <MainMenu app={props.router.app} goto={props.goto} />
             <BottomMenu
                 goto={props.goto}
-                hideBalance={props.hideBalance}
-                setHideBalance={props.setHideBalance}
+                discreetMode={props.discreetMode}
+                setDiscreetMode={props.setDiscreetMode}
             />
         </Wrapper>
     );

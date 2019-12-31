@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors } from '@trezor/components-v2';
 import SecurityCard from './components/SecurityCard';
-import { TrezorDevice } from '@suite/types/suite';
+import { Props } from './Container';
+import { AcquiredDevice } from '@suite/types/suite';
 
 const Section = styled.div`
     display: flex;
@@ -28,12 +29,15 @@ const SectionTitle = styled.div`
     color: ${colors.BLACK50};
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    device: TrezorDevice | undefined;
-    discreetMode: boolean;
-}
-
-const SecurityFeatures = ({ device, discreetMode, ...rest }: Props) => {
+const SecurityFeatures = ({
+    device,
+    discreetMode,
+    setDiscreetMode,
+    onCreateDeviceInstance,
+    backupDevice,
+    changePin,
+    ...rest
+}: Props) => {
     if (!device) return null;
     const needsBackup = device.features && device.features.needs_backup;
     const pinEnabled = device.features && device.features.pin_protection;
@@ -56,7 +60,12 @@ const SecurityFeatures = ({ device, discreetMode, ...rest }: Props) => {
                         icon="SIGN"
                         heading="Backup your device"
                         description="Blabla bla why is backup important"
-                        cta={{ label: 'Backup now' }}
+                        cta={{
+                            label: 'Backup now',
+                            action: () => {
+                                backupDevice({});
+                            },
+                        }}
                     />
                 ) : (
                     <SecurityCard
@@ -81,7 +90,12 @@ const SecurityFeatures = ({ device, discreetMode, ...rest }: Props) => {
                         icon="WALLET"
                         heading="Pin Code"
                         description="Set strong PIN number against unauthorized access"
-                        cta={{ label: 'Set PIN', action: () => {} }}
+                        cta={{
+                            label: 'Set PIN',
+                            action: () => {
+                                changePin();
+                            },
+                        }}
                     />
                 )}
 
@@ -98,7 +112,12 @@ const SecurityFeatures = ({ device, discreetMode, ...rest }: Props) => {
                         icon="WALLET"
                         heading="Hidden Wallet"
                         description="Create a Wallet hidden behind a strong passphrase"
-                        cta={{ label: 'Create hidden wallet', action: () => {} }}
+                        cta={{
+                            label: 'Create hidden wallet',
+                            action: () => {
+                                onCreateDeviceInstance(device as AcquiredDevice);
+                            },
+                        }}
                     />
                 )}
 
@@ -106,16 +125,26 @@ const SecurityFeatures = ({ device, discreetMode, ...rest }: Props) => {
                     <SecurityCard
                         variant="primary"
                         icon="CHECK"
-                        heading="Discrete mode enabled!"
-                        cta={{ label: 'Done', action: () => {} }}
+                        heading="Discreet mode enabled!"
+                        cta={{
+                            label: 'Done',
+                            action: () => {
+                                setDiscreetMode(false);
+                            },
+                        }}
                     />
                 ) : (
                     <SecurityCard
                         variant="secondary"
                         icon="WALLET"
-                        heading="Discrete mode"
+                        heading="Discreet mode"
                         description="Try to temporarily hide away all balance-related numbers"
-                        cta={{ label: 'Try discrete mode', action: () => {} }}
+                        cta={{
+                            label: 'Try Discreet mode',
+                            action: () => {
+                                setDiscreetMode(true);
+                            },
+                        }}
                     />
                 )}
             </Content>

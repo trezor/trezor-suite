@@ -22,7 +22,7 @@ interface Props {
 
 interface State {
     isHidden: boolean;
-    canAnimateHideBalanceIcon: boolean;
+    canAnimatediscreetModeIcon: boolean;
 }
 
 const Wrapper = styled.div<Pick<State, 'isHidden'>>`
@@ -33,7 +33,7 @@ const Wrapper = styled.div<Pick<State, 'isHidden'>>`
     border-bottom: 1px solid ${colors.DIVIDER};
 `;
 
-const HideBalanceIconWrapper = styled.div`
+const discreetModeIconWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -105,14 +105,14 @@ const TooltipWrapper = styled.div`
 
 const AccountBalance = (props: Props) => {
     const [isHidden, setIsHidden] = useState(props.isHidden);
-    const [canAnimateHideBalanceIcon, setCanAnimateHideBalanceIcon] = useState(isHidden);
+    const [canAnimatediscreetModeIcon, setCanAnimatediscreetModeIcon] = useState(isHidden);
 
     useEffect(() => {
         setIsHidden(props.isHidden);
     }, [props.isHidden]);
 
-    const handleHideBalanceIconClick = () => {
-        setCanAnimateHideBalanceIcon(true);
+    const handlediscreetModeIconClick = () => {
+        setCanAnimatediscreetModeIcon(true);
         setIsHidden(!isHidden);
     };
 
@@ -129,15 +129,15 @@ const AccountBalance = (props: Props) => {
 
     return (
         <Wrapper isHidden={isHidden}>
-            <HideBalanceIconWrapper onClick={() => handleHideBalanceIconClick()}>
+            <discreetModeIconWrapper onClick={() => handlediscreetModeIconClick()}>
                 <Icon
-                    canAnimate={canAnimateHideBalanceIcon}
+                    canAnimate={canAnimatediscreetModeIcon}
                     isActive={isHidden}
                     icon="ARROW_UP"
                     color={colors.TEXT_SECONDARY}
                     size={14}
                 />
-            </HideBalanceIconWrapper>
+            </discreetModeIconWrapper>
             {!isHidden && (
                 <>
                     <BalanceWrapper>

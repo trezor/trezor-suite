@@ -91,7 +91,7 @@ const StyledLink = styled(Link)`
 
 interface Props {
     account: Account;
-    hideBalance: boolean;
+    discreetMode: boolean;
     selected: boolean;
 }
 

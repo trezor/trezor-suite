@@ -9,12 +9,12 @@ import Menu from './index';
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
     selectedDevice: state.suite.device,
-    hideBalance: state.wallet.settings.hideBalance,
+    discreetMode: state.wallet.settings.discreetMode,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
-    setHideBalance: bindActionCreators(settingsActions.setHideBalance, dispatch),
+    setDiscreetMode: bindActionCreators(settingsActions.setDiscreetMode, dispatch),
 });
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
