@@ -5,7 +5,7 @@ import AccountItem from './index';
 
 const mapStateToProps = (state: AppState) => ({
     localCurrency: state.wallet.settings.localCurrency,
-    hideBalance: state.wallet.settings.hideBalance,
+    discreetMode: state.wallet.settings.discreetMode,
     fiat: state.wallet.fiat,
 });
 
