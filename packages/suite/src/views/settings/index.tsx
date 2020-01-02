@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { LanguagePicker } from '@trezor/components';
 import { H2 } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -19,7 +18,7 @@ import {
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
 import * as settingsActions from '@wallet-actions/settingsActions';
-import * as languageActions from '@suite-actions/languageActions.useNative';
+import * as languageActions from '@suite-actions/languageActions';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -66,11 +65,18 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                     <Row>
                         <TextColumn title={<Translation>{messages.TR_LANGUAGE}</Translation>} />
                         <ActionColumn>
-                            <LanguagePicker
-                                language={language}
-                                languages={LANGUAGES}
-                                // @ts-ignore types in components need some love
-                                onChange={(option: any) => fetchLocale(option.value)}
+                            <ActionSelect
+                                value={{
+                                    value: language,
+                                    // sorry for ! but dont know how to force typescript to stay calm
+                                    label: LANGUAGES.find(l => l.code === language)!.name,
+                                }}
+                                options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
+                                // todo: Select should preserve type information
+                                onChange={(option: {
+                                    value: typeof LANGUAGES[number]['code'];
+                                    label: typeof LANGUAGES[number]['name'];
+                                }) => fetchLocale(option.value)}
                             />
                         </ActionColumn>
                     </Row>

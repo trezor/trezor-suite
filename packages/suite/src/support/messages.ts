@@ -2278,10 +2278,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'These coins are supported by Trezor but only in 3rd party wallets. These coins cannot be managed by Trezor Suite or Wallet.',
     },
-    TR_LANGUAGE: {
-        id: 'TR_LANGUAGE',
-        defaultMessage: 'Language',
-    },
     TR_SETTINGS: {
         id: 'TR_SETTINGS',
         defaultMessage: 'Settings',
@@ -2290,6 +2286,10 @@ const definedMessages = defineMessages({
         id: 'TR_BACKUP_FAILED',
         defaultMessage:
             'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
+    },
+    TR_LANGUAGE: {
+        id: 'TR_LANGUAGE',
+        defaultMessage: 'Language',
     },
     TR_WHAT_TO_DO_NOW: {
         id: 'TR_WHAT_TO_DO_NOW',
