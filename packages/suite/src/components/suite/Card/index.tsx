@@ -4,8 +4,7 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
     display: flex;
     border-radius: 6px;
-    box-shadow: 0 6px 20px 0 #f5f5f5;
-    border: solid 2px #f5f5f5;
+    box-shadow: 0 6px 20px 0 #ebebeb;
 `;
 
 // const Header = styled.div`

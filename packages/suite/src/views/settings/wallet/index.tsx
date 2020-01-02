@@ -18,9 +18,9 @@ const WalletSettings = (props: Props) => (
                     <ActionColumn>
                         <Switch
                             onChange={(checked: boolean) => {
-                                props.setHideBalance(checked);
+                                props.setDiscreetMode(checked);
                             }}
-                            checked={props.wallet.settings.hideBalance}
+                            checked={props.wallet.settings.discreetMode}
                         />
                     </ActionColumn>
                 </Row>

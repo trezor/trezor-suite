@@ -7,14 +7,14 @@ import { Network, ExternalNetwork } from '@suite/types/wallet';
 
 export interface State {
     localCurrency: string;
-    hideBalance: boolean;
+    discreetMode: boolean;
     enabledNetworks: Network['symbol'][];
     enabledExternalNetworks: ExternalNetwork['symbol'][];
 }
 
 export const initialState: State = {
     localCurrency: 'usd',
-    hideBalance: false,
+    discreetMode: false,
     enabledNetworks: ['btc'],
     enabledExternalNetworks: EXTERNAL_NETWORKS.filter(n => !n.isHidden).map(n => n.symbol),
 };
@@ -30,7 +30,7 @@ export default (state: State = initialState, action: Action): State => {
                 break;
 
             case SETTINGS.SET_HIDE_BALANCE:
-                draft.hideBalance = action.toggled;
+                draft.discreetMode = action.toggled;
                 break;
 
             case SETTINGS.CHANGE_NETWORKS:
