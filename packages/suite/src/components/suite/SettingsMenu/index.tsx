@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, Icon, colors } from '@trezor/components-v2';
+import { H2, Icon, colors, variables } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
 import { IconType } from '@trezor/components-v2/lib/support/types';
@@ -39,7 +39,10 @@ const Bottom = styled.div`
 
 const Heading = styled(H2)`
     padding-left: ${LEFT_PADDING};
-    color: ${TEXT_COLOR};
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: uppercase;
 `;
 
 const Items = styled.div``;
@@ -48,6 +51,9 @@ const ItemWrapper = styled.div<{ isActive?: boolean }>`
     width: 100%;
     height: 50px;
     border-radius: 6px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    /* todo: not in variables */
+    font-weight: 500;
     cursor: pointer;
     color: ${({ isActive }) => (isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR)};
 
