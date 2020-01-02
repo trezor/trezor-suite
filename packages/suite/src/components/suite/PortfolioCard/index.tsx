@@ -19,16 +19,14 @@ const Header = styled.div`
 const HeaderTitle = styled.div`
     flex: 1;
     font-size: 12px;
-    margin-bottom: 2px;
     font-weight: 600;
+    color: ${colors.BLACK50};
     text-transform: uppercase;
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: minmax(180px, 2fr) repeat(auto-fit, minmax(80px, 1fr));
 `;
 
 const ValueWrapper = styled.div`
     font-size: 36px;
+    font-weight: 300;
     color: ${colors.BLACK17};
 `;
 
@@ -85,11 +83,11 @@ const PortfolioCard = ({
                     </ValueWrapper>
                 </Left>
                 <Right>
-                    <ActionButton variant="primary" onClick={buyClickHandler}>
-                        Buy
-                    </ActionButton>
                     <ActionButton variant="secondary" onClick={receiveClickHandler}>
                         Receive
+                    </ActionButton>
+                    <ActionButton variant="primary" onClick={buyClickHandler}>
+                        Buy
                     </ActionButton>
                 </Right>
             </Header>

@@ -24,12 +24,12 @@ const AccountSummary = (props: Props) => {
                 network={network}
                 fiatRates={props.fiat}
                 localCurrency={props.wallet.settings.localCurrency}
-                isHidden={props.wallet.settings.hideBalance}
+                isHidden={props.wallet.settings.discreetMode}
             />
             {account.networkType === 'ethereum' && (
                 <Tokens
                     tokens={account.tokens || []}
-                    hideBalance={props.wallet.settings.hideBalance}
+                    discreetMode={props.wallet.settings.discreetMode}
                 />
             )}
         </LayoutAccount>

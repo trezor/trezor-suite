@@ -45,7 +45,7 @@ describe('settings reducer', () => {
             }),
         ).toEqual({
             ...initialState,
-            hideBalance: true,
+            discreetMode: true,
         });
     });
 

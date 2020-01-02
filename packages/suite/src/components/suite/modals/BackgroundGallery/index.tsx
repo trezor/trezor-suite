@@ -95,6 +95,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
                 <BackgroundGalleryT2>
                     {homescreensT2.map(image => (
                         <BackgroundImageT2
+                            data-test={`@modal/gallery/t2/${image}`}
                             key={image}
                             id={image}
                             onClick={() => setHomescreen(image)}

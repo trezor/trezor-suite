@@ -30,6 +30,7 @@
         "@types/react-select": "^2.0.17",
         "@types/react-textarea-autosize": "^4.3.4",
         "@types/storybook__addon-knobs": "^5.0.0",
+        "@types/storybook__addon-info": "5.2.1",
         "@types/storybook__addon-links": "^3.3.4",
         "@types/storybook__react": "^4.0.1",
         "@types/styled-components": "^4.1.15",

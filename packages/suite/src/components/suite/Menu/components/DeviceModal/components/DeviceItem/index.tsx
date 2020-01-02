@@ -125,6 +125,7 @@ const DeviceItem = ({
                 <Button
                     variant="tertiary"
                     icon="PLUS"
+                    disabled={!device.connected} // TODO: tooltip?
                     onClick={() => {
                         addHiddenWallet(device);
                     }}

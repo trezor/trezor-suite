@@ -8,10 +8,12 @@ import BigNumber from 'bignumber.js';
 import { AppState } from '@suite/types/suite';
 import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
 import { Loader } from '@trezor/components';
+import { colors } from '@trezor/components-v2';
 
 const Header = styled.div`
     display: flex;
     background-color: #f5f5f5;
+    border-radius: 6px 6px 0px 0px;
     padding: 10px 20px;
 `;
 
@@ -19,6 +21,7 @@ const HeaderTitle = styled.div`
     flex: 1;
     font-size: 12px;
     font-weight: 600;
+    color: ${colors.BLACK50};
     text-transform: uppercase;
     display: grid;
     grid-gap: 10px;
@@ -83,7 +86,7 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                         key={symbol}
                         name={network.name}
                         symbol={network.symbol}
-                        cryptoValue={assetBalance.toString()}
+                        cryptoValue={assetBalance.toFixed()}
                         fiatValue={fiatvalue}
                         exchangeRate={localCurrencyRate}
                         localCurrency={localCurrency}

@@ -8,7 +8,7 @@ import {
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
 import { BlindMatrix, OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
-import { RECOVERY_MODEL_ONE_URL } from '@onboarding-constants/urls';
+import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components/Translation';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
