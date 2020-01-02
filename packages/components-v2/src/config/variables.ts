@@ -17,6 +17,7 @@ export const FONT_SIZE = {
 export const FONT_WEIGHT = {
     LIGHT: 300,
     REGULAR: 400,
+    MEDIUM: 500,
     DEMI_BOLD: 600,
     BOLD: 700,
 } as const;

@@ -119,6 +119,8 @@ const BottomText = styled.div<InputProps>`
 
 const Button = styled.button`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK25};
     border: none;
     outline: none;
@@ -246,7 +248,7 @@ const Input = ({
                                 <StyledIcon
                                     icon={button.icon}
                                     size={10}
-                                    color={buttonHover ? colors.BLACK0 : colors.BLACK50}
+                                    color={buttonHover ? colors.BLACK0 : colors.BLACK25}
                                 />
                             )}
                             {button.text && <ButtonText>{button.text}</ButtonText>}
