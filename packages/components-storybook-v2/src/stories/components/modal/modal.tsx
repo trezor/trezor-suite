@@ -3,21 +3,6 @@ import { H2, P, Modal } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 
-const InputWrapper = styled.div`
-    margin-top: 24px;
-    margin-bottom: 10px;
-    max-width: 260px;
-`;
-
-const PinFooter = styled.div`
-    margin: 20px 0 10px 0;
-    display: flex;
-    flex-direction: column;
-`;
-
-InputWrapper.displayName = 'InputWrapper';
-PinFooter.displayName = 'PinFooter';
-
 storiesOf('Modals', module)
     .add(
         'Small',
