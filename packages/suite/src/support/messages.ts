@@ -2277,6 +2277,7 @@ const definedMessages = defineMessages({
         id: 'TR_3RD_PARTY_WALLETS_DESC',
         defaultMessage:
             'These coins are supported by Trezor but only in 3rd party wallets. These coins cannot be managed by Trezor Suite or Wallet.',
+    },
     TR_LANGUAGE: {
         id: 'TR_LANGUAGE',
         defaultMessage: 'Language',

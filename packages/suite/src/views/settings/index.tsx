@@ -61,6 +61,21 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                 }}
             >
                 <H2>General</H2>
+
+                <Section header={<Translation>{messages.TR_LANGUAGE}</Translation>}>
+                    <Row>
+                        <TextColumn title={<Translation>{messages.TR_LANGUAGE}</Translation>} />
+                        <ActionColumn>
+                            <LanguagePicker
+                                language={language}
+                                languages={LANGUAGES}
+                                // @ts-ignore types in components need some love
+                                onChange={(option: any) => fetchLocale(option.value)}
+                            />
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
                 <Section header={<Translation>{messages.TR_CURRENCY}</Translation>}>
                     <Row>
                         <TextColumn title={<Translation>{messages.TR_PRIMARY_FIAT}</Translation>} />
@@ -90,20 +105,6 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                             >
                                 <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
                             </ActionButton>
-                        </ActionColumn>
-                    </Row>
-                </Section>
-
-                <Section header={<Translation>{messages.TR_LANGUAGE}</Translation>}>
-                    <Row>
-                        <TextColumn title={<Translation>{messages.TR_LANGUAGE}</Translation>} />
-                        <ActionColumn>
-                            <LanguagePicker
-                                language={language}
-                                languages={LANGUAGES}
-                                // @ts-ignore types in components need some love
-                                onChange={(option: any) => fetchLocale(option.value)}
-                            />
                         </ActionColumn>
                     </Row>
                 </Section>
