@@ -52,13 +52,13 @@ const ItemWrapper = styled.div<{ isActive?: boolean }>`
     height: 50px;
     border-radius: 6px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    /* todo: not in variables */
-    font-weight: 500;
     cursor: pointer;
     color: ${({ isActive }) => (isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR)};
-
+    /* todo: not in variables */
+    font-weight: ${({ isActive }) => (isActive ? 500 : variables.FONT_WEIGHT.REGULAR)};
     display: flex;
     align-items: center;
+
     ${({ isActive }) =>
         isActive &&
         css`
