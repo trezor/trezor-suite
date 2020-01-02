@@ -6,10 +6,11 @@ import AssetsCard from '@suite/components/suite/AssetsCard';
 import { Props } from './Container';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
-import Card from '@suite-components/Card';
 import PortfolioCard from '@suite-components/PortfolioCard';
 import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
+import NewsFeed from '@suite-components/NewsFeed';
+import ConnectionStatusCard from '@suite/components/suite/ConnectionStatusCard';
 
 const Wrapper = styled.div`
     padding: 30px 50px;
@@ -19,10 +20,12 @@ const Divider = styled.div`
     margin-bottom: 20px;
 `;
 
-const PlaceholderCard = styled(Card)`
-    min-height: 100px;
-    align-content: center;
-    justify-content: center;
+const Row = styled.div`
+    display: flex;
+`;
+
+const StyledConnectionStatusCard = styled(ConnectionStatusCard)`
+    margin-right: 20px;
 `;
 
 const Dashboard = (props: Props) => {
@@ -74,7 +77,10 @@ const Dashboard = (props: Props) => {
                     <SecurityFeatures />
                 </Divider>
                 <Divider>
-                    <PlaceholderCard>placeholder</PlaceholderCard>{' '}
+                    <Row>
+                        <StyledConnectionStatusCard />
+                        <NewsFeed />
+                    </Row>
                 </Divider>
             </Wrapper>
         </SuiteLayout>
