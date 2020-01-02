@@ -22,4 +22,4 @@ COPY packages/integration-tests/projects/components-storybook-v2 packages/integr
 RUN yarn
 
 # run
-CMD [ "yarn", "workspace", "@trezor/integration-tests", "test-components-storybook-v2" ]
+CMD [ "yarn", "workspace", "@trezor/integration-tests", "test:components-storybook-v2" ]
