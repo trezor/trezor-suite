@@ -26,7 +26,7 @@ const baseStyles = css`
 const H1 = styled.h1<Props>`
     ${baseStyles};
     font-size: ${FONT_SIZE.H1};
-    margin-bottom: 10px;
+    padding-bottom: 10px;
     color: ${colors.BLACK17};
     font-weight: 300;
 `;
@@ -34,7 +34,7 @@ const H1 = styled.h1<Props>`
 const H2 = styled.h2<Props>`
     ${baseStyles};
     font-size: ${FONT_SIZE.H2};
-    margin-bottom: 10px;
+    padding-bottom: 10px;
     color: ${colors.BLACK0};
     font-weight: normal;
 `;
