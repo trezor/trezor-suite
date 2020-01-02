@@ -61,7 +61,7 @@ const StyledLink = styled(Link)`
     top: 0;
     padding: 18px;
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK25};
 
     :hover {

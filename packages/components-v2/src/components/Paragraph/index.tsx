@@ -25,7 +25,8 @@ const P_SIZES: { [key: string]: string } = {
 const Paragraph = styled.p<Props>`
     font-size: ${props => P_SIZES[props.size || 'normal']};
     line-height: ${props => getLineHeight(props.size)};
-    color: ${colors.BLACK50};
+    color: ${props =>
+        props.size === 'tiny' || props.weight === 'bold' ? colors.BLACK50 : colors.BLACK0};
     padding: 0;
     font-weight: ${props => (props.weight === 'normal' ? 'normal' : 600)};
     ${props =>
