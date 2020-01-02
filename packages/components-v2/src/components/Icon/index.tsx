@@ -108,4 +108,4 @@ const Icon = ({
     );
 };
 
-export { Icon };
+export { Icon, Props as IconProps };

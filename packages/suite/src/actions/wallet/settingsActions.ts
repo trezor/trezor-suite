@@ -14,7 +14,7 @@ export const setLocalCurrency = (localCurrency: string) => ({
     localCurrency: localCurrency.toLowerCase(),
 });
 
-export const setHideBalance = (toggled: boolean) => ({
+export const setDiscreetMode = (toggled: boolean) => ({
     type: SETTINGS.SET_HIDE_BALANCE,
     toggled,
 });
