@@ -54,7 +54,7 @@ components-storybook-v2 test snapshots:
   stage: integration testing
   script:
     - npx cypress install
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook-v2/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test-components-storybook-v2
+    - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook-v2/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test:components-storybook-v2
   artifacts:
     expire_in: 2 days
     when: always
