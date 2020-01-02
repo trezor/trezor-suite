@@ -2280,7 +2280,7 @@ const definedMessages = defineMessages({
     },
     TR_SETTINGS: {
         id: 'TR_SETTINGS',
-        defaultMessage: 'Settings',
+        defaultMessage: 'SETTINGS',
     },
 });
 

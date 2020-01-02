@@ -21,8 +21,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const LEFT_PADDING = '10px';
-const TEXT_COLOR = colors.BLACK70;
-const ACTIVE_TEXT_COLOR = colors.BLACK25;
+const TEXT_COLOR = colors.BLACK17;
+const ACTIVE_TEXT_COLOR = colors.BLACK0;
 const SECONDARY_COLOR = colors.BLACK92;
 
 const ContentWrapper = styled.div`
@@ -63,6 +63,7 @@ const ItemWrapper = styled.div<{ isActive?: boolean }>`
 const StyledIcon = styled(Icon)`
     padding-left: ${LEFT_PADDING};
     padding-right: 10px;
+    margin-bottom: 2px;
 `;
 
 interface ItemProps {
