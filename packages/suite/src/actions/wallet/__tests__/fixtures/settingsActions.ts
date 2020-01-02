@@ -27,18 +27,18 @@ export default [
     },
     {
         description: 'Set hide balance true',
-        initialState: { hideBalance: false },
-        action: () => settingsActions.setHideBalance(true),
+        initialState: { discreetMode: false },
+        action: () => settingsActions.setDiscreetMode(true),
         result: {
-            hideBalance: true,
+            discreetMode: true,
         },
     },
     {
         description: 'Set hide balance false',
-        initialState: { hideBalance: true },
-        action: () => settingsActions.setHideBalance(false),
+        initialState: { discreetMode: true },
+        action: () => settingsActions.setDiscreetMode(false),
         result: {
-            hideBalance: false,
+            discreetMode: false,
         },
     },
     {
