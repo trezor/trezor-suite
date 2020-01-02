@@ -17,9 +17,7 @@ export const TREZOR_RESELLERS_URL = 'https://trezor.io/resellers/';
 export const TREZOR_PACKAGING_URL = 'https://wiki.trezor.io/Trezor_packaging_timeline';
 export const WALLET_URL = 'https://wallet.trezor.io';
 export const SKIP_URL = WALLET_URL;
-export const RECOVERY_MODEL_ONE_URL =
-    'https://wiki.trezor.io/index.php?title=User+manual%3ARecovery&ModelType=1';
-export const NEXT_WALLET_URL = 'https://beta-wallet.trezor.io/next/#/';
+export const RECOVERY_MODEL_ONE_URL = 'https://wiki.trezor.io/User_manual:Recovery__T1';
 export const PASSWORD_MANAGER_URL = 'https://trezor.io/passwords/';
 export const TROUBLESHOOTER_URL = 'https://trezor.io/support/#technical-technical-issues';
 export const SATOSHILABS_URL = 'http://satoshilabs.com';
