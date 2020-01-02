@@ -8,15 +8,15 @@ RUN apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 
 WORKDIR /tests
 
 # copy root
-COPY package.json package.json
-COPY lerna.json lerna.json
-COPY yarn.lock yarn.lock
+COPY package.json /tests/package.json
+COPY lerna.json /tests/lerna.json
+COPY yarn.lock /tests/yarn.lock
 
-# copy package integration tests
-COPY packages/integration-tests/package.json packages/integration-tests/package.json
+# copy package.json integration tests
+COPY packages/integration-tests/package.json /tests/packages/integration-tests/package.json
 
 # copy specific project in integration tests package
-COPY packages/integration-tests/projects/components-storybook-v2 packages/integration-tests/projects/components-storybook-v2
+COPY packages/integration-tests/projects/components-storybook-v2 /tests/packages/integration-tests/projects/components-storybook-v2
 
 # install
 RUN yarn
