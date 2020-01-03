@@ -17,6 +17,7 @@ const Wrapper = styled.div`
 `;
 
 const Divider = styled.div`
+    display: flex;
     margin-bottom: 20px;
 `;
 
@@ -57,31 +58,27 @@ const Dashboard = (props: Props) => {
     return (
         <SuiteLayout>
             <Wrapper>
-                <Divider>
-                    <PortfolioCard
-                        portfolioValue={instanceBalance.toString()}
-                        localCurrency={props.localCurrency}
-                        buyClickHandler={() => props.goto('wallet-account-receive')}
-                        receiveClickHandler={() => props.goto('wallet-account-receive')}
-                    />
-                </Divider>
-                <Divider>
-                    <AssetsCard
-                        assets={groupedAssets}
-                        localCurrency={props.localCurrency}
-                        rates={props.fiat}
-                        isLoading={isLoading}
-                    />
-                </Divider>
-                <Divider>
-                    <SecurityFeatures />
-                </Divider>
-                <Divider>
-                    <Row>
-                        <StyledConnectionStatusCard />
-                        <NewsFeed />
-                    </Row>
-                </Divider>
+                <PortfolioCard
+                    portfolioValue={instanceBalance}
+                    localCurrency={props.localCurrency}
+                    buyClickHandler={() => props.goto('wallet-account-receive')}
+                    receiveClickHandler={() => props.goto('wallet-account-receive')}
+                />
+                <Divider />
+                <AssetsCard
+                    assets={groupedAssets}
+                    localCurrency={props.localCurrency}
+                    rates={props.fiat}
+                    isLoading={isLoading}
+                />
+                <Divider />
+                <SecurityFeatures />
+                <Divider />
+                <Row>
+                    <StyledConnectionStatusCard />
+                    <NewsFeed />
+                </Row>
+                <Divider />
             </Wrapper>
         </SuiteLayout>
     );
