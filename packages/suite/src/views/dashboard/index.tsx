@@ -59,7 +59,7 @@ const Dashboard = (props: Props) => {
         <SuiteLayout>
             <Wrapper>
                 <PortfolioCard
-                    portfolioValue={instanceBalance.toString()}
+                    portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}
                     buyClickHandler={() => props.goto('wallet-account-receive')}
                     receiveClickHandler={() => props.goto('wallet-account-receive')}

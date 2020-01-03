@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import FormattedNumber from '@suite-components/FormattedNumber';
 import { colors, Button } from '@trezor/components-v2';
+import BigNumber from 'bignumber.js';
+import EmptyWallet from './components/EmptyWallet';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -32,8 +34,6 @@ const ValueWrapper = styled.div`
 
 const Body = styled.div`
     display: flex;
-    min-height: 100px;
-    justify-content: center;
     align-items: center;
 `;
 
@@ -57,7 +57,7 @@ const ActionButton = styled(Button)`
 `;
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    portfolioValue: string;
+    portfolioValue: BigNumber;
     localCurrency: string;
     buyClickHandler: () => void;
     receiveClickHandler: () => void;
@@ -91,7 +91,7 @@ const PortfolioCard = ({
                     </ActionButton>
                 </Right>
             </Header>
-            <Body>graficek</Body>
+            <Body>{portfolioValue.gt(0) ? 'graficek' : <EmptyWallet />}</Body>
         </StyledCard>
     );
 };
