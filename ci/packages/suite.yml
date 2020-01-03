@@ -18,5 +18,12 @@ suite check outdated:
     dependencies:
         - install and build
 
+suite check unused messages:
+    stage: misc
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/suite translations:unused
+    dependencies:
+        - install and build
+
 # TODO: add messages (values) duplicities check
-# TODO: add check if there are unused messages https://github.com/trezor/trezor-suite/issues/944
