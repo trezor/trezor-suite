@@ -59,6 +59,12 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
                 border-color: ${colors.BLACK50};
             }
         `}
+
+    ${props =>
+        props.monospace &&
+        css`
+            font-family: ${variables.FONT_FAMILY.MONOSPACE};
+        `}
 `;
 
 const TopLabel = styled.label`
@@ -103,6 +109,7 @@ interface StyledTextareaProps extends BaseTextareaProps {
     tooltipAction?: React.ReactNode;
     display?: InputDisplay;
     state?: InputState;
+    monospace?: boolean;
 }
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
@@ -112,6 +119,7 @@ interface Props extends StyledTextareaProps {
     bottomText?: React.ReactNode;
     maxRows?: number;
     wrapperProps?: Record<string, any>;
+    monospace?: boolean;
 }
 
 const Textarea = ({
@@ -125,6 +133,7 @@ const Textarea = ({
     wrapperProps,
     display,
     rows = 5,
+    monospace,
     ...rest
 }: Props) => {
     return (
@@ -139,6 +148,7 @@ const Textarea = ({
                 display={display}
                 state={state}
                 rows={rows}
+                monospace={monospace}
                 {...rest}
             />
             <TooltipAction action={tooltipAction}>

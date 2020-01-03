@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import colors from '../../config/colors';
 
@@ -13,6 +13,18 @@ const A = styled.a<Props>`
     &:hover {
         text-decoration: underline;
     }
+
+    ${props =>
+        props.variant === 'nostyle' &&
+        css`
+            color: inherit;
+            &:visited,
+            &:active,
+            &:hover {
+                text-decoration: none;
+                color: inherit;
+            }
+        `}
 `;
 
 interface Props {
@@ -22,6 +34,7 @@ interface Props {
     onClick?: (event: React.MouseEvent<any>) => void;
     children?: React.ReactNode;
     className?: string;
+    variant?: 'default' | 'nostyle';
 }
 
 const Link = (props: Props) => (

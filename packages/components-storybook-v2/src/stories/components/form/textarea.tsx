@@ -32,6 +32,7 @@ storiesOf('Form', module).add(
         const bottomText: string = text('Bottom text', '');
         const placeholder: string = text('Placeholder', '');
         const disabled = boolean('Disabled', false);
+        const monospace = boolean('Monospace', false);
         const rows = number('Rows', 5, {
             min: 1,
             max: 30,
@@ -48,6 +49,7 @@ storiesOf('Form', module).add(
                 {...(bottomText ? { bottomText } : {})}
                 {...(placeholder ? { placeholder } : {})}
                 {...(rows !== 5 ? { rows } : {})}
+                {...(monospace ? { monospace } : {})}
                 value={value}
             />
         );
@@ -57,7 +59,7 @@ storiesOf('Form', module).add(
             ...infoOptions,
             text: `
             ~~~js
-            import { Input } from 'trezor-ui-components';
+            import { Input } from '@trezor/components-v2';
             ~~~
             `,
         },

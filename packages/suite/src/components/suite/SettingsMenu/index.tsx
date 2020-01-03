@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, Icon, colors } from '@trezor/components-v2';
+import { H2, Icon, colors, variables } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
 import { IconType } from '@trezor/components-v2/lib/support/types';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
@@ -19,12 +21,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const LEFT_PADDING = '10px';
-const TEXT_COLOR = colors.BLACK70;
-const ACTIVE_TEXT_COLOR = colors.BLACK25;
+const TEXT_COLOR = colors.BLACK17;
+const ACTIVE_TEXT_COLOR = colors.BLACK0;
 const SECONDARY_COLOR = colors.BLACK92;
-const ITEMS_BORDER = `2px solid ${SECONDARY_COLOR}`;
 
 const ContentWrapper = styled.div`
+    padding: 0 ${LEFT_PADDING};
     margin-top: 30px;
     display: flex;
     flex-direction: column;
@@ -37,27 +39,26 @@ const Bottom = styled.div`
 
 const Heading = styled(H2)`
     padding-left: ${LEFT_PADDING};
-    color: ${TEXT_COLOR};
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: uppercase;
 `;
 
-const Items = styled.div`
-    & > div:first-child {
-        border-top: ${ITEMS_BORDER};
-        border-bottom: ${ITEMS_BORDER};
-    }
-    & > div:not(:first-child) {
-        border-bottom: ${ITEMS_BORDER};
-    }
-`;
+const Items = styled.div``;
 
 const ItemWrapper = styled.div<{ isActive?: boolean }>`
     width: 100%;
     height: 50px;
+    border-radius: 6px;
+    font-size: ${variables.FONT_SIZE.SMALL};
     cursor: pointer;
     color: ${({ isActive }) => (isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR)};
-
+    /* todo: not in variables */
+    font-weight: ${({ isActive }) => (isActive ? 500 : variables.FONT_WEIGHT.REGULAR)};
     display: flex;
     align-items: center;
+
     ${({ isActive }) =>
         isActive &&
         css`
@@ -68,6 +69,7 @@ const ItemWrapper = styled.div<{ isActive?: boolean }>`
 const StyledIcon = styled(Icon)`
     padding-left: ${LEFT_PADDING};
     padding-right: 10px;
+    margin-bottom: 2px;
 `;
 
 interface ItemProps {
@@ -136,7 +138,9 @@ const BOTTOM_ITEMS = [
 const SettignsMenu = ({ goto, router }: Props) => {
     return (
         <ContentWrapper>
-            <Heading>Settings</Heading>
+            <Heading>
+                <Translation>{messages.TR_SETTINGS}</Translation>
+            </Heading>
             <Items>
                 {ITEMS.map(i => (
                     <Item
