@@ -47,7 +47,8 @@ const SecurityFeatures = ({
     const [isHidden, setIsHidden] = useState(false);
 
     if (!device) return null;
-    const needsBackup = device.features && device.features.needs_backup;
+    const needsBackup =
+        device.features && (device.features.needs_backup || device.features.unfinished_backup);
     const pinEnabled = device.features && device.features.pin_protection;
     const hiddenWalletCreated = false;
     const featuresCompleted =
