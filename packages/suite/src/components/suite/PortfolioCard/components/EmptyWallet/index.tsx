@@ -39,7 +39,7 @@ const SecurityItem = styled.div`
     }
 `;
 
-export interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const EmptyWallet = (props: Props) => {
     return (
