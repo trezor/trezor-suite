@@ -50,7 +50,7 @@ storiesOf('Typography', module).add(
             ...infoOptions,
             text: `
             ~~~js
-            import { P } from 'trezor-ui-components';
+            import { P } from '@trezor/components-v2';
             ~~~
             `,
         },
