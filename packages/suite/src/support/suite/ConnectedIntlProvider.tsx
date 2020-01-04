@@ -7,40 +7,24 @@ import { AppState } from '@suite-types';
 // polyfill for Intl.PluralRules (e.g IE11 & Safari 12-)
 if (!Intl.PluralRules) {
     require('@formatjs/intl-pluralrules/polyfill');
-    require('@formatjs/intl-pluralrules/dist/locale-data/zh');
-    require('@formatjs/intl-pluralrules/dist/locale-data/uk');
     require('@formatjs/intl-pluralrules/dist/locale-data/ru');
-    require('@formatjs/intl-pluralrules/dist/locale-data/pt');
-    require('@formatjs/intl-pluralrules/dist/locale-data/nl');
-    require('@formatjs/intl-pluralrules/dist/locale-data/ja');
-    require('@formatjs/intl-pluralrules/dist/locale-data/it');
-    require('@formatjs/intl-pluralrules/dist/locale-data/id');
     require('@formatjs/intl-pluralrules/dist/locale-data/fr');
     require('@formatjs/intl-pluralrules/dist/locale-data/es');
-    require('@formatjs/intl-pluralrules/dist/locale-data/el');
     require('@formatjs/intl-pluralrules/dist/locale-data/de');
-    require('@formatjs/intl-pluralrules/dist/locale-data/bn');
     require('@formatjs/intl-pluralrules/dist/locale-data/cs');
 }
 
 // polyfill for Intl.RelativeTimeFormat (e.g IE11, Edge, Safari 13-)
 // TODO: TS types are missing Intl.RelativeTimeFormat
-// if (!Intl.RelativeTimeFormat) {
-require('@formatjs/intl-relativetimeformat/polyfill');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/zh');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/uk');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/ru');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/pt');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/nl');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/ja');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/it');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/id');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/fr');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/es');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/el');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/de');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/bn');
-require('@formatjs/intl-relativetimeformat/dist/locale-data/cs');
+// @ts-ignore
+if (!Intl.RelativeTimeFormat) {
+    require('@formatjs/intl-relativetimeformat/polyfill');
+    require('@formatjs/intl-relativetimeformat/dist/locale-data/ru');
+    require('@formatjs/intl-relativetimeformat/dist/locale-data/fr');
+    require('@formatjs/intl-relativetimeformat/dist/locale-data/es');
+    require('@formatjs/intl-relativetimeformat/dist/locale-data/de');
+    require('@formatjs/intl-relativetimeformat/dist/locale-data/cs');
+}
 
 type PrimitiveType = string | number | boolean | Date | null | undefined;
 
