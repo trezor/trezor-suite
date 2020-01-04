@@ -11,8 +11,6 @@ import { AppState } from '@suite-types';
 import { Log } from '@suite-components';
 import MenuSecondary from '@suite/components/suite/MenuSecondary';
 
-// const { SCREEN_SIZE } = variables;
-
 const PageWrapper = styled.div`
     display: flex;
     flex: 1;
