@@ -6,6 +6,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Route } from '@suite-constants/routes';
 import { SUITE } from './constants';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
+import { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
 export type SuiteActions =
     | { type: typeof SUITE.INIT }
@@ -28,6 +29,7 @@ export type SuiteActions =
     | { type: typeof SUITE.REQUEST_DISCONNECT_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
     | { type: typeof SUITE.TOGGLE_DEVICE_MENU; payload: boolean }
+    | { type: typeof SUITE.SET_DEBUG_MODE; payload: DebugModeOptions }
     | { type: typeof SUITE.TOGGLE_SIDEBAR }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
@@ -87,6 +89,18 @@ export const toggleDeviceMenu = (payload: boolean) => ({
  */
 export const toggleSidebar = (): Action => ({
     type: SUITE.TOGGLE_SIDEBAR,
+});
+
+/**
+ * Triggered by user action in:
+ * - Debug Settings
+ * Set `debug` object in suite reducer
+ * @param {boolean} payload
+ * @returns {Action}
+ */
+export const setDebugMode = (payload: DebugModeOptions): Action => ({
+    type: SUITE.SET_DEBUG_MODE,
+    payload,
 });
 
 /**

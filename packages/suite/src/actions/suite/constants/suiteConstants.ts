@@ -19,6 +19,7 @@ export const REQUEST_DISCONNECT_DEVICE = '@suite/request-disconnect-device';
 export const SET_LANGUAGE = '@suite/set-language';
 export const TOGGLE_DEVICE_MENU = '@suite/toggle-device-menu';
 export const TOGGLE_SIDEBAR = '@suite/toggle-sidebar';
+export const SET_DEBUG_MODE = '@suite/set-debug-mode';
 export const ONLINE_STATUS = '@suite/online-status';
 export const APP_CHANGED = '@suite/app-changed';
 export const LOCK_UI = '@suite/lock-ui';
