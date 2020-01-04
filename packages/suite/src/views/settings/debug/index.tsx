@@ -16,7 +16,7 @@ const DebugSettings = (props: Props) => {
                 <Section header="Localization">
                     <Row>
                         <TextColumn
-                            title={'Translation mode'}
+                            title="Translation mode"
                             description="Translation mode enables distinctive visual styling for currently used intl messages. Helpful tooltip with an ID of the message will show up when you mouse over the message."
                         />
                         <ActionColumn>
