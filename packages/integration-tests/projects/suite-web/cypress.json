@@ -1,0 +1,11 @@
+{
+    "integrationFolder": "./tests",
+    "fixturesFolder": "./fixtures",
+    "pluginsFile": "./plugins/index.js",
+    "supportFile": "./support/index.ts",
+    "defaultCommandTimeout": 10000,
+    "screenshotsFolder": "./screenshots",
+    "video": false,
+    "trashAssetsBeforeRuns": true,
+    "chromeWebSecurity": false
+}
