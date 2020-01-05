@@ -66,6 +66,7 @@ module.exports = {
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
+        '^.+\\.svg$': '<rootDir>/src/support/tests/svgTransform.js', // https://stackoverflow.com/questions/46791263/jest-test-fail-syntaxerror-unexpected-token
     },
     preset: 'ts-jest',
     verbose: false,

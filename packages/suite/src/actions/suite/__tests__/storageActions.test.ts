@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import { Middleware } from 'redux';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
-import * as languageActions from '../languageActions.useNative';
+import * as languageActions from '../languageActions';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as SUITE from '@suite-actions/constants/suiteConstants';

@@ -1,21 +1,4 @@
-type Code =
-    | 'en'
-    | 'bn'
-    | 'cs'
-    | 'de'
-    | 'el'
-    | 'es'
-    | 'fr'
-    | 'id'
-    | 'it'
-    | 'ja'
-    | 'nl'
-    | 'pl'
-    | 'pt'
-    | 'ru'
-    | 'uk'
-    | 'zh'
-    | 'zh-TW';
+type Code = 'en' | 'cs' | 'de' | 'es' | 'fr' | 'ru';
 
 export interface Language {
     code: Code;

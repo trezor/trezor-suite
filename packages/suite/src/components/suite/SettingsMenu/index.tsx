@@ -21,9 +21,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const LEFT_PADDING = '10px';
-const TEXT_COLOR = colors.BLACK17;
+const TEXT_COLOR = colors.BLACK25;
 const ACTIVE_TEXT_COLOR = colors.BLACK0;
-const SECONDARY_COLOR = colors.BLACK92;
+const SECONDARY_COLOR = colors.BLACK96;
 
 const ContentWrapper = styled.div`
     padding: 0 ${LEFT_PADDING};
