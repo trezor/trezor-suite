@@ -34,10 +34,7 @@ def start():
 
 
             # "TREZOR_OLED_SCALE=2 ./packages/suite-web/test/trezor-emu-legacy-v1.6.2 -O0",
-
-
-            # "./packages/suite-web/test/trezor-emu-core-v2.0.10 -O0 -X heapsize=20M -m main",
-            "./bin/trezor-emu-core-v2.1.4 -O0 -X heapsize=20M -m main",
+            "./projects/suite-web/plugins/python/bin/trezor-emu-core-v2.1.4 -O0 -X heapsize=20M -m main",
             shell=True,
             preexec_fn=os.setsid
         )

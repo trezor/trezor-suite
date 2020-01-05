@@ -3,6 +3,7 @@ import { TRANSPORT } from 'trezor-connect';
 
 describe('Transport webusb/bridge', () => {
     beforeEach(() => {
+        cy.task('stopBridge').task('stopEmu');
         cy.viewport(1024, 768).resetDb();
         cy.visit('').onboardingShouldLoad();
 

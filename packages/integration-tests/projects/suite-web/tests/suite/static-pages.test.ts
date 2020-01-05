@@ -11,10 +11,6 @@ const fixtures = [
         visit: '/onboarding',
         should: ['contain', 'Welcome to Trezor'],
     },
-    {
-        visit: '/firmware',
-        should: ['contain', 'Firmware'],
-    },
 ] as const;
 
 describe('Static pages', () => {
