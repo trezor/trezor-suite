@@ -20,7 +20,6 @@ components-storybook deploy dev:
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    on_stop: components-storybook delete review
   before_script: []
   script:
     - cd packages/components-storybook
@@ -30,25 +29,6 @@ components-storybook deploy dev:
     - rsync --delete -va .build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
-
-components-storybook delete review:
-  before_script: []
-  stage: deploy to dev servers
-  variables:
-    GIT_STRATEGY: none
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components-storybook/${CI_BUILD_REF_NAME}
-  when: manual
-  environment:
-    name: ${CI_BUILD_REF_NAME}
-    action: stop
-  before_script: []
-  script:
-    - cd packages/components-storybook
-    - 'rm -r "${DEPLOY_DIRECTORY}"'
-  tags:
-    - deploy
-  dependencies:
-    - install and build
 
 # components-storybook test snapshots:
 #   stage: integration testing
