@@ -8,9 +8,9 @@ import {
     changePin,
     wipeDevice,
     openBackgroundGalleryModal,
-} from '@suite-actions/deviceSettingsActions';
+} from '@suite/actions/settings/deviceSettingsActions';
 // todo: device management actions
-import * as backupActions from '@suite-actions/backupActions';
+import * as backupActions from '@suite/actions/settings/backupActions';
 
 import { AppState, Dispatch } from '@suite-types';
 

@@ -20,7 +20,7 @@ import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import OnboardingActions from '@onboarding-types/actions';
-import { DeviceSettingsActions } from '@suite-actions/deviceSettingsActions';
+import { DeviceSettingsActions } from '@settings-actions/deviceSettingsActions';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 

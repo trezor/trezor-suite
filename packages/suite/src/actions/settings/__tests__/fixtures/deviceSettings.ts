@@ -1,4 +1,4 @@
-import * as deviceSettingsActions from '@suite-actions/deviceSettingsActions';
+import * as deviceSettingsActions from '@suite/actions/settings/deviceSettingsActions';
 import { NOTIFICATION, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
 
 export default [
