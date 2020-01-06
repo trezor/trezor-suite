@@ -47,27 +47,31 @@ const StyledTippy = styled(Tippy)`
     }
 
     &[data-placement^='top'] {
+        margin-bottom: 10px;
         .tippy-arrow {
             border-top: 5px solid ${colors.WHITE};
-            bottom: -10px;
+            bottom: 0;
         }
     }
     &[data-placement^='bottom'] {
+        margin-top: 10px;
         .tippy-arrow {
             border-bottom: 5px solid ${colors.WHITE};
-            top: -10px;
+            top: 0;
         }
     }
     &[data-placement^='left'] {
+        margin-right: 10px;
         .tippy-arrow {
             border-left: 5px solid ${colors.WHITE};
-            right: -10px;
+            right: 0;
         }
     }
     &[data-placement^='right'] {
+        margin-left: 10px;
         .tippy-arrow {
             border-right: 5px solid ${colors.WHITE};
-            left: -10px;
+            left: 0;
         }
     }
 `;
