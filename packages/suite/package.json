@@ -7,6 +7,7 @@
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
         "translations:extract": "rimraf translations/extractedMessages && cross-env NODE_ENV=translations babel src/**/*.{tsx,ts} > /dev/null && node ../translations-manager/lib/cli.js merge-msgs && node ../translations-manager/lib/cli.js build-csv",
+        "translations:upload": "yarn translations:extract && node ../translations-manager/lib/cli.js upload",
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations",
         "type-check": "tsc --project tsconfig.json",
         "test": "run-s test:*",
@@ -65,8 +66,8 @@
         "@types/react-qr-reader": "^2.1.2",
         "@types/react-redux": "^7.1.5",
         "@types/react-test-renderer": "^16.9.1",
-        "@types/recharts": "^1.8.3",
         "@types/react-window": "^1.8.0",
+        "@types/recharts": "^1.8.3",
         "@types/redux-logger": "^3.0.7",
         "@types/redux-mock-store": "^1.0.1",
         "@types/styled-components": "^4.4.1",
@@ -82,6 +83,7 @@
         "stylelint": "^10.0.1",
         "stylelint-config-recommended": "^2.2.0",
         "stylelint-config-styled-components": "^0.1.1",
-        "stylelint-processor-styled-components": "^1.8.0"
+        "stylelint-processor-styled-components": "^1.8.0",
+        "typescript-styled-plugin": "^0.15.0"
     }
 }

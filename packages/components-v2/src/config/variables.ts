@@ -24,6 +24,7 @@ export const FONT_WEIGHT = {
 
 export const FONT_FAMILY = {
     TTHOVES: 'TTHoves',
+    MONOSPACE: 'Menlo, Monaco, Consolas, “Courier New”, monospace',
 } as const;
 
 export const COINS: CoinType[] = [

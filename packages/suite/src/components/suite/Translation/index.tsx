@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ExtendedMessageDescriptor } from '@suite-types';
+import HelperTooltip from './components/HelperTooltip';
 
 export const isChildrenMessageDescriptor = (
     message: null | React.ReactNode | ExtendedMessageDescriptor,
@@ -58,10 +59,12 @@ const Translation = (props: ChildrenType | MsgType) => {
 
         // pass undefined to a 'values' prop in case of an empty values object
         return (
-            <FormattedMessage
-                {...props}
-                values={Object.keys(values).length === 0 ? undefined : values}
-            />
+            <HelperTooltip messageId={props.id}>
+                <FormattedMessage
+                    {...props}
+                    values={Object.keys(values).length === 0 ? undefined : values}
+                />
+            </HelperTooltip>
         );
     }
     // Passed children prop (ExtendedMessageDescriptor obj)
@@ -74,10 +77,12 @@ const Translation = (props: ChildrenType | MsgType) => {
         });
 
         return (
-            <FormattedMessage
-                {...props.children}
-                values={Object.keys(values).length === 0 ? undefined : values}
-            />
+            <HelperTooltip messageId={props.children.id}>
+                <FormattedMessage
+                    {...props.children}
+                    values={Object.keys(values).length === 0 ? undefined : values}
+                />
+            </HelperTooltip>
         );
     }
 

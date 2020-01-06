@@ -7,6 +7,10 @@ import { Action, TrezorDevice } from '@suite-types';
 
 type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
 
+export interface DebugModeOptions {
+    translationMode: boolean;
+}
+
 export interface SuiteState {
     initialRun: boolean;
     online: boolean;
@@ -20,6 +24,7 @@ export interface SuiteState {
     deviceMenuOpened: boolean;
     showSidebar?: boolean;
     locks: Lock[];
+    debug: DebugModeOptions;
 }
 
 interface Transport {
@@ -48,6 +53,9 @@ const initialState: SuiteState = {
     deviceMenuOpened: false,
     showSidebar: undefined,
     locks: [],
+    debug: {
+        translationMode: false,
+    },
 };
 
 const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
@@ -98,6 +106,10 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
 
             case SUITE.TOGGLE_DEVICE_MENU:
                 draft.deviceMenuOpened = action.payload;
+                break;
+
+            case SUITE.SET_DEBUG_MODE:
+                draft.debug = { ...draft.debug, ...action.payload };
                 break;
 
             case TRANSPORT.START:

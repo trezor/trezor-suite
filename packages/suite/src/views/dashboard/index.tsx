@@ -6,23 +6,27 @@ import AssetsCard from '@suite/components/suite/AssetsCard';
 import { Props } from './Container';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
-import Card from '@suite-components/Card';
 import PortfolioCard from '@suite-components/PortfolioCard';
 import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
+import NewsFeed from '@suite-components/NewsFeed';
+import ConnectionStatusCard from '@suite/components/suite/ConnectionStatusCard';
 
 const Wrapper = styled.div`
     padding: 30px 50px;
 `;
 
 const Divider = styled.div`
+    display: flex;
     margin-bottom: 20px;
 `;
 
-const PlaceholderCard = styled(Card)`
-    min-height: 100px;
-    align-content: center;
-    justify-content: center;
+const Row = styled.div`
+    display: flex;
+`;
+
+const StyledConnectionStatusCard = styled(ConnectionStatusCard)`
+    margin-right: 20px;
 `;
 
 const Dashboard = (props: Props) => {
@@ -54,28 +58,27 @@ const Dashboard = (props: Props) => {
     return (
         <SuiteLayout>
             <Wrapper>
-                <Divider>
-                    <PortfolioCard
-                        portfolioValue={instanceBalance.toString()}
-                        localCurrency={props.localCurrency}
-                        buyClickHandler={() => props.goto('wallet-account-receive')}
-                        receiveClickHandler={() => props.goto('wallet-account-receive')}
-                    />
-                </Divider>
-                <Divider>
-                    <AssetsCard
-                        assets={groupedAssets}
-                        localCurrency={props.localCurrency}
-                        rates={props.fiat}
-                        isLoading={isLoading}
-                    />
-                </Divider>
-                <Divider>
-                    <SecurityFeatures />
-                </Divider>
-                <Divider>
-                    <PlaceholderCard>placeholder</PlaceholderCard>{' '}
-                </Divider>
+                <PortfolioCard
+                    portfolioValue={instanceBalance}
+                    localCurrency={props.localCurrency}
+                    buyClickHandler={() => props.goto('wallet-account-receive')}
+                    receiveClickHandler={() => props.goto('wallet-account-receive')}
+                />
+                <Divider />
+                <AssetsCard
+                    assets={groupedAssets}
+                    localCurrency={props.localCurrency}
+                    rates={props.fiat}
+                    isLoading={isLoading}
+                />
+                <Divider />
+                <SecurityFeatures />
+                <Divider />
+                <Row>
+                    <StyledConnectionStatusCard />
+                    <NewsFeed />
+                </Row>
+                <Divider />
             </Wrapper>
         </SuiteLayout>
     );

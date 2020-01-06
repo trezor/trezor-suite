@@ -14,10 +14,21 @@ storiesOf('Form', module).add(
     () => {
         const checked = boolean('Active', false);
         const isSmall = boolean('Small', true);
+        const isDisabled = boolean('Disabled', false);
+
         return isSmall ? (
-            <Switch onChange={() => {}} checked={checked} isSmall />
+            <Switch
+                onChange={() => {}}
+                checked={checked}
+                {...(isDisabled ? { isDisabled } : {})}
+                isSmall
+            />
         ) : (
-            <StyledSwitch onChange={() => {}} checked={checked} />
+            <StyledSwitch
+                onChange={() => {}}
+                {...(isDisabled ? { isDisabled } : {})}
+                checked={checked}
+            />
         );
     },
     {
@@ -25,7 +36,7 @@ storiesOf('Form', module).add(
             ...infoOptions,
             text: `
         ~~~js
-        import { Checkbox } from 'trezor-ui-components';
+        import { Checkbox } from '@trezor/components-v2';
         ~~~
         `,
         },

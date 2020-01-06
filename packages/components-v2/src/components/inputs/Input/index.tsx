@@ -47,6 +47,7 @@ const StyledInput = styled.input<InputProps>`
     ${props =>
         props.monospace &&
         css`
+            font-family: ${variables.FONT_FAMILY.MONOSPACE};
             padding-bottom: 2px;
         `}
 
@@ -83,14 +84,25 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputIconWrapper = styled.div`
+const InputIconWrapper = styled.div<InputProps>`
     position: absolute;
     top: 1px;
     bottom: 1px;
-    right: 10px;
     display: flex;
     align-items: center;
     z-index: 2;
+
+    ${props =>
+        props.align === 'left' &&
+        css`
+            right: 10px;
+        `}
+
+    ${props =>
+        props.align === 'right' &&
+        css`
+            left: 10px;
+        `}
 `;
 
 const SpinnerWrapper = styled.div``;
@@ -106,6 +118,9 @@ const BottomText = styled.div<InputProps>`
 `;
 
 const Button = styled.button`
+    font-family: ${variables.FONT_FAMILY.TTHOVES};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK25};
     border: none;
     outline: none;
@@ -124,6 +139,7 @@ const ButtonText = styled.div`
     font-size: 14px;
     font-weight: 500;
     height: 14px;
+    line-height: 16px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -158,8 +174,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     variant?: InputVariant;
     display?: InputDisplay;
     button?: InputButton;
-    topLabel?: string;
-    bottomText?: string;
+    topLabel?: React.ReactNode;
+    bottomText?: React.ReactNode;
     monospace?: boolean;
     isDisabled?: boolean;
     autoComplete?: string;
@@ -191,7 +207,7 @@ const Input = ({
     wrapperProps,
     isLoading,
     isPartiallyHidden,
-    align,
+    align = 'left',
     ...rest
 }: InputProps) => {
     const [buttonHover, setButtonHover] = React.useState(false);
@@ -216,7 +232,7 @@ const Input = ({
         <Wrapper display={display} {...wrapperProps}>
             {topLabel && <Label>{topLabel}</Label>}
             <InputWrapper>
-                <InputIconWrapper>
+                <InputIconWrapper align={align}>
                     {isLoading && (
                         <SpinnerWrapper>
                             <FluidSpinner size={16} color={colors.GREEN} />
@@ -232,7 +248,7 @@ const Input = ({
                                 <StyledIcon
                                     icon={button.icon}
                                     size={10}
-                                    color={buttonHover ? colors.BLACK0 : colors.BLACK50}
+                                    color={buttonHover ? colors.BLACK0 : colors.BLACK25}
                                 />
                             )}
                             {button.text && <ButtonText>{button.text}</ButtonText>}

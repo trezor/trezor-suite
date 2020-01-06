@@ -1,6 +1,8 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 
 interface Props {
     locale: string;
@@ -8,10 +10,24 @@ interface Props {
 
 const createComponentWithIntl = (children: React.ReactChild, props?: Props) => {
     const { locale = 'en' } = props || {};
+
+    // Mock store because our custom wrapper around FormattedMessage (Translation component)
+    // imports TooltipHelper that depends on accessing the redux store
+    const mockStore = configureStore([]);
+    const store = mockStore({
+        suite: {
+            debug: {
+                translationMode: false,
+            },
+        },
+    });
+
     return renderer.create(
-        <IntlProvider {...props} locale={locale}>
-            {children}
-        </IntlProvider>,
+        <Provider store={store}>
+            <IntlProvider {...props} locale={locale}>
+                {children}
+            </IntlProvider>
+        </Provider>,
     );
 };
 

@@ -24,7 +24,8 @@ type WrapperProps = Pick<Props, 'isOpen'>;
 const AbsoluteWrapper = styled.aside<WrapperProps>`
     width: 240px;
     background: ${colors.WHITE};
-    box-shadow: 2px 0px 3px rgb(0, 0, 0, 0.1);
+    box-shadow: 10px 0px 20px -5px rgba(0, 0, 0, 0.05);
+    z-index: 2; /* makes the shadow visible on top of the content element */
     margin-right: 3px;
     height: 100vh;
     min-height: 600px;

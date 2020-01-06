@@ -32,7 +32,7 @@ storiesOf('Typography', module).add(
             ...infoOptions,
             text: `
             ~~~js
-            import { Link } from 'trezor-ui-components';
+            import { Link } from '@trezor/components-v2';
             ~~~
             `,
         },

@@ -54,7 +54,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             1: 'data/firmware/1/releases.json',
             2: 'data/firmware/2/releases.json',
         },
-        baseUrl: 'https://beta-wallet.trezor.io',
+        baseUrl: 'https://wallet.trezor.io',
     });
 
     let fw;

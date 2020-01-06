@@ -290,16 +290,20 @@ export const enhanceTransaction = (
     };
 };
 
-export const getTotalBalance = (deviceAccounts: Account[], localCurrency: string, fiat: Fiat[]) => {
-    let instanceBalance = new BigNumber(0);
-    deviceAccounts.forEach(a => {
-        const fiatRates = fiat.find(f => f.symbol === a.symbol);
-        if (fiatRates) {
-            const fiatBalance = toFiatCurrency(a.balance, localCurrency, fiatRates);
-            if (fiatBalance) {
-                instanceBalance = instanceBalance.plus(formatNetworkAmount(fiatBalance, a.symbol));
-            }
+export const getAccountBalance = (account: Account, localCurrency: string, fiat: Fiat[]) => {
+    const fiatRates = fiat.find(f => f.symbol === account.symbol);
+    if (fiatRates) {
+        const fiatBalance = toFiatCurrency(account.balance, localCurrency, fiatRates);
+        if (fiatBalance) {
+            return formatNetworkAmount(fiatBalance, account.symbol);
         }
+    }
+};
+
+export const getTotalBalance = (deviceAccounts: Account[], localCurrency: string, fiat: Fiat[]) => {
+    const instanceBalance = new BigNumber(0);
+    deviceAccounts.forEach(a => {
+        getAccountBalance(a, localCurrency, fiat);
     });
     return instanceBalance;
 };
