@@ -73,22 +73,28 @@ export const rememberDevice = (device: TrezorDevice) => async (
     getState: GetState,
 ) => {
     if (!device || !device.features || !device.state) return;
-    const { wallet } = getState();
-    const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
-    const discovery = wallet.discovery.filter(d => d.deviceState === device.state);
-    // trim promise function from discovery object
-    const serializableDiscovery = discovery.map(d => serializeDiscovery(d));
-    const txsPromises = accounts.map(acc => {
-        return dispatch(saveAccountTransactions(acc));
-    });
+    const { wallet, devices } = getState();
+    const instances = getDeviceInstances(device, devices, true);
 
-    try {
-        await Promise.all([
-            saveDevice(device),
+    const promises = instances.map(instance => {
+        const accounts = wallet.accounts.filter(a => a.deviceState === instance.state);
+        const discovery = wallet.discovery.filter(d => d.deviceState === instance.state);
+        // trim promise function from discovery object
+        const serializableDiscovery = discovery.map(d => serializeDiscovery(d));
+        const txsPromises = accounts.map(acc => {
+            return dispatch(saveAccountTransactions(acc));
+        });
+
+        return Promise.all([
+            saveDevice(instance),
             saveAccounts(accounts),
             saveDiscovery(serializableDiscovery),
             ...txsPromises,
         ] as Promise<void | string | undefined>[]);
+    });
+
+    try {
+        await Promise.all(promises);
     } catch (error) {
         if (error) {
             console.error('errorName', error.name);
@@ -99,24 +105,31 @@ export const rememberDevice = (device: TrezorDevice) => async (
     }
 };
 
-export const forgetDevice = (device: TrezorDevice) => async (
+export const forgetDeviceInstance = (device: TrezorDevice) => async (
     _dispatch: Dispatch,
     _getState: GetState,
 ) => {
     if (!device.state) return;
-
-    // get all device instances
-    const storedDevices = await db.getItemsExtended('devices');
-    const deviceInstances = getDeviceInstances(device, storedDevices);
-
-    await Promise.all([
+    const promises = await Promise.all([
         db.removeItemByPK('devices', device.state),
-        deviceInstances.filter(d => !!d.state).map(d => db.removeItemByPK('devices', d.state!)),
         db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByPK('discovery', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),
         db.removeItemByIndex('sendForm', 'deviceState', device.state),
     ]);
+    return promises;
+};
+
+export const forgetDevice = (device: TrezorDevice) => async (
+    dispatch: Dispatch,
+    _getState: GetState,
+) => {
+    if (!device.state) return;
+    // get all device instances
+    const storedDevices = await db.getItemsExtended('devices');
+    const deviceInstances = getDeviceInstances(device, storedDevices, true);
+    const promises = deviceInstances.map(instance => dispatch(forgetDeviceInstance(instance)));
+    await Promise.all(promises);
 };
 
 export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
@@ -127,6 +140,10 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
         },
         'wallet',
     );
+};
+
+export const saveFiatRates = () => (_dispatch: Dispatch, getState: GetState) => {
+    return db.addItems('fiatRates', getState().wallet.fiat, true);
 };
 
 export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState) => {
@@ -145,7 +162,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
     const isDBAvailable = await SuiteDB.isDBAvailable();
 
     if (!isDBAvailable) {
-        console.warn('IndexedDB not supported');
+        // console.warn('IndexedDB not supported');
         const initialState = getState();
         dispatch({
             type: STORAGE.LOADED,
@@ -160,6 +177,8 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const accounts = await db.getItemsExtended('accounts');
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
+        const fiatRates = await db.getItemsExtended('fiatRates');
+
         const txs = await db.getItemsExtended('txs', 'order');
 
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
@@ -193,6 +212,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         ...initialState.wallet.transactions,
                         transactions: mappedTxs,
                     },
+                    fiat: fiatRates || [],
                 },
             },
         });

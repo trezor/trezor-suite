@@ -32,7 +32,6 @@ export const showAddress = (path: string) => async (
     const { network } = getState().wallet.selectedAccount;
 
     if (!selectedDevice || !network) return;
-
     if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         // Show modal when device is not connected
         dispatch({

@@ -34,13 +34,15 @@ module.exports = (async () => {
                 stream: nodejs.stream,
                 path: nodejs.path,
                 vm: nodejs.vm,
-                '@trezor/blockchain-link': path.resolve(__dirname, '../../packages/blockchain-link'),
+                '@trezor/blockchain-link': path.resolve(
+                    __dirname,
+                    '../../packages/blockchain-link',
+                ),
             },
             // https://github.com/facebook/metro/issues/265
             blacklistRE: blacklist([
                 /packages\/.*\/node_modules\/react-native\/.*/, // ignores react-native dependency in each package; suite relies on react-native hoisted to root node_modules folder
                 /node_modules\/.*\/node_modules\/react-native\/.*/,
-                /packages\/suite-desktop\/.*/,
             ]),
             assetExts: assetExts.filter(ext => ext !== 'svg'),
             sourceExts: [...sourceExts, 'svg'],

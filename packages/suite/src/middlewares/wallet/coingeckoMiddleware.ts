@@ -1,47 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
-import { httpRequest } from '@wallet-utils/networkUtils';
-import { resolveAfter } from '@wallet-utils/promiseUtils';
-import { FIAT } from '@suite-config';
 import { AppState, Action, Dispatch } from '@suite-types';
-
-export const RATE_UPDATE = '@rate/update';
-
-export interface NetworkRate {
-    symbol: string;
-    rates: { [key: string]: number };
-}
-
-export interface FiatRateActions {
-    type: typeof RATE_UPDATE;
-    symbol: string;
-    rates: { [key: string]: number };
-}
-
-const loadRateAction = () => async (dispatch: Dispatch): Promise<void> => {
-    // const { config } = getState().localStorage;
-    // if (!config) return;
-
-    try {
-        FIAT.tickers.forEach(async ticker => {
-            const response = await httpRequest(
-                `${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`,
-                'json',
-            );
-            if (response) {
-                dispatch({
-                    type: RATE_UPDATE,
-                    symbol: response.symbol,
-                    rates: response.market_data.current_price,
-                });
-            }
-        });
-    } catch (error) {
-        console.error(error);
-    }
-
-    await resolveAfter(50000);
-};
+import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 
 const coingeckoMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -51,7 +11,7 @@ const coingeckoMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     // TODO: change to WALLET.READY
     if (action.type === SUITE.READY) {
-        api.dispatch(loadRateAction());
+        api.dispatch(fiatRatesActions.initRates());
     }
 
     // if (action.type === TOKEN.ADD) {

@@ -66,7 +66,7 @@ storiesOf('Notifications', module).add(
             ...infoOptions,
             text: `
             ~~~js
-            import { Notification } from 'trezor-ui-components';
+            import { Notification } from '@trezor/components-v2';
             ~~~
             `,
         },

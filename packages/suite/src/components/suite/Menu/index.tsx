@@ -11,7 +11,6 @@ const Wrapper = styled.div`
     background: ${colors.BLACK17};
     width: 120px;
     display: flex;
-    height: 100vh;
     flex-direction: column;
 `;
 
@@ -20,7 +19,11 @@ const Menu = (props: Props) => {
         <Wrapper>
             <TopMenu selectedDevice={props.selectedDevice} />
             <MainMenu app={props.router.app} goto={props.goto} />
-            <BottomMenu goto={props.goto} />
+            <BottomMenu
+                goto={props.goto}
+                discreetMode={props.discreetMode}
+                setDiscreetMode={props.setDiscreetMode}
+            />
         </Wrapper>
     );
 };

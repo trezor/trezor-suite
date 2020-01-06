@@ -62,4 +62,4 @@ export default {
         'xag',
         'xau',
     ],
-};
+} as const;

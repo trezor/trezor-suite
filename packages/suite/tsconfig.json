@@ -1,6 +1,12 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "plugins": [
+            {
+                "name": "typescript-styled-plugin",
+                "tags": ["styled", "css", "sty"]
+            }
+        ],
         "jsx": "react", // https://github.com/kulshekhar/ts-jest/issues/937#issuecomment-456814377
         "moduleResolution": "node",
         "sourceMap": true,

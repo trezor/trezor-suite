@@ -75,7 +75,7 @@ describe('suite middleware', () => {
                 url: '/',
             });
             expect(store.getActions()).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'wallet' },
+                { type: SUITE.APP_CHANGED, payload: 'dashboard' },
                 { type: ROUTER.LOCATION_CHANGE, url: '/' },
             ]);
         });
@@ -93,6 +93,7 @@ describe('suite middleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isStatic: true,
+                        isModal: true,
                     },
                 }),
             );

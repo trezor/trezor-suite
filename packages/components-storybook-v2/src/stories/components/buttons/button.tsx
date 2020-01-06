@@ -21,9 +21,9 @@ storiesOf('Buttons', module).add(
         const size: any = select(
             'Size',
             {
-                'Default (medium)': null,
+                'Default (large)': null,
                 Small: 'small',
-                Large: 'large',
+                Medium: 'medium',
             },
             null
         );
@@ -57,7 +57,7 @@ storiesOf('Buttons', module).add(
             ...infoOptions,
             text: `
             ~~~js
-            import { Button } from 'trezor-ui-components';
+            import { Button } from '@trezor/components-v2';
             ~~~
             `,
         },

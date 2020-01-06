@@ -1,4 +1,4 @@
-import { PHISHING_URL } from '@onboarding-constants/urls';
+import { PHISHING_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components/Translation';
 import { addToFlags, HAS_BOOKMARK_FLAG } from '@suite-utils/flags';
 import { Key, OnboardingButton, Text, Wrapper } from '@suite/components/onboarding';

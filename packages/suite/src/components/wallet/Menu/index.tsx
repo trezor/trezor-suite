@@ -9,10 +9,11 @@ import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
 import { Account } from '@wallet-types';
-import Row from './components/Row';
+import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import messages from '@suite/support/messages';
+import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
 
 const Wrapper = styled.div``;
 
@@ -29,11 +30,29 @@ const LoadingText = styled.div`
     padding-left: 10px;
 `;
 
+const TitleWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 36px 0px 16px 0px;
+    padding: 0px 12px;
+`;
+
+const TitleText = styled.div`
+    display: flex;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 600;
+    color: #808080;
+`;
+
+const TitleActions = styled.div`
+    display: flex;
+`;
+
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     accounts: state.wallet.accounts,
     selectedAccount: state.wallet.selectedAccount,
-    hideBalance: state.wallet.settings.hideBalance,
     discovery: state.wallet.discovery,
     router: state.router,
 });
@@ -64,7 +83,6 @@ const Menu = ({
     device,
     accounts,
     selectedAccount,
-    hideBalance,
     getDiscoveryForDevice,
     requestNewAccount,
 }: Props) => {
@@ -99,28 +117,25 @@ const Menu = ({
 
     return (
         <Wrapper>
-            {discovery.status === 4 && (
-                <AddAccountButton
-                    onClick={requestNewAccount}
-                    tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
-                />
-            )}
+            <TitleWrapper>
+                <TitleText>Accounts</TitleText>{' '}
+                <TitleActions>
+                    <AddAccountButton
+                        onClick={requestNewAccount}
+                        disabled={discovery.status !== DISCOVERY_STATUS.COMPLETED}
+                        tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
+                    />
+                </TitleActions>
+            </TitleWrapper>
             {discoveryIsRunning && list.length === 0 && <DiscoveryStatus />}
             {normalAccounts.map(account => (
-                <Row
+                <AccountItem
                     account={account}
-                    hideBalance={hideBalance}
                     selected={isSelected(account)}
                     key={`${account.descriptor}-${account.symbol}`}
                 />
             ))}
             {discoveryIsRunning && list.length > 0 && <DiscoveryStatus />}
-            {discovery.status === 4 && (
-                <AddAccountButton
-                    onClick={requestNewAccount}
-                    tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
-                />
-            )}
             {legacyAccounts.length > 0 && (
                 <ToggleLegacyAccounts
                     onToggle={() => setLegacyVisibleState(!legacyVisible)}
@@ -129,9 +144,8 @@ const Menu = ({
             )}
             {legacyVisible &&
                 legacyAccounts.map(account => (
-                    <Row
+                    <AccountItem
                         account={account}
-                        hideBalance={hideBalance}
                         selected={isSelected(account)}
                         key={`${account.descriptor}-${account.symbol}`}
                     />

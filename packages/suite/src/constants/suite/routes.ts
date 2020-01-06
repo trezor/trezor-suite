@@ -7,6 +7,7 @@ const routes = [
         name: 'wallet-index',
         pattern: '/wallet',
         app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'passwords-index',
@@ -19,14 +20,9 @@ const routes = [
         app: 'exchange',
     },
     {
-        name: 'dashboard-index',
-        pattern: '/dashboard',
-        app: 'dashboard',
-    },
-    {
         name: 'suite-index',
         pattern: '/',
-        app: 'wallet',
+        app: 'dashboard',
     },
     {
         name: 'suite-version',
@@ -45,11 +41,17 @@ const routes = [
         pattern: '/onboarding',
         app: 'onboarding',
         isStatic: true,
+        isModal: true,
     },
     // todo: app will be just settings probably
     {
         name: 'settings-index',
         pattern: '/settings',
+        app: 'deviceManagement',
+    },
+    {
+        name: 'settings-debug',
+        pattern: '/settings/debug',
         app: 'deviceManagement',
     },
     {
@@ -72,21 +74,19 @@ const routes = [
         pattern: '/settings/coins',
         app: 'deviceManagement',
     },
+    // todo: remove this route and move functionality to settings
     {
         name: 'suite-device-firmware',
         pattern: '/firmware',
         app: 'firmware',
         isStatic: true,
+        isModal: true,
     },
     {
-        name: 'suite-device-backup',
-        pattern: '/backup',
+        name: 'suite-switch-device',
+        pattern: '/switch-device',
         app: 'deviceManagement',
-    },
-    {
-        name: 'wallet-settings',
-        pattern: '/wallet/settings',
-        app: 'wallet',
+        isModal: true,
     },
     {
         name: 'wallet-import',
@@ -127,6 +127,7 @@ const routes = [
 
 export type Route = {
     isStatic?: boolean;
+    isModal?: boolean;
     params?: typeof walletParams;
 } & ArrayElement<typeof routes>;
 

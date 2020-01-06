@@ -14,7 +14,7 @@ interface Props {
 export default ({ device, pathname, goto }: Props) => {
     const needsBackup = device && device.features && device.features.needs_backup;
     if (!needsBackup) return null;
-    if (pathname === getRoute('suite-device-backup')) return null;
+    if (pathname === getRoute('settings-device')) return null;
     return (
         <Notification
             key="no-backup"
@@ -25,7 +25,7 @@ export default ({ device, pathname, goto }: Props) => {
                 {
                     label: <Translation {...messages.TR_CREATE_BACKUP_IN_3_MINUTES} />,
                     // label: 'Create backup in 3 minutes',
-                    callback: () => goto('suite-device-backup'),
+                    callback: () => goto('settings-device'),
                 },
             ]}
         />

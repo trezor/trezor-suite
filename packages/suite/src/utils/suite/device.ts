@@ -105,7 +105,7 @@ export const getStatusColor = (deviceStatus: string): string => {
 
 // todo: not sure if this belongs to device utils, maybe something like suiteUtils
 export const isWebUSB = (transport?: Transport) =>
-    !!(transport && transport.type && transport.type === 'webusb');
+    !!(transport && transport.type && transport.type === 'WebUsbPlugin');
 
 /*
 TODO: is this util used anywhere?
@@ -142,9 +142,14 @@ export const isSelectedDevice = (selected?: TrezorDevice, device?: TrezorDevice)
         selected.instance === device.instance
     );
 
-export const getVersion = (device: TrezorDevice): string => {
+export const getVersion = (device: TrezorDevice) => {
     const { features } = device;
     return features && features.major_version > 1 ? 'T' : 'One';
+};
+
+export const getFwVersion = (device: AcquiredDevice) => {
+    const { features } = device;
+    return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };
 
 /**

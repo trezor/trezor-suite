@@ -1,4 +1,5 @@
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { getDateWithTimeZone } from '../suite/date';
 
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
@@ -13,7 +14,7 @@ export const groupTransactionsByDate = (
     transactions.forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockTime && item.blockTime !== 0) {
-            const d = new Date(item.blockTime * 1000);
+            const d = getDateWithTimeZone(item.blockTime * 1000);
             // YYYY-MM-DD format
             key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
         }
@@ -32,6 +33,8 @@ export const groupTransactionsByDate = (
  */
 export const parseKey = (key: string) => {
     const parts = key.split('-');
-    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    const d = getDateWithTimeZone(
+        new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])).getTime(),
+    );
     return d;
 };

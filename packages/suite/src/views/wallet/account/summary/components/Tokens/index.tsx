@@ -15,10 +15,10 @@ const AddedTokensWrapper = styled.div``;
 
 interface Props {
     tokens: Exclude<Account['tokens'], undefined>;
-    hideBalance: boolean;
+    discreetMode: boolean;
 }
 
-const Tokens = ({ tokens, hideBalance }: Props) => {
+const Tokens = ({ tokens, discreetMode }: Props) => {
     return (
         <>
             <TokensHeadingWrapper>
@@ -29,7 +29,7 @@ const Tokens = ({ tokens, hideBalance }: Props) => {
             <AddedTokensWrapper>
                 {tokens.length === 0 && <P textAlign="center">No tokens</P>}
                 {tokens.map(token => (
-                    <TokenItem key={token.address} token={token} hideBalance={hideBalance} />
+                    <TokenItem key={token.address} token={token} discreetMode={discreetMode} />
                 ))}
             </AddedTokensWrapper>
         </>

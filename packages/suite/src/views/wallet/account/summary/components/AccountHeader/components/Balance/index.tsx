@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { Icon, Tooltip, colors, variables } from '@trezor/components';
+import { Icon, colors, variables } from '@trezor/components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { FormattedNumber } from '@suite/components/suite';
+import { FormattedNumber, NoRatesTooltip } from '@suite-components';
 import { Network, Fiat } from '@wallet-types';
 import messages from '@suite/support/messages';
 
@@ -22,7 +22,7 @@ interface Props {
 
 interface State {
     isHidden: boolean;
-    canAnimateHideBalanceIcon: boolean;
+    canAnimatediscreetModeIcon: boolean;
 }
 
 const Wrapper = styled.div<Pick<State, 'isHidden'>>`
@@ -33,7 +33,7 @@ const Wrapper = styled.div<Pick<State, 'isHidden'>>`
     border-bottom: 1px solid ${colors.DIVIDER};
 `;
 
-const HideBalanceIconWrapper = styled.div`
+const DiscreetModeIconWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,12 +94,6 @@ const Label = styled.div`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    align-items: center;
-    margin-top: -5px;
-`;
-
 const TooltipContainer = styled.div`
     margin-left: 6px;
 `;
@@ -111,14 +105,14 @@ const TooltipWrapper = styled.div`
 
 const AccountBalance = (props: Props) => {
     const [isHidden, setIsHidden] = useState(props.isHidden);
-    const [canAnimateHideBalanceIcon, setCanAnimateHideBalanceIcon] = useState(isHidden);
+    const [canAnimatediscreetModeIcon, setCanAnimatediscreetModeIcon] = useState(isHidden);
 
     useEffect(() => {
         setIsHidden(props.isHidden);
     }, [props.isHidden]);
 
-    const handleHideBalanceIconClick = () => {
-        setCanAnimateHideBalanceIcon(true);
+    const handleDiscreetModeIconClick = () => {
+        setCanAnimatediscreetModeIcon(true);
         setIsHidden(!isHidden);
     };
 
@@ -127,29 +121,23 @@ const AccountBalance = (props: Props) => {
     const fiatRateValue = fiatRates ? fiatRates.rates[localCurrency] : null;
     const fiat = fiatRates ? toFiatCurrency(props.balance, localCurrency, fiatRates) : null;
 
-    const NoRatesTooltip = (
+    const WrappedNoRatesTooltip = (
         <TooltipContainer>
-            <Tooltip
-                maxWidth={285}
-                placement="top"
-                content={<Translation {...messages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
-            >
-                <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
-            </Tooltip>
+            <NoRatesTooltip />
         </TooltipContainer>
     );
 
     return (
         <Wrapper isHidden={isHidden}>
-            <HideBalanceIconWrapper onClick={() => handleHideBalanceIconClick()}>
+            <DiscreetModeIconWrapper onClick={() => handleDiscreetModeIconClick()}>
                 <Icon
-                    canAnimate={canAnimateHideBalanceIcon}
+                    canAnimate={canAnimatediscreetModeIcon}
                     isActive={isHidden}
                     icon="ARROW_UP"
                     color={colors.TEXT_SECONDARY}
                     size={14}
                 />
-            </HideBalanceIconWrapper>
+            </DiscreetModeIconWrapper>
             {!isHidden && (
                 <>
                     <BalanceWrapper>
@@ -164,7 +152,7 @@ const AccountBalance = (props: Props) => {
                                     'N/A'
                                 )}
                             </FiatValue>
-                            {!fiatRates && NoRatesTooltip}
+                            {!fiatRates && WrappedNoRatesTooltip}
                         </TooltipWrapper>
                         <CoinBalance>
                             {props.balance} {network.symbol}
@@ -195,7 +183,7 @@ const AccountBalance = (props: Props) => {
                                     'N/A'
                                 )}
                             </FiatValueRate>
-                            {!fiatRates && NoRatesTooltip}
+                            {!fiatRates && WrappedNoRatesTooltip}
                         </TooltipWrapper>
                         <CoinBalance>1 {network.symbol}</CoinBalance>
                     </BalanceRateWrapper>

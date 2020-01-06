@@ -1,8 +1,7 @@
 import React from 'react';
 import { Props as ContainerProps } from '../../Container';
 import styled from 'styled-components';
-import { Switch } from '@trezor/components';
-import { Icon, colors } from '@trezor/components-v2';
+import { Icon, colors, Switch } from '@trezor/components-v2';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 
@@ -35,15 +34,21 @@ const SubMenuText = styled.div`
 
 interface Props {
     goto: ContainerProps['goto'];
+    discreetMode: boolean;
+    setDiscreetMode: (s: boolean) => void;
 }
 
 const BottomMenu = (props: Props) => (
     <Wrapper>
         {BOTTOM_MENU_ITEMS.map(item => {
             const { route, icon, text } = item;
-
+            const dataTestId = `@suite/menu/${text.toLocaleLowerCase()}`;
             return (
-                <MenuItemWrapper key={text} onClick={() => props.goto(route)}>
+                <MenuItemWrapper
+                    data-test={dataTestId}
+                    key={text}
+                    onClick={() => props.goto(route)}
+                >
                     <IconWrapper>
                         <Icon color={colors.WHITE} size={10} icon={icon} />
                     </IconWrapper>
@@ -57,9 +62,9 @@ const BottomMenu = (props: Props) => (
                 <SubMenuText>Discreet</SubMenuText>
                 <Switch
                     isSmall
-                    checked={false}
-                    onChange={() => {
-                        console.log('change me');
+                    checked={props.discreetMode}
+                    onChange={checked => {
+                        props.setDiscreetMode(checked);
                     }}
                 />
             </MenuItemWrapper>

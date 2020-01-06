@@ -5,7 +5,7 @@ import { getPrefixedURL, isInternalRoute } from '@suite-utils/router';
 
 interface Props extends LinkProps {
     className?: string;
-    variant?: 'gray' | 'nostyle';
+    variant?: 'default' | 'nostyle';
     target?: string;
     children?: React.ReactNode;
 }

@@ -1,3 +1,6 @@
+// all tests have same UTC timezone
+process.env.TZ = 'UTC';
+
 module.exports = {
     roots: ['./src'],
     globals: {
@@ -42,18 +45,13 @@ module.exports = {
         '!**/constants/**',
         '!**/constants/**',
         '!**/__tests__/**',
-        // TODO REMOVE THIS
-        '!<rootDir>/src/reducers/wallet/sendFormReducer.ts',
-        '!<rootDir>/src/reducers/wallet/feesReducer.ts',
-        '!<rootDir>/src/actions/wallet/sendFormActions.ts',
-        '!<rootDir>/src/actions/wallet/sendFormSpecific/**',
     ],
     coverageThreshold: {
         global: {
-            statements: 66.3,
-            branches: 65.31,
+            statements: 63.2,
+            branches: 58.88,
             functions: 66.78,
-            lines: 66.87,
+            lines: 63.72,
         },
     },
     modulePathIgnorePatterns: [
@@ -68,6 +66,7 @@ module.exports = {
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
+        '^.+\\.svg$': '<rootDir>/src/support/tests/svgTransform.js', // https://stackoverflow.com/questions/46791263/jest-test-fail-syntaxerror-unexpected-token
     },
     preset: 'ts-jest',
     verbose: false,

@@ -4,7 +4,7 @@ export const init = [
     {
         description: `success`,
         result: {
-            app: 'wallet',
+            app: 'dashboard',
             hash: undefined,
             params: undefined,
             pathname: '/',
@@ -19,7 +19,7 @@ export const init = [
                 url: '/',
                 pathname: '/',
                 hash: undefined,
-                app: 'wallet',
+                app: 'dashboard',
                 params: undefined,
                 route: undefined,
             },

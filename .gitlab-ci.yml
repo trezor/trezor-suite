@@ -1,30 +1,27 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:30432a76306b0b3ae5f0fa57d0bc9a63fb4d025f
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:c51f080789c0f0c9683a96090e335831cde283b4
 
-variables:
-    PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
-    PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
-    PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
-    PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-    PACKAGE_PATH_CONNECT_EXPLORER: 'packages/connect-explorer'
-    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+variables: 
+    DEV_SERVER_URL: "https://suite.corp.sldev.cz"
+    PACKAGE_PATH_COMPONENTS: packages/components-storybook
+    PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
+    PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
+    PACKAGE_PATH_SUITE_WEB: packages/suite-web
 
-stages:
+stages: 
     - setup environment
-    - lint and prettier
-    - typescript type check
+    - lint and types
     - unit testing
     - build
     - deploy to dev servers
     - integration testing
-    - build desktop apps
     - misc
 
-include:
+include: 
     - ci/environment.yml
     - ci/install-and-build.yml
     - ci/packages/components.yml
-    - ci/packages/components-v2.yml
+    # - ci/packages/components-v2.yml
     - ci/packages/components-storybook.yml
     - ci/packages/components-storybook-v2.yml
     - ci/packages/suite.yml
@@ -33,4 +30,18 @@ include:
     - ci/packages/suite-native.yml
     - ci/packages/blockchain-link.yml
     - ci/packages/rollout.yml
-    # - ci/packages/connect-explorer.yml
+    # - ci/packages/translations-manager.yml
+
+lint: 
+    stage: lint and types
+    dependencies: 
+        - install and build
+    script: 
+        - lerna run lint
+    
+type check:
+    stage: lint and types
+    dependencies: 
+        - install and build
+    script: 
+        - lerna run type-check

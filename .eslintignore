@@ -6,7 +6,6 @@ _old
 examples
 docker
 public
-static
 
 # libs and builds
 dist
@@ -32,3 +31,5 @@ ci
 # native
 android
 ios
+
+packages/suite-data/files/browser-detection

@@ -1,4 +1,4 @@
-import { IconType } from '../support/types';
+import { IconType, CoinType } from '../support/types';
 
 export const SCREEN_SIZE = {} as const;
 
@@ -17,13 +17,40 @@ export const FONT_SIZE = {
 export const FONT_WEIGHT = {
     LIGHT: 300,
     REGULAR: 400,
+    MEDIUM: 500,
     DEMI_BOLD: 600,
     BOLD: 700,
 } as const;
 
 export const FONT_FAMILY = {
     TTHOVES: 'TTHoves',
+    MONOSPACE: 'Menlo, Monaco, Consolas, “Courier New”, monospace',
 } as const;
+
+export const COINS: CoinType[] = [
+    'ada',
+    'bch',
+    'btc',
+    'test',
+    'btg',
+    'dash',
+    'dgb',
+    'doge',
+    'etc',
+    'eth',
+    'ltc',
+    'nem',
+    'nmc',
+    'rinkeby',
+    'trop',
+    'txrp',
+    'vtc',
+    'xem',
+    'xlm',
+    'xrp',
+    'xtz',
+    'zec',
+];
 
 export const ICONS: IconType[] = [
     'ARROW_DOWN',

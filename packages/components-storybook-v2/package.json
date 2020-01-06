@@ -13,10 +13,7 @@
         "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
         "build": "build-storybook -s ./public -c .storybook -o .build",
         "type-check": "tsc --project tsconfig.types.json",
-        "type-check:watch": "yarn type-check -- --watch",
-        "ci:test:snapshots": "cypress run",
-        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots",
-        "ci:test:open": "cypress open"
+        "type-check:watch": "yarn type-check -- --watch"
     },
     "dependencies": {
         "@storybook/addon-actions": "^5.0.10",
@@ -24,7 +21,6 @@
         "@storybook/addon-info": "5.2.0-alpha.30",
         "@storybook/addon-knobs": "^5.0.10",
         "@storybook/addon-links": "^5.0.10",
-        "@storybook/addon-options": "^5.0.10",
         "@storybook/addon-viewport": "^5.0.10",
         "@storybook/addons": "^5.0.10",
         "@storybook/react": "^5.0.10",
@@ -39,9 +35,7 @@
         "awesome-typescript-loader": "^5.2.1",
         "babel-loader": "^8.0.5",
         "babel-plugin-styled-components": "^1.10.6",
-        "cypress": "^3.4.1",
-        "cypress-image-snapshot": "^3.0.1",
-        "fs-extra": "^7.0.1",
+        "fs-extra": "^8.1.0",
         "npm-run-all": "^4.1.5",
         "react": "16.9.0",
         "react-docgen-typescript-loader": "^3.1.0",

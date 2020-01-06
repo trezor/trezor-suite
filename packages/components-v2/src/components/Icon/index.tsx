@@ -1,7 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 
 import React from 'react';
-import ReactSvg from 'react-svg';
+import { ReactSVG } from 'react-svg';
 import colors from '../../config/colors';
 import { IconType } from '../../support/types';
 import { ICONS } from './icons';
@@ -95,7 +95,7 @@ const Icon = ({
             size={size}
             {...rest}
         >
-            <ReactSvg
+            <ReactSVG
                 src={ICONS[icon]}
                 beforeInjection={svg => {
                     svg.setAttribute('width', `${size}px`);
@@ -108,4 +108,4 @@ const Icon = ({
     );
 };
 
-export { Icon };
+export { Icon, Props as IconProps };

@@ -39,7 +39,7 @@ storiesOf('Typography', module).add(
             ...infoOptions,
             text: `
             ~~~js
-            import { Heading } from 'trezor-ui-components';
+            import { Heading } from '@trezor/components-v2';
             ~~~
             `,
         },

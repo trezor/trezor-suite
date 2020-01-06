@@ -1,17 +1,3 @@
-components lint:
-    stage: lint and prettier
-    script:
-        - yarn workspace @trezor/components lint
-    dependencies:
-        - install and build
-
-components type check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/components type-check
-    dependencies:
-        - install and build
-
 components test unit:
     stage: unit testing
     script:

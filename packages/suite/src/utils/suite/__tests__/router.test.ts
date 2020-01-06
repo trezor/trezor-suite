@@ -7,6 +7,7 @@ import {
     stripPrefixedPathname,
     isInternalRoute,
     isStatic,
+    getTopLevelRoute,
 } from '../router';
 
 const OLD_ENV = { ...process.env };
@@ -56,7 +57,7 @@ describe('router', () => {
         it('should return the route for given name', () => {
             // @ts-ignore: invalid params
             expect(getRoute('unknown-route')).toEqual('/');
-            expect(getRoute('wallet-settings')).toEqual('/wallet/settings');
+            expect(getRoute('settings-wallet')).toEqual('/settings/wallet');
             expect(getRoute('wallet-account-transactions')).toEqual('/wallet/account/transactions');
             // tests below with intentionally mixed # params
             expect(
@@ -191,7 +192,7 @@ describe('router', () => {
 
         it('other params validation', () => {
             expect(getAppWithParams('/')).toEqual({
-                app: 'wallet',
+                app: 'dashboard',
                 params: undefined,
                 route: findRouteByName('suite-index'),
             });
@@ -207,6 +208,26 @@ describe('router', () => {
                 params: undefined,
                 route: undefined,
             });
+        });
+    });
+
+    describe('getTopLevelRoute', () => {
+        it('should return value if url is a nested page', () => {
+            process.env.assetPrefix = undefined;
+            expect(getTopLevelRoute('/')).toEqual(undefined);
+            expect(getTopLevelRoute('/wallet')).toEqual(undefined);
+            expect(getTopLevelRoute('/wallet/account')).toEqual('/wallet');
+            expect(getTopLevelRoute('dummy-data-without-slash')).toEqual(undefined);
+            // @ts-ignore: intentional invalid param type
+            expect(getTopLevelRoute(1)).toEqual(undefined);
+        });
+
+        it('should return value if url is a nested page (with prefix)', () => {
+            const prefix = '/test/asset/prefix';
+            process.env.assetPrefix = prefix;
+            expect(getTopLevelRoute(`${prefix}/`)).toEqual(undefined);
+            expect(getTopLevelRoute(`${prefix}/wallet`)).toEqual(undefined);
+            expect(getTopLevelRoute(`${prefix}/wallet/account`)).toEqual(`${prefix}/wallet`);
         });
     });
 });
