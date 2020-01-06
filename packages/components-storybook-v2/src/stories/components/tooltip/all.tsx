@@ -32,8 +32,6 @@ storiesOf('Tooltip', module).add(
                     maxWidth={number('Max width', 280)}
                     placement={placement}
                     content={text('Content', 'Passphrase is an optional feature.')}
-                    ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
-                    ctaText={text('CTA Text', 'Learn more')}
                 >
                     <span>Text with tooltip</span>
                 </Tooltip>

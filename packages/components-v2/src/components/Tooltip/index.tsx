@@ -40,7 +40,7 @@ const StyledLink = styled(Link)`
 
 const StyledTippy = styled(Tippy)`
     .tippy-arrow {
-        border: 10px solid transparent;
+        border: 5px solid transparent;
         width: 0px;
         height: 0px;
         position: absolute;
@@ -48,26 +48,26 @@ const StyledTippy = styled(Tippy)`
 
     &[data-placement^='top'] {
         .tippy-arrow {
-            border-top: 10px solid ${colors.WHITE};
-            bottom: -20px;
+            border-top: 5px solid ${colors.WHITE};
+            bottom: -10px;
         }
     }
     &[data-placement^='bottom'] {
         .tippy-arrow {
-            border-bottom: 10px solid ${colors.WHITE};
-            top: -20px;
+            border-bottom: 5px solid ${colors.WHITE};
+            top: -10px;
         }
     }
     &[data-placement^='left'] {
         .tippy-arrow {
-            border-left: 10px solid ${colors.WHITE};
-            right: -20px;
+            border-left: 5px solid ${colors.WHITE};
+            right: -10px;
         }
     }
     &[data-placement^='right'] {
         .tippy-arrow {
-            border-right: 10px solid ${colors.WHITE};
-            left: -20px;
+            border-right: 5px solid ${colors.WHITE};
+            left: -10px;
         }
     }
 `;
