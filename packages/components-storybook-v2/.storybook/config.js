@@ -33,6 +33,7 @@ function loadStories() {
     require('../src/stories/components/typography/link');
     require('../src/stories/components/notifications/all');
     require('../src/stories/components/notifications/notification');
+    require('../src/stories/components/modal/modal');
     require('../src/stories/components/loaders/all');
     require('../src/stories/components/loaders/loader');
     require('../src/stories/components/tooltip/all');

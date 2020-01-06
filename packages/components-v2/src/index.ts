@@ -12,6 +12,7 @@ import { H1, H2 } from './components/Heading';
 import { P } from './components/Paragraph';
 import { Link } from './components/Link';
 import { Notification } from './components/Notification';
+import { Modal } from './components/Modal';
 import { CoinLogo } from './components/CoinLogo';
 import { TrezorLogo } from './components/TrezorLogo';
 import { Loader } from './components/Loader';
@@ -34,6 +35,7 @@ export {
     P,
     Link,
     Notification,
+    Modal,
     CoinLogo,
     TrezorLogo,
     Loader,
