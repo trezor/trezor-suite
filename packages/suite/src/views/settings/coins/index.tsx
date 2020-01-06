@@ -3,13 +3,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { H2, P, Switch, Link, Icon, variables, colors } from '@trezor/components-v2';
+// todo: use new components
+import { CoinLogo } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { SuiteLayout, SettingsMenu } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
+import { Menu as SettingsMenu } from '@settings-components';
 import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
-import { CoinLogo } from '@trezor/components';
+// todo: maybe move to @settings-actions ?
 import * as settingsActions from '@wallet-actions/settingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
 
