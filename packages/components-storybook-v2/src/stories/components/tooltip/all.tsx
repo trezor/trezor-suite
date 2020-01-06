@@ -1,52 +1,53 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tooltip } from '@trezor/components-v2';
+import { Tooltip, H1, colors } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { select, number, text, boolean } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+
+const Wrapper = styled.div`
+    padding: 2rem;
+`;
 
 const Center = styled.div`
     display: flex;
     justify-content: center;
-    width: 100%;
-    padding: 100px 0px;
+    padding: 4rem 0px;
 `;
 
 storiesOf('Tooltip', module).add(
-    'Tooltip',
+    'All',
     () => {
-        const placement: any = select(
-            'Placement',
-            {
-                Top: 'top',
-                Bottom: 'bottom',
-                Left: 'left',
-                Right: 'right',
-            },
-            'bottom'
-        );
-
         return (
-            <Center>
-                <Tooltip
-                    maxWidth={number('Max width', 280)}
-                    placement={placement}
-                    content={text('Content', 'Passphrase is an optional feature.')}
-                >
-                    <span>Text with tooltip</span>
-                </Tooltip>
-            </Center>
+            <Wrapper>
+                <H1>Tooltip top</H1>
+                <Center data-test="tooltip-top">
+                    <Tooltip content="Nehehe" visible>
+                        <span>Tooltip text</span>
+                    </Tooltip>
+                </Center>
+                <H1>Tooltip bottom</H1>
+                <Center data-test="tooltip-bottom">
+                    <Tooltip content="Nehehe" placement="bottom" visible>
+                        <span>Tooltip text</span>
+                    </Tooltip>
+                </Center>
+                <H1>Tooltip left</H1>
+                <Center data-test="tooltip-left">
+                    <Tooltip content="Nehehe" placement="left" visible>
+                        <span>Tooltip text</span>
+                    </Tooltip>
+                </Center>
+                <H1>Tooltip right</H1>
+                <Center data-test="tooltip-right">
+                    <Tooltip content="Nehehe" placement="right" visible>
+                        <span>Tooltip text</span>
+                    </Tooltip>
+                </Center>
+            </Wrapper>
         );
     },
     {
         info: {
-            ...infoOptions,
-            text: `
-        ~~~js
-        import { Tooltip } from 'trezor-ui-components';
-        ~~~
-        *<Tooltip> is a wrapper around [Tippy.js for React](https://github.com/atomiks/tippy.js-react) component. See the [official documentation](https://github.com/atomiks/tippy.js-react) for more information about its props and usage.*
-        `,
+            disable: true,
         },
     }
 );

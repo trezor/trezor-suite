@@ -37,6 +37,7 @@ function loadStories() {
     require('../src/stories/components/loaders/all');
     require('../src/stories/components/loaders/loader');
     require('../src/stories/components/tooltip/all');
+    require('../src/stories/components/tooltip/tooltip');
 }
 
 configure(loadStories, module);
