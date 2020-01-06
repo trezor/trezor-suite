@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { colors, Icon } from '@trezor/components';
+import { colors, Icon } from '@trezor/components-v2';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
-    padding: 0px 15px;
-    margin: 8px 0px;
     display: flex;
+    padding: 0px 12px;
+    margin: 8px 0px;
     cursor: pointer;
     justify-content: space-between;
     align-items: center;
-    color: ${colors.TEXT_SECONDARY};
-    transition: color 0.3s;
-    &:hover {
-        color: ${colors.TEXT_PRIMARY};
-    }
+
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    color: ${colors.BLACK50};
+
+    /* &:hover {
+        color: ${colors.BLACK25};
+    } */
 `;
 
 interface Props {
@@ -37,7 +41,7 @@ const Toggle = ({ onToggle, isOpen }: Props) => {
                 canAnimate={touched}
                 isActive={isOpen}
                 size={12}
-                color={colors.TEXT_SECONDARY}
+                color={colors.BLACK50}
                 icon="ARROW_DOWN"
             />
         </Wrapper>

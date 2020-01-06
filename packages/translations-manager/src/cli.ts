@@ -9,7 +9,7 @@ import Crowdin from './services/crowdin';
 const result = dotenv.config();
 
 if (result.error) {
-    console.warn(result.error);
+    console.log(result.error);
 }
 
 const cli = meow(
@@ -53,7 +53,7 @@ Usage
 );
 
 if (cli.input.length === 0) {
-    console.error('Missing command');
+    console.log('Missing command');
     cli.showHelp(1);
 }
 
@@ -65,7 +65,7 @@ if (cli.flags.version) {
 
 const configFilePath = cli.flags.config;
 if (!configFilePath) {
-    console.error('Config not specified');
+    console.log('Config not specified');
     cli.showHelp();
 }
 
@@ -85,7 +85,7 @@ const projectFilename = config.project.filename;
 const apiKey = process.env[config.project.apiKeyEnv];
 
 if (!apiKey) {
-    console.error(`Could not read CrowdIn API key from env variable ${config.project.apiKeyEnv}`);
+    console.log(`Could not read CrowdIn API key from env variable ${config.project.apiKeyEnv}`);
 }
 
 const crowdin = new Crowdin(projectId, apiKey || '');
@@ -154,7 +154,7 @@ switch (command) {
         break;
 
     default:
-        console.error('Unknown command');
+        console.log('Unknown command');
         cli.showHelp();
         break;
 }

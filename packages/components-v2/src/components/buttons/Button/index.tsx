@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import colors from '../../../config/colors';
-import { FONT_SIZE } from '../../../config/variables';
+import { FONT_SIZE, FONT_FAMILY } from '../../../config/variables';
 import FluidSpinner from '../../FluidSpinner';
 
 const getPrimaryPadding = (size: ButtonSize) => {
@@ -14,6 +14,17 @@ const getPrimaryPadding = (size: ButtonSize) => {
             return '11px 12px 9px';
         default:
             return '9px 12px 7px';
+    }
+};
+
+const getButtonHeight = (size: ButtonSize) => {
+    switch (size) {
+        case 'small':
+            return '26px';
+        case 'large':
+            return '38px';
+        default:
+            return '34px';
     }
 };
 
@@ -45,6 +56,7 @@ const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
 };
 
 const Wrapper = styled.button<WrapperProps>`
+    font-family: ${FONT_FAMILY.TTHOVES};
     display: flex;
     width: ${props => (props.fullWidth ? '100%' : 'auto')};
     align-items: center;
@@ -64,6 +76,7 @@ const Wrapper = styled.button<WrapperProps>`
             background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
             border: none;
             padding: ${getPrimaryPadding(props.size)};
+            height: ${getButtonHeight(props.size)};
             box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
 
             &:hover,
@@ -81,6 +94,8 @@ const Wrapper = styled.button<WrapperProps>`
                 linear-gradient(${colors.WHITE}, ${colors.WHITE});
             border: 1px solid ${colors.BLACK70};
             padding: ${getSecondaryPadding(props.size)};
+            height: ${getButtonHeight(props.size)};
+            font-weight: 500;
 
             &:hover,
             &:focus {
@@ -93,11 +108,11 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         !props.isDisabled &&
         css`
-            background: ${colors.WHITE};
             border: none;
             height: 20px;
             font-size: ${getTertiaryFontSize(props.size)};
             padding: 0 4px;
+            font-weight: 500;
 
             &:hover,
             &:focus {
@@ -181,7 +196,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = ({
     children,
     variant = 'primary',
-    size = 'medium',
+    size = 'large',
     icon,
     fullWidth = false,
     isDisabled = false,
@@ -193,6 +208,7 @@ const Button = ({
             variant={variant}
             size={size}
             isDisabled={isDisabled}
+            disabled={isDisabled}
             fullWidth={fullWidth}
             {...rest}
         >

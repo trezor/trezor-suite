@@ -1,11 +1,3 @@
-suite test unit:
-    stage: unit testing
-    script:
-        - yarn workspace @trezor/suite-data copy-static-files
-        - yarn workspace @trezor/suite test:unit
-    dependencies:
-        - install and build
-
 suite test integration:
     only:
         - schedules

@@ -1,6 +1,0 @@
-rollout test unit:
-    stage: unit testing
-    script:
-        - yarn workspace @trezor/rollout test
-    dependencies:
-        - install and build

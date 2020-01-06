@@ -95,7 +95,7 @@ storiesOf('Form', module).add(
             ...infoOptions,
             text: `
             ~~~js
-            import { Input } from 'trezor-ui-components';
+            import { Input } from '@trezor/components-v2';
             ~~~
             `,
         },

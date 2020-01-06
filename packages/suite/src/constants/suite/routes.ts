@@ -50,6 +50,11 @@ const routes = [
         app: 'deviceManagement',
     },
     {
+        name: 'settings-debug',
+        pattern: '/settings/debug',
+        app: 'deviceManagement',
+    },
+    {
         name: 'settings-device',
         pattern: '/settings/device',
         app: 'deviceManagement',
@@ -82,11 +87,6 @@ const routes = [
         pattern: '/switch-device',
         app: 'deviceManagement',
         isModal: true,
-    },
-    {
-        name: 'wallet-settings',
-        pattern: '/wallet/settings',
-        app: 'wallet',
     },
     {
         name: 'wallet-import',

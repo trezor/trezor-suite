@@ -88,7 +88,7 @@ const Dashboard = (props: Props) => {
                     })}
                     <AddMoreCoins
                         onClick={() => {
-                            props.goto('wallet-settings');
+                            props.goto('settings-wallet');
                         }}
                     >
                         <IconWrapper>

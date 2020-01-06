@@ -1,0 +1,21 @@
+{
+    "name": "@trezor/integration-tests",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "test:components-storybook-v2": "npx cypress run --project ./projects/components-storybook-v2",
+        "test:components-storybook": "npx cypress run --project ./projects/components-storybook",
+        "test:suite-web:local:open": "./projects/suite-web/scripts/open-local.sh",
+        "test:suite-web:local:run": "./projects/suite-web/scripts/run-local.sh",
+        "test:suite-web:ci:run": "./projects/suite-web/scripts/run-ci.sh"
+    },
+    "dependencies": {
+        "cypress": "^3.7.0",
+        "ts-loader": "^6.2.1",
+        "webpack": "^4.41.4"
+    },
+    "devDependencies": {
+        "@cypress/webpack-preprocessor": "^4.1.1",
+        "cypress-image-snapshot": "^3.1.1"
+    }
+}

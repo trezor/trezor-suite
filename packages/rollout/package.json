@@ -1,33 +1,33 @@
 {
-  "name": "@trezor/rollout",
-  "version": "1.0.0",
-  "author": "Trezor <info@trezor.io>",
-  "keywords": [
-    "Trezor",
-    "trezor-rollout",
-    "trezor firmware update"
-  ],
-  "license": "SEE LICENSE IN LICENSE.md",
-  "description": "Small javascript library to get latest safe firmware version for trezor update.",
-  "main": "lib/index.js",
-  "module": "lib/index.es.js",
-  "types": "lib/index.d.ts",
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "lint": "eslint '**/*{.ts,.tsx}'",
-    "type-check": "tsc --project tsconfig.json",
-    "type-check:watch": "yarn type-check -- --watch",
-    "clean": "rimraf lib",
-    "build:lib": "yarn run clean && npx rollup -c rollup.config.js"
-  },
-  "dependencies": {
-    "cross-fetch": "^3.0.4"
-  },
-  "devDependencies": {
-    "jest-mock-random": "^1.0.3",
-    "rollup": "^0.67.4",
-    "rollup-plugin-cleanup": "^3.0.0",
-    "rollup-plugin-typescript2": "^0.21.2"
-  }
+    "name": "@trezor/rollout",
+    "version": "1.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "keywords": [
+        "Trezor",
+        "trezor-rollout",
+        "trezor firmware update"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "Small javascript library to get latest safe firmware version for trezor update.",
+    "main": "lib/index.js",
+    "module": "lib/index.es.js",
+    "types": "lib/index.d.ts",
+    "scripts": {
+        "test:unit": "jest",
+        "test:watch": "jest --watch",
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "type-check": "tsc --project tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch",
+        "clean": "rimraf lib",
+        "build:lib": "yarn run clean && npx rollup -c rollup.config.js"
+    },
+    "dependencies": {
+        "cross-fetch": "^3.0.4"
+    },
+    "devDependencies": {
+        "jest-mock-random": "^1.0.3",
+        "rollup": "^0.67.4",
+        "rollup-plugin-cleanup": "^3.0.0",
+        "rollup-plugin-typescript2": "^0.21.2"
+    }
 }

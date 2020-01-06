@@ -57,7 +57,7 @@ describe('router', () => {
         it('should return the route for given name', () => {
             // @ts-ignore: invalid params
             expect(getRoute('unknown-route')).toEqual('/');
-            expect(getRoute('wallet-settings')).toEqual('/wallet/settings');
+            expect(getRoute('settings-wallet')).toEqual('/settings/wallet');
             expect(getRoute('wallet-account-transactions')).toEqual('/wallet/account/transactions');
             // tests below with intentionally mixed # params
             expect(

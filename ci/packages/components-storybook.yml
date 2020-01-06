@@ -20,7 +20,6 @@ components-storybook deploy dev:
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    on_stop: components-storybook delete review
   before_script: []
   script:
     - cd packages/components-storybook
@@ -31,49 +30,14 @@ components-storybook deploy dev:
   tags:
     - deploy
 
-components-storybook delete review:
-  before_script: []
-  stage: deploy to dev servers
-  variables:
-    GIT_STRATEGY: none
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components-storybook/${CI_BUILD_REF_NAME}
-  when: manual
-  environment:
-    name: ${CI_BUILD_REF_NAME}
-    action: stop
-  before_script: []
-  script:
-    - cd packages/components-storybook
-    - 'rm -r "${DEPLOY_DIRECTORY}"'
-  tags:
-    - deploy
-  dependencies:
-    - install and build
-
-components-storybook test snapshots:
-  image: cypress/base:10
-  stage: integration testing
-  script:
-    - npx cypress install
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
-  artifacts:
-    expire_in: 2 days
-    when: always
-    paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/screenshots
-
-components-storybook make snapshot references:
-  image: cypress/base:10
-  stage: integration testing
-  when: manual
-  script:
-    - npx cypress install
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
-  artifacts:
-    expire_in: 5 days
-    when: always
-    paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots/
-  dependencies:
-    - install and build
+# components-storybook test snapshots:
+#   stage: integration testing
+#   script:
+#     - npx cypress install
+#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test:components-storybook
+#   artifacts:
+#     expire_in: 2 days
+#     when: always
+#     paths:
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/snapshots
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook/test/screenshots
