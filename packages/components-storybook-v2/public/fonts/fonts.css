@@ -1,5 +1,5 @@
 @font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-Bold.woff2) format('woff2'),
         url(tthoves/TTHoves-Bold.woff) format('woff');
     font-weight: bold;
@@ -7,7 +7,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-ExtraBold.woff2) format('woff2'),
         url(tthoves/TTHoves-ExtraBold.woff) format('woff');
     font-weight: 800;
@@ -15,31 +15,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-ExtraBoldItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-ExtraBoldItalic.woff) format('woff');
-    font-weight: 800;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-DemiBoldItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-DemiBoldItalic.woff) format('woff');
-    font-weight: 600;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-ExtraLightItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-ExtraLightItalic.woff) format('woff');
-    font-weight: 200;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-Black.woff2) format('woff2'),
         url(tthoves/TTHoves-Black.woff) format('woff');
     font-weight: 900;
@@ -47,7 +23,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-ExtraLight.woff2) format('woff2'),
         url(tthoves/TTHoves-ExtraLight.woff) format('woff');
     font-weight: 200;
@@ -55,15 +31,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-BlackItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-BlackItalic.woff) format('woff');
-    font-weight: 900;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-Thin.woff2) format('woff2'),
         url(tthoves/TTHoves-Thin.woff) format('woff');
     font-weight: 100;
@@ -71,15 +39,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-LightItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-LightItalic.woff) format('woff');
-    font-weight: 300;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-Regular.woff2) format('woff2'),
         url(tthoves/TTHoves-Regular.woff) format('woff');
     font-weight: normal;
@@ -87,7 +47,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-Light.woff2) format('woff2'),
         url(tthoves/TTHoves-Light.woff) format('woff');
     font-weight: 300;
@@ -95,15 +55,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-ThinItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-ThinItalic.woff) format('woff');
-    font-weight: 100;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-DemiBold.woff2) format('woff2'),
         url(tthoves/TTHoves-DemiBold.woff) format('woff');
     font-weight: 600;
@@ -111,23 +63,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-BoldItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-BoldItalic.woff) format('woff');
-    font-weight: bold;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
-    src: url(tthoves/TTHoves-MediumItalic.woff2) format('woff2'),
-        url(tthoves/TTHoves-MediumItalic.woff) format('woff');
-    font-weight: 500;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-Medium.woff2) format('woff2'),
         url(tthoves/TTHoves-Medium.woff) format('woff');
     font-weight: 500;
@@ -135,7 +71,7 @@
 }
 
 @font-face {
-    font-family: TTHoves;
+    font-family: 'TT Hoves';
     src: url(tthoves/TTHoves-Italic.woff2) format('woff2'),
         url(tthoves/TTHoves-Italic.woff) format('woff');
     font-weight: normal;
