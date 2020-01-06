@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+// /* eslint-disable @typescript-eslint/camelcase */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
@@ -42,8 +43,10 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openBackgroundGalleryModal,
-    goto,
-}: Props) => {
+    // goto,
+    openApp,
+}: // exitApp,
+Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
 
@@ -126,7 +129,8 @@ const Settings = ({
                             <ActionColumn>
                                 <ActionButton
                                     onClick={
-                                        () => TrezorConnect.recoveryDevice({ dry_run: true })
+                                        () =>
+                                            TrezorConnect.recoveryDevice({ dry_run: true, device })
                                         // console.log('t/odo: add recoveryDevice({dry_run: true})')
                                     }
                                     isDisabled={
@@ -158,7 +162,12 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() => goto('suite-device-firmware')}
+                                onClick={() =>
+                                    openApp('suite-device-firmware', [
+                                        SUITE.LOCK_TYPE.ROUTER,
+                                        SUITE.LOCK_TYPE.DEVICE,
+                                    ])
+                                }
                                 isDisabled={uiLocked}
                             >
                                 Check for update
@@ -347,3 +356,5 @@ const Settings = ({
 };
 
 export default Settings;
+
+// export default () => <div>oeaibjeioj eroi jgio</div>;

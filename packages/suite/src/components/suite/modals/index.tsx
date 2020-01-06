@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
 import { UI } from 'trezor-connect';
-import { Modal as ModalComponent, Button } from '@trezor/components';
+import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
@@ -33,6 +34,7 @@ import AddAccount from './AddAccount';
 import QrScanner from './Qr';
 import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
+import FirmwareModal from './Firmware';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -48,16 +50,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     modalActions: bindActionCreators(modalActions, dispatch),
     receiveActions: bindActionCreators(receiveActions, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
+    exitApp: bindActionCreators(suiteActions.exitApp, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const ExampleAppModal = ({goto}) => (
-    <ModalComponent>
-        <div>exmaple app modal</div>
-        <Button onClick={() => goto('settings-devcie')}>Exit</Button>
-    </ModalComponent>
-);
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
@@ -216,7 +212,7 @@ const Modal = (props: Props) => {
     if (!component && router.route && router.route.isModal) {
         switch (router.app) {
             case 'firmware':
-                component = <ExampleAppModal goto={props.goto} />;
+                component = <FirmwareModal />;
                 break;
             default:
                 break;

@@ -219,7 +219,7 @@ describe('Suite Actions', () => {
         });
     });
 
-    it(`exitApp: it shuold remove LOCKTYPE.ROUTER form suite.locks`, async () => {
+    it(`exitApp: it should remove LOCKTYPE.ROUTER form suite.locks`, async () => {
         // mock router
         require('next/router').default.push = () => {};
         const goto = jest.spyOn(routerActions, 'goto');
@@ -227,7 +227,7 @@ describe('Suite Actions', () => {
             locks: [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE],
         });
         const store = initStore(state);
-        await store.dispatch(suiteActions.exitApp('wallet-index'));
+        await store.dispatch(suiteActions.exitApp('wallet-index', [SUITE.LOCK_TYPE.ROUTER]));
 
         expect(store.getState()).toMatchObject({
             suite: {

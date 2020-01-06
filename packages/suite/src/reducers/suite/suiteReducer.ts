@@ -134,6 +134,18 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.online = action.payload;
                 break;
 
+            case SUITE.LOCKS_ADD:
+                action.payload.forEach(lock => {
+                    changeLock(draft, lock, true);
+                });
+                break;
+
+            case SUITE.LOCKS_REMOVE:
+                action.payload.forEach(lock => {
+                    changeLock(draft, lock, false);
+                });
+                break;
+
             case SUITE.LOCK_UI:
                 changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
                 break;

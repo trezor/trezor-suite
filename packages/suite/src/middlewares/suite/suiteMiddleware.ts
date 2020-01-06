@@ -21,26 +21,11 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
         api.dispatch({ type: SUITE.APP_CHANGED, payload: getApp(action.url) });
     }
 
-    if (action.type === SUITE.APP_CHANGED) {
-        // if (api.getState().router.route && api.getState().router.route.isMobile) {
-        //     console.log('lock bujaaa');
-        //     api.dispatch(suiteActions.lockRouter(true));
-        // }
-    }
-
     // pass action to reducers
     next(action);
 
-    // console.log()
-    if (action.type === ROUTER.LOCATION_CHANGE && getApp(action.url) !== prevApp) {
-        if (api.getState().router.route && api.getState().router.route.isModal) {
-            console.log('lock bujaaa');
-            api.dispatch(suiteActions.lockRouter(true));
-            api.dispatch(suiteActions.lockDevice(true));
-            // api.dispatch(suiteActions.lockUI(true));
-        }
-    }
-
+    // TODO: I need to block device select action, this does not seem the best place for it.
+    // Either do it in deviceSelect action, or separate it to a new "device middleware";
     if (api.getState().suite.locks.includes(1)) {
         return action;
     }
