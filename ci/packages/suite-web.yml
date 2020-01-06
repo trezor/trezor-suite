@@ -72,7 +72,7 @@ suite-web test integration google-chrome-beta:
     script:
         - npx cypress install
         - apt-get update && apt-get upgrade -y
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/integration-tests test:integration:ci:run 
+        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/integration-tests test:suite-web:ci:run 
     artifacts:
         expire_in: 2 days
         when: always
