@@ -16,7 +16,6 @@ const mapStateToProps = (state: AppState) => ({
 type Props = ReturnType<typeof mapStateToProps> & {
     children: React.ReactNode;
     dispatch: Dispatch;
-    isStatic: boolean;
 };
 
 const styles = StyleSheet.create({

@@ -1,7 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@suite-actions/firmwareActions';
-// import * as suiteActions from '@suite-actions/suiteActions';
 import { DEVICE } from 'trezor-connect';
 import { AppState, Action, Dispatch } from '@suite-types';
 
@@ -20,11 +19,6 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         //  1. make reducer to accept actions (enableReducer) and apply changes
         if (enabledApps.includes(action.payload)) {
             api.dispatch(firmwareActions.enableReducer(true));
-        }
-
-        if (action.payload === 'firmware') {
-            // console.log('locking from firmware middleware');
-            // api.dispatch(suiteActions.lockRouter(true));
         }
 
         // here middleware detects that firmware 'app' is disposed, do following:

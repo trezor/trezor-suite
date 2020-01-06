@@ -10,7 +10,7 @@ import Step from './index';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-    exitApp: bindActionCreators(suiteActions.exitApp, dispatch),
+    closeModalApp: bindActionCreators(suiteActions.closeModalApp, dispatch),
 });
 
 export type Props = ReturnType<typeof mapDispatchToProps>;

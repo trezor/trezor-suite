@@ -71,7 +71,7 @@ const WelcomeStep = (props: Props) => {
                 {shouldDisplayLeaveButton() && (
                     <OnboardingButton.Back
                         data-test="button-use-wallet"
-                        onClick={() => props.exitApp(CONFIG.APP.EXIT_APP_ROUTE)}
+                        onClick={() => props.closeModalApp(CONFIG.APP.EXIT_APP_ROUTE)}
                     >
                         <Translation {...messages.TR_USE_WALLET_NOW} />
                     </OnboardingButton.Back>

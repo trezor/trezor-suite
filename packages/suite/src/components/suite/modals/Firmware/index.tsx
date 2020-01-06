@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { Modal, Button } from '@trezor/components';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { SUITE } from '@suite-actions/constants';
 import { Dispatch } from '@suite-types';
 
 // const mapStateToProps = (state: AppState) => ({
@@ -14,13 +13,13 @@ import { Dispatch } from '@suite-types';
 // });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    exitApp: bindActionCreators(suiteActions.exitApp, dispatch),
+    closeModalApp: bindActionCreators(suiteActions.closeModalApp, dispatch),
 });
 
-type Props = ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapDispatchToProps> & { modal: React.ReactNode };
 // ReturnType<typeof mapStateToProps>
 
-const FirmwareModal = ({ exitApp }: Props) => (
+const FirmwareModal = ({ closeModalApp, modal }: Props) => (
     <Modal>
         <div
             style={{
@@ -32,14 +31,13 @@ const FirmwareModal = ({ exitApp }: Props) => (
                 padding: '100px',
             }}
         >
-            <div>Example app modal</div>
-            <Button
-                onClick={() =>
-                    exitApp('settings-device', [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE])
-                }
-            >
-                Exit
-            </Button>
+            {modal && modal}
+            {!modal && (
+                <>
+                    <div>Example app modal</div>
+                    <Button onClick={() => closeModalApp('settings-device')}>Exit</Button>
+                </>
+            )}
         </div>
     </Modal>
 );

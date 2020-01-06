@@ -32,9 +32,6 @@ export type SuiteActions =
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: DebugModeOptions }
     | { type: typeof SUITE.TOGGLE_SIDEBAR }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
-    // todo
-    | { type: typeof SUITE.LOCKS_ADD; payload: (1 | 2 | 3)[] }
-    | { type: typeof SUITE.LOCKS_REMOVE; payload: (1 | 2 | 3)[] }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -389,34 +386,12 @@ export const authorizeDevice = () => async (
     return false;
 };
 
-/**
- * Wrapper utility action that dispatches:
- * 1. routerLock(false)
- * 2. goto(params)
- *
- * Useful for exiting apps that operate under locked router.
- */
-export const exitApp = (routeName: Route['name'], removeLocks?: (1 | 2 | 3)[]) => (
-    dispatch: Dispatch,
-) => {
-    if (removeLocks) {
-        dispatch({
-            type: SUITE.LOCKS_REMOVE,
-            payload: removeLocks,
-        });
-    }
+export const closeModalApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
+    dispatch(lockRouter(false));
     dispatch(routerActions.goto(routeName));
 };
 
-export const openApp = (routeName: Route['name'], addLocks?: (1 | 2 | 3)[]) => (
-    dispatch: Dispatch,
-) => {
+export const openModalApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
     dispatch(routerActions.goto(routeName));
-
-    if (addLocks) {
-        dispatch({
-            type: SUITE.LOCKS_ADD,
-            payload: addLocks,
-        });
-    }
+    dispatch(lockRouter(false));
 };

@@ -27,8 +27,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     wipeDevice: bindActionCreators(wipeDevice, dispatch),
     backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
-    openApp: bindActionCreators(suiteActions.openApp, dispatch),
-    exitApp: bindActionCreators(suiteActions.exitApp, dispatch),
+    openModalApp: bindActionCreators(suiteActions.openModalApp, dispatch),
     openBackgroundGalleryModal: bindActionCreators(openBackgroundGalleryModal, dispatch),
 });
 

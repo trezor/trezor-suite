@@ -24,12 +24,6 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
     // pass action to reducers
     next(action);
 
-    // TODO: I need to block device select action, this does not seem the best place for it.
-    // Either do it in deviceSelect action, or separate it to a new "device middleware";
-    if (api.getState().suite.locks.includes(1)) {
-        return action;
-    }
-
     switch (action.type) {
         case SUITE.INIT:
             // load storage

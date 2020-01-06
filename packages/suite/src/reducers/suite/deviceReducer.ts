@@ -168,6 +168,7 @@ const disconnectDevice = (draft: State, device: Device) => {
     affectedDevices.forEach(d => {
         // do not remove devices with state, they are potential candidates to remember if not remembered already
         const skip = d.features && d.state;
+        // todo: test
         if (skip) {
             d.connected = false;
             d.available = false;

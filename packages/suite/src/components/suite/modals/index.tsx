@@ -10,7 +10,6 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
 import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
@@ -50,7 +49,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     modalActions: bindActionCreators(modalActions, dispatch),
     receiveActions: bindActionCreators(receiveActions, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
-    exitApp: bindActionCreators(suiteActions.exitApp, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -192,6 +190,8 @@ const Modal = (props: Props) => {
     const { modal, router } = props;
 
     let component = null;
+    let appModal = null;
+
     switch (modal.context) {
         case MODAL.CONTEXT_NONE:
             component = null;
@@ -209,14 +209,18 @@ const Modal = (props: Props) => {
             break;
     }
 
-    if (!component && router.route && router.route.isModal) {
+    if (router.route && router.route.isModal) {
         switch (router.app) {
             case 'firmware':
-                component = <FirmwareModal />;
+                appModal = <FirmwareModal modal={component} />;
                 break;
             default:
                 break;
         }
+    }
+
+    if (appModal) {
+        return <ModalComponent>{appModal}</ModalComponent>;
     }
 
     if (!component) {

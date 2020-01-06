@@ -169,7 +169,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
     firmwareUpdate: bindActionCreators(firmwareActions.firmwareUpdate, dispatch),
     lockRouter: bindActionCreators(suiteActions.lockRouter, dispatch),
-    exitApp: bindActionCreators(suiteActions.exitApp, dispatch),
+    closeModalApp: bindActionCreators(suiteActions.closeModalApp, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -235,11 +235,11 @@ const FirmwareUpdate = (props: Props) => {
         );
     };
 
-    const exitApp = () => {
+    const closeModalApp = () => {
         if (device && device.features && device.mode === 'initialize') {
-            return props.exitApp('onboarding-index');
+            return props.closeModalApp('onboarding-index');
         }
-        return props.exitApp('suite-index');
+        return props.closeModalApp('suite-index');
     };
 
     const getExitButtonText = () => {
@@ -343,7 +343,7 @@ const FirmwareUpdate = (props: Props) => {
             <Bottom>
                 {firmware.status === 'initial' && (
                     <>
-                        <Button variant="secondary" onClick={() => exitApp()}>
+                        <Button variant="secondary" onClick={() => closeModalApp()}>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton
@@ -358,12 +358,12 @@ const FirmwareUpdate = (props: Props) => {
                 )}
                 {firmware.status === 'done' && (
                     <>
-                        <Button onClick={() => exitApp()}>{getExitButtonText()}</Button>
+                        <Button onClick={() => closeModalApp()}>{getExitButtonText()}</Button>
                     </>
                 )}
                 {firmware.status === 'error' && (
                     <>
-                        <Button variant="secondary" onClick={() => exitApp()}>
+                        <Button variant="secondary" onClick={() => closeModalApp()}>
                             {getExitButtonText()}
                         </Button>
                         <InstallButton

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-// /* eslint-disable @typescript-eslint/camelcase */
+
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
@@ -43,10 +43,8 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openBackgroundGalleryModal,
-    // goto,
-    openApp,
-}: // exitApp,
-Props) => {
+    openModalApp,
+}: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
 
@@ -128,10 +126,8 @@ Props) => {
                             />
                             <ActionColumn>
                                 <ActionButton
-                                    onClick={
-                                        () =>
-                                            TrezorConnect.recoveryDevice({ dry_run: true, device })
-                                        // console.log('t/odo: add recoveryDevice({dry_run: true})')
+                                    onClick={() =>
+                                        TrezorConnect.recoveryDevice({ dry_run: true, device })
                                     }
                                     isDisabled={
                                         uiLocked ||
@@ -162,12 +158,7 @@ Props) => {
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() =>
-                                    openApp('suite-device-firmware', [
-                                        SUITE.LOCK_TYPE.ROUTER,
-                                        SUITE.LOCK_TYPE.DEVICE,
-                                    ])
-                                }
+                                onClick={() => openModalApp('suite-device-firmware')}
                                 isDisabled={uiLocked}
                             >
                                 Check for update
@@ -356,5 +347,3 @@ Props) => {
 };
 
 export default Settings;
-
-// export default () => <div>oeaibjeioj eroi jgio</div>;
