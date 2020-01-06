@@ -6,32 +6,30 @@
 
 import { useEffect } from 'react';
 import { withNavigation, NavigationInjectedProps } from 'react-navigation';
+import { observeChanges } from '@suite-utils/reducerUtils';
 
 type Props = NavigationInjectedProps & {
     title: string;
     enabled?: boolean; // enable/disable all Navigation (Drawer + Header + Tabs)
-    // disableDrawer?: boolean; // enable/disable only Drawer,Header
     disableTabs?: boolean; // enable/disable only Tabs (use case: "/wallet" without connected device vs. "/settings")
 };
 
-// TODO:
-// - do not set if already exists (use case: back button)
-
 const Head = (props: Props) => {
     const { title, enabled, disableTabs, navigation } = props;
-    const { setParams } = navigation;
+    const { setParams, getParam } = navigation;
     useEffect(() => {
         const isEnabled = !(enabled === false);
-        const isTabEnabled = true; // TODO: !disableTabs;
-        setParams({
-            navigationOptions: {
-                title,
-                drawerLockMode: isEnabled ? 'unlocked' : 'locked-closed',
-                header: isEnabled ? undefined : null, // `undefined` will render default header, `null` will render nothing
-                tabBarVisible: isEnabled && isTabEnabled,
-            },
-        });
-    }, [title, enabled, disableTabs, setParams]); // eslint-disable-line react-hooks/exhaustive-deps
+        const isTabEnabled = !disableTabs;
+        const navigationOptions = {
+            title,
+            drawerLockMode: isEnabled ? 'unlocked' : 'locked-closed',
+            header: isEnabled ? undefined : null, // `undefined` will render default header, `null` will render nothing
+            tabBarVisible: isEnabled && isTabEnabled,
+        };
+        if (observeChanges(getParam('navigationOptions'), navigationOptions)) {
+            setParams({ navigationOptions });
+        }
+    }, [title, enabled, disableTabs, getParam, setParams]);
     return null;
 };
 
