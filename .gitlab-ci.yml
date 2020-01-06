@@ -1,23 +1,22 @@
 # ! DO NOT set latest here USE custom hash !
 image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:c51f080789c0f0c9683a96090e335831cde283b4
 
-variables: 
-    DEV_SERVER_URL: "https://suite.corp.sldev.cz"
+variables:
+    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
     PACKAGE_PATH_COMPONENTS: packages/components-storybook
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
 
-stages: 
+stages:
     - setup environment
-    - lint and types
-    - unit testing
+    - lint, types and unit tests
     - build
     - deploy to dev servers
     - integration testing
     - misc
 
-include: 
+include:
     - ci/environment.yml
     - ci/install-and-build.yml
     - ci/packages/components.yml
@@ -32,16 +31,23 @@ include:
     - ci/packages/rollout.yml
     # - ci/packages/translations-manager.yml
 
-lint: 
-    stage: lint and types
-    dependencies: 
+lint:
+    stage: lint, types and unit tests
+    dependencies:
         - install and build
-    script: 
+    script:
         - lerna run lint
-    
+
 type check:
-    stage: lint and types
-    dependencies: 
+    stage: lint, types and unit tests
+    dependencies:
         - install and build
-    script: 
+    script:
         - lerna run type-check
+
+unit tests:
+    stage: lint, types and unit tests
+    dependencies:
+        - install and build
+    script:
+        - lerna run test:unit -- --passWithNoTests

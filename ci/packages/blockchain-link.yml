@@ -1,6 +1,1 @@
-blockchain-link test:
-    stage: unit testing
-    script:
-        - yarn workspace @trezor/blockchain-link test:unit
-    dependencies:
-        - install and build
+
