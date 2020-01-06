@@ -16,7 +16,7 @@ const Line = styled.div`
 `;
 
 interface Props {
-    className: string;
+    className?: string;
 }
 
 const Divider = ({ className }: Props) => (
