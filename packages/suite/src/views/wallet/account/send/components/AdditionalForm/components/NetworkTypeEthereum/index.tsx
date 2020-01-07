@@ -4,13 +4,13 @@ import { State } from '@wallet-types/sendForm';
 import styled from 'styled-components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Props } from './Container';
-import { Input, Textarea } from '@trezor/components-v2';
+import Fee from '../../components/Fee';
+import { Input, Textarea, colors } from '@trezor/components-v2';
 import GasLimitTopLabel from './components/GasLimitTopLabel';
 import GasPriceTopLabel from './components/GasPriceTopLabel';
 import DataTopLabel from './components/DataTopLabel';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,6 +23,10 @@ const Top = styled.div`
     flex-wrap: wrap;
     flex: 1;
     border-bottom: 2px solid ${colors.BLACK96};
+`;
+
+const Row = styled.div`
+    margin-bottom: 15px;
 `;
 
 const Left = styled.div`
@@ -82,25 +86,32 @@ const NetworkTypeEthereum = ({ send, sendFormActionsEthereum }: Props) => {
         <Wrapper>
             <Top>
                 <Left>
-                    <GasInput
-                        variant="small"
-                        display="block"
-                        state={getInputState(gasLimit.error, gasLimit.value)}
-                        topLabel={<GasLimitTopLabel />}
-                        bottomText={getErrorGasLimit(gasLimit.error)}
-                        value={gasLimit.value || ''}
-                        isDisabled={false}
-                        onChange={e => sendFormActionsEthereum.handleGasLimit(e.target.value)}
-                    />
-                    <GasInput
-                        variant="small"
-                        display="block"
-                        state={getInputState(gasPrice.error, gasPrice.value)}
-                        topLabel={<GasPriceTopLabel />}
-                        bottomText={getErrorGasPrice(gasPrice.error)}
-                        value={send.networkTypeEthereum.gasPrice.value || ''}
-                        onChange={e => sendFormActionsEthereum.handleGasPrice(e.target.value)}
-                    />
+                    <Row>
+                        <Fee />
+                    </Row>
+                    <Row>
+                        <GasInput
+                            variant="small"
+                            display="block"
+                            state={getInputState(gasLimit.error, gasLimit.value)}
+                            topLabel={<GasLimitTopLabel />}
+                            bottomText={getErrorGasLimit(gasLimit.error)}
+                            value={gasLimit.value || ''}
+                            isDisabled={false}
+                            onChange={e => sendFormActionsEthereum.handleGasLimit(e.target.value)}
+                        />
+                    </Row>
+                    <Row>
+                        <GasInput
+                            variant="small"
+                            display="block"
+                            state={getInputState(gasPrice.error, gasPrice.value)}
+                            topLabel={<GasPriceTopLabel />}
+                            bottomText={getErrorGasPrice(gasPrice.error)}
+                            value={send.networkTypeEthereum.gasPrice.value || ''}
+                            onChange={e => sendFormActionsEthereum.handleGasPrice(e.target.value)}
+                        />
+                    </Row>
                 </Left>
                 <Right />
             </Top>

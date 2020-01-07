@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, P, Select } from '@trezor/components';
+import { colors, P, Select } from '@trezor/components-v2';
 import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { Account } from '@wallet-types';
 import { FeeLevel } from '@wallet-types/sendForm';
@@ -70,6 +70,7 @@ const FeeComponent = (props: Props) => (
             <Translation {...messages.TR_FEE} />
         </Label>
         <StyledSelect
+            display="block"
             isSearchable={false}
             isClearable={false}
             value={props.selectedFee}
