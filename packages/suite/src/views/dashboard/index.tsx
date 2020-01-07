@@ -45,7 +45,7 @@ const Dashboard = (props: Props) => {
         groupedAssets[a.symbol].push(a);
     });
 
-    const deviceAccounts = device ? accountUtils.getDeviceAccounts(device, props.accounts) : [];
+    const deviceAccounts = device ? accountUtils.getAllAccounts(device.state, props.accounts) : [];
     const instanceBalance = accountUtils.getTotalBalance(
         deviceAccounts,
         props.localCurrency,
