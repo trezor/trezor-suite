@@ -7,7 +7,6 @@ import { AppState, Action, Dispatch } from '@suite-types';
 const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
-    // console.log('firmware middleware');
     const prevApp = api.getState().router.app;
 
     // pass action

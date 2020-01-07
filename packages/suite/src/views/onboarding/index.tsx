@@ -186,7 +186,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps & { modal: React.ReactNode };
 
 const Onboarding = (props: Props) => {
     const {

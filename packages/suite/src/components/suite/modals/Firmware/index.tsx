@@ -35,7 +35,12 @@ const FirmwareModal = ({ closeModalApp, modal }: Props) => (
             {!modal && (
                 <>
                     <div>Example app modal</div>
-                    <Button onClick={() => closeModalApp('settings-device')}>Exit</Button>
+                    <Button
+                        onClick={() => closeModalApp('settings-device')}
+                        data-test="@modal/firmware/exit-button"
+                    >
+                        Exit
+                    </Button>
                 </>
             )}
         </div>

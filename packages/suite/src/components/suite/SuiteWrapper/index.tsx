@@ -21,6 +21,7 @@ interface OwnProps {
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
     devices: state.devices,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -33,7 +34,7 @@ export type Props = OwnProps &
     ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => {
-    const { suite, goto } = props;
+    const { suite, goto, router } = props;
     const { transport, loaded, device } = props.suite;
 
     if (!loaded || !transport) {
@@ -52,6 +53,11 @@ const Index = (props: Props) => {
                 <Bridge />
             </SuiteLayout>
         );
+    }
+
+    // TODO: temporary, remove ASAP
+    if (router.app === 'onboarding') {
+        return <>{props.children}</>;
     }
 
     // no available device

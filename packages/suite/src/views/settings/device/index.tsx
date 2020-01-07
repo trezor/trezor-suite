@@ -160,6 +160,7 @@ const Settings = ({
                                 variant="secondary"
                                 onClick={() => openModalApp('suite-device-firmware')}
                                 isDisabled={uiLocked}
+                                data-test="@suite/settings/device/update-button"
                             >
                                 Check for update
                             </ActionButton>

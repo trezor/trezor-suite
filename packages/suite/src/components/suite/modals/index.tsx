@@ -34,6 +34,7 @@ import QrScanner from './Qr';
 import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
 import FirmwareModal from './Firmware';
+import Onboarding from '@onboarding-views/index';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -189,21 +190,21 @@ const getQrModal = (props: Props) => {
 const Modal = (props: Props) => {
     const { modal, router } = props;
 
-    let component = null;
-    let appModal = null;
+    let modalComponent = null;
+    let appModalComponent = null;
 
     switch (modal.context) {
         case MODAL.CONTEXT_NONE:
-            component = null;
+            modalComponent = null;
             break;
         case MODAL.CONTEXT_DEVICE:
-            component = getDeviceContextModal(props);
+            modalComponent = getDeviceContextModal(props);
             break;
         case MODAL.CONTEXT_CONFIRMATION:
-            component = getConfirmationModal(props);
+            modalComponent = getConfirmationModal(props);
             break;
         case MODAL.CONTEXT_SCAN_QR:
-            component = getQrModal(props);
+            modalComponent = getQrModal(props);
             break;
         default:
             break;
@@ -212,28 +213,31 @@ const Modal = (props: Props) => {
     if (router.route && router.route.isModal) {
         switch (router.app) {
             case 'firmware':
-                appModal = <FirmwareModal modal={component} />;
+                appModalComponent = <FirmwareModal modal={modalComponent} />;
+                break;
+            case 'onboarding':
+                appModalComponent = <Onboarding modal={modalComponent} />;
                 break;
             default:
                 break;
         }
     }
 
-    if (appModal) {
-        return <ModalComponent>{appModal}</ModalComponent>;
+    if (appModalComponent) {
+        return <ModalComponent>{appModalComponent}</ModalComponent>;
     }
 
-    if (!component) {
+    if (!modalComponent) {
         return null;
     }
 
     return (
         <ModalComponent
             // if modal has onCancel action set cancelable to true and pass the onCancel action
-            cancelable={component && component.props.onCancel}
-            onCancel={component ? component.props.onCancel : undefined}
+            cancelable={modalComponent.props.onCancel}
+            onCancel={modalComponent.props.onCancel}
         >
-            {component && <FocusLock>{component}</FocusLock>}
+            <FocusLock>{modalComponent}</FocusLock>
         </ModalComponent>
     );
 };

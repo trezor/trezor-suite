@@ -184,8 +184,11 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
  */
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
-    // const { deviceId } = getState().modal;
-    // if ()
+    // todo:
+    // We are waiting for device in bootloader mode (only in firmware update)
+    // if (selectedDevice && device.mode === 'bootloader' && 'waiting-for-bootloader-todo') {
+    //     dispatch(selectDevice(device));
+    // }
     if (!selectedDevice) {
         dispatch(selectDevice(device));
     } else {
