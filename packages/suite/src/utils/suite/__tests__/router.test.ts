@@ -6,7 +6,6 @@ import {
     getPrefixedURL,
     stripPrefixedPathname,
     isInternalRoute,
-    isStatic,
     getTopLevelRoute,
 } from '../router';
 
@@ -113,28 +112,6 @@ describe('router', () => {
             expect(isInternalRoute('/wallet/')).toEqual(true);
             expect(isInternalRoute('/onboarding/')).toEqual(true);
             expect(isInternalRoute('https://example.com')).toEqual(false);
-        });
-    });
-
-    describe('isStatic', () => {
-        it('should return true if url is a static page', () => {
-            expect(isStatic('/onboarding')).toEqual(true);
-            expect(isStatic('/bridge')).toEqual(true);
-            expect(isStatic('/version')).toEqual(true);
-            expect(isStatic('/firmware')).toEqual(true);
-            expect(isStatic('/404/page')).toEqual(true);
-            expect(isStatic('/wallet/')).toEqual(false);
-        });
-
-        it('should return true if url is a static page (with prefix)', () => {
-            const prefix = '/test/asset/prefix';
-            process.env.assetPrefix = prefix;
-            expect(isStatic(`${prefix}/onboarding`)).toEqual(true);
-            expect(isStatic(`${prefix}/bridge`)).toEqual(true);
-            expect(isStatic(`${prefix}/version`)).toEqual(true);
-            expect(isStatic(`${prefix}/firmware`)).toEqual(true);
-            expect(isStatic(`${prefix}/404/page`)).toEqual(true);
-            expect(isStatic(`${prefix}/wallet`)).toEqual(false);
         });
     });
 
