@@ -4,6 +4,7 @@ import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { ObjectValues } from '@suite/types/utils';
 import { Action, TrezorDevice } from '@suite-types';
+import { LANGUAGES } from '@suite-config';
 
 type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
 
@@ -19,7 +20,7 @@ export interface SuiteState {
     error?: string;
     transport?: Transport;
     device?: TrezorDevice;
-    language: string;
+    language: typeof LANGUAGES[number]['code'];
     messages: { [key: string]: any };
     deviceMenuOpened: boolean;
     showSidebar?: boolean;

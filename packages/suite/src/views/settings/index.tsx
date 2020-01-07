@@ -16,8 +16,9 @@ import {
     ActionButton,
 } from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
-import { FIAT } from '@suite-config';
+import { FIAT, LANGUAGES } from '@suite-config';
 import * as settingsActions from '@wallet-actions/settingsActions';
+import * as languageActions from '@suite-actions/languageActions';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -30,10 +31,12 @@ const mapStateToProps = (state: AppState) => ({
     // device: state.suite.device,
     locks: state.suite.locks,
     wallet: state.wallet,
+    language: state.suite.language,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(settingsActions.setLocalCurrency, dispatch),
+    fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -42,7 +45,7 @@ const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
+const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
@@ -57,6 +60,28 @@ const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
                 }}
             >
                 <H2>General</H2>
+
+                <Section header={<Translation>{messages.TR_LANGUAGE}</Translation>}>
+                    <Row>
+                        <TextColumn title={<Translation>{messages.TR_LANGUAGE}</Translation>} />
+                        <ActionColumn>
+                            <ActionSelect
+                                value={{
+                                    value: language,
+                                    // sorry for ! but dont know how to force typescript to stay calm
+                                    label: LANGUAGES.find(l => l.code === language)!.name,
+                                }}
+                                options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
+                                // todo: Select should preserve type information
+                                onChange={(option: {
+                                    value: typeof LANGUAGES[number]['code'];
+                                    label: typeof LANGUAGES[number]['name'];
+                                }) => fetchLocale(option.value)}
+                            />
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
                 <Section header={<Translation>{messages.TR_CURRENCY}</Translation>}>
                     <Row>
                         <TextColumn title={<Translation>{messages.TR_PRIMARY_FIAT}</Translation>} />
@@ -79,7 +104,11 @@ const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
                             title={<Translation>{messages.TR_CONNECT_DROPBOX}</Translation>}
                         />
                         <ActionColumn>
-                            <ActionButton onClick={() => console.log('fooo')} isDisabled={uiLocked}>
+                            <ActionButton
+                                onClick={() => console.log('fooo')}
+                                isDisabled={uiLocked}
+                                variant="secondary"
+                            >
                                 <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
                             </ActionButton>
                         </ActionColumn>
@@ -99,6 +128,7 @@ const Settings = ({ locks, wallet, setLocalCurrency }: Props) => {
                                 <ActionButton
                                     onClick={() => console.log('moo')}
                                     isDisabled={uiLocked}
+                                    variant="secondary"
                                 >
                                     <Translation>{messages.TR_CHECK_FOR_UPDATES}</Translation>
                                 </ActionButton>
