@@ -6,7 +6,7 @@ export const MAIN_MENU_ITEMS = [
 ] as const;
 
 export const BOTTOM_MENU_ITEMS = [
-    { text: 'Tips', icon: 'TIPS', route: 'suite-index' },
+    { text: 'Tips', icon: 'TIPS', route: 'tips-index' },
     { text: 'Settings', icon: 'SETTINGS', route: 'settings-index' },
 ] as const;
 

@@ -1,30 +1,28 @@
 import React from 'react';
 import { Props as ContainerProps } from '../../Container';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { findRouteByName } from '@suite-utils/router';
 import { Icon, colors, Switch } from '@trezor/components-v2';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 
 const Wrapper = styled.div`
-    padding: ${MENU_PADDING}px 10px;
+    padding: ${MENU_PADDING}px 0 10px 10px;
 `;
 
 const MenuItemWrapper = styled.div`
     display: flex;
     font-weight: bold;
-    padding-bottom: 10px;
     color: ${colors.WHITE};
     cursor: pointer;
 `;
 
-const IconWrapper = styled.div``;
-
-const Text = styled.div`
-    padding-left: 10px;
+const IconWrapper = styled.div`
+    padding-right: 5px;
 `;
 
 const SubMenu = styled.div`
-    margin-top: 10px;
+    padding: 0 10px 0 0;
 `;
 
 const SubMenuText = styled.div`
@@ -32,7 +30,45 @@ const SubMenuText = styled.div`
     flex: 1;
 `;
 
+interface ComponentProps {
+    isActive: boolean;
+}
+
+const Text = styled.div<ComponentProps>`
+    color: ${colors.WHITE};
+    font-weight: bold;
+
+    ${props =>
+        props.isActive &&
+        css`
+            color: ${colors.BLACK0};
+        `}
+`;
+
+const In = styled.div<ComponentProps>`
+    cursor: pointer;
+    padding: 10px 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    display: flex;
+    flex: 1;
+    flex-direction: flex-start;
+    align-items: center;
+
+    ${props =>
+        props.isActive &&
+        css`
+            padding-left: 10px;
+            background: ${colors.WHITE};
+        `}
+`;
+
+const StyledDivider = styled(Divider)`
+    padding: 5px 0 10px 0;
+`;
+
 interface Props {
+    app: string;
     goto: ContainerProps['goto'];
     discreetMode: boolean;
     setDiscreetMode: (s: boolean) => void;
@@ -43,21 +79,26 @@ const BottomMenu = (props: Props) => (
         {BOTTOM_MENU_ITEMS.map(item => {
             const { route, icon, text } = item;
             const dataTestId = `@suite/menu/${text.toLocaleLowerCase()}`;
+            const routeObj = findRouteByName(route);
+            const isActive = routeObj ? routeObj.app === props.app : false;
+
             return (
-                <MenuItemWrapper
-                    data-test={dataTestId}
-                    key={text}
-                    onClick={() => props.goto(route)}
-                >
-                    <IconWrapper>
-                        <Icon color={colors.WHITE} size={10} icon={icon} />
-                    </IconWrapper>
-                    <Text>{text}</Text>
-                </MenuItemWrapper>
+                <In key={text} onClick={() => props.goto(routeObj!.name)} isActive={isActive}>
+                    <MenuItemWrapper data-test={dataTestId} onClick={() => props.goto(route)}>
+                        <IconWrapper>
+                            <Icon
+                                color={isActive ? colors.BLACK0 : colors.WHITE}
+                                size={10}
+                                icon={icon}
+                            />
+                        </IconWrapper>
+                        <Text isActive={isActive}>{text}</Text>
+                    </MenuItemWrapper>
+                </In>
             );
         })}
-        <Divider />
         <SubMenu>
+            <StyledDivider className="divider" />
             <MenuItemWrapper>
                 <SubMenuText>Discreet</SubMenuText>
                 <Switch

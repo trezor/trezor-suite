@@ -43,6 +43,11 @@ const routes = [
         isStatic: true,
         isModal: true,
     },
+    {
+        name: 'tips-index',
+        pattern: '/tips',
+        app: 'wallet',
+    },
     // todo: app will be just settings probably
     {
         name: 'settings-index',

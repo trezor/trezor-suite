@@ -20,6 +20,7 @@ const Menu = (props: Props) => {
             <TopMenu selectedDevice={props.selectedDevice} />
             <MainMenu app={props.router.app} goto={props.goto} />
             <BottomMenu
+                app={props.router.app}
                 goto={props.goto}
                 discreetMode={props.discreetMode}
                 setDiscreetMode={props.setDiscreetMode}
