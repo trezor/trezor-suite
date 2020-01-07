@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
-import colors from '@suite/config/onboarding/colors';
+import colors from '@onboarding-config/colors';
 import { variables } from '@trezor/components';
 
 const OptionWrapper = styled.div<{ isSelected: boolean }>`

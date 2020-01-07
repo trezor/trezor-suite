@@ -5,8 +5,8 @@ import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as STEP from '@suite/constants/onboarding/steps';
-import { AnyStepDisallowedState } from '@suite/types/onboarding/steps';
+import * as STEP from '@onboarding-constants/steps';
+import { AnyStepDisallowedState } from '@onboarding-types/steps';
 import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
 import { PinMatrix, Text, Wrapper, OnboardingButton } from '@onboarding-components';
 import { Dispatch, AppState } from '@suite-types';

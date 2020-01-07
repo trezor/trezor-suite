@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { AccountAddresses } from 'trezor-connect';
-import { selectText } from '@suite/utils/suite/dom';
-import { parseBIP44Path } from '@suite/utils/wallet/accountUtils';
+import { selectText } from '@suite-utils/dom';
+import { parseBIP44Path } from '@wallet-utils/accountUtils';
 import AddressItem from '../AddressItem';
 
 const Wrapper = styled.div``;

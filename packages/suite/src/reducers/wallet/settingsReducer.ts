@@ -3,7 +3,7 @@ import { STORAGE } from '@suite-actions/constants';
 import { SETTINGS } from '@wallet-actions/constants';
 import { EXTERNAL_NETWORKS } from '@wallet-config';
 import { Action } from '@suite-types';
-import { Network, ExternalNetwork } from '@suite/types/wallet';
+import { Network, ExternalNetwork } from '@wallet-types';
 
 export interface State {
     localCurrency: string;

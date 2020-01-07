@@ -1,5 +1,5 @@
 import TrezorConnect from 'trezor-connect';
-import { validateAddress } from '@suite/utils/wallet/ethUtils';
+import { validateAddress } from '@wallet-utils/ethUtils';
 import { NOTIFICATION } from '@suite-actions/constants';
 import messages from '@suite/support/messages';
 import { SIGN_VERIFY } from './constants';

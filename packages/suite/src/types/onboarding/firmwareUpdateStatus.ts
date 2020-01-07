@@ -3,6 +3,6 @@ import {
     DOWNLOADING,
     INSTALLING,
     DONE,
-} from '@suite/actions/onboarding/constants/firmwareUpdateStatus';
+} from '@onboarding-actions/constants/firmwareUpdateStatus';
 
 export type AnyStatus = typeof STARTED | typeof DOWNLOADING | typeof INSTALLING | typeof DONE;

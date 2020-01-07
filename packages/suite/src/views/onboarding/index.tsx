@@ -8,16 +8,16 @@ import { bindActionCreators } from 'redux';
 
 import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 
-import * as EVENTS from '@suite/actions/onboarding/constants/events';
+import * as EVENTS from '@onboarding-actions/constants/events';
 
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
-import * as connectActions from '@suite/actions/onboarding/connectActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as connectActions from '@onboarding-actions/connectActions';
 
-import * as STEP from '@suite/constants/onboarding/steps';
-import { STEP_ANIMATION_DURATION } from '@suite/constants/onboarding/constants';
-import steps from '@suite/config/onboarding/steps';
+import * as STEP from '@onboarding-constants/steps';
+import { STEP_ANIMATION_DURATION } from '@onboarding-constants/constants';
+import steps from '@onboarding-config/steps';
 
-import colors from '@suite/config/onboarding/colors';
+import colors from '@onboarding-config/colors';
 import { TOS_URL } from '@suite-constants/urls';
 
 import {
@@ -27,9 +27,9 @@ import {
     STEP_HEIGHT_UNIT,
     NAVBAR_HEIGHT,
     NAVBAR_HEIGHT_UNIT,
-} from '@suite/config/onboarding/layout';
+} from '@onboarding-config/layout';
 
-import { getFnForRule } from '@suite/utils/onboarding/rules';
+import { getFnForRule } from '@onboarding-utils/rules';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
 import NewOrUsedStep from '@onboarding-views/steps/NewOrUsed/Container';

@@ -9,7 +9,7 @@ import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
 import SuiteLayout from '@suite-components/SuiteLayout';
-import Bridge from '@suite/views/suite/bridge';
+import Bridge from '@suite-views/bridge';
 import AcquireDevice from '@suite-components/AcquireDevice';
 
 import { AppState, Dispatch } from '@suite-types';

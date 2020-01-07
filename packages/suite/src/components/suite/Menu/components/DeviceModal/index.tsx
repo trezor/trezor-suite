@@ -6,7 +6,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { Props } from './Container';
 import DeviceItem from './components/DeviceItem';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { Translation } from '@suite/components/suite/Translation';
+import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 
 const StyledModal = styled(Modal)`

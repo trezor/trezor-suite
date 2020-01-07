@@ -8,8 +8,8 @@ import { SUITE } from '@suite-actions/constants';
 
 import routerReducer from '@suite-reducers/routerReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
-import suiteReducer from '@suite/reducers/suite/suiteReducer';
-import modalReducer from '@suite/reducers/suite/modalReducer';
+import suiteReducer from '@suite-reducers/suiteReducer';
+import modalReducer from '@suite-reducers/modalReducer';
 
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 import redirectMiddleware from '@suite-middlewares/redirectMiddleware';

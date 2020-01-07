@@ -11,10 +11,10 @@ import {
     DEVICE_CALL_ERROR,
     DEVICE_CALL_SUCCESS,
     DEVICE_CALL_RESET,
-} from '@suite/types/onboarding/connect';
-import { AnyStepId } from '@suite/types/onboarding/steps';
-import * as CALLS from '@suite/actions/onboarding/constants/calls';
-import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
+} from '@onboarding-types/connect';
+import { AnyStepId } from '@onboarding-types/steps';
+import * as CALLS from '@onboarding-actions/constants/calls';
+import { DEFAULT_LABEL } from '@onboarding-constants/trezor';
 
 import { ObjectValues } from '@suite/types/utils';
 import { goToNextStep } from './onboardingActions';

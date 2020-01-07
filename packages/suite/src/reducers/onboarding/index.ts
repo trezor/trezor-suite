@@ -1,6 +1,6 @@
-import onboarding from '@suite/reducers/onboarding/onboardingReducer';
-import recovery from '@suite/reducers/onboarding/recoveryReducer';
-import newsletter from '@suite/reducers/onboarding/newsletterReducer';
+import onboarding from '@onboarding-reducers/onboardingReducer';
+import recovery from '@onboarding-reducers/recoveryReducer';
+import newsletter from '@onboarding-reducers/newsletterReducer';
 import { RecoveryActionTypes } from '@onboarding-types/recovery';
 import { NewsletterActionTypes } from '@onboarding-types/newsletter';
 

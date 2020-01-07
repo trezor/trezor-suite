@@ -4,7 +4,7 @@ import {
     goToNextStep,
     selectTrezorModel,
     goToPreviousStep,
-} from '@suite/actions/onboarding/onboardingActions';
+} from '@onboarding-actions/onboardingActions';
 import { Dispatch } from '@suite-types';
 
 import Step from './index';
