@@ -98,11 +98,6 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
 // Check if the URL/route points to an in-app page
 export const isInternalRoute = (url: string) => !!findRoute(url);
 
-export const isStatic = (url: string) => {
-    const route = findRoute(url);
-    return route ? !!route.isStatic : true; // 404 page act as a static
-};
-
 // Used in @suite-native routerActions
 export const getTopLevelRoute = (url: string) => {
     if (typeof url !== 'string') return;
