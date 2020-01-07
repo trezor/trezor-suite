@@ -129,19 +129,21 @@ const Amount = (props: Props) => (
             />
             <CurrencySelect key="currency-select" symbol={props.symbol} />
         </Left>
-        <EqualsSign>=</EqualsSign>
-        <Right>
-            {hasRates(props.fiat, props.localCurrency, props.symbol) && (
-                <FiatComponent
-                    outputId={props.outputId}
-                    key="fiat-input"
-                    state={props.error ? 'error' : undefined}
-                    sendFormActions={props.sendFormActions}
-                    value={props.fiatValue}
-                    localCurrency={props.localCurrency}
-                />
-            )}
-        </Right>
+        {hasRates(props.fiat, props.localCurrency, props.symbol) && (
+            <>
+                <EqualsSign>=</EqualsSign>
+                <Right>
+                    <FiatComponent
+                        outputId={props.outputId}
+                        key="fiat-input"
+                        state={props.error ? 'error' : undefined}
+                        sendFormActions={props.sendFormActions}
+                        value={props.fiatValue}
+                        localCurrency={props.localCurrency}
+                    />
+                </Right>
+            </>
+        )}
     </Wrapper>
 );
 
