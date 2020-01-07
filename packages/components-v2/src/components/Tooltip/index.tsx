@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import Tippy, { TippyProps } from '@tippy.js/react';
+import 'tippy.js/dist/tippy.css';
 
 import { Link } from '../Link';
 import colors from '../../config/colors';
@@ -10,16 +11,7 @@ const Content = styled.div<{ maxWidth?: number }>`
     max-width: ${props => `${props.maxWidth}px` || 'auto'};
 `;
 
-const ContentWrapper = styled.div`
-    display: block;
-    background: ${colors.WHITE};
-    color: ${colors.BLACK0};
-    border-radius: 4px;
-    font-size: ${FONT_SIZE.NORMAL};
-    padding: 10px;
-    text-align: left;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15);
-`;
+const ContentWrapper = styled.div``;
 
 const CTAWrapper = styled.div`
     margin-top: 15px;
@@ -39,39 +31,36 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledTippy = styled(Tippy)`
+    background: ${colors.WHITE};
+    color: ${colors.BLACK0};
+    border-radius: 4px;
+    font-size: ${FONT_SIZE.NORMAL};
+    padding: 8px 10px 6px;
+    text-align: left;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15);
+
     .tippy-arrow {
         border: 5px solid transparent;
-        width: 0px;
-        height: 0px;
-        position: absolute;
     }
 
     &[data-placement^='top'] {
-        margin-bottom: 10px;
         .tippy-arrow {
-            border-top: 5px solid ${colors.WHITE};
-            bottom: 0;
+            border-top-color: ${colors.WHITE};
         }
     }
     &[data-placement^='bottom'] {
-        margin-top: 10px;
         .tippy-arrow {
-            border-bottom: 5px solid ${colors.WHITE};
-            top: 0;
+            border-bottom-color: ${colors.WHITE};
         }
     }
     &[data-placement^='left'] {
-        margin-right: 10px;
         .tippy-arrow {
-            border-left: 5px solid ${colors.WHITE};
-            right: 0;
+            border-left-color: ${colors.WHITE};
         }
     }
     &[data-placement^='right'] {
-        margin-left: 10px;
         .tippy-arrow {
-            border-right: 5px solid ${colors.WHITE};
-            left: 0;
+            border-right-color: ${colors.WHITE};
         }
     }
 `;
@@ -89,6 +78,7 @@ const Tooltip = ({
     ctaText,
     ctaLink,
     children,
+    animation = 'fade',
     ...rest
 }: Props) => {
     const Overlay = (
@@ -105,12 +95,14 @@ const Tooltip = ({
     /* TODO: Figure out why styled-components does not forward ref from the Icon component. https://github.com/atomiks/tippy.js-react#component-children */
     return (
         <StyledTippy
+            animation={animation}
             placement={placement}
+            offset={0}
             zIndex={10070}
             arrow
             interactive
-            {...rest}
             content={Overlay}
+            {...rest}
         >
             <span>{children}</span>
         </StyledTippy>

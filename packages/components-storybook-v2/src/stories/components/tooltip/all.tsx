@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tooltip, H1, colors } from '@trezor/components-v2';
+import { Tooltip, H2 } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -10,7 +10,12 @@ const Wrapper = styled.div`
 const Center = styled.div`
     display: flex;
     justify-content: center;
-    padding: 4rem 0px;
+`;
+
+const TooltipWrapper = styled.div`
+    width: 400px;
+    text-align: center;
+    padding: 5rem 0px;
 `;
 
 storiesOf('Tooltip', module).add(
@@ -18,29 +23,37 @@ storiesOf('Tooltip', module).add(
     () => {
         return (
             <Wrapper>
-                <H1>Tooltip top</H1>
-                <Center data-test="tooltip-top">
-                    <Tooltip content="Nehehe" visible>
-                        <span>Tooltip text</span>
-                    </Tooltip>
+                <H2>Top</H2>
+                <Center>
+                    <TooltipWrapper data-test="tooltip-top">
+                        <Tooltip content="Tooltip text" visible>
+                            <span>Tooltip top</span>
+                        </Tooltip>
+                    </TooltipWrapper>
                 </Center>
-                <H1>Tooltip bottom</H1>
-                <Center data-test="tooltip-bottom">
-                    <Tooltip content="Nehehe" placement="bottom" visible>
-                        <span>Tooltip text</span>
-                    </Tooltip>
+                <H2>Bottom</H2>
+                <Center>
+                    <TooltipWrapper data-test="tooltip-bottom">
+                        <Tooltip content="Tooltip text" visible placement="bottom">
+                            <span>Tooltip bottom</span>
+                        </Tooltip>
+                    </TooltipWrapper>
                 </Center>
-                <H1>Tooltip left</H1>
-                <Center data-test="tooltip-left">
-                    <Tooltip content="Nehehe" placement="left" visible>
-                        <span>Tooltip text</span>
-                    </Tooltip>
+                <H2>Left</H2>
+                <Center>
+                    <TooltipWrapper data-test="tooltip-left">
+                        <Tooltip content="Tooltip text" visible placement="left">
+                            <span>Tooltip left</span>
+                        </Tooltip>
+                    </TooltipWrapper>
                 </Center>
-                <H1>Tooltip right</H1>
-                <Center data-test="tooltip-right">
-                    <Tooltip content="Nehehe" placement="right" visible>
-                        <span>Tooltip text</span>
-                    </Tooltip>
+                <H2>Right</H2>
+                <Center>
+                    <TooltipWrapper data-test="tooltip-right">
+                        <Tooltip content="Tooltip text" visible placement="right">
+                            <span>Tooltip right</span>
+                        </Tooltip>
+                    </TooltipWrapper>
                 </Center>
             </Wrapper>
         );

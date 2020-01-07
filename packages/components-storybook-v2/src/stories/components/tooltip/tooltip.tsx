@@ -12,6 +12,8 @@ const Center = styled.div`
     padding: 100px 0px;
 `;
 
+Center.displayName = 'CenterWrapper';
+
 storiesOf('Tooltip', module).add(
     'Tooltip',
     () => {
