@@ -66,7 +66,7 @@ export default (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_CONFIRMATION,
                 windowType: action.payload.view,
             };
-        case SUITE.REQUEST_REMEMBER_DEVICE:
+        // case SUITE.REQUEST_REMEMBER_DEVICE:
         case SUITE.REQUEST_STORAGE_MODE:
         case SUITE.REQUEST_DEVICE_INSTANCE:
         case SUITE.REQUEST_PASSPHRASE_MODE:

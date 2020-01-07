@@ -421,36 +421,36 @@ const handleDeviceDisconnect = [
         },
         device: CONNECT_DEVICE,
     },
-    {
-        description: `disconnected selected device (3 instances: 1 remembered, 1 with state, 1 stateless which will be removed, remember request)`,
-        state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
-            devices: [
-                SUITE_DEVICE,
-                getSuiteDevice({
-                    path: '1',
-                    state: 'cba',
-                    instance: 2,
-                    remember: true,
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                    instance: 1,
-                }),
-            ],
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            type: SUITE.REQUEST_REMEMBER_DEVICE,
-            payload: getSuiteDevice({
-                state: 'abc',
-                instance: 1,
-            }),
-        },
-    },
+    // {
+    //     description: `disconnected selected device (3 instances: 1 remembered, 1 with state, 1 stateless which will be removed, remember request)`,
+    //     state: {
+    //         suite: {
+    //             device: SUITE_DEVICE,
+    //         },
+    //         devices: [
+    //             SUITE_DEVICE,
+    //             getSuiteDevice({
+    //                 path: '1',
+    //                 state: 'cba',
+    //                 instance: 2,
+    //                 remember: true,
+    //             }),
+    //             getSuiteDevice({
+    //                 path: '1',
+    //                 state: 'abc',
+    //                 instance: 1,
+    //             }),
+    //         ],
+    //     },
+    //     device: CONNECT_DEVICE,
+    //     result: {
+    //         type: SUITE.REQUEST_REMEMBER_DEVICE,
+    //         payload: getSuiteDevice({
+    //             state: 'abc',
+    //             instance: 1,
+    //         }),
+    //     },
+    // },
     {
         description: `disconnected selected device (3 instances: 2 remembered, 1 stateless which will be removed, no action)`,
         state: {
@@ -483,33 +483,33 @@ const handleDeviceDisconnect = [
             }),
         },
     },
-    {
-        description: `disconnected selected device with state (remember request)`,
-        state: {
-            suite: {
-                device: getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                }),
-            },
-            devices: [
-                getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                }),
-            ],
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            type: SUITE.REQUEST_REMEMBER_DEVICE,
-            payload: getSuiteDevice({
-                connected: false,
-                available: false,
-                path: '',
-                state: 'abc',
-            }),
-        },
-    },
+    // {
+    //     description: `disconnected selected device with state (remember request)`,
+    //     state: {
+    //         suite: {
+    //             device: getSuiteDevice({
+    //                 path: '1',
+    //                 state: 'abc',
+    //             }),
+    //         },
+    //         devices: [
+    //             getSuiteDevice({
+    //                 path: '1',
+    //                 state: 'abc',
+    //             }),
+    //         ],
+    //     },
+    //     device: CONNECT_DEVICE,
+    //     result: {
+    //         type: SUITE.REQUEST_REMEMBER_DEVICE,
+    //         payload: getSuiteDevice({
+    //             connected: false,
+    //             available: false,
+    //             path: '',
+    //             state: 'abc',
+    //         }),
+    //     },
+    // },
     {
         description: `disconnected selected device with router locked`,
         state: {

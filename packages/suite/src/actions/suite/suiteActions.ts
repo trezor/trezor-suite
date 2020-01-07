@@ -25,7 +25,7 @@ export type SuiteActions =
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice; name?: string }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
+    // | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_STORAGE_MODE; payload: TrezorDevice }
     | { type: typeof SUITE.RECEIVE_STORAGE_MODE; device: TrezorDevice; remember: boolean }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
@@ -225,14 +225,14 @@ export const handleDeviceDisconnect = (device: Device) => (
         if (!devicePresent) {
             dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
         }
-        // show modal if one of the instances in not remembered
-        const remember = deviceInstances.filter(d => !d.remember);
-        if (remember.length > 0) {
-            dispatch({
-                type: SUITE.REQUEST_REMEMBER_DEVICE,
-                payload: deviceInstances[0],
-            });
-        }
+        // // show modal if one of the instances in not remembered
+        // const remember = deviceInstances.filter(d => !d.remember);
+        // if (remember.length > 0) {
+        //     dispatch({
+        //         type: SUITE.REQUEST_REMEMBER_DEVICE,
+        //         payload: deviceInstances[0],
+        //     });
+        // }
         return;
     }
     const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);

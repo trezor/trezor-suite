@@ -147,33 +147,34 @@ export const onRememberRequest = (prevState: State) => (
 };
 */
 
-export const resolveRememberRequest = (device: Device) => (
-    dispatch: Dispatch,
-    getState: GetState,
-): void => {
-    // interrupt process of remembering device (force forget)
-    // TODO: the same for disconnect more than 1 device at once
-    const { modal } = getState();
-    if (
-        modal.context === MODAL.CONTEXT_DEVICE &&
-        modal.windowType === SUITE.REQUEST_REMEMBER_DEVICE
-    ) {
-        if (
-            device.features &&
-            modal.device.features &&
-            modal.device.features.device_id === device.features.device_id
-        ) {
-            dispatch({
-                type: MODAL.CLOSE,
-            });
-        } else {
-            dispatch({
-                type: SUITE.FORGET_DEVICE,
-                payload: modal.device as TrezorDevice,
-            });
-        }
-    }
-};
+// TODO: probably not needed anymore?
+// export const resolveRememberRequest = (device: Device) => (
+//     dispatch: Dispatch,
+//     getState: GetState,
+// ): void => {
+//     // interrupt process of remembering device (force forget)
+//     // TODO: the same for disconnect more than 1 device at once
+//     const { modal } = getState();
+//     if (
+//         modal.context === MODAL.CONTEXT_DEVICE &&
+//         modal.windowType === SUITE.REQUEST_REMEMBER_DEVICE
+//     ) {
+//         if (
+//             device.features &&
+//             modal.device.features &&
+//             modal.device.features.device_id === device.features.device_id
+//         ) {
+//             dispatch({
+//                 type: MODAL.CLOSE,
+//             });
+//         } else {
+//             dispatch({
+//                 type: SUITE.FORGET_DEVICE,
+//                 payload: modal.device as TrezorDevice,
+//             });
+//         }
+//     }
+// };
 
 export const onWalletTypeRequest = (hidden: boolean) => (
     dispatch: Dispatch,

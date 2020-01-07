@@ -188,20 +188,20 @@ export default [
             addressPath: `m/44'/0'/0'/0/0`,
         },
     },
-    {
-        description: 'SUITE.REQUEST_REMEMBER_DEVICE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_REMEMBER_DEVICE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_REMEMBER_DEVICE,
-        },
-    },
+    // {
+    //     description: 'SUITE.REQUEST_REMEMBER_DEVICE',
+    //     initialState,
+    //     actions: [
+    //         {
+    //             type: SUITE.REQUEST_REMEMBER_DEVICE,
+    //             payload: SUITE_DEVICE,
+    //         },
+    //     ],
+    //     result: {
+    //         ...deviceContextState,
+    //         windowType: SUITE.REQUEST_REMEMBER_DEVICE,
+    //     },
+    // },
     {
         description: 'SUITE.REQUEST_DEVICE_INSTANCE',
         initialState,
