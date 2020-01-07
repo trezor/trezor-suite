@@ -84,7 +84,7 @@ export const onStorageModeSelected = (device: TrezorDevice, remember: boolean) =
     }
 };
 
-// TODO: this method is only a placeholder
+// TODO: DELETE, action is dispatched from onStorageModeSelected
 export const onRememberDevice = (payload: TrezorDevice): Action => ({
     type: SUITE.REMEMBER_DEVICE,
     payload,

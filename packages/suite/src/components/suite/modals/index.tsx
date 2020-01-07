@@ -27,7 +27,6 @@ import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import RequestInstance from './RequestInstance';
 import StorageMode from './StorageMode';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
-import WalletType from './DELETE_WalletType';
 import AddAccount from './AddAccount';
 import QrScanner from './Qr';
 import Disconnect from './Disconnect';
