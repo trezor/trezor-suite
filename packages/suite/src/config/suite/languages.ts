@@ -16,4 +16,4 @@ export default [
     // { code: 'uk', name: 'Українська', en: 'Ukrainian' },
     // { code: 'zh', name: '中文(简体)', en: 'Chinese Simplified' },
     // { code: 'zh-TW', name: '中文(台灣)', en: 'Chinese Traditional' },
-];
+] as const;

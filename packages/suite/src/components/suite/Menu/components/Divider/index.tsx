@@ -15,8 +15,12 @@ const Line = styled.div`
     background: ${colors.BLACK96};
 `;
 
-const Divider = () => (
-    <Wrapper>
+interface Props {
+    className?: string;
+}
+
+const Divider = ({ className }: Props) => (
+    <Wrapper className={className}>
         <Line />
     </Wrapper>
 );

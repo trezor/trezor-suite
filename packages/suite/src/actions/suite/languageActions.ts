@@ -1,8 +1,11 @@
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { SUITE } from './constants';
 import { Dispatch } from '@suite-types';
+import { LANGUAGES } from '@suite-config';
 
-export const fetchLocale = (locale: string) => async (dispatch: Dispatch) => {
+export const fetchLocale = (locale: typeof LANGUAGES[number]['code']) => async (
+    dispatch: Dispatch,
+) => {
     try {
         const response = await fetch(resolveStaticPath(`translations/${locale}.json`));
         if (!response.ok) throw Error(response.statusText);

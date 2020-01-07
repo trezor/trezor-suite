@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import colors from '@suite/config/onboarding/colors';
+import colors from '@onboarding-config/colors';
 
 interface Props {
     // todo: typescript when isFirst is true isLast should not be possible to set to true;

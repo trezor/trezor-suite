@@ -2299,6 +2299,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
     },
+    TR_LANGUAGE: {
+        id: 'TR_LANGUAGE',
+        defaultMessage: 'Language',
+    },
     TR_WHAT_TO_DO_NOW: {
         id: 'TR_WHAT_TO_DO_NOW',
         defaultMessage: 'What to do now',

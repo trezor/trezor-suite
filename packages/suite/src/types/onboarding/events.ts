@@ -9,7 +9,7 @@ import {
     WORD_REQUEST_PLAIN,
     WORD_REQUEST_MATRIX9,
     WORD_REQUEST_MATRIX6,
-} from '@suite/actions/onboarding/constants/events';
+} from '@onboarding-actions/constants/events';
 
 export type AnyEvent =
     | typeof BUTTON_REQUEST__PROTECT_CALL

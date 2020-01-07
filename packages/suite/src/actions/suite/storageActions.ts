@@ -3,10 +3,10 @@ import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
-import { getAccountKey } from '@suite/utils/wallet/accountUtils';
+import { getAccountKey } from '@wallet-utils/accountUtils';
 import { State as SendFormState } from '@wallet-types/sendForm';
-import { getDeviceInstances } from '@suite/utils/suite/device';
-import { Discovery } from '@suite/reducers/wallet/discoveryReducer';
+import { getDeviceInstances } from '@suite-utils/device';
+import { Discovery } from '@wallet-reducers/discoveryReducer';
 import { serializeDiscovery } from '@suite-utils/storage';
 
 export type StorageActions =

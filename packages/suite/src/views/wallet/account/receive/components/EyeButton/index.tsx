@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, Tooltip, Icon } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
-import { AppState } from '@suite/types/suite';
+import { AppState } from '@suite-types';
 import VerifyAddressTooltip from '@wallet-components/tooltips/VerifyAddressTooltip';
 
 const Wrapper = styled(Button)`

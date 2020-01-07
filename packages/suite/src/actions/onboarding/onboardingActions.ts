@@ -7,7 +7,7 @@ import {
     RESET_ONBOARDING,
     ENABLE_ONBOARDING_REDUCER,
     SET_BACKUP_TYPE,
-} from '@suite/types/onboarding/onboarding';
+} from '@onboarding-types/onboarding';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';

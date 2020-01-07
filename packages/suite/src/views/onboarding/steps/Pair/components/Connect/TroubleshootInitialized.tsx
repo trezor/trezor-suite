@@ -3,7 +3,7 @@ import * as STEP from '@onboarding-constants/steps';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components/Translation';
 import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import messages from '@suite/support/messages';
 import { Link } from '@trezor/components-v2';
 import React from 'react';

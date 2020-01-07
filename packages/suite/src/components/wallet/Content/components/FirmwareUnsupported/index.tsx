@@ -5,7 +5,7 @@ import { CoinLogo, colors } from '@trezor/components';
 import { Button, H2, P, Link } from '@trezor/components-v2';
 
 import { Translation } from '@suite-components/Translation';
-import { ExtendedMessageDescriptor } from '@suite/types/suite';
+import { ExtendedMessageDescriptor } from '@suite-types';
 import messages from '@suite/support/messages';
 
 interface Props {

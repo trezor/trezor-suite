@@ -31,10 +31,10 @@ module.exports = api => {
                         // exclude .messages.*
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-views/(?!.*[.]messages)(.+)':
                             './packages/suite-native/src/views/\\1/\\2',
-                        '^@(.+)-views$': './packages/suite-native/src/views/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-views$':
+                            './packages/suite-native/src/views/\\1/index',
 
-                        // === Components ===
-                        // without (suite|wallet|onboarding) it was failing to resolve style-components/native in /packages/components/lib/components/buttons/Pin/index.native.js
+                        // === Components - no reuse at all ===
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-components/(?!.*[.]messages)(.+)':
                             './packages/suite-native/src/components/\\1/\\2',
                         // '^@(.+)-components': './packages/suite-native/src/components/\\1/index',
@@ -44,24 +44,34 @@ module.exports = api => {
                         // '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
                         // '^@(.+)-components/(.+)': './packages/suite/src/components/\\1/\\2',
 
-                        '^@(.+)-actions/(.+)': './packages/suite/src/actions/\\1/\\2',
-                        '^@(.+)-actions': './packages/suite/src/actions/\\1/index',
-                        '^@(.+)-reducers/(.+)': './packages/suite/src/reducers/\\1/\\2',
-                        '^@(.+)-reducers': './packages/suite/src/reducers/\\1/index',
-                        '^@(.+)-config/(.+)': './packages/suite/src/config/\\1/\\2',
-                        '^@(.+)-config': './packages/suite/src/config/\\1/index',
-                        '^@(.+)-constants/(.+)': './packages/suite/src/constants/\\1/\\2',
-                        '^@(.+)-constants': './packages/suite/src/constants/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-actions/(.+)':
+                            './packages/suite/src/actions/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-actions':
+                            './packages/suite/src/actions/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-reducers/(.+)':
+                            './packages/suite/src/reducers/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-reducers':
+                            './packages/suite/src/reducers/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-config/(.+)':
+                            './packages/suite/src/config/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-config':
+                            './packages/suite/src/config/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-constants/(.+)':
+                            './packages/suite/src/constants/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-constants':
+                            './packages/suite/src/constants/\\1/index',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-utils/(.+)':
                             './packages/suite/src/utils/\\1/\\2',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-utils':
                             './packages/suite/src/utils/\\1/index',
-                        '^@(.+)-types/(.+)': './packages/suite/src/types/\\1/\\2',
-                        '^@(.+)-types': './packages/suite/src/types/\\1/index',
-                        '^@(.+)-middlewares/(.+)': './packages/suite/src/middlewares/\\1/\\2',
-                        '^@(.+)-middlewares': './packages/suite/src/middlewares/\\1/index',
-
-                        // todo maybe use '^@(.+)-(.+)/(.+)': './packages/suite/src/\\1/\\2/\\3',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-types/(.+)':
+                            './packages/suite/src/types/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-types':
+                            './packages/suite/src/types/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-middlewares/(.+)':
+                            './packages/suite/src/middlewares/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings)-middlewares':
+                            './packages/suite/src/middlewares/\\1/index',
 
                         // ??????
                         '^@trezor/components$': './packages/components',

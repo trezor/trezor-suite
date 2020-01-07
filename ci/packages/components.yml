@@ -1,6 +1,0 @@
-components test unit:
-    stage: unit testing
-    script:
-        - yarn workspace @trezor/components test:unit
-    dependencies:
-        - install and build

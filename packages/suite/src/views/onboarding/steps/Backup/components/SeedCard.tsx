@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
 
-import colors from '@suite/config/onboarding/colors';
+import colors from '@onboarding-config/colors';
 import Pencil from './Pencil';
 
 const WIDTH = 360;

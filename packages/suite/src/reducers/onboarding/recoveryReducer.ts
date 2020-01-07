@@ -4,7 +4,7 @@ import {
     RecoveryActionTypes,
     SET_WORDS_COUNT,
     SET_ADVANCED_RECOVERY,
-} from '@suite/types/onboarding/recovery';
+} from '@onboarding-types/recovery';
 
 const initialState = {
     advancedRecovery: false,

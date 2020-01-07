@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as connectActions from '@suite/actions/onboarding/connectActions';
+import * as connectActions from '@onboarding-actions/connectActions';
 
 import { Dispatch, AppState } from '@suite-types';
 

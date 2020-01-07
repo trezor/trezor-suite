@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import SuiteLayout from '@suite-components/SuiteLayout';
-import AssetsCard from '@suite/components/suite/AssetsCard';
+import AssetsCard from '@suite-components/AssetsCard';
 import { Props } from './Container';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
@@ -10,7 +10,7 @@ import PortfolioCard from '@suite-components/PortfolioCard';
 import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import NewsFeed from '@suite-components/NewsFeed';
-import ConnectionStatusCard from '@suite/components/suite/ConnectionStatusCard';
+import ConnectionStatusCard from '@suite-components/ConnectionStatusCard';
 
 const Wrapper = styled.div`
     padding: 30px 50px;

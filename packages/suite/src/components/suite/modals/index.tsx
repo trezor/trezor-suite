@@ -11,9 +11,8 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
-import { ACCOUNT } from '@wallet-actions/constants';
+import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
-import { RECEIVE } from '@suite/actions/wallet/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';

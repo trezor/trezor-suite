@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Account } from '@wallet-types';
-import { NETWORKS } from '@suite/config/wallet';
+import BigNumber from 'bignumber.js';
+
+import { NETWORKS } from '@wallet-config';
 import Asset from './components/Asset';
 import Card from '../Card';
-import BigNumber from 'bignumber.js';
-import { AppState } from '@suite/types/suite';
-import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
+import { Account } from '@wallet-types';
+import { AppState } from '@suite-types';
+import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { Loader } from '@trezor/components';
 import { colors } from '@trezor/components-v2';
 

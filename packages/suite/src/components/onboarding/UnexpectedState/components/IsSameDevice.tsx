@@ -1,7 +1,7 @@
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components/Translation';
 import { Dispatch } from '@suite-types';
-import { resetOnboarding } from '@suite/actions/onboarding/onboardingActions';
+import { resetOnboarding } from '@onboarding-actions/onboardingActions';
 import messages from '@suite/support/messages';
 import React from 'react';
 import { connect } from 'react-redux';
