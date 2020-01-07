@@ -1,7 +1,8 @@
 import { Translation } from '@suite-components/Translation';
 import { AppState } from '@suite-types';
+import styled from 'styled-components';
+import { Icon, colors, Input } from '@trezor/components-v2';
 import messages from '@suite/support/messages';
-import { Input } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
@@ -9,8 +10,17 @@ import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-
 import { DispatchProps } from '../../Container';
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+    padding-left: 5px;
+`;
+
+const Label = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 interface Props extends WrappedComponentProps {
     outputId: Output['id'];
@@ -57,8 +67,12 @@ const Address = (props: Props) => (
         state={getInputState(props.error, props.address)}
         display="block"
         monospace
-        topLabel={props.intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
-        // @ts-ignore
+        topLabel={
+            <Label>
+                {props.intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
+                <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+            </Label>
+        }
         bottomText={getMessage(
             props.error,
             props.networkType,

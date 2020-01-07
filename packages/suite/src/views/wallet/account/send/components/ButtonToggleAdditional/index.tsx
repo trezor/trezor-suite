@@ -1,5 +1,5 @@
 import React from 'react';
-import { variables, colors, Icon } from '@trezor/components';
+import { variables, colors, Icon } from '@trezor/components-v2';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -11,8 +11,8 @@ const Wrapper = styled.div`
     min-height: 41px;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.BASE};
-    color: ${colors.TEXT_PRIMARY};
+    font-size: ${variables.FONT_SIZE.BODY};
+    color: ${colors.BLACK17};
 `;
 
 const ToggleIcon = styled(Icon)`
@@ -30,7 +30,7 @@ const ToggleAdditionalButton = (props: Props) => (
         <Translation {...messages.TR_ADVANCED_SETTINGS} />
         <ToggleIcon
             icon="ARROW_DOWN"
-            color={colors.TEXT_SECONDARY}
+            color={colors.BLACK17}
             size={12}
             isActive={props.isActive}
             canAnimate={props.isActive}

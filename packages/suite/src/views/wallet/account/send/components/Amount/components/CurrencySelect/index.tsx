@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Select } from '@trezor/components';
+import { Select } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
+import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 
 const CurrencySelect = styled(Select)`
-    width: 60px;
-    height: 40px;
+    margin-top: ${LABEL_HEIGHT}px;
+    margin-left: 10px;
 `;
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 const CoinSelect = (props: Props) => (
     <CurrencySelect
         key="currency"
+        display="short"
         isSearchable={false}
         isClearable={false}
         value={{

@@ -14,3 +14,6 @@ export const FIRST_OUTPUT_ID = 0;
 export const BTC_RBF_SEQUENCE = 0xffffffff - 2;
 export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
+
+// UI
+export const LABEL_HEIGHT = 38;

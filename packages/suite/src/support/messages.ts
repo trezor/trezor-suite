@@ -68,7 +68,7 @@ const definedMessages = defineMessages({
         id: 'TR_ADVANCED_RECOVERY_OPTION',
     },
     TR_ADVANCED_SETTINGS: {
-        defaultMessage: 'Advanced settings',
+        defaultMessage: 'Show advanced options',
         description: 'Shows advanced sending form',
         id: 'TR_ADVANCED_SETTINGS',
     },
