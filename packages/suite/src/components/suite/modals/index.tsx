@@ -26,13 +26,14 @@ import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import RequestInstance from './RequestInstance';
-import RememberDevice from './Remember';
+import StorageMode from './StorageMode';
 // import DuplicateDevice from 'components/modals/device/Duplicate';
-import WalletType from './WalletType';
+import WalletType from './DELETE_WalletType';
 import AddAccount from './AddAccount';
 import QrScanner from './Qr';
 import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
+import PassphraseMode from './PassphraseMode';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -59,8 +60,7 @@ const getDeviceContextModal = (props: Props) => {
     switch (modal.windowType) {
         case SUITE.REQUEST_PASSPHRASE_MODE:
             return (
-                <WalletType
-                    device={device}
+                <PassphraseMode
                     onWalletTypeRequest={modalActions.onWalletTypeRequest}
                     onCancel={modalActions.onCancel}
                 />
@@ -107,12 +107,11 @@ const getDeviceContextModal = (props: Props) => {
                 />
             );
 
-        case SUITE.REQUEST_REMEMBER_DEVICE:
+        case SUITE.REQUEST_STORAGE_MODE:
             return (
-                <RememberDevice
+                <StorageMode
                     device={modal.device as AcquiredDevice}
-                    onRememberDevice={modalActions.onRememberDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
+                    onStorageModeSelected={modalActions.onStorageModeSelected}
                 />
             );
 

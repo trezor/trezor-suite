@@ -282,10 +282,11 @@ const createInstance = (draft: State, device: TrezorDevice, name?: string) => {
  * @param {TrezorDevice} device
  */
 const remember = (draft: State, device: TrezorDevice) => {
+    if (!device || !device.features) return;
     // only acquired devices
-    if (!device || !device.features || !device.state) return;
+    // if (!device || !device.features || !device.state) return;
     draft.forEach(d => {
-        if (d.features && d.state && d.features.device_id === device.features.device_id) {
+        if (d.features && d.features.device_id === device.features.device_id) {
             d.remember = true;
         }
     });

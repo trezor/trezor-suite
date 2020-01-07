@@ -68,6 +68,22 @@ export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch:
     dispatch(onCancel());
 };
 
+export const onStorageModeSelected = (device: TrezorDevice, remember: boolean) => (
+    dispatch: Dispatch,
+) => {
+    dispatch({
+        type: SUITE.RECEIVE_STORAGE_MODE,
+        device,
+        remember,
+    });
+    if (remember) {
+        dispatch({
+            type: SUITE.REMEMBER_DEVICE,
+            payload: device,
+        });
+    }
+};
+
 // TODO: this method is only a placeholder
 export const onRememberDevice = (payload: TrezorDevice): Action => ({
     type: SUITE.REMEMBER_DEVICE,

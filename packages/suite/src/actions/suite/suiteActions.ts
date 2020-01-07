@@ -25,6 +25,8 @@ export type SuiteActions =
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
+    | { type: typeof SUITE.REQUEST_STORAGE_MODE; payload: TrezorDevice }
+    | { type: typeof SUITE.RECEIVE_STORAGE_MODE; device: TrezorDevice; remember: boolean }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_DISCONNECT_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.SET_LANGUAGE; locale: string; messages: { [key: string]: string } }
@@ -304,10 +306,35 @@ export const acquireDevice = () => async (dispatch: Dispatch, getState: GetState
 
 /**
  * Called from `walletMiddleware`
+ * Show modal and ask user if he wants to remember the device or use it in guest mode
+ * Skip if device has `passphrase_protection` disabled
+ */
+export const requestStorageMode = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+    if (!device) return;
+    // const isDeviceReady =
+    //     device.connected &&
+    //     device.features &&
+    //     !device.state &&
+    //     device.mode === 'normal' &&
+    //     device.firmware !== 'required';
+    // if (!isDeviceReady) return;
+
+    dispatch({
+        type: SUITE.REQUEST_STORAGE_MODE,
+        payload: device,
+    });
+};
+
+/**
+ * Called from `walletMiddleware`
  * Show modal and ask user if he wants to use passphrase or not
  * Skip if device has `passphrase_protection` disabled
  */
-export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: GetState) => {
+export const requestPassphraseMode = (forcePassphraseMode: boolean) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { device } = getState().suite;
     if (!device) return;
     const isDeviceReady =
@@ -319,12 +346,22 @@ export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: 
     if (!isDeviceReady) return;
 
     if (device.features && device.features.passphrase_protection) {
-        dispatch({
-            type: SUITE.RECEIVE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: !device.useEmptyPassphrase,
-        });
+        if (forcePassphraseMode) {
+            // use passphrase mode
+            dispatch({
+                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                payload: device,
+                hidden: true,
+            });
+        } else {
+            // show modal where user choose between standard or hidden wallet
+            dispatch({
+                type: SUITE.REQUEST_PASSPHRASE_MODE,
+                payload: device,
+            });
+        }
     } else {
+        // use no passphrase mode
         dispatch({
             type: SUITE.RECEIVE_PASSPHRASE_MODE,
             payload: device,
