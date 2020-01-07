@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import * as dotenv from 'dotenv';
 import meow from 'meow';
-import { mergeMessages, buildCSV, buildLocales } from './index';
+import { mergeMessages, buildCSV, buildLocales, findUnusedMessages } from './index';
 import Crowdin from './services/crowdin';
 
 const result = dotenv.config();
@@ -36,6 +36,10 @@ Usage
 
         export-translations
             - downloads translations and generates locales
+
+        find-unused-messages --messages [path/to/messages.json] --src
+            - performs fulltext search of keys provided in --messages option on all files under src
+
 `,
     {
         flags: {
@@ -47,6 +51,14 @@ Usage
             version: {
                 type: 'boolean',
                 alias: 'v',
+            },
+            messages: {
+                type: 'string',
+                alias: 'm',
+            },
+            src: {
+                type: 'string',
+                alias: 's',
             },
         },
     },
@@ -153,6 +165,10 @@ switch (command) {
         });
         break;
 
+    case 'find-unused-messages':
+        console.log('Looking for unused messagess...');
+        findUnusedMessages(cli.flags.messages, cli.flags.src);
+        break;
     default:
         console.log('Unknown command');
         cli.showHelp();
