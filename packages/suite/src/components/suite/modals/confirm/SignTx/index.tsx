@@ -1,12 +1,11 @@
 import React from 'react';
-import { State as SendFormState } from '@wallet-types/sendForm';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { formatDuration } from '@suite-utils/date';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
-import { TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
+import { AppState, TrezorDevice } from '@suite-types';
 
 import messages from '@suite/support/messages';
 
@@ -93,11 +92,12 @@ const Row = styled.div`
     justify-content: center;
 `;
 
-interface Props {
-    device: TrezorDevice;
-    account: Account | null;
-    sendForm: SendFormState | null;
-}
+const mapStateToProps = (state: AppState) => ({
+    sendForm: state.wallet.send,
+    account: state.wallet.selectedAccount ? state.wallet.selectedAccount.account : null,
+});
+
+type Props = ReturnType<typeof mapStateToProps> & { device: TrezorDevice };
 
 const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
     if (!account || !sendForm || !sendForm.networkTypeBitcoin.transactionInfo) return null;
@@ -171,4 +171,4 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
     );
 };
 
-export default ConfirmSignTx;
+export default connect(mapStateToProps)(ConfirmSignTx);
