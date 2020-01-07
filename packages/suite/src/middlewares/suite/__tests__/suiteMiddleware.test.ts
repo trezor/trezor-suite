@@ -66,7 +66,6 @@ describe('suite middleware', () => {
                         name: 'suite-version',
                         pattern: '/version',
                         app: 'notSpecified',
-                        isStatic: true,
                     },
                 }),
             );
@@ -92,7 +91,6 @@ describe('suite middleware', () => {
                         name: 'onboarding-index',
                         pattern: '/onboarding',
                         app: 'onboarding',
-                        isStatic: true,
                         isModal: true,
                     },
                 }),

@@ -28,19 +28,16 @@ const routes = [
         name: 'suite-version',
         pattern: '/version',
         app: 'notSpecified',
-        isStatic: true,
     },
     {
         name: 'suite-bridge',
         pattern: '/bridge',
         app: 'notSpecified',
-        isStatic: true,
     },
     {
         name: 'onboarding-index',
         pattern: '/onboarding',
         app: 'onboarding',
-        isStatic: true,
         isModal: true,
     },
     {
@@ -129,7 +126,6 @@ const routes = [
 ] as const;
 
 export type Route = {
-    isStatic?: boolean;
     isModal?: boolean;
     params?: typeof walletParams;
 } & ArrayElement<typeof routes>;
