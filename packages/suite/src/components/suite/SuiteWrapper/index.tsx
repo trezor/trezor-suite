@@ -9,7 +9,7 @@ import { isWebUSB } from '@suite-utils/device';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
 import SuiteLayout from '@suite-components/SuiteLayout';
-import Bridge from '@suite/views/suite/bridge';
+import Bridge from '@suite-views/bridge';
 import AcquireDevice from '@suite-components/AcquireDevice';
 
 import { AppState, Dispatch } from '@suite-types';
@@ -21,6 +21,7 @@ interface OwnProps {
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
     devices: state.devices,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -33,7 +34,7 @@ export type Props = OwnProps &
     ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => {
-    const { suite, goto } = props;
+    const { suite, goto, router } = props;
     const { transport, loaded, device } = props.suite;
 
     if (!loaded || !transport) {
@@ -52,6 +53,11 @@ const Index = (props: Props) => {
                 <Bridge />
             </SuiteLayout>
         );
+    }
+
+    // Modal application handles everything on its own
+    if (router.route && router.route.isModal) {
+        return <>{props.children}</>;
     }
 
     // no available device

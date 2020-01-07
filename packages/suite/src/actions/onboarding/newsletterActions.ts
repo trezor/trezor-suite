@@ -6,9 +6,9 @@ import {
     FETCH_START,
     FETCH_SUCCESS,
     Checkbox,
-} from '@suite/types/onboarding/newsletter';
+} from '@onboarding-types/newsletter';
 
-import { MAILCHIMP_U, MAILCHIMP_ID, MAILCHIMP_BASE } from '@suite/config/onboarding/mailchimp';
+import { MAILCHIMP_U, MAILCHIMP_ID, MAILCHIMP_BASE } from '@onboarding-config/mailchimp';
 import { Dispatch, GetState } from '@suite-types';
 
 const GET = 'GET';

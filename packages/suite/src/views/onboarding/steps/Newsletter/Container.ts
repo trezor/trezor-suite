@@ -2,8 +2,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 
-import * as newsletterActions from '@suite/actions/onboarding/newsletterActions';
-import * as connectActions from '@suite/actions/onboarding/connectActions';
+import * as newsletterActions from '@onboarding-actions/newsletterActions';
+import * as connectActions from '@onboarding-actions/connectActions';
 
 import { Dispatch, AppState } from '@suite-types';
 

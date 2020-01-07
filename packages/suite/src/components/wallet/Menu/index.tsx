@@ -13,7 +13,7 @@ import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import messages from '@suite/support/messages';
-import { DISCOVERY_STATUS } from '@suite/reducers/wallet/discoveryReducer';
+import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
 const Wrapper = styled.div``;
 

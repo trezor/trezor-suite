@@ -7,7 +7,7 @@ import {
     DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
     DISALLOWED_DEVICE_IS_REQUESTING_PIN,
     DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
-} from '@suite/constants/onboarding/steps';
+} from '@onboarding-constants/steps';
 
 import {
     isNotSameDevice,
@@ -22,7 +22,7 @@ import {
 const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
 
 describe('rules', () => {
-    describe('isNotConneted', () => {
+    describe('isNotConnected', () => {
         it('should return true', () => {
             expect(isNotConnected({ device: undefined })).toEqual(true);
         });

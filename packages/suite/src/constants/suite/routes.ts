@@ -43,6 +43,11 @@ const routes = [
         isStatic: true,
         isModal: true,
     },
+    {
+        name: 'tips-index',
+        pattern: '/tips',
+        app: 'wallet',
+    },
     // todo: app will be just settings probably
     {
         name: 'settings-index',
@@ -74,12 +79,10 @@ const routes = [
         pattern: '/settings/coins',
         app: 'deviceManagement',
     },
-    // todo: remove this route and move functionality to settings
     {
         name: 'suite-device-firmware',
         pattern: '/firmware',
         app: 'firmware',
-        isStatic: true,
         isModal: true,
     },
     {

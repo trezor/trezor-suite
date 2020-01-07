@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import colors from '@suite/config/onboarding/colors';
-import { Step } from '@suite/types/onboarding/steps';
+import colors from '@onboarding-config/colors';
+import { Step } from '@onboarding-types/steps';
 
 import Line from './Line';
 

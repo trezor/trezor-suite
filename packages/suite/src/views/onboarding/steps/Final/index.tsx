@@ -7,7 +7,7 @@ import React from 'react';
 
 import { Props } from './Container';
 
-const FinalStep = ({ exitApp }: Props) => (
+const FinalStep = ({ closeModalApp }: Props) => (
     <Wrapper.Step>
         <H1>
             <Translation>{messages.TR_FINAL_HEADING}</Translation>
@@ -16,7 +16,7 @@ const FinalStep = ({ exitApp }: Props) => (
             <Translation>{messages.TR_FINAL_SUBHEADING}</Translation>
         </H2>
         <Wrapper.Controls>
-            <OnboardingButton.Cta onClick={() => exitApp(CONFIG.APP.EXIT_APP_ROUTE)}>
+            <OnboardingButton.Cta onClick={() => closeModalApp(CONFIG.APP.EXIT_APP_ROUTE)}>
                 Go to wallet
             </OnboardingButton.Cta>
         </Wrapper.Controls>

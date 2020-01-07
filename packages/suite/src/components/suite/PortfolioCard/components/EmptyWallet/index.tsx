@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { colors, Button, variables } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
@@ -20,11 +21,10 @@ const Title = styled.div`
     margin-bottom: 30px;
 `;
 
-const Image = styled.div`
+const Image = styled.img`
     display: flex;
     width: 220px;
     height: 180px;
-    background: #f5f5f5;
     margin-right: 52px;
 `;
 
@@ -44,7 +44,7 @@ type Props = React.HTMLAttributes<HTMLDivElement>;
 const EmptyWallet = (props: Props) => {
     return (
         <Wrapper {...props}>
-            <Image />
+            <Image src={resolveStaticPath(`images/dashboard/empty-dashboard.svg`)} />
             <Content>
                 <Title>Your Wallet is ready. What to do now?</Title>
                 <SecurityItem>

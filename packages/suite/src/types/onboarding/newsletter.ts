@@ -3,7 +3,7 @@ import {
     setEmail,
     submitEmail,
     setSkipped,
-} from '@suite/actions/onboarding/newsletterActions';
+} from '@onboarding-actions/newsletterActions';
 
 export interface NewsletterState {
     email: string;

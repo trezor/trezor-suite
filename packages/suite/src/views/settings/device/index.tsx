@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
@@ -42,6 +43,7 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openBackgroundGalleryModal,
+    openModalApp,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
@@ -124,9 +126,8 @@ const Settings = ({
                             />
                             <ActionColumn>
                                 <ActionButton
-                                    onClick={
-                                        () => TrezorConnect.recoveryDevice({ dry_run: true })
-                                        // console.log('t/odo: add recoveryDevice({dry_run: true})')
+                                    onClick={() =>
+                                        TrezorConnect.recoveryDevice({ dry_run: true, device })
                                     }
                                     isDisabled={
                                         uiLocked ||
@@ -157,8 +158,9 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() => console.log('boo')}
+                                onClick={() => openModalApp('suite-device-firmware')}
                                 isDisabled={uiLocked}
+                                data-test="@suite/settings/device/update-button"
                             >
                                 Check for update
                             </ActionButton>

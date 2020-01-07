@@ -19,7 +19,7 @@ const SecurityStep = (props: Props) => (
                 <OnboardingButton.Alt
                     data-test="button-exit-app"
                     onClick={() => {
-                        props.exitApp(CONFIG.APP.EXIT_APP_ROUTE);
+                        props.closeModalApp(CONFIG.APP.EXIT_APP_ROUTE);
                     }}
                 >
                     <Translation {...messages.TR_SKIP_SECURITY} />

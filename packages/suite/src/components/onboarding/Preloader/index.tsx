@@ -13,7 +13,7 @@ import { Loaders } from '@onboarding-components';
 //     STEP_HEIGHT_UNIT,
 //     NAVBAR_HEIGHT,
 //     NAVBAR_HEIGHT_UNIT,
-// } from '@suite/config/onboarding/layout';
+// } from '@onboarding-config/layout';
 
 const ANIMATION_DURATION = 2.5;
 

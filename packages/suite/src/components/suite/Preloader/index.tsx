@@ -4,7 +4,6 @@ import { View, StyleSheet } from 'react-native';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import { SUITE } from '@suite-actions/constants';
 import SuiteWrapper from '@suite-components/SuiteWrapper';
-import StaticPageWrapper from '@suite-components/StaticPageWrapper';
 import { H1, P } from '@trezor/components-v2';
 import { AppState, Dispatch } from '@suite-types';
 
@@ -17,7 +16,6 @@ const mapStateToProps = (state: AppState) => ({
 type Props = ReturnType<typeof mapStateToProps> & {
     children: React.ReactNode;
     dispatch: Dispatch;
-    isStatic: boolean;
 };
 
 const styles = StyleSheet.create({
@@ -29,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, dispatch, isStatic } = props;
+    const { loading, loaded, error, dispatch } = props;
     useEffect(() => {
         if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
@@ -42,15 +40,6 @@ const Preloader = (props: Props) => {
                 <H1>Failed to load Trezor Suite</H1>
                 <P>Ups, something went wrong. Details: {error}</P>
             </View>
-        );
-    }
-
-    if (isStatic) {
-        return (
-            <StaticPageWrapper>
-                <OnlineStatus />
-                {props.children}
-            </StaticPageWrapper>
         );
     }
 

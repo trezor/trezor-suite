@@ -6,9 +6,9 @@ import {
     ID_NAME_STEP,
     ID_BOOKMARK_STEP,
     ID_NEWSLETTER_STEP,
-} from '@suite/constants/onboarding/steps';
-import { Step, AnyStepId } from '@suite/types/onboarding/steps';
-import colors from '@suite/config/onboarding/colors';
+} from '@onboarding-constants/steps';
+import { Step, AnyStepId } from '@onboarding-types/steps';
+import colors from '@onboarding-config/colors';
 
 import ProgressStep from './components/ProgressStep';
 

@@ -5,7 +5,7 @@
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { getPrefixedURL, getRoute, RouteParams } from '@suite-utils/router';
+import { getPrefixedURL, getRoute, findRouteByName, RouteParams } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 interface LocationChange {
@@ -68,6 +68,11 @@ export const goto = (
     if (!unlocked) return;
 
     const url = getRoute(routeName, params);
+
+    const route = findRouteByName(routeName);
+    if (route && route.isModal) {
+        return dispatch(onLocationChange(url));
+    }
 
     if (preserveParams) {
         const { hash } = window.location;

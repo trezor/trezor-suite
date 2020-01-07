@@ -6,7 +6,7 @@ import { Link } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
-import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
 import messages from '@suite/support/messages';
 
