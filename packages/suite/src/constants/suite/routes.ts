@@ -79,12 +79,10 @@ const routes = [
         pattern: '/settings/coins',
         app: 'deviceManagement',
     },
-    // todo: remove this route and move functionality to settings
     {
         name: 'suite-device-firmware',
         pattern: '/firmware',
         app: 'firmware',
-        isStatic: true,
         isModal: true,
     },
     {
