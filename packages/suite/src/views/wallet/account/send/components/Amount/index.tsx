@@ -43,6 +43,7 @@ const Right = styled.div`
     display: flex;
     margin-top: ${LABEL_HEIGHT}px;
     flex: 1;
+    min-width: 210px;
     align-items: flex-start;
 `;
 
@@ -107,7 +108,6 @@ const Amount = (props: Props) => (
         <Left>
             <StyledInput
                 state={getInputState(props.error, props.amount)}
-                monospace
                 topLabel={
                     <Label>
                         {props.intl.formatMessage(messages.TR_AMOUNT)}

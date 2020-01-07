@@ -7,6 +7,7 @@ import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
     display: flex;
+    padding: 15px 40px;
     cursor: pointer;
     min-height: 41px;
     align-items: center;
@@ -27,7 +28,13 @@ interface Props {
 
 const ToggleAdditionalButton = (props: Props) => (
     <Wrapper onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
-        <Translation {...messages.TR_ADVANCED_SETTINGS} />
+        <>
+            {props.isActive ? (
+                <Translation {...messages.TR_HIDE_ADVANCED_OPTIONS} />
+            ) : (
+                <Translation {...messages.TR_SHOW_ADVANCED_OPTIONS} />
+            )}
+        </>
         <ToggleIcon
             icon="ARROW_DOWN"
             color={colors.BLACK17}

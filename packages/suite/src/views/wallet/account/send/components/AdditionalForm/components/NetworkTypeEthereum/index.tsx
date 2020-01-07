@@ -10,19 +10,27 @@ import GasPriceTopLabel from './components/GasPriceTopLabel';
 import DataTopLabel from './components/DataTopLabel';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import { colors } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     display: flex;
-    flex: 1;
-    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 0 36px;
 `;
 
-const Row = styled.div`
-    display: flex;
+const Left = styled.div`
+    flex: 1;
+    margin-top: 20px;
+`;
+const Right = styled.div`
+    flex: 1;
+`;
 
-    &:last-child {
-        padding: 0;
-    }
+const Line = styled.div`
+    height: 100%;
+    width: 2px;
+    margin: 0 36px;
+    background: ${colors.BLACK96};
 `;
 
 const GasInput = styled(Input)`
@@ -64,9 +72,10 @@ const NetworkTypeEthereum = ({ send, sendFormActionsEthereum }: Props) => {
     const { gasLimit, gasPrice, data } = send.networkTypeEthereum;
     return (
         <Wrapper>
-            <Row>
+            <Left>
                 <GasInput
                     variant="small"
+                    display="block"
                     state={getInputState(gasLimit.error, gasLimit.value)}
                     topLabel={<GasLimitTopLabel />}
                     bottomText={getErrorGasLimit(gasLimit.error)}
@@ -74,26 +83,25 @@ const NetworkTypeEthereum = ({ send, sendFormActionsEthereum }: Props) => {
                     isDisabled={false}
                     onChange={e => sendFormActionsEthereum.handleGasLimit(e.target.value)}
                 />
-            </Row>
-            <Row>
                 <GasInput
                     variant="small"
+                    display="block"
                     state={getInputState(gasPrice.error, gasPrice.value)}
                     topLabel={<GasPriceTopLabel />}
                     bottomText={getErrorGasPrice(gasPrice.error)}
                     value={send.networkTypeEthereum.gasPrice.value || ''}
                     onChange={e => sendFormActionsEthereum.handleGasPrice(e.target.value)}
                 />
-            </Row>
-            <Row>
-                <Textarea
-                    state={getInputState(data.error, data.value)}
-                    value={send.networkTypeEthereum.data.value || ''}
-                    bottomText={getErrorData(data.error)}
-                    onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
-                    topLabel={<DataTopLabel />}
-                />
-            </Row>
+            </Left>
+            <Line />
+            <Right></Right>
+            <Textarea
+                state={getInputState(data.error, data.value)}
+                value={send.networkTypeEthereum.data.value || ''}
+                bottomText={getErrorData(data.error)}
+                onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
+                topLabel={<DataTopLabel />}
+            />
         </Wrapper>
     );
 };

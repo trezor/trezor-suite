@@ -12,13 +12,15 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
+const SelectWrapper = styled.div`
+    width: 100px;
+    min-width: 80px;
+    margin-left: 10px;
+`;
+
 const getCurrencyOptions = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
-
-const LocalCurrencySelect = styled(Select)`
-    margin-left: 10px;
-`;
 
 const LocalCurrencyInput = styled(Input)``;
 
@@ -40,17 +42,19 @@ const Fiat = (props: Props) => (
                 props.sendFormActions.handleFiatInputChange(props.outputId, e.target.value)
             }
         />
-        <LocalCurrencySelect
-            key="local-currency"
-            isSearchable
-            display="short"
-            isClearable={false}
-            onChange={(option: Output['localCurrency']['value']) =>
-                props.sendFormActions.handleSelectCurrencyChange(option, props.outputId)
-            }
-            value={props.localCurrency}
-            options={FIAT.currencies.map((currency: string) => getCurrencyOptions(currency))}
-        />
+        <SelectWrapper>
+            <Select
+                key="local-currency"
+                isSearchable
+                display="block"
+                isClearable={false}
+                onChange={(option: Output['localCurrency']['value']) =>
+                    props.sendFormActions.handleSelectCurrencyChange(option, props.outputId)
+                }
+                value={props.localCurrency}
+                options={FIAT.currencies.map((currency: string) => getCurrencyOptions(currency))}
+            />
+        </SelectWrapper>
     </Wrapper>
 );
 

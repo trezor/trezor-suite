@@ -67,10 +67,15 @@ const definedMessages = defineMessages({
         description: 'Button for selecting advanced recovery option',
         id: 'TR_ADVANCED_RECOVERY_OPTION',
     },
-    TR_ADVANCED_SETTINGS: {
+    TR_SHOW_ADVANCED_OPTIONS: {
         defaultMessage: 'Show advanced options',
         description: 'Shows advanced sending form',
-        id: 'TR_ADVANCED_SETTINGS',
+        id: 'TR_SHOW_ADVANCED_OPTIONS',
+    },
+    TR_HIDE_ADVANCED_OPTIONS: {
+        defaultMessage: 'Hide advanced options',
+        description: 'Hide advanced sending form',
+        id: 'TR_HIDE_ADVANCED_OPTIONS',
     },
     TR_ALREADY_ADDED: {
         defaultMessage: 'Already added',

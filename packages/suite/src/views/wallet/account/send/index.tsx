@@ -12,8 +12,7 @@ import messages from '@suite/support/messages';
 import Address from './components/Address';
 import Amount from './components/Amount';
 import Clear from './components/Clear';
-import Fee from './components/Fee';
-import SendButton from './components/Send';
+import SendSection from './components/SendSection';
 import AdditionalForm from './components/AdditionalForm';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 
@@ -45,9 +44,13 @@ const StyledIcon = styled(Icon)`
 `;
 
 const OutputWrapper = styled.div`
-    padding: 23px 40px;
+    padding: 23px 40px 60px 40px;
     border-radius: 6px;
     background: ${colors.BLACK96};
+`;
+
+const AdditionalInfoWrapper = styled.div`
+    margin-top: 20px;
 `;
 
 const Send = (props: StateProps & DispatchProps) => {
@@ -136,27 +139,29 @@ const Send = (props: StateProps & DispatchProps) => {
                     symbol={network.symbol}
                 />
             </Row> */}
-            <Row isColumn={send.isAdditionalFormVisible}>
-                <ButtonToggleAdditional
-                    isActive={send.isAdditionalFormVisible}
-                    sendFormActions={sendFormActions}
-                />
-                {send.isAdditionalFormVisible && (
-                    <AdditionalForm networkType={network.networkType} />
-                )}
-                <SendButton
-                    isComposing={send.isComposing}
-                    send={send}
-                    suite={suite}
-                    device={device}
-                    networkType={account.networkType}
-                    symbol={network.symbol}
-                    sendFormActions={sendFormActions}
-                    sendFormActionsBitcoin={sendFormActionsBitcoin}
-                    sendFormActionsEthereum={sendFormActionsEthereum}
-                    sendFormActionsRipple={sendFormActionsRipple}
-                />
-            </Row>
+            <AdditionalInfoWrapper>
+                <Row isColumn={send.isAdditionalFormVisible}>
+                    <ButtonToggleAdditional
+                        isActive={send.isAdditionalFormVisible}
+                        sendFormActions={sendFormActions}
+                    />
+                    {send.isAdditionalFormVisible && (
+                        <AdditionalForm networkType={network.networkType} />
+                    )}
+                </Row>
+            </AdditionalInfoWrapper>
+            <SendSection
+                isComposing={send.isComposing}
+                send={send}
+                suite={suite}
+                device={device}
+                networkType={account.networkType}
+                symbol={network.symbol}
+                sendFormActions={sendFormActions}
+                sendFormActionsBitcoin={sendFormActionsBitcoin}
+                sendFormActionsEthereum={sendFormActionsEthereum}
+                sendFormActionsRipple={sendFormActionsRipple}
+            />
         </LayoutAccount>
     );
 };

@@ -13,17 +13,12 @@ import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
-    flex: 1;
-
-    justify-content: flex-end;
-
-    & button {
-        margin-left: 10px;
-    }
+    justify-content: center;
+    margin-top: 25px;
 `;
 
 const Send = styled(Button)`
-    min-width: 200px;
+    min-width: 240px;
 `;
 
 interface Props {
@@ -108,7 +103,7 @@ const getSendText = (
     return 'Send';
 };
 
-const SendAndClear = (props: Props) => (
+const SendSection = (props: Props) => (
     <Wrapper>
         {props.networkType === 'bitcoin' && (
             <Button variant="secondary" onClick={() => props.sendFormActionsBitcoin.addRecipient()}>
@@ -141,4 +136,4 @@ const SendAndClear = (props: Props) => (
     </Wrapper>
 );
 
-export default SendAndClear;
+export default SendSection;
