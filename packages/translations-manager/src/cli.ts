@@ -1,16 +1,9 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import * as dotenv from 'dotenv';
 import meow from 'meow';
 import { mergeMessages, buildCSV, buildLocales, findUnusedMessages } from './index';
 import Crowdin from './services/crowdin';
-
-const result = dotenv.config();
-
-if (result.error) {
-    console.log(result.error);
-}
 
 const cli = meow(
     `
@@ -37,7 +30,7 @@ Usage
         export-translations
             - downloads translations and generates locales
 
-        find-unused-messages --messages [path/to/messages.json] --src
+        find-unused-messages --messages [path/to/messages.json] --src [path/to/src/dir]
             - performs fulltext search of keys provided in --messages option on all files under src
 
 `,
