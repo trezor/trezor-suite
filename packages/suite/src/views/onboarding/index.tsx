@@ -58,31 +58,6 @@ const TRANSITION_PROPS = {
     unmountOnExit: true,
 };
 
-// todo: Modal should be solved by some common suite-modal-component
-const ModalContainer = styled.div`
-    position: absolute;
-    z-index: 1000;
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    background: rgba(0, 0, 0, 0.35);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: auto;
-    padding: 20px;
-`;
-
-const ModalWindow = styled.div`
-    z-index: 10001;
-    margin: auto;
-    position: relative;
-    border-radius: 4px;
-    background-color: ${colors.white};
-    text-align: center;
-`;
-
 interface WrapperInsideProps extends React.HTMLAttributes<HTMLDivElement> {
     isGlobalInteraction: boolean;
 }
@@ -248,28 +223,26 @@ const Onboarding = (props: Props) => {
 
     return (
         <>
-            <ModalContainer />
-            <ModalWindow>
-                <Head>
-                    <title>Onboarding | Trezor Suite</title>
-                </Head>
-                <Preloader loaded={loaded}>
-                    <WrapperInside isGlobalInteraction={isGlobalInteraction()}>
-                        {errorState && (
-                            <UnexpectedStateOverlay>
-                                <UnexpectedState
-                                    caseType={errorState}
-                                    prevModel={
-                                        (prevDevice &&
-                                            prevDevice.features &&
-                                            prevDevice.features.major_version) ||
-                                        2
-                                    }
-                                    uiInteraction={uiInteraction}
-                                />
-                            </UnexpectedStateOverlay>
-                        )}
-                        {/* <ProgressStepsSlot>
+            <Head>
+                <title>Onboarding | Trezor Suite</title>
+            </Head>
+            <Preloader loaded={loaded}>
+                <WrapperInside isGlobalInteraction={isGlobalInteraction()}>
+                    {errorState && (
+                        <UnexpectedStateOverlay>
+                            <UnexpectedState
+                                caseType={errorState}
+                                prevModel={
+                                    (prevDevice &&
+                                        prevDevice.features &&
+                                        prevDevice.features.major_version) ||
+                                    2
+                                }
+                                uiInteraction={uiInteraction}
+                            />
+                        </UnexpectedStateOverlay>
+                    )}
+                    {/* <ProgressStepsSlot>
                             <ProgressSteps
                                 hiddenOnSteps={[
                                     STEP.ID_WELCOME_STEP,
@@ -281,119 +254,118 @@ const Onboarding = (props: Props) => {
                                 isDisabled={deviceCall.isProgress}
                             />
                         </ProgressStepsSlot> */}
-                        <ComponentWrapper>
-                            {uiInteraction.name && isGlobalInteraction() && (
-                                <TrezorAction model={model} event={uiInteraction.name} />
-                            )}
+                    <ComponentWrapper>
+                        {uiInteraction.name && isGlobalInteraction() && (
+                            <TrezorAction model={model} event={uiInteraction.name} />
+                        )}
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_WELCOME_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <WelcomeStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_WELCOME_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <WelcomeStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_NEW_OR_USED}
-                                {...TRANSITION_PROPS}
-                            >
-                                <NewOrUsedStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_NEW_OR_USED}
+                            {...TRANSITION_PROPS}
+                        >
+                            <NewOrUsedStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SELECT_DEVICE_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <SelectDeviceStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SELECT_DEVICE_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <SelectDeviceStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_UNBOXING_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <HologramStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_UNBOXING_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <HologramStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_PAIR_DEVICE_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <PairStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_PAIR_DEVICE_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <PairStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_FIRMWARE_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <FirmwareStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_FIRMWARE_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <FirmwareStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SHAMIR_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <ShamirStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SHAMIR_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <ShamirStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_RECOVERY_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <RecoveryStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_RECOVERY_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <RecoveryStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SECURITY_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <SecurityStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SECURITY_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <SecurityStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_BACKUP_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <BackupStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_BACKUP_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <BackupStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_SET_PIN_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <SetPinStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_SET_PIN_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <SetPinStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_NAME_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <NameStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_NAME_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <NameStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_NEWSLETTER_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <NewsletterStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_NEWSLETTER_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <NewsletterStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_BOOKMARK_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <BookmarkStep />
-                            </CSSTransition>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_BOOKMARK_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <BookmarkStep />
+                        </CSSTransition>
 
-                            <CSSTransition
-                                in={activeStepId === STEP.ID_FINAL_STEP}
-                                {...TRANSITION_PROPS}
-                            >
-                                <FinalStep />
-                            </CSSTransition>
-                        </ComponentWrapper>
-                    </WrapperInside>
-                </Preloader>
-            </ModalWindow>
+                        <CSSTransition
+                            in={activeStepId === STEP.ID_FINAL_STEP}
+                            {...TRANSITION_PROPS}
+                        >
+                            <FinalStep />
+                        </CSSTransition>
+                    </ComponentWrapper>
+                </WrapperInside>
+            </Preloader>
         </>
     );
 };

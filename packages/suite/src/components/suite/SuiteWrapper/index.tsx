@@ -55,8 +55,8 @@ const Index = (props: Props) => {
         );
     }
 
-    // TODO: temporary, remove ASAP
-    if (router.app === 'onboarding') {
+    // Modal application handles everything on its own
+    if (router.route && router.route.isModal) {
         return <>{props.children}</>;
     }
 
