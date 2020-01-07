@@ -33,8 +33,12 @@ import AddAccount from './AddAccount';
 import QrScanner from './Qr';
 import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
-import FirmwareModal from './Firmware';
-import Onboarding from '@onboarding-views/index';
+
+import Firmware from '@firmware-views';
+import Onboarding from '@onboarding-views';
+
+console.log('Firmware', Firmware);
+console.log('Onboarding', Onboarding);
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -213,7 +217,7 @@ const Modal = (props: Props) => {
     if (router.route && router.route.isModal) {
         switch (router.app) {
             case 'firmware':
-                appModalComponent = <FirmwareModal modal={modalComponent} />;
+                appModalComponent = <Firmware modal={modalComponent} />;
                 break;
             case 'onboarding':
                 appModalComponent = <Onboarding modal={modalComponent} />;
