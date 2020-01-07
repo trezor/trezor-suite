@@ -37,9 +37,6 @@ import BackgroundGallery from './BackgroundGallery';
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
 
-console.log('Firmware', Firmware);
-console.log('Onboarding', Onboarding);
-
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
