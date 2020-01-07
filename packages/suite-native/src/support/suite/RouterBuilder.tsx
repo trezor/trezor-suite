@@ -11,7 +11,7 @@ import {
 } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 // @ts-ignore
-import createNativeStackNavigator from 'react-native-screens/createNativeStackNavigator.js'; // eslint-disable-line import/extensions
+import createNativeStackNavigator from 'react-native-screens/createNativeStackNavigator';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
