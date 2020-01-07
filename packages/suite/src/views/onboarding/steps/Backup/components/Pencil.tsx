@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 
-import colors from '@suite/config/onboarding/colors';
+import colors from '@onboarding-config/colors';
 
 const shake = keyframes`
     0%{transform:rotateZ(0);}

@@ -1,4 +1,4 @@
-import * as STEP from '@suite/constants/onboarding/steps';
+import * as STEP from '@onboarding-constants/steps';
 
 export interface Step {
     id: AnyStepId;

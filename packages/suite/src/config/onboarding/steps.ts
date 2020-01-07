@@ -1,6 +1,6 @@
-import { Step } from '@suite/types/onboarding/steps';
+import { Step } from '@onboarding-types/steps';
 
-import * as STEP from '@suite/constants/onboarding/steps';
+import * as STEP from '@onboarding-constants/steps';
 
 const steps: Step[] = [
     {
