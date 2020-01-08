@@ -69,7 +69,6 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     let authorizationIntent = false;
     const { device } = nextState.suite;
-    const isInstance = device && device.instance !== undefined && device.instance > 0;
 
     // 1. selected device is acquired but doesn't have a state
     if (
@@ -99,10 +98,9 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     }
 
     // 3a. auth process
-    // triggered from StorageMode modal in case of physical device or on authIntent in case of an instance of a device
-    if (action.type === SUITE.RECEIVE_REMEMBER_MODE || (authorizationIntent && isInstance)) {
+    if (action.type === SUITE.RECEIVE_REMEMBER_MODE) {
         console.log('request passphrase from middleware');
-        api.dispatch(suiteActions.requestPassphraseMode(isInstance!!));
+        api.dispatch(suiteActions.requestPassphraseMode());
     }
 
     // 3b. auth process

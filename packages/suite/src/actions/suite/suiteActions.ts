@@ -329,18 +329,21 @@ export const requestRememberMode = () => async (dispatch: Dispatch, getState: Ge
             type: SUITE.REQUEST_REMEMBER_MODE,
             payload: device,
         });
+    } else {
+        dispatch({
+            type: SUITE.RECEIVE_REMEMBER_MODE,
+            device,
+            remember: (device as AcquiredDevice).remember || false,
+        });
     }
 };
 
 /**
  * Called from `walletMiddleware`
  * Show modal and ask user if he wants to use passphrase or not
- * Skip if device has `passphrase_protection` disabled
+ * Skip if device has `passphrase_protection` disabled or if the device is an instance
  */
-export const requestPassphraseMode = (forcePassphraseMode: boolean) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device) return;
     const isDeviceReady =
@@ -351,9 +354,11 @@ export const requestPassphraseMode = (forcePassphraseMode: boolean) => async (
         device.firmware !== 'required';
     if (!isDeviceReady) return;
 
+    const isInstance = device && device.instance !== undefined && device.instance > 0;
+
     if (device.features && device.features.passphrase_protection) {
-        if (forcePassphraseMode) {
-            // use passphrase mode
+        if (isInstance) {
+            // use passphrase mode (device is an instance created through adding a hidden wallet)
             dispatch({
                 type: SUITE.RECEIVE_PASSPHRASE_MODE,
                 payload: device,
@@ -367,6 +372,7 @@ export const requestPassphraseMode = (forcePassphraseMode: boolean) => async (
             });
         }
     } else {
+        // disabled passphrase protection feature
         // use no passphrase mode
         dispatch({
             type: SUITE.RECEIVE_PASSPHRASE_MODE,
