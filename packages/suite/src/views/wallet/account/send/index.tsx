@@ -68,13 +68,7 @@ const Send = (props: StateProps & DispatchProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.selectedAccount]);
 
-    const { account, network, discovery, shouldRender } = props.selectedAccount;
-    const accountNameMessage =
-        account && account.networkType === 'ethereum'
-            ? messages.TR_SEND_NETWORK_AND_TOKENS
-            : messages.TR_SEND_NETWORK;
-
-    if (!device || !send || !account || !discovery || !network || !fees || !shouldRender) {
+    if (!device || !send || !fees || props.selectedAccount.status !== 'loaded') {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
             <LayoutAccount title="Send">
@@ -82,6 +76,12 @@ const Send = (props: StateProps & DispatchProps) => {
             </LayoutAccount>
         );
     }
+
+    const { account, network } = props.selectedAccount;
+    const accountNameMessage =
+        account.networkType === 'ethereum'
+            ? messages.TR_SEND_NETWORK_AND_TOKENS
+            : messages.TR_SEND_NETWORK;
 
     return (
         <LayoutAccount title="Send">

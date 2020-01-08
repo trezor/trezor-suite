@@ -63,7 +63,7 @@ const WalletInstance = ({
     getDiscovery,
 }: Props) => {
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
-    const deviceAccounts = accountUtils.getDeviceAccounts(instance, accounts);
+    const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);

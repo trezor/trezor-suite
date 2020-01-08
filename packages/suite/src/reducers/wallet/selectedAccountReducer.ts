@@ -1,4 +1,3 @@
-import produce from 'immer';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { Props as NotificationProps } from '@suite-components/Notification';
 import { Action, ExtendedMessageDescriptor } from '@suite-types';
@@ -22,36 +21,32 @@ export interface AccountNotification extends NotificationProps {
     type: 'info' | 'backend';
     shouldRender: boolean;
 }
-export interface State {
-    // location: string;
-    account: Account | null;
-    network: Network | null;
-    // tokens: Token[];
-    // pending: Transaction[];
-    discovery: Discovery | null;
-    loader: Loader | null;
-    notification: AccountNotification | null;
-    exceptionPage?: ExceptionPage;
-    shouldRender: boolean;
-}
+
+export type State =
+    | {
+          status: 'loaded';
+          account: Account;
+          network: Network;
+          discovery: Discovery;
+          // blockchain?: any; // TODO:
+          // transactions?: any; // TODO:
+          notification?: AccountNotification;
+          loader?: Loader;
+          exceptionPage?: ExceptionPage;
+      }
+    | {
+          status: 'loading' | 'exception' | 'none';
+          account?: Account;
+          loader?: Loader;
+          exceptionPage?: ExceptionPage;
+      };
 
 export const initialState: State = {
-    account: null,
-    network: null,
-    discovery: null,
-    loader: null,
-    notification: null,
-    shouldRender: false,
+    status: 'none',
 };
 
 export default (state: State = initialState, action: Action): State => {
-    return produce(state, _draft => {
-        switch (action.type) {
-            case ACCOUNT.DISPOSE:
-                return initialState;
-            case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-                return action.payload;
-            // no default
-        }
-    });
+    if (action.type === ACCOUNT.UPDATE_SELECTED_ACCOUNT) return action.payload;
+    if (action.type === ACCOUNT.DISPOSE) return initialState;
+    return state;
 };

@@ -40,8 +40,6 @@ const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
     devices: state.devices,
-    send: state.wallet.send,
-    account: state.wallet.selectedAccount.account,
     router: state.router,
 });
 
@@ -56,7 +54,7 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
-    const { modal, device, send, modalActions, account } = props;
+    const { modal, device, modalActions } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
@@ -96,7 +94,7 @@ const getDeviceContextModal = (props: Props) => {
             // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
             return <ConfirmAction device={device} />;
         case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} sendForm={send} account={account} />;
+            return <ConfirmSignTx device={device} />;
         }
 
         case RECEIVE.REQUEST_UNVERIFIED:

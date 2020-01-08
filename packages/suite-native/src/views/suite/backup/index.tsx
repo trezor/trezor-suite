@@ -28,10 +28,7 @@ const Backup = (props: Props) => {
             <View style={{ margin: 20 }}>
                 <Button onPress={props.back} title="Back to previous screen" />
             </View>
-            <Button
-                onPress={() => props.goto('wallet-account-send')}
-                title="Go to wallet send page"
-            />
+            <Button onPress={() => props.goto('wallet-send')} title="Go to wallet send page" />
         </View>
     );
 };

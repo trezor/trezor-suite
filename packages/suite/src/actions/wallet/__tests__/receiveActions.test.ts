@@ -58,7 +58,7 @@ export const getInitialState = (state: InitialState | undefined) => {
         wallet: {
             receive: receiveReducer(undefined, { type: 'foo' } as any),
             selectedAccount: {
-                network: {
+                account: {
                     networkType: 'bitcoin',
                 },
             },

@@ -184,22 +184,18 @@ export const isAddressInAccount = (
     }
 };
 
-export const getAccountDevice = (devices: AppState['devices'], account: Account) => {
-    const device = devices.find(d => d.state === account.deviceState);
-    return device;
-};
+export const getAccountDevice = (devices: AppState['devices'], account: Account) =>
+    devices.find(d => d.state === account.deviceState);
 
-export const getDeviceAccounts = (device: AppState['devices'][number], accounts: Account[]) => {
-    const deviceAccs = accounts.filter(a => a.deviceState === device.state);
-    return deviceAccs;
-};
+export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) =>
+    accounts.filter(a => a.deviceState === deviceState);
 
 export const getSelectedAccount = (
+    deviceState: string | typeof undefined,
     accounts: Account[],
-    device: AppState['suite']['device'],
     routerParams: AppState['router']['params'],
 ) => {
-    if (!device || !routerParams) return null;
+    if (!deviceState || !routerParams) return null;
 
     // TODO: imported accounts
     // imported account index has 'i' prefix
@@ -214,7 +210,7 @@ export const getSelectedAccount = (
                 a.index === routerParams.accountIndex &&
                 a.symbol === routerParams.symbol &&
                 a.accountType === routerParams.accountType &&
-                a.deviceState === device.state,
+                a.deviceState === deviceState,
         ) || null
     );
 };

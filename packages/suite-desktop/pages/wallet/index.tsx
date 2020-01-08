@@ -1,3 +1,3 @@
-import Wallet from '@wallet-views/index';
+import Transactions from '@wallet-views/account/transactions';
 
-export default Wallet;
+export default Transactions;

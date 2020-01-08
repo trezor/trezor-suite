@@ -92,7 +92,7 @@ describe('account utils', () => {
     });
 
     it('getSelectedAccount null', () => {
-        const res = accountUtils.getSelectedAccount([], undefined, undefined);
+        const res = accountUtils.getSelectedAccount(undefined, [], undefined);
         expect(res).toBeNull();
     });
 
@@ -122,6 +122,7 @@ describe('account utils', () => {
     it('getSelectedAccount', () => {
         expect(
             accountUtils.getSelectedAccount(
+                '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 [
                     global.JestMocks.getWalletAccount({
                         descriptor:
@@ -136,9 +137,6 @@ describe('account utils', () => {
                         index: 1,
                     }),
                 ],
-                global.JestMocks.getSuiteDevice({
-                    state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-                }),
                 {
                     symbol: 'btc',
                     accountIndex: 1,
@@ -156,6 +154,7 @@ describe('account utils', () => {
 
         expect(
             accountUtils.getSelectedAccount(
+                '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 [
                     global.JestMocks.getWalletAccount({
                         descriptor:
@@ -170,15 +169,13 @@ describe('account utils', () => {
                         index: 1,
                     }),
                 ],
-                global.JestMocks.getSuiteDevice({
-                    state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-                }),
                 undefined,
             ),
         ).toBeNull();
 
         expect(
             accountUtils.getSelectedAccount(
+                undefined,
                 [
                     global.JestMocks.getWalletAccount({
                         descriptor:
@@ -193,7 +190,6 @@ describe('account utils', () => {
                         index: 1,
                     }),
                 ],
-                undefined,
                 {
                     symbol: 'btc',
                     accountIndex: 1,
@@ -204,6 +200,7 @@ describe('account utils', () => {
 
         expect(
             accountUtils.getSelectedAccount(
+                '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 [
                     global.JestMocks.getWalletAccount({
                         descriptor:
@@ -218,9 +215,6 @@ describe('account utils', () => {
                         index: 1,
                     }),
                 ],
-                global.JestMocks.getSuiteDevice({
-                    state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-                }),
                 {
                     symbol: 'btc',
                     accountIndex: 3,
