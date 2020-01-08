@@ -9,6 +9,9 @@ suite test integration:
 
 suite check outdated:
     stage: misc
+    only:
+        refs:
+            - develop
     allow_failure: true
     script:
         - ./ci/scripts/outdated.sh
