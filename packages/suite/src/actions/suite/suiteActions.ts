@@ -6,7 +6,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Route } from '@suite-constants/routes';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
-import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice, AppState, AcquiredDevice } from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
 export type SuiteActions =
@@ -313,25 +313,23 @@ export const acquireDevice = () => async (dispatch: Dispatch, getState: GetState
 };
 
 /**
- * Called from `walletMiddleware`
+ * Called from `discoveryMiddlware`
  * Show modal and ask user if he wants to remember the device or use it in guest mode
  * Skip if device has `passphrase_protection` disabled
  */
 export const requestStorageMode = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device) return;
-    // const isDeviceReady =
-    //     device.connected &&
-    //     device.features &&
-    //     !device.state &&
-    //     device.mode === 'normal' &&
-    //     device.firmware !== 'required';
-    // if (!isDeviceReady) return;
 
-    dispatch({
-        type: SUITE.REQUEST_REMEMBER_MODE,
-        payload: device,
-    });
+    const isInstance = device && device.instance !== undefined && device.instance > 0;
+    const isRemembered = device && (device as AcquiredDevice).remember;
+
+    if (!isInstance && !isRemembered) {
+        dispatch({
+            type: SUITE.REQUEST_REMEMBER_MODE,
+            payload: device,
+        });
+    }
 };
 
 /**

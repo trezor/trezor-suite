@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { UI, DEVICE } from 'trezor-connect';
+import TrezorConnect, { UI } from 'trezor-connect';
 import { SUITE, ROUTER, MODAL } from '@suite-actions/constants';
 import { SETTINGS, ACCOUNT } from '@wallet-actions/constants';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
@@ -7,7 +7,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import { getApp } from '@suite-utils/router';
-import { AppState, Action, Dispatch, AcquiredDevice } from '@suite-types';
+import { AppState, Action, Dispatch } from '@suite-types';
 
 const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
@@ -69,6 +69,8 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     let authorizationIntent = false;
     const { device } = nextState.suite;
+    const isInstance = device && device.instance !== undefined && device.instance > 0;
+
     // 1. selected device is acquired but doesn't have a state
     if (
         device &&
@@ -90,16 +92,14 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         }
     }
 
-    const isInstance = device && device.instance !== undefined && device.instance > 0;
-    const isRemembered = device && (device as AcquiredDevice).remember;
     // 3a0. incognito/remember device mode
-    if (authorizationIntent && !isInstance && !isRemembered) {
+    if (authorizationIntent) {
         console.log('storage dialog');
         api.dispatch(suiteActions.requestStorageMode());
     }
 
     // 3a. auth process
-    // triggered from StorageMode modal in case of physical device or directly in case of an instance of a device
+    // triggered from StorageMode modal in case of physical device or on authIntent in case of an instance of a device
     if (action.type === SUITE.RECEIVE_REMEMBER_MODE || (authorizationIntent && isInstance)) {
         console.log('request passphrase from middleware');
         api.dispatch(suiteActions.requestPassphraseMode(isInstance!!));
