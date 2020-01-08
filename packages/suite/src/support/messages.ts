@@ -1007,6 +1007,15 @@ const definedMessages = defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE_LINK',
     },
+    TR_LEARN_MORE: {
+        defaultMessage: 'Learn more',
+        description: 'Link to Trezor wiki.',
+        id: 'TR_LEARN_MORE',
+    },
+    TR_UPLOAD_IMAGE: {
+        id: 'TR_UPLOAD_IMAGE',
+        defaultMessage: 'Upload Image',
+    },
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
         id: 'TR_LEGACY_ACCOUNTS',
@@ -2052,9 +2061,14 @@ const definedMessages = defineMessages({
         defaultMessage: '{number}. word',
         description: 'Ordinal number. For example: 1. word',
     },
-    TR_WAITING_FOR_CAMERA: {
-        defaultMessage: 'Waiting for camera...',
-        id: 'TR_WAITING_FOR_CAMERA',
+    TR_FOR_EASIER_AND_SAFER_INPUT: {
+        id: 'TR_FOR_EASIER_AND_SAFER_INPUT',
+        defaultMessage:
+            'For easier and safer input you can scan recipient’s address from a QR code using your computer camera.',
+    },
+    TR_PLEASE_ALLOW_YOUR_CAMERA: {
+        id: 'TR_PLEASE_ALLOW_YOUR_CAMERA',
+        defaultMessage: 'Please allow your camera to be able to scan a QR code.',
     },
     TR_CONFIRM_ADDRESS_ON_TREZOR: {
         id: 'TR_CONFIRM_ADDRESS_ON_TREZOR',

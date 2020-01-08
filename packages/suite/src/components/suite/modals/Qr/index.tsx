@@ -1,7 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import { ParsedURI, parseUri } from '@suite-utils/parseUri';
-import { colors } from '@trezor/components';
-import { H2, P } from '@trezor/components-v2';
+import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components-v2';
 import dynamic from 'next/dynamic';
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
@@ -20,22 +19,56 @@ const Padding = styled.div`
     padding: 0px 48px;
 `;
 
-const CameraPlaceholder = styled(P)`
+const CameraPlaceholderWrapper = styled.div<{ show: boolean }>`
+    display: ${props => (props.show ? 'flex' : 'none')};
+    margin-top: 12px;
+    margin-bottom: 20px;
+`;
+
+const CameraPlaceholder = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 10px 0;
+    padding: 70px;
+    height: 320px;
+    background: #ebebeb;
 `;
 
 const Error = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 10px 0;
 `;
 
 const ErrorTitle = styled(P)`
     text-align: center;
-    color: ${colors.ERROR_PRIMARY};
+    color: ${colors.RED};
 `;
 const ErrorMessage = styled.span`
     text-align: center;
-    color: ${colors.TEXT_PRIMARY};
+    color: ${colors.BLACK25};
+`;
+
+const Info = styled.div`
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
+    margin-bottom: 10px;
+`;
+
+const IconWrapper = styled.div`
+    margin-bottom: 40px;
+`;
+
+const StyledLink = styled(Link)`
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
+
+const Actions = styled.div`
+    display: flex;
+    justify-content: center;
 `;
 
 // TODO fix types
@@ -106,10 +139,21 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
                 <H2>
                     <Translation>{messages.TR_SCAN_QR_CODE}</Translation>
                 </H2>
+                <Info>
+                    <Translation {...messages.TR_FOR_EASIER_AND_SAFER_INPUT} />
+                </Info>
+                <StyledLink href="no-style">
+                    <Translation {...messages.TR_LEARN_MORE} />
+                </StyledLink>
                 {!readerLoaded && !error && (
-                    <CameraPlaceholder>
-                        <Translation>{messages.TR_WAITING_FOR_CAMERA}</Translation>
-                    </CameraPlaceholder>
+                    <CameraPlaceholderWrapper show>
+                        <CameraPlaceholder>
+                            <IconWrapper>
+                                <Icon icon="QR" size={100} />
+                            </IconWrapper>
+                            <Translation {...messages.TR_PLEASE_ALLOW_YOUR_CAMERA} />
+                        </CameraPlaceholder>
+                    </CameraPlaceholderWrapper>
                 )}
                 {error && (
                     <Error>
@@ -121,15 +165,23 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
                 )}
             </Padding>
             {!error && (
-                <QrReader
-                    delay={500}
-                    onError={handleError}
-                    onScan={handleScan}
-                    onLoad={onLoad}
-                    style={{ width: '100%' }}
-                    showViewFinder={false}
-                />
+                <CameraPlaceholderWrapper show={readerLoaded}>
+                    <QrReader
+                        delay={500}
+                        onError={handleError}
+                        onScan={handleScan}
+                        onLoad={onLoad}
+                        style={{ width: '100%' }}
+                        showViewFinder={false}
+                    />
+                </CameraPlaceholderWrapper>
             )}
+
+            <Actions>
+                <Button variant="secondary">
+                    <Translation {...messages.TR_UPLOAD_IMAGE} />
+                </Button>
+            </Actions>
         </Wrapper>
     );
 };
