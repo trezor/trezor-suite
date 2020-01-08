@@ -1,7 +1,7 @@
 install and build:
     cache:
         untracked: true
-        policy: push
+        policy: pull-push
         key: node_modules-across-the-monorepo-universe
         paths:
             - node_modules/
