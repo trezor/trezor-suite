@@ -33,6 +33,7 @@ module.exports = {
         '^@(.+)-types': '<rootDir>/src/types/$1/index',
         '^@(.+)-middlewares/(.+)': '<rootDir>/src/middlewares/$1/$2',
         '^@(.+)-middlewares': '<rootDir>/src/middlewares/$1/index',
+        '^.+\\.(css|less)$': '<rootDir>/src/support/tests/cssTransform.js',
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',
