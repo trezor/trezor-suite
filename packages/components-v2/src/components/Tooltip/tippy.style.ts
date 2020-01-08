@@ -25,6 +25,12 @@ export const tippy = css`
         transition-property: visibility, opacity, transform;
         outline: 0;
     }
+    .tippy-tooltip[data-interactive][data-state='visible'] {
+        pointer-events: auto;
+    }
+    .tippy-tooltip[data-inertia][data-state='visible'] {
+        transition-timing-function: cubic-bezier(0.54, 1.5, 0.38, 1.11);
+    }
     .tippy-tooltip[data-placement^='top'] > .tippy-arrow {
         border-width: 8px 8px 0;
         border-top-color: #333;
@@ -52,12 +58,6 @@ export const tippy = css`
         margin: 3px 0;
         transform-origin: 7px 50%;
         left: -7px;
-    }
-    .tippy-tooltip[data-interactive][data-state='visible'] {
-        pointer-events: auto;
-    }
-    .tippy-tooltip[data-inertia][data-state='visible'] {
-        transition-timing-function: cubic-bezier(0.54, 1.5, 0.38, 1.11);
     }
     .tippy-arrow {
         position: absolute;
