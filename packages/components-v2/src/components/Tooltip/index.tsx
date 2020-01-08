@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import Tippy, { TippyProps } from '@tippy.js/react';
-import 'tippy.js/dist/tippy.css';
+import { tippy } from './tippy.style';
 
 import { Link } from '../Link';
 import colors from '../../config/colors';
@@ -30,37 +30,41 @@ const StyledLink = styled(Link)`
     }
 `;
 
-const StyledTippy = styled(Tippy)`
-    background: ${colors.WHITE};
-    color: ${colors.BLACK0};
-    border-radius: 4px;
-    font-size: ${FONT_SIZE.NORMAL};
-    padding: 8px 10px 6px;
-    text-align: left;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15);
+const TippyWrapper = styled.div`
+    ${tippy};
 
-    .tippy-arrow {
-        border: 5px solid transparent;
-    }
+    .tippy-tooltip {
+        background: ${colors.WHITE};
+        color: ${colors.BLACK0};
+        border-radius: 4px;
+        font-size: ${FONT_SIZE.NORMAL};
+        padding: 8px 10px 6px;
+        text-align: left;
+        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15);
 
-    &[data-placement^='top'] {
         .tippy-arrow {
-            border-top-color: ${colors.WHITE};
+            border: 5px solid transparent;
         }
-    }
-    &[data-placement^='bottom'] {
-        .tippy-arrow {
-            border-bottom-color: ${colors.WHITE};
+
+        &[data-placement^='top'] {
+            .tippy-arrow {
+                border-top-color: ${colors.WHITE};
+            }
         }
-    }
-    &[data-placement^='left'] {
-        .tippy-arrow {
-            border-left-color: ${colors.WHITE};
+        &[data-placement^='bottom'] {
+            .tippy-arrow {
+                border-bottom-color: ${colors.WHITE};
+            }
         }
-    }
-    &[data-placement^='right'] {
-        .tippy-arrow {
-            border-right-color: ${colors.WHITE};
+        &[data-placement^='left'] {
+            .tippy-arrow {
+                border-left-color: ${colors.WHITE};
+            }
+        }
+        &[data-placement^='right'] {
+            .tippy-arrow {
+                border-right-color: ${colors.WHITE};
+            }
         }
     }
 `;
@@ -94,18 +98,20 @@ const Tooltip = ({
 
     /* TODO: Figure out why styled-components does not forward ref from the Icon component. https://github.com/atomiks/tippy.js-react#component-children */
     return (
-        <StyledTippy
-            animation={animation}
-            placement={placement}
-            offset={0}
-            zIndex={10070}
-            arrow
-            interactive
-            content={Overlay}
-            {...rest}
-        >
-            <span>{children}</span>
-        </StyledTippy>
+        <TippyWrapper>
+            <Tippy
+                animation={animation}
+                placement={placement}
+                offset={0}
+                zIndex={10070}
+                arrow
+                interactive
+                content={Overlay}
+                {...rest}
+            >
+                <span>{children}</span>
+            </Tippy>
+        </TippyWrapper>
     );
 };
 
