@@ -8,6 +8,9 @@ variables:
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
 
+before_script:
+    - yarn config set cache-folder /cache/${CI_COMMIT_REF_SLUG}
+
 stages:
     - setup environment
     - lint, types and unit tests
