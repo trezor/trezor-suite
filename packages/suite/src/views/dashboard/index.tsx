@@ -61,8 +61,8 @@ const Dashboard = (props: Props) => {
                 <PortfolioCard
                     portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}
-                    buyClickHandler={() => props.goto('wallet-account-receive')}
-                    receiveClickHandler={() => props.goto('wallet-account-receive')}
+                    buyClickHandler={() => props.goto('wallet-receive')}
+                    receiveClickHandler={() => props.goto('wallet-receive')}
                 />
                 <Divider />
                 <AssetsCard

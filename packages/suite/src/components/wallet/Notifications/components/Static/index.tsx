@@ -64,16 +64,17 @@ export default (props: Props) => {
     }
 
     // Import tool notification
-    if (pathname === getRoute('wallet-import')) {
-        notifications.push(
-            <Notification
-                key="import-warning"
-                variant="warning"
-                title="Use at your own risk"
-                message="This is an advanced interface intended for developer use only. Never use this process unless you really know what you are doing."
-            />,
-        );
-    }
+    // TODO: move this to AddAccount modal
+    // if (pathname === getRoute('wallet-import')) {
+    //     notifications.push(
+    //         <Notification
+    //             key="import-warning"
+    //             variant="warning"
+    //             title="Use at your own risk"
+    //             message="This is an advanced interface intended for developer use only. Never use this process unless you really know what you are doing."
+    //         />,
+    //     );
+    // }
 
     if (account && account.imported) {
         notifications.push(

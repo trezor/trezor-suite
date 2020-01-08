@@ -30,7 +30,7 @@ describe('router', () => {
         it('should return string indicating the current app', () => {
             process.env.assetPrefix = '/next';
             expect(getApp('/next/wallet/')).toEqual('wallet');
-            expect(getApp('/next/wallet/account/receive/#/btc/0')).toEqual('wallet');
+            expect(getApp('/next/wallet/receive/#/btc/0')).toEqual('wallet');
             expect(getApp('/next/onboarding/')).toEqual('onboarding');
             expect(getApp('/unknown-route/')).toEqual('unknown');
         });
@@ -46,8 +46,8 @@ describe('router', () => {
             process.env.assetPrefix = prefix;
             expect(getPrefixedURL('/wallet')).toEqual(`${prefix}/wallet`);
             expect(getPrefixedURL(`${prefix}/wallet`)).toEqual(`${prefix}/wallet`);
-            expect(getPrefixedURL('/suite-web/wallet/account/receive/#/btc/0')).toEqual(
-                `${prefix}/suite-web/wallet/account/receive/#/btc/0`,
+            expect(getPrefixedURL('/suite-web/wallet/receive/#/btc/0')).toEqual(
+                `${prefix}/suite-web/wallet/receive/#/btc/0`,
             );
         });
     });
@@ -57,36 +57,36 @@ describe('router', () => {
             // @ts-ignore: invalid params
             expect(getRoute('unknown-route')).toEqual('/');
             expect(getRoute('settings-wallet')).toEqual('/settings/wallet');
-            expect(getRoute('wallet-account-transactions')).toEqual('/wallet/account/transactions');
+            expect(getRoute('wallet-index')).toEqual('/wallet');
             // tests below with intentionally mixed # params
             expect(
-                getRoute('wallet-account-summary', {
+                getRoute('wallet-index', {
                     symbol: 'btc',
                     accountIndex: 0,
                     accountType: 'legacy',
                 }),
-            ).toEqual('/wallet/account#/btc/0/legacy');
+            ).toEqual('/wallet#/btc/0/legacy');
             expect(
-                getRoute('wallet-account-summary', {
+                getRoute('wallet-index', {
                     accountIndex: 0,
                     accountType: 'segwit',
                     symbol: 'btc',
                 }),
-            ).toEqual('/wallet/account#/btc/0/segwit');
+            ).toEqual('/wallet#/btc/0/segwit');
             expect(
-                getRoute('wallet-account-summary', {
+                getRoute('wallet-index', {
                     accountType: 'normal',
                     symbol: 'btc',
                     accountIndex: 0,
                 }),
-            ).toEqual('/wallet/account#/btc/0');
+            ).toEqual('/wallet#/btc/0');
             expect(
                 // @ts-ignore: invalid params
-                getRoute('wallet-account-summary', {
+                getRoute('wallet-index', {
                     accountIndex: 1,
                     symbol: 'btc',
                 }),
-            ).toEqual('/wallet/account#/btc/1');
+            ).toEqual('/wallet#/btc/1');
             // route shouldnt have params
             expect(
                 // @ts-ignore: invalid params
@@ -99,16 +99,16 @@ describe('router', () => {
 
     describe('stripPrefixedPathname', () => {
         it('should strip params delimited by a hashtag from the URL', () => {
-            expect(stripPrefixedPathname('/wallet/account/#/btc/0')).toEqual('/wallet/account');
-            expect(stripPrefixedPathname('/wallet/account/#/42')).toEqual('/wallet/account');
+            expect(stripPrefixedPathname('/wallet/send/#/btc/0')).toEqual('/wallet/send');
+            expect(stripPrefixedPathname('/wallet/send/#/42')).toEqual('/wallet/send');
         });
     });
 
     describe('isInternalRoute', () => {
         it('should return true in case of in app route', () => {
-            expect(isInternalRoute('/wallet/account/#/btc/0')).toEqual(true);
-            expect(isInternalRoute('/wallet/account/#/42')).toEqual(true);
-            expect(isInternalRoute('/wallet/account/receive/#/btc/0')).toEqual(true);
+            expect(isInternalRoute('/wallet/#/btc/0')).toEqual(true);
+            expect(isInternalRoute('/wallet/#/42')).toEqual(true);
+            expect(isInternalRoute('/wallet/receive/#/btc/0')).toEqual(true);
             expect(isInternalRoute('/wallet/')).toEqual(true);
             expect(isInternalRoute('/onboarding/')).toEqual(true);
             expect(isInternalRoute('https://example.com')).toEqual(false);
@@ -124,11 +124,11 @@ describe('router', () => {
                     accountIndex: 0,
                     accountType: 'normal',
                 },
-                route: findRouteByName('wallet-account-summary'),
+                route: findRouteByName('wallet-index'),
             };
-            expect(getAppWithParams('/wallet/account/#/btc/0')).toEqual(resp);
-            expect(getAppWithParams('/wallet/account/#/btc/0/normal')).toEqual(resp);
-            expect(getAppWithParams('/wallet/account/#/btc/1/segwit')).toEqual({
+            expect(getAppWithParams('/wallet/#/btc/0')).toEqual(resp);
+            expect(getAppWithParams('/wallet/#/btc/0/normal')).toEqual(resp);
+            expect(getAppWithParams('/wallet/#/btc/1/segwit')).toEqual({
                 ...resp,
                 params: {
                     symbol: 'btc',
@@ -136,7 +136,7 @@ describe('router', () => {
                     accountType: 'segwit',
                 },
             });
-            expect(getAppWithParams('/wallet/account/#/btc/1/legacy')).toEqual({
+            expect(getAppWithParams('/wallet/#/btc/1/legacy')).toEqual({
                 ...resp,
                 params: {
                     symbol: 'btc',
@@ -144,19 +144,19 @@ describe('router', () => {
                     accountType: 'legacy',
                 },
             });
-            expect(getAppWithParams('/wallet/account/#/btc/NaN')).toEqual({
+            expect(getAppWithParams('/wallet/#/btc/NaN')).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams('/wallet/account/#/btc-invalid/0')).toEqual({
+            expect(getAppWithParams('/wallet/#/btc-invalid/0')).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams('/wallet/account/#/btc/0/unknown-type')).toEqual({
+            expect(getAppWithParams('/wallet/#/btc/0/unknown-type')).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams('/wallet/account/#/btc')).toEqual({
+            expect(getAppWithParams('/wallet/#/btc')).toEqual({
                 ...resp,
                 params: undefined,
             });
@@ -193,7 +193,7 @@ describe('router', () => {
             process.env.assetPrefix = undefined;
             expect(getTopLevelRoute('/')).toEqual(undefined);
             expect(getTopLevelRoute('/wallet')).toEqual(undefined);
-            expect(getTopLevelRoute('/wallet/account')).toEqual('/wallet');
+            expect(getTopLevelRoute('/wallet/receive')).toEqual('/wallet');
             expect(getTopLevelRoute('dummy-data-without-slash')).toEqual(undefined);
             // @ts-ignore: intentional invalid param type
             expect(getTopLevelRoute(1)).toEqual(undefined);
@@ -204,7 +204,7 @@ describe('router', () => {
             process.env.assetPrefix = prefix;
             expect(getTopLevelRoute(`${prefix}/`)).toEqual(undefined);
             expect(getTopLevelRoute(`${prefix}/wallet`)).toEqual(undefined);
-            expect(getTopLevelRoute(`${prefix}/wallet/account`)).toEqual(`${prefix}/wallet`);
+            expect(getTopLevelRoute(`${prefix}/wallet/receive`)).toEqual(`${prefix}/wallet`);
         });
     });
 });

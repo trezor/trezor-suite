@@ -84,7 +84,7 @@ const AddAccount = (props: Props) => {
                 onEnableAccount={(account: Account) => {
                     props.onCancel();
                     props.changeAccountVisibility(account);
-                    props.goto('wallet-account-summary', {
+                    props.goto('wallet-index', {
                         symbol: account.symbol,
                         accountIndex: account.index,
                         accountType: account.accountType,
@@ -93,7 +93,7 @@ const AddAccount = (props: Props) => {
                 onEnableNetwork={(symbol: Network['symbol']) => {
                     props.onCancel();
                     props.changeCoinVisibility(symbol, true);
-                    props.goto('wallet-account-summary', {
+                    props.goto('wallet-index', {
                         symbol,
                         accountIndex: 0,
                         accountType: 'normal',

@@ -35,11 +35,11 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     const nextRouter = api.getState().router;
 
     if (prevRouter.route && prevRouter.route !== nextRouter.route) {
-        if (prevRouter.route.name === 'wallet-account-send') {
+        if (prevRouter.route.name === 'wallet-send') {
             api.dispatch(sendFormActions.dispose());
         }
 
-        if (prevRouter.route.name === 'wallet-account-receive') {
+        if (prevRouter.route.name === 'wallet-receive') {
             api.dispatch(receiveActions.dispose());
         }
     }

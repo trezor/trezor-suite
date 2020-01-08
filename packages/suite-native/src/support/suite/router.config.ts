@@ -41,9 +41,9 @@ export default [
         type: 'tabs',
         tabs: [
             { key: getRoute('wallet-index'), screen: AccountTransactions },
-            { key: getRoute('wallet-account-receive'), screen: AccountReceive },
-            { key: getRoute('wallet-account-send'), screen: AccountSend },
-            { key: getRoute('wallet-account-sign-verify'), screen: AccountSignVerify },
+            { key: getRoute('wallet-receive'), screen: AccountReceive },
+            { key: getRoute('wallet-send'), screen: AccountSend },
+            { key: getRoute('wallet-sign-verify'), screen: AccountSignVerify },
         ],
         navigators: defaultNavigatorsViews,
     },
