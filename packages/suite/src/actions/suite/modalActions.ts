@@ -72,7 +72,7 @@ export const onStorageModeSelected = (device: TrezorDevice, remember: boolean) =
     dispatch: Dispatch,
 ) => {
     dispatch({
-        type: SUITE.RECEIVE_STORAGE_MODE,
+        type: SUITE.RECEIVE_REMEMBER_MODE,
         device,
         remember,
     });

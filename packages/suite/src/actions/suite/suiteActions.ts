@@ -26,8 +26,8 @@ export type SuiteActions =
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
     // | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_STORAGE_MODE; payload: TrezorDevice }
-    | { type: typeof SUITE.RECEIVE_STORAGE_MODE; device: TrezorDevice; remember: boolean }
+    | { type: typeof SUITE.REQUEST_REMEMBER_MODE; payload: TrezorDevice }
+    | { type: typeof SUITE.RECEIVE_REMEMBER_MODE; device: TrezorDevice; remember: boolean }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_DISCONNECT_DEVICE; payload: TrezorDevice }
     | {
@@ -329,7 +329,7 @@ export const requestStorageMode = () => async (dispatch: Dispatch, getState: Get
     // if (!isDeviceReady) return;
 
     dispatch({
-        type: SUITE.REQUEST_STORAGE_MODE,
+        type: SUITE.REQUEST_REMEMBER_MODE,
         payload: device,
     });
 };

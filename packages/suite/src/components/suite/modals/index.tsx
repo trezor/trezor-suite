@@ -109,7 +109,7 @@ const getDeviceContextModal = (props: Props) => {
                 />
             );
 
-        case SUITE.REQUEST_STORAGE_MODE:
+        case SUITE.REQUEST_REMEMBER_MODE:
             return (
                 <StorageMode
                     device={modal.device as AcquiredDevice}
