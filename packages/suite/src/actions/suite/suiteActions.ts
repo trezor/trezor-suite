@@ -33,9 +33,7 @@ export type SuiteActions =
           locale: typeof LANGUAGES[number]['code'];
           messages: { [key: string]: string };
       }
-    | { type: typeof SUITE.TOGGLE_DEVICE_MENU; payload: boolean }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: DebugModeOptions }
-    | { type: typeof SUITE.TOGGLE_SIDEBAR }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
@@ -71,29 +69,6 @@ export const updateOnlineStatus = (payload: boolean) => ({
  */
 export const onSuiteReady = (): Action => ({
     type: SUITE.READY,
-});
-
-/**
- * Triggered by user action in `@suite-components/DeviceMenu`
- * Set `deviceMenuOpened` field in suite reducer
- * @param {boolean} payload
- * @returns {Action}
- */
-export const toggleDeviceMenu = (payload: boolean) => ({
-    type: SUITE.TOGGLE_DEVICE_MENU,
-    payload,
-});
-
-/**
- * Triggered by user action in:
- * - `@suite-components/Layout`
- * - `@wallet-components/Layout/Sidebar`
- * Set `showSidebar` field in suite reducer
- * @param {boolean} payload
- * @returns {Action}
- */
-export const toggleSidebar = (): Action => ({
-    type: SUITE.TOGGLE_SIDEBAR,
 });
 
 /**
