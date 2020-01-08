@@ -24,9 +24,6 @@ install and build:
         - mkdir -p /cache/${CI_COMMIT_REF_SLUG}/packages/components-storybook-v2/node_modules
         - cp -r packages/components-storybook-v2/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/components-storybook-v2/node_modules
         
-        - mkdir -p /cache/${CI_COMMIT_REF_SLUG}/packages/connect-explorer/node_modules
-        - cp -r packages/connect-explorer/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/connect-explorer/node_modules
-        
         - mkdir -p /cache/${CI_COMMIT_REF_SLUG}/packages/rollout/node_modules
         - cp -r packages/rollout/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/rollout/node_modules
 
@@ -35,9 +32,6 @@ install and build:
 
         - mkdir -p /cache/${CI_COMMIT_REF_SLUG}/packages/suite-native/node_modules
         - cp -r packages/suite-native/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/suite-native/node_modules
-        
-        - mkdir -p /cache/${CI_COMMIT_REF_SLUG}/packages/suite-storage/node_modules
-        - cp -r packages/suite-storage/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/suite-storage/node_modules
         
         - mkdir -p /cache/${CI_COMMIT_REF_SLUG}/packages/translations-manager/node_modules
         - cp -r packages/translations-manager/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/translations-manager/node_modules
