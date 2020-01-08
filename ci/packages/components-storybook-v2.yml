@@ -7,8 +7,6 @@ components-storybook-v2 build:
     expire_in: 10 hours
     paths:
       - packages/components-storybook-v2/.build
-  dependencies:
-    - install and build
 
 components-storybook-v2 deploy dev:
   stage: deploy to dev servers

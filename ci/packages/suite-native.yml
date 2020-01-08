@@ -11,8 +11,6 @@ suite-native build android:
         expire_in: 1 day
         paths:
             - app-release.apk
-    dependencies:
-        - install and build
 
 suite-native deploy:
     stage: deploy to dev servers

@@ -4,8 +4,6 @@ suite test integration:
     stage: integration testing
     script:
         - yarn workspace @trezor/suite test-health
-    dependencies:
-        - install and build
 
 suite check outdated:
     stage: misc
@@ -15,8 +13,6 @@ suite check outdated:
     allow_failure: true
     script:
         - ./ci/scripts/outdated.sh
-    dependencies:
-        - install and build
 
 # TODO: add messages (values) duplicities check
 # TODO: add check if there are unused messages https://github.com/trezor/trezor-suite/issues/944

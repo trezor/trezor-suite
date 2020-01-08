@@ -6,15 +6,12 @@ suite-web build:
         expire_in: 15 minutes
         paths:
             - $PACKAGE_PATH_SUITE_WEB/build
-    dependencies:
-        - install and build
 
 suite-web deploy dev:
     stage: deploy to dev servers
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
     dependencies:
-        - install and build
         - suite-web build
     environment:
         name: ${CI_BUILD_REF_NAME}
@@ -44,8 +41,6 @@ suite-web test integration google-chrome:
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
             # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
-    dependencies:
-        - install and build
 
 suite-web test integration google-chrome-beta:
     only:
@@ -62,8 +57,6 @@ suite-web test integration google-chrome-beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/screenshots
             # - /builds/satoshilabs/trezor/trezor-suite/packages/suite-web/test/videos
-    dependencies:
-        - install and build
 
 suite-web test security:
     only: 

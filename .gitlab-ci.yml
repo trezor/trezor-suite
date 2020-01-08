@@ -8,9 +8,6 @@ variables:
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
 
-cache:
-    policy: pull
-
 stages:
     - setup environment
     - lint, types and unit tests
@@ -33,6 +30,8 @@ before_script:
     - yarn
 
 lint:
+    cache:
+        policy: pull
     stage: lint, types and unit tests
     dependencies:
         - install and build
@@ -40,6 +39,8 @@ lint:
         - lerna run lint
 
 type check:
+    cache:
+        policy: pull
     stage: lint, types and unit tests
     dependencies:
         - install and build
@@ -47,6 +48,8 @@ type check:
         - lerna run type-check
 
 unit tests:
+    cache:
+        policy: pull
     stage: lint, types and unit tests
     dependencies:
         - install and build
