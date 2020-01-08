@@ -39,3 +39,4 @@ components-storybook-v2 test snapshots:
     paths:
       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots
       - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/screenshots
+  dependencies: []
