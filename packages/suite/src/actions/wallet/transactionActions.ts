@@ -85,8 +85,6 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { selectedAccount } = getState().wallet;
-    // const totalTxs = selectedAccount.account!.history.total;
     const { transactions } = getState().wallet.transactions;
     const reducerTxs = getAccountTransactions(transactions, account);
 
@@ -101,9 +99,9 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
         type: TRANSACTION.FETCH_INIT,
     });
 
-    const { marker } = selectedAccount.account!;
+    const { marker } = account;
     const result = await TrezorConnect.getAccountInfo({
-        coin: selectedAccount.account!.symbol,
+        coin: account.symbol,
         descriptor: account.descriptor,
         details: 'txs',
         page, // useful for every network except ripple

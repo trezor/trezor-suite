@@ -29,9 +29,9 @@ export const showAddress = (path: string) => async (
     getState: GetState,
 ): Promise<void> => {
     const selectedDevice = getState().suite.device;
-    const { network } = getState().wallet.selectedAccount;
+    const { account } = getState().wallet.selectedAccount;
 
-    if (!selectedDevice || !network) return;
+    if (!selectedDevice || !account) return;
     if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
         // Show modal when device is not connected
         dispatch({
@@ -61,7 +61,7 @@ export const showAddress = (path: string) => async (
     };
 
     let fn;
-    switch (network.networkType) {
+    switch (account.networkType) {
         case 'ethereum':
             fn = TrezorConnect.ethereumGetAddress;
             break;

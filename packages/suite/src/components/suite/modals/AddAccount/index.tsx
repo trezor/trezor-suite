@@ -24,6 +24,7 @@ const mapStateToProps = (state: AppState) => ({
     accounts: state.wallet.accounts,
     enabledNetworks: state.wallet.settings.enabledNetworks,
     router: state.router,
+    selectedAccount: state.wallet.selectedAccount,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -49,10 +50,10 @@ const AddAccount = (props: Props) => {
     const accounts = props.accounts.filter(a => a.deviceState === props.device.state);
 
     // Use component state, default value is currently selected network or first network item on the list (btc)
-    const { params } = props.router;
+    const { account } = props.selectedAccount;
     let preselectedNetwork;
-    if (props.router.app === 'wallet' && params) {
-        preselectedNetwork = internalNetworks.find(n => n.symbol === params.symbol);
+    if (props.router.app === 'wallet' && account) {
+        preselectedNetwork = internalNetworks.find(n => n.symbol === account.symbol);
     }
     const [selectedSymbol, setSelectedNetwork] = useState<NetworkSymbol>(
         preselectedNetwork ? preselectedNetwork.symbol : internalNetworks[0].symbol,

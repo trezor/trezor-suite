@@ -6,9 +6,7 @@ import Tokens from './components/Tokens';
 import { Props } from './Container';
 
 const AccountSummary = (props: Props) => {
-    const { device } = props.suite;
-    const { account, network, shouldRender } = props.wallet.selectedAccount;
-    if (!device || !account || !network || !shouldRender) {
+    if (props.wallet.selectedAccount.status !== 'loaded') {
         const { loader, exceptionPage } = props.wallet.selectedAccount;
         return (
             <LayoutAccount title="Summary">
@@ -16,6 +14,7 @@ const AccountSummary = (props: Props) => {
             </LayoutAccount>
         );
     }
+    const { account, network } = props.wallet.selectedAccount;
 
     return (
         <LayoutAccount title="Summary">

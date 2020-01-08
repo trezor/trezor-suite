@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components-v2';
 import { ITEMS, HIDDEN_ITEMS } from '@wallet-config/menu';
-import { findRoute } from '@suite-utils/router';
 import { Props } from './Container';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
@@ -45,10 +44,10 @@ const Text = styled.div`
 `;
 
 const AccountNavigation = (props: Props) => {
-    const { pathname, params, app } = props.router;
-    const currentRoute = findRoute(pathname);
     const [moreItemsActive, setMoreItemsActive] = useState(false);
-    if (app !== 'wallet' || !params) return <>Invalid account</>;
+    const { account } = props.selectedAccount;
+    const { app, route } = props.router;
+    if (app !== 'wallet' || !account) return null;
 
     return (
         <Wrapper>
@@ -57,7 +56,7 @@ const AccountNavigation = (props: Props) => {
                     return (
                         <StyledNavLink
                             key={item.route}
-                            active={currentRoute ? currentRoute.name === item.route : false}
+                            active={route ? route.name === item.route : false}
                             onClick={() => props.goto(item.route, undefined, true)}
                         >
                             <IconWrapper>
@@ -71,11 +70,11 @@ const AccountNavigation = (props: Props) => {
             })}
             {moreItemsActive &&
                 HIDDEN_ITEMS.map(item => {
-                    if (!item.isHidden(params.symbol)) {
+                    if (!item.isHidden(account.symbol)) {
                         return (
                             <StyledNavLink
                                 key={item.route}
-                                active={currentRoute ? currentRoute.name === item.route : false}
+                                active={route ? route.name === item.route : false}
                                 onClick={() => props.goto(item.route, undefined, true)}
                             >
                                 <IconWrapper>

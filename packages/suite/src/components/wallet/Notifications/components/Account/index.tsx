@@ -15,9 +15,9 @@ interface Network {
 
 // There could be only one account notification
 const AccountNotifications = (props: Props) => {
+    if (props.selectedAccount.status !== 'loaded') return null;
     const { network, notification } = props.selectedAccount;
-
-    if (!network || !notification) return null;
+    if (!notification) return null;
     const blockchain = props.blockchain.find((b: Network) => b.symbol === network.symbol);
 
     if (notification.type === 'backend') {

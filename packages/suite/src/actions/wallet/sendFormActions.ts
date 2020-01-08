@@ -17,13 +17,12 @@ import * as rippleActions from './sendFormSpecific/rippleActions';
  * Initialize current form, load values from session storage
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { router } = getState();
     const { settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
-    if (router.app !== 'wallet' || !router.params || !account) return;
+    if (!account) return;
 
     let cachedState = null;
-    const feeInfo = getState().wallet.fees[router.params.symbol];
+    const feeInfo = getState().wallet.fees[account.symbol];
     const levels: FeeLevel[] = feeInfo.levels.concat({
         label: 'custom',
         feePerUnit: '0',
@@ -135,9 +134,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account, network } = getState().wallet.selectedAccount;
-    const { send, fiat } = getState().wallet;
-    if (!account || !send || !fiat || !network) return null;
+    const { send, fiat, selectedAccount } = getState().wallet;
+    if (!send || !fiat || selectedAccount.status !== 'loaded') return null;
+    const { account, network } = selectedAccount;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
@@ -173,9 +172,9 @@ export const handleSelectCurrencyChange = (
     localCurrency: Output['localCurrency']['value'],
     outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
-    const { account, network } = getState().wallet.selectedAccount;
-    const { fiat, send } = getState().wallet;
-    if (!account || !fiat || !send || !network) return null;
+    const { fiat, send, selectedAccount } = getState().wallet;
+    if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
+    const { account, network } = selectedAccount;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
@@ -219,9 +218,9 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account, network } = getState().wallet.selectedAccount;
-    const { fiat, send } = getState().wallet;
-    if (!account || !fiat || !send || !network) return null;
+    const { fiat, send, selectedAccount } = getState().wallet;
+    if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
+    const { account, network } = selectedAccount;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
@@ -253,10 +252,10 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     Click on "set max"
  */
 export const setMax = (outputId: number) => async (dispatch: Dispatch, getState: GetState) => {
-    const { account, network } = getState().wallet.selectedAccount;
-    const { fiat, send } = getState().wallet;
+    const { fiat, send, selectedAccount } = getState().wallet;
 
-    if (!account || !fiat || !send || !network) return null;
+    if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
+    const { account, network } = selectedAccount;
 
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
