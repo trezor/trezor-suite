@@ -82,8 +82,13 @@ export const goto = (
     }
 };
 
-export const back = () => {
-    Router.back();
+/**
+ * Used only in application modal.
+ * Application modal does not push route into router history, it changes it only in reducer (see goto action).
+ * Reverse operation (again without touching history) needs to be done in back action.
+ */
+export const back = () => async (dispatch: Dispatch) => {
+    dispatch(onLocationChange(Router.pathname));
 };
 
 /**

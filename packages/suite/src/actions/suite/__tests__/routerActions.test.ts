@@ -15,10 +15,6 @@ jest.mock('next/router', () => {
                 history.push(asUrl);
                 dispatch(asUrl);
             },
-            back: () => {
-                history.pop();
-                dispatch(history[history.length - 1]);
-            },
             pathname: '/',
         },
         setDispatch: (d: Function) => {
@@ -113,10 +109,7 @@ describe('Suite Actions', () => {
             window.location.hash = f.hash;
             store.dispatch(routerActions.goto(f.url as any, undefined, f.preserveHash));
             if (f.result) {
-                const action = store.getActions().pop();
-                expect(action.url).toEqual(f.result);
-
-                routerActions.back();
+                expect(store.getActions()[0].url).toEqual(f.result);
                 expect(store.getActions().length).toEqual(1);
             } else {
                 expect(store.getActions().length).toEqual(0);
@@ -133,5 +126,13 @@ describe('Suite Actions', () => {
         const store = initStore(state);
         store.dispatch(routerActions.onLocationChange('/'));
         expect(store.getActions().length).toEqual(0);
+    });
+
+    it('back', () => {
+        // @ts-ignore this test is interested only in router.pathname, for better maintainability ignore other properties
+        const state = getInitialState({ router: { pathname: '/firmware' } });
+        const store = initStore(state);
+        store.dispatch(routerActions.back());
+        expect(store.getActions().length).toEqual(1);
     });
 });
