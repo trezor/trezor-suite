@@ -4,7 +4,7 @@ import { STORAGE } from '@suite-actions/constants';
 import { Deferred, createDeferred } from '@suite-utils/deferred';
 import { ObjectValues } from '@suite/types/utils';
 import { Action as SuiteAction } from '@suite-types';
-import { WalletAction } from '@wallet-types';
+import { WalletAction, Network } from '@wallet-types';
 
 export const DISCOVERY_STATUS = {
     IDLE: 0,
@@ -29,7 +29,7 @@ export interface Discovery {
         error: string;
         fwException?: string;
     }[];
-    networks: string[];
+    networks: Network['symbol'][];
     running?: Deferred<void>;
 }
 
