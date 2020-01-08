@@ -88,7 +88,8 @@ export const goto = (
  * Reverse operation (again without touching history) needs to be done in back action.
  */
 export const back = () => async (dispatch: Dispatch) => {
-    dispatch(onLocationChange(Router.pathname));
+    // + window.location.hash is here to preserve params (eg nth account)
+    dispatch(onLocationChange(Router.pathname + window.location.hash));
 };
 
 /**
