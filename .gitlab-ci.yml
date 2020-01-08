@@ -26,9 +26,6 @@ include:
     - ci/packages/suite-desktop.yml
     - ci/packages/suite-native.yml
 
-before_script:
-    - yarn
-
 lint:
     cache:
         policy: pull
