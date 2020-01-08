@@ -3,7 +3,7 @@ image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
 
 cache:
     untracked: true
-    policy: pull-push
+    policy: pull
     key: node_modules-across-the-monorepo-universe
     paths:
         - .yarn
