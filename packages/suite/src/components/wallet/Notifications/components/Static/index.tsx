@@ -4,35 +4,21 @@ import { Link } from '@trezor/components-v2';
 import Bignumber from 'bignumber.js';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { getRoute } from '@suite-utils/router';
 import { AppState } from '@suite-types';
 import { URLS } from '@suite-constants';
 
 interface Props {
-    router: AppState['router'];
+    selectedAccount: AppState['wallet']['selectedAccount'];
 }
 
 export default (props: Props) => {
-    // TODO
-    // const { selectedAccount } = props;
-    const selectedAccount = {
-        account: {
-            reserve: '20',
-            balance: '0',
-            networkType: 'fake',
-            imported: false,
-        },
-    };
-
-    const { pathname } = props.router;
-    const { account } = selectedAccount;
+    const { account } = props.selectedAccount;
     const notifications = [];
 
     // Ripple minimum reserve notification
-    if (selectedAccount && account && account.networkType === 'ripple') {
-        const { reserve, balance } = account;
-        const bigBalance = new Bignumber(balance);
-        const bigReserve = new Bignumber(reserve);
+    if (account && account.networkType === 'ripple') {
+        const bigBalance = new Bignumber(account.availableBalance);
+        const bigReserve = new Bignumber(account.misc.reserve);
         if (bigBalance.isLessThan(bigReserve)) {
             notifications.push(
                 <Notification
@@ -62,19 +48,6 @@ export default (props: Props) => {
             );
         }
     }
-
-    // Import tool notification
-    // TODO: move this to AddAccount modal
-    // if (pathname === getRoute('wallet-import')) {
-    //     notifications.push(
-    //         <Notification
-    //             key="import-warning"
-    //             variant="warning"
-    //             title="Use at your own risk"
-    //             message="This is an advanced interface intended for developer use only. Never use this process unless you really know what you are doing."
-    //         />,
-    //     );
-    // }
 
     if (account && account.imported) {
         notifications.push(
