@@ -47,7 +47,6 @@ include:
     - ci/packages/suite-native.yml
 
 before_script:
-    - cp -r /cache/${CI_COMMIT_REF_SLUG} ./
     - yarn
 
 lint:
