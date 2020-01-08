@@ -1,5 +1,3 @@
-before_script: {}
-
 install and build:
     stage: setup environment
     script:
