@@ -69,16 +69,16 @@ export const goto = [
     },
     {
         description: `preserve hash params`,
-        url: 'wallet-account-summary',
+        url: 'wallet-index',
         hash: '/btc/0',
         preserveHash: true,
-        result: '/wallet/account#/btc/0',
+        result: '/wallet#/btc/0',
     },
     {
         description: `ignore hash params`,
-        url: 'wallet-account-summary',
+        url: 'wallet-index',
         hash: '/btc/0',
-        result: '/wallet/account',
+        result: '/wallet',
     },
     {
         description: `router locked`,
@@ -87,7 +87,7 @@ export const goto = [
                 locks: [1],
             },
         },
-        url: 'wallet-account-summary',
+        url: 'wallet-index',
     },
     {
         description: `device locked`,
@@ -96,7 +96,7 @@ export const goto = [
                 locks: [3],
             },
         },
-        url: 'wallet-account-summary',
+        url: 'wallet-index',
     },
 ];
 

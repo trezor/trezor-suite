@@ -1,30 +1,21 @@
 import { MiddlewareAPI } from 'redux';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import { ACCOUNT, DISCOVERY, SETTINGS } from '@wallet-actions/constants';
+import { SUITE } from '@suite-actions/constants';
+import { ACCOUNT, SETTINGS } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as receiveActions from '@wallet-actions/receiveActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
-import { observeChanges } from '@suite-utils/reducerUtils';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { findRoute } from '@suite-utils/router';
 import { handleRatesUpdate } from '@wallet-actions/fiatRatesActions';
 
 const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
     const prevState = api.getState();
+    const prevRouter = prevState.router;
 
-    if (
-        action.type === ROUTER.LOCATION_CHANGE &&
-        prevState.router.route &&
-        prevState.router.route.name === 'wallet-account-send'
-    ) {
-        const nextRoute = findRoute(action.url);
-        // don't call dispose if next route is the same
-        if (nextRoute && nextRoute.name !== 'wallet-account-send') {
-            api.dispatch(sendFormActions.dispose());
-        }
-    }
+    // propagate action to reducers
+    next(action);
 
     if (
         action.type === ACCOUNT.CREATE ||
@@ -34,33 +25,29 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         api.dispatch(blockchainActions.subscribe());
     }
 
-    // propagate action to reducers
-    next(action);
-
-    const nextState = api.getState();
-
-    if (
-        action.type === ROUTER.LOCATION_CHANGE &&
-        observeChanges(prevState.router.params, nextState.router.params)
-    ) {
+    // leaving wallet app, reset account reducers
+    if (prevRouter.app === 'wallet' && action.type === SUITE.APP_CHANGED) {
         api.dispatch(selectedAccountActions.dispose());
+        api.dispatch(sendFormActions.dispose());
+        api.dispatch(receiveActions.dispose());
     }
 
-    switch (action.type) {
-        case DISCOVERY.UPDATE:
-        case DISCOVERY.COMPLETE:
-        case SUITE.SELECT_DEVICE:
-        case SUITE.UPDATE_SELECTED_DEVICE:
-        case ROUTER.LOCATION_CHANGE:
-        case ACCOUNT.UPDATE:
-            // update discovery in selectedAccount
-            api.dispatch(selectedAccountActions.observe(prevState, action));
-            break;
-        case SETTINGS.CHANGE_NETWORKS:
-            api.dispatch(handleRatesUpdate());
-            break;
-        default:
-        // no default
+    const nextRouter = api.getState().router;
+
+    if (prevRouter.route && prevRouter.route !== nextRouter.route) {
+        if (prevRouter.route.name === 'wallet-send') {
+            api.dispatch(sendFormActions.dispose());
+        }
+
+        if (prevRouter.route.name === 'wallet-receive') {
+            api.dispatch(receiveActions.dispose());
+        }
+    }
+
+    api.dispatch(selectedAccountActions.getStateForAction(action));
+
+    if (action.type === SETTINGS.CHANGE_NETWORKS) {
+        api.dispatch(handleRatesUpdate());
     }
 
     return action;

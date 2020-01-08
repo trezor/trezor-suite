@@ -30,10 +30,22 @@ const NoTransactions = styled.div`
     text-align: center;
 `;
 
+const mapStateToProps = (state: AppState) => ({
+    selectedAccount: state.wallet.selectedAccount,
+    transactions: state.wallet.transactions,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    fetchTransactions: bindActionCreators(transactionActions.fetchTransactions, dispatch),
+});
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
 const Transactions = (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
-    if (!selectedAccount.account) {
+
+    if (selectedAccount.status !== 'loaded') {
         const { loader, exceptionPage } = selectedAccount;
         return (
             <LayoutAccount title="Transactions">
@@ -42,27 +54,24 @@ const Transactions = (props: Props) => {
         );
     }
 
-    const explorerUrl = selectedAccount.network ? selectedAccount.network.explorer.tx : undefined;
+    const { account, network } = selectedAccount;
 
-    const accountTransactions = getAccountTransactions(
-        transactions.transactions,
-        selectedAccount.account,
-    );
-    const { size = undefined, total = undefined } = selectedAccount.account.page || {};
+    const accountTransactions = getAccountTransactions(transactions.transactions, account);
+    const { size = undefined, total = undefined } = account.page || {};
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
-        props.fetchTransactions(selectedAccount.account!, page, size);
+        props.fetchTransactions(account, page, size);
     };
 
     const accountNameMessage =
-        selectedAccount.account && selectedAccount.account.networkType === 'ethereum'
+        account.networkType === 'ethereum'
             ? messages.TR_TRANSACTIONS_AND_TOKENS
             : messages.TR_TRANSACTIONS;
 
     return (
         <LayoutAccount title="Transactions">
-            <AccountName account={selectedAccount.account} message={accountNameMessage} />
+            <AccountName account={account} message={accountNameMessage} />
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />
@@ -80,7 +89,7 @@ const Transactions = (props: Props) => {
             )}
             {accountTransactions.length > 0 && (
                 <TransactionList
-                    explorerUrl={explorerUrl}
+                    explorerUrl={network.explorer.tx}
                     transactions={accountTransactions}
                     currentPage={selectedPage}
                     totalPages={total}
@@ -91,16 +100,5 @@ const Transactions = (props: Props) => {
         </LayoutAccount>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
-    transactions: state.wallet.transactions,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    fetchTransactions: bindActionCreators(transactionActions.fetchTransactions, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transactions);

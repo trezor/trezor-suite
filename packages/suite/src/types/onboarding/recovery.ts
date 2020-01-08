@@ -1,8 +1,4 @@
-import {
-    setWordsCount,
-    setAdvancedRecovery,
-    submit,
-} from '@suite/actions/onboarding/recoveryActions';
+import { setWordsCount, setAdvancedRecovery, submit } from '@onboarding-actions/recoveryActions';
 
 export interface RecoveryState {
     advancedRecovery: boolean;

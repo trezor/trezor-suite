@@ -1,32 +1,32 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import { FLAGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import messages from '@suite/support/messages';
 
 export const ITEMS = [
     {
-        route: 'wallet-account-transactions',
+        route: 'wallet-index',
         title: <Translation>{messages.TR_NAV_TRANSACTIONS}</Translation>,
         icon: 'TRANSACTIONS',
-        isHidden: () => {
-            return !FLAGS.transactions;
-        },
+        isHidden: () => false,
     },
     {
-        route: 'wallet-account-receive',
+        route: 'wallet-receive',
         title: <Translation>{messages.TR_NAV_RECEIVE}</Translation>,
         icon: 'RECEIVE',
         isHidden: () => false,
     },
     {
-        route: 'wallet-account-send',
+        route: 'wallet-send',
         title: <Translation>{messages.TR_NAV_SEND}</Translation>,
         icon: 'SEND',
         isHidden: () => false,
     },
+] as const;
+
+export const HIDDEN_ITEMS = [
     {
-        route: 'wallet-account-sign-verify',
+        route: 'wallet-sign-verify',
         title: <Translation>{messages.TR_NAV_SIGN_AND_VERIFY}</Translation>,
         icon: 'SIGN',
         isHidden: (networkType: string) => {

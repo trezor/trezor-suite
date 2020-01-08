@@ -38,7 +38,7 @@ const Dashboard = (props: Props) => {
             <View style={{ margin: 20 }}>
                 <Button
                     onPress={() =>
-                        props.goto('wallet-account-receive', {
+                        props.goto('wallet-receive', {
                             accountType: 'normal',
                             accountIndex: 1,
                             symbol: 'btc',

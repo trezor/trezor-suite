@@ -1,7 +1,5 @@
-// import { UI } from 'trezor-connect';
 import produce from 'immer';
-import { RECEIVE, ACCOUNT } from '@wallet-actions/constants';
-// import { Action } from '@wallet-types';
+import { RECEIVE } from '@wallet-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 
 export interface ReceiveInfo {
@@ -79,7 +77,7 @@ export default (state: State = initialState, action: SuiteAction): State => {
                 initAddress(draft, action.descriptor);
                 break;
 
-            case ACCOUNT.DISPOSE:
+            case RECEIVE.DISPOSE:
                 return initialState;
 
             case RECEIVE.SHOW_ADDRESS:
@@ -94,12 +92,6 @@ export default (state: State = initialState, action: SuiteAction): State => {
                 showUnverifiedAddress(draft, action.descriptor);
                 break;
 
-            // @ts-ignore
-            // need fix in connect?
-            // case UI.REQUEST_BUTTON:
-            //     if (action.payload.code === 'ButtonRequest_Address') {
-            //         draft.isAddressVerified = true;
-            //     }
             // no default
         }
     });

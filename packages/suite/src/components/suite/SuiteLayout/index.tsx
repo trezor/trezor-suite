@@ -9,7 +9,7 @@ import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import { Log } from '@suite-components';
-import MenuSecondary from '@suite/components/suite/MenuSecondary';
+import MenuSecondary from '@suite-components/MenuSecondary';
 
 const PageWrapper = styled.div`
     display: flex;

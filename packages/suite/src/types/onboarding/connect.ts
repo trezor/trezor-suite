@@ -14,7 +14,7 @@ import {
     // responses to device events
     submitNewPin,
     submitWord,
-} from '@suite/actions/onboarding/connectActions';
+} from '@onboarding-actions/connectActions';
 
 export interface ConnectActions {
     // calls to connect

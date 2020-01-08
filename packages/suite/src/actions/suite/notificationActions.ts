@@ -1,6 +1,6 @@
 // import { NotificationProps } from '@trezor/components';
 import { RequiredKey } from '@suite/types/utils';
-import { NotificationEntry } from '@suite/reducers/suite/notificationReducer';
+import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import { NOTIFICATION } from './constants';
 
 export type NotificationAddPayload = Omit<NotificationEntry, 'key'>;

@@ -14,15 +14,15 @@ import {
 } from '@onboarding-types/onboarding';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 import { AnyPath } from '@onboarding-types/steps';
-import * as STEP from '@suite/constants/onboarding/steps';
+import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import {
     DEVICE_CALL_RESET,
     DEVICE_CALL_START,
     DEVICE_CALL_SUCCESS,
     DEVICE_CALL_ERROR,
-} from '@suite/types/onboarding/connect';
-import * as CALLS from '@suite/actions/onboarding/constants/calls';
+} from '@onboarding-types/connect';
+import * as CALLS from '@onboarding-actions/constants/calls';
 
 import { Action } from '@suite-types';
 

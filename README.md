@@ -6,10 +6,13 @@
 Name            | Packages
 --------------- | ----------
 suite           | [core](./packages/suite), [web](./packages/suite-web), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [data](./packages/suite-data), [storage](./packages/suite-storage)
-components      | [components](./packages/components), [storybook](./packages/components-storybook), [storybook native](./packages/components-storybook-native)
+components      | [components](./packages/components), [storybook](./packages/components-storybook), [storybook native](./packages/components-storybook-native), [components-v2](./packages/components-v2), [storybook-v2](./packages/components-storybook-v2)
 rollout         | [rollout](./packages/rollout)
 blockchain-link | [blockchain-link](./packages/blockchain-link)
-connect-explorer | [connect-explorer](./packages/connect-explorer)
+translations-manager | [translations-manager](./packages/translations-manager)
+integration-tests | [integration-tests](./packages/integration-tests)
+types | [typescript-typings](./packages/typescript-typings)
+
 
 ## Development
 Before you start make sure you have downloaded and installed [Node.js LTS](https://nodejs.org/en/download/), [Yarn](https://yarnpkg.com/lang/en/docs/install/) and git.

@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 import { Icon, Button, colors, variables } from '@trezor/components-v2';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
-import { FormattedNumber } from '@suite/components/suite';
-import { Translation } from '@suite/components/suite/Translation';
+import { FormattedNumber } from '@suite-components';
+import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div<{ active: boolean }>`
@@ -63,7 +63,7 @@ const WalletInstance = ({
     getDiscovery,
 }: Props) => {
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
-    const deviceAccounts = accountUtils.getDeviceAccounts(instance, accounts);
+    const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);

@@ -20,6 +20,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
     if (action.type === ROUTER.LOCATION_CHANGE && getApp(action.url) !== prevApp) {
         api.dispatch({ type: SUITE.APP_CHANGED, payload: getApp(action.url) });
     }
+
     // pass action to reducers
     next(action);
 
@@ -78,7 +79,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(suiteActions.handleDeviceConnect(action.payload));
             break;
         case DEVICE.DISCONNECT:
-            api.dispatch(resolveRememberRequest(action.payload));
+            // api.dispatch(resolveRememberRequest(action.payload));
             api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
             break;
         case SUITE.FORGET_DEVICE:

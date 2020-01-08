@@ -30,7 +30,7 @@ const Backup = (props: Props) => {
             </View>
             <Button
                 onPress={() =>
-                    props.goto('wallet-account-receive', {
+                    props.goto('wallet-receive', {
                         symbol: 'btc',
                         accountIndex: 2,
                         accountType: 'normal',

@@ -1,7 +1,7 @@
 import { PHISHING_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components/Translation';
 import { addToFlags, HAS_BOOKMARK_FLAG } from '@suite-utils/flags';
-import { Key, OnboardingButton, Text, Wrapper } from '@suite/components/onboarding';
+import { Key, OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { Link, P } from '@trezor/components-v2';
 import React from 'react';

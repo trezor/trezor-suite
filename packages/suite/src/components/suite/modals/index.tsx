@@ -11,9 +11,8 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
-import { ACCOUNT } from '@wallet-actions/constants';
+import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
-import { RECEIVE } from '@suite/actions/wallet/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
@@ -34,12 +33,14 @@ import QrScanner from './Qr';
 import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
 
+import Firmware from '@firmware-views';
+import Onboarding from '@onboarding-views';
+
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
     devices: state.devices,
-    send: state.wallet.send,
-    account: state.wallet.selectedAccount.account,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -53,7 +54,7 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
-    const { modal, device, send, modalActions, account } = props;
+    const { modal, device, modalActions } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
@@ -93,7 +94,7 @@ const getDeviceContextModal = (props: Props) => {
             // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
             return <ConfirmAction device={device} />;
         case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} sendForm={send} account={account} />;
+            return <ConfirmSignTx device={device} />;
         }
 
         case RECEIVE.REQUEST_UNVERIFIED:
@@ -185,32 +186,56 @@ const getQrModal = (props: Props) => {
 
 // modal container component
 const Modal = (props: Props) => {
-    const { modal } = props;
+    const { modal, router } = props;
 
-    if (modal.context === MODAL.CONTEXT_NONE) return null;
+    let modalComponent = null;
+    let appModalComponent = null;
 
-    let component = null;
     switch (modal.context) {
+        case MODAL.CONTEXT_NONE:
+            modalComponent = null;
+            break;
         case MODAL.CONTEXT_DEVICE:
-            component = getDeviceContextModal(props);
+            modalComponent = getDeviceContextModal(props);
             break;
         case MODAL.CONTEXT_CONFIRMATION:
-            component = getConfirmationModal(props);
+            modalComponent = getConfirmationModal(props);
             break;
         case MODAL.CONTEXT_SCAN_QR:
-            component = getQrModal(props);
+            modalComponent = getQrModal(props);
             break;
         default:
             break;
     }
 
+    if (router.route && router.route.isModal) {
+        switch (router.app) {
+            case 'firmware':
+                appModalComponent = <Firmware modal={modalComponent} />;
+                break;
+            case 'onboarding':
+                appModalComponent = <Onboarding modal={modalComponent} />;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (appModalComponent) {
+        return <ModalComponent>{appModalComponent}</ModalComponent>;
+    }
+
+    if (!modalComponent) {
+        return null;
+    }
+
     return (
         <ModalComponent
             // if modal has onCancel action set cancelable to true and pass the onCancel action
-            cancelable={component && component.props.onCancel}
-            onCancel={component ? component.props.onCancel : undefined}
+            cancelable={modalComponent.props.onCancel}
+            onCancel={modalComponent.props.onCancel}
         >
-            {component && <FocusLock>{component}</FocusLock>}
+            <FocusLock>{modalComponent}</FocusLock>
         </ModalComponent>
     );
 };

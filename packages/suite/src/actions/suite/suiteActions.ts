@@ -189,8 +189,11 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
  */
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
-    // const { deviceId } = getState().modal;
-    // if ()
+    // todo:
+    // We are waiting for device in bootloader mode (only in firmware update)
+    // if (selectedDevice && device.mode === 'bootloader' && 'waiting-for-bootloader-todo') {
+    //     dispatch(selectDevice(device));
+    // }
     if (!selectedDevice) {
         dispatch(selectDevice(device));
     } else {
@@ -391,14 +394,12 @@ export const authorizeDevice = () => async (
     return false;
 };
 
-/**
- * Wrapper utility action that dispatches:
- * 1. routerLock(false)
- * 2. goto(params)
- *
- * Useful for exiting apps that operate under locked router.
- */
-export const exitApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
+export const closeModalApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
     dispatch(lockRouter(false));
     dispatch(routerActions.goto(routeName));
+};
+
+export const openModalApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
+    dispatch(routerActions.goto(routeName));
+    dispatch(lockRouter(false));
 };

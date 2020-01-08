@@ -1,6 +1,6 @@
 import CONSTANTS from '../../constants';
 import { homescreensT2 } from '@suite-constants';
-// ../../../../packages/suite/src/constants/suite
+
 describe('Device settings', () => {
     // Note that running this beforeEach makes tests run about 5 (I guess) times longer. I disagree with such practice
     beforeEach(() => {
@@ -74,7 +74,14 @@ describe('Device settings', () => {
         cy.getTestElement('@modal/disconnect-device');
     });
 
+    it('open firmware modal and close it again', () => {
+        cy.getTestElement('@suite/settings/device/update-button')
+            .click()
+            .getTestElement('@modal/firmware/exit-button')
+            .click()
+            .getTestElement('@modal/firmware/exit-button').should('not.be.visible');
+    });
+
     // TODO: upload custom image
     // TODO: set pin part. need to extend python script to allow input digits on emulator
-    // TODO: change rotation
 });

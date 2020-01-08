@@ -30,9 +30,7 @@ type Props = WrappedComponentProps &
 
 const AccountReceive = (props: Props) => {
     const { device } = props;
-    const { account, network, discovery, shouldRender } = props.selectedAccount;
-
-    if (!device || !account || !discovery || !network || !shouldRender) {
+    if (!device || props.selectedAccount.status !== 'loaded') {
         const { loader, exceptionPage } = props.selectedAccount;
         return (
             <LayoutAccount title="Receive">
@@ -40,6 +38,7 @@ const AccountReceive = (props: Props) => {
             </LayoutAccount>
         );
     }
+    const { account, network } = props.selectedAccount;
 
     const isAddressPartiallyHidden = (descriptor: string) => {
         const receiveInfo = props.receive.addresses.find(r => r.descriptor === descriptor);

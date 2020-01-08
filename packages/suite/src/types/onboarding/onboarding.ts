@@ -1,5 +1,5 @@
 import { Device } from 'trezor-connect';
-import { AnyStepId, AnyPath } from '@suite/types/onboarding/steps';
+import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 
 export interface UiInteraction {
     name: undefined | string;
