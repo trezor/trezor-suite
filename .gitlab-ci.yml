@@ -9,24 +9,7 @@ variables:
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
 
 cache:
-    untracked: true
-    key: '$CI_BUILD_REF_NAME'
-    paths:
-        - node_modules/
-        - packages/blockchain-link/node_modules/
-        - packages/components/node_modules/
-        - packages/components-v2/node_modules/
-        - packages/components-storybook/node_modules/
-        - packages/components-storybook-v2/node_modules/
-        - packages/connect-explorer/node_modules/
-        - packages/rollout/node_modules/
-        - packages/suite/node_modules/
-        - packages/suite-web/node_modules/
-        - packages/suite-desktop/node_modules/
-        - packages/suite-native/node_modules/
-        - packages/suite-storage/node_modules/
-        - packages/translations-manager/node_modules/
-        - packages/integration-tests/node_modules/
+    policy: pull
 
 stages:
     - setup environment
