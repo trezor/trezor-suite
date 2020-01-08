@@ -29,6 +29,7 @@ include:
 before_script:
     - mkdir -p /cache/${CI_COMMIT_REF_SLUG}
     - export HOME=/cache/${CI_COMMIT_REF_SLUG}
+    - cd $HOME
 
 lint:
     stage: lint, types and unit tests
