@@ -1,6 +1,5 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import { FLAGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import messages from '@suite/support/messages';
 
@@ -9,9 +8,7 @@ export const ITEMS = [
         route: 'wallet-index',
         title: <Translation>{messages.TR_NAV_TRANSACTIONS}</Translation>,
         icon: 'TRANSACTIONS',
-        isHidden: () => {
-            return !FLAGS.transactions;
-        },
+        isHidden: () => false,
     },
     {
         route: 'wallet-receive',
