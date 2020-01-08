@@ -57,8 +57,6 @@ include:
     - ci/packages/suite-native.yml
 
 lint:
-    cache:
-        policy: pull
     stage: lint, types and unit tests
     dependencies:
         - install and build
@@ -66,8 +64,6 @@ lint:
         - lerna run lint
 
 type check:
-    cache:
-        policy: pull
     stage: lint, types and unit tests
     dependencies:
         - install and build
@@ -75,8 +71,6 @@ type check:
         - lerna run type-check
 
 unit tests:
-    cache:
-        policy: pull
     stage: lint, types and unit tests
     dependencies:
         - install and build
