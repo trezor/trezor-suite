@@ -317,7 +317,7 @@ export const acquireDevice = () => async (dispatch: Dispatch, getState: GetState
  * Show modal and ask user if he wants to remember the device or use it in guest mode
  * Skip if device has `passphrase_protection` disabled
  */
-export const requestStorageMode = () => async (dispatch: Dispatch, getState: GetState) => {
+export const requestRememberMode = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device) return;
 

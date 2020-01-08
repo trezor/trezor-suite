@@ -95,7 +95,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     // 3a0. incognito/remember device mode
     if (authorizationIntent) {
         console.log('storage dialog');
-        api.dispatch(suiteActions.requestStorageMode());
+        api.dispatch(suiteActions.requestRememberMode());
     }
 
     // 3a. auth process
