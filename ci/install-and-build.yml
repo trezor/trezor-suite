@@ -6,6 +6,18 @@ install and build:
         - yarn
         - yarn run build:libs
         - cp -r node_modules /cache/${CI_COMMIT_REF_SLUG}
+        - cp -r packages/blockchain-link/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/blockchain-link/node_modules
+        - cp -r packages/components/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/components/node_modules
+        - cp -r packages/components-v2/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/components-v2/node_modules
+        - cp -r packages/components-storybook/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/components-storybook/node_modules
+        - cp -r packages/components-storybook-v2/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/components-storybook-v2/node_modules
+        - cp -r packages/connect-explorer/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/connect-explorer/node_modules
+        - cp -r packages/rollout/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/rollout/node_modules
+        - cp -r packages/suite/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/suite/node_modules
+        - cp -r packages/suite-native/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/suite-native/node_modules
+        - cp -r packages/suite-storage/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/suite-storage/node_modules
+        - cp -r packages/translations-manager/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/translations-manager/node_modules
+        - cp -r packages/integration-tests/node_modules /cache/${CI_COMMIT_REF_SLUG}/packages/integration-tests/node_modules
     artifacts:
         expire_in: 3 hours
         when: always
