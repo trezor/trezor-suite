@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components-v2';
-import { ITEMS } from '@wallet-config/menu';
+import { ITEMS, HIDDEN_ITEMS } from '@wallet-config/menu';
 import { findRoute } from '@suite-utils/router';
 import { Props } from './Container';
 
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     padding: 0px 10px 10px 10px;
 `;
 
-const StyledNavLink = styled.div<{ active: boolean }>`
+const StyledNavLink = styled.div<{ active?: boolean }>`
     font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.active ? colors.BLACK17 : colors.BLACK50)};
     font-weight: ${props => (props.active ? 500 : FONT_WEIGHT.REGULAR)};
@@ -47,12 +47,13 @@ const Text = styled.div`
 const AccountNavigation = (props: Props) => {
     const { pathname, params, app } = props.router;
     const currentRoute = findRoute(pathname);
+    const [moreItemsActive, setMoreItemsActive] = useState(false);
     if (app !== 'wallet' || !params) return <>Invalid account</>;
 
     return (
         <Wrapper>
             {ITEMS.map(item => {
-                if (!item.isHidden(params.symbol)) {
+                if (!item.isHidden()) {
                     return (
                         <StyledNavLink
                             key={item.route}
@@ -68,6 +69,30 @@ const AccountNavigation = (props: Props) => {
                 }
                 return null;
             })}
+            {moreItemsActive &&
+                HIDDEN_ITEMS.map(item => {
+                    if (!item.isHidden(params.symbol)) {
+                        return (
+                            <StyledNavLink
+                                key={item.route}
+                                active={currentRoute ? currentRoute.name === item.route : false}
+                                onClick={() => props.goto(item.route, undefined, true)}
+                            >
+                                <IconWrapper>
+                                    <Icon size={12} icon={item.icon} />
+                                </IconWrapper>
+                                <Text>{item.title}</Text>
+                            </StyledNavLink>
+                        );
+                    }
+                    return null;
+                })}
+            <StyledNavLink onClick={() => setMoreItemsActive(!moreItemsActive)}>
+                <IconWrapper>
+                    <Icon size={12} icon={moreItemsActive ? 'CROSS' : 'PLUS'} />
+                </IconWrapper>
+                <Text>Show {moreItemsActive ? 'less' : 'more'}</Text>
+            </StyledNavLink>
         </Wrapper>
     );
 };

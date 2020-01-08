@@ -25,6 +25,9 @@ export const ITEMS = [
         icon: 'SEND',
         isHidden: () => false,
     },
+] as const;
+
+export const HIDDEN_ITEMS = [
     {
         route: 'wallet-account-sign-verify',
         title: <Translation>{messages.TR_NAV_SIGN_AND_VERIFY}</Translation>,
