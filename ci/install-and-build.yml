@@ -1,8 +1,6 @@
 install and build:
     stage: setup environment
     script:
-        - mkdir -p /cache/${CI_COMMIT_REF_SLUG}
-        - yarn config set cache-folder /cache/${CI_COMMIT_REF_SLUG}
         - yarn
         - yarn run build:libs
 
