@@ -1,3 +1,13 @@
+components-storybook lint:
+  stage: lint
+  script:
+      - yarn workspace @trezor/components-storybook lint
+
+components-storybook type-check:
+  stage: typescript type check
+  script:
+      - yarn workspace @trezor/components-storybook type-check
+
 components-storybook build:
   stage: build
   script:

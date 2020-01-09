@@ -1,0 +1,9 @@
+rollout lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/rollout lint
+  
+rollout type-check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/rollout type-check

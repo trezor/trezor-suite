@@ -1,5 +1,5 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:5d4ee34202486b6bf06218850f98590b772013ed
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:3d64beb0e2574c93829d4b10a48ea729a7c91e9f
 
 cache:
     untracked: true
@@ -40,7 +40,9 @@ variables:
 
 stages:
     - setup environment
-    - lint, types and unit tests
+    - lint
+    - typescript type check
+    - unit tests
     - build
     - deploy to dev servers
     - integration testing
@@ -51,28 +53,11 @@ include:
     - ci/install-and-build.yml
     - ci/packages/components-storybook.yml
     - ci/packages/components-storybook-v2.yml
+    - ci/packages/components.yml
+    - ci/packages/components-v2.yml
+    - ci/packages/rollout.yml
+    - ci/packages/blockchain-link.yml
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
     - ci/packages/suite-native.yml
-
-lint:
-    stage: lint, types and unit tests
-    dependencies:
-        - install and build
-    script:
-        - lerna run lint
-
-type check:
-    stage: lint, types and unit tests
-    dependencies:
-        - install and build
-    script:
-        - lerna run type-check
-
-unit tests:
-    stage: lint, types and unit tests
-    dependencies:
-        - install and build
-    script:
-        - lerna run test:unit -- --passWithNoTests

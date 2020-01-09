@@ -1,3 +1,18 @@
+suite-native lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/suite-native lint
+  
+suite-native type-check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/suite-native type-check
+
+suite-native unit tests:
+    stage: unit tests
+    script:
+        - yarn workspace @trezor/suite-native test:unit
+
 suite-native build android:
     image: reactnativecommunity/react-native-android
     stage: build
