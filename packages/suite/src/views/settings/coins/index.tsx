@@ -13,7 +13,7 @@ import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
 // todo: maybe move to @settings-actions ?
-import * as settingsActions from '@wallet-actions/settingsActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
 
 const mapStateToProps = (state: AppState) => ({
@@ -21,9 +21,9 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    changeCoinVisibility: bindActionCreators(settingsActions.changeCoinVisibility, dispatch),
+    changeCoinVisibility: bindActionCreators(walletSettingsActions.changeCoinVisibility, dispatch),
     toggleGroupCoinsVisibility: bindActionCreators(
-        settingsActions.toggleGroupCoinsVisibility,
+        walletSettingsActions.toggleGroupCoinsVisibility,
         dispatch,
     ),
 });

@@ -1,4 +1,3 @@
-import { SettingsActions } from '@wallet-actions/settingsActions';
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
@@ -38,7 +37,6 @@ interface BlockchainLinkToken {
 
 export type WalletAction =
     | BlockchainActions
-    | SettingsActions
     | ReceiveActions
     | SendFormActions
     | SendFormBitcoinActions

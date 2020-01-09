@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { H2 } from '@trezor/components-v2';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
-import { changeCoinVisibility } from '@wallet-actions/settingsActions';
+import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';

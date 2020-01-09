@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
-import * as settingsActions from '@wallet-actions/settingsActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import Menu from './index';
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
-    setDiscreetMode: bindActionCreators(settingsActions.setDiscreetMode, dispatch),
+    setDiscreetMode: bindActionCreators(walletSettingsActions.setDiscreetMode, dispatch),
 });
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

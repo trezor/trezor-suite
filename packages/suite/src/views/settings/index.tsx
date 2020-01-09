@@ -19,7 +19,7 @@ import {
 } from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
-import * as settingsActions from '@wallet-actions/settingsActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as languageActions from '@settings-actions/languageActions';
 
 const buildCurrencyOption = (currency: string) => {
@@ -37,7 +37,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setLocalCurrency: bindActionCreators(settingsActions.setLocalCurrency, dispatch),
+    setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
     fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
 });
 
