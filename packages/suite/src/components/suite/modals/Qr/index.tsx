@@ -16,13 +16,16 @@ const Wrapper = styled.div`
 `;
 
 const Padding = styled.div`
-    padding: 0px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
 `;
 
 const CameraPlaceholderWrapper = styled.div<{ show: boolean }>`
     display: ${props => (props.show ? 'flex' : 'none')};
-    margin-top: 12px;
-    margin-bottom: 20px;
+    margin: 12px 0px 20px 0px;
+    width: 100%;
 `;
 
 const CameraPlaceholder = styled.div`
@@ -31,8 +34,10 @@ const CameraPlaceholder = styled.div`
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 70px;
+    flex: 1;
+    padding: 40px;
     height: 320px;
+    border-radius: 3px;
     background: #ebebeb;
 `;
 
@@ -156,32 +161,44 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
                     </CameraPlaceholderWrapper>
                 )}
                 {error && (
-                    <Error>
-                        <ErrorTitle>
-                            <Translation>{messages.TR_OOPS_SOMETHING_WENT_WRONG}</Translation>
-                        </ErrorTitle>
-                        <ErrorMessage>{error.toString()}</ErrorMessage>
-                    </Error>
+                    <CameraPlaceholderWrapper show>
+                        <CameraPlaceholder>
+                            <Error>
+                                <ErrorTitle>
+                                    <Translation>
+                                        {messages.TR_OOPS_SOMETHING_WENT_WRONG}
+                                    </Translation>
+                                </ErrorTitle>
+                                <ErrorMessage>{error}</ErrorMessage>
+                            </Error>
+                        </CameraPlaceholder>
+                    </CameraPlaceholderWrapper>
                 )}
-            </Padding>
-            {!error && (
-                <CameraPlaceholderWrapper show={readerLoaded}>
-                    <QrReader
-                        delay={500}
-                        onError={handleError}
-                        onScan={handleScan}
-                        onLoad={onLoad}
-                        style={{ width: '100%' }}
-                        showViewFinder={false}
-                    />
-                </CameraPlaceholderWrapper>
-            )}
 
-            <Actions>
-                <Button variant="secondary">
-                    <Translation {...messages.TR_UPLOAD_IMAGE} />
-                </Button>
-            </Actions>
+                {!error && (
+                    <CameraPlaceholderWrapper show={readerLoaded}>
+                        <QrReader
+                            delay={500}
+                            onError={handleError}
+                            onScan={handleScan}
+                            onLoad={onLoad}
+                            style={{ width: '100%', borderRadius: '3px' }}
+                            showViewFinder={false}
+                        />
+                    </CameraPlaceholderWrapper>
+                )}
+
+                <Actions>
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            // TODO: enable legacyMode and call openImageDialog? https://github.com/JodusNodus/react-qr-reader#readme
+                        }}
+                    >
+                        <Translation {...messages.TR_UPLOAD_IMAGE} />
+                    </Button>
+                </Actions>
+            </Padding>
         </Wrapper>
     );
 };
