@@ -1,5 +1,6 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
-import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
+import { MODAL, SUITE } from '@suite-actions/constants';
+import { DEVICE_SETTINGS } from '@settings-actions/constants';
 import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 

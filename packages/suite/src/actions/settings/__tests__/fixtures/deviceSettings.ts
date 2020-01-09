@@ -1,5 +1,6 @@
 import * as deviceSettingsActions from '@suite/actions/settings/deviceSettingsActions';
-import { NOTIFICATION, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
+import { NOTIFICATION, SUITE } from '@suite-actions/constants';
+import { DEVICE_SETTINGS } from '@settings-actions/constants';
 
 export default [
     {
