@@ -20,7 +20,7 @@ import {
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
 import * as settingsActions from '@wallet-actions/settingsActions';
-import * as languageActions from '@suite-actions/languageActions';
+import * as languageActions from '@settings-actions/languageActions';
 
 const buildCurrencyOption = (currency: string) => {
     return {
