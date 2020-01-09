@@ -68,7 +68,7 @@ const routes = [
     {
         name: 'settings-coins',
         pattern: '/settings/coins',
-        app: 'deviceManagement',
+        app: 'wallet',
     },
     {
         name: 'suite-device-firmware',
