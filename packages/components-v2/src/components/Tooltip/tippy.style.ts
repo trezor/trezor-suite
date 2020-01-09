@@ -31,6 +31,14 @@ export const tippy = css`
     .tippy-tooltip[data-inertia][data-state='visible'] {
         transition-timing-function: cubic-bezier(0.54, 1.5, 0.38, 1.11);
     }
+    .tippy-arrow {
+        position: absolute;
+        border-color: transparent;
+        border-style: solid;
+    }
+    .tippy-content {
+        padding: 5px 9px;
+    }
     .tippy-tooltip[data-placement^='top'] > .tippy-arrow {
         border-width: 8px 8px 0;
         border-top-color: #333;
@@ -58,13 +66,5 @@ export const tippy = css`
         margin: 3px 0;
         transform-origin: 7px 50%;
         left: -7px;
-    }
-    .tippy-arrow {
-        position: absolute;
-        border-color: transparent;
-        border-style: solid;
-    }
-    .tippy-content {
-        padding: 5px 9px;
     }
 `;
