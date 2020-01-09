@@ -71,4 +71,5 @@ export const ReduxNavigator = (props: Props) => {
     return <Navigator onNavigationStateChange={props.onNavigationStateChange} ref={setNavigator} />;
 };
 
+// @ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)(ReduxNavigator);

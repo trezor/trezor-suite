@@ -46,7 +46,7 @@
     "eslint-loader": "^3.0.2",
     "eslint-plugin-jest": "^23.0.4",
     "html-webpack-plugin": "^3.2.0",
-    "ripple-lib": "^1.4.2",
+    "ripple-lib": "^1.5.0",
     "tiny-worker": "^2.3.0",
     "ts-loader": "^6.2.1",
     "webpack": "4.41.2",

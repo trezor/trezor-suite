@@ -326,7 +326,7 @@ export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: 
         device.firmware !== 'required';
     if (!isDeviceReady) return;
 
-    if (device.features && device.features.passphrase_protection) {
+    if (device.features?.passphrase_protection) {
         dispatch({
             type: SUITE.RECEIVE_PASSPHRASE_MODE,
             payload: device,
