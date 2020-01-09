@@ -29,14 +29,15 @@ suite check outdated:
     script:
         - ./ci/scripts/outdated.sh
 
-suite check unused messages:
-    stage: misc
-    allow_failure: true
-    script:
-        # create the master.json first. later we shall use directly messages.ts
-        - yarn workspace @trezor/suite translations:extract
-        - yarn workspace @trezor/suite translations:unused
-    dependencies:
-        - install and build
+# TODO: https://github.com/trezor/trezor-suite/issues/1045
+# suite check unused messages:
+#     stage: misc
+#     allow_failure: true
+#     script:
+#         # create the master.json first. later we shall use directly messages.ts
+#         - yarn workspace @trezor/suite translations:extract
+#         - yarn workspace @trezor/suite translations:unused
+#     dependencies:
+#         - install and build
 
 # TODO: add messages (values) duplicities check
