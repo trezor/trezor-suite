@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as settingsActions from '@wallet-actions/settingsActions';
 import * as modalActions from '@suite-actions/modalActions';
-import * as deviceSettingsActions from '@suite/actions/settings/deviceSettingsActions';
-import * as backupActions from '@suite/actions/settings/backupActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import * as backupActions from '@settings-actions/backupActions';
 import { Dispatch, AppState } from '@suite-types';
 import SecurityFeatures from './index';
 

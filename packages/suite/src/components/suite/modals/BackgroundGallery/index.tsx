@@ -7,7 +7,7 @@ import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import * as deviceSettingsActions from '@suite/actions/settings/deviceSettingsActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { Dispatch, AcquiredDevice } from '@suite-types';
 

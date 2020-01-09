@@ -7,7 +7,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { resolveRememberRequest } from '@suite-actions/modalActions';
 import { loadStorage } from '@suite-actions/storageActions';
-import { fetchLocale } from '@suite/actions/settings/languageActions';
+import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { getApp } from '@suite-utils/router';
 

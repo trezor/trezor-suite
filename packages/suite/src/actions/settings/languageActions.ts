@@ -1,5 +1,5 @@
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { SUITE } from '../suite/constants';
+import { SUITE } from '@suite-constants';
 import { Dispatch } from '@suite-types';
 import { LANGUAGES } from '@suite-config';
 

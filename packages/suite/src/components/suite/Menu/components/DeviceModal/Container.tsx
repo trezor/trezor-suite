@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
-import * as deviceSettingsActions from '@suite/actions/settings/deviceSettingsActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
