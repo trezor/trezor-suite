@@ -4,7 +4,7 @@ import { State } from '@wallet-types/sendForm';
 import styled from 'styled-components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Props } from './Container';
-import Fee from '../../components/Fee';
+import Fee from '../Fee';
 import { Input, Textarea, colors } from '@trezor/components-v2';
 import GasLimitTopLabel from './components/GasLimitTopLabel';
 import GasPriceTopLabel from './components/GasPriceTopLabel';
