@@ -155,6 +155,27 @@
             "@settings-config": ["./packages/suite/src/config/settings/index"],
             "@settings-middlewares/*": ["./packages/suite/src/middlewares/settings/*"],
             "@settings-middlewares": ["./packages/suite/src/middlewares/settings/index"],
+            // firmware
+            "@firmware-components/*": ["./packages/suite/src/components/firmware/*"],
+            "@firmware-components": ["./packages/suite/src/components/firmware/index"],
+            "@firmware-views/*": ["./packages/suite/src/views/firmware/*"],
+            "@firmware-views": ["./packages/suite/src/views/firmware/index"],
+            "@firmware-actions/*": ["./packages/suite/src/actions/firmware/*"],
+            "@firmware-actions": ["./packages/suite/src/actions/firmware/index"],
+            "@firmware-utils/*": ["./packages/suite/src/utils/firmware/*"],
+            "@firmware-utils": ["./packages/suite/src/utils/firmware/index"],
+            "@firmware-types/*": ["./packages/suite/src/types/firmware/*"],
+            "@firmware-types": ["./packages/suite/src/types/firmware/index"],
+            "@firmware-reducers/*": ["./packages/suite/src/reducers/firmware/*"],
+            "@firmware-reducers": ["./packages/suite/src/reducers/firmware/index"],
+            "@firmware-support/*": ["./packages/suite/src/support/firmware/*"],
+            "@firmware-support": ["./packages/suite/src/support/firmware/index"],
+            "@firmware-constants/*": ["./packages/suite/src/constants/firmware/*"],
+            "@firmware-constants": ["./packages/suite/src/constants/firmware/index"],
+            "@firmware-config/*": ["./packages/suite/src/config/firmware/*"],
+            "@firmware-config": ["./packages/suite/src/config/firmware/index"],
+            "@firmware-middlewares/*": ["./packages/suite/src/middlewares/firmware/*"],
+            "@firmware-middlewares": ["./packages/suite/src/middlewares/firmware/index"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"]
@@ -168,7 +189,7 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
-        "target": "esnext",
+        "target": "ES2020",
         "typeRoots": ["node_modules/@trezor/typescript-typings/types", "node_modules/@types"]
     },
     "exclude": [

@@ -6,7 +6,6 @@ import WalletTypeIcon from './images/WalletType';
 import Link from './Link';
 import Log from './Log';
 import Preloader from './Preloader';
-import StaticPageWrapper from './StaticPageWrapper';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
 import Notification from './Notification';
@@ -23,7 +22,6 @@ export {
     Link,
     Log,
     Preloader,
-    StaticPageWrapper,
     FormattedNumber,
     SuiteLayout,
     Notification,

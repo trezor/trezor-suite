@@ -2,7 +2,6 @@ import React from 'react';
 import { Translation } from '@suite-components/Translation';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import CONFIG from '@onboarding-config';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
@@ -19,7 +18,7 @@ const SecurityStep = (props: Props) => (
                 <OnboardingButton.Alt
                     data-test="button-exit-app"
                     onClick={() => {
-                        props.exitApp(CONFIG.APP.EXIT_APP_ROUTE);
+                        props.closeModalApp();
                     }}
                 >
                     <Translation {...messages.TR_SKIP_SECURITY} />

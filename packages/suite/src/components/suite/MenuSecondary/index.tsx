@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
 import Backdrop from '@suite-components/Backdrop';
-import { toggleSidebar } from '@suite-actions/suiteActions';
 import { variables } from '@trezor/components';
 import { colors } from '@trezor/components-v2';
 
@@ -15,7 +13,6 @@ interface Props {
     router: AppState['router'];
     suite: AppState['suite'];
     isOpen?: boolean;
-    toggleSidebar: typeof toggleSidebar;
     children: React.ReactNode;
 }
 
@@ -74,10 +71,10 @@ const StyledBackdrop = styled(Backdrop)`
     }
 `;
 
-const MenuSecondary = ({ isOpen, toggleSidebar, children }: Props) => {
+const MenuSecondary = ({ isOpen, children }: Props) => {
     return (
         <>
-            <StyledBackdrop show={isOpen} onClick={toggleSidebar} animated />
+            <StyledBackdrop onClick={() => {}} show={isOpen} animated />
             <AbsoluteWrapper isOpen={isOpen}>
                 <Wrapper>{children}</Wrapper>
             </AbsoluteWrapper>
@@ -90,6 +87,4 @@ const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
 });
 
-export default connect(mapStateToProps, dispatch => ({
-    toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
-}))(MenuSecondary);
+export default connect(mapStateToProps)(MenuSecondary);

@@ -5,7 +5,7 @@
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { getPrefixedURL, getRoute, RouteParams } from '@suite-utils/router';
+import { getPrefixedURL, getRoute, findRouteByName, RouteParams } from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 interface LocationChange {
@@ -69,6 +69,11 @@ export const goto = (
 
     const url = getRoute(routeName, params);
 
+    const route = findRouteByName(routeName);
+    if (route && route.isModal) {
+        return dispatch(onLocationChange(url));
+    }
+
     if (preserveParams) {
         const { hash } = window.location;
         await Router.push(url + hash, getPrefixedURL(url) + hash);
@@ -77,8 +82,14 @@ export const goto = (
     }
 };
 
-export const back = () => {
-    Router.back();
+/**
+ * Used only in application modal.
+ * Application modal does not push route into router history, it changes it only in reducer (see goto action).
+ * Reverse operation (again without touching history) needs to be done in back action.
+ */
+export const back = () => async (dispatch: Dispatch) => {
+    // + window.location.hash is here to preserve params (eg nth account)
+    dispatch(onLocationChange(Router.pathname + window.location.hash));
 };
 
 /**

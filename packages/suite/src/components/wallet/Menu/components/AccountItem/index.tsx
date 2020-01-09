@@ -135,7 +135,7 @@ const AccountItem = React.memo((props: Props) => {
     return (
         <Wrapper selected={selected}>
             <StyledLink
-                href={getRoute('wallet-account-summary', {
+                href={getRoute('wallet-index', {
                     symbol: account.symbol,
                     accountIndex: account.index,
                     accountType: account.accountType,

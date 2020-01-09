@@ -1969,11 +1969,6 @@ const definedMessages = defineMessages({
         description: 'We want user to pres Ctrl + D',
         id: 'TR_USE_THE_KEYBOARD_SHORTCUT',
     },
-    TR_USE_WALLET_NOW: {
-        defaultMessage: 'Use wallet now',
-        description: 'Button on welcome page, use can take shorcut directly to wallet',
-        id: 'TR_USE_WALLET_NOW',
-    },
     TR_USE_YOUR_DEVICE_IN_THIS_WINDOW: {
         defaultMessage: 'Do you want to use your device in this window?',
         id: 'TR_USE_YOUR_DEVICE_IN_THIS_WINDOW',

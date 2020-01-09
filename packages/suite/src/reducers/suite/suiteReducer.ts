@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { TRANSPORT } from 'trezor-connect';
-import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
+import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { ObjectValues } from '@suite/types/utils';
 import { Action, TrezorDevice } from '@suite-types';
@@ -22,8 +22,6 @@ export interface SuiteState {
     device?: TrezorDevice;
     language: typeof LANGUAGES[number]['code'];
     messages: { [key: string]: any };
-    deviceMenuOpened: boolean;
-    showSidebar?: boolean;
     locks: Lock[];
     debug: DebugModeOptions;
 }
@@ -51,8 +49,6 @@ const initialState: SuiteState = {
     loaded: false,
     language: 'en',
     messages: {},
-    deviceMenuOpened: false,
-    showSidebar: undefined,
     locks: [],
     debug: {
         translationMode: false,
@@ -105,10 +101,6 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.messages = action.messages;
                 break;
 
-            case SUITE.TOGGLE_DEVICE_MENU:
-                draft.deviceMenuOpened = action.payload;
-                break;
-
             case SUITE.SET_DEBUG_MODE:
                 draft.debug = { ...draft.debug, ...action.payload };
                 break;
@@ -121,14 +113,6 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.transport = {
                     bridge: action.payload.bridge,
                 };
-                break;
-
-            case ROUTER.LOCATION_CHANGE:
-                draft.showSidebar = false;
-                break;
-
-            case SUITE.TOGGLE_SIDEBAR:
-                draft.showSidebar = !draft.showSidebar;
                 break;
 
             case SUITE.ONLINE_STATUS:

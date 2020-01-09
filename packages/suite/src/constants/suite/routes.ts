@@ -4,12 +4,6 @@ const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 
 const routes = [
     {
-        name: 'wallet-index',
-        pattern: '/wallet',
-        app: 'wallet',
-        params: walletParams,
-    },
-    {
         name: 'passwords-index',
         pattern: '/passwords',
         app: 'passwords',
@@ -28,19 +22,16 @@ const routes = [
         name: 'suite-version',
         pattern: '/version',
         app: 'notSpecified',
-        isStatic: true,
     },
     {
         name: 'suite-bridge',
         pattern: '/bridge',
         app: 'notSpecified',
-        isStatic: true,
     },
     {
         name: 'onboarding-index',
         pattern: '/onboarding',
         app: 'onboarding',
-        isStatic: true,
         isModal: true,
     },
     {
@@ -79,12 +70,10 @@ const routes = [
         pattern: '/settings/coins',
         app: 'deviceManagement',
     },
-    // todo: remove this route and move functionality to settings
     {
         name: 'suite-device-firmware',
         pattern: '/firmware',
         app: 'firmware',
-        isStatic: true,
         isModal: true,
     },
     {
@@ -94,44 +83,32 @@ const routes = [
         isModal: true,
     },
     {
-        name: 'wallet-import',
-        pattern: '/wallet/import',
-        app: 'wallet',
-    },
-    {
-        name: 'wallet-account-summary',
-        pattern: '/wallet/account',
+        name: 'wallet-index',
+        pattern: '/wallet',
         app: 'wallet',
         params: walletParams,
     },
     {
-        name: 'wallet-account-transactions',
-        pattern: '/wallet/account/transactions',
+        name: 'wallet-send',
+        pattern: '/wallet/send',
         app: 'wallet',
         params: walletParams,
     },
     {
-        name: 'wallet-account-send',
-        pattern: '/wallet/account/send',
+        name: 'wallet-receive',
+        pattern: '/wallet/receive',
         app: 'wallet',
         params: walletParams,
     },
     {
-        name: 'wallet-account-receive',
-        pattern: '/wallet/account/receive',
-        app: 'wallet',
-        params: walletParams,
-    },
-    {
-        name: 'wallet-account-sign-verify',
-        pattern: '/wallet/account/sign-verify',
+        name: 'wallet-sign-verify',
+        pattern: '/wallet/sign-verify',
         app: 'wallet',
         params: walletParams,
     },
 ] as const;
 
 export type Route = {
-    isStatic?: boolean;
     isModal?: boolean;
     params?: typeof walletParams;
 } & ArrayElement<typeof routes>;

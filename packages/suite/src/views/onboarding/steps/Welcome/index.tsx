@@ -4,7 +4,6 @@ import { variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
 import * as STEP from '@onboarding-constants/steps';
-import CONFIG from '@onboarding-config';
 import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
 import messages from '@suite/support/messages';
@@ -71,9 +70,10 @@ const WelcomeStep = (props: Props) => {
                 {shouldDisplayLeaveButton() && (
                     <OnboardingButton.Back
                         data-test="button-use-wallet"
-                        onClick={() => props.exitApp(CONFIG.APP.EXIT_APP_ROUTE)}
+                        onClick={() => props.closeModalApp()}
                     >
-                        <Translation {...messages.TR_USE_WALLET_NOW} />
+                        {/* TODO proper texts, I dunno */}
+                        <Translation {...messages.TR_BACK} />
                     </OnboardingButton.Back>
                 )}
             </Wrapper.StepFooter>

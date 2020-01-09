@@ -45,7 +45,7 @@ const Dashboard = (props: Props) => {
         groupedAssets[a.symbol].push(a);
     });
 
-    const deviceAccounts = device ? accountUtils.getDeviceAccounts(device, props.accounts) : [];
+    const deviceAccounts = device ? accountUtils.getAllAccounts(device.state, props.accounts) : [];
     const instanceBalance = accountUtils.getTotalBalance(
         deviceAccounts,
         props.localCurrency,
@@ -61,8 +61,8 @@ const Dashboard = (props: Props) => {
                 <PortfolioCard
                     portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}
-                    buyClickHandler={() => props.goto('wallet-account-receive')}
-                    receiveClickHandler={() => props.goto('wallet-account-receive')}
+                    buyClickHandler={() => props.goto('wallet-receive')}
+                    receiveClickHandler={() => props.goto('wallet-receive')}
                 />
                 <Divider />
                 <AssetsCard

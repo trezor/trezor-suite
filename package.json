@@ -4,9 +4,6 @@
     "private": true,
     "repository": "https://github.com/trezor/trezor-suite.git",
     "license": "SEE LICENSE IN LICENSE.md",
-    "engines": {
-        "node": ">=12"
-    },
     "workspaces": {
         "packages": [
             "packages/*"
@@ -64,6 +61,6 @@
         "prettier-eslint": "^9.0.1",
         "rimraf": "^3.0.0",
         "ts-jest": "^24.2.0",
-        "typescript": "3.6.4"
+        "typescript": "^3.7.3"
     }
 }

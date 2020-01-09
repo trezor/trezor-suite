@@ -56,16 +56,16 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     // pass action
     await next(action);
 
-    const nextState = api.getState();
-    // code below runs only in wallet context
-    if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard') return action;
-
     if (action.type === SETTINGS.CHANGE_NETWORKS) {
         // update Discovery fields
         api.dispatch(discoveryActions.updateNetworkSettings());
         // remove accounts which are no longer part of Discovery
         api.dispatch(accountActions.disableAccounts());
     }
+
+    const nextState = api.getState();
+    // code below runs only in wallet context
+    if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard') return action;
 
     let authorizationIntent = false;
     const { device } = nextState.suite;

@@ -305,7 +305,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
                         callback: () => {
                             dispatch(suiteActions.selectDevice(accountDevice));
                             dispatch(
-                                goto('wallet-account-transactions', {
+                                goto('wallet-index', {
                                     symbol: account.symbol,
                                     accountIndex: account.index,
                                     accountType: account.accountType,

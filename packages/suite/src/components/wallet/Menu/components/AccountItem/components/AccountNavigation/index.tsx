@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components-v2';
-import { ITEMS } from '@wallet-config/menu';
-import { findRoute } from '@suite-utils/router';
+import { ITEMS, HIDDEN_ITEMS } from '@wallet-config/menu';
 import { Props } from './Container';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
@@ -15,7 +14,7 @@ const Wrapper = styled.div`
     padding: 0px 10px 10px 10px;
 `;
 
-const StyledNavLink = styled.div<{ active: boolean }>`
+const StyledNavLink = styled.div<{ active?: boolean }>`
     font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.active ? colors.BLACK17 : colors.BLACK50)};
     font-weight: ${props => (props.active ? 500 : FONT_WEIGHT.REGULAR)};
@@ -45,18 +44,19 @@ const Text = styled.div`
 `;
 
 const AccountNavigation = (props: Props) => {
-    const { pathname, params, app } = props.router;
-    const currentRoute = findRoute(pathname);
-    if (app !== 'wallet' || !params) return <>Invalid account</>;
+    const [moreItemsActive, setMoreItemsActive] = useState(false);
+    const { account } = props.selectedAccount;
+    const { app, route } = props.router;
+    if (app !== 'wallet' || !account) return null;
 
     return (
         <Wrapper>
             {ITEMS.map(item => {
-                if (!item.isHidden(params.symbol)) {
+                if (!item.isHidden()) {
                     return (
                         <StyledNavLink
                             key={item.route}
-                            active={currentRoute ? currentRoute.name === item.route : false}
+                            active={route ? route.name === item.route : false}
                             onClick={() => props.goto(item.route, undefined, true)}
                         >
                             <IconWrapper>
@@ -68,6 +68,30 @@ const AccountNavigation = (props: Props) => {
                 }
                 return null;
             })}
+            {moreItemsActive &&
+                HIDDEN_ITEMS.map(item => {
+                    if (!item.isHidden(account.symbol)) {
+                        return (
+                            <StyledNavLink
+                                key={item.route}
+                                active={route ? route.name === item.route : false}
+                                onClick={() => props.goto(item.route, undefined, true)}
+                            >
+                                <IconWrapper>
+                                    <Icon size={12} icon={item.icon} />
+                                </IconWrapper>
+                                <Text>{item.title}</Text>
+                            </StyledNavLink>
+                        );
+                    }
+                    return null;
+                })}
+            <StyledNavLink onClick={() => setMoreItemsActive(!moreItemsActive)}>
+                <IconWrapper>
+                    <Icon size={12} icon={moreItemsActive ? 'CROSS' : 'PLUS'} />
+                </IconWrapper>
+                <Text>Show {moreItemsActive ? 'less' : 'more'}</Text>
+            </StyledNavLink>
         </Wrapper>
     );
 };
