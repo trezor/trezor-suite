@@ -6,6 +6,7 @@ import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 import messages from '@suite/support/messages';
+import * as URLS from '@suite/constants/suite/urls';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
@@ -69,6 +70,13 @@ const IconWrapper = styled.div`
 
 const StyledLink = styled(Link)`
     font-size: ${variables.FONT_SIZE.TINY};
+
+    &,
+    &:active,
+    &:hover,
+    &:focus {
+        font-weight: 500;
+    }
 `;
 
 const Actions = styled.div`
@@ -147,8 +155,10 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
                 <Info>
                     <Translation {...messages.TR_FOR_EASIER_AND_SAFER_INPUT} />
                 </Info>
-                <StyledLink href="no-style">
-                    <Translation {...messages.TR_LEARN_MORE} />
+                <StyledLink variant="nostyle" href={URLS.WIKI_QR_CODE}>
+                    <Button size="small" variant="tertiary">
+                        <Translation {...messages.TR_LEARN_MORE} />
+                    </Button>
                 </StyledLink>
                 {!readerLoaded && !error && (
                     <CameraPlaceholderWrapper show>
