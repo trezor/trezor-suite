@@ -9,7 +9,7 @@ import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 
-import { DispatchProps } from '../../Container';
+import { DispatchProps } from '../../../../Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Label = styled.span`
-    color: ${colors.TEXT_SECONDARY};
+    color: ${colors.BLACK92};
     padding-bottom: 10px;
 `;
 
