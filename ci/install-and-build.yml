@@ -1,12 +1,26 @@
 install and build:
-    stage: setup environment
-    script:
-        - yarn
-        - yarn run build:libs
-    artifacts:
-        expire_in: 3 hours
-        when: always
+    cache:
+        untracked: true
+        policy: pull-push
+        key: node_modules-across-the-monorepo-universe
         paths:
+            - .yarn
+            # modules
+            - node_modules/
+            - packages/blockchain-link/node_modules/
+            - packages/components/node_modules/
+            - packages/components-v2/node_modules/
+            - packages/components-storybook/node_modules/
+            - packages/components-storybook-v2/node_modules/
+            - packages/connect-explorer/node_modules/
+            - packages/rollout/node_modules/
+            - packages/suite/node_modules/
+            - packages/suite-web/node_modules/
+            - packages/suite-desktop/node_modules/
+            - packages/suite-native/node_modules/
+            - packages/suite-storage/node_modules/
+            - packages/translations-manager/node_modules/
+            - packages/integration-tests/node_modules/
             # libs
             - packages/components/lib
             - packages/components-v2/lib
@@ -14,20 +28,7 @@ install and build:
             - packages/rollout/lib
             - packages/suite-storage/lib
             - packages/translations-manager/lib
-            
-            # node_modules
-            - node_modules
-            - packages/blockchain-link/node_modules
-            - packages/components/node_modules
-            - packages/components-v2/node_modules
-            - packages/components-storybook/node_modules
-            - packages/components-storybook-v2/node_modules
-            - packages/connect-explorer/node_modules
-            - packages/rollout/node_modules
-            - packages/suite/node_modules
-            - packages/suite-web/node_modules
-            - packages/suite-desktop/node_modules
-            - packages/suite-native/node_modules
-            - packages/suite-storage/node_modules
-            - packages/translations-manager/node_modules
-            - packages/integration-tests/node_modules
+    stage: setup environment
+    script:
+        - yarn install --pure-lockfile --cache-folder .yarn
+        - yarn run build:libs

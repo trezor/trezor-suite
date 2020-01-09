@@ -4,9 +4,6 @@
     "private": true,
     "repository": "https://github.com/trezor/trezor-suite.git",
     "license": "SEE LICENSE IN LICENSE.md",
-    "engines": {
-        "node": ">=12"
-    },
     "workspaces": {
         "packages": [
             "packages/*"
