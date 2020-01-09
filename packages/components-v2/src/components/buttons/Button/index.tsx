@@ -166,16 +166,32 @@ const Wrapper = styled.button<WrapperProps>`
         `}
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
-    margin-right: 8px;
-    margin-left: 3px;
     transform: translateY(-1px);
+
+    ${props =>
+        props.alignIcon === 'left' &&
+        css`
+            margin-right: 8px;
+            margin-left: 3px;
+        `}
+
+    ${props =>
+        props.alignIcon === 'right' &&
+        css`
+            margin-left: 8px;
+            margin-right: 3px;
+        `}
 `;
 
 const Label = styled.div`
     line-height: 18px;
 `;
+
+interface IconWrapperProps {
+    alignIcon?: ButtonProps['alignIcon'];
+}
 
 interface WrapperProps {
     variant: ButtonVariant;
@@ -191,6 +207,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isDisabled?: boolean;
     isLoading?: boolean;
     fullWidth?: boolean;
+    alignIcon?: 'left' | 'right';
 }
 
 const Button = ({
@@ -201,8 +218,19 @@ const Button = ({
     fullWidth = false,
     isDisabled = false,
     isLoading = false,
+    alignIcon = 'left',
     ...rest
 }: ButtonProps) => {
+    const IconComponent = icon ? (
+        <IconWrapper alignIcon={alignIcon}>
+            <Icon icon={icon} size={10} color={getIconColor(variant, isDisabled)} />
+        </IconWrapper>
+    ) : null;
+    const Loader = (
+        <IconWrapper alignIcon={alignIcon}>
+            <FluidSpinner size={10} />
+        </IconWrapper>
+    );
     return (
         <Wrapper
             variant={variant}
@@ -212,17 +240,11 @@ const Button = ({
             fullWidth={fullWidth}
             {...rest}
         >
-            {!isLoading && icon && (
-                <IconWrapper>
-                    <Icon icon={icon} size={10} color={getIconColor(variant, isDisabled)} />
-                </IconWrapper>
-            )}
-            {isLoading && (
-                <IconWrapper>
-                    <FluidSpinner size={10} />
-                </IconWrapper>
-            )}
+            {!isLoading && alignIcon === 'left' && IconComponent}
+            {isLoading && alignIcon === 'left' && Loader}
             <Label>{children}</Label>
+            {!isLoading && alignIcon === 'right' && IconComponent}
+            {isLoading && alignIcon === 'right' && Loader}
         </Wrapper>
     );
 };

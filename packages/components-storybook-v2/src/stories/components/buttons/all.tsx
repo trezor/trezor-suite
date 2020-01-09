@@ -48,9 +48,23 @@ storiesOf('Buttons', module).add(
                                     variant={variant as 'primary' | 'secondary'}
                                     data-test={`button-${variant}-icon`}
                                     icon="PLUS"
+                                    onClick={() => {
+                                        console.log('click');
+                                    }}
                                 >
                                     {variant[0].toUpperCase()}
                                     {variant.slice(1)} icon
+                                </Button>
+                            </ButtonWrapper>
+                            <ButtonWrapper>
+                                <Button
+                                    variant={variant as 'primary' | 'secondary'}
+                                    data-test={`button-${variant}-icon-right`}
+                                    icon="PLUS"
+                                    alignIcon="right"
+                                >
+                                    {variant[0].toUpperCase()}
+                                    {variant.slice(1)} icon right
                                 </Button>
                             </ButtonWrapper>
                             <ButtonWrapper>
@@ -78,6 +92,9 @@ storiesOf('Buttons', module).add(
                                     variant={variant as 'primary' | 'secondary'}
                                     isDisabled
                                     data-test={`button-${variant}-disabled`}
+                                    onClick={() => {
+                                        console.log('click');
+                                    }}
                                 >
                                     {variant[0].toUpperCase()}
                                     {variant.slice(1)} disabled
