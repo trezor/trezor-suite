@@ -9,8 +9,6 @@ suite-desktop build mac:
         expire_in: 1 day
         paths:
             - TrezorSuite-*.zip
-    dependencies:
-        - install and build
 
 suite-desktop build linux:
     stage: build
@@ -23,8 +21,6 @@ suite-desktop build linux:
         expire_in: 1 day
         paths:
             - TrezorSuite-*.AppImage
-    dependencies:
-        - install and build
 
 suite-desktop build windows:
     image: electronuserland/builder:wine
@@ -38,8 +34,6 @@ suite-desktop build windows:
         expire_in: 1 day
         paths:
             - TrezorSuite-*.exe
-    dependencies:
-        - install and build
 
 suite-desktop deploy:
     stage: deploy to dev servers

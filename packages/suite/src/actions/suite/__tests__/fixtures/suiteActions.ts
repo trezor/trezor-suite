@@ -75,30 +75,6 @@ const reducerActions = [
         ],
     },
     {
-        description: `toggleDeviceMenu (true/false)`,
-        actions: [suiteActions.toggleDeviceMenu(true), suiteActions.toggleDeviceMenu(false)],
-        result: [
-            {
-                deviceMenuOpened: true,
-            },
-            {
-                deviceMenuOpened: false,
-            },
-        ],
-    },
-    {
-        description: `toggleSidebar (true/false)`,
-        actions: [suiteActions.toggleSidebar(), suiteActions.toggleSidebar()],
-        result: [
-            {
-                showSidebar: true,
-            },
-            {
-                showSidebar: false,
-            },
-        ],
-    },
-    {
         description: `lockUI (true/false)`,
         actions: [suiteActions.lockUI(true), suiteActions.lockUI(false)],
         result: [

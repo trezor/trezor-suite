@@ -42,7 +42,7 @@ const ContentWrapper = styled.div<{ preventBgScroll?: boolean }>`
 const WalletLayout = (props: Props) => {
     return (
         <SuiteLayout title={props.title || 'Trezor Suite | Wallet'} secondaryMenu={<Menu />}>
-            <ContentWrapper preventBgScroll={props.suite.showSidebar}>
+            <ContentWrapper>
                 <ProgressBar />
                 <WalletNotifications />
                 <Content>{props.children}</Content>

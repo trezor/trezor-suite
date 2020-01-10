@@ -52,11 +52,7 @@ const SuiteLayout = (props: Props) => {
             <Menu />
             <ErrorBoundary>
                 {!props.disableModals && <Modals />}
-                {props.secondaryMenu && (
-                    <MenuSecondary isOpen={props.suite.showSidebar}>
-                        {props.secondaryMenu}
-                    </MenuSecondary>
-                )}
+                {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}
                 <AppWrapper isLanding={props.isLanding}>
                     <>
                         {/* notifications disabled now. lets redo them into new design */}

@@ -1,11 +1,24 @@
+suite lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/suite lint
+  
+suite type-check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/suite type-check
+
+suite unit tests:
+    stage: unit tests
+    script:
+        - yarn workspace @trezor/suite test:unit
+
 suite test integration:
     only:
         - schedules
     stage: integration testing
     script:
         - yarn workspace @trezor/suite test-health
-    dependencies:
-        - install and build
 
 suite check outdated:
     stage: misc
@@ -15,8 +28,16 @@ suite check outdated:
     allow_failure: true
     script:
         - ./ci/scripts/outdated.sh
-    dependencies:
-        - install and build
+
+# TODO: https://github.com/trezor/trezor-suite/issues/1045
+# suite check unused messages:
+#     stage: misc
+#     allow_failure: true
+#     script:
+#         # create the master.json first. later we shall use directly messages.ts
+#         - yarn workspace @trezor/suite translations:extract
+#         - yarn workspace @trezor/suite translations:unused
+#     dependencies:
+#         - install and build
 
 # TODO: add messages (values) duplicities check
-# TODO: add check if there are unused messages https://github.com/trezor/trezor-suite/issues/944
