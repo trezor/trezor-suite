@@ -36,7 +36,5 @@ suite check unused messages:
         # create the master.json first. later we shall use directly messages.ts
         - yarn workspace @trezor/suite translations:extract
         - yarn workspace @trezor/suite translations:unused
-    dependencies:
-        - install and build
 
 # TODO: add messages (values) duplicities check
