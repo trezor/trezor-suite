@@ -79,7 +79,8 @@ describe('Device settings', () => {
             .click()
             .getTestElement('@modal/firmware/exit-button')
             .click()
-            .getTestElement('@modal/firmware/exit-button').should('not.be.visible');
+            .getTestElement('@modal/firmware/exit-button')
+            .should('not.be.visible');
     });
 
     // TODO: upload custom image
