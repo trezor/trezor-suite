@@ -1,7 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, colors as oldColors } from '@trezor/components';
-import { colors } from '@trezor/components-v2';
+import { colors, Icon } from '@trezor/components-v2';
 import { Output } from '@wallet-types/sendForm';
 import AccountName from '@wallet-components/AccountName';
 
@@ -69,8 +69,7 @@ const Send = (props: StateProps & DispatchProps) => {
     } = props;
 
     useEffect(() => {
-        sendFormActions.init();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        props.sendFormActions.init();
     }, [props.selectedAccount]);
 
     if (!device || !send || !fees || props.selectedAccount.status !== 'loaded') {
@@ -98,8 +97,8 @@ const Send = (props: StateProps & DispatchProps) => {
                         <StyledIcon
                             onClick={() => props.sendFormActionsBitcoin.removeRecipient(output.id)}
                             size={10}
-                            color={oldColors.TEXT_SECONDARY}
-                            icon="CLOSE"
+                            color={colors.BLACK92}
+                            icon="CROSS"
                         />
                     </SlimRow>
                     <Row>

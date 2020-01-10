@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Label = styled.span`
-    color: ${colors.BLACK92};
+    color: ${colors.BLACK0};
     padding-bottom: 10px;
 `;
 
@@ -76,16 +76,18 @@ const FeeComponent = (props: Props) => (
             value={props.selectedFee}
             onChange={props.onChange}
             options={props.feeLevels}
-            formatOptionLabel={(option: FeeLevel) => (
-                <OptionWrapper>
-                    <OptionLabel>{capitalize(option.label)}</OptionLabel>
-                    {option.label !== CUSTOM_FEE && (
-                        <OptionValue>
-                            {getValue(props.networkType, option.value, props.symbol)}
-                        </OptionValue>
-                    )}
-                </OptionWrapper>
-            )}
+            formatOptionLabel={(option: FeeLevel) => {
+                return (
+                    <OptionWrapper>
+                        <OptionLabel>{capitalize(option.label)}</OptionLabel>
+                        {option.label !== CUSTOM_FEE && (
+                            <OptionValue>
+                                {getValue(props.networkType, option.value, props.symbol)}
+                            </OptionValue>
+                        )}
+                    </OptionWrapper>
+                );
+            }}
         />
     </Wrapper>
 );

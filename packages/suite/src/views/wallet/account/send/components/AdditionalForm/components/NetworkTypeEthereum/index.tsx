@@ -4,7 +4,7 @@ import { State } from '@wallet-types/sendForm';
 import styled from 'styled-components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Props } from './Container';
-// import Fee from '../Fee';
+import Fee from '../Fee';
 import { Input, Textarea, colors } from '@trezor/components-v2';
 import GasLimitTopLabel from './components/GasLimitTopLabel';
 import GasPriceTopLabel from './components/GasPriceTopLabel';
@@ -18,6 +18,11 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
+const Column = styled.div`
+    flex: 1;
+    padding: 40px;
+`;
+
 const Top = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -29,21 +34,13 @@ const Row = styled.div`
     margin-bottom: 15px;
 `;
 
-const Left = styled.div`
-    flex: 1;
-    padding: 20px 40px 40px 40px;
-`;
+const Left = styled(Column)``;
 
-const Right = styled.div`
-    flex: 1;
-    padding: 20px 40px 40px 40px;
+const Right = styled(Column)`
     border-left: 2px solid ${colors.BLACK96};
 `;
 
-const Bottom = styled.div`
-    margin-top: 20px;
-    padding: 20px 36px 36px 36px;
-`;
+const Bottom = styled(Column)``;
 
 const GasInput = styled(Input)`
     &:first-child {
@@ -78,17 +75,24 @@ const getErrorData = (error: State['networkTypeEthereum']['data']['error']) => {
     }
 };
 
-const NetworkTypeEthereum = ({ send, sendFormActionsEthereum }: Props) => {
-    if (!send) return null;
+const NetworkTypeEthereum = ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
+    const { account } = selectedAccount;
+    if (!send || !account) return null;
 
     const { gasLimit, gasPrice, data } = send.networkTypeEthereum;
     return (
         <Wrapper>
             <Top>
                 <Left>
-                    {/* <Row>
-                        <Fee />
-                    </Row> */}
+                    <Row>
+                        <Fee
+                            onChange={() => console.log('change')}
+                            networkType={account.networkType}
+                            feeLevels={send.feeInfo.levels}
+                            selectedFee={send.selectedFee}
+                            symbol={account.symbol}
+                        />
+                    </Row>
                     <Row>
                         <GasInput
                             variant="small"
