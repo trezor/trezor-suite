@@ -23,7 +23,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     let cachedState = null;
     const feeInfo = getState().wallet.fees[account.symbol];
-    const levels: FeeLevel[] = feeInfo.levels;
+    const { levels }: FeeLevel[] = feeInfo;
     // .concat({
     //     label: 'custom',
     //     feePerUnit: '0',
