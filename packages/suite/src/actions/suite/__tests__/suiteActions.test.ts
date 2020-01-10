@@ -13,7 +13,7 @@ import { SUITE } from '@suite-actions/constants';
 import * as suiteActions from '../suiteActions';
 import * as routerActions from '../routerActions';
 import { init } from '../trezorConnectActions';
-import fixtures from './fixtures/suiteActions';
+import fixtures from '../__fixtures__/suiteActions';
 
 jest.mock('trezor-connect', () => {
     let fixture: any;

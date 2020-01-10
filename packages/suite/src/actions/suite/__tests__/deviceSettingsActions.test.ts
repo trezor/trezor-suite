@@ -3,7 +3,7 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import fixtures from './fixtures/deviceSettings';
+import fixtures from '../__fixtures__/deviceSettings';
 
 const { getSuiteDevice } = global.JestMocks;
 

@@ -34,7 +34,7 @@ module.exports = {
         '^@(.+)-middlewares/(.+)': '<rootDir>/src/middlewares/$1/$2',
         '^@(.+)-middlewares': '<rootDir>/src/middlewares/$1/index',
     },
-    moduleFileExtensions: ['js', 'ts', 'tsx'],
+    moduleFileExtensions: ['js', 'ts', 'tsx', 'json'],
     coverageDirectory: './coverage',
     collectCoverage: true,
     collectCoverageFrom: [

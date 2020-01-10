@@ -2,8 +2,8 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 
+import fixtures from '../__fixtures__/selectedAccountActions';
 import { getStateForAction } from '../selectedAccountActions';
-import fixtures from './fixtures/selectedAccountActions';
 
 export const getInitialState = (_settings?: any) => {
     return {
