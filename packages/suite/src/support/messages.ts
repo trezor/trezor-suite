@@ -1910,6 +1910,65 @@ const definedMessages = defineMessages({
         defaultMessage: 'Tokens',
         id: 'TR_TOKENS',
     },
+    TR_NORTH: {
+        id: 'TR_NORTH',
+        defaultMessage: 'North',
+    },
+    TR_EAST: {
+        id: 'TR_EAST',
+        defaultMessage: 'East',
+    },
+    TR_SOUTH: {
+        id: 'TR_SOUTH',
+        defaultMessage: 'South',
+    },
+    TR_WEST: {
+        id: 'TR_WEST',
+        defaultMessage: 'West',
+    },
+    TR_GENERAL: {
+        id: 'TR_GENERAL',
+        defaultMessage: 'General',
+        description: 'Category in Settings',
+    },
+    TR_DEVICE: {
+        id: 'TR_DEVICE',
+        defaultMessage: 'Device',
+        description: 'Category in Settings',
+    },
+    TR_DASHBOARD: {
+        id: 'TR_DASHBOARD',
+        defaultMessage: 'Dashboard',
+        description: 'Category in Settings',
+    },
+    TR_WALLET: {
+        id: 'TR_WALLET',
+        defaultMessage: 'Wallet',
+        description: 'Category in Settings',
+    },
+
+    TR_ASSETS: {
+        id: 'TR_ASSETS',
+        defaultMessage: 'Coins',
+        description: 'Category in Settings',
+    },
+    TR_SUPPORT: {
+        id: 'TR_SUPPORT',
+        defaultMessage: 'Support',
+    },
+    TR_COINS_SETTINGS_ALSO_DEFINES: {
+        id: 'TR_COINS_SETTINGS_ALSO_DEFINES',
+        defaultMessage:
+            'Coins settings also defines the Discovery process when Trezor is connected. Each\n                    time you connect not remembered device, Trezor Suite needs to find out what\n                    accounts you have by going through each coin one by one. That can take between\n                    few seconds to few minutes if you allow all or too many coins.',
+    },
+    TR_DEACTIVATE_ALL: {
+        id: 'TR_DEACTIVATE_ALL',
+        defaultMessage: 'Deactivate all',
+    },
+    TR_ACTIVATE_ALL: {
+        id: 'TR_ACTIVATE_ALL',
+        defaultMessage: 'Activate all',
+    },
 });
 
 export default definedMessages;

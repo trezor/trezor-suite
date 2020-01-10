@@ -73,7 +73,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 interface ItemProps {
-    label: string;
+    label: React.ReactNode;
     icon: IconType;
     onClick?: () => void;
     dataTest?: string;
@@ -93,31 +93,31 @@ const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
 
 const ITEMS = [
     {
-        label: 'General',
+        label: <Translation {...messages.TR_GENERAL} />,
         dataTest: 'general',
         icon: 'SETTINGS',
         route: 'settings-index',
     },
     {
-        label: 'Device',
+        label: <Translation {...messages.TR_DEVICE} />,
         dataTest: 'device',
         icon: 'TREZOR',
         route: 'settings-device',
     },
     {
-        label: 'Dashboard',
+        label: <Translation {...messages.TR_DASHBOARD} />,
         dataTest: 'dashboard',
         icon: 'DASHBOARD',
         route: 'settings-dashboard',
     },
     {
-        label: 'Wallet',
+        label: <Translation {...messages.TR_WALLET} />,
         dataTest: 'wallet',
         icon: 'WALLET',
         route: 'settings-wallet',
     },
     {
-        label: 'Coins',
+        label: <Translation {...messages.TR_ASSETS} />,
         dataTest: 'coins',
         icon: 'COINS',
         route: 'settings-coins',
@@ -126,7 +126,7 @@ const ITEMS = [
 
 const BOTTOM_ITEMS = [
     {
-        label: 'Support',
+        label: <Translation {...messages.TR_SUPPORT} />,
         icon: 'SUPPORT',
     },
     {
@@ -144,7 +144,7 @@ const SettignsMenu = ({ goto, router }: Props) => {
             <Items>
                 {ITEMS.map(i => (
                     <Item
-                        key={i.label}
+                        key={i.route}
                         {...i}
                         onClick={() => goto(i.route)}
                         isActive={
@@ -158,8 +158,9 @@ const SettignsMenu = ({ goto, router }: Props) => {
 
             <Bottom>
                 <Items>
-                    {BOTTOM_ITEMS.map(i => (
-                        <Item key={i.label} {...i} />
+                    {BOTTOM_ITEMS.map((item, i) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Item key={i} {...item} />
                     ))}
                 </Items>
             </Bottom>

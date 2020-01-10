@@ -125,9 +125,11 @@ const CoinsGroup = ({
                 {description && <P size="tiny">{description}</P>}
             </HeaderLeft>
             <ToggleAll onClick={() => onToggleAllFn(filterFn)}>
-                {NETWORKS.filter(filterFn).some(n => enabledNetworks.includes(n.symbol))
-                    ? 'Deactivate all'
-                    : 'Activate all'}
+                {NETWORKS.filter(filterFn).some(n => enabledNetworks.includes(n.symbol)) ? (
+                    <Translation {...messages.TR_DEACTIVATE_ALL} />
+                ) : (
+                    <Translation {...messages.TR_ACTIVATE_ALL} />
+                )}
             </ToggleAll>
         </Header>
 
@@ -138,7 +140,7 @@ const CoinsGroup = ({
                     <ActionColumn>
                         <AdvancedSettings>
                             <SettingsIcon icon="SETTINGS" size={12} />
-                            Advanced settings
+                            <Translation {...messages.TR_ADVANCED_SETTINGS} />
                         </AdvancedSettings>
                         <Switch
                             onChange={(visible: boolean) => {
@@ -175,12 +177,11 @@ const Settings = (props: Props) => {
                     flexDirection: 'column',
                 }}
             >
-                <H2>Coins to discover</H2>
+                <H2>
+                    <Translation {...messages.TR_ASSETS} />
+                </H2>
                 <P size="tiny">
-                    Coins settings also defines the Discovery process when Trezor is connected. Each
-                    time you connect not remembered device, Trezor Suite needs to find out what
-                    accounts you have by going through each coin one by one. That can take between
-                    few seconds to few minutes if you allow all or too many coins.
+                    <Translation {...messages.TR_COINS_SETTINGS_ALSO_DEFINES} />
                 </P>
 
                 <CoinsGroup
