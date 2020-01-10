@@ -12,7 +12,7 @@ import TroubleshootBootloader from './components/Connect/TroubleshootBootloader'
 import TroubleshootInitialized from './components/Connect/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/Connect/TroubleshootTooLong';
 import { Props } from './Container';
-import { isWebUSB } from '@suite-utils/device';
+import { isWebUSB } from '@suite-utils/transport';
 
 const WebusbButtonWrapper = styled.div`
     width: 200px;

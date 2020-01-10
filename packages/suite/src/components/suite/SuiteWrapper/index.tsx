@@ -5,7 +5,7 @@ import { P } from '@trezor/components';
 import { Button } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import * as resizeActions from '@suite-actions/resizeActions';
-import { isWebUSB } from '@suite-utils/device';
+import { isWebUSB } from '@suite-utils/transport';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Loading from '@suite-components/landing/Loading';
 import SuiteLayout from '@suite-components/SuiteLayout';
