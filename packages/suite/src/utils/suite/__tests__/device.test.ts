@@ -17,15 +17,6 @@ describe('getStatus + getStatusName + getStatusColor', () => {
     });
 });
 
-describe('isWebUSB', () => {
-    fixtures.isWebUSB.forEach(f => {
-        it(f.description, () => {
-            const instance = utils.isWebUSB(f.transport);
-            expect(instance).toEqual(f.result);
-        });
-    });
-});
-
 describe('isDeviceAccessible', () => {
     fixtures.isDeviceAccessible.forEach(f => {
         it(f.description, () => {

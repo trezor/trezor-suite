@@ -1,12 +1,12 @@
 import { Translation } from '@suite-components/Translation';
 import { ParsedURI, parseUri } from '@suite-utils/parseUri';
-import { colors } from '@trezor/components';
-import { H2, P } from '@trezor/components-v2';
+import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components-v2';
 import dynamic from 'next/dynamic';
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 import messages from '@suite/support/messages';
+import * as URLS from '@suite/constants/suite/urls';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
@@ -17,25 +17,71 @@ const Wrapper = styled.div`
 `;
 
 const Padding = styled.div`
-    padding: 0px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
 `;
 
-const CameraPlaceholder = styled(P)`
+const CameraPlaceholderWrapper = styled.div<{ show: boolean }>`
+    display: ${props => (props.show ? 'flex' : 'none')};
+    margin: 12px 0px 20px 0px;
+    width: 100%;
+`;
+
+const CameraPlaceholder = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 10px 0;
+    flex: 1;
+    padding: 40px;
+    height: 320px;
+    border-radius: 3px;
+    background: #ebebeb;
 `;
 
 const Error = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 10px 0;
 `;
 
 const ErrorTitle = styled(P)`
     text-align: center;
-    color: ${colors.ERROR_PRIMARY};
+    color: ${colors.RED};
 `;
 const ErrorMessage = styled.span`
     text-align: center;
-    color: ${colors.TEXT_PRIMARY};
+    color: ${colors.BLACK25};
+`;
+
+const Info = styled.div`
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
+    margin-bottom: 10px;
+`;
+
+const IconWrapper = styled.div`
+    margin-bottom: 40px;
+`;
+
+const StyledLink = styled(Link)`
+    font-size: ${variables.FONT_SIZE.TINY};
+
+    &,
+    &:active,
+    &:hover,
+    &:focus {
+        font-weight: 500;
+    }
+`;
+
+const Actions = styled.div`
+    display: flex;
+    justify-content: center;
 `;
 
 // TODO fix types
@@ -106,30 +152,63 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
                 <H2>
                     <Translation>{messages.TR_SCAN_QR_CODE}</Translation>
                 </H2>
+                <Info>
+                    <Translation {...messages.TR_FOR_EASIER_AND_SAFER_INPUT} />
+                </Info>
+                <StyledLink variant="nostyle" href={URLS.WIKI_QR_CODE}>
+                    <Button size="small" variant="tertiary">
+                        <Translation {...messages.TR_LEARN_MORE} />
+                    </Button>
+                </StyledLink>
                 {!readerLoaded && !error && (
-                    <CameraPlaceholder>
-                        <Translation>{messages.TR_WAITING_FOR_CAMERA}</Translation>
-                    </CameraPlaceholder>
+                    <CameraPlaceholderWrapper show>
+                        <CameraPlaceholder>
+                            <IconWrapper>
+                                <Icon icon="QR" size={100} />
+                            </IconWrapper>
+                            <Translation {...messages.TR_PLEASE_ALLOW_YOUR_CAMERA} />
+                        </CameraPlaceholder>
+                    </CameraPlaceholderWrapper>
                 )}
                 {error && (
-                    <Error>
-                        <ErrorTitle>
-                            <Translation>{messages.TR_OOPS_SOMETHING_WENT_WRONG}</Translation>
-                        </ErrorTitle>
-                        <ErrorMessage>{error.toString()}</ErrorMessage>
-                    </Error>
+                    <CameraPlaceholderWrapper show>
+                        <CameraPlaceholder>
+                            <Error>
+                                <ErrorTitle>
+                                    <Translation>
+                                        {messages.TR_OOPS_SOMETHING_WENT_WRONG}
+                                    </Translation>
+                                </ErrorTitle>
+                                <ErrorMessage>{error}</ErrorMessage>
+                            </Error>
+                        </CameraPlaceholder>
+                    </CameraPlaceholderWrapper>
                 )}
+
+                {!error && (
+                    <CameraPlaceholderWrapper show={readerLoaded}>
+                        <QrReader
+                            delay={500}
+                            onError={handleError}
+                            onScan={handleScan}
+                            onLoad={onLoad}
+                            style={{ width: '100%', borderRadius: '3px' }}
+                            showViewFinder={false}
+                        />
+                    </CameraPlaceholderWrapper>
+                )}
+
+                <Actions>
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            // TODO: enable legacyMode and call openImageDialog? https://github.com/JodusNodus/react-qr-reader#readme
+                        }}
+                    >
+                        <Translation {...messages.TR_UPLOAD_IMAGE} />
+                    </Button>
+                </Actions>
             </Padding>
-            {!error && (
-                <QrReader
-                    delay={500}
-                    onError={handleError}
-                    onScan={handleScan}
-                    onLoad={onLoad}
-                    style={{ width: '100%' }}
-                    showViewFinder={false}
-                />
-            )}
         </Wrapper>
     );
 };
