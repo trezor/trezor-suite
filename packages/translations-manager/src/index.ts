@@ -5,6 +5,8 @@ import glob from 'glob';
 import csvToJson from 'csvtojson';
 import csvStringify from 'csv-stringify/lib/sync';
 import { ensureDirSync } from 'fs-extra';
+import recursive from 'recursive-readdir-sync';
+
 import createRowArray, { MessageObject } from './utils/create-row-array';
 
 interface MessageDescription {
@@ -148,4 +150,46 @@ export const buildLocales = async (
         // delete the CSV file from which locales were generated
         fs.unlinkSync(inputFilePath);
     }
+};
+
+export const findUnusedMessages = (messagesPath: string, src: string) => {
+    const messages = JSON.parse(fs.readFileSync(messagesPath, 'utf-8'));
+    // read all paths we are interested in. filter out those we are not.
+    const paths = recursive(src).filter(path => {
+        // - we dont need file with defined messages or tests
+        const excluded = ['messages.ts', '.messages.ts', '__test__', '__tests__', '.test.ts'];
+        if (excluded.some(e => path.includes(e))) return false;
+        // all other are ok.
+        return true;
+    });
+
+    console.log(`checking  ${paths.length} paths`);
+
+    // just a map we are going to use to count occurrences of messages throughout the codebase
+    const tracker: { [key: string]: number } = {};
+
+    paths.forEach(path => {
+        const file = fs.readFileSync(path, 'utf-8');
+        Object.keys(messages).forEach(m => {
+            if (!tracker[m]) {
+                tracker[m] = 0;
+            }
+
+            if (file.includes(m)) {
+                tracker[m]++;
+            }
+        });
+    });
+
+    // lets check the results, filter unused (zero occurences)
+    const unused = Object.entries(tracker).filter(t => t[1] === 0);
+
+    if (unused.length === 0) {
+        console.log('Good job, no useless keys in messages');
+        process.exit(0);
+    }
+
+    console.log(unused);
+    console.log(`Achtung achtung!, there is total ${unused.length} unused messages.`);
+    process.exit(1);
 };

@@ -1,5 +1,35 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:c51f080789c0f0c9683a96090e335831cde283b4
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:3d64beb0e2574c93829d4b10a48ea729a7c91e9f
+
+cache:
+    untracked: true
+    policy: pull
+    key: node_modules-across-the-monorepo-universe
+    paths:
+        - .yarn
+        # modules
+        - node_modules/
+        - packages/blockchain-link/node_modules/
+        - packages/components/node_modules/
+        - packages/components-v2/node_modules/
+        - packages/components-storybook/node_modules/
+        - packages/components-storybook-v2/node_modules/
+        - packages/connect-explorer/node_modules/
+        - packages/rollout/node_modules/
+        - packages/suite/node_modules/
+        - packages/suite-web/node_modules/
+        - packages/suite-desktop/node_modules/
+        - packages/suite-native/node_modules/
+        - packages/suite-storage/node_modules/
+        - packages/translations-manager/node_modules/
+        - packages/integration-tests/node_modules/
+          # libs
+        - packages/components/lib
+        - packages/components-v2/lib
+        - packages/blockchain-link/lib
+        - packages/rollout/lib
+        - packages/suite-storage/lib
+        - packages/translations-manager/lib
 
 variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
@@ -10,7 +40,9 @@ variables:
 
 stages:
     - setup environment
-    - lint, types and unit tests
+    - lint
+    - typescript type check
+    - unit tests
     - build
     - deploy to dev servers
     - integration testing
@@ -21,28 +53,11 @@ include:
     - ci/install-and-build.yml
     - ci/packages/components-storybook.yml
     - ci/packages/components-storybook-v2.yml
+    - ci/packages/components.yml
+    - ci/packages/components-v2.yml
+    - ci/packages/rollout.yml
+    - ci/packages/blockchain-link.yml
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
     - ci/packages/suite-native.yml
-
-lint:
-    stage: lint, types and unit tests
-    dependencies:
-        - install and build
-    script:
-        - lerna run lint
-
-type check:
-    stage: lint, types and unit tests
-    dependencies:
-        - install and build
-    script:
-        - lerna run type-check
-
-unit tests:
-    stage: lint, types and unit tests
-    dependencies:
-        - install and build
-    script:
-        - lerna run test:unit -- --passWithNoTests

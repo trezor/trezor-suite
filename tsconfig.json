@@ -189,7 +189,7 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
-        "target": "esnext",
+        "target": "ES2020",
         "typeRoots": ["node_modules/@trezor/typescript-typings/types", "node_modules/@types"]
     },
     "exclude": [

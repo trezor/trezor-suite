@@ -1,0 +1,14 @@
+components lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/components lint
+  
+components type-check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/components type-check
+
+components unit tests:
+    stage: unit tests
+    script:
+        - yarn workspace @trezor/components test:unit
