@@ -23,7 +23,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     let cachedState = null;
     const feeInfo = getState().wallet.fees[account.symbol];
-    const { levels }: FeeLevel[] = feeInfo;
+    // eslint-disable-next-line prefer-destructuring
+    const levels: FeeLevel[] = feeInfo.levels;
     // .concat({
     //     label: 'custom',
     //     feePerUnit: '0',
