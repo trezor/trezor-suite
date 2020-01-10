@@ -1740,10 +1740,6 @@ const definedMessages = defineMessages({
             'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
         id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
     },
-    TR_XRP_TRANSFER_COST: {
-        defaultMessage: 'Transfer cost in XRP drops',
-        id: 'TR_XRP_TRANSFER_COST',
-    },
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage: 'You were disconnected.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',

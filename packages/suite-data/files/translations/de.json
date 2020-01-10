@@ -376,7 +376,6 @@
 	"TR_WRONG_EMAIL_FORMAT": "Wrong email format",
 	"TR_XRP_DESTINATION_TAG": "Destination tag",
 	"TR_XRP_DESTINATION_TAG_EXPLAINED": "Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.",
-	"TR_XRP_TRANSFER_COST": "Transfer cost in XRP drops",
 	"TR_YOU_WERE_DISCONNECTED_DOT": "You were disconnected.",
 	"TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL": "You will be redirected to external wallet",
 	"TR_YOUR_TREZOR_IS_NOT_BACKED_UP": "Your Trezor is not backed up",
