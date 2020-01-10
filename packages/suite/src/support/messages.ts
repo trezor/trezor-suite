@@ -790,6 +790,11 @@ const definedMessages = defineMessages({
         description: 'Subheading on hologram step page',
         id: 'TR_HOLOGRAM_STEP_SUBHEADING',
     },
+    TR_HOLOGRAM_STEP_HEADING: {
+        defaultMessage: 'Hologram check',
+        description: 'Heading on hologram step page',
+        id: 'TR_HOLOGRAM_STEP_HEADING',
+    },
     TR_HOW_PIN_WORKS: {
         defaultMessage: 'Not sure how PIN works?',
         id: 'TR_HOW_PIN_WORKS',
@@ -1624,6 +1629,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Used in other window',
         description: 'Device status',
         id: 'TR_USED_IN_ANOTHER_WINDOW',
+    },
+    TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE: {
+        defaultMessage: 'It is a brand new device, just unpacked',
+        description: 'Option to click when troubleshooting initialized device.',
+        id: 'TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE',
     },
     TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS: {
         defaultMessage:
