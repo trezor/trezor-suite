@@ -2,14 +2,14 @@ import CONSTANTS from '../../constants';
 import { homescreensT2 } from '@suite-constants';
 
 describe('Device settings', () => {
-    // Note that running this beforeEach makes tests run about 5 (I guess) times longer. I disagree with such practice
     beforeEach(() => {
         cy.task('startBridge')
             .task('startEmu')
             .task('setupEmu');
-        cy.viewport(1024, 768).resetDb();
 
         // navigate to device settings page
+        cy.viewport(1024, 768).resetDb();
+
         cy.visit('/')
             .onboardingShouldLoad()
             .getTestElement('button-use-wallet')
@@ -19,12 +19,13 @@ describe('Device settings', () => {
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')
             .click();
-        // TODO: a little antipattern but perfection is the enemy of good.
+        // a little antipattern but perfection is the enemy of good.
         // there is a problem with device call in progress (from discovery)
         cy.wait(2000);
     });
 
-    it('change device label', () => {
+    it('change all possible device settings and wipe device in the end', () => {
+        cy.log('change label');
         cy.getTestElement('@suite/settings/device/label-input')
             .should('have.value', CONSTANTS.DEFAULT_TREZOR_LABEL)
             .clear()
@@ -34,53 +35,46 @@ describe('Device settings', () => {
         cy.getConfirmActionOnDeviceModal();
 
         cy.task('sendDecision', { method: 'applySettings' });
-        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
-    });
+        cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-    it('turn on passphrase protection', () => {
+        cy.log('turn on passphrase protection');
         cy.getTestElement('@suite/settings/device/passphrase-switch')
-            // TODO: find a way how to remove force: true
+            // TODO: find a way how to remove force: true, probably depends on @trezor/components
             .click({ force: true })
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
-        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
-    });
+        cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-    it('change background', () => {
+        cy.log('change background');
         cy.getTestElement('@suite/settings/device/select-from-gallery')
             .click()
-            // might be nice to try all! I would even like to employ random choice from all possibilities
-            // but this would cause heart attack to reviewers
             .getTestElement(`@modal/gallery/t2/${homescreensT2[4]}`)
             .click()
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
-        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
-    });
+        cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-    it('change display rotation', () => {
+        cy.log('change display rotation');
         cy.getTestElement('@suite/settings/device/rotation-button/90')
             .click()
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });
-        cy.getConfirmActionOnDeviceModal().should('not.be.visible');
-    });
+        cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-    it('wipe device', () => {
-        cy.getTestElement('@suite/settings/device/wipe-button')
-            .click()
-            .getConfirmActionOnDeviceModal();
-        cy.task('sendDecision', { method: 'wipeDevice' });
-        cy.getTestElement('@modal/disconnect-device');
-    });
-
-    it('open firmware modal and close it again', () => {
+        cy.log('open firmware modal and close it again');
         cy.getTestElement('@suite/settings/device/update-button')
             .click()
             .getTestElement('@modal/firmware/exit-button')
             .click()
             .getTestElement('@modal/firmware/exit-button')
-            .should('not.be.visible');
+            .should('not.exist');
+
+        cy.log('wipe device');
+        cy.getTestElement('@suite/settings/device/wipe-button')
+            .click()
+            .getConfirmActionOnDeviceModal();
+        cy.task('sendDecision', { method: 'wipeDevice' });
+        cy.getTestElement('@modal/disconnect-device');
     });
 
     // TODO: upload custom image
