@@ -408,5 +408,10 @@
 	"TR_SETTINGS": "Settings",
 	"TR_BACKUP_FAILED": "Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.",
 	"TR_LANGUAGE": "Language",
-	"TR_WHAT_TO_DO_NOW": "What to do now"
+	"TR_WHAT_TO_DO_NOW": "What to do now",
+	"TR_DONT_HAVE_A_TREZOR": "Don't have a Trezor? {getOne}",
+	"TR_NETWORK_UNKNOWN": "unknown",
+	"TR_USER_HAS_WORKED_WITH_THIS_DEVICE": "I have worked with it before",
+	"TR_CUSTOM_FEE_IS_NOT_NUMBER": "Fee is not a number",
+	"TR_TOKENS": "Tokens"
 }

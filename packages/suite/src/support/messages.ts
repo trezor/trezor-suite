@@ -1879,6 +1879,27 @@ const definedMessages = defineMessages({
         id: 'TR_WHAT_TO_DO_NOW',
         defaultMessage: 'What to do now',
     },
+    TR_DONT_HAVE_A_TREZOR: {
+        defaultMessage: "Don't have a Trezor? {getOne}",
+        id: 'TR_DONT_HAVE_A_TREZOR',
+    },
+    TR_NETWORK_UNKNOWN: {
+        defaultMessage: 'unknown',
+        id: 'TR_NETWORK_UNKNOWN',
+    },
+    TR_USER_HAS_WORKED_WITH_THIS_DEVICE: {
+        defaultMessage: 'I have worked with it before',
+        description: 'Option to click when troubleshooting initialized device.',
+        id: 'TR_USER_HAS_WORKED_WITH_THIS_DEVICE',
+    },
+    TR_CUSTOM_FEE_IS_NOT_NUMBER: {
+        defaultMessage: 'Fee is not a number',
+        id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
+    },
+    TR_TOKENS: {
+        defaultMessage: 'Tokens',
+        id: 'TR_TOKENS',
+    },
 });
 
 export default definedMessages;
