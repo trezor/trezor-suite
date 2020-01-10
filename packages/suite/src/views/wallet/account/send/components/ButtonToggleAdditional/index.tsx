@@ -8,7 +8,6 @@ import { DispatchProps } from '../../Container';
 const Wrapper = styled.div`
     display: flex;
     padding: 15px 40px;
-    cursor: pointer;
     min-height: 41px;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -21,27 +20,32 @@ const ToggleIcon = styled(Icon)`
     margin-right: 6px;
 `;
 
+const Text = styled.div`
+    cursor: pointer;
+`;
+
 interface Props {
     isActive: boolean;
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
 const ToggleAdditionalButton = (props: Props) => (
-    <Wrapper onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
-        <>
+    <Wrapper>
+        <Text onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
             {props.isActive ? (
                 <Translation {...messages.TR_HIDE_ADVANCED_OPTIONS} />
             ) : (
                 <Translation {...messages.TR_SHOW_ADVANCED_OPTIONS} />
             )}
-        </>
-        <ToggleIcon
-            icon="ARROW_DOWN"
-            color={colors.BLACK17}
-            size={12}
-            isActive={props.isActive}
-            canAnimate={props.isActive}
-        />
+
+            <ToggleIcon
+                icon="ARROW_DOWN"
+                color={colors.BLACK17}
+                size={12}
+                isActive={props.isActive}
+                canAnimate={props.isActive}
+            />
+        </Text>
     </Wrapper>
 );
 

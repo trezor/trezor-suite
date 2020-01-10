@@ -129,15 +129,6 @@ const Send = (props: StateProps & DispatchProps) => {
                     </Row>
                 </OutputWrapper>
             ))}
-            {/* <Row>
-                <Fee
-                    networkType={account.networkType}
-                    feeLevels={send.feeInfo.levels}
-                    selectedFee={send.selectedFee}
-                    onChange={sendFormActions.handleFeeValueChange}
-                    symbol={network.symbol}
-                />
-            </Row> */}
             <AdditionalInfoWrapper>
                 <Row isColumn={send.isAdditionalFormVisible}>
                     <ButtonToggleAdditional
