@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { colors, Button, variables } from '@trezor/components-v2';
+import { Translation } from '@suite/components/suite/Translation';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,9 +48,11 @@ const EmptyWallet = (props: Props) => {
         <Wrapper {...props}>
             <Image src={resolveStaticPath(`images/dashboard/empty-dashboard.svg`)} />
             <Content>
-                <Title>Your Wallet is ready. What to do now?</Title>
+                <Title>
+                    <Translation {...messages.TR_YOUR_WALLET_IS_READY_WHAT} />
+                </Title>
                 <SecurityItem>
-                    Additional security features are waiting to be done.
+                    <Translation {...messages.TR_ADDITIONAL_SECURITY_FEATURES} />
                     <Button
                         variant="tertiary"
                         size="small"
@@ -56,11 +60,11 @@ const EmptyWallet = (props: Props) => {
                             console.log('do something');
                         }}
                     >
-                        Finish advanced security
+                        <Translation {...messages.TR_FINISH_ADVANCED_SECURITY} />
                     </Button>
                 </SecurityItem>
                 <SecurityItem>
-                    Looking for a quick & easy way to buy BTC? We got you covered.
+                    <Translation {...messages.TR_LOOKING_FOR_QUICK_EASY} />
                     <Button
                         variant="tertiary"
                         size="small"

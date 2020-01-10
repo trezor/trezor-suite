@@ -1946,12 +1946,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Wallet',
         description: 'Category in Settings',
     },
-
-    TR_ASSETS: {
-        id: 'TR_ASSETS',
-        defaultMessage: 'Coins',
-        description: 'Category in Settings',
-    },
     TR_SUPPORT: {
         id: 'TR_SUPPORT',
         defaultMessage: 'Support',
@@ -1959,7 +1953,7 @@ const definedMessages = defineMessages({
     TR_COINS_SETTINGS_ALSO_DEFINES: {
         id: 'TR_COINS_SETTINGS_ALSO_DEFINES',
         defaultMessage:
-            'Coins settings also defines the Discovery process when Trezor is connected. Each\n                    time you connect not remembered device, Trezor Suite needs to find out what\n                    accounts you have by going through each coin one by one. That can take between\n                    few seconds to few minutes if you allow all or too many coins.',
+            'Coins settings also defines the Discovery process when Trezor is connected. Each time you connect not remembered device, Trezor Suite needs to find out what accounts you have by going through each coin one by one. That can take between few seconds to few minutes if you allow all or too many coins.',
     },
     TR_DEACTIVATE_ALL: {
         id: 'TR_DEACTIVATE_ALL',
@@ -1968,6 +1962,78 @@ const definedMessages = defineMessages({
     TR_ACTIVATE_ALL: {
         id: 'TR_ACTIVATE_ALL',
         defaultMessage: 'Activate all',
+    },
+    TR_TOTAL_PORTFOLIO_VALUE: {
+        id: 'TR_TOTAL_PORTFOLIO_VALUE',
+        defaultMessage: 'Total portfolio value',
+    },
+    TR_RECEIVE: {
+        id: 'TR_RECEIVE',
+        defaultMessage: 'Receive',
+    },
+    TR_BUY: {
+        id: 'TR_BUY',
+        defaultMessage: 'Buy',
+    },
+    TR_YOUR_WALLET_IS_READY_WHAT: {
+        id: 'TR_YOUR_WALLET_IS_READY_WHAT',
+        defaultMessage: 'Your Wallet is ready. What to do now?',
+    },
+    TR_ADDITIONAL_SECURITY_FEATURES: {
+        id: 'TR_ADDITIONAL_SECURITY_FEATURES',
+        defaultMessage: 'Additional security features are waiting to be done.',
+    },
+    TR_FINISH_ADVANCED_SECURITY: {
+        id: 'TR_FINISH_ADVANCED_SECURITY',
+        defaultMessage: 'Finish advanced security',
+    },
+    TR_LOOKING_FOR_QUICK_EASY: {
+        id: 'TR_LOOKING_FOR_QUICK_EASY',
+        defaultMessage: 'Looking for a quick & easy way to buy BTC? We got you covered.',
+    },
+    TR_ASSETS: {
+        id: 'TR_ASSETS',
+        defaultMessage: 'Assets',
+    },
+    TR_VALUES: {
+        id: 'TR_VALUES',
+        defaultMessage: 'Values',
+    },
+    TR_EXCHANGE_RATE: {
+        id: 'TR_EXCHANGE_RATE',
+        defaultMessage: 'Exchange rate',
+    },
+    TR_CONNECTION_STATUS: {
+        id: 'TR_CONNECTION_STATUS',
+        defaultMessage: 'Connection Status',
+    },
+    TR_ONLINE: {
+        id: 'TR_ONLINE',
+        defaultMessage: 'Online',
+    },
+    TR_CONNECTING_DOTDOTDOT: {
+        id: 'TR_CONNECTING_DOTDOTDOT',
+        defaultMessage: 'Connecting...',
+    },
+    TR_OFFLINE: {
+        id: 'TR_OFFLINE',
+        defaultMessage: 'Offline',
+    },
+    TR_MARK_ALL_AS_READ: {
+        id: 'TR_MARK_ALL_AS_READ',
+        defaultMessage: 'Mark all as read',
+    },
+    TR_WHATS_NEW: {
+        id: 'TR_WHATS_NEW',
+        defaultMessage: "What's new",
+    },
+    TR_READ_MORE: {
+        id: 'TR_READ_MORE',
+        defaultMessage: 'Read more',
+    },
+    TR_SHOW_OLDER_NEWS: {
+        id: 'TR_SHOW_OLDER_NEWS',
+        defaultMessage: 'Show older news',
     },
 });
 

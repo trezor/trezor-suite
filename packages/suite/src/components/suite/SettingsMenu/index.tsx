@@ -117,7 +117,7 @@ const ITEMS = [
         route: 'settings-wallet',
     },
     {
-        label: <Translation {...messages.TR_ASSETS} />,
+        label: <Translation {...messages.TR_COINS} />,
         dataTest: 'coins',
         icon: 'COINS',
         route: 'settings-coins',
