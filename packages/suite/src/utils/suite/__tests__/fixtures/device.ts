@@ -6,15 +6,6 @@ const { getSuiteDevice } = global.JestMocks;
 
 const SUITE_DEVICE = getSuiteDevice();
 const connected = { connected: true, available: true };
-const TRANSPORT = {
-    type: 'bridge',
-    bridge: {
-        version: [1, 0, 0],
-        directory: '',
-        packages: [{ platform: '', name: '', url: '' }],
-        changelog: '',
-    },
-};
 
 const getStatus = [
     {
@@ -95,27 +86,6 @@ const getStatus = [
         status: 'unknown',
         name: messages.TR_STATUS_UNKNOWN.defaultMessage,
         color: colors.TEXT_PRIMARY,
-    },
-];
-
-const isWebUSB = [
-    {
-        description: `Transport is webusb`,
-        transport: {
-            ...TRANSPORT,
-            type: 'WebUsbPlugin',
-        },
-        result: true,
-    },
-    {
-        description: `Transport is not webusb (bridge)`,
-        transport: TRANSPORT,
-        result: false,
-    },
-    {
-        description: `Transport is not webusb (not defined)`,
-        transport: undefined,
-        result: false,
     },
 ];
 
@@ -467,7 +437,6 @@ const getDeviceInstances = [
 
 export default {
     getStatus,
-    isWebUSB,
     isDeviceAccessible,
     isSelectedDevice,
     getVersion,

@@ -9,7 +9,8 @@ import accountsReducer from '@wallet-reducers/accountsReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
-import { DISCOVERY, ACCOUNT, SETTINGS } from '@wallet-actions/constants';
+import { DISCOVERY, ACCOUNT } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { ArrayElement } from '@suite/types/utils';
 import * as discoveryActions from '../discoveryActions';
 import {
@@ -158,7 +159,7 @@ export const getInitialState = () => ({
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
         settings: walletSettingsReducer(undefined, {
-            type: SETTINGS.CHANGE_NETWORKS,
+            type: WALLET_SETTINGS.CHANGE_NETWORKS,
             payload: ['btc', 'test'],
         }),
     },
@@ -268,7 +269,7 @@ describe('Discovery Actions', () => {
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
                     if (trigger) {
                         store.dispatch({
-                            type: SETTINGS.CHANGE_NETWORKS,
+                            type: WALLET_SETTINGS.CHANGE_NETWORKS,
                             payload: trigger.networks,
                         });
                         store.dispatch(discoveryActions.updateNetworkSettings());

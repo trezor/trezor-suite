@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { STORAGE } from '@suite-actions/constants';
-import { SETTINGS } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { EXTERNAL_NETWORKS } from '@wallet-config';
 import { Action } from '@suite-types';
 import { Network, ExternalNetwork } from '@wallet-types';
@@ -25,19 +25,19 @@ export default (state: State = initialState, action: Action): State => {
             case STORAGE.LOADED:
                 return action.payload.wallet.settings;
 
-            case SETTINGS.SET_LOCAL_CURRENCY:
+            case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
                 draft.localCurrency = action.localCurrency;
                 break;
 
-            case SETTINGS.SET_HIDE_BALANCE:
+            case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 draft.discreetMode = action.toggled;
                 break;
 
-            case SETTINGS.CHANGE_NETWORKS:
+            case WALLET_SETTINGS.CHANGE_NETWORKS:
                 draft.enabledNetworks = action.payload;
                 break;
 
-            case SETTINGS.CHANGE_EXTERNAL_NETWORKS:
+            case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
                 draft.enabledExternalNetworks = action.payload;
                 break;
             // no default

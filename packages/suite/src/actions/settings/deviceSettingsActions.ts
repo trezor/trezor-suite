@@ -1,6 +1,8 @@
 import TrezorConnect, { ApplySettingsParams, ChangePinParams } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
-import { SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
+import { SUITE } from '@suite-actions/constants';
+import { DEVICE_SETTINGS } from '@settings-actions/constants';
+
 import { Dispatch, GetState, AcquiredDevice } from '@suite-types';
 
 //  TODO: should be reworked to deviceManagementActions

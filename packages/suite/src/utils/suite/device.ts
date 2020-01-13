@@ -1,9 +1,7 @@
 import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
 import { WrappedComponentProps } from 'react-intl';
 import messages from '@suite/support/messages';
-import { TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
-
-type Transport = NonNullable<AppState['suite']['transport']>;
+import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 export const getStatus = (device: TrezorDevice): string => {
     if (device.type === 'acquired') {
@@ -102,10 +100,6 @@ export const getStatusColor = (deviceStatus: string): string => {
             return colors.TEXT_PRIMARY;
     }
 };
-
-// todo: not sure if this belongs to device utils, maybe something like suiteUtils
-export const isWebUSB = (transport?: Transport) =>
-    !!(transport && transport.type && transport.type === 'WebUsbPlugin');
 
 /*
 TODO: is this util used anywhere?

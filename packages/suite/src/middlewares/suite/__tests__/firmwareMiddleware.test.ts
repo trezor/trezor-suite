@@ -1,8 +1,8 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { SUITE, FIRMWARE } from '@suite-actions/constants';
-
+import { SUITE } from '@suite-actions/constants';
+import { FIRMWARE } from '@settings-actions/constants';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';

@@ -1,20 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 describe('Onboarding happy paths', () => {
-    before(() => {
+    beforeEach(() => {
         cy.task('startBridge')
             .task('startEmu')
             .task('wipeEmu')
             .task('stopEmu');
-    });
-
-    beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
-
-    // after(() => {
-    //     cy.task('stopBridge').task('stopEmu');
-    // });
 
     it('this is just example how to use setState command', () => {
         cy.visit('/').onboardingShouldLoad();
@@ -30,7 +23,7 @@ describe('Onboarding happy paths', () => {
         cy.onboardingShouldLoad()
             .getTestElement('@onboarding/button-path-create')
             .click()
-            // todo: add snapshots in distance future when everything is stable
+            //  add snapshots in distance future when everything is stable
             // .matchImageSnapshot()
             .get('html')
             .should('contain', 'New device')

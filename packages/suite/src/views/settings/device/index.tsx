@@ -3,15 +3,17 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
 import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
+
+import { SUITE } from '@suite-actions/constants';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { SuiteLayout, SettingsMenu } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
+import { Menu as SettingsMenu } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
+import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
 
 import { Props } from './Container';
-import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
 
 import {
     Section,

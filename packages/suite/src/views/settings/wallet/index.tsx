@@ -2,7 +2,9 @@ import React from 'react';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { Switch } from '@trezor/components-v2';
-import { SuiteLayout, SettingsMenu } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
+import { Menu as SettingsMenu } from '@settings-components';
+
 import { Props } from './Container';
 import { Section, ActionColumn, Row, TextColumn } from '@suite-components/Settings';
 

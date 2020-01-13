@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
-import * as settingsActions from '@wallet-actions/settingsActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { AppState, Dispatch } from '@suite-types';
 import WalletSettings from './index';
 
@@ -10,8 +10,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setDiscreetMode: bindActionCreators(settingsActions.setDiscreetMode, dispatch),
-    changeCoinVisibility: bindActionCreators(settingsActions.changeCoinVisibility, dispatch),
+    setDiscreetMode: bindActionCreators(walletSettingsActions.setDiscreetMode, dispatch),
+    changeCoinVisibility: bindActionCreators(walletSettingsActions.changeCoinVisibility, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
