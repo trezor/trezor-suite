@@ -2,7 +2,7 @@ import { Output, State } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
-import web3 from 'web3';
+import ethUnits from 'ethereumjs-units';
 
 export const getOutput = (outputs: Output[], id: number) =>
     outputs.find(outputItem => outputItem.id === id) as Output;
@@ -100,7 +100,7 @@ export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null
     }
     const valueToConvert = new BigNumber(gasPrice).times(gasLimit).toFixed();
     try {
-        return web3.utils.fromWei(valueToConvert, 'ether');
+        return ethUnits.convert(valueToConvert, 'wei', 'eth');
     } catch (error) {
         // TODO: empty input throws this error.
         return '0';

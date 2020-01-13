@@ -52,8 +52,7 @@
         "styled-components": "^4.3.2",
         "trezor-connect": "8.0.11-extended",
         "validator": "^11.1.0",
-        "wallet-address-validator": "^0.2.4",
-        "web3": "^1.2.4"
+        "wallet-address-validator": "^0.2.4"
     },
     "devDependencies": {
         "@babel/plugin-syntax-dynamic-import": "^7.7.4",
