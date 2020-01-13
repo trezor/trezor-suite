@@ -13,6 +13,7 @@ import { SETTINGS } from '@suite-config';
 import { AppState, Dispatch } from '@suite-types';
 import TransactionList from './components/TransactionList';
 import messages from '@suite/support/messages';
+import NoTransactions from './components/NoTransactions';
 
 const LoaderWrapper = styled.div`
     display: flex;
@@ -21,11 +22,6 @@ const LoaderWrapper = styled.div`
     align-items: center;
 `;
 const LoaderText = styled.div`
-    color: ${colors.TEXT_SECONDARY};
-    text-align: center;
-`;
-
-const NoTransactions = styled.div`
     color: ${colors.TEXT_SECONDARY};
     text-align: center;
 `;
@@ -71,7 +67,7 @@ const Transactions = (props: Props) => {
 
     return (
         <LayoutAccount title="Transactions">
-            <AccountName account={account} message={accountNameMessage} />
+            {/* <AccountName account={account} message={accountNameMessage} /> */}
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />
@@ -81,11 +77,7 @@ const Transactions = (props: Props) => {
                 </LoaderWrapper>
             )}
             {accountTransactions.length === 0 && !transactions.isLoading && (
-                <LoaderWrapper>
-                    <NoTransactions>
-                        <Translation {...messages.TR_NO_TRANSACTIONS} />
-                    </NoTransactions>
-                </LoaderWrapper>
+                <NoTransactions account={account} />
             )}
             {accountTransactions.length > 0 && (
                 <TransactionList
