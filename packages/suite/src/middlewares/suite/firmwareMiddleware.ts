@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
-import * as firmwareActions from '@suite-actions/firmwareActions';
+import * as firmwareActions from '@settings-actions/firmwareActions';
 import { DEVICE } from 'trezor-connect';
 import { AppState, Action, Dispatch } from '@suite-types';
 

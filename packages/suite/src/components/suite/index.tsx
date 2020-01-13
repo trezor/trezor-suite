@@ -10,7 +10,6 @@ import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
 import Notification from './Notification';
 import PinInput from './PinInput';
-import SettingsMenu from './SettingsMenu';
 import NoRatesTooltip from './NoRatesTooltip';
 
 export {
@@ -26,6 +25,5 @@ export {
     SuiteLayout,
     Notification,
     PinInput,
-    SettingsMenu,
     NoRatesTooltip,
 };

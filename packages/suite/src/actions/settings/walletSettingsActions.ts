@@ -1,21 +1,24 @@
 import { Dispatch, GetState } from '@suite-types';
-import { SETTINGS } from './constants';
+import { WALLET_SETTINGS } from './constants';
 import { NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
 
-export type SettingsActions =
-    | { type: typeof SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
-    | { type: typeof SETTINGS.CHANGE_EXTERNAL_NETWORKS; payload: ExternalNetwork['symbol'][] }
-    | { type: typeof SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
-    | { type: typeof SETTINGS.SET_HIDE_BALANCE; toggled: boolean };
+export type WalletSettingsActions =
+    | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
+    | {
+          type: typeof WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS;
+          payload: ExternalNetwork['symbol'][];
+      }
+    | { type: typeof WALLET_SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
+    | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean };
 
 export const setLocalCurrency = (localCurrency: string) => ({
-    type: SETTINGS.SET_LOCAL_CURRENCY,
+    type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
     localCurrency: localCurrency.toLowerCase(),
 });
 
 export const setDiscreetMode = (toggled: boolean) => ({
-    type: SETTINGS.SET_HIDE_BALANCE,
+    type: WALLET_SETTINGS.SET_HIDE_BALANCE,
     toggled,
 });
 
@@ -32,7 +35,7 @@ export const changeCoinVisibility = (symbol: Network['symbol'], shouldBeVisible:
     }
 
     dispatch({
-        type: SETTINGS.CHANGE_NETWORKS,
+        type: WALLET_SETTINGS.CHANGE_NETWORKS,
         payload: enabledNetworks,
     });
 };
@@ -49,12 +52,12 @@ export const toggleGroupCoinsVisibility = (
         : [...enabledNetworks, ...matchedNetworks.map(m => m.symbol)];
 
     return dispatch({
-        type: SETTINGS.CHANGE_NETWORKS,
+        type: WALLET_SETTINGS.CHANGE_NETWORKS,
         payload: Array.from(new Set(nextEnabledNetworks)),
     });
 };
 
 export const changeNetworks = (payload: Network['symbol'][]) => ({
-    type: SETTINGS.CHANGE_NETWORKS,
+    type: WALLET_SETTINGS.CHANGE_NETWORKS,
     payload,
 });

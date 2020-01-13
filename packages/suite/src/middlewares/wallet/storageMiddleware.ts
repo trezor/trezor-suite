@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 // import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
-import * as WALLET_SETTINGS from '@wallet-actions/constants/settingsConstants';
+import * as WALLET_SETTINGS from '@suite/actions/settings/constants/walletSettings';
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@wallet-utils/accountUtils';

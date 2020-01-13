@@ -1,6 +1,7 @@
 import React from 'react';
 import { H2, Switch } from '@trezor/components-v2';
-import { SuiteLayout, SettingsMenu } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
+import { Menu as SettingsMenu } from '@settings-components';
 
 import { Props } from './Container';
 

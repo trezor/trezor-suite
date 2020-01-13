@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { H2 } from '@trezor/components-v2';
+
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SUITE } from '@suite-actions/constants';
-import { SuiteLayout, SettingsMenu } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
+import { Menu as SettingsMenu } from '@settings-components';
 import {
     Section,
     ActionColumn,
@@ -17,8 +19,8 @@ import {
 } from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
-import * as settingsActions from '@wallet-actions/settingsActions';
-import * as languageActions from '@suite-actions/languageActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as languageActions from '@settings-actions/languageActions';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -35,7 +37,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setLocalCurrency: bindActionCreators(settingsActions.setLocalCurrency, dispatch),
+    setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
     fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
 });
 

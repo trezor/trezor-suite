@@ -1,7 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { UI } from 'trezor-connect';
 import { SUITE, ROUTER, MODAL } from '@suite-actions/constants';
-import { SETTINGS, ACCOUNT } from '@wallet-actions/constants';
+import { ACCOUNT } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -56,7 +57,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     // pass action
     await next(action);
 
-    if (action.type === SETTINGS.CHANGE_NETWORKS) {
+    if (action.type === WALLET_SETTINGS.CHANGE_NETWORKS) {
         // update Discovery fields
         api.dispatch(discoveryActions.updateNetworkSettings());
         // remove accounts which are no longer part of Discovery
@@ -110,7 +111,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         action.type === SUITE.APP_CHANGED ||
         action.type === SUITE.SELECT_DEVICE ||
         action.type === SUITE.AUTH_DEVICE ||
-        action.type === SETTINGS.CHANGE_NETWORKS ||
+        action.type === WALLET_SETTINGS.CHANGE_NETWORKS ||
         action.type === ACCOUNT.CHANGE_VISIBILITY ||
         (action.type === ROUTER.LOCATION_CHANGE && prevState.router.app !== 'wallet')
     ) {
