@@ -29,6 +29,7 @@
         "date-fns": "^2.8.1",
         "date-fns-tz": "^1.0.8",
         "debounce": "^1.2.0",
+        "ethereumjs-units": "^0.2.0",
         "ethereumjs-util": "^6.0.0",
         "immer": "^5.0.0",
         "pako": "^1.0.10",
