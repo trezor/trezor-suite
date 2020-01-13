@@ -2,6 +2,7 @@ import { Output, State } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
+// @ts-ignore
 import ethUnits from 'ethereumjs-units';
 
 export const getOutput = (outputs: Output[], id: number) =>
