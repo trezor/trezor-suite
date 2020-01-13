@@ -2049,6 +2049,10 @@ const definedMessages = defineMessages({
         id: 'TR_SHOW_OLDER_NEWS',
         defaultMessage: 'Show older news',
     },
+    TR_CHECK_FOR_DEVICES: {
+        defaultMessage: 'Check for devices',
+        id: 'TR_CHECK_FOR_DEVICES',
+    },
 });
 
 export default definedMessages;
