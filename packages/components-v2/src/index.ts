@@ -16,6 +16,7 @@ import { Modal } from './components/Modal';
 import { CoinLogo } from './components/CoinLogo';
 import { TrezorLogo } from './components/TrezorLogo';
 import { Loader } from './components/Loader';
+import { Tooltip } from './components/Tooltip';
 import * as types from './support/types';
 
 export {
@@ -38,5 +39,6 @@ export {
     CoinLogo,
     TrezorLogo,
     Loader,
+    Tooltip,
     types,
 };
