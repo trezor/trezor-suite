@@ -7,6 +7,7 @@ import { getAccountBalance, getTitleForNetwork } from '@wallet-utils/accountUtil
 import Badge from '@suite-components/Badge';
 import { Account } from '@wallet-types';
 import FormattedNumber from '@suite-components/FormattedNumber';
+import NoRatesTooltip from '@suite-components/NoRatesTooltip';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
 
@@ -110,15 +111,19 @@ const PricePanel = (props: Props) => {
                             {props.account.symbol.toUpperCase()})
                         </TickerTitle>
 
-                        {fiatRateValue && (
+                        {fiatRateValue ? (
                             <Live>
                                 <Dot /> Live
                             </Live>
+                        ) : (
+                            <NoRatesTooltip />
                         )}
                     </Row>
                     <TickerPrice>
-                        {fiatRateValue && (
+                        {fiatRateValue ? (
                             <FormattedNumber value={fiatRateValue} currency={localCurrency} />
+                        ) : (
+                            <>N/A</>
                         )}
                     </TickerPrice>
                 </Ticker>
