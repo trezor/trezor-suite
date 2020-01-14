@@ -39,7 +39,7 @@ const getErrorMessage = (
         case VALIDATION_ERRORS.IS_EMPTY:
             return <Translation {...messages.TR_CUSTOM_FEE_IS_NOT_SET} />;
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation {...messages.TR_CUSTOM_FEE_IS_NOT_VALID} />;
+            return <Translation {...messages.TR_CUSTOM_FEE_IS_NOT_NUMBER} />;
         case VALIDATION_ERRORS.NOT_IN_RANGE:
             return (
                 <Translation {...messages.TR_CUSTOM_FEE_NOT_IN_RANGE} values={{ maxFee, minFee }} />

@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { colors, variables } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -92,16 +94,18 @@ const CONNECTION_STATUS_COLORS = {
 };
 
 const CONNECTION_STATUS_NAMES = {
-    online: 'Online',
-    connecting: 'Connecting...',
-    offline: 'Offline',
+    online: <Translation {...messages.TR_ONLINE} />,
+    connecting: <Translation {...messages.TR_CONNECTING_DOTDOTDOT} />,
+    offline: <Translation {...messages.TR_OFFLINE} />,
 };
 
 const ConnectionStatusCard = ({ ...rest }: Props) => {
     return (
         <Section {...rest}>
             <SectionHeader>
-                <SectionTitle>Connection Status</SectionTitle>
+                <SectionTitle>
+                    <Translation {...messages.TR_CONNECTION_STATUS} />
+                </SectionTitle>
             </SectionHeader>
             <Content>
                 <StyledCard>

@@ -64,10 +64,10 @@ const Settings = ({
     const { features } = device;
 
     const DISPLAY_ROTATIONS = [
-        { label: 'North', value: 0 },
-        { label: 'East', value: 90 },
-        { label: 'South', value: 180 },
-        { label: 'West', value: 270 },
+        { label: <Translation {...messages.TR_NORTH} />, value: 0 },
+        { label: <Translation {...messages.TR_EAST} />, value: 90 },
+        { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
+        { label: <Translation {...messages.TR_WEST} />, value: 270 },
     ] as const;
 
     return (
@@ -164,7 +164,7 @@ const Settings = ({
                                 isDisabled={uiLocked}
                                 data-test="@suite/settings/device/update-button"
                             >
-                                Check for update
+                                <Translation {...messages.TR_CHECK_FOR_UPDATES} />
                             </ActionButton>
                         </ActionColumn>
                     </Row>

@@ -1,6 +1,6 @@
 module.exports = api => {
     // used only for react-intl messages extraction via the babel plugin
-    const plugins = ['@babel/plugin-syntax-dynamic-import'];
+    const plugins = [];
 
     if (api.env('translations')) {
         plugins.push([
@@ -14,7 +14,7 @@ module.exports = api => {
 
     return {
         // transformIgnorePatterns: ['<rootDir>/node_modules/'],
-        presets: ['@babel/preset-typescript'],
+        presets: ['next/babel'],
         plugins,
     };
 };

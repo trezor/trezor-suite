@@ -61,7 +61,9 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                     flexDirection: 'column',
                 }}
             >
-                <H2>General</H2>
+                <H2>
+                    <Translation {...messages.TR_GENERAL} />
+                </H2>
 
                 <Section header={<Translation>{messages.TR_LANGUAGE}</Translation>}>
                     <Row>
