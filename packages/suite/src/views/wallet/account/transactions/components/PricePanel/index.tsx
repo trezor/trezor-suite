@@ -14,8 +14,6 @@ import { connect } from 'react-redux';
 const Wrapper = styled(Card)`
     width: 100%;
     border-radius: 6px;
-    /* border: solid 2px ${colors.BLACK96}; */
-    /* box-shadow: none; */
     margin-bottom: 80px;
     padding: 20px;
     align-items: center;
