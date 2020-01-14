@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H1, H2, Button, CoinLogo } from '@trezor/components-v2';
+import { colors, variables, H2, Button } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
 import PricePanel from '../PricePanel';
 
@@ -15,13 +15,6 @@ const Content = styled.div`
     flex-direction: column;
     align-items: center;
     max-width: 520px;
-`;
-
-const Balance = styled.div`
-    font-size: ${variables.FONT_SIZE.H1};
-    font-weight: ${variables.FONT_WEIGHT.LIGHT};
-    margin: 0px 10px;
-    white-space: nowrap;
 `;
 
 const Title = styled(H2)`
@@ -53,7 +46,7 @@ const Actions = styled.div`
 
 const ActionButton = styled(Button)`
     min-width: 160px;
-`
+`;
 
 interface Props {
     account: Account;

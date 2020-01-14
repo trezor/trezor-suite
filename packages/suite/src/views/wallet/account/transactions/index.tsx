@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Loader, colors } from '@trezor/components';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import LayoutAccount from '@wallet-components/LayoutAccount';
-import AccountName from '@wallet-components/AccountName';
+// import AccountName from '@wallet-components/AccountName';
 import Content from '@wallet-components/Content';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
@@ -60,10 +60,10 @@ const Transactions = (props: Props) => {
         props.fetchTransactions(account, page, size);
     };
 
-    const accountNameMessage =
-        account.networkType === 'ethereum'
-            ? messages.TR_TRANSACTIONS_AND_TOKENS
-            : messages.TR_TRANSACTIONS;
+    // const accountNameMessage =
+    //     account.networkType === 'ethereum'
+    //         ? messages.TR_TRANSACTIONS_AND_TOKENS
+    //         : messages.TR_TRANSACTIONS;
 
     return (
         <LayoutAccount title="Transactions">
