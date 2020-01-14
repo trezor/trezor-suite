@@ -109,9 +109,12 @@ const PricePanel = (props: Props) => {
                             <Translation {...getTitleForNetwork(props.account.symbol)} /> price (
                             {props.account.symbol.toUpperCase()})
                         </TickerTitle>
-                        <Live>
-                            <Dot /> Live
-                        </Live>
+
+                        {fiatRateValue && (
+                            <Live>
+                                <Dot /> Live
+                            </Live>
+                        )}
                     </Row>
                     <TickerPrice>
                         {fiatRateValue && (
