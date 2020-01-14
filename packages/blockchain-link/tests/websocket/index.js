@@ -10,7 +10,9 @@ const RESPONSES = {
 };
 
 const create = async type => {
+    console.log('before getting a port');
     const port = await getFreePort();
+    console.log('after getting a port', port);
     const server = new Server({ port, noServer: true });
     const { close } = server;
 
