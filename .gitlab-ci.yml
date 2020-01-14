@@ -40,8 +40,8 @@ variables:
 
 stages:
     - setup environment
-    - lint
-    - typescript type check
+    # - lint
+    # - typescript type check
     - unit tests
     - build
     - deploy to dev servers
