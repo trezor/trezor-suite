@@ -8,7 +8,6 @@ const getFreePort = async () => {
         server.on('error', reject);
         server.listen(0, () => {
             const { port } = server.address();
-            console.log('port:', port);
             server.close(() => {
                 resolve(port);
             });
