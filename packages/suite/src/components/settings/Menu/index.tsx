@@ -105,18 +105,6 @@ const ITEMS = [
         route: 'settings-device',
     },
     {
-        label: <Translation {...messages.TR_DASHBOARD} />,
-        dataTest: 'dashboard',
-        icon: 'DASHBOARD',
-        route: 'settings-dashboard',
-    },
-    {
-        label: <Translation {...messages.TR_WALLET} />,
-        dataTest: 'wallet',
-        icon: 'WALLET',
-        route: 'settings-wallet',
-    },
-    {
         label: <Translation {...messages.TR_COINS} />,
         dataTest: 'coins',
         icon: 'COINS',
