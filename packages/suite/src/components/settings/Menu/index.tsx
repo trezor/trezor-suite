@@ -105,10 +105,10 @@ const ITEMS = [
         route: 'settings-device',
     },
     {
-        label: <Translation {...messages.TR_COINS} />,
-        dataTest: 'coins',
-        icon: 'COINS',
-        route: 'settings-coins',
+        label: <Translation {...messages.TR_WALLET} />,
+        dataTest: 'wallet',
+        icon: 'WALLET',
+        route: 'settings-wallet',
     },
 ] as const;
 

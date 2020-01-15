@@ -56,8 +56,8 @@ const routes = [
         app: 'deviceManagement',
     },
     {
-        name: 'settings-coins',
-        pattern: '/settings/coins',
+        name: 'settings-wallet',
+        pattern: '/settings/wallet',
         app: 'deviceManagement',
     },
     {
