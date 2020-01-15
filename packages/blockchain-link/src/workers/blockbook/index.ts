@@ -4,7 +4,11 @@ import Connection from './websocket';
 import * as utils from './utils';
 
 import { Message, Response, SubscriptionAccountInfo } from '../../types';
-import { AddressNotification, BlockNotification } from '../../types/blockbook';
+import {
+    AddressNotification,
+    BlockNotification,
+    FiatRatesNotification,
+} from '../../types/blockbook';
 import * as MessageTypes from '../../types/messages';
 import WorkerCommon from '../common';
 
@@ -142,6 +146,26 @@ const getAccountUtxo = async (
     }
 };
 
+const getCurrentFiatRates = async (
+    data: { id: number } & MessageTypes.GetCurrentFiatRates
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const fiatRates = await socket.getCurrentFiatRates(payload.currency);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_CURRENT_FIAT_RATES,
+            payload: {
+                ts: fiatRates.ts,
+                rates: fiatRates.rates,
+            },
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const getTransaction = async (
     data: { id: number } & MessageTypes.GetTransaction
 ): Promise<void> => {
@@ -206,6 +230,19 @@ const onNewBlock = (event: BlockNotification) => {
     });
 };
 
+const onNewFiatRates = (event: FiatRatesNotification) => {
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'fiatRates',
+            payload: {
+                rates: event.rates,
+            },
+        },
+    });
+};
+
 const onTransaction = (event: AddressNotification) => {
     if (!event.tx) return;
     const descriptor = event.address;
@@ -256,6 +293,14 @@ const subscribeBlock = async () => {
     return socket.subscribeBlock();
 };
 
+const subscribeFiatRates = async (currency?: string[]) => {
+    if (common.getSubscription('fiatRates')) return { subscribed: true };
+    const socket = await connect();
+    common.addSubscription('fiatRates');
+    socket.on('fiatRates', onNewFiatRates);
+    return socket.subscribeFiatRates(currency);
+};
+
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
     try {
@@ -266,6 +311,8 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
             response = await subscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             response = await subscribeBlock();
+        } else if (payload.type === 'fiatRates') {
+            response = await subscribeFiatRates(payload.currency);
         } else {
             throw new CustomError('invalid_param', '+type');
         }
@@ -322,6 +369,14 @@ const unsubscribeBlock = async () => {
     return socket.unsubscribeBlock();
 };
 
+const unsubscribeFiatRates = async () => {
+    if (!common.getSubscription('fiatRates')) return { subscribed: false };
+    const socket = await connect();
+    socket.removeListener('fiatRates', onNewBlock);
+    common.removeSubscription('fiatRates');
+    return socket.unsubscribeFiatRates();
+};
+
 const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Promise<void> => {
     const { payload } = data;
     try {
@@ -332,6 +387,8 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Pro
             response = await unsubscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             response = await unsubscribeBlock();
+        } else if (payload.type === 'fiatRates') {
+            response = await unsubscribeFiatRates();
         } else {
             throw new CustomError('invalid_param', '+type');
         }
@@ -391,6 +448,9 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.GET_TRANSACTION:
             getTransaction(data);
+            break;
+        case MESSAGES.GET_CURRENT_FIAT_RATES:
+            getCurrentFiatRates(data);
             break;
         case MESSAGES.ESTIMATE_FEE:
             estimateFee(data);

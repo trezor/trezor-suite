@@ -49,6 +49,13 @@ export interface GetTransaction {
     payload: string;
 }
 
+export interface GetCurrentFiatRates {
+    type: typeof MESSAGES.GET_CURRENT_FIAT_RATES;
+    payload: {
+        currency: string[];
+    };
+}
+
 export interface EstimateFeeOptions {
     blocks?: number[];
     specific?: {
@@ -77,6 +84,10 @@ export interface Subscribe {
         | {
               type: 'accounts';
               accounts: SubscriptionAccountInfo[];
+          }
+        | {
+              type: 'fiatRates';
+              currency?: string[];
           };
 }
 
@@ -93,6 +104,9 @@ export interface Unsubscribe {
         | {
               type: 'accounts';
               accounts?: SubscriptionAccountInfo[];
+          }
+        | {
+              type: 'fiatRates';
           };
 }
 
@@ -110,6 +124,7 @@ export type Message =
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
+    | ({ id: number } & GetCurrentFiatRates)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

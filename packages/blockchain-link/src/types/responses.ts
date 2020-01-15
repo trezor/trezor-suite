@@ -1,5 +1,5 @@
 import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
-import { Transaction as BlockbookTransaction } from './blockbook';
+import { Transaction as BlockbookTransaction, FiatRates } from './blockbook';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
 import { AccountInfo, Transaction } from './common';
@@ -72,6 +72,14 @@ export interface GetTransaction {
           };
 }
 
+export interface GetCurrentFiatRates {
+    type: typeof RESPONSES.GET_CURRENT_FIAT_RATES;
+    payload: {
+        ts: number;
+        rates: FiatRates;
+    };
+}
+
 export interface EstimateFee {
     type: typeof RESPONSES.ESTIMATE_FEE;
     payload: {
@@ -107,9 +115,16 @@ export interface NotificationEvent {
     };
 }
 
+export interface FiatRatesEvent {
+    type: 'fiatRates';
+    payload: {
+        rates: FiatRates;
+    };
+}
+
 export interface Notification {
     type: typeof RESPONSES.NOTIFICATION;
-    payload: BlockEvent | NotificationEvent;
+    payload: BlockEvent | NotificationEvent | FiatRatesEvent;
 }
 
 export interface PushTransaction {
@@ -134,6 +149,7 @@ export type Response =
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
+    | ({ id: number } & GetCurrentFiatRates)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

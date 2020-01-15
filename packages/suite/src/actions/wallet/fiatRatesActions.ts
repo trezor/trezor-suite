@@ -25,7 +25,7 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
     // it doesnt matter there are testnets included, as they will not be taken into account because
     // there is no counterpart for them in FIAT constant
     const { enabledNetworks } = getState().wallet.settings;
-    const watchedTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
+    const watchedTickers = FIAT.blockbook.filter(t => enabledNetworks.includes(t.symbol));
 
     try {
         const promises = watchedTickers
@@ -39,16 +39,13 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
                 return Date.now() - watchedTicker.timestamp > MAX_AGE;
             })
             .map(async ticker => {
-                const response = await httpRequest(
-                    `${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`,
-                    'json',
-                );
+                const response = await httpRequest(`${ticker.url}/api/v2/tickers/`, 'json');
                 if (response) {
                     dispatch({
                         type: RATE_UPDATE,
                         payload: {
-                            symbol: response.symbol,
-                            rates: response.market_data.current_price,
+                            symbol: ticker.symbol,
+                            rates: response.rates,
                             timestamp: Date.now(),
                         },
                     });
@@ -71,3 +68,21 @@ export const initRates = () => (dispatch: Dispatch) => {
         dispatch(handleRatesUpdate());
     }, INTERVAL);
 };
+
+// export const subscribe = () => {
+//     const ws = new WebSocket('ws://blockbook-dev.corp.sldev.cz:9130/websocket');
+
+//     ws.onopen = () => {
+//         console.log('connected');
+//     };
+
+//     ws.onmessage = evt => {
+//         // listen to data sent from the websocket server
+//         const message = JSON.parse(evt.data);
+//         console.log(message);
+//     };
+
+//     ws.onclose = () => {
+//         console.log('disconnected');
+//     };
+// };

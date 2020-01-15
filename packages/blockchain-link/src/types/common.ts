@@ -120,3 +120,4 @@ export interface SubscriptionAccountInfo {
     descriptor: string;
     addresses?: AccountAddresses; // bitcoin addresses
 }
+

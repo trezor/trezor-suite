@@ -144,6 +144,10 @@ export type Fee = {
     feeLimit?: string;
 }[];
 
+export interface FiatRates {
+    [symbol: string]: number;
+}
+
 export interface BlockNotification {
     height: number;
     hash: string;
@@ -154,12 +158,25 @@ export interface AddressNotification {
     tx: Transaction;
 }
 
+export interface FiatRatesNotification {
+    rates: FiatRates;
+}
+
+export interface CurrentFiatRates {
+    ts: number;
+    rates: FiatRates;
+}
+
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
 declare function FSend(method: 'sendTransaction', params: { hex: string }): Promise<Push>;
+declare function FSend(
+    method: 'getCurrentFiatRates',
+    params: { currency?: string[] }
+): Promise<CurrentFiatRates>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
     method: 'subscribeAddresses',
@@ -168,4 +185,9 @@ declare function FSend(
 declare function FSend(method: 'unsubscribeAddresses', params: {}): Promise<Subscribe>;
 declare function FSend(method: 'subscribeNewBlock', params: {}): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeNewBlock', params: {}): Promise<Subscribe>;
+declare function FSend(
+    method: 'subscribeFiatRates',
+    params: { currency?: string[] }
+): Promise<Subscribe>;
+declare function FSend(method: 'unsubscribeFiatRates', params: {}): Promise<Subscribe>;
 export type Send = typeof FSend;

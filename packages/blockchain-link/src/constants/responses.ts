@@ -3,6 +3,7 @@ export const ERROR = 'r_error'; // exception: this could be also emitted as even
 export const CONNECT = 'r_connect';
 export const GET_INFO = 'r_info';
 export const GET_BLOCK_HASH = 'r_get_block_hash';
+export const GET_CURRENT_FIAT_RATES = 'r_get_current_fiat_rates';
 export const GET_ACCOUNT_INFO = 'r_account_info';
 export const GET_ACCOUNT_UTXO = 'r_get_account_utxo';
 export const GET_TRANSACTION = 'r_get_transaction';
