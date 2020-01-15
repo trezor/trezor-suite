@@ -21,6 +21,7 @@ import PinInvalid from './PinInvalid';
 import Passphrase from './Passphrase';
 import PassphraseType from './PassphraseType';
 import ConfirmAction from './confirm/Action';
+import Word from './Word';
 // import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
@@ -82,6 +83,9 @@ const getDeviceContextModal = (props: Props) => {
                     onEnterPassphrase={modalActions.onPassphraseSubmit}
                 />
             );
+
+        case 'WordRequestType_Plain':
+            return <Word />;
 
         case 'ButtonRequest_PassphraseType':
             return <PassphraseType device={device} />;

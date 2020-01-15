@@ -11,6 +11,8 @@ import SuiteLayout from './SuiteLayout';
 import Notification from './Notification';
 import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
+import WordInput from './WordInput';
+import { Translation } from './Translation';
 
 export {
     AcquireDevice,
@@ -26,4 +28,6 @@ export {
     Notification,
     PinInput,
     NoRatesTooltip,
+    WordInput,
+    Translation,
 };

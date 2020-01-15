@@ -1,4 +1,4 @@
-import BIP_39 from './bip39';
+import BIP_39 from '../suite/bip39';
 import * as CONSTANTS from './constants';
 import * as STEPS from './steps';
 import * as TREZOR from './trezor';
