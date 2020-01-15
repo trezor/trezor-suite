@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import DestinationTag from './components/DestinationTag';
 import { Props } from './Container';
-import CustomFee from '../CustomFee';
+import Fee from '../Fee';
 import Layout from '../Layout';
 
 const Wrapper = styled.div`
@@ -17,7 +17,7 @@ const NetworkTypeXrp = ({ send, sendFormActions, sendFormActionsRipple }: Props)
         <Wrapper>
             <Layout
                 left={
-                    <CustomFee
+                    <Fee
                         maxFee={send.feeInfo.maxFee}
                         minFee={send.feeInfo.minFee}
                         sendFormActions={sendFormActions}

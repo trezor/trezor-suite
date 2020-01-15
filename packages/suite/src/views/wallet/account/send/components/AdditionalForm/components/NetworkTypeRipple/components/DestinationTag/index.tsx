@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Tooltip, Icon, colors } from '@trezor/components';
+import { Input, Icon, colors } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Translation } from '@suite-components/Translation';
@@ -40,18 +40,20 @@ const getErrorMessage = (error: Props['errors']) => {
 const NetworkTypeXrp = (props: Props) => (
     <Input
         state={getInputState(props.errors, props.destinationTag)}
+        display="block"
+        variant="small"
         topLabel={
             <Label>
                 <Translation {...messages.TR_XRP_DESTINATION_TAG} />
-                <Tooltip
+                {/* <Tooltip
                     content={<Translation {...messages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
                     maxWidth={200}
                     ctaLink={RIPPLE_MANUAL_URL}
                     ctaText={<Translation {...messages.TR_LEARN_MORE_LINK} />}
                     placement="top"
-                >
-                    <StyledIcon icon="HELP" color={colors.TEXT_SECONDARY} size={12} />
-                </Tooltip>
+                > */}
+                <StyledIcon icon="HELP" color={colors.BLACK0} size={12} />
+                {/* </Tooltip> */}
             </Label>
         }
         bottomText={getErrorMessage(props.errors)}

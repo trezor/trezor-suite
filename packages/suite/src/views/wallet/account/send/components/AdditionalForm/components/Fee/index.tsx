@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 const Label = styled.span`
     color: ${colors.BLACK0};
-    padding-bottom: 10px;
+    padding: 10px;
 `;
 
 const OptionWrapper = styled.div`
