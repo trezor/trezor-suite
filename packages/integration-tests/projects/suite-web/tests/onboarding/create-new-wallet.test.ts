@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 describe('Onboarding happy paths', () => {
-    before(() => {
-        cy.wait(500);
-    });
-
     beforeEach(() => {
-        cy.task('startBridge')
-            .task('startEmu')
-            .task('wipeEmu')
-            .task('stopEmu');
+        cy.wait(500);
+        cy.task('startBridge');
+        cy.task('startEmu');
+        cy.task('wipeEmu');
+        cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
     });
 
