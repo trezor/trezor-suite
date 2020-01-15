@@ -39,7 +39,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch,
     goto: bindActionCreators(routerActions.goto, dispatch),
-    closeModalApp: bindActionCreators(suiteActions.closeModalApp, dispatch),
+    closeModalApp: bindActionCreators(routerActions.back, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -48,7 +48,10 @@ type Props = ReturnType<typeof mapStateToProps> &
     };
 
 const getSuiteApplicationState = (props: Props) => {
-    const { transport, device } = props;
+    const { loaded, transport, device } = props;
+
+    // display Loader wrapped in modal above requested route to keep "modal" flow continuity
+    if (!loaded || !transport) return Loading;
 
     // no transport available
     if (transport && !transport.type) return Bridge;
@@ -137,20 +140,11 @@ const Preloader = (props: Props) => {
     }
 
     // trezor-connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-    if (!loaded || !transport) {
-        // if "app" could be already set by initial redirection
-        // display Loader wrapped in modal above requested route to keep "modal" flow continuity
-        // otherwise display Loader as full page view
-        return router.app === 'unknown' ? (
-            <Loading />
-        ) : (
-            <>
-                <ModalComponent>
-                    <Loading />
-                </ModalComponent>
-                {props.children}
-            </>
-        );
+    // if "router.app" is already set
+    // display Loader wrapped in modal above requested route to keep "modal" flow continuity (see ApplicationStateModal)
+    // otherwise display Loader as full page view
+    if (router.app === 'unknown' && (!loaded || !transport)) {
+        return <Loading />;
     }
 
     // check route state and display it as not cancelable modal above requested route view

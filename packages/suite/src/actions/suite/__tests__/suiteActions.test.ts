@@ -219,21 +219,4 @@ describe('Suite Actions', () => {
         });
     });
 
-    it(`closeModalApp: it should remove LOCKTYPE.ROUTER form suite.locks`, async () => {
-        // mock router
-        require('next/router').default.push = () => {};
-        const back = jest.spyOn(routerActions, 'back');
-        const state = getInitialState({
-            locks: [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE],
-        });
-        const store = initStore(state);
-        await store.dispatch(suiteActions.closeModalApp());
-
-        expect(store.getState()).toMatchObject({
-            suite: {
-                locks: [SUITE.LOCK_TYPE.DEVICE],
-            },
-        });
-        expect(back).toHaveBeenCalledTimes(1);
-    });
 });

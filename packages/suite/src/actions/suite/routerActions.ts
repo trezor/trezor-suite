@@ -4,6 +4,7 @@
  */
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import {
     getPrefixedURL,
@@ -43,7 +44,9 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
  */
 export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
     const { locks } = getState().suite;
-    return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
+    const isLocked = locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI);
+    const hasActionModal = getState().modal.context !== '@modal/context-none';
+    return !isLocked && !hasActionModal;
 };
 
 /**
@@ -71,14 +74,18 @@ export const goto = (
     preserveParams = false,
 ) => async (dispatch: Dispatch) => {
     const unlocked = dispatch(onBeforePopState());
-    if (!unlocked) return;
-
     const url = getRoute(routeName, params);
-
     const route = findRouteByName(routeName);
     if (route && route.isModal) {
-        return dispatch(onLocationChange(url));
+        if (!unlocked) {
+            dispatch(suiteActions.lockRouter(false));
+        }
+        dispatch(onLocationChange(url));
+        dispatch(suiteActions.lockRouter(true));
+        return;
     }
+
+    if (!unlocked) return;
 
     if (preserveParams) {
         const { hash } = window.location;
@@ -95,12 +102,13 @@ export const goto = (
  */
 export const back = () => async (dispatch: Dispatch) => {
     // + window.location.hash is here to preserve params (eg nth account)
+    dispatch(suiteActions.lockRouter(false));
     dispatch(onLocationChange(Router.pathname + window.location.hash));
 };
 
 /**
  * Called from `@suite-middlewares/suiteMiddleware`
- * Redirects to onboarding if `suite.initialRun` is set to true
+ * Redirects to requested modal app or welcome screen if `suite.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
     const route = findRoute(Router.pathname + window.location.hash);

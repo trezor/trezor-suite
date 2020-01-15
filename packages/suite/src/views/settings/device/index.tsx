@@ -45,7 +45,7 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openBackgroundGalleryModal,
-    openModalApp,
+    goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
@@ -160,7 +160,7 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() => openModalApp('firmware-index')}
+                                onClick={() => goto('firmware-index', { cancelable: true })}
                                 isDisabled={uiLocked}
                                 data-test="@suite/settings/device/update-button"
                             >

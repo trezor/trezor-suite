@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
 import {
     applySettings,
     changePin,
@@ -27,7 +26,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     wipeDevice: bindActionCreators(wipeDevice, dispatch),
     backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
-    openModalApp: bindActionCreators(suiteActions.openModalApp, dispatch),
     openBackgroundGalleryModal: bindActionCreators(openBackgroundGalleryModal, dispatch),
 });
 

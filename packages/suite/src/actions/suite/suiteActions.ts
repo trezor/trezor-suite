@@ -368,13 +368,3 @@ export const authorizeDevice = () => async (
     );
     return false;
 };
-
-export const closeModalApp = () => (dispatch: Dispatch) => {
-    dispatch(lockRouter(false));
-    dispatch(routerActions.back());
-};
-
-export const openModalApp = (routeName: Route['name']) => (dispatch: Dispatch) => {
-    dispatch(routerActions.goto(routeName));
-    dispatch(lockRouter(true));
-};

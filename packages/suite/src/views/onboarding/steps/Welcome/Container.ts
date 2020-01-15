@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Dispatch } from '@suite-types';
-import * as suiteActions from '@suite-actions/suiteActions';
+import * as routerActions from '@suite-actions/routerActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 import Step from './index';
@@ -9,7 +9,7 @@ import Step from './index';
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
     addPath: bindActionCreators(onboardingActions.addPath, dispatch),
-    closeModalApp: bindActionCreators(suiteActions.closeModalApp, dispatch),
+    closeModalApp: bindActionCreators(routerActions.back, dispatch),
 });
 
 export type Props = ReturnType<typeof mapDispatchToProps>;

@@ -90,11 +90,6 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
 
 export type WalletParams = NonNullable<ReturnType<typeof validateWalletParams>>;
 export type ModalAppParams = NonNullable<ReturnType<typeof validateModalAppParams>>;
-
-export type RouteParams2 =
-    | Exclude<ReturnType<typeof validateWalletParams>, 'paramsType'>
-    | Exclude<ReturnType<typeof validateModalAppParams>, 'paramsType'>;
-// export type RouteParams = Exclude<NonNullable<RouteParamsWithType>['paramsType'], 'paramsType'>;
 export type RouteParams = WalletParams | ModalAppParams;
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
