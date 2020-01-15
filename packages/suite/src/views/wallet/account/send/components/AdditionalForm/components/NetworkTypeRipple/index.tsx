@@ -11,8 +11,15 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const NetworkTypeXrp = ({ send, sendFormActions, sendFormActionsRipple }: Props) => {
-    if (!send) return null;
+const NetworkTypeXrp = ({
+    send,
+    sendFormActions,
+    sendFormActionsRipple,
+    selectedAccount,
+}: Props) => {
+    const { account } = selectedAccount;
+    if (!send || !account) return null;
+
     return (
         <Wrapper>
             <Layout
@@ -20,6 +27,9 @@ const NetworkTypeXrp = ({ send, sendFormActions, sendFormActionsRipple }: Props)
                     <Fee
                         maxFee={send.feeInfo.maxFee}
                         minFee={send.feeInfo.minFee}
+                        selectedFee={send.selectedFee}
+                        symbol={account.symbol}
+                        feeLevels={send.feeInfo.levels}
                         sendFormActions={sendFormActions}
                         customFee={send.customFee.value}
                         errors={send.customFee.error}

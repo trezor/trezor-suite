@@ -23,14 +23,13 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     let cachedState = null;
     const feeInfo = getState().wallet.fees[account.symbol];
-    // eslint-disable-next-line prefer-destructuring
-    const levels: FeeLevel[] = feeInfo.levels;
-    // .concat({
-    //     label: 'custom',
-    //     feePerUnit: '0',
-    //     value: '0',
-    //     blocks: 0,
-    // });
+
+    const levels: FeeLevel[] = feeInfo.levels.concat({
+        label: 'custom',
+        feePerUnit: '0',
+        value: '0',
+        blocks: 0,
+    });
 
     const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     const cachedItem = await storageActions.loadSendForm(accountKey);

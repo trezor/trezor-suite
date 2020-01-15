@@ -10,15 +10,19 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const NetworkTypeBitcoin = ({ send, sendFormActions }: Props) => {
+const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) => {
     if (!send) return null;
+    const { account } = selectedAccount;
     return (
         <Wrapper>
             <Layout
                 left={
                     <Fee
+                        symbol={account.symbol}
                         maxFee={send.feeInfo.maxFee}
+                        selectedFee={send.selectedFee}
                         minFee={send.feeInfo.minFee}
+                        feeLevels={send.feeInfo.levels}
                         errors={send.customFee.error}
                         customFee={send.customFee.value}
                         sendFormActions={sendFormActions}
