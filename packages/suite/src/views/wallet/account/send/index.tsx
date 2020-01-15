@@ -48,6 +48,11 @@ const OutputWrapper = styled.div`
     padding: 23px 40px 60px 40px;
     border-radius: 6px;
     background: ${colors.BLACK96};
+    margin-bottom: 20px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 `;
 
 const AdditionalInfoWrapper = styled.div`
@@ -101,15 +106,19 @@ const Send = (props: StateProps & DispatchProps) => {
             <AccountName account={account} message={accountNameMessage} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
-                    <Clear sendFormActions={sendFormActions} />
-                    <SlimRow isOnlyOne={send.outputs.length === 1}>
-                        <StyledIcon
-                            onClick={() => props.sendFormActionsBitcoin.removeRecipient(output.id)}
-                            size={10}
-                            color={colors.BLACK92}
-                            icon="CROSS"
-                        />
-                    </SlimRow>
+                    {output.id === 0 && <Clear sendFormActions={sendFormActions} />}
+                    {output.id !== 0 && (
+                        <SlimRow isOnlyOne={send.outputs.length === 1}>
+                            <StyledIcon
+                                onClick={() =>
+                                    props.sendFormActionsBitcoin.removeRecipient(output.id)
+                                }
+                                size={10}
+                                color={colors.BLACK50}
+                                icon="CROSS"
+                            />
+                        </SlimRow>
+                    )}
                     <Row>
                         <Address
                             accounts={accounts}
