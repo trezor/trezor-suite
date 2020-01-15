@@ -109,7 +109,7 @@ describe('onboardingMiddleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isModal: true,
-                        params: undefined,
+                        params: ['cancelable'],
                     },
                 }),
             );

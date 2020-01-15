@@ -88,7 +88,7 @@ describe('suite middleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isModal: true,
-                        params: undefined,
+                        params: ['cancelable'],
                     },
                 }),
             );
