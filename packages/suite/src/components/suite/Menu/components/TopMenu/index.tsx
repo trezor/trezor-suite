@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { colors, Icon } from '@trezor/components-v2';
 import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
 import { MENU_PADDING } from '@suite-constants/menu';
-import DeviceModal from '../DeviceModal/Container';
 
 const Wrapper = styled.div`
     padding: ${MENU_PADDING}px 10px;
@@ -42,31 +41,25 @@ const IconWrapper = styled.div`
 
 interface Props {
     selectedDevice: ContainerProps['selectedDevice'];
+    goto: ContainerProps['goto'];
 }
 
-const TopMenu = (props: Props) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const showModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
-
-    return (
-        <Wrapper>
-            <DeviceStatus>
-                {!props.selectedDevice && <DeviceRow />}
-                {props.selectedDevice && (
-                    <DeviceRow onClick={() => showModal()}>
-                        <DeviceIcon size={12} device={props.selectedDevice} />
-                        <DeviceLabel>{props.selectedDevice.label}</DeviceLabel>
-                        <IconWrapper>
-                            <Icon size={10} color={colors.WHITE} icon="ARROW_RIGHT" />
-                        </IconWrapper>
-                    </DeviceRow>
-                )}
-                {isOpen && <DeviceModal closeModal={closeModal} isOpen={isOpen} />}
-            </DeviceStatus>
-            <Divider />
-        </Wrapper>
-    );
-};
+const TopMenu = (props: Props) => (
+    <Wrapper>
+        <DeviceStatus>
+            {!props.selectedDevice && <DeviceRow />}
+            {props.selectedDevice && (
+                <DeviceRow onClick={() => props.goto('suite-switch-device', { cancelable: true })}>
+                    <DeviceIcon size={12} device={props.selectedDevice} />
+                    <DeviceLabel>{props.selectedDevice.label}</DeviceLabel>
+                    <IconWrapper>
+                        <Icon size={10} color={colors.WHITE} icon="ARROW_RIGHT" />
+                    </IconWrapper>
+                </DeviceRow>
+            )}
+        </DeviceStatus>
+        <Divider />
+    </Wrapper>
+);
 
 export default TopMenu;
