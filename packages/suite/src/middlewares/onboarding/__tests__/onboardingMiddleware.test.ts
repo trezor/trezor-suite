@@ -82,13 +82,9 @@ describe('onboardingMiddleware', () => {
                     url: '/',
                     pathname: '/',
                     hash: undefined,
-                    app: 'notSpecified',
+                    app: 'unknown',
                     params: undefined,
-                    route: {
-                        name: 'suite-version',
-                        pattern: '/version',
-                        app: 'notSpecified',
-                    },
+                    route: undefined,
                 }),
             );
             await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'onboarding' });
@@ -113,6 +109,7 @@ describe('onboardingMiddleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isModal: true,
+                        params: undefined,
                     },
                 }),
             );

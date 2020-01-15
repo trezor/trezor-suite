@@ -5,7 +5,13 @@
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { getPrefixedURL, getRoute, findRouteByName, RouteParams } from '@suite-utils/router';
+import {
+    getPrefixedURL,
+    getRoute,
+    findRoute,
+    findRouteByName,
+    RouteParams,
+} from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 interface LocationChange {
@@ -97,9 +103,11 @@ export const back = () => async (dispatch: Dispatch) => {
  * Redirects to onboarding if `suite.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
+    const route = findRoute(Router.pathname + window.location.hash);
     const { initialRun } = getState().suite;
-    const unlocked = dispatch(onBeforePopState());
-    if (initialRun && unlocked) {
-        await dispatch(goto('onboarding-index'));
+    if (route && route.isModal) {
+        await dispatch(goto(route.name));
+    } else if (initialRun) {
+        await dispatch(goto('suite-welcome'));
     }
 };

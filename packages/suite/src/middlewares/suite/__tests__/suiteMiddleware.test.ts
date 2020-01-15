@@ -60,13 +60,9 @@ describe('suite middleware', () => {
                     url: '/',
                     pathname: '/',
                     hash: undefined,
-                    app: 'notSpecified',
+                    app: 'unknown',
                     params: undefined,
-                    route: {
-                        name: 'suite-version',
-                        pattern: '/version',
-                        app: 'notSpecified',
-                    },
+                    route: undefined,
                 }),
             );
             store.dispatch({
@@ -92,6 +88,7 @@ describe('suite middleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isModal: true,
+                        params: undefined,
                     },
                 }),
             );

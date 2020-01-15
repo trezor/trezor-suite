@@ -33,7 +33,7 @@ const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?
     }
     // device firmware update required, redirect to "firmware update"
     else if (device.firmware === 'required') {
-        await dispatch(routerActions.goto('suite-device-firmware'));
+        await dispatch(routerActions.goto('firmware-index'));
     }
 
     // reset wallet params if switching from one device to another

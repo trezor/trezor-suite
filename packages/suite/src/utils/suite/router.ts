@@ -1,4 +1,4 @@
-import routes, { Route } from '@suite-constants/routes';
+import routes, { Route, RouterAppWithParams } from '@suite-constants/routes';
 import { NETWORKS } from '@wallet-config';
 
 // Prefix a url with assetPrefix (eg. name of the branch in CI)
@@ -57,21 +57,45 @@ const validateWalletParams = (url: string) => {
     };
 };
 
-// Used in routerReducer
-export const getAppWithParams = (url: string) => {
-    const route = findRoute(url);
-    if (!route) return { app: 'unknown', route: undefined, params: undefined } as const;
-    if (route.app === 'wallet') {
-        return {
-            app: 'wallet',
-            params: validateWalletParams(url),
-            route,
-        } as const;
-    }
-    return { app: route.app, route, params: undefined };
+const validateModalAppParams = (url: string) => {
+    const [, hash] = stripPrefixedURL(url).split('#');
+    if (!hash) return;
+    const [cancelable] = hash.split('/').filter(p => p.length > 0);
+    if (cancelable !== 'true') return;
+    return {
+        cancelable: true,
+    };
 };
 
-export type RouteParams = ReturnType<typeof validateWalletParams> | { otherPar: boolean };
+// Used in routerReducer
+export const getAppWithParams = (url: string): RouterAppWithParams => {
+    const route = findRoute(url);
+    if (!route) return { app: 'unknown', route: undefined, params: undefined };
+    if (route.app === 'wallet') {
+        return {
+            app: route.app,
+            params: validateWalletParams(url),
+            route,
+        };
+    }
+    if (route.params) {
+        return {
+            app: route.app,
+            params: validateModalAppParams(url),
+            route,
+        } as RouterAppWithParams;
+    }
+    return { app: route.app, route, params: undefined } as RouterAppWithParams;
+};
+
+export type WalletParams = NonNullable<ReturnType<typeof validateWalletParams>>;
+export type ModalAppParams = NonNullable<ReturnType<typeof validateModalAppParams>>;
+
+export type RouteParams2 =
+    | Exclude<ReturnType<typeof validateWalletParams>, 'paramsType'>
+    | Exclude<ReturnType<typeof validateModalAppParams>, 'paramsType'>;
+// export type RouteParams = Exclude<NonNullable<RouteParamsWithType>['paramsType'], 'paramsType'>;
+export type RouteParams = WalletParams | ModalAppParams;
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);
@@ -81,8 +105,8 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
         const paramsString = Object.entries(params)
             // sort by order defined in routes
             .sort((a, b) => {
-                const aIndex = order.findIndex(o => o === a[0]);
-                const bIndex = order.findIndex(o => o === b[0]);
+                const aIndex = order.findIndex((o: string) => o === a[0]);
+                const bIndex = order.findIndex((o: string) => o === b[0]);
                 return aIndex - bIndex;
             })
             .reduce((val, curr) => {
