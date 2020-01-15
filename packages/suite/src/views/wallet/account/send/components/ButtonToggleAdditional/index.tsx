@@ -7,7 +7,6 @@ import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
     display: flex;
-    padding: 15px 40px;
     min-height: 41px;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

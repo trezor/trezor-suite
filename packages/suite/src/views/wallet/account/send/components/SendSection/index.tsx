@@ -5,8 +5,6 @@ import { Button } from '@trezor/components-v2';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
 import { DispatchProps } from '../../Container';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -105,11 +103,6 @@ const getSendText = (
 
 const SendSection = (props: Props) => (
     <Wrapper>
-        {props.networkType === 'bitcoin' && (
-            <Button variant="secondary" onClick={() => props.sendFormActionsBitcoin.addRecipient()}>
-                <Translation>{messages.TR_ADD_RECIPIENT}</Translation>
-            </Button>
-        )}
         <Send
             isLoading={props.isComposing}
             isDisabled={

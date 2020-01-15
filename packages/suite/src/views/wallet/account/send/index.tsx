@@ -14,6 +14,7 @@ import Amount from './components/Amount';
 import Clear from './components/Clear';
 import SendSection from './components/SendSection';
 import AdditionalForm from './components/AdditionalForm';
+import Add from './components/Add/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 
 const Row = styled.div`
@@ -51,6 +52,14 @@ const OutputWrapper = styled.div`
 
 const AdditionalInfoWrapper = styled.div`
     margin-top: 20px;
+`;
+
+const AdditionalFormHeader = styled.div`
+    padding: 5px 40px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
 `;
 
 const Send = (props: StateProps & DispatchProps) => {
@@ -131,10 +140,13 @@ const Send = (props: StateProps & DispatchProps) => {
             ))}
             <AdditionalInfoWrapper>
                 <Row isColumn={send.isAdditionalFormVisible}>
-                    <ButtonToggleAdditional
-                        isActive={send.isAdditionalFormVisible}
-                        sendFormActions={sendFormActions}
-                    />
+                    <AdditionalFormHeader>
+                        <ButtonToggleAdditional
+                            isActive={send.isAdditionalFormVisible}
+                            sendFormActions={sendFormActions}
+                        />
+                        <Add />
+                    </AdditionalFormHeader>
                     {send.isAdditionalFormVisible && (
                         <AdditionalForm networkType={network.networkType} />
                     )}

@@ -1,7 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { colors, P, Select } from '@trezor/components-v2';
-import { CUSTOM_FEE } from '@wallet-constants/sendForm';
 import { Account } from '@wallet-types';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -80,11 +79,9 @@ const FeeComponent = (props: Props) => (
                 return (
                     <OptionWrapper>
                         <OptionLabel>{capitalize(option.label)}</OptionLabel>
-                        {option.label !== CUSTOM_FEE && (
-                            <OptionValue>
-                                {getValue(props.networkType, option.value, props.symbol)}
-                            </OptionValue>
-                        )}
+                        <OptionValue>
+                            {getValue(props.networkType, option.value, props.symbol)}
+                        </OptionValue>
                     </OptionWrapper>
                 );
             }}
