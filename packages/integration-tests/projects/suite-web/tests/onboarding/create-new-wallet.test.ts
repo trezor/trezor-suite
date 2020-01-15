@@ -2,7 +2,7 @@
 
 describe('Onboarding happy paths', () => {
     beforeEach(() => {
-        cy.wait(500);
+        cy.wait(1000);
         cy.task('startBridge');
         cy.task('startEmu');
         cy.task('wipeEmu');
