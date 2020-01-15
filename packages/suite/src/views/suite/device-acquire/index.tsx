@@ -6,7 +6,6 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Notification } from '@trezor/components';
 import { acquireDevice } from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';
-import SuiteLayout from '@suite-components/SuiteLayout';
 import { AppState } from '@suite-types';
 import messages from '@suite/support/messages';
 
@@ -24,7 +23,7 @@ const Acquire = (props: Props) => {
     if (!device) return null;
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
-        <SuiteLayout>
+        <>
             <Notification
                 title={props.intl.formatMessage(messages.TR_DEVICE_USED_IN_OTHER)}
                 message={props.intl.formatMessage(messages.TR_USE_YOUR_DEVICE_IN_THIS_WINDOW)}
@@ -38,7 +37,7 @@ const Acquire = (props: Props) => {
                     },
                 ]}
             />
-        </SuiteLayout>
+        </>
     );
 };
 

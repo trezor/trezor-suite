@@ -160,7 +160,7 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() => openModalApp('suite-device-firmware')}
+                                onClick={() => openModalApp('firmware-index')}
                                 isDisabled={uiLocked}
                                 data-test="@suite/settings/device/update-button"
                             >
