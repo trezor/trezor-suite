@@ -177,6 +177,10 @@ declare function FSend(
     method: 'getCurrentFiatRates',
     params: { currency?: string[] }
 ): Promise<CurrentFiatRates>;
+declare function FSend(
+    method: 'getFiatRatesForTimestamps',
+    params: { timestamps?: number[]; currency?: string[] }
+): Promise<CurrentFiatRates[]>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
     method: 'subscribeAddresses',

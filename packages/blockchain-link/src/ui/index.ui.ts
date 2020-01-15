@@ -178,6 +178,26 @@ const handleClick = (event: MouseEvent) => {
             break;
         }
 
+        case 'get-fiat-rates-for-timestamps': {
+            try {
+                blockchain
+                    .getCurrentFiatRates({
+                        timestamps: getInputValue('get-fiat-rates-for-timestamps-timestamps');
+                        // TODO: remove once fixed in blockbook
+                        // @ts-ignore
+                        currency:
+                            getInputValue('get-fiat-rates-for-timestamps-currency') !== ''
+                                ? getInputValue('get-fiat-rates-for-timestamps-currency').split(',')
+                                : undefined,
+                    })
+                    .then(onResponse)
+                    .catch(onError);
+            } catch (error) {
+                onError(error);
+            }
+            break;
+        }
+
         default:
             break;
     }

@@ -261,6 +261,10 @@ export default class Socket extends EventEmitter {
         return this.send('getCurrentFiatRates', { currency });
     }
 
+    getFiatRatesForTimestamps(timestamps: number[], currency: string[]) {
+        return this.send('getFiatRatesForTimestamps', { timestamps, currency });
+    }
+
     subscribeAddresses(addresses: string[]) {
         const index = this.subscriptions.findIndex(s => s.type === 'notification');
         if (index >= 0) {

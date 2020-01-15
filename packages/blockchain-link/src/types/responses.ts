@@ -80,6 +80,16 @@ export interface GetCurrentFiatRates {
     };
 }
 
+export interface GetFiatRatesForTimestamps {
+    type: typeof RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS;
+    payload: {
+        tickers: {
+            ts: number;
+            rates: FiatRates;
+        }[];
+    };
+}
+
 export interface EstimateFee {
     type: typeof RESPONSES.ESTIMATE_FEE;
     payload: {
@@ -150,6 +160,7 @@ export type Response =
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
     | ({ id: number } & GetCurrentFiatRates)
+    | ({ id: number } & GetFiatRatesForTimestamps)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

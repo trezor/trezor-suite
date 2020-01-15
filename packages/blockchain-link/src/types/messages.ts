@@ -56,6 +56,14 @@ export interface GetCurrentFiatRates {
     };
 }
 
+export interface GetFiatRatesForTimestamps {
+    type: typeof MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS;
+    payload: {
+        timestamps: number[];
+        currency: string[];
+    };
+}
+
 export interface EstimateFeeOptions {
     blocks?: number[];
     specific?: {
@@ -125,6 +133,7 @@ export type Message =
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
     | ({ id: number } & GetCurrentFiatRates)
+    | ({ id: number } & GetFiatRatesForTimestamps)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)
