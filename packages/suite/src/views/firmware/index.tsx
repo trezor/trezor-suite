@@ -27,7 +27,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     closeModalApp: bindActionCreators(suiteActions.closeModalApp, dispatch),
 });
 
-type Props = ReturnType<typeof mapDispatchToProps> & { modal: React.ReactNode };
+type Props = ReturnType<typeof mapDispatchToProps> & {
+    modal: React.ReactNode;
+    cancelable: boolean;
+};
 // ReturnType<typeof mapStateToProps>
 
 const Firmware = ({ closeModalApp, modal }: Props) => (

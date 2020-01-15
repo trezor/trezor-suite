@@ -79,7 +79,7 @@ interface Props {
     loadedTimeout?: number;
 }
 
-const Preloader: React.SFC<Props> = props => {
+const Preloader: React.FC<Props> = props => {
     const { loaded, loadedTimeout = 5000 } = props;
     const [introTimedout, setIntroTimedout] = useState(false);
     const [introExited, setIntroExited] = useState(false);

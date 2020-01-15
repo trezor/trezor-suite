@@ -108,10 +108,6 @@ interface Installer {
 const InstallBridge = (props: Props) => {
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
-    const onChange = (value: Installer) => {
-        setSelectedTarget(value);
-    };
-
     // todo: typescript any. use type from connect?
     const installers = props.transport
         ? props.transport.bridge.packages.map((p: any) => ({
@@ -168,7 +164,7 @@ const InstallBridge = (props: Props) => {
                             isSearchable={false}
                             isClearable={false}
                             value={target}
-                            onChange={(v: Installer) => onChange(v)}
+                            onChange={setSelectedTarget}
                             options={installers}
                         />
 
