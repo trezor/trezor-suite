@@ -2,11 +2,9 @@ import CONSTANTS from '../../constants';
 import { homescreensT2 } from '@suite-constants';
 
 describe('Device settings', () => {
-    before(() => {
-        cy.wait(500);
-    });
-
     beforeEach(() => {
+        cy.wait(1000);
+
         cy.task('startBridge')
             .task('startEmu')
             .task('setupEmu');
