@@ -1,7 +1,11 @@
 import CONSTANTS from '../../constants';
 import { homescreensT2 } from '@suite-constants';
 
-describe.skip('Device settings', () => {
+describe('Device settings', () => {
+    before(() => {
+        cy.wait(500);
+    });
+
     beforeEach(() => {
         cy.task('startBridge')
             .task('startEmu')

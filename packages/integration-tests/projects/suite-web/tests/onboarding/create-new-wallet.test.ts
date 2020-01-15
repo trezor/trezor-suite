@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 describe('Onboarding happy paths', () => {
+    before(() => {
+        cy.wait(500);
+    });
+
     beforeEach(() => {
         cy.task('startBridge')
             .task('startEmu')
