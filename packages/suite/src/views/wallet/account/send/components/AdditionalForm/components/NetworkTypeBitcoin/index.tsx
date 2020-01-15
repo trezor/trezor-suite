@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Props } from './Container';
 import CustomFee from '../CustomFee';
+import Layout from '../Layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,15 +23,18 @@ const NetworkTypeBitcoin = ({ send, sendFormActions }: Props) => {
     if (!send) return null;
     return (
         <Wrapper>
-            <Row>
-                <CustomFee
-                    maxFee={send.feeInfo.maxFee}
-                    minFee={send.feeInfo.minFee}
-                    errors={send.customFee.error}
-                    customFee={send.customFee.value}
-                    sendFormActions={sendFormActions}
-                />
-            </Row>
+            <Layout
+                left={
+                    <CustomFee
+                        maxFee={send.feeInfo.maxFee}
+                        minFee={send.feeInfo.minFee}
+                        errors={send.customFee.error}
+                        customFee={send.customFee.value}
+                        sendFormActions={sendFormActions}
+                    />
+                }
+                right={null}
+            />
         </Wrapper>
     );
 };

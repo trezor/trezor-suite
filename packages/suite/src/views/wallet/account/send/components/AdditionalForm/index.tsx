@@ -1,18 +1,14 @@
+import { Network } from '@wallet-types';
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components-v2';
 
 import NetworkTypeBitcoin from './components/NetworkTypeBitcoin/Container';
 import NetworkTypeEthereum from './components/NetworkTypeEthereum/Container';
 import NetworkTypeXrp from './components/NetworkTypeRipple/Container';
 
-import { Network } from '@wallet-types';
-
 const Wrapper = styled.div`
     display: flex;
-    border-radius: 6px;
-    margin-top: 20px;
-    border: 2px solid ${colors.BLACK96};
+    margin-top: 40px;
 `;
 
 interface Props {

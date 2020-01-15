@@ -12,6 +12,8 @@ import DataTopLabel from './components/DataTopLabel';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 
+import Layout from '../Layout';
+
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -23,24 +25,9 @@ const Column = styled.div`
     padding: 40px;
 `;
 
-const Top = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-    border-bottom: 2px solid ${colors.BLACK96};
-`;
-
 const Row = styled.div`
     margin-bottom: 15px;
 `;
-
-const Left = styled(Column)``;
-
-const Right = styled(Column)`
-    border-left: 2px solid ${colors.BLACK96};
-`;
-
-const Bottom = styled(Column)``;
 
 const GasInput = styled(Input)`
     &:first-child {
@@ -82,53 +69,59 @@ const NetworkTypeEthereum = ({ send, sendFormActionsEthereum, selectedAccount }:
     const { gasLimit, gasPrice, data } = send.networkTypeEthereum;
     return (
         <Wrapper>
-            <Top>
-                <Left>
-                    <Row>
-                        <Fee
-                            onChange={() => console.log('change')}
-                            networkType={account.networkType}
-                            feeLevels={send.feeInfo.levels}
-                            selectedFee={send.selectedFee}
-                            symbol={account.symbol}
-                        />
-                    </Row>
-                    <Row>
-                        <GasInput
-                            variant="small"
-                            display="block"
-                            state={getInputState(gasLimit.error, gasLimit.value)}
-                            topLabel={<GasLimitTopLabel />}
-                            bottomText={getErrorGasLimit(gasLimit.error)}
-                            value={gasLimit.value || ''}
-                            isDisabled={false}
-                            onChange={e => sendFormActionsEthereum.handleGasLimit(e.target.value)}
-                        />
-                    </Row>
-                    <Row>
-                        <GasInput
-                            variant="small"
-                            display="block"
-                            state={getInputState(gasPrice.error, gasPrice.value)}
-                            topLabel={<GasPriceTopLabel />}
-                            bottomText={getErrorGasPrice(gasPrice.error)}
-                            value={send.networkTypeEthereum.gasPrice.value || ''}
-                            onChange={e => sendFormActionsEthereum.handleGasPrice(e.target.value)}
-                        />
-                    </Row>
-                </Left>
-                <Right />
-            </Top>
-            <Bottom>
-                <Textarea
-                    state={getInputState(data.error, data.value)}
-                    value={send.networkTypeEthereum.data.value || ''}
-                    display="block"
-                    bottomText={getErrorData(data.error)}
-                    onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
-                    topLabel={<DataTopLabel />}
-                />
-            </Bottom>
+            <Layout
+                left={
+                    <>
+                        <Row>
+                            <Fee
+                                onChange={() => console.log('change')}
+                                networkType={account.networkType}
+                                feeLevels={send.feeInfo.levels}
+                                selectedFee={send.selectedFee}
+                                symbol={account.symbol}
+                            />
+                        </Row>
+                        <Row>
+                            <GasInput
+                                variant="small"
+                                display="block"
+                                state={getInputState(gasLimit.error, gasLimit.value)}
+                                topLabel={<GasLimitTopLabel />}
+                                bottomText={getErrorGasLimit(gasLimit.error)}
+                                value={gasLimit.value || ''}
+                                isDisabled={false}
+                                onChange={e =>
+                                    sendFormActionsEthereum.handleGasLimit(e.target.value)
+                                }
+                            />
+                        </Row>
+                        <Row>
+                            <GasInput
+                                variant="small"
+                                display="block"
+                                state={getInputState(gasPrice.error, gasPrice.value)}
+                                topLabel={<GasPriceTopLabel />}
+                                bottomText={getErrorGasPrice(gasPrice.error)}
+                                value={send.networkTypeEthereum.gasPrice.value || ''}
+                                onChange={e =>
+                                    sendFormActionsEthereum.handleGasPrice(e.target.value)
+                                }
+                            />
+                        </Row>
+                    </>
+                }
+                right={null}
+                middle={
+                    <Textarea
+                        state={getInputState(data.error, data.value)}
+                        value={send.networkTypeEthereum.data.value || ''}
+                        display="block"
+                        bottomText={getErrorData(data.error)}
+                        onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
+                        topLabel={<DataTopLabel />}
+                    />
+                }
+            />
         </Wrapper>
     );
 };
