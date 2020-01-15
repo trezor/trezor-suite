@@ -18,6 +18,7 @@ const Row = styled.div`
 const Column = styled.div`
     flex: 1;
     padding: 30px;
+    min-width: 320px;
 `;
 
 const Left = styled(Column)`
