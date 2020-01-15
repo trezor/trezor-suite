@@ -3,7 +3,7 @@
     "fixturesFolder": "./fixtures",
     "pluginsFile": "./plugins/index.js",
     "supportFile": "./support/index.ts",
-    "defaultCommandTimeout": 10000,
+    "defaultCommandTimeout": 20000,
     "screenshotsFolder": "./screenshots",
     "video": false,
     "trashAssetsBeforeRuns": true,
