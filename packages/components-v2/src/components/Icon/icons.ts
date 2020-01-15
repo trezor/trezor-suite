@@ -30,4 +30,5 @@ export const ICONS = {
     TRANSACTIONS: require('../../images/icons/transactions.svg'),
     TREZOR: require('../../images/icons/trezor.svg'),
     WALLET: require('../../images/icons/wallet.svg'),
+    PORTFOLIO: require('../../images/icons/portfolio.svg'),
 };

@@ -10,6 +10,13 @@ import { Network } from '@wallet-types';
 const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 const modalAppParams = ['cancelable'] as const;
 
+export const BOTTOM_MENU_ITEMS = [
+    { text: 'Tips', icon: 'TIPS', route: 'tips-index' },
+    { text: 'Settings', icon: 'SETTINGS', route: 'settings-index' },
+] as const;
+
+export const MENU_PADDING = 10;
+
 const routes = [
     {
         name: 'suite-welcome',
@@ -122,6 +129,11 @@ const routes = [
         name: 'exchange-index',
         pattern: '/exchange',
         app: 'exchange',
+    }, 
+    {
+        name: 'portfolio-index',
+        pattern: '/portfolio',
+        app: 'portfolio',
     },
 ] as const;
 
