@@ -6,6 +6,6 @@ export const onboardingShouldLoad = () => {
     return cy.get('html').should('contain', 'Welcome to Trezor');
 };
 
-export const walletShouldLoad = () => {
-    return cy.get('html').should('contain', 'Dashboard');
+export const dashboardShouldLoad = () => {
+    return cy.getTestElement('@dashboard/index').should('be.visible');
 };

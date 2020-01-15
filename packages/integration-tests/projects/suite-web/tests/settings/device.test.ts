@@ -15,7 +15,7 @@ describe('Device settings', () => {
             .onboardingShouldLoad()
             .getTestElement('button-use-wallet')
             .click()
-            .walletShouldLoad()
+            .dashboardShouldLoad()
             .getTestElement('@suite/menu/settings')
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')

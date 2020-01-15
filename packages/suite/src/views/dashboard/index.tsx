@@ -57,7 +57,7 @@ const Dashboard = (props: Props) => {
 
     return (
         <SuiteLayout>
-            <Wrapper>
+            <Wrapper data-test="@dashboard/index">
                 <PortfolioCard
                     portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}
