@@ -1,37 +1,44 @@
 import { css } from 'styled-components';
+import { colors } from '@trezor/components-v2';
 
 export const notificationStyles = css`
     .Toastify__toast-container {
         z-index: 9999;
-        -webkit-transform: translate3d(0, 0, 9999px);
         position: fixed;
         padding: 4px;
         width: 320px;
         box-sizing: border-box;
+        border-radius: 6px;
         color: #fff;
     }
+
     .Toastify__toast-container--top-left {
         top: 1em;
         left: 1em;
     }
+
     .Toastify__toast-container--top-center {
         top: 1em;
         left: 50%;
         margin-left: -160px;
     }
+
     .Toastify__toast-container--top-right {
         top: 1em;
         right: 1em;
     }
+
     .Toastify__toast-container--bottom-left {
         bottom: 1em;
         left: 1em;
     }
+
     .Toastify__toast-container--bottom-center {
         bottom: 1em;
         left: 50%;
         margin-left: -160px;
     }
+
     .Toastify__toast-container--bottom-right {
         bottom: 1em;
         right: 1em;
@@ -68,9 +75,7 @@ export const notificationStyles = css`
         padding: 8px;
         border-radius: 1px;
         box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
-        display: -ms-flexbox;
         display: flex;
-        -ms-flex-pack: justify;
         justify-content: space-between;
         max-height: 800px;
         overflow: hidden;
@@ -78,28 +83,34 @@ export const notificationStyles = css`
         cursor: pointer;
         direction: ltr;
     }
+
     .Toastify__toast--rtl {
         direction: rtl;
     }
+
     .Toastify__toast--default {
         background: #fff;
-        color: #aaa;
+        color: ${colors.BLACK0};
     }
+
     .Toastify__toast--info {
-        background: #3498db;
+        background: ${colors.WHITE};
     }
+
     .Toastify__toast--success {
-        background: #07bc0c;
+        background: ${colors.WHITE};
     }
+
     .Toastify__toast--warning {
-        background: #f1c40f;
+        background: ${colors.WHITE};
     }
+
     .Toastify__toast--error {
-        background: #e74c3c;
+        background: ${colors.WHITE};
     }
+
     .Toastify__toast-body {
         margin: auto 0;
-        -ms-flex: 1;
         flex: 1;
     }
 
@@ -111,6 +122,7 @@ export const notificationStyles = css`
 
     .Toastify__close-button {
         color: #fff;
+        display: none;
         font-weight: bold;
         font-size: 14px;
         background: transparent;
@@ -120,13 +132,14 @@ export const notificationStyles = css`
         cursor: pointer;
         opacity: 0.7;
         transition: 0.3s ease;
-        -ms-flex-item-align: start;
         align-self: flex-start;
     }
+
     .Toastify__close-button--default {
         color: #000;
         opacity: 0.3;
     }
+
     .Toastify__close-button:hover,
     .Toastify__close-button:focus {
         opacity: 1;
@@ -152,17 +165,21 @@ export const notificationStyles = css`
         background-color: rgba(255, 255, 255, 0.7);
         transform-origin: left;
     }
+
     .Toastify__progress-bar--animated {
         animation: Toastify__trackProgress linear 1 forwards;
     }
+
     .Toastify__progress-bar--controlled {
         transition: transform 0.2s;
     }
+
     .Toastify__progress-bar--rtl {
         right: 0;
         left: initial;
         transform-origin: right;
     }
+
     .Toastify__progress-bar--default {
         background: linear-gradient(to right, #4cd964, #5ac8fa, #007aff, #34aadc, #5856d6, #ff2d55);
     }
