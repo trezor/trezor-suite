@@ -1,0 +1,12 @@
+html, body {
+    font-size: 14px;
+    margin: 0;
+}
+
+* {
+    font-family: 'TT Hoves';
+    line-height: 1.15;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
