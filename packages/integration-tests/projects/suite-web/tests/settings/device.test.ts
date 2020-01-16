@@ -3,11 +3,15 @@ import { homescreensT2 } from '@suite-constants';
 
 describe('Device settings', () => {
     beforeEach(() => {
-        cy.wait(800);
+        cy.wait(1000);
         cy.task('stopBridge');
+        cy.wait(1000);
         cy.task('startBridge');
+        cy.wait(1000);
         cy.task('startEmu');
+        cy.wait(1000);
         cy.task('setupEmu');
+        cy.wait(1000);
 
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();
