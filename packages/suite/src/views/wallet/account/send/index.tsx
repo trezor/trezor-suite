@@ -1,21 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import messages from '@suite/support/messages';
+import { colors, Icon } from '@trezor/components-v2';
+import { Content, LayoutAccount } from '@wallet-components';
+import AccountName from '@wallet-components/AccountName';
+import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Icon } from '@trezor/components-v2';
-import { Output } from '@wallet-types/sendForm';
-import AccountName from '@wallet-components/AccountName';
 
-import { StateProps, DispatchProps } from './Container';
-import { Content, LayoutAccount } from '@wallet-components';
-import messages from '@suite/support/messages';
-
+import Add from './components/Add/Container';
+import AdditionalForm from './components/AdditionalForm';
 import Address from './components/Address';
 import Amount from './components/Amount';
+import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
 import SendSection from './components/SendSection';
-import AdditionalForm from './components/AdditionalForm';
-import Add from './components/Add/Container';
-import ButtonToggleAdditional from './components/ButtonToggleAdditional';
+import { DispatchProps, StateProps } from './Container';
 
 const Row = styled.div`
     display: flex;

@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, P, Select } from '@trezor/components-v2';
+import { colors, P, Select, Icon } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -10,15 +10,52 @@ import styled from 'styled-components';
 
 import { DispatchProps } from '../../../../Container';
 
+const Row = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+    display: flex;
+    padding-left: 5px;
+    height: 100%;
+`;
+
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
 `;
 
-const Label = styled.span`
+const Top = styled.div`
+    padding: 10px 0;
+    display: flex;
+    width: 100%;
+`;
+
+const Column = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+`;
+
+const LabelColumn = styled(Column)`
     color: ${colors.BLACK0};
-    padding: 10px;
+`;
+
+const RefreshColumn = styled(Column)`
+    color: ${colors.BLACK0};
+    justify-content: center;
+`;
+
+const RefreshText = styled.div`
+    padding-left: 5px;
+`;
+
+const HelpColumn = styled(Column)`
+    color: ${colors.BLACK0};
+    justify-content: flex-end;
 `;
 
 const OptionWrapper = styled.div`
@@ -66,29 +103,41 @@ const getValue = (
 
 const FeeComponent = (props: Props) => (
     <Wrapper>
-        <Label>
-            <Translation {...messages.TR_FEE} />
-        </Label>
-        <StyledSelect
-            display="block"
-            isSearchable={false}
-            isClearable={false}
-            value={props.selectedFee}
-            onChange={props.onChange}
-            options={props.feeLevels}
-            formatOptionLabel={(option: FeeLevel) => {
-                return (
-                    <OptionWrapper>
-                        <OptionLabel>{capitalize(option.label)}</OptionLabel>
-                        {option.value !== '0' && (
-                            <OptionValue>
-                                {getValue(props.networkType, option.value, props.symbol)}
-                            </OptionValue>
-                        )}
-                    </OptionWrapper>
-                );
-            }}
-        />
+        <Row>
+            <Top>
+                <LabelColumn>
+                    <Translation {...messages.TR_FEE} />
+                </LabelColumn>
+                <RefreshColumn>
+                    <StyledIcon icon="REFRESH" color={colors.BLACK0} size={12} />
+                    <RefreshText>Refresh</RefreshText>
+                </RefreshColumn>
+                <HelpColumn>
+                    <StyledIcon icon="QUESTION" color={colors.BLACK0} size={12} />
+                </HelpColumn>
+            </Top>
+            <StyledSelect
+                display="block"
+                isSearchable={false}
+                isClearable={false}
+                value={props.selectedFee}
+                onChange={props.onChange}
+                options={props.feeLevels}
+                formatOptionLabel={(option: FeeLevel) => {
+                    return (
+                        <OptionWrapper>
+                            <OptionLabel>{capitalize(option.label)}</OptionLabel>
+                            {option.value !== '0' && (
+                                <OptionValue>
+                                    {getValue(props.networkType, option.value, props.symbol)}
+                                </OptionValue>
+                            )}
+                        </OptionWrapper>
+                    );
+                }}
+            />
+        </Row>
+        <Row>aa</Row>
     </Wrapper>
 );
 
