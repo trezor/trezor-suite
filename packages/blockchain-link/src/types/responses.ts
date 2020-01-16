@@ -1,5 +1,5 @@
 import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
-import { Transaction as BlockbookTransaction, FiatRates } from './blockbook';
+import { Transaction as BlockbookTransaction, FiatRates, AccountBalanceHistory } from './blockbook';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
 import { AccountInfo, Transaction } from './common';
@@ -70,6 +70,11 @@ export interface GetTransaction {
               type: 'blockbook';
               tx: BlockbookTransaction;
           };
+}
+
+export interface GetAccountBalanceHistory {
+    type: typeof RESPONSES.GET_ACCOUNT_BALANCE_HISTORY;
+    payload: AccountBalanceHistory[];
 }
 
 export interface GetCurrentFiatRates {
@@ -159,6 +164,7 @@ export type Response =
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
+    | ({ id: number } & GetAccountBalanceHistory)
     | ({ id: number } & GetCurrentFiatRates)
     | ({ id: number } & GetFiatRatesForTimestamps)
     | ({ id: number } & EstimateFee)

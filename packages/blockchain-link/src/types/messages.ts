@@ -1,5 +1,6 @@
 import { SubscriptionAccountInfo, BlockchainSettings } from './common';
 import * as MESSAGES from '../constants/messages';
+import { AccountBalanceHistoryParams } from './blockbook';
 
 // messages sent from blockchain.js to worker
 
@@ -42,6 +43,11 @@ export interface GetAccountInfo {
 export interface GetAccountUtxo {
     type: typeof MESSAGES.GET_ACCOUNT_UTXO;
     payload: string; // address or xpub
+}
+
+export interface GetAccountBalanceHistory {
+    type: typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY;
+    payload: AccountBalanceHistoryParams;
 }
 
 export interface GetTransaction {
@@ -134,6 +140,7 @@ export type Message =
     | ({ id: number } & GetTransaction)
     | ({ id: number } & GetCurrentFiatRates)
     | ({ id: number } & GetFiatRatesForTimestamps)
+    | ({ id: number } & GetAccountBalanceHistory)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

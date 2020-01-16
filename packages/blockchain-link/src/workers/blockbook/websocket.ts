@@ -9,6 +9,7 @@ import {
     AddressNotification,
     Send,
     FiatRatesNotification,
+    AccountBalanceHistoryParams,
 } from '../../types/blockbook';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
@@ -259,6 +260,10 @@ export default class Socket extends EventEmitter {
 
     getCurrentFiatRates(currency: string[]) {
         return this.send('getCurrentFiatRates', { currency });
+    }
+
+    getAccountBalanceHistory(payload: AccountBalanceHistoryParams) {
+        return this.send('getBalanceHistory', payload);
     }
 
     getFiatRatesForTimestamps(timestamps: number[], currency: string[]) {

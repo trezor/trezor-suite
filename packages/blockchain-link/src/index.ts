@@ -147,6 +147,15 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
+    async getAccountBalanceHistory(
+        payload: MessageTypes.GetAccountBalanceHistory['payload']
+    ): Promise<ResponseTypes.GetAccountBalanceHistory['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_ACCOUNT_BALANCE_HISTORY,
+            payload,
+        });
+    }
+
     async getCurrentFiatRates(
         payload: MessageTypes.GetCurrentFiatRates['payload']
     ): Promise<ResponseTypes.GetCurrentFiatRates['payload']> {

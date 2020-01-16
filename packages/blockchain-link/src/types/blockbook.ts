@@ -171,12 +171,32 @@ export interface FiatRatesForTimestamp {
     tickers: CurrentFiatRates[];
 }
 
+export interface AccountBalanceHistory {
+    time: number;
+    txs: number;
+    received: string;
+    sent: string;
+    fiatRate: number;
+}
+
+export interface AccountBalanceHistoryParams {
+    descriptor: string;
+    from: number;
+    to: number;
+    fiat: string;
+    groupBy?: number;
+}
+
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
 declare function FSend(method: 'sendTransaction', params: { hex: string }): Promise<Push>;
+declare function FSend(
+    method: 'getBalanceHistory',
+    params: AccountBalanceHistoryParams
+): Promise<AccountBalanceHistory[]>;
 declare function FSend(
     method: 'getCurrentFiatRates',
     params: { currency?: string[] }

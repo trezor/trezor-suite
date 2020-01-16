@@ -199,6 +199,23 @@ const handleClick = (event: MouseEvent) => {
             }
             break;
         }
+        case 'get-account-balance-history': {
+            try {
+                blockchain
+                    .getAccountBalanceHistory({
+                        descriptor: getInputValue('get-account-balance-history-descriptor'),
+                        from: parseInt(getInputValue('get-account-balance-history-from'), 10),
+                        to: parseInt(getInputValue('get-account-balance-history-to'), 10),
+                        fiat: getInputValue('get-account-balance-history-currency'),
+                        groupBy: parseInt(getInputValue('get-account-balance-history-groupby'), 10),
+                    })
+                    .then(onResponse)
+                    .catch(onError);
+            } catch (error) {
+                onError(error);
+            }
+            break;
+        }
 
         default:
             break;

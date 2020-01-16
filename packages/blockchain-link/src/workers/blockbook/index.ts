@@ -146,6 +146,23 @@ const getAccountUtxo = async (
     }
 };
 
+const getAccountBalanceHistory = async (
+    data: { id: number } & MessageTypes.GetAccountBalanceHistory
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const history = await socket.getAccountBalanceHistory(payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
+            payload: history,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const getCurrentFiatRates = async (
     data: { id: number } & MessageTypes.GetCurrentFiatRates
 ): Promise<void> => {
@@ -470,6 +487,9 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.GET_TRANSACTION:
             getTransaction(data);
+            break;
+        case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
+            getAccountBalanceHistory(data);
             break;
         case MESSAGES.GET_CURRENT_FIAT_RATES:
             getCurrentFiatRates(data);

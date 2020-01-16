@@ -7,6 +7,7 @@ export const GET_CURRENT_FIAT_RATES = 'r_get_current_fiat_rates';
 export const GET_FIAT_RATES_FOR_TIMESTAMPS = 'r_get_fiat_rates_for_timestamps';
 export const GET_ACCOUNT_INFO = 'r_account_info';
 export const GET_ACCOUNT_UTXO = 'r_get_account_utxo';
+export const GET_ACCOUNT_BALANCE_HISTORY = 'r_get_account_balance_history';
 export const GET_TRANSACTION = 'r_get_transaction';
 export const ESTIMATE_FEE = 'r_estimate_fee';
 export const SUBSCRIBE = 'r_subscribe';
