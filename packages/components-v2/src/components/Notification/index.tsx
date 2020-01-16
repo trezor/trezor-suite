@@ -85,7 +85,7 @@ const CtaLoading = styled.div`
 `;
 
 interface StateProps {
-    state: NotificationProps['state'];
+    state: Props['state'];
 }
 
 interface WrapperProps {
@@ -101,7 +101,7 @@ interface CtaShape {
     onClick: () => any;
 }
 
-interface NotificationProps {
+interface Props {
     title: string;
     message?: string;
     mainCta?: CtaShape;
@@ -120,7 +120,7 @@ const Notification = ({
     state = 'success',
     wrapperProps,
     ...rest
-}: NotificationProps) => {
+}: Props) => {
     return (
         <Wrapper hasCta={!!(mainCta || isLoading)} {...wrapperProps} {...rest}>
             <StateWrapper>
@@ -147,4 +147,4 @@ const Notification = ({
     );
 };
 
-export { Notification };
+export { Notification, Props as NotificationProps };
