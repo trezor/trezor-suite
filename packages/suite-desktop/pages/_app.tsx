@@ -4,7 +4,7 @@ import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-
+import { NotificationsContainer } from '@suite-components/Notification-v2';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import Router from '@suite-support/Router';
@@ -32,6 +32,7 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
+                <NotificationsContainer />
                 <ReduxProvider store={store}>
                     <Resize />
                     <IntlProvider>
