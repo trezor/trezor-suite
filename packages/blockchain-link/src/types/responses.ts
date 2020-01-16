@@ -95,6 +95,14 @@ export interface GetFiatRatesForTimestamps {
     };
 }
 
+export interface GetFiatRatesTickersList {
+    type: typeof RESPONSES.GET_FIAT_RATES_TICKERS_LIST;
+    payload: {
+        ts: number;
+        availableCurrencies: string[];
+    };
+}
+
 export interface EstimateFee {
     type: typeof RESPONSES.ESTIMATE_FEE;
     payload: {
@@ -167,6 +175,7 @@ export type Response =
     | ({ id: number } & GetAccountBalanceHistory)
     | ({ id: number } & GetCurrentFiatRates)
     | ({ id: number } & GetFiatRatesForTimestamps)
+    | ({ id: number } & GetFiatRatesTickersList)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

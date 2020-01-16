@@ -45,6 +45,13 @@ export interface GetAccountUtxo {
     payload: string; // address or xpub
 }
 
+export interface GetFiatRatesTickersList {
+    type: typeof MESSAGES.GET_FIAT_RATES_TICKERS_LIST;
+    payload: {
+        timestamp?: number;
+    };
+}
+
 export interface GetAccountBalanceHistory {
     type: typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY;
     payload: AccountBalanceHistoryParams;
@@ -141,6 +148,7 @@ export type Message =
     | ({ id: number } & GetCurrentFiatRates)
     | ({ id: number } & GetFiatRatesForTimestamps)
     | ({ id: number } & GetAccountBalanceHistory)
+    | ({ id: number } & GetFiatRatesTickersList)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

@@ -5,6 +5,7 @@ export const GET_INFO = 'r_info';
 export const GET_BLOCK_HASH = 'r_get_block_hash';
 export const GET_CURRENT_FIAT_RATES = 'r_get_current_fiat_rates';
 export const GET_FIAT_RATES_FOR_TIMESTAMPS = 'r_get_fiat_rates_for_timestamps';
+export const GET_FIAT_RATES_TICKERS_LIST = 'r_GET_FIAT_RATES_TICKERS_LIST';
 export const GET_ACCOUNT_INFO = 'r_account_info';
 export const GET_ACCOUNT_UTXO = 'r_get_account_utxo';
 export const GET_ACCOUNT_BALANCE_HISTORY = 'r_get_account_balance_history';

@@ -187,6 +187,11 @@ export interface AccountBalanceHistoryParams {
     groupBy?: number;
 }
 
+export interface AvailableCurrencies {
+    ts: number;
+    available_currencies: string[];
+}
+
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
@@ -201,6 +206,10 @@ declare function FSend(
     method: 'getCurrentFiatRates',
     params: { currency?: string[] }
 ): Promise<CurrentFiatRates>;
+declare function FSend(
+    method: 'getFiatRatesTickersList',
+    params: { timestamp?: number }
+): Promise<AvailableCurrencies>;
 declare function FSend(
     method: 'getFiatRatesForTimestamps',
     params: { timestamps?: number[]; currency?: string[] }

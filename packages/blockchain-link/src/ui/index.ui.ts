@@ -217,6 +217,23 @@ const handleClick = (event: MouseEvent) => {
             break;
         }
 
+        case 'get-fiat-rates-ticker-list': {
+            try {
+                blockchain
+                    .getFiatRatesTickersList({
+                        timestamp: parseInt(
+                            getInputValue('get-fiat-rates-ticker-list-timestamp'),
+                            10
+                        ),
+                    })
+                    .then(onResponse)
+                    .catch(onError);
+            } catch (error) {
+                onError(error);
+            }
+            break;
+        }
+
         default:
             break;
     }

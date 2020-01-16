@@ -205,6 +205,26 @@ const getFiatRatesForTimestamps = async (
     }
 };
 
+const getFiatRatesTickersList = async (
+    data: { id: number } & MessageTypes.GetFiatRatesTickersList
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const tickers = await socket.getFiatRatesTickersList(payload.timestamp);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_FIAT_RATES_TICKERS_LIST,
+            payload: {
+                ts: tickers.ts,
+                availableCurrencies: tickers.available_currencies, // convert to camelCase
+            },
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const getTransaction = async (
     data: { id: number } & MessageTypes.GetTransaction
 ): Promise<void> => {
@@ -496,6 +516,9 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS:
             getFiatRatesForTimestamps(data);
+            break;
+        case MESSAGES.GET_FIAT_RATES_TICKERS_LIST:
+            getFiatRatesTickersList(data);
             break;
         case MESSAGES.ESTIMATE_FEE:
             estimateFee(data);
