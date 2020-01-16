@@ -2,11 +2,13 @@
 
 describe('Steps order - slightly differs under certain circumstances', () => {
     before(() => {
+        cy.wait(800);
         cy.task('stopBridge');
         cy.task('stopEmu');
     });
 
     beforeEach(() => {
+        cy.wait(800);
         cy.viewport(1024, 768).resetDb();
         cy.visit('').onboardingShouldLoad();
     });

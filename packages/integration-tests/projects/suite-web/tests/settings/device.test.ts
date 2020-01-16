@@ -3,7 +3,7 @@ import { homescreensT2 } from '@suite-constants';
 
 describe('Device settings', () => {
     beforeEach(() => {
-        // cy.wait(800);
+        cy.wait(800);
         cy.task('stopBridge');
         cy.task('startBridge');
         cy.task('startEmu');
