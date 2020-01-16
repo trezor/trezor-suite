@@ -5,7 +5,6 @@ import { SUITE } from '@suite-actions/constants';
 import { Modal as ModalComponent } from '@trezor/components';
 import Loading from '@suite-components/Loading';
 import Modals from '@suite-components/modals';
-import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
 

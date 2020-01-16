@@ -9,9 +9,8 @@ import { DEVICE } from 'trezor-connect';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
-import { SUITE } from '@suite-actions/constants';
+import modalReducer from '@suite-reducers/modalReducer';
 import * as suiteActions from '../suiteActions';
-import * as routerActions from '../routerActions';
 import { init } from '../trezorConnectActions';
 import fixtures from './fixtures/suiteActions';
 
@@ -42,6 +41,7 @@ jest.mock('trezor-connect', () => {
             START: 'transport-start',
             ERROR: 'transport-error',
         },
+        UI: {},
         setTestFixtures: (f: any) => {
             fixture = f;
         },
@@ -67,6 +67,7 @@ export const getInitialState = (
             ...routerReducer(undefined, { type: 'foo' } as any),
             ...router,
         },
+        modal: modalReducer(undefined, { type: 'foo' } as any),
     };
 };
 
@@ -218,5 +219,4 @@ describe('Suite Actions', () => {
             }
         });
     });
-
 });

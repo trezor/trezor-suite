@@ -132,8 +132,7 @@ type RouteParamsTypes = {
     symbol: Network['symbol'];
     accountIndex: number;
     accountType: NonNullable<Network['accountType']>;
-    // cancelable: boolean;
-    another: boolean;
+    cancelable: boolean;
 };
 
 type ExtractType<T extends any> = {
@@ -149,7 +148,6 @@ type AppWithParams<T extends { [key: string]: any }> = {
                   ? ExtractType<ArrayElement<T[K]['params']>>
                   : undefined)
             | undefined;
-        // route: T[K];
     };
 };
 

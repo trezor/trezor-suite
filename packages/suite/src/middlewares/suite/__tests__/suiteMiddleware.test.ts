@@ -5,6 +5,7 @@ import { SUITE, ROUTER, STORAGE } from '@suite-actions/constants';
 // import { BLOCKCHAIN } from '@wallet-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
+import modalReducer from '@suite-reducers/modalReducer';
 import * as routerActions from '@suite-actions/routerActions';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
@@ -32,6 +33,7 @@ export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState
             ...suiteReducer(undefined, { type: 'foo' } as any),
             ...suite,
         },
+        modal: modalReducer(undefined, { type: 'foo' } as any),
     };
 };
 
@@ -117,7 +119,7 @@ describe('suite middleware', () => {
                     },
                 },
             });
-            expect(goto).toHaveBeenNthCalledWith(1, 'onboarding-index');
+            expect(goto).toHaveBeenNthCalledWith(1, 'suite-welcome');
 
             goto.mockClear();
         });

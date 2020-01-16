@@ -103,7 +103,7 @@ export const goto = [
 export const initialRedirection = [
     {
         description: `success`,
-        result: '/onboarding',
+        app: 'welcome',
     },
     {
         description: `already initialized`,
@@ -112,6 +112,12 @@ export const initialRedirection = [
                 initialRun: false,
             },
         },
+        app: 'unknown', // app will be set later, after SUITE.READY
+    },
+    {
+        description: `redirect to modal app`,
+        pathname: '/bridge',
+        app: 'bridge',
     },
     {
         description: `router locked`,
@@ -120,5 +126,6 @@ export const initialRedirection = [
                 locks: [1],
             },
         },
+        app: 'welcome',
     },
 ];

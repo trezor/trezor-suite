@@ -105,11 +105,13 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
                 return aIndex - bIndex;
             })
             .reduce((val, curr) => {
+                const exists = order.findIndex((o: string) => o === curr[0]);
+                if (exists < 0) return val;
                 // exclude accountType="normal" (most of accounts are normal)
                 if (curr[0] === 'accountType' && curr[1] === 'normal') return val;
                 return `${val}/${curr[1]}`;
             }, '');
-        return `${route.pattern}#${paramsString}`;
+        return paramsString.length > 0 ? `${route.pattern}#${paramsString}` : route.pattern;
     }
     return route.pattern;
 };

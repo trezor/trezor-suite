@@ -5,6 +5,7 @@ import { SUITE } from '@suite-actions/constants';
 
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
+import modalReducer from '@suite-reducers/modalReducer';
 import onboardingReducer from '@onboarding-reducers/index';
 import onboardingMiddlewares from '@onboarding-middlewares';
 
@@ -52,6 +53,7 @@ export const getInitialState = (
             ...onboardingReducer(undefined, { type: 'foo' } as any),
             ...onboarding,
         },
+        modal: modalReducer(undefined, { type: 'foo' } as any),
     };
 };
 
@@ -92,7 +94,6 @@ describe('onboardingMiddleware', () => {
             expect(result).toEqual([
                 { type: SUITE.APP_CHANGED, payload: 'onboarding' },
                 { type: '@onboarding/enable-onboarding-reducer', payload: true },
-                { type: SUITE.LOCK_ROUTER, payload: true },
             ]);
         });
 

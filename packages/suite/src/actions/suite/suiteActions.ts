@@ -2,8 +2,6 @@ import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducerUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { add as addNotification } from '@suite-actions/notificationActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { Route } from '@suite-constants/routes';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
