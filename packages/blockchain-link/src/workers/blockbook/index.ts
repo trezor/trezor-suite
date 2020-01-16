@@ -180,7 +180,7 @@ const getFiatRatesForTimestamps = async (
             id: data.id,
             type: RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS,
             payload: {
-                tickers,
+                tickers: tickers.tickers,
             },
         });
     } catch (error) {

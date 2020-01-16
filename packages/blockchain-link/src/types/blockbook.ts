@@ -167,6 +167,10 @@ export interface CurrentFiatRates {
     rates: FiatRates;
 }
 
+export interface FiatRatesForTimestamp {
+    tickers: CurrentFiatRates[];
+}
+
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
@@ -180,7 +184,7 @@ declare function FSend(
 declare function FSend(
     method: 'getFiatRatesForTimestamps',
     params: { timestamps?: number[]; currency?: string[] }
-): Promise<CurrentFiatRates[]>;
+): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
     method: 'subscribeAddresses',
