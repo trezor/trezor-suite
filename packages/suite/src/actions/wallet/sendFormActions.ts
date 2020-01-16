@@ -322,11 +322,6 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     if (send.selectedFee.label === fee.label) return;
 
     if (fee.label === 'custom') {
-        // show additional form
-        if (!send.isAdditionalFormVisible) {
-            dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-        }
-
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: send.selectedFee.feePerUnit,

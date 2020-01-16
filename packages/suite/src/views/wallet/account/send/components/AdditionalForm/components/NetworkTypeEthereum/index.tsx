@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Props } from './Container';
 import Fee from '../Fee';
-import { Input, Textarea, colors } from '@trezor/components-v2';
+import { Input, Textarea } from '@trezor/components-v2';
 import GasLimitTopLabel from './components/GasLimitTopLabel';
 import GasPriceTopLabel from './components/GasPriceTopLabel';
 import DataTopLabel from './components/DataTopLabel';
@@ -18,11 +18,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-`;
-
-const Column = styled.div`
-    flex: 1;
-    padding: 40px;
 `;
 
 const Row = styled.div`

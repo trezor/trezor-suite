@@ -103,7 +103,7 @@ export const formatAmount = (amount: string, decimals: number) => {
         if (bAmount.isNaN()) {
             throw new Error('Amount is not a number');
         }
-        return bAmount.div(10 ** decimals).toString(10);
+        return bAmount.div(10 ** decimals).toFixed();
     } catch (error) {
         return '-1';
     }
@@ -118,7 +118,7 @@ export const networkAmountToSatoshi = (amount: string | null, symbol: Account['s
         if (bAmount.isNaN()) {
             throw new Error('Amount is not a number');
         }
-        return bAmount.times(10 ** network.decimals).toString(10);
+        return bAmount.times(10 ** network.decimals).toFixed();
     } catch (error) {
         return '-1';
     }

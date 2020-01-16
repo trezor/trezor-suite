@@ -60,6 +60,7 @@ const getValue = (
     if (networkType === 'bitcoin') {
         return `${value} sat/B`;
     }
+
     return `${formatNetworkAmount(value, symbol)} ${symbol.toUpperCase()}`;
 };
 
@@ -79,9 +80,11 @@ const FeeComponent = (props: Props) => (
                 return (
                     <OptionWrapper>
                         <OptionLabel>{capitalize(option.label)}</OptionLabel>
-                        <OptionValue>
-                            {getValue(props.networkType, option.value, props.symbol)}
-                        </OptionValue>
+                        {option.value !== '0' && (
+                            <OptionValue>
+                                {getValue(props.networkType, option.value, props.symbol)}
+                            </OptionValue>
+                        )}
                     </OptionWrapper>
                 );
             }}
