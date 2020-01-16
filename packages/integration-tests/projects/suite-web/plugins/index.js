@@ -14,6 +14,10 @@ const CONSTANTS = require('../constants');
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = on => {
     // make ts possible start
     const options = {
@@ -42,6 +46,7 @@ module.exports = on => {
             await controller.connect();
             const response = await controller.send({ type: 'bridge-start' });
             await controller.disconnect();
+            await timeout(1000);
             return null;
         },
         stopBridge: async () => {
