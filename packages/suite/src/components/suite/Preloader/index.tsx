@@ -38,7 +38,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch,
     goto: bindActionCreators(routerActions.goto, dispatch),
-    closeModalApp: bindActionCreators(routerActions.back, dispatch),
+    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &

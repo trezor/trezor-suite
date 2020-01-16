@@ -7,7 +7,7 @@ import { Dispatch } from '@suite-types';
 import Step from './index';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    closeModalApp: bindActionCreators(routerActions.back, dispatch),
+    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
 });
 
 export type Props = ReturnType<typeof mapDispatchToProps>;

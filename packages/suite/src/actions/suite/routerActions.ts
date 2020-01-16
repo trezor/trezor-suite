@@ -100,7 +100,7 @@ export const goto = (
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-export const back = () => async (dispatch: Dispatch) => {
+export const closeModalApp = () => async (dispatch: Dispatch) => {
     // + window.location.hash is here to preserve params (eg nth account)
     dispatch(suiteActions.lockRouter(false));
     dispatch(onLocationChange(Router.pathname + window.location.hash));

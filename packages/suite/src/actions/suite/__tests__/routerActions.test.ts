@@ -132,13 +132,13 @@ describe('Suite Actions', () => {
         expect(store.getActions().length).toEqual(0);
     });
 
-    it('back', () => {
+    it('closeModalApp', () => {
         // @ts-ignore this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
         // eslint-disable-next-line global-require
         require('next/router').default.pathname = '/wallet/send';
-        store.dispatch(routerActions.back());
+        store.dispatch(routerActions.closeModalApp());
         expect(store.getActions().length).toEqual(2); // unlock + location change
         expect(store.getState().router.app).toEqual('wallet');
         expect(store.getState().router.pathname).toEqual('/wallet/send');
