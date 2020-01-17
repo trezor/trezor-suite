@@ -7,8 +7,8 @@ import { FONT_SIZE } from '../../../config/variables';
 import FluidSpinner from '../../FluidSpinner';
 
 const BUTTON_PADDING = {
-    small: '5px 12px',
-    large: '2px 12px',
+    small: '4px 12px',
+    large: '9px 12px',
 };
 
 const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
