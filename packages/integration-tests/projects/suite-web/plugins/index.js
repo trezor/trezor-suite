@@ -46,7 +46,7 @@ module.exports = on => {
             await controller.connect();
             const response = await controller.send({ type: 'bridge-start' });
             await controller.disconnect();
-            await timeout(1000);
+            await timeout(1500);
             return null;
         },
         stopBridge: async () => {
