@@ -152,15 +152,21 @@ export const buildLocales = async (
     }
 };
 
-export const findUnusedMessages = (messagesPath: string, src: string) => {
+export const findUnusedMessages = (messagesPath: string, srcs: string[]) => {
     const messages = JSON.parse(fs.readFileSync(messagesPath, 'utf-8'));
     // read all paths we are interested in. filter out those we are not.
-    const paths = recursive(src).filter(path => {
-        // - we dont need file with defined messages or tests
-        const excluded = ['messages.ts', '.messages.ts', '__test__', '__tests__', '.test.ts'];
-        if (excluded.some(e => path.includes(e))) return false;
-        // all other are ok.
-        return true;
+
+    const paths: string[] = [];
+
+    srcs.forEach(src => {
+        const pathsInSrc = recursive(src).filter(path => {
+            // - we dont need file with defined messages or tests
+            const excluded = ['messages.ts', '.messages.ts', '__test__', '__tests__', '.test.ts'];
+            if (excluded.some(e => path.includes(e))) return false;
+            // all other are ok.
+            return true;
+        });
+        paths.push(...pathsInSrc);
     });
 
     console.log(`checking  ${paths.length} paths`);
