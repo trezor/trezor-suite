@@ -10,7 +10,7 @@ import styled from 'styled-components';
 // @ts-ignore
 import ethUnits from 'ethereumjs-units';
 import CustomFee from './components/CustomFee';
-
+import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import { DispatchProps } from '../../../../Container';
 import { CUSTOM_FEE } from '@suite/constants/wallet/sendForm';
 
@@ -100,20 +100,19 @@ const capitalize = (s: string) => {
 
 const getValue = (
     networkType: Account['networkType'],
-    value: string,
+    option: FeeLevel,
     symbol: Account['symbol'],
-    label: string,
 ) => {
     if (networkType === 'bitcoin') {
-        return `${value} sat/B`;
+        return `${option.value} sat/B`;
     }
 
-    // fee for eth is calculated in actions
-    if (networkType === 'ethereum' && label === CUSTOM_FEE) {
-        return `${value} ${symbol.toUpperCase()}`;
+    if (networkType === 'ethereum') {
+        const fee = calculateEthFee(option.feePerUnit, option.feeLimit || '0');
+        return `${ethUnits.convert(fee, 'gwei', 'eth')} ${symbol.toUpperCase()}`;
     }
 
-    return `${formatNetworkAmount(value, symbol)} ${symbol.toUpperCase()}`;
+    return `${formatNetworkAmount(option.value, symbol)} ${symbol.toUpperCase()}`;
 };
 
 const FeeComponent = (props: Props) => (
@@ -144,12 +143,7 @@ const FeeComponent = (props: Props) => (
                             <OptionLabel>{capitalize(option.label)}</OptionLabel>
                             {option.value !== '0' && (
                                 <OptionValue>
-                                    {getValue(
-                                        props.networkType,
-                                        option.value,
-                                        props.symbol,
-                                        option.label,
-                                    )}
+                                    {getValue(props.networkType, option, props.symbol)}
                                 </OptionValue>
                             )}
                         </OptionWrapper>

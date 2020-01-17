@@ -99,9 +99,8 @@ export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null
     if (!gasPrice || !gasLimit) {
         return '0';
     }
-    const gasPriceInEth = ethUnits.convert(gasPrice, 'gwei', 'eth');
     try {
-        return new BigNumber(gasPriceInEth).times(gasLimit).toFixed();
+        return new BigNumber(gasPrice).times(gasLimit).toFixed();
     } catch (error) {
         // TODO: empty input throws this error.
         return '0';

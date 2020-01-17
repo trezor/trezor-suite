@@ -7,6 +7,9 @@ import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
+// @ts-ignore
+import ethUnits from 'ethereumjs-units';
+import { ETH_DEFAULT_GAS_PRICE, ETH_DEFAULT_GAS_LIMIT } from '@wallet-constants/sendForm';
 
 import * as storageActions from '@suite-actions/storageActions';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
@@ -31,6 +34,15 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         blocks: 0,
     });
 
+    let firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
+
+    if (account.networkType === 'ethereum') {
+        firstFeeLevel = {
+            ...firstFeeLevel,
+            feePerUnit: ethUnits.convert(firstFeeLevel.feePerUnit, 'wei', 'gwei'),
+        };
+    }
+
     const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     // const cachedItem = await storageActions.loadSendForm(accountKey);
     // cachedState = cachedItem;
@@ -45,7 +57,19 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 ...feeInfo,
                 levels,
             },
-            selectedFee: levels.find(l => l.label === 'normal') || levels[0],
+            networkTypeEthereum: {
+                transactionInfo: null,
+                gasPrice: {
+                    value: firstFeeLevel.feePerUnit || ETH_DEFAULT_GAS_PRICE,
+                    error: null,
+                },
+                gasLimit: {
+                    value: firstFeeLevel.feeLimit || ETH_DEFAULT_GAS_LIMIT,
+                    error: null,
+                },
+                data: { value: null, error: null },
+            },
+            selectedFee: firstFeeLevel,
             ...cachedState,
         },
         localCurrency,
@@ -321,18 +345,18 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     if (!send || !account) return;
     if (send.selectedFee.label === fee.label) return;
 
-    if (fee.label === 'custom') {
-        dispatch({
-            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-            customFee: send.selectedFee.feePerUnit,
-        });
-    } else {
-        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
-        dispatch({
-            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-            customFee: null,
-        });
-    }
+    // if (fee.label === 'custom') {
+    //     dispatch({
+    //         type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
+    //         customFee: send.selectedFee,
+    //     });
+    // } else {
+    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
+    dispatch({
+        type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
+        customFee: null,
+    });
+    // }
 
     dispatch(applyChange());
 };

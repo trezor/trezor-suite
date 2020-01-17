@@ -79,15 +79,17 @@ export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getStat
     const { account } = getState().wallet.selectedAccount;
     if (!send || !account) return null;
 
-    const gasLimit = send.networkTypeEthereum.gasLimit.value;
+    const gasLimit = send.networkTypeEthereum.gasLimit.value || '0';
     const fee = calculateEthFee(gasPrice, gasLimit);
 
     dispatch({
         type: SEND.HANDLE_FEE_VALUE_CHANGE,
         fee: {
             label: 'custom',
-            feePerUnit: fee,
-            blocks: 2,
+            feePerUnit: gasPrice,
+            feeLimit: gasLimit,
+            feePerTx: '1',
+            blocks: 1,
             value: fee,
         },
     });
@@ -108,15 +110,17 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
     const { account } = getState().wallet.selectedAccount;
     if (!send || !account) return null;
 
-    const gasPrice = send.networkTypeEthereum.gasPrice.value;
+    const gasPrice = send.networkTypeEthereum.gasPrice.value || '0';
     const fee = calculateEthFee(gasPrice, gasLimit);
 
     dispatch({
         type: SEND.HANDLE_FEE_VALUE_CHANGE,
         fee: {
             label: 'custom',
-            feePerUnit: fee,
-            blocks: 2,
+            feePerUnit: gasPrice,
+            feeLimit: gasLimit,
+            feePerTx: '1',
+            blocks: 1,
             value: fee,
         },
     });
