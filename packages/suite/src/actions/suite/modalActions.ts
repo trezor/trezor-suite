@@ -55,8 +55,6 @@ export const onPassphraseSubmit = (value: string) => async (
             save: true,
         },
     });
-
-    dispatch(onCancel());
 };
 
 export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch: Dispatch) => {

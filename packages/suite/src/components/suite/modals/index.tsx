@@ -19,7 +19,7 @@ import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
 import Passphrase from './Passphrase';
-import PassphraseType from './PassphraseType';
+import PassphraseSource from './PassphraseSource';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
 // import ConfirmAddress from './confirm/Address';
@@ -75,19 +75,14 @@ const getDeviceContextModal = (props: Props) => {
             return <PinInvalid device={device} />;
 
         case UI.REQUEST_PASSPHRASE:
-            return (
-                <Passphrase
-                    device={device}
-                    shouldShowSingleInput={!!device.state}
-                    onEnterPassphrase={modalActions.onPassphraseSubmit}
-                />
-            );
+            return <Passphrase device={device} />;
 
         case 'WordRequestType_Plain':
             return <Word />;
 
+        // used in TT legacy firmware
         case 'ButtonRequest_PassphraseType':
-            return <PassphraseType device={device} />;
+            return <PassphraseSource device={device} />;
 
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
