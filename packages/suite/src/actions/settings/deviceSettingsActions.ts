@@ -1,6 +1,5 @@
 import TrezorConnect, { ApplySettingsParams, ChangePinParams } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
-import { SUITE } from '@suite-actions/constants';
 import { DEVICE_SETTINGS } from '@settings-actions/constants';
 
 import { Dispatch, GetState, AcquiredDevice } from '@suite-types';
@@ -64,12 +63,13 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         }),
     );
 
-    if (result.success && device && device.features) {
-        dispatch({
-            type: SUITE.REQUEST_DISCONNECT_DEVICE,
-            payload: device,
-        });
-    }
+    // todo: evaluate in future, see https://github.com/trezor/trezor-suite/issues/1064
+    // if (result.success && device && device.features) {
+    //     dispatch({
+    //         type: SUITE.REQUEST_DISCONNECT_DEVICE,
+    //         payload: device,
+    //     });
+    // }
 };
 
 export const openBackgroundGalleryModal = () => (dispatch: Dispatch, getState: GetState) => {

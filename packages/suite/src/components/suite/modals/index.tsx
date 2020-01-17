@@ -131,6 +131,7 @@ const getDeviceContextModal = (props: Props) => {
                     onCancel={modalActions.onCancel}
                 />
             );
+        // todo: not used at the moment but might be in future, see https://github.com/trezor/trezor-suite/issues/1064
         case SUITE.REQUEST_DISCONNECT_DEVICE:
             return <Disconnect device={device} />;
 

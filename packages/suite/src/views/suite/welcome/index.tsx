@@ -26,8 +26,12 @@ const Index = (props: Props) => (
     <Wrapper>
         <P data-test="welcome-message">Welcome to Trezor Suite!</P>
         <P>Lorem ipsum...</P>
-        <Button onClick={() => props.goto('onboarding-index')}>Let's begin!</Button>
-        <Button onClick={() => props.closeModalApp()}>I want to use suite now!</Button>
+        <Button onClick={() => props.goto('onboarding-index')} data-test="@button/go-to-onboarding">
+            Let's begin!
+        </Button>
+        <Button onClick={() => props.closeModalApp()} data-test="@suite/welcome/go-to-suite">
+            I want to use suite now!
+        </Button>
     </Wrapper>
 );
 

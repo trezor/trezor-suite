@@ -1,5 +1,5 @@
 import * as deviceSettingsActions from '@suite/actions/settings/deviceSettingsActions';
-import { NOTIFICATION, SUITE } from '@suite-actions/constants';
+import { NOTIFICATION } from '@suite-actions/constants';
 import { DEVICE_SETTINGS } from '@settings-actions/constants';
 
 export default [
@@ -8,7 +8,7 @@ export default [
         action: () => deviceSettingsActions.wipeDevice(),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
-            actions: [{ type: NOTIFICATION.ADD }, { type: SUITE.REQUEST_DISCONNECT_DEVICE }],
+            actions: [{ type: NOTIFICATION.ADD }],
         },
     },
     {

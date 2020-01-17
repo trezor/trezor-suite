@@ -8,7 +8,7 @@ describe('Steps order - slightly differs under certain circumstances', () => {
 
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.visit('').onboardingShouldLoad();
+        cy.visit('').goToOnboarding().onboardingShouldLoad();
     });
 
     describe('new device', () => {

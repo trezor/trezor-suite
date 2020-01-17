@@ -15,7 +15,12 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const Index = (props: Props) => (
     <>
         <P data-test="initialize-message">Device is not set up.</P>
-        <Button onClick={() => props.goto('onboarding-index')}>Go to setup wizard</Button>
+        <Button
+            data-test="@button/go-to-onboarding"
+            onClick={() => props.goto('onboarding-index', { cancelable: true })}
+        >
+            Go to setup wizard
+        </Button>
     </>
 );
 

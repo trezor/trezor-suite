@@ -10,17 +10,9 @@ describe('Onboarding happy paths', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    it('this is just example how to use setState command', () => {
-        cy.visit('/').onboardingShouldLoad();
-        // @ts-ignore
-        cy.setState({ onboarding: { activeStepId: 'backup' } });
-        cy.connectDevice({ mode: 'normal' }, { initialized: true, needs_backup: true });
-        cy.get('html').should('contain', 'Backup');
-    });
-
     it(`create new wallet - skip security - appear in wallet`, () => {
         cy.visit('/');
-
+        cy.goToOnboarding();
         cy.onboardingShouldLoad()
             .getTestElement('@onboarding/button-path-create')
             .click()

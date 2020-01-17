@@ -101,8 +101,14 @@ export const goto = (
  * Reverse operation (again without touching history) needs to be done in back action.
  */
 export const closeModalApp = () => async (dispatch: Dispatch) => {
-    // + window.location.hash is here to preserve params (eg nth account)
     dispatch(suiteActions.lockRouter(false));
+    const route = findRoute(Router.pathname + window.location.hash);
+    // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
+    // so we need a fallback to suite-index
+    if (route && route.isModal) {
+        return dispatch(goto('suite-index'));
+    }
+    // + window.location.hash is here to preserve params (eg nth account)
     dispatch(onLocationChange(Router.pathname + window.location.hash));
 };
 
