@@ -12,7 +12,6 @@ import ethUnits from 'ethereumjs-units';
 import CustomFee from './components/CustomFee';
 import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import { DispatchProps } from '../../../../Container';
-import { CUSTOM_FEE } from '@suite/constants/wallet/sendForm';
 
 const Row = styled.div`
     display: flex;
@@ -89,6 +88,8 @@ const CustomFeeWrapper = styled.div`
 interface Props extends WrappedComponentProps {
     feeLevels: FeeLevel[];
     selectedFee: FeeLevel;
+    maxFee: number;
+    minFee: number;
     symbol: Account['symbol'];
     networkType: Account['networkType'];
     onChange: DispatchProps['sendFormActions']['handleFeeValueChange'];
@@ -137,18 +138,16 @@ const FeeComponent = (props: Props) => (
                 value={props.selectedFee}
                 onChange={props.onChange}
                 options={props.feeLevels}
-                formatOptionLabel={(option: FeeLevel) => {
-                    return (
-                        <OptionWrapper>
-                            <OptionLabel>{capitalize(option.label)}</OptionLabel>
-                            {option.value !== '0' && (
-                                <OptionValue>
-                                    {getValue(props.networkType, option, props.symbol)}
-                                </OptionValue>
-                            )}
-                        </OptionWrapper>
-                    );
-                }}
+                formatOptionLabel={(option: FeeLevel) => (
+                    <OptionWrapper>
+                        <OptionLabel>{capitalize(option.label)}</OptionLabel>
+                        {option.value !== '0' && (
+                            <OptionValue>
+                                {getValue(props.networkType, option, props.symbol)}
+                            </OptionValue>
+                        )}
+                    </OptionWrapper>
+                )}
             />
         </Row>
         {props.networkType !== 'ethereum' && (

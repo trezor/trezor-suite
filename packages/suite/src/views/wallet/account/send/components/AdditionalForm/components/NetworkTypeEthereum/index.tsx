@@ -57,7 +57,12 @@ const getErrorData = (error: State['networkTypeEthereum']['data']['error']) => {
     }
 };
 
-const NetworkTypeEthereum = ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
+const NetworkTypeEthereum = ({
+    send,
+    sendFormActions,
+    sendFormActionsEthereum,
+    selectedAccount,
+}: Props) => {
     const { account } = selectedAccount;
     if (!send || !account) return null;
 
@@ -69,7 +74,7 @@ const NetworkTypeEthereum = ({ send, sendFormActionsEthereum, selectedAccount }:
                     <>
                         <Row>
                             <Fee
-                                onChange={() => console.log('change')}
+                                onChange={sendFormActions.handleFeeValueChange}
                                 networkType={account.networkType}
                                 feeLevels={send.feeInfo.levels}
                                 selectedFee={send.selectedFee}
