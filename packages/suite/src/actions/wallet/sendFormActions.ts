@@ -1,5 +1,7 @@
+import * as storageActions from '@suite-actions/storageActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
+import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { Account } from '@wallet-types';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
@@ -9,9 +11,7 @@ import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
 // @ts-ignore
 import ethUnits from 'ethereumjs-units';
-import { ETH_DEFAULT_GAS_PRICE, ETH_DEFAULT_GAS_LIMIT } from '@wallet-constants/sendForm';
 
-import * as storageActions from '@suite-actions/storageActions';
 import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
 import * as ethereumActions from './sendFormSpecific/ethereumActions';
 import * as rippleActions from './sendFormSpecific/rippleActions';
@@ -25,27 +25,31 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!account) return;
 
     let cachedState = null;
+    const convertedEthLevels: FeeLevel[] = [];
     const feeInfo = getState().wallet.fees[account.symbol];
 
-    const levels: FeeLevel[] = feeInfo.levels.concat({
+    const initialLevels: FeeLevel[] = feeInfo.levels.concat({
         label: 'custom',
         feePerUnit: '0',
         value: '0',
         blocks: 0,
     });
 
-    let firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
-
     if (account.networkType === 'ethereum') {
-        firstFeeLevel = {
-            ...firstFeeLevel,
-            feePerUnit: ethUnits.convert(firstFeeLevel.feePerUnit, 'wei', 'gwei'),
-        };
+        initialLevels.forEach(level =>
+            convertedEthLevels.push({
+                ...level,
+                feePerUnit: ethUnits.convert(level.feePerUnit, 'wei', 'gwei'),
+            }),
+        );
     }
 
+    const levels = account.networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+    const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
     const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    // const cachedItem = await storageActions.loadSendForm(accountKey);
-    // cachedState = cachedItem;
+    const cachedItem = await storageActions.loadSendForm(accountKey);
+
+    cachedState = cachedItem;
 
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
