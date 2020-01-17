@@ -762,15 +762,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Hidden wallet',
         id: 'TR_HIDDEN_WALLET',
     },
-    TR_HIDE_BALANCE: {
-        defaultMessage: 'Hide balance',
-        id: 'TR_HIDE_BALANCE',
-    },
-    TR_HIDE_BALANCE_EXPLAINED: {
-        defaultMessage:
-            "Hides your account balance so you don't have to worry about anyone looking over your shoulder.",
-        id: 'TR_HIDE_BALANCE_EXPLAINED',
-    },
     TR_HIDE_PREVIOUS_ADDRESSES: {
         defaultMessage: 'Hide previous addresses',
         id: 'TR_HIDE_PREVIOUS_ADDRESSES',
@@ -1116,10 +1107,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Receive information on important security updates',
         description: 'Subheading in newsletter step',
         id: 'TR_NEWSLETTER_SUBHEADING',
-    },
-    TR_NO_TRANSACTIONS: {
-        defaultMessage: 'No Transactions :(',
-        id: 'TR_NO_TRANSACTIONS',
     },
     TR_OOPS_SOMETHING_WENT_WRONG: {
         defaultMessage: 'Oops! Something went wrong!',
@@ -1604,10 +1591,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKOWN_ERROR_SEE_CONSOLE',
     },
-    TR_UNPLUG_DEVICE_LABEL: {
-        defaultMessage: 'Unplug "{deviceLabel}" device',
-        id: 'TR_UNPLUG_DEVICE_LABEL',
-    },
     TR_UNREADABLE: {
         defaultMessage: 'Unreadable',
         description: 'Device status',
@@ -1948,11 +1931,6 @@ const definedMessages = defineMessages({
     TR_DEVICE: {
         id: 'TR_DEVICE',
         defaultMessage: 'Device',
-        description: 'Category in Settings',
-    },
-    TR_DASHBOARD: {
-        id: 'TR_DASHBOARD',
-        defaultMessage: 'Dashboard',
         description: 'Category in Settings',
     },
     TR_WALLET: {
