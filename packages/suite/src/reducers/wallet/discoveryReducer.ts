@@ -6,21 +6,14 @@ import { ObjectValues } from '@suite/types/utils';
 import { Action as SuiteAction } from '@suite-types';
 import { WalletAction, Network } from '@wallet-types';
 
-export const DISCOVERY_STATUS = {
-    IDLE: 0,
-    RUNNING: 1,
-    STOPPING: 2,
-    STOPPED: 3,
-    COMPLETED: 4,
-} as const;
-
 export interface Discovery {
     deviceState: string;
+    authConfirmationNeeded: boolean;
     index: number;
     total: number;
     loaded: number;
     bundleSize: number;
-    status: ObjectValues<typeof DISCOVERY_STATUS>;
+    status: ObjectValues<typeof DISCOVERY.STATUS>;
     // coins which failed to load
     failed: {
         symbol: string;
