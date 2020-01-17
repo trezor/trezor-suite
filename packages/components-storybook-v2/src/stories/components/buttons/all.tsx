@@ -21,8 +21,8 @@ const ButtonWrapper = styled.div`
 storiesOf('Buttons', module).add(
     'All',
     () => {
-        const variants = ['primary', 'secondary', 'tertiary', 'danger'];
-        const sizes = ['small', 'medium', 'large'];
+        const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
+        const sizes = ['small', 'large'] as const;
 
         return (
             <Wrapper>
@@ -33,8 +33,8 @@ storiesOf('Buttons', module).add(
                                 return (
                                     <ButtonWrapper>
                                         <Button
-                                            variant={variant as 'primary' | 'secondary'}
-                                            size={size as 'small' | 'medium' | 'large'}
+                                            variant={variant}
+                                            size={size}
                                             data-test={`button-${variant}-${size}`}
                                         >
                                             {variant[0].toUpperCase()}
@@ -45,7 +45,7 @@ storiesOf('Buttons', module).add(
                             })}
                             <ButtonWrapper>
                                 <Button
-                                    variant={variant as 'primary' | 'secondary'}
+                                    variant={variant}
                                     data-test={`button-${variant}-icon`}
                                     icon="PLUS"
                                     onClick={() => {
@@ -58,7 +58,7 @@ storiesOf('Buttons', module).add(
                             </ButtonWrapper>
                             <ButtonWrapper>
                                 <Button
-                                    variant={variant as 'primary' | 'secondary'}
+                                    variant={variant}
                                     data-test={`button-${variant}-icon-right`}
                                     icon="PLUS"
                                     alignIcon="right"
@@ -69,7 +69,7 @@ storiesOf('Buttons', module).add(
                             </ButtonWrapper>
                             <ButtonWrapper>
                                 <Button
-                                    variant={variant as 'primary' | 'secondary'}
+                                    variant={variant}
                                     data-test={`button-${variant}-loading`}
                                     isLoading
                                 >
@@ -79,7 +79,7 @@ storiesOf('Buttons', module).add(
                             </ButtonWrapper>
                             <ButtonWrapper>
                                 <Button
-                                    variant={variant as 'primary' | 'secondary'}
+                                    variant={variant}
                                     data-test={`button-${variant}-full-width`}
                                     fullWidth
                                 >
@@ -89,7 +89,7 @@ storiesOf('Buttons', module).add(
                             </ButtonWrapper>
                             <ButtonWrapper>
                                 <Button
-                                    variant={variant as 'primary' | 'secondary'}
+                                    variant={variant}
                                     isDisabled
                                     data-test={`button-${variant}-disabled`}
                                     onClick={() => {
