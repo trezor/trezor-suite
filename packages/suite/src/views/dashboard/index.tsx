@@ -7,6 +7,7 @@ import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
 import ConnectionStatusCard from '@suite-components/ConnectionStatusCard';
 import PortfolioCard from '@suite-components/PortfolioCard';
 import NewsFeed from '@suite-components/NewsFeed';
+import AuthConfirm from '@suite-components/Notifications/components/AuthConfirm';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
@@ -56,6 +57,7 @@ const Dashboard = (props: Props) => {
 
     return (
         <SuiteLayout>
+            {device && device.authConfirm && <AuthConfirm />}
             <Wrapper data-test="@dashboard/index">
                 <PortfolioCard
                     portfolioValue={instanceBalance}
