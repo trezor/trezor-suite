@@ -15,7 +15,7 @@ interface Props extends WrappedComponentProps {
 const UpdateFirmware = ({ device, pathname, intl, goto }: Props) => {
     if (!device || device.type !== 'acquired') return null;
     // don't show notification when user is on firmware update page
-    if (pathname === getRoute('suite-device-firmware')) return null;
+    if (pathname === getRoute('firmware-index')) return null;
 
     // in bootloader, we dont see firmware version (not true from model T), but still, we probably
     // dont want to show this notification
@@ -33,7 +33,7 @@ const UpdateFirmware = ({ device, pathname, intl, goto }: Props) => {
             actions={[
                 {
                     label: intl.formatMessage(messages.TR_SHOW_DETAILS),
-                    callback: () => goto('suite-device-firmware'),
+                    callback: () => goto('firmware-index'),
                 },
             ]}
         />

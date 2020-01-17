@@ -25,13 +25,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     requestDeviceInstance: bindActionCreators(suiteActions.requestDeviceInstance, dispatch),
 });
 
-interface OwnProps extends WrappedComponentProps {
-    isOpen: boolean;
-    closeModal: () => void;
-}
-
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export type Props = StateProps & DispatchProps & OwnProps;
+export type Props = StateProps & DispatchProps & WrappedComponentProps;
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Component));

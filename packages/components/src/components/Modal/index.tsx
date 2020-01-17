@@ -60,7 +60,12 @@ const Modal = ({ children, cancelable, onCancel }: Props) => {
                 {children}
                 {cancelable && (
                     <StyledLink onClick={onCancel}>
-                        <Icon size={14} color={colors.TEXT_SECONDARY} icon="CLOSE" />
+                        <Icon
+                            size={14}
+                            color={colors.TEXT_SECONDARY}
+                            icon="CLOSE"
+                            data-test="@modal/close"
+                        />
                     </StyledLink>
                 )}
             </ModalWindow>

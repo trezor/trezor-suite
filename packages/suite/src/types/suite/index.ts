@@ -100,3 +100,9 @@ export interface UnknownDevice {
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 export type Store = ReduxStore<AppState, Action>;
+
+export type InjectedModalApplicationProps = {
+    modal: React.ReactNode;
+    cancelable: boolean;
+    closeModalApp: () => void;
+};

@@ -7,7 +7,7 @@
     "author": "SatoshiLabs s.r.o.",
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
-        "lint": "run-s lint:*",
+        "lint": "yarn lint:styles && yarn lint:js",
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.tsx,.ts}'",
         "lint-fix": "npx eslint ./src --fix",

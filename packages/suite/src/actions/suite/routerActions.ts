@@ -4,8 +4,15 @@
  */
 import Router from 'next/router';
 import { Route } from '@suite-constants/routes';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { getPrefixedURL, getRoute, findRouteByName, RouteParams } from '@suite-utils/router';
+import {
+    getPrefixedURL,
+    getRoute,
+    findRoute,
+    findRouteByName,
+    RouteParams,
+} from '@suite-utils/router';
 import { Dispatch, GetState } from '@suite-types';
 
 interface LocationChange {
@@ -37,7 +44,9 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
  */
 export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
     const { locks } = getState().suite;
-    return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
+    const isLocked = locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI);
+    const hasActionModal = getState().modal.context !== '@modal/context-none';
+    return !isLocked && !hasActionModal;
 };
 
 /**
@@ -65,14 +74,18 @@ export const goto = (
     preserveParams = false,
 ) => async (dispatch: Dispatch) => {
     const unlocked = dispatch(onBeforePopState());
-    if (!unlocked) return;
-
     const url = getRoute(routeName, params);
-
     const route = findRouteByName(routeName);
     if (route && route.isModal) {
-        return dispatch(onLocationChange(url));
+        if (!unlocked) {
+            dispatch(suiteActions.lockRouter(false));
+        }
+        dispatch(onLocationChange(url));
+        dispatch(suiteActions.lockRouter(true));
+        return;
     }
+
+    if (!unlocked) return;
 
     if (preserveParams) {
         const { hash } = window.location;
@@ -87,19 +100,28 @@ export const goto = (
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-export const back = () => async (dispatch: Dispatch) => {
+export const closeModalApp = () => async (dispatch: Dispatch) => {
+    dispatch(suiteActions.lockRouter(false));
+    const route = findRoute(Router.pathname + window.location.hash);
+    // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
+    // so we need a fallback to suite-index
+    if (route && route.isModal) {
+        return dispatch(goto('suite-index'));
+    }
     // + window.location.hash is here to preserve params (eg nth account)
     dispatch(onLocationChange(Router.pathname + window.location.hash));
 };
 
 /**
  * Called from `@suite-middlewares/suiteMiddleware`
- * Redirects to onboarding if `suite.initialRun` is set to true
+ * Redirects to requested modal app or welcome screen if `suite.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
+    const route = findRoute(Router.pathname + window.location.hash);
     const { initialRun } = getState().suite;
-    const unlocked = dispatch(onBeforePopState());
-    if (initialRun && unlocked) {
-        await dispatch(goto('onboarding-index'));
+    if (route && route.isModal) {
+        await dispatch(goto(route.name));
+    } else if (initialRun) {
+        await dispatch(goto('suite-welcome'));
     }
 };

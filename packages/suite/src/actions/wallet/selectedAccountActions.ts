@@ -147,11 +147,15 @@ const getAccountState = () => (
 
     // get params from router
     // or set first default account from discovery list
-    const params = state.router.params || {
-        accountIndex: 0,
-        accountType: 'normal',
-        symbol: discovery.networks[0] || 'btc',
-    };
+    const params =
+        state.router.app === 'wallet' && state.router.params
+            ? state.router.params
+            : {
+                  paramsType: 'wallet' as const,
+                  accountIndex: 0,
+                  accountType: 'normal' as const,
+                  symbol: discovery.networks[0] || 'btc',
+              };
 
     const network = NETWORKS.find(c => c.symbol === params.symbol)!;
 

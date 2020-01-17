@@ -19,8 +19,6 @@ const Base = styled.div`
 `;
 
 const WelcomeStep = (props: Props) => {
-    console.log('render');
-
     return (
         <Wrapper.Step data-test="onboarding_first_page">
             <Wrapper.StepBody>
@@ -59,10 +57,7 @@ const WelcomeStep = (props: Props) => {
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                <OnboardingButton.Back
-                    data-test="button-use-wallet"
-                    onClick={() => props.closeModalApp()}
-                >
+                <OnboardingButton.Back data-test="button-use-wallet" onClick={props.closeModalApp}>
                     {/* TODO proper texts, I dunno */}
                     <Translation {...messages.TR_BACK} />
                 </OnboardingButton.Back>

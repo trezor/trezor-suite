@@ -101,7 +101,7 @@ describe('redirectMiddleware', () => {
                 type: DEVICE.CONNECT,
                 payload: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
             });
-            expect(goto).toHaveBeenNthCalledWith(1, 'suite-device-firmware');
+            expect(goto).toHaveBeenNthCalledWith(1, 'firmware-index');
         });
 
         it('SUITE.SELECT_DEVICE reset wallet params', () => {

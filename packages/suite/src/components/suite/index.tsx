@@ -1,4 +1,3 @@
-import AcquireDevice from './AcquireDevice';
 import Backdrop from './Backdrop';
 import Footer from './Footer';
 import DeviceIcon from './images/DeviceIcon';
@@ -13,7 +12,6 @@ import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
 
 export {
-    AcquireDevice,
     Backdrop,
     Footer,
     DeviceIcon,

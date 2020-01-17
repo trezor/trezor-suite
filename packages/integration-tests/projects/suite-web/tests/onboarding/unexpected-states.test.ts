@@ -5,7 +5,7 @@ describe('Onboarding unexpected states', () => {
 
     it('user selects he is going to use device as a new one and it is already connected, we detect this and notify user about the fact it is not new', () => {
         cy.visit('/');
-        cy.onboardingShouldLoad()
+        cy.goToOnboarding().onboardingShouldLoad()
             .connectDevice({ firmware: 'valid' })
             .getTestElement('@onboarding/button-path-create')
             .click()

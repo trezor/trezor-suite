@@ -5,6 +5,7 @@ import { SUITE } from '@suite-actions/constants';
 import { FIRMWARE } from '@settings-actions/constants';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
 import routerReducer from '@suite-reducers/routerReducer';
+import modalReducer from '@suite-reducers/modalReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import firmwareMiddleware from '@suite-middlewares/firmwareMiddleware';
 
@@ -32,6 +33,7 @@ export const getInitialState = (
             ...suiteReducer(undefined, { type: 'foo' } as any),
             ...suite,
         },
+        modal: modalReducer(undefined, { type: 'foo' } as any),
     };
 };
 
