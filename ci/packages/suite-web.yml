@@ -24,7 +24,7 @@ suite-web deploy dev:
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     tags:
-      - deploy
+        - deploy
 
 suite-web test integration google-chrome:
     stage: integration testing

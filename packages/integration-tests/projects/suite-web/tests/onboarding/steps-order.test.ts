@@ -7,7 +7,6 @@ describe('Steps order - slightly differs under certain circumstances', () => {
     });
 
     beforeEach(() => {
-        cy.wait(800);
         cy.viewport(1024, 768).resetDb();
         cy.visit('').onboardingShouldLoad();
     });
