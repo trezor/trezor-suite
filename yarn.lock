@@ -14990,10 +14990,10 @@ is-utf8@^0.2.0:
   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
   integrity sha1-Sw2hRCEE0bM2NA6AeX6GXPOffXI=
 
-is-website-vulnerable@^1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/is-website-vulnerable/-/is-website-vulnerable-1.10.1.tgz#7512c9d256354a3f57f8201016824e2e5da67e9a"
-  integrity sha512-GRR7emWrcS1PuV6AhKb0MQEVsWLQi7zWW7y1lAnQCFq0+v26YldFSp7RNXAuPcuHZ0LPuvTtB4etotkgfsveGQ==
+is-website-vulnerable@^1.10.2:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/is-website-vulnerable/-/is-website-vulnerable-1.10.2.tgz#862fc6d15483a8473865e10d99eeba1b8ce38eaa"
+  integrity sha512-Aojtn2YCEDrwjxz9kWSlBX8uuo1HNAgzFEX/qpCURHJ7KpVGYFvdm6C8uNyQg4uxMjTJX2Y2II8yFlItNRgVwQ==
   dependencies:
     chalk "2.4.2"
     debug "4.1.1"
