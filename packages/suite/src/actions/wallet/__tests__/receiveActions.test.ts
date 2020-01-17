@@ -4,7 +4,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import receiveReducer from '@wallet-reducers/receiveReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
-import fixtures from './fixtures/receiveActions';
+import fixtures from '../__fixtures__/receiveActions';
 
 const { getSuiteDevice } = global.JestMocks;
 

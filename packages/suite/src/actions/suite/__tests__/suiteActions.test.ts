@@ -12,7 +12,7 @@ import routerReducer from '@suite-reducers/routerReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import * as suiteActions from '../suiteActions';
 import { init } from '../trezorConnectActions';
-import fixtures from './fixtures/suiteActions';
+import fixtures from '../__fixtures__/suiteActions';
 
 jest.mock('trezor-connect', () => {
     let fixture: any;

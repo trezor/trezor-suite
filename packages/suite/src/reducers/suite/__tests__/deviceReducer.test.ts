@@ -1,6 +1,6 @@
 import deviceReducer from '@suite-reducers/deviceReducer';
 import { Action } from '@suite-types';
-import fixtures from './fixtures/deviceReducer';
+import fixtures from '../__fixtures__/deviceReducer';
 
 type State = ReturnType<typeof deviceReducer>;
 

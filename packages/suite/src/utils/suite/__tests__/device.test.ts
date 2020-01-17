@@ -1,6 +1,6 @@
 import * as utils from '@suite-utils/device';
 import { AcquiredDevice } from '@suite-types';
-import fixtures from './fixtures/device';
+import fixtures from '../__fixtures__/device';
 
 describe('getStatus + getStatusName + getStatusColor', () => {
     fixtures.getStatus.forEach(f => {
