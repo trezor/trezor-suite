@@ -1,17 +1,17 @@
-# suite lint:
-#     stage: lint
-#     script:
-#         - yarn workspace @trezor/suite lint
+suite lint:
+    stage: lint
+    script:
+        - yarn workspace @trezor/suite lint
   
-# suite type-check:
-#     stage: typescript type check
-#     script:
-#         - yarn workspace @trezor/suite type-check
+suite type-check:
+    stage: typescript type check
+    script:
+        - yarn workspace @trezor/suite type-check
 
-# suite unit tests:
-#     stage: unit tests
-#     script:
-#         - yarn workspace @trezor/suite test:unit
+suite unit tests:
+    stage: unit tests
+    script:
+        - yarn workspace @trezor/suite test:unit
 
 suite test integration:
     only:
@@ -20,14 +20,14 @@ suite test integration:
     script:
         - yarn workspace @trezor/suite test-health
 
-# suite check outdated:
-#     stage: misc
-#     only:
-#         refs:
-#             - develop
-#     allow_failure: true
-#     script:
-#       - ./ci/scripts/outdated.sh
+suite check outdated:
+    stage: misc
+    only:
+        refs:
+            - develop
+    allow_failure: true
+    script:
+        - ./ci/scripts/outdated.sh
 
 suite check unused messages:
     stage: misc

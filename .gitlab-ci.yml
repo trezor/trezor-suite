@@ -14,7 +14,6 @@ cache:
         - packages/components-v2/node_modules/
         - packages/components-storybook/node_modules/
         - packages/components-storybook-v2/node_modules/
-        - packages/connect-explorer/node_modules/
         - packages/rollout/node_modules/
         - packages/suite/node_modules/
         - packages/suite-web/node_modules/
@@ -51,13 +50,13 @@ stages:
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    # - ci/packages/components-storybook.yml
-    # - ci/packages/components-storybook-v2.yml
-    # - ci/packages/components.yml
-    # - ci/packages/components-v2.yml
-    # - ci/packages/rollout.yml
-    # - ci/packages/blockchain-link.yml
-    # - ci/packages/suite.yml
+    - ci/packages/components-storybook.yml
+    - ci/packages/components-storybook-v2.yml
+    - ci/packages/components.yml
+    - ci/packages/components-v2.yml
+    - ci/packages/rollout.yml
+    - ci/packages/blockchain-link.yml
+    - ci/packages/suite.yml
     - ci/packages/suite-web.yml
-    # - ci/packages/suite-desktop.yml
-    # - ci/packages/suite-native.yml
+    - ci/packages/suite-desktop.yml
+    - ci/packages/suite-native.yml
