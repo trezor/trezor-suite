@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { colors, Button, variables } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 // import parser from 'fast-xml-parser';
 
 const StyledCard = styled(Card)`
@@ -148,7 +150,9 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
     return (
         <Section {...rest}>
             <SectionHeader>
-                <SectionTitle>What's new</SectionTitle>
+                <SectionTitle>
+                    <Translation {...messages.TR_WHATS_NEW} />
+                </SectionTitle>
                 <SectionAction>
                     <Button
                         variant="tertiary"
@@ -158,7 +162,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                             console.log('do something');
                         }}
                     >
-                        Mark all as read
+                        <Translation {...messages.TR_MARK_ALL_AS_READ} />
                     </Button>
                 </SectionAction>
             </SectionHeader>
@@ -203,7 +207,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                             </Description>
                             <CTAWrapper>
                                 <CTAButton size="small" variant="tertiary">
-                                    Read more
+                                    <Translation {...messages.TR_READ_MORE} />
                                 </CTAButton>
                             </CTAWrapper>
                         </Right>
@@ -219,7 +223,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                         console.log('do something');
                     }}
                 >
-                    Show older news
+                    <Translation {...messages.TR_SHOW_OLDER_NEWS} />
                 </Button>
             </BottomAction>
         </Section>

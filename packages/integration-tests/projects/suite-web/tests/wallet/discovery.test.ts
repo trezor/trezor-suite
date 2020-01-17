@@ -18,7 +18,7 @@ describe.skip('Discovery', () => {
             .onboardingShouldLoad()
             .getTestElement('button-use-wallet')
             .click()
-            .walletShouldLoad()
+            .dashboardShouldLoad()
             .toggleDeviceMenu()
             .getTestElement('@suite/menu-item/wallet-settings')
             .click();

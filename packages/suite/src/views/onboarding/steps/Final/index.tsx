@@ -15,7 +15,7 @@ const FinalStep = ({ closeModalApp }: Props) => (
             <Translation>{messages.TR_FINAL_SUBHEADING}</Translation>
         </H2>
         <Wrapper.Controls>
-            <OnboardingButton.Cta onClick={() => closeModalApp()}>Finish</OnboardingButton.Cta>
+            <OnboardingButton.Cta onClick={closeModalApp}>Finish</OnboardingButton.Cta>
         </Wrapper.Controls>
     </Wrapper.Step>
 );

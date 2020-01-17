@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import * as fixtures from '../__fixtures__/routerActions';
+import modalReducer from '@suite-reducers/modalReducer';
 import * as routerActions from '../routerActions';
 
 jest.mock('next/router', () => {
@@ -42,6 +43,7 @@ export const getInitialState = (state: InitialState | undefined) => {
             ...routerReducer(undefined, { type: 'foo' } as any),
             ...router,
         },
+        modal: modalReducer(undefined, { type: 'foo' } as any),
     };
 };
 
@@ -89,11 +91,13 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
+            require('next/router').default.pathname = f.pathname || '/';
+            // eslint-disable-next-line global-require
             require('next/router').setDispatch((url: string) => {
                 store.dispatch(routerActions.onLocationChange(url));
             });
             store.dispatch(routerActions.initialRedirection());
-            expect(store.getActions().length).toEqual(f.result ? 1 : 0);
+            expect(store.getState().router.app).toEqual(f.app);
         });
     });
 
@@ -128,11 +132,15 @@ describe('Suite Actions', () => {
         expect(store.getActions().length).toEqual(0);
     });
 
-    it('back', () => {
+    it('closeModalApp', () => {
         // @ts-ignore this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
-        store.dispatch(routerActions.back());
-        expect(store.getActions().length).toEqual(1);
+        // eslint-disable-next-line global-require
+        require('next/router').default.pathname = '/wallet/send';
+        store.dispatch(routerActions.closeModalApp());
+        expect(store.getActions().length).toEqual(2); // unlock + location change
+        expect(store.getState().router.app).toEqual('wallet');
+        expect(store.getState().router.pathname).toEqual('/wallet/send');
     });
 });

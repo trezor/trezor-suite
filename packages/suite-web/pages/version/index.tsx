@@ -1,3 +1,4 @@
-import Version from '@suite-views/version';
+// This route will be displayed as ApplicationModal
+import SuiteLayout from '@suite-components/SuiteLayout';
 
-export default Version;
+export default SuiteLayout;

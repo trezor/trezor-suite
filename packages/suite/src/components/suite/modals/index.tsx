@@ -10,7 +10,8 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { MODAL, SUITE, DEVICE_SETTINGS } from '@suite-actions/constants';
+import { MODAL, SUITE } from '@suite-actions/constants';
+import { DEVICE_SETTINGS } from '@settings-actions/constants';
 import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
@@ -33,14 +34,10 @@ import QrScanner from './Qr';
 import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
 
-import Firmware from '@firmware-views';
-import Onboarding from '@onboarding-views';
-
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
     devices: state.devices,
-    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -50,7 +47,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> & {
+        background?: boolean;
+    };
 
 const getDeviceContextModal = (props: Props) => {
     // const { modal, modalActions } = props;
@@ -131,6 +131,7 @@ const getDeviceContextModal = (props: Props) => {
                     onCancel={modalActions.onCancel}
                 />
             );
+        // todo: not used at the moment but might be in future, see https://github.com/trezor/trezor-suite/issues/1064
         case SUITE.REQUEST_DISCONNECT_DEVICE:
             return <Disconnect device={device} />;
 
@@ -186,10 +187,9 @@ const getQrModal = (props: Props) => {
 
 // modal container component
 const Modal = (props: Props) => {
-    const { modal, router } = props;
+    const { modal } = props;
 
     let modalComponent = null;
-    let appModalComponent = null;
 
     switch (modal.context) {
         case MODAL.CONTEXT_NONE:
@@ -208,36 +208,22 @@ const Modal = (props: Props) => {
             break;
     }
 
-    if (router.route && router.route.isModal) {
-        switch (router.app) {
-            case 'firmware':
-                appModalComponent = <Firmware modal={modalComponent} />;
-                break;
-            case 'onboarding':
-                appModalComponent = <Onboarding modal={modalComponent} />;
-                break;
-            default:
-                break;
-        }
+    if (!modalComponent) return null;
+
+    const useBackground = typeof props.background === 'boolean' ? props.background : true;
+    if (useBackground) {
+        return (
+            <ModalComponent
+                // if modal has onCancel action set cancelable to true and pass the onCancel action
+                cancelable={modalComponent.props.onCancel}
+                onCancel={modalComponent.props.onCancel}
+            >
+                <FocusLock>{modalComponent}</FocusLock>
+            </ModalComponent>
+        );
     }
 
-    if (appModalComponent) {
-        return <ModalComponent>{appModalComponent}</ModalComponent>;
-    }
-
-    if (!modalComponent) {
-        return null;
-    }
-
-    return (
-        <ModalComponent
-            // if modal has onCancel action set cancelable to true and pass the onCancel action
-            cancelable={modalComponent.props.onCancel}
-            onCancel={modalComponent.props.onCancel}
-        >
-            <FocusLock>{modalComponent}</FocusLock>
-        </ModalComponent>
-    );
+    return <FocusLock>{modalComponent}</FocusLock>;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);

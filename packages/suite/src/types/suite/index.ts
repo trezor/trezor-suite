@@ -20,7 +20,7 @@ import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import OnboardingActions from '@onboarding-types/actions';
-import { DeviceSettingsActions } from '@suite-actions/deviceSettingsActions';
+import { SettingsActions } from '@settings-types';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 
@@ -47,7 +47,7 @@ export type Action =
     | NotificationActions
     | WalletAction
     | OnboardingActions
-    | DeviceSettingsActions;
+    | SettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
 export type Dispatch = ThunkDispatch<AppState, any, Action>;
@@ -100,3 +100,9 @@ export interface UnknownDevice {
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 export type Store = ReduxStore<AppState, Action>;
+
+export type InjectedModalApplicationProps = {
+    modal: React.ReactNode;
+    cancelable: boolean;
+    closeModalApp: () => void;
+};

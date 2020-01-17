@@ -1,4 +1,3 @@
-import { SettingsActions } from '@wallet-actions/settingsActions';
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
@@ -22,6 +21,7 @@ import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
+import { WalletParams as WalletParams$ } from '@suite-utils/router';
 import { ArrayElement } from '../utils';
 
 export type Network = ArrayElement<typeof NETWORKS>;
@@ -32,6 +32,7 @@ export type Account = Account$;
 export type Icon = Icon$;
 export type Fiat = Fiat$;
 export type Discovery = Discovery$;
+export type WalletParams = WalletParams$;
 
 interface BlockchainLinkToken {
     name: string;
@@ -41,7 +42,6 @@ interface BlockchainLinkToken {
 
 export type WalletAction =
     | BlockchainActions
-    | SettingsActions
     | ReceiveActions
     | SendFormActions
     | SendFormBtcActions

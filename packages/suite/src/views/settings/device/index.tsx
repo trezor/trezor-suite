@@ -3,15 +3,17 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
 import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
+
+import { SUITE } from '@suite-actions/constants';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { SuiteLayout, SettingsMenu } from '@suite-components';
+import { SuiteLayout } from '@suite-components';
+import { Menu as SettingsMenu } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
+import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
 
 import { Props } from './Container';
-import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
 
 import {
     Section,
@@ -43,7 +45,7 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openBackgroundGalleryModal,
-    openModalApp,
+    goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
@@ -62,10 +64,10 @@ const Settings = ({
     const { features } = device;
 
     const DISPLAY_ROTATIONS = [
-        { label: 'North', value: 0 },
-        { label: 'East', value: 90 },
-        { label: 'South', value: 180 },
-        { label: 'West', value: 270 },
+        { label: <Translation {...messages.TR_NORTH} />, value: 0 },
+        { label: <Translation {...messages.TR_EAST} />, value: 90 },
+        { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
+        { label: <Translation {...messages.TR_WEST} />, value: 270 },
     ] as const;
 
     return (
@@ -158,11 +160,11 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() => openModalApp('suite-device-firmware')}
+                                onClick={() => goto('firmware-index', { cancelable: true })}
                                 isDisabled={uiLocked}
                                 data-test="@suite/settings/device/update-button"
                             >
-                                Check for update
+                                <Translation {...messages.TR_CHECK_FOR_UPDATES} />
                             </ActionButton>
                         </ActionColumn>
                     </Row>

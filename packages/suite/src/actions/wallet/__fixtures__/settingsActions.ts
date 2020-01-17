@@ -1,10 +1,10 @@
-import * as settingsActions from '@wallet-actions/settingsActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 
 export default [
     {
         description: 'Btc should be visible as a default if no initial state provided',
         initialState: {},
-        action: () => settingsActions.changeCoinVisibility('ltc', true),
+        action: () => walletSettingsActions.changeCoinVisibility('ltc', true),
         result: {
             enabledNetworks: ['btc', 'ltc'],
         },
@@ -12,7 +12,7 @@ export default [
     {
         description: 'Enable already enabled network',
         initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () => settingsActions.changeCoinVisibility('ltc', true),
+        action: () => walletSettingsActions.changeCoinVisibility('ltc', true),
         result: {
             enabledNetworks: ['btc', 'ltc'],
         },
@@ -20,7 +20,7 @@ export default [
     {
         description: 'Disable already enabled network',
         initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () => settingsActions.changeCoinVisibility('ltc', false),
+        action: () => walletSettingsActions.changeCoinVisibility('ltc', false),
         result: {
             enabledNetworks: ['btc'],
         },
@@ -28,7 +28,7 @@ export default [
     {
         description: 'Set hide balance true',
         initialState: { discreetMode: false },
-        action: () => settingsActions.setDiscreetMode(true),
+        action: () => walletSettingsActions.setDiscreetMode(true),
         result: {
             discreetMode: true,
         },
@@ -36,7 +36,7 @@ export default [
     {
         description: 'Set hide balance false',
         initialState: { discreetMode: true },
-        action: () => settingsActions.setDiscreetMode(false),
+        action: () => walletSettingsActions.setDiscreetMode(false),
         result: {
             discreetMode: false,
         },
@@ -44,7 +44,7 @@ export default [
     {
         description: 'Change networks',
         initialState: { enabledNetworks: [] },
-        action: () => settingsActions.changeNetworks(['ltc', 'eth']),
+        action: () => walletSettingsActions.changeNetworks(['ltc', 'eth']),
         result: {
             enabledNetworks: ['ltc', 'eth'],
         },
@@ -52,7 +52,8 @@ export default [
     {
         description: 'toggleGroupCoinsVisibility - show all ethereum like',
         initialState: { enabledNetworks: [] },
-        action: () => settingsActions.toggleGroupCoinsVisibility(n => n.networkType === 'ethereum'),
+        action: () =>
+            walletSettingsActions.toggleGroupCoinsVisibility(n => n.networkType === 'ethereum'),
         result: {
             enabledNetworks: ['eth', 'etc', 'trop'],
         },
@@ -60,7 +61,8 @@ export default [
     {
         description: 'toggleGroupCoinsVisibility - hide all ethereum like',
         initialState: { enabledNetworks: ['btc', 'eth'] },
-        action: () => settingsActions.toggleGroupCoinsVisibility(n => n.networkType === 'ethereum'),
+        action: () =>
+            walletSettingsActions.toggleGroupCoinsVisibility(n => n.networkType === 'ethereum'),
         result: {
             enabledNetworks: ['btc'],
         },
@@ -68,7 +70,7 @@ export default [
     {
         description: 'toggleGroupCoinsVisibility - hide all (no filter provided)',
         initialState: { enabledNetworks: ['btc', 'eth'] },
-        action: () => settingsActions.toggleGroupCoinsVisibility(undefined),
+        action: () => walletSettingsActions.toggleGroupCoinsVisibility(undefined),
         result: {
             enabledNetworks: [],
         },
@@ -76,7 +78,7 @@ export default [
     {
         description: 'setLocalCurrency',
         initialState: { localCurrency: 'eur' },
-        action: () => settingsActions.setLocalCurrency('usd'),
+        action: () => walletSettingsActions.setLocalCurrency('usd'),
         result: {
             localCurrency: 'usd',
         },

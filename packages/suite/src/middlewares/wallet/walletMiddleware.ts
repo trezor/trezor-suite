@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
-import { ACCOUNT, SETTINGS } from '@wallet-actions/constants';
+import { ACCOUNT } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
@@ -46,7 +47,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     api.dispatch(selectedAccountActions.getStateForAction(action));
 
-    if (action.type === SETTINGS.CHANGE_NETWORKS) {
+    if (action.type === WALLET_SETTINGS.CHANGE_NETWORKS) {
         api.dispatch(handleRatesUpdate());
     }
 
