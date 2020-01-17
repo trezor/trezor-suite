@@ -2,10 +2,11 @@
 
 describe('Onboarding happy paths', () => {
     beforeEach(() => {
-        cy.task('startBridge')
-            .task('startEmu')
-            .task('wipeEmu')
-            .task('stopEmu');
+        cy.task('stopBridge');
+        cy.task('startBridge');
+        cy.task('startEmu');
+        cy.task('wipeEmu');
+        cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
     });
 
@@ -49,7 +50,8 @@ describe('Onboarding happy paths', () => {
 
         cy.get('html')
             .should('contain', 'Take me to security')
-            .getTestElement('button-exit-app')
-            .click();
+            .getTestElement('button-exit-app');
+        // click() removed it for now. I need reproducible runs to compare line by line faild and succeeded once
+        // and going to wallet SOMETIMES managed to trigger discovery process resulting in more lines (bridge calls logs)
     });
 });

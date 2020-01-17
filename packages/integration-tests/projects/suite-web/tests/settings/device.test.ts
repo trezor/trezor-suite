@@ -3,9 +3,10 @@ import { homescreensT2 } from '@suite-constants';
 
 describe('Device settings', () => {
     beforeEach(() => {
-        cy.task('startBridge')
-            .task('startEmu')
-            .task('setupEmu');
+        cy.task('stopBridge');
+        cy.task('startBridge');
+        cy.task('startEmu');
+        cy.task('setupEmu');
 
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();
@@ -14,7 +15,7 @@ describe('Device settings', () => {
             .onboardingShouldLoad()
             .getTestElement('button-use-wallet')
             .click()
-            .walletShouldLoad()
+            .dashboardShouldLoad()
             .getTestElement('@suite/menu/settings')
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')

@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 describe('Steps order - slightly differs under certain circumstances', () => {
-    beforeEach(() => {
+    before(() => {
+        cy.task('stopBridge');
         cy.task('stopEmu');
+    });
+
+    beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
         cy.visit('').onboardingShouldLoad();
     });
