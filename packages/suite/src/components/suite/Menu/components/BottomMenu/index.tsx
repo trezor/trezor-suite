@@ -54,12 +54,20 @@ const In = styled.div<ComponentProps>`
     flex: 1;
     flex-direction: flex-start;
     align-items: center;
+    padding-left: 10px;
 
     ${props =>
         props.isActive &&
         css`
-            padding-left: 10px;
             background: ${colors.WHITE};
+        `}
+
+    ${props =>
+        !props.isActive &&
+        css`
+            &:hover {
+                background-color: ${colors.BLACK25};
+            }
         `}
 `;
 
