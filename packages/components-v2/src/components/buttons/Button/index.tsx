@@ -7,7 +7,7 @@ import { FONT_SIZE } from '../../../config/variables';
 import FluidSpinner from '../../FluidSpinner';
 
 const BUTTON_PADDING = {
-    small: '4px 12px',
+    small: '3px 12px',
     large: '9px 12px',
 };
 
@@ -26,7 +26,6 @@ const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
 
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
-    width: ${props => (props.fullWidth ? '100%' : 'auto')};
     align-items: center;
     justify-content: center;
     white-space: nowrap;
@@ -36,9 +35,14 @@ const Wrapper = styled.button<WrapperProps>`
     font-weight: ${props => (props.variant === 'primary' ? 600 : 500)};
     color: ${colors.BLACK25};
     outline: none;
-    line-height: ${props => (props.size === 'small' ? 1.1428571429 : 'auto')};
     padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
     height: ${props => (props.variant === 'tertiary' ? '20px' : 'auto')};
+
+    ${props =>
+        props.fullWidth &&
+        css`
+            width: 100%;
+        `}
 
     ${props =>
         props.variant === 'primary' &&
