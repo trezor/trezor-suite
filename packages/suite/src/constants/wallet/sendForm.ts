@@ -14,6 +14,8 @@ export const FIRST_OUTPUT_ID = 0;
 export const BTC_RBF_SEQUENCE = 0xffffffff - 2;
 export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
+export const ETH_DEFAULT_GAS_PRICE = '21000';
+export const ETH_DEFAULT_GAS_LIMIT = '1';
 
 // UI
 export const LABEL_HEIGHT = 38;

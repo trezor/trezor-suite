@@ -7,8 +7,12 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
+// @ts-ignore
+import ethUnits from 'ethereumjs-units';
+import CustomFee from './components/CustomFee';
 
 import { DispatchProps } from '../../../../Container';
+import { CUSTOM_FEE } from '@suite/constants/wallet/sendForm';
 
 const Row = styled.div`
     display: flex;
@@ -51,6 +55,7 @@ const RefreshColumn = styled(Column)`
 
 const RefreshText = styled.div`
     padding-left: 5px;
+    cursor: pointer;
 `;
 
 const HelpColumn = styled(Column)`
@@ -77,6 +82,10 @@ const OptionLabel = styled(P)`
 
 const StyledSelect = styled(Select)``;
 
+const CustomFeeWrapper = styled.div`
+    margin-top: 10px;
+`;
+
 interface Props extends WrappedComponentProps {
     feeLevels: FeeLevel[];
     selectedFee: FeeLevel;
@@ -93,9 +102,15 @@ const getValue = (
     networkType: Account['networkType'],
     value: string,
     symbol: Account['symbol'],
+    label: string,
 ) => {
     if (networkType === 'bitcoin') {
         return `${value} sat/B`;
+    }
+
+    // fee for eth is calculated in actions
+    if (networkType === 'ethereum' && label === CUSTOM_FEE) {
+        return `${value} ${symbol.toUpperCase()}`;
     }
 
     return `${formatNetworkAmount(value, symbol)} ${symbol.toUpperCase()}`;
@@ -129,7 +144,12 @@ const FeeComponent = (props: Props) => (
                             <OptionLabel>{capitalize(option.label)}</OptionLabel>
                             {option.value !== '0' && (
                                 <OptionValue>
-                                    {getValue(props.networkType, option.value, props.symbol)}
+                                    {getValue(
+                                        props.networkType,
+                                        option.value,
+                                        props.symbol,
+                                        option.label,
+                                    )}
                                 </OptionValue>
                             )}
                         </OptionWrapper>
@@ -137,7 +157,13 @@ const FeeComponent = (props: Props) => (
                 }}
             />
         </Row>
-        <Row>aa</Row>
+        {props.networkType !== 'ethereum' && (
+            <Row>
+                <CustomFeeWrapper>
+                    <CustomFee symbol={props.symbol} networkType={props.networkType} />
+                </CustomFeeWrapper>
+            </Row>
+        )}
     </Wrapper>
 );
 

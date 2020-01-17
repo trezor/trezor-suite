@@ -26,6 +26,7 @@ const NetworkTypeXrp = ({
                 left={
                     <Fee
                         maxFee={send.feeInfo.maxFee}
+                        networkType={account.networkType}
                         minFee={send.feeInfo.minFee}
                         selectedFee={send.selectedFee}
                         symbol={account.symbol}

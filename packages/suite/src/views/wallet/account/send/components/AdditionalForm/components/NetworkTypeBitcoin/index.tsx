@@ -19,6 +19,7 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) =
                 left={
                     <Fee
                         symbol={account.symbol}
+                        networkType={account.networkType}
                         maxFee={send.feeInfo.maxFee}
                         selectedFee={send.selectedFee}
                         minFee={send.feeInfo.minFee}

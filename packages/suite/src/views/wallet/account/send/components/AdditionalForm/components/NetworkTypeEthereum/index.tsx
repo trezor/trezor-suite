@@ -97,7 +97,7 @@ const NetworkTypeEthereum = ({ send, sendFormActionsEthereum, selectedAccount }:
                                 state={getInputState(gasPrice.error, gasPrice.value)}
                                 topLabel={<GasPriceTopLabel />}
                                 bottomText={getErrorGasPrice(gasPrice.error)}
-                                value={send.networkTypeEthereum.gasPrice.value || ''}
+                                value={gasPrice.value || ''}
                                 onChange={e =>
                                     sendFormActionsEthereum.handleGasPrice(e.target.value)
                                 }

@@ -32,8 +32,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    const cachedItem = await storageActions.loadSendForm(accountKey);
-    cachedState = cachedItem;
+    // const cachedItem = await storageActions.loadSendForm(accountKey);
+    // cachedState = cachedItem;
 
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
