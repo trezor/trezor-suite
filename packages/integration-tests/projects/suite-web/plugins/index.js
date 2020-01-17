@@ -46,6 +46,11 @@ module.exports = on => {
             await controller.connect();
             const response = await controller.send({ type: 'bridge-start' });
             await controller.disconnect();
+            // not the best solution by far, but seems to work.
+            // problem is that bridge when started probably needs some time to process configure request (POST to '/')
+            // otherwise it returns 403.
+            // Or there may be a problem with python scripts that they dont wait for response properly. Don't know. So
+            // it requires more proper debugging.
             await timeout(1500);
             return null;
         },

@@ -2,7 +2,6 @@
 
 describe('Steps order - slightly differs under certain circumstances', () => {
     before(() => {
-        cy.wait(800);
         cy.task('stopBridge');
         cy.task('stopEmu');
     });
