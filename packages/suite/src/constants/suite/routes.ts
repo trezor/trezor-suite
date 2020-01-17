@@ -129,7 +129,7 @@ const routes = [
         name: 'exchange-index',
         pattern: '/exchange',
         app: 'exchange',
-    }, 
+    },
     {
         name: 'portfolio-index',
         pattern: '/portfolio',

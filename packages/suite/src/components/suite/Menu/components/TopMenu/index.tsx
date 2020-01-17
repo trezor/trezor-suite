@@ -64,12 +64,8 @@ const TopMenu = (props: Props) => (
             {props.selectedDevice && (
                 <DeviceRow onClick={() => props.goto('suite-switch-device', { cancelable: true })}>
                     <DeviceIconWrapper>
-                        <DeviceIcon
-                            size={12}
-                            color={colors.GREEN}
-                            device={props.selectedDevice}
-                        />
-                        </DeviceIconWrapper>
+                        <DeviceIcon size={12} color={colors.GREEN} device={props.selectedDevice} />
+                    </DeviceIconWrapper>
                     <DeviceLabel>{props.selectedDevice.label}</DeviceLabel>
                     <IconWrapper>
                         <Icon size={7} color={colors.WHITE} icon="ARROW_RIGHT" />
