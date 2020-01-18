@@ -3,11 +3,21 @@ import styled from 'styled-components';
 import { Props } from './Container';
 import Fee from '../Fee';
 import Layout from '../Layout';
+import SwitchItem from './components/SwitchItem';
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+`;
+
+const Row = styled.div`
+    display: flex;
+    margin-bottom: 30px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 `;
 
 const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) => {
@@ -30,7 +40,22 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) =
                         sendFormActions={sendFormActions}
                     />
                 }
-                right={null}
+                right={
+                    <>
+                        <Row>
+                            <SwitchItem
+                                title="Replace by fee (RBF)"
+                                description="RBF allows to bump fee later in case you want the transaction to be mined faster"
+                            />
+                        </Row>
+                        <Row>
+                            <SwitchItem
+                                title="Add Locktime"
+                                description="Allows you to postpone the transaction by set value (time or block)"
+                            />
+                        </Row>
+                    </>
+                }
             />
         </Wrapper>
     );

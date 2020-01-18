@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, P, Select, Icon } from '@trezor/components-v2';
+import { colors, P, Select, Icon, variables } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 `;
 
 const Top = styled.div`
-    padding: 10px 0;
+    padding: 0 0 10px 0;
     display: flex;
     width: 100%;
 `;
@@ -55,6 +55,7 @@ const RefreshColumn = styled(Column)`
 const RefreshText = styled.div`
     padding-left: 5px;
     cursor: pointer;
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const HelpColumn = styled(Column)`
@@ -124,11 +125,11 @@ const FeeComponent = (props: Props) => (
                     <Translation {...messages.TR_FEE} />
                 </LabelColumn>
                 <RefreshColumn>
-                    <StyledIcon icon="REFRESH" color={colors.BLACK0} size={12} />
+                    <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
                     <RefreshText>Refresh</RefreshText>
                 </RefreshColumn>
                 <HelpColumn>
-                    <StyledIcon icon="QUESTION" color={colors.BLACK0} size={12} />
+                    <StyledIcon icon="QUESTION" color={colors.BLACK50} size={12} />
                 </HelpColumn>
             </Top>
             <StyledSelect

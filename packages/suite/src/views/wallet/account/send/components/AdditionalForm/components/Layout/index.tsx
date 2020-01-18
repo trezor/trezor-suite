@@ -25,7 +25,9 @@ const Left = styled(Column)`
     border-right: 2px solid ${colors.BLACK96};
 `;
 
-const Right = styled(Column)``;
+const Right = styled(Column)`
+    position: relative;
+`;
 
 const Middle = styled.div`
     padding: 30px;
