@@ -1,5 +1,5 @@
 import * as receiveActions from '@wallet-actions/receiveActions';
-import { RECEIVE } from '../../constants';
+import { RECEIVE } from '../constants';
 import { NOTIFICATION } from '@suite-actions/constants';
 
 const { getSuiteDevice } = global.JestMocks;
