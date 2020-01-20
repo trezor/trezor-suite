@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import TrezorConnect from 'trezor-connect';
 import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
 
 import { SUITE } from '@suite-actions/constants';
@@ -45,6 +44,7 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openModal,
+    checkSeed,
     goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -128,13 +128,7 @@ const Settings = ({
                             />
                             <ActionColumn>
                                 <ActionButton
-                                    onClick={() =>
-                                        TrezorConnect.recoveryDevice({
-                                            dry_run: true,
-                                            device,
-                                            type: 1,
-                                        })
-                                    }
+                                    onClick={checkSeed}
                                     isDisabled={
                                         uiLocked ||
                                         features.needs_backup ||

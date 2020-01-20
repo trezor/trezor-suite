@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/camelcase */
+import TrezorConnect from 'trezor-connect';
 import { RECOVERY } from '@settings-actions/constants';
 
 // todo
 import { submitWord } from '@onboarding-actions/connectActions';
-import { Dispatch } from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 
 type WordCount = 12 | 18 | 24;
 
@@ -25,4 +27,15 @@ const submit = (word: string) => async (dispatch: Dispatch) => {
     await dispatch(submitWord({ word }));
 };
 
-export { submit, setWordsCount, setAdvancedRecovery };
+const checkSeed = () => async (_dispatch: Dispatch, getState: GetState) => {
+    const { advancedRecovery } = getState().settings.recovery;
+    const { device } = getState().suite;
+
+    await TrezorConnect.recoveryDevice({
+        dry_run: true,
+        type: advancedRecovery ? 1 : 0,
+        device,
+    });
+};
+
+export { submit, setWordsCount, setAdvancedRecovery, checkSeed };
