@@ -2047,4 +2047,4 @@ export default [
     'zero',
     'zone',
     'zoo',
-];
+] as const;
