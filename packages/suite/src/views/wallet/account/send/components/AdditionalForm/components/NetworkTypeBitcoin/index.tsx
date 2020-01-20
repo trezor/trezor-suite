@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
 import Fee from '../Fee';
 import Layout from '../Layout';
-import TransactionInfo from '../TransactionInfo';
+import TransactionInfo from '../TransactionInfo/Container';
 import Locktime from './components/Locktime';
 import ReplaceByFee from './components/ReplaceByFee';
 import { Props } from './Container';
@@ -68,11 +68,7 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount, settings, 
                         </Row>
                     </>
                 }
-                bottom={
-                    transactionInfo?.type === 'final' ? (
-                        <TransactionInfo transactionInfo={transactionInfo} />
-                    ) : null
-                }
+                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
             />
         </Wrapper>
     );

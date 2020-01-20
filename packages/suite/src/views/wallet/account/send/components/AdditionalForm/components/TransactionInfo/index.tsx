@@ -1,15 +1,9 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { colors } from '@trezor/components-v2';
-
-interface Row {
-    title: string;
-    value: string | ReactElement;
-}
-
-interface Props {
-    rows: Row[];
-}
+import { Props } from './Container';
+import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div``;
 
@@ -29,16 +23,36 @@ const Value = styled.div`
     padding-left: 5px;
 `;
 
-interface Props {
-    transactionInfo: any;
-}
+const TransactionInfo = ({ account, send }: Props) => {
+    if (!account || !send) return null;
+    const { networkType, symbol } = account;
+    const transactionInfo = getTransactionInfo(networkType, send);
+    if (transactionInfo?.type !== 'final') return null;
 
-const TransactionInfo = (props: Props) => (
-    <Wrapper>
-        <Item>
-            <Title>Fee</Title>:<Value>fee value</Value>
-        </Item>
-    </Wrapper>
-);
+    return (
+        <Wrapper>
+            <Item>
+                <Title>Fee:</Title>
+                <Value>
+                    {formatNetworkAmount(transactionInfo.fee, symbol)} {symbol.toUpperCase()}
+                </Value>
+            </Item>
+            {transactionInfo.bytes && (
+                <Item>
+                    <Title>Size:</Title>
+                    <Value>{transactionInfo.bytes} bytes</Value>
+                </Item>
+            )}
+            <Item>
+                <Title>Inputs:</Title>
+                <Value>xxx</Value>
+            </Item>
+            <Item>
+                <Title>Outputs:</Title>
+                <Value>yyy</Value>
+            </Item>
+        </Wrapper>
+    );
+};
 
 export default TransactionInfo;

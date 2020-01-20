@@ -2,7 +2,11 @@ import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors, variables } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
-import { State as SendFormState } from '@wallet-types/sendForm';
+import {
+    State as SendFormState,
+    PrecomposedTransactionXrp,
+    PrecomposedTransactionEth,
+} from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -98,11 +102,9 @@ const isDisabled = (
 };
 
 const getSendText = (
-    send: SendFormState,
-    networkType: Account['networkType'],
+    transactionInfo: PrecomposedTransactionXrp | PrecomposedTransactionEth,
     symbol: Account['symbol'],
 ) => {
-    const transactionInfo = getTransactionInfo(networkType, send);
     if (transactionInfo && transactionInfo.type !== 'error') {
         return `Send ${formatNetworkAmount(
             transactionInfo.totalSpent,
@@ -125,6 +127,7 @@ const SendSection = ({
     if (!send || !account || !device) return null;
     const { isComposing } = send;
     const { networkType, symbol } = account;
+    const transactionInfo = getTransactionInfo(networkType, send);
 
     return (
         <Wrapper>
@@ -147,14 +150,17 @@ const SendSection = ({
                         }
                     }}
                 >
-                    {getSendText(send, networkType, symbol)}
+                    {getSendText(transactionInfo, symbol)}
                 </Send>
             </Row>
-            <Row>
-                <Fee>
-                    Including fee of <Bold>0.000002 BTC = 0.56 USD</Bold>
-                </Fee>
-            </Row>
+            {transactionInfo?.type === 'final' && (
+                <Row>
+                    <Fee>
+                        Including fee of{' '}
+                        <Bold>{formatNetworkAmount(transactionInfo.fee, symbol)}</Bold>
+                    </Fee>
+                </Row>
+            )}
             {networkType === 'bitcoin' && (
                 <Row>
                     <EstimatedMiningTime

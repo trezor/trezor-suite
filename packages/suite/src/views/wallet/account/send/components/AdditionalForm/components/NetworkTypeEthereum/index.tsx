@@ -7,7 +7,7 @@ import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
 
-import TransactionInfo from '../TransactionInfo';
+import TransactionInfo from '../TransactionInfo/Container';
 import Fee from '../Fee';
 import Layout from '../Layout';
 import DataTopLabel from './components/DataTopLabel';
@@ -66,7 +66,7 @@ const NetworkTypeEthereum = ({
 }: Props) => {
     const { account } = selectedAccount;
     if (!send || !account) return null;
-
+    const { transactionInfo } = send.networkTypeEthereum;
     const { gasLimit, gasPrice, data } = send.networkTypeEthereum;
     return (
         <Wrapper>
@@ -122,11 +122,7 @@ const NetworkTypeEthereum = ({
                         topLabel={<DataTopLabel />}
                     />
                 }
-                bottom={
-                    transactionInfo?.type === 'final' ? (
-                        <TransactionInfo transactionInfo={transactionInfo} />
-                    ) : null
-                }
+                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
             />
         </Wrapper>
     );

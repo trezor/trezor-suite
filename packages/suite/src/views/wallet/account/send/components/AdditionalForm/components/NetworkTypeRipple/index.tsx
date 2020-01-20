@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import TransactionInfo from '../TransactionInfo';
+import TransactionInfo from '../TransactionInfo/Container';
 import Fee from '../Fee';
 import Layout from '../Layout';
 import DestinationTag from './components/DestinationTag';
@@ -13,9 +13,15 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const NetworkTypeXrp = ({ send, sendFormActionsRipple, selectedAccount }: Props) => {
+const NetworkTypeXrp = ({
+    send,
+    sendFormActionsRipple,
+    sendFormActions,
+    selectedAccount,
+}: Props) => {
     const { account } = selectedAccount;
     if (!send || !account) return null;
+    const { transactionInfo } = send.networkTypeRipple;
 
     return (
         <Wrapper>
@@ -28,8 +34,8 @@ const NetworkTypeXrp = ({ send, sendFormActionsRipple, selectedAccount }: Props)
                         selectedFee={send.selectedFee}
                         symbol={account.symbol}
                         feeLevels={send.feeInfo.levels}
-                        sendFormActions={props.sendFormActions}
-                        customFee={send.customFee.value}
+                        sendFormActions={sendFormActions}
+                        customFee={send.customFee.value || ''}
                         errors={send.customFee.error}
                     />
                 }
@@ -40,11 +46,7 @@ const NetworkTypeXrp = ({ send, sendFormActionsRipple, selectedAccount }: Props)
                         errors={send.networkTypeRipple.destinationTag.error}
                     />
                 }
-                bottom={
-                    transactionInfo?.type === 'final' ? (
-                        <TransactionInfo transactionInfo={transactionInfo} />
-                    ) : null
-                }
+                bottom={transactionInfo?.type !== 'error' ? <TransactionInfo /> : null}
             />
         </Wrapper>
     );
