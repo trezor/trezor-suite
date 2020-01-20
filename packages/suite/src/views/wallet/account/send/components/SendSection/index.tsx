@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
-import { Button } from '@trezor/components-v2';
+import { Button, colors, variables } from '@trezor/components-v2';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { DispatchProps } from '../../Container';
+import EstimatedMiningTime from '../EstimatedMiningTime';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 
@@ -13,10 +14,33 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 25px;
+    flex-direction: column;
 `;
 
 const Send = styled(Button)`
-    min-width: 240px;
+    min-width: 200px;
+    margin-bottom: 5px;
+`;
+
+const Row = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 5px;
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+`;
+
+const Fee = styled.div`
+    display: flex;
+    color: ${colors.BLACK50};
+`;
+
+const Bold = styled.div`
+    padding-left: 4px;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 interface Props {
@@ -103,29 +127,41 @@ const getSendText = (
 
 const SendSection = (props: Props) => (
     <Wrapper>
-        <Send
-            isLoading={props.isComposing}
-            isDisabled={
-                props.isComposing ||
-                isDisabled(props.send, props.suite, props.device, props.networkType)
-            }
-            onClick={() => {
-                switch (props.networkType) {
-                    case 'bitcoin':
-                        props.sendFormActionsBitcoin.send();
-                        break;
-                    case 'ethereum':
-                        props.sendFormActionsEthereum.send();
-                        break;
-                    case 'ripple':
-                        props.sendFormActionsRipple.send();
-                        break;
-                    // no default
+        <Row>
+            <Send
+                isLoading={props.isComposing}
+                isDisabled={
+                    props.isComposing ||
+                    isDisabled(props.send, props.suite, props.device, props.networkType)
                 }
-            }}
-        >
-            {getSendText(props.send, props.networkType, props.symbol)}
-        </Send>
+                onClick={() => {
+                    switch (props.networkType) {
+                        case 'bitcoin':
+                            props.sendFormActionsBitcoin.send();
+                            break;
+                        case 'ethereum':
+                            props.sendFormActionsEthereum.send();
+                            break;
+                        case 'ripple':
+                            props.sendFormActionsRipple.send();
+                            break;
+                        // no default
+                    }
+                }}
+            >
+                {getSendText(props.send, props.networkType, props.symbol)}
+            </Send>
+        </Row>
+        <Row>
+            <Fee>
+                Including fee of <Bold>0.000002 BTC = 0.56 USD</Bold>
+            </Fee>
+        </Row>
+        {props.networkType === 'bitcoin' && (
+            <Row>
+                <EstimatedMiningTime seconds={130} />
+            </Row>
+        )}
     </Wrapper>
 );
 

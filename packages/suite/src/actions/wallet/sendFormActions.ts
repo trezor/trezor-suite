@@ -349,18 +349,18 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     if (!send || !account) return;
     if (send.selectedFee.label === fee.label) return;
 
-    // if (fee.label === 'custom') {
-    //     dispatch({
-    //         type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-    //         customFee: send.selectedFee,
-    //     });
-    // } else {
-    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
-    dispatch({
-        type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-        customFee: null,
-    });
-    // }
+    if (fee.label === 'custom') {
+        dispatch({
+            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
+            customFee: send.selectedFee.value,
+        });
+    } else {
+        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
+        dispatch({
+            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
+            customFee: null,
+        });
+    }
 
     dispatch(applyChange());
 };

@@ -6,7 +6,6 @@ import { P, Prompt, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
 import { AppState, TrezorDevice } from '@suite-types';
-
 import messages from '@suite/support/messages';
 
 const { LINE_HEIGHT, FONT_SIZE, FONT_WEIGHT } = variables;

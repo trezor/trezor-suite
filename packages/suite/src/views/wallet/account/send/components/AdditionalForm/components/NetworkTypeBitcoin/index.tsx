@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Props } from './Container';
-import Fee from '../Fee';
-import Layout from '../Layout';
 
-import ReplaceByFee from './components/ReplaceByFee';
+import EstimatedMiningTime from '../../../EstimatedMiningTime';
+import Fee from '../Fee';
+import Footer from '../Footer';
+import Layout from '../Layout';
 import Locktime from './components/Locktime';
+import ReplaceByFee from './components/ReplaceByFee';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,7 +17,7 @@ const Wrapper = styled.div`
 
 const Row = styled.div`
     display: flex;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 
     &:last-child {
         margin-bottom: 0;
@@ -29,18 +31,24 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) =
         <Wrapper>
             <Layout
                 left={
-                    <Fee
-                        symbol={account.symbol}
-                        onChange={sendFormActions.handleFeeValueChange}
-                        networkType={account.networkType}
-                        maxFee={send.feeInfo.maxFee}
-                        selectedFee={send.selectedFee}
-                        minFee={send.feeInfo.minFee}
-                        feeLevels={send.feeInfo.levels}
-                        errors={send.customFee.error}
-                        customFee={send.customFee.value}
-                        sendFormActions={sendFormActions}
-                    />
+                    <>
+                        <Row>
+                            <Fee
+                                symbol={account.symbol}
+                                networkType={account.networkType}
+                                maxFee={send.feeInfo.maxFee}
+                                selectedFee={send.selectedFee}
+                                minFee={send.feeInfo.minFee}
+                                feeLevels={send.feeInfo.levels}
+                                errors={send.customFee.error}
+                                customFee={send.customFee.value}
+                                sendFormActions={sendFormActions}
+                            />
+                        </Row>
+                        <Row>
+                            <EstimatedMiningTime seconds={130} />
+                        </Row>
+                    </>
                 }
                 right={
                     <>
@@ -51,6 +59,16 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) =
                             <Locktime />
                         </Row>
                     </>
+                }
+                bottom={
+                    <Footer
+                        rows={[
+                            { title: 'Fee', value: 'bbb' },
+                            { title: 'Size', value: 'aaa' },
+                            { title: 'Inputs', value: 'bbb' },
+                            { title: 'Outputs', value: 'aaa' },
+                        ]}
+                    />
                 }
             />
         </Wrapper>

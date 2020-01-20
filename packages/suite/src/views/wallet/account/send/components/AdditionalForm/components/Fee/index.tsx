@@ -98,11 +98,12 @@ const BadgeWrapper = styled.div`
 interface Props extends WrappedComponentProps {
     feeLevels: FeeLevel[];
     selectedFee: FeeLevel;
+    customFee: DispatchProps['customFee'];
     maxFee: number;
     minFee: number;
     symbol: Account['symbol'];
     networkType: Account['networkType'];
-    onChange: DispatchProps['sendFormActions']['handleFeeValueChange'];
+    sendFormActions: DispatchProps['sendFormActions'];
 }
 
 const capitalize = (s: string) => {
@@ -146,7 +147,7 @@ const FeeComponent = (props: Props) => (
                 isSearchable={false}
                 isClearable={false}
                 value={props.selectedFee}
-                onChange={props.onChange}
+                onChange={props.sendFormActions.handleFeeValueChange}
                 options={props.feeLevels}
                 formatOptionLabel={(option: FeeLevel) => (
                     <OptionWrapper>
@@ -160,10 +161,11 @@ const FeeComponent = (props: Props) => (
                 )}
             />
         </Row>
-        {props.networkType !== 'ethereum' && (
+        {props.networkType !== 'ethereum' && props.customFee && (
             <CustomFeeRow>
                 <CustomFeeWrapper>
                     <CustomFee
+                        sendFormActions={props.sendFormActions}
                         customFee={props.customFee}
                         selectedFee={props.selectedFee}
                         symbol={props.symbol}

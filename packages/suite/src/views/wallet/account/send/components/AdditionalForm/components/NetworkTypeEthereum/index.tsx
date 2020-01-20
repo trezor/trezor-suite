@@ -77,6 +77,7 @@ const NetworkTypeEthereum = ({
                                 onChange={sendFormActions.handleFeeValueChange}
                                 networkType={account.networkType}
                                 feeLevels={send.feeInfo.levels}
+                                sendFormActions={sendFormActions}
                                 selectedFee={send.selectedFee}
                                 symbol={account.symbol}
                             />
