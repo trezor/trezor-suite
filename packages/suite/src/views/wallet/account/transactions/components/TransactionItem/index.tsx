@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
-import { colors, variables } from '@trezor/components';
-import { Link } from '@trezor/components-v2';
+import { Link, variables, colors, Button } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
@@ -12,20 +11,19 @@ import { getDateWithTimeZone } from '@suite-utils/date';
 const Wrapper = styled.div`
     display: flex;
     background: ${colors.WHITE};
-    padding: 10px 35px;
+    padding: 12px 16px;
     flex-direction: column;
-    line-height: 1.5;
-    margin: 0 -35px;
+
+    & + & {
+        border-top: 2px solid ${colors.BLACK96};
+    }
 `;
 
-const Timestamp = styled(Link)`
-    color: ${colors.TEXT_SECONDARY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+const Timestamp = styled.div`
+    color: ${colors.BLACK50};
     width: 70px;
     text-decoration: none;
-    font-size: 0.8em;
-    opacity: 0.5;
-    cursor: pointer;
+    font-size: ${variables.FONT_SIZE.TINY};
 
     &:hover {
         opacity: 1;
@@ -48,7 +46,8 @@ const ColBalance = styled(Col)`
 `;
 
 const Targets = styled.div`
-    color: ${colors.TEXT_PRIMARY};
+    color: ${colors.BLACK0};
+    font-size: ${variables.FONT_SIZE.TINY};
     overflow: hidden;
     flex: 1;
 `;
@@ -68,21 +67,21 @@ const Token = styled.div`
 `;
 
 const TokenName = styled.div`
-    color: ${colors.TEXT_SECONDARY};
+    color: ${colors.BLACK0};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const TokenAddress = styled.div`
-    color: ${colors.TEXT_SECONDARY};
-    font-family: ${variables.FONT_FAMILY.MONOSPACE};
+    color: ${colors.BLACK0};
+    /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
     font-size: ${variables.FONT_SIZE.SMALL};
     overflow: hidden;
     text-overflow: ellipsis;
 `;
 
 const Label = styled.div`
-    color: ${colors.TEXT_SECONDARY};
+    color: ${colors.BLACK80};
     font-size: ${variables.FONT_SIZE.SMALL};
     display: flex;
 `;
@@ -90,30 +89,31 @@ const Label = styled.div`
 const Balances = styled.div`
     display: flex;
     flex-direction: row;
-    color: ${colors.TEXT_PRIMARY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.BLACK0};
     margin-left: 1rem;
 `;
 
 const Symbol = styled.div`
-    color: ${colors.TEXT_SECONDARY};
+    color: ${colors.BLACK0};
 `;
 
 const Amount = styled.div<{ txType: string }>`
     display: flex;
     text-align: right;
-    color: ${props => (props.txType === 'recv' ? 'green' : 'red')};
+    /* color: ${props => (props.txType === 'recv' ? 'green' : 'red')}; */
 `;
 
 const TokenAmount = styled(Token)<{ txType: string }>`
     display: inline;
-    color: ${props => (props.txType === 'recv' ? 'green' : 'red')};
+    /* color: ${props => (props.txType === 'recv' ? 'green' : 'red')}; */
     border: none;
 `;
 
 const Addr = styled.div`
-    color: ${colors.TEXT_PRIMARY};
-    font-family: ${variables.FONT_FAMILY.MONOSPACE};
-    font-size: ${variables.FONT_SIZE.BASE};
+    color: ${colors.BLACK0};
+    /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
+    font-size: ${variables.FONT_SIZE.TINY};
     overflow: hidden;
     text-overflow: ellipsis;
     margin-right: 10px;
@@ -164,6 +164,38 @@ const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
     );
 };
 
+const ExpandableTargets = ({ targets }: { targets: WalletAccountTransaction['targets'] }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const targetLists = targets.map((target, i) => (
+        // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
+        // eslint-disable-next-line react/no-array-index-key
+        <Target key={i}>
+            {target.addresses && target.addresses.map(addr => <Addr key={addr}>{addr}</Addr>)}
+        </Target>
+    ));
+
+    if (targets.length > 1 || isExpanded) {
+        return (
+            <>
+                <Button
+                    variant="tertiary"
+                    size="small"
+                    icon={isExpanded ? 'ARROW_UP' : 'ARROW_DOWN'}
+                    onClick={() => {
+                        setIsExpanded(!isExpanded);
+                    }}
+                >
+                    {targets.length} addressess
+                </Button>
+
+                {isExpanded && targetLists}
+            </>
+        );
+    }
+    return <>{targetLists}</>;
+};
+
 const TransactionItem = React.memo(
     ({ explorerUrl, symbol, type, blockTime, blockHeight, amount, targets, tokens }: Props) => {
         // blockbook cannot parse some txs
@@ -172,7 +204,7 @@ const TransactionItem = React.memo(
         return (
             <Wrapper>
                 <Row>
-                    <Timestamp href={explorerUrl}>
+                    <Timestamp>
                         {blockHeight !== 0 && blockTime && blockTime > 0 && (
                             <FormattedDate
                                 value={getDateWithTimeZone(blockTime * 1000)}
@@ -196,17 +228,7 @@ const TransactionItem = React.memo(
                                 </Addr>
                             </Target>
                         )}
-                        {targets &&
-                            targets.map((target, i) => (
-                                // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
-                                // eslint-disable-next-line react/no-array-index-key
-                                <Target key={i}>
-                                    {target.addresses &&
-                                        target.addresses.map(addr => (
-                                            <Addr key={addr}>{addr}</Addr>
-                                        ))}
-                                </Target>
-                            ))}
+                        {targets && <ExpandableTargets targets={targets} />}
                         {tokens &&
                             tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
                     </Targets>

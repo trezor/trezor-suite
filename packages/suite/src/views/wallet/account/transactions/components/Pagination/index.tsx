@@ -5,7 +5,6 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 10px;
     flex-wrap: wrap;
 `;
 
@@ -30,7 +29,7 @@ interface Props {
     onPageSelected: (page: number) => void;
 }
 
-const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: Props) => {
+const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage, ...rest }: Props) => {
     // if totalPages is undefined show only start/prev/next buttons
     const showNext = totalPages ? currentPage < totalPages : !isOnLastPage;
     const showPrevious = currentPage > 1;
@@ -40,7 +39,7 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage }: P
     ]);
 
     return (
-        <Wrapper>
+        <Wrapper {...rest}>
             <Actions isActive={showPrevious}>
                 <PageItem onClick={() => onPageSelected(1)}>«</PageItem>
                 <PageItem onClick={() => onPageSelected(currentPage - 1)}>‹</PageItem>

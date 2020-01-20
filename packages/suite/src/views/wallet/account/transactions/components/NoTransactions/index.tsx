@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, H2, Button } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
-import PricePanel from '../PricePanel';
 
 const Wrapper = styled.div`
     display: flex;
@@ -55,7 +54,6 @@ interface Props {
 const NoTransactions = (props: Props) => {
     return (
         <Wrapper>
-            <PricePanel account={props.account} />
             <Content>
                 <Title>The account is empty</Title>
                 <Description>

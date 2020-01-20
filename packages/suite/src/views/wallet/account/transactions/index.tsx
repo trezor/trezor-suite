@@ -14,6 +14,7 @@ import { AppState, Dispatch } from '@suite-types';
 import TransactionList from './components/TransactionList';
 import messages from '@suite/support/messages';
 import NoTransactions from './components/NoTransactions';
+import PricePanel from './components/PricePanel';
 
 const LoaderWrapper = styled.div`
     display: flex;
@@ -67,7 +68,7 @@ const Transactions = (props: Props) => {
 
     return (
         <LayoutAccount title="Transactions">
-            {/* <AccountName account={account} message={accountNameMessage} /> */}
+            <PricePanel account={account} />
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />
