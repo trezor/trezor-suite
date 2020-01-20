@@ -20,6 +20,7 @@ import Pin from './Pin';
 import PinInvalid from './PinInvalid';
 import Passphrase from './Passphrase';
 import PassphraseSource from './PassphraseSource';
+import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
 // import ConfirmAddress from './confirm/Address';
@@ -70,7 +71,6 @@ const getDeviceContextModal = (props: Props) => {
 
         case UI.REQUEST_PIN:
             return <Pin device={device} onEnterPin={modalActions.onPinSubmit} />;
-
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
 
@@ -83,6 +83,8 @@ const getDeviceContextModal = (props: Props) => {
         // used in TT legacy firmware
         case 'ButtonRequest_PassphraseType':
             return <PassphraseSource device={device} />;
+        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+            return <PassphraseOnDevice device={device} />;
 
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':

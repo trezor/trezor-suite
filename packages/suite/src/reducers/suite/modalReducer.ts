@@ -51,6 +51,7 @@ export default (state: State = initialState, action: Action): State => {
         case UI.REQUEST_PIN:
         case UI.INVALID_PIN:
         case UI.REQUEST_PASSPHRASE:
+        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
