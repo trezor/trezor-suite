@@ -79,7 +79,7 @@ const getAccountStateWithNotification = (selectedAccount: SelectedAccountState) 
             variant: 'info',
             title: {
                 ...messages.TR_DEVICE_LABEL_IS_DISCONNECTED,
-                values: { deviceLabel: device.instanceLabel },
+                values: { deviceLabel: device.label },
             },
             shouldRender: true,
         });
@@ -93,7 +93,7 @@ const getAccountStateWithNotification = (selectedAccount: SelectedAccountState) 
             variant: 'info',
             title: {
                 ...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
-                values: { deviceLabel: device.instanceLabel || device.label },
+                values: { deviceLabel: device.label },
             },
             message: messages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
             actions: [

@@ -123,9 +123,9 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
 ) => {
     let payload: TrezorDevice | typeof undefined;
     if (device) {
-        // "instanceLabel" is one of the field which distinguish Device from TrezorDevice
-        const { instanceLabel } = device as TrezorDevice;
-        if (typeof instanceLabel === 'string') {
+        // "ts" is one of the field which distinguish Device from TrezorDevice
+        const { ts } = device as TrezorDevice;
+        if (typeof ts === 'number') {
             // requested device is a @suite TrezorDevice type. get exact instance from reducer
             payload = deviceUtils.getSelectedDevice(device as TrezorDevice, getState().devices);
         } else {
