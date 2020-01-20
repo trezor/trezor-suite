@@ -55,6 +55,7 @@ type Props = {
 const Passphrase = (props: Props) => {
     const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || props.device.authConfirm;
     const stateConfirmation = !!props.device.state;
+    const noPassphraseOffer = !props.device.instance && !stateConfirmation;
 
     const [submitted, setSubmitted] = useState(false);
     const [enabled, setEnabled] = useState(!authConfirmation);
@@ -103,7 +104,7 @@ const Passphrase = (props: Props) => {
 
     return (
         <Wrapper>
-            {!props.device.instance && !stateConfirmation && (
+            {noPassphraseOffer && (
                 <Col>
                     <H2>No-passphrase Wallet</H2>
                     <Content>
