@@ -81,16 +81,7 @@ export const goto = [
         result: '/wallet',
     },
     {
-        description: `router locked`,
-        state: {
-            suite: {
-                locks: [1],
-            },
-        },
-        url: 'wallet-index',
-    },
-    {
-        description: `device locked`,
+        description: `ui locked`,
         state: {
             suite: {
                 locks: [3],

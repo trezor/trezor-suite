@@ -56,7 +56,7 @@ const initStore = (state: State) => {
 
 describe('firmware middleware', () => {
     describe('SUITE.APP_CHANGED', () => {
-        it('payload=firwmare (into firmware)', async () => {
+        it('payload=firmware (into firmware)', async () => {
             const store = initStore(getInitialState());
             await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'firmware' });
 

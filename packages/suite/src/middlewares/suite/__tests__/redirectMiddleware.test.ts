@@ -126,6 +126,13 @@ describe('redirectMiddleware', () => {
                             accountIndex: 2,
                             accountType: 'normal',
                         },
+                        route: {
+                            name: 'wallet-index',
+                            pattern: '/wallet',
+                            app: 'wallet',
+                            params: ['symbol', 'accountIndex', 'accountType'],
+                            isModal: undefined,
+                        },
                     },
                 ),
             );
