@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
@@ -19,7 +18,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
     rememberDevice: bindActionCreators(suiteActions.rememberDevice, dispatch),
     forgetDevice: bindActionCreators(suiteActions.forgetDevice, dispatch),
-    onCreateDeviceInstance: bindActionCreators(modalActions.onCreateDeviceInstance, dispatch),
+    createDeviceInstance: bindActionCreators(suiteActions.createDeviceInstance, dispatch),
     selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
     applySettings: bindActionCreators(deviceSettingsActions.applySettings, dispatch),
 });

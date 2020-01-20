@@ -3,10 +3,10 @@ import { ROUTER, SUITE } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 
-import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as reducerUtils from '@suite-utils/reducerUtils';
 import * as accountUtils from '@wallet-utils/accountUtils';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
 import { Action, Dispatch, GetState } from '@suite-types';
 import {
@@ -100,7 +100,8 @@ const getAccountStateWithNotification = (selectedAccount: SelectedAccountState) 
                 {
                     label: messages.TR_DEVICE_SETTINGS,
                     callback: () => {
-                        dispatch(routerActions.goto('settings-index'));
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        dispatch(deviceSettingsActions.applySettings({ use_passphrase: true }));
                     },
                 },
             ],

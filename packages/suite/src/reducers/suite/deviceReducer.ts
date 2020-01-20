@@ -283,7 +283,6 @@ const createInstance = (draft: State, device: TrezorDevice, name?: string) => {
     const { instance } = device;
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: false,
         remember: device.remember,
         state: undefined,
         instance,
@@ -375,7 +374,7 @@ export default (state: State = initialState, action: Action): State => {
                 authConfirm(draft, action.payload, action.success);
                 break;
             case SUITE.CREATE_DEVICE_INSTANCE:
-                createInstance(draft, action.payload, action.name);
+                createInstance(draft, action.payload);
                 break;
             case SUITE.REMEMBER_DEVICE:
                 remember(draft, action.payload);

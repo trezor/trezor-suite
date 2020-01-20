@@ -4,7 +4,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
-import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
 export type SuiteActions =
@@ -19,7 +19,7 @@ export type SuiteActions =
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof SUITE.REQUEST_AUTH_CONFIRM }
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
-    | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice; name?: string }
+    | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
@@ -158,6 +158,41 @@ export const forgetDeviceInstance = (payload: TrezorDevice): Action => ({
     type: SUITE.FORGET_DEVICE_INSTANCE,
     payload,
 });
+
+/**
+ * Triggered by `trezor-connect DEVICE_EVENT`
+ * @param {Device} device
+ */
+export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    if (!device.features) return;
+    if (!device.features.passphrase_protection) {
+        // TODO: enable passphrase
+        const response = await TrezorConnect.applySettings({
+            device,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            use_passphrase: true,
+        });
+        if (!response.success) {
+            // TODO: show fail notification
+            return;
+        }
+        // TODO: show success notification
+    }
+
+    dispatch({
+        type: SUITE.CREATE_DEVICE_INSTANCE,
+        payload: {
+            ...device,
+            useEmptyPassphrase,
+            instance: !useEmptyPassphrase
+                ? deviceUtils.getNewInstanceNumber(getState().devices, device as AcquiredDevice)
+                : undefined,
+        },
+    });
+};
 
 /**
  * Triggered by `trezor-connect DEVICE_EVENT`

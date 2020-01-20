@@ -1,7 +1,6 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import * as deviceUtils from '@suite-utils/device';
-import { Action, Dispatch, GetState, AcquiredDevice } from '@suite-types';
+import { Action, Dispatch, GetState } from '@suite-types';
 
 export type ModalActions =
     | {
@@ -63,22 +62,6 @@ export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch:
     });
 
     dispatch(onCancel());
-};
-
-export const onCreateDeviceInstance = (device: AcquiredDevice, _name?: string) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    dispatch({
-        type: SUITE.CREATE_DEVICE_INSTANCE,
-        payload: {
-            ...device,
-            instance: deviceUtils.getNewInstanceNumber(
-                getState().devices,
-                device as AcquiredDevice,
-            ),
-        },
-    });
 };
 
 export const openQrModal = (outputId: number) => (dispatch: Dispatch): void => {

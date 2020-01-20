@@ -138,18 +138,14 @@ const DeviceItem = ({
                 />
             ))}
             <Actions>
-                {device.features?.passphrase_protection && (
-                    <Button
-                        variant="tertiary"
-                        icon="PLUS"
-                        disabled={!device.connected} // TODO: tooltip?
-                        onClick={() => {
-                            addHiddenWallet(device);
-                        }}
-                    >
-                        <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
-                    </Button>
-                )}
+                <Button
+                    variant="tertiary"
+                    icon="PLUS"
+                    disabled={!device.connected} // TODO: tooltip?
+                    onClick={() => addHiddenWallet(device)}
+                >
+                    <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
+                </Button>
             </Actions>
         </DeviceWrapper>
     );

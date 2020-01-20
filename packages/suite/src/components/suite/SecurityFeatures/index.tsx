@@ -39,7 +39,7 @@ const SecurityFeatures = ({
     device,
     discreetMode,
     setDiscreetMode,
-    onCreateDeviceInstance,
+    createDeviceInstance,
     backupDevice,
     changePin,
     ...rest
@@ -120,9 +120,7 @@ const SecurityFeatures = ({
                     description="Create a Wallet hidden behind a strong passphrase"
                     cta={{
                         label: 'Create hidden wallet',
-                        action: () => {
-                            onCreateDeviceInstance(device as AcquiredDevice);
-                        },
+                        action: () => createDeviceInstance(device as AcquiredDevice),
                     }}
                 />
             )}
