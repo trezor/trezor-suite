@@ -1,14 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
 import { SUITE } from '@suite-actions/constants';
+import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors, variables } from '@trezor/components-v2';
+import { Account } from '@wallet-types';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { DispatchProps } from '../../Container';
+import React from 'react';
+import styled from 'styled-components';
+
 import EstimatedMiningTime from '../EstimatedMiningTime';
-import { AppState, TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,19 +44,6 @@ const Bold = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-interface Props {
-    sendFormActions: DispatchProps['sendFormActions'];
-    sendFormActionsBitcoin: DispatchProps['sendFormActionsBitcoin'];
-    sendFormActionsEthereum: DispatchProps['sendFormActionsEthereum'];
-    sendFormActionsRipple: DispatchProps['sendFormActionsRipple'];
-    networkType: Account['networkType'];
-    isComposing: SendFormState['isComposing'];
-    send: SendFormState;
-    suite: AppState['suite'];
-    device: TrezorDevice;
-    symbol: Account['symbol'];
-}
-
 const isDisabled = (
     send: SendFormState,
     suite: AppState['suite'],
@@ -63,7 +51,7 @@ const isDisabled = (
     networkType: Account['networkType'],
 ) => {
     let isDisabled = false;
-
+    const { outputs, customFee } = send;
     const transactionInfo = getTransactionInfo(networkType, send);
 
     // compose error or progress
@@ -72,14 +60,14 @@ const isDisabled = (
     }
 
     // form errors
-    send.outputs.forEach(output => {
+    outputs.forEach(output => {
         if (output.address.error || output.amount.error) {
             isDisabled = true;
         }
     });
 
     // error in advanced form
-    if (send.customFee.error) {
+    if (customFee.error) {
         isDisabled = true;
     }
 
@@ -125,46 +113,58 @@ const getSendText = (
     return 'Send';
 };
 
-const SendSection = (props: Props) => (
-    <Wrapper>
-        <Row>
-            <Send
-                isLoading={props.isComposing}
-                isDisabled={
-                    props.isComposing ||
-                    isDisabled(props.send, props.suite, props.device, props.networkType)
-                }
-                onClick={() => {
-                    switch (props.networkType) {
-                        case 'bitcoin':
-                            props.sendFormActionsBitcoin.send();
-                            break;
-                        case 'ethereum':
-                            props.sendFormActionsEthereum.send();
-                            break;
-                        case 'ripple':
-                            props.sendFormActionsRipple.send();
-                            break;
-                        // no default
-                    }
-                }}
-            >
-                {getSendText(props.send, props.networkType, props.symbol)}
-            </Send>
-        </Row>
-        <Row>
-            <Fee>
-                Including fee of <Bold>0.000002 BTC = 0.56 USD</Bold>
-            </Fee>
-        </Row>
-        {props.networkType === 'bitcoin' && (
+const SendSection = (props: Props) => {
+    const {
+        send,
+        suite,
+        account,
+        device,
+        sendFormActionsBitcoin,
+        sendFormActionsEthereum,
+        sendFormActionsRipple,
+    } = props;
+    if (!send || !account || !device) return null;
+    const { isComposing } = send;
+    const { networkType, symbol } = account;
+
+    return (
+        <Wrapper>
             <Row>
-                <EstimatedMiningTime
-                    seconds={props.send.feeInfo.blockTime * props.send.selectedFee.blocks * 60}
-                />
+                <Send
+                    isLoading={isComposing}
+                    isDisabled={isComposing || isDisabled(send, suite, device, networkType)}
+                    onClick={() => {
+                        switch (networkType) {
+                            case 'bitcoin':
+                                sendFormActionsBitcoin.send();
+                                break;
+                            case 'ethereum':
+                                sendFormActionsEthereum.send();
+                                break;
+                            case 'ripple':
+                                sendFormActionsRipple.send();
+                                break;
+                            // no default
+                        }
+                    }}
+                >
+                    {getSendText(send, networkType, symbol)}
+                </Send>
             </Row>
-        )}
-    </Wrapper>
-);
+            <Row>
+                <Fee>
+                    Including fee of <Bold>0.000002 BTC = 0.56 USD</Bold>
+                </Fee>
+            </Row>
+            {networkType === 'bitcoin' && (
+                <Row>
+                    <EstimatedMiningTime
+                        seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
+                    />
+                </Row>
+            )}
+        </Wrapper>
+    );
+};
 
 export default SendSection;

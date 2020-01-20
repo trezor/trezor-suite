@@ -13,7 +13,7 @@ import Address from './components/Address';
 import Amount from './components/Amount';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
-import SendSection from './components/SendSection';
+import SendSection from './components/SendSection/Container';
 import { DispatchProps, StateProps } from './Container';
 
 const Row = styled.div`
@@ -69,24 +69,23 @@ const AdditionalFormHeader = styled.div`
 const Send = (props: StateProps & DispatchProps) => {
     const {
         device,
-        suite,
         devices,
-        sendFormActions,
         send,
         fees,
         fiat,
+        openQrModal,
+        selectedAccount,
+        sendFormActions,
         sendFormActionsBitcoin,
-        sendFormActionsEthereum,
-        sendFormActionsRipple,
         accounts,
     } = props;
 
     useEffect(() => {
-        props.sendFormActions.init();
-    }, [props.selectedAccount]);
+        sendFormActions.init();
+    }, [selectedAccount]);
 
-    if (!device || !send || !fees || props.selectedAccount.status !== 'loaded') {
-        const { loader, exceptionPage } = props.selectedAccount;
+    if (!device || !send || !fees || selectedAccount.status !== 'loaded') {
+        const { loader, exceptionPage } = selectedAccount;
         return (
             <LayoutAccount title="Send">
                 <Content loader={loader} exceptionPage={exceptionPage} isLoading />
@@ -94,7 +93,7 @@ const Send = (props: StateProps & DispatchProps) => {
         );
     }
 
-    const { account, network } = props.selectedAccount;
+    const { account, network } = selectedAccount;
     const accountNameMessage =
         account.networkType === 'ethereum'
             ? messages.TR_SEND_NETWORK_AND_TOKENS
@@ -109,9 +108,7 @@ const Send = (props: StateProps & DispatchProps) => {
                     {output.id !== 0 && (
                         <SlimRow isOnlyOne={send.outputs.length === 1}>
                             <StyledIcon
-                                onClick={() =>
-                                    props.sendFormActionsBitcoin.removeRecipient(output.id)
-                                }
+                                onClick={() => sendFormActionsBitcoin.removeRecipient(output.id)}
                                 size={10}
                                 color={colors.BLACK50}
                                 icon="CROSS"
@@ -127,7 +124,7 @@ const Send = (props: StateProps & DispatchProps) => {
                             address={output.address.value}
                             error={output.address.error}
                             sendFormActions={sendFormActions}
-                            openQrModal={props.openQrModal}
+                            openQrModal={openQrModal}
                         />
                     </Row>
                     <Row>
@@ -160,18 +157,7 @@ const Send = (props: StateProps & DispatchProps) => {
                     )}
                 </Row>
             </AdditionalInfoWrapper>
-            <SendSection
-                isComposing={send.isComposing}
-                send={send}
-                suite={suite}
-                device={device}
-                networkType={account.networkType}
-                symbol={network.symbol}
-                sendFormActions={sendFormActions}
-                sendFormActionsBitcoin={sendFormActionsBitcoin}
-                sendFormActionsEthereum={sendFormActionsEthereum}
-                sendFormActionsRipple={sendFormActionsRipple}
-            />
+            <SendSection />
         </LayoutAccount>
     );
 };
