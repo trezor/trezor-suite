@@ -14,7 +14,7 @@ import Amount from './components/Amount';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
 import SendSection from './components/SendSection/Container';
-import { DispatchProps, StateProps } from './Container';
+import { Props } from './Container';
 
 const Row = styled.div`
     display: flex;
@@ -66,20 +66,18 @@ const AdditionalFormHeader = styled.div`
     align-items: center;
 `;
 
-const Send = (props: StateProps & DispatchProps) => {
-    const {
-        device,
-        devices,
-        send,
-        fees,
-        fiat,
-        openQrModal,
-        selectedAccount,
-        sendFormActions,
-        sendFormActionsBitcoin,
-        accounts,
-    } = props;
-
+const Send = ({
+    device,
+    devices,
+    send,
+    fees,
+    fiat,
+    openQrModal,
+    selectedAccount,
+    sendFormActions,
+    sendFormActionsBitcoin,
+    accounts,
+}: Props) => {
     useEffect(() => {
         sendFormActions.init();
     }, [selectedAccount]);

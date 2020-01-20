@@ -19,16 +19,11 @@ interface Props {
     seconds: number;
 }
 
-const CHAR = `~ `;
-
-const EstimatedMiningTime = (props: Props) => {
+const EstimatedMiningTime = ({ seconds }: Props) => {
     return (
         <Wrapper>
             <Translation {...messages.TR_ESTIMATED_TIME} />
-            <Bold>
-                {CHAR}
-                {formatDuration(props.seconds)}
-            </Bold>
+            <Bold>~ {formatDuration(seconds)}</Bold>
         </Wrapper>
     );
 };

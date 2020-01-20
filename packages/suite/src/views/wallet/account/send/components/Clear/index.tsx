@@ -31,9 +31,9 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const Clear = (props: Props) => (
+const Clear = ({ sendFormActions }: Props) => (
     <Wrapper>
-        <In onClick={() => props.sendFormActions.clear()}>
+        <In onClick={() => sendFormActions.clear()}>
             <StyledIcon size={8} color={colors.BLACK50} icon="CROSS" />
             <ClearText>Clear</ClearText>
         </In>

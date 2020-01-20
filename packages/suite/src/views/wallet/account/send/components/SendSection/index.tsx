@@ -113,16 +113,15 @@ const getSendText = (
     return 'Send';
 };
 
-const SendSection = (props: Props) => {
-    const {
-        send,
-        suite,
-        account,
-        device,
-        sendFormActionsBitcoin,
-        sendFormActionsEthereum,
-        sendFormActionsRipple,
-    } = props;
+const SendSection = ({
+    send,
+    suite,
+    account,
+    device,
+    sendFormActionsBitcoin,
+    sendFormActionsEthereum,
+    sendFormActionsRipple,
+}: Props) => {
     if (!send || !account || !device) return null;
     const { isComposing } = send;
     const { networkType, symbol } = account;
