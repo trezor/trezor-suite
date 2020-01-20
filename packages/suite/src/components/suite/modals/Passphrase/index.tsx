@@ -8,8 +8,9 @@ import { Translation } from '@suite-components/Translation';
 import Loading from '@suite-components/Loading';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as deviceUtils from '@suite-utils/device';
 import messages from '@suite/support/messages';
-import { Dispatch, TrezorDevice } from '@suite-types';
+import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -42,6 +43,10 @@ const Actions = styled.div`
     margin-top: 20px;
 `;
 
+const mapStateToProps = (state: AppState) => ({
+    devices: state.devices,
+});
+
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
@@ -50,12 +55,16 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = {
     device: TrezorDevice;
-} & ReturnType<typeof mapDispatchToProps>;
+} & ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 const Passphrase = (props: Props) => {
     const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || props.device.authConfirm;
     const stateConfirmation = !!props.device.state;
-    const noPassphraseOffer = !props.device.instance && !stateConfirmation;
+    const hasEmptyPassphraseWallet = deviceUtils
+        .getDeviceInstances(props.device, props.devices)
+        .find(d => d.useEmptyPassphrase);
+    const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
 
     const [submitted, setSubmitted] = useState(false);
     const [enabled, setEnabled] = useState(!authConfirmation);
@@ -158,4 +167,4 @@ const Passphrase = (props: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(Passphrase);
+export default connect(mapStateToProps, mapDispatchToProps)(Passphrase);

@@ -97,7 +97,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     // 4. device state received
     if (action.type === SUITE.AUTH_DEVICE) {
-        api.dispatch(discoveryActions.create(action.state, action.payload.useEmptyPassphrase));
+        api.dispatch(discoveryActions.create(action.state, device!.useEmptyPassphrase));
     }
 
     // 5. device state confirmation received
