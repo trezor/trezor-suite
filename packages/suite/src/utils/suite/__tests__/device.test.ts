@@ -78,10 +78,10 @@ describe('sortByTimestamp', () => {
     });
 });
 
-describe('getOtherDevices', () => {
-    fixtures.getOtherDevices.forEach(f => {
+describe('getFirstDeviceInstance', () => {
+    fixtures.getFirstDeviceInstance.forEach(f => {
         it(f.description, () => {
-            const sort = utils.getOtherDevices(f.selected as any, f.devices as any);
+            const sort = utils.getFirstDeviceInstance(f.devices as any);
             expect(sort).toEqual(f.result);
         });
     });
@@ -90,7 +90,7 @@ describe('getOtherDevices', () => {
 describe('getDeviceInstances', () => {
     fixtures.getDeviceInstances.forEach(f => {
         it(f.description, () => {
-            const sort = utils.getDeviceInstances(f.selected as any, f.devices as any);
+            const sort = utils.getDeviceInstances(f.selected as any, f.devices as any, f.excluded);
             expect(sort).toEqual(f.result);
         });
     });

@@ -329,28 +329,20 @@ const d = (obj: any) => ({
     ts: obj.ts,
 });
 
-const getOtherDevices = [
+const getFirstDeviceInstance = [
     {
-        description: 'Selected is unacquired',
-        selected: d({ path: '1' }),
-        devices: [d({ path: '1' }), d({ path: '2' }), d({ id: '3' })],
-        result: [d({ path: '2' }), d({ id: '3' })],
+        description: 'All devices are unacquired',
+        devices: [d({ path: '1' }), d({ id: '3' }), d({ path: '2' })],
+        result: [d({ path: '1' }), d({ path: '2' }), d({ id: '3' })],
     },
     {
-        description: 'Selected is acquired',
-        selected: d({ id: '3' }),
-        devices: [d({ path: '1' }), d({ id: '2' }), d({ id: '3' }), d({ id: '4' })],
-        result: [d({ path: '1' }), d({ id: '2' }), d({ id: '4' })],
-    },
-    {
-        description: 'Selected is undefined (sort by priority)',
-        selected: undefined,
+        description: 'Sorted by priority',
         devices: [
             d({ id: '9', ts: 1 }),
             d({ path: '1' }),
             d({ id: '7', inst: 1 }),
             d({ id: '7', ts: 3 }),
-            d({ id: '8', ts: 2 }),
+            d({ id: '8', ts: 2, inst: 1 }),
             d({ id: '5', fw: 'outdated', inst: 1 }),
             d({ path: '2' }),
             d({ id: '5', fw: 'outdated' }),
@@ -368,7 +360,7 @@ const getOtherDevices = [
             d({ id: '5', fw: 'outdated' }),
             d({ id: '6', fw: 'required' }),
             d({ id: '7', ts: 3 }),
-            d({ id: '8', ts: 2 }),
+            d({ id: '8', ts: 2, inst: 1 }),
             d({ id: '9', ts: 1 }),
         ],
     },
@@ -397,10 +389,17 @@ const getDeviceInstances = [
         description: 'Selected is a base device',
         selected: d({ id: '1' }),
         devices: [d({ id: '1', inst: 2 }), d({ id: '1', inst: 1 }), d({ id: '1' })],
+        result: [d({ id: '1' }), d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })],
+    },
+    {
+        description: 'Selected is a excluded base device',
+        selected: d({ id: '1' }),
+        devices: [d({ id: '1', inst: 2 }), d({ id: '1', inst: 1 }), d({ id: '1' })],
+        excluded: true,
         result: [d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })],
     },
     {
-        description: 'Selected is an instance',
+        description: 'Selected is an excluded instance',
         selected: d({ id: '1', inst: 2 }),
         devices: [
             d({ id: '1' }),
@@ -409,6 +408,7 @@ const getDeviceInstances = [
             d({ id: '1', inst: 4 }),
             d({ id: '1', inst: 3 }),
         ],
+        excluded: true,
         result: [
             d({ id: '1' }),
             d({ id: '1', inst: 1 }),
@@ -417,7 +417,7 @@ const getDeviceInstances = [
         ],
     },
     {
-        description: 'Selected is an instance (base placed at the end)',
+        description: 'Selected is an instance (with base placed at the end)',
         selected: d({ id: '1', inst: 2 }),
         devices: [
             d({ id: '1', inst: 2 }),
@@ -429,6 +429,7 @@ const getDeviceInstances = [
         result: [
             d({ id: '1' }),
             d({ id: '1', inst: 1 }),
+            d({ id: '1', inst: 2 }),
             d({ id: '1', inst: 3 }),
             d({ id: '1', inst: 4 }),
         ],
@@ -444,7 +445,7 @@ export default {
     findInstanceIndex,
     getSelectedDevice,
     sortByTimestamp,
-    getOtherDevices,
+    getFirstDeviceInstance,
     getDeviceInstances,
     isDeviceRemembered,
 };
