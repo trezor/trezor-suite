@@ -7,9 +7,9 @@ import {
 } from '@onboarding-actions/constants/events';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
-import { BlindMatrix, OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
+import { OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
 import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
-import { Translation, WordInput } from '@suite-components';
+import { Translation, WordInput, WordInputAdvanced } from '@suite-components';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
 import { Link, P } from '@trezor/components-v2';
@@ -219,7 +219,7 @@ const RecoveryStepModelOne = (props: Props) => {
                 )}
                 {getStatus() === 'recovering-advanced' && (
                     <>
-                        <BlindMatrix
+                        <WordInputAdvanced
                             count={uiInteraction.name === WORD_REQUEST_MATRIX9 ? 9 : 6}
                             onSubmit={recoveryActions.submit}
                         />

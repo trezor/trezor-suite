@@ -87,7 +87,7 @@ const Settings = ({
                         />
                         <ActionColumn>
                             <ActionButton
-                                onClick={() => backupDevice({})}
+                                onClick={() => backupDevice({ device })}
                                 isDisabled={
                                     uiLocked || !features.needs_backup || features.unfinished_backup
                                 }
@@ -129,7 +129,11 @@ const Settings = ({
                             <ActionColumn>
                                 <ActionButton
                                     onClick={() =>
-                                        TrezorConnect.recoveryDevice({ dry_run: true, device })
+                                        TrezorConnect.recoveryDevice({
+                                            dry_run: true,
+                                            device,
+                                            type: 1,
+                                        })
                                     }
                                     isDisabled={
                                         uiLocked ||

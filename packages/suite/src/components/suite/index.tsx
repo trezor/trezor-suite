@@ -11,6 +11,8 @@ import Notification from './Notification';
 import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
 import WordInput from './WordInput';
+import WordInputAdvanced from './WordInputAdvanced';
+
 import { Translation } from './Translation';
 
 export {
@@ -26,6 +28,7 @@ export {
     Notification,
     PinInput,
     NoRatesTooltip,
-    WordInput,
     Translation,
+    WordInput,
+    WordInputAdvanced,
 };
