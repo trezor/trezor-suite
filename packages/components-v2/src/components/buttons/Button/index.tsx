@@ -7,7 +7,7 @@ import { FONT_SIZE } from '../../../config/variables';
 import FluidSpinner from '../../FluidSpinner';
 
 const BUTTON_PADDING = {
-    small: '3px 12px',
+    small: '2px 12px',
     large: '9px 12px',
 };
 
