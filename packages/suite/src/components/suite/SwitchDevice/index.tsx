@@ -42,15 +42,15 @@ const ModalActions = styled.div`
 `;
 
 const SwitchDeviceModal = (props: Props) => {
-    const { devices, selectedDevice } = props;
-    const sortedDevices = deviceUtils.getPhysDevices(devices);
+    const { devices, selectedDevice, closeModalApp } = props;
+    const sortedDevices = deviceUtils.getFirstDeviceInstance(devices);
 
-    const onSelectInstance = (instance: TrezorDevice) => {
-        // props.closeModal();
-        props.selectDevice(instance);
+    const onSelectInstance = async (instance: TrezorDevice) => {
+        await props.selectDevice(instance);
+        closeModalApp();
     };
 
-    const onAddHiddenWallet = (instance: TrezorDevice) => {
+    const onAddHiddenWallet = async (instance: TrezorDevice) => {
         // props.closeModal();
         // TODO: if we really want to auto-enable passphrase feature,
         // we need to wait for the device to trigger 'confirm on device' modal,
@@ -59,7 +59,8 @@ const SwitchDeviceModal = (props: Props) => {
         //     // eslint-disable-next-line @typescript-eslint/camelcase
         //     props.applySettings({ use_passphrase: true });
         // }
-        props.onCreateDeviceInstance(instance as AcquiredDevice);
+        await props.onCreateDeviceInstance(instance as AcquiredDevice);
+        closeModalApp();
     };
 
     return (
@@ -76,7 +77,8 @@ const SwitchDeviceModal = (props: Props) => {
                         key={device.path}
                         device={device}
                         selectedDevice={selectedDevice}
-                        instances={deviceUtils.getDeviceInstances(device, devices, true)}
+                        goto={props.goto}
+                        instances={deviceUtils.getDeviceInstances(device, devices)}
                         addHiddenWallet={onAddHiddenWallet}
                         selectInstance={onSelectInstance}
                         forgetDevice={props.forgetDevice}
@@ -84,7 +86,7 @@ const SwitchDeviceModal = (props: Props) => {
                     />
                 ))}
                 <ModalActions>
-                    <Button variant="secondary" onClick={() => {}}>
+                    <Button variant="secondary" onClick={props.closeModalApp}>
                         <Translation {...messages.TR_CLOSE} />
                     </Button>
                 </ModalActions>

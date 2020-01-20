@@ -75,6 +75,7 @@ interface Props extends WrappedComponentProps {
     selectInstance: (instance: TrezorDevice) => void;
     forgetDevice: DeviceModalProps['forgetDevice'];
     addHiddenWallet: (instance: TrezorDevice) => void;
+    goto: DeviceModalProps['goto'];
 }
 
 const DeviceItem = ({
@@ -85,6 +86,7 @@ const DeviceItem = ({
     addHiddenWallet,
     forgetDevice,
     selectedDevice,
+    goto,
     ...props
 }: Props) => {
     const deviceStatus = deviceUtils.getStatus(device);
@@ -100,6 +102,15 @@ const DeviceItem = ({
                 </Col>
                 <Col grow={1}>
                     {!deviceUtils.isDeviceRemembered(device) && <Badge>Guest Mode</Badge>}
+                </Col>
+                <Col>
+                    <ForgetButton
+                        size="small"
+                        variant="secondary"
+                        onClick={() => goto('settings-device')}
+                    >
+                        Device settings
+                    </ForgetButton>
                 </Col>
                 <Col>
                     <ForgetButton
@@ -122,16 +133,18 @@ const DeviceItem = ({
                 />
             ))}
             <Actions>
-                <Button
-                    variant="tertiary"
-                    icon="PLUS"
-                    disabled={!device.connected} // TODO: tooltip?
-                    onClick={() => {
-                        addHiddenWallet(device);
-                    }}
-                >
-                    <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
-                </Button>
+                {device.features?.passphrase_protection && (
+                    <Button
+                        variant="tertiary"
+                        icon="PLUS"
+                        disabled={!device.connected} // TODO: tooltip?
+                        onClick={() => {
+                            addHiddenWallet(device);
+                        }}
+                    >
+                        <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
+                    </Button>
+                )}
             </Actions>
         </DeviceWrapper>
     );
