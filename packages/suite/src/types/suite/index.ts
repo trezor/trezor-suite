@@ -86,6 +86,7 @@ export interface UnknownDevice {
     instance?: undefined;
     useEmptyPassphrase: true;
     // types below are here just for type compatibility with AcquiredDevice
+    remember?: boolean;
     authConfirm?: undefined;
     instanceLabel?: undefined;
     state?: string;

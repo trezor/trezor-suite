@@ -27,6 +27,6 @@ const AuthConfirm = ({ retryAuthConfirm }: Props) => {
             ]}
         />
     );
-}
+};
 
 export default connect(null, mapDispatchToProps)(AuthConfirm);
