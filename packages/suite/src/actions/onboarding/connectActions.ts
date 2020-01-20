@@ -1,3 +1,5 @@
+// TODO: deprecated, should be refactored and removed
+
 /* eslint-disable @typescript-eslint/camelcase */
 import TrezorConnect, {
     UI,
@@ -28,7 +30,6 @@ const DEFAULT_STRENGTH_T2 = 128;
 const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) => {
     const { device } = state.suite;
     const { backupType } = state.onboarding;
-    const { recovery } = state.settings;
 
     if (call === CALLS.GET_FEATURES) {
         return {};
@@ -54,19 +55,6 @@ const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) =
                     skipBackup: DEFAULT_SKIP_BACKUP,
                     passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
                     backupType,
-                };
-            }
-            break;
-        case CALLS.RECOVER_DEVICE:
-            if (device.features.major_version === 1) {
-                params = {
-                    passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
-                    type: recovery.advancedRecovery ? 1 : 0,
-                    word_count: recovery.wordsCount,
-                };
-            } else {
-                params = {
-                    passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
                 };
             }
             break;

@@ -90,6 +90,13 @@ const routes = [
         app: 'settings',
     },
     {
+        // todo:
+        name: 'check-seed-index',
+        pattern: '/settings/check-seed',
+        app: 'check-seed',
+        isModal: true,
+    },
+    {
         name: 'firmware-index',
         pattern: '/firmware',
         app: 'firmware',

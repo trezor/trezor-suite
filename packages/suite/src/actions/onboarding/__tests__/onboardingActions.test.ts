@@ -9,7 +9,7 @@ import fixtures, {
     deviceCallsSpecific,
     deviceCallsGeneral,
 } from '../__fixtures__/onboardingActions';
-import recoveryReducer from '@settings-reducer/recoveryReducer';
+import recoveryReducer from '@settings-reducers/recoveryReducer';
 
 import { Action } from '@suite-types';
 

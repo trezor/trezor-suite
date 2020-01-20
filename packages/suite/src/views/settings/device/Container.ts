@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
     openModal: bindActionCreators(modalActions.openModal, dispatch),
     checkSeed: bindActionCreators(recoveryActions.checkSeed, dispatch),
+    resetRecoveryReducer: bindActionCreators(recoveryActions.resetReducer, dispatch),
 });
 
 export type Props = WrappedComponentProps &
