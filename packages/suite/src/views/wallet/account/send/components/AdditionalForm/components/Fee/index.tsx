@@ -4,6 +4,7 @@ import { colors, P, Select, Icon, variables } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
@@ -12,7 +13,7 @@ import Badge from '@suite-components/Badge';
 import ethUnits from 'ethereumjs-units';
 import CustomFee from './components/CustomFee';
 import { calculateEthFee } from '@wallet-utils/sendFormUtils';
-import { DispatchProps } from '../../../../Container';
+import { Props as DispatchProps } from '../../../../Container';
 
 const Row = styled.div`
     display: flex;
@@ -98,9 +99,10 @@ const BadgeWrapper = styled.div`
 interface Props extends WrappedComponentProps {
     feeLevels: FeeLevel[];
     selectedFee: FeeLevel;
-    customFee: DispatchProps['customFee'];
+    customFee: string;
     maxFee: number;
     minFee: number;
+    localCurrency: string;
     symbol: Account['symbol'];
     networkType: Account['networkType'];
     sendFormActions: DispatchProps['sendFormActions'];
@@ -173,7 +175,14 @@ const FeeComponent = (props: Props) => (
                     />
                 </CustomFeeWrapper>
                 <BadgeWrapper>
-                    <Badge>0.54 USD</Badge>
+                    <Badge>
+                        {toFiatCurrency(
+                            formatNetworkAmount(props.customFee, props.symbol),
+                            props.localCurrency,
+                            props.fiat.find(item => item.symbol === props.symbol),
+                        )}
+                        {props.localCurrency}
+                    </Badge>
                 </BadgeWrapper>
             </CustomFeeRow>
         )}

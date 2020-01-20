@@ -24,7 +24,7 @@ const Row = styled.div`
     }
 `;
 
-const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) => {
+const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount, settings, fiat }: Props) => {
     if (!send) return null;
     const { account } = selectedAccount;
     return (
@@ -39,6 +39,8 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) =
                                 maxFee={send.feeInfo.maxFee}
                                 selectedFee={send.selectedFee}
                                 minFee={send.feeInfo.minFee}
+                                fiat={fiat}
+                                localCurrency={settings.localCurrency}
                                 feeLevels={send.feeInfo.levels}
                                 errors={send.customFee.error}
                                 customFee={send.customFee.value}

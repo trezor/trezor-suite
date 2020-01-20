@@ -11,12 +11,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const NetworkTypeXrp = ({
-    send,
-    sendFormActions,
-    sendFormActionsRipple,
-    selectedAccount,
-}: Props) => {
+const NetworkTypeXrp = ({ send, sendFormActionsRipple, selectedAccount }: Props) => {
     const { account } = selectedAccount;
     if (!send || !account) return null;
 

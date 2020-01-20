@@ -18,7 +18,7 @@ const toFiatCurrency = (amount: string, fiatCurrency: string, networkRates: Fiat
     }
 
     const localAmount = new BigNumber(formattedAmount).times(rate);
-    const localAmountStr = localAmount.isNaN() ? null : localAmount.toFixed(2);
+    const localAmountStr = localAmount.isNaN() ? null : localAmount.toFixed(5);
     return localAmountStr;
 };
 

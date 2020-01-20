@@ -66,7 +66,7 @@ const CustomFee = (props: Props) => (
                 variant="small"
                 state={getInputState(props.errors, props.customFee)}
                 bottomText={getErrorMessage(props.errors, props.maxFee, props.minFee)}
-                value={props.customFee || ''}
+                value={props.customFee}
                 onChange={e => {
                     props.sendFormActions.handleCustomFeeValueChange(e.target.value);
                 }}
