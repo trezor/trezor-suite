@@ -2,7 +2,7 @@
 import { DEVICE, TRANSPORT } from 'trezor-connect';
 import { SUITE, STORAGE, NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import * as suiteActions from '../../suiteActions';
+import * as suiteActions from '../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 

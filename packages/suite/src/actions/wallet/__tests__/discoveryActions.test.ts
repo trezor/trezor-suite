@@ -18,7 +18,7 @@ import {
     fixtures,
     interruptionFixtures,
     changeNetworksFixtures,
-} from './fixtures/discoveryActions';
+} from '../__fixtures__/discoveryActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
