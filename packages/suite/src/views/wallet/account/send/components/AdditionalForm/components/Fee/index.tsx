@@ -7,6 +7,7 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
+import Badge from '@suite-components/Badge';
 // @ts-ignore
 import ethUnits from 'ethereumjs-units';
 import CustomFee from './components/CustomFee';
@@ -82,8 +83,16 @@ const OptionLabel = styled(P)`
 
 const StyledSelect = styled(Select)``;
 
-const CustomFeeWrapper = styled.div`
+const CustomFeeRow = styled(Row)`
+    flex-direction: row;
     margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const CustomFeeWrapper = styled.div``;
+const BadgeWrapper = styled.div`
+    display: flex;
 `;
 
 interface Props extends WrappedComponentProps {
@@ -152,11 +161,14 @@ const FeeComponent = (props: Props) => (
             />
         </Row>
         {props.networkType !== 'ethereum' && (
-            <Row>
+            <CustomFeeRow>
                 <CustomFeeWrapper>
                     <CustomFee symbol={props.symbol} networkType={props.networkType} />
                 </CustomFeeWrapper>
-            </Row>
+                <BadgeWrapper>
+                    <Badge>0.54 USD</Badge>
+                </BadgeWrapper>
+            </CustomFeeRow>
         )}
     </Wrapper>
 );

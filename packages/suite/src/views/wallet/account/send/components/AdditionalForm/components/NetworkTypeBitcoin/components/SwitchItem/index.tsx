@@ -18,13 +18,15 @@ const Description = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const Left = styled.div``;
+const Left = styled.div`
+    padding-right: 5px;
+`;
 
 const Right = styled.div`
     display: flex;
     align-items: center;
     flex: 1;
-    padding-left: 5px;
+    justify-content: flex-end;
 `;
 
 interface Props {
@@ -32,7 +34,7 @@ interface Props {
     description: string;
 }
 
-const SwitchItem = ({ title, description, action }: Props) => {
+const SwitchItem = ({ title, description }: Props) => {
     return (
         <Wrapper>
             <Left>
@@ -40,7 +42,7 @@ const SwitchItem = ({ title, description, action }: Props) => {
                 <Description>{description}</Description>
             </Left>
             <Right>
-                <Switch checked onChange={action} />
+                <Switch checked onChange={() => console.log('change')} />
             </Right>
         </Wrapper>
     );
