@@ -728,7 +728,7 @@ const changePassphraseMode = [
         initialState: [SUITE_DEVICE],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: SUITE_DEVICE,
                 hidden: true,
             },
@@ -749,7 +749,7 @@ const changePassphraseMode = [
         ],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: SUITE_DEVICE,
                 hidden: true,
             },
@@ -801,7 +801,7 @@ const changePassphraseMode = [
         initialState: [SUITE_DEVICE],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: getConnectDevice({
                     type: 'unacquired',
                 }),
@@ -819,7 +819,7 @@ const changePassphraseMode = [
         initialState: [],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: SUITE_DEVICE,
                 hidden: false,
             },

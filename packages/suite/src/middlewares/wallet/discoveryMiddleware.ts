@@ -30,12 +30,12 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         return action;
     }
 
-    // do not close "device instance" modal during discovery
+    // do not close "add account" modal during discovery
     if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
         const { modal } = prevState;
         if (
             modal.context === MODAL.CONTEXT_DEVICE &&
-            modal.windowType === SUITE.REQUEST_DEVICE_INSTANCE
+            modal.windowType === ACCOUNT.REQUEST_NEW_ACCOUNT
         ) {
             return action;
         }

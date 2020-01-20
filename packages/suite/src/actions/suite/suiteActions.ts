@@ -15,19 +15,14 @@ export type SuiteActions =
     | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_PASSPHRASE_MODE; payload: TrezorDevice }
-    | { type: typeof SUITE.RECEIVE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
     | { type: typeof SUITE.UPDATE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof SUITE.REQUEST_AUTH_CONFIRM }
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
-    | { type: typeof SUITE.REQUEST_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice; name?: string }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_DISCONNECT_DEVICE; payload: TrezorDevice }
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: typeof LANGUAGES[number]['code'];
@@ -117,15 +112,6 @@ export const lockRouter = (payload: boolean): Action => ({
 });
 
 /**
- * Called from <DeviceMenu /> component
- * Display modal
- */
-export const requestDeviceInstance = (payload: TrezorDevice) => ({
-    type: SUITE.REQUEST_DEVICE_INSTANCE,
-    payload,
-});
-
-/**
  * Called from:
  * - `trezor-connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
  * - from user action in `@suite-components/DeviceMenu`
@@ -157,6 +143,21 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
         payload,
     });
 };
+
+export const rememberDevice = (payload: TrezorDevice): Action => ({
+    type: SUITE.REMEMBER_DEVICE,
+    payload,
+});
+
+export const forgetDevice = (payload: TrezorDevice): Action => ({
+    type: SUITE.FORGET_DEVICE,
+    payload,
+});
+
+export const forgetDeviceInstance = (payload: TrezorDevice): Action => ({
+    type: SUITE.FORGET_DEVICE_INSTANCE,
+    payload,
+});
 
 /**
  * Triggered by `trezor-connect DEVICE_EVENT`
@@ -198,21 +199,13 @@ export const handleDeviceDisconnect = (device: Device) => (
         if (!devicePresent) {
             dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
         }
-        // show modal if one of the instances in not remembered
-        const remember = deviceInstances.filter(d => !d.remember);
-        if (remember.length > 0) {
-            dispatch({
-                type: SUITE.REQUEST_REMEMBER_DEVICE,
-                payload: deviceInstances[0],
-            });
-        }
         return;
     }
-    const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
-    if (devices.length < 1 || routerLocked) {
-        dispatch({ type: SUITE.SELECT_DEVICE });
-        return;
-    }
+    // const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+    // if (devices.length < 1 || routerLocked) {
+    //     dispatch({ type: SUITE.SELECT_DEVICE });
+    //     return;
+    // }
 
     const available = deviceUtils.getFirstDeviceInstance(devices);
     dispatch({ type: SUITE.SELECT_DEVICE, payload: available[0] });
@@ -227,7 +220,6 @@ const actions = [
     SUITE.SELECT_DEVICE,
     SUITE.RECEIVE_AUTH_CONFIRM,
     SUITE.UPDATE_PASSPHRASE_MODE,
-    SUITE.RECEIVE_PASSPHRASE_MODE,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 
@@ -288,36 +280,6 @@ export const acquireDevice = () => async (dispatch: Dispatch, getState: GetState
     }
 };
 
-/**
- * Called from `walletMiddleware`
- * Show modal and ask user if he wants to use passphrase or not
- * Skip if device has `passphrase_protection` disabled
- */
-export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-    if (!device) return;
-    const isDeviceReady =
-        device.connected &&
-        device.features &&
-        !device.state &&
-        device.mode === 'normal' &&
-        device.firmware !== 'required';
-    if (!isDeviceReady) return;
-
-    if (device.features?.passphrase_protection) {
-        dispatch({
-            type: SUITE.RECEIVE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: !device.useEmptyPassphrase,
-        });
-    } else {
-        dispatch({
-            type: SUITE.RECEIVE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: false,
-        });
-    }
-};
 /**
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE

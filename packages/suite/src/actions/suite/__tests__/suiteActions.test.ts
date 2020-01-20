@@ -10,9 +10,12 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import modalReducer from '@suite-reducers/modalReducer';
+import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
 import { init } from '../trezorConnectActions';
 import fixtures from '../__fixtures__/suiteActions';
+
+const { getSuiteDevice } = global.JestMocks;
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
@@ -204,20 +207,6 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.requestPassphraseMode.forEach(f => {
-        it(`requestPassphraseMode: ${f.description}`, async () => {
-            const state = getInitialState(f.state);
-            const store = initStore(state);
-            await store.dispatch(suiteActions.requestPassphraseMode());
-            if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
-            } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
-            }
-        });
-    });
-
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
             require('trezor-connect').setTestFixtures(f.getDeviceState);
@@ -261,5 +250,22 @@ describe('Suite Actions', () => {
                 expect(action.type).toEqual(f.result);
             }
         });
+    });
+
+    const SUITE_DEVICE = getSuiteDevice({ path: '1' });
+    it('forgetDevice', () => {
+        const expectedAction = {
+            type: SUITE.FORGET_DEVICE,
+            payload: SUITE_DEVICE,
+        };
+        expect(suiteActions.forgetDevice(SUITE_DEVICE)).toEqual(expectedAction);
+    });
+
+    it('forgetDeviceInstance', () => {
+        const expectedAction = {
+            type: SUITE.FORGET_DEVICE_INSTANCE,
+            payload: SUITE_DEVICE,
+        };
+        expect(suiteActions.forgetDeviceInstance(SUITE_DEVICE)).toEqual(expectedAction);
     });
 });

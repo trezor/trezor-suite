@@ -61,7 +61,7 @@ const getSuiteApplicationState = (props: Props) => {
     if (transport && !transport.type) return Bridge;
 
     // no device available
-    if (!device) return DeviceConnect; // TODO: request disconnect screen (after forget)
+    if (!device) return DeviceConnect;
 
     // device features cannot be read, device is probably used in another window
     if (device.type === 'unacquired') return DeviceAcquire;

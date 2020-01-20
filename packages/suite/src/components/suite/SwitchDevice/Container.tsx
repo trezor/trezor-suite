@@ -17,11 +17,11 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
-    forgetDevice: bindActionCreators(modalActions.onForgetDevice, dispatch),
+    rememberDevice: bindActionCreators(suiteActions.rememberDevice, dispatch),
+    forgetDevice: bindActionCreators(suiteActions.forgetDevice, dispatch),
     onCreateDeviceInstance: bindActionCreators(modalActions.onCreateDeviceInstance, dispatch),
     selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
     applySettings: bindActionCreators(deviceSettingsActions.applySettings, dispatch),
-    requestDeviceInstance: bindActionCreators(suiteActions.requestDeviceInstance, dispatch),
 });
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

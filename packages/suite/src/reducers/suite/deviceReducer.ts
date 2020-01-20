@@ -169,7 +169,7 @@ const disconnectDevice = (draft: State, device: Device) => {
     const affectedDevices = draft.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
         // do not remove devices with state, they are potential candidates to remember if not remembered already
-        const skip = d.features && d.state;
+        const skip = d.features && d.remember;
         if (skip) {
             d.connected = false;
             d.available = false;
@@ -365,7 +365,6 @@ export default (state: State = initialState, action: Action): State => {
             case SUITE.SELECT_DEVICE:
                 updateTimestamp(draft, action.payload);
                 break;
-            case SUITE.RECEIVE_PASSPHRASE_MODE:
             case SUITE.UPDATE_PASSPHRASE_MODE:
                 changePassphraseMode(draft, action.payload, action.hidden);
                 break;

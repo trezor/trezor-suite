@@ -81,6 +81,7 @@ const SwitchDeviceModal = (props: Props) => {
                         instances={deviceUtils.getDeviceInstances(device, devices)}
                         addHiddenWallet={onAddHiddenWallet}
                         selectInstance={onSelectInstance}
+                        rememberDevice={props.rememberDevice}
                         forgetDevice={props.forgetDevice}
                         accounts={props.accounts}
                     />
