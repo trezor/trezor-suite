@@ -1,5 +1,5 @@
 import { DEVICE, UI } from 'trezor-connect';
-import { MODAL, SUITE } from '@suite-actions/constants';
+import { MODAL } from '@suite-actions/constants';
 import { RECEIVE } from '@wallet-actions/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
@@ -189,48 +189,6 @@ export default [
         },
     },
     {
-        description: 'SUITE.REQUEST_REMEMBER_DEVICE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_REMEMBER_DEVICE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_REMEMBER_DEVICE,
-        },
-    },
-    {
-        description: 'SUITE.REQUEST_DEVICE_INSTANCE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_DEVICE_INSTANCE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_DEVICE_INSTANCE,
-        },
-    },
-    {
-        description: 'SUITE.REQUEST_PASSPHRASE_MODE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_PASSPHRASE_MODE,
-        },
-    },
-    {
         description: 'UI.CLOSE_UI_WINDOW',
         initialState: deviceContextState,
         actions: [
@@ -246,36 +204,6 @@ export default [
         actions: [
             {
                 type: MODAL.CLOSE,
-            },
-        ],
-        result: initialState,
-    },
-    {
-        description: 'SUITE.FORGET_DEVICE',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: SUITE.FORGET_DEVICE,
-            },
-        ],
-        result: initialState,
-    },
-    {
-        description: 'SUITE.FORGET_DEVICE_INSTANCE',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: SUITE.FORGET_DEVICE_INSTANCE,
-            },
-        ],
-        result: initialState,
-    },
-    {
-        description: 'SUITE.REMEMBER_DEVICE',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: SUITE.REMEMBER_DEVICE,
             },
         ],
         result: initialState,

@@ -188,7 +188,7 @@ export const getAccountDevice = (devices: AppState['devices'], account: Account)
     devices.find(d => d.state === account.deviceState);
 
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) =>
-    accounts.filter(a => a.deviceState === deviceState);
+    accounts.filter(a => a.deviceState === deviceState && a.visible);
 
 export const getSelectedAccount = (
     deviceState: string | typeof undefined,

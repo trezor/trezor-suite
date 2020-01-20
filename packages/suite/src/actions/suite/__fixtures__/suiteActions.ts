@@ -123,15 +123,6 @@ const reducerActions = [
         ],
     },
     {
-        description: `requestDeviceInstance (just for coverage)`,
-        actions: [suiteActions.requestDeviceInstance(getSuiteDevice())],
-        result: [
-            {
-                online: true,
-            },
-        ],
-    },
-    {
         description: `TRANSPORT.START`,
         actions: [
             {
@@ -398,36 +389,6 @@ const handleDeviceDisconnect = [
         device: CONNECT_DEVICE,
     },
     {
-        description: `disconnected selected device (3 instances: 1 remembered, 1 with state, 1 stateless which will be removed, remember request)`,
-        state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
-            devices: [
-                SUITE_DEVICE,
-                getSuiteDevice({
-                    path: '1',
-                    state: 'cba',
-                    instance: 2,
-                    remember: true,
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                    instance: 1,
-                }),
-            ],
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            type: SUITE.REQUEST_REMEMBER_DEVICE,
-            payload: getSuiteDevice({
-                state: 'abc',
-                instance: 1,
-            }),
-        },
-    },
-    {
         description: `disconnected selected device (3 instances: 2 remembered, 1 stateless which will be removed, no action)`,
         state: {
             suite: {
@@ -459,57 +420,30 @@ const handleDeviceDisconnect = [
             }),
         },
     },
-    {
-        description: `disconnected selected device with state (remember request)`,
-        state: {
-            suite: {
-                device: getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                }),
-            },
-            devices: [
-                getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                }),
-            ],
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            type: SUITE.REQUEST_REMEMBER_DEVICE,
-            payload: getSuiteDevice({
-                connected: false,
-                available: false,
-                path: '',
-                state: 'abc',
-            }),
-        },
-    },
-    {
-        description: `disconnected selected device with router locked`,
-        state: {
-            suite: {
-                device: SUITE_DEVICE,
-                locks: [SUITE.LOCK_TYPE.ROUTER],
-            },
-            devices: [
-                SUITE_DEVICE,
-                getSuiteDevice(
-                    {
-                        path: '2',
-                    },
-                    {
-                        device_id: '2',
-                    },
-                ),
-            ],
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            payload: undefined,
-        },
-    },
+    // {
+    //     description: `disconnected selected device with router locked`,
+    //     state: {
+    //         suite: {
+    //             device: SUITE_DEVICE,
+    //             locks: [SUITE.LOCK_TYPE.ROUTER],
+    //         },
+    //         devices: [
+    //             SUITE_DEVICE,
+    //             getSuiteDevice(
+    //                 {
+    //                     path: '2',
+    //                 },
+    //                 {
+    //                     device_id: '2',
+    //                 },
+    //             ),
+    //         ],
+    //     },
+    //     device: CONNECT_DEVICE,
+    //     result: {
+    //         payload: undefined,
+    //     },
+    // },
     {
         description: `switch to first unacquired device`,
         state: {
@@ -737,84 +671,6 @@ const acquireDevice = [
     },
 ];
 
-const requestPassphraseMode = [
-    {
-        description: `without device`,
-        state: {},
-        result: undefined,
-    },
-    {
-        description: `with disconnected device`,
-        state: {
-            device: SUITE_DEVICE,
-        },
-        result: undefined,
-    },
-    {
-        description: `with unacquired device`,
-        state: {
-            device: getSuiteDevice({
-                type: 'unacquired',
-                connected: true,
-            }),
-        },
-        result: undefined,
-    },
-    {
-        description: `with device which already has state`,
-        state: {
-            device: getSuiteDevice({
-                connected: true,
-                state: '012345',
-            }),
-        },
-        result: undefined,
-    },
-    {
-        description: `with device in unexpected mode`,
-        state: {
-            device: getSuiteDevice({
-                connected: true,
-                mode: 'bootloader',
-            }),
-        },
-        result: undefined,
-    },
-    {
-        description: `with device which needs FW update`,
-        state: {
-            device: getSuiteDevice({
-                connected: true,
-                firmware: 'required',
-            }),
-        },
-        result: undefined,
-    },
-    {
-        description: `with device "passphrase_protection" disabled`,
-        state: {
-            device: getSuiteDevice({
-                connected: true,
-            }),
-        },
-        result: SUITE.RECEIVE_PASSPHRASE_MODE,
-    },
-    {
-        description: `with device "passphrase_protection" enabled`,
-        state: {
-            device: getSuiteDevice(
-                {
-                    connected: true,
-                },
-                {
-                    passphrase_protection: true,
-                },
-            ),
-        },
-        result: SUITE.RECEIVE_PASSPHRASE_MODE,
-    },
-];
-
 const authorizeDevice = [
     {
         description: `without device`,
@@ -894,6 +750,126 @@ const authorizeDevice = [
     },
 ];
 
+const authConfirm = [
+    {
+        description: `without device`,
+        state: {},
+        result: undefined,
+    },
+    {
+        description: `failed first getAddress`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getAddress: [
+            {
+                success: false,
+                payload: {
+                    error: 'getAddress error',
+                },
+            },
+        ],
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: false,
+        },
+    },
+    {
+        description: `failed second getAddress`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getAddress: [
+            undefined,
+            {
+                success: false,
+                payload: {
+                    error: 'second getAddress error',
+                },
+            },
+        ],
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: false,
+        },
+    },
+    {
+        description: `mismatch`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getAddress: [
+            {
+                success: true,
+                payload: {
+                    address: 'current-address',
+                },
+            },
+        ],
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: false,
+        },
+    },
+    {
+        description: `success`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: true,
+        },
+    },
+];
+
+const retryAuthConfirm = [
+    {
+        description: `without device`,
+        state: {},
+        result: undefined,
+    },
+    {
+        description: `failed getDeviceState`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getDeviceState: {
+            success: false,
+            payload: {
+                error: 'getDeviceState error',
+            },
+        },
+        result: NOTIFICATION.ADD,
+    },
+    {
+        description: `failed with incorrect passphrase`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getDeviceState: {
+            success: false,
+            payload: {
+                error: 'Passphrase is incorrect',
+            },
+        },
+        result: undefined,
+    },
+    {
+        description: `success`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getDeviceState: {
+            success: true,
+            payload: {
+                state: 'device-state',
+            },
+        },
+        result: SUITE.RECEIVE_AUTH_CONFIRM,
+    },
+];
+
 export default {
     reducerActions,
     initialRun,
@@ -902,6 +878,7 @@ export default {
     handleDeviceDisconnect,
     observeSelectedDevice,
     acquireDevice,
-    requestPassphraseMode,
     authorizeDevice,
+    authConfirm,
+    retryAuthConfirm,
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { colors } from '@trezor/components';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Discovery } from '@wallet-types';
 import { AppState, Dispatch } from '@suite-types';
@@ -39,7 +40,7 @@ const calculateProgress = (discovery: Discovery) => {
 
 const ProgressBar = (props: Props) => {
     const discovery = props.getDiscoveryForDevice();
-    if (!discovery || discovery.status >= 4) return null;
+    if (!discovery || discovery.status >= DISCOVERY.STATUS.STOPPING) return null;
     return (
         <Wrapper>
             <Line progress={calculateProgress(discovery)} />

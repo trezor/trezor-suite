@@ -1,5 +1,5 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
-import { MODAL, SUITE } from '@suite-actions/constants';
+import { MODAL } from '@suite-actions/constants';
 import { DEVICE_SETTINGS } from '@settings-actions/constants';
 import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
@@ -51,6 +51,7 @@ export default (state: State = initialState, action: Action): State => {
         case UI.REQUEST_PIN:
         case UI.INVALID_PIN:
         case UI.REQUEST_PASSPHRASE:
+        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
@@ -73,10 +74,6 @@ export default (state: State = initialState, action: Action): State => {
                 device: action.payload.device,
                 windowType: action.payload.type,
             };
-        case SUITE.REQUEST_REMEMBER_DEVICE:
-        case SUITE.REQUEST_DEVICE_INSTANCE:
-        case SUITE.REQUEST_PASSPHRASE_MODE:
-        case SUITE.REQUEST_DISCONNECT_DEVICE:
         case ACCOUNT.REQUEST_NEW_ACCOUNT:
         case DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL:
             return {
@@ -94,9 +91,6 @@ export default (state: State = initialState, action: Action): State => {
         // close modal
         case UI.CLOSE_UI_WINDOW:
         case MODAL.CLOSE:
-        case SUITE.FORGET_DEVICE:
-        case SUITE.FORGET_DEVICE_INSTANCE:
-        case SUITE.REMEMBER_DEVICE:
             return initialState;
 
         // other contexts

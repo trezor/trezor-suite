@@ -72,20 +72,21 @@ export const goto = (
     routeName: Route['name'],
     params?: RouteParams,
     preserveParams = false,
-) => async (dispatch: Dispatch) => {
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const hasRouterLock = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+    if (hasRouterLock) {
+        dispatch(suiteActions.lockRouter(false));
+    }
     const unlocked = dispatch(onBeforePopState());
+    if (!unlocked) return;
+
     const url = getRoute(routeName, params);
     const route = findRouteByName(routeName);
     if (route && route.isModal) {
-        if (!unlocked) {
-            dispatch(suiteActions.lockRouter(false));
-        }
         dispatch(onLocationChange(url));
         dispatch(suiteActions.lockRouter(true));
         return;
     }
-
-    if (!unlocked) return;
 
     if (preserveParams) {
         const { hash } = window.location;
