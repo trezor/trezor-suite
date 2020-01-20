@@ -42,8 +42,8 @@ const Bottom = styled.div`
 interface Props {
     left: ReactElement;
     right: ReactElement | null;
-    middle?: ReactElement;
-    bottom?: ReactElement;
+    middle?: ReactElement | null;
+    bottom?: ReactElement | null;
 }
 
 const Layout = (props: Props) => (

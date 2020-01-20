@@ -1,18 +1,19 @@
-import React from 'react';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { State } from '@wallet-types/sendForm';
-import styled from 'styled-components';
-import { getInputState } from '@wallet-utils/sendFormUtils';
-import { Props } from './Container';
-import Fee from '../Fee';
-import { Input, Textarea } from '@trezor/components-v2';
-import GasLimitTopLabel from './components/GasLimitTopLabel';
-import GasPriceTopLabel from './components/GasPriceTopLabel';
-import DataTopLabel from './components/DataTopLabel';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import { Input, Textarea } from '@trezor/components-v2';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { State } from '@wallet-types/sendForm';
+import { getInputState } from '@wallet-utils/sendFormUtils';
+import React from 'react';
+import styled from 'styled-components';
 
+import TransactionInfo from '../TransactionInfo';
+import Fee from '../Fee';
 import Layout from '../Layout';
+import DataTopLabel from './components/DataTopLabel';
+import GasLimitTopLabel from './components/GasLimitTopLabel';
+import GasPriceTopLabel from './components/GasPriceTopLabel';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -120,6 +121,11 @@ const NetworkTypeEthereum = ({
                         onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
                         topLabel={<DataTopLabel />}
                     />
+                }
+                bottom={
+                    transactionInfo?.type === 'final' ? (
+                        <TransactionInfo transactionInfo={transactionInfo} />
+                    ) : null
                 }
             />
         </Wrapper>

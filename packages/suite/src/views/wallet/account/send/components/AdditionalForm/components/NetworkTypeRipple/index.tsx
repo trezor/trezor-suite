@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import DestinationTag from './components/DestinationTag';
-import { Props } from './Container';
+
+import TransactionInfo from '../TransactionInfo';
 import Fee from '../Fee';
 import Layout from '../Layout';
+import DestinationTag from './components/DestinationTag';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,7 +28,7 @@ const NetworkTypeXrp = ({ send, sendFormActionsRipple, selectedAccount }: Props)
                         selectedFee={send.selectedFee}
                         symbol={account.symbol}
                         feeLevels={send.feeInfo.levels}
-                        sendFormActions={sendFormActions}
+                        sendFormActions={props.sendFormActions}
                         customFee={send.customFee.value}
                         errors={send.customFee.error}
                     />
@@ -37,6 +39,11 @@ const NetworkTypeXrp = ({ send, sendFormActionsRipple, selectedAccount }: Props)
                         destinationTag={send.networkTypeRipple.destinationTag.value}
                         errors={send.networkTypeRipple.destinationTag.error}
                     />
+                }
+                bottom={
+                    transactionInfo?.type === 'final' ? (
+                        <TransactionInfo transactionInfo={transactionInfo} />
+                    ) : null
                 }
             />
         </Wrapper>

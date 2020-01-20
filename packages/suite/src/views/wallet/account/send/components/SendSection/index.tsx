@@ -159,7 +159,9 @@ const SendSection = (props: Props) => (
         </Row>
         {props.networkType === 'bitcoin' && (
             <Row>
-                <EstimatedMiningTime seconds={130} />
+                <EstimatedMiningTime
+                    seconds={props.send.feeInfo.blockTime * props.send.selectedFee.blocks * 60}
+                />
             </Row>
         )}
     </Wrapper>

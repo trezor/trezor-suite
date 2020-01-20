@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
 import Fee from '../Fee';
-import Footer from '../Footer';
 import Layout from '../Layout';
+import TransactionInfo from '../TransactionInfo';
 import Locktime from './components/Locktime';
 import ReplaceByFee from './components/ReplaceByFee';
 import { Props } from './Container';
@@ -24,8 +24,12 @@ const Row = styled.div`
     }
 `;
 
+const Inputs = styled.div``;
+const Item = styled.div``;
+
 const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount, settings, fiat }: Props) => {
     if (!send) return null;
+    const { transactionInfo } = send.networkTypeBitcoin;
     const { account } = selectedAccount;
     return (
         <Wrapper>
@@ -48,7 +52,9 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount, settings, 
                             />
                         </Row>
                         <Row>
-                            <EstimatedMiningTime seconds={130} />
+                            <EstimatedMiningTime
+                                seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
+                            />
                         </Row>
                     </>
                 }
@@ -63,14 +69,9 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount, settings, 
                     </>
                 }
                 bottom={
-                    <Footer
-                        rows={[
-                            { title: 'Fee', value: 'bbb' },
-                            { title: 'Size', value: 'aaa' },
-                            { title: 'Inputs', value: 'bbb' },
-                            { title: 'Outputs', value: 'aaa' },
-                        ]}
-                    />
+                    transactionInfo?.type === 'final' ? (
+                        <TransactionInfo transactionInfo={transactionInfo} />
+                    ) : null
                 }
             />
         </Wrapper>

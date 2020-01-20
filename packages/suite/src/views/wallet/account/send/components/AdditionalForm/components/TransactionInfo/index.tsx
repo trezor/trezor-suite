@@ -29,14 +29,16 @@ const Value = styled.div`
     padding-left: 5px;
 `;
 
-const Footer = (props: Props) => (
+interface Props {
+    transactionInfo: any;
+}
+
+const TransactionInfo = (props: Props) => (
     <Wrapper>
-        {props.rows.map(row => (
-            <Item>
-                <Title>{row.title}</Title>:<Value>{row.value}</Value>
-            </Item>
-        ))}
+        <Item>
+            <Title>Fee</Title>:<Value>fee value</Value>
+        </Item>
     </Wrapper>
 );
 
-export default Footer;
+export default TransactionInfo;
