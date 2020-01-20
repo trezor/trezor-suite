@@ -2,13 +2,14 @@
 
 describe('Steps order - slightly differs under certain circumstances', () => {
     before(() => {
-        cy.task('stopBridge');
         cy.task('stopEmu');
     });
 
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.visit('').goToOnboarding().onboardingShouldLoad();
+        cy.visit('')
+            .goToOnboarding()
+            .onboardingShouldLoad();
     });
 
     describe('new device', () => {

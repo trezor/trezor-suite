@@ -89,7 +89,7 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 const Index = (props: Props) => {
     const showWebUsb = isWebUSB(props.transport);
     return (
-        <StyledConnectDevice>
+        <StyledConnectDevice data-test="@modal/connect-device">
             <Title>
                 <H1>
                     <Translation {...messages.TR_CONNECT_TREZOR} />
