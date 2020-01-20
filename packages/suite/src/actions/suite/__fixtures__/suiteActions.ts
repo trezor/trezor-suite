@@ -894,6 +894,126 @@ const authorizeDevice = [
     },
 ];
 
+const authConfirm = [
+    {
+        description: `without device`,
+        state: {},
+        result: undefined,
+    },
+    {
+        description: `failed first getAddress`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getAddress: [
+            {
+                success: false,
+                payload: {
+                    error: 'getAddress error',
+                },
+            },
+        ],
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: false,
+        },
+    },
+    {
+        description: `failed second getAddress`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getAddress: [
+            undefined,
+            {
+                success: false,
+                payload: {
+                    error: 'second getAddress error',
+                },
+            },
+        ],
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: false,
+        },
+    },
+    {
+        description: `mismatch`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getAddress: [
+            {
+                success: true,
+                payload: {
+                    address: 'current-address',
+                },
+            },
+        ],
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: false,
+        },
+    },
+    {
+        description: `success`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        result: {
+            type: SUITE.RECEIVE_AUTH_CONFIRM,
+            success: true,
+        },
+    },
+];
+
+const retryAuthConfirm = [
+    {
+        description: `without device`,
+        state: {},
+        result: undefined,
+    },
+    {
+        description: `failed getDeviceState`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getDeviceState: {
+            success: false,
+            payload: {
+                error: 'getDeviceState error',
+            },
+        },
+        result: NOTIFICATION.ADD,
+    },
+    {
+        description: `failed with incorrect passphrase`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getDeviceState: {
+            success: false,
+            payload: {
+                error: 'Passphrase is incorrect',
+            },
+        },
+        result: undefined,
+    },
+    {
+        description: `success`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getDeviceState: {
+            success: true,
+            payload: {
+                state: 'device-state',
+            },
+        },
+        result: SUITE.RECEIVE_AUTH_CONFIRM,
+    },
+];
+
 export default {
     reducerActions,
     initialRun,
@@ -904,4 +1024,6 @@ export default {
     acquireDevice,
     requestPassphraseMode,
     authorizeDevice,
+    authConfirm,
+    retryAuthConfirm,
 };

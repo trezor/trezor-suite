@@ -32,6 +32,19 @@ jest.mock('trezor-connect', () => {
                         state: '0123456',
                     },
                 },
+            getAddress: () => {
+                if (fixture && Array.isArray(fixture) && fixture.length > 0) {
+                    const f = fixture[0];
+                    fixture.splice(0, 1);
+                    if (f) return f;
+                }
+                return {
+                    success: true,
+                    payload: {
+                        address: '1234567890address',
+                    },
+                };
+            },
         },
         DEVICE: {
             CONNECT: 'device-connect',
@@ -211,6 +224,36 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state);
             const store = initStore(state);
             await store.dispatch(suiteActions.authorizeDevice());
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                const action = store.getActions().pop();
+                expect(action.type).toEqual(f.result);
+            }
+        });
+    });
+
+    fixtures.authConfirm.forEach(f => {
+        it(`authConfirm: ${f.description}`, async () => {
+            require('trezor-connect').setTestFixtures(f.getAddress);
+            const state = getInitialState(f.state);
+            const store = initStore(state);
+            await store.dispatch(suiteActions.authConfirm());
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                const action = store.getActions().pop();
+                expect(action).toMatchObject(f.result);
+            }
+        });
+    });
+
+    fixtures.retryAuthConfirm.forEach(f => {
+        it(`retryAuthConfirm: ${f.description}`, async () => {
+            require('trezor-connect').setTestFixtures(f.getDeviceState);
+            const state = getInitialState(f.state);
+            const store = initStore(state);
+            await store.dispatch(suiteActions.retryAuthConfirm());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {

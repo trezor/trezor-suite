@@ -8,7 +8,7 @@ import { WalletAction, Network } from '@wallet-types';
 
 export interface Discovery {
     deviceState: string;
-    authConfirmationNeeded: boolean;
+    authConfirm: boolean;
     index: number;
     total: number;
     loaded: number;

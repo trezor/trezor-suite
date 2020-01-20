@@ -88,6 +88,9 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
         case SUITE.CREATE_DEVICE_INSTANCE:
             api.dispatch(suiteActions.selectDevice(action.payload));
             break;
+        case SUITE.REQUEST_AUTH_CONFIRM:
+            api.dispatch(suiteActions.authConfirm());
+            break;
         default:
             break;
     }
