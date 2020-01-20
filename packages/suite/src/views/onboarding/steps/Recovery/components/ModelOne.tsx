@@ -6,7 +6,7 @@ import {
     WORD_REQUEST_PLAIN,
 } from '@onboarding-actions/constants/events';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as recoveryActions from '@onboarding-actions/recoveryActions';
+import * as recoveryActions from '@settings-actions/recoveryActions';
 import { OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
 import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
 import { Translation, WordInput, WordInputAdvanced } from '@suite-components';
@@ -22,7 +22,7 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     deviceCall: state.onboarding.deviceCall,
     uiInteraction: state.onboarding.uiInteraction,
-    recovery: state.onboarding.recovery,
+    recovery: state.settings.recovery,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

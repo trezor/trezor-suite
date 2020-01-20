@@ -1,13 +1,10 @@
 import onboarding from '@onboarding-reducers/onboardingReducer';
-import recovery from '@onboarding-reducers/recoveryReducer';
 import newsletter from '@onboarding-reducers/newsletterReducer';
-import { RecoveryActionTypes } from '@onboarding-types/recovery';
 import { NewsletterActionTypes } from '@onboarding-types/newsletter';
 
 import { Action } from '@suite-types';
 
 interface OnboardingAppState extends ReturnType<typeof onboarding> {
-    recovery?: ReturnType<typeof recovery>;
     newsletter?: ReturnType<typeof newsletter>;
 }
 
@@ -23,7 +20,6 @@ export default function onboardingApp(state: OnboardingAppState | undefined, act
         uiInteraction: onboardingState.uiInteraction,
         path: onboardingState.path,
         backupType: onboardingState.backupType,
-        recovery: recovery(onboardingState.recovery, action as RecoveryActionTypes),
         newsletter: newsletter(onboardingState.newsletter, action as NewsletterActionTypes),
     };
 }

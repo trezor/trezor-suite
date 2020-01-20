@@ -1,14 +1,14 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import recoveryReducer from '@onboarding-reducers/recoveryReducer';
-import { RecoveryState, RecoveryActionTypes } from '@onboarding-types/recovery';
-import * as recoveryActions from '../recoveryActions';
+import recoveryReducer, { RecoveryState } from '@settings-reducers/recoveryReducer';
+import { Action } from '@suite-types';
+import * as recoveryActions from '@settings-actions/recoveryActions';
 
 export const getInitialState = (custom?: any): { recovery: RecoveryState } => {
     return {
         recovery: {
-            ...recoveryReducer(undefined, {} as RecoveryActionTypes),
+            ...recoveryReducer(undefined, {} as Action),
             ...custom,
         },
     };
@@ -23,7 +23,7 @@ const updateStore = (store: ReturnType<typeof createStore>) => {
     // there is not much redux logic in this test
     // just update state on every action manually
     store.subscribe(() => {
-        const action: RecoveryActionTypes = store.getActions().pop();
+        const action = store.getActions().pop();
         const { recovery } = store.getState();
 
         store.getState().recovery = recoveryReducer(recovery, action);

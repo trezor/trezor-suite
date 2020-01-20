@@ -10,11 +10,13 @@ import onboardingMiddlewares from '@onboarding-middlewares';
 import suiteReducers from '@suite-reducers';
 import walletReducers from '@wallet-reducers';
 import onboardingReducers from '@onboarding-reducers';
+import settingsReducers from '@settings-reducers';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
+    settings: settingsReducers,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

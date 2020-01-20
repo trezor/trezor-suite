@@ -27,7 +27,9 @@ const DEFAULT_STRENGTH_T2 = 128;
 
 const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) => {
     const { device } = state.suite;
-    const { recovery, backupType } = state.onboarding;
+    const { backupType } = state.onboarding;
+    const { recovery } = state.settings;
+
     if (call === CALLS.GET_FEATURES) {
         return {};
     }

@@ -12,11 +12,13 @@ import walletMiddlewares from '@wallet-middlewares/index';
 import suiteReducers from '@suite-reducers/index';
 import onboardingReducers from '@onboarding-reducers/index';
 import walletReducers from '@wallet-reducers/index';
+import settingsReducers from '@settings-reducers/index';
 
 const reducers = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
+    settings: settingsReducers,
 });
 
 export type AppState = ReturnType<typeof reducers>;
