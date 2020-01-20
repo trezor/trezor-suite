@@ -163,7 +163,12 @@ const FeeComponent = (props: Props) => (
         {props.networkType !== 'ethereum' && (
             <CustomFeeRow>
                 <CustomFeeWrapper>
-                    <CustomFee symbol={props.symbol} networkType={props.networkType} />
+                    <CustomFee
+                        customFee={props.customFee}
+                        selectedFee={props.selectedFee}
+                        symbol={props.symbol}
+                        networkType={props.networkType}
+                    />
                 </CustomFeeWrapper>
                 <BadgeWrapper>
                     <Badge>0.54 USD</Badge>

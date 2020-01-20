@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { Props } from './Container';
 import Fee from '../Fee';
 import Layout from '../Layout';
-import SwitchItem from './components/SwitchItem';
+
+import ReplaceByFee from './components/ReplaceByFee';
+import Locktime from './components/Locktime';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,16 +45,10 @@ const NetworkTypeBitcoin = ({ send, sendFormActions, selectedAccount }: Props) =
                 right={
                     <>
                         <Row>
-                            <SwitchItem
-                                title="Replace by fee (RBF)"
-                                description="RBF allows to bump fee later in case you want the transaction to be mined faster"
-                            />
+                            <ReplaceByFee />
                         </Row>
                         <Row>
-                            <SwitchItem
-                                title="Add Locktime"
-                                description="Allows you to postpone the transaction by set value (time or block)"
-                            />
+                            <Locktime />
                         </Row>
                     </>
                 }

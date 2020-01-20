@@ -23,6 +23,7 @@ interface Props {
     errors: State['customFee']['error'];
     symbol: Account['symbol'];
     networkType: Account['networkType'];
+    selectedFee: State['selectedFee'];
     customFee: State['customFee']['value'];
     maxFee: State['feeInfo']['maxFee'];
     minFee: State['feeInfo']['minFee'];
@@ -65,7 +66,7 @@ const CustomFee = (props: Props) => (
                 variant="small"
                 state={getInputState(props.errors, props.customFee)}
                 bottomText={getErrorMessage(props.errors, props.maxFee, props.minFee)}
-                value={props.customFee || ''}
+                value={props.customFee}
                 onChange={e => {
                     props.sendFormActions.handleCustomFeeValueChange(e.target.value);
                 }}

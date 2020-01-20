@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { variables, colors, Switch } from '@trezor/components-v2';
+import { variables, colors, Switch, Input } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,17 +29,14 @@ const Right = styled.div`
     justify-content: flex-end;
 `;
 
-interface Props {
-    title: string;
-    description: string;
-}
-
-const SwitchItem = ({ title, description }: Props) => {
+const ReplaceByFee = () => {
     return (
         <Wrapper>
             <Left>
-                <Title>{title}</Title>
-                <Description>{description}</Description>
+                <Title>Replace by fee (RBF)</Title>
+                <Description>
+                    RBF allows to bump fee later in case you want the transaction to be mined faster
+                </Description>
             </Left>
             <Right>
                 <Switch checked onChange={() => console.log('change')} />
@@ -48,4 +45,4 @@ const SwitchItem = ({ title, description }: Props) => {
     );
 };
 
-export default SwitchItem;
+export default ReplaceByFee;
