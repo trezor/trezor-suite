@@ -35,7 +35,7 @@ const Wrapper = styled.div`
 `;
 
 const Top = styled.div`
-    padding: 0 0 10px 0;
+    padding: 10px 0 10px 0;
     display: flex;
     width: 100%;
 `;

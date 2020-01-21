@@ -18,7 +18,7 @@ const AdvancedFormRipple = ({ send, account }: Props) => {
 
     return (
         <Wrapper>
-            <Layout left={<Fee />} right={<DestinationTag />} middle={<TransactionInfo />} />
+            <Layout left={<Fee />} right={<DestinationTag />} bottom={<TransactionInfo />} />
         </Wrapper>
     );
 };
