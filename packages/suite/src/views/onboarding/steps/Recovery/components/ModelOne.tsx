@@ -3,49 +3,34 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {
-    WORD_REQUEST_MATRIX6,
-    WORD_REQUEST_MATRIX9,
-    WORD_REQUEST_PLAIN,
-} from '@onboarding-actions/constants/events';
-import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
-import * as connectActions from '@onboarding-actions/connectActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@settings-actions/recoveryActions';
 import { OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
 import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
-import { Translation, WordInput, WordInputAdvanced } from '@suite-components';
-import { AppState, Dispatch } from '@suite-types';
+import { Translation } from '@suite-components';
+import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import messages from '@suite/support/messages';
 import { Link, P } from '@trezor/components-v2';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     deviceCall: state.onboarding.deviceCall,
-    uiInteraction: state.onboarding.uiInteraction,
     recovery: state.settings.recovery,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: {
-        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-        goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
-        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    },
-    recoveryActions: {
-        setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
-        submit: bindActionCreators(recoveryActions.submit, dispatch),
-        setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
-        recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
-    },
-    connectActions: {
-        resetCall: bindActionCreators(connectActions.resetCall, dispatch),
-    },
+    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
+    setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
+    submit: bindActionCreators(recoveryActions.submit, dispatch),
+    setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
+    recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps;
+    WrappedComponentProps &
+    InjectedModalApplicationProps;
 
 type Status = null | 'select-advanced-recovery';
 
@@ -53,13 +38,16 @@ const RecoveryStepModelOne = (props: Props) => {
     const [status, setStatus] = useState<Status>(null);
 
     const {
-        recoveryActions,
+        goToNextStep,
+        goToPreviousStep,
+        setWordsCount,
+        submit,
+        setAdvancedRecovery,
+        recoverDevice,
         recovery,
         device,
-        uiInteraction,
         deviceCall,
-        connectActions,
-        onboardingActions,
+        modal,
     } = props;
 
     if (!device || !device.features) {
@@ -73,7 +61,7 @@ const RecoveryStepModelOne = (props: Props) => {
         if (recovery.error) {
             return 'error';
         }
-        if (props.modal) {
+        if (modal) {
             return 'recovering';
         }
         return status;
@@ -89,9 +77,9 @@ const RecoveryStepModelOne = (props: Props) => {
                 {getStatus() === 'error' && 'Recovery failed'}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
-                {props.modal && props.modal}
+                {modal && modal}
 
-                {!props.modal && (
+                {!modal && (
                     <>
                         {getStatus() === null && (
                             <>
@@ -102,7 +90,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     <Option
                                         isSelected={recovery.wordsCount === 12}
                                         onClick={() => {
-                                            recoveryActions.setWordsCount(12);
+                                            setWordsCount(12);
                                         }}
                                     >
                                         <P>
@@ -115,7 +103,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     <Option
                                         isSelected={recovery.wordsCount === 18}
                                         onClick={() => {
-                                            recoveryActions.setWordsCount(18);
+                                            setWordsCount(18);
                                         }}
                                     >
                                         <P>
@@ -128,7 +116,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     <Option
                                         isSelected={recovery.wordsCount === 24}
                                         onClick={() => {
-                                            recoveryActions.setWordsCount(24);
+                                            setWordsCount(24);
                                         }}
                                     >
                                         <P>
@@ -170,7 +158,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     <Option
                                         isSelected={recovery.advancedRecovery === false}
                                         onClick={() => {
-                                            recoveryActions.setAdvancedRecovery(false);
+                                            setAdvancedRecovery(false);
                                         }}
                                     >
                                         <P>
@@ -180,7 +168,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                     <Option
                                         isSelected={recovery.advancedRecovery === true}
                                         onClick={() => {
-                                            recoveryActions.setAdvancedRecovery(true);
+                                            setAdvancedRecovery(true);
                                         }}
                                     >
                                         <P>
@@ -194,7 +182,7 @@ const RecoveryStepModelOne = (props: Props) => {
                                 <Wrapper.Controls>
                                     <OnboardingButton.Cta
                                         onClick={() => {
-                                            recoveryActions.recoverDevice();
+                                            recoverDevice();
                                         }}
                                     >
                                         <Translation {...messages.TR_START_RECOVERY} />
@@ -212,9 +200,7 @@ const RecoveryStepModelOne = (props: Props) => {
                         )}
                         {getStatus() === 'success' && (
                             <Wrapper.Controls>
-                                <OnboardingButton.Cta
-                                    onClick={() => onboardingActions.goToNextStep()}
-                                >
+                                <OnboardingButton.Cta onClick={() => goToNextStep()}>
                                     Continue
                                 </OnboardingButton.Cta>
                             </Wrapper.Controls>
@@ -235,7 +221,8 @@ const RecoveryStepModelOne = (props: Props) => {
                                 </Text>
                                 <OnboardingButton.Cta
                                     onClick={() => {
-                                        props.connectActions.resetCall();
+                                        // todo:
+                                        // props.connectActions.resetCall();
                                         setStatus(null);
                                     }}
                                 >
@@ -249,9 +236,7 @@ const RecoveryStepModelOne = (props: Props) => {
 
             <Wrapper.StepFooter>
                 {getStatus() == null && (
-                    <OnboardingButton.Back
-                        onClick={() => props.onboardingActions.goToPreviousStep()}
-                    >
+                    <OnboardingButton.Back onClick={() => goToPreviousStep()}>
                         Back
                     </OnboardingButton.Back>
                 )}

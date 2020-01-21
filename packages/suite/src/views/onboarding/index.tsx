@@ -159,12 +159,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     connectActions: bindActionCreators(connectActions, dispatch),
 });
 
-export type StateProps = ReturnType<typeof mapStateToProps>;
-export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type Props = StateProps & DispatchProps & InjectedModalApplicationProps;
+type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> &
+    InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
-    console.log('props.modal', props.modal);
     const {
         selectedModel,
         activeStepId,
@@ -175,6 +174,8 @@ const Onboarding = (props: Props) => {
         loaded,
         device,
         prevDevice,
+
+        modal,
     } = props;
 
     const model =
@@ -313,7 +314,7 @@ const Onboarding = (props: Props) => {
                             in={activeStepId === STEP.ID_RECOVERY_STEP}
                             {...TRANSITION_PROPS}
                         >
-                            <RecoveryStep modal={props.modal} />
+                            <RecoveryStep modal={modal} />
                         </CSSTransition>
 
                         <CSSTransition

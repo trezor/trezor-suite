@@ -3,18 +3,18 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
 import * as recoveryActions from '@settings-actions/recoveryActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { AppState, Dispatch } from '@suite-types';
+import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import messages from '@suite/support/messages';
 
 // import styled from 'styled-components';
 const mapStateToProps = (state: AppState) => ({
     uiInteraction: state.onboarding.uiInteraction,
     device: state.suite.device,
+    recovery: state.settings.recovery,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -25,10 +25,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps;
+    WrappedComponentProps &
+    InjectedModalApplicationProps;
 
 const RecoveryStepModelT = (props: Props) => {
-    const { device, uiInteraction, modal } = props;
+    const { device, uiInteraction, modal, recovery, recoverDevice } = props;
 
     const getStatus = () => {
         if (recovery.success) {
@@ -41,7 +42,7 @@ const RecoveryStepModelT = (props: Props) => {
             return 'success';
         }
         if (
-            recoverry.error &&
+            recovery.error &&
             // on model T, recovery is persistent. when devices reaches recovery_mode, disconnecting
             // does not mean failure.
             device &&
@@ -71,7 +72,7 @@ const RecoveryStepModelT = (props: Props) => {
                                 <Wrapper.Controls>
                                     <OnboardingButton.Cta
                                         onClick={() => {
-                                            recoveryDevice();
+                                            recoverDevice();
                                         }}
                                     >
                                         <Translation {...messages.TR_START_RECOVERY} />
@@ -91,12 +92,12 @@ const RecoveryStepModelT = (props: Props) => {
                                 <Text>
                                     <Translation
                                         {...messages.TR_RECOVERY_ERROR}
-                                        values={{ error: deviceCall.error || '' }}
+                                        values={{ error: recovery.error || '' }}
                                     />
                                 </Text>
                                 <OnboardingButton.Cta
                                     onClick={() => {
-                                        props.connectActions.resetCall();
+                                        console.log('todo');
                                     }}
                                 >
                                     <Translation {...messages.TR_RETRY} />
