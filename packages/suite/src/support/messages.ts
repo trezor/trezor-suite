@@ -75,6 +75,11 @@ const definedMessages = defineMessages({
         description: 'Button for selecting advanced recovery option',
         id: 'TR_ADVANCED_RECOVERY_OPTION',
     },
+    TR_ADVANCED_SETTINGS: {
+        defaultMessage: 'Advanced settings',
+        description: 'Shows advanced sending form',
+        id: 'TR_ADVANCED_SETTINGS',
+    },
     TR_AMOUNT: {
         defaultMessage: 'Amount',
         id: 'TR_AMOUNT',
@@ -116,6 +121,19 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.',
         id: 'TR_ATTENTION_COLON_THE_LOG_CONTAINS',
+    },
+    TR_AUTH_CONFIRM_FAILED_MESSAGE: {
+        defaultMessage:
+            'Passphrase entered on the first step does not match with passphrase confirmation.',
+        id: 'TR_AUTH_CONFIRM_FAILED_MESSAGE',
+    },
+    TR_AUTH_CONFIRM_FAILED_RETRY: {
+        defaultMessage: 'Retry',
+        id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
+    },
+    TR_AUTH_CONFIRM_FAILED_TITLE: {
+        defaultMessage: 'Passphrase mismatch!',
+        id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
     TR_AUTHENTICATING_DEVICE: {
         defaultMessage: 'Authenticating device...',
@@ -192,9 +210,19 @@ const definedMessages = defineMessages({
         description: 'Description what Trezor Bridge is',
         id: 'TR_BRIDGE_SUBHEADING',
     },
+    TR_BTC: {
+        defaultMessage: 'Transfer cost in XRP drops',
+        id: 'TR_XRP_TRANSFER_COST',
+    },
     TR_BUY: {
         defaultMessage: 'Buy',
         id: 'TR_BUY',
+    },
+    TR_CALCULATING_DOT_DOT: {
+        defaultMessage: 'Calculating...',
+        description:
+            'Used when calculating gas limit based on data input in ethereum advanced send form',
+        id: 'TR_CALCULATING_DOT_DOT',
     },
     TR_CAMERA_NOT_RECOGNIZED: {
         defaultMessage: 'The camera was not recognized.',
@@ -1065,19 +1093,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Loading other accounts...',
         id: 'TR_LOADING_OTHER_ACCOUNTS',
     },
-    TR_AUTH_CONFIRM_FAILED_TITLE: {
-        defaultMessage: 'Passphrase mismatch!',
-        id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
-    },
-    TR_AUTH_CONFIRM_FAILED_MESSAGE: {
-        defaultMessage:
-            'Passphrase entered on the first step does not match with passphrase confirmation.',
-        id: 'TR_AUTH_CONFIRM_FAILED_MESSAGE',
-    },
-    TR_AUTH_CONFIRM_FAILED_RETRY: {
-        defaultMessage: 'Retry',
-        id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
-    },
     TR_LOADING_TRANSACTIONS: {
         defaultMessage: 'Loading transactions',
         id: 'TR_LOADING_TRANSACTIONS',
@@ -1631,6 +1646,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send {amount}',
         id: 'TR_SEND',
     },
+    TR_SEND_ERROR: {
+        defaultMessage: 'Send {network}',
+        id: 'TR_SEND_ERROR',
+    },
     TR_SEND_LABEL: {
         defaultMessage: 'Send',
         description: 'Label for amount to be send',
@@ -2058,6 +2077,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
         id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
+    },
+    TR_XRP_TRANSFER_COST: {
+        defaultMessage: 'Transfer cost in XRP drops',
+        id: 'TR_XRP_TRANSFER_COST',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage: 'You were disconnected.',
