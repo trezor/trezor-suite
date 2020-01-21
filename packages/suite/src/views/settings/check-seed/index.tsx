@@ -7,6 +7,7 @@ import { Button, H2, P } from '@trezor/components-v2';
 
 import * as recoveryActions from '@settings-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
+import { WordCount } from '@settings-types';
 
 // todo: taken from switch device. grrr
 const Wrapper = styled.div`
@@ -26,7 +27,7 @@ const Row = styled.div`
 
 interface WordsButtonProps {
     isActive: boolean;
-    count: 12 | 18 | 24;
+    count: WordCount;
     onClick: () => void;
 }
 

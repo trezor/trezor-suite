@@ -5,8 +5,8 @@ import { RECOVERY } from '@settings-actions/constants';
 // todo
 import { submitWord } from '@onboarding-actions/connectActions';
 import { Dispatch, GetState, Action } from '@suite-types';
+import { WordCount } from '@settings-types';
 
-type WordCount = 12 | 18 | 24;
 type ResultPayload = { success: boolean; error: string };
 
 export type RecoveryActions =

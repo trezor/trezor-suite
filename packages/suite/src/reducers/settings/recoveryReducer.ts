@@ -1,10 +1,11 @@
 import produce from 'immer';
 import { RECOVERY } from '@settings-actions/constants';
 import { Action } from '@suite-types';
+import { WordCount } from '@settings-types';
 
 export interface RecoveryState {
     advancedRecovery: boolean;
-    wordsCount: 12 | 18 | 24;
+    wordsCount: WordCount;
     success: boolean | null;
     error: string | null;
 }
