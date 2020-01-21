@@ -143,7 +143,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
 `;
 
 interface IconWrapperProps {
-    alignIcon?: ButtonProps['alignIcon'];
+    alignIcon?: Props['alignIcon'];
 }
 
 interface WrapperProps {
