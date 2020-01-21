@@ -49,12 +49,17 @@ const Targets = styled.div`
     color: ${colors.BLACK0};
     font-size: ${variables.FONT_SIZE.TINY};
     overflow: hidden;
+    align-items: center;
     flex: 1;
 `;
 
 const Target = styled.div`
     display: flex;
     flex-direction: column;
+
+    & + & {
+        margin-top: 12px;
+    }
 `;
 
 const Token = styled.div`
@@ -86,22 +91,20 @@ const Label = styled.div`
     display: flex;
 `;
 
-const Balances = styled.div`
+const Balances = styled.div<{ partial?: boolean }>`
     display: flex;
     flex-direction: row;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK0};
+    color: ${props => (props.partial === true ? colors.BLACK50 : colors.BLACK0)};
     margin-left: 1rem;
 `;
 
 const Symbol = styled.div`
-    color: ${colors.BLACK0};
 `;
 
-const Amount = styled.div<{ txType: string }>`
+const Amount = styled.div`
     display: flex;
     text-align: right;
-    /* color: ${props => (props.txType === 'recv' ? 'green' : 'red')}; */
 `;
 
 const TokenAmount = styled(Token)<{ txType: string }>`
@@ -117,6 +120,17 @@ const Addr = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     margin-right: 10px;
+`;
+
+const ExpandButton = styled(Button)`
+    && {
+        color: ${colors.BLACK0};
+        font-weight: ${variables.FONT_WEIGHT.REGULAR};
+    }
+`;
+
+const ExpandedWrapper = styled.div`
+    margin-top: 12px;
 `;
 
 type Props = {
@@ -164,40 +178,18 @@ const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
     );
 };
 
-const ExpandableTargets = ({ targets }: { targets: WalletAccountTransaction['targets'] }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const targetLists = targets.map((target, i) => (
-        // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
-        // eslint-disable-next-line react/no-array-index-key
-        <Target key={i}>
-            {target.addresses && target.addresses.map(addr => <Addr key={addr}>{addr}</Addr>)}
-        </Target>
-    ));
-
-    if (targets.length > 1 || isExpanded) {
-        return (
-            <>
-                <Button
-                    variant="tertiary"
-                    size="small"
-                    icon={isExpanded ? 'ARROW_UP' : 'ARROW_DOWN'}
-                    onClick={() => {
-                        setIsExpanded(!isExpanded);
-                    }}
-                >
-                    {targets.length} addressess
-                </Button>
-
-                {isExpanded && targetLists}
-            </>
-        );
-    }
-    return <>{targetLists}</>;
-};
-
 const TransactionItem = React.memo(
     ({ explorerUrl, symbol, type, blockTime, blockHeight, amount, targets, tokens }: Props) => {
+        const [isExpanded, setIsExpanded] = useState(false);
+
+        const targetsList = targets.map((target, i) => (
+            // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
+            // eslint-disable-next-line react/no-array-index-key
+            <Target key={i}>
+                {target.addresses && target.addresses.map(addr => <Addr key={addr}>{addr}</Addr>)}
+            </Target>
+        ));
+
         // blockbook cannot parse some txs
         // eg. tx with eth smart contract that creates a new token has no valid target
         const isUnknown = type === 'sent' && targets.length === 1 && targets[0].addresses === null;
@@ -228,14 +220,28 @@ const TransactionItem = React.memo(
                                 </Addr>
                             </Target>
                         )}
-                        {targets && <ExpandableTargets targets={targets} />}
+                        {targets && targets.length === 1 && <>{targetsList}</>}
+
+                        {targets && targets.length > 1 && (
+                            <ExpandButton
+                                variant="tertiary"
+                                size="small"
+                                icon={isExpanded ? 'ARROW_UP' : 'ARROW_DOWN'}
+                                onClick={() => {
+                                    setIsExpanded(!isExpanded);
+                                }}
+                            >
+                                {targets.length} addressess
+                            </ExpandButton>
+                        )}
+
                         {tokens &&
                             tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
                     </Targets>
                     {amount !== '0' && (
                         <ColBalance>
                             <Balances>
-                                <Amount txType={type}>
+                                <Amount>
                                     {type === 'recv' && '+'}
                                     {type !== 'recv' && '-'}
                                     {amount}&nbsp;
@@ -245,6 +251,32 @@ const TransactionItem = React.memo(
                         </ColBalance>
                     )}
                 </Row>
+                {isExpanded &&
+                    targets.map((target, i) => (
+                        <Row>
+                            <Timestamp />
+                            <Targets>
+                                <ExpandedWrapper>
+                                    <Target key={i}>
+                                        {target.addresses &&
+                                            target.addresses.map(addr => (
+                                                <Addr key={addr}>{addr}</Addr>
+                                            ))}
+                                    </Target>
+                                </ExpandedWrapper>
+                            </Targets>
+                            <ColBalance>
+                                <Balances partial>
+                                    <Amount>
+                                        {type === 'recv' && '+'}
+                                        {type !== 'recv' && '-'}
+                                        {target.amount}&nbsp;
+                                    </Amount>
+                                    <Symbol>{symbol.toUpperCase()}</Symbol>
+                                </Balances>
+                            </ColBalance>
+                        </Row>
+                    ))}
             </Wrapper>
         );
     },
