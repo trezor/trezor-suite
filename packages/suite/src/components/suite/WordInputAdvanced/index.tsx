@@ -27,7 +27,6 @@ const Backspace = styled(Button)`
 
 interface Props {
     count: 6 | 9;
-    // todo:
     onSubmit: (value: string) => void;
 }
 
@@ -44,77 +43,46 @@ const WordInputAdvanced = (props: Props) => {
             if (event.keyCode === 8) {
                 backspace();
             }
-            if (count === 9) {
-                switch (event.keyCode) {
-                    // numeric and numpad
-                    case 49:
-                    case 97:
-                        onSubmit('1');
-                        break;
-                    case 50:
-                    case 98:
-                        onSubmit('2');
-                        break;
-                    case 51:
-                    case 99:
-                        onSubmit('3');
-                        break;
-                    case 52:
-                    case 100:
-                        onSubmit('4');
-                        break;
-                    case 53:
-                    case 101:
-                        onSubmit('5');
-                        break;
-                    case 54:
-                    case 102:
-                        onSubmit('6');
-                        break;
-                    case 55:
-                    case 103:
-                        onSubmit('7');
-                        break;
-                    case 56:
-                    case 104:
-                        onSubmit('8');
-                        break;
-                    case 57:
-                    case 105:
-                        onSubmit('9');
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                switch (event.keyCode) {
-                    case 49:
-                    case 97:
-                        onSubmit('1');
-                        break;
-                    case 51:
-                    case 99:
-                        onSubmit('3');
-                        break;
-                    case 52:
-                    case 100:
-                        onSubmit('4');
-                        break;
-                    case 54:
-                    case 102:
-                        onSubmit('6');
-                        break;
-                    case 55:
-                    case 103:
-                        onSubmit('7');
-                        break;
-                    case 57:
-                    case 105:
-                        onSubmit('9');
-                        break;
-                    default:
-                        break;
-                }
+            switch (event.keyCode) {
+                // numeric and numpad
+                case 49:
+                case 97:
+                    onSubmit('1');
+                    break;
+                case 50:
+                case 98:
+                    onSubmit('2');
+                    break;
+                case 51:
+                case 99:
+                    onSubmit('3');
+                    break;
+                case 52:
+                case 100:
+                    onSubmit('4');
+                    break;
+                case 53:
+                case 101:
+                    onSubmit('5');
+                    break;
+                case 54:
+                case 102:
+                    onSubmit('6');
+                    break;
+                case 55:
+                case 103:
+                    onSubmit('7');
+                    break;
+                case 56:
+                case 104:
+                    onSubmit('8');
+                    break;
+                case 57:
+                case 105:
+                    onSubmit('9');
+                    break;
+                default:
+                    break;
             }
         };
 
