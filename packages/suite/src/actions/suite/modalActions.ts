@@ -1,14 +1,40 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { Action, Dispatch, GetState } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+
+export type UserContextPayload =
+    | {
+          type: 'qr-reader';
+          outputId: number;
+      }
+    | {
+          type: 'unverified-address';
+          device: TrezorDevice;
+          addressPath: string;
+      }
+    | {
+          type: 'add-account';
+          device: TrezorDevice;
+      }
+    | {
+          type: 'device-background-gallery';
+          device: TrezorDevice;
+      }
+    | {
+          type: 'transaction-detail';
+          txid: string;
+      }
+    | {
+          type: 'log';
+      };
 
 export type ModalActions =
     | {
           type: typeof MODAL.CLOSE;
       }
     | {
-          type: typeof MODAL.OPEN_SCAN_QR;
-          outputId: number;
+          type: typeof MODAL.OPEN_USER_CONTEXT;
+          payload: UserContextPayload;
       };
 
 export const onCancel = (): Action => ({
@@ -64,9 +90,7 @@ export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch:
     dispatch(onCancel());
 };
 
-export const openQrModal = (outputId: number) => (dispatch: Dispatch): void => {
-    dispatch({
-        type: MODAL.OPEN_SCAN_QR,
-        outputId,
-    });
-};
+export const openModal = (payload: UserContextPayload): Action => ({
+    type: MODAL.OPEN_USER_CONTEXT,
+    payload,
+});

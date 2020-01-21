@@ -1,6 +1,6 @@
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { RECEIVE } from '../constants';
-import { NOTIFICATION } from '@suite-actions/constants';
+import { NOTIFICATION, MODAL } from '@suite-actions/constants';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -46,7 +46,10 @@ export default [
         action: () => receiveActions.showAddress(PATH),
         result: {
             actions: [
-                { type: RECEIVE.REQUEST_UNVERIFIED, device: UNAVAILABLE_DEVICE, addressPath: PATH },
+                {
+                    type: MODAL.OPEN_USER_CONTEXT,
+                    payload: { device: UNAVAILABLE_DEVICE, addressPath: PATH },
+                },
             ],
         },
     },

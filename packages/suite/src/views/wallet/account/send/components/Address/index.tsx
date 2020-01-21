@@ -31,7 +31,7 @@ interface Props extends WrappedComponentProps {
     accounts: Account[];
     address: Output['address']['value'];
     sendFormActions: DispatchProps['sendFormActions'];
-    openQrModal: DispatchProps['openQrModal'];
+    openModal: DispatchProps['openModal'];
 }
 
 const getMessage = (
@@ -93,7 +93,12 @@ const Address = (props: Props) => (
             <QrButton
                 key="qrButton"
                 variant="secondary"
-                onClick={() => props.openQrModal(props.outputId)}
+                onClick={() =>
+                    props.openModal({
+                        type: 'qr-reader',
+                        outputId: props.outputId,
+                    })
+                }
             >
                 <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />
             </QrButton>

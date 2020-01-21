@@ -1,14 +1,14 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import { NOTIFICATION } from '@suite-actions/constants';
+import * as modalActions from '@suite-actions/modalActions';
 import messages from '@suite/support/messages';
-import { GetState, Dispatch, TrezorDevice } from '@suite-types';
+import { GetState, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
 
 export type ReceiveActions =
     | { type: typeof RECEIVE.INIT; descriptor: string }
     | { type: typeof RECEIVE.DISPOSE }
-    | { type: typeof RECEIVE.REQUEST_UNVERIFIED; device: TrezorDevice; addressPath: string }
     | { type: typeof RECEIVE.SHOW_ADDRESS; descriptor: string }
     | { type: typeof RECEIVE.HIDE_ADDRESS; descriptor: string }
     | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS; descriptor: string };
@@ -32,13 +32,15 @@ export const showAddress = (path: string) => async (
     const { account } = getState().wallet.selectedAccount;
 
     if (!selectedDevice || !account) return;
-    if (selectedDevice && (!selectedDevice.connected || !selectedDevice.available)) {
+    if (!selectedDevice.connected || !selectedDevice.available) {
         // Show modal when device is not connected
-        dispatch({
-            type: RECEIVE.REQUEST_UNVERIFIED,
-            device: selectedDevice,
-            addressPath: path,
-        });
+        dispatch(
+            modalActions.openModal({
+                type: 'unverified-address',
+                device: selectedDevice,
+                addressPath: path,
+            }),
+        );
         return;
     }
 
