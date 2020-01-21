@@ -1,6 +1,5 @@
 import * as deviceSettingsActions from '@suite/actions/settings/deviceSettingsActions';
 import { NOTIFICATION } from '@suite-actions/constants';
-import { DEVICE_SETTINGS } from '@settings-actions/constants';
 
 export default [
     {
@@ -49,13 +48,6 @@ export default [
         mocks: { success: false, payload: { error: 'eeeh' } },
         result: {
             actions: [{ type: NOTIFICATION.ADD, payload: { variant: 'error' } }],
-        },
-    },
-    {
-        description: 'Open background gallery modal',
-        action: () => deviceSettingsActions.openBackgroundGalleryModal(),
-        result: {
-            actions: [{ type: DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL }],
         },
     },
 ];

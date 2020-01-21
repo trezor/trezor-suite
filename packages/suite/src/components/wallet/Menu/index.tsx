@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
 import { DISCOVERY } from '@wallet-actions/constants';
-import * as accountActions from '@wallet-actions/accountActions';
+import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
@@ -59,7 +59,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
-    requestNewAccount: bindActionCreators(accountActions.requestNewAccount, dispatch),
+    openModal: bindActionCreators(modalActions.openModal, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -79,13 +79,7 @@ const DiscoveryStatus = () => (
     </Wrapper>
 );
 
-const Menu = ({
-    device,
-    accounts,
-    selectedAccount,
-    getDiscoveryForDevice,
-    requestNewAccount,
-}: Props) => {
+const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openModal }: Props) => {
     const [legacyVisibleState, setLegacyVisibleState] = useState<State['legacyVisible']>(false);
     const discovery = getDiscoveryForDevice();
     if (!device || !discovery) {
@@ -121,7 +115,12 @@ const Menu = ({
                 <TitleText>Accounts</TitleText>{' '}
                 <TitleActions>
                     <AddAccountButton
-                        onClick={requestNewAccount}
+                        onClick={() =>
+                            openModal({
+                                type: 'add-account',
+                                device,
+                            })
+                        }
                         disabled={discovery.status !== DISCOVERY.STATUS.COMPLETED}
                         tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
                     />

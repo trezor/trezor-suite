@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as modalActions from '@suite-actions/modalActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import * as backupActions from '@settings-actions/backupActions';
 import { Dispatch, AppState } from '@suite-types';
@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setDiscreetMode: bindActionCreators(walletSettingsActions.setDiscreetMode, dispatch),
-    onCreateDeviceInstance: bindActionCreators(modalActions.onCreateDeviceInstance, dispatch),
+    createDeviceInstance: bindActionCreators(suiteActions.createDeviceInstance, dispatch),
     changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
     backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
 });

@@ -14,19 +14,11 @@ const initialState: State = [];
  * @returns {TrezorDevice}
  */
 const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): TrezorDevice => {
-    let { instanceLabel } = device;
-    if (typeof upcoming.label === 'string' && upcoming.label !== device.label) {
-        instanceLabel = upcoming.label;
-        if (typeof device.instance === 'number') {
-            instanceLabel += ` (${device.instanceName || device.instance})`;
-        }
-    }
     return {
         ...device,
         ...upcoming,
         state: device.state,
         instance: device.instance,
-        instanceLabel,
     };
 };
 
@@ -85,8 +77,6 @@ const connectDevice = (draft: State, device: Device) => {
         instance: device.features.passphrase_protection
             ? getNewInstanceNumber(draft, device as AcquiredDevice) || 1
             : undefined,
-        instanceLabel: device.label,
-        instanceName: undefined,
         ts: new Date().getTime(),
     };
 
@@ -277,18 +267,15 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
  * @param {TrezorDevice} device
  * @returns
  */
-const createInstance = (draft: State, device: TrezorDevice, name?: string) => {
+const createInstance = (draft: State, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
     const { instance } = device;
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: false,
         remember: device.remember,
         state: undefined,
         instance,
-        instanceLabel: `${device.label} (${name || instance})`,
-        instanceName: name,
         ts: new Date().getTime(),
     };
     draft.push(newDevice);
@@ -375,7 +362,7 @@ export default (state: State = initialState, action: Action): State => {
                 authConfirm(draft, action.payload, action.success);
                 break;
             case SUITE.CREATE_DEVICE_INSTANCE:
-                createInstance(draft, action.payload, action.name);
+                createInstance(draft, action.payload);
                 break;
             case SUITE.REMEMBER_DEVICE:
                 remember(draft, action.payload);
