@@ -29,6 +29,7 @@ const Row = styled.div`
 const AdvancedFormBitcoin = ({ send }: Props) => {
     if (!send) return null;
     const { customFee } = send;
+    const { transactionInfo } = send.networkTypeBitcoin;
     return (
         <Wrapper>
             <Layout
@@ -56,7 +57,7 @@ const AdvancedFormBitcoin = ({ send }: Props) => {
                         </Row>
                     </Content>
                 }
-                bottom={<TransactionInfo />}
+                bottom={transactionInfo && <TransactionInfo />}
             />
         </Wrapper>
     );

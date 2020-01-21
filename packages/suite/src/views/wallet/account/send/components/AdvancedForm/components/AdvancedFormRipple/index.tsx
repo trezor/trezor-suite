@@ -16,6 +16,7 @@ const Wrapper = styled.div`
 const AdvancedFormRipple = ({ send, sendFormActionsRipple, selectedAccount }: Props) => {
     const { account } = selectedAccount;
     if (!send || !account) return null;
+    const { transactionInfo } = send.networkTypeRipple;
 
     return (
         <Wrapper>
@@ -28,7 +29,7 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple, selectedAccount }: Pr
                         errors={send.networkTypeRipple.destinationTag.error}
                     />
                 }
-                bottom={<TransactionInfo />}
+                bottom={transactionInfo && <TransactionInfo />}
             />
         </Wrapper>
     );

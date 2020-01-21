@@ -1,15 +1,23 @@
 import { connect } from 'react-redux';
-import { AppState } from '@suite-types';
-import Component from './index';
+import { bindActionCreators } from 'redux';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
+
+import { AppState, Dispatch } from '@suite-types';
+import AdditionalFormXrp from './index';
 
 const mapStateToProps = (state: AppState) => ({
     account: state.wallet.selectedAccount.account,
-    fiat: state.wallet.fiat,
-    settings: state.wallet.settings,
     send: state.wallet.send,
 });
 
-export type StateProps = ReturnType<typeof mapStateToProps>;
-export type Props = StateProps;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    sendFormActions: bindActionCreators(sendFormActions, dispatch),
+    sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
+});
 
-export default connect(mapStateToProps, null)(Component);
+export type StateProps = ReturnType<typeof mapStateToProps>;
+export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+export type Props = StateProps & DispatchProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdditionalFormXrp);
