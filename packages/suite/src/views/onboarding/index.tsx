@@ -38,7 +38,7 @@ import HologramStep from '@onboarding-views/steps/Hologram/Container';
 import PairStep from '@onboarding-views/steps/Pair/Container';
 import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
 import ShamirStep from '@onboarding-views/steps/Shamir/Container';
-import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
+import RecoveryStep from '@onboarding-views/steps/Recovery';
 import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';

@@ -34,7 +34,7 @@ const initialState: OnboardingState = {
     // and here leave only isMatchingPrevDevice ?
     prevDevice: null,
     selectedModel: null,
-    activeStepId: STEP.ID_RECOVERY_STEP,
+    activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
     deviceCall: {

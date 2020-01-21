@@ -8,6 +8,7 @@ import { createLogger } from 'redux-logger';
 
 import suiteMiddlewares from '@suite-middlewares/index';
 import walletMiddlewares from '@wallet-middlewares/index';
+import settingsMiddlewares from '@settings-middlewares/index';
 
 import suiteReducers from '@suite-reducers/index';
 import onboardingReducers from '@onboarding-reducers/index';
@@ -23,7 +24,12 @@ const reducers = combineReducers({
 
 export type AppState = ReturnType<typeof reducers>;
 
-const middlewares = [thunkMiddleware, ...suiteMiddlewares, ...walletMiddlewares];
+const middlewares = [
+    thunkMiddleware,
+    ...suiteMiddlewares,
+    ...walletMiddlewares,
+    ...settingsMiddlewares,
+];
 
 const enhancers: any[] = [];
 

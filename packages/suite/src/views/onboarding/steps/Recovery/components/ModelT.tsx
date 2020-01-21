@@ -1,5 +1,4 @@
 import React from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -7,10 +6,9 @@ import * as recoveryActions from '@settings-actions/recoveryActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
 
-// import styled from 'styled-components';
 const mapStateToProps = (state: AppState) => ({
     uiInteraction: state.onboarding.uiInteraction,
     device: state.suite.device,
@@ -24,9 +22,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps &
-    InjectedModalApplicationProps;
+    ReturnType<typeof mapDispatchToProps> & { modal: React.ReactNode };
 
 const RecoveryStepModelT = (props: Props) => {
     const { device, uiInteraction, modal, recovery, recoverDevice } = props;
@@ -119,4 +115,4 @@ const RecoveryStepModelT = (props: Props) => {
     );
 };
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelT));
+export default connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelT);

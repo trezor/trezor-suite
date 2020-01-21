@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -8,7 +7,7 @@ import * as recoveryActions from '@settings-actions/recoveryActions';
 import { OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
 import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components';
-import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
 import { Link, P } from '@trezor/components-v2';
 
@@ -22,15 +21,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
     goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
-    submit: bindActionCreators(recoveryActions.submit, dispatch),
     setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
     recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps &
-    InjectedModalApplicationProps;
+type Props = { modal: React.ReactNode } & ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 type Status = null | 'select-advanced-recovery';
 
@@ -41,7 +37,6 @@ const RecoveryStepModelOne = (props: Props) => {
         goToNextStep,
         goToPreviousStep,
         setWordsCount,
-        submit,
         setAdvancedRecovery,
         recoverDevice,
         recovery,
@@ -245,4 +240,4 @@ const RecoveryStepModelOne = (props: Props) => {
     );
 };
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelOne));
+export default connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelOne);
