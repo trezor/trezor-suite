@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Fee from '../Fee/Container';
 import Layout from '../Layout';
 import TransactionInfo from '../TransactionInfo/Container';
-import DestinationTag from './components/DestinationTag';
+import DestinationTag from './components/DestinationTag/Container';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -13,24 +13,12 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const AdvancedFormRipple = ({ send, sendFormActionsRipple, selectedAccount }: Props) => {
-    const { account } = selectedAccount;
+const AdvancedFormRipple = ({ send, account }: Props) => {
     if (!send || !account) return null;
-    const { transactionInfo } = send.networkTypeRipple;
 
     return (
         <Wrapper>
-            <Layout
-                left={<Fee />}
-                right={
-                    <DestinationTag
-                        sendFormActionsRipple={sendFormActionsRipple}
-                        destinationTag={send.networkTypeRipple.destinationTag.value}
-                        errors={send.networkTypeRipple.destinationTag.error}
-                    />
-                }
-                bottom={transactionInfo && <TransactionInfo />}
-            />
+            <Layout left={<Fee />} right={<DestinationTag />} middle={<TransactionInfo />} />
         </Wrapper>
     );
 };

@@ -4,7 +4,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as sendFormActionsEthereum from '@wallet-actions/sendFormSpecific/ethereumActions';
 
 import { AppState, Dispatch } from '@suite-types';
-import AdditionalFormEthereum from './index';
+import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -22,4 +22,4 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export type Props = StateProps & DispatchProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdditionalFormEthereum);
+export default connect(mapStateToProps, mapDispatchToProps)(Component);

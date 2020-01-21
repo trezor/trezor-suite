@@ -4,10 +4,10 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
 
 import { AppState, Dispatch } from '@suite-types';
-import AdditionalFormXrp from './index';
+import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
+    account: state.wallet.selectedAccount.account,
     send: state.wallet.send,
     fiat: state.wallet.fiat,
     device: state.suite.device,
@@ -22,4 +22,4 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export type Props = StateProps & DispatchProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdditionalFormXrp);
+export default connect(mapStateToProps, mapDispatchToProps)(Component);

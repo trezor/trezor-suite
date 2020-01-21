@@ -29,7 +29,7 @@ const Row = styled.div`
 const AdvancedFormBitcoin = ({ send }: Props) => {
     if (!send) return null;
     const { customFee } = send;
-    const { transactionInfo } = send.networkTypeBitcoin;
+
     return (
         <Wrapper>
             <Layout
@@ -38,7 +38,7 @@ const AdvancedFormBitcoin = ({ send }: Props) => {
                         <Row>
                             <Fee />
                         </Row>
-                        {customFee.value && (
+                        {!customFee.value && (
                             <Row>
                                 <EstimatedMiningTime
                                     seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
@@ -57,7 +57,7 @@ const AdvancedFormBitcoin = ({ send }: Props) => {
                         </Row>
                     </Content>
                 }
-                bottom={transactionInfo && <TransactionInfo />}
+                bottom={<TransactionInfo />}
             />
         </Wrapper>
     );

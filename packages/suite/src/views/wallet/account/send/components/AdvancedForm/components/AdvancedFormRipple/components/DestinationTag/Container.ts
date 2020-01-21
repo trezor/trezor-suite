@@ -1,13 +1,17 @@
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
 
-import { AppState } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     send: state.wallet.send,
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
+});
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;

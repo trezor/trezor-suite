@@ -42,6 +42,7 @@ const getValue = (networkType: Account['networkType']) => {
     if (networkType === 'bitcoin') {
         return { value: 'sat', label: 'sat/B' };
     }
+
     if (networkType === 'ripple') {
         return { value: 'drop', label: 'drops' };
     }

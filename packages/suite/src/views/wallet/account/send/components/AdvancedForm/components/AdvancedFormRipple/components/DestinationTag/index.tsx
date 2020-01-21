@@ -6,13 +6,7 @@ import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Translation } from '@suite-components/Translation';
 import { State } from '@wallet-types/sendForm';
 import messages from '@suite/support/messages';
-import { Props as ContainerProps } from '../../Container';
-
-interface Props {
-    errors: State['networkTypeRipple']['destinationTag']['error'];
-    destinationTag: State['networkTypeRipple']['destinationTag']['value'];
-    sendFormActionsRipple: ContainerProps['sendFormActionsRipple'];
-}
+import { Props } from './Container';
 
 const Label = styled.div`
     display: flex;
@@ -27,7 +21,7 @@ const StyledIcon = styled(Icon)`
     height: 100%;
 `;
 
-const getErrorMessage = (error: Props['errors']) => {
+const getErrorMessage = (error: State['networkTypeRipple']['destinationTag']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <Translation {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;
@@ -36,21 +30,28 @@ const getErrorMessage = (error: Props['errors']) => {
     }
 };
 
-const NetworkTypeXrp = (props: Props) => (
-    <Input
-        state={getInputState(props.errors, props.destinationTag)}
-        display="block"
-        variant="small"
-        topLabel={
-            <Label>
-                <Translation {...messages.TR_XRP_DESTINATION_TAG} />
-                <StyledIcon icon="QUESTION" color={colors.BLACK0} size={12} />
-            </Label>
-        }
-        bottomText={getErrorMessage(props.errors)}
-        value={props.destinationTag || ''}
-        onChange={e => props.sendFormActionsRipple.handleDestinationTagChange(e.target.value)}
-    />
-);
+const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
+    if (!send) return null;
+    const { networkTypeRipple } = send;
+    const { destinationTag } = networkTypeRipple;
+    const { error, value } = destinationTag;
 
-export default NetworkTypeXrp;
+    return (
+        <Input
+            state={getInputState(error, value)}
+            display="block"
+            variant="small"
+            topLabel={
+                <Label>
+                    <Translation {...messages.TR_XRP_DESTINATION_TAG} />
+                    <StyledIcon icon="QUESTION" color={colors.BLACK0} size={12} />
+                </Label>
+            }
+            bottomText={getErrorMessage(error)}
+            value={value || ''}
+            onChange={e => sendFormActionsRipple.handleDestinationTagChange(e.target.value)}
+        />
+    );
+};
+
+export default AdvancedFormRipple;

@@ -161,7 +161,7 @@ const SendSection = ({
                     </Fee>
                 </Row>
             )}
-            {networkType === 'bitcoin' && customFee.value && (
+            {networkType === 'bitcoin' && !customFee.value && (
                 <Row>
                     <EstimatedMiningTime
                         seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
