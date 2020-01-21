@@ -1,18 +1,3 @@
-suite lint:
-    stage: lint
-    script:
-        - yarn workspace @trezor/suite lint
-  
-suite type-check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/suite type-check
-
-suite unit tests:
-    stage: unit tests
-    script:
-        - yarn workspace @trezor/suite test:unit
-
 suite test integration:
     only:
         - schedules
