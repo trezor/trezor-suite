@@ -88,6 +88,7 @@ const Transactions = (props: Props) => {
                     totalPages={total}
                     onPageSelected={onPageSelected}
                     perPage={SETTINGS.TXS_PER_PAGE}
+                    symbol={account.symbol}
                 />
             )}
         </LayoutAccount>
