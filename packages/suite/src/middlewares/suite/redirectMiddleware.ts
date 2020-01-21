@@ -1,4 +1,3 @@
-// import { DEVICE } from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
@@ -33,12 +32,12 @@ const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?
     }
     // device firmware update required, redirect to "firmware update"
     else if (device.firmware === 'required') {
-        await dispatch(routerActions.goto('suite-device-firmware'));
+        await dispatch(routerActions.goto('firmware-index'));
     }
 
     // reset wallet params if switching from one device to another
     if (state.suite.device && state.router.app === 'wallet' && state.router.params) {
-        await dispatch(routerActions.goto('wallet-index'));
+        await dispatch(routerActions.goto(state.router.route.name));
     }
 };
 /**
@@ -58,9 +57,6 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     switch (action.type) {
         case SUITE.SELECT_DEVICE:
             await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
-            break;
-        case SUITE.CREATE_DEVICE_INSTANCE:
-            await api.dispatch(routerActions.goto('suite-index'));
             break;
         default:
             break;

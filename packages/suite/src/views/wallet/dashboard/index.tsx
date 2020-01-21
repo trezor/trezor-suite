@@ -69,7 +69,7 @@ const Dashboard = (props: Props) => {
     const isLoading = !discovery || accounts.length < 1;
 
     return (
-        <Content data-test="Dashboard__page__content">
+        <Content>
             <H2>Dashboard</H2>
             {isLoading && (
                 <LoadingContent>

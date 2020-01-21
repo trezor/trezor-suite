@@ -1,6 +1,6 @@
 import reducer, { initialState } from '@wallet-reducers/settingsReducer';
 import { STORAGE } from '@suite-actions/constants';
-import { SETTINGS } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -28,7 +28,7 @@ describe('settings reducer', () => {
     it('SET_LOCAL_CURRENCY', () => {
         expect(
             reducer(undefined, {
-                type: SETTINGS.SET_LOCAL_CURRENCY,
+                type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
                 localCurrency: 'czk',
             }),
         ).toEqual({
@@ -40,7 +40,7 @@ describe('settings reducer', () => {
     it('SET_HIDE_BALANCE', () => {
         expect(
             reducer(undefined, {
-                type: SETTINGS.SET_HIDE_BALANCE,
+                type: WALLET_SETTINGS.SET_HIDE_BALANCE,
                 toggled: true,
             }),
         ).toEqual({
@@ -52,7 +52,7 @@ describe('settings reducer', () => {
     it('CHANGE_NETWORKS', () => {
         expect(
             reducer(undefined, {
-                type: SETTINGS.CHANGE_NETWORKS,
+                type: WALLET_SETTINGS.CHANGE_NETWORKS,
                 payload: ['eth'],
             }),
         ).toEqual({
@@ -64,7 +64,7 @@ describe('settings reducer', () => {
     it('CHANGE_EXTERNAL_NETWORKS', () => {
         expect(
             reducer(undefined, {
-                type: SETTINGS.CHANGE_EXTERNAL_NETWORKS,
+                type: WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS,
                 payload: ['xem'],
             }),
         ).toEqual({

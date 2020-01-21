@@ -4,7 +4,6 @@ install and build:
         policy: pull-push
         key: node_modules-across-the-monorepo-universe
         paths:
-            - .yarn
             # modules
             - node_modules/
             - packages/blockchain-link/node_modules/

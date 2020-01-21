@@ -5,9 +5,8 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
-import { resolveRememberRequest } from '@suite-actions/modalActions';
 import { loadStorage } from '@suite-actions/storageActions';
-import { fetchLocale } from '@suite-actions/languageActions';
+import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { getApp } from '@suite-utils/router';
 
@@ -75,11 +74,9 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
 
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
-            api.dispatch(resolveRememberRequest(action.payload));
             api.dispatch(suiteActions.handleDeviceConnect(action.payload));
             break;
         case DEVICE.DISCONNECT:
-            // api.dispatch(resolveRememberRequest(action.payload));
             api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
             break;
         case SUITE.FORGET_DEVICE:
@@ -87,6 +84,9 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             break;
         case SUITE.CREATE_DEVICE_INSTANCE:
             api.dispatch(suiteActions.selectDevice(action.payload));
+            break;
+        case SUITE.REQUEST_AUTH_CONFIRM:
+            api.dispatch(suiteActions.authConfirm());
             break;
         default:
             break;

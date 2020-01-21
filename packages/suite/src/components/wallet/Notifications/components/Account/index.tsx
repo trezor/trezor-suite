@@ -1,34 +1,33 @@
 import * as React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Notification } from '@suite-components';
-import { AppState } from '@suite-types';
+import AuthConfirm from '@suite-components/Notifications/components/AuthConfirm';
+import { Props as BaseProps } from '@wallet-components/Notifications';
 import messages from '@suite/support/messages';
 
-interface Props extends WrappedComponentProps {
-    blockchain: any;
-    selectedAccount: AppState['wallet']['selectedAccount'];
-}
-
-interface Network {
-    symbol: string;
-}
+type Props = WrappedComponentProps & BaseProps;
 
 // There could be only one account notification
 const AccountNotifications = (props: Props) => {
     if (props.selectedAccount.status !== 'loaded') return null;
-    const { network, notification } = props.selectedAccount;
+    const { notification } = props.selectedAccount;
     if (!notification) return null;
-    const blockchain = props.blockchain.find((b: Network) => b.symbol === network.symbol);
+
+    if (notification.type === 'auth') {
+        // special case: passphrase confirmation failed
+        return <AuthConfirm />;
+    }
 
     if (notification.type === 'backend') {
         // special case: backend is down
         // TODO: this is a different component with "auto resolve" button
+        // const blockchain = props.blockchain[network.symbol];
         return (
             <Notification
                 variant="error"
                 title={notification.title}
                 message={notification.message}
-                isActionInProgress={blockchain && blockchain.connecting}
+                // isActionInProgress={blockchain && blockchain.connecting}
                 actions={[
                     {
                         label: props.intl.formatMessage(messages.TR_CONNECT_TO_BACKEND),
@@ -41,6 +40,7 @@ const AccountNotifications = (props: Props) => {
             />
         );
     }
+
     return (
         <Notification
             variant={notification.variant}

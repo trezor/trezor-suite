@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { UI } from 'trezor-connect';
 import { SUITE, ROUTER, MODAL } from '@suite-actions/constants';
-import { SETTINGS, ACCOUNT } from '@wallet-actions/constants';
-import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
+import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as accountActions from '@wallet-actions/accountActions';
@@ -16,8 +16,8 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     const prevDiscovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
     const discoveryIsRunning =
         prevDiscovery &&
-        prevDiscovery.status > DISCOVERY_STATUS.IDLE &&
-        prevDiscovery.status < DISCOVERY_STATUS.STOPPING;
+        prevDiscovery.status > DISCOVERY.STATUS.IDLE &&
+        prevDiscovery.status < DISCOVERY.STATUS.STOPPING;
 
     // temporary workaround, needs to be changed in trezor-connect
     // BLOCK action propagation (via next() function) and respond to trezor-connect
@@ -30,12 +30,12 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         return action;
     }
 
-    // do not close "device instance" modal during discovery
+    // do not close "add account" modal during discovery
     if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
         const { modal } = prevState;
         if (
             modal.context === MODAL.CONTEXT_DEVICE &&
-            modal.windowType === SUITE.REQUEST_DEVICE_INSTANCE
+            modal.windowType === ACCOUNT.REQUEST_NEW_ACCOUNT
         ) {
             return action;
         }
@@ -56,7 +56,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     // pass action
     await next(action);
 
-    if (action.type === SETTINGS.CHANGE_NETWORKS) {
+    if (action.type === WALLET_SETTINGS.CHANGE_NETWORKS) {
         // update Discovery fields
         api.dispatch(discoveryActions.updateNetworkSettings());
         // remove accounts which are no longer part of Discovery
@@ -90,36 +90,44 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         }
     }
 
-    // 3a. auth process
+    // 3. begin auth process
     if (authorizationIntent) {
-        api.dispatch(suiteActions.requestPassphraseMode());
-    }
-
-    // 3b. auth process
-    if (action.type === SUITE.RECEIVE_PASSPHRASE_MODE) {
         api.dispatch(suiteActions.authorizeDevice());
     }
 
+    // 4. device state received
     if (action.type === SUITE.AUTH_DEVICE) {
-        api.dispatch(discoveryActions.create(action.state));
+        api.dispatch(discoveryActions.create(action.state, action.payload.useEmptyPassphrase));
     }
 
-    // 4. start or restart discovery
+    // 5. device state confirmation received
+    if (action.type === SUITE.RECEIVE_AUTH_CONFIRM && action.payload.state) {
+        // from discovery point of view it's irrelevant if authConfirm fails
+        // it's a device matter now
+        api.dispatch(
+            discoveryActions.update({
+                deviceState: action.payload.state,
+                authConfirm: false,
+            }),
+        );
+    }
+
+    // 6. start or restart discovery
     if (
         becomesConnected ||
         action.type === SUITE.APP_CHANGED ||
         action.type === SUITE.SELECT_DEVICE ||
         action.type === SUITE.AUTH_DEVICE ||
-        action.type === SETTINGS.CHANGE_NETWORKS ||
-        action.type === ACCOUNT.CHANGE_VISIBILITY ||
-        (action.type === ROUTER.LOCATION_CHANGE && prevState.router.app !== 'wallet')
+        action.type === WALLET_SETTINGS.CHANGE_NETWORKS ||
+        action.type === ACCOUNT.CHANGE_VISIBILITY
     ) {
         const discovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
         if (
             device &&
             device.connected &&
             discovery &&
-            (discovery.status === 0 || discovery.status >= DISCOVERY_STATUS.STOPPED)
+            (discovery.status === DISCOVERY.STATUS.IDLE ||
+                discovery.status >= DISCOVERY.STATUS.STOPPED)
         ) {
             api.dispatch(discoveryActions.start());
         }

@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { sortByCoin } from '@wallet-utils/accountUtils';
@@ -13,7 +14,6 @@ import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import messages from '@suite/support/messages';
-import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
 const Wrapper = styled.div``;
 
@@ -91,7 +91,7 @@ const Menu = ({
     if (!device || !discovery) {
         return <DiscoveryStatus />;
     }
-    const discoveryIsRunning = discovery.status <= 2;
+    const discoveryIsRunning = discovery.status <= DISCOVERY.STATUS.STOPPING;
 
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state));
     // always show first "normal" account even if they are empty
@@ -122,7 +122,7 @@ const Menu = ({
                 <TitleActions>
                     <AddAccountButton
                         onClick={requestNewAccount}
-                        disabled={discovery.status !== DISCOVERY_STATUS.COMPLETED}
+                        disabled={discovery.status !== DISCOVERY.STATUS.COMPLETED}
                         tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
                     />
                 </TitleActions>

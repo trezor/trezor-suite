@@ -5,6 +5,8 @@ import FormattedNumber from '@suite-components/FormattedNumber';
 import { colors, Button } from '@trezor/components-v2';
 import BigNumber from 'bignumber.js';
 import EmptyWallet from './components/EmptyWallet';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -74,7 +76,9 @@ const PortfolioCard = ({
         <StyledCard {...rest}>
             <Header>
                 <Left>
-                    <HeaderTitle>Total portfolio value</HeaderTitle>
+                    <HeaderTitle>
+                        <Translation {...messages.TR_TOTAL_PORTFOLIO_VALUE} />
+                    </HeaderTitle>
                     <ValueWrapper>
                         <FormattedNumber
                             value={portfolioValue.toString()}
@@ -84,10 +88,10 @@ const PortfolioCard = ({
                 </Left>
                 <Right>
                     <ActionButton variant="secondary" onClick={receiveClickHandler}>
-                        Receive
+                        <Translation {...messages.TR_RECEIVE} />
                     </ActionButton>
                     <ActionButton variant="primary" onClick={buyClickHandler}>
-                        Buy
+                        <Translation {...messages.TR_BUY} />
                     </ActionButton>
                 </Right>
             </Header>

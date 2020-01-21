@@ -123,7 +123,9 @@ class Controller extends EventEmitter {
             console.log('response in websocketclinet.js', resp);
             if (dfd) {
                 if (!success) {
-                    dfd.reject(new Error(`websocket_error_message${resp.error.message}`));
+                    dfd.reject(
+                        new Error(`websocket_error_message${resp.error.message || resp.error}`),
+                    );
                 } else {
                     dfd.resolve(resp);
                 }

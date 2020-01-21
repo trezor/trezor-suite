@@ -101,7 +101,7 @@ describe('redirectMiddleware', () => {
                 type: DEVICE.CONNECT,
                 payload: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
             });
-            expect(goto).toHaveBeenNthCalledWith(1, 'suite-device-firmware');
+            expect(goto).toHaveBeenNthCalledWith(1, 'firmware-index');
         });
 
         it('SUITE.SELECT_DEVICE reset wallet params', () => {
@@ -125,6 +125,13 @@ describe('redirectMiddleware', () => {
                             symbol: 'btc',
                             accountIndex: 2,
                             accountType: 'normal',
+                        },
+                        route: {
+                            name: 'wallet-index',
+                            pattern: '/wallet',
+                            app: 'wallet',
+                            params: ['symbol', 'accountIndex', 'accountType'],
+                            isModal: undefined,
                         },
                     },
                 ),

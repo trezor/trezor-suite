@@ -9,11 +9,13 @@ import { DEVICE } from 'trezor-connect';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
-import { SUITE } from '@suite-actions/constants';
+import modalReducer from '@suite-reducers/modalReducer';
+import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
-import * as routerActions from '../routerActions';
 import { init } from '../trezorConnectActions';
-import fixtures from './fixtures/suiteActions';
+import fixtures from '../__fixtures__/suiteActions';
+
+const { getSuiteDevice } = global.JestMocks;
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
@@ -33,6 +35,19 @@ jest.mock('trezor-connect', () => {
                         state: '0123456',
                     },
                 },
+            getAddress: () => {
+                if (fixture && Array.isArray(fixture) && fixture.length > 0) {
+                    const f = fixture[0];
+                    fixture.splice(0, 1);
+                    if (f) return f;
+                }
+                return {
+                    success: true,
+                    payload: {
+                        address: '1234567890address',
+                    },
+                };
+            },
         },
         DEVICE: {
             CONNECT: 'device-connect',
@@ -42,6 +57,7 @@ jest.mock('trezor-connect', () => {
             START: 'transport-start',
             ERROR: 'transport-error',
         },
+        UI: {},
         setTestFixtures: (f: any) => {
             fixture = f;
         },
@@ -67,6 +83,7 @@ export const getInitialState = (
             ...routerReducer(undefined, { type: 'foo' } as any),
             ...router,
         },
+        modal: modalReducer(undefined, { type: 'foo' } as any),
     };
 };
 
@@ -190,20 +207,6 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.requestPassphraseMode.forEach(f => {
-        it(`requestPassphraseMode: ${f.description}`, async () => {
-            const state = getInitialState(f.state);
-            const store = initStore(state);
-            await store.dispatch(suiteActions.requestPassphraseMode());
-            if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
-            } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
-            }
-        });
-    });
-
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
             require('trezor-connect').setTestFixtures(f.getDeviceState);
@@ -219,21 +222,50 @@ describe('Suite Actions', () => {
         });
     });
 
-    it(`closeModalApp: it should remove LOCKTYPE.ROUTER form suite.locks`, async () => {
-        // mock router
-        require('next/router').default.push = () => {};
-        const back = jest.spyOn(routerActions, 'back');
-        const state = getInitialState({
-            locks: [SUITE.LOCK_TYPE.ROUTER, SUITE.LOCK_TYPE.DEVICE],
+    fixtures.authConfirm.forEach(f => {
+        it(`authConfirm: ${f.description}`, async () => {
+            require('trezor-connect').setTestFixtures(f.getAddress);
+            const state = getInitialState(f.state);
+            const store = initStore(state);
+            await store.dispatch(suiteActions.authConfirm());
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                const action = store.getActions().pop();
+                expect(action).toMatchObject(f.result);
+            }
         });
-        const store = initStore(state);
-        await store.dispatch(suiteActions.closeModalApp());
+    });
 
-        expect(store.getState()).toMatchObject({
-            suite: {
-                locks: [SUITE.LOCK_TYPE.DEVICE],
-            },
+    fixtures.retryAuthConfirm.forEach(f => {
+        it(`retryAuthConfirm: ${f.description}`, async () => {
+            require('trezor-connect').setTestFixtures(f.getDeviceState);
+            const state = getInitialState(f.state);
+            const store = initStore(state);
+            await store.dispatch(suiteActions.retryAuthConfirm());
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                const action = store.getActions().pop();
+                expect(action.type).toEqual(f.result);
+            }
         });
-        expect(back).toHaveBeenCalledTimes(1);
+    });
+
+    const SUITE_DEVICE = getSuiteDevice({ path: '1' });
+    it('forgetDevice', () => {
+        const expectedAction = {
+            type: SUITE.FORGET_DEVICE,
+            payload: SUITE_DEVICE,
+        };
+        expect(suiteActions.forgetDevice(SUITE_DEVICE)).toEqual(expectedAction);
+    });
+
+    it('forgetDeviceInstance', () => {
+        const expectedAction = {
+            type: SUITE.FORGET_DEVICE_INSTANCE,
+            payload: SUITE_DEVICE,
+        };
+        expect(suiteActions.forgetDeviceInstance(SUITE_DEVICE)).toEqual(expectedAction);
     });
 });

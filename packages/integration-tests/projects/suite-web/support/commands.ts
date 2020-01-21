@@ -4,11 +4,11 @@
 import TrezorConnect, { Device, Features } from 'trezor-connect';
 import { Store, AppState } from '@suite-types';
 
-import { onboardingShouldLoad, walletShouldLoad } from './utils/assertions';
+import { onboardingShouldLoad, dashboardShouldLoad } from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
 import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
 import { resetDb, setState } from './utils/test-env';
-import { toggleDeviceMenu } from './utils/shortcuts';
+import { toggleDeviceMenu, goToOnboarding, goToSuite } from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
 
@@ -32,7 +32,7 @@ declare global {
             ) => Chainable<any>;
             setState: (state: Partial<AppState>) => undefined;
             onboardingShouldLoad: () => Chainable<Subject>;
-            walletShouldLoad: () => Chainable<Subject>;
+            dashboardShouldLoad: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
         }
     }
@@ -57,9 +57,11 @@ Cypress.Commands.add('connectBootloaderDevice', connectBootloaderDevice);
 Cypress.Commands.add('changeDevice', changeDevice);
 // assertion helpers
 Cypress.Commands.add('onboardingShouldLoad', onboardingShouldLoad);
-Cypress.Commands.add('walletShouldLoad', walletShouldLoad);
+Cypress.Commands.add('dashboardShouldLoad', dashboardShouldLoad);
 // selector helpers
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('getConfirmActionOnDeviceModal', getConfirmActionOnDeviceModal);
 // various shortcuts
 Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
+Cypress.Commands.add('goToOnboarding', goToOnboarding);
+Cypress.Commands.add('goToSuite', goToSuite);

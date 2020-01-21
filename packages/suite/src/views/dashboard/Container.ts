@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    getDiscoveryForDevice: bindActionCreators(discoveryActions.getDiscoveryForDevice, dispatch),
+    getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 

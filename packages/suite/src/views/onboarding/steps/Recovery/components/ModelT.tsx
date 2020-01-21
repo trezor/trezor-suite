@@ -2,7 +2,7 @@ import * as connectActions from '@onboarding-actions/connectActions';
 import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
 import React from 'react';

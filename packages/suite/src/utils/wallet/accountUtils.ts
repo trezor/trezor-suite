@@ -6,7 +6,7 @@ import { AccountTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import messages from '@suite/support/messages';
 import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
-import { Account, Network, Fiat } from '@wallet-types';
+import { Account, Network, Fiat, WalletParams } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -188,12 +188,12 @@ export const getAccountDevice = (devices: AppState['devices'], account: Account)
     devices.find(d => d.state === account.deviceState);
 
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) =>
-    accounts.filter(a => a.deviceState === deviceState);
+    accounts.filter(a => a.deviceState === deviceState && a.visible);
 
 export const getSelectedAccount = (
     deviceState: string | typeof undefined,
     accounts: Account[],
-    routerParams: AppState['router']['params'],
+    routerParams: WalletParams | undefined,
 ) => {
     if (!deviceState || !routerParams) return null;
 

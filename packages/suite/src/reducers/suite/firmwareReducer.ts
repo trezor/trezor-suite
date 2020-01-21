@@ -1,6 +1,8 @@
 import produce from 'immer';
-import { SUITE, FIRMWARE } from '@suite-actions/constants';
 import { DEVICE, UI, Device } from 'trezor-connect';
+
+import { SUITE } from '@suite-actions/constants';
+import { FIRMWARE } from '@settings-actions/constants';
 import { TrezorDevice, Action } from '@suite-types';
 
 const INITIAL = 'initial';

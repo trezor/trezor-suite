@@ -75,7 +75,7 @@ export default [
         screen: Onboarding,
     },
     {
-        key: getRoute('suite-device-firmware'),
+        key: getRoute('firmware-index'),
         type: 'default',
         screen: Firmware,
     },

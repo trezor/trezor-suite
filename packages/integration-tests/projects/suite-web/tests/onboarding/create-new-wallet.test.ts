@@ -1,36 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 describe('Onboarding happy paths', () => {
-    before(() => {
-        cy.task('startBridge')
-            .task('startEmu')
-            .task('wipeEmu')
-            .task('stopEmu');
-    });
-
     beforeEach(() => {
+        cy.task('stopBridge');
+        cy.task('startBridge');
+        cy.task('startEmu');
+        cy.task('wipeEmu');
+        cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
-    });
-
-    // after(() => {
-    //     cy.task('stopBridge').task('stopEmu');
-    // });
-
-    it('this is just example how to use setState command', () => {
-        cy.visit('/').onboardingShouldLoad();
-        // @ts-ignore
-        cy.setState({ onboarding: { activeStepId: 'backup' } });
-        cy.connectDevice({ mode: 'normal' }, { initialized: true, needs_backup: true });
-        cy.get('html').should('contain', 'Backup');
     });
 
     it(`create new wallet - skip security - appear in wallet`, () => {
         cy.visit('/');
-
+        cy.goToOnboarding();
         cy.onboardingShouldLoad()
             .getTestElement('@onboarding/button-path-create')
             .click()
-            // todo: add snapshots in distance future when everything is stable
+            //  add snapshots in distance future when everything is stable
             // .matchImageSnapshot()
             .get('html')
             .should('contain', 'New device')
@@ -56,7 +42,8 @@ describe('Onboarding happy paths', () => {
 
         cy.get('html')
             .should('contain', 'Take me to security')
-            .getTestElement('button-exit-app')
-            .click();
+            .getTestElement('button-exit-app');
+        // click() removed it for now. I need reproducible runs to compare line by line faild and succeeded once
+        // and going to wallet SOMETIMES managed to trigger discovery process resulting in more lines (bridge calls logs)
     });
 });

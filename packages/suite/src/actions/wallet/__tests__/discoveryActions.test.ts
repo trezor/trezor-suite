@@ -9,7 +9,8 @@ import accountsReducer from '@wallet-reducers/accountsReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
-import { DISCOVERY, ACCOUNT, SETTINGS } from '@wallet-actions/constants';
+import { DISCOVERY, ACCOUNT } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { ArrayElement } from '@suite/types/utils';
 import * as discoveryActions from '../discoveryActions';
 import {
@@ -17,7 +18,7 @@ import {
     fixtures,
     interruptionFixtures,
     changeNetworksFixtures,
-} from './fixtures/discoveryActions';
+} from '../__fixtures__/discoveryActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -158,7 +159,7 @@ export const getInitialState = () => ({
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
         settings: walletSettingsReducer(undefined, {
-            type: SETTINGS.CHANGE_NETWORKS,
+            type: WALLET_SETTINGS.CHANGE_NETWORKS,
             payload: ['btc', 'test'],
         }),
     },
@@ -268,7 +269,7 @@ describe('Discovery Actions', () => {
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
                     if (trigger) {
                         store.dispatch({
-                            type: SETTINGS.CHANGE_NETWORKS,
+                            type: WALLET_SETTINGS.CHANGE_NETWORKS,
                             payload: trigger.networks,
                         });
                         store.dispatch(discoveryActions.updateNetworkSettings());
@@ -397,7 +398,7 @@ describe('Discovery Actions', () => {
         store.dispatch(
             discoveryActions.update({
                 deviceState: 'device-state',
-                status: 3, // STATUS.STOP
+                status: DISCOVERY.STATUS.STOPPED,
             }),
         );
     });
@@ -510,5 +511,14 @@ describe('Discovery Actions', () => {
         expect(action.type).toEqual(DISCOVERY.COMPLETE);
         expect(result.loaded).toEqual(0);
         expect(result.total).toEqual(0);
+    });
+
+    it('getDiscoveryAuthConfirmationStatus', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state', false));
+        await store.dispatch(discoveryActions.start());
+        const status = store.dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus());
+        expect(status).toEqual(true);
     });
 });

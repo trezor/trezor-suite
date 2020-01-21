@@ -1,6 +1,5 @@
 import * as BLOCKCHAIN from './blockchainConstants';
 import * as SIGN_VERIFY from './signVerifyConstants';
-import * as SETTINGS from './settingsConstants';
 import * as RECEIVE from './receiveConstants';
 import * as ACCOUNT from './accountConstants';
 import * as SEND from './sendFormConstants';
@@ -13,7 +12,6 @@ import * as SEND_CACHE from './sendFormCacheConstants';
 export {
     BLOCKCHAIN,
     SIGN_VERIFY,
-    SETTINGS,
     TOKEN,
     RECEIVE,
     ACCOUNT,

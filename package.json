@@ -4,6 +4,9 @@
     "private": true,
     "repository": "https://github.com/trezor/trezor-suite.git",
     "license": "SEE LICENSE IN LICENSE.md",
+    "engines": {
+        "node": ">=11"
+    },
     "workspaces": {
         "packages": [
             "packages/*"
@@ -28,20 +31,20 @@
         "lint": "yarn lerna run lint"
     },
     "devDependencies": {
-        "@babel/cli": "^7.7.4",
-        "@babel/core": "^7.7.4",
-        "@babel/node": "^7.7.4",
-        "@babel/plugin-proposal-class-properties": "^7.7.4",
-        "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
-        "@babel/plugin-transform-runtime": "^7.7.4",
-        "@babel/preset-env": "^7.7.4",
-        "@babel/preset-react": "^7.7.4",
-        "@babel/preset-typescript": "^7.7.4",
+        "@babel/cli": "^7.8.3",
+        "@babel/core": "^7.8.3",
+        "@babel/node": "^7.8.3",
+        "@babel/plugin-proposal-class-properties": "^7.8.3",
+        "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+        "@babel/plugin-transform-runtime": "^7.8.3",
+        "@babel/preset-env": "^7.8.3",
+        "@babel/preset-react": "^7.8.3",
+        "@babel/preset-typescript": "^7.8.3",
         "@types/jest": "^24.0.23",
         "@typescript-eslint/eslint-plugin": "^2.12.0",
         "@typescript-eslint/parser": "^2.12.0",
         "babel-plugin-module-resolver": "^3.2.0",
-        "concurrently": "^5.0.1",
+        "concurrently": "^5.0.2",
         "eslint": "^6.7.1",
         "eslint-config-airbnb": "^18.0.1",
         "eslint-config-prettier": "^6.7.0",
@@ -53,14 +56,14 @@
         "eslint-plugin-react": "^7.16.0",
         "eslint-plugin-react-hooks": "^2.3.0",
         "jest": "^24.9.0",
-        "lerna": "^3.19.0",
+        "lerna": "^3.20.2",
         "npm-run-all": "^4.1.5",
         "patch-package": "^6.2.0",
         "postinstall-postinstall": "^2.0.0",
         "prettier": "1.19.1",
         "prettier-eslint": "^9.0.1",
         "rimraf": "^3.0.0",
-        "ts-jest": "^24.2.0",
+        "ts-jest": "^24.3.0",
         "typescript": "^3.7.3"
     }
 }

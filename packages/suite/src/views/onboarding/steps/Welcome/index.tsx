@@ -19,16 +19,6 @@ const Base = styled.div`
 `;
 
 const WelcomeStep = (props: Props) => {
-    const { device } = props;
-
-    const shouldDisplayLeaveButton = () => {
-        if (device && device.features && !device.features.initialized) {
-            return false;
-        }
-        // rather show than not
-        return true;
-    };
-
     return (
         <Wrapper.Step data-test="onboarding_first_page">
             <Wrapper.StepBody>
@@ -67,15 +57,10 @@ const WelcomeStep = (props: Props) => {
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                {shouldDisplayLeaveButton() && (
-                    <OnboardingButton.Back
-                        data-test="button-use-wallet"
-                        onClick={() => props.closeModalApp()}
-                    >
-                        {/* TODO proper texts, I dunno */}
-                        <Translation {...messages.TR_BACK} />
-                    </OnboardingButton.Back>
-                )}
+                <OnboardingButton.Back data-test="button-use-wallet" onClick={props.closeModalApp}>
+                    {/* TODO proper texts, I dunno */}
+                    <Translation {...messages.TR_BACK} />
+                </OnboardingButton.Back>
             </Wrapper.StepFooter>
         </Wrapper.Step>
     );

@@ -3,8 +3,8 @@ import thunk from 'redux-thunk';
 import { Middleware } from 'redux';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
-import * as languageActions from '../languageActions';
-import * as settingsActions from '@wallet-actions/settingsActions';
+import * as languageActions from '../../settings/languageActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 
@@ -164,7 +164,7 @@ describe('Storage actions', () => {
         // save wallet settings to the db
         await store.dispatch(storageActions.saveWalletSettings());
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
-        await store.dispatch(settingsActions.setLocalCurrency('czk'));
+        await store.dispatch(walletSettingsActions.setLocalCurrency('czk'));
         const { settings } = store.getState().wallet;
         // triggers SUITE.LOADED action with objects from the DB inside the payload prop
         await store.dispatch(storageActions.loadStorage());

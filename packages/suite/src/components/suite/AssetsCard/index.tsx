@@ -10,6 +10,8 @@ import { AppState } from '@suite-types';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { Loader } from '@trezor/components';
 import { colors } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const Header = styled.div`
     display: flex;
@@ -58,10 +60,16 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
             <Header>
                 <HeaderTitle>
                     {/* todo */}
-                    <div>Assets</div>
-                    <div>Values</div>
+                    <div>
+                        <Translation {...messages.TR_ASSETS} />
+                    </div>
+                    <div>
+                        <Translation {...messages.TR_VALUES} />
+                    </div>
                     <div />
-                    <div>Exchange rate</div>
+                    <div>
+                        <Translation {...messages.TR_EXCHANGE_RATE} />
+                    </div>
                     <div />
                 </HeaderTitle>
             </Header>

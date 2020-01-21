@@ -48,7 +48,7 @@ import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import { UnexpectedState, Preloader } from '@onboarding-components';
 
-import { AppState, Dispatch } from '@suite-types';
+import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 // import { CSSTransition } from 'react-transition-group';
 
 const BORDER_RADIUS = 12;
@@ -161,7 +161,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type Props = StateProps & DispatchProps & { modal: React.ReactNode };
+type Props = StateProps & DispatchProps & InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
     const {
