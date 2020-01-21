@@ -44,7 +44,7 @@ const Settings = ({
     changePin,
     wipeDevice,
     backupDevice,
-    openBackgroundGalleryModal,
+    openModal,
     goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -278,7 +278,12 @@ const Settings = ({
                             </ActionButton>
 
                             <ActionButton
-                                onClick={() => openBackgroundGalleryModal()}
+                                onClick={() =>
+                                    openModal({
+                                        type: 'device-background-gallery',
+                                        device,
+                                    })
+                                }
                                 isDisabled={uiLocked}
                                 data-test="@suite/settings/device/select-from-gallery"
                                 variant="secondary"

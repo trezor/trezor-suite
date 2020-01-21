@@ -1,15 +1,40 @@
-import TrezorConnect, { UI, Device } from 'trezor-connect';
+import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import * as deviceUtils from '@suite-utils/device';
-import { Action, Dispatch, GetState, TrezorDevice, AcquiredDevice } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+
+export type UserContextPayload =
+    | {
+          type: 'qr-reader';
+          outputId: number;
+      }
+    | {
+          type: 'unverified-address';
+          device: TrezorDevice;
+          addressPath: string;
+      }
+    | {
+          type: 'add-account';
+          device: TrezorDevice;
+      }
+    | {
+          type: 'device-background-gallery';
+          device: TrezorDevice;
+      }
+    | {
+          type: 'transaction-detail';
+          txid: string;
+      }
+    | {
+          type: 'log';
+      };
 
 export type ModalActions =
     | {
           type: typeof MODAL.CLOSE;
       }
     | {
-          type: typeof MODAL.OPEN_SCAN_QR;
-          outputId: number;
+          type: typeof MODAL.OPEN_USER_CONTEXT;
+          payload: UserContextPayload;
       };
 
 export const onCancel = (): Action => ({
@@ -22,9 +47,8 @@ export const onCancel = (): Action => ({
  * @param {string} value
  * @returns
  */
-export const onPinSubmit = (payload: string) => {
+export const onPinSubmit = (payload: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload });
-    return onCancel();
 };
 
 /**
@@ -55,8 +79,6 @@ export const onPassphraseSubmit = (value: string) => async (
             save: true,
         },
     });
-
-    dispatch(onCancel());
 };
 
 export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch: Dispatch) => {
@@ -68,114 +90,7 @@ export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch:
     dispatch(onCancel());
 };
 
-// TODO: this method is only a placeholder
-export const onRememberDevice = (payload: TrezorDevice): Action => ({
-    type: SUITE.REMEMBER_DEVICE,
+export const openModal = (payload: UserContextPayload): Action => ({
+    type: MODAL.OPEN_USER_CONTEXT,
     payload,
 });
-
-export const onForgetDevice = (payload: TrezorDevice): Action => ({
-    type: SUITE.FORGET_DEVICE,
-    payload,
-});
-
-export const onForgetDeviceInstance = (payload: TrezorDevice): Action => ({
-    type: SUITE.FORGET_DEVICE_INSTANCE,
-    payload,
-});
-
-export const onCreateDeviceInstance = (device: AcquiredDevice, _name?: string) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    dispatch({
-        type: SUITE.CREATE_DEVICE_INSTANCE,
-        payload: {
-            ...device,
-            instance: deviceUtils.getNewInstanceNumber(
-                getState().devices,
-                device as AcquiredDevice,
-            ),
-        },
-    });
-
-    dispatch(onCancel());
-};
-
-/*
-export const onRememberRequest = (prevState: State) => (
-    dispatch: Dispatch,
-    getState: GetState,
-): void => {
-    const state: State = getState().modal;
-    // handle case where forget modal is already opened
-    // TODO: 2 modals at once (two devices disconnected in the same time)
-    if (
-        prevState.context === MODAL.CONTEXT_DEVICE &&
-        prevState.windowType === CONNECT.REMEMBER_REQUEST
-    ) {
-        // forget current (new)
-        if (state.context === MODAL.CONTEXT_DEVICE) {
-            dispatch({
-                type: SUITE.FORGET_DEVICE,
-                device: state.device,
-            });
-        }
-
-        // forget previous (old)
-        dispatch({
-            type: SUITE.FORGET_DEVICE,
-            device: prevState.device,
-        });
-    }
-};
-*/
-
-export const resolveRememberRequest = (device: Device) => (
-    dispatch: Dispatch,
-    getState: GetState,
-): void => {
-    // interrupt process of remembering device (force forget)
-    // TODO: the same for disconnect more than 1 device at once
-    const { modal } = getState();
-    if (
-        modal.context === MODAL.CONTEXT_DEVICE &&
-        modal.windowType === SUITE.REQUEST_REMEMBER_DEVICE
-    ) {
-        if (
-            device.features &&
-            modal.device.features &&
-            modal.device.features.device_id === device.features.device_id
-        ) {
-            dispatch({
-                type: MODAL.CLOSE,
-            });
-        } else {
-            dispatch({
-                type: SUITE.FORGET_DEVICE,
-                payload: modal.device as TrezorDevice,
-            });
-        }
-    }
-};
-
-export const onWalletTypeRequest = (hidden: boolean) => (
-    dispatch: Dispatch,
-    getState: GetState,
-): void => {
-    const { device } = getState().suite;
-    if (!device) return;
-    dispatch({
-        type: SUITE.RECEIVE_PASSPHRASE_MODE,
-        payload: device,
-        hidden,
-    });
-    dispatch(onCancel());
-};
-
-export const openQrModal = (outputId: number) => (dispatch: Dispatch): void => {
-    dispatch({
-        type: MODAL.OPEN_SCAN_QR,
-        outputId,
-    });
-};

@@ -73,8 +73,10 @@ interface Props extends WrappedComponentProps {
     instances: AcquiredDevice[];
     accounts: DeviceModalProps['accounts'];
     selectInstance: (instance: TrezorDevice) => void;
+    rememberDevice: DeviceModalProps['rememberDevice'];
     forgetDevice: DeviceModalProps['forgetDevice'];
     addHiddenWallet: (instance: TrezorDevice) => void;
+    goto: DeviceModalProps['goto'];
 }
 
 const DeviceItem = ({
@@ -83,11 +85,14 @@ const DeviceItem = ({
     accounts,
     selectInstance,
     addHiddenWallet,
+    rememberDevice,
     forgetDevice,
     selectedDevice,
+    goto,
     ...props
 }: Props) => {
     const deviceStatus = deviceUtils.getStatus(device);
+    const isRemembered = deviceUtils.isDeviceRemembered(device);
 
     return (
         <DeviceWrapper key={device.path}>
@@ -99,19 +104,30 @@ const DeviceItem = ({
                     </DeviceStatus>
                 </Col>
                 <Col grow={1}>
-                    {!deviceUtils.isDeviceRemembered(device) && <Badge>Guest Mode</Badge>}
+                    {!deviceUtils.isDeviceRemembered(device) && false && <Badge>Guest Mode</Badge>}
                 </Col>
-                <Col>
-                    <ForgetButton
-                        size="small"
-                        variant="secondary"
-                        onClick={() => {
-                            forgetDevice(device);
-                        }}
-                    >
-                        <Translation {...messages.TR_FORGET} />
-                    </ForgetButton>
-                </Col>
+                {isRemembered && (
+                    <Col>
+                        <ForgetButton
+                            size="small"
+                            variant="secondary"
+                            onClick={() => forgetDevice(device)}
+                        >
+                            <Translation {...messages.TR_FORGET} />
+                        </ForgetButton>
+                    </Col>
+                )}
+                {device.state && !isRemembered && (
+                    <Col>
+                        <ForgetButton
+                            size="small"
+                            variant="secondary"
+                            onClick={() => rememberDevice(device)}
+                        >
+                            <Translation {...messages.TR_REMEMBER_DEVICE} />
+                        </ForgetButton>
+                    </Col>
+                )}
             </Device>
             {instances.map(instance => (
                 <WalletInstance
@@ -126,9 +142,7 @@ const DeviceItem = ({
                     variant="tertiary"
                     icon="PLUS"
                     disabled={!device.connected} // TODO: tooltip?
-                    onClick={() => {
-                        addHiddenWallet(device);
-                    }}
+                    onClick={() => addHiddenWallet(device)}
                 >
                     <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
                 </Button>

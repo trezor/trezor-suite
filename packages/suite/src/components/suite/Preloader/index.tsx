@@ -6,6 +6,7 @@ import { Modal as ModalComponent } from '@trezor/components';
 import Loading from '@suite-components/Loading';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { AppState, Dispatch } from '@suite-types';
 
 import Firmware from '@firmware-views';
@@ -33,10 +34,14 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     transport: state.suite.transport,
     router: state.router,
+    discovery: state.wallet.discovery,
+    actionModalContext: state.modal.context,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch,
+    getDiscoveryAuthConfirmationStatus: () =>
+        dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
     goto: bindActionCreators(routerActions.goto, dispatch),
     closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
 });
@@ -47,7 +52,7 @@ type Props = ReturnType<typeof mapStateToProps> &
     };
 
 const getSuiteApplicationState = (props: Props) => {
-    const { loaded, transport, device } = props;
+    const { loaded, transport, device, getDiscoveryAuthConfirmationStatus } = props;
 
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity
     if (!loaded || !transport) return Loading;
@@ -56,7 +61,7 @@ const getSuiteApplicationState = (props: Props) => {
     if (transport && !transport.type) return Bridge;
 
     // no device available
-    if (!device) return DeviceConnect; // TODO: request disconnect screen (after forget)
+    if (!device) return DeviceConnect;
 
     // device features cannot be read, device is probably used in another window
     if (device.type === 'unacquired') return DeviceAcquire;
@@ -80,7 +85,9 @@ const getSuiteApplicationState = (props: Props) => {
     // device in seedless mode
     if (device.mode === 'seedless') return DeviceSeedless;
 
-    // TODO: discovery (auth) loader (cancelable)
+    // account discovery in progress and didn't find any used account yet
+    const authConfirmation = getDiscoveryAuthConfirmationStatus();
+    if (authConfirmation) return Loading;
 };
 
 const getModalApplication = (route: Props['router']['route']) => {
@@ -104,7 +111,7 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, dispatch, router, transport } = props;
+    const { loading, loaded, error, dispatch, router, transport, actionModalContext } = props;
     useEffect(() => {
         if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
@@ -116,6 +123,8 @@ const Preloader = (props: Props) => {
         // throw error to <ErrorBoundary /> in _app.tsx
         throw new Error(error);
     }
+
+    const hasActionModal = actionModalContext !== '@modal/context-none';
 
     // check if current route is a "modal application" and display it above requested physical route (route in url)
     // pass params to "modal application" and set "cancelable" conditionally
@@ -130,7 +139,7 @@ const Preloader = (props: Props) => {
                     <ApplicationModal
                         cancelable={cancelable}
                         closeModalApp={props.closeModalApp}
-                        modal={<Modals background={false} />}
+                        modal={hasActionModal ? <Modals background={false} /> : null}
                     />
                 </ModalComponent>
                 {props.children}
@@ -151,9 +160,12 @@ const Preloader = (props: Props) => {
     if (ApplicationStateModal) {
         return (
             <>
-                <ModalComponent>
-                    <ApplicationStateModal />
-                </ModalComponent>
+                {hasActionModal && <Modals />}
+                {!hasActionModal && (
+                    <ModalComponent>
+                        <ApplicationStateModal />
+                    </ModalComponent>
+                )}
                 {props.children}
             </>
         );

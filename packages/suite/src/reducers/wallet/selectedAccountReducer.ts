@@ -18,7 +18,7 @@ export interface ExceptionPage {
 }
 
 export interface AccountNotification extends NotificationProps {
-    type: 'info' | 'backend';
+    type: 'info' | 'auth' | 'backend';
     shouldRender: boolean;
 }
 

@@ -4,7 +4,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
-import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
 export type SuiteActions =
@@ -15,17 +15,14 @@ export type SuiteActions =
     | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_PASSPHRASE_MODE; payload: TrezorDevice }
-    | { type: typeof SUITE.RECEIVE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
     | { type: typeof SUITE.UPDATE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
-    | { type: typeof SUITE.REQUEST_DEVICE_INSTANCE; payload: TrezorDevice }
-    | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice; name?: string }
+    | { type: typeof SUITE.REQUEST_AUTH_CONFIRM }
+    | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
+    | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_REMEMBER_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_DISCONNECT_DEVICE; payload: TrezorDevice }
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: typeof LANGUAGES[number]['code'];
@@ -115,15 +112,6 @@ export const lockRouter = (payload: boolean): Action => ({
 });
 
 /**
- * Called from <DeviceMenu /> component
- * Display modal
- */
-export const requestDeviceInstance = (payload: TrezorDevice) => ({
-    type: SUITE.REQUEST_DEVICE_INSTANCE,
-    payload,
-});
-
-/**
  * Called from:
  * - `trezor-connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
  * - from user action in `@suite-components/DeviceMenu`
@@ -135,9 +123,9 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
 ) => {
     let payload: TrezorDevice | typeof undefined;
     if (device) {
-        // "instanceLabel" is one of the field which distinguish Device from TrezorDevice
-        const { instanceLabel } = device as TrezorDevice;
-        if (typeof instanceLabel === 'string') {
+        // "ts" is one of the field which distinguish Device from TrezorDevice
+        const { ts } = device as TrezorDevice;
+        if (typeof ts === 'number') {
             // requested device is a @suite TrezorDevice type. get exact instance from reducer
             payload = deviceUtils.getSelectedDevice(device as TrezorDevice, getState().devices);
         } else {
@@ -153,6 +141,56 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     dispatch({
         type: SUITE.SELECT_DEVICE,
         payload,
+    });
+};
+
+export const rememberDevice = (payload: TrezorDevice): Action => ({
+    type: SUITE.REMEMBER_DEVICE,
+    payload,
+});
+
+export const forgetDevice = (payload: TrezorDevice): Action => ({
+    type: SUITE.FORGET_DEVICE,
+    payload,
+});
+
+export const forgetDeviceInstance = (payload: TrezorDevice): Action => ({
+    type: SUITE.FORGET_DEVICE_INSTANCE,
+    payload,
+});
+
+/**
+ * Triggered by `trezor-connect DEVICE_EVENT`
+ * @param {Device} device
+ */
+export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    if (!device.features) return;
+    if (!device.features.passphrase_protection) {
+        // TODO: enable passphrase
+        const response = await TrezorConnect.applySettings({
+            device,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            use_passphrase: true,
+        });
+        if (!response.success) {
+            // TODO: show fail notification
+            return;
+        }
+        // TODO: show success notification
+    }
+
+    dispatch({
+        type: SUITE.CREATE_DEVICE_INSTANCE,
+        payload: {
+            ...device,
+            useEmptyPassphrase,
+            instance: !useEmptyPassphrase
+                ? deviceUtils.getNewInstanceNumber(getState().devices, device as AcquiredDevice)
+                : undefined,
+        },
     });
 };
 
@@ -190,29 +228,21 @@ export const handleDeviceDisconnect = (device: Device) => (
     const { devices } = getState();
     // device is still present in reducer (remembered or candidate to remember)
     const devicePresent = deviceUtils.getSelectedDevice(selectedDevice, devices);
-    const deviceInstances = deviceUtils.getDeviceInstances(selectedDevice, devices, true);
+    const deviceInstances = deviceUtils.getDeviceInstances(selectedDevice, devices);
     if (deviceInstances.length > 0) {
         // if selected device is gone from reducer, switch to first instance
         if (!devicePresent) {
             dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
         }
-        // show modal if one of the instances in not remembered
-        const remember = deviceInstances.filter(d => !d.remember);
-        if (remember.length > 0) {
-            dispatch({
-                type: SUITE.REQUEST_REMEMBER_DEVICE,
-                payload: deviceInstances[0],
-            });
-        }
         return;
     }
-    const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
-    if (devices.length < 1 || routerLocked) {
-        dispatch({ type: SUITE.SELECT_DEVICE });
-        return;
-    }
+    // const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+    // if (devices.length < 1 || routerLocked) {
+    //     dispatch({ type: SUITE.SELECT_DEVICE });
+    //     return;
+    // }
 
-    const available = deviceUtils.getOtherDevices(undefined, devices);
+    const available = deviceUtils.getFirstDeviceInstance(devices);
     dispatch({ type: SUITE.SELECT_DEVICE, payload: available[0] });
 };
 
@@ -220,9 +250,11 @@ export const handleDeviceDisconnect = (device: Device) => (
  * list of actions which has influence on `device` field inside `suite` reducer
  * all other actions should be ignored
  */
-const actions: string[] = [
+const actions = [
     SUITE.AUTH_DEVICE,
-    SUITE.RECEIVE_PASSPHRASE_MODE,
+    SUITE.SELECT_DEVICE,
+    SUITE.RECEIVE_AUTH_CONFIRM,
+    SUITE.UPDATE_PASSPHRASE_MODE,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 
@@ -284,37 +316,7 @@ export const acquireDevice = () => async (dispatch: Dispatch, getState: GetState
 };
 
 /**
- * Called from `walletMiddleware`
- * Show modal and ask user if he wants to use passphrase or not
- * Skip if device has `passphrase_protection` disabled
- */
-export const requestPassphraseMode = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-    if (!device) return;
-    const isDeviceReady =
-        device.connected &&
-        device.features &&
-        !device.state &&
-        device.mode === 'normal' &&
-        device.firmware !== 'required';
-    if (!isDeviceReady) return;
-
-    if (device.features?.passphrase_protection) {
-        dispatch({
-            type: SUITE.RECEIVE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: !device.useEmptyPassphrase,
-        });
-    } else {
-        dispatch({
-            type: SUITE.RECEIVE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: false,
-        });
-    }
-};
-/**
- * Called from `walletMiddleware`
+ * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
 export const authorizeDevice = () => async (
@@ -335,13 +337,14 @@ export const authorizeDevice = () => async (
         device: {
             path: device.path,
             instance: device.instance,
-            state: device.state,
+            state: undefined,
         },
         keepSession: true,
         useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
     if (response.success) {
+        // TODO: catch already existing state here (new passphrase design)
         dispatch({
             type: SUITE.AUTH_DEVICE,
             payload: device,
@@ -365,4 +368,116 @@ export const authorizeDevice = () => async (
         }),
     );
     return false;
+};
+
+/**
+ * Inner action used in `authConfirm` and `retryAuthConfirm`
+ */
+const receiveAuthConfirm = (device: TrezorDevice, success: boolean): Action => ({
+    type: SUITE.RECEIVE_AUTH_CONFIRM,
+    payload: device,
+    success,
+});
+
+/**
+ * Triggered by user action in `AuthConfirm` component
+ */
+export const retryAuthConfirm = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+    if (!device) return;
+    const response = await TrezorConnect.getDeviceState({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        useEmptyPassphrase: device.useEmptyPassphrase,
+    });
+
+    if (response.success) {
+        dispatch(receiveAuthConfirm(device, true));
+        return;
+    }
+
+    // TODO: add code to trezor-connect
+    if (response.payload.error !== 'Passphrase is incorrect') {
+        // TODO: notification with translations
+        dispatch(
+            addNotification({
+                variant: 'error',
+                title: 'Passphrase confirmation failed',
+                message: response.payload.error,
+                cancelable: true,
+            }),
+        );
+    }
+};
+
+/**
+ * Called from `suiteMiddleware`
+ */
+export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+    if (!device) return false;
+
+    // Fetch current state first bitcoin address to have some value to compare
+    // TODO: with new passphrase design call .getDeviceState
+    const currentAddress = await TrezorConnect.getAddress({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        path: "m/49'/0'/0'/0/0",
+        showOnTrezor: false,
+        useEmptyPassphrase: false,
+        keepSession: false, // reset session, next request will enforce passphrase
+    });
+
+    if (!currentAddress.success) {
+        // TODO: notification translations
+        dispatch(
+            addNotification({
+                variant: 'error',
+                title: 'Passphrase confirmation failed',
+                message: currentAddress.payload.error,
+                cancelable: true,
+            }),
+        );
+        dispatch(receiveAuthConfirm(device, false));
+        return;
+    }
+
+    // Fetch first bitcoin address this time reset device.state to enforce passphrase
+    const confirmedAddress = await TrezorConnect.getAddress({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: undefined, // reset state
+        },
+        path: "m/49'/0'/0'/0/0",
+        showOnTrezor: false,
+        useEmptyPassphrase: false,
+    });
+
+    if (!confirmedAddress.success) {
+        // TODO: notification translations
+        dispatch(
+            addNotification({
+                variant: 'error',
+                title: 'Passphrase confirmation failed',
+                message: confirmedAddress.payload.error,
+                cancelable: true,
+            }),
+        );
+        dispatch(receiveAuthConfirm(device, false));
+        return;
+    }
+
+    if (currentAddress.payload.address !== confirmedAddress.payload.address) {
+        dispatch(receiveAuthConfirm(device, false));
+        return;
+    }
+
+    dispatch(receiveAuthConfirm(device, true));
 };

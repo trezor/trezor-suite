@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { Device, DEVICE } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
-import { findInstanceIndex } from '@suite-utils/device';
+import { findInstanceIndex, getNewInstanceNumber } from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice, Action } from '@suite-types';
 
 type State = TrezorDevice[];
@@ -14,19 +14,11 @@ const initialState: State = [];
  * @returns {TrezorDevice}
  */
 const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): TrezorDevice => {
-    let { instanceLabel } = device;
-    if (typeof upcoming.label === 'string' && upcoming.label !== device.label) {
-        instanceLabel = upcoming.label;
-        if (typeof device.instance === 'number') {
-            instanceLabel += ` (${device.instanceName || device.instance})`;
-        }
-    }
     return {
         ...device,
         ...upcoming,
         state: device.state,
         instance: device.instance,
-        instanceLabel,
     };
 };
 
@@ -50,7 +42,6 @@ const connectDevice = (draft: State, device: Device) => {
             connected: true,
             available: false,
             features: undefined,
-            instance: undefined,
             useEmptyPassphrase: true,
             ts: new Date().getTime(),
         });
@@ -78,13 +69,14 @@ const connectDevice = (draft: State, device: Device) => {
     // prepare new device
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: true,
+        useEmptyPassphrase: !device.features.passphrase_protection,
         remember: false,
         connected: true,
         available: true,
-        instance: undefined,
-        instanceLabel: device.label,
-        instanceName: undefined,
+        authConfirm: false,
+        instance: device.features.passphrase_protection
+            ? getNewInstanceNumber(draft, device as AcquiredDevice) || 1
+            : undefined,
         ts: new Date().getTime(),
     };
 
@@ -99,7 +91,7 @@ const connectDevice = (draft: State, device: Device) => {
         });
 
         // affected device with current "passphrase_protection" does not exists
-        // basically it means that "base" device, the one without "instance" (useEmptyPassphrase) field was forgotten
+        // basically it means that the "base" device without "instance" was forgotten (removed from reducer)
         // automatically create new instance
         if (!changedDevices.find(d => d.available)) {
             changedDevices.push(newDevice);
@@ -167,7 +159,7 @@ const disconnectDevice = (draft: State, device: Device) => {
     const affectedDevices = draft.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
         // do not remove devices with state, they are potential candidates to remember if not remembered already
-        const skip = d.features && d.state;
+        const skip = d.features && d.remember;
         if (skip) {
             d.connected = false;
             d.available = false;
@@ -232,7 +224,7 @@ const changePassphraseMode = (draft: State, device: TrezorDevice, hidden: boolea
     if (!draft[index]) return;
     // update fields
     draft[index].useEmptyPassphrase = !hidden;
-    draft[index].state = undefined;
+    // draft[index].instance = undefined;
     draft[index].ts = new Date().getTime();
 };
 
@@ -253,23 +245,37 @@ const authDevice = (draft: State, device: TrezorDevice, state: string) => {
 };
 
 /**
+ * Action handler: SUITE.RECEIVE_AUTH_CONFIRM
+ * @param {State} draft
+ * @param {TrezorDevice} device
+ * @param {boolean} success
+ * @returns
+ */
+const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = findInstanceIndex(draft, device);
+    if (!draft[index]) return;
+    // update state
+    draft[index].authConfirm = !success;
+    draft[index].available = success;
+};
+
+/**
  * Action handler: SUITE.CREATE_DEVICE_INSTANCE
  * @param {State} draft
  * @param {TrezorDevice} device
  * @returns
  */
-const createInstance = (draft: State, device: TrezorDevice, name?: string) => {
+const createInstance = (draft: State, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
     const { instance } = device;
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: false,
         remember: device.remember,
         state: undefined,
         instance,
-        instanceLabel: `${device.label} (${name || instance})`,
-        instanceName: name,
         ts: new Date().getTime(),
     };
     draft.push(newDevice);
@@ -346,15 +352,17 @@ export default (state: State = initialState, action: Action): State => {
             case SUITE.SELECT_DEVICE:
                 updateTimestamp(draft, action.payload);
                 break;
-            case SUITE.RECEIVE_PASSPHRASE_MODE:
             case SUITE.UPDATE_PASSPHRASE_MODE:
                 changePassphraseMode(draft, action.payload, action.hidden);
                 break;
             case SUITE.AUTH_DEVICE:
                 authDevice(draft, action.payload, action.state);
                 break;
+            case SUITE.RECEIVE_AUTH_CONFIRM:
+                authConfirm(draft, action.payload, action.success);
+                break;
             case SUITE.CREATE_DEVICE_INSTANCE:
-                createInstance(draft, action.payload, action.name);
+                createInstance(draft, action.payload);
                 break;
             case SUITE.REMEMBER_DEVICE:
                 remember(draft, action.payload);

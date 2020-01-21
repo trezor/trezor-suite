@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 
 import { AppState, Dispatch, TrezorDevice, AcquiredDevice } from '@suite-types';
@@ -17,10 +16,9 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
-    forgetDeviceInstance: bindActionCreators(modalActions.onForgetDeviceInstance, dispatch),
+    forgetDeviceInstance: bindActionCreators(suiteActions.forgetDeviceInstance, dispatch),
     getDiscovery: bindActionCreators(discoveryActions.getDiscovery, dispatch),
     selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
-    requestDeviceInstance: bindActionCreators(suiteActions.requestDeviceInstance, dispatch),
 });
 
 interface OwnProps extends WrappedComponentProps {

@@ -23,7 +23,7 @@ const Wrapper = styled.div<WrapperProps>`
         `}
 `;
 
-const StyledInput = styled.input<InputProps>`
+const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     padding: 0 10px;
     font-size: ${props => (props.value ? '16px' : '14px')};
@@ -84,7 +84,7 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputIconWrapper = styled.div<InputProps>`
+const InputIconWrapper = styled.div<Props>`
     position: absolute;
     top: 1px;
     bottom: 1px;
@@ -111,7 +111,7 @@ const Label = styled.label`
     padding: 10px;
 `;
 
-const BottomText = styled.div<InputProps>`
+const BottomText = styled.div<Props>`
     padding: 10px;
     font-size: 12px;
     color: ${props => getStateColor(props.state)};
@@ -152,7 +152,7 @@ const StateIconWrapper = styled.div`
     background: ${colors.WHITE};
 `;
 
-const Overlay = styled.div<InputProps>`
+const Overlay = styled.div<Props>`
     bottom: 1px;
     top: 1px;
     left: 1px;
@@ -169,7 +169,7 @@ interface WrapperProps {
     display?: InputDisplay;
 }
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.RefObject<HTMLInputElement>;
     variant?: InputVariant;
     display?: InputDisplay;
@@ -209,7 +209,7 @@ const Input = ({
     isPartiallyHidden,
     align = 'left',
     ...rest
-}: InputProps) => {
+}: Props) => {
     const [buttonHover, setButtonHover] = React.useState(false);
     const handleButtonEnter = () => {
         setButtonHover(true);
@@ -283,4 +283,4 @@ const Input = ({
     );
 };
 
-export { Input };
+export { Input, Props as InputProps };

@@ -1,10 +1,7 @@
-import {
-    Discovery,
-    PartialDiscovery,
-    DISCOVERY_STATUS as STATUS,
-} from '@wallet-reducers/discoveryReducer';
+import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
+import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
 import { DISCOVERY } from './constants';
 import { SETTINGS } from '@suite-config';
@@ -66,6 +63,25 @@ export const getDiscoveryForDevice = () => (
     return dispatch(getDiscovery(device.state));
 };
 
+/**
+ * Helper action called from components
+ * return `true` if discovery process is running/completed and `authConfirm` is required
+ */
+export const getDiscoveryAuthConfirmationStatus = () => (
+    dispatch: Dispatch,
+    getState: GetState,
+): boolean | undefined => {
+    const { device } = getState().suite;
+    if (!device || !device.state) return;
+    const discovery = dispatch(getDiscovery(device.state));
+    if (!discovery) return;
+    return (
+        discovery.authConfirm &&
+        (discovery.status < DISCOVERY.STATUS.STOPPING ||
+            discovery.status === DISCOVERY.STATUS.COMPLETED)
+    );
+};
+
 export const update = (
     payload: PartialDiscovery,
     type: UpdateActionType = DISCOVERY.UPDATE,
@@ -112,7 +128,7 @@ const handleProgress = (event: ProgressEvent, deviceState: string, item: Discove
     const discovery = dispatch(getDiscovery(deviceState));
     // ignore progress event when:
     // 1. discovery is not running (interrupted/stopped/complete)
-    if (!discovery || discovery.status > STATUS.RUNNING) return;
+    if (!discovery || discovery.status >= DISCOVERY.STATUS.STOPPING) return;
     // 2. account network is no longer part of discovery (network disabled in wallet settings)
     if (!discovery.networks.includes(item.coin)) return;
     // process event
@@ -138,9 +154,14 @@ const handleProgress = (event: ProgressEvent, deviceState: string, item: Discove
         }),
     );
     // update discovery
+    let { authConfirm } = discovery;
+    if (authConfirm && response) {
+        authConfirm = response.empty;
+    }
     dispatch(
         update({
             ...progress,
+            authConfirm,
             bundleSize: discovery.bundleSize - 1,
             failed,
         }),
@@ -214,7 +235,10 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
     });
 };
 
-export const create = (deviceState: string) => (dispatch: Dispatch, getState: GetState) => {
+export const create = (deviceState: string, useEmptyPassphrase = false) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { enabledNetworks } = getState().wallet.settings;
     const networks = NETWORKS.filter(n => enabledNetworks.includes(n.symbol) && !n.isHidden).map(
         n => n.symbol,
@@ -223,8 +247,9 @@ export const create = (deviceState: string) => (dispatch: Dispatch, getState: Ge
         type: DISCOVERY.CREATE,
         payload: {
             deviceState,
+            authConfirm: !useEmptyPassphrase,
             index: 0,
-            status: STATUS.IDLE,
+            status: DISCOVERY.STATUS.IDLE,
             total: LIMIT * networks.length,
             bundleSize: 0,
             loaded: 0,
@@ -262,12 +287,15 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     const { deviceState } = discovery;
 
     // start process
-    if (discovery.status === STATUS.IDLE || discovery.status > STATUS.STOPPING) {
+    if (
+        discovery.status === DISCOVERY.STATUS.IDLE ||
+        discovery.status > DISCOVERY.STATUS.STOPPING
+    ) {
         dispatch({
             type: DISCOVERY.START,
             payload: {
                 ...discovery,
-                status: STATUS.RUNNING,
+                status: DISCOVERY.STATUS.RUNNING,
             },
         });
     }
@@ -277,24 +305,28 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     // discovery process complete
     if (bundle.length === 0) {
-        if (discovery.status === STATUS.RUNNING && selectedDevice.connected) {
+        if (discovery.status === DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
             // call getFeatures to release device session
-            await TrezorConnect.getFeatures({
-                device: {
-                    path: selectedDevice.path,
-                    instance: selectedDevice.instance,
-                    state: selectedDevice.state,
-                },
-                keepSession: false,
-                useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-            });
+            if (!discovery.authConfirm) {
+                await TrezorConnect.getFeatures({
+                    device: {
+                        path: selectedDevice.path,
+                        instance: selectedDevice.instance,
+                        state: selectedDevice.state,
+                    },
+                    keepSession: false,
+                    useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+                });
+            } else {
+                dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
+            }
         }
 
         dispatch(
             update(
                 {
                     deviceState,
-                    status: STATUS.COMPLETED,
+                    status: DISCOVERY.STATUS.COMPLETED,
                 },
                 DISCOVERY.COMPLETE,
             ),
@@ -302,7 +334,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         return;
     }
 
-    dispatch(update({ deviceState, bundleSize: bundle.length, status: STATUS.RUNNING }));
+    dispatch(update({ deviceState, bundleSize: bundle.length, status: DISCOVERY.STATUS.RUNNING }));
 
     // handle trezor-connect event
     const onBundleProgress = (event: ProgressEvent) => {
@@ -331,10 +363,10 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         // fetch fresh data from reducer
         const currentDiscovery = dispatch(getDiscovery(deviceState));
         if (!currentDiscovery) return;
-        if (currentDiscovery.status === STATUS.RUNNING) {
+        if (currentDiscovery.status === DISCOVERY.STATUS.RUNNING) {
             await dispatch(start()); // try next index
-        } else if (currentDiscovery.status === STATUS.STOPPING) {
-            dispatch(update({ deviceState, status: STATUS.STOPPED }, DISCOVERY.STOP));
+        } else if (currentDiscovery.status === DISCOVERY.STATUS.STOPPING) {
+            dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
         } else {
             // TODO: notification with translations
             dispatch(
@@ -394,7 +426,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             }
         }
 
-        dispatch(update({ deviceState, status: STATUS.STOPPED }, DISCOVERY.STOP));
+        dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
 
         if (result.payload.error !== 'discovery_interrupted') {
             // TODO: notification with translations
@@ -421,7 +453,7 @@ export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     if (discovery && discovery.running) {
         dispatch(
             update(
-                { deviceState: discovery.deviceState, status: STATUS.STOPPING },
+                { deviceState: discovery.deviceState, status: DISCOVERY.STATUS.STOPPING },
                 DISCOVERY.INTERRUPT,
             ),
         );

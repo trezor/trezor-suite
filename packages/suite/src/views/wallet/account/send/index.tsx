@@ -72,7 +72,7 @@ const Send = ({
     send,
     fees,
     fiat,
-    openQrModal,
+    openModal,
     selectedAccount,
     sendFormActions,
     sendFormActionsBitcoin,
@@ -122,7 +122,7 @@ const Send = ({
                             address={output.address.value}
                             error={output.address.error}
                             sendFormActions={sendFormActions}
-                            openQrModal={openQrModal}
+                            openModal={openModal}
                         />
                     </Row>
                     <Row>

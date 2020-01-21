@@ -20,13 +20,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     // blockchainReconnect: bindActionCreators(reconnect, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Notifications = (props: Props) => (
     <>
-        <StaticNotifications selectedAccount={props.selectedAccount} />
-        <AccountNotifications selectedAccount={props.selectedAccount} blockchain={[]} />
-        <ActionNotifications notifications={props.notifications} close={props.close} />
+        <StaticNotifications {...props} />
+        <AccountNotifications {...props} />
+        <ActionNotifications {...props} />
     </>
 );
 

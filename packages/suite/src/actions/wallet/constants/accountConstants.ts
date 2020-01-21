@@ -4,7 +4,6 @@ export const CREATE = '@account/create';
 export const REMOVE = '@account/remove';
 export const UPDATE = '@account/update';
 export const CHANGE_VISIBILITY = '@account/change-visibility';
-export const REQUEST_NEW_ACCOUNT = '@account/request-new-account';
 export const SET_BALANCE = '@account/set-balance';
 export const SET_NONCE = '@account/set0nonce';
 export const FROM_STORAGE = '@account/from-storage';
