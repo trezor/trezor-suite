@@ -1,9 +1,14 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_CANNOT_SEND_TO_MYSELF: {
-        defaultMessage: 'Cannot send to myself',
-        id: 'TR_CANNOT_SEND_TO_MYSELF',
+    TR_3RD_PARTY_WALLETS: {
+        defaultMessage: '3rd party wallets',
+        id: 'TR_3RD_PARTY_WALLETS',
+    },
+    TR_3RD_PARTY_WALLETS_DESC: {
+        defaultMessage:
+            'These coins are supported by Trezor but only in 3rd party wallets. These coins cannot be managed by Trezor Suite or Wallet.',
+        id: 'TR_3RD_PARTY_WALLETS_DESC',
     },
     TR_ACCOUNT_DOES_NOT_EXIST: {
         defaultMessage: 'Account does not exist',
@@ -20,6 +25,10 @@ const definedMessages = defineMessages({
             'call-to-action to use device in current window when it is used in other window',
         id: 'TR_ACQUIRE_DEVICE',
     },
+    TR_ACTIVATE_ALL: {
+        defaultMessage: 'Activate all',
+        id: 'TR_ACTIVATE_ALL',
+    },
     TR_ADD_ACCOUNT: {
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
@@ -27,6 +36,10 @@ const definedMessages = defineMessages({
     TR_ADD_FRESH_ADDRESS: {
         defaultMessage: 'Add fresh address',
         id: 'TR_ADD_FRESH_ADDRESS',
+    },
+    TR_ADD_HIDDEN_WALLET: {
+        defaultMessage: 'Add hidden wallet',
+        id: 'TR_ADD_HIDDEN_WALLET',
     },
     TR_ADD_MORE_COINS: {
         defaultMessage: 'Add more coins',
@@ -39,6 +52,10 @@ const definedMessages = defineMessages({
     TR_ADD_RECIPIENT: {
         defaultMessage: 'Add recipient',
         id: 'TR_ADD_RECIPIENT',
+    },
+    TR_ADDITIONAL_SECURITY_FEATURES: {
+        defaultMessage: 'Additional security features are waiting to be done.',
+        id: 'TR_ADDITIONAL_SECURITY_FEATURES',
     },
     TR_ADDRESS: {
         defaultMessage: 'Address',
@@ -57,16 +74,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Advanced recovery (5 minutes)',
         description: 'Button for selecting advanced recovery option',
         id: 'TR_ADVANCED_RECOVERY_OPTION',
-    },
-    TR_SHOW_ADVANCED_OPTIONS: {
-        defaultMessage: 'Show advanced options',
-        description: 'Shows advanced sending form',
-        id: 'TR_SHOW_ADVANCED_OPTIONS',
-    },
-    TR_HIDE_ADVANCED_OPTIONS: {
-        defaultMessage: 'Hide advanced options',
-        description: 'Hide advanced sending form',
-        id: 'TR_HIDE_ADVANCED_OPTIONS',
     },
     TR_AMOUNT: {
         defaultMessage: 'Amount',
@@ -101,6 +108,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'You will be asked to enter your passphrase to unlock your hidden wallet.',
         id: 'TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK',
     },
+    TR_ASSETS: {
+        defaultMessage: 'Assets',
+        id: 'TR_ASSETS',
+    },
     TR_ATTENTION_COLON_THE_LOG_CONTAINS: {
         defaultMessage:
             'Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.',
@@ -115,6 +126,19 @@ const definedMessages = defineMessages({
         description: 'Back button',
         id: 'TR_BACK',
     },
+    TR_BACKGROUND_GALLERY: {
+        defaultMessage: 'Homescreen background gallery',
+        id: 'TR_BACKGROUND_GALLERY',
+    },
+    TR_BACKUP: {
+        defaultMessage: 'Backup',
+        id: 'TR_BACKUP',
+    },
+    TR_BACKUP_FAILED: {
+        defaultMessage:
+            'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
+        id: 'TR_BACKUP_FAILED',
+    },
     TR_BACKUP_FINISHED_BUTTON: {
         defaultMessage: 'My recovery card is safe',
         description: 'Exit button after backup is finished',
@@ -125,6 +149,10 @@ const definedMessages = defineMessages({
             'Backup is now on your recovery seed card. Once again dont lose it and keep it private!',
         description: 'Text that appears after backup is finished',
         id: 'TR_BACKUP_FINISHED_TEXT',
+    },
+    TR_BACKUP_RECOVERY_SEED: {
+        defaultMessage: 'Backup (Recovery seed)',
+        id: 'TR_BACKUP_RECOVERY_SEED',
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
@@ -164,6 +192,10 @@ const definedMessages = defineMessages({
         description: 'Description what Trezor Bridge is',
         id: 'TR_BRIDGE_SUBHEADING',
     },
+    TR_BUY: {
+        defaultMessage: 'Buy',
+        id: 'TR_BUY',
+    },
     TR_CAMERA_NOT_RECOGNIZED: {
         defaultMessage: 'The camera was not recognized.',
         id: 'TR_CAMERA_NOT_RECOGNIZED',
@@ -175,6 +207,10 @@ const definedMessages = defineMessages({
     TR_CANCEL: {
         defaultMessage: 'Cancel',
         id: 'TR_CANCEL',
+    },
+    TR_CANNOT_SEND_TO_MYSELF: {
+        defaultMessage: 'Cannot send to myself',
+        id: 'TR_CANNOT_SEND_TO_MYSELF',
     },
     TR_CARDANO_WALLET: {
         defaultMessage: 'Cardano wallet',
@@ -197,9 +233,25 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check address on Trezor',
         id: 'TR_CHECK_ADDRESS_ON_TREZOR',
     },
+    TR_CHECK_FOR_DEVICES: {
+        defaultMessage: 'Check for devices',
+        id: 'TR_CHECK_FOR_DEVICES',
+    },
+    TR_CHECK_FOR_UPDATES: {
+        defaultMessage: 'Check for updates',
+        id: 'TR_CHECK_FOR_UPDATES',
+    },
     TR_CHECK_PGP_SIGNATURE: {
         defaultMessage: 'Check PGP signature',
         id: 'TR_CHECK_PGP_SIGNATURE',
+    },
+    TR_CHECK_RECOVERY_SEED: {
+        defaultMessage: 'Check recovery seed',
+        id: 'TR_CHECK_RECOVERY_SEED',
+    },
+    TR_CHECK_SEED: {
+        defaultMessage: 'Check seed',
+        id: 'TR_CHECK_SEED',
     },
     TR_CHECK_YOUR_DEVICE: {
         defaultMessage: 'Check your device',
@@ -219,6 +271,15 @@ const definedMessages = defineMessages({
         defaultMessage: 'Close',
         id: 'TR_CLOSE',
     },
+    TR_COINS: {
+        defaultMessage: 'Coins',
+        id: 'TR_COINS',
+    },
+    TR_COINS_SETTINGS_ALSO_DEFINES: {
+        defaultMessage:
+            'Coins settings also defines the Discovery process when Trezor is connected. Each time you connect not remembered device, Trezor Suite needs to find out what accounts you have by going through each coin one by one. That can take between few seconds to few minutes if you allow all or too many coins.',
+        id: 'TR_COINS_SETTINGS_ALSO_DEFINES',
+    },
     TR_COMPLETE_ACTION_ON_DEVICE: {
         defaultMessage: 'Complete the action on "{deviceLabel}" device',
         id: 'TR_COMPLETE_ACTION_ON_DEVICE',
@@ -227,13 +288,25 @@ const definedMessages = defineMessages({
         defaultMessage: 'Confirm action on your "{deviceLabel}" device.',
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
+    TR_CONFIRM_ADDRESS_ON_TREZOR: {
+        defaultMessage: 'Confirm address on Trezor',
+        id: 'TR_CONFIRM_ADDRESS_ON_TREZOR',
+    },
     TR_CONFIRM_TRANSACTION_ON: {
         defaultMessage: 'Confirm transaction on "{deviceLabel}" device',
         id: 'TR_CONFIRM_TRANSACTION_ON',
     },
+    TR_CONNECT_DROPBOX: {
+        defaultMessage: 'Connect Dropbox',
+        id: 'TR_CONNECT_DROPBOX',
+    },
     TR_CONNECT_TO_BACKEND: {
         defaultMessage: 'Connect',
         id: 'TR_CONNECT_TO_BACKEND',
+    },
+    TR_CONNECT_TO_DISCOVER: {
+        defaultMessage: 'Connect to discover',
+        id: 'TR_CONNECT_TO_DISCOVER',
     },
     TR_CONNECT_TREZOR: {
         defaultMessage: 'Connect Trezor to continue...',
@@ -292,6 +365,14 @@ const definedMessages = defineMessages({
         description: 'Device status',
         id: 'TR_CONNECTED_UPDATE_REQUIRED',
     },
+    TR_CONNECTING_DOTDOTDOT: {
+        defaultMessage: 'Connecting...',
+        id: 'TR_CONNECTING_DOTDOTDOT',
+    },
+    TR_CONNECTION_STATUS: {
+        defaultMessage: 'Connection Status',
+        id: 'TR_CONNECTION_STATUS',
+    },
     TR_CONTACT_OUR_SUPPORT_LINK: {
         defaultMessage: 'contact our support',
         description: 'Part of sentence TR_DID_YOU_PURCHASE. Link to support',
@@ -330,6 +411,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Copy to clipboard',
         id: 'TR_COPY_TO_CLIPBOARD',
     },
+    TR_CREATE_BACKUP: {
+        defaultMessage: 'Create backup',
+        id: 'TR_CREATE_BACKUP',
+    },
     TR_CREATE_BACKUP_IN_3_MINUTES: {
         defaultMessage: 'Create a backup in 3 minutes',
         id: 'TR_CREATE_BACKUP_IN_3_MINUTES',
@@ -343,18 +428,35 @@ const definedMessages = defineMessages({
         defaultMessage: 'Create new instance',
         id: 'TR_CREATE_NEW_INSTANCE',
     },
+    TR_CURRENCY: {
+        defaultMessage: 'Currency',
+        id: 'TR_CURRENCY',
+    },
     TR_CUSTOM_FEE: {
         defaultMessage: 'Custom',
         description: 'fee level',
         id: 'TR_CUSTOM_FEE',
     },
+    TR_CUSTOM_FEE_IS_NOT_NUMBER: {
+        defaultMessage: 'Fee is not a number',
+        id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
+    },
     TR_CUSTOM_FEE_IS_NOT_SET: {
         defaultMessage: 'Fee is not set',
         id: 'TR_CUSTOM_FEE_IS_NOT_SET',
     },
+    TR_CUSTOM_FEE_IS_NOT_VALID: {
+        defaultMessage: 'Fee is not valid',
+        id: 'TR_CUSTOM_FEE_IS_NOT_VALID',
+    },
     TR_CUSTOM_FEE_NOT_IN_RANGE: {
         defaultMessage: 'Allowed fee is between {minFee} and {maxFee}',
         id: 'TR_CUSTOM_FEE_NOT_IN_RANGE',
+    },
+    TR_DASHBOARD: {
+        defaultMessage: 'Dashboard',
+        description: 'Category in Settings',
+        id: 'TR_DASHBOARD',
     },
     TR_DATA: {
         defaultMessage: 'Data',
@@ -363,6 +465,10 @@ const definedMessages = defineMessages({
     TR_DATA_IS_USUALLY_USED: {
         defaultMessage: 'Data is usually used when you send transactions to contracts.',
         id: 'TR_DATA_IS_USUALLY_USED',
+    },
+    TR_DEACTIVATE_ALL: {
+        defaultMessage: 'Deactivate all',
+        id: 'TR_DEACTIVATE_ALL',
     },
     TR_DESTINATION_TAG_IS_NOT_NUMBER: {
         defaultMessage: 'Destination tag is not a number',
@@ -376,6 +482,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Detecting Trezor Bridge instalation',
         description: 'Message to show after user clicks download bridge.',
         id: 'TR_DETECTING_BRIDGE',
+    },
+    TR_DEVICE: {
+        defaultMessage: 'Device',
+        description: 'Category in Settings',
+        id: 'TR_DEVICE',
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION: {
         defaultMessage: 'Device disconnected during action',
@@ -564,6 +675,10 @@ const definedMessages = defineMessages({
         description: 'Button in remember/forget dialog',
         id: 'TR_DONT_FORGET',
     },
+    TR_DONT_HAVE_A_TREZOR: {
+        defaultMessage: "Don't have a Trezor? {getOne}",
+        id: 'TR_DONT_HAVE_A_TREZOR',
+    },
     TR_DONT_UPGRADE_BRIDGE: {
         defaultMessage: "No, I don't want to upgrade Bridge now",
         id: 'TR_DONT_UPGRADE_BRIDGE',
@@ -581,6 +696,10 @@ const definedMessages = defineMessages({
     TR_DOWNLOAD_LATEST_BRIDGE: {
         defaultMessage: 'Download latest Bridge {version}',
         id: 'TR_DOWNLOAD_LATEST_BRIDGE',
+    },
+    TR_EAST: {
+        defaultMessage: 'East',
+        id: 'TR_EAST',
     },
     TR_EMAIL_SKIPPED: {
         defaultMessage:
@@ -626,6 +745,22 @@ const definedMessages = defineMessages({
         defaultMessage: 'Estimated time',
         id: 'TR_ESTIMATED_TIME',
     },
+    TR_ETH_DATA_NOT_HEX: {
+        defaultMessage: 'Data is not hex',
+        id: 'TR_ETH_DATA_NOT_HEX',
+    },
+    TR_ETH_GAS_LIMIT_NOT_NUMBER: {
+        defaultMessage: 'Gas limit is not a number',
+        id: 'TR_ETH_GAS_LIMIT_NOT_NUMBER',
+    },
+    TR_ETH_GAS_PRICE_NOT_NUMBER: {
+        defaultMessage: 'Gas price is not a number',
+        id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
+    },
+    TR_EXCHANGE_RATE: {
+        defaultMessage: 'Exchange rate',
+        id: 'TR_EXCHANGE_RATE',
+    },
     TR_EXCHANGE_RATES_BY: {
         defaultMessage: 'Exchange rates by {service}',
         id: 'TR_EXCHANGE_RATES_BY',
@@ -658,6 +793,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Find out more info',
         id: 'TR_FIND_OUT_MORE_INFO',
     },
+    TR_FINISH_ADVANCED_SECURITY: {
+        defaultMessage: 'Finish advanced security',
+        id: 'TR_FINISH_ADVANCED_SECURITY',
+    },
     TR_FIRMWARE_HEADING: {
         defaultMessage: 'Get the latest firmware',
         description: 'Heading on firmware page',
@@ -679,11 +818,24 @@ const definedMessages = defineMessages({
         description: 'Main text on firmware page for devices without firmware.',
         id: 'TR_FIRMWARE_SUBHEADING',
     },
+    TR_FIRMWARE_VERSION: {
+        defaultMessage: 'Firmware version',
+        id: 'TR_FIRMWARE_VERSION',
+    },
     TR_FIRST_PIN_ENTERED: {
         defaultMessage:
             'Good. You entered a new pin. But to make sure you did not make mistake, please enter it again. Look at your device now, numbers are now different.',
         description: 'Text describing what happens after user enters PIN for the first time.',
         id: 'TR_FIRST_PIN_ENTERED',
+    },
+    TR_FOR_EASIER_AND_SAFER_INPUT: {
+        defaultMessage:
+            'For easier and safer input you can scan recipient’s address from a QR code using your computer camera.',
+        id: 'TR_FOR_EASIER_AND_SAFER_INPUT',
+    },
+    TR_FORGET: {
+        defaultMessage: 'Forget',
+        id: 'TR_FORGET',
     },
     TR_FORGET_DEVICE: {
         defaultMessage: 'Forget device',
@@ -737,6 +889,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Gathering information, please wait...',
         id: 'TR_GATHERING_INFO',
     },
+    TR_GENERAL: {
+        defaultMessage: 'General',
+        description: 'Category in Settings',
+        id: 'TR_GENERAL',
+    },
     TR_GET_ONE: {
         defaultMessage: 'Get one',
         description: 'Part of the sentence: Dont have a Trezor? Get one',
@@ -763,6 +920,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Hidden wallet',
         id: 'TR_HIDDEN_WALLET',
     },
+    TR_HIDE_ADVANCED_OPTIONS: {
+        defaultMessage: 'Hide advanced options',
+        description: 'Hide advanced sending form',
+        id: 'TR_HIDE_ADVANCED_OPTIONS',
+    },
     TR_HIDE_BALANCE: {
         defaultMessage: 'Hide balance',
         id: 'TR_HIDE_BALANCE',
@@ -786,15 +948,15 @@ const definedMessages = defineMessages({
         description: 'Button to click in allright case',
         id: 'TR_HOLOGRAM_STEP_ACTION_OK',
     },
-    TR_HOLOGRAM_STEP_SUBHEADING: {
-        defaultMessage: 'Please make sure hologram protecting your device is authentic',
-        description: 'Subheading on hologram step page',
-        id: 'TR_HOLOGRAM_STEP_SUBHEADING',
-    },
     TR_HOLOGRAM_STEP_HEADING: {
         defaultMessage: 'Hologram check',
         description: 'Heading on hologram step page',
         id: 'TR_HOLOGRAM_STEP_HEADING',
+    },
+    TR_HOLOGRAM_STEP_SUBHEADING: {
+        defaultMessage: 'Please make sure hologram protecting your device is authentic',
+        description: 'Subheading on hologram step page',
+        id: 'TR_HOLOGRAM_STEP_SUBHEADING',
     },
     TR_HOW_PIN_WORKS: {
         defaultMessage: 'Not sure how PIN works?',
@@ -856,10 +1018,23 @@ const definedMessages = defineMessages({
             'Just a message that we show after user selects that he wants to setup device as a new one but we detect that it apparently is not',
         id: 'TR_IS_NOT_NEW_DEVICE',
     },
+    TR_LABELING: {
+        defaultMessage: 'Labeling',
+        id: 'TR_LABELING',
+    },
+    TR_LANGUAGE: {
+        defaultMessage: 'Language',
+        id: 'TR_LANGUAGE',
+    },
     TR_LAST_RESORT_INSTRUCTION: {
         defaultMessage: 'If nothing helps, {ContactSupportLink}',
         description: 'Troubleshooting instruction. See TR_CONTACT_TREZOR_SUPPORT_LINK',
         id: 'TR_LAST_RESORT_INSTRUCTION',
+    },
+    TR_LEARN_MORE: {
+        defaultMessage: 'Learn more',
+        description: 'Link to Trezor wiki.',
+        id: 'TR_LEARN_MORE',
     },
     TR_LEARN_MORE_ABOUT_LATEST_VERSION: {
         defaultMessage: 'Learn more about latest version in {TR_CHANGELOG}.',
@@ -869,15 +1044,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Learn more.',
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE_LINK',
-    },
-    TR_LEARN_MORE: {
-        defaultMessage: 'Learn more',
-        description: 'Link to Trezor wiki.',
-        id: 'TR_LEARN_MORE',
-    },
-    TR_UPLOAD_IMAGE: {
-        id: 'TR_UPLOAD_IMAGE',
-        defaultMessage: 'Upload Image',
     },
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
@@ -908,10 +1074,18 @@ const definedMessages = defineMessages({
         description: 'application event and error',
         id: 'TR_LOG',
     },
+    TR_LOOKING_FOR_QUICK_EASY: {
+        defaultMessage: 'Looking for a quick & easy way to buy BTC? We got you covered.',
+        id: 'TR_LOOKING_FOR_QUICK_EASY',
+    },
     TR_MAKE_SURE_IT_IS_WELL_CONNECTED: {
         defaultMessage: 'Make sure your device is well connected to avoid communication failures.',
         description: 'Instruction for connecting device.',
         id: 'TR_MAKE_SURE_IT_IS_WELL_CONNECTED',
+    },
+    TR_MARK_ALL_AS_READ: {
+        defaultMessage: 'Mark all as read',
+        id: 'TR_MARK_ALL_AS_READ',
     },
     TR_MESSAGE: {
         defaultMessage: 'Message',
@@ -1079,6 +1253,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'segwit',
         id: 'TR_NETWORK_TYPE_SEGWIT',
     },
+    TR_NETWORK_UNKNOWN: {
+        defaultMessage: 'unknown',
+        id: 'TR_NETWORK_UNKNOWN',
+    },
     TR_NETWORK_VERTCOIN: {
         defaultMessage: 'Vertcoin',
         id: 'TR_NETWORK_VERTCOIN',
@@ -1121,6 +1299,29 @@ const definedMessages = defineMessages({
     TR_NO_TRANSACTIONS: {
         defaultMessage: 'No Transactions :(',
         id: 'TR_NO_TRANSACTIONS',
+    },
+    TR_NORTH: {
+        defaultMessage: 'North',
+        id: 'TR_NORTH',
+    },
+    TR_NTH_WORD: {
+        defaultMessage: '{number}. word',
+        description: 'Ordinal number. For example: 1. word',
+        id: 'TR_NTH_WORD',
+    },
+    TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE: {
+        defaultMessage:
+            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} - {coinsCount} {coinsCount, plural, one {coin} other {coins}} - {fiatValue}',
+        description: 'Used as title for a wallet instance in Switch Device modal',
+        id: 'TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE',
+    },
+    TR_OFFLINE: {
+        defaultMessage: 'Offline',
+        id: 'TR_OFFLINE',
+    },
+    TR_ONLINE: {
+        defaultMessage: 'Online',
+        id: 'TR_ONLINE',
     },
     TR_OOPS_SOMETHING_WENT_WRONG: {
         defaultMessage: 'Oops! Something went wrong!',
@@ -1199,6 +1400,14 @@ const definedMessages = defineMessages({
         description: 'Subheading on PIN page',
         id: 'TR_PIN_SUBHEADING',
     },
+    TR_PLEASE_ALLOW_YOUR_CAMERA: {
+        defaultMessage: 'Please allow your camera to be able to scan a QR code.',
+        id: 'TR_PLEASE_ALLOW_YOUR_CAMERA',
+    },
+    TR_PLEASE_COMPARE_YOUR_ADDRESS: {
+        defaultMessage: 'Please compare your address on device with address shown bellow',
+        id: 'TR_PLEASE_COMPARE_YOUR_ADDRESS',
+    },
     TR_PLEASE_CONNECT_YOUR_DEVICE: {
         defaultMessage: 'Please connect your device to continue with the verification process',
         id: 'TR_PLEASE_CONNECT_YOUR_DEVICE',
@@ -1221,6 +1430,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Previous addresses',
         id: 'TR_PREVIOUS_ADDRESSES',
     },
+    TR_PRIMARY_FIAT: {
+        defaultMessage: 'Primary FIAT currency to display',
+        id: 'TR_PRIMARY_FIAT',
+    },
     TR_QR_CODE: {
         defaultMessage: 'QR Code',
         id: 'TR_QR_CODE',
@@ -1236,6 +1449,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Rate',
         id: 'TR_RATE',
     },
+    TR_READ_MORE: {
+        defaultMessage: 'Read more',
+        id: 'TR_READ_MORE',
+    },
+    TR_RECEIVE: {
+        defaultMessage: 'Receive',
+        id: 'TR_RECEIVE',
+    },
     TR_RECEIVE_NETWORK: {
         defaultMessage: 'Receive {network}',
         id: 'TR_RECEIVE_NETWORK',
@@ -1243,6 +1464,10 @@ const definedMessages = defineMessages({
     TR_RECEIVE_NETWORK_AND_TOKENS: {
         defaultMessage: 'Receive {network} and tokens',
         id: 'TR_RECEIVE_NETWORK_AND_TOKENS',
+    },
+    TR_RECIPIENT_ADDRESS: {
+        defaultMessage: 'Recipient address',
+        id: 'TR_RECIPIENT_ADDRESS',
     },
     TR_RECONNECT_HEADER: {
         defaultMessage: 'Reconnect your device',
@@ -1282,6 +1507,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device recovery failed with error: {error}',
         description: 'Error during recovery. For example wrong word retyped or device disconnected',
         id: 'TR_RECOVERY_ERROR',
+    },
+    TR_RECOVERY_SEED_IS: {
+        defaultMessage:
+            'Recovery seed is a list of words in a specific order which store all the information needed.',
+        id: 'TR_RECOVERY_SEED_IS',
     },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
@@ -1419,9 +1649,18 @@ const definedMessages = defineMessages({
         description: 'Button text',
         id: 'TR_SET_PIN',
     },
+    TR_SETTINGS: {
+        defaultMessage: 'Settings',
+        id: 'TR_SETTINGS',
+    },
     TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK: {
         defaultMessage: 'Show address, I will take the risk',
         id: 'TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK',
+    },
+    TR_SHOW_ADVANCED_OPTIONS: {
+        defaultMessage: 'Show advanced options',
+        description: 'Shows advanced sending form',
+        id: 'TR_SHOW_ADVANCED_OPTIONS',
     },
     TR_SHOW_DETAILS: {
         defaultMessage: 'Show details',
@@ -1430,6 +1669,10 @@ const definedMessages = defineMessages({
     TR_SHOW_FULL_ADDRESS: {
         defaultMessage: 'Show full address',
         id: 'TR_SHOW_FULL_ADDRESS',
+    },
+    TR_SHOW_OLDER_NEWS: {
+        defaultMessage: 'Show older news',
+        id: 'TR_SHOW_OLDER_NEWS',
     },
     TR_SHOW_ON_TREZOR: {
         defaultMessage: 'Show on Trezor',
@@ -1485,6 +1728,10 @@ const definedMessages = defineMessages({
         description: 'Button in security page (skip security setup)',
         id: 'TR_SKIP_SECURITY',
     },
+    TR_SOUTH: {
+        defaultMessage: 'South',
+        id: 'TR_SOUTH',
+    },
     TR_STANDARD_WALLET: {
         defaultMessage: 'Standard wallet',
         id: 'TR_STANDARD_WALLET',
@@ -1518,6 +1765,18 @@ const definedMessages = defineMessages({
         description: 'Button text',
         id: 'TR_SUBMIT',
     },
+    TR_SUITE_VERSION: {
+        defaultMessage: 'Suite version',
+        id: 'TR_SUITE_VERSION',
+    },
+    TR_SUPPORT: {
+        defaultMessage: 'Support',
+        id: 'TR_SUPPORT',
+    },
+    TR_SWITCH_DEVICE: {
+        defaultMessage: 'Switch Device',
+        id: 'TR_SWITCH_DEVICE',
+    },
     TR_TAKE_ME_BACK_TO_WALLET: {
         defaultMessage: 'Take me back to the wallet',
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
@@ -1526,6 +1785,15 @@ const definedMessages = defineMessages({
         defaultMessage: 'Terms',
         description: 'As in Terms and Conditions, In the bottom footer',
         id: 'TR_TERMS',
+    },
+    TR_TESTNET_COINS: {
+        defaultMessage: 'Testnet coins',
+        id: 'TR_TESTNET_COINS',
+    },
+    TR_TESTNET_COINS_EXPLAINED: {
+        defaultMessage:
+            'Testnet coins dont have any value but you still may use them to learn and experiment.',
+        id: 'TR_TESTNET_COINS_EXPLAINED',
     },
     TR_TEZOS_WALLET: {
         defaultMessage: 'Tezos wallet',
@@ -1545,6 +1813,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
     },
+    TR_THIS_IS_PLACE_TO_SEE_ALL: {
+        defaultMessage:
+            'This is a place to see all your devices. You can further set them up in Settings but here you can switch between devices and see their statuses.',
+        id: 'TR_THIS_IS_PLACE_TO_SEE_ALL',
+    },
     TR_THIS_WILL_CREATE_NEW_INSTANCE: {
         defaultMessage:
             'This will create new instance of device which can be used with different passphrase',
@@ -1559,6 +1832,14 @@ const definedMessages = defineMessages({
         defaultMessage:
             'To prevent phishing attacks, you should verify the address on your Trezor first. {claim}',
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
+    },
+    TR_TOKENS: {
+        defaultMessage: 'Tokens',
+        id: 'TR_TOKENS',
+    },
+    TR_TOTAL_PORTFOLIO_VALUE: {
+        defaultMessage: 'Total portfolio value',
+        id: 'TR_TOTAL_PORTFOLIO_VALUE',
     },
     TR_TOTAL_RECEIVED: {
         defaultMessage: 'Total received: {amount}',
@@ -1597,6 +1878,10 @@ const definedMessages = defineMessages({
         description: 'Device status',
         id: 'TR_UNAVAILABLE',
     },
+    TR_UNDISCOVERED_WALLET: {
+        defaultMessage: 'Undiscovered wallet',
+        id: 'TR_UNDISCOVERED_WALLET',
+    },
     TR_UNKNOWN_TRANSACTION: {
         defaultMessage: '(Unknown transaction)',
         id: 'TR_UNKNOWN_TRANSACTION',
@@ -1626,6 +1911,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Upgrade for the newest features.',
         id: 'TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT',
     },
+    TR_UPLOAD_IMAGE: {
+        defaultMessage: 'Upload Image',
+        id: 'TR_UPLOAD_IMAGE',
+    },
     TR_USE_THE_KEYBOARD_SHORTCUT: {
         defaultMessage: 'Use the keyboard shortcut:',
         description: 'We want user to pres Ctrl + D',
@@ -1650,6 +1939,15 @@ const definedMessages = defineMessages({
             'In that case you should immediately contact Trezor support with detailed information on your purchase and refrain from using this device.',
         description: 'What to do if device is already initialized but not by user.',
         id: 'TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS',
+    },
+    TR_USER_HAS_WORKED_WITH_THIS_DEVICE: {
+        defaultMessage: 'I have worked with it before',
+        description: 'Option to click when troubleshooting initialized device.',
+        id: 'TR_USER_HAS_WORKED_WITH_THIS_DEVICE',
+    },
+    TR_VALUES: {
+        defaultMessage: 'Values',
+        id: 'TR_VALUES',
     },
     TR_VERIFY: {
         defaultMessage: 'Verify',
@@ -1677,19 +1975,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Version is loading',
         id: 'TR_VERSION_IS_LOADING',
     },
-    TR_COINS: {
-        defaultMessage: 'Coins',
-        id: 'TR_COINS',
-    },
-    TR_TESTNET_COINS: {
-        defaultMessage: 'Testnet coins',
-        id: 'TR_TESTNET_COINS',
-    },
-    TR_TESTNET_COINS_EXPLAINED: {
-        defaultMessage:
-            'Testnet coins dont have any value but you still may use them to learn and experiment.',
-        id: 'TR_TESTNET_COINS_EXPLAINED',
-    },
     TR_WAIT_FOR_FILE_TO_DOWNLOAD: {
         defaultMessage: 'Wait for file to download',
         description: 'Instruction for installing Trezor Bridge',
@@ -1700,27 +1985,10 @@ const definedMessages = defineMessages({
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
     },
-    TR_NTH_WORD: {
-        id: 'TR_NTH_WORD',
-        defaultMessage: '{number}. word',
-        description: 'Ordinal number. For example: 1. word',
-    },
-    TR_FOR_EASIER_AND_SAFER_INPUT: {
-        id: 'TR_FOR_EASIER_AND_SAFER_INPUT',
-        defaultMessage:
-            'For easier and safer input you can scan recipient’s address from a QR code using your computer camera.',
-    },
-    TR_PLEASE_ALLOW_YOUR_CAMERA: {
-        id: 'TR_PLEASE_ALLOW_YOUR_CAMERA',
-        defaultMessage: 'Please allow your camera to be able to scan a QR code.',
-    },
-    TR_CONFIRM_ADDRESS_ON_TREZOR: {
-        id: 'TR_CONFIRM_ADDRESS_ON_TREZOR',
-        defaultMessage: 'Confirm address on Trezor',
-    },
-    TR_PLEASE_COMPARE_YOUR_ADDRESS: {
-        id: 'TR_PLEASE_COMPARE_YOUR_ADDRESS',
-        defaultMessage: 'Please compare your address on device with address shown bellow',
+    TR_WALLET: {
+        defaultMessage: 'Wallet',
+        description: 'Category in Settings',
+        id: 'TR_WALLET',
     },
     TR_WAS_USED_IN_ANOTHER_WINDOW: {
         defaultMessage: 'Reload session',
@@ -1740,6 +2008,23 @@ const definedMessages = defineMessages({
         defaultMessage: 'Let us take you through a short setup.',
         description: 'Welcome message on welcome page, longer text.',
         id: 'TR_WELCOME_TO_TREZOR_TEXT',
+    },
+    TR_WEST: {
+        defaultMessage: 'West',
+        id: 'TR_WEST',
+    },
+    TR_WHAT_TO_DO_NOW: {
+        defaultMessage: 'What to do now',
+        id: 'TR_WHAT_TO_DO_NOW',
+    },
+    TR_WHATS_NEW: {
+        defaultMessage: "What's new",
+        id: 'TR_WHATS_NEW',
+    },
+    TR_WIPING_YOUR_DEVICE: {
+        defaultMessage:
+            'Wiping the device removes all its information. Only wipe your device if you have your device if you have your recovery seed at hand or there are no funds stored on this device.',
+        id: 'TR_WIPING_YOUR_DEVICE',
     },
     TR_WORDS: {
         defaultMessage: '{count} words',
@@ -1773,302 +2058,21 @@ const definedMessages = defineMessages({
         defaultMessage: 'You will be redirected to external wallet',
         id: 'TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL',
     },
+    TR_YOUR_CURRENT_FIRMWARE: {
+        defaultMessage: 'Your current firmware version is {version}',
+        id: 'TR_YOUR_CURRENT_FIRMWARE',
+    },
+    TR_YOUR_CURRENT_VERSION: {
+        defaultMessage: 'Your current Suite version is 1.2.0',
+        id: 'TR_YOUR_CURRENT_VERSION',
+    },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor is not backed up',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     },
-    TR_ETH_GAS_LIMIT_NOT_NUMBER: {
-        defaultMessage: 'Gas limit is not a number',
-        id: 'TR_ETH_GAS_LIMIT_NOT_NUMBER',
-    },
-    TR_ETH_GAS_PRICE_NOT_NUMBER: {
-        defaultMessage: 'Gas price is not a number',
-        id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
-    },
-    TR_ETH_DATA_NOT_HEX: {
-        defaultMessage: 'Data is not hex',
-        id: 'TR_ETH_DATA_NOT_HEX',
-    },
-    TR_SWITCH_DEVICE: {
-        id: 'TR_SWITCH_DEVICE',
-        defaultMessage: 'Switch Device',
-    },
-    TR_THIS_IS_PLACE_TO_SEE_ALL: {
-        id: 'TR_THIS_IS_PLACE_TO_SEE_ALL',
-        defaultMessage:
-            'This is a place to see all your devices. You can further set them up in Settings but here you can switch between devices and see their statuses.',
-    },
-    TR_FORGET: {
-        id: 'TR_FORGET',
-        defaultMessage: 'Forget',
-    },
-    TR_UNDISCOVERED_WALLET: {
-        id: 'TR_UNDISCOVERED_WALLET',
-        defaultMessage: 'Undiscovered wallet',
-    },
-    TR_CONNECT_TO_DISCOVER: {
-        id: 'TR_CONNECT_TO_DISCOVER',
-        defaultMessage: 'Connect to discover',
-    },
-    TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE: {
-        id: 'TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE',
-        defaultMessage:
-            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} - {coinsCount} {coinsCount, plural, one {coin} other {coins}} - {fiatValue}',
-        description: 'Used as title for a wallet instance in Switch Device modal',
-    },
-    TR_ADD_HIDDEN_WALLET: {
-        id: 'TR_ADD_HIDDEN_WALLET',
-        defaultMessage: 'Add hidden wallet',
-    },
-    TR_RECIPIENT_ADDRESS: {
-        id: 'TR_RECIPIENT_ADDRESS',
-        defaultMessage: 'Recipient address',
-    },
-    TR_BACKGROUND_GALLERY: {
-        id: 'TR_BACKGROUND_GALLERY',
-        defaultMessage: 'Homescreen background gallery',
-    },
-    TR_BACKUP: {
-        id: 'TR_BACKUP',
-        defaultMessage: 'Backup',
-    },
-    TR_BACKUP_RECOVERY_SEED: {
-        id: 'TR_BACKUP_RECOVERY_SEED',
-        defaultMessage: 'Backup (Recovery seed)',
-    },
-    TR_RECOVERY_SEED_IS: {
-        id: 'TR_RECOVERY_SEED_IS',
-        defaultMessage:
-            'Recovery seed is a list of words in a specific order which store all the information needed.',
-    },
-    TR_CREATE_BACKUP: {
-        id: 'TR_CREATE_BACKUP',
-        defaultMessage: 'Create backup',
-    },
-    TR_CHECK_RECOVERY_SEED: {
-        id: 'TR_CHECK_RECOVERY_SEED',
-        defaultMessage: 'Check recovery seed',
-    },
-    TR_CHECK_SEED: {
-        id: 'TR_CHECK_SEED',
-        defaultMessage: 'Check seed',
-    },
-    TR_FIRMWARE_VERSION: {
-        id: 'TR_FIRMWARE_VERSION',
-        defaultMessage: 'Firmware version',
-    },
-    TR_YOUR_CURRENT_FIRMWARE: {
-        id: 'TR_YOUR_CURRENT_FIRMWARE',
-        defaultMessage: 'Your current firmware version is {version}',
-    },
-    TR_WIPING_YOUR_DEVICE: {
-        id: 'TR_WIPING_YOUR_DEVICE',
-        defaultMessage:
-            'Wiping the device removes all its information. Only wipe your device if you have your device if you have your recovery seed at hand or there are no funds stored on this device.',
-    },
-    TR_CURRENCY: {
-        id: 'TR_CURRENCY',
-        defaultMessage: 'Currency',
-    },
-    TR_PRIMARY_FIAT: {
-        id: 'TR_PRIMARY_FIAT',
-        defaultMessage: 'Primary FIAT currency to display',
-    },
-    TR_LABELING: {
-        id: 'TR_LABELING',
-        defaultMessage: 'Labeling',
-    },
-    TR_CONNECT_DROPBOX: {
-        id: 'TR_CONNECT_DROPBOX',
-        defaultMessage: 'Connect Dropbox',
-    },
-    TR_SUITE_VERSION: {
-        id: 'TR_SUITE_VERSION',
-        defaultMessage: 'Suite version',
-    },
-    TR_YOUR_CURRENT_VERSION: {
-        id: 'TR_YOUR_CURRENT_VERSION',
-        defaultMessage: 'Your current Suite version is 1.2.0',
-    },
-    TR_CHECK_FOR_UPDATES: {
-        id: 'TR_CHECK_FOR_UPDATES',
-        defaultMessage: 'Check for updates',
-    },
-    TR_3RD_PARTY_WALLETS: {
-        id: 'TR_3RD_PARTY_WALLETS',
-        defaultMessage: '3rd party wallets',
-    },
-    TR_3RD_PARTY_WALLETS_DESC: {
-        id: 'TR_3RD_PARTY_WALLETS_DESC',
-        defaultMessage:
-            'These coins are supported by Trezor but only in 3rd party wallets. These coins cannot be managed by Trezor Suite or Wallet.',
-    },
-    TR_SETTINGS: {
-        id: 'TR_SETTINGS',
-        defaultMessage: 'Settings',
-    },
-    TR_BACKUP_FAILED: {
-        id: 'TR_BACKUP_FAILED',
-        defaultMessage:
-            'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
-    },
-    TR_LANGUAGE: {
-        id: 'TR_LANGUAGE',
-        defaultMessage: 'Language',
-    },
-    TR_WHAT_TO_DO_NOW: {
-        id: 'TR_WHAT_TO_DO_NOW',
-        defaultMessage: 'What to do now',
-    },
-    TR_DONT_HAVE_A_TREZOR: {
-        defaultMessage: "Don't have a Trezor? {getOne}",
-        id: 'TR_DONT_HAVE_A_TREZOR',
-    },
-    TR_NETWORK_UNKNOWN: {
-        defaultMessage: 'unknown',
-        id: 'TR_NETWORK_UNKNOWN',
-    },
-    TR_USER_HAS_WORKED_WITH_THIS_DEVICE: {
-        defaultMessage: 'I have worked with it before',
-        description: 'Option to click when troubleshooting initialized device.',
-        id: 'TR_USER_HAS_WORKED_WITH_THIS_DEVICE',
-    },
-    TR_CUSTOM_FEE_IS_NOT_NUMBER: {
-        defaultMessage: 'Fee is not a number',
-        id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
-    },
-    TR_TOKENS: {
-        defaultMessage: 'Tokens',
-        id: 'TR_TOKENS',
-    },
-    TR_NORTH: {
-        id: 'TR_NORTH',
-        defaultMessage: 'North',
-    },
-    TR_EAST: {
-        id: 'TR_EAST',
-        defaultMessage: 'East',
-    },
-    TR_SOUTH: {
-        id: 'TR_SOUTH',
-        defaultMessage: 'South',
-    },
-    TR_WEST: {
-        id: 'TR_WEST',
-        defaultMessage: 'West',
-    },
-    TR_GENERAL: {
-        id: 'TR_GENERAL',
-        defaultMessage: 'General',
-        description: 'Category in Settings',
-    },
-    TR_DEVICE: {
-        id: 'TR_DEVICE',
-        defaultMessage: 'Device',
-        description: 'Category in Settings',
-    },
-    TR_DASHBOARD: {
-        id: 'TR_DASHBOARD',
-        defaultMessage: 'Dashboard',
-        description: 'Category in Settings',
-    },
-    TR_WALLET: {
-        id: 'TR_WALLET',
-        defaultMessage: 'Wallet',
-        description: 'Category in Settings',
-    },
-    TR_SUPPORT: {
-        id: 'TR_SUPPORT',
-        defaultMessage: 'Support',
-    },
-    TR_COINS_SETTINGS_ALSO_DEFINES: {
-        id: 'TR_COINS_SETTINGS_ALSO_DEFINES',
-        defaultMessage:
-            'Coins settings also defines the Discovery process when Trezor is connected. Each time you connect not remembered device, Trezor Suite needs to find out what accounts you have by going through each coin one by one. That can take between few seconds to few minutes if you allow all or too many coins.',
-    },
-    TR_DEACTIVATE_ALL: {
-        id: 'TR_DEACTIVATE_ALL',
-        defaultMessage: 'Deactivate all',
-    },
-    TR_ACTIVATE_ALL: {
-        id: 'TR_ACTIVATE_ALL',
-        defaultMessage: 'Activate all',
-    },
-    TR_TOTAL_PORTFOLIO_VALUE: {
-        id: 'TR_TOTAL_PORTFOLIO_VALUE',
-        defaultMessage: 'Total portfolio value',
-    },
-    TR_RECEIVE: {
-        id: 'TR_RECEIVE',
-        defaultMessage: 'Receive',
-    },
-    TR_BUY: {
-        id: 'TR_BUY',
-        defaultMessage: 'Buy',
-    },
     TR_YOUR_WALLET_IS_READY_WHAT: {
-        id: 'TR_YOUR_WALLET_IS_READY_WHAT',
         defaultMessage: 'Your Wallet is ready. What to do now?',
-    },
-    TR_ADDITIONAL_SECURITY_FEATURES: {
-        id: 'TR_ADDITIONAL_SECURITY_FEATURES',
-        defaultMessage: 'Additional security features are waiting to be done.',
-    },
-    TR_FINISH_ADVANCED_SECURITY: {
-        id: 'TR_FINISH_ADVANCED_SECURITY',
-        defaultMessage: 'Finish advanced security',
-    },
-    TR_LOOKING_FOR_QUICK_EASY: {
-        id: 'TR_LOOKING_FOR_QUICK_EASY',
-        defaultMessage: 'Looking for a quick & easy way to buy BTC? We got you covered.',
-    },
-    TR_ASSETS: {
-        id: 'TR_ASSETS',
-        defaultMessage: 'Assets',
-    },
-    TR_VALUES: {
-        id: 'TR_VALUES',
-        defaultMessage: 'Values',
-    },
-    TR_EXCHANGE_RATE: {
-        id: 'TR_EXCHANGE_RATE',
-        defaultMessage: 'Exchange rate',
-    },
-    TR_CONNECTION_STATUS: {
-        id: 'TR_CONNECTION_STATUS',
-        defaultMessage: 'Connection Status',
-    },
-    TR_ONLINE: {
-        id: 'TR_ONLINE',
-        defaultMessage: 'Online',
-    },
-    TR_CONNECTING_DOTDOTDOT: {
-        id: 'TR_CONNECTING_DOTDOTDOT',
-        defaultMessage: 'Connecting...',
-    },
-    TR_OFFLINE: {
-        id: 'TR_OFFLINE',
-        defaultMessage: 'Offline',
-    },
-    TR_MARK_ALL_AS_READ: {
-        id: 'TR_MARK_ALL_AS_READ',
-        defaultMessage: 'Mark all as read',
-    },
-    TR_WHATS_NEW: {
-        id: 'TR_WHATS_NEW',
-        defaultMessage: "What's new",
-    },
-    TR_READ_MORE: {
-        id: 'TR_READ_MORE',
-        defaultMessage: 'Read more',
-    },
-    TR_SHOW_OLDER_NEWS: {
-        id: 'TR_SHOW_OLDER_NEWS',
-        defaultMessage: 'Show older news',
-    },
-    TR_CHECK_FOR_DEVICES: {
-        defaultMessage: 'Check for devices',
-        id: 'TR_CHECK_FOR_DEVICES',
+        id: 'TR_YOUR_WALLET_IS_READY_WHAT',
     },
 });
 

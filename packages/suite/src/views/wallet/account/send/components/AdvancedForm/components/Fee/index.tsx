@@ -7,13 +7,13 @@ import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { calculateEthFee, hasRates } from '@wallet-utils/sendFormUtils';
+import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 // @ts-ignore
 import ethUnits from 'ethereumjs-units';
 import React from 'react';
 import styled from 'styled-components';
 
-import CustomFee from './components/CustomFee';
+import CustomFee from './components/CustomFee/Container';
 import { Props } from './Container';
 
 const Row = styled.div`
@@ -155,13 +155,7 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
             {networkType !== 'ethereum' && customFee.value && (
                 <CustomFeeRow>
                     <CustomFeeWrapper>
-                        <CustomFee
-                            sendFormActions={sendFormActions}
-                            customFee={customFee.value}
-                            selectedFee={selectedFee}
-                            symbol={symbol}
-                            networkType={networkType}
-                        />
+                        <CustomFee />
                     </CustomFeeWrapper>
                     {fiatVal && (
                         <BadgeWrapper>
@@ -175,7 +169,6 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                             </Badge>
                         </BadgeWrapper>
                     )}
-                    }
                 </CustomFeeRow>
             )}
         </Wrapper>

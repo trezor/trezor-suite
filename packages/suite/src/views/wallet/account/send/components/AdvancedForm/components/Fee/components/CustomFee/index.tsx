@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
+import { State } from '@wallet-types/sendForm';
 import { Translation } from '@suite-components/Translation';
 import { Input, Select } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { State } from '@wallet-types/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import messages from '@suite/support/messages';
-import { Props as ContainerProps } from '../../../../../../Container';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,21 +19,10 @@ const ItemWrapper = styled.div`
     padding-right: 10px;
 `;
 
-interface Props {
-    errors: State['customFee']['error'];
-    symbol: Account['symbol'];
-    networkType: Account['networkType'];
-    selectedFee: State['selectedFee'];
-    customFee: State['customFee']['value'];
-    maxFee: State['feeInfo']['maxFee'];
-    minFee: State['feeInfo']['minFee'];
-    sendFormActions: ContainerProps['sendFormActions'];
-}
-
 const getErrorMessage = (
-    error: Props['errors'],
-    maxFee: Props['maxFee'],
-    minFee: Props['minFee'],
+    error: State['customFee']['error'],
+    maxFee: State['feeInfo']['maxFee'],
+    minFee: State['feeInfo']['minFee'],
 ) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
@@ -49,7 +38,7 @@ const getErrorMessage = (
     }
 };
 
-const getUnits = (networkType: Account['networkType']) => {
+const getValue = (networkType: Account['networkType']) => {
     if (networkType === 'bitcoin') {
         return { value: 'sat', label: 'sat/B' };
     }
@@ -58,29 +47,32 @@ const getUnits = (networkType: Account['networkType']) => {
     }
 };
 
-const CustomFee = (props: Props) => (
-    <Wrapper>
-        <ItemWrapper>
-            <Input
-                display="block"
-                variant="small"
-                state={getInputState(props.errors, props.customFee)}
-                bottomText={getErrorMessage(props.errors, props.maxFee, props.minFee)}
-                value={props.customFee || ''}
-                onChange={e => {
-                    props.sendFormActions.handleCustomFeeValueChange(e.target.value);
-                }}
-            />
-        </ItemWrapper>
-        <ItemWrapper>
-            <Select
-                display="block"
-                variant="small"
-                isDisabled
-                value={getUnits(props.networkType)}
-            />
-        </ItemWrapper>
-    </Wrapper>
-);
+const CustomFee = ({ send, sendFormActions, account }: Props) => {
+    if (!send || !account) return null;
+    const { customFee, feeInfo } = send;
+    const { value, error } = customFee;
+    const { maxFee, minFee } = feeInfo;
+    const { networkType } = account;
+
+    return (
+        <Wrapper>
+            <ItemWrapper>
+                <Input
+                    display="block"
+                    variant="small"
+                    state={getInputState(error, value)}
+                    bottomText={getErrorMessage(error, maxFee, minFee)}
+                    value={value || ''}
+                    onChange={e => {
+                        sendFormActions.handleCustomFeeValueChange(e.target.value);
+                    }}
+                />
+            </ItemWrapper>
+            <ItemWrapper>
+                <Select display="block" variant="small" isDisabled value={getValue(networkType)} />
+            </ItemWrapper>
+        </Wrapper>
+    );
+};
 
 export default CustomFee;
