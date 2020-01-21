@@ -3,10 +3,10 @@ import { ROUTER, SUITE } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 
-import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as reducerUtils from '@suite-utils/reducerUtils';
 import * as accountUtils from '@wallet-utils/accountUtils';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
 import { Action, Dispatch, GetState } from '@suite-types';
 import {
@@ -79,7 +79,7 @@ const getAccountStateWithNotification = (selectedAccount: SelectedAccountState) 
             variant: 'info',
             title: {
                 ...messages.TR_DEVICE_LABEL_IS_DISCONNECTED,
-                values: { deviceLabel: device.instanceLabel },
+                values: { deviceLabel: device.label },
             },
             shouldRender: true,
         });
@@ -93,14 +93,15 @@ const getAccountStateWithNotification = (selectedAccount: SelectedAccountState) 
             variant: 'info',
             title: {
                 ...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
-                values: { deviceLabel: device.instanceLabel || device.label },
+                values: { deviceLabel: device.label },
             },
             message: messages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
             actions: [
                 {
                     label: messages.TR_DEVICE_SETTINGS,
                     callback: () => {
-                        dispatch(routerActions.goto('settings-index'));
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        dispatch(deviceSettingsActions.applySettings({ use_passphrase: true }));
                     },
                 },
             ],

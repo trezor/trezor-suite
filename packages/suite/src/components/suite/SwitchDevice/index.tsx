@@ -59,7 +59,7 @@ const SwitchDeviceModal = (props: Props) => {
         //     // eslint-disable-next-line @typescript-eslint/camelcase
         //     props.applySettings({ use_passphrase: true });
         // }
-        await props.onCreateDeviceInstance(instance as AcquiredDevice);
+        await props.createDeviceInstance(instance as AcquiredDevice);
         closeModalApp();
     };
 

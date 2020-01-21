@@ -1,10 +1,13 @@
 import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+import * as receiveActions from '@wallet-actions/receiveActions';
 import { Translation } from '@suite-components/Translation';
 import { colors } from '@trezor/components';
 import { Button, P, H2, Link } from '@trezor/components-v2';
 import { useKeyPress } from '@suite-utils/dom';
-import { TrezorDevice } from '@suite-types';
+import { TrezorDevice, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
@@ -38,13 +41,16 @@ const Row = styled.div`
     }
 `;
 
-interface Props {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
+    showUnverifiedAddress: bindActionCreators(receiveActions.showUnverifiedAddress, dispatch),
+});
+
+type Props = {
     device: TrezorDevice;
-    addressPath?: string;
-    showAddress: (accountPath: string) => void;
-    showUnverifiedAddress: (accountPath: string) => void;
+    addressPath: string;
     onCancel: () => void;
-}
+} & ReturnType<typeof mapDispatchToProps>;
 
 const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     device,
@@ -150,4 +156,4 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     );
 };
 
-export default ConfirmUnverifiedAddress;
+export default connect(null, mapDispatchToProps)(ConfirmUnverifiedAddress);

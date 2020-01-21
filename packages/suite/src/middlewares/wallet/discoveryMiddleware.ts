@@ -30,13 +30,10 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         return action;
     }
 
-    // do not close "add account" modal during discovery
+    // do not close user context modals during discovery
     if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
         const { modal } = prevState;
-        if (
-            modal.context === MODAL.CONTEXT_DEVICE &&
-            modal.windowType === ACCOUNT.REQUEST_NEW_ACCOUNT
-        ) {
+        if (modal.context === MODAL.CONTEXT_USER) {
             return action;
         }
     }
@@ -97,7 +94,7 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     // 4. device state received
     if (action.type === SUITE.AUTH_DEVICE) {
-        api.dispatch(discoveryActions.create(action.state, action.payload.useEmptyPassphrase));
+        api.dispatch(discoveryActions.create(action.state, device!.useEmptyPassphrase));
     }
 
     // 5. device state confirmation received

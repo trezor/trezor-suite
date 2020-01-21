@@ -104,8 +104,6 @@ const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): 
             available: false,
             authConfirm: false,
             instance: undefined,
-            instanceLabel: 'My Trezor',
-            instanceName: undefined,
             ts: 0,
             ...dev,
             ...device,

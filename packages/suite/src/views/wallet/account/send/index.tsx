@@ -105,7 +105,7 @@ const Send = (props: StateProps & DispatchProps) => {
                             address={output.address.value}
                             error={output.address.error}
                             sendFormActions={sendFormActions}
-                            openQrModal={props.openQrModal}
+                            openModal={props.openModal}
                         />
                     </Row>
                     <Row>

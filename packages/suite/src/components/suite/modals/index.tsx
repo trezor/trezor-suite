@@ -11,8 +11,6 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
-import { DEVICE_SETTINGS } from '@settings-actions/constants';
-import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
@@ -27,7 +25,7 @@ import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount';
-import QrScanner from './Qr';
+import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 
 const mapStateToProps = (state: AppState) => ({
@@ -48,8 +46,9 @@ type Props = ReturnType<typeof mapStateToProps> &
         background?: boolean;
     };
 
+// Modals requested byt Device from `trezor-connect`
 const getDeviceContextModal = (props: Props) => {
-    const { modal, device, modalActions } = props;
+    const { modal, device } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
@@ -88,39 +87,16 @@ const getDeviceContextModal = (props: Props) => {
             return <ConfirmSignTx device={device} />;
         }
 
-        case RECEIVE.REQUEST_UNVERIFIED:
-            return (
-                <ConfirmUnverifiedAddress
-                    device={device}
-                    addressPath={modal.addressPath}
-                    onCancel={modalActions.onCancel}
-                    showAddress={props.receiveActions.showAddress}
-                    showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
-                />
-            );
-
-        case ACCOUNT.REQUEST_NEW_ACCOUNT:
-            return (
-                <AddAccount device={device as AcquiredDevice} onCancel={modalActions.onCancel} />
-            );
-
-        case DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL:
-            return (
-                <BackgroundGallery
-                    device={device as AcquiredDevice}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-
         default:
             return null;
     }
 };
 
-const getConfirmationModal = (props: Props) => {
+// Modals requested from `trezor-connect`
+const getDeviceConfirmationModal = (props: Props) => {
     const { modal, modalActions, goto } = props;
 
-    if (modal.context !== MODAL.CONTEXT_CONFIRMATION) return null;
+    if (modal.context !== MODAL.CONTEXT_DEVICE_CONFIRMATION) return null;
 
     switch (modal.windowType) {
         case 'no-backup':
@@ -135,38 +111,58 @@ const getConfirmationModal = (props: Props) => {
     }
 };
 
-const getQrModal = (props: Props) => {
-    const { modalActions, sendFormActions, modal } = props;
-    if (modal.context !== MODAL.CONTEXT_SCAN_QR) return null;
+// Modals opened as result of user action
+const getUserContextModal = (props: Props) => {
+    const { modalActions, modal } = props;
+    if (modal.context !== MODAL.CONTEXT_USER) return null;
 
-    return (
-        <QrScanner
-            onCancel={modalActions.onCancel}
-            onScan={parsedUri => {
-                sendFormActions.onQrScan(parsedUri, modal.outputId);
-            }}
-        />
-    );
+    const { payload } = modal;
+
+    switch (payload.type) {
+        case 'add-account':
+            return (
+                <AddAccount
+                    device={payload.device as AcquiredDevice}
+                    onCancel={modalActions.onCancel}
+                />
+            );
+        case 'unverified-address':
+            return (
+                <ConfirmUnverifiedAddress
+                    device={payload.device}
+                    addressPath={payload.addressPath}
+                    onCancel={modalActions.onCancel}
+                />
+            );
+        case 'device-background-gallery':
+            return (
+                <BackgroundGallery
+                    device={payload.device as AcquiredDevice}
+                    onCancel={modalActions.onCancel}
+                />
+            );
+        case 'qr-reader':
+            return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
+        default:
+            return null;
+    }
 };
 
-// modal container component
+// Action modal container component
 const Modal = (props: Props) => {
     const { modal } = props;
 
-    let modalComponent = null;
+    let modalComponent;
 
     switch (modal.context) {
-        case MODAL.CONTEXT_NONE:
-            modalComponent = null;
-            break;
         case MODAL.CONTEXT_DEVICE:
             modalComponent = getDeviceContextModal(props);
             break;
-        case MODAL.CONTEXT_CONFIRMATION:
-            modalComponent = getConfirmationModal(props);
+        case MODAL.CONTEXT_DEVICE_CONFIRMATION:
+            modalComponent = getDeviceConfirmationModal(props);
             break;
-        case MODAL.CONTEXT_SCAN_QR:
-            modalComponent = getQrModal(props);
+        case MODAL.CONTEXT_USER:
+            modalComponent = getUserContextModal(props);
             break;
         default:
             break;

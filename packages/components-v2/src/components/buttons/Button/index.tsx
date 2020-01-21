@@ -153,7 +153,7 @@ interface WrapperProps {
     fullWidth: boolean;
 }
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     size?: ButtonSize;
     icon?: IconType;
@@ -173,7 +173,7 @@ const Button = ({
     isLoading = false,
     alignIcon = 'left',
     ...rest
-}: ButtonProps) => {
+}: Props) => {
     const IconComponent = icon ? (
         <IconWrapper alignIcon={alignIcon}>
             <Icon icon={icon} size={10} color={getIconColor(variant, isDisabled)} />
@@ -202,4 +202,4 @@ const Button = ({
     );
 };
 
-export { Button };
+export { Button, Props as ButtonProps };
