@@ -96,7 +96,6 @@ const Wrapper = styled.button<WrapperProps>`
             border: none;
         `}
 
-
     ${props =>
         props.variant === 'danger' &&
         !props.isDisabled &&
