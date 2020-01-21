@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { variables, colors, Switch, Input } from '@trezor/components-v2';
+import { variables, colors, Switch } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     display: flex;

@@ -61,7 +61,6 @@ const getErrorData = (error: State['networkTypeEthereum']['data']['error']) => {
 const AdvancedFormEthereum = ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
     const { account } = selectedAccount;
     if (!send || !account) return null;
-    const { transactionInfo } = send.networkTypeEthereum;
     const { gasLimit, gasPrice, data } = send.networkTypeEthereum;
     return (
         <Wrapper>

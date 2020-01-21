@@ -2074,6 +2074,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Your Wallet is ready. What to do now?',
         id: 'TR_YOUR_WALLET_IS_READY_WHAT',
     },
+    TR_ADVANCED_SETTINGS: {
+        defaultMessage: 'Your Wallet is ready. What to do now?',
+        id: 'TR_YOUR_WALLET_IS_READY_WHAT',
+    },
 });
 
 export default definedMessages;
