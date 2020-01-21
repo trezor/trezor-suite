@@ -39,24 +39,24 @@ variables:
 
 stages:
     - setup environment
-    - lint, typescript & unit tests
+    - lint, typescript and unit tests
     - build
     - deploy to dev servers
     - integration testing
     - misc
 
 lint:
-    stage: lint, typescript & unit tests
+    stage: lint, typescript and unit tests
     script:
         - lerna run lint
 
 typescript:
-    stage: lint, typescript & unit tests
+    stage: lint, typescript and unit tests
     script:
         - lerna run type-check
 
 unit tests:
-    stage: lint, typescript & unit tests
+    stage: lint, typescript and unit tests
     script:
         - lerna run test:unit -- --passWithNoTests
 
