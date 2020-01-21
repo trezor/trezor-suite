@@ -8,12 +8,12 @@ import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 import Add from './components/Add/Container';
-import AdditionalForm from './components/AdditionalForm';
 import Address from './components/Address';
+import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
-import SendSection from './components/SendSection/Container';
+import SendButtonSection from './components/SendButtonSection/Container';
 import { Props } from './Container';
 
 const Row = styled.div`
@@ -155,7 +155,7 @@ const Send = ({
                     )}
                 </Row>
             </AdditionalInfoWrapper>
-            <SendSection />
+            <SendButtonSection />
         </LayoutAccount>
     );
 };

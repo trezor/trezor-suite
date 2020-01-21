@@ -125,7 +125,7 @@ const SendSection = ({
     sendFormActionsRipple,
 }: Props) => {
     if (!send || !account || !device) return null;
-    const { isComposing } = send;
+    const { isComposing, customFee } = send;
     const { networkType, symbol } = account;
     const transactionInfo = getTransactionInfo(networkType, send);
 
@@ -161,7 +161,7 @@ const SendSection = ({
                     </Fee>
                 </Row>
             )}
-            {networkType === 'bitcoin' && (
+            {networkType === 'bitcoin' && customFee.value && (
                 <Row>
                     <EstimatedMiningTime
                         seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}

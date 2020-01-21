@@ -1,4 +1,5 @@
 import { Output, State } from '@wallet-types/sendForm';
+import { Fiat } from '@wallet-types';
 import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';

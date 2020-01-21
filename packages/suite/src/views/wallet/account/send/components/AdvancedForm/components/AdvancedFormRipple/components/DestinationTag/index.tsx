@@ -5,7 +5,6 @@ import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Translation } from '@suite-components/Translation';
 import { State } from '@wallet-types/sendForm';
-import { RIPPLE_MANUAL_URL } from '@suite-constants/urls';
 import messages from '@suite/support/messages';
 import { Props as ContainerProps } from '../../Container';
 
@@ -45,15 +44,7 @@ const NetworkTypeXrp = (props: Props) => (
         topLabel={
             <Label>
                 <Translation {...messages.TR_XRP_DESTINATION_TAG} />
-                {/* <Tooltip
-                    content={<Translation {...messages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
-                    maxWidth={200}
-                    ctaLink={RIPPLE_MANUAL_URL}
-                    ctaText={<Translation {...messages.TR_LEARN_MORE_LINK} />}
-                    placement="top"
-                > */}
-                <StyledIcon icon="HELP" color={colors.BLACK0} size={12} />
-                {/* </Tooltip> */}
+                <StyledIcon icon="QUESTION" color={colors.BLACK0} size={12} />
             </Label>
         }
         bottomText={getErrorMessage(props.errors)}

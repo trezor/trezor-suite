@@ -5,7 +5,7 @@ import { AppState, Dispatch } from '@suite-types';
 import AdditionalFormBitcoin from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
+    account: state.wallet.selectedAccount.account,
     settings: state.wallet.settings,
     send: state.wallet.send,
     fiat: state.wallet.fiat,

@@ -7,9 +7,9 @@ import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
 
-import TransactionInfo from '../TransactionInfo/Container';
-import Fee from '../Fee';
+import Fee from '../Fee/Container';
 import Layout from '../Layout';
+import TransactionInfo from '../TransactionInfo/Container';
 import DataTopLabel from './components/DataTopLabel';
 import GasLimitTopLabel from './components/GasLimitTopLabel';
 import GasPriceTopLabel from './components/GasPriceTopLabel';
@@ -58,12 +58,7 @@ const getErrorData = (error: State['networkTypeEthereum']['data']['error']) => {
     }
 };
 
-const NetworkTypeEthereum = ({
-    send,
-    sendFormActions,
-    sendFormActionsEthereum,
-    selectedAccount,
-}: Props) => {
+const AdvancedFormEthereum = ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
     const { account } = selectedAccount;
     if (!send || !account) return null;
     const { transactionInfo } = send.networkTypeEthereum;
@@ -74,13 +69,7 @@ const NetworkTypeEthereum = ({
                 left={
                     <>
                         <Row>
-                            <Fee
-                                networkType={account.networkType}
-                                feeLevels={send.feeInfo.levels}
-                                sendFormActions={sendFormActions}
-                                selectedFee={send.selectedFee}
-                                symbol={account.symbol}
-                            />
+                            <Fee />
                         </Row>
                         <Row>
                             <GasInput
@@ -122,10 +111,10 @@ const NetworkTypeEthereum = ({
                         topLabel={<DataTopLabel />}
                     />
                 }
-                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
+                bottom={<TransactionInfo />}
             />
         </Wrapper>
     );
 };
 
-export default NetworkTypeEthereum;
+export default AdvancedFormEthereum;
