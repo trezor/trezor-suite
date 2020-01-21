@@ -1,37 +1,13 @@
-import { Route } from '@suite-constants/routes';
+import { RouterAppWithParams } from '@suite-constants/routes';
 import { ROUTER } from '@suite-actions/constants';
 import { getAppWithParams } from '@suite-utils/router';
 import { Action } from '@suite-types';
-import { Network } from '@wallet-types';
-
-interface WalletParams {
-    symbol: Network['symbol'];
-    accountIndex: number;
-    accountType: NonNullable<Network['accountType']>;
-}
-
-type AppState =
-    | {
-          app: 'wallet';
-          route: Route;
-          params: WalletParams | undefined;
-      }
-    | {
-          app: Exclude<Route['app'], 'wallet'>;
-          route: Route;
-          params: undefined;
-      }
-    | {
-          app: 'unknown';
-          route: undefined;
-          params: undefined;
-      };
 
 type State = {
     url: string;
     pathname: string;
     hash?: string;
-} & AppState;
+} & RouterAppWithParams;
 
 const initialState: State = {
     url: '/',

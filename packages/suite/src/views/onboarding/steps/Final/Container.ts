@@ -1,13 +1,13 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as suiteActions from '@suite-actions/suiteActions';
+import * as routerActions from '@suite-actions/routerActions';
 
 import { Dispatch } from '@suite-types';
 
 import Step from './index';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    closeModalApp: bindActionCreators(suiteActions.closeModalApp, dispatch),
+    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
 });
 
 export type Props = ReturnType<typeof mapDispatchToProps>;

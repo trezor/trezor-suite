@@ -41,7 +41,7 @@ const AccountsMenu = (props: Props) => {
             <StyledButton onPress={() => props.goto('settings-index')} title="Settings" />
 
             <Button onPress={() => props.goto('onboarding-index')} title="Onboarding" />
-            <Button onPress={() => props.goto('suite-device-firmware')} title="Firmware update" />
+            <Button onPress={() => props.goto('firmware-index')} title="Firmware update" />
             <Button onPress={() => props.goto('settings-device')} title="Backup" />
             <Button onPress={() => props.goto('suite-switch-device')} title="Switch device" />
         </View>

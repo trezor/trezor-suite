@@ -7,7 +7,7 @@ import firmwareReducer from '@suite-reducers/firmwareReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@suite/types/utils';
 import * as firmwareActions from '../firmwareActions';
-import { firmwareUpdate, reducerActions } from './fixtures/firmwareActions';
+import { firmwareUpdate, reducerActions } from '../__fixtures__/firmwareActions';
 
 type Fixture = ArrayElement<typeof firmwareUpdate>;
 

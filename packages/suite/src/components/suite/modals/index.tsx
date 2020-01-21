@@ -10,38 +10,30 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { MODAL, SUITE } from '@suite-actions/constants';
+import { MODAL } from '@suite-actions/constants';
 import { DEVICE_SETTINGS } from '@settings-actions/constants';
 import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
-import * as deviceUtils from '@suite-utils/device';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
 import Passphrase from './Passphrase';
-import PassphraseType from './PassphraseType';
+import PassphraseSource from './PassphraseSource';
+import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
+import Word from './Word';
 // import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import RequestInstance from './RequestInstance';
-import RememberDevice from './Remember';
-// import DuplicateDevice from 'components/modals/device/Duplicate';
-import WalletType from './WalletType';
 import AddAccount from './AddAccount';
 import QrScanner from './Qr';
-import Disconnect from './Disconnect';
 import BackgroundGallery from './BackgroundGallery';
-
-import Firmware from '@firmware-views';
-import Onboarding from '@onboarding-views';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
     devices: state.devices,
-    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -51,41 +43,39 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> & {
+        background?: boolean;
+    };
 
 const getDeviceContextModal = (props: Props) => {
-    // const { modal, modalActions } = props;
     const { modal, device, modalActions } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
-        case SUITE.REQUEST_PASSPHRASE_MODE:
-            return (
-                <WalletType
-                    device={device}
-                    onWalletTypeRequest={modalActions.onWalletTypeRequest}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-
+        // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} onEnterPin={modalActions.onPinSubmit} />;
-
+            return <Pin device={device} />;
+        // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
 
+        // Passphrase on host
         case UI.REQUEST_PASSPHRASE:
-            return (
-                <Passphrase
-                    device={device}
-                    shouldShowSingleInput={!!device.state}
-                    onEnterPassphrase={modalActions.onPassphraseSubmit}
-                />
-            );
+            return <Passphrase device={device} />;
 
+        case 'WordRequestType_Plain':
+            return <Word />;
+
+        // used in TT legacy firmware
+        // TT legacy firmware
         case 'ButtonRequest_PassphraseType':
-            return <PassphraseType device={device} />;
+            return <PassphraseSource device={device} />;
+        // TT firmware
+        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+            return <PassphraseOnDevice device={device} />;
 
+        // Button requests
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
@@ -108,32 +98,6 @@ const getDeviceContextModal = (props: Props) => {
                     showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
                 />
             );
-
-        case SUITE.REQUEST_REMEMBER_DEVICE:
-            return (
-                <RememberDevice
-                    device={modal.device as AcquiredDevice}
-                    onRememberDevice={modalActions.onRememberDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
-                />
-            );
-
-        case SUITE.REQUEST_DEVICE_INSTANCE:
-            return (
-                // TODO: DELETE or implement new design once it's ready
-                // Used to be triggered from function 'requestDeviceInstance' fired on 'add hidden wallet' btn in 'SwitchDeviceModal'
-                <RequestInstance
-                    device={modal.device as AcquiredDevice}
-                    instance={deviceUtils.getNewInstanceNumber(
-                        props.devices,
-                        modal.device as AcquiredDevice,
-                    )}
-                    onCreateInstance={modalActions.onCreateDeviceInstance}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-        case SUITE.REQUEST_DISCONNECT_DEVICE:
-            return <Disconnect device={device} />;
 
         case ACCOUNT.REQUEST_NEW_ACCOUNT:
             return (
@@ -187,10 +151,9 @@ const getQrModal = (props: Props) => {
 
 // modal container component
 const Modal = (props: Props) => {
-    const { modal, router } = props;
+    const { modal } = props;
 
     let modalComponent = null;
-    let appModalComponent = null;
 
     switch (modal.context) {
         case MODAL.CONTEXT_NONE:
@@ -209,36 +172,22 @@ const Modal = (props: Props) => {
             break;
     }
 
-    if (router.route && router.route.isModal) {
-        switch (router.app) {
-            case 'firmware':
-                appModalComponent = <Firmware modal={modalComponent} />;
-                break;
-            case 'onboarding':
-                appModalComponent = <Onboarding modal={modalComponent} />;
-                break;
-            default:
-                break;
-        }
+    if (!modalComponent) return null;
+
+    const useBackground = typeof props.background === 'boolean' ? props.background : true;
+    if (useBackground) {
+        return (
+            <ModalComponent
+                // if modal has onCancel action set cancelable to true and pass the onCancel action
+                cancelable={modalComponent.props.onCancel}
+                onCancel={modalComponent.props.onCancel}
+            >
+                <FocusLock>{modalComponent}</FocusLock>
+            </ModalComponent>
+        );
     }
 
-    if (appModalComponent) {
-        return <ModalComponent>{appModalComponent}</ModalComponent>;
-    }
-
-    if (!modalComponent) {
-        return null;
-    }
-
-    return (
-        <ModalComponent
-            // if modal has onCancel action set cancelable to true and pass the onCancel action
-            cancelable={modalComponent.props.onCancel}
-            onCancel={modalComponent.props.onCancel}
-        >
-            <FocusLock>{modalComponent}</FocusLock>
-        </ModalComponent>
-    );
+    return <FocusLock>{modalComponent}</FocusLock>;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);

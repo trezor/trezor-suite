@@ -69,6 +69,7 @@ export interface AcquiredDevice {
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
+    authConfirm: boolean; // device cannot be used because passphrase was not confirmed
     instance?: number;
     instanceLabel: string;
     instanceName?: string;
@@ -81,22 +82,23 @@ export interface UnknownDevice {
     label: string;
     connected: true;
     available: false;
-    // types below are here just for compatibility
-    features: typeof undefined;
-    instance: typeof undefined;
-    instanceLabel?: typeof undefined;
+    features: undefined;
+    instance?: undefined;
+    useEmptyPassphrase: true;
+    // types below are here just for type compatibility with AcquiredDevice
+    remember?: boolean;
+    authConfirm?: undefined;
+    instanceLabel?: undefined;
     state?: string;
-    useEmptyPassphrase: boolean;
     ts: number;
-
-    // remember: boolean; // device should be remembered
-    //  // device is connected
-    // available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
-    // instance?: number;
-    // instanceName?: string;
-    // ts: number;
 }
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 export type Store = ReduxStore<AppState, Action>;
+
+export type InjectedModalApplicationProps = {
+    modal: React.ReactNode;
+    cancelable: boolean;
+    closeModalApp: () => void;
+};

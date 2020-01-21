@@ -74,7 +74,7 @@ export const rememberDevice = (device: TrezorDevice) => async (
 ) => {
     if (!device || !device.features || !device.state) return;
     const { wallet, devices } = getState();
-    const instances = getDeviceInstances(device, devices, true);
+    const instances = getDeviceInstances(device, devices);
 
     const promises = instances.map(instance => {
         const accounts = wallet.accounts.filter(a => a.deviceState === instance.state);
@@ -127,7 +127,7 @@ export const forgetDevice = (device: TrezorDevice) => async (
     if (!device.state) return;
     // get all device instances
     const storedDevices = await db.getItemsExtended('devices');
-    const deviceInstances = getDeviceInstances(device, storedDevices, true);
+    const deviceInstances = getDeviceInstances(device, storedDevices);
     const promises = deviceInstances.map(instance => dispatch(forgetDeviceInstance(instance)));
     await Promise.all(promises);
 };

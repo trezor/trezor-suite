@@ -2,7 +2,6 @@ import messages from '@suite/support/messages';
 import { ROUTER, SUITE } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
-import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
 import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -54,8 +53,17 @@ const getAccountStateWithNotification = (selectedAccount: SelectedAccountState) 
     //     };
     // }
 
+    if (device.authConfirm) {
+        return wrap({
+            type: 'auth',
+            variant: 'warning',
+            title: 'does-not-matter',
+            shouldRender: true,
+        });
+    }
+
     // case 2: account does exists and it's visible but shouldn't be active
-    if (account && discovery && discovery.status !== DISCOVERY_STATUS.COMPLETED) {
+    if (account && discovery && discovery.status !== DISCOVERY.STATUS.COMPLETED) {
         return wrap({
             type: 'info',
             variant: 'info',
@@ -147,11 +155,15 @@ const getAccountState = () => (
 
     // get params from router
     // or set first default account from discovery list
-    const params = state.router.params || {
-        accountIndex: 0,
-        accountType: 'normal',
-        symbol: discovery.networks[0] || 'btc',
-    };
+    const params =
+        state.router.app === 'wallet' && state.router.params
+            ? state.router.params
+            : {
+                  paramsType: 'wallet' as const,
+                  accountIndex: 0,
+                  accountType: 'normal' as const,
+                  symbol: discovery.networks[0] || 'btc',
+              };
 
     const network = NETWORKS.find(c => c.symbol === params.symbol)!;
 
@@ -183,7 +195,7 @@ const getAccountState = () => (
 
     // account doesn't exist (yet?) checking why...
     // discovery is still running
-    if (discovery.status !== DISCOVERY_STATUS.COMPLETED) {
+    if (discovery.status !== DISCOVERY.STATUS.COMPLETED) {
         return {
             status: 'loading',
             loader: {

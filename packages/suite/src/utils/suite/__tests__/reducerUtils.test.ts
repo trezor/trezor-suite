@@ -1,4 +1,4 @@
-import * as fixtures from './fixtures/reducerUtils';
+import * as fixtures from '../__fixtures__/reducerUtils';
 import * as reducerUtils from '../reducerUtils';
 
 describe('reducer utils', () => {

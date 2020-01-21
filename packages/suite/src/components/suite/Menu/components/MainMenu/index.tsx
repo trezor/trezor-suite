@@ -1,7 +1,7 @@
 import React from 'react';
 import { findRouteByName } from '@suite-utils/router';
 import styled, { css } from 'styled-components';
-import { Icon, colors } from '@trezor/components-v2';
+import { Icon, colors, variables } from '@trezor/components-v2';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { Props as ContainerProps } from '../../Container';
 
@@ -19,10 +19,12 @@ const MenuItemWrapper = styled.div`
 
 interface ComponentProps {
     isActive: boolean;
+    isDisabled?: boolean;
 }
 
 const In = styled.div<ComponentProps>`
-    cursor: pointer;
+    cursor: ${props => (!props.isDisabled ? 'pointer' : 'initial')};
+    opacity: ${props => (!props.isDisabled ? 1 : 0.4)};
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     display: flex;
@@ -39,11 +41,20 @@ const In = styled.div<ComponentProps>`
             padding: 20px 0 20px 0;
             background: ${colors.WHITE};
         `}
+
+    ${props =>
+        !props.isDisabled &&
+        !props.isActive &&
+        css`
+            &:hover {
+                background-color: ${colors.BLACK25};
+            }
+        `}
 `;
 
 const InnerWrapper = styled.div<ComponentProps>`
     color: ${colors.WHITE};
-    font-weight: bold; /* TODO: fetch from components */
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 
     ${props =>
         props.isActive &&
@@ -57,6 +68,11 @@ const IconWrapper = styled(InnerWrapper)<ComponentProps>`
 `;
 
 const Text = styled(InnerWrapper)<ComponentProps>``;
+const ComingSoon = styled.div`
+    font-size: 9px;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${colors.WHITE};
+`;
 
 interface Props {
     app: string;
@@ -66,13 +82,16 @@ interface Props {
 const Menu = (props: Props) => (
     <Wrapper>
         {MAIN_MENU_ITEMS.map(item => {
-            const { route, icon, text } = item;
+            const { route, icon, text, isDisabled } = item;
             const routeObj = findRouteByName(route);
             const isActive = routeObj ? routeObj.app === props.app : false;
-
             return (
                 <MenuItemWrapper key={text}>
-                    <In onClick={() => props.goto(routeObj!.name)} isActive={isActive}>
+                    <In
+                        onClick={() => !isDisabled && props.goto(routeObj!.name)}
+                        isActive={isActive}
+                        isDisabled={isDisabled}
+                    >
                         <IconWrapper isActive={isActive}>
                             <Icon
                                 size={20}
@@ -81,6 +100,7 @@ const Menu = (props: Props) => (
                             />
                         </IconWrapper>
                         <Text isActive={isActive}>{text}</Text>
+                        {isDisabled && <ComingSoon>Coming soon</ComingSoon>}
                     </In>
                 </MenuItemWrapper>
             );
