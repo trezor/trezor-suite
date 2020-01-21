@@ -46,17 +46,17 @@ stages:
     - misc
 
 lint:
-    stage: lint, typescript, unit tests
+    stage: lint, typescript & unit tests
     script:
         - lerna run lint
 
 typescript:
-    stage: lint, typescript, unit tests
+    stage: lint, typescript & unit tests
     script:
         - lerna run type-check
 
 unit tests:
-    stage: lint, typescript, unit tests
+    stage: lint, typescript & unit tests
     script:
         - lerna run test:unit -- --passWithNoTests
 
