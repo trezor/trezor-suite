@@ -12,10 +12,10 @@ const RecoveryStep = (props: Props) => {
     }
 
     if (device.features.major_version === 1) {
-        return <RecoveryModelOne />;
+        return <RecoveryModelOne modal={props.modal} />;
     }
     if (device.features.major_version === 2) {
-        return <RecoveryModelT />;
+        return <RecoveryModelT modal={props.modal} />;
     }
 
     return null;

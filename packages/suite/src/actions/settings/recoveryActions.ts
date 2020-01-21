@@ -40,12 +40,13 @@ const submit = (word: string) => async (dispatch: Dispatch) => {
 };
 
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { advancedRecovery } = getState().settings.recovery;
+    const { advancedRecovery, wordsCount } = getState().settings.recovery;
     const { device } = getState().suite;
 
     const response = await TrezorConnect.recoveryDevice({
         dry_run: true,
         type: advancedRecovery ? 1 : 0,
+        word_count: wordsCount,
         device,
     });
 
@@ -56,4 +57,31 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(setResult({ success: true, error: '' }));
 };
 
-export { submit, setWordsCount, setAdvancedRecovery, setResult, checkSeed, resetReducer };
+const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { advancedRecovery, wordsCount } = getState().settings.recovery;
+    const { device } = getState().suite;
+
+    const response = await TrezorConnect.recoveryDevice({
+        type: advancedRecovery ? 1 : 0,
+        word_count: wordsCount,
+        device,
+    });
+
+    if (!response.success) {
+        return dispatch(setResult({ success: false, error: response.payload.error }));
+    }
+
+    // !(deviceCall.error.code && deviceCall.error.code !== 'Failure_ActionCancelled') &&
+
+    dispatch(setResult({ success: true, error: '' }));
+};
+
+export {
+    submit,
+    setWordsCount,
+    setAdvancedRecovery,
+    setResult,
+    checkSeed,
+    recoverDevice,
+    resetReducer,
+};

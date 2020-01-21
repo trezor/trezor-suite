@@ -1,31 +1,26 @@
-import * as connectActions from '@onboarding-actions/connectActions';
-import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components';
-import { AppState, Dispatch } from '@suite-types';
-import messages from '@suite/support/messages';
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
+import * as recoveryActions from '@settings-actions/recoveryActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
+import { Translation } from '@suite-components';
+import { AppState, Dispatch } from '@suite-types';
+import messages from '@suite/support/messages';
+
 // import styled from 'styled-components';
 const mapStateToProps = (state: AppState) => ({
     uiInteraction: state.onboarding.uiInteraction,
-    deviceCall: state.onboarding.deviceCall,
     device: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: {
-        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    },
-    connectActions: {
-        recoveryDevice: bindActionCreators(connectActions.recoveryDevice, dispatch),
-        resetCall: bindActionCreators(connectActions.resetCall, dispatch),
-    },
+    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
+    recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -33,21 +28,20 @@ type Props = ReturnType<typeof mapStateToProps> &
     WrappedComponentProps;
 
 const RecoveryStepModelT = (props: Props) => {
-    const { deviceCall, device, uiInteraction, connectActions } = props;
+    const { device, uiInteraction, modal } = props;
 
     const getStatus = () => {
-        // todo: legacy, older firmwares dont respond with ButtonRequest_Success
-        // this could be deleted if we forbid user to continue without updating fw to the latest
-        if (deviceCall.result && deviceCall.name === RECOVER_DEVICE) {
+        if (recovery.success) {
             return 'success';
         }
+        // todo: reconsider, this might not be complete
+        // todo: legacy, older firmwares dont respond with ButtonRequest_Success
+        // this could be deleted if we forbid user to continue without updating fw to the latest
         if (uiInteraction.name === 'ButtonRequest_Success') {
             return 'success';
         }
         if (
-            deviceCall.error &&
-            deviceCall.error !== 'Cancelled' &&
-            deviceCall.name === RECOVER_DEVICE &&
+            recoverry.error &&
             // on model T, recovery is persistent. when devices reaches recovery_mode, disconnecting
             // does not mean failure.
             device &&
@@ -59,67 +53,63 @@ const RecoveryStepModelT = (props: Props) => {
         return null;
     };
 
-    const recoveryDevice = () => {
-        connectActions.recoveryDevice();
-    };
-
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
                 {getStatus() === null && 'Recover your device from seed'}
-                {/* todo ? */}
                 {getStatus() === 'success' && 'Device recovered from seed'}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
-                {getStatus() === null && (
+                {modal && modal}
+                {!modal && (
                     <>
-                        <Text>
-                            <Translation {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
-                        </Text>
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                onClick={() => {
-                                    recoveryDevice();
-                                }}
-                            >
-                                <Translation {...messages.TR_START_RECOVERY} />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-                {getStatus() === 'success' && (
-                    <Wrapper.Controls>
-                        <OnboardingButton.Cta
-                            onClick={() => props.onboardingActions.goToNextStep()}
-                        >
-                            Continue
-                        </OnboardingButton.Cta>
-                    </Wrapper.Controls>
-                )}
-                {getStatus() === 'error' && (
-                    <>
-                        <Text>
-                            <Translation
-                                {...messages.TR_RECOVERY_ERROR}
-                                values={{ error: deviceCall.error || '' }}
-                            />
-                        </Text>
-                        <OnboardingButton.Cta
-                            onClick={() => {
-                                props.connectActions.resetCall();
-                            }}
-                        >
-                            <Translation {...messages.TR_RETRY} />
-                        </OnboardingButton.Cta>
+                        {getStatus() === null && (
+                            <>
+                                <Text>
+                                    <Translation {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
+                                </Text>
+                                <Wrapper.Controls>
+                                    <OnboardingButton.Cta
+                                        onClick={() => {
+                                            recoveryDevice();
+                                        }}
+                                    >
+                                        <Translation {...messages.TR_START_RECOVERY} />
+                                    </OnboardingButton.Cta>
+                                </Wrapper.Controls>
+                            </>
+                        )}
+                        {getStatus() === 'success' && (
+                            <Wrapper.Controls>
+                                <OnboardingButton.Cta onClick={() => props.goToNextStep()}>
+                                    Continue
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
+                        )}
+                        {getStatus() === 'error' && (
+                            <>
+                                <Text>
+                                    <Translation
+                                        {...messages.TR_RECOVERY_ERROR}
+                                        values={{ error: deviceCall.error || '' }}
+                                    />
+                                </Text>
+                                <OnboardingButton.Cta
+                                    onClick={() => {
+                                        props.connectActions.resetCall();
+                                    }}
+                                >
+                                    <Translation {...messages.TR_RETRY} />
+                                </OnboardingButton.Cta>
+                            </>
+                        )}
                     </>
                 )}
             </Wrapper.StepBody>
 
             <Wrapper.StepFooter>
                 {getStatus() == null && (
-                    <OnboardingButton.Back
-                        onClick={() => props.onboardingActions.goToPreviousStep()}
-                    >
+                    <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>
                         Back
                     </OnboardingButton.Back>
                 )}

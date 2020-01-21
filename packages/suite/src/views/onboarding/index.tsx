@@ -164,6 +164,7 @@ export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type Props = StateProps & DispatchProps & InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
+    console.log('props.modal', props.modal);
     const {
         selectedModel,
         activeStepId,
@@ -312,7 +313,7 @@ const Onboarding = (props: Props) => {
                             in={activeStepId === STEP.ID_RECOVERY_STEP}
                             {...TRANSITION_PROPS}
                         >
-                            <RecoveryStep />
+                            <RecoveryStep modal={props.modal} />
                         </CSSTransition>
 
                         <CSSTransition
