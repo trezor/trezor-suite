@@ -5,7 +5,6 @@ describe('Buttons', () => {
 
     [
         'button-primary-small',
-        'button-primary-medium',
         'button-primary-large',
         'button-primary-icon',
         'button-primary-icon-right',
@@ -13,7 +12,6 @@ describe('Buttons', () => {
         'button-primary-full-width',
         'button-primary-disabled',
         'button-secondary-small',
-        'button-secondary-medium',
         'button-secondary-large',
         'button-secondary-icon',
         'button-secondary-icon-right',
@@ -21,7 +19,6 @@ describe('Buttons', () => {
         'button-secondary-full-width',
         'button-secondary-disabled',
         'button-tertiary-small',
-        'button-tertiary-medium',
         'button-tertiary-large',
         'button-tertiary-icon',
         'button-tertiary-icon-right',
@@ -29,7 +26,6 @@ describe('Buttons', () => {
         'button-tertiary-full-width',
         'button-tertiary-disabled',
         'button-danger-small',
-        'button-danger-medium',
         'button-danger-large',
         'button-danger-icon',
         'button-danger-icon-right',
