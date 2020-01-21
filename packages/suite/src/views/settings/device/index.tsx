@@ -46,7 +46,6 @@ const Settings = ({
     openModal,
     checkSeed,
     goto,
-    resetRecoveryReducer,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
@@ -66,11 +65,9 @@ const Settings = ({
 
     const startCheckSeed = () => {
         if (features.major_version === 1) {
-            resetRecoveryReducer();
             // T1 needs to input some more information from suite. TT does everything on device.
             goto('check-seed-index', { cancelable: true });
         } else {
-            resetRecoveryReducer();
             checkSeed();
         }
     };

@@ -30,7 +30,7 @@ const setResult = (payload: ResultPayload): Action => ({
     payload,
 });
 
-const resetReducer = () => ({
+const resetReducer = (): Action => ({
     type: RECOVERY.RESET_REDUCER,
 });
 
