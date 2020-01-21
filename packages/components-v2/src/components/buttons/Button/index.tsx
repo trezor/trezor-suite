@@ -184,7 +184,7 @@ interface WrapperProps {
     fullWidth: boolean;
 }
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     size?: ButtonSize;
     icon?: IconType;
@@ -202,7 +202,7 @@ const Button = ({
     isDisabled = false,
     isLoading = false,
     ...rest
-}: ButtonProps) => {
+}: Props) => {
     return (
         <Wrapper
             variant={variant}
@@ -227,4 +227,4 @@ const Button = ({
     );
 };
 
-export { Button };
+export { Button, Props as ButtonProps };

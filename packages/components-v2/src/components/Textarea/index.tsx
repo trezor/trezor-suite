@@ -160,4 +160,4 @@ const Textarea = ({
     );
 };
 
-export { Textarea };
+export { Textarea, Props as TextareaProps };
