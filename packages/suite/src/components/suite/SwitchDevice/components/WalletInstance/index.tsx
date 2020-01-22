@@ -107,7 +107,7 @@ const WalletInstance = ({
                 </InstanceType>
             </Col>
             <Col>
-                {discoveryProcess && !instance.useEmptyPassphrase && (
+                {discoveryProcess && !instance.useEmptyPassphrase && instance.remember && (
                     <ForgetButton
                         size="small"
                         variant="secondary"

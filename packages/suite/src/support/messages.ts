@@ -889,6 +889,19 @@ const definedMessages = defineMessages({
         defaultMessage: 'Loading other accounts...',
         id: 'TR_LOADING_OTHER_ACCOUNTS',
     },
+    TR_AUTH_CONFIRM_FAILED_TITLE: {
+        defaultMessage: 'Passphrase mismatch!',
+        id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
+    },
+    TR_AUTH_CONFIRM_FAILED_MESSAGE: {
+        defaultMessage:
+            'Passphrase entered on the first step does not match with passphrase confirmation.',
+        id: 'TR_AUTH_CONFIRM_FAILED_MESSAGE',
+    },
+    TR_AUTH_CONFIRM_FAILED_RETRY: {
+        defaultMessage: 'Retry',
+        id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
+    },
     TR_LOADING_TRANSACTIONS: {
         defaultMessage: 'Loading transactions',
         id: 'TR_LOADING_TRANSACTIONS',

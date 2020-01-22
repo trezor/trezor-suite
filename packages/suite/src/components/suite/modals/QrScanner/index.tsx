@@ -1,12 +1,15 @@
-import { Translation } from '@suite-components/Translation';
-import { ParsedURI, parseUri } from '@suite-utils/parseUri';
-import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components-v2';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import dynamic from 'next/dynamic';
-import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
-
+import { Translation } from '@suite-components/Translation';
+import { parseUri } from '@suite-utils/parseUri';
+import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components-v2';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 import messages from '@suite/support/messages';
-import * as URLS from '@suite/constants/suite/urls';
+import * as URLS from '@suite-constants/urls';
+import { Dispatch } from '@suite-types';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
@@ -84,19 +87,21 @@ const Actions = styled.div`
     justify-content: center;
 `;
 
-// TODO fix types
-interface Props {
-    onScan: (data: ParsedURI) => void;
-    onError?: (error: any) => any;
-    onCancel?: () => void;
-}
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    onScan: bindActionCreators(sendFormActions.onQrScan, dispatch),
+});
+
+type Props = {
+    outputId: number;
+    onCancel: () => void;
+} & ReturnType<typeof mapDispatchToProps>;
 
 interface State {
     readerLoaded: boolean;
-    error: any;
+    error: JSX.Element | null;
 }
 
-const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
+const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
 
@@ -105,12 +110,6 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
     };
 
     const handleError = (err: any) => {
-        // log thrown error
-        console.error(err);
-        if (onError) {
-            onError(err);
-        }
-
         if (
             err.name === 'NotAllowedError' ||
             err.name === 'PermissionDeniedError' ||
@@ -125,20 +124,14 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
         }
     };
 
-    const handleCancel = () => {
-        if (onCancel) {
-            onCancel();
-        }
-    };
-
     const handleScan = (data: string | null) => {
         if (data) {
             try {
                 const parsedUri = parseUri(data);
                 if (parsedUri) {
-                    onScan(parsedUri);
+                    onScan(parsedUri, outputId);
                     setReaderLoaded(true);
-                    handleCancel();
+                    onCancel();
                 }
             } catch (error) {
                 handleError(error);
@@ -213,4 +206,4 @@ const QrModal: FunctionComponent<Props> = ({ onScan, onError, onCancel }) => {
     );
 };
 
-export default QrModal;
+export default connect(null, mapDispatchToProps)(QrScanner);

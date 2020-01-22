@@ -7,7 +7,7 @@ addParameters({
     options: {
         theme: Theme,
         showPanel: true,
-        panelPosition: 'right',
+        panelPosition: 'bottom',
     },
 });
 addDecorator(withInfo);

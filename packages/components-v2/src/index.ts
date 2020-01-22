@@ -1,44 +1,57 @@
 import colors from './config/colors';
 import * as variables from './config/variables';
 
-import { Button } from './components/buttons/Button';
-import { Input } from './components/inputs/Input';
-import { Textarea } from './components/Textarea';
-import { Select } from './components/Select';
-import { Checkbox } from './components/Checkbox';
-import { Switch } from './components/Switch';
+import { Button, ButtonProps } from './components/buttons/Button';
+import { Input, InputProps } from './components/inputs/Input';
+import { Textarea, TextareaProps } from './components/Textarea';
+import { Select, SelectProps } from './components/Select';
+import { Checkbox, CheckboxProps } from './components/Checkbox';
+import { Switch, SwitchProps } from './components/Switch';
 import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/Heading';
 import { P } from './components/Paragraph';
-import { Link } from './components/Link';
-import { Notification } from './components/Notification';
-import { Modal } from './components/Modal';
-import { CoinLogo } from './components/CoinLogo';
-import { TrezorLogo } from './components/TrezorLogo';
-import { Loader } from './components/Loader';
-import { Tooltip } from './components/Tooltip';
+import { Link, LinkProps } from './components/Link';
+import { Notification, NotificationProps } from './components/Notification';
+import { Modal, ModalProps } from './components/Modal';
+import { CoinLogo, CoinLogoProps } from './components/CoinLogo';
+import { TrezorLogo, TrezorLogoProps } from './components/TrezorLogo';
+import { Loader, LoaderProps } from './components/Loader';
+import { Tooltip, TooltipProps } from './components/Tooltip';
 import * as types from './support/types';
 
 export {
     colors,
     variables,
     Button,
+    ButtonProps,
     Input,
+    InputProps,
     Textarea,
+    TextareaProps,
     Select,
+    SelectProps,
     Checkbox,
+    CheckboxProps,
     Switch,
+    SwitchProps,
     Icon,
     IconProps,
     H1,
     H2,
     P,
     Link,
+    LinkProps,
     Notification,
+    NotificationProps,
     Modal,
+    ModalProps,
     CoinLogo,
+    CoinLogoProps,
     TrezorLogo,
+    TrezorLogoProps,
     Loader,
+    LoaderProps,
     Tooltip,
+    TooltipProps,
     types,
 };

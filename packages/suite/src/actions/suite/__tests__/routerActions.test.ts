@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import modalReducer from '@suite-reducers/modalReducer';
-import * as fixtures from './fixtures/routerActions';
+import * as fixtures from '../__fixtures__/routerActions';
 import * as routerActions from '../routerActions';
 
 jest.mock('next/router', () => {

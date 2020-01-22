@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
-import * as accountActions from '@wallet-actions/accountActions';
+import { DISCOVERY } from '@wallet-actions/constants';
+import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
@@ -13,7 +14,6 @@ import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import messages from '@suite/support/messages';
-import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
 
 const Wrapper = styled.div``;
 
@@ -59,7 +59,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
-    requestNewAccount: bindActionCreators(accountActions.requestNewAccount, dispatch),
+    openModal: bindActionCreators(modalActions.openModal, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -79,19 +79,13 @@ const DiscoveryStatus = () => (
     </Wrapper>
 );
 
-const Menu = ({
-    device,
-    accounts,
-    selectedAccount,
-    getDiscoveryForDevice,
-    requestNewAccount,
-}: Props) => {
+const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openModal }: Props) => {
     const [legacyVisibleState, setLegacyVisibleState] = useState<State['legacyVisible']>(false);
     const discovery = getDiscoveryForDevice();
     if (!device || !discovery) {
         return <DiscoveryStatus />;
     }
-    const discoveryIsRunning = discovery.status <= 2;
+    const discoveryIsRunning = discovery.status <= DISCOVERY.STATUS.STOPPING;
 
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state));
     // always show first "normal" account even if they are empty
@@ -121,8 +115,13 @@ const Menu = ({
                 <TitleText>Accounts</TitleText>{' '}
                 <TitleActions>
                     <AddAccountButton
-                        onClick={requestNewAccount}
-                        disabled={discovery.status !== DISCOVERY_STATUS.COMPLETED}
+                        onClick={() =>
+                            openModal({
+                                type: 'add-account',
+                                device,
+                            })
+                        }
+                        disabled={discovery.status !== DISCOVERY.STATUS.COMPLETED}
                         tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
                     />
                 </TitleActions>

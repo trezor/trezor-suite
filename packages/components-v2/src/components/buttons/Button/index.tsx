@@ -3,51 +3,12 @@ import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import colors from '../../../config/colors';
-import { FONT_SIZE, FONT_FAMILY } from '../../../config/variables';
+import { FONT_SIZE } from '../../../config/variables';
 import FluidSpinner from '../../FluidSpinner';
 
-const getPrimaryPadding = (size: ButtonSize) => {
-    switch (size) {
-        case 'small':
-            return '5px 12px 3px';
-        case 'large':
-            return '11px 12px 9px';
-        default:
-            return '9px 12px 7px';
-    }
-};
-
-const getButtonHeight = (size: ButtonSize) => {
-    switch (size) {
-        case 'small':
-            return '26px';
-        case 'large':
-            return '38px';
-        default:
-            return '34px';
-    }
-};
-
-const getSecondaryPadding = (size: ButtonSize) => {
-    switch (size) {
-        case 'small':
-            return '4px 12px 2px';
-        case 'large':
-            return '10px 12px 8px';
-        default:
-            return '8px 12px 6px';
-    }
-};
-
-const getTertiaryFontSize = (size: ButtonSize) => {
-    switch (size) {
-        case 'small':
-            return FONT_SIZE.TINY;
-        case 'large':
-            return FONT_SIZE.NORMAL;
-        default:
-            return FONT_SIZE.SMALL;
-    }
+const BUTTON_PADDING = {
+    small: '2px 12px',
+    large: '9px 12px',
 };
 
 const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
@@ -55,18 +16,33 @@ const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
     return variant === 'primary' || variant === 'danger' ? colors.WHITE : colors.BLACK25;
 };
 
+const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
+    // all button variants use same font size except the small tertiary btn
+    if (variant === 'tertiary' && size === 'small') {
+        return FONT_SIZE.TINY;
+    }
+    return FONT_SIZE.BUTTON;
+};
+
 const Wrapper = styled.button<WrapperProps>`
-    font-family: ${FONT_FAMILY.TTHOVES};
     display: flex;
-    width: ${props => (props.fullWidth ? '100%' : 'auto')};
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    white-space: nowrap;
+    cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
     border-radius: 3px;
-    font-size: ${FONT_SIZE.BUTTON};
-    font-weight: 600;
+    font-size: ${props => getFontSize(props.variant, props.size)}; 
+    font-weight: ${props => (props.variant === 'primary' ? 600 : 500)};
     color: ${colors.BLACK25};
     outline: none;
+    padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
+    height: ${props => (props.variant === 'tertiary' ? '20px' : 'auto')};
+
+    ${props =>
+        props.fullWidth &&
+        css`
+            width: 100%;
+        `}
 
     ${props =>
         props.variant === 'primary' &&
@@ -75,8 +51,6 @@ const Wrapper = styled.button<WrapperProps>`
             color: ${colors.WHITE};
             background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
             border: none;
-            padding: ${getPrimaryPadding(props.size)};
-            height: ${getButtonHeight(props.size)};
             box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
 
             &:hover,
@@ -93,9 +67,6 @@ const Wrapper = styled.button<WrapperProps>`
             background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05)),
                 linear-gradient(${colors.WHITE}, ${colors.WHITE});
             border: 1px solid ${colors.BLACK70};
-            padding: ${getSecondaryPadding(props.size)};
-            height: ${getButtonHeight(props.size)};
-            font-weight: 500;
 
             &:hover,
             &:focus {
@@ -109,15 +80,20 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             border: none;
-            height: 20px;
-            font-size: ${getTertiaryFontSize(props.size)};
-            padding: 0 4px;
-            font-weight: 500;
+            padding: 0px 4px;
 
             &:hover,
             &:focus {
                 background: ${colors.BLACK92};
             }
+        `};
+
+    ${props =>
+        props.isDisabled &&
+        props.variant === 'tertiary' &&
+        css`
+            color: ${colors.BLACK80};
+            border: none;
         `}
 
     ${props =>
@@ -127,7 +103,6 @@ const Wrapper = styled.button<WrapperProps>`
             color: ${colors.WHITE};
             background-image: linear-gradient(to top, ${colors.RED}, #f25757);
             border: none;
-            padding: ${getPrimaryPadding(props.size)};
             box-shadow: 0 3px 6px 0 rgba(205, 73, 73, 0.3);
 
             &:hover,
@@ -142,40 +117,34 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant !== 'tertiary' &&
         css`
             color: ${colors.BLACK80};
-            cursor: default;
             border: solid 1px ${colors.BLACK70};
             background-image: linear-gradient(${colors.WHITE}, ${colors.BLACK96});
-            padding: ${getSecondaryPadding(props.size)};
-        `}
-
-    
-    ${props =>
-        props.isDisabled &&
-        props.variant === 'tertiary' &&
-        css`
-            color: ${colors.BLACK80};
-            border: none;
-        `}
-
-    ${props =>
-        !props.isDisabled &&
-        css`
-            &:active {
-                transform: translateY(1px);
-            }
         `}
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
-    margin-right: 8px;
-    margin-left: 3px;
-    transform: translateY(-1px);
+    /* looks wrong with check icon for an example ¯\_(ツ)_/¯ */
+    /* transform: translateY(-1px); */
+
+    ${props =>
+        props.alignIcon === 'left' &&
+        css`
+            margin-right: 8px;
+            margin-left: 3px;
+        `}
+
+    ${props =>
+        props.alignIcon === 'right' &&
+        css`
+            margin-left: 8px;
+            margin-right: 3px;
+        `}
 `;
 
-const Label = styled.div`
-    line-height: 18px;
-`;
+interface IconWrapperProps {
+    alignIcon?: Props['alignIcon'];
+}
 
 interface WrapperProps {
     variant: ButtonVariant;
@@ -184,13 +153,14 @@ interface WrapperProps {
     fullWidth: boolean;
 }
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     size?: ButtonSize;
     icon?: IconType;
     isDisabled?: boolean;
     isLoading?: boolean;
     fullWidth?: boolean;
+    alignIcon?: 'left' | 'right';
 }
 
 const Button = ({
@@ -201,8 +171,19 @@ const Button = ({
     fullWidth = false,
     isDisabled = false,
     isLoading = false,
+    alignIcon = 'left',
     ...rest
-}: ButtonProps) => {
+}: Props) => {
+    const IconComponent = icon ? (
+        <IconWrapper alignIcon={alignIcon}>
+            <Icon icon={icon} size={10} color={getIconColor(variant, isDisabled)} />
+        </IconWrapper>
+    ) : null;
+    const Loader = (
+        <IconWrapper alignIcon={alignIcon}>
+            <FluidSpinner size={10} />
+        </IconWrapper>
+    );
     return (
         <Wrapper
             variant={variant}
@@ -212,19 +193,13 @@ const Button = ({
             fullWidth={fullWidth}
             {...rest}
         >
-            {!isLoading && icon && (
-                <IconWrapper>
-                    <Icon icon={icon} size={10} color={getIconColor(variant, isDisabled)} />
-                </IconWrapper>
-            )}
-            {isLoading && (
-                <IconWrapper>
-                    <FluidSpinner size={10} />
-                </IconWrapper>
-            )}
-            <Label>{children}</Label>
+            {!isLoading && alignIcon === 'left' && IconComponent}
+            {isLoading && alignIcon === 'left' && Loader}
+            {children}
+            {!isLoading && alignIcon === 'right' && IconComponent}
+            {isLoading && alignIcon === 'right' && Loader}
         </Wrapper>
     );
 };
 
-export { Button };
+export { Button, Props as ButtonProps };

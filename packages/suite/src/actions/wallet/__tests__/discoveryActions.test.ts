@@ -18,7 +18,7 @@ import {
     fixtures,
     interruptionFixtures,
     changeNetworksFixtures,
-} from './fixtures/discoveryActions';
+} from '../__fixtures__/discoveryActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -398,7 +398,7 @@ describe('Discovery Actions', () => {
         store.dispatch(
             discoveryActions.update({
                 deviceState: 'device-state',
-                status: 3, // STATUS.STOP
+                status: DISCOVERY.STATUS.STOPPED,
             }),
         );
     });
@@ -511,5 +511,14 @@ describe('Discovery Actions', () => {
         expect(action.type).toEqual(DISCOVERY.COMPLETE);
         expect(result.loaded).toEqual(0);
         expect(result.total).toEqual(0);
+    });
+
+    it('getDiscoveryAuthConfirmationStatus', async () => {
+        const store = mockStore(getInitialState());
+        store.subscribe(() => updateStore(store));
+        store.dispatch(discoveryActions.create('device-state', false));
+        await store.dispatch(discoveryActions.start());
+        const status = store.dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus());
+        expect(status).toEqual(true);
     });
 });

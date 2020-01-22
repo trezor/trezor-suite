@@ -39,18 +39,19 @@ const SecurityFeatures = ({
     device,
     discreetMode,
     setDiscreetMode,
-    onCreateDeviceInstance,
+    createDeviceInstance,
     backupDevice,
     changePin,
     ...rest
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
 
-    if (!device) return null;
-    const needsBackup =
-        device.features && (device.features.needs_backup || device.features.unfinished_backup);
-    const pinEnabled = device.features && device.features.pin_protection;
-    const hiddenWalletCreated = false;
+    if (!device || !device.features) return null;
+    // TODO: add "error - backup failed" instead of needsBackup
+    // TODO: add "enable passphrase" instead of hiddenWalletCreated
+    const needsBackup = device.features.needs_backup || device.features.unfinished_backup;
+    const pinEnabled = device.features.pin_protection;
+    const hiddenWalletCreated = device.features.passphrase_protection;
     const featuresCompleted =
         Number(!needsBackup) +
         Number(pinEnabled) +
@@ -119,9 +120,7 @@ const SecurityFeatures = ({
                     description="Create a Wallet hidden behind a strong passphrase"
                     cta={{
                         label: 'Create hidden wallet',
-                        action: () => {
-                            onCreateDeviceInstance(device as AcquiredDevice);
-                        },
+                        action: () => createDeviceInstance(device as AcquiredDevice),
                     }}
                 />
             )}

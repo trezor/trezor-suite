@@ -414,70 +414,6 @@ const disconnect = [
 
 const changed = [
     {
-        description: `Change device label (using device_id)`,
-        initialState: [getSuiteDevice({ connected: true })],
-        actions: [
-            {
-                type: DEVICE.CHANGED,
-                payload: getConnectDevice(
-                    {
-                        label: 'New Label',
-                    },
-                    {
-                        label: 'New Label',
-                    },
-                ),
-            },
-        ],
-        result: [
-            {
-                label: 'New Label',
-                instanceLabel: 'New Label',
-                features: {
-                    label: 'New Label',
-                },
-            },
-        ],
-    },
-    {
-        description: `Change device label (2 instances, 2 affected)`,
-        initialState: [
-            getSuiteDevice({ connected: true }),
-            getSuiteDevice({ connected: true, instance: 1 }),
-        ],
-        actions: [
-            {
-                type: DEVICE.CHANGED,
-                payload: getConnectDevice(
-                    {
-                        label: 'New Label',
-                    },
-                    {
-                        label: 'New Label',
-                    },
-                ),
-            },
-        ],
-        result: [
-            {
-                label: 'New Label',
-                instance: undefined,
-                instanceLabel: 'New Label',
-                features: {
-                    label: 'New Label',
-                },
-            },
-            {
-                label: 'New Label',
-                instance: 1,
-                instanceLabel: 'New Label (1)',
-                features: {
-                    label: 'New Label',
-                },
-            },
-        ],
-    },
-    {
         description: `Change status available > occupied (using path)`,
         initialState: [
             getSuiteDevice(
@@ -728,7 +664,7 @@ const changePassphraseMode = [
         initialState: [SUITE_DEVICE],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: SUITE_DEVICE,
                 hidden: true,
             },
@@ -749,7 +685,7 @@ const changePassphraseMode = [
         ],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: SUITE_DEVICE,
                 hidden: true,
             },
@@ -801,7 +737,7 @@ const changePassphraseMode = [
         initialState: [SUITE_DEVICE],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: getConnectDevice({
                     type: 'unacquired',
                 }),
@@ -819,7 +755,7 @@ const changePassphraseMode = [
         initialState: [],
         actions: [
             {
-                type: SUITE.RECEIVE_PASSPHRASE_MODE,
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: SUITE_DEVICE,
                 hidden: false,
             },
@@ -936,7 +872,7 @@ const authDevice = [
 
 const createInstance = [
     {
-        description: `Create instance without instanceName`,
+        description: `Create instance, 1 connected`,
         initialState: [SUITE_DEVICE],
         actions: [
             {
@@ -953,8 +889,6 @@ const createInstance = [
             },
             {
                 instance: 1,
-                instanceLabel: 'My Trezor (1)',
-                instanceName: undefined,
                 features: {
                     device_id: 'device-id',
                 },
@@ -962,7 +896,7 @@ const createInstance = [
         ],
     },
     {
-        description: `Create instance with instanceName (2 connected, 1 affected)`,
+        description: `Create instance, 2 connected, 1 affected`,
         initialState: [
             getSuiteDevice(undefined, {
                 device_id: 'ignored-device-id',
@@ -973,7 +907,6 @@ const createInstance = [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
                 payload: getSuiteDevice({ instance: 1 }),
-                name: 'Custom name',
             },
         ],
         result: [
@@ -990,8 +923,6 @@ const createInstance = [
             },
             {
                 instance: 1,
-                instanceLabel: 'My Trezor (Custom name)',
-                instanceName: 'Custom name',
                 features: {
                     device_id: 'device-id',
                 },
@@ -1000,10 +931,7 @@ const createInstance = [
     },
     {
         description: `Create instance from instance`,
-        initialState: [
-            SUITE_DEVICE,
-            getSuiteDevice({ instance: 1, instanceLabel: 'My Trezor (1)' }),
-        ],
+        initialState: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
@@ -1019,14 +947,12 @@ const createInstance = [
             },
             {
                 instance: 1,
-                instanceLabel: 'My Trezor (1)',
                 features: {
                     device_id: 'device-id',
                 },
             },
             {
                 instance: 2,
-                instanceLabel: 'My Trezor (2)',
                 features: {
                     device_id: 'device-id',
                 },

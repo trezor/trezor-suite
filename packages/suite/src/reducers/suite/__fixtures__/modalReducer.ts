@@ -1,6 +1,5 @@
 import { DEVICE, UI } from 'trezor-connect';
-import { MODAL, SUITE } from '@suite-actions/constants';
-import { RECEIVE } from '@wallet-actions/constants';
+import { MODAL } from '@suite-actions/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 // Default devices
@@ -32,32 +31,24 @@ export default [
         result: initialState,
     },
     {
-        description: 'Connect device, modal is opened and should be closed',
-        initialState: {
-            context: MODAL.CONTEXT_SCAN_QR,
-        },
+        description: 'Disconnect device, modal is opened and should be closed',
+        initialState: deviceContextState,
         actions: [
             {
-                type: DEVICE.CONNECT,
+                type: DEVICE.DISCONNECT,
                 payload: CONNECT_DEVICE,
             },
         ],
         result: initialState,
     },
     {
-        description: 'Connect device, modal is opened and should not be closed',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: DEVICE.CONNECT,
-                payload: CONNECT_DEVICE,
+        description: 'Disconnect device, modal is opened (user context) and should be closed',
+        initialState: {
+            context: MODAL.CONTEXT_USER,
+            payload: {
+                type: 'log',
             },
-        ],
-        result: deviceContextState,
-    },
-    {
-        description: 'Disconnect device, modal is opened and should be closed',
-        initialState: deviceContextState,
+        },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -157,6 +148,24 @@ export default [
         },
     },
     {
+        description: 'UI.REQUEST_WORD',
+        initialState: undefined,
+        actions: [
+            {
+                type: UI.REQUEST_WORD,
+                payload: {
+                    device: CONNECT_DEVICE,
+                    type: 'WordRequestType_Plain',
+                },
+            },
+        ],
+        result: {
+            context: MODAL.CONTEXT_DEVICE,
+            device: CONNECT_DEVICE,
+            windowType: 'WordRequestType_Plain',
+        },
+    },
+    {
         description: 'UI.REQUEST_CONFIRMATION',
         initialState,
         actions: [
@@ -168,66 +177,8 @@ export default [
             },
         ],
         result: {
-            context: MODAL.CONTEXT_CONFIRMATION,
+            context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
             windowType: 'no-backup',
-        },
-    },
-    {
-        description: 'RECEIVE.REQUEST_UNVERIFIED',
-        initialState,
-        actions: [
-            {
-                type: RECEIVE.REQUEST_UNVERIFIED,
-                device: SUITE_DEVICE,
-                addressPath: `m/44'/0'/0'/0/0`,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: RECEIVE.REQUEST_UNVERIFIED,
-            addressPath: `m/44'/0'/0'/0/0`,
-        },
-    },
-    {
-        description: 'SUITE.REQUEST_REMEMBER_DEVICE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_REMEMBER_DEVICE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_REMEMBER_DEVICE,
-        },
-    },
-    {
-        description: 'SUITE.REQUEST_DEVICE_INSTANCE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_DEVICE_INSTANCE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_DEVICE_INSTANCE,
-        },
-    },
-    {
-        description: 'SUITE.REQUEST_PASSPHRASE_MODE',
-        initialState,
-        actions: [
-            {
-                type: SUITE.REQUEST_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-            },
-        ],
-        result: {
-            ...deviceContextState,
-            windowType: SUITE.REQUEST_PASSPHRASE_MODE,
         },
     },
     {
@@ -251,45 +202,21 @@ export default [
         result: initialState,
     },
     {
-        description: 'SUITE.FORGET_DEVICE',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: SUITE.FORGET_DEVICE,
-            },
-        ],
-        result: initialState,
-    },
-    {
-        description: 'SUITE.FORGET_DEVICE_INSTANCE',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: SUITE.FORGET_DEVICE_INSTANCE,
-            },
-        ],
-        result: initialState,
-    },
-    {
-        description: 'SUITE.REMEMBER_DEVICE',
-        initialState: deviceContextState,
-        actions: [
-            {
-                type: SUITE.REMEMBER_DEVICE,
-            },
-        ],
-        result: initialState,
-    },
-    {
-        description: 'MODAL.OPEN_SCAN_QR',
+        description: 'MODAL.OPEN_USER_CONTEXT',
         initialState: undefined,
         actions: [
             {
-                type: MODAL.OPEN_SCAN_QR,
+                type: MODAL.OPEN_USER_CONTEXT,
+                payload: {
+                    type: 'log',
+                },
             },
         ],
         result: {
-            context: MODAL.CONTEXT_SCAN_QR,
+            context: MODAL.CONTEXT_USER,
+            payload: {
+                type: 'log',
+            },
         },
     },
     {

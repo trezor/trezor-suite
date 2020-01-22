@@ -10,29 +10,22 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { MODAL, SUITE } from '@suite-actions/constants';
-import { DEVICE_SETTINGS } from '@settings-actions/constants';
-import { ACCOUNT, RECEIVE } from '@wallet-actions/constants';
-import * as deviceUtils from '@suite-utils/device';
+import { MODAL } from '@suite-actions/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
 import Passphrase from './Passphrase';
-import PassphraseType from './PassphraseType';
+import PassphraseSource from './PassphraseSource';
+import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
 // import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import RequestInstance from './RequestInstance';
-import RememberDevice from './Remember';
-// import DuplicateDevice from 'components/modals/device/Duplicate';
-import WalletType from './WalletType';
 import AddAccount from './AddAccount';
-import QrScanner from './Qr';
-import Disconnect from './Disconnect';
+import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 
 const mapStateToProps = (state: AppState) => ({
@@ -53,42 +46,35 @@ type Props = ReturnType<typeof mapStateToProps> &
         background?: boolean;
     };
 
+// Modals requested byt Device from `trezor-connect`
 const getDeviceContextModal = (props: Props) => {
-    // const { modal, modalActions } = props;
-    const { modal, device, modalActions } = props;
+    const { modal, device } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
-        case SUITE.REQUEST_PASSPHRASE_MODE:
-            return (
-                <WalletType
-                    device={device}
-                    onWalletTypeRequest={modalActions.onWalletTypeRequest}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-
+        // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} onEnterPin={modalActions.onPinSubmit} />;
-
+            return <Pin device={device} />;
+        // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
 
+        // Passphrase on host
         case UI.REQUEST_PASSPHRASE:
-            return (
-                <Passphrase
-                    device={device}
-                    shouldShowSingleInput={!!device.state}
-                    onEnterPassphrase={modalActions.onPassphraseSubmit}
-                />
-            );
+            return <Passphrase device={device} />;
 
         case 'WordRequestType_Plain':
             return <Word />;
 
+        // used in TT legacy firmware
+        // TT legacy firmware
         case 'ButtonRequest_PassphraseType':
-            return <PassphraseType device={device} />;
+            return <PassphraseSource device={device} />;
+        // TT firmware
+        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+            return <PassphraseOnDevice device={device} />;
 
+        // Button requests
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
@@ -101,66 +87,16 @@ const getDeviceContextModal = (props: Props) => {
             return <ConfirmSignTx device={device} />;
         }
 
-        case RECEIVE.REQUEST_UNVERIFIED:
-            return (
-                <ConfirmUnverifiedAddress
-                    device={device}
-                    addressPath={modal.addressPath}
-                    onCancel={modalActions.onCancel}
-                    showAddress={props.receiveActions.showAddress}
-                    showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
-                />
-            );
-
-        case SUITE.REQUEST_REMEMBER_DEVICE:
-            return (
-                <RememberDevice
-                    device={modal.device as AcquiredDevice}
-                    onRememberDevice={modalActions.onRememberDevice}
-                    onForgetDevice={modalActions.onForgetDevice}
-                />
-            );
-
-        case SUITE.REQUEST_DEVICE_INSTANCE:
-            return (
-                // TODO: DELETE or implement new design once it's ready
-                // Used to be triggered from function 'requestDeviceInstance' fired on 'add hidden wallet' btn in 'SwitchDeviceModal'
-                <RequestInstance
-                    device={modal.device as AcquiredDevice}
-                    instance={deviceUtils.getNewInstanceNumber(
-                        props.devices,
-                        modal.device as AcquiredDevice,
-                    )}
-                    onCreateInstance={modalActions.onCreateDeviceInstance}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-        // todo: not used at the moment but might be in future, see https://github.com/trezor/trezor-suite/issues/1064
-        case SUITE.REQUEST_DISCONNECT_DEVICE:
-            return <Disconnect device={device} />;
-
-        case ACCOUNT.REQUEST_NEW_ACCOUNT:
-            return (
-                <AddAccount device={device as AcquiredDevice} onCancel={modalActions.onCancel} />
-            );
-
-        case DEVICE_SETTINGS.OPEN_BACKGROUND_GALLERY_MODAL:
-            return (
-                <BackgroundGallery
-                    device={device as AcquiredDevice}
-                    onCancel={modalActions.onCancel}
-                />
-            );
-
         default:
             return null;
     }
 };
 
-const getConfirmationModal = (props: Props) => {
+// Modals requested from `trezor-connect`
+const getDeviceConfirmationModal = (props: Props) => {
     const { modal, modalActions, goto } = props;
 
-    if (modal.context !== MODAL.CONTEXT_CONFIRMATION) return null;
+    if (modal.context !== MODAL.CONTEXT_DEVICE_CONFIRMATION) return null;
 
     switch (modal.windowType) {
         case 'no-backup':
@@ -175,38 +111,58 @@ const getConfirmationModal = (props: Props) => {
     }
 };
 
-const getQrModal = (props: Props) => {
-    const { modalActions, sendFormActions, modal } = props;
-    if (modal.context !== MODAL.CONTEXT_SCAN_QR) return null;
+// Modals opened as result of user action
+const getUserContextModal = (props: Props) => {
+    const { modalActions, modal } = props;
+    if (modal.context !== MODAL.CONTEXT_USER) return null;
 
-    return (
-        <QrScanner
-            onCancel={modalActions.onCancel}
-            onScan={parsedUri => {
-                sendFormActions.onQrScan(parsedUri, modal.outputId);
-            }}
-        />
-    );
+    const { payload } = modal;
+
+    switch (payload.type) {
+        case 'add-account':
+            return (
+                <AddAccount
+                    device={payload.device as AcquiredDevice}
+                    onCancel={modalActions.onCancel}
+                />
+            );
+        case 'unverified-address':
+            return (
+                <ConfirmUnverifiedAddress
+                    device={payload.device}
+                    addressPath={payload.addressPath}
+                    onCancel={modalActions.onCancel}
+                />
+            );
+        case 'device-background-gallery':
+            return (
+                <BackgroundGallery
+                    device={payload.device as AcquiredDevice}
+                    onCancel={modalActions.onCancel}
+                />
+            );
+        case 'qr-reader':
+            return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
+        default:
+            return null;
+    }
 };
 
-// modal container component
+// Action modal container component
 const Modal = (props: Props) => {
     const { modal } = props;
 
-    let modalComponent = null;
+    let modalComponent;
 
     switch (modal.context) {
-        case MODAL.CONTEXT_NONE:
-            modalComponent = null;
-            break;
         case MODAL.CONTEXT_DEVICE:
             modalComponent = getDeviceContextModal(props);
             break;
-        case MODAL.CONTEXT_CONFIRMATION:
-            modalComponent = getConfirmationModal(props);
+        case MODAL.CONTEXT_DEVICE_CONFIRMATION:
+            modalComponent = getDeviceConfirmationModal(props);
             break;
-        case MODAL.CONTEXT_SCAN_QR:
-            modalComponent = getQrModal(props);
+        case MODAL.CONTEXT_USER:
+            modalComponent = getUserContextModal(props);
             break;
         default:
             break;
