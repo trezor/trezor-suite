@@ -92,10 +92,6 @@ const definedMessages = defineMessages({
         description: 'Troubleshooting instruction',
         id: 'TR_ANOTHER_CABLE_INSTRUCTION',
     },
-    TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK: {
-        defaultMessage: 'You will be asked to enter your passphrase to unlock your hidden wallet.',
-        id: 'TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK',
-    },
     TR_ATTENTION_COLON_THE_LOG_CONTAINS: {
         defaultMessage:
             'Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.',
@@ -167,10 +163,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Permission to access the camera was denied.',
         id: 'TR_CAMERA_PERMISSION_DENIED',
     },
-    TR_CANCEL: {
-        defaultMessage: 'Cancel',
-        id: 'TR_CANCEL',
-    },
     TR_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
@@ -182,10 +174,6 @@ const definedMessages = defineMessages({
     TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE: {
         defaultMessage: 'Change passphrase settings to use this device',
         id: 'TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE',
-    },
-    TR_CHANGE_WALLET_TYPE_FOR: {
-        defaultMessage: 'Change wallet type for {deviceLabel}',
-        id: 'TR_CHANGE_WALLET_TYPE_FOR',
     },
     TR_CHANGELOG: {
         defaultMessage: 'Changelog',
@@ -210,17 +198,9 @@ const definedMessages = defineMessages({
         description: 'Clear form button',
         id: 'TR_CLEAR',
     },
-    TR_CLONE: {
-        defaultMessage: 'Clone "{deviceLabel}"?',
-        id: 'TR_CLONE',
-    },
     TR_CLOSE: {
         defaultMessage: 'Close',
         id: 'TR_CLOSE',
-    },
-    TR_COMPLETE_ACTION_ON_DEVICE: {
-        defaultMessage: 'Complete the action on "{deviceLabel}" device',
-        id: 'TR_COMPLETE_ACTION_ON_DEVICE',
     },
     TR_CONFIRM_ACTION_ON_YOUR: {
         defaultMessage: 'Confirm action on your "{deviceLabel}" device.',
@@ -312,10 +292,6 @@ const definedMessages = defineMessages({
         description: 'Continue button',
         id: 'TR_CONTINUE',
     },
-    TR_CONTINUE_TO_ACCESS_STANDARD_WALLET: {
-        defaultMessage: 'Continue to access your standard wallet.',
-        id: 'TR_CONTINUE_TO_ACCESS_STANDARD_WALLET',
-    },
     TR_CONTRIBUTION: {
         defaultMessage: 'contribution',
         description: 'Part of the sentence: We thank our translators for their contribution',
@@ -332,15 +308,6 @@ const definedMessages = defineMessages({
     TR_CREATE_BACKUP_IN_3_MINUTES: {
         defaultMessage: 'Create a backup in 3 minutes',
         id: 'TR_CREATE_BACKUP_IN_3_MINUTES',
-    },
-    TR_CREATE_INSTANCE: {
-        defaultMessage: 'Create hidden wallet',
-        description: 'Create button',
-        id: 'TR_CREATE_INSTANCE',
-    },
-    TR_CREATE_NEW_INSTANCE: {
-        defaultMessage: 'Create new instance',
-        id: 'TR_CREATE_NEW_INSTANCE',
     },
     TR_CUSTOM_FEE: {
         defaultMessage: 'Custom',
@@ -519,15 +486,6 @@ const definedMessages = defineMessages({
         description: 'Text to display when user is unhappy with his hologram.',
         id: 'TR_DID_YOU_PURCHASE',
     },
-    TR_DISCONNECT_DEVICE_HEADER: {
-        defaultMessage: 'Disconnect {label} device',
-        id: 'TR_DISCONNECT_DEVICE_HEADER',
-    },
-    TR_DISCONNECT_DEVICE_TEXT: {
-        defaultMessage:
-            'Your device is wiped and might be safely sold on ebay. No one will ever be able to steal your funds.',
-        id: 'TR_DISCONNECT_DEVICE_TEXT',
-    },
     TR_DISCONNECT_YOUR_DEVICE: {
         defaultMessage: 'Disconnect your device',
         description: 'Prompt to disconnect device.',
@@ -558,11 +516,6 @@ const definedMessages = defineMessages({
         description: 'Link to trezor documentation (wiki)',
         id: 'TR_DOCUMENTATION',
     },
-    TR_DONT_FORGET: {
-        defaultMessage: "Don't forget",
-        description: 'Button in remember/forget dialog',
-        id: 'TR_DONT_FORGET',
-    },
     TR_DONT_UPGRADE_BRIDGE: {
         defaultMessage: "No, I don't want to upgrade Bridge now",
         id: 'TR_DONT_UPGRADE_BRIDGE',
@@ -590,10 +543,6 @@ const definedMessages = defineMessages({
     TR_ENABLE_NETWORK_BUTTON: {
         defaultMessage: 'Find my {networkName} accounts',
         id: 'TR_ENABLE_NETWORK_BUTTON',
-    },
-    TR_ENTER_PASSPHRASE: {
-        defaultMessage: 'Enter',
-        id: 'TR_ENTER_PASSPHRASE',
     },
     TR_ENTER_PIN: {
         defaultMessage: 'Enter PIN',
@@ -684,19 +633,6 @@ const definedMessages = defineMessages({
         description: 'Text describing what happens after user enters PIN for the first time.',
         id: 'TR_FIRST_PIN_ENTERED',
     },
-    TR_FORGET_DEVICE: {
-        defaultMessage: 'Forget device',
-        id: 'TR_FORGET_DEVICE',
-    },
-    TR_FORGET_LABEL: {
-        defaultMessage: 'Forget {deviceLabel}?',
-        id: 'TR_FORGET_LABEL',
-    },
-    TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM: {
-        defaultMessage:
-            'Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your Trezor again.',
-        id: 'TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM',
-    },
     TR_FOUND_OK_DEVICE: {
         defaultMessage: 'Found an empty device, yay! You can continue now.',
         description: 'Case when device was connected and it is in expected state (not initialized)',
@@ -745,22 +681,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Go to external wallet',
         id: 'TR_GO_TO_EXTERNAL_WALLET',
     },
-    TR_GO_TO_HIDDEN_WALLET: {
-        defaultMessage: 'Go to your hidden wallet',
-        id: 'TR_GO_TO_HIDDEN_WALLET',
-    },
     TR_GO_TO_SECURITY: {
         defaultMessage: 'Take me to security (recommended)',
         description: 'Button in security page (start security setup)',
         id: 'TR_GO_TO_SECURITY',
-    },
-    TR_GO_TO_STANDARD_WALLET: {
-        defaultMessage: 'Go to your standard wallet',
-        id: 'TR_GO_TO_STANDARD_WALLET',
-    },
-    TR_HIDDEN_WALLET: {
-        defaultMessage: 'Hidden wallet',
-        id: 'TR_HIDDEN_WALLET',
     },
     TR_HIDE_PREVIOUS_ADDRESSES: {
         defaultMessage: 'Hide previous addresses',
@@ -795,11 +719,6 @@ const definedMessages = defineMessages({
         description: 'Checkbox text',
         id: 'TR_I_HAVE_READ_INSTRUCTIONS',
     },
-    TR_IF_WRONG_PASSPHRASE: {
-        defaultMessage:
-            'If you enter a wrong passphrase, you will not unlock the desired hidden wallet.',
-        id: 'TR_IF_WRONG_PASSPHRASE',
-    },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
         defaultMessage:
             'If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.',
@@ -823,14 +742,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Do not disconnect your device. Installing',
         description: 'Message that is visible when installing process is in progress.',
         id: 'TR_INSTALLING',
-    },
-    TR_INSTANCE_NAME: {
-        defaultMessage: 'Instance name',
-        id: 'TR_INSTANCE_NAME',
-    },
-    TR_INSTANCE_NAME_IN_USE: {
-        defaultMessage: 'Instance name is already in use',
-        id: 'TR_INSTANCE_NAME_IN_USE',
     },
     TR_INSTRUCTION_TO_SKIP: {
         defaultMessage:
@@ -1130,26 +1041,9 @@ const definedMessages = defineMessages({
         description: 'Part of sentence TR_DID_YOU_PURCHASE. Link to support',
         id: 'TR_PACKAGING_LINK',
     },
-    TR_PASSPHRASE_BLANK: {
-        defaultMessage: 'Leave passphrase blank to access your default wallet',
-        id: 'PASSPHRASE_BLANK',
-    },
     TR_PASSPHRASE_CASE_SENSITIVE: {
         defaultMessage: 'Note: Passphrase is case-sensitive.',
         id: 'PASSPHRASE_CASE_SENSITIVE',
-    },
-    TR_PASSPHRASE_DO_NOT_MATCH: {
-        defaultMessage: 'Passphrases do not match!',
-        id: 'PASSPHRASE_DO_NOT_MATCH',
-    },
-    TR_PASSPHRASE_IS_OPTIONAL_FEATURE: {
-        defaultMessage:
-            'Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.',
-        id: 'TR_PASSPHRASE_IS_OPTIONAL_FEATURE',
-    },
-    TR_PASSPHRASE_LABEL: {
-        defaultMessage: 'Enter "{deviceLabel}" passphrase',
-        id: 'TR_PASSPHRASE_LABEL',
     },
     TR_PENDING: {
         defaultMessage: 'Pending',
@@ -1297,16 +1191,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Remember device',
         id: 'TR_REMEMBER_DEVICE',
     },
-    TR_REQUEST_INSTANCE_DESCRIPTION: {
-        defaultMessage:
-            'Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.',
-        id: 'TR_REQUEST_INSTANCE_DESCRIPTION',
-    },
-    TR_REQUEST_INSTANCE_HEADER: {
-        defaultMessage: 'Create hidden wallet with name "{deviceLabel}"?',
-        description: 'Create virtual device with passphrase',
-        id: 'TR_REQUEST_INSTANCE_HEADER',
-    },
     TR_RESELLERS_LINK: {
         defaultMessage: 'a trusted reseller',
         description:
@@ -1373,10 +1257,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'recovery seed',
         description: 'Link. Part of TR_BACKUP_SUBHEADING_1',
         id: 'TR_SEED_MANUAL_LINK',
-    },
-    TR_SELECT_WALLET_TYPE_FOR: {
-        defaultMessage: 'Select wallet type for {deviceLabel}',
-        id: 'TR_SELECT_WALLET_TYPE_FOR',
     },
     TR_SELECT_YOUR_DEVICE_HEADING: {
         defaultMessage: 'Select your device',
@@ -1484,10 +1364,6 @@ const definedMessages = defineMessages({
         description: 'Button in security page (skip security setup)',
         id: 'TR_SKIP_SECURITY',
     },
-    TR_STANDARD_WALLET: {
-        defaultMessage: 'Standard wallet',
-        id: 'TR_STANDARD_WALLET',
-    },
     TR_START_AGAIN: {
         defaultMessage: 'Start again',
         description: 'Button text',
@@ -1543,11 +1419,6 @@ const definedMessages = defineMessages({
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
-    },
-    TR_THIS_WILL_CREATE_NEW_INSTANCE: {
-        defaultMessage:
-            'This will create new instance of device which can be used with different passphrase',
-        id: 'TR_THIS_WILL_CREATE_NEW_INSTANCE',
     },
     TR_TO_LABEL: {
         defaultMessage: 'To',
@@ -1740,11 +1611,6 @@ const definedMessages = defineMessages({
         defaultMessage: '{count} words',
         description: 'Number of words. For example: 12 words',
         id: 'TR_WORDS',
-    },
-    TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO: {
-        defaultMessage:
-            'Would you like Trezor Wallet to forget your {deviceCount, plural, one {device} other {devices}} or to remember {deviceCount, plural, one {it} other {them}}, so that it is still visible even while disconnected?',
-        id: 'TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO',
     },
     TR_WRONG_EMAIL_FORMAT: {
         defaultMessage: 'Wrong email format',
