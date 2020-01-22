@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
-import { Link, variables, colors, Button } from '@trezor/components-v2';
+import { variables, colors, Button } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
 import { getDateWithTimeZone } from '@suite-utils/date';
+import TransactionTypeIcon from '../TransactionTypeIcon';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,6 +23,7 @@ const Wrapper = styled.div`
 const Timestamp = styled.div`
     color: ${colors.BLACK50};
     width: 70px;
+    min-width: 70px;
     text-decoration: none;
     font-size: ${variables.FONT_SIZE.TINY};
 
@@ -46,6 +48,7 @@ const ColBalance = styled(Col)`
 `;
 
 const Targets = styled.div`
+    display: flex;
     color: ${colors.BLACK0};
     font-size: ${variables.FONT_SIZE.TINY};
     overflow: hidden;
@@ -56,6 +59,7 @@ const Targets = styled.div`
 const Target = styled.div`
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 
     & + & {
         margin-top: 12px;
@@ -99,8 +103,7 @@ const Balances = styled.div<{ partial?: boolean }>`
     margin-left: 1rem;
 `;
 
-const Symbol = styled.div`
-`;
+const Symbol = styled.div``;
 
 const Amount = styled.div`
     display: flex;
@@ -130,7 +133,16 @@ const ExpandButton = styled(Button)`
 `;
 
 const ExpandedWrapper = styled.div`
+    display: flex;
+    flex: 1;
     margin-top: 12px;
+    margin-left: 20px;
+    overflow: hidden;
+`;
+
+const TxIconWrapper = styled.div`
+    margin-right: 8px;
+    display: flex;
 `;
 
 type Props = {
@@ -220,19 +232,31 @@ const TransactionItem = React.memo(
                                 </Addr>
                             </Target>
                         )}
-                        {targets && targets.length === 1 && <>{targetsList}</>}
 
+                        {targets && targets.length === 1 && (
+                            <>
+                                <TxIconWrapper>
+                                    <TransactionTypeIcon type={type} />
+                                </TxIconWrapper>
+                                {targetsList}
+                            </>
+                        )}
                         {targets && targets.length > 1 && (
-                            <ExpandButton
-                                variant="tertiary"
-                                size="small"
-                                icon={isExpanded ? 'ARROW_UP' : 'ARROW_DOWN'}
-                                onClick={() => {
-                                    setIsExpanded(!isExpanded);
-                                }}
-                            >
-                                {targets.length} addressess
-                            </ExpandButton>
+                            <>
+                                <TxIconWrapper>
+                                    <TransactionTypeIcon type={type} />
+                                </TxIconWrapper>
+                                <ExpandButton
+                                    variant="tertiary"
+                                    size="small"
+                                    icon={isExpanded ? 'ARROW_UP' : 'ARROW_DOWN'}
+                                    onClick={() => {
+                                        setIsExpanded(!isExpanded);
+                                    }}
+                                >
+                                    {targets.length} addressess
+                                </ExpandButton>
+                            </>
                         )}
 
                         {tokens &&
@@ -256,26 +280,26 @@ const TransactionItem = React.memo(
                         // eslint-disable-next-line react/no-array-index-key
                         <Row key={i}>
                             <Timestamp />
-                            <Targets>
-                                <ExpandedWrapper>
+                            <ExpandedWrapper>
+                                <Targets>
                                     <Target key={i}>
                                         {target.addresses &&
                                             target.addresses.map(addr => (
                                                 <Addr key={addr}>{addr}</Addr>
                                             ))}
                                     </Target>
-                                </ExpandedWrapper>
-                            </Targets>
-                            <ColBalance>
-                                <Balances partial>
-                                    <Amount>
-                                        {type === 'recv' && '+'}
-                                        {type !== 'recv' && '-'}
-                                        {target.amount}&nbsp;
-                                    </Amount>
-                                    <Symbol>{symbol.toUpperCase()}</Symbol>
-                                </Balances>
-                            </ColBalance>
+                                </Targets>
+                                <ColBalance>
+                                    <Balances partial>
+                                        <Amount>
+                                            {type === 'recv' && '+'}
+                                            {type !== 'recv' && '-'}
+                                            {target.amount}&nbsp;
+                                        </Amount>
+                                        <Symbol>{symbol.toUpperCase()}</Symbol>
+                                    </Balances>
+                                </ColBalance>
+                            </ExpandedWrapper>
                         </Row>
                     ))}
             </Wrapper>
