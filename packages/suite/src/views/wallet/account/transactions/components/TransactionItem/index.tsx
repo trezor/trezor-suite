@@ -253,7 +253,8 @@ const TransactionItem = React.memo(
                 </Row>
                 {isExpanded &&
                     targets.map((target, i) => (
-                        <Row>
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Row key={i}>
                             <Timestamp />
                             <Targets>
                                 <ExpandedWrapper>
