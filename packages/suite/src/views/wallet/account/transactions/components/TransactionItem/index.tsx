@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 import { variables, colors, Button } from '@trezor/components-v2';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from '../TransactionTypeIcon';
+import Badge from '@suite/components/suite/Badge';
+import FiatAmount from '@suite-components/FiatAmount/Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -95,7 +96,7 @@ const Label = styled.div`
     display: flex;
 `;
 
-const Balances = styled.div<{ partial?: boolean }>`
+const Balance = styled.div<{ partial?: boolean }>`
     display: flex;
     flex-direction: row;
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -135,6 +136,7 @@ const ExpandButton = styled(Button)`
 const ExpandedWrapper = styled.div`
     display: flex;
     flex: 1;
+    align-items: center;
     margin-top: 12px;
     margin-left: 20px;
     overflow: hidden;
@@ -143,6 +145,10 @@ const ExpandedWrapper = styled.div`
 const TxIconWrapper = styled.div`
     margin-right: 8px;
     display: flex;
+`;
+
+const SmallBadge = styled(Badge)`
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 type Props = {
@@ -263,16 +269,21 @@ const TransactionItem = React.memo(
                             tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
                     </Targets>
                     {amount !== '0' && (
-                        <ColBalance>
-                            <Balances>
+                        <>
+                            <Balance>
                                 <Amount>
                                     {type === 'recv' && '+'}
                                     {type !== 'recv' && '-'}
                                     {amount}&nbsp;
                                 </Amount>
                                 <Symbol>{symbol.toUpperCase()}</Symbol>
-                            </Balances>
-                        </ColBalance>
+                            </Balance>
+                            <Balance>
+                                <SmallBadge>
+                                    <FiatAmount amount={amount} symbol={symbol} />
+                                </SmallBadge>
+                            </Balance>
+                        </>
                     )}
                 </Row>
                 {isExpanded &&
@@ -289,16 +300,19 @@ const TransactionItem = React.memo(
                                             ))}
                                     </Target>
                                 </Targets>
-                                <ColBalance>
-                                    <Balances partial>
-                                        <Amount>
-                                            {type === 'recv' && '+'}
-                                            {type !== 'recv' && '-'}
-                                            {target.amount}&nbsp;
-                                        </Amount>
-                                        <Symbol>{symbol.toUpperCase()}</Symbol>
-                                    </Balances>
-                                </ColBalance>
+                                <Balance partial>
+                                    <Amount>
+                                        {type === 'recv' && '+'}
+                                        {type !== 'recv' && '-'}
+                                        {target.amount}&nbsp;
+                                    </Amount>
+                                    <Symbol>{symbol.toUpperCase()}</Symbol>
+                                </Balance>
+                                <Balance partial>
+                                    <SmallBadge>
+                                        <FiatAmount amount={target.amount} symbol={symbol} />
+                                    </SmallBadge>
+                                </Balance>
                             </ExpandedWrapper>
                         </Row>
                     ))}

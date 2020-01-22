@@ -12,6 +12,8 @@ import TransactionItem from '../TransactionItem';
 import Pagination from '../Pagination';
 import messages from '@suite/support/messages';
 import Card from '@suite-components/Card';
+import Badge from '@suite-components/Badge';
+import FiatAmount from '@suite-components/FiatAmount/Container';
 
 const Wrapper = styled.div``;
 
@@ -32,6 +34,7 @@ const DayHeading = styled.div`
     text-transform: uppercase;
     background: ${colors.BLACK96};
     justify-content: space-between;
+    align-items: center;
 
     &:first-child {
         border-top-left-radius: 6px;
@@ -43,8 +46,17 @@ const PaginationWrapper = styled.div`
     margin: 10px 0px;
 `;
 
+const DayAmountWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
 const DayAmount = styled.div`
     display: flex;
+
+    & + & {
+        margin-left: 10px;
+    }
 `;
 
 const DateWrapper = styled.div`
@@ -112,11 +124,21 @@ const TransactionList = ({
                                                     year="numeric"
                                                 />
                                             </DateWrapper>
-                                            <DayAmount>
-                                                {totalAmountPerDay.gte(0) && '+'}
-                                                {totalAmountPerDay.toFixed()}{' '}
-                                                {props.symbol.toUpperCase()}
-                                            </DayAmount>
+                                            <DayAmountWrapper>
+                                                <DayAmount>
+                                                    {totalAmountPerDay.gte(0) && '+'}
+                                                    {totalAmountPerDay.toFixed()}{' '}
+                                                    {props.symbol.toUpperCase()}
+                                                </DayAmount>
+                                                <DayAmount>
+                                                    <Badge>
+                                                        <FiatAmount
+                                                            amount={totalAmountPerDay.toFixed()}
+                                                            symbol={props.symbol}
+                                                        />
+                                                    </Badge>
+                                                </DayAmount>
+                                            </DayAmountWrapper>
                                         </>
                                     )}
                                 </DayHeading>
