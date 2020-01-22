@@ -1,4 +1,4 @@
-import { OUTPUTS } from './fixtures/sendFormFixtures';
+import { OUTPUTS } from '../__fixtures__/sendFormFixtures';
 import { getOutput, hasDecimals, shouldComposeBy } from '../sendFormUtils';
 
 describe('sendForm utils', () => {

@@ -14,6 +14,10 @@ const CONSTANTS = require('../constants');
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = on => {
     // make ts possible start
     const options = {
@@ -29,7 +33,15 @@ module.exports = on => {
     // add snapshot plugin
     addMatchImageSnapshotPlugin(on);
 
-    on('before:browser:launch', (browser = {}, args) => {
+    on('before:browser:launch', async (browser = {}, args) => {
+        // not the best solution by far, but seems to work.
+        // problem is that bridge response to POST to '/' with 403 sometimes.
+        // this request occurs on bridge start. so I disabled bridge stop/start functionality
+        // in tests until I find another way how to fix this (debug in python scripts most probably)
+        await controller.connect();
+        const response = await controller.send({ type: 'bridge-start' });
+        await controller.disconnect();
+
         if (browser.name === 'chrome') {
             args.push('--disable-dev-shm-usage');
             return args;

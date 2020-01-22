@@ -3,14 +3,16 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import SuiteLayout from '@suite-components/SuiteLayout';
 import AssetsCard from '@suite-components/AssetsCard';
-import { Props } from './Container';
-import * as accountUtils from '@wallet-utils/accountUtils';
-import { Account } from '@wallet-types';
-import PortfolioCard from '@suite-components/PortfolioCard';
 import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
-import { DISCOVERY_STATUS } from '@wallet-reducers/discoveryReducer';
-import NewsFeed from '@suite-components/NewsFeed';
 import ConnectionStatusCard from '@suite-components/ConnectionStatusCard';
+import PortfolioCard from '@suite-components/PortfolioCard';
+import NewsFeed from '@suite-components/NewsFeed';
+import AuthConfirm from '@suite-components/Notifications/components/AuthConfirm';
+import ProgressBar from '@wallet-components/DiscoveryProgress';
+import * as accountUtils from '@wallet-utils/accountUtils';
+import { DISCOVERY } from '@wallet-actions/constants';
+import { Account } from '@wallet-types';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     padding: 30px 50px;
@@ -52,12 +54,13 @@ const Dashboard = (props: Props) => {
         props.fiat,
     );
 
-    // @ts-ignore
-    const isLoading = !discovery || (discovery && discovery.status === DISCOVERY_STATUS.RUNNING);
+    const isLoading = !discovery || (discovery && discovery.status < DISCOVERY.STATUS.STOPPING);
 
     return (
         <SuiteLayout>
-            <Wrapper>
+            {device && device.authConfirm && <AuthConfirm />}
+            <Wrapper data-test="@dashboard/index">
+                <ProgressBar />
                 <PortfolioCard
                     portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}

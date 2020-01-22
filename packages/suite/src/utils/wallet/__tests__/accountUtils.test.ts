@@ -1,5 +1,5 @@
 import * as accountUtils from '../accountUtils';
-import * as fixtures from './fixtures/accountUtils';
+import * as fixtures from '../__fixtures__/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 

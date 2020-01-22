@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
-import ProgressBar from './components/ProgressBar';
+import DiscoveryProgress from '@wallet-components/DiscoveryProgress';
 import { AppState } from '@suite-types';
 import { SuiteLayout } from '@suite-components';
 import Menu from '@wallet-components/Menu';
@@ -43,7 +43,7 @@ const WalletLayout = (props: Props) => {
     return (
         <SuiteLayout title={props.title || 'Trezor Suite | Wallet'} secondaryMenu={<Menu />}>
             <ContentWrapper>
-                <ProgressBar />
+                <DiscoveryProgress />
                 <WalletNotifications />
                 <Content>{props.children}</Content>
             </ContentWrapper>

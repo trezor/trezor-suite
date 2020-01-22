@@ -30,7 +30,7 @@ Usage
         export-translations
             - downloads translations and generates locales
 
-        find-unused-messages --messages [path/to/messages.json] --src [path/to/src/dir]
+        find-unused-messages --messages [string] --src [string | string[]]
             - performs fulltext search of keys provided in --messages option on all files under src
 
 `,
@@ -160,7 +160,11 @@ switch (command) {
 
     case 'find-unused-messages':
         console.log('Looking for unused messagess...');
-        findUnusedMessages(cli.flags.messages, cli.flags.src);
+        console.log(cli.flags.src);
+        findUnusedMessages(
+            cli.flags.messages,
+            Array.isArray(cli.flags.src) ? cli.flags.src : [cli.flags.src],
+        );
         break;
     default:
         console.log('Unknown command');

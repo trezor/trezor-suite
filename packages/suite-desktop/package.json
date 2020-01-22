@@ -71,15 +71,16 @@
         }
     },
     "dependencies": {
+        "@sentry/browser": "^5.11.1",
         "electron-is-dev": "^1.1.0",
         "electron-localshortcut": "^3.2.1",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.0",
+        "next": "^9.2.0",
         "os": "^0.1.1",
         "ps-list": "6.3.0"
     },
     "devDependencies": {
-        "@sentry/browser": "^5.10.2",
         "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^9.0.0",
         "@types/next-redux-wrapper": "^3.0.0",
@@ -89,7 +90,6 @@
         "electron": "^7.1.4",
         "electron-builder": "22.1.0",
         "git-revision-webpack-plugin": "^3.0.4",
-        "next": "^9.1.5",
         "next-plugin-custom-babel-config": "^1.0.2",
         "next-redux-wrapper": "^4.0.1",
         "next-transpile-modules": "^2.3.1"

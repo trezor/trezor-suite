@@ -9,7 +9,7 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@onboarding-actions/recoveryActions';
 import { BlindMatrix, OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
 import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
-import { Translation } from '@suite-components/Translation';
+import { Translation, WordInput } from '@suite-components';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
 import { Link, P } from '@trezor/components-v2';
@@ -17,8 +17,6 @@ import React, { useState } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import WordsInput from './WordsInput';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
@@ -214,9 +212,8 @@ const RecoveryStepModelOne = (props: Props) => {
                     </>
                 )}
                 {getStatus() === 'recovering' && (
-                    <WordsInput
-                        wordsCount={recovery.wordsCount}
-                        counter={uiInteraction.counter}
+                    <WordInput
+                        counter={{ total: recovery.wordsCount, current: uiInteraction.counter }}
                         onSubmit={recoveryActions.submit}
                     />
                 )}

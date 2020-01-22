@@ -1,18 +1,3 @@
-suite lint:
-    stage: lint
-    script:
-        - yarn workspace @trezor/suite lint
-  
-suite type-check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/suite type-check
-
-suite unit tests:
-    stage: unit tests
-    script:
-        - yarn workspace @trezor/suite test:unit
-
 suite test integration:
     only:
         - schedules
@@ -31,7 +16,6 @@ suite check outdated:
 
 suite check unused messages:
     stage: misc
-    allow_failure: true
     script:
         # create the master.json first. later we shall use directly messages.ts
         - yarn workspace @trezor/suite translations:extract

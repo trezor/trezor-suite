@@ -22,7 +22,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    openQrModal: bindActionCreators(modalActions.openQrModal, dispatch),
+    openModal: bindActionCreators(modalActions.openModal, dispatch),
     sendFormActions: bindActionCreators(sendFormActions, dispatch),
     sendFormActionsBitcoin: bindActionCreators(sendFormActionsBitcoin, dispatch),
     sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),

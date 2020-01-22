@@ -109,23 +109,6 @@ describe('Account Actions', () => {
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });
 
-    it('Request new account', async () => {
-        const store = initStore(getInitialState());
-        store.dispatch(accountActions.requestNewAccount());
-        expect(store.getActions().length).toEqual(1);
-    });
-
-    it('Request new account (no device)', async () => {
-        const store = initStore({
-            ...getInitialState(),
-            suite: {
-                device: false,
-            },
-        });
-        store.dispatch(accountActions.requestNewAccount());
-        expect(store.getActions().length).toEqual(0);
-    });
-
     it('Change account visibility', async () => {
         const store = initStore(
             getInitialState({

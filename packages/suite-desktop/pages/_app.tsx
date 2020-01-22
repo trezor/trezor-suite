@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/browser';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import Router from '@suite-support/Router';
+import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
@@ -33,6 +34,7 @@ class TrezorSuiteApp extends App<Props> {
             <ErrorBoundary>
                 <ReduxProvider store={store}>
                     <Resize />
+                    <OnlineStatus />
                     <IntlProvider>
                         <Router />
                         <BridgeStatus />

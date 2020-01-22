@@ -235,7 +235,7 @@ export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] => {
     });
 };
 
-export const sortByPriorityCmp = (a: TrezorDevice, b: TrezorDevice) => {
+export const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
     // sort by priority:
     // 1. unacquired
     // 2. unexpected mode
@@ -261,54 +261,16 @@ export const sortByPriorityCmp = (a: TrezorDevice, b: TrezorDevice) => {
 };
 
 /**
- * Used by 'Switch device' modal
- * Returns physical devices (without its instances) sorted by priority
- * @param {TrezorDevice[]} devices
- * @returns {TrezorDevice[]}
- */
-export const getPhysDevices = (devices: TrezorDevice[]): TrezorDevice[] => {
-    const physDevices = devices.filter(d => !d.instance);
-    return physDevices.sort(sortByPriorityCmp);
-};
-
-/**
- * Used by suiteActions and <DeviceMenu />
- * Returns all physical devices except the selected one or
- * @param {TrezorDevice | undefined} selected
- * @param {TrezorDevice[]} devices
- * @returns {TrezorDevice[]}
- */
-export const getOtherDevices = (
-    selected: TrezorDevice | typeof undefined,
-    devices: TrezorDevice[],
-): TrezorDevice[] => {
-    // ignore instances
-    devices = devices.filter(d => !d.instance);
-    // exclude selected device
-    if (selected) {
-        if (selected.features && selected.features.device_id) {
-            devices = devices.filter(
-                d =>
-                    !d.features ||
-                    (d.features && d.features.device_id !== selected.features.device_id),
-            );
-        } else {
-            devices = devices.filter(d => d.path !== selected.path);
-        }
-    }
-    return devices.sort(sortByPriorityCmp);
-};
-
-/**
- * Used by <DeviceMenu />
+ * Returns all device instances sorted by `instance` field
  * @param {TrezorDevice | undefined} device
  * @param {TrezorDevice[]} devices
+ * @param {boolean} exclude - excludes `device` from results
  * @returns {TrezorDevice[]}
  */
 export const getDeviceInstances = (
     device: TrezorDevice,
     devices: TrezorDevice[],
-    includeCurrent = false,
+    exclude = false,
 ): AcquiredDevice[] => {
     if (!device || !device.features || !device.features.device_id) return [];
     return devices
@@ -316,11 +278,34 @@ export const getDeviceInstances = (
             d =>
                 d.features &&
                 d.features.device_id === device.features.device_id &&
-                (includeCurrent || (!includeCurrent && d.instance !== device.instance)),
+                (!exclude || (exclude && d.instance !== device.instance)),
         )
         .sort((a, b) => {
             if (!a.instance) return -1;
             if (!b.instance) return 1;
             return a.instance > b.instance ? 1 : -1;
         }) as AcquiredDevice[];
+};
+
+/**
+ * Returns first available instance for each device sorted by priority
+ * @param {TrezorDevice[]} devices
+ * @returns {TrezorDevice[]}
+ */
+export const getFirstDeviceInstance = (devices: TrezorDevice[]) => {
+    // filter device instances
+    return devices
+        .reduce((result, dev) => {
+            // unacquired devices always return empty array
+            const instances = getDeviceInstances(dev, devices);
+            if (instances.length < 1) return result.concat(dev);
+            // `device_id` already exists in result
+            const alreadyExists = result.find(
+                r => r.features && dev.features && r.features.device_id === dev.features.device_id,
+            );
+            if (alreadyExists) return result;
+            // base (np passphrase) or first passphrase instance
+            return result.concat(instances[0]);
+        }, [] as TrezorDevice[])
+        .sort(sortByPriority);
 };

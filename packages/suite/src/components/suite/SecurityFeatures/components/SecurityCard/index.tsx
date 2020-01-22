@@ -95,10 +95,13 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                 <Description>{description}</Description>
                 <Action>
                     <Button
-                        disabled={variant === 'primary'}
+                        isDisabled={variant === 'primary'}
                         variant="tertiary"
                         size="small"
                         onClick={cta.action}
+                        {...(variant === 'secondary'
+                            ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
+                            : {})}
                     >
                         {cta.label}
                     </Button>

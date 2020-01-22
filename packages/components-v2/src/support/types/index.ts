@@ -7,7 +7,7 @@ export type FeedbackState = 'success' | 'info' | 'warning' | 'error';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
 
-export type ButtonSize = 'small' | 'medium' | 'large';
+export type ButtonSize = 'small' | 'large';
 
 export type InputState = 'success' | 'warning' | 'error';
 
