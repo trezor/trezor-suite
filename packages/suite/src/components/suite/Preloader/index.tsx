@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import OnlineStatus from '@suite-support/OnlineStatus';
+import NotificationActionContainer from '@suite-components/NotificationAction';
 import { SUITE } from '@suite-actions/constants';
 import SuiteWrapper from '@suite-components/SuiteWrapper';
 import { H1, P } from '@trezor/components-v2';
@@ -45,6 +46,7 @@ const Preloader = (props: Props) => {
 
     return (
         <SuiteWrapper>
+            <NotificationActionContainer />
             <OnlineStatus />
             {props.children}
         </SuiteWrapper>

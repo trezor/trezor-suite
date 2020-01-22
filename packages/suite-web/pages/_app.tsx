@@ -5,7 +5,6 @@ import { Translation } from '@suite-components/Translation';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
 import { Button } from '@trezor/components';
-import { NotificationsContainer } from '@suite-components/Notification-v2';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
@@ -54,7 +53,6 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <ErrorBoundary>
-                <NotificationsContainer />
                 <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
