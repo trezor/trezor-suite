@@ -1,48 +1,49 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
-
-import { Notification } from '@trezor/components';
-import { acquireDevice } from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';
-import { AppState } from '@suite-types';
+import styled from 'styled-components';
 import messages from '@suite/support/messages';
+import { H2, P, Button } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
+import React from 'react';
 
-const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
-    locks: state.suite.locks,
-});
+import { Props } from './Container';
 
-type Props = ReturnType<typeof mapStateToProps> & {
-    acquireDevice: typeof acquireDevice;
-} & WrappedComponentProps;
+const Wrapper = styled.div`
+    display: flex;
+    padding: 100px 170px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+`;
 
-const Acquire = (props: Props) => {
-    const { device, locks } = props;
+// TODO add proper image
+const Image = styled.div`
+    margin: 50px;
+    width: 252px;
+    height: 170px;
+    background: #d8d9da;
+`;
+
+const StyledP = styled(P)`
+    max-width: 400px;
+`;
+
+const Acquire = ({ device, locks, acquireDevice }: Props) => {
     if (!device) return null;
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
-        <>
-            <Notification
-                title={props.intl.formatMessage(messages.TR_DEVICE_USED_IN_OTHER)}
-                message={props.intl.formatMessage(messages.TR_USE_YOUR_DEVICE_IN_THIS_WINDOW)}
-                variant="info"
-                cancelable={false}
-                isActionInProgress={locked}
-                actions={[
-                    {
-                        label: props.intl.formatMessage(messages.TR_ACQUIRE_DEVICE),
-                        callback: props.acquireDevice,
-                    },
-                ]}
-            />
-        </>
+        <Wrapper>
+            <H2>
+                <Translation {...messages.TR_ACQUIRE_DEVICE_TITLE} />
+            </H2>
+            <StyledP size="tiny">
+                <Translation {...messages.TR_ACQUIRE_DEVICE_DESCRIPTION} />
+            </StyledP>
+            <Image />
+            <Button isLoading={locked} onClick={() => acquireDevice()}>
+                <Translation {...messages.TR_ACQUIRE_DEVICE} />
+            </Button>
+        </Wrapper>
     );
 };
 
-export default injectIntl(
-    connect(mapStateToProps, dispatch => ({
-        acquireDevice: bindActionCreators(acquireDevice, dispatch),
-    }))(Acquire),
-);
+export default Acquire;

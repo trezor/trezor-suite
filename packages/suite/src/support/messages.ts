@@ -1910,6 +1910,15 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check for devices',
         id: 'TR_CHECK_FOR_DEVICES',
     },
+    TR_ACQUIRE_DEVICE_TITLE: {
+        defaultMessage: 'Trezor is being used in a browser',
+        id: 'TR_ACQUIRE_DEVICE_TITLE',
+    },
+    TR_ACQUIRE_DEVICE_DESCRIPTION: {
+        defaultMessage:
+            'Please close the tab in your browser or click the button below to acquire the device since Trezor can be only used in one session.',
+        id: 'TR_ACQUIRE_DEVICE_DESCRIPTION',
+    },
 });
 
 export default definedMessages;
