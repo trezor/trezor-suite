@@ -138,7 +138,6 @@ const IconWrapper = styled.div<IconWrapperProps>`
         props.alignIcon === 'right' &&
         css`
             margin-left: 8px;
-            margin-right: 3px;
         `}
 `;
 
@@ -176,7 +175,11 @@ const Button = ({
 }: Props) => {
     const IconComponent = icon ? (
         <IconWrapper alignIcon={alignIcon}>
-            <Icon icon={icon} size={10} color={getIconColor(variant, isDisabled)} />
+            <Icon
+                icon={icon}
+                size={size === 'large' ? 10 : 8}
+                color={getIconColor(variant, isDisabled)}
+            />
         </IconWrapper>
     ) : null;
     const Loader = (
