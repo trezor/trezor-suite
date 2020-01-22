@@ -1,9 +1,0 @@
-components-v2 lint:
-    stage: lint
-    script:
-        - yarn workspace @trezor/components-v2 lint
-  
-components-v2 type-check:
-    stage: typescript type check
-    script:
-        - yarn workspace @trezor/components-v2 type-check
