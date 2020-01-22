@@ -113,7 +113,7 @@ const TransactionList = ({
                                                 />
                                             </DateWrapper>
                                             <DayAmount>
-                                                {totalAmountPerDay.gte(0) ? '+' : '-'}
+                                                {totalAmountPerDay.gte(0) && '+'}
                                                 {totalAmountPerDay.toFixed()}{' '}
                                                 {props.symbol.toUpperCase()}
                                             </DayAmount>

@@ -28,7 +28,7 @@ export const groupTransactionsByDate = (
 };
 
 /**
- * Returns a sum of all txs amounts as a BigNumber.
+ * Returns a sum of sent/recv txs amounts as a BigNumber.
  * Amounts of sent transactions are added, amounts of recv transactions are subtracted
  *
  * @param {WalletAccountTransaction[]} transactions
@@ -36,6 +36,7 @@ export const groupTransactionsByDate = (
 export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
+        // count only recv/sent txs
         if (tx.type === 'sent') {
             totalAmount = totalAmount.minus(tx.amount);
         }
