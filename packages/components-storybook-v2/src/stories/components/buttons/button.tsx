@@ -35,6 +35,17 @@ storiesOf('Buttons', module).add(
             iconOptions[icon] = icon;
         });
         const icon = select('Icon', iconOptions, null);
+        const alignIcon: any = icon
+            ? select(
+                  'Align icon',
+                  {
+                      'Default (left)': 'left',
+                      Right: 'right',
+                  },
+                  'left'
+              )
+            : null;
+
         const fullWidth = boolean('Full width', false);
         const isDisabled = boolean('Disabled', false);
         const isLoading = boolean('Loading', false);
@@ -46,6 +57,7 @@ storiesOf('Buttons', module).add(
                 {...(variant ? { variant } : {})}
                 {...(size ? { size } : {})}
                 {...(icon ? { icon } : {})}
+                {...(icon && alignIcon !== 'left' ? { alignIcon } : {})}
                 {...(fullWidth ? { fullWidth } : {})}
             >
                 {value}

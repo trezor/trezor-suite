@@ -3,10 +3,14 @@ import ReactSelect from 'react-select';
 import { Props as SelectProps } from 'react-select/lib/Select';
 import styled from 'styled-components';
 import colors from '../../config/colors';
-import { InputDisplay } from '../../support/types';
+import { InputDisplay, InputVariant } from '../../support/types';
 import { getDisplayWidth } from '../../utils/display';
 
-const selectStyle = (isSearchable: boolean, withDropdownIndicator = true) => ({
+const selectStyle = (
+    isSearchable: boolean,
+    withDropdownIndicator = true,
+    variant: InputVariant
+) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
         maxWidth: 'calc(100% - 10px)', // 8px padding + 2px maring-left
@@ -29,7 +33,7 @@ const selectStyle = (isSearchable: boolean, withDropdownIndicator = true) => ({
         return {
             ...base,
             minHeight: 'initial',
-            height: '40px',
+            height: variant === 'small' ? '38px' : '48px',
             borderRadius: '3px',
             borderColor: colors.BLACK80,
             boxShadow: 'none',
@@ -98,6 +102,7 @@ interface Props extends Omit<SelectProps, 'components'> {
     topLabel?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     display?: InputDisplay;
+    variant?: InputVariant;
 }
 
 const Select = ({
@@ -107,13 +112,14 @@ const Select = ({
     wrapperProps,
     topLabel,
     display,
+    variant = 'large',
     ...rest
 }: Props) => {
     return (
         <Wrapper className={className} display={display} {...wrapperProps}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <ReactSelect
-                styles={selectStyle(isSearchable, withDropdownIndicator)}
+                styles={selectStyle(isSearchable, withDropdownIndicator, variant)}
                 isSearchable={isSearchable}
                 {...rest}
             />

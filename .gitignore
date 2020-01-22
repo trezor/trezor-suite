@@ -21,8 +21,6 @@ logs
 .yarnclean
 
 coverage
-test/**/__diff_output__
-test/screenshots
 
 .env*
 !.env.dev
