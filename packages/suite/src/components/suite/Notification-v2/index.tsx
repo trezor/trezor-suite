@@ -29,6 +29,7 @@ const notify = (
         />,
         {
             autoClose: false,
+            position: 'bottom-center',
         },
     );
 };
