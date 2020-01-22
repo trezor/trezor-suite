@@ -8,7 +8,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
-import { PinMatrix, Text, OnboardingButton, Wrapper } from '@onboarding-components';
+import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
 
 const NewPinWrapper = styled.div`
@@ -102,7 +102,7 @@ const SetPinStep = (props: Props) => {
                                 </Modal>
                             )} */}
                         <div>
-                            <PinMatrix
+                            <PinInput
                                 onPinSubmit={(pin: string) => {
                                     props.connectActions.submitNewPin({ pin });
                                 }}
@@ -116,7 +116,7 @@ const SetPinStep = (props: Props) => {
                         <Text>
                             <Translation {...messages.TR_FIRST_PIN_ENTERED} />
                         </Text>
-                        <PinMatrix
+                        <PinInput
                             onPinSubmit={(pin: string) => {
                                 props.connectActions.submitNewPin({ pin });
                             }}

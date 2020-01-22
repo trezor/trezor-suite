@@ -72,6 +72,7 @@ export interface AcquiredDevice {
     authConfirm: boolean; // device cannot be used because passphrase was not confirmed
     instance?: number;
     ts: number;
+    buttonRequests: string[];
 }
 
 export interface UnknownDevice {
@@ -88,6 +89,7 @@ export interface UnknownDevice {
     authConfirm?: undefined;
     state?: string;
     ts: number;
+    buttonRequests: string[];
 }
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;

@@ -8,7 +8,8 @@ import { bindActionCreators } from 'redux';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepDisallowedState } from '@onboarding-types/steps';
 import { getFeatures, submitNewPin } from '@onboarding-actions/connectActions';
-import { PinMatrix, Text, Wrapper, OnboardingButton } from '@onboarding-components';
+import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
+import { PinInput } from '@suite-components';
 import { Dispatch, AppState } from '@suite-types';
 import messages from '@suite/support/messages';
 import Reconnect from './components/Reconnect';
@@ -53,7 +54,7 @@ const IsDeviceRequestingPin = ({ submitNewPin, uiInteraction }: IsDeviceRequesti
                 {uiInteraction.counter > 1 &&
                     'You entered wrong PIN. To make sure, that your device can not be accessed by unauthorized person, it will get wiped after 16 incorrect entries.'}
             </Text>
-            <PinMatrix
+            <PinInput
                 onPinSubmit={pin => {
                     submitNewPin({ pin });
                 }}

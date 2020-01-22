@@ -43,6 +43,7 @@ const connectDevice = (draft: State, device: Device) => {
             available: false,
             features: undefined,
             useEmptyPassphrase: true,
+            buttonRequests: [],
             ts: new Date().getTime(),
         });
         return;
@@ -77,6 +78,7 @@ const connectDevice = (draft: State, device: Device) => {
         instance: device.features.passphrase_protection
             ? getNewInstanceNumber(draft, device as AcquiredDevice) || 1
             : undefined,
+        buttonRequests: [],
         ts: new Date().getTime(),
     };
 
@@ -334,6 +336,23 @@ const forgetInstance = (draft: State, device: TrezorDevice) => {
     draft.splice(index, 1);
 };
 
+const addButtonRequest = (
+    draft: State,
+    device: TrezorDevice | undefined,
+    buttonRequest: string | null,
+) => {
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = findInstanceIndex(draft, device);
+    if (!draft[index] || !draft[index].features) return;
+    // update state
+    if (buttonRequest === null) {
+        draft[index].buttonRequests = [];
+        return;
+    }
+    draft[index].buttonRequests.push(buttonRequest);
+};
+
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
@@ -372,6 +391,9 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case SUITE.FORGET_DEVICE_INSTANCE:
                 forgetInstance(draft, action.payload);
+                break;
+            case SUITE.ADD_BUTTON_REQUEST:
+                addButtonRequest(draft, action.device, action.payload);
                 break;
             // no default
         }

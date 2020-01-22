@@ -501,6 +501,10 @@ const definedMessages = defineMessages({
         description: '',
         id: 'TR_ENTER_PIN_HEADING',
     },
+    TR_CONFIRM_PIN: {
+        defaultMessage: 'Confirm PIN',
+        id: 'TR_CONFIRM_PIN',
+    },
     TR_ENTER_PIN_TEXT: {
         defaultMessage:
             'Your device gets locked anytime you disconnect it. You now need to enter your PIN to continue.',

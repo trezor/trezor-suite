@@ -128,7 +128,6 @@ const Preloader = (props: Props) => {
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
-
     // check if current route is a "modal application" and display it above requested physical route (route in url)
     // pass params to "modal application" and set "cancelable" conditionally
     const ApplicationModal = getModalApplication(router.route);
