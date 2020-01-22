@@ -5,11 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { P, colors, variables } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import {
-    groupTransactionsByDate,
-    parseKey,
-    getTotalTxsAmount,
-} from '@wallet-utils/transactionUtils';
+import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import TransactionItem from '../TransactionItem';
@@ -98,7 +94,7 @@ const TransactionList = ({
             <StyledCard>
                 <Transactions>
                     {Object.keys(transactionsByDate).map(dateKey => {
-                        const totalAmountPerDay = getTotalTxsAmount(transactionsByDate[dateKey]);
+                        const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
                         return (
                             <React.Fragment key={dateKey}>
                                 <DayHeading>
@@ -109,12 +105,12 @@ const TransactionList = ({
                                     ) : (
                                         <>
                                             <DateWrapper>
-                                            <FormattedDate
-                                                value={parseKey(dateKey)}
-                                                day="numeric"
-                                                month="long"
-                                                year="numeric"
-                                            />
+                                                <FormattedDate
+                                                    value={parseKey(dateKey)}
+                                                    day="numeric"
+                                                    month="long"
+                                                    year="numeric"
+                                                />
                                             </DateWrapper>
                                             <DayAmount>
                                                 {totalAmountPerDay.gte(0) ? '+' : '-'}

@@ -33,14 +33,14 @@ export const groupTransactionsByDate = (
  *
  * @param {WalletAccountTransaction[]} transactions
  */
-export const getTotalTxsAmount = (transactions: WalletAccountTransaction[]) => {
-    const totalAmount = new BigNumber(0);
+export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
+    let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
         if (tx.type === 'sent') {
-            totalAmount.minus(tx.amount);
+            totalAmount = totalAmount.minus(tx.amount);
         }
         if (tx.type === 'recv') {
-            totalAmount.plus(tx.amount);
+            totalAmount = totalAmount.plus(tx.amount);
         }
     });
     return totalAmount;
