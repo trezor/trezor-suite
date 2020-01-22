@@ -33,7 +33,15 @@ module.exports = on => {
     // add snapshot plugin
     addMatchImageSnapshotPlugin(on);
 
-    on('before:browser:launch', (browser = {}, args) => {
+    on('before:browser:launch', async (browser = {}, args) => {
+        // not the best solution by far, but seems to work.
+        // problem is that bridge response to POST to '/' with 403 sometimes.
+        // this request occurs on bridge start. so I disabled bridge stop/start functionality
+        // in tests until I find another way how to fix this (debug in python scripts most probably)
+        await controller.connect();
+        const response = await controller.send({ type: 'bridge-start' });
+        await controller.disconnect();
+
         if (browser.name === 'chrome') {
             args.push('--disable-dev-shm-usage');
             return args;
@@ -46,12 +54,6 @@ module.exports = on => {
             await controller.connect();
             const response = await controller.send({ type: 'bridge-start' });
             await controller.disconnect();
-            // not the best solution by far, but seems to work.
-            // problem is that bridge when started probably needs some time to process configure request (POST to '/')
-            // otherwise it returns 403.
-            // Or there may be a problem with python scripts that they dont wait for response properly. Don't know. So
-            // it requires more proper debugging.
-            await timeout(1500);
             return null;
         },
         stopBridge: async () => {

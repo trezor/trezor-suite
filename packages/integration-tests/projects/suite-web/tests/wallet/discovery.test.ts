@@ -3,9 +3,8 @@
 // todo: Finish with new design; had to stop with this after rebase.
 describe.skip('Discovery', () => {
     before(() => {
-        cy.task('startBridge')
-            .task('startEmu')
-            .task('setupEmu');
+        cy.task('startEmu');
+        cy.task('setupEmu');
         cy.viewport(1024, 768).resetDb();
     });
 
