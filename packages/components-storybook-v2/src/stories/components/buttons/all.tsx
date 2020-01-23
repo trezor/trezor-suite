@@ -4,108 +4,92 @@ import { Button } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
-    padding: 2rem;
+    display: flex;
+    padding: 20px;
 `;
 
 const Row = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 1rem 0 2rem;
-    width: 400px;
+    border-radius: 10px;
+    border: 3px dashed #00ffff;
+    padding: 10px;
+    margin: 5px;
+    min-width: 200px;
+    max-width: 300px;
+
+    > button {
+        margin-bottom: 10px;
+    }
 `;
 
-const ButtonWrapper = styled.div`
-    margin-bottom: 1rem;
-`;
+const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
+const sizes = ['small', 'large'] as const;
 
 storiesOf('Buttons', module).add(
     'All',
-    () => {
-        const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
-        const sizes = ['small', 'large'] as const;
-
-        return (
-            <Wrapper>
-                {variants.map(variant => {
-                    return (
-                        <Row>
-                            {sizes.map(size => {
-                                return (
-                                    <ButtonWrapper>
-                                        <Button
-                                            variant={variant}
-                                            size={size}
-                                            data-test={`button-${variant}-${size}`}
-                                        >
-                                            {variant[0].toUpperCase()}
-                                            {variant.slice(1)} {size}
-                                        </Button>
-                                    </ButtonWrapper>
-                                );
-                            })}
-                            <ButtonWrapper>
+    () => (
+        <Wrapper>
+            {variants.map(variant => {
+                return (
+                    <Row>
+                        {sizes.map(size => {
+                            return (
                                 <Button
                                     variant={variant}
-                                    data-test={`button-${variant}-icon`}
-                                    icon="PLUS"
-                                    onClick={() => {
-                                        console.log('click');
-                                    }}
+                                    size={size}
+                                    data-test={`button-${variant}-${size}`}
                                 >
                                     {variant[0].toUpperCase()}
-                                    {variant.slice(1)} icon
+                                    {variant.slice(1)} {size}
                                 </Button>
-                            </ButtonWrapper>
-                            <ButtonWrapper>
-                                <Button
-                                    variant={variant}
-                                    data-test={`button-${variant}-icon-right`}
-                                    icon="PLUS"
-                                    alignIcon="right"
-                                >
-                                    {variant[0].toUpperCase()}
-                                    {variant.slice(1)} icon right
-                                </Button>
-                            </ButtonWrapper>
-                            <ButtonWrapper>
-                                <Button
-                                    variant={variant}
-                                    data-test={`button-${variant}-loading`}
-                                    isLoading
-                                >
-                                    {variant[0].toUpperCase()}
-                                    {variant.slice(1)} loading
-                                </Button>
-                            </ButtonWrapper>
-                            <ButtonWrapper>
-                                <Button
-                                    variant={variant}
-                                    data-test={`button-${variant}-full-width`}
-                                    fullWidth
-                                >
-                                    {variant[0].toUpperCase()}
-                                    {variant.slice(1)} full width
-                                </Button>
-                            </ButtonWrapper>
-                            <ButtonWrapper>
-                                <Button
-                                    variant={variant}
-                                    isDisabled
-                                    data-test={`button-${variant}-disabled`}
-                                    onClick={() => {
-                                        console.log('click');
-                                    }}
-                                >
-                                    {variant[0].toUpperCase()}
-                                    {variant.slice(1)} disabled
-                                </Button>
-                            </ButtonWrapper>
-                        </Row>
-                    );
-                })}
-            </Wrapper>
-        );
-    },
+                            );
+                        })}
+                        <Button
+                            variant={variant}
+                            data-test={`button-${variant}-icon`}
+                            icon="PLUS"
+                            onClick={() => {
+                                console.log('click');
+                            }}
+                        >
+                            {variant[0].toUpperCase()}
+                            {variant.slice(1)} icon
+                        </Button>
+                        <Button
+                            variant={variant}
+                            data-test={`button-${variant}-icon-right`}
+                            icon="PLUS"
+                        >
+                            {variant[0].toUpperCase()}
+                            {variant.slice(1)} icon right
+                        </Button>
+                        <Button variant={variant} data-test={`button-${variant}-loading`} isLoading>
+                            {variant[0].toUpperCase()}
+                            {variant.slice(1)} loading
+                        </Button>
+                        <Button
+                            variant={variant}
+                            data-test={`button-${variant}-full-width`}
+                            fullWidth
+                        >
+                            {variant[0].toUpperCase()}
+                            {variant.slice(1)} full width
+                        </Button>
+                        <Button
+                            variant={variant}
+                            isDisabled
+                            data-test={`button-${variant}-disabled`}
+                            onClick={() => {
+                                console.log('click');
+                            }}
+                        >
+                            {variant[0].toUpperCase()}
+                            {variant.slice(1)} disabled
+                        </Button>
+                    </Row>
+                );
+            })}
+        </Wrapper>
+    ),
     {
         info: {
             disable: true,
