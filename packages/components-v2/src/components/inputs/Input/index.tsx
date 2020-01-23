@@ -52,12 +52,6 @@ const StyledInput = styled.input<Props>`
         `}
 
     ${props =>
-        props.state &&
-        css`
-            padding-right: 30px;
-        `}
-
-    ${props =>
         props.disabled &&
         css`
             background: ${colors.BLACK96};
@@ -144,12 +138,6 @@ const ButtonText = styled.div`
 
 const StyledIcon = styled(Icon)`
     margin-right: 5px;
-`;
-
-const StateIconWrapper = styled.div`
-    display: flex;
-    padding: 0 5px;
-    background: ${colors.WHITE};
 `;
 
 const Overlay = styled.div<Props>`
@@ -253,11 +241,6 @@ const Input = ({
                             )}
                             {button.text && <ButtonText>{button.text}</ButtonText>}
                         </Button>
-                    )}
-                    {state && (
-                        <StateIconWrapper>
-                            <Icon icon={getStateIcon()} color={getStateColor(state)} size={10} />
-                        </StateIconWrapper>
                     )}
                 </InputIconWrapper>
                 {isPartiallyHidden && <Overlay />}
