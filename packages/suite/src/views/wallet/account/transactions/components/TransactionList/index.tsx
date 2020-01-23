@@ -30,7 +30,7 @@ const DayHeading = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK50};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding: 10px 12px;
+    padding: 5px 16px;
     text-transform: uppercase;
     background: ${colors.BLACK96};
     justify-content: space-between;
@@ -55,8 +55,14 @@ const DayAmount = styled.div`
     display: flex;
 
     & + & {
-        margin-left: 10px;
+        margin-left: 14px;
     }
+`;
+
+const FiatDayAmount = styled(DayAmount)`
+    min-width: 100px;
+    justify-content: flex-end;
+    text-align: right;
 `;
 
 const DateWrapper = styled.div`
@@ -130,14 +136,14 @@ const TransactionList = ({
                                                     {totalAmountPerDay.toFixed()}{' '}
                                                     {props.symbol.toUpperCase()}
                                                 </DayAmount>
-                                                <DayAmount>
+                                                <FiatDayAmount>
                                                     <Badge>
                                                         <FiatAmount
                                                             amount={totalAmountPerDay.toFixed()}
                                                             symbol={props.symbol}
                                                         />
                                                     </Badge>
-                                                </DayAmount>
+                                                </FiatDayAmount>
                                             </DayAmountWrapper>
                                         </>
                                     )}

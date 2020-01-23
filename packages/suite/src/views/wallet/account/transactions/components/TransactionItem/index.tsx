@@ -9,6 +9,7 @@ import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from '../TransactionTypeIcon';
 import Badge from '@suite/components/suite/Badge';
 import FiatAmount from '@suite-components/FiatAmount/Container';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,9 +44,6 @@ const Row = styled.div`
 const Col = styled.div`
     display: flex;
     flex-direction: column;
-`;
-const ColBalance = styled(Col)`
-    text-align: end;
 `;
 
 const Targets = styled.div`
@@ -102,6 +100,12 @@ const Balance = styled.div<{ partial?: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${props => (props.partial === true ? colors.BLACK50 : colors.BLACK0)};
     margin-left: 1rem;
+`;
+
+const FiatBalance = styled(Balance)`
+    min-width: 100px;
+    justify-content: flex-end;
+    text-align: right;
 `;
 
 const Symbol = styled.div``;
@@ -278,11 +282,11 @@ const TransactionItem = React.memo(
                                 </Amount>
                                 <Symbol>{symbol.toUpperCase()}</Symbol>
                             </Balance>
-                            <Balance>
+                            <FiatBalance>
                                 <SmallBadge>
                                     <FiatAmount amount={amount} symbol={symbol} />
                                 </SmallBadge>
-                            </Balance>
+                            </FiatBalance>
                         </>
                     )}
                 </Row>
@@ -308,11 +312,11 @@ const TransactionItem = React.memo(
                                     </Amount>
                                     <Symbol>{symbol.toUpperCase()}</Symbol>
                                 </Balance>
-                                <Balance partial>
+                                <FiatBalance partial>
                                     <SmallBadge>
                                         <FiatAmount amount={target.amount} symbol={symbol} />
                                     </SmallBadge>
-                                </Balance>
+                                </FiatBalance>
                             </ExpandedWrapper>
                         </Row>
                     ))}
