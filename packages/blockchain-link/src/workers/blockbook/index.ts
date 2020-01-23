@@ -169,7 +169,7 @@ const getCurrentFiatRates = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const fiatRates = await socket.getCurrentFiatRates(payload.currency);
+        const fiatRates = await socket.getCurrentFiatRates(payload.currencies);
         common.response({
             id: data.id,
             type: RESPONSES.GET_CURRENT_FIAT_RATES,
@@ -191,7 +191,7 @@ const getFiatRatesForTimestamps = async (
         const socket = await connect();
         const tickers = await socket.getFiatRatesForTimestamps(
             payload.timestamps,
-            payload.currency
+            payload.currencies
         );
         common.response({
             id: data.id,
@@ -352,12 +352,12 @@ const subscribeBlock = async () => {
     return socket.subscribeBlock();
 };
 
-const subscribeFiatRates = async (currency?: string[]) => {
+const subscribeFiatRates = async (currencies?: string[]) => {
     if (common.getSubscription('fiatRates')) return { subscribed: true };
     const socket = await connect();
     common.addSubscription('fiatRates');
     socket.on('fiatRates', onNewFiatRates);
-    return socket.subscribeFiatRates(currency);
+    return socket.subscribeFiatRates(currencies);
 };
 
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
@@ -371,7 +371,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
         } else if (payload.type === 'block') {
             response = await subscribeBlock();
         } else if (payload.type === 'fiatRates') {
-            response = await subscribeFiatRates(payload.currency);
+            response = await subscribeFiatRates(payload.currencies);
         } else {
             throw new CustomError('invalid_param', '+type');
         }

@@ -258,16 +258,16 @@ export default class Socket extends EventEmitter {
         return this.send('estimateFee', payload);
     }
 
-    getCurrentFiatRates(currency: string[]) {
-        return this.send('getCurrentFiatRates', { currency });
+    getCurrentFiatRates(currencies?: string[]) {
+        return this.send('getCurrentFiatRates', { currencies });
     }
 
     getAccountBalanceHistory(payload: AccountBalanceHistoryParams) {
         return this.send('getBalanceHistory', payload);
     }
 
-    getFiatRatesForTimestamps(timestamps: number[], currency: string[]) {
-        return this.send('getFiatRatesForTimestamps', { timestamps, currency });
+    getFiatRatesForTimestamps(timestamps: number[], currencies?: string[]) {
+        return this.send('getFiatRatesForTimestamps', { timestamps, currencies });
     }
 
     getFiatRatesTickersList(timestamp?: number) {
@@ -330,7 +330,7 @@ export default class Socket extends EventEmitter {
         return { subscribed: false };
     }
 
-    subscribeFiatRates(currency?: string[]) {
+    subscribeFiatRates(currencies?: string[]) {
         const index = this.subscriptions.findIndex(s => s.type === 'fiatRates');
         if (index >= 0) {
             // remove previous subscriptions
@@ -345,7 +345,7 @@ export default class Socket extends EventEmitter {
                 this.emit('fiatRates', result);
             },
         });
-        return this.send('subscribeFiatRates', { currency });
+        return this.send('subscribeFiatRates', { currencies });
     }
 
     unsubscribeFiatRates() {

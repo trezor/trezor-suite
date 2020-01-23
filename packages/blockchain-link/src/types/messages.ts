@@ -65,7 +65,7 @@ export interface GetTransaction {
 export interface GetCurrentFiatRates {
     type: typeof MESSAGES.GET_CURRENT_FIAT_RATES;
     payload: {
-        currency: string[];
+        currencies?: string[];
     };
 }
 
@@ -73,7 +73,7 @@ export interface GetFiatRatesForTimestamps {
     type: typeof MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS;
     payload: {
         timestamps: number[];
-        currency: string[];
+        currencies?: string[];
     };
 }
 
@@ -108,7 +108,7 @@ export interface Subscribe {
           }
         | {
               type: 'fiatRates';
-              currency?: string[];
+              currencies?: string[];
           };
 }
 

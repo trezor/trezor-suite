@@ -142,9 +142,9 @@ const handleClick = (event: MouseEvent) => {
             blockchain
                 .subscribe({
                     type: 'fiatRates',
-                    currency:
+                    currencies:
                         getInputValue('subscribe-fiat-rates-currency') !== ''
-                            ? getInputValue('subscribe-fiat-rates-currency').split('')
+                            ? getInputValue('subscribe-fiat-rates-currency').split(' ')
                             : undefined,
                 })
                 .then(onResponse)
@@ -163,9 +163,7 @@ const handleClick = (event: MouseEvent) => {
             try {
                 blockchain
                     .getCurrentFiatRates({
-                        // TODO: remove once fixed in blockbook
-                        // @ts-ignore
-                        currency:
+                        currencies:
                             getInputValue('get-current-fiat-rates-currency') !== ''
                                 ? getInputValue('get-current-fiat-rates-currency').split(',')
                                 : undefined,
@@ -185,12 +183,10 @@ const handleClick = (event: MouseEvent) => {
                         timestamps: getInputValue('get-fiat-rates-for-timestamps-timestamps')
                             .split(',')
                             .map(v => Number(v)),
-                        // TODO: remove once fixed in blockbook
-                        // @ts-ignore
-                        currency: 'usd',
-                        // currency: getInputValue('get-fiat-rates-for-timestamps-currency') !== ''
-                        // ? getInputValue('get-fiat-rates-for-timestamps-currency').split(',')
-                        // : undefined,
+                        currencies:
+                            getInputValue('get-fiat-rates-for-timestamps-currency') !== ''
+                                ? getInputValue('get-fiat-rates-for-timestamps-currency').split(',')
+                                : undefined,
                     })
                     .then(onResponse)
                     .catch(onError);
@@ -206,7 +202,9 @@ const handleClick = (event: MouseEvent) => {
                         descriptor: getInputValue('get-account-balance-history-descriptor'),
                         from: parseInt(getInputValue('get-account-balance-history-from'), 10),
                         to: parseInt(getInputValue('get-account-balance-history-to'), 10),
-                        fiat: getInputValue('get-account-balance-history-currency'),
+                        currencies: getInputValue('get-account-balance-history-currency')
+                            ? getInputValue('get-account-balance-history-currency').split(',')
+                            : undefined,
                         groupBy: parseInt(getInputValue('get-account-balance-history-groupby'), 10),
                     })
                     .then(onResponse)

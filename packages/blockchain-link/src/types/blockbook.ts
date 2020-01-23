@@ -183,7 +183,7 @@ export interface AccountBalanceHistoryParams {
     descriptor: string;
     from: number;
     to: number;
-    fiat: string;
+    currencies?: string[];
     groupBy?: number;
 }
 
@@ -204,7 +204,7 @@ declare function FSend(
 ): Promise<AccountBalanceHistory[]>;
 declare function FSend(
     method: 'getCurrentFiatRates',
-    params: { currency?: string[] }
+    params: { currencies?: string[] }
 ): Promise<CurrentFiatRates>;
 declare function FSend(
     method: 'getFiatRatesTickersList',
@@ -212,7 +212,7 @@ declare function FSend(
 ): Promise<AvailableCurrencies>;
 declare function FSend(
     method: 'getFiatRatesForTimestamps',
-    params: { timestamps?: number[]; currency?: string[] }
+    params: { timestamps?: number[]; currencies?: string[] }
 ): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
@@ -224,7 +224,7 @@ declare function FSend(method: 'subscribeNewBlock', params: {}): Promise<Subscri
 declare function FSend(method: 'unsubscribeNewBlock', params: {}): Promise<Subscribe>;
 declare function FSend(
     method: 'subscribeFiatRates',
-    params: { currency?: string[] }
+    params: { currencies?: string[] }
 ): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeFiatRates', params: {}): Promise<Subscribe>;
 export type Send = typeof FSend;
