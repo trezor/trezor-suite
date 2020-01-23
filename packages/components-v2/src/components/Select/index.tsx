@@ -13,6 +13,8 @@ const selectStyle = (
 ) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
+        display: 'flex',
+        alignItems: 'center',
         maxWidth: 'calc(100% - 10px)', // 8px padding + 2px maring-left
         width: '100%',
         color: colors.BLACK0,
@@ -33,6 +35,8 @@ const selectStyle = (
         return {
             ...base,
             minHeight: 'initial',
+            display: 'flex',
+            alignItems: 'center',
             height: variant === 'small' ? '38px' : '48px',
             borderRadius: '3px',
             borderColor: colors.BLACK80,
@@ -42,9 +46,6 @@ const selectStyle = (
                 cursor: 'pointer',
                 borderColor: colors.BLACK50,
             },
-            ' > div': {
-                overflow: 'visible',
-            },
         };
     },
     indicatorSeparator: () => ({
@@ -52,7 +53,8 @@ const selectStyle = (
     }),
     dropdownIndicator: (base: Record<string, any>, { isDisabled }: { isDisabled: boolean }) => ({
         ...base,
-        display: !withDropdownIndicator || isDisabled ? 'none' : 'block',
+        display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
+        alignItems: 'center',
         color: colors.BLACK50,
         path: '',
         '&:hover': {
@@ -61,7 +63,7 @@ const selectStyle = (
     }),
     menu: (base: Record<string, any>) => ({
         ...base,
-        margin: '5px 0 0 0',
+        margin: '0',
         boxShadow: 'box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15)',
         zIndex: 9,
     }),
