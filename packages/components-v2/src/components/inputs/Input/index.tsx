@@ -10,17 +10,16 @@ import {
     InputButton,
     TextAlign,
 } from '../../../support/types';
-import { getStateColor, getDisplayWidth } from '../../../utils';
+import { getStateColor } from '../../../utils';
 
-const Wrapper = styled.div<WrapperProps>`
+interface WrappedProps {
+    width?: any;
+}
+
+const Wrapper = styled.div<WrappedProps>`
     display: inline-flex;
     flex-direction: column;
-
-    ${props =>
-        props.display === 'block' &&
-        css`
-            width: 100%;
-        `}
+    width: ${props => (props.width ? `${props.width}px` : '100%')};
 `;
 
 const StyledInput = styled.input<Props>`
@@ -33,7 +32,7 @@ const StyledInput = styled.input<Props>`
     background-color: ${colors.WHITE};
     outline: none;
     box-sizing: border-box;
-    width: ${props => getDisplayWidth(props.display || 'default')};
+    width: 100%;
     height: ${props => (props.variant === 'small' ? '38px' : '48px')};
     text-align: ${props => props.align || 'left'};
     color: ${props => getStateColor(props.state)};
@@ -152,11 +151,6 @@ const Overlay = styled.div<Props>`
     z-index: 1;
 `;
 
-interface WrapperProps {
-    dataTest?: string;
-    display?: InputDisplay;
-}
-
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.RefObject<HTMLInputElement>;
     variant?: InputVariant;
@@ -183,7 +177,7 @@ const Input = ({
     innerRef,
     state,
     variant = 'large',
-    display = 'default',
+    width,
     button,
     topLabel,
     bottomText,
@@ -217,7 +211,7 @@ const Input = ({
     };
 
     return (
-        <Wrapper display={display} {...wrapperProps}>
+        <Wrapper width={width} {...wrapperProps}>
             {topLabel && <Label>{topLabel}</Label>}
             <InputWrapper>
                 <InputIconWrapper align={align}>
@@ -253,7 +247,7 @@ const Input = ({
                     state={state}
                     variant={variant}
                     disabled={isDisabled}
-                    display={display}
+                    width={width}
                     monospace={monospace}
                     align={align}
                     ref={innerRef}

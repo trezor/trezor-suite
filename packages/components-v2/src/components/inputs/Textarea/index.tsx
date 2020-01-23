@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 import React from 'react';
 
-import { getStateColor, getDisplayWidth } from '../../utils';
-import { colors, variables } from '../../config';
-import { InputState, InputDisplay } from '../../support/types';
+import { getStateColor, getDisplayWidth } from '../../../utils';
+import { colors, variables } from '../../../config';
+import { InputState, InputDisplay } from '../../../support/types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -13,8 +13,15 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
+interface StyledTextareaProps extends BaseTextareaProps {
+    tooltipAction?: React.ReactNode;
+    width?: any;
+    state?: InputState;
+    monospace?: boolean;
+}
+
 const StyledTextarea = styled.textarea<StyledTextareaProps>`
-    width: ${props => getDisplayWidth(props.display || 'default')};
+    width: ${props => (props.width ? `${props.width}px` : '100%')};
     padding: 10px;
     box-sizing: border-box;
     border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};
@@ -68,7 +75,8 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
 `;
 
 const TopLabel = styled.label`
-    padding: 10px;
+    padding: 10px 0;
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
 const BottomText = styled.span<StyledTextareaProps>`
@@ -105,13 +113,6 @@ const ArrowUp = styled.div`
 
 type BaseTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-interface StyledTextareaProps extends BaseTextareaProps {
-    tooltipAction?: React.ReactNode;
-    display?: InputDisplay;
-    state?: InputState;
-    monospace?: boolean;
-}
-
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props extends StyledTextareaProps {
     isDisabled?: boolean;
@@ -131,7 +132,7 @@ const Textarea = ({
     bottomText,
     tooltipAction,
     wrapperProps,
-    display,
+    width,
     rows = 5,
     monospace,
     ...rest
@@ -145,7 +146,7 @@ const Textarea = ({
                 autoCapitalize="off"
                 maxLength={maxLength}
                 disabled={isDisabled}
-                display={display}
+                width={width}
                 state={state}
                 rows={rows}
                 monospace={monospace}

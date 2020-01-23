@@ -3,8 +3,8 @@ import ReactSelect from 'react-select';
 import { Props as SelectProps } from 'react-select/lib/Select';
 import styled from 'styled-components';
 import colors from '../../config/colors';
+import { FONT_SIZE } from '../../config/variables';
 import { InputDisplay, InputVariant } from '../../support/types';
-import { getDisplayWidth } from '../../utils/display';
 
 const selectStyle = (
     isSearchable: boolean,
@@ -15,7 +15,6 @@ const selectStyle = (
         ...base,
         display: 'flex',
         alignItems: 'center',
-        maxWidth: 'calc(100% - 10px)', // 8px padding + 2px maring-left
         width: '100%',
         color: colors.BLACK0,
         '&:hover': {
@@ -63,7 +62,7 @@ const selectStyle = (
     }),
     menu: (base: Record<string, any>) => ({
         ...base,
-        margin: '0',
+        margin: '5px 0',
         boxShadow: 'box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15)',
         zIndex: 9,
     }),
@@ -88,13 +87,14 @@ const selectStyle = (
 });
 
 const Wrapper = styled.div<Props>`
-    width: ${props => getDisplayWidth(props.display || 'default')};
+    width: ${props => (props.width ? `${props.width}px` : '100%')};
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 `;
 
 const TopLabel = styled.span`
+    font-size: ${FONT_SIZE.NORMAL};
     padding: 10px 0;
 `;
 
@@ -113,12 +113,12 @@ const Select = ({
     className,
     wrapperProps,
     topLabel,
-    display,
+    width,
     variant = 'large',
     ...rest
 }: Props) => {
     return (
-        <Wrapper className={className} display={display} {...wrapperProps}>
+        <Wrapper className={className} width={width} {...wrapperProps}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <ReactSelect
                 styles={selectStyle(isSearchable, withDropdownIndicator, variant)}
