@@ -93,7 +93,7 @@ const Wrapper = styled.div<Props>`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 10px;
+    padding: 10px 0;
 `;
 
 interface Props extends Omit<SelectProps, 'components'> {

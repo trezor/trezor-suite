@@ -102,7 +102,7 @@ const InputIconWrapper = styled.div<Props>`
 const SpinnerWrapper = styled.div``;
 
 const Label = styled.label`
-    padding: 10px;
+    padding: 10px 0;
 `;
 
 const BottomText = styled.div<Props>`
