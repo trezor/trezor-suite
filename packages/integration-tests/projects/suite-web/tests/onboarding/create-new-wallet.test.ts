@@ -2,8 +2,6 @@
 
 describe('Onboarding happy paths', () => {
     beforeEach(() => {
-        cy.task('stopBridge');
-        cy.task('startBridge');
         cy.task('startEmu');
         cy.task('wipeEmu');
         cy.task('stopEmu');

@@ -3,21 +3,22 @@ import { homescreensT2 } from '@suite-constants';
 
 describe('Device settings', () => {
     beforeEach(() => {
-        cy.task('stopBridge');
-        cy.task('startBridge');
         cy.task('startEmu');
         cy.task('setupEmu');
-
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();
 
-        cy.visit('/')
-            .goToSuite()
-            .dashboardShouldLoad()
-            .getTestElement('@suite/menu/settings')
+        cy.visit('/');
+ 
+
+        cy.goToSuite();
+        // make sure suite already sees device
+        cy.getTestElement('@modal/connect-device').should('not.exist');
+        cy.dashboardShouldLoad();
+        cy.getTestElement('@suite/menu/settings')
             .click({ force: true })
             .getTestElement('@suite/settings/menu/device')
-            .click();
+            .click({ force: true });
         // a little antipattern but perfection is the enemy of good.
         // there is a problem with device call in progress (from discovery)
         cy.wait(2000);
@@ -38,7 +39,6 @@ describe('Device settings', () => {
 
         cy.log('turn on passphrase protection');
         cy.getTestElement('@suite/settings/device/passphrase-switch')
-            // TODO: find a way how to remove force: true, probably depends on @trezor/components
             .click({ force: true })
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision', { method: 'applySettings' });

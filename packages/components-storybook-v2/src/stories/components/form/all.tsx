@@ -128,6 +128,33 @@ storiesOf('Form', module).add(
                     </ComponentWrapper>
                     <ComponentWrapper>
                         <Select
+                            options={[
+                                {
+                                    label: 'Option one',
+                                    value: 'value-one',
+                                },
+                                {
+                                    label: 'Option two',
+                                    value: 'value-two',
+                                },
+                                {
+                                    label: 'Option tree',
+                                    value: 'value-tree',
+                                },
+                            ]}
+                            value={{
+                                label: 'Option one',
+                                value: 'value-one',
+                            }}
+                            topLabel="Selected"
+                            wrapperProps={{
+                                'data-test': 'select-small',
+                            }}
+                            variant="small"
+                        />
+                    </ComponentWrapper>
+                    <ComponentWrapper>
+                        <Select
                             isDisabled
                             topLabel="Disabled"
                             wrapperProps={{

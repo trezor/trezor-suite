@@ -120,7 +120,6 @@ class Controller extends EventEmitter {
             const resp = JSON.parse(message);
             const { id, success } = resp;
             const dfd = this.messages.find(m => m.id === id);
-            console.log('response in websocketclinet.js', resp);
             if (dfd) {
                 if (!success) {
                     dfd.reject(
@@ -183,7 +182,7 @@ class Controller extends EventEmitter {
     init() {
         const { ws } = this;
         if (!ws || !this.isConnected()) {
-            throw Error('Blockbook websocket init cannot be called');
+            throw Error('Websocket init cannot be called');
         }
         // clear timeout from this.connect
         this.clearConnectionTimeout();

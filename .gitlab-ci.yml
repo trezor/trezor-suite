@@ -22,7 +22,7 @@ cache:
         - packages/suite-storage/node_modules/
         - packages/translations-manager/node_modules/
         - packages/integration-tests/node_modules/
-          # libs
+        # libs
         - packages/components/lib
         - packages/components-v2/lib
         - packages/blockchain-link/lib
@@ -39,23 +39,32 @@ variables:
 
 stages:
     - setup environment
-    - lint
-    - typescript type check
-    - unit tests
+    - lint, types, unit tests
     - build
     - deploy to dev servers
     - integration testing
     - misc
+
+lint:
+    stage: lint, types, unit tests
+    script:
+        - lerna run lint
+
+typescript:
+    stage: lint, types, unit tests
+    script:
+        - lerna run type-check
+
+unit tests:
+    stage: lint, types, unit tests
+    script:
+        - lerna run test:unit -- --passWithNoTests
 
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
     - ci/packages/components-storybook.yml
     - ci/packages/components-storybook-v2.yml
-    - ci/packages/components.yml
-    - ci/packages/components-v2.yml
-    - ci/packages/rollout.yml
-    - ci/packages/blockchain-link.yml
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
