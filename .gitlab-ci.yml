@@ -1,5 +1,5 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:3d64beb0e2574c93829d4b10a48ea729a7c91e9f
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:54b807728aa0417641c00dfab1aa6c0ea77bcfdb
 
 cache:
     untracked: true
