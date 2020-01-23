@@ -91,9 +91,9 @@ const routes = [
     },
     {
         // todo:
-        name: 'check-seed-index',
-        pattern: '/settings/check-seed',
-        app: 'check-seed',
+        name: 'seed-input-index',
+        pattern: 'seed-input',
+        app: 'seed-input',
         isModal: true,
     },
     {

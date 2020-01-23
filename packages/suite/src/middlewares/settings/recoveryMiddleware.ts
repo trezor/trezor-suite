@@ -9,8 +9,8 @@ const recoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Di
     // pass action
     next(action);
 
-    // just reset recoveryReducer when user enters 'check-seed' app
-    if (action.type === SUITE.APP_CHANGED && action.payload === 'check-seed') {
+    // just reset recoveryReducer when user enters 'seed-input' app
+    if (action.type === SUITE.APP_CHANGED && action.payload === 'seed-input') {
         api.dispatch(recoveryActions.resetReducer());
     }
     return action;

@@ -66,7 +66,7 @@ const Settings = ({
     const startCheckSeed = () => {
         if (features.major_version === 1) {
             // T1 needs to input some more information from suite. TT does everything on device.
-            goto('check-seed-index', { cancelable: true });
+            goto('seed-input-index', { cancelable: true });
         } else {
             checkSeed();
         }

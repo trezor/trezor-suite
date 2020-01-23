@@ -9,7 +9,6 @@ import * as recoveryActions from '@settings-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@settings-types';
 
-// todo: taken from switch device. grrr
 const Wrapper = styled.div`
     padding: 30px 24px;
     display: flex;
@@ -64,7 +63,7 @@ export type Props = InjectedModalApplicationProps &
     ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-const CheckSeed = ({
+const SeedInput = ({
     recovery,
     checkSeed,
     setWordsCount,
@@ -148,4 +147,4 @@ const CheckSeed = ({
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CheckSeed);
+export default connect(mapStateToProps, mapDispatchToProps)(SeedInput);
