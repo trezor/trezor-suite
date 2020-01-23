@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import React from 'react';
 
-import { getStateColor, getDisplayWidth } from '../../../utils';
+import { getStateColor } from '../../../utils';
 import { colors, variables } from '../../../config';
 import { InputState, InputDisplay } from '../../../support/types';
 
