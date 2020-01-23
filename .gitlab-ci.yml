@@ -43,6 +43,7 @@ stages:
     - build
     - deploy to dev servers
     - integration testing
+    - build artifacts
     - misc
 
 lint:
