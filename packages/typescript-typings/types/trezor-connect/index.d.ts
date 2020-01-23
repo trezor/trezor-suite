@@ -391,6 +391,8 @@ declare module 'trezor-connect' {
         unfinished_backup: boolean;
         vendor: string;
         recovery_mode?: boolean;
+        session_id?: string;
+        passphrase_always_on_device?: boolean;
     }
 
     export type Device =
@@ -780,6 +782,7 @@ declare module 'trezor-connect' {
               payload: {
                   save: boolean;
                   value: string;
+                  passphraseOnDevice?: boolean;
               }
           };
 
