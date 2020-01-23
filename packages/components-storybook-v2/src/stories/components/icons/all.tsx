@@ -4,20 +4,22 @@ import { Icon, variables, colors, types } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
-    padding: 2rem;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 const Col = styled.div`
-    margin: 1rem 0 2rem;
+    flex: 1;
 `;
 
 const Heading = styled.h2``;
 
 const IconWrapper = styled.div`
     display: inline-block;
-    margin: 2rem 0 0 0;
+    margin: 10px 0;
     text-align: center;
-    width: 20%;
+    min-width: 110px;
 `;
 
 const IconText = styled.div`
@@ -30,7 +32,6 @@ storiesOf('Icons', module).add(
     () => {
         return (
             <Wrapper>
-                <Heading>Icons</Heading>
                 <Col>
                     {variables.ICONS.map((icon: types.IconType) => (
                         <IconWrapper>

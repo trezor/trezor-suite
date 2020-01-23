@@ -11,8 +11,9 @@ const Wrapper = styled.div`
 
 const Col = styled.div`
     padding: 10px;
+    flex: 1;
     border-radius: 10px;
-    border: 3px dashed #00ffff;
+    border: 4px dashed pink;
     margin: 5px;
     min-width: 200px;
     max-width: 300px;

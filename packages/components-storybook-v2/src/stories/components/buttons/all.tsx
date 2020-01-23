@@ -4,13 +4,15 @@ import { Button } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
-    display: flex;
     padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 const Row = styled.div`
     border-radius: 10px;
-    border: 3px dashed #00ffff;
+    flex: 1;
+    border: 4px dashed #00ffff;
     padding: 10px;
     margin: 5px;
     min-width: 200px;
