@@ -59,13 +59,17 @@ type Props = {
     ReturnType<typeof mapDispatchToProps>;
 
 const Passphrase = (props: Props) => {
-    const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || props.device.authConfirm;
-    const stateConfirmation = !!props.device.state;
+    const { device } = props;
+    const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
+    const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
-        .getDeviceInstances(props.device, props.devices)
+        .getDeviceInstances(device, props.devices)
         .find(d => d.useEmptyPassphrase);
     const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
-    const onDeviceOffer = props.device.features && props.device.features.session_id;
+    const onDeviceOffer =
+        device.features &&
+        device.features.capabilities &&
+        device.features.capabilities.includes('Capability_PassphraseEntry');
 
     const [submitted, setSubmitted] = useState(false);
     const [enabled, setEnabled] = useState(!authConfirmation);
