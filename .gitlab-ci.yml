@@ -1,5 +1,5 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:3d64beb0e2574c93829d4b10a48ea729a7c91e9f
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:54b807728aa0417641c00dfab1aa6c0ea77bcfdb
 
 cache:
     untracked: true
@@ -10,9 +10,9 @@ cache:
         # modules
         - node_modules/
         - packages/blockchain-link/node_modules/
-        - packages/components/node_modules/
+        # - packages/components/node_modules/
         - packages/components-v2/node_modules/
-        - packages/components-storybook/node_modules/
+        # - packages/components-storybook/node_modules/
         - packages/components-storybook-v2/node_modules/
         - packages/rollout/node_modules/
         - packages/suite/node_modules/
@@ -23,7 +23,7 @@ cache:
         - packages/translations-manager/node_modules/
         - packages/integration-tests/node_modules/
         # libs
-        - packages/components/lib
+        # - packages/components/lib
         - packages/components-v2/lib
         - packages/blockchain-link/lib
         - packages/rollout/lib
@@ -43,7 +43,8 @@ stages:
     - build
     - deploy to dev servers
     - integration testing
-    - misc
+    - build artifacts
+    - deploy artifacts, others
 
 lint:
     stage: lint, types, unit tests
@@ -63,7 +64,7 @@ unit tests:
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    - ci/packages/components-storybook.yml
+    # - ci/packages/components-storybook.yml
     - ci/packages/components-storybook-v2.yml
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
