@@ -124,8 +124,6 @@ const Wrapper = styled.button<WrapperProps>`
 
 const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
-    /* looks wrong with check icon for an example ¯\_(ツ)_/¯ */
-    /* transform: translateY(-1px); */
 
     ${props =>
         props.alignIcon === 'left' &&

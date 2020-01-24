@@ -10,6 +10,9 @@ addParameters({
         showInfo: false,
         panelPosition: 'right',
     },
+    info: {
+        disable: true,
+    },
 });
 
 addDecorator(withInfo);
