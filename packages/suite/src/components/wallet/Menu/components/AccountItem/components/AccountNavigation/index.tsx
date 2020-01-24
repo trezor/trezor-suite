@@ -68,10 +68,9 @@ const AccountNavigation = (props: Props) => {
                 }
                 return null;
             })}
-            {moreItemsActive &&
+            {/* {moreItemsActive &&
                 HIDDEN_ITEMS.length > 0 &&
                 HIDDEN_ITEMS.map(item => {
-                    // @ts-ignore
                     if (!item.isHidden(account.symbol)) {
                         return (
                             <StyledNavLink
@@ -87,7 +86,7 @@ const AccountNavigation = (props: Props) => {
                         );
                     }
                     return null;
-                })}
+                })} */}
             {HIDDEN_ITEMS.length > 0 && (
                 <StyledNavLink onClick={() => setMoreItemsActive(!moreItemsActive)}>
                     <IconWrapper>
