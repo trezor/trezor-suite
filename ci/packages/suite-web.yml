@@ -61,7 +61,7 @@ suite-web test integration google-chrome-beta:
 suite-web test security:
     only: 
         - schedules
-    stage: misc
+    stage: deploy artifacts and others
     script: 
         yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
     dependencies: []
