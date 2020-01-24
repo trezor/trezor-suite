@@ -33,7 +33,7 @@ import NameStep from '@onboarding-views/steps/Name/Container';
 import BookmarkStep from '@onboarding-views/steps/Bookmark/Container';
 import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
-import { UnexpectedState } from '@onboarding-components';
+import { UnexpectedState, ProgressBar } from '@onboarding-components';
 
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 
@@ -45,13 +45,14 @@ const Wrapper = styled.div`
     flex-direction: column;
     width: 100%;
     overflow-x: hidden;
-
+    padding-left: 40px;
+    padding-right: 40px;
     max-width: 700px; /* neat boxed view */
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         width: calc(55vw + 150px);
-        margin: 50px auto;
-        height: 65vh;
+        margin: 10px auto;
+        height: 80vh;
         overflow: hidden;
     }
 `;
@@ -67,9 +68,9 @@ const Overlay = styled(Wrapper)`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
-// const ProgressStepsSlot = styled.div`
-//     height: ${`${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT}`};
-// `;
+const ProgressBarSlot = styled.div`
+    height: 80px;
+`;
 
 const ComponentWrapper = styled.div`
     display: flex;
@@ -245,18 +246,9 @@ const Onboarding = (props: Props) => {
                     />
                 </Overlay>
             )}
-            {/* <ProgressStepsSlot>
-                            <ProgressSteps
-                                hiddenOnSteps={[
-                                    STEP.ID_WELCOME_STEP,
-                                    STEP.ID_SECURITY_STEP,
-                                    STEP.ID_FINAL_STEP,
-                                ]}
-                                steps={steps}
-                                activeStep={activeStep}
-                                isDisabled={deviceCall.isProgress}
-                            />
-                        </ProgressStepsSlot> */}
+            <ProgressBarSlot>
+                <ProgressBar activeStepId={activeStepId} />
+            </ProgressBarSlot>
             <ComponentWrapper>
                 {uiInteraction.name && isGlobalInteraction() && (
                     <TrezorAction model={model} event={uiInteraction.name} />
