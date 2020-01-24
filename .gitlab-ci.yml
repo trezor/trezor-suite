@@ -44,7 +44,7 @@ stages:
     - deploy to dev servers
     - integration testing
     - build artifacts
-    - deploy artifacts and others
+    - deploy artifacts, others
 
 lint:
     stage: lint, types, unit tests

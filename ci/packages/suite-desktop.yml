@@ -36,7 +36,7 @@ suite-desktop build windows:
             - TrezorSuite-*.exe
 
 suite-desktop deploy:
-    stage: deploy artifacts and others
+    stage: deploy artifacts, others
     only:
         refs:
             - develop
