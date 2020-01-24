@@ -1,4 +1,6 @@
 suite-desktop build mac:
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     stage: build artifacts
     script:
         - yarn cache clean
@@ -9,6 +11,8 @@ suite-desktop build mac:
 
 suite-desktop build linux:
     stage: build artifacts
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -18,6 +22,8 @@ suite-desktop build linux:
 
 suite-desktop build windows:
     stage: build artifacts
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     image: electronuserland/builder:wine
     script:
         - yarn cache clean

@@ -1,5 +1,7 @@
 suite-native build android:
     stage: build artifacts
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-native/${CI_BUILD_REF_NAME}
     image: reactnativecommunity/react-native-android
     script:
         - yarn cache clean
