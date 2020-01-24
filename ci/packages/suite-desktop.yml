@@ -4,6 +4,7 @@ suite-desktop build mac:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:mac
+        - mkdir -p ${DEPLOY_DIRECTORY}
         - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.zip ${DEPLOY_DIRECTORY}/
 
 suite-desktop build linux:
@@ -12,6 +13,7 @@ suite-desktop build linux:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:linux
+        - mkdir -p ${DEPLOY_DIRECTORY}
         - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.AppImage ${DEPLOY_DIRECTORY}/
 
 suite-desktop build windows:
@@ -21,4 +23,5 @@ suite-desktop build windows:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:win
+        - mkdir -p ${DEPLOY_DIRECTORY}
         - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.exe ${DEPLOY_DIRECTORY}/
