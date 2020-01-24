@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 
-import * as firmwareUpdateActions from '@settings-actions/firmwareActions';
+import * as firmwareUpdateActions from '@suite/actions/firmware/firmwareActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { Dispatch, AppState } from '@suite-types';
 import Step from './index';

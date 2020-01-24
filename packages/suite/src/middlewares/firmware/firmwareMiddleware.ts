@@ -1,9 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import * as firmwareActions from '@settings-actions/firmwareActions';
-import { AppState, Action, Dispatch } from '@suite-types';
+import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as suiteActions from '@suite-actions/suiteActions';
+import { AppState, Action, Dispatch } from '@suite-types';
 
 const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,

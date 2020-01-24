@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { UI } from 'trezor-connect';
-import { FIRMWARE } from '@settings-actions/constants';
+import { FIRMWARE } from '@firmware-actions/constants';
 import { Action } from '@suite-types';
 
 const INITIAL = 'initial';

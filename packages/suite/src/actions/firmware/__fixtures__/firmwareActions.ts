@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { UI } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import { FIRMWARE } from '@settings-actions/constants';
+import { FIRMWARE } from '@firmware-actions/constants';
 
 const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
 

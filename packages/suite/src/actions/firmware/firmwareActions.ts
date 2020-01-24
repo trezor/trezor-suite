@@ -2,8 +2,7 @@ import TrezorConnect from 'trezor-connect';
 import Rollout from '@trezor/rollout';
 
 import { lockUI } from '@suite-actions/suiteActions';
-import { FIRMWARE } from '@settings-actions/constants';
-//  TODO: should be reworked to deviceManagementActions
+import { FIRMWARE } from '@firmware-actions/constants';
 import { AnyStatus } from '@suite-reducers/firmwareReducer';
 import { Dispatch, GetState, Action } from '@suite-types';
 

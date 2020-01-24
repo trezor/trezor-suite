@@ -21,6 +21,7 @@ import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import OnboardingActions from '@onboarding-types/actions';
 import { SettingsActions } from '@settings-types';
+import { FirmwareActions } from '@firmware-types';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 
@@ -47,6 +48,7 @@ export type Action =
     | NotificationActions
     | WalletAction
     | OnboardingActions
+    | FirmwareActions
     | SettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;

@@ -1,14 +1,14 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { DEVICE } from 'trezor-connect';
 
 import { SUITE } from '@suite-actions/constants';
-import { FIRMWARE } from '@settings-actions/constants';
-import { DEVICE } from 'trezor-connect';
+import { FIRMWARE } from '@firmware-actions/constants';
 import firmwareReducer from '@suite-reducers/firmwareReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
-import firmwareMiddleware from '@suite-middlewares/firmwareMiddleware';
+import firmwareMiddleware from '@firmware-middlewares/firmwareMiddleware';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 
