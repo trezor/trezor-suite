@@ -1,15 +1,14 @@
 import React from 'react';
 import { H2, P, Modal } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import styled from 'styled-components';
 
 storiesOf('Modals', module)
     .add(
-        'Small',
+        'Default',
         () => (
-            <Modal cancelable cancelText="Close" size="small" data-test="modal-small">
-                <H2>Hello world!</H2>
-                <P>Some description.</P>
+            <Modal cancelText="Close" data-test="modal-small">
+                <H2>Ahoj kamaráde!</H2>
+                <P>Ježíš tě strašně miluje.</P>
             </Modal>
         ),
         {
@@ -23,29 +22,16 @@ storiesOf('Modals', module)
         }
     )
     .add(
-        'Medium',
+        'padding with cancel',
         () => (
-            <Modal cancelable cancelText="Close" data-test="modal-medium">
-                <H2>Hello world!</H2>
-                <P>Some description.</P>
-            </Modal>
-        ),
-        {
-            info: {
-                text: `
-            ~~~js
-            import { Modal } from 'trezor-ui-components';
-            ~~~
-            `,
-            },
-        }
-    )
-    .add(
-        'Large',
-        () => (
-            <Modal cancelable cancelText="Close" size="large" data-test="modal-large">
-                <H2>Hello world!</H2>
-                <P>Some description.</P>
+            <Modal
+                padding="50px 20px"
+                cancelable
+                cancelText="Zavři už tenhle trapnej modálek"
+                data-test="modal-medium"
+            >
+                <H2>Ježíš tě má hrozně rád kamaráde!</H2>
+                <P>Páček slimáček.</P>
             </Modal>
         ),
         {

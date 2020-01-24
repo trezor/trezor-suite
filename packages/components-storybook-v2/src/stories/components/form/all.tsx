@@ -2,26 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Input, Textarea, Select, Checkbox, Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-
-const Wrapper = styled.div`
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-`;
-
-const Col = styled.div`
-    padding: 10px;
-    flex: 1;
-    border-radius: 10px;
-    border: 4px dashed pink;
-    margin: 5px;
-    min-width: 200px;
-    max-width: 300px;
-
-    > div {
-        margin-bottom: 20px;
-    }
-`;
+import { StoryWrapper, StoryColumn } from '../../../components/Story';
 
 const Heading = styled.h2``;
 
@@ -48,8 +29,8 @@ storiesOf('Form', module).add(
     'All',
     () => {
         return (
-            <Wrapper>
-                <Col>
+            <StoryWrapper>
+                <StoryColumn>
                     <Heading>Input</Heading>
                     <SubHeading>Default</SubHeading>
                     <Input value="Default input" wrapperProps={{ 'data-test': 'input-default' }} />
@@ -143,8 +124,8 @@ storiesOf('Form', module).add(
                         topLabel="Label"
                         bottomText="bottom text"
                     />
-                </Col>
-                <Col>
+                </StoryColumn>
+                <StoryColumn>
                     <Heading>Textarea</Heading>
                     <SubHeading>Default</SubHeading>
                     <Textarea
@@ -182,8 +163,8 @@ storiesOf('Form', module).add(
                         disabled
                         wrapperProps={{ 'data-test': 'textarea-disabled' }}
                     />
-                </Col>
-                <Col>
+                </StoryColumn>
+                <StoryColumn>
                     <Heading>Switch</Heading>
                     <SubHeading>Off</SubHeading>
                     <Switch onChange={() => {}} checked={false} />
@@ -193,8 +174,8 @@ storiesOf('Form', module).add(
                     <Switch onChange={() => {}} checked={false} isSmall />
                     <SubHeading>On</SubHeading>
                     <Switch onChange={() => {}} checked isSmall />
-                </Col>
-                <Col>
+                </StoryColumn>
+                <StoryColumn>
                     <Heading>Checkbox</Heading>
                     <SubHeading>Unchecked</SubHeading>
                     <Checkbox onClick={() => {}} data-test="checkbox">
@@ -204,8 +185,8 @@ storiesOf('Form', module).add(
                     <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
                         Label
                     </Checkbox>
-                </Col>
-                <Col>
+                </StoryColumn>
+                <StoryColumn>
                     <Heading>Select</Heading>
                     <Select
                         options={SELECT_OPTIONS}
@@ -245,13 +226,13 @@ storiesOf('Form', module).add(
                             'data-test': 'select-disabled',
                         }}
                     />
-                </Col>
-            </Wrapper>
+                </StoryColumn>
+            </StoryWrapper>
         );
     },
     {
-        info: {
-            disable: true,
+        options: {
+            showPanel: false,
         },
     }
 );

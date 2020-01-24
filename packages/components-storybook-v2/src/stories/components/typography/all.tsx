@@ -57,8 +57,8 @@ storiesOf('Typography', module).add(
         );
     },
     {
-        info: {
-            disable: true,
+        options: {
+            showPanel: false,
         },
     }
 );

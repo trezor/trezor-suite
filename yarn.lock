@@ -6406,6 +6406,11 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
 
+"@types/randomcolor@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.npmjs.org/@types/randomcolor/-/randomcolor-0.5.3.tgz#2030101c695dd1b048e82ba3d5e6d605b37b9c0c"
+  integrity sha512-eIhyxP1VKqLRNPrQ9yhsenCj8W+ZIzMrUZqjLCyy1KTV1noh0YPi0DWqTITG82buHVZpzKOf6CCznvZHRQIRPg==
+
 "@types/reach__router@^1.2.3":
   version "1.2.6"
   resolved "https://registry.npmjs.org/@types/reach__router/-/reach__router-1.2.6.tgz#b14cf1adbd1a365d204bbf6605cd9dd7b8816c87"
@@ -20401,6 +20406,11 @@ randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   integrity sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==
   dependencies:
     safe-buffer "^5.1.0"
+
+randomcolor@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.npmjs.org/randomcolor/-/randomcolor-0.5.4.tgz#df615b13f25b89ea58c5f8f72647f0a6f07adcc3"
+  integrity sha512-nYd4nmTuuwMFzHL6W+UWR5fNERGZeVauho8mrJDUSXdNDbao4rbrUwhuLgKC/j8VCS5+34Ria8CsTDuBjrIrQA==
 
 randomfill@^1.0.3:
   version "1.0.4"

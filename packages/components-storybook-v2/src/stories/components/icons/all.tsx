@@ -13,8 +13,6 @@ const Col = styled.div`
     flex: 1;
 `;
 
-const Heading = styled.h2``;
-
 const IconWrapper = styled.div`
     display: inline-block;
     margin: 10px 0;
@@ -48,8 +46,8 @@ storiesOf('Icons', module).add(
         );
     },
     {
-        info: {
-            disable: true,
+        options: {
+            showPanel: false,
         },
     }
 );

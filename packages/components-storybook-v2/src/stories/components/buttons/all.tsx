@@ -1,27 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Button } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-
-const Wrapper = styled.div`
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-`;
-
-const Row = styled.div`
-    border-radius: 10px;
-    flex: 1;
-    border: 4px dashed #00ffff;
-    padding: 10px;
-    margin: 5px;
-    min-width: 200px;
-    max-width: 300px;
-
-    > button {
-        margin-bottom: 10px;
-    }
-`;
+import { StoryWrapper, StoryColumn } from '../../../components/Story';
 
 const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
 const sizes = ['small', 'large'] as const;
@@ -29,10 +9,10 @@ const sizes = ['small', 'large'] as const;
 storiesOf('Buttons', module).add(
     'All',
     () => (
-        <Wrapper>
+        <StoryWrapper>
             {variants.map(variant => {
                 return (
-                    <Row>
+                    <StoryColumn>
                         {sizes.map(size => {
                             return (
                                 <Button
@@ -87,14 +67,14 @@ storiesOf('Buttons', module).add(
                             {variant[0].toUpperCase()}
                             {variant.slice(1)} disabled
                         </Button>
-                    </Row>
+                    </StoryColumn>
                 );
             })}
-        </Wrapper>
+        </StoryWrapper>
     ),
     {
-        info: {
-            disable: true,
+        options: {
+            showPanel: false,
         },
     }
 );

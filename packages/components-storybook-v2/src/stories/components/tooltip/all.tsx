@@ -59,8 +59,8 @@ storiesOf('Tooltip', module).add(
         );
     },
     {
-        info: {
-            disable: true,
+        options: {
+            showPanel: false,
         },
     }
 );

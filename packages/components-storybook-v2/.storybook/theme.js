@@ -1,6 +1,6 @@
 import { create } from '@storybook/theming';
 
 export default create({
-    brandTitle: 'Trezor UI Components v2',
     fontBase: 'TT Hoves',
+    brandImage: 'https://trezor.io/static/images/trezor-logo-black.png',
 });

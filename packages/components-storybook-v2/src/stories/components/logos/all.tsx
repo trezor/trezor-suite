@@ -126,8 +126,8 @@ storiesOf('Logos', module).add(
         );
     },
     {
-        info: {
-            disable: true,
+        options: {
+            showPanel: false,
         },
     }
 );
