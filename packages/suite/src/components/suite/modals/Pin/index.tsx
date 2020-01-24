@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { P, H2, Link } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
+import Loading from '@suite-components/Loading';
 import { PinInput } from '@suite-components';
-import { TrezorDevice } from '@suite-types';
+import { Dispatch, TrezorDevice } from '@suite-types';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
+import * as modalActions from '@suite-actions/modalActions';
 
 const ModalWrapper = styled.div`
     padding: 30px 45px;
@@ -18,12 +22,26 @@ const BottomMessage = styled(P)`
     margin: 20px 30px 0;
 `;
 
-interface Props {
-    device: TrezorDevice;
-    onEnterPin: (value: string) => void;
-}
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    onPinSubmit: bindActionCreators(modalActions.onPinSubmit, dispatch),
+});
 
-const Pin = ({ device, onEnterPin }: Props) => {
+type Props = {
+    device: TrezorDevice;
+} & ReturnType<typeof mapDispatchToProps>;
+
+const Pin = ({ device, onPinSubmit }: Props) => {
+    const [submitted, setSubmitted] = useState(false);
+    if (submitted) {
+        return <Loading />;
+    }
+
+    const submit = (value: string) => {
+        if (submitted) return;
+        setSubmitted(true);
+        onPinSubmit(value);
+    };
+
     return (
         <ModalWrapper>
             <H2>
@@ -37,7 +55,7 @@ const Pin = ({ device, onEnterPin }: Props) => {
             <TopMessage size="small">
                 <Translation {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
             </TopMessage>
-            <PinInput onPinSubmit={onEnterPin} />
+            <PinInput onPinSubmit={submit} />
             <BottomMessage size="small">
                 <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
                 <Link href={URLS.PIN_MANUAL_URL}>
@@ -48,4 +66,4 @@ const Pin = ({ device, onEnterPin }: Props) => {
     );
 };
 
-export default Pin;
+export default connect(null, mapDispatchToProps)(Pin);

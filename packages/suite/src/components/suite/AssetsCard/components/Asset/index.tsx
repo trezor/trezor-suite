@@ -4,8 +4,9 @@ import { Network } from '@wallet-types';
 import { CoinLogo } from '@trezor/components';
 import BigNumber from 'bignumber.js';
 import { FormattedNumber, NoRatesTooltip } from '@suite-components';
-import { variables, colors } from '@trezor/components-v2';
+import { variables } from '@trezor/components-v2';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
+import Badge from '@suite-components/Badge';
 
 const greenArea = '#D6F3CC';
 const greenStroke = '#30c100';
@@ -78,18 +79,8 @@ const AssetName = styled.div`
 
 // Similar Badge in DeviceItem (part of switch device modal)
 // TOOD: refactor to single component
-const Badge = styled.div`
-    display: flex;
-    align-items: center;
+const SmallBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: 600;
-    padding: 5px;
-    border-radius: 3px;
-    background-color: ${colors.BLACK92};
-    text-transform: uppercase;
-    color: ${colors.BLACK50};
-    align-self: center;
-    white-space: nowrap;
 `;
 
 const BadgeText = styled.div`
@@ -112,6 +103,7 @@ const CryptoValueWrapper = styled(Col)`
     flex: 1;
     justify-content: flex-end;
     margin-right: 32px;
+    text-align: right;
 `;
 const FiatValueWrapper = styled(Col)``;
 
@@ -145,12 +137,12 @@ const Asset = React.memo(
                 </Col>
                 <Col>
                     <FiatValueWrapper>
-                        <Badge>
+                        <SmallBadge>
                             <FormattedNumber
                                 value={fiatValue.toString()}
                                 currency={localCurrency}
                             />
-                        </Badge>
+                        </SmallBadge>
                     </FiatValueWrapper>
                 </Col>
                 <Col>
@@ -202,19 +194,19 @@ const Asset = React.memo(
                 </Col>
                 <Col>
                     {exchangeRate && (
-                        <Badge>
+                        <SmallBadge>
                             1 {symbol.toUpperCase()} ={' '}
                             <FormattedNumber
                                 value={exchangeRate.toString()}
                                 currency={localCurrency}
                             />
-                        </Badge>
+                        </SmallBadge>
                     )}
                     {!exchangeRate && (
                         <>
-                            <Badge>
+                            <SmallBadge>
                                 <BadgeText>N/A</BadgeText> <NoRatesTooltip />
-                            </Badge>
+                            </SmallBadge>
                         </>
                     )}
                 </Col>

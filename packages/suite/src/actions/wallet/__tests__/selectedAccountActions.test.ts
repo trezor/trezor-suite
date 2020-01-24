@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 
 import { getStateForAction } from '../selectedAccountActions';
-import fixtures from './fixtures/selectedAccountActions';
+import fixtures from '../__fixtures__/selectedAccountActions';
 
 export const getInitialState = (_settings?: any) => {
     return {

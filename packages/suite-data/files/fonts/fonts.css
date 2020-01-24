@@ -6,15 +6,15 @@
     font-style: normal;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-ExtraBold.woff2') format('woff2'),
         url('./TTHoves/TTHoves-ExtraBold.woff') format('woff');
     font-weight: 800;
     font-style: normal;
-}
+} */
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-ExtraBoldItalic.woff2') format('woff2'),
         url('./TTHoves/TTHoves-ExtraBoldItalic.woff') format('woff');
@@ -44,47 +44,47 @@
         url('./TTHoves/TTHoves-ExtraLightItalic.woff') format('woff');
     font-weight: 200;
     font-style: italic;
-}
+} */
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-Black.woff2') format('woff2'),
         url('./TTHoves/TTHoves-Black.woff') format('woff');
     font-weight: 900;
     font-style: normal;
-}
+} */
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-ExtraLight.woff2') format('woff2'),
         url('./TTHoves/TTHoves-ExtraLight.woff') format('woff');
     font-weight: 200;
     font-style: normal;
-}
+} */
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-BlackItalic.woff2') format('woff2'),
         url('./TTHoves/TTHoves-BlackItalic.woff') format('woff');
     font-weight: 900;
     font-style: italic;
-}
+} */
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-Thin.woff2') format('woff2'),
         url('./TTHoves/TTHoves-Thin.woff') format('woff');
     font-weight: 100;
     font-style: normal;
-}
+} */
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-LightItalic.woff2') format('woff2'),
         url('./TTHoves/TTHoves-LightItalic.woff') format('woff');
     font-weight: 300;
     font-style: italic;
-}
+} */
 
 @font-face {
     font-family: 'TT Hoves';
@@ -102,13 +102,13 @@
     font-style: normal;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-ThinItalic.woff2') format('woff2'),
         url('./TTHoves/TTHoves-ThinItalic.woff') format('woff');
     font-weight: 100;
     font-style: italic;
-}
+} */
 
 @font-face {
     font-family: 'TT Hoves';
@@ -118,7 +118,7 @@
     font-style: normal;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-BoldItalic.woff2') format('woff2'),
         url('./TTHoves/TTHoves-BoldItalic.woff') format('woff');
@@ -132,7 +132,7 @@
         url('./TTHoves/TTHoves-MediumItalic.woff') format('woff');
     font-weight: 500;
     font-style: italic;
-}
+} */
 
 @font-face {
     font-family: 'TT Hoves';
@@ -142,18 +142,18 @@
     font-style: normal;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves Hairline';
     src: url('./TTHoves/TTHoves-Hairline.woff2') format('woff2'),
         url('./TTHoves/TTHoves-Hairline.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-}
+} */
 
-@font-face {
+/* @font-face {
     font-family: 'TT Hoves';
     src: url('./TTHoves/TTHoves-Italic.woff2') format('woff2'),
         url('./TTHoves/TTHoves-Italic.woff') format('woff');
     font-weight: normal;
     font-style: italic;
-}
+} */

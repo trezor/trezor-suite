@@ -1,3 +1,4 @@
-import Onboarding from '@onboarding-views';
+// This route will be displayed as ApplicationModal
+import SuiteLayout from '@suite-components/SuiteLayout';
 
-export default Onboarding;
+export default SuiteLayout;

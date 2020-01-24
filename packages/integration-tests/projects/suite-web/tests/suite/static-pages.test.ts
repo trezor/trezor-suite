@@ -1,15 +1,11 @@
 const fixtures = [
     {
         visit: '/bridge',
-        should: ['contain', 'bridge'],
+        should: ['contain', 'Trezor Bridge'],
     },
     {
         visit: '/version',
         should: ['contain', 'version'],
-    },
-    {
-        visit: '/onboarding',
-        should: ['contain', 'Welcome to Trezor'],
     },
 ] as const;
 

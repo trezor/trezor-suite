@@ -37,7 +37,7 @@ describe.skip('Stories of device connecting', () => {
             cy.getTestElement('button-use-wallet').click();
             cy.get('html').should('contain', 'Connect Trezor to continue');
             cy.connectDevice({ path: FIRST_DEVICE_PATH }, { device_id: FIRST_DEVICE_PATH });
-            cy.walletShouldLoad();
+            cy.dashboardShouldLoad();
         });
 
         it(`bootloader mode -> show info about bootloader`, () => {

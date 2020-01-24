@@ -33,6 +33,14 @@ storiesOf('Form', module).add(
             },
             null
         );
+        const variant: any = select(
+            'Variant',
+            {
+                'Default (large)': null,
+                Small: 'small',
+            },
+            null
+        );
 
         return (
             <Select
@@ -41,6 +49,7 @@ storiesOf('Form', module).add(
                 {...(isDisabled ? { isDisabled } : {})}
                 {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
                 {...(display ? { display } : {})}
+                {...(variant ? { variant } : {})}
                 value={select('Value', values, null)}
                 options={options}
                 topLabel={topLabel}

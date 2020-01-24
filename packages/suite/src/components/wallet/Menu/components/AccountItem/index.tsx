@@ -1,5 +1,5 @@
 import React from 'react';
-import { CoinLogo, colors, variables } from '@trezor/components';
+import { CoinLogo, colors, variables } from '@trezor/components-v2';
 import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import {
@@ -42,8 +42,6 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     flex-direction: column;
-    font-size: ${variables.FONT_SIZE.BIG};
-    color: ${colors.TEXT_PRIMARY};
     padding-left: 8px;
     min-width: 0; /* this makes text-overflow on label work */
 `;
@@ -85,15 +83,14 @@ const AccountHeader = styled.div<{ selected: boolean }>`
         !props.selected &&
         css`
             &:hover {
-                /* TODO: add from components */
-                background: #f5f5f5;
+                background: ${colors.BLACK96};
             }
         `}
 `;
 
 // todo make no style link component
 const StyledLink = styled(Link)`
-    color: ${colors.TEXT_PRIMARY};
+    color: ${colors.BLACK50};
 
     /* TODO: remove and use nostyle Link */
     &:focus,
@@ -101,12 +98,13 @@ const StyledLink = styled(Link)`
     &:visited,
     &:link,
     &:active {
-        color: ${colors.TEXT_PRIMARY} !important;
+        color: ${colors.BLACK50} !important;
         text-decoration: none !important;
     }
 `;
 
 const StyledBadge = styled(Badge)`
+    font-size: ${variables.FONT_SIZE.TINY};
     background: #ebebeb;
 `;
 

@@ -2,7 +2,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import newsletterReducer from '@onboarding-reducers/newsletterReducer';
 import * as newsletterActions from '@onboarding-actions/newsletterActions';
-import { fixtures } from './fixtures/newsletterActions';
+import { fixtures } from '../__fixtures__/newsletterActions';
 
 type NewsletterState = ReturnType<typeof newsletterReducer>;
 

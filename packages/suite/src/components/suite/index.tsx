@@ -1,4 +1,3 @@
-import AcquireDevice from './AcquireDevice';
 import Backdrop from './Backdrop';
 import Footer from './Footer';
 import DeviceIcon from './images/DeviceIcon';
@@ -11,9 +10,10 @@ import SuiteLayout from './SuiteLayout';
 import Notification from './Notification';
 import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
+import WordInput from './WordInput';
+import { Translation } from './Translation';
 
 export {
-    AcquireDevice,
     Backdrop,
     Footer,
     DeviceIcon,
@@ -26,4 +26,6 @@ export {
     Notification,
     PinInput,
     NoRatesTooltip,
+    WordInput,
+    Translation,
 };

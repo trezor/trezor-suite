@@ -1,6 +1,6 @@
 import deviceReducer from '@suite-reducers/deviceReducer';
 import { Action } from '@suite-types';
-import fixtures from './fixtures/deviceReducer';
+import fixtures from '../__fixtures__/deviceReducer';
 
 type State = ReturnType<typeof deviceReducer>;
 
@@ -73,7 +73,7 @@ describe('SUITE.SELECT_DEVICE', () => {
     });
 });
 
-describe('SUITE.RECEIVE_PASSPHRASE_MODE + SUITE.UPDATE_PASSPHRASE_MODE', () => {
+describe('SUITE.UPDATE_PASSPHRASE_MODE', () => {
     fixtures.changePassphraseMode.forEach(f => {
         it(f.description, () => {
             let state: State = f.initialState;

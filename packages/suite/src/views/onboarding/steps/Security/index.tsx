@@ -15,12 +15,7 @@ const SecurityStep = (props: Props) => (
                 <Translation {...messages.TR_SECURITY_SUBHEADING} />
             </Text>
             <Wrapper.Controls>
-                <OnboardingButton.Alt
-                    data-test="button-exit-app"
-                    onClick={() => {
-                        props.closeModalApp();
-                    }}
-                >
+                <OnboardingButton.Alt data-test="button-exit-app" onClick={props.closeModalApp}>
                     <Translation {...messages.TR_SKIP_SECURITY} />
                 </OnboardingButton.Alt>
                 <OnboardingButton.Cta

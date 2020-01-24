@@ -65,8 +65,6 @@ export const connectBootloaderDevice = (path: string) => {
                 },
                 firmware: 'unknown',
                 instance: undefined,
-                instanceLabel: 'My Trezor',
-                instanceName: undefined,
                 label: 'My Trezor',
                 mode: 'bootloader',
                 path,

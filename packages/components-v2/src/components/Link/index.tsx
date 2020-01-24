@@ -43,4 +43,4 @@ const Link = (props: Props) => (
     </A>
 );
 
-export { Link };
+export { Link, Props as LinkProps };
