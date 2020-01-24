@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Button, Checkbox, H1 } from '@trezor/components-v2';
 
-import * as firmwareActions from '@suite/actions/firmware/firmwareActions';
+import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 

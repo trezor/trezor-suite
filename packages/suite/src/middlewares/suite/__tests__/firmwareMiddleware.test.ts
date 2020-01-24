@@ -4,7 +4,7 @@ import { DEVICE } from 'trezor-connect';
 
 import { SUITE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
-import firmwareReducer from '@suite-reducers/firmwareReducer';
+import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';

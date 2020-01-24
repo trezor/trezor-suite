@@ -3,7 +3,7 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import firmwareReducer from '@suite-reducers/firmwareReducer';
+import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@suite/types/utils';
 import * as firmwareActions from '../firmwareActions';

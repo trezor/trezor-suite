@@ -3,7 +3,7 @@ import Rollout from '@trezor/rollout';
 
 import { lockUI } from '@suite-actions/suiteActions';
 import { FIRMWARE } from '@firmware-actions/constants';
-import { AnyStatus } from '@suite-reducers/firmwareReducer';
+import { AnyStatus } from '@firmware-reducers/firmwareReducer';
 import { Dispatch, GetState, Action } from '@suite-types';
 
 export type FirmwareActions =
