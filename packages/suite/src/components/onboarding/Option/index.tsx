@@ -1,51 +1,62 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import colors from '@onboarding-config/colors';
-import { variables } from '@trezor/components';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const OptionWrapper = styled.div<{ isSelected: boolean }>`
-    /* flex-grow: 1; */
-    width: 100%;
-    padding: 10px;
+import { variables as oldVariables } from '@trezor/components';
+import { Button, variables, colors } from '@trezor/components-v2';
+
+const { FONT_SIZE } = variables;
+
+const Wrapper = styled.div`
+    width: 260px;
+    height: 350px;
+    padding: 20px 30px 30px 30px;
     margin: 2%;
-    border: solid 0.2px ${colors.gray};
-    border-radius: 4px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    box-shadow: ${({ isSelected }) =>
-        isSelected ? `0px 0px 2px 1px ${colors.brandPrimary}` : '0px 0px 6px 2px rgba(0,0,0,0.05)'};
-    border-color: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)};
 
-    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (min-width: ${oldVariables.SCREEN_SIZE.SM}) {
         height: 260px;
         width: 215px;
     }
+
+    &:hover {
+        box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.05);
+    }
 `;
 
-const Circle = styled.div`
-    background-color: ${colors.brandPrimary};
-    border-radius: 50%;
-    height: 20px;
-    width: 20px;
-    align-self: flex-end;
+const Image = styled.img``;
+
+const Title = styled.div`
+    font-size: ${FONT_SIZE.NORMAL};
 `;
 
-interface OptionProps {
-    onClick?: () => void;
-    isSelected?: boolean;
-    style?: CSSProperties;
+const Text = styled.div`
+    font-size: ${FONT_SIZE.SMALL};
+    color: ${colors.BLACK50};
+`;
+
+interface Props {
+    imgSrc?: string;
+    title: React.ReactNode;
+    text: React.ReactNode;
+    action: () => void;
+    button: React.ReactNode;
 }
 
-const Option: React.FC<OptionProps> = props => {
-    const { isSelected = false } = props;
+const Option = (props: Props) => {
+    const { imgSrc, title, text, action, button } = props;
     return (
-        <OptionWrapper isSelected={isSelected} onClick={props.onClick} {...props}>
-            <Circle style={{ visibility: props.isSelected ? 'visible' : 'hidden' }} />
-            {props.children}
-        </OptionWrapper>
+        <Wrapper>
+            {imgSrc && <Image src={resolveStaticPath(imgSrc)} />}
+            <Title>{title}</Title>
+            <Text>{text}</Text>
+            <Button onClick={action}>{button}</Button>
+        </Wrapper>
     );
 };
 

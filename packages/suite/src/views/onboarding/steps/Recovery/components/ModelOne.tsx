@@ -9,7 +9,7 @@ import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
-import { Link, P } from '@trezor/components-v2';
+import { Link } from '@trezor/components-v2';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
@@ -83,56 +83,49 @@ const RecoveryStepModelOne = (props: Props) => {
                                 </Text>
                                 <Wrapper.Options>
                                     <Option
-                                        isSelected={recovery.wordsCount === 12}
-                                        onClick={() => {
+                                        action={() => {
                                             setWordsCount(12);
+                                            setStatus('select-advanced-recovery');
                                         }}
-                                    >
-                                        <P>
+                                        title="??"
+                                        text={
                                             <Translation
                                                 {...messages.TR_WORDS}
                                                 values={{ count: '12' }}
                                             />
-                                        </P>
-                                    </Option>
+                                        }
+                                        button="???"
+                                    />
                                     <Option
-                                        isSelected={recovery.wordsCount === 18}
-                                        onClick={() => {
+                                        action={() => {
                                             setWordsCount(18);
+                                            setStatus('select-advanced-recovery');
                                         }}
-                                    >
-                                        <P>
+                                        title="??"
+                                        text={
                                             <Translation
                                                 {...messages.TR_WORDS}
                                                 values={{ count: '18' }}
                                             />
-                                        </P>
-                                    </Option>
+                                        }
+                                        button="???"
+                                    />
+
                                     <Option
-                                        isSelected={recovery.wordsCount === 24}
-                                        onClick={() => {
+                                        action={() => {
                                             setWordsCount(24);
+                                            setStatus('select-advanced-recovery');
                                         }}
-                                    >
-                                        <P>
+                                        title="??"
+                                        text={
                                             <Translation
                                                 {...messages.TR_WORDS}
                                                 values={{ count: '24' }}
                                             />
-                                        </P>
-                                    </Option>
+                                        }
+                                        button="???"
+                                    />
                                 </Wrapper.Options>
-
-                                <Wrapper.Controls>
-                                    <OnboardingButton.Cta
-                                        isDisabled={recovery.wordsCount === null}
-                                        onClick={() => {
-                                            setStatus('select-advanced-recovery');
-                                        }}
-                                    >
-                                        <Translation {...messages.TR_CONTINUE} />
-                                    </OnboardingButton.Cta>
-                                </Wrapper.Controls>
                             </>
                         )}
                         {getStatus() === 'select-advanced-recovery' && (
@@ -151,38 +144,33 @@ const RecoveryStepModelOne = (props: Props) => {
                                 </Text>
                                 <Wrapper.Options>
                                     <Option
-                                        isSelected={recovery.advancedRecovery === false}
-                                        onClick={() => {
+                                        action={() => {
                                             setAdvancedRecovery(false);
+                                            recoverDevice();
                                         }}
-                                    >
-                                        <P>
+                                        title="??"
+                                        text={
                                             <Translation {...messages.TR_BASIC_RECOVERY_OPTION} />
-                                        </P>
-                                    </Option>
+                                        }
+                                        button="???"
+                                    />
+
                                     <Option
-                                        isSelected={recovery.advancedRecovery === true}
-                                        onClick={() => {
+                                        action={() => {
                                             setAdvancedRecovery(true);
+                                            recoverDevice();
                                         }}
-                                    >
-                                        <P>
+                                        title="??"
+                                        text={
                                             <Translation
                                                 {...messages.TR_ADVANCED_RECOVERY_OPTION}
                                             />
-                                        </P>
-                                    </Option>
+                                        }
+                                        button="???"
+                                    />
                                 </Wrapper.Options>
 
                                 <Wrapper.Controls>
-                                    <OnboardingButton.Cta
-                                        onClick={() => {
-                                            recoverDevice();
-                                        }}
-                                    >
-                                        <Translation {...messages.TR_START_RECOVERY} />
-                                    </OnboardingButton.Cta>
-
                                     <OnboardingButton.Alt
                                         onClick={() => {
                                             setStatus(null);

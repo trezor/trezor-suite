@@ -1,22 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
-import { variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
 
+import { Translation } from '@suite-components';
 import * as STEP from '@onboarding-constants/steps';
 import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
-import { Props } from './Container';
 import messages from '@suite/support/messages';
-
-const Small = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    margin-bottom: 5px;
-`;
-
-const Base = styled.div`
-    font-size: ${variables.FONT_SIZE.BASE};
-    margin-bottom: 5px;
-`;
+import { Props } from './Container';
 
 const WelcomeStep = (props: Props) => {
     return (
@@ -33,32 +21,30 @@ const WelcomeStep = (props: Props) => {
                 <Wrapper.Options>
                     <Option
                         data-test="@onboarding/button-path-create"
-                        onClick={() => {
+                        action={() => {
                             props.addPath(STEP.PATH_CREATE);
                             props.goToNextStep();
                         }}
-                    >
-                        <Base>Create new Wallet</Base>
-                        <Small>if you never had any Wallet</Small>
-                        <OnboardingButton.Cta>Create a new Wallet</OnboardingButton.Cta>
-                    </Option>
+                        title="Create new Wallet"
+                        text="if you never had any Wallet"
+                        button="Create a new Wallet"
+                        imgSrc="images/onboarding/create-new.svg"
+                    />
                     <Option
                         data-test="button-path-recovery"
-                        onClick={() => {
+                        action={() => {
                             props.addPath(STEP.PATH_RECOVERY);
                             props.goToNextStep();
                         }}
-                    >
-                        <Base>Restore existing wallet</Base>
-                        <Small>using your backup seed</Small>
-
-                        <OnboardingButton.Alt>Restore existing</OnboardingButton.Alt>
-                    </Option>
+                        title="Restore existing wallet"
+                        text="using your backup seed"
+                        button="Restore"
+                        imgSrc="images/onboarding/recover-from-seed.svg"
+                    />
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back data-test="button-use-wallet" onClick={props.closeModalApp}>
-                    {/* TODO proper texts, I dunno */}
                     <Translation {...messages.TR_BACK} />
                 </OnboardingButton.Back>
             </Wrapper.StepFooter>

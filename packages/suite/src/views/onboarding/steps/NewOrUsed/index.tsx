@@ -1,5 +1,4 @@
 import React from 'react';
-import { P } from '@trezor/components-v2';
 
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
@@ -24,32 +23,28 @@ const NewOrUsedStep = (props: Props) => {
             </Text>
             <Wrapper.StepBody>
                 <Wrapper.Options>
-                    <Option>
-                        <P weight="bold">I have a new device</P>
-                        <Text>Sealed package that you just bought or received</Text>
-                        <OnboardingButton.Cta
-                            data-test="@onboarding/button-new-path"
-                            onClick={() => {
-                                handleNewDeviceOnClick();
-                            }}
-                        >
-                            New device
-                        </OnboardingButton.Cta>
-                    </Option>
+                    <Option
+                        data-test="@onboarding/button-new-path"
+                        action={() => {
+                            handleNewDeviceOnClick();
+                        }}
+                        title="I have a new device"
+                        text="Sealed package that you just bought or received"
+                        button="New device"
+                        imgSrc="images/onboarding/new-device.svg"
+                    />
 
-                    <Option>
-                        <P weight="bold">I have a used device</P>
-                        <Text>Unpacked device that has been already used before</Text>
-                        <OnboardingButton.Alt
-                            data-test="@onboarding/button-used-path"
-                            onClick={() => {
-                                props.onboardingActions.addPath(STEP.PATH_USED);
-                                props.onboardingActions.goToNextStep();
-                            }}
-                        >
-                            Used device
-                        </OnboardingButton.Alt>
-                    </Option>
+                    <Option
+                        data-test="@onboarding/button-used-path"
+                        action={() => {
+                            props.onboardingActions.addPath(STEP.PATH_USED);
+                            props.onboardingActions.goToNextStep();
+                        }}
+                        title="I have a used device"
+                        text="Unpacked device that has been already used before"
+                        button="Used device"
+                        imgSrc="images/onboarding/used-device.svg"
+                    />
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
