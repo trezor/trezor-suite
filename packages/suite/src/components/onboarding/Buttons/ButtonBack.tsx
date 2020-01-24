@@ -6,7 +6,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const ButtonBack = (props: Props) => (
-    <Button variant="tertiary" {...props}>
+    <Button variant="tertiary" icon="ARROW_LEFT" {...props} style={{ backgroundColor: 'initial' }}>
         {props.children}
     </Button>
 );

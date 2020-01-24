@@ -7,6 +7,13 @@ const steps: Step[] = [
         id: STEP.ID_WELCOME_STEP,
     },
     {
+        id: STEP.ID_CREATE_OR_RECOVER,
+        // todo
+        title: STEP.TITLE_SELECT_DEVICE_STEP,
+        // todo
+        path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
+    },
+    {
         id: STEP.ID_NEW_OR_USED,
         title: STEP.TITLE_SELECT_DEVICE_STEP,
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],

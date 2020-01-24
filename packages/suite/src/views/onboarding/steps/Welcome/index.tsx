@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { Translation } from '@suite-components';
-import * as STEP from '@onboarding-constants/steps';
-import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
+import { Text, Option, Wrapper } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
@@ -20,34 +19,27 @@ const WelcomeStep = (props: Props) => {
 
                 <Wrapper.Options>
                     <Option
-                        data-test="@onboarding/button-path-create"
+                        data-test="@onboarding/button-begin"
                         action={() => {
-                            props.addPath(STEP.PATH_CREATE);
                             props.goToNextStep();
                         }}
-                        title="Create new Wallet"
-                        text="if you never had any Wallet"
-                        button="Create a new Wallet"
-                        imgSrc="images/onboarding/create-new.svg"
+                        title="I'm new to all this"
+                        text="I want to be guided through onboarding process"
+                        button="Begin onboarding"
+                        imgSrc="images/onboarding/new-user.svg"
                     />
                     <Option
-                        data-test="button-path-recovery"
+                        data-test="@onboarding/button-skip"
                         action={() => {
-                            props.addPath(STEP.PATH_RECOVERY);
-                            props.goToNextStep();
+                            props.closeModalApp();
                         }}
-                        title="Restore existing wallet"
-                        text="using your backup seed"
-                        button="Restore"
-                        imgSrc="images/onboarding/recover-from-seed.svg"
+                        title="I have initialized device"
+                        text="My device is initialized and I used Wallet or Suite before"
+                        button="Skip onboarding"
+                        imgSrc="images/onboarding/existing-user.svg"
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>
-            <Wrapper.StepFooter>
-                <OnboardingButton.Back data-test="button-use-wallet" onClick={props.closeModalApp}>
-                    <Translation {...messages.TR_BACK} />
-                </OnboardingButton.Back>
-            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

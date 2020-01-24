@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-
-import { variables as oldVariables } from '@trezor/components';
 import { Button, variables, colors } from '@trezor/components-v2';
+
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const { FONT_SIZE } = variables;
 
@@ -18,11 +17,6 @@ const Wrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-
-    @media (min-width: ${oldVariables.SCREEN_SIZE.SM}) {
-        height: 260px;
-        width: 215px;
-    }
 
     &:hover {
         box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.05);

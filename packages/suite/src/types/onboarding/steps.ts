@@ -4,12 +4,11 @@ export interface Step {
     id: AnyStepId;
     title?: AnyStepTitle;
     disallowedDeviceStates?: AnyStepDisallowedState[];
-    visited?: boolean; // todo: might not be used
-    resolved?: boolean; // todo: might not be used
     path?: AnyPath[];
 }
 
 export type AnyStepId =
+    | typeof STEP.ID_CREATE_OR_RECOVER
     | typeof STEP.ID_INIT_DEVICE
     | typeof STEP.ID_BACKUP_STEP
     | typeof STEP.ID_BOOKMARK_STEP

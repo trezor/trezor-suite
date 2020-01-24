@@ -1598,13 +1598,11 @@ const definedMessages = defineMessages({
         id: 'TR_WE_THANK_OUR_TRANSLATORS',
     },
     TR_WELCOME_TO_TREZOR: {
-        defaultMessage: 'Welcome to Trezor',
-        description: 'Welcome message on welcome page, heading.',
+        defaultMessage: 'First-time user or an ol’ Trezor fella?',
         id: 'TR_WELCOME_TO_TREZOR',
     },
     TR_WELCOME_TO_TREZOR_TEXT: {
-        defaultMessage: 'Let us take you through a short setup.',
-        description: 'Welcome message on welcome page, longer text.',
+        defaultMessage: 'Choose your path and let the Trezor Force be with you!.',
         id: 'TR_WELCOME_TO_TREZOR_TEXT',
     },
     TR_WORDS: {
