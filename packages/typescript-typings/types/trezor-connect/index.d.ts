@@ -248,8 +248,9 @@ declare module 'trezor-connect' {
         passphrase_protection?: boolean;
         pin_protection?: boolean;
         label?: string;
-        type?: number;
+        type?: 0 | 1;
         dry_run?: boolean;
+        word_count?: 12 | 18 | 24;
         // there are more of them but dont have a valid usecase now
     }
 

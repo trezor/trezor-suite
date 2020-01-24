@@ -20,6 +20,7 @@ import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
+import WordAdvanced from './WordAdvanced';
 // import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
@@ -65,9 +66,10 @@ const getDeviceContextModal = (props: Props) => {
 
         case 'WordRequestType_Plain':
             return <Word />;
-
-        // used in TT legacy firmware
-        // TT legacy firmware
+        case 'WordRequestType_Matrix6':
+            return <WordAdvanced count={6} />;
+        case 'WordRequestType_Matrix9':
+            return <WordAdvanced count={9} />;
         case 'ButtonRequest_PassphraseType':
             return <PassphraseSource device={device} />;
         // TT firmware

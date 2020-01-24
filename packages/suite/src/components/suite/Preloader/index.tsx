@@ -11,6 +11,7 @@ import { AppState, Dispatch } from '@suite-types';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
+import SeedInput from '@seed-input-views';
 import {
     Bridge,
     DeviceAcquire,
@@ -105,6 +106,8 @@ const getModalApplication = (route: Props['router']['route']) => {
             return Version;
         case 'switch-device':
             return SwitchDevice;
+        case 'seed-input':
+            return SeedInput;
         default:
             break;
     }

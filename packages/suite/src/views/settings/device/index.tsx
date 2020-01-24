@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import TrezorConnect from 'trezor-connect';
 import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
 
 import { SUITE } from '@suite-actions/constants';
@@ -45,6 +44,7 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openModal,
+    checkSeed,
     goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -62,6 +62,15 @@ const Settings = ({
     }
 
     const { features } = device;
+
+    const startCheckSeed = () => {
+        if (features.major_version === 1) {
+            // T1 needs to input some more information from suite. TT does everything on device.
+            goto('seed-input-index', { cancelable: true });
+        } else {
+            checkSeed();
+        }
+    };
 
     const DISPLAY_ROTATIONS = [
         { label: <Translation {...messages.TR_NORTH} />, value: 0 },
@@ -87,7 +96,7 @@ const Settings = ({
                         />
                         <ActionColumn>
                             <ActionButton
-                                onClick={() => backupDevice({})}
+                                onClick={() => backupDevice({ device })}
                                 isDisabled={
                                     uiLocked || !features.needs_backup || features.unfinished_backup
                                 }
@@ -128,9 +137,9 @@ const Settings = ({
                             />
                             <ActionColumn>
                                 <ActionButton
-                                    onClick={() =>
-                                        TrezorConnect.recoveryDevice({ dry_run: true, device })
-                                    }
+                                    onClick={() => {
+                                        startCheckSeed();
+                                    }}
                                     isDisabled={
                                         uiLocked ||
                                         features.needs_backup ||

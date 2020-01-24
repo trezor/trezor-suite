@@ -336,34 +336,6 @@ export const deviceCallsSpecific = [
         action: () => connectActions.changePin(),
     },
     {
-        description: 'recoverDevice t2',
-        initialState: {
-            suite: {
-                device: getSuiteDevice({
-                    features: getDeviceFeatures({ major_version: 2 }),
-                }),
-            },
-        },
-        mocks: {
-            connectResponse: connectSuccessResponse,
-        },
-        action: () => connectActions.recoveryDevice(),
-    },
-    {
-        description: 'recoverDevice - t1',
-        initialState: {
-            suite: {
-                device: getSuiteDevice({
-                    features: getDeviceFeatures({ major_version: 1 }),
-                }),
-            },
-        },
-        mocks: {
-            connectResponse: connectSuccessResponse,
-        },
-        action: () => connectActions.recoveryDevice(),
-    },
-    {
         description: 'wipeDevice',
         initialState: {
             suite: {
