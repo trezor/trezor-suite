@@ -38,7 +38,7 @@ import HologramStep from '@onboarding-views/steps/Hologram/Container';
 import PairStep from '@onboarding-views/steps/Pair/Container';
 import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
 import ShamirStep from '@onboarding-views/steps/Shamir/Container';
-import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
+import RecoveryStep from '@onboarding-views/steps/Recovery';
 import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';
@@ -159,9 +159,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     connectActions: bindActionCreators(connectActions, dispatch),
 });
 
-export type StateProps = ReturnType<typeof mapStateToProps>;
-export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type Props = StateProps & DispatchProps & InjectedModalApplicationProps;
+type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> &
+    InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
     const {
@@ -174,6 +174,8 @@ const Onboarding = (props: Props) => {
         loaded,
         device,
         prevDevice,
+
+        modal,
     } = props;
 
     const model =
@@ -312,7 +314,7 @@ const Onboarding = (props: Props) => {
                             in={activeStepId === STEP.ID_RECOVERY_STEP}
                             {...TRANSITION_PROPS}
                         >
-                            <RecoveryStep />
+                            <RecoveryStep modal={modal} />
                         </CSSTransition>
 
                         <CSSTransition
