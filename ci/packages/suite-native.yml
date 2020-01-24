@@ -13,7 +13,7 @@ suite-native build android:
             - app-release.apk
 
 suite-native deploy:
-    stage: deploy to dev servers
+    stage: deploy artifacts and others
     only:
         refs:
             - develop

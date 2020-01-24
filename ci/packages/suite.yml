@@ -6,7 +6,7 @@ suite test integration:
         - yarn workspace @trezor/suite test-health
 
 suite check outdated:
-    stage: misc
+    stage: deploy artifacts and others
     only:
         refs:
             - develop
