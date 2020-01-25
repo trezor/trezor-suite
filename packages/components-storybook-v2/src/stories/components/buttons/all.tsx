@@ -12,10 +12,11 @@ storiesOf('Buttons', module).add(
         <StoryWrapper>
             {variants.map(variant => {
                 return (
-                    <StoryColumn>
+                    <StoryColumn key={variant}>
                         {sizes.map(size => {
                             return (
                                 <Button
+                                    key={size}
                                     variant={variant}
                                     size={size}
                                     data-test={`button-${variant}-${size}`}

@@ -1,4 +1,4 @@
-describe('Notifications', () => {
+describe.skip('Notifications', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

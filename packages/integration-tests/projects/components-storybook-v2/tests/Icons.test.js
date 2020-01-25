@@ -1,4 +1,4 @@
-describe('Icons', () => {
+describe.skip('Icons', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

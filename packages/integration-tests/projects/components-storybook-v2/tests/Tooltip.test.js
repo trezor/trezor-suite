@@ -1,4 +1,4 @@
-describe('Tooltip', () => {
+describe.skip('Tooltip', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

@@ -1,11 +1,9 @@
 import { addParameters, addDecorator, configure } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs } from '@storybook/addon-knobs';
-import Theme from './theme';
 
 addParameters({
     options: {
-        theme: Theme,
         showPanel: true,
         showInfo: false,
         panelPosition: 'right',

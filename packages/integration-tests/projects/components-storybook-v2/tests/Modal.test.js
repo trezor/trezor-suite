@@ -1,4 +1,4 @@
-describe('Modal', () => {
+describe.skip('Modal', () => {
     it('modal-small', () => {
         cy.viewport(1024, 500);
         cy.loadContent('/iframe.html?selectedKind=Modals&selectedStory=Small&full=0');

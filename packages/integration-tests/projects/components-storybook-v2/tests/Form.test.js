@@ -1,4 +1,4 @@
-describe('Form', () => {
+describe.skip('Form', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "test:components-storybook-v2": "npx cypress run --project ./projects/components-storybook-v2",
+        "test:components-storybook-v2": "CYPRESS_baseUrl='https://suite.corp.sldev.cz/components-storybook-v2/develop' npx cypress run --project ./projects/components-storybook-v2",
+        "test:components-storybook-v2:local": "CYPRESS_baseUrl='http://192.168.0.81:9001' npx cypress open --project ./projects/components-storybook-v2",
         "test:components-storybook": "npx cypress run --project ./projects/components-storybook",
         "test:suite-web:local:open": "./projects/suite-web/scripts/open-local.sh",
         "test:suite-web:local:run": "./projects/suite-web/scripts/run-local.sh",
