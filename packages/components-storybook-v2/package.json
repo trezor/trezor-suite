@@ -15,9 +15,6 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
-    "resolutions": {
-        "styled-components": "5.0.0"
-    },
     "dependencies": {
         "@storybook/addon-actions": "^5.3.9",
         "@storybook/addon-centered": "^5.3.9",
@@ -47,7 +44,7 @@
         "react-dom": "16.9.0",
         "react-router-dom": "^5.0.0",
         "start-server-and-test": "^1.10.7",
-        "styled-components": "^5.0.0",
+        "styled-components": "4.4.1",
         "stylelint": "^13.0.0",
         "stylelint-config-recommended": "^3.0.0",
         "stylelint-config-styled-components": "^0.1.1",
