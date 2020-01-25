@@ -3,6 +3,7 @@ import { Textarea } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select, number } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
+import { StoryWrapper } from '../../../components/Story';
 
 storiesOf('Form', module).add(
     'Textarea',
@@ -41,17 +42,19 @@ storiesOf('Form', module).add(
         });
 
         return (
-            <Textarea
-                {...(disabled ? { disabled } : {})}
-                {...(state ? { state } : {})}
-                {...(display ? { display } : {})}
-                {...(topLabel ? { topLabel } : {})}
-                {...(bottomText ? { bottomText } : {})}
-                {...(placeholder ? { placeholder } : {})}
-                {...(rows !== 5 ? { rows } : {})}
-                {...(monospace ? { monospace } : {})}
-                value={value}
-            />
+            <StoryWrapper>
+                <Textarea
+                    {...(disabled ? { disabled } : {})}
+                    {...(state ? { state } : {})}
+                    {...(display ? { display } : {})}
+                    {...(topLabel ? { topLabel } : {})}
+                    {...(bottomText ? { bottomText } : {})}
+                    {...(placeholder ? { placeholder } : {})}
+                    {...(rows !== 5 ? { rows } : {})}
+                    {...(monospace ? { monospace } : {})}
+                    value={value}
+                />
+            </StoryWrapper>
         );
     },
     {

@@ -3,6 +3,7 @@ import { Button, variables } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { boolean, select, text } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
+import { StoryWrapper } from '../../../components/Story';
 
 storiesOf('Buttons', module).add(
     'Button',
@@ -51,17 +52,19 @@ storiesOf('Buttons', module).add(
         const isLoading = boolean('Loading', false);
 
         return (
-            <Button
-                {...(isDisabled ? { isDisabled } : {})}
-                {...(isLoading ? { isLoading } : {})}
-                {...(variant ? { variant } : {})}
-                {...(size ? { size } : {})}
-                {...(icon ? { icon } : {})}
-                {...(icon && alignIcon !== 'left' ? { alignIcon } : {})}
-                {...(fullWidth ? { fullWidth } : {})}
-            >
-                {value}
-            </Button>
+            <StoryWrapper>
+                <Button
+                    {...(isDisabled ? { isDisabled } : {})}
+                    {...(isLoading ? { isLoading } : {})}
+                    {...(variant ? { variant } : {})}
+                    {...(size ? { size } : {})}
+                    {...(icon ? { icon } : {})}
+                    {...(icon && alignIcon !== 'left' ? { alignIcon } : {})}
+                    {...(fullWidth ? { fullWidth } : {})}
+                >
+                    {value}
+                </Button>
+            </StoryWrapper>
         );
     },
     {

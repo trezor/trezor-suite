@@ -3,6 +3,7 @@ import { Select } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
+import { StoryWrapper } from '../../../components/Story';
 
 storiesOf('Form', module).add(
     'Select',
@@ -43,17 +44,19 @@ storiesOf('Form', module).add(
         );
 
         return (
-            <Select
-                {...(!isSearchable ? { isSearchable } : {})}
-                {...(isClearable ? { isClearable } : {})}
-                {...(isDisabled ? { isDisabled } : {})}
-                {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
-                {...(display ? { display } : {})}
-                {...(variant ? { variant } : {})}
-                value={select('Value', values, null)}
-                options={options}
-                topLabel={topLabel}
-            />
+            <StoryWrapper>
+                <Select
+                    {...(!isSearchable ? { isSearchable } : {})}
+                    {...(isClearable ? { isClearable } : {})}
+                    {...(isDisabled ? { isDisabled } : {})}
+                    {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
+                    {...(display ? { display } : {})}
+                    {...(variant ? { variant } : {})}
+                    value={select('Value', values, null)}
+                    options={options}
+                    topLabel={topLabel}
+                />
+            </StoryWrapper>
         );
     },
     {

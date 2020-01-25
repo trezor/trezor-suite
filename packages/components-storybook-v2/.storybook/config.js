@@ -11,6 +11,9 @@ addParameters({
     info: {
         disable: true,
     },
+    theme: {
+        base: 'light',
+    },
 });
 
 addDecorator(withInfo);

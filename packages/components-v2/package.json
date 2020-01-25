@@ -41,7 +41,7 @@
         "typescript-styled-plugin": "^0.15.0"
     },
     "peerDependencies": {
-        "react": "^16.8",
+        "react": "16.9.0",
         "react-native": "^0.59.4",
         "styled-components": "5.0.0"
     }
