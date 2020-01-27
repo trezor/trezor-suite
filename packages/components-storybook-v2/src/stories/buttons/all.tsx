@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { StoryColumn } from '../../../components/Story';
+import { StoryColumn } from '../../components/Story';
 
 const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
 const sizes = ['small', 'large'] as const;

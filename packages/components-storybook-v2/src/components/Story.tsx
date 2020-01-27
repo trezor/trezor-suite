@@ -19,8 +19,8 @@ const StoryWrapper = ({ children }: StoryWrapperProps) => <Wrapper>{children}</W
 
 interface StoryColumnProps {
     children: any;
-    maxWidth?: string;
-    minWidth?: string;
+    maxWidth?: number;
+    minWidth?: number;
 }
 
 const Col = styled.div<StoryColumnProps>`
@@ -29,8 +29,8 @@ const Col = styled.div<StoryColumnProps>`
     border-radius: 10px;
     border: 1px dashed ${color};
     margin: 5px;
-    min-width: ${props => props.minWidth};
-    max-width: ${props => props.minWidth};
+    min-width: ${props => props.minWidth}px;
+    max-width: ${props => props.minWidth}px;
 
     > * {
         margin-bottom: 20px;
@@ -38,7 +38,7 @@ const Col = styled.div<StoryColumnProps>`
 `;
 
 const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) => (
-    <Col minWidth={`${minWidth}px` || '200px'} maxWidth={`${maxWidth}px` || '350px'}>
+    <Col minWidth={minWidth || 200} maxWidth={maxWidth || 200}>
         {children}
     </Col>
 );

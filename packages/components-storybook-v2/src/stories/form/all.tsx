@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Input, Textarea, Select, Checkbox, Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { StoryColumn } from '../../../components/Story';
+import { StoryColumn } from '../../components/Story';
 
 const Heading = styled.h2``;
 

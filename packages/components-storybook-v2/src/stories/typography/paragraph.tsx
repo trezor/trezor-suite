@@ -2,7 +2,7 @@ import React from 'react';
 import { P } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { select, text } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 storiesOf('Typography', module).add(
     'Paragraph',

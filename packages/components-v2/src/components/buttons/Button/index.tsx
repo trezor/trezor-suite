@@ -26,6 +26,7 @@ const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
 
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
+    background: transparent;
     align-items: center;
     justify-content: center;
     white-space: nowrap;

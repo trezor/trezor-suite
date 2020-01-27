@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, variables, colors } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { number, select, color } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 storiesOf('Icons', module).add(
     'Icon',

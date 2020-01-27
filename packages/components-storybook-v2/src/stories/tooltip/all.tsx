@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Tooltip } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { StoryColumn } from '../../../components/Story';
+import { StoryColumn } from '../../components/Story';
 
 const Center = styled.div`
     display: flex;

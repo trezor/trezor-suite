@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { boolean } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 import styled from 'styled-components';
 
 const StyledSwitch = styled(Switch)``;

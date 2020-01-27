@@ -3,7 +3,7 @@ import { Input, variables } from '@trezor/components-v2';
 import { IconType } from '@trezor/components-v2/lib/support/types';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 storiesOf('Form', module).add(
     'Input',

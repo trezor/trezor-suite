@@ -1,7 +1,7 @@
 import React from 'react';
 import { Notification, H1 } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { StoryColumn } from '../../../components/Story';
+import { StoryColumn } from '../../components/Story';
 
 storiesOf('Notifications', module).add(
     'All',

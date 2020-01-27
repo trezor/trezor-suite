@@ -2,7 +2,7 @@ import React from 'react';
 import { Loader } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { number, boolean, text } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 storiesOf('Loaders', module).add(
     'Loader',

@@ -2,10 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, TrezorLogo, variables, colors, types } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import randomColor from 'randomcolor';
-import { StoryColumn } from '../../../components/Story';
-
-const color = randomColor({ luminosity: 'light' });
+import { StoryColumn } from '../../components/Story';
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;

@@ -4733,6 +4733,25 @@
     qs "^6.6.0"
     ts-dedent "^1.1.0"
 
+"@storybook/addon-storysource@5.3.9":
+  version "5.3.9"
+  resolved "https://registry.npmjs.org/@storybook/addon-storysource/-/addon-storysource-5.3.9.tgz#cc564a5377870fbf6f52a064266d425c65bbb375"
+  integrity sha512-ilipax+C0OTkeE2sYxEA1ZSSl89s12wAP6zq66RQmpD95DvvJswetpU+40dWukw0+9WQ5prW0wR25AlbIVIxLQ==
+  dependencies:
+    "@storybook/addons" "5.3.9"
+    "@storybook/components" "5.3.9"
+    "@storybook/router" "5.3.9"
+    "@storybook/source-loader" "5.3.9"
+    "@storybook/theming" "5.3.9"
+    core-js "^3.0.1"
+    estraverse "^4.2.0"
+    loader-utils "^1.2.3"
+    prettier "^1.16.4"
+    prop-types "^15.7.2"
+    react-syntax-highlighter "^11.0.2"
+    regenerator-runtime "^0.13.3"
+    util-deprecate "^1.0.2"
+
 "@storybook/addon-viewport@^5.3.9":
   version "5.3.9"
   resolved "https://registry.npmjs.org/@storybook/addon-viewport/-/addon-viewport-5.3.9.tgz#197e924b0166bc233a1b14344886ee0c4f1ede5d"
@@ -5010,6 +5029,22 @@
     memoizerific "^1.11.3"
     qs "^6.6.0"
     util-deprecate "^1.0.2"
+
+"@storybook/source-loader@5.3.9":
+  version "5.3.9"
+  resolved "https://registry.npmjs.org/@storybook/source-loader/-/source-loader-5.3.9.tgz#6820476c5fb08c0950dcde033f88b9496df38f67"
+  integrity sha512-ol3SxzpLYb4x3RJS9J/xzCOzK/ZnUs9LIMmpYl4sWsZQECCTTbN96P36BBH0Z6CrB38IJsDHAarseBAMqVov7A==
+  dependencies:
+    "@storybook/addons" "5.3.9"
+    "@storybook/client-logger" "5.3.9"
+    "@storybook/csf" "0.0.1"
+    core-js "^3.0.1"
+    estraverse "^4.2.0"
+    global "^4.3.2"
+    loader-utils "^1.2.3"
+    prettier "^1.16.4"
+    prop-types "^15.7.2"
+    regenerator-runtime "^0.13.3"
 
 "@storybook/theming@5.3.9":
   version "5.3.9"
@@ -19113,7 +19148,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@1.19.1:
+prettier@1.19.1, prettier@^1.16.4:
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
@@ -22654,25 +22689,6 @@ style-search@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/style-search/-/style-search-0.1.0.tgz#7958c793e47e32e07d2b5cafe5c0bf8e12e77902"
   integrity sha1-eVjHk+R+MuB9K1yv5cC/jhLneQI=
-
-styled-components@4.4.1:
-  version "4.4.1"
-  resolved "https://registry.npmjs.org/styled-components/-/styled-components-4.4.1.tgz#e0631e889f01db67df4de576fedaca463f05c2f2"
-  integrity sha512-RNqj14kYzw++6Sr38n7197xG33ipEOktGElty4I70IKzQF1jzaD1U4xQ+Ny/i03UUhHlC5NWEO+d8olRCDji6g==
-  dependencies:
-    "@babel/helper-module-imports" "^7.0.0"
-    "@babel/traverse" "^7.0.0"
-    "@emotion/is-prop-valid" "^0.8.1"
-    "@emotion/unitless" "^0.7.0"
-    babel-plugin-styled-components ">= 1"
-    css-to-react-native "^2.2.2"
-    memoize-one "^5.0.0"
-    merge-anything "^2.2.4"
-    prop-types "^15.5.4"
-    react-is "^16.6.0"
-    stylis "^3.5.0"
-    stylis-rule-sheet "^0.0.10"
-    supports-color "^5.5.0"
 
 styled-components@^4.3.2:
   version "4.3.2"

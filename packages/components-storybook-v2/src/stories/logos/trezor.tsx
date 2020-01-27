@@ -2,7 +2,7 @@ import React from 'react';
 import { TrezorLogo } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { number, select } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 storiesOf('Logos', module).add(
     'Trezor',

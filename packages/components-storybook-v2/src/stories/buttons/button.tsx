@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, variables } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { boolean, select, text } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 storiesOf('Buttons', module).add(
     'Button',

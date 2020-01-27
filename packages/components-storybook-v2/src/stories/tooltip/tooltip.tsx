@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Tooltip } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { select, number, text, boolean } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 const Center = styled.div`
     display: flex;

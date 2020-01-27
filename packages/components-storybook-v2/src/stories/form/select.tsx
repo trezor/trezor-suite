@@ -2,7 +2,7 @@ import React from 'react';
 import { Select } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
-import { infoOptions } from '../../../support/info';
+import { infoOptions } from '../../support/info';
 
 storiesOf('Form', module).add(
     'Select',

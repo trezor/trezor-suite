@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryColumn } from '../../../components/Story';
+import { StoryColumn } from '../../components/Story';
 import { H1, H2, P, Link } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
