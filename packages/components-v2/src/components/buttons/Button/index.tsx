@@ -169,6 +169,7 @@ const Button = ({
     isDisabled = false,
     isLoading = false,
     alignIcon = 'left',
+    onChange,
     ...rest
 }: Props) => {
     const IconComponent = icon ? (
@@ -189,6 +190,7 @@ const Button = ({
         <Wrapper
             variant={variant}
             size={size}
+            onChange={isDisabled ? () => {} : onChange}
             isDisabled={isDisabled}
             disabled={isDisabled}
             fullWidth={fullWidth}
