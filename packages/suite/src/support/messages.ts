@@ -87,11 +87,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'and',
         id: 'TR_AND',
     },
-    TR_ANOTHER_CABLE_INSTRUCTION: {
-        defaultMessage: 'Try using another cable',
-        description: 'Troubleshooting instruction',
-        id: 'TR_ANOTHER_CABLE_INSTRUCTION',
-    },
     TR_ATTENTION_COLON_THE_LOG_CONTAINS: {
         defaultMessage:
             'Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.',
@@ -119,15 +114,9 @@ const definedMessages = defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            'Your {TR_SEED_MANUAL_LINK} is the backup key to all your cryptocurrencies and applications.',
+            'Backup seed consisting of words is the ultimate key to your Wallet and all the important data. Trezor will generate the seed and you should write it down and store it securely.',
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
-    },
-    TR_BACKUP_SUBHEADING_2: {
-        defaultMessage:
-            'Your recovery seed can only be displayed once. Never make a digital copy of your recovery seed and never upload it online. Keep your recovery seed in a safe place.',
-        description: 'Explanation what recovery seed is',
-        id: 'TR_BACKUP_SUBHEADING_2',
     },
     TR_BALANCE: {
         defaultMessage: 'Balance',
@@ -281,12 +270,6 @@ const definedMessages = defineMessages({
         description: 'Button to click to contact support',
         id: 'TR_CONTACT_SUPPORT',
     },
-    TR_CONTACT_TREZOR_SUPPORT_LINK: {
-        defaultMessage: 'contact Trezor support.',
-        description:
-            'Full sentences: If nothing helps, contact Trezor support. See TR_LAST_RESORT_INSTRUCTION',
-        id: 'TR_CONTACT_TREZOR_SUPPORT_LINK',
-    },
     TR_CONTINUE: {
         defaultMessage: 'Continue',
         description: 'Continue button',
@@ -358,12 +341,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device firmware: {firmware}.',
         description: 'Display firmware of device',
         id: 'TR_DEVICE_FIRMWARE_VERSION',
-    },
-    TR_DEVICE_IN_BOOTLOADER_MODE_INSTRUCTIONS: {
-        defaultMessage:
-            'Device is connected in bootloader mode. Plug out the USB cable and connect device again.',
-        description: 'Instructions what to do if device is in bootloader mode',
-        id: 'TR_DEVICE_IN_BOOTLOADER_MODE_INSTRUCTIONS',
     },
     TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON: {
         defaultMessage: 'Continue',
@@ -495,21 +472,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Disconnected',
         description: 'Device status',
         id: 'TR_DISCONNECTED',
-    },
-    TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION: {
-        defaultMessage: 'Do not write it into a computer',
-        description: 'Instruction what user should never do with his seed.',
-        id: 'TR_DO_NOT_SAFE_IN_COMPUTER_INSTRUCTION',
-    },
-    TR_DO_NOT_TAKE_PHOTO_INSTRUCTION: {
-        defaultMessage: 'Do not take a photo of your recovery seed',
-        description: 'Instruction what user should never do with his seed.',
-        id: 'TR_DO_NOT_TAKE_PHOTO_INSTRUCTION',
-    },
-    TR_DO_NOT_UPLOAD_INSTRUCTION: {
-        defaultMessage: 'Do not upload words on the internet',
-        description: 'Instruction what user should never do with his seed.',
-        id: 'TR_DO_NOT_UPLOAD_INSTRUCTION',
     },
     TR_DOCUMENTATION: {
         defaultMessage: 'documentation',
@@ -714,11 +676,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Not sure how PIN works?',
         id: 'TR_HOW_PIN_WORKS',
     },
-    TR_I_HAVE_READ_INSTRUCTIONS: {
-        defaultMessage: 'I have read the instructions and agree',
-        description: 'Checkbox text',
-        id: 'TR_I_HAVE_READ_INSTRUCTIONS',
-    },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
         defaultMessage:
             'If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.',
@@ -756,11 +713,6 @@ const definedMessages = defineMessages({
         description:
             'Just a message that we show after user selects that he wants to setup device as a new one but we detect that it apparently is not',
         id: 'TR_IS_NOT_NEW_DEVICE',
-    },
-    TR_LAST_RESORT_INSTRUCTION: {
-        defaultMessage: 'If nothing helps, {ContactSupportLink}',
-        description: 'Troubleshooting instruction. See TR_CONTACT_TREZOR_SUPPORT_LINK',
-        id: 'TR_LAST_RESORT_INSTRUCTION',
     },
     TR_LEARN_MORE_ABOUT_LATEST_VERSION: {
         defaultMessage: 'Learn more about latest version in {TR_CHANGELOG}.',
@@ -821,11 +773,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Log',
         description: 'application event and error',
         id: 'TR_LOG',
-    },
-    TR_MAKE_SURE_IT_IS_WELL_CONNECTED: {
-        defaultMessage: 'Make sure your device is well connected to avoid communication failures.',
-        description: 'Instruction for connecting device.',
-        id: 'TR_MAKE_SURE_IT_IS_WELL_CONNECTED',
     },
     TR_MESSAGE: {
         defaultMessage: 'Message',
@@ -1182,11 +1129,6 @@ const definedMessages = defineMessages({
         description: 'There are two methods of recovery for T1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },
-    TR_REFRESH_INSTRUCTION: {
-        defaultMessage: 'Refresh your internet browser window',
-        description: 'Troubleshooting instruction',
-        id: 'TR_REFRESH_INSTRUCTION',
-    },
     TR_REMEMBER_DEVICE: {
         defaultMessage: 'Remember device',
         id: 'TR_REMEMBER_DEVICE',
@@ -1216,27 +1158,10 @@ const definedMessages = defineMessages({
             'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
         id: 'TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE',
     },
-    TR_SATOSHILABS_CANNOT_BE_HELD_RESPONSIBLE: {
-        defaultMessage:
-            'SatoshiLabs cannot be held responsible for security liabilities or financial losses resulting from not following security instructions described here.',
-        description: 'Liability disclaimer.',
-        id: 'TR_SATOSHILABS_CANNOT_BE_HELD_RESPONSIBLE',
-    },
     TR_SCAN_QR_CODE: {
         defaultMessage: 'Scan QR code',
         description: 'Title for the Scan QR modal dialog',
         id: 'TR_SCAN_QR_CODE',
-    },
-    TR_SEARCHING_FOR_YOUR_DEVICE: {
-        defaultMessage: 'Searching for your device',
-        description: 'Indication that we app does not see connected device yet.',
-        id: 'TR_SEARCHING_FOR_YOUR_DEVICE',
-    },
-    TR_SEARCHING_TAKES_TOO_LONG: {
-        defaultMessage: 'Searching for your device takes too long, you might want to try to:',
-        description:
-            'Message to display when device is not detected after a decent period of time.',
-        id: 'TR_SEARCHING_TAKES_TOO_LONG',
     },
     TR_SECURITY_HEADING: {
         defaultMessage: 'Trezor successfully initialized!',
@@ -1565,11 +1490,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Wait for your device to reboot',
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
-    },
-    TR_NTH_WORD: {
-        id: 'TR_NTH_WORD',
-        defaultMessage: '{number}. word',
-        description: 'Ordinal number. For example: 1. word',
     },
     TR_FOR_EASIER_AND_SAFER_INPUT: {
         id: 'TR_FOR_EASIER_AND_SAFER_INPUT',
