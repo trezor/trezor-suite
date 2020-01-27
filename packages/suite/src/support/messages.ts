@@ -127,17 +127,6 @@ const definedMessages = defineMessages({
         description: 'Button for selecting basic recovery option',
         id: 'TR_BASIC_RECOVERY_OPTION',
     },
-    TR_BOOKMARK_HEADING: {
-        defaultMessage: 'Browser bookmark',
-        description: 'Heading in bookmark step',
-        id: 'TR_BOOKMARK_HEADING',
-    },
-    TR_BOOKMARK_SUBHEADING: {
-        defaultMessage:
-            'Protect yourself against {TR_PHISHING_ATTACKS}. Bookmark Trezor Wallet (wallet.trezor.io) to avoid visiting fake sites.',
-        description: 'Heading in bookmark step',
-        id: 'TR_BOOKMARK_SUBHEADING',
-    },
     TR_BRIDGE_SUBHEADING: {
         defaultMessage:
             'Trezor Bridge is a communication tool to facilitate the connection between your Trezor and your internet browser.',
@@ -560,8 +549,8 @@ const definedMessages = defineMessages({
         id: 'TR_FINAL_HEADING',
     },
     TR_FINAL_SUBHEADING: {
-        defaultMessage: 'Now you are ready to enjoy bleeding edge security with Trezor.',
-        description: 'Subheading in newsletter step',
+        defaultMessage:
+            'You did it! Not only your Trezor is initialized and ready but you also increased your security level above the average user by going through all security steps. Good job!',
         id: 'TR_FINAL_SUBHEADING',
     },
     TR_FIND_OUT_MORE_INFO: {
@@ -798,47 +787,6 @@ const definedMessages = defineMessages({
         description: 'How many words will user need to enter before recovery is finished.',
         id: 'TR_MORE_WORDS_TO_ENTER',
     },
-    TR_NAME_BORING: {
-        defaultMessage: 'Nah.. too boring, chose a different label',
-        description: 'User shouldnt use My Trezor (default name) as their new custom name',
-        id: 'TR_NAME_BORING',
-    },
-    TR_NAME_CHANGED_TEXT: {
-        defaultMessage:
-            'Excellent, your device has a custom name now. It will be visible on your device display from now on.',
-        description: 'Text to display after user has changed label.',
-        id: 'TR_NAME_CHANGED_TEXT',
-    },
-    TR_NAME_HEADING: {
-        defaultMessage: 'Name your device',
-        description: 'Heading in name step',
-        id: 'TR_NAME_HEADING',
-    },
-    TR_NAME_HEADING_CHANGED: {
-        defaultMessage: 'Hi, {label}',
-        description: 'Subheading in name step after user changes label, so lets welcome him!',
-        id: 'TR_NAME_HEADING_CHANGED',
-    },
-    TR_NAME_OK: {
-        defaultMessage: 'Cool name',
-        description: 'Validation message in label input',
-        id: 'TR_NAME_OK',
-    },
-    TR_NAME_ONLY_ASCII: {
-        defaultMessage: 'Name can contain only basic letters',
-        description: 'Validation message in label input',
-        id: 'TR_NAME_ONLY_ASCII',
-    },
-    TR_NAME_SUBHEADING: {
-        defaultMessage: 'Personalize your device with your own name.',
-        description: 'Subheading in name step',
-        id: 'TR_NAME_SUBHEADING',
-    },
-    TR_NAME_TOO_LONG: {
-        defaultMessage: 'Name is too long',
-        description: 'Validation message in label input',
-        id: 'TR_NAME_TOO_LONG',
-    },
     TR_NAV_RECEIVE: {
         defaultMessage: 'Receive',
         description: 'Title of the navigation tab that contains the account address',
@@ -996,12 +944,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         description: 'Pending transaction with no confirmations',
         id: 'TR_PENDING',
-    },
-    TR_PHISHING_ATTACKS: {
-        defaultMessage: 'phishing attacks',
-        description:
-            'Term, type of hacker attack trying to fool user to enter his sensitive data into a fake site.',
-        id: 'TR_PHISHING_ATTACKS',
     },
     TR_PIN_ERROR_TROUBLESHOOT: {
         defaultMessage:
@@ -1416,11 +1358,6 @@ const definedMessages = defineMessages({
     TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT: {
         defaultMessage: 'Upgrade for the newest features.',
         id: 'TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT',
-    },
-    TR_USE_THE_KEYBOARD_SHORTCUT: {
-        defaultMessage: 'Use the keyboard shortcut:',
-        description: 'We want user to pres Ctrl + D',
-        id: 'TR_USE_THE_KEYBOARD_SHORTCUT',
     },
     TR_USE_YOUR_DEVICE_IN_THIS_WINDOW: {
         defaultMessage: 'Do you want to use your device in this window?',

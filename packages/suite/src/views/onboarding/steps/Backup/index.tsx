@@ -11,7 +11,7 @@ import messages from '@suite/support/messages';
 
 import { Props } from './Container';
 
-const { FONT_WEIGHT, FONT_SIZE } = variables;
+const { FONT_SIZE } = variables;
 
 const StyledCheckbox = styled(Checkbox)`
     margin-bottom: 22px;
@@ -21,15 +21,12 @@ const CheckboxRight = styled.div`
     text-align: left;
 `;
 
-const CheckboxTitle = styled.div`
-    /* font-weight: ${FONT_WEIGHT.BOLD}; */
-`;
+const CheckboxTitle = styled.div``;
 
 const CheckboxText = styled.div`
     font-size: ${FONT_SIZE.TINY};
     color: ${colors.BLACK50};
     max-width: 360px;
-    /* font-weight: ${FONT_WEIGHT.BOLD}; */
 `;
 
 interface CheckItemProps {
@@ -53,10 +50,16 @@ const CheckItem = ({ title, description, isChecked, onClick }: CheckItemProps) =
 const BackupStep = (props: Props) => {
     const { device } = props;
 
-    const [checkboxValues, setCheckboxValues] = useState({
+    const [checkboxValuesBefore, setCheckboxValuesBefore] = useState({
         hasTime: false,
         isInPrivate: false,
         understands: false,
+    });
+
+    const [checkboxValuesAfter, setCheckboxValuesAfter] = useState({
+        wroteProperly: false,
+        noDigitalCopy: false,
+        willHide: false,
     });
 
     if (!device || !device.features) {
@@ -78,7 +81,8 @@ const BackupStep = (props: Props) => {
         return null;
     };
 
-    const canStart = () => Object.values(checkboxValues).every(v => v === true);
+    const canStart = () => Object.values(checkboxValuesBefore).every(v => v === true);
+    const canContinue = () => Object.values(checkboxValuesAfter).every(v => v === true);
 
     return (
         <Wrapper.Step>
@@ -106,36 +110,36 @@ const BackupStep = (props: Props) => {
                         <Wrapper.Checkbox>
                             <CheckItem
                                 onClick={() =>
-                                    setCheckboxValues({
-                                        ...checkboxValues,
-                                        hasTime: !checkboxValues.hasTime,
+                                    setCheckboxValuesBefore({
+                                        ...checkboxValuesBefore,
+                                        hasTime: !checkboxValuesBefore.hasTime,
                                     })
                                 }
                                 title="I have enough time to do a backup (few minutes)"
                                 description="Once you begin this process you can’t pause it or do it again. Please ensure you have enough time to do this backup."
-                                isChecked={checkboxValues.hasTime}
+                                isChecked={checkboxValuesBefore.hasTime}
                             />
                             <CheckItem
                                 onClick={() =>
-                                    setCheckboxValues({
-                                        ...checkboxValues,
-                                        isInPrivate: !checkboxValues.isInPrivate,
+                                    setCheckboxValuesBefore({
+                                        ...checkboxValuesBefore,
+                                        isInPrivate: !checkboxValuesBefore.isInPrivate,
                                     })
                                 }
                                 title="I am in a safe private or public place away from cameras"
                                 description="Make sure no one can peek above your shoulder or there are no cameras watching your screen. Nobody should ever see your seed."
-                                isChecked={checkboxValues.isInPrivate}
+                                isChecked={checkboxValuesBefore.isInPrivate}
                             />
                             <CheckItem
                                 onClick={() =>
-                                    setCheckboxValues({
-                                        ...checkboxValues,
-                                        understands: !checkboxValues.understands,
+                                    setCheckboxValuesBefore({
+                                        ...checkboxValuesBefore,
+                                        understands: !checkboxValuesBefore.understands,
                                     })
                                 }
                                 title="I understand seed is important and I should keep it safe"
                                 description="Backup seed is the ultimate key to your Wallet and funds. Once you lose it, it’s gone forever and there is no way to restore lost seed."
-                                isChecked={checkboxValues.understands}
+                                isChecked={checkboxValuesBefore.understands}
                             />
                         </Wrapper.Checkbox>
 
@@ -190,8 +194,47 @@ const BackupStep = (props: Props) => {
                             <Translation {...messages.TR_BACKUP_FINISHED_TEXT} />
                         </Text>
 
+                        <Wrapper.Checkbox>
+                            <CheckItem
+                                onClick={() =>
+                                    setCheckboxValuesAfter({
+                                        ...checkboxValuesAfter,
+                                        wroteProperly: !checkboxValuesAfter.wroteProperly,
+                                    })
+                                }
+                                title="I wrote down the seed properly "
+                                description="All words must be in the exact order. Make sure the seed won’t get wet or can’t get smudged to make it not readable."
+                                isChecked={checkboxValuesAfter.wroteProperly}
+                            />
+                            <CheckItem
+                                onClick={() =>
+                                    setCheckboxValuesAfter({
+                                        ...checkboxValuesAfter,
+                                        noDigitalCopy: !checkboxValuesAfter.noDigitalCopy,
+                                    })
+                                }
+                                title="I will never make a digital copy or photo"
+                                description="Don’t save your seed in a phone or take a picture with any device.
+                                A cloud or photo service can be hacked and your seed stolen."
+                                isChecked={checkboxValuesAfter.noDigitalCopy}
+                            />
+                            <CheckItem
+                                onClick={() =>
+                                    setCheckboxValuesAfter({
+                                        ...checkboxValuesAfter,
+                                        willHide: !checkboxValuesAfter.willHide,
+                                    })
+                                }
+                                title="I will hide the seed properly"
+                                description="Hide your seed properly and/or use further accessories to ensure maximum security of your seed."
+                                isChecked={checkboxValuesAfter.willHide}
+                            />
+                        </Wrapper.Checkbox>
                         <Wrapper.Controls>
-                            <OnboardingButton.Cta onClick={() => props.goToNextStep()}>
+                            <OnboardingButton.Cta
+                                onClick={() => props.goToNextStep()}
+                                isDisabled={!canContinue()}
+                            >
                                 <Translation {...messages.TR_BACKUP_FINISHED_BUTTON} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>

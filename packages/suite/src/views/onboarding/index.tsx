@@ -25,9 +25,6 @@ import RecoveryStep from '@onboarding-views/steps/Recovery';
 import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';
-import NameStep from '@onboarding-views/steps/Name/Container';
-import BookmarkStep from '@onboarding-views/steps/Bookmark/Container';
-import NewsletterStep from '@onboarding-views/steps/Newsletter/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import { UnexpectedState, ProgressBar } from '@onboarding-components';
 
@@ -153,12 +150,6 @@ const Onboarding = (props: Props) => {
                 return BackupStep;
             case STEP.ID_SET_PIN_STEP:
                 return SetPinStep;
-            case STEP.ID_NAME_STEP:
-                return NameStep;
-            case STEP.ID_NEWSLETTER_STEP:
-                return NewsletterStep;
-            case STEP.ID_BOOKMARK_STEP:
-                return BookmarkStep;
             case STEP.ID_FINAL_STEP:
                 return FinalStep;
             default:
