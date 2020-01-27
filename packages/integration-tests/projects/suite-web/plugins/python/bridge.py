@@ -46,7 +46,6 @@ def start():
         # - check if Popen process starts without error (if 21325 port is listening)
         # - custom path to binary (?)
         base = "./projects/suite-web/plugins/python/bin/trezord-go -ed 21324:21325"
-        # base = "./projects/suite-web/plugins/python/bin/trezord-go-stable -ed 21324:21325"
         command = base + " -u=false" if 'CI' in os.environ else base
         print(command)
         proc = Popen(
