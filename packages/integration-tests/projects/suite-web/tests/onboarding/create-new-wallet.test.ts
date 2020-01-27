@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-describe.skip('Onboarding happy paths', () => {
+describe('Onboarding happy paths', () => {
     beforeEach(() => {
         cy.task('startEmu');
         cy.task('wipeEmu');
