@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import { NETWORKS } from '@wallet-config';
+// import { NETWORKS } from '@wallet-config';
 import messages from '@suite/support/messages';
 
 export const ITEMS = [
