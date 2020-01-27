@@ -1,4 +1,4 @@
-describe.skip('Typography', () => {
+describe('Typography', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

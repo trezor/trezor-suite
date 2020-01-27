@@ -33,37 +33,25 @@ storiesOf('Form', module).add(
                 <StoryColumn minWidth={520}>
                     <Heading>Input</Heading>
                     <SubHeading>Default</SubHeading>
-                    <Input value="Default input" wrapperProps={{ 'data-test': 'input-default' }} />
-                    <Input
-                        variant="small"
-                        value="Small input"
-                        wrapperProps={{ 'data-test': 'input-default-small' }}
-                    />
-                    <Input
-                        state="error"
-                        value="Input with error"
-                        wrapperProps={{ 'data-test': 'input-default-error' }}
-                    />
+                    <Input value="Default input" dataTest="input-default" />
+                    <Input variant="small" value="Small input" dataTest="input-default-small" />
+                    <Input state="error" value="Input with error" dataTest="input-default-error" />
                     <Input
                         state="warning"
                         value="Input with warning"
-                        wrapperProps={{ 'data-test': 'input-default-warning' }}
+                        dataTest="input-default-warning"
                     />
                     <Input
                         state="success"
                         value="Input with success"
-                        wrapperProps={{ 'data-test': 'input-default-success' }}
+                        dataTest="input-default-success"
                     />
-                    <Input
-                        disabled
-                        value="Disabled input"
-                        wrapperProps={{ 'data-test': 'input-default-disabled' }}
-                    />
+                    <Input disabled value="Disabled input" dataTest="input-default-disabled" />
                     <SubHeading>Monospace with button</SubHeading>
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                         display="block"
-                        wrapperProps={{ 'data-test': 'input-block-monospace-button' }}
+                        dataTest="input-block-monospace-button"
                         button={{
                             text: 'Scan',
                             icon: 'QR',
@@ -74,7 +62,7 @@ storiesOf('Form', module).add(
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                         display="block"
-                        wrapperProps={{ 'data-test': 'input-block-monospace-hidden' }}
+                        dataTest="input-block-monospace-hidden"
                         isPartiallyHidden
                         button={{
                             text: 'Show full address',
@@ -85,42 +73,42 @@ storiesOf('Form', module).add(
                     <SubHeading>With label &amp; bottom text</SubHeading>
                     <Input
                         value="Input label"
-                        wrapperProps={{ 'data-test': 'input-label' }}
+                        dataTest="input-label'"
                         topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         variant="small"
                         value="Small input label"
-                        wrapperProps={{ 'data-test': 'input-small-label' }}
+                        dataTest="input-small-label"
                         topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="error"
                         value="Input label with error"
-                        wrapperProps={{ 'data-test': 'input-error-label' }}
+                        dataTest="input-error-label"
                         topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="warning"
                         value="Input label with warning"
-                        wrapperProps={{ 'data-test': 'input-warning-label' }}
+                        dataTest="input-warning-label"
                         topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="success"
                         value="Input label with success"
-                        wrapperProps={{ 'data-test': 'input-success-label' }}
+                        dataTest="input-success-label"
                         topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         disabled
                         value="Disabled input label"
-                        wrapperProps={{ 'data-test': 'input-disabled-label' }}
+                        dataTest="input-disabled-label"
                         topLabel="Label"
                         bottomText="bottom text"
                     />

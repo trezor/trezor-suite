@@ -165,6 +165,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     autoCapitalize?: string;
     spellCheck?: boolean;
     isLoading?: boolean;
+    dataTest?: string;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
     type?: string;
@@ -188,6 +189,7 @@ const Input = ({
     monospace,
     wrapperProps,
     isLoading,
+    dataTest,
     isPartiallyHidden,
     align = 'left',
     ...rest
@@ -211,7 +213,7 @@ const Input = ({
     };
 
     return (
-        <Wrapper width={width} {...wrapperProps}>
+        <Wrapper width={width} {...wrapperProps} data-test={dataTest}>
             {topLabel && <Label>{topLabel}</Label>}
             <InputWrapper>
                 <InputIconWrapper align={align}>
