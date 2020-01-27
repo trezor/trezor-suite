@@ -40,6 +40,7 @@ interface Props {
     text: React.ReactNode;
     action: () => void;
     button: React.ReactNode;
+    'data-test'?: string;
 }
 
 const Option = (props: Props) => {
@@ -49,7 +50,9 @@ const Option = (props: Props) => {
             {imgSrc && <Image src={resolveStaticPath(imgSrc)} />}
             <Title>{title}</Title>
             <Text>{text}</Text>
-            <Button onClick={action}>{button}</Button>
+            <Button onClick={action} data-test={props['data-test']}>
+                {button}
+            </Button>
         </Wrapper>
     );
 };

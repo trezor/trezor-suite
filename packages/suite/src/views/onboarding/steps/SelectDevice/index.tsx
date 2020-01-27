@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components';
-import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
+import { Wrapper, Text, OnboardingButton, Option } from '@onboarding-components';
 
 import messages from '@suite/support/messages';
 import { Props } from './Container';
@@ -12,6 +12,10 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                 <Translation {...messages.TR_SELECT_YOUR_DEVICE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
+                <Text>
+                    Trezor One features two buttons and a monochromatic screen, Trezor T is the
+                    high-end model featuring touch-screen display.
+                </Text>
                 <Wrapper.Options>
                     <Option
                         data-test="@onboarding/option-model-one-path"

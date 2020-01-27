@@ -1,10 +1,12 @@
-import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
-import WebusbButton from '@suite-components/WebusbButton';
-import messages from '@suite/support/messages';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
+
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
+import { Translation } from '@suite-components/Translation';
+import WebusbButton from '@suite-components/WebusbButton';
+import { isWebUSB } from '@suite-utils/transport';
+import messages from '@suite/support/messages';
 
 import Bridge from './components/Bridge/Container';
 import Connect from './components/Connect';
@@ -12,7 +14,6 @@ import TroubleshootBootloader from './components/Connect/TroubleshootBootloader'
 import TroubleshootInitialized from './components/Connect/TroubleshootInitialized';
 import TroubleshootSearchingTooLong from './components/Connect/TroubleshootTooLong';
 import { Props } from './Container';
-import { isWebUSB } from '@suite-utils/transport';
 
 const WebusbButtonWrapper = styled.div`
     width: 200px;
