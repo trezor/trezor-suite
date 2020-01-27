@@ -30,7 +30,6 @@ const Col = styled.div<StoryColumnProps>`
     border: 1px dashed ${color};
     margin: 5px;
     min-width: ${props => props.minWidth}px;
-    max-width: ${props => props.minWidth}px;
 
     > * {
         margin-bottom: 20px;
@@ -38,9 +37,7 @@ const Col = styled.div<StoryColumnProps>`
 `;
 
 const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) => (
-    <Col minWidth={minWidth || 200} maxWidth={maxWidth || 200}>
-        {children}
-    </Col>
+    <Col minWidth={minWidth || 250}>{children}</Col>
 );
 
 export { StoryWrapper, StoryColumn };

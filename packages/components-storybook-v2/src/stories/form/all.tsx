@@ -30,7 +30,7 @@ storiesOf('Form', module).add(
     () => {
         return (
             <>
-                <StoryColumn>
+                <StoryColumn minWidth={520}>
                     <Heading>Input</Heading>
                     <SubHeading>Default</SubHeading>
                     <Input value="Default input" wrapperProps={{ 'data-test': 'input-default' }} />
@@ -125,7 +125,7 @@ storiesOf('Form', module).add(
                         bottomText="bottom text"
                     />
                 </StoryColumn>
-                <StoryColumn>
+                <StoryColumn minWidth={300}>
                     <Heading>Textarea</Heading>
                     <SubHeading>Default</SubHeading>
                     <Textarea

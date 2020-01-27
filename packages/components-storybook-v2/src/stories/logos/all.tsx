@@ -47,8 +47,8 @@ storiesOf('Logos', module).add(
     'All',
     () => {
         return (
-            <Wrapper>
-                <StoryColumn>
+            <>
+                <StoryColumn minWidth={700}>
                     <WrapperIcons>
                         {variables.COINS.map((coin: types.CoinType) => (
                             <Icon>
@@ -58,7 +58,7 @@ storiesOf('Logos', module).add(
                         ))}
                     </WrapperIcons>
                 </StoryColumn>
-                <StoryColumn>
+                <StoryColumn minWidth={400}>
                     <LogoWrapper>
                         <TrezorLogo
                             type="horizontal"
@@ -100,7 +100,7 @@ storiesOf('Logos', module).add(
                         />
                     </LogoWrapper>
                 </StoryColumn>
-            </Wrapper>
+            </>
         );
     },
     {
