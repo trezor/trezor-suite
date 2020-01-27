@@ -180,7 +180,7 @@ export const handleSelectCurrencyChange = (
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && output.amount.value) {
-        const rate = fiatNetwork.rates[localCurrency.value];
+        const rate = fiatNetwork.current.rates[localCurrency.value];
         const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
             new BigNumber(rate),
         );

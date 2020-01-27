@@ -9,6 +9,8 @@ const Wrapper = styled.div`
     display: flex;
     padding: 54px 42px;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 `;
 
 const Content = styled.div`

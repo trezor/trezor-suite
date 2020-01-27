@@ -1,39 +1,76 @@
 import produce from 'immer';
 import { Action } from '@suite-types';
-import { RATE_UPDATE } from '@wallet-actions/constants/fiatRatesConstants';
+import { RATE_UPDATE, LAST_WEEK_RATES_UPDATE } from '@wallet-actions/constants/fiatRatesConstants';
 import { STORAGE } from '@suite-actions/constants';
 import { Network } from '@wallet-types';
 
-export interface Fiat {
+export interface CurrentFiatRates {
     symbol: Network['symbol'];
     rates: { [key: string]: number };
-    timestamp: number;
+    ts: number;
 }
 
-export const initialState: Fiat[] = [];
+export interface TimestampedRates {
+    rates: { [key: string]: number };
+    ts: number;
+}
 
-const update = (state: Fiat[], fiat: Fiat) => {
-    const { symbol, rates, timestamp } = fiat;
+export interface LastWeekRates {
+    tickers: TimestampedRates[];
+    ts: number;
+}
+
+export interface CoinFiatRates {
+    current?: CurrentFiatRates;
+    lastWeek?: LastWeekRates;
+    symbol: Network['symbol'];
+}
+
+export const initialState: CoinFiatRates[] = [];
+
+const updateCurrentRates = (state: CoinFiatRates[], current: CurrentFiatRates) => {
+    const { symbol, rates } = current;
     const affected = state.find(f => f.symbol === symbol);
-    Object.keys(rates).map(k => rates[k].toFixed(2));
+    console.log('affected', affected);
+    // Object.keys(rates).map(k => rates[k].toFixed(2));
+
     if (!affected) {
         state.push({
             symbol,
-            rates,
-            timestamp,
+            current,
+            lastWeek: undefined,
         });
     } else {
-        affected.symbol = symbol;
-        affected.rates = rates;
-        affected.timestamp = timestamp;
+        affected.current = current;
     }
 };
 
-export default (state: Fiat[] = initialState, action: Action): Fiat[] => {
+const updateLastWeekRates = (
+    state: CoinFiatRates[],
+    payload: { symbol: Network['symbol']; tickers: TimestampedRates[]; ts: number },
+) => {
+    const affected = state.find(f => f.symbol === payload.symbol);
+    // Object.keys(tickers).map(k => tickers[k].toFixed(2));
+
+    if (!affected) {
+        state.push({
+            symbol: payload.symbol,
+            current: undefined,
+            lastWeek: payload,
+        });
+    } else {
+        affected.lastWeek = payload;
+    }
+};
+
+export default (state: CoinFiatRates[] = initialState, action: Action): CoinFiatRates[] => {
     return produce(state, draft => {
         switch (action.type) {
             case RATE_UPDATE:
-                update(draft, action.payload);
+                updateCurrentRates(draft, action.payload);
+                break;
+            case LAST_WEEK_RATES_UPDATE:
+                updateLastWeekRates(draft, action.payload);
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.fiat;

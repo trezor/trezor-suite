@@ -118,7 +118,7 @@ const AccountBalance = (props: Props) => {
 
     const { network, localCurrency } = props;
     const fiatRates = props.fiat.find(f => f.symbol === network.symbol);
-    const fiatRateValue = fiatRates ? fiatRates.rates[localCurrency] : null;
+    const fiatRateValue = fiatRates ? fiatRates.current.rates[localCurrency] : null;
     const fiat = fiatRates ? toFiatCurrency(props.balance, localCurrency, fiatRates) : null;
 
     const WrappedNoRatesTooltip = (

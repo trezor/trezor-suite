@@ -5,58 +5,16 @@ import { CoinLogo } from '@trezor/components';
 import BigNumber from 'bignumber.js';
 import { FormattedNumber, NoRatesTooltip } from '@suite-components';
 import { variables } from '@trezor/components-v2';
-import { AreaChart, Area, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
 import Badge from '@suite-components/Badge';
+import { LastWeekRates } from '@wallet-reducers/fiatRateReducer';
+import { AppState } from '@suite-types';
+import { connect } from 'react-redux';
 
 const greenArea = '#D6F3CC';
 const greenStroke = '#30c100';
 const redArea = '#F6DBDB';
 const redStroke = '#d04949';
-
-const data = [
-    {
-        name: 'Page A',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
-    },
-    {
-        name: 'Page B',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
-    },
-    {
-        name: 'Page C',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
-    },
-    {
-        name: 'Page D',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
-    },
-    {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-    },
-    {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-    },
-    {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-    },
-];
 
 const Wrapper = styled.div`
     padding: 12px 20px;
@@ -107,7 +65,7 @@ const CryptoValueWrapper = styled(Col)`
 `;
 const FiatValueWrapper = styled(Col)``;
 
-export interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
     name: string;
     symbol: Network['symbol'];
     cryptoValue: BigNumber | string | number;
@@ -116,12 +74,27 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     localCurrency: string;
 }
 
+const mapStateToProps = (state: AppState) => ({
+    fiat: state.wallet.fiat,
+});
+
+export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
+
 const Asset = React.memo(
-    ({ name, symbol, cryptoValue, fiatValue, exchangeRate, localCurrency, ...rest }: Props) => {
-        const isGraphGreen = Math.random() > 0.5;
+    ({ name, symbol, cryptoValue, fiatValue, exchangeRate, localCurrency, ...props }: Props) => {
+        const lastWeekData = props.fiat.find(r => r.symbol === symbol)?.lastWeek?.tickers;
+        let isGraphGreen = false;
+
+        if (lastWeekData) {
+            const firstDataPoint = lastWeekData[0];
+            const lastDataPoint = lastWeekData[lastWeekData.length - 1];
+            console.log('first', firstDataPoint.rates[localCurrency]);
+            console.log('last', lastDataPoint.rates[localCurrency]);
+            isGraphGreen = lastDataPoint.rates[localCurrency] > firstDataPoint.rates[localCurrency];
+        }
 
         return (
-            <Wrapper {...rest}>
+            <Wrapper {...props}>
                 <Col>
                     <AssetLogoWrapper>
                         <CoinLogo symbol={symbol} size={16} />
@@ -149,7 +122,7 @@ const Asset = React.memo(
                     <GraphWrapper>
                         <ResponsiveContainer id={symbol} height="100%" width="100%">
                             <AreaChart
-                                data={data}
+                                data={lastWeekData}
                                 margin={{
                                     right: 10,
                                     left: 0,
@@ -177,10 +150,11 @@ const Asset = React.memo(
                                         <stop offset="95%" stopColor="#fff" stopOpacity={1} />
                                     </linearGradient>
                                 </defs>
+                                <YAxis hide type="number" domain={['dataMin', 'dataMax']} />
                                 <Area
                                     isAnimationActive={false}
                                     type="monotone"
-                                    dataKey="uv"
+                                    dataKey={data => data.rates.eur}
                                     stroke={isGraphGreen ? greenStroke : redStroke}
                                     fill={
                                         isGraphGreen
@@ -215,4 +189,4 @@ const Asset = React.memo(
     },
 );
 
-export default Asset;
+export default connect(mapStateToProps, null)(Asset);

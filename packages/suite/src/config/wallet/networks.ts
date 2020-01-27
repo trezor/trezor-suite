@@ -13,6 +13,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9130'],
     },
     {
         name: 'Bitcoin (segwit)',
@@ -26,6 +27,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9130'],
     },
     {
         name: 'Bitcoin (legacy)',
@@ -39,6 +41,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9130'],
     },
     // Litecoin
     {
@@ -52,6 +55,7 @@ const networks = [
             tx: 'https://ltc1.trezor.io/tx/',
             account: 'https://ltc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9134'],
     },
     {
         name: 'Litecoin (legacy)',
@@ -65,6 +69,7 @@ const networks = [
             tx: 'https://ltc1.trezor.io/tx/',
             account: 'https://ltc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9134'],
     },
     // Ethereum
     {
@@ -78,6 +83,7 @@ const networks = [
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9136'],
     },
     {
         name: 'Ethereum Classic',
@@ -90,6 +96,7 @@ const networks = [
             tx: 'https://etc1.trezor.io/tx/',
             account: 'https://etc1.trezor.io/address/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9137'],
     },
     // Ripple
     {
@@ -102,6 +109,7 @@ const networks = [
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
         },
+        blockbook: undefined,
     },
     {
         name: 'Bitcoin Cash',
@@ -113,6 +121,7 @@ const networks = [
             tx: 'https://bch1.trezor.io/tx/',
             account: 'https://bch1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9131'],
     },
     {
         name: 'Bitcoin Gold',
@@ -125,6 +134,7 @@ const networks = [
             tx: 'https://btg1.trezor.io/tx/',
             account: 'https://btg1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9135'],
     },
     {
         name: 'Bitcoin Gold (legacy)',
@@ -138,6 +148,7 @@ const networks = [
             tx: 'https://btg1.trezor.io/tx/',
             account: 'https://btg1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9135'],
     },
     {
         name: 'Dash',
@@ -150,6 +161,7 @@ const networks = [
             tx: 'https://dash1.trezor.io/tx/',
             account: 'https://dash1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9133'],
     },
     {
         name: 'DigiByte',
@@ -162,6 +174,7 @@ const networks = [
             tx: 'https://dgb1.trezor.io/tx/',
             account: 'https://dgb1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9142'],
     },
     {
         name: 'DigiByte (legacy)',
@@ -175,6 +188,7 @@ const networks = [
             tx: 'https://dgb1.trezor.io/tx/',
             account: 'https://dgb1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9142'],
     },
     {
         name: 'Dogecoin',
@@ -187,6 +201,7 @@ const networks = [
             tx: 'https://doge1.trezor.io/tx/',
             account: 'https://doge1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9138'],
     },
     {
         name: 'Namecoin',
@@ -199,6 +214,7 @@ const networks = [
             tx: 'https://nmc1.trezor.io/tx/',
             account: 'https://nmc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9139'],
     },
     {
         name: 'Vertcoin',
@@ -211,6 +227,7 @@ const networks = [
             tx: 'https://vtc1.trezor.io/tx/',
             account: 'https://vtc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9140'],
     },
     {
         name: 'Vertcoin (legacy)',
@@ -224,6 +241,7 @@ const networks = [
             tx: 'https://vtc1.trezor.io/tx/',
             account: 'https://vtc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9140'],
     },
     {
         name: 'Zcash',
@@ -236,6 +254,7 @@ const networks = [
             tx: 'https://zec1.trezor.io/tx/',
             account: 'https://zec1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:9132'],
     },
     // Bitcoin testnet
     {
@@ -250,6 +269,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:19130'],
     },
     {
         name: 'Bitcoin Testnet (segwit)',
@@ -264,6 +284,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:19130'],
     },
     {
         name: 'Bitcoin Testnet (legacy)',
@@ -278,6 +299,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:19130'],
     },
     {
         name: 'Ethereum Ropsten',
@@ -291,6 +313,7 @@ const networks = [
             tx: 'https://ropsten1.trezor.io/tx/',
             account: 'https://ropsten1.trezor.io/address/',
         },
+        blockbook: ['https://blockbook-dev.corp.sldev.cz:19136'],
     },
     {
         name: 'XRP Testnet',
@@ -303,6 +326,7 @@ const networks = [
             tx: 'https://test.bithomp.com/explorer/',
             account: 'https://test.bithomp.com/explorer/',
         },
+        blockbook: undefined,
     },
 ] as const;
 

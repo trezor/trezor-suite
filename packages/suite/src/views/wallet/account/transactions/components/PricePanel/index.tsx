@@ -88,7 +88,7 @@ const PricePanel = (props: Props) => {
     const { localCurrency } = props.settings;
     const fiatBalance = getAccountBalance(props.account, localCurrency, props.fiat) || 0;
     const fiatRates = props.fiat.find(f => f.symbol === props.account.symbol);
-    const fiatRateValue = fiatRates ? fiatRates.rates[localCurrency] : null;
+    const fiatRateValue = fiatRates ? fiatRates.current.rates[localCurrency] : null;
 
     return (
         <Wrapper>
