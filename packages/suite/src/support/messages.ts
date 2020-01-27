@@ -607,7 +607,7 @@ const definedMessages = defineMessages({
         id: 'TR_FIND_OUT_MORE_INFO',
     },
     TR_FIRMWARE_HEADING: {
-        defaultMessage: 'Get the latest firmware',
+        defaultMessage: 'Firmware installation',
         description: 'Heading on firmware page',
         id: 'TR_FIRMWARE_HEADING',
     },
@@ -682,7 +682,7 @@ const definedMessages = defineMessages({
         id: 'TR_GO_TO_EXTERNAL_WALLET',
     },
     TR_GO_TO_SECURITY: {
-        defaultMessage: 'Take me to security (recommended)',
+        defaultMessage: 'Continue to backup',
         description: 'Button in security page (start security setup)',
         id: 'TR_GO_TO_SECURITY',
     },
@@ -1239,13 +1239,13 @@ const definedMessages = defineMessages({
         id: 'TR_SEARCHING_TAKES_TOO_LONG',
     },
     TR_SECURITY_HEADING: {
-        defaultMessage: 'Basic setup is done, but...',
+        defaultMessage: 'Trezor successfully initialized!',
         description: 'Heading in security page',
         id: 'TR_SECURITY_HEADING',
     },
     TR_SECURITY_SUBHEADING: {
         defaultMessage:
-            'Good job, your wallet is ready. But we strongly recommend you to spend few more minutes and improve your security.',
+            'Your Trezor has been successfully initialized and is ready to be used. Your Wallet has been successfully created and is ready to be used as well. Wheeee!',
         description: 'Text in security page',
         id: 'TR_SECURITY_SUBHEADING',
     },
@@ -1360,7 +1360,7 @@ const definedMessages = defineMessages({
         id: 'TR_SKIP_ALL',
     },
     TR_SKIP_SECURITY: {
-        defaultMessage: 'Skip for now',
+        defaultMessage: 'Skip backup and PIN',
         description: 'Button in security page (skip security setup)',
         id: 'TR_SKIP_SECURITY',
     },
