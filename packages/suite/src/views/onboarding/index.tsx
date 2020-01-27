@@ -4,16 +4,12 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Prompt, variables } from '@trezor/components';
-import { Link, P } from '@trezor/components-v2';
+import { variables } from '@trezor/components';
 import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
-import * as EVENTS from '@onboarding-actions/constants/events';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
-import colors from '@onboarding-config/colors';
-import { TOS_URL } from '@suite-constants/urls';
 import { STEP_HEIGHT, STEP_HEIGHT_UNIT } from '@onboarding-config/layout';
 import { getFnForRule } from '@onboarding-utils/rules';
 
@@ -37,8 +33,6 @@ import { UnexpectedState, ProgressBar } from '@onboarding-components';
 
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 
-const BORDER_RADIUS = 12;
-
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -57,49 +51,22 @@ const Wrapper = styled.div`
     }
 `;
 
-const Overlay = styled(Wrapper)`
-    position: absolute;
-    margin-top: auto;
-    margin-bottom: auto;
-    display: flex;
-    justify-content: center;
-    background-color: ${colors.white};
-    z-index: 405;
-    border-radius: ${BORDER_RADIUS}px;
-`;
-
 const ProgressBarSlot = styled.div`
     height: 80px;
 `;
 
 const ComponentWrapper = styled.div`
     display: flex;
+    justify-content: center;
     min-height: ${`${STEP_HEIGHT}${STEP_HEIGHT_UNIT}`};
 `;
 
-const TrezorAction = ({ model, event }: { model: number; event: string }) => {
-    let TrezorActionText;
-    if (event === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
-        TrezorActionText = () => (
-            <P>
-                Complete action on your device. By clicking continue you agree with{' '}
-                <Link target="_blank" href={TOS_URL}>
-                    Terms of services
-                </Link>
-            </P>
-        );
-    } else {
-        TrezorActionText = () => <P>Complete action on your device.</P>;
-    }
-
-    return (
-        <Overlay data-test="@onboading/confirm-action-on-device">
-            <Prompt model={model} size={100}>
-                <TrezorActionText />
-            </Prompt>
-        </Overlay>
-    );
-};
+// used to position modal to center
+const ActionModalWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 
 const mapStateToProps = (state: AppState) => {
     return {
@@ -107,12 +74,10 @@ const mapStateToProps = (state: AppState) => {
 
         // connect reducer
         deviceCall: state.onboarding.deviceCall,
-        // deviceInteraction: state.onboarding.connect.deviceInteraction,
         uiInteraction: state.onboarding.uiInteraction,
 
         // onboarding reducer
         prevDevice: state.onboarding.prevDevice,
-        selectedModel: state.onboarding.selectedModel,
         activeStepId: state.onboarding.activeStepId,
         path: state.onboarding.path,
     };
@@ -129,20 +94,14 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 const Onboarding = (props: Props) => {
     const {
-        selectedModel,
         activeStepId,
 
-        deviceCall,
         uiInteraction,
 
-        device,
         prevDevice,
 
         modal,
     } = props;
-
-    const model =
-        (device && device.features && device.features.major_version) || selectedModel || 2;
 
     const getStep = (activeStepId: AppState['onboarding']['activeStepId']) => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
@@ -164,24 +123,6 @@ const Onboarding = (props: Props) => {
             const fn = getFnForRule(state);
             return fn({ device, prevDevice, path, uiInteraction });
         });
-    };
-
-    const isGlobalInteraction = () => {
-        const globals = [
-            EVENTS.BUTTON_REQUEST__PROTECT_CALL,
-            EVENTS.BUTTON_REQUEST__WIPE_DEVICE,
-            EVENTS.BUTTON_REQUEST__RESET_DEVICE,
-            EVENTS.BUTTON_REQUEST__MNEMONIC_WORD_COUNT,
-            EVENTS.BUTTON_REQUEST__MNEMONIC_INPUT,
-            EVENTS.BUTTON_REQUEST__OTHER,
-            'ButtonRequest_RecoveryHomepage',
-            'ButtonRequest_MnemonicWordCount',
-        ];
-        return !!(
-            uiInteraction.name &&
-            globals.includes(uiInteraction.name) &&
-            deviceCall.isProgress
-        );
     };
 
     const errorState = getError();
@@ -232,8 +173,12 @@ const Onboarding = (props: Props) => {
             <Head>
                 <title>Onboarding | Trezor Suite</title>
             </Head>
-            {errorState && (
-                <Overlay>
+
+            <ProgressBarSlot>
+                <ProgressBar activeStepId={activeStepId} />
+            </ProgressBarSlot>
+            <ComponentWrapper>
+                {errorState && (
                     <UnexpectedState
                         caseType={errorState}
                         prevModel={
@@ -244,17 +189,13 @@ const Onboarding = (props: Props) => {
                         }
                         uiInteraction={uiInteraction}
                     />
-                </Overlay>
-            )}
-            <ProgressBarSlot>
-                <ProgressBar activeStepId={activeStepId} />
-            </ProgressBarSlot>
-            <ComponentWrapper>
-                {uiInteraction.name && isGlobalInteraction() && (
-                    <TrezorAction model={model} event={uiInteraction.name} />
                 )}
-
-                <StepComponent modal={modal} />
+                {!errorState && modal && (
+                    <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
+                        {modal}
+                    </ActionModalWrapper>
+                )}
+                {!errorState && !modal && <StepComponent modal={modal} />}
             </ComponentWrapper>
         </Wrapper>
     );
