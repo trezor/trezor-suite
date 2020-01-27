@@ -2,7 +2,7 @@ import React from 'react';
 import randomColor from 'randomcolor';
 import styled from 'styled-components';
 
-const color = randomColor({ hue: 'pink' });
+const color = randomColor({ luminosity: 'light' });
 
 const Wrapper = styled.div`
     padding: 20px;
@@ -27,7 +27,7 @@ const Col = styled.div<StoryColumnProps>`
     padding: 10px;
     flex: 1;
     border-radius: 10px;
-    border: 3px dashed ${color};
+    border: 1px dashed ${color};
     margin: 5px;
     min-width: ${props => props.minWidth};
     max-width: ${props => props.minWidth};

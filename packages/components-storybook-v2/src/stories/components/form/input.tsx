@@ -4,7 +4,6 @@ import { IconType } from '@trezor/components-v2/lib/support/types';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
-import { StoryWrapper } from '../../../components/Story';
 
 storiesOf('Form', module).add(
     'Input',
@@ -75,22 +74,20 @@ storiesOf('Form', module).add(
         }
 
         return (
-            <StoryWrapper>
-                <Input
-                    {...(disabled ? { disabled } : {})}
-                    {...(state ? { state } : {})}
-                    {...(variant ? { variant } : {})}
-                    {...(display ? { display } : {})}
-                    {...(topLabel ? { topLabel } : {})}
-                    {...(bottomText ? { bottomText } : {})}
-                    {...(placeholder ? { placeholder } : {})}
-                    {...(isLoading ? { isLoading } : {})}
-                    {...(monospace ? { monospace } : {})}
-                    {...(buttonText ? { button } : {})}
-                    {...(align ? { align } : {})}
-                    value={value}
-                />
-            </StoryWrapper>
+            <Input
+                {...(disabled ? { disabled } : {})}
+                {...(state ? { state } : {})}
+                {...(variant ? { variant } : {})}
+                {...(display ? { display } : {})}
+                {...(topLabel ? { topLabel } : {})}
+                {...(bottomText ? { bottomText } : {})}
+                {...(placeholder ? { placeholder } : {})}
+                {...(isLoading ? { isLoading } : {})}
+                {...(monospace ? { monospace } : {})}
+                {...(buttonText ? { button } : {})}
+                {...(align ? { align } : {})}
+                value={value}
+            />
         );
     },
     {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { StoryWrapper, StoryColumn } from '../../../components/Story';
+import { StoryColumn } from '../../../components/Story';
 
 const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
 const sizes = ['small', 'large'] as const;
@@ -9,7 +9,7 @@ const sizes = ['small', 'large'] as const;
 storiesOf('Buttons', module).add(
     'All',
     () => (
-        <StoryWrapper>
+        <>
             {variants.map(variant => {
                 return (
                     <StoryColumn key={variant}>
@@ -71,7 +71,7 @@ storiesOf('Buttons', module).add(
                     </StoryColumn>
                 );
             })}
-        </StoryWrapper>
+        </>
     ),
     {
         options: {

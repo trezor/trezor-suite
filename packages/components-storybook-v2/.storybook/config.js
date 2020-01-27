@@ -1,6 +1,8 @@
+import React from 'react';
 import { addParameters, addDecorator, configure } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs } from '@storybook/addon-knobs';
+import { StoryWrapper } from '../src/components/Story';
 
 addParameters({
     options: {
@@ -18,6 +20,8 @@ addParameters({
 
 addDecorator(withInfo);
 addDecorator(withKnobs);
+
+addDecorator(storyFn => <StoryWrapper>{storyFn()}</StoryWrapper>);
 
 const loadStories = () => {
     require('../src/stories/components/buttons/all');

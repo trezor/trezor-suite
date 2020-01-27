@@ -3,10 +3,6 @@ import styled from 'styled-components';
 import { Tooltip, H2 } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
-const Wrapper = styled.div`
-    padding: 2rem;
-`;
-
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -22,7 +18,7 @@ storiesOf('Tooltip', module).add(
     'All',
     () => {
         return (
-            <Wrapper>
+            <>
                 <H2>Top</H2>
                 <Center>
                     <TooltipWrapper data-test="tooltip-top">
@@ -55,7 +51,7 @@ storiesOf('Tooltip', module).add(
                         </Tooltip>
                     </TooltipWrapper>
                 </Center>
-            </Wrapper>
+            </>
         );
     },
     {

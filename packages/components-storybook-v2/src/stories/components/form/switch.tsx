@@ -1,10 +1,9 @@
 import React from 'react';
 import { Switch } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { text, boolean } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/info';
 import styled from 'styled-components';
-import { StoryWrapper } from '../../../components/Story';
 
 const StyledSwitch = styled(Switch)``;
 
@@ -18,22 +17,18 @@ storiesOf('Form', module).add(
         const isDisabled = boolean('Disabled', false);
 
         return isSmall ? (
-            <StoryWrapper>
-                <Switch
-                    onChange={() => {}}
-                    checked={checked}
-                    {...(isDisabled ? { isDisabled } : {})}
-                    isSmall
-                />
-            </StoryWrapper>
+            <Switch
+                onChange={() => {}}
+                checked={checked}
+                {...(isDisabled ? { isDisabled } : {})}
+                isSmall
+            />
         ) : (
-            <StoryWrapper>
-                <StyledSwitch
-                    onChange={() => {}}
-                    {...(isDisabled ? { isDisabled } : {})}
-                    checked={checked}
-                />
-            </StoryWrapper>
+            <StyledSwitch
+                onChange={() => {}}
+                {...(isDisabled ? { isDisabled } : {})}
+                checked={checked}
+            />
         );
     },
     {

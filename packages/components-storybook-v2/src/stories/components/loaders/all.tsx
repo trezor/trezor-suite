@@ -3,10 +3,6 @@ import styled from 'styled-components';
 import { H1, H2, Loader, colors } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
 
-const Wrapper = styled.div`
-    padding: 2rem;
-`;
-
 const Section = styled.div`
     display: flex;
     flex-direction: row;
@@ -23,7 +19,7 @@ storiesOf('Loaders', module).add(
     'All',
     () => {
         return (
-            <Wrapper>
+            <>
                 <H1>Loader</H1>
                 <H2>default</H2>
                 <Section>
@@ -74,7 +70,7 @@ storiesOf('Loaders', module).add(
                         data-test="loader-white-text-transparent"
                     />
                 </SectionDark>
-            </Wrapper>
+            </>
         );
     },
     {

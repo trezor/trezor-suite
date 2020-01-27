@@ -2,26 +2,31 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, variables, colors, types } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
+import randomColor from 'randomcolor';
+
+const color = randomColor({ luminosity: 'light' });
 
 const Wrapper = styled.div`
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-`;
-
-const Col = styled.div`
-    flex: 1;
+    display: grid;
+    width: 100%;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 `;
 
 const IconWrapper = styled.div`
-    display: inline-block;
-    margin: 10px 0;
-    text-align: center;
-    min-width: 110px;
+    display: flex;
+    min-height: 100px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        border: 1px dashed ${color};
+    }
 `;
 
 const IconText = styled.div`
-    margin-bottom: 0.5rem;
+    padding-bottom: 10px;
     color: ${colors.BLACK50};
 `;
 
@@ -30,18 +35,16 @@ storiesOf('Icons', module).add(
     () => {
         return (
             <Wrapper>
-                <Col>
-                    {variables.ICONS.map((icon: types.IconType) => (
-                        <IconWrapper>
-                            <IconText>{icon}</IconText>
-                            <Icon
-                                icon={icon}
-                                color={colors.BLACK17}
-                                data-test={`icon-${icon.toLowerCase().replace('_', '-')}`}
-                            />
-                        </IconWrapper>
-                    ))}
-                </Col>
+                {variables.ICONS.map((icon: types.IconType) => (
+                    <IconWrapper>
+                        <IconText>{icon}</IconText>
+                        <Icon
+                            icon={icon}
+                            color={colors.BLACK17}
+                            data-test={`icon-${icon.toLowerCase().replace('_', '-')}`}
+                        />
+                    </IconWrapper>
+                ))}
             </Wrapper>
         );
     },

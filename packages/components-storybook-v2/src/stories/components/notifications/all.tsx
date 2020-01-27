@@ -1,8 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Notification, H1, colors } from '@trezor/components-v2';
+import { Notification, H1 } from '@trezor/components-v2';
 import { storiesOf } from '@storybook/react';
-import { StoryWrapper, StoryColumn } from '../../../components/Story';
+import { StoryColumn } from '../../../components/Story';
 
 storiesOf('Notifications', module).add(
     'All',
@@ -11,7 +10,7 @@ storiesOf('Notifications', module).add(
         type StateType = 'success' | 'info' | 'warning' | 'error';
 
         return (
-            <StoryWrapper>
+            <>
                 {states.map(state => (
                     <StoryColumn>
                         <H1>{state}</H1>
@@ -91,7 +90,7 @@ storiesOf('Notifications', module).add(
                         />
                     </StoryColumn>
                 ))}
-            </StoryWrapper>
+            </>
         );
     },
     {
