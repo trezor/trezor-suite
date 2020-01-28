@@ -1,4 +1,4 @@
-describe('Tooltip', () => {
+describe.only('Tooltip', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
     });

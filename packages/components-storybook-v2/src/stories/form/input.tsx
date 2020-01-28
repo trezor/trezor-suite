@@ -48,10 +48,9 @@ storiesOf('Form', module).add(
             {
                 Left: null,
                 Right: 'right',
-                Center: 'center',
             },
             null
-        ) as 'right' | 'center';
+        ) as 'right';
 
         const buttonText: string = text('Button', '');
         const button = {
