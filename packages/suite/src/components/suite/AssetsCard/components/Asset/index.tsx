@@ -5,16 +5,10 @@ import { CoinLogo } from '@trezor/components';
 import BigNumber from 'bignumber.js';
 import { FormattedNumber, NoRatesTooltip } from '@suite-components';
 import { variables } from '@trezor/components-v2';
-import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
 import Badge from '@suite-components/Badge';
-import { LastWeekRates } from '@wallet-reducers/fiatRateReducer';
 import { AppState } from '@suite-types';
 import { connect } from 'react-redux';
-
-const greenArea = '#D6F3CC';
-const greenStroke = '#30c100';
-const redArea = '#F6DBDB';
-const redStroke = '#d04949';
+import LastWeekGraph from './components/LastWeekGraph';
 
 const Wrapper = styled.div`
     padding: 12px 20px;
@@ -83,15 +77,6 @@ export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
 const Asset = React.memo(
     ({ name, symbol, cryptoValue, fiatValue, exchangeRate, localCurrency, ...props }: Props) => {
         const lastWeekData = props.fiat.find(r => r.symbol === symbol)?.lastWeek?.tickers;
-        let isGraphGreen = false;
-
-        if (lastWeekData) {
-            const firstDataPoint = lastWeekData[0];
-            const lastDataPoint = lastWeekData[lastWeekData.length - 1];
-            console.log('first', firstDataPoint.rates[localCurrency]);
-            console.log('last', lastDataPoint.rates[localCurrency]);
-            isGraphGreen = lastDataPoint.rates[localCurrency] > firstDataPoint.rates[localCurrency];
-        }
 
         return (
             <Wrapper {...props}>
@@ -120,50 +105,11 @@ const Asset = React.memo(
                 </Col>
                 <Col>
                     <GraphWrapper>
-                        <ResponsiveContainer id={symbol} height="100%" width="100%">
-                            <AreaChart
-                                data={lastWeekData}
-                                margin={{
-                                    right: 10,
-                                    left: 0,
-                                }}
-                            >
-                                <defs>
-                                    <linearGradient
-                                        id="greenAreaGradient"
-                                        x1="0"
-                                        y1="0"
-                                        x2="0"
-                                        y2="1"
-                                    >
-                                        <stop offset="30%" stopColor={greenArea} stopOpacity={1} />
-                                        <stop offset="95%" stopColor="#fff" stopOpacity={1} />
-                                    </linearGradient>
-                                    <linearGradient
-                                        id="redAreaGradient"
-                                        x1="0"
-                                        y1="0"
-                                        x2="0"
-                                        y2="1"
-                                    >
-                                        <stop offset="30%" stopColor={redArea} stopOpacity={1} />
-                                        <stop offset="95%" stopColor="#fff" stopOpacity={1} />
-                                    </linearGradient>
-                                </defs>
-                                <YAxis hide type="number" domain={['dataMin', 'dataMax']} />
-                                <Area
-                                    isAnimationActive={false}
-                                    type="monotone"
-                                    dataKey={data => data.rates.eur}
-                                    stroke={isGraphGreen ? greenStroke : redStroke}
-                                    fill={
-                                        isGraphGreen
-                                            ? 'url(#greenAreaGradient)'
-                                            : 'url(#redAreaGradient)'
-                                    }
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                        <LastWeekGraph
+                            lastWeekData={lastWeekData}
+                            symbol={symbol}
+                            localCurrency={localCurrency}
+                        />
                     </GraphWrapper>
                 </Col>
                 <Col>
