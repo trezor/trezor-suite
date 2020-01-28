@@ -1,4 +1,5 @@
 export const ID_WELCOME_STEP = 'welcome';
+export const ID_SKIP_STEP = 'skip';
 export const ID_CREATE_OR_RECOVER = 'create-or-recover';
 export const ID_NEW_OR_USED = 'new-or-used';
 export const ID_BACKUP_STEP = 'backup';

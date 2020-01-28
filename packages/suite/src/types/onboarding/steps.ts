@@ -4,9 +4,14 @@ export interface Step {
     id: AnyStepId;
     disallowedDeviceStates?: AnyStepDisallowedState[];
     path?: AnyPath[];
+    buy: boolean;
+    help: boolean;
+    progress: boolean;
 }
 
 export type AnyStepId =
+    | typeof STEP.ID_WELCOME_STEP
+    | typeof STEP.ID_SKIP_STEP
     | typeof STEP.ID_CREATE_OR_RECOVER
     | typeof STEP.ID_INIT_DEVICE
     | typeof STEP.ID_BACKUP_STEP
@@ -17,7 +22,6 @@ export type AnyStepId =
     | typeof STEP.ID_SELECT_DEVICE_STEP
     | typeof STEP.ID_SET_PIN_STEP
     | typeof STEP.ID_SECURITY_STEP
-    | typeof STEP.ID_WELCOME_STEP
     | typeof STEP.ID_UNBOXING_STEP
     | typeof STEP.ID_SHAMIR_STEP
     | typeof STEP.ID_RECOVERY_STEP;

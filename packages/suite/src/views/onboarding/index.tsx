@@ -90,17 +90,9 @@ type Props = ReturnType<typeof mapStateToProps> &
     InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
-    const {
-        activeStepId,
+    const { activeStepId, device, uiInteraction, prevDevice, path, modal } = props;
 
-        uiInteraction,
-
-        prevDevice,
-
-        modal,
-    } = props;
-
-    const getStep = (activeStepId: AppState['onboarding']['activeStepId']) => {
+    const getStep = () => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
         // todo: is there a better way how to solve lookup completeness with typescript?
         if (!lookup) {
@@ -110,8 +102,7 @@ const Onboarding = (props: Props) => {
     };
 
     const getError = () => {
-        const { device, prevDevice, activeStepId, path, uiInteraction } = props;
-        const activeStep = getStep(activeStepId);
+        const activeStep = getStep();
         if (!activeStep.disallowedDeviceStates) {
             return null;
         }
@@ -166,7 +157,7 @@ const Onboarding = (props: Props) => {
             </Head>
 
             <ProgressBarSlot>
-                <ProgressBar activeStepId={activeStepId} />
+                {getStep().progress && <ProgressBar activeStepId={activeStepId} />}
             </ProgressBarSlot>
             <ComponentWrapper>
                 {errorState && (

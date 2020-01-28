@@ -21,7 +21,7 @@ const WelcomeStep = (props: Props) => {
                     <Option
                         data-test="@onboarding/button-begin"
                         action={() => {
-                            props.goToNextStep();
+                            props.goToNextStep('create-or-recover');
                         }}
                         title="I'm new to all this"
                         text="I want to be guided through onboarding process"

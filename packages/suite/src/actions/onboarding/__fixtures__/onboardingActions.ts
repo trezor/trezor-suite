@@ -17,7 +17,7 @@ export default [
         },
         action: () => onboardingActions.goToNextStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_CREATE_OR_RECOVER },
+            toMatchObject: { activeStepId: STEP.ID_SKIP_STEP },
         },
     },
     {
