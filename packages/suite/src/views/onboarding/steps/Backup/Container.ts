@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import * as routerActions from '@suite-actions/routerActions';
+import * as backupActions from '@settings-actions/backupActions';
 
 import { Dispatch, AppState } from '@suite-types';
 
@@ -11,10 +12,6 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
-    // deviceInteraction: state.onboarding.connect.deviceInteraction,
-    uiInteraction: state.onboarding.uiInteraction,
-    deviceCall: state.onboarding.deviceCall,
-    activeSubStep: state.onboarding.activeSubStep,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -27,7 +24,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     ),
     resetDevice: bindActionCreators(connectActions.resetDevice, dispatch),
     resetCall: bindActionCreators(connectActions.resetCall, dispatch),
-    backupDevice: bindActionCreators(connectActions.backupDevice, dispatch),
+    backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
     retryBackup: bindActionCreators(onboardingActions.retryBackup, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });

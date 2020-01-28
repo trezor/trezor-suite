@@ -17,7 +17,7 @@ export default [
         },
         action: () => onboardingActions.goToNextStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_NEW_OR_USED },
+            toMatchObject: { activeStepId: STEP.ID_SKIP_STEP },
         },
     },
     {
@@ -53,7 +53,7 @@ export default [
         },
         action: () => onboardingActions.goToPreviousStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_WELCOME_STEP },
+            toMatchObject: { activeStepId: STEP.ID_CREATE_OR_RECOVER },
         },
     },
     {

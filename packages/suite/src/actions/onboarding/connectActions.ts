@@ -63,6 +63,7 @@ const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) =
 
     return {
         ...params,
+        // not neccessary
         useEmptyPassphrase: true,
         device,
     };

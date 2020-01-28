@@ -1,8 +1,10 @@
-import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
-import { P, Tooltip } from '@trezor/components';
 import React, { useEffect, useState } from 'react';
+import { P, Tooltip } from '@trezor/components';
+
+import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
+import { Translation } from '@suite-components';
+import messages from '@suite/support/messages';
 
 import { Props } from './Container';
 
@@ -11,6 +13,12 @@ interface ButtonProps {
     isConnected: boolean;
     isInBootloader: boolean;
 }
+
+const InitImg = () => <img alt="" src={resolveStaticPath('images/onboarding/firmware-init.svg')} />;
+
+const SuccessImg = () => (
+    <img alt="" src={resolveStaticPath('images/onboarding/firmware-success.svg')} />
+);
 
 const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) => {
     let content = '';
@@ -214,6 +222,7 @@ const FirmwareStep = ({
                                 <Text>
                                     <Translation {...messages.TR_FIRMWARE_SUBHEADING} />
                                 </Text>
+                                <InitImg />
                             </>
                         )}
 
@@ -231,6 +240,7 @@ const FirmwareStep = ({
                                     You might either update your device now or continue and update
                                     it later.
                                 </Text>
+                                <InitImg />
                             </>
                         )}
 
@@ -248,6 +258,7 @@ const FirmwareStep = ({
                                     This firmware is not longer supported, you will need to update
                                     it now.
                                 </Text>
+                                <InitImg />
                             </>
                         )}
                     </>
@@ -260,6 +271,7 @@ const FirmwareStep = ({
                         <Text>
                             <Translation {...messages.TR_FIRMWARE_INSTALLED} />
                         </Text>
+                        <SuccessImg />
                     </>
                 )}
 

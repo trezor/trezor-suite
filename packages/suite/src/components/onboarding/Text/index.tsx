@@ -8,8 +8,7 @@ interface Props {
 }
 
 const Text = styled(P)<Props>`
-    margin-bottom: 10px;
-    text-align: center;
+    /* text-align: center; */
 `;
 
 export default Text;

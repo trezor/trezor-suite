@@ -2,8 +2,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UI } from 'trezor-connect';
+
 import { Link } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
+import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import { PinMatrix, Text, OnboardingButton, Wrapper } from '@onboarding-components';
@@ -14,25 +16,6 @@ const NewPinWrapper = styled.div`
     flex-direction: column;
     align-items: center;
 `;
-
-// const HowToSetPinModal = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: space-around;
-//     align-items: center;
-//     height: 400px;
-// `;
-
-// const HowToSetPin = styled.img`
-//     box-shadow: 0 4px 8px 0 grey;
-//     max-width: 400px;
-//     width: 80%;
-//     object-fit: contain;
-// `;
-
-// interface SetPinState {
-//     instructionsFocused: boolean;
-// }
 
 const SetPinStep = (props: Props) => {
     const { deviceCall, device, activeSubStep, uiInteraction } = props;
@@ -81,12 +64,8 @@ const SetPinStep = (props: Props) => {
                         <Text>
                             <Translation {...messages.TR_PIN_SUBHEADING} />
                         </Text>
+                        <img alt="" src={resolveStaticPath('images/onboarding/t-pin-ask.svg')} />
                         <Wrapper.Controls>
-                            <OnboardingButton.Alt
-                                onClick={() => props.onboardingActions.goToNextStep()}
-                            >
-                                <Translation {...messages.TR_SKIP} />
-                            </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 onClick={() => {
                                     props.connectActions.changePin();
@@ -150,6 +129,10 @@ const SetPinStep = (props: Props) => {
                         <Text>
                             <Translation {...messages.TR_PIN_SET_SUCCESS} />
                         </Text>
+                        <img
+                            alt=""
+                            src={resolveStaticPath('images/onboarding/t-pin-success.svg')}
+                        />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => props.onboardingActions.goToNextStep()}
@@ -187,6 +170,14 @@ const SetPinStep = (props: Props) => {
                     </>
                 )}
             </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <OnboardingButton.Back
+                    icon="CROSS"
+                    onClick={() => props.onboardingActions.goToNextStep()}
+                >
+                    <Translation {...messages.TR_SKIP} />
+                </OnboardingButton.Back>
+            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

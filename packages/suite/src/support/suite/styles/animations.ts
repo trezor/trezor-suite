@@ -1,5 +1,6 @@
 import { css } from 'styled-components';
-import { STEP_ANIMATION_DURATION } from '@onboarding-constants/constants';
+
+const STEP_ANIMATION_DURATION = 500;
 
 const animationStyles = css`
     .slide-left-enter {

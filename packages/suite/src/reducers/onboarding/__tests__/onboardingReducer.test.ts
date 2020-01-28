@@ -92,10 +92,13 @@ describe('onboarding reducer', () => {
 
         it('should change prevDevice field on step that does care', () => {
             const device = getConnectDevice();
-            const state = onboardingReducer(getInitialState({ activeStepId: STEP.ID_NAME_STEP }), {
-                type: DEVICE.DISCONNECT,
-                payload: device,
-            });
+            const state = onboardingReducer(
+                getInitialState({ activeStepId: STEP.ID_BACKUP_STEP }),
+                {
+                    type: DEVICE.DISCONNECT,
+                    payload: device,
+                },
+            );
             expect(state.prevDevice).toEqual(device);
         });
 
@@ -104,7 +107,7 @@ describe('onboarding reducer', () => {
             const device2 = getConnectDevice({ features: getDeviceFeatures({ device_id: '2' }) });
 
             const state = onboardingReducer(
-                getInitialState({ prevDevice: device1, activeStepId: STEP.ID_NAME_STEP }),
+                getInitialState({ prevDevice: device1, activeStepId: STEP.ID_BACKUP_STEP }),
                 {} as Action,
             );
 
