@@ -65,6 +65,7 @@ const getSuiteApplicationState = (props: Props) => {
     if (!device) return DeviceConnect;
 
     // device features cannot be read, device is probably used in another window
+    return DeviceAcquire;
     if (device.type === 'unacquired') return DeviceAcquire;
 
     // Webusb unreadable device (HID)

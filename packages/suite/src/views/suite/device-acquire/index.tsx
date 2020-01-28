@@ -2,6 +2,7 @@ import { SUITE } from '@suite-actions/constants';
 import styled from 'styled-components';
 import messages from '@suite/support/messages';
 import { H2, P, Button } from '@trezor/components-v2';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Translation } from '@suite-components/Translation';
 import React from 'react';
 
@@ -9,22 +10,18 @@ import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
-    padding: 100px 170px;
+    padding: 100px 120px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 `;
 
-// TODO add proper image
-const Image = styled.div`
-    margin: 50px;
-    width: 252px;
-    height: 170px;
-    background: #d8d9da;
+const Image = styled.img`
+    width: 360px;
 `;
 
 const StyledP = styled(P)`
-    max-width: 400px;
+    max-width: 500px;
 `;
 
 const Acquire = ({ device, locks, acquireDevice }: Props) => {
@@ -35,10 +32,10 @@ const Acquire = ({ device, locks, acquireDevice }: Props) => {
             <H2>
                 <Translation {...messages.TR_ACQUIRE_DEVICE_TITLE} />
             </H2>
-            <StyledP size="tiny">
+            <StyledP>
                 <Translation {...messages.TR_ACQUIRE_DEVICE_DESCRIPTION} />
             </StyledP>
-            <Image />
+            <Image src={resolveStaticPath('images/suite/device-another-session.svg')} />
             <Button isLoading={locked} onClick={() => acquireDevice()}>
                 <Translation {...messages.TR_ACQUIRE_DEVICE} />
             </Button>

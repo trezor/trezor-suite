@@ -469,10 +469,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device Settings',
         id: 'TR_DEVICE_SETTINGS_TITLE',
     },
-    TR_DEVICE_USED_IN_OTHER: {
-        defaultMessage: 'Device is used in other window',
-        id: 'TR_DEVICE_USED_IN_OTHER',
-    },
     TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT: {
         defaultMessage:
             'Device you reconnected is different from the previous device. Connect the right one.',
@@ -1496,10 +1492,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Use the keyboard shortcut:',
         description: 'We want user to pres Ctrl + D',
         id: 'TR_USE_THE_KEYBOARD_SHORTCUT',
-    },
-    TR_USE_YOUR_DEVICE_IN_THIS_WINDOW: {
-        defaultMessage: 'Do you want to use your device in this window?',
-        id: 'TR_USE_YOUR_DEVICE_IN_THIS_WINDOW',
     },
     TR_USED_IN_ANOTHER_WINDOW: {
         defaultMessage: 'Used in other window',
