@@ -70,12 +70,12 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
         const tx = resp.payload[0];
 
         dispatch({
-            type: SEND.BTC_PRECOMPOSED_TX,
+            type: SEND.DCR_PRECOMPOSED_TX,
             payload: tx,
         });
     } else {
         dispatch({
-            type: SEND.BTC_PRECOMPOSED_TX,
+            type: SEND.DCR_PRECOMPOSED_TX,
             payload: {
                 type: 'error',
                 error: resp.payload.error,
@@ -111,7 +111,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
     };
 
     dispatch({
-        type: SEND.BTC_ADD_RECIPIENT,
+        type: SEND.DCR_ADD_RECIPIENT,
         newOutput,
     });
 
@@ -126,7 +126,7 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getSta
     const { account } = getState().wallet.selectedAccount;
     if (!send || !account) return null;
 
-    dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
+    dispatch({ type: SEND.DCR_REMOVE_RECIPIENT, outputId });
     dispatch(sendFormActions.cache());
 };
 
@@ -137,7 +137,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     const selectedDevice = getState().suite.device;
     const account = selectedAccount.account as Account;
-    if (!send || !send.networkTypeBitcoin.transactionInfo || !selectedDevice) return;
+    if (!send || !send.networkTypedDecred.transactionInfo || !selectedDevice) return;
 
     const { transactionInfo } = send.networkTypeBitcoin;
 

@@ -1219,6 +1219,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'NEM',
         id: 'TR_NETWORK_NEM',
     },
+    TR_NETWORK_DECRED: {
+        defaultMessage: 'Decred',
+        id: 'TR_NETWORK_DECRED',
+    },
+    TR_NETWORK_DECRED_TESTNET: {
+        defaultMessage: 'Decred Testnet',
+        id: 'TR_NETWORK_DECRED_TESTNET',
+    },
     TR_NETWORK_STELLAR: {
         defaultMessage: 'Stellar',
         id: 'TR_NETWORK_STELLAR',

@@ -3,6 +3,7 @@ import {
     SendFormBtcActions as SendFormBtcActions$,
     SendFormXrpActions as SendFormXrpActions$,
     SendFormEthActions as SendFormEthActions$,
+    SendFormDcrActions as SendFormDcrActions$,
 } from './actions';
 
 import { Output as Output$ } from './output';
@@ -20,6 +21,7 @@ import {
 
 export type SendFormActions = SendFormActions$;
 export type SendFormBtcActions = SendFormBtcActions$;
+export type SendFormDcrActions = SendFormDcrActions$;
 export type SendFormXrpActions = SendFormXrpActions$;
 export type SendFormEthActions = SendFormEthActions$;
 export type Output = Output$;

@@ -75,6 +75,9 @@ export const getTransactionInfo = (networkType: Account['networkType'], send: St
         case 'ripple': {
             return send.networkTypeRipple.transactionInfo;
         }
+        case 'decred': {
+            return send.networkTypeDecred.transactionInfo;
+        }
         // no default
     }
 };

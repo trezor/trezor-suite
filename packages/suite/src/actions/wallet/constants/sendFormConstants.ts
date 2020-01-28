@@ -29,3 +29,8 @@ export const ETH_HANDLE_DATA = '@wallet-send-form/eth-handle-data';
 // xrp
 export const XRP_HANDLE_DESTINATION_TAG_CHANGE = '@wallet-send-form/xrp-handle-destination-tag';
 export const XRP_PRECOMPOSED_TX = '@wallet-send-form/xrp-precomposed-tx';
+
+//decred
+export const DCR_ADD_RECIPIENT = '@wallet-send-form/dcr-add-recipient';
+export const DCR_REMOVE_RECIPIENT = '@wallet-send-form/dcr-remove-recipient';
+export const DCR_PRECOMPOSED_TX = '@wallet-send-form/dcr-precomposed-tx';

@@ -13,6 +13,12 @@ type AccountNetworkSpecific =
           page: AccountInfo['page'];
       }
     | {
+        networkType: 'decred';
+        misc: undefined;
+        marker: undefined;
+        page: AccountInfo['page'];
+    }
+    | {
           networkType: 'ripple';
           misc: { sequence: number; reserve: string };
           marker: AccountInfo['marker'];

@@ -3,6 +3,7 @@ import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import {
     FeeLevel as FeeLevelBase,
     PrecomposedTransaction as PrecomposedBitcoinTransaction,
+    PrecomposedTransaction as PrecomposedDecredTransaction,
 } from 'trezor-connect';
 import { PrecomposedTransactionXrp } from './transactions';
 
@@ -60,6 +61,9 @@ interface NetworkTypeEthereum {
 interface NetworkTypeBitcoin {
     transactionInfo: PrecomposedBitcoinTransaction | null;
 }
+interface NetworkTypeDecred {
+    transactionInfo: PrecomposedDecredTransaction | null;
+}
 
 export interface State {
     deviceState: string;
@@ -72,4 +76,5 @@ export interface State {
     networkTypeRipple: NetworkTypeRipple;
     networkTypeEthereum: NetworkTypeEthereum;
     networkTypeBitcoin: NetworkTypeBitcoin;
+    networkTypeDecred: NetworkTypeDecred;
 }

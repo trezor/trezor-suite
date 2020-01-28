@@ -6,6 +6,7 @@ import {
     SendFormBtcActions,
     SendFormXrpActions,
     SendFormEthActions,
+    SendFormDcrActions,
 } from '@wallet-types/sendForm';
 
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
@@ -45,6 +46,7 @@ export type WalletAction =
     | ReceiveActions
     | SendFormActions
     | SendFormBtcActions
+    | SendFormDcrActions
     | SendFormXrpActions
     | SendFormEthActions
     | SignVerifyActions

@@ -91,6 +91,34 @@ const networks = [
             account: 'https://etc1.trezor.io/address/',
         },
     },
+    //Decred
+    {
+        name: 'Decred',
+        networkType: 'decred',
+        symbol: 'dcr',
+        bip44: "m/44'/42'/0'/i'",
+        hasSignVerify: true,
+        decimals: 8,
+        explorer: {
+            tx: 'https://dcrdata.dcred.org/tx/',
+            account: 'https://dcrdata.dcred.org/address/',
+        },
+    },
+    //Decred Testnet
+    {
+        name: 'Decred',
+        networkType: 'decred',
+        symbol: 'tdcr',
+        bip44: "m/44'/42'/1'/i'",
+        hasSignVerify: true, 
+        
+        decimals: 8,
+        testnet: true,
+        explorer: {
+            tx: 'https://testnet.dcred.org/tx/',
+            account: 'https://testnet.dcred.org/address/',
+        },
+    },
     // Ripple
     {
         name: 'XRP',

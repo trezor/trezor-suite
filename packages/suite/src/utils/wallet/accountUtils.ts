@@ -76,6 +76,10 @@ export const getTitleForNetwork = (symbol: Account['symbol']) => {
             return messages.TR_NETWORK_XRP;
         case 'txrp':
             return messages.TR_NETWORK_XRP_TESTNET;
+        case 'dcr': 
+            return messages.TR_NETWORK_DECRED;
+        case 'tdcr':
+            return messages.TR_NETWORK_DECRED_TESTNET;
         default:
             return messages.TR_NETWORK_UNKNOWN;
     }
@@ -154,6 +158,24 @@ export const isAddressInAccount = (
 
     switch (networkType) {
         case NETWORK_TYPE.BITCOIN: {
+            return filteredAccounts.find(account => {
+                const { addresses } = account;
+                if (addresses) {
+                    const foundAccountUnused = addresses.unused.find(
+                        item => item.address === address,
+                    );
+                    if (foundAccountUnused) {
+                        return account;
+                    }
+                    const foundAccountUsed = addresses.used.find(item => item.address === address);
+                    if (foundAccountUsed) {
+                        return account;
+                    }
+                }
+                return false;
+            });
+        }
+        case NETWORK_TYPE.DECRED: {
             return filteredAccounts.find(account => {
                 const { addresses } = account;
                 if (addresses) {

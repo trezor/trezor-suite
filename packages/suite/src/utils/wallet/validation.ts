@@ -18,6 +18,8 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'xrp';
         case 'trop':
             return 'eth';
+        case 'tdcr':
+            return 'dcr';
         // no default
     }
 };

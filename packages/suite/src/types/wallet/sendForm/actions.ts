@@ -64,6 +64,11 @@ export type SendFormBtcActions =
     | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
     | { type: typeof SEND.BTC_REMOVE_RECIPIENT; outputId: number }
     | { type: typeof SEND.BTC_PRECOMPOSED_TX; payload: PrecomposedTransaction };
+    
+export type SendFormDcrActions =
+    | { type: typeof SEND.DCR_ADD_RECIPIENT; newOutput: Output }
+    | { type: typeof SEND.DCR_REMOVE_RECIPIENT; outputId: number }
+    | { type: typeof SEND.DCR_PRECOMPOSED_TX; payload: PrecomposedTransaction };
 
 export type SendFormXrpActions =
     | { type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE; destinationTag: string }

@@ -12,10 +12,10 @@ export const VALIDATION_ERRORS = {
 export const CUSTOM_FEE = 'custom' as const;
 export const FIRST_OUTPUT_ID = 0;
 export const BTC_RBF_SEQUENCE = 0xffffffff - 2;
-export const XRP_FLAG = 0x80000000;
+export const XRP_FLAG = 0x80000000; 
 export const U_INT_32 = 0xffffffff;
 export const ETH_DEFAULT_GAS_PRICE = '21000';
 export const ETH_DEFAULT_GAS_LIMIT = '1';
-
+//export const DCR_STANDARD_TX = '0.0001'
 // UI
 export const LABEL_HEIGHT = 38;
