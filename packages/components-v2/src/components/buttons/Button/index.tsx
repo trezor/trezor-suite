@@ -29,6 +29,7 @@ const Wrapper = styled.button<WrapperProps>`
     background: transparent;
     align-items: center;
     justify-content: center;
+    border: none;
     white-space: nowrap;
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
     border-radius: 3px;
@@ -50,12 +51,13 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             color: ${colors.WHITE};
+            border: 1px solid ${colors.GREENER};
             background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
             box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
 
             &:hover,
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25)),
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
                     linear-gradient(to top, ${colors.GREENER}, #21c100);
             }
         `}
@@ -70,7 +72,7 @@ const Wrapper = styled.button<WrapperProps>`
 
             &:hover,
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15)),
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1)),
                     linear-gradient(${colors.WHITE}, ${colors.WHITE});
             }
         `}
@@ -107,7 +109,7 @@ const Wrapper = styled.button<WrapperProps>`
 
             &:hover,
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25)),
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
                     linear-gradient(to top, ${colors.RED}, #f25757);
             }
         `}
