@@ -51,7 +51,7 @@ const steps: Step[] = [
             STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
-        buy: false,
+        buy: true,
         help: true,
         progress: true,
     },

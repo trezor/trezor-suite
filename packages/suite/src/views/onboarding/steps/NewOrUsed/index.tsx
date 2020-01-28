@@ -16,10 +16,10 @@ const NewOrUsedStep = (props: Props) => {
 
     return (
         <Wrapper.Step>
-            <Wrapper.StepHeading>Do you want to use new or used device?</Wrapper.StepHeading>
+            <Wrapper.StepHeading>Select device status</Wrapper.StepHeading>
             <Text>
-                Trezor Wallet is your account within Trezor ecosystem. It allows you to easily
-                manage your funds and initiate transfers.
+                You can select either a brand new Trezor or any Trezor device that has been used
+                before and already initialized.
             </Text>
             <Wrapper.StepBody>
                 <Wrapper.Options>

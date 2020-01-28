@@ -54,12 +54,9 @@ const ProgressBar = (props: Props) => {
 
     const activeStepIndex = steps.findIndex(step => activeStepId === step.id);
     let progress = (100 / steps.filter(s => s.progress).length) * activeStepIndex;
-    console.log('steps', steps);
-    console.log('activeStepIndex', activeStepIndex);
     if (activeStepIndex === steps.length) {
         progress = 100;
     }
-    console.log('progress', progress);
 
     return (
         <Wrapper>
