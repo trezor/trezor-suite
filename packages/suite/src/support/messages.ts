@@ -1765,6 +1765,15 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check for devices',
         id: 'TR_CHECK_FOR_DEVICES',
     },
+    TR_SKIP_ONBOARDING_HEADING: {
+        defaultMessage: 'Skipping onboarding? One more thing…',
+        id: 'TR_SKIP_ONBOARDING_HEADING',
+    },
+    TR_SKIP_ONBOARDING_TEXT: {
+        defaultMessage:
+            'If your device is initialiazed and you used Wallet or Suite before, that’s great! Did you initialize Trezor yourself? You should be the one doing it. If not, it might be dangerous.',
+        id: 'TR_SKIP_ONBOARDING_TEXT',
+    },
 });
 
 export default definedMessages;

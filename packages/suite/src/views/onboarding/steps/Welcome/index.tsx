@@ -31,7 +31,7 @@ const WelcomeStep = (props: Props) => {
                     <Option
                         data-test="@onboarding/button-skip"
                         action={() => {
-                            props.closeModalApp();
+                            props.goToNextStep('skip');
                         }}
                         title="I have initialized device"
                         text="My device is initialized and I used Wallet or Suite before"

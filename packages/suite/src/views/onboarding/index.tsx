@@ -14,7 +14,9 @@ import { STEP_HEIGHT, STEP_HEIGHT_UNIT } from '@onboarding-config/layout';
 import { getFnForRule } from '@onboarding-utils/rules';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
+import SkipStep from '@onboarding-views/steps/Skip/Container';
 import CreateOrRecover from '@onboarding-views/steps/CreateOrRecover/Container';
+
 import NewOrUsedStep from '@onboarding-views/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@onboarding-views/steps/SelectDevice/Container';
 import HologramStep from '@onboarding-views/steps/Hologram/Container';
@@ -119,6 +121,8 @@ const Onboarding = (props: Props) => {
         switch (activeStepId) {
             case STEP.ID_WELCOME_STEP:
                 return WelcomeStep;
+            case STEP.ID_SKIP_STEP:
+                return SkipStep;
             case STEP.ID_CREATE_OR_RECOVER:
                 return CreateOrRecover;
             case STEP.ID_NEW_OR_USED:
