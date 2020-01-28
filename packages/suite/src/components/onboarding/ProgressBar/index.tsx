@@ -53,13 +53,19 @@ const ProgressBar = (props: Props) => {
     const { activeStepId } = props;
 
     const activeStepIndex = steps.findIndex(step => activeStepId === step.id);
-    const progress = (100 / steps.length) * activeStepIndex;
+    let progress = (100 / steps.filter(s => s.progress).length) * activeStepIndex;
+    console.log('steps', steps);
+    console.log('activeStepIndex', activeStepIndex);
+    if (activeStepIndex === steps.length) {
+        progress = 100;
+    }
+    console.log('progress', progress);
 
     return (
         <Wrapper>
             <BarContainer>
-                <GreenBar width={`${progress + 5}%`} />
-                <GrayBar width={`${progress + 10}%`} />
+                <GreenBar width={`${Math.min(progress - 5, 100)}%`} />
+                <GrayBar width={`${Math.min(progress, 100)}%`} />
                 <BackgroundBar />
             </BarContainer>
         </Wrapper>
