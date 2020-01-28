@@ -7,13 +7,14 @@ import { Button, P, H2 } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
+import { Analytics } from '@suite-components/Settings';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
-    padding: 36px;
+    padding: 90px;
     justify-content: center;
     width: 780px;
     height: 680px;
@@ -37,16 +38,8 @@ const Index = (props: Props) => {
                 <P size="tiny">Lorem ipsum...</P>
                 <img alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
 
-                {/* <Button onClick={() => props.goto('onboarding-index')} data-test="@button/go-to-onboarding">
-            Let's begin!
-        </Button> */}
-                <Button onClick={() => setShowAnalytics(true)}>Let's begin!</Button>
-
-                <Button
-                    onClick={() => props.closeModalApp()}
-                    data-test="@suite/welcome/go-to-suite"
-                >
-                    I want to use suite now!
+                <Button data-test="@button/continue" onClick={() => setShowAnalytics(true)}>
+                    Let's begin!
                 </Button>
             </Wrapper>
         );
@@ -61,6 +54,17 @@ const Index = (props: Props) => {
             </P>
 
             <img alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
+            <Analytics />
+
+            <Button
+                onClick={() => props.goto('onboarding-index')}
+                data-test="@button/go-to-onboarding"
+            >
+                Continue
+            </Button>
+            <Button onClick={() => props.closeModalApp()} data-test="@suite/welcome/go-to-suite">
+                I want to use suite now!
+            </Button>
         </Wrapper>
     );
 };

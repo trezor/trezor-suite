@@ -6,9 +6,9 @@ export const toggleDeviceMenu = () => {
 };
 
 export const goToOnboarding = () => {
-    return cy.getTestElement('@button/go-to-onboarding').click();
+    return cy.getTestElement('@button/continue').click().getTestElement('@button/go-to-onboarding').click();
 };
 
 export const goToSuite = () => {
-    return cy.getTestElement('@suite/welcome/go-to-suite').click();
+    return cy.getTestElement('@button/continue').click().getTestElement('@suite/welcome/go-to-suite').click();
 };

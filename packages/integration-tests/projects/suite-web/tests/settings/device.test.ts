@@ -67,12 +67,13 @@ describe('Device settings', () => {
         //     .getTestElement('@modal/close')
         //     .should('not.exist');
 
-        // cy.log('wipe device');
-        // cy.getTestElement('@suite/settings/device/wipe-button')
-        //     .click()
-        //     .getConfirmActionOnDeviceModal();
-        // cy.task('sendDecision', { method: 'wipeDevice' });
-        // cy.goToOnboarding().onboardingShouldLoad();
+        cy.log('wipe device');
+        cy.getTestElement('@suite/settings/device/wipe-button')
+            .click()
+            .getConfirmActionOnDeviceModal();
+        cy.task('sendDecision', { method: 'wipeDevice' });
+        cy.getTestElement('@button/go-to-onboarding').click();
+        cy.onboardingShouldLoad();
     });
 
     // TODO: upload custom image

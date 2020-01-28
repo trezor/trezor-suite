@@ -3,6 +3,7 @@ import SectionHeader from './components/SectionHeader';
 import TextColumn from './components/TextColumn';
 import { ActionColumn, ActionButton, ActionInput, ActionSelect } from './components/ActionColumn';
 import Row from './components/Row';
+import Analytics from './components/Analytics';
 
 export {
     Section,
@@ -13,4 +14,5 @@ export {
     ActionButton,
     ActionInput,
     ActionSelect,
+    Analytics,
 };
