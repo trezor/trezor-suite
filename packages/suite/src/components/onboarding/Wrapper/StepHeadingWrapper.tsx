@@ -9,7 +9,7 @@ const StepHeadingWrapper = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    font-weight: ${FONT_WEIGHT.REGULAR};
     font-size: ${FONT_SIZE.H2};
 `;
 
