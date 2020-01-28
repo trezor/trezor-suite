@@ -45,6 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
     goto: bindActionCreators(routerActions.goto, dispatch),
     closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
+    getBackgroundRoute: () => dispatch(routerActions.getBackgroundRoute()),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -141,6 +142,7 @@ const Preloader = (props: Props) => {
                     <ApplicationModal
                         cancelable={cancelable}
                         closeModalApp={props.closeModalApp}
+                        getBackgroundRoute={props.getBackgroundRoute}
                         modal={hasActionModal ? <Modals background={false} /> : null}
                     />
                 </ModalComponent>

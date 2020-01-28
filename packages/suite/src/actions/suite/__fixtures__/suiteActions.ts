@@ -652,6 +652,12 @@ const acquireDevice = [
         result: SUITE.LOCK_DEVICE,
     },
     {
+        description: `success with requestedDevice param`,
+        state: {},
+        requestedDevice: SUITE_DEVICE,
+        result: SUITE.LOCK_DEVICE,
+    },
+    {
         description: `with TrezorConnect error`,
         state: {
             device: SUITE_DEVICE,

@@ -877,7 +877,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: getSuiteDevice({ instance: 1 }),
+                payload: getSuiteDevice({ useEmptyPassphrase: false }),
             },
         ],
         result: [
@@ -906,7 +906,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: getSuiteDevice({ instance: 1 }),
+                payload: getSuiteDevice({ useEmptyPassphrase: false }),
             },
         ],
         result: [
@@ -935,7 +935,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: getSuiteDevice({ instance: 2 }),
+                payload: getSuiteDevice({ useEmptyPassphrase: false }),
             },
         ],
         result: [

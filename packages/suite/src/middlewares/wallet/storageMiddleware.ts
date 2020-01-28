@@ -44,14 +44,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
 
         case ACCOUNT.REMOVE: {
-            const accounts = action.payload;
-            const { devices } = api.getState();
-            accounts.forEach(account => {
-                const device = accountUtils.getAccountDevice(devices, account);
-                if (isDeviceRemembered(device)) {
-                    storageActions.removeAccount(account, device);
-                    storageActions.removeAccountTransactions(account);
-                }
+            action.payload.forEach(account => {
+                storageActions.removeAccount(account);
+                storageActions.removeAccountTransactions(account);
             });
             break;
         }

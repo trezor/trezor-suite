@@ -27,13 +27,12 @@ export const removeSendForm = async (accountKey: string) => {
 };
 
 export const saveDevice = async (device: TrezorDevice) => {
-    if (!device || !device.features || !device.state) return;
-    return db.addItem('devices', { ...device, remember: true, connected: false }, device.state);
+    if (!device || !device.features || !device.remember) return;
+    return db.addItem('devices', { ...device, path: '', connected: false }, device.state);
 };
 
-export const removeAccount = async (account: Account, device: TrezorDevice) => {
-    if (!device.state) return;
-    return db.removeItemByPK('accounts', [account.descriptor, account.symbol, device.state]);
+export const removeAccount = async (account: Account) => {
+    return db.removeItemByPK('accounts', [account.descriptor, account.symbol, account.deviceState]);
 };
 
 export const removeAccountTransactions = async (account: Account) => {

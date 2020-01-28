@@ -76,7 +76,7 @@ const connectDevice = (draft: State, device: Device) => {
         available: true,
         authConfirm: false,
         instance: device.features.passphrase_protection
-            ? getNewInstanceNumber(draft, device as AcquiredDevice) || 1
+            ? getNewInstanceNumber(draft, device) || 1
             : undefined,
         buttonRequests: [],
         ts: new Date().getTime(),
@@ -142,7 +142,7 @@ const changeDevice = (
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
             if (d.instance && !features.passphrase_protection) {
-                return merge(d, { ...device, ...extended, available: false });
+                return merge(d, { ...device, ...extended, available: !d.state });
             }
             return merge(d, { ...device, ...extended, available: true });
         });
@@ -272,12 +272,11 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
 const createInstance = (draft: State, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const { instance } = device;
     const newDevice: TrezorDevice = {
         ...device,
-        remember: device.remember,
+        remember: false,
         state: undefined,
-        instance,
+        instance: !device.useEmptyPassphrase ? getNewInstanceNumber(draft, device) || 1 : undefined,
         ts: new Date().getTime(),
     };
     draft.push(newDevice);

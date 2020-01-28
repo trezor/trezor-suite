@@ -16,6 +16,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
+    rememberDevice: bindActionCreators(suiteActions.rememberDevice, dispatch),
     forgetDeviceInstance: bindActionCreators(suiteActions.forgetDeviceInstance, dispatch),
     getDiscovery: bindActionCreators(discoveryActions.getDiscovery, dispatch),
     selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
@@ -23,8 +24,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 interface OwnProps extends WrappedComponentProps {
     instance: AcquiredDevice;
-    active: boolean;
-    selectInstance: (instance: TrezorDevice) => void;
+    enabled: boolean;
+    selected: boolean;
+    selectDeviceInstance: (instance: TrezorDevice) => void;
 }
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

@@ -8,10 +8,12 @@ import {
     DeviceStatus,
     DeviceMode,
     DeviceFirmwareStatus,
+    UnavailableCapability,
     FirmwareRelease,
     BlockchainEvent,
 } from 'trezor-connect';
 import { RouterActions } from '@suite-actions/routerActions';
+import { Route as Route$ } from '@suite-constants/routes';
 import { AppState as AppState$ } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
@@ -34,6 +36,8 @@ type TrezorConnectEvents =
     | BlockchainEvent;
 
 export type AppState = AppState$;
+
+export type Route = Route$;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -63,6 +67,7 @@ export interface AcquiredDevice {
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
+    unavailableCapabilities: { [key: string]: UnavailableCapability };
 
     // suite specific
     useEmptyPassphrase: boolean;
@@ -97,7 +102,8 @@ export type TrezorDevice = AcquiredDevice | UnknownDevice;
 export type Store = ReduxStore<AppState, Action>;
 
 export type InjectedModalApplicationProps = {
-    modal: React.ReactNode;
+    modal: JSX.Element | null;
     cancelable: boolean;
     closeModalApp: () => void;
+    getBackgroundRoute: () => Route$ | typeof undefined;
 };

@@ -1,13 +1,13 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, Button, colors, variables } from '@trezor/components-v2';
+import { Button, Switch, colors, variables } from '@trezor/components-v2';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 
-const Wrapper = styled.div<{ active: boolean }>`
+const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;
     padding: 10px 24px;
     align-items: center;
@@ -19,7 +19,7 @@ const Wrapper = styled.div<{ active: boolean }>`
     }
 
     ${props =>
-        props.active &&
+        props.selected &&
         css`
             background: ${colors.BLACK96};
         `}
@@ -37,10 +37,6 @@ const InstanceType = styled.div`
     /* text-transform: uppercase; */
 `;
 
-const SortIconWrapper = styled.div`
-    margin-right: ${variables.FONT_SIZE.TINY};
-`;
-
 const Col = styled.div<{ grow?: number }>`
     display: flex;
     flex-grow: ${props => props.grow || 0};
@@ -54,8 +50,10 @@ const ForgetButton = styled(Button)`
 
 const WalletInstance = ({
     instance,
-    active,
-    selectInstance,
+    enabled,
+    selected,
+    selectDeviceInstance,
+    rememberDevice,
     forgetDeviceInstance,
     accounts,
     fiat,
@@ -67,19 +65,17 @@ const WalletInstance = ({
     const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);
+    let instanceType = instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase';
+    if (!discoveryProcess) {
+        instanceType = ' ';
+    }
 
     return (
         <Wrapper
             key={`${instance.label}${instance.instance}${instance.state}`}
-            active={active}
-            onClick={() => {
-                selectInstance(instance);
-            }}
+            selected={enabled && selected && !!discoveryProcess}
         >
-            <SortIconWrapper>
-                <Icon size={12} icon="SORT" />
-            </SortIconWrapper>
-            <Col grow={1}>
+            <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
                     <InstanceTitle>
                         <Translation
@@ -102,34 +98,28 @@ const WalletInstance = ({
                         <Translation {...messages.TR_UNDISCOVERED_WALLET} />
                     </InstanceTitle>
                 )}
-                <InstanceType>
-                    {instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase'}
-                </InstanceType>
+                <InstanceType>{instanceType}</InstanceType>
             </Col>
-            <Col>
-                {discoveryProcess && !instance.useEmptyPassphrase && instance.remember && (
+            {enabled && discoveryProcess && (
+                <Col>
+                    <Switch
+                        checked={instance.remember}
+                        onChange={() => rememberDevice(instance)}
+                        data-test="@suite/settings/device/passphrase-switch"
+                    />
+                </Col>
+            )}
+            {enabled && discoveryProcess && (
+                <Col>
                     <ForgetButton
                         size="small"
                         variant="secondary"
-                        onClick={() => {
-                            forgetDeviceInstance(instance);
-                        }}
+                        onClick={() => forgetDeviceInstance(instance)}
                     >
                         <Translation {...messages.TR_FORGET} />
                     </ForgetButton>
-                )}
-                {!discoveryProcess && (
-                    <Button
-                        size="small"
-                        isDisabled
-                        variant="tertiary"
-                        icon="INFO"
-                        onClick={() => {}}
-                    >
-                        <Translation {...messages.TR_CONNECT_TO_DISCOVER} />
-                    </Button>
-                )}
-            </Col>
+                </Col>
+            )}
         </Wrapper>
     );
 };

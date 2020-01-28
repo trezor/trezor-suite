@@ -4,7 +4,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
-import { Action, Dispatch, GetState, TrezorDevice, AcquiredDevice, AppState } from '@suite-types';
+import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
 export type SuiteActions =
@@ -171,7 +171,6 @@ export const forgetDeviceInstance = (payload: TrezorDevice): Action => ({
  */
 export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = false) => async (
     dispatch: Dispatch,
-    getState: GetState,
 ) => {
     if (!device.features) return;
     if (!device.features.passphrase_protection) {
@@ -193,9 +192,6 @@ export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = 
         payload: {
             ...device,
             useEmptyPassphrase,
-            instance: !useEmptyPassphrase
-                ? deviceUtils.getNewInstanceNumber(getState().devices, device as AcquiredDevice)
-                : undefined,
         },
     });
 };
@@ -299,14 +295,15 @@ export const observeSelectedDevice = (action: Action) => (
  * Fetch device features without asking for pin/passphrase
  * this is the only place where useEmptyPassphrase should be always set to "true"
  */
-export const acquireDevice = () => async (dispatch: Dispatch, getState: GetState) => {
+export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { device } = getState().suite;
-    if (!device) return;
+    if (!device && !requestedDevice) return;
 
     const response = await TrezorConnect.getFeatures({
-        device: {
-            path: device.path,
-        },
+        device: requestedDevice || device,
         useEmptyPassphrase: true,
     });
 

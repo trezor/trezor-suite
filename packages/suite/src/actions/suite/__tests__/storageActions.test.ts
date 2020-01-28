@@ -285,7 +285,7 @@ describe('Storage actions', () => {
 
         // stored devices
         expect(getLastAction(store).payload.devices.length).toEqual(3);
-        expect(getLastAction(store).payload.devices[0]).toEqual(dev1);
+        expect(getLastAction(store).payload.devices[0]).toEqual({ ...dev1, path: '' });
         // stored txs
         const acc1Txs = getAccountTransactions(
             getLastAction(store).payload.wallet.transactions.transactions,
@@ -316,7 +316,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.loadStorage());
         // device deleted, dev2 and dev2Instance1 should still be there
         expect(getLastAction(store).payload.devices.length).toEqual(2);
-        expect(getLastAction(store).payload.devices[0]).toEqual(dev2);
+        expect(getLastAction(store).payload.devices[0]).toEqual({ ...dev2, path: '' });
         // txs deleted
         const deletedAcc1Txs = getAccountTransactions(
             getLastAction(store).payload.wallet.transactions.transactions,
