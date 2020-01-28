@@ -142,9 +142,9 @@ const handleClick = (event: MouseEvent) => {
             blockchain
                 .subscribe({
                     type: 'fiatRates',
-                    currencies:
+                    currency:
                         getInputValue('subscribe-fiat-rates-currency') !== ''
-                            ? getInputValue('subscribe-fiat-rates-currency').split(' ')
+                            ? getInputValue('subscribe-fiat-rates-currency')
                             : undefined,
                 })
                 .then(onResponse)

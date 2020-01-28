@@ -330,7 +330,7 @@ export default class Socket extends EventEmitter {
         return { subscribed: false };
     }
 
-    subscribeFiatRates(currencies?: string[]) {
+    subscribeFiatRates(currency?: string) {
         const index = this.subscriptions.findIndex(s => s.type === 'fiatRates');
         if (index >= 0) {
             // remove previous subscriptions
@@ -345,7 +345,7 @@ export default class Socket extends EventEmitter {
                 this.emit('fiatRates', result);
             },
         });
-        return this.send('subscribeFiatRates', { currencies });
+        return this.send('subscribeFiatRates', { currency });
     }
 
     unsubscribeFiatRates() {

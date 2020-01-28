@@ -352,12 +352,12 @@ const subscribeBlock = async () => {
     return socket.subscribeBlock();
 };
 
-const subscribeFiatRates = async (currencies?: string[]) => {
+const subscribeFiatRates = async (currency?: string) => {
     if (common.getSubscription('fiatRates')) return { subscribed: true };
     const socket = await connect();
     common.addSubscription('fiatRates');
     socket.on('fiatRates', onNewFiatRates);
-    return socket.subscribeFiatRates(currencies);
+    return socket.subscribeFiatRates(currency);
 };
 
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
@@ -371,7 +371,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
         } else if (payload.type === 'block') {
             response = await subscribeBlock();
         } else if (payload.type === 'fiatRates') {
-            response = await subscribeFiatRates(payload.currencies);
+            response = await subscribeFiatRates(payload.currency);
         } else {
             throw new CustomError('invalid_param', '+type');
         }

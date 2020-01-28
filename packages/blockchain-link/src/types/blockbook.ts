@@ -224,7 +224,7 @@ declare function FSend(method: 'subscribeNewBlock', params: {}): Promise<Subscri
 declare function FSend(method: 'unsubscribeNewBlock', params: {}): Promise<Subscribe>;
 declare function FSend(
     method: 'subscribeFiatRates',
-    params: { currencies?: string[] }
+    params: { currency?: string }
 ): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeFiatRates', params: {}): Promise<Subscribe>;
 export type Send = typeof FSend;

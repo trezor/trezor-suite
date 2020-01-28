@@ -108,7 +108,7 @@ export interface Subscribe {
           }
         | {
               type: 'fiatRates';
-              currencies?: string[];
+              currency?: string;
           };
 }
 
