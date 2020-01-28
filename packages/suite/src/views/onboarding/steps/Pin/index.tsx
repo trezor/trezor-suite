@@ -5,7 +5,7 @@ import { UI } from 'trezor-connect';
 
 import { Link } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Translation } from '@suite-components';
+import { Translation, PinInput } from '@suite-components';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
