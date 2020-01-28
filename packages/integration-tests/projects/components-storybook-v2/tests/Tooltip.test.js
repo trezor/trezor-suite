@@ -1,6 +1,6 @@
-describe.only('Tooltip', () => {
+describe('Tooltip', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768);
+        cy.viewport(1200, 850);
     });
 
     ['tooltip-top', 'tooltip-bottom', 'tooltip-left', 'tooltip-right'].forEach(testName => {
