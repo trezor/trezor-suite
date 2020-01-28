@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { variables } from '@trezor/components';
+import { Button, Link } from '@trezor/components-v2';
 import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
@@ -12,11 +13,11 @@ import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { STEP_HEIGHT, STEP_HEIGHT_UNIT } from '@onboarding-config/layout';
 import { getFnForRule } from '@onboarding-utils/rules';
+import { URLS } from '@suite-constants';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
 import SkipStep from '@onboarding-views/steps/Skip/Container';
 import CreateOrRecover from '@onboarding-views/steps/CreateOrRecover/Container';
-
 import NewOrUsedStep from '@onboarding-views/steps/NewOrUsed/Container';
 import SelectDeviceStep from '@onboarding-views/steps/SelectDevice/Container';
 import HologramStep from '@onboarding-views/steps/Hologram/Container';
@@ -50,8 +51,17 @@ const Wrapper = styled.div`
     }
 `;
 
-const ProgressBarSlot = styled.div`
-    height: 80px;
+const ProgressBarWrapper = styled.div`
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+`;
+
+const IconsWrapper = styled.div`
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 `;
 
 const ComponentWrapper = styled.div`
@@ -66,6 +76,18 @@ const ActionModalWrapper = styled.div`
     justify-content: center;
     align-items: center;
 `;
+
+const BuyButton = () => (
+    <Button variant="tertiary" icon="TREZOR" size="small" style={{ backgroundColor: 'initial' }}>
+        <Link href={URLS.SHOP_URL}>Buy Trezor</Link>
+    </Button>
+);
+
+const HelpButton = () => (
+    <Button variant="tertiary" icon="SUPPORT" size="small" style={{ backgroundColor: 'initial' }}>
+        <Link href={URLS.SUPPORT_URL}>Help</Link>
+    </Button>
+);
 
 const mapStateToProps = (state: AppState) => {
     return {
@@ -160,9 +182,14 @@ const Onboarding = (props: Props) => {
                 <title>Onboarding | Trezor Suite</title>
             </Head>
 
-            <ProgressBarSlot>
+            <ProgressBarWrapper>
                 {getStep().progress && <ProgressBar activeStepId={activeStepId} />}
-            </ProgressBarSlot>
+            </ProgressBarWrapper>
+            <IconsWrapper>
+                {getStep().buy ? <BuyButton /> : <div />}
+                {getStep().help ? <HelpButton /> : <div />}
+            </IconsWrapper>
+            {/* TODO: proper icon, missing in components */}
             <ComponentWrapper>
                 {errorState && (
                     <UnexpectedState
