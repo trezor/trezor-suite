@@ -54,7 +54,6 @@ const Switch = ({ onChange, isDisabled, isSmall, dataTest, ...rest }: Props) => 
     return (
         <Wrapper data-test={dataTest}>
             <StyledReactSwitch
-                data-test={dataTest}
                 checked={checked}
                 disabled={isDisabled}
                 onChange={handleChange}

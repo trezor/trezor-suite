@@ -46,10 +46,7 @@ describe('Form', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Form&selectedStory=All&full=0');
-            if (
-                testName.match(/error|warning|success|checked|monospace/) &&
-                !testName.match(/textarea/)
-            ) {
+            if (testName.match(/checked|monospace/) && !testName.match(/textarea/)) {
                 cy.getTestElement(testName)
                     .find('svg')
                     .each(el => {

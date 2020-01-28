@@ -6,7 +6,7 @@ storiesOf('Modals', module)
     .add(
         'Default',
         () => (
-            <Modal cancelText="Close" data-test="modal-small">
+            <Modal cancelText="Close" data-test="modal">
                 <H2>Ahoj kamaráde!</H2>
                 <P>Ježíš tě strašně miluje.</P>
             </Modal>
@@ -28,7 +28,7 @@ storiesOf('Modals', module)
                 padding="50px 20px"
                 cancelable
                 cancelText="Zavři už tenhle trapnej modálek"
-                data-test="modal-medium"
+                data-test="modal-with-cancel"
             >
                 <H2>Ježíš tě má hrozně rád kamaráde!</H2>
                 <P>Páček slimáček.</P>
