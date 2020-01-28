@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Tooltip } from '@trezor/components';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
@@ -9,12 +9,6 @@ import ContinueButton from './components/ContinueButton';
 import InstallButton from './components/InstallButton';
 
 import { Props } from './Container';
-
-interface ButtonProps {
-    onClick: () => void;
-    isConnected: boolean;
-    isInBootloader: boolean;
-}
 
 const InitImg = () => <img alt="" src={resolveStaticPath('images/onboarding/firmware-init.svg')} />;
 
@@ -29,7 +23,7 @@ const FirmwareStep = ({
     firmwareUpdateActions,
     intl,
 }: Props) => {
-    const { status, installingProgress, error } = firmwareUpdate;
+    const { status, error } = firmwareUpdate;
     const isConnected = !!device;
     const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
 
@@ -74,12 +68,13 @@ const FirmwareStep = ({
             <Wrapper.StepBody>
                 {status === 'initial' && (
                     <>
+                        {!device && 'connect device'}
+
                         {getFirmwareStatus() === 'none' && (
                             <>
                                 <Text>
                                     <Translation {...messages.TR_FIRMWARE_SUBHEADING} />
                                 </Text>
-                                <InitImg />
                             </>
                         )}
 
@@ -97,7 +92,6 @@ const FirmwareStep = ({
                                     You might either update your device now or continue and update
                                     it later.
                                 </Text>
-                                <InitImg />
                             </>
                         )}
 
@@ -115,8 +109,11 @@ const FirmwareStep = ({
                                     This firmware is not longer supported, you will need to update
                                     it now.
                                 </Text>
-                                <InitImg />
                             </>
+                        )}
+
+                        {['outdated', 'required', 'nonee'].includes(getFirmwareStatus()) && (
+                            <InitImg />
                         )}
 
                         {getFirmwareStatus() === 'valid' && (
@@ -124,23 +121,30 @@ const FirmwareStep = ({
                                 <Text>
                                     <Translation {...messages.TR_FIRMWARE_INSTALLED} />
                                 </Text>
+                                <SuccessImg />
                             </>
                         )}
                     </>
                 )}
 
                 {status === 'done' && (
-                    <Text>
-                        Excellent, fw update successful, only 6% of user share this experience!
-                    </Text>
+                    <>
+                        <Text>
+                            Excellent, fw update successful, only 6% of user share this experience!
+                        </Text>
+                        <SuccessImg />
+                    </>
                 )}
 
                 {status === 'partially-done' && (
-                    <Text>
-                        Update was done, but it was not possible to update your device to the
-                        lastest version. Only to an intermediate one. We apologize for
-                        inconvenience.
-                    </Text>
+                    <>
+                        <Text>
+                            Update was done, but it was not possible to update your device to the
+                            lastest version. Only to an intermediate one. We apologize for
+                            inconvenience.
+                        </Text>
+                        <SuccessImg />
+                    </>
                 )}
 
                 {status === 'error' && (
@@ -158,13 +162,7 @@ const FirmwareStep = ({
                     'wait-for-reboot',
                 ].includes(status) && (
                     <>
-                        {installingProgress && (
-                            <Loaders.Donut
-                                progress={installingProgress}
-                                isSuccess={['unplug', 'wait-for-reboot'].includes(status)}
-                                isError={status === 'error'}
-                            />
-                        )}
+                        <InitImg />
 
                         <Text>
                             {getMessageForStatus() && (
