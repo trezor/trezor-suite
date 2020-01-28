@@ -1355,11 +1355,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Upgrade for the newest features.',
         id: 'TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT',
     },
-    TR_USE_THE_KEYBOARD_SHORTCUT: {
-        defaultMessage: 'Use the keyboard shortcut:',
-        description: 'We want user to pres Ctrl + D',
-        id: 'TR_USE_THE_KEYBOARD_SHORTCUT',
-    },
     TR_USED_IN_ANOTHER_WINDOW: {
         defaultMessage: 'Used in other window',
         description: 'Device status',
