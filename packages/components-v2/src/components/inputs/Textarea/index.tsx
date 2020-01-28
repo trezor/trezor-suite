@@ -75,7 +75,7 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
 `;
 
 const TopLabel = styled.label`
-    padding: 10px 0;
+    padding: 0 0 10px 0;
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 

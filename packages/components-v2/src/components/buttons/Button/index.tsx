@@ -51,7 +51,6 @@ const Wrapper = styled.button<WrapperProps>`
         css`
             color: ${colors.WHITE};
             background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
-            border: none;
             box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
 
             &:hover,

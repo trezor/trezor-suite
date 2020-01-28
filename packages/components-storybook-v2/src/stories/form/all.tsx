@@ -73,7 +73,7 @@ storiesOf('Form', module).add(
                     <SubHeading>With label &amp; bottom text</SubHeading>
                     <Input
                         value="Input label"
-                        dataTest="input-label'"
+                        dataTest="input-label"
                         topLabel="Label"
                         bottomText="bottom text"
                     />
@@ -113,7 +113,7 @@ storiesOf('Form', module).add(
                         bottomText="bottom text"
                     />
                 </StoryColumn>
-                <StoryColumn minWidth={300}>
+                <StoryColumn minWidth={300} maxWidth={400}>
                     <Heading>Textarea</Heading>
                     <SubHeading>Default</SubHeading>
                     <Textarea
@@ -152,18 +152,56 @@ storiesOf('Form', module).add(
                         wrapperProps={{ 'data-test': 'textarea-disabled' }}
                     />
                 </StoryColumn>
-                <StoryColumn>
+                <StoryColumn maxWidth={200}>
                     <Heading>Switch</Heading>
+
                     <SubHeading>Off</SubHeading>
-                    <Switch onChange={() => {}} checked={false} />
+                    <Switch dataTest="switch-off" onChange={() => {}} checked={false} />
+
+                    <SubHeading>Off disabled</SubHeading>
+                    <Switch
+                        dataTest="switch-off-disabled"
+                        disabled
+                        onChange={() => {}}
+                        checked={false}
+                    />
+
                     <SubHeading>On</SubHeading>
-                    <Switch onChange={() => {}} checked />
+                    <Switch onChange={() => {}} checked dataTest="switch-on" />
+
+                    <SubHeading>On disabled</SubHeading>
+                    <Switch dataTest="switch-on-disabled" disabled onChange={() => {}} checked />
+
                     <SubHeading>Off small</SubHeading>
-                    <Switch onChange={() => {}} checked={false} isSmall />
-                    <SubHeading>On</SubHeading>
-                    <Switch onChange={() => {}} checked isSmall />
+                    <Switch
+                        onChange={() => {}}
+                        checked={false}
+                        isSmall
+                        dataTest="switch-off-small"
+                    />
+
+                    <SubHeading>Off small disabled</SubHeading>
+                    <Switch
+                        disabled
+                        onChange={() => {}}
+                        checked={false}
+                        isSmall
+                        dataTest="switch-off-small-disabled"
+                    />
+
+                    <SubHeading>On small</SubHeading>
+                    <Switch onChange={() => {}} checked isSmall dataTest="switch-on-small" />
+
+                    <SubHeading>On small disabled</SubHeading>
+                    <Switch
+                        disabled
+                        onChange={() => {}}
+                        checked
+                        isSmall
+                        dataTest="switch-on-small-disabled"
+                    />
                 </StoryColumn>
-                <StoryColumn>
+                <StoryColumn maxWidth={200}>
                     <Heading>Checkbox</Heading>
                     <SubHeading>Unchecked</SubHeading>
                     <Checkbox onClick={() => {}} data-test="checkbox">
@@ -174,7 +212,7 @@ storiesOf('Form', module).add(
                         Label
                     </Checkbox>
                 </StoryColumn>
-                <StoryColumn>
+                <StoryColumn maxWidth={200}>
                     <Heading>Select</Heading>
                     <Select
                         options={SELECT_OPTIONS}
@@ -220,7 +258,7 @@ storiesOf('Form', module).add(
     },
     {
         options: {
-            showPanel: false,
+            showPanel: true,
         },
     }
 );

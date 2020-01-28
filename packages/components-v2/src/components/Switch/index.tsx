@@ -33,13 +33,18 @@ interface Props extends ReactSwitchProps {
     onChange: (checked: boolean) => any;
     isDisabled?: boolean;
     isSmall?: boolean;
+    dataTest?: string;
 }
 
 interface StateProps {
     checked: boolean;
 }
 
-const Switch = ({ onChange, isDisabled, isSmall, ...rest }: Props) => {
+const Wrapper = styled.div`
+    display: flex;
+`;
+
+const Switch = ({ onChange, isDisabled, isSmall, dataTest, ...rest }: Props) => {
     const [checked, setChecked] = useState<StateProps['checked']>(false);
     const handleChange = (checked: boolean) => {
         onChange(checked);
@@ -47,23 +52,26 @@ const Switch = ({ onChange, isDisabled, isSmall, ...rest }: Props) => {
     };
 
     return (
-        <StyledReactSwitch
-            checked={checked}
-            disabled={isDisabled}
-            onChange={handleChange}
-            onColor={colors.GREEN}
-            checkedIcon={false}
-            uncheckedIcon={false}
-            offColor={colors.BLACK70}
-            color={colors.GREEN}
-            isSmall={isSmall}
-            width={isSmall ? 32 : 42}
-            height={isSmall ? 18 : 24}
-            handleDiameter={isSmall ? 14 : 18}
-            boxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.5)"
-            activeBoxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.8)"
-            {...rest}
-        />
+        <Wrapper data-test={dataTest}>
+            <StyledReactSwitch
+                data-test={dataTest}
+                checked={checked}
+                disabled={isDisabled}
+                onChange={handleChange}
+                onColor={colors.GREEN}
+                checkedIcon={false}
+                uncheckedIcon={false}
+                offColor={colors.BLACK70}
+                color={colors.GREEN}
+                isSmall={isSmall}
+                width={isSmall ? 32 : 42}
+                height={isSmall ? 18 : 24}
+                handleDiameter={isSmall ? 14 : 18}
+                boxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.5)"
+                activeBoxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.8)"
+                {...rest}
+            />
+        </Wrapper>
     );
 };
 

@@ -95,7 +95,7 @@ const Wrapper = styled.div<Props>`
 
 const TopLabel = styled.span`
     font-size: ${FONT_SIZE.NORMAL};
-    padding: 10px 0;
+    padding: 0 0 10px 0;
 `;
 
 interface Props extends Omit<SelectProps, 'components'> {

@@ -12,7 +12,7 @@ storiesOf('Buttons', module).add(
         <>
             {variants.map(variant => {
                 return (
-                    <StoryColumn key={variant} minWidth={350}>
+                    <StoryColumn key={variant} minWidth={350} maxWidth={420}>
                         {sizes.map(size => {
                             return (
                                 <Button
