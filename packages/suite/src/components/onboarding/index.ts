@@ -1,4 +1,3 @@
-import BlindMatrix from './BlindMatrix';
 import Key from './Key';
 import Option from './Option';
 import PinMatrix from './PinMatrix';
@@ -54,7 +53,6 @@ const Wrapper = {
 };
 
 export {
-    BlindMatrix,
     OnboardingButton,
     OnboardingIcon,
     Key,

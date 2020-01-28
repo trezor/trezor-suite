@@ -56,6 +56,8 @@ const EmptyWallet = (props: Props) => {
                     <Button
                         variant="tertiary"
                         size="small"
+                        icon="ARROW_RIGHT"
+                        alignIcon="right"
                         onClick={() => {
                             console.log('do something');
                         }}
@@ -68,6 +70,8 @@ const EmptyWallet = (props: Props) => {
                     <Button
                         variant="tertiary"
                         size="small"
+                        icon="ARROW_RIGHT"
+                        alignIcon="right"
                         onClick={() => {
                             console.log('do something');
                         }}
