@@ -1,4 +1,3 @@
-import Key from './Key';
 import Option from './Option';
 import ProgressBar from './ProgressBar';
 import Text from './Text';
@@ -18,14 +17,12 @@ import ButtonCta from './Buttons/ButtonCta';
 import ButtonBack from './Buttons/ButtonBack';
 
 import ConnectDevice from './Icons/ConnectDevice';
-import SocialLogo from './Icons/SocialLogo';
 
 import Dots from './Loaders/Dots';
 import Donut from './Loaders/Donut';
 
 const OnboardingIcon = {
     ConnectDevice,
-    SocialLogo,
 };
 
 const OnboardingButton = {
@@ -53,7 +50,6 @@ const Wrapper = {
 export {
     OnboardingButton,
     OnboardingIcon,
-    Key,
     Loaders,
     ProgressBar,
     Text,
