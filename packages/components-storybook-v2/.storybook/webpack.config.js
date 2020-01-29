@@ -15,6 +15,7 @@ module.exports = ({ config }) => {
                 },
             },
         ],
+        enforce: 'pre',
     });
     config.resolve.alias = {
         components: path.join(SRC_PATH, 'components'),

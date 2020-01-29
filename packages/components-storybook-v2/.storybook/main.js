@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
     addons: [
         '@storybook/addon-links/register',
