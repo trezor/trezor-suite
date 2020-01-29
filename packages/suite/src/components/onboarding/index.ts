@@ -19,7 +19,6 @@ import ButtonBack from './Buttons/ButtonBack';
 import ConnectDevice from './Icons/ConnectDevice';
 
 import Dots from './Loaders/Dots';
-import Donut from './Loaders/Donut';
 
 const OnboardingIcon = {
     ConnectDevice,
@@ -32,7 +31,6 @@ const OnboardingButton = {
 };
 
 const Loaders = {
-    Donut,
     Dots,
 };
 
