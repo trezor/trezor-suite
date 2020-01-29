@@ -37,6 +37,6 @@ components-storybook-v2 test snapshots:
     expire_in: 2 days
     when: always
     paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/screenshots
+      - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/snapshots
+      - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/screenshots
   dependencies: []

@@ -1,52 +1,21 @@
 describe('Modal', () => {
-    it('modal-small', () => {
+    it('modal', () => {
         cy.viewport(1024, 500);
-        cy.loadContent('/iframe.html?selectedKind=Modals&selectedStory=Small&full=0');
-        cy.getTestElement('modal-small')
-            .find('svg')
-            .each(el => {
-                cy.get(el).should('be.visible');
-            });
-        cy.getTestElement('modal-small')
+        cy.loadContent('iframe.html?id=modals--default');
+        cy.getTestElement('modal')
             .should('be.visible')
             .matchImageSnapshot();
     });
 
-    it('modal-medium', () => {
+    it('modal-with-cancel', () => {
         cy.viewport(1024, 500);
-        cy.loadContent('/iframe.html?selectedKind=Modals&selectedStory=Medium&full=0');
-        cy.getTestElement('modal-medium')
+        cy.loadContent('/iframe.html?id=modals--padding-with-cancel');
+        cy.getTestElement('modal-with-cancel')
             .find('svg')
             .each(el => {
                 cy.get(el).should('be.visible');
             });
-        cy.getTestElement('modal-medium')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('modal-large', () => {
-        cy.viewport(1024, 500);
-        cy.loadContent('/iframe.html?selectedKind=Modals&selectedStory=Large&full=0');
-        cy.getTestElement('modal-large')
-            .find('svg')
-            .each(el => {
-                cy.get(el).should('be.visible');
-            });
-        cy.getTestElement('modal-large')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('modal-responsive', () => {
-        cy.viewport(760, 500);
-        cy.loadContent('/iframe.html?selectedKind=Modals&selectedStory=Large&full=0');
-        cy.getTestElement('modal-large')
-            .find('svg')
-            .each(el => {
-                cy.get(el).should('be.visible');
-            });
-        cy.getTestElement('modal-large')
+        cy.getTestElement('modal-with-cancel')
             .should('be.visible')
             .matchImageSnapshot();
     });
