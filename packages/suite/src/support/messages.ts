@@ -435,10 +435,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device Settings',
         id: 'TR_DEVICE_SETTINGS_TITLE',
     },
-    TR_DEVICE_USED_IN_OTHER: {
-        defaultMessage: 'Device is used in other window',
-        id: 'TR_DEVICE_USED_IN_OTHER',
-    },
     TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT: {
         defaultMessage:
             'Device you reconnected is different from the previous device. Connect the right one.',
@@ -1359,10 +1355,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Upgrade for the newest features.',
         id: 'TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT',
     },
-    TR_USE_YOUR_DEVICE_IN_THIS_WINDOW: {
-        defaultMessage: 'Do you want to use your device in this window?',
-        id: 'TR_USE_YOUR_DEVICE_IN_THIS_WINDOW',
-    },
     TR_USED_IN_ANOTHER_WINDOW: {
         defaultMessage: 'Used in other window',
         description: 'Device status',
@@ -1764,6 +1756,15 @@ const definedMessages = defineMessages({
     TR_CHECK_FOR_DEVICES: {
         defaultMessage: 'Check for devices',
         id: 'TR_CHECK_FOR_DEVICES',
+    },
+    TR_ACQUIRE_DEVICE_TITLE: {
+        defaultMessage: 'Trezor is being used in a browser',
+        id: 'TR_ACQUIRE_DEVICE_TITLE',
+    },
+    TR_ACQUIRE_DEVICE_DESCRIPTION: {
+        defaultMessage:
+            'Please close the tab in your browser or click the button below to acquire the device since Trezor can be only used in one session.',
+        id: 'TR_ACQUIRE_DEVICE_DESCRIPTION',
     },
     TR_SKIP_ONBOARDING_HEADING: {
         defaultMessage: 'Skipping onboarding? One more thing…',
