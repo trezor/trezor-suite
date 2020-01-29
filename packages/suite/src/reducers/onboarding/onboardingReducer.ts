@@ -1,30 +1,35 @@
 import produce from 'immer';
 import { DEVICE, UI, Device } from 'trezor-connect';
 
-import {
-    OnboardingState,
-    SET_STEP_ACTIVE,
-    GO_TO_SUBSTEP,
-    SELECT_TREZOR_MODEL,
-    ADD_PATH,
-    REMOVE_PATH,
-    RESET_ONBOARDING,
-    ENABLE_ONBOARDING_REDUCER,
-    SET_BACKUP_TYPE,
-} from '@onboarding-types/onboarding';
+import { ONBOARDING } from '@onboarding-actions/constants';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
-import { AnyPath } from '@onboarding-types/steps';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
-import {
-    DEVICE_CALL_RESET,
-    DEVICE_CALL_START,
-    DEVICE_CALL_SUCCESS,
-    DEVICE_CALL_ERROR,
-} from '@onboarding-types/connect';
 import * as CALLS from '@onboarding-actions/constants/calls';
-
 import { Action } from '@suite-types';
+import { AnyStepId, AnyPath } from '@onboarding-types/steps';
+
+export interface UiInteraction {
+    name: undefined | string;
+    counter: undefined | number;
+}
+
+export interface OnboardingState {
+    reducerEnabled: boolean;
+    prevDevice: Device | null;
+    selectedModel: number | null;
+    activeStepId: AnyStepId;
+    activeSubStep: string | null;
+    path: AnyPath[];
+    deviceCall: {
+        name: null | string; // todo: better, make type AnyDeviceCall
+        isProgress: boolean;
+        error: null | string;
+        result: null | Record<string, any>;
+    };
+    uiInteraction: UiInteraction;
+    backupType: number;
+}
 
 const initialState: OnboardingState = {
     reducerEnabled: false,
@@ -117,40 +122,40 @@ const setInteraction = (
 const onboarding = (state: OnboardingState = initialState, action: Action) => {
     if (
         !state.reducerEnabled &&
-        ![RESET_ONBOARDING, ENABLE_ONBOARDING_REDUCER].includes(action.type)
+        ![ONBOARDING.RESET_ONBOARDING, ONBOARDING.ENABLE_ONBOARDING_REDUCER].includes(action.type)
     ) {
         return state;
     }
 
     return produce(state, draft => {
         switch (action.type) {
-            case ENABLE_ONBOARDING_REDUCER:
+            case ONBOARDING.ENABLE_ONBOARDING_REDUCER:
                 draft.reducerEnabled = action.payload;
                 break;
-            case SET_STEP_ACTIVE:
+            case ONBOARDING.SET_STEP_ACTIVE:
                 draft.activeStepId = action.stepId;
                 draft.activeSubStep = null;
                 break;
-            case GO_TO_SUBSTEP:
+            case ONBOARDING.GO_TO_SUBSTEP:
                 draft.activeSubStep = action.subStepId;
                 break;
-            case SELECT_TREZOR_MODEL:
+            case ONBOARDING.SELECT_TREZOR_MODEL:
                 draft.selectedModel = action.model;
                 break;
-            case ADD_PATH:
+            case ONBOARDING.ADD_PATH:
                 draft.path = addPath(action.payload, state);
                 break;
-            case REMOVE_PATH:
+            case ONBOARDING.REMOVE_PATH:
                 draft.path = removePath(action.payload, state);
                 break;
-            case SET_BACKUP_TYPE:
+            case ONBOARDING.SET_BACKUP_TYPE:
                 draft.backupType = action.payload;
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);
                 draft.uiInteraction = initialState.uiInteraction;
                 break;
-            case DEVICE_CALL_RESET:
+            case ONBOARDING.DEVICE_CALL_RESET:
                 draft.deviceCall = {
                     name: null,
                     isProgress: false,
@@ -159,14 +164,14 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 };
                 draft.uiInteraction = initialState.uiInteraction;
                 break;
-            case DEVICE_CALL_START:
+            case ONBOARDING.DEVICE_CALL_START:
                 draft.deviceCall = {
                     ...state.deviceCall,
                     name: action.name,
                     isProgress: true,
                 };
                 break;
-            case DEVICE_CALL_SUCCESS:
+            case ONBOARDING.DEVICE_CALL_SUCCESS:
                 draft.deviceCall = {
                     ...state.deviceCall,
                     isProgress: false,
@@ -175,7 +180,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 };
                 draft.uiInteraction = initialState.uiInteraction;
                 break;
-            case DEVICE_CALL_ERROR:
+            case ONBOARDING.DEVICE_CALL_ERROR:
                 draft.deviceCall = {
                     ...state.deviceCall,
                     name: action.name,
@@ -200,7 +205,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
             case SUITE.UPDATE_SELECTED_DEVICE:
                 updatePrevDevice(draft, action.payload);
                 break;
-            case RESET_ONBOARDING:
+            case ONBOARDING.RESET_ONBOARDING:
                 return initialState;
             //  no default
         }

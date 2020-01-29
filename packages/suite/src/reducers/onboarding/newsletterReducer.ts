@@ -2,18 +2,20 @@
 
 import produce from 'immer';
 
-import {
-    NewsletterState,
-    NewsletterActionTypes,
-    TOGGLE_CHECKBOX,
-    SET_EMAIL,
-    SET_SKIPPED,
-    FETCH_START,
-    FETCH_ERROR,
-    FETCH_SUCCESS,
-} from '@onboarding-types/newsletter';
+import { ONBOARDING } from '@onboarding-actions/constants';
+import { Action } from '@suite-types';
+import { Checkbox } from '@onboarding-types';
 
-const initialState = {
+interface NewsletterState {
+    email: string;
+    skipped: boolean;
+    checkboxes: Checkbox[];
+    isProgress: boolean;
+    isSuccess: boolean;
+    error: null | string;
+}
+
+const initialState: NewsletterState = {
     email: '',
     skipped: false,
     // note that order of elements in array is important, it defines how mailchimp understands subscription;
@@ -44,10 +46,10 @@ const initialState = {
     error: null,
 };
 
-const newsletter = (state: NewsletterState = initialState, action: NewsletterActionTypes) => {
+const newsletter = (state: NewsletterState = initialState, action: Action) => {
     return produce(state, draft => {
         switch (action.type) {
-            case TOGGLE_CHECKBOX:
+            case ONBOARDING.TOGGLE_CHECKBOX:
                 draft.checkboxes = draft.checkboxes.map(checkbox => {
                     const toggled = checkbox;
                     if (checkbox.label === action.checkbox) {
@@ -56,21 +58,21 @@ const newsletter = (state: NewsletterState = initialState, action: NewsletterAct
                     return toggled;
                 });
                 break;
-            case SET_EMAIL:
+            case ONBOARDING.SET_EMAIL:
                 draft.email = action.email;
                 break;
-            case SET_SKIPPED:
+            case ONBOARDING.SET_SKIPPED:
                 draft.skipped = true;
                 break;
-            case FETCH_START:
+            case ONBOARDING.FETCH_START:
                 draft.isProgress = true;
                 break;
-            case FETCH_SUCCESS:
+            case ONBOARDING.FETCH_SUCCESS:
                 draft.isSuccess = true;
                 draft.isProgress = false;
                 draft.error = null;
                 break;
-            case FETCH_ERROR:
+            case ONBOARDING.FETCH_ERROR:
                 draft.isProgress = false;
                 draft.isSuccess = false;
                 draft.error = action.error;

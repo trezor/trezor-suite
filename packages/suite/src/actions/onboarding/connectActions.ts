@@ -8,12 +8,7 @@ import TrezorConnect, {
     ResetDeviceParams,
 } from 'trezor-connect';
 
-import {
-    DEVICE_CALL_START,
-    DEVICE_CALL_ERROR,
-    DEVICE_CALL_SUCCESS,
-    DEVICE_CALL_RESET,
-} from '@onboarding-types/connect';
+import { ONBOARDING } from '@onboarding-actions/constants';
 import { AnyStepId } from '@onboarding-types/steps';
 import * as CALLS from '@onboarding-actions/constants/calls';
 import { ObjectValues } from '@suite/types/utils';
@@ -25,6 +20,31 @@ const DEFAULT_PASSPHRASE_PROTECTION = true;
 const DEFAULT_SKIP_BACKUP = true;
 const DEFAULT_STRENGTH_T1 = 256;
 const DEFAULT_STRENGTH_T2 = 128;
+
+export type ConnectActionTypes =
+    | {
+          type: typeof ONBOARDING.DEVICE_CALL_RESET;
+      }
+    | {
+          type: typeof ONBOARDING.DEVICE_CALL_START;
+          name: string;
+      }
+    | {
+          type: typeof ONBOARDING.DEVICE_CALL_RESET;
+      }
+    | {
+          type: typeof ONBOARDING.DEVICE_CALL_SUCCESS;
+          result: Record<string, any>;
+      }
+    | {
+          type: typeof ONBOARDING.DEVICE_CALL_ERROR;
+          name: string; // todo: why use name here and not in success?
+          error: string;
+      }
+    | {
+          type: typeof ONBOARDING.UI_INTERACTION_EVENT;
+          name: string;
+      };
 
 const applyDefaultParams = (state: AppState, call: ObjectValues<typeof CALLS>) => {
     const { device } = state.suite;
@@ -75,14 +95,14 @@ const call = async (
     params?: any,
 ) => {
     // todo: reset and start in separate calls?
-    dispatch({ type: DEVICE_CALL_RESET });
+    dispatch({ type: ONBOARDING.DEVICE_CALL_RESET });
 
     const { device } = state.suite;
 
     if (!device) {
         // this should never happen
         dispatch({
-            type: DEVICE_CALL_ERROR,
+            type: ONBOARDING.DEVICE_CALL_ERROR,
             error: 'no device connected',
             name,
         });
@@ -90,7 +110,7 @@ const call = async (
     }
     // todo: maybe UI lock? hmm but...
     dispatch({
-        type: DEVICE_CALL_START,
+        type: ONBOARDING.DEVICE_CALL_START,
         name,
     });
 
@@ -131,14 +151,14 @@ const call = async (
     const response = await fn();
     if (response.success) {
         dispatch({
-            type: DEVICE_CALL_SUCCESS,
+            type: ONBOARDING.DEVICE_CALL_SUCCESS,
             result: response.payload,
             name,
         });
         return response;
     }
     dispatch({
-        type: DEVICE_CALL_ERROR,
+        type: ONBOARDING.DEVICE_CALL_ERROR,
         error: response.payload.error,
         name,
     });
@@ -208,7 +228,7 @@ const callActionAndGoToNextStep = (
 };
 
 // todo: maybe connect this with getFeatures call and use it as "initialize" in terms of connect?
-const resetCall = () => ({ type: DEVICE_CALL_RESET });
+const resetCall = () => ({ type: ONBOARDING.DEVICE_CALL_RESET });
 
 export {
     // calls to connect
