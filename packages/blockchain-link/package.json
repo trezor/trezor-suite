@@ -49,11 +49,11 @@
     "ripple-lib": "^1.5.0",
     "tiny-worker": "^2.3.0",
     "ts-loader": "^6.2.1",
-    "webpack": "4.41.2",
+    "webpack": "4.41.5",
     "webpack-cli": "3.3.10",
-    "webpack-dev-server": "3.9.0",
+    "webpack-dev-server": "3.10.1",
     "worker-loader": "^2.0.0",
-    "ws": "^7.2.0"
+    "ws": "^7.2.1"
   },
   "dependencies": {
     "es6-promise": "^4.2.8",
@@ -63,6 +63,6 @@
     "bignumber.js": "^9.0.0",
     "ripple-lib": "^1.4.0",
     "tiny-worker": "^2.3.0",
-    "ws": "^7.2.0"
+    "ws": "^7.2.1"
   }
 }
