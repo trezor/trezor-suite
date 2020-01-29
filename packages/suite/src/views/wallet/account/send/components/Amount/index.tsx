@@ -26,7 +26,6 @@ const StyledIcon = styled(Icon)`
 
 const StyledInput = styled(Input)`
     min-width: 150px;
-    border: 2px solid red;
 `;
 
 const Label = styled.div`
