@@ -51,7 +51,11 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     if (locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
         next(action);
         // router is locked, no redirect except for switch-device modal app
-        if (action.type === SUITE.SELECT_DEVICE && api.getState().router.app === 'switch-device') {
+        if (
+            action.type === SUITE.SELECT_DEVICE &&
+            !action.payload &&
+            api.getState().router.app === 'switch-device'
+        ) {
             api.dispatch(routerActions.closeModalApp());
         }
         return action;
