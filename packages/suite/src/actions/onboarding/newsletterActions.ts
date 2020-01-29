@@ -1,3 +1,5 @@
+// Not used at the moment but might be in future. Keeping it here for some more time.
+
 import {
     TOGGLE_CHECKBOX,
     SET_EMAIL,

@@ -9,7 +9,6 @@ import OptionsWrapper from './Wrapper/OptionsWrapper';
 import StepBodyWrapper from './Wrapper/StepBodyWrapper';
 import StepFooterWrapper from './Wrapper/StepFooterWrapper';
 import StepHeadingWrapper from './Wrapper/StepHeadingWrapper';
-import StepSubHeadingWrapper from './Wrapper/StepSubHeadingWrapper';
 import StepWrapper from './Wrapper/StepWrapper';
 
 import ButtonAlt from './Buttons/ButtonAlt';
@@ -41,7 +40,6 @@ const Wrapper = {
     StepBody: StepBodyWrapper,
     StepFooter: StepFooterWrapper,
     StepHeading: StepHeadingWrapper,
-    StepSubHeadingWrapper,
     Step: StepWrapper,
 };
 

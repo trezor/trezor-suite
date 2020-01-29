@@ -16,12 +16,11 @@ import {
 } from '@onboarding-types/connect';
 import { AnyStepId } from '@onboarding-types/steps';
 import * as CALLS from '@onboarding-actions/constants/calls';
-import { DEFAULT_LABEL } from '@onboarding-constants/trezor';
-
 import { ObjectValues } from '@suite/types/utils';
 import { goToNextStep } from './onboardingActions';
 import { GetState, Dispatch, AppState } from '@suite-types';
 
+const DEFAULT_LABEL = 'My Trezor';
 const DEFAULT_PASSPHRASE_PROTECTION = true;
 const DEFAULT_SKIP_BACKUP = true;
 const DEFAULT_STRENGTH_T1 = 256;
