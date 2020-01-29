@@ -92,313 +92,286 @@ const Settings = ({
                     <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
                 </H2>
 
-                {(!device || !device.features) && <>no device connected</>}
-                {device && device.features && (
-                    <>
-                        <Section header={<Translation>{messages.TR_BACKUP}</Translation>}>
-                            <Row>
-                                <TextColumn
-                                    title={
-                                        <Translation>
-                                            {messages.TR_BACKUP_RECOVERY_SEED}
-                                        </Translation>
+                <Section header={<Translation>{messages.TR_BACKUP}</Translation>}>
+                    <Row>
+                        <TextColumn
+                            title={<Translation>{messages.TR_BACKUP_RECOVERY_SEED}</Translation>}
+                            description={<Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>}
+                            learnMore={SEED_MANUAL_URL}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                onClick={() => backupDevice({ device })}
+                                isDisabled={
+                                    uiLocked || !features.needs_backup || features.unfinished_backup
+                                }
+                            >
+                                {features.needs_backup && (
+                                    <Translation>{messages.TR_CREATE_BACKUP}</Translation>
+                                )}
+                                {!features.needs_backup &&
+                                    !features.unfinished_backup &&
+                                    'Backup successful'}
+                                {features.unfinished_backup && 'Backup failed'}
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+
+                    {features.unfinished_backup && (
+                        <BackupFailedRow>
+                            <P size="tiny">
+                                <Translation>{messages.TR_BACKUP_FAILED}</Translation>
+                            </P>
+                            <ActionColumn>
+                                {/* todo: add proper link */}
+                                <BackupFailedLink href="https://fooo">
+                                    <Translation>{messages.TR_WHAT_TO_DO_NOW}</Translation>
+                                </BackupFailedLink>
+                            </ActionColumn>
+                        </BackupFailedRow>
+                    )}
+
+                    {!features.unfinished_backup && (
+                        <Row>
+                            <TextColumn
+                                title={<Translation>{messages.TR_CHECK_RECOVERY_SEED}</Translation>}
+                                description={
+                                    <Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>
+                                }
+                                learnMore={DRY_RUN_URL}
+                            />
+                            <ActionColumn>
+                                <ActionButton
+                                    onClick={() => {
+                                        startCheckSeed();
+                                    }}
+                                    isDisabled={
+                                        uiLocked ||
+                                        features.needs_backup ||
+                                        features.unfinished_backup
                                     }
-                                    description={
-                                        <Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>
-                                    }
-                                    learnMore={SEED_MANUAL_URL}
+                                    variant="secondary"
+                                >
+                                    <Translation>{messages.TR_CHECK_SEED}</Translation>
+                                </ActionButton>
+                            </ActionColumn>
+                        </Row>
+                    )}
+                </Section>
+
+                <Section header="Security">
+                    <Row>
+                        <TextColumn
+                            title={<Translation>{messages.TR_FIRMWARE_VERSION}</Translation>}
+                            description={
+                                <Translation
+                                    values={{ version: '1.2.3' }}
+                                    // values={{ version: getFwVersion(device) }}
+                                    {...messages.TR_YOUR_CURRENT_FIRMWARE}
                                 />
-                                <ActionColumn>
-                                    <ActionButton
-                                        onClick={() => backupDevice({ device })}
-                                        isDisabled={
-                                            uiLocked ||
-                                            !features.needs_backup ||
-                                            features.unfinished_backup
-                                        }
-                                    >
-                                        {features.needs_backup && (
-                                            <Translation>{messages.TR_CREATE_BACKUP}</Translation>
-                                        )}
-                                        {!features.needs_backup &&
-                                            !features.unfinished_backup &&
-                                            'Backup successful'}
-                                        {features.unfinished_backup && 'Backup failed'}
-                                    </ActionButton>
-                                </ActionColumn>
-                            </Row>
+                            }
+                            learnMore={SEED_MANUAL_URL}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => goto('firmware-index', { cancelable: true })}
+                                data-test="@suite/settings/device/update-button"
+                                isDisabled={
+                                    uiLocked
+                                    // TODO: for development and testing purposes is disable disabled
+                                    // || (device && !['required', 'outdated'].includes(device.firmware))
+                                }
+                            >
+                                {device &&
+                                    ['required', 'outdated'].includes(device.firmware) &&
+                                    'Update available'}
+                                {device && device.firmware === 'valid' && 'Up to date'}
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
 
-                            {features.unfinished_backup && (
-                                <BackupFailedRow>
-                                    <P size="tiny">
-                                        <Translation>{messages.TR_BACKUP_FAILED}</Translation>
-                                    </P>
-                                    <ActionColumn>
-                                        {/* todo: add proper link */}
-                                        <BackupFailedLink href="https://fooo">
-                                            <Translation>{messages.TR_WHAT_TO_DO_NOW}</Translation>
-                                        </BackupFailedLink>
-                                    </ActionColumn>
-                                </BackupFailedRow>
-                            )}
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}
+                                </Translation>
+                            }
+                            description={
+                                <Translation {...messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC} />
+                            }
+                        />
 
-                            {!features.unfinished_backup && (
-                                <Row>
-                                    <TextColumn
-                                        title={
-                                            <Translation>
-                                                {messages.TR_CHECK_RECOVERY_SEED}
-                                            </Translation>
-                                        }
-                                        description={
-                                            <Translation>
-                                                {messages.TR_RECOVERY_SEED_IS}
-                                            </Translation>
-                                        }
-                                        learnMore={DRY_RUN_URL}
-                                    />
-                                    <ActionColumn>
-                                        <ActionButton
-                                            onClick={() => {
-                                                startCheckSeed();
-                                            }}
-                                            isDisabled={
-                                                uiLocked ||
-                                                features.needs_backup ||
-                                                features.unfinished_backup
-                                            }
-                                            variant="secondary"
-                                        >
-                                            <Translation>{messages.TR_CHECK_SEED}</Translation>
-                                        </ActionButton>
-                                    </ActionColumn>
-                                </Row>
-                            )}
-                        </Section>
+                        <ActionColumn>
+                            <Switch
+                                checked={!!features.pin_protection}
+                                onChange={() => changePin({ remove: features.pin_protection })}
+                                // isDisabled={uiLocked}
+                            />
+                        </ActionColumn>
+                    </Row>
 
-                        <Section header="Security">
-                            <Row>
-                                <TextColumn
-                                    title={
-                                        <Translation>{messages.TR_FIRMWARE_VERSION}</Translation>
-                                    }
-                                    description={
-                                        <Translation
-                                            values={{ version: '1.2.3' }}
-                                            // values={{ version: getFwVersion(device) }}
-                                            {...messages.TR_YOUR_CURRENT_FIRMWARE}
-                                        />
-                                    }
-                                    learnMore={SEED_MANUAL_URL}
-                                />
-                                <ActionColumn>
-                                    <ActionButton
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_PASSPHRASE_TITLE}
+                                </Translation>
+                            }
+                            description={
+                                <>
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC}
+                                    </Translation>
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE}
+                                    </Translation>
+                                </>
+                            }
+                            learnMore={PASSPHRASE_URL}
+                        />
+                        <ActionColumn>
+                            <Switch
+                                checked={!!features.passphrase_protection}
+                                onChange={() =>
+                                    applySettings({
+                                        use_passphrase: !features.passphrase_protection,
+                                    })
+                                }
+                                data-test="@suite/settings/device/passphrase-switch"
+                                // isDisabled={uiLocked}
+                            />
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
+                <Section header="Personalization">
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_DEVICE_LABEL}
+                                </Translation>
+                            }
+                        />
+                        <ActionColumn>
+                            <ActionInput
+                                value={label}
+                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                    setLabel(event.currentTarget.value)
+                                }
+                                data-test="@suite/settings/device/label-input"
+                            />
+                            <ActionButton
+                                onClick={() => applySettings({ label })}
+                                isDisabled={uiLocked}
+                                data-test="@suite/settings/device/label-submit"
+                            >
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}
+                                </Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_TITLE}
+                                </Translation>
+                            }
+                            description={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS}
+                                </Translation>
+                            }
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                onClick={() => console.log('woo')}
+                                isDisabled={uiLocked}
+                                variant="secondary"
+                            >
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
+                                </Translation>
+                            </ActionButton>
+                            <ActionButton
+                                onClick={() =>
+                                    openModal({
+                                        type: 'device-background-gallery',
+                                        device,
+                                    })
+                                }
+                                isDisabled={uiLocked}
+                                data-test="@suite/settings/device/select-from-gallery"
+                                variant="secondary"
+                            >
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
+                                </Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+
+                    {features.major_version === 2 && (
+                        <Row>
+                            <TextColumn
+                                title={
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_DISPLAY_ROTATION}
+                                    </Translation>
+                                }
+                            />
+                            <ActionColumn>
+                                {DISPLAY_ROTATIONS.map(variant => (
+                                    <RotationButton
+                                        key={variant.value}
                                         variant="secondary"
-                                        onClick={() => goto('firmware-index', { cancelable: true })}
-                                        data-test="@suite/settings/device/update-button"
-                                        isDisabled={
-                                            uiLocked
-                                            // TODO: for development and testing purposes is disable disabled
-                                            // || (device && !['required', 'outdated'].includes(device.firmware))
-                                        }
-                                    >
-                                        {device &&
-                                            ['required', 'outdated'].includes(device.firmware) &&
-                                            'Update available'}
-                                        {device && device.firmware === 'valid' && 'Up to date'}
-                                    </ActionButton>
-                                </ActionColumn>
-                            </Row>
-
-                            <Row>
-                                <TextColumn
-                                    title={
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}
-                                        </Translation>
-                                    }
-                                    description={
-                                        <Translation
-                                            {...messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC}
-                                        />
-                                    }
-                                />
-
-                                <ActionColumn>
-                                    <Switch
-                                        checked={!!features.pin_protection}
-                                        onChange={() =>
-                                            changePin({ remove: features.pin_protection })
-                                        }
-                                        // isDisabled={uiLocked}
-                                    />
-                                </ActionColumn>
-                            </Row>
-
-                            <Row>
-                                <TextColumn
-                                    title={
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_PASSPHRASE_TITLE}
-                                        </Translation>
-                                    }
-                                    description={
-                                        <>
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC}
-                                            </Translation>
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE}
-                                            </Translation>
-                                        </>
-                                    }
-                                    learnMore={PASSPHRASE_URL}
-                                />
-                                <ActionColumn>
-                                    <Switch
-                                        checked={!!features.passphrase_protection}
-                                        onChange={() =>
-                                            applySettings({
-                                                use_passphrase: !features.passphrase_protection,
-                                            })
-                                        }
-                                        data-test="@suite/settings/device/passphrase-switch"
-                                        // isDisabled={uiLocked}
-                                    />
-                                </ActionColumn>
-                            </Row>
-                        </Section>
-
-                        <Section header="Personalization">
-                            <Row>
-                                <TextColumn
-                                    title={
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_DEVICE_LABEL}
-                                        </Translation>
-                                    }
-                                />
-                                <ActionColumn>
-                                    <ActionInput
-                                        value={label}
-                                        onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                                            setLabel(event.currentTarget.value)
-                                        }
-                                        data-test="@suite/settings/device/label-input"
-                                    />
-                                    <ActionButton
-                                        onClick={() => applySettings({ label })}
-                                        isDisabled={uiLocked}
-                                        data-test="@suite/settings/device/label-submit"
-                                    >
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}
-                                        </Translation>
-                                    </ActionButton>
-                                </ActionColumn>
-                            </Row>
-
-                            <Row>
-                                <TextColumn
-                                    title={
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_HOMESCREEN_TITLE}
-                                        </Translation>
-                                    }
-                                    description={
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS}
-                                        </Translation>
-                                    }
-                                />
-                                <ActionColumn>
-                                    <ActionButton
-                                        onClick={() => console.log('woo')}
-                                        isDisabled={uiLocked}
-                                        variant="secondary"
-                                    >
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
-                                        </Translation>
-                                    </ActionButton>
-                                    <ActionButton
                                         onClick={() =>
-                                            openModal({
-                                                type: 'device-background-gallery',
-                                                device,
+                                            applySettings({
+                                                display_rotation: variant.value,
                                             })
                                         }
+                                        data-test={`@suite/settings/device/rotation-button/${variant.value}`}
                                         isDisabled={uiLocked}
-                                        data-test="@suite/settings/device/select-from-gallery"
-                                        variant="secondary"
                                     >
-                                        <Translation>
-                                            {
-                                                messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY
-                                            }
-                                        </Translation>
-                                    </ActionButton>
-                                </ActionColumn>
-                            </Row>
+                                        {variant.label}
+                                    </RotationButton>
+                                ))}
+                            </ActionColumn>
+                        </Row>
+                    )}
+                </Section>
 
-                            {features.major_version === 2 && (
-                                <Row>
-                                    <TextColumn
-                                        title={
-                                            <Translation>
-                                                {messages.TR_DEVICE_SETTINGS_DISPLAY_ROTATION}
-                                            </Translation>
-                                        }
-                                    />
-                                    <ActionColumn>
-                                        {DISPLAY_ROTATIONS.map(variant => (
-                                            <RotationButton
-                                                key={variant.value}
-                                                variant="secondary"
-                                                onClick={() =>
-                                                    applySettings({
-                                                        display_rotation: variant.value,
-                                                    })
-                                                }
-                                                data-test={`@suite/settings/device/rotation-button/${variant.value}`}
-                                                isDisabled={uiLocked}
-                                            >
-                                                {variant.label}
-                                            </RotationButton>
-                                        ))}
-                                    </ActionColumn>
-                                </Row>
-                            )}
-                        </Section>
-
-                        <Section borderless>
-                            <Row>
-                                <TextColumn
-                                    title={
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
-                                        </Translation>
-                                    }
-                                    description={
-                                        <Translation>{messages.TR_WIPING_YOUR_DEVICE}</Translation>
-                                    }
-                                />
-                                <ActionColumn>
-                                    <ActionButton
-                                        variant="danger"
-                                        onClick={() => wipeDevice()}
-                                        isDisabled={uiLocked}
-                                        data-test="@suite/settings/device/wipe-button"
-                                    >
-                                        <Translation>
-                                            {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
-                                        </Translation>
-                                    </ActionButton>
-                                </ActionColumn>
-                            </Row>
-                        </Section>
-                    </>
-                )}
+                <Section borderless>
+                    <Row>
+                        <TextColumn
+                            title={
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
+                                </Translation>
+                            }
+                            description={
+                                <Translation>{messages.TR_WIPING_YOUR_DEVICE}</Translation>
+                            }
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="danger"
+                                onClick={() => wipeDevice()}
+                                isDisabled={uiLocked}
+                                data-test="@suite/settings/device/wipe-button"
+                            >
+                                <Translation>
+                                    {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
+                                </Translation>
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
             </div>
         </SuiteLayout>
     );
