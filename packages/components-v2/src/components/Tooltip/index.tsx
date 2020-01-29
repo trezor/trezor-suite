@@ -5,7 +5,7 @@ import { tippy } from './tippy.style';
 
 import { Link } from '../Link';
 import colors from '../../config/colors';
-import { FONT_SIZE } from '../../config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 const Content = styled.div<{ maxWidth?: number }>`
     max-width: ${props => `${props.maxWidth}px` || 'auto'};
@@ -34,13 +34,13 @@ const TippyWrapper = styled.div`
     ${tippy};
 
     .tippy-tooltip {
-        background: ${colors.WHITE};
-        color: ${colors.BLACK0};
-        border-radius: 4px;
-        font-size: ${FONT_SIZE.NORMAL};
-        padding: 8px 10px 6px;
+        background: ${colors.BLACK0};
+        color: ${colors.WHITE};
+        font-weight: ${FONT_WEIGHT.DEMI_BOLD};
+        border-radius: 3px;
+        font-size: ${FONT_SIZE.TINY};
         text-align: left;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
 
         .tippy-arrow {
             border: 5px solid transparent;
@@ -48,22 +48,22 @@ const TippyWrapper = styled.div`
 
         &[data-placement^='top'] {
             .tippy-arrow {
-                border-top-color: ${colors.WHITE};
+                border-top-color: ${colors.BLACK0};
             }
         }
         &[data-placement^='bottom'] {
             .tippy-arrow {
-                border-bottom-color: ${colors.WHITE};
+                border-bottom-color: ${colors.BLACK0};
             }
         }
         &[data-placement^='left'] {
             .tippy-arrow {
-                border-left-color: ${colors.WHITE};
+                border-left-color: ${colors.BLACK0};
             }
         }
         &[data-placement^='right'] {
             .tippy-arrow {
-                border-right-color: ${colors.WHITE};
+                border-right-color: ${colors.BLACK0};
             }
         }
     }
