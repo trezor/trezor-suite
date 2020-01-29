@@ -56,7 +56,11 @@ const Index = (props: Props) => {
                     {...messages.TR_HELP_TREZOR_SUITE_TEXT_1}
                     values={{
                         TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
-                            <Bold><Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}</Translation></Bold>
+                            <Bold>
+                                <Translation>
+                                    {messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}
+                                </Translation>
+                            </Bold>
                         ),
                     }}
                 />
@@ -66,7 +70,7 @@ const Index = (props: Props) => {
             </Bold>
 
             <StyledImg alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
-            
+
             <Analytics />
 
             <Button

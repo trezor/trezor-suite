@@ -21,6 +21,11 @@ const Wrapper = styled.div`
     height: 680px;
 `;
 
+const StyledImg = styled.img`
+    margin-top: 40px;
+    margin-bottom: 15px;
+`;
+
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
@@ -31,12 +36,12 @@ const Index = (props: Props) => {
     return (
         <Wrapper>
             <H2 data-test="welcome-message">
-                <Translation>{messages.TR_WELCOME_TO_TREZOR}</Translation>
+                <Translation>{messages.TR_WELCOME_MODAL_HEADING}</Translation>
             </H2>
             <P size="tiny">
-                <Translation>{messages.TR_WELCOME_TO_TREZOR_TEXT}</Translation>
+                <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation>
             </P>
-            <img alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
+            <StyledImg alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
 
             <Button data-test="@button/continue" onClick={() => props.goto('suite-analytics')}>
                 <Translation>{messages.TR_BEGIN}</Translation>

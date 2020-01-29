@@ -1703,13 +1703,11 @@ const definedMessages = defineMessages({
         id: 'TR_HELP_TREZOR_SUITE_TEXT_1',
     },
     TR_HELP_TREZOR_SUITE_TEXT_1_FAT: {
-        defaultMessage:
-            'anonymous analytics data.',
+        defaultMessage: 'anonymous analytics data.',
         id: 'TR_HELP_TREZOR_SUITE_TEXT_1_FAT',
     },
     TR_HELP_TREZOR_SUITE_TEXT_2: {
-        defaultMessage:
-            'Trezor Suite does NOT track any balance-related or personal data.',
+        defaultMessage: 'Trezor Suite does NOT track any balance-related or personal data.',
         id: 'TR_HELP_TREZOR_SUITE_TEXT_2',
     },
     TR_TOS_INFORMATION: {
@@ -1721,13 +1719,13 @@ const definedMessages = defineMessages({
         defaultMessage: 'Terms & Conditions.',
         id: 'TR_TOS_LINK',
     },
-    TR_WELCOME_TO_TREZOR: {
+    TR_WELCOME_MODAL_HEADING: {
         defaultMessage: 'Welcome to Trezor Suite!',
-        id: 'TR_WELCOME_TO_TREZOR', 
+        id: 'TR_WELCOME_MODAL_HEADING',
     },
-    TR_WELCOME_TO_TREZOR_TEXT: {
+    TR_WELCOME_MODAL_TEXT: {
         defaultMessage: 'Cyka blyat davai trezora',
-        id: 'TR_WELCOME_TO_TREZOR_TEXT', 
+        id: 'TR_WELCOME_MODAL_TEXT',
     },
     TR_BEGIN: {
         defaultMessage: "Let's begin!",
