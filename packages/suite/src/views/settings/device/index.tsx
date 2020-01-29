@@ -9,7 +9,7 @@ import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
-// import { getFwVersion } from '@suite-utils/device';
+import { getFwVersion } from '@suite-utils/device';
 import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
 // import { AcquiredDevice } from '@suite-types';
 
@@ -165,8 +165,7 @@ const Settings = ({
                             title={<Translation>{messages.TR_FIRMWARE_VERSION}</Translation>}
                             description={
                                 <Translation
-                                    values={{ version: '1.2.3' }}
-                                    // values={{ version: getFwVersion(device) }}
+                                    values={{ version: getFwVersion(device) }}
                                     {...messages.TR_YOUR_CURRENT_FIRMWARE}
                                 />
                             }
