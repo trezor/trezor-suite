@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { ToastContainer as NotificationsContainer } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import { Modal as ModalComponent } from '@trezor/components';
@@ -178,6 +179,7 @@ const Preloader = (props: Props) => {
     // everything is set. action modals will use own ModalComponent wrapper
     return (
         <>
+            <NotificationsContainer />
             <Modals />
             {props.children}
         </>
